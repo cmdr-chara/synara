@@ -1046,6 +1046,7 @@ export const DEFAULT_MODEL_BY_PROVIDER: Record<ProviderWithDefaultModel, ModelSl
   cursor: "auto",
   antigravity: "Gemini 3.5 Flash",
   grok: "grok-build",
+  deepseek: "deepseek-v4-pro",
   droid: "claude-opus-4-8",
   kilo: "kilo/kilo-auto/free",
   opencode: "openai/gpt-5",

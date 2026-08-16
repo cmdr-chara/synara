@@ -1242,6 +1242,7 @@ export function getCustomBinaryPathForProvider(
     | "cursorBinaryPath"
     | "antigravityBinaryPath"
     | "grokBinaryPath"
+    | "deepSeekBinaryPath"
     | "droidBinaryPath"
     | "kiloBinaryPath"
     | "openCodeBinaryPath"

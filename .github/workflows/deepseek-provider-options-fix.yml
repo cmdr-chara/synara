@@ -25,11 +25,8 @@ jobs:
 
           path = Path("apps/web/src/session-logic.test.ts")
           text = path.read_text()
-          old = '''      { value: "grok", label: "Grok", available: true },
-      { value: "droid", label: "Droid", available: true },'''
-          new = '''      { value: "grok", label: "Grok", available: true },
-      { value: "deepseek", label: "DeepSeek Harness", available: true },
-      { value: "droid", label: "Droid", available: true },'''
+          old = '      { value: "grok", label: "Grok", available: true },\n      { value: "droid", label: "Droid", available: true },'
+          new = '      { value: "grok", label: "Grok", available: true },\n      { value: "deepseek", label: "DeepSeek Harness", available: true },\n      { value: "droid", label: "Droid", available: true },'
           if text.count(old) != 1:
               raise SystemExit(f"expected exactly one target block, found {text.count(old)}")
           path.write_text(text.replace(old, new, 1))

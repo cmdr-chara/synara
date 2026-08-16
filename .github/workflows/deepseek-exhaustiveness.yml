@@ -31,7 +31,10 @@ jobs:
           node-version-file: package.json
 
       - name: Apply DeepSeek integration edits
-        run: node scripts/apply-deepseek-exhaustiveness.mjs
+        shell: bash
+        run: |
+          node scripts/apply-deepseek-exhaustiveness.mjs || true
+          node scripts/fix-deepseek-plugin-library.mjs
 
       - name: Install dependencies
         env:

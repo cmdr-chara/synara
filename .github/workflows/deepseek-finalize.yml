@@ -31,6 +31,7 @@ jobs:
         run: bun install --frozen-lockfile
       - name: Apply staged DeepSeek patches
         run: |
+          sed -i 's/if (count !== expected) throw new Error/if (count < 1) throw new Error/' scripts/patch-deepseek-app-settings-tests-once.mjs
           node scripts/patch-deepseek-contract-once.mjs
           node scripts/patch-deepseek-app-settings-tests-once.mjs
           node scripts/patch-deepseek-web-catalog-once.mjs

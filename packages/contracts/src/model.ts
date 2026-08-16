@@ -223,6 +223,14 @@ const CODEX_GPT_5_5_CAPABILITIES: ModelCapabilities = {
   ],
 };
 
+const DEEPSEEK_HARNESS_CAPABILITIES: ModelCapabilities = {
+  reasoningEffortLevels: [],
+  supportsFastMode: false,
+  supportsThinkingToggle: false,
+  promptInjectedEffortLevels: [],
+  contextWindowOptions: [],
+};
+
 const GROK_BUILD_CAPABILITIES: ModelCapabilities = {
   reasoningEffortLevels: [
     { value: "none", label: "None" },
@@ -613,6 +621,18 @@ export const MODEL_OPTIONS_BY_PROVIDER = {
       slug: "grok-build",
       name: "Grok 4.3",
       capabilities: GROK_BUILD_CAPABILITIES,
+    },
+  ],
+  deepseek: [
+    {
+      slug: "deepseek-v4-pro",
+      name: "DeepSeek V4 Pro",
+      capabilities: DEEPSEEK_HARNESS_CAPABILITIES,
+    },
+    {
+      slug: "deepseek-v4-flash",
+      name: "DeepSeek V4 Flash",
+      capabilities: DEEPSEEK_HARNESS_CAPABILITIES,
     },
   ],
   droid: [
@@ -1109,6 +1129,13 @@ export const MODEL_SLUG_ALIASES_BY_PROVIDER: Record<ProviderKind, Record<string,
     kimi: "kimi-k2.7-code",
   },
   antigravity: {},
+  deepseek: {
+    deepseek: "deepseek-v4-pro",
+    pro: "deepseek-v4-pro",
+    flash: "deepseek-v4-flash",
+    "deepseek-v4-pro": "deepseek-v4-pro",
+    "deepseek-v4-flash": "deepseek-v4-flash",
+  },
   droid: {
     droid: "claude-opus-4-8",
     factory: "claude-opus-4-8",
@@ -1196,6 +1223,7 @@ export const PROVIDER_DISPLAY_NAMES: Record<ProviderKind, string> = {
   cursor: "Cursor",
   antigravity: "Antigravity",
   grok: "Grok",
+  deepseek: "DeepSeek Harness",
   droid: "Droid",
   kilo: "Kilo",
   opencode: "OpenCode",

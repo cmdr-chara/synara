@@ -1341,7 +1341,9 @@ export const checkGrokProviderStatus = makeCheckGrokProviderStatus();
 
 // ── DeepSeek Harness health check ───────────────────────────────────
 
-export const makeCheckDeepSeekProviderStatus = (binaryPath?: string): Effect.Effect<ServerProviderStatus> =>
+export const makeCheckDeepSeekProviderStatus = (
+  binaryPath?: string,
+): Effect.Effect<ServerProviderStatus> =>
   Effect.sync(() => {
     const checkedAt = new Date().toISOString();
     const executable = nonEmptyTrimmed(binaryPath) ?? "dsh-acp-demo";

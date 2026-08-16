@@ -160,7 +160,10 @@ export function buildDeepSeekAcpSpawnInput(input: {
     args: ["--config", input.configPath],
     cwd: input.cwd,
     env: {
-      ...buildProviderChildEnvironment({ provider: "deepseek" }),
+      ...buildProviderChildEnvironment({
+        provider: "deepseek",
+        inheritedSynaraKeys: ["SYNARA_DEEPSEEK_SESSIONS_ROOT"],
+      }),
       DSH_PERMISSION_MODE: deepSeekPermissionMode(input.runtimeMode),
     },
   };

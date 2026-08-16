@@ -1,0 +1,60 @@
+name: DeepSeek Custom Config Health Fix
+
+on:
+  push:
+    branches:
+      - agent/deepseek-harness
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/deepseek-harness
+          fetch-depth: 0
+      - name: Patch DeepSeek custom config health semantics
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path("apps/server/src/provider/Layers/ProviderHealth.ts")
+          text = path.read_text()
+
+          old_signature = 'export const makeCheckDeepSeekProviderStatus = (\n  binaryPath?: string,\n): Effect.Effect<ServerProviderStatus> =>'
+          new_signature = 'export const makeCheckDeepSeekProviderStatus = (\n  binaryPath?: string,\n  configPath?: string,\n): Effect.Effect<ServerProviderStatus> =>'
+          if text.count(old_signature) != 1:
+              raise SystemExit(f"signature target count: {text.count(old_signature)}")
+          text = text.replace(old_signature, new_signature, 1)
+
+          old_auth = '    const hasApiKey = Boolean(env.DEEPSEEK_API_KEY?.trim());\n    return {\n      provider: DEEPSEEK_PROVIDER,\n      status: hasApiKey ? "ready" : "error",\n      available: true,\n      authStatus: hasApiKey ? "authenticated" : "unauthenticated",\n      checkedAt,\n      ...(hasApiKey\n        ? { authType: "apiKey", authLabel: "DeepSeek API Key" }\n        : {\n            message:\n              "DeepSeek Harness ACP is installed, but DEEPSEEK_API_KEY is not set. Set it before starting a DeepSeek session.",\n          }),\n    } satisfies ServerProviderStatus;'
+          new_auth = '    const hasApiKey = Boolean(env.DEEPSEEK_API_KEY?.trim());\n    const hasCustomConfig = Boolean(nonEmptyTrimmed(configPath));\n    if (hasCustomConfig) {\n      return {\n        provider: DEEPSEEK_PROVIDER,\n        status: "ready",\n        available: true,\n        authStatus: hasApiKey ? "authenticated" : "unknown",\n        checkedAt,\n        ...(hasApiKey\n          ? { authType: "apiKey", authLabel: "DeepSeek API Key" }\n          : {\n              message:\n                "DeepSeek Harness ACP is installed. Authentication will be resolved by the configured Harness composition.",\n            }),\n      } satisfies ServerProviderStatus;\n    }\n\n    return {\n      provider: DEEPSEEK_PROVIDER,\n      status: hasApiKey ? "ready" : "error",\n      available: true,\n      authStatus: hasApiKey ? "authenticated" : "unauthenticated",\n      checkedAt,\n      ...(hasApiKey\n        ? { authType: "apiKey", authLabel: "DeepSeek API Key" }\n        : {\n            message:\n              "DeepSeek Harness ACP is installed, but DEEPSEEK_API_KEY is not set. Set it before starting a DeepSeek session.",\n          }),\n    } satisfies ServerProviderStatus;'
+          if text.count(old_auth) != 1:
+              raise SystemExit(f"auth target count: {text.count(old_auth)}")
+          text = text.replace(old_auth, new_auth, 1)
+
+          old_call = '                  makeCheckDeepSeekProviderStatus(settings.providers.deepseek.binaryPath),'
+          new_call = '                  makeCheckDeepSeekProviderStatus(\n                    settings.providers.deepseek.binaryPath,\n                    settings.providers.deepseek.configPath,\n                  ),'
+          if text.count(old_call) != 1:
+              raise SystemExit(f"call target count: {text.count(old_call)}")
+          text = text.replace(old_call, new_call, 1)
+
+          path.write_text(text)
+          PY
+          bunx oxfmt apps/server/src/provider/Layers/ProviderHealth.ts
+      - name: Commit patch
+        run: |
+          if git diff --quiet; then
+            echo "No patch needed"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps/server/src/provider/Layers/ProviderHealth.ts
+          git commit -m "fix(deepseek): respect custom config auth semantics"
+          git push origin HEAD:agent/deepseek-harness

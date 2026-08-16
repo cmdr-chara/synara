@@ -120,6 +120,7 @@ export type GrokModelSelection = typeof GrokModelSelection.Type;
 export const DeepSeekModelSelection = Schema.Struct({
   provider: Schema.Literal("deepseek"),
   model: TrimmedNonEmptyString,
+  options: Schema.optional(Schema.Struct({})),
 });
 export type DeepSeekModelSelection = typeof DeepSeekModelSelection.Type;
 

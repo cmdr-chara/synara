@@ -69,10 +69,10 @@ type DeepSeekSessionContext = {
   readonly pendingApprovals: Map<ApprovalRequestId, PendingApproval>;
   readonly turns: Array<{ id: TurnId; items: Array<unknown> }>;
   session: ProviderSession;
-  notificationFiber?: Fiber.Fiber<void, never>;
-  promptFiber?: Fiber.Fiber<void, never>;
-  activeTurnId?: TurnId;
-  activeInteractionMode?: "default" | "plan" | "debug";
+  notificationFiber: Fiber.Fiber<void, never> | undefined;
+  promptFiber: Fiber.Fiber<void, never> | undefined;
+  activeTurnId: TurnId | undefined;
+  activeInteractionMode: "default" | "plan" | "debug" | undefined;
   stopped: boolean;
 };
 
@@ -273,6 +273,10 @@ export function makeDeepSeekAdapter(options: DeepSeekAdapterLiveOptions = {}) {
           pendingApprovals,
           turns: [],
           session,
+          notificationFiber: undefined,
+          promptFiber: undefined,
+          activeTurnId: undefined,
+          activeInteractionMode: undefined,
           stopped: false,
         };
         sessions.set(input.threadId, ctx);
@@ -376,10 +380,11 @@ export function makeDeepSeekAdapter(options: DeepSeekAdapterLiveOptions = {}) {
           ...(yield* makeEventStamp()),
           provider: PROVIDER,
           threadId: input.threadId,
-          payload: { sessionId: started.sessionId },
+          providerRefs: { providerThreadId: started.sessionId },
+          payload: {},
         });
         return session;
-      });
+      }).pipe(Effect.scoped);
 
     const sendTurn: DeepSeekAdapterShape["sendTurn"] = (input) =>
       Effect.gen(function* () {
@@ -486,7 +491,7 @@ export function makeDeepSeekAdapter(options: DeepSeekAdapterLiveOptions = {}) {
             },
           });
         }).pipe(
-          Effect.catchAll((error) =>
+          Effect.catch((error) =>
             Effect.gen(function* () {
               if (ctx.activeTurnId === turnId) {
                 ctx.activeTurnId = undefined;

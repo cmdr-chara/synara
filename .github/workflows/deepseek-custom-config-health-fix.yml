@@ -46,7 +46,6 @@ jobs:
 
           path.write_text(text)
           PY
-          bunx oxfmt apps/server/src/provider/Layers/ProviderHealth.ts
       - name: Commit patch
         run: |
           if git diff --quiet; then

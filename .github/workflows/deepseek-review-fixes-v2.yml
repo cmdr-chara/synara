@@ -1,0 +1,442 @@
+name: DeepSeek review fixes v2
+on:
+  push:
+    branches: [tmp/deepseek-review-fixes]
+permissions:
+  contents: write
+jobs:
+  patch-and-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: tmp/deepseek-review-fixes
+          fetch-depth: 0
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.12
+      - name: Apply fixes
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          def r(path, old, new):
+              p = Path(path)
+              text = p.read_text()
+              n = text.count(old)
+              if n != 1:
+                  raise SystemExit(f"{path}: expected 1 match, got {n}: {old[:120]!r}")
+              p.write_text(text.replace(old, new, 1))
+
+          p = "apps/server/src/provider/acp/DeepSeekAcpSupport.ts"
+          r(p,
+            '''export interface DeepSeekAcpRuntimeInput extends Omit<
+  AcpSessionRuntimeOptions,
+  "authMethodId" | "freshSessionRetry" | "resolveAuthMethodId" | "spawn"
+> {
+  readonly settings?: DeepSeekAcpRuntimeSettings;
+  readonly childProcessSpawner: ChildProcessSpawner;
+  readonly cwd: string;
+  readonly runtimeMode: RuntimeMode;
+}''',
+            '''export interface DeepSeekAcpRuntimeInput extends Omit<
+  AcpSessionRuntimeOptions,
+  "authMethodId" | "freshSessionRetry" | "resolveAuthMethodId" | "spawn"
+> {
+  readonly settings?: DeepSeekAcpRuntimeSettings;
+  readonly childProcessSpawner: ChildProcessSpawner;
+  readonly cwd: string;
+  readonly runtimeMode: RuntimeMode;
+  readonly sessionsRoot?: string;
+}''')
+          r(p,
+            'const DEFAULT_DEEPSEEK_MODEL = "deepseek-v4-pro";\nconst KNOWN_DEEPSEEK_MODELS = ["deepseek-v4-flash", "deepseek-v4-pro"] as const;\n',
+            '''const DEFAULT_DEEPSEEK_MODEL = "deepseek-v4-pro";
+const KNOWN_DEEPSEEK_MODELS = ["deepseek-v4-flash", "deepseek-v4-pro"] as const;
+
+const resolveDeepSeekAuthMethodId: NonNullable<
+  AcpSessionRuntimeOptions["resolveAuthMethodId"]
+> = (initializeResult) => {
+  const authMethodId = initializeResult.authMethods
+    ?.map((method) => method.id.trim())
+    .find((id) => id.length > 0);
+  return authMethodId
+    ? Effect.succeed(authMethodId)
+    : Effect.fail(
+        new AcpErrors.AcpRequestError({
+          code: -32602,
+          errorMessage: "DeepSeek Harness ACP did not advertise an authentication method.",
+          data: { authMethods: initializeResult.authMethods ?? [] },
+        }),
+      );
+};
+''')
+          r(p,
+            "    persistenceRoot: !!js process.env.SYNARA_DEEPSEEK_SESSIONS_ROOT ?? './.synara-deepseek-sessions'",
+            "    persistenceRoot: !!js process.env.SYNARA_DEEPSEEK_SESSIONS_ROOT")
+          r(p,
+            '''export function buildDeepSeekAcpSpawnInput(input: {
+  readonly settings?: DeepSeekAcpRuntimeSettings;
+  readonly configPath: string;
+  readonly cwd: string;
+  readonly runtimeMode: RuntimeMode;
+}): AcpSpawnInput {''',
+            '''export function buildDeepSeekAcpSpawnInput(input: {
+  readonly settings?: DeepSeekAcpRuntimeSettings;
+  readonly configPath: string;
+  readonly cwd: string;
+  readonly runtimeMode: RuntimeMode;
+  readonly sessionsRoot?: string;
+}): AcpSpawnInput {''')
+          r(p,
+            '''      ...buildProviderChildEnvironment({
+        provider: "deepseek",
+        inheritedSynaraKeys: ["SYNARA_DEEPSEEK_SESSIONS_ROOT"],
+      }),
+      DSH_PERMISSION_MODE: deepSeekPermissionMode(input.runtimeMode),''',
+            '''      ...buildProviderChildEnvironment({
+        provider: "deepseek",
+        inheritedSynaraKeys: ["SYNARA_DEEPSEEK_SESSIONS_ROOT"],
+      }),
+      SYNARA_DEEPSEEK_SESSIONS_ROOT:
+        process.env.SYNARA_DEEPSEEK_SESSIONS_ROOT?.trim() || input.sessionsRoot,
+      DSH_PERMISSION_MODE: deepSeekPermissionMode(input.runtimeMode),''')
+          r(p,
+            '''        ...input,
+        spawn: buildDeepSeekAcpSpawnInput({''',
+            '''        ...input,
+        resolveAuthMethodId: resolveDeepSeekAuthMethodId,
+        spawn: buildDeepSeekAcpSpawnInput({''')
+          r(p,
+            '''          cwd: input.cwd,
+          runtimeMode: input.runtimeMode,
+        }),''',
+            '''          cwd: input.cwd,
+          runtimeMode: input.runtimeMode,
+          sessionsRoot: input.sessionsRoot,
+        }),''')
+
+          p = "apps/server/src/provider/Layers/DeepSeekAdapter.ts"
+          r(p, 'import {\n  ApprovalRequestId,', 'import * as nodePath from "node:path";\n\nimport {\n  ApprovalRequestId,')
+          r(p,
+            '''import {
+  classifyAcpPromptTurnCompletion,
+  mapAcpToAdapterError,
+  resolveAcpPermissionPolicy,
+  selectAcpPermissionOptionId,
+} from "../acp/AcpAdapterSupport.ts";
+''',
+            '''import {
+  classifyAcpPromptTurnCompletion,
+  mapAcpToAdapterError,
+  resolveAcpPermissionPolicy,
+  selectAcpPermissionOptionId,
+} from "../acp/AcpAdapterSupport.ts";
+import { withAcpPlanModePrompt } from "../acp/AcpAdapterSessionSupport.ts";
+''')
+          r(p, 'import { parsePermissionRequest } from "../acp/AcpRuntimeModel.ts";\n',
+            '''import { parsePermissionRequest } from "../acp/AcpRuntimeModel.ts";
+import {
+  forkAcpTurnIdleWatchdog,
+  resolveAcpTurnIdleTimeoutMs,
+} from "../acp/AcpTurnIdleWatchdog.ts";
+''')
+          r(p,
+            '''const PROVIDER = "deepseek" as const;
+const MAX_INLINE_SKILL_CHARS = 48_000;
+''',
+            '''const PROVIDER = "deepseek" as const;
+const MAX_INLINE_SKILL_CHARS = 48_000;
+const DEEPSEEK_TURN_IDLE_TIMEOUT_MS = resolveAcpTurnIdleTimeoutMs({
+  envVar: "SYNARA_DEEPSEEK_TURN_IDLE_TIMEOUT_MS",
+  defaultMs: 600_000,
+});
+const DEEPSEEK_TURN_WATCHDOG_INTERVAL_MS = 15_000;
+const DEEPSEEK_PLAN_MODE_PROMPT_PREFIX = [
+  "Synara Plan mode is active.",
+  "Do not mutate files, run commands that change state, or implement the request in this turn.",
+  "Inspect and reason as needed, then return a concrete implementation plan.",
+].join("\\n");
+''')
+          r(p,
+            '''  activeTurnId: TurnId | undefined;
+  activeInteractionMode: "default" | "plan" | "debug" | undefined;
+  stopped: boolean;
+''',
+            '''  activeTurnId: TurnId | undefined;
+  activeInteractionMode: "default" | "plan" | "debug" | undefined;
+  lastTurnActivityAt: number | undefined;
+  stopped: boolean;
+''')
+          r(p,
+            '''    const sessions = new Map<ThreadId, DeepSeekSessionContext>();
+    const runtimeEventPubSub = yield* PubSub.bounded<ProviderRuntimeEvent>(''',
+            '''    const sessions = new Map<ThreadId, DeepSeekSessionContext>();
+    const lifecycleScope = yield* Scope.make("sequential");
+    yield* Effect.addFinalizer(() => Scope.close(lifecycleScope, Exit.void));
+    const runtimeEventPubSub = yield* PubSub.bounded<ProviderRuntimeEvent>(''')
+          r(p,
+            '''    const startSession: DeepSeekAdapterShape["startSession"] = (input) =>
+''',
+            '''    const retireExitedSession = (ctx: DeepSeekSessionContext) =>
+      Effect.gen(function* () {
+        if (ctx.stopped || sessions.get(ctx.threadId) !== ctx) return;
+
+        const activeTurnId = ctx.activeTurnId;
+        const errorMessage = "DeepSeek Harness ACP process exited unexpectedly.";
+        const promptFiber = ctx.promptFiber;
+        ctx.stopped = true;
+        ctx.activeTurnId = undefined;
+        ctx.activeInteractionMode = undefined;
+        ctx.lastTurnActivityAt = undefined;
+        ctx.promptFiber = undefined;
+        yield* settlePendingApprovals(ctx);
+        if (promptFiber) yield* Fiber.interrupt(promptFiber);
+        if (ctx.notificationFiber) yield* Fiber.interrupt(ctx.notificationFiber);
+        sessions.delete(ctx.threadId);
+
+        if (activeTurnId !== undefined) {
+          yield* offerRuntimeEvent(ctx.lifecycleGeneration, {
+            type: "turn.completed",
+            ...(yield* makeEventStamp()),
+            provider: PROVIDER,
+            threadId: ctx.threadId,
+            turnId: activeTurnId,
+            payload: { state: "failed", errorMessage },
+          });
+        }
+        yield* offerRuntimeEvent(ctx.lifecycleGeneration, {
+          type: "session.exited",
+          ...(yield* makeEventStamp()),
+          provider: PROVIDER,
+          threadId: ctx.threadId,
+          payload: { exitKind: "error", reason: errorMessage, recoverable: true },
+        });
+        yield* Effect.ignore(Scope.close(ctx.scope, Exit.void));
+      });
+
+    const startSession: DeepSeekAdapterShape["startSession"] = (input) =>
+''')
+          r(p,
+            '''          cwd,
+          runtimeMode: input.runtimeMode,
+          clientInfo: { name: "Synara", version: "0.0.0" },''',
+            '''          cwd,
+          runtimeMode: input.runtimeMode,
+          sessionsRoot: nodePath.join(serverConfig.stateDir, "deepseek-sessions"),
+          clientInfo: { name: "Synara", version: "0.0.0" },''')
+          r(p,
+            '''        yield* acp.handleRequestPermission((params) =>
+          Effect.gen(function* () {
+            const policyOutcome = resolveAcpPermissionPolicy({''',
+            '''        yield* acp.handleRequestPermission((params) =>
+          Effect.gen(function* () {
+            if (ctx?.activeTurnId !== undefined) ctx.lastTurnActivityAt = Date.now();
+            const policyOutcome = resolveAcpPermissionPolicy({''')
+          r(p,
+            '''        const now = yield* nowIso;
+        const session: ProviderSession = {''',
+            '''        if (settings.configPath?.trim() && modelSelection?.model) {
+          yield* acp.setModel(modelSelection.model).pipe(
+            Effect.mapError((error) =>
+              mapAcpToAdapterError(PROVIDER, input.threadId, "session/set_config_option", error),
+            ),
+          );
+        }
+        const now = yield* nowIso;
+        const session: ProviderSession = {''')
+          r(p,
+            '''          activeTurnId: undefined,
+          activeInteractionMode: undefined,
+          stopped: false,''',
+            '''          activeTurnId: undefined,
+          activeInteractionMode: undefined,
+          lastTurnActivityAt: undefined,
+          stopped: false,''')
+          r(p,
+            '''            Effect.gen(function* () {
+              const turnId = ctx.activeTurnId;
+              switch (event._tag) {''',
+            '''            Effect.gen(function* () {
+              const turnId = ctx.activeTurnId;
+              if (turnId !== undefined) ctx.lastTurnActivityAt = Date.now();
+              switch (event._tag) {''')
+          r(p,
+            '''          payload: {},
+        });
+        return session;''',
+            '''          payload: {},
+        });
+        yield* acp.awaitExit.pipe(
+          Effect.flatMap(() => retireExitedSession(ctx)),
+          Effect.forkIn(lifecycleScope),
+        );
+        return session;''')
+          r(p,
+            '''    const sendTurn: DeepSeekAdapterShape["sendTurn"] = (input) =>
+''',
+            '''    const failDeepSeekTurnAsTimedOut = (
+      ctx: DeepSeekSessionContext,
+      turnId: TurnId,
+      idleMs: number,
+    ) =>
+      Effect.gen(function* () {
+        if (ctx.activeTurnId !== turnId) return;
+        const promptFiber = ctx.promptFiber;
+        const idleSeconds = Math.max(1, Math.round(idleMs / 1_000));
+        const errorMessage = `DeepSeek Harness ACP produced no activity for ${idleSeconds}s.`;
+        ctx.activeTurnId = undefined;
+        ctx.activeInteractionMode = undefined;
+        ctx.lastTurnActivityAt = undefined;
+        ctx.promptFiber = undefined;
+        ctx.session = {
+          ...ctx.session,
+          status: "error",
+          activeTurnId: undefined,
+          updatedAt: yield* nowIso,
+          lastError: errorMessage,
+        };
+        if (promptFiber) yield* Fiber.interrupt(promptFiber);
+        yield* Effect.ignore(ctx.acp.cancel);
+        yield* offerRuntimeEvent(ctx.lifecycleGeneration, {
+          type: "turn.completed",
+          ...(yield* makeEventStamp()),
+          provider: PROVIDER,
+          threadId: ctx.threadId,
+          turnId,
+          payload: { state: "failed", errorMessage },
+        });
+      });
+
+    const sendTurn: DeepSeekAdapterShape["sendTurn"] = (input) =>
+''')
+          r(p,
+            '''            issue: "A text prompt is required.",
+          });
+        }
+
+        const turnId = TurnId.makeUnsafe(crypto.randomUUID());''',
+            '''            issue: "A text prompt is required.",
+          });
+        }
+        const promptText = withAcpPlanModePrompt({
+          text,
+          interactionMode: input.interactionMode,
+          promptPrefix: DEEPSEEK_PLAN_MODE_PROMPT_PREFIX,
+        });
+
+        const turnId = TurnId.makeUnsafe(crypto.randomUUID());''')
+          r(p,
+            '''        ctx.activeTurnId = turnId;
+        ctx.activeInteractionMode = input.interactionMode ?? "default";
+        ctx.turns.push({ id: turnId, items: [] });''',
+            '''        ctx.activeTurnId = turnId;
+        ctx.activeInteractionMode = input.interactionMode ?? "default";
+        ctx.lastTurnActivityAt = Date.now();
+        ctx.turns.push({ id: turnId, items: [] });''')
+          r(p, '            .prompt({ prompt: [{ type: "text", text }] })',
+            '            .prompt({ prompt: [{ type: "text", text: promptText }] })')
+          r(p,
+            '''          ctx.activeTurnId = undefined;
+          ctx.activeInteractionMode = undefined;
+          ctx.session = {''',
+            '''          ctx.activeTurnId = undefined;
+          ctx.activeInteractionMode = undefined;
+          ctx.lastTurnActivityAt = undefined;
+          ctx.promptFiber = undefined;
+          ctx.session = {''')
+          r(p,
+            '''                ctx.activeTurnId = undefined;
+                ctx.activeInteractionMode = undefined;
+                ctx.session = {''',
+            '''                ctx.activeTurnId = undefined;
+                ctx.activeInteractionMode = undefined;
+                ctx.lastTurnActivityAt = undefined;
+                ctx.promptFiber = undefined;
+                ctx.session = {''')
+          r(p,
+            '''        ctx.promptFiber = promptFiber;
+        return { threadId: ctx.threadId, turnId };''',
+            '''        ctx.promptFiber = promptFiber;
+        yield* forkAcpTurnIdleWatchdog({
+          idleTimeoutMs: DEEPSEEK_TURN_IDLE_TIMEOUT_MS,
+          checkIntervalMs: DEEPSEEK_TURN_WATCHDOG_INTERVAL_MS,
+          scope: ctx.scope,
+          isTurnActive: () => ctx.activeTurnId === turnId && !ctx.stopped,
+          isAwaitingHuman: () => ctx.pendingApprovals.size > 0,
+          lastActivityAt: () => ctx.lastTurnActivityAt ?? Date.now(),
+          touchActivity: () => {
+            ctx.lastTurnActivityAt = Date.now();
+          },
+          onIdleTimeout: (idleMs) => failDeepSeekTurnAsTimedOut(ctx, turnId, idleMs),
+        });
+        return { threadId: ctx.threadId, turnId };''')
+
+          p = "apps/web/src/components/settings/ProvidersSettingsPanel.tsx"
+          r(p,
+            '''  | "grokBinaryPath"
+  | "droidBinaryPath"''',
+            '''  | "grokBinaryPath"
+  | "deepSeekBinaryPath"
+  | "deepSeekConfigPath"
+  | "droidBinaryPath"''')
+          deepseek = '''  {
+    provider: "deepseek",
+    docs: [{ label: "Harness", href: "https://github.com/deepseek-ai/deepseek-harness" }],
+    fields: [
+      {
+        kind: "text",
+        settingsKey: "deepSeekBinaryPath",
+        label: "DeepSeek Harness binary path",
+        placeholder: "dsh-acp-demo",
+        description: (
+          <>
+            Leave blank to use <code>dsh-acp-demo</code> from your PATH.
+          </>
+        ),
+      },
+      {
+        kind: "text",
+        settingsKey: "deepSeekConfigPath",
+        label: "DeepSeek Harness config path",
+        placeholder: "Cordis config path",
+        description:
+          "Optional custom Harness composition. Leave blank to let Synara generate the Cordis config.",
+      },
+    ],
+  },
+'''
+          r(p, '  {\n    provider: "antigravity",', deepseek + '  {\n    provider: "antigravity",')
+
+          p = "apps/web/src/components/PluginLibrary.tsx"
+          r(p,
+            '''  const grokCapabilitiesQuery = useQuery(providerComposerCapabilitiesQueryOptions("grok"));
+  const droidCapabilitiesQuery = useQuery(providerComposerCapabilitiesQueryOptions("droid"));''',
+            '''  const grokCapabilitiesQuery = useQuery(providerComposerCapabilitiesQueryOptions("grok"));
+  const deepSeekCapabilitiesQuery = useQuery(
+    providerComposerCapabilitiesQueryOptions("deepseek"),
+  );
+  const droidCapabilitiesQuery = useQuery(providerComposerCapabilitiesQueryOptions("droid"));''')
+          r(p, '    deepseek: { plugins: false, skills: false },',
+            '''    deepseek: {
+      plugins: supportsPluginDiscovery(deepSeekCapabilitiesQuery.data),
+      skills: supportsSkillDiscovery(deepSeekCapabilitiesQuery.data),
+    },''')
+          PY
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+      - name: Format touched files
+        run: bunx oxfmt --write apps/server/src/provider/acp/DeepSeekAcpSupport.ts apps/server/src/provider/Layers/DeepSeekAdapter.ts apps/web/src/components/settings/ProvidersSettingsPanel.tsx apps/web/src/components/PluginLibrary.tsx
+      - name: Focused tests
+        run: bun run --cwd apps/server test -- src/provider/acp/DeepSeekAcpSupport.test.ts src/provider/Layers/DeepSeekProviderHealth.test.ts
+      - name: Typecheck
+        run: bun run typecheck
+      - name: Remove temporary workflows
+        run: git rm .github/workflows/deepseek-review-fixes.yml .github/workflows/deepseek-review-fixes-v2.yml
+      - name: Commit validated tree
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "fix(deepseek): address ACP review findings"
+          git push origin HEAD:tmp/deepseek-review-fixes

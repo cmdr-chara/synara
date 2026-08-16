@@ -1343,6 +1343,7 @@ export const checkGrokProviderStatus = makeCheckGrokProviderStatus();
 
 export const makeCheckDeepSeekProviderStatus = (
   binaryPath?: string,
+  configPath?: string,
 ): Effect.Effect<ServerProviderStatus> =>
   Effect.sync(() => {
     const checkedAt = new Date().toISOString();
@@ -1362,6 +1363,23 @@ export const makeCheckDeepSeekProviderStatus = (
     }
 
     const hasApiKey = Boolean(env.DEEPSEEK_API_KEY?.trim());
+    const hasCustomConfig = Boolean(nonEmptyTrimmed(configPath));
+    if (hasCustomConfig) {
+      return {
+        provider: DEEPSEEK_PROVIDER,
+        status: "ready",
+        available: true,
+        authStatus: hasApiKey ? "authenticated" : "unknown",
+        checkedAt,
+        ...(hasApiKey
+          ? { authType: "apiKey", authLabel: "DeepSeek API Key" }
+          : {
+              message:
+                "DeepSeek Harness ACP is installed. Authentication will be resolved by the configured Harness composition.",
+            }),
+      } satisfies ServerProviderStatus;
+    }
+
     return {
       provider: DEEPSEEK_PROVIDER,
       status: hasApiKey ? "ready" : "error",
@@ -2450,7 +2468,10 @@ export function makeProviderHealthLive(options?: { readonly providerUpdateTimeou
                 checkProviderWhenEnabled(
                   settings,
                   DEEPSEEK_PROVIDER,
-                  makeCheckDeepSeekProviderStatus(settings.providers.deepseek.binaryPath),
+                  makeCheckDeepSeekProviderStatus(
+                    settings.providers.deepseek.binaryPath,
+                    settings.providers.deepseek.configPath,
+                  ),
                 ),
                 checkProviderWhenEnabled(
                   settings,

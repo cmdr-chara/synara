@@ -1,0 +1,43 @@
+name: DeepSeek typecheck fixture fix
+
+on:
+  push:
+    branches:
+      - agent/deepseek-harness
+    paths:
+      - .github/workflows/deepseek-typecheck-fix.yml
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: agent/deepseek-harness
+          fetch-depth: 0
+      - name: Patch DeepSeek prefetch test fixture
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path("apps/web/src/lib/providerModelPrefetch.test.ts")
+          source = path.read_text()
+          before = '    grokBinaryPath: "",\n    droidBinaryPath: "",'
+          after = '    grokBinaryPath: "",\n    deepSeekBinaryPath: "",\n    droidBinaryPath: "",'
+          count = source.count(before)
+          if count != 1:
+              raise SystemExit(f"expected one model-prefetch fixture match, found {count}")
+          path.write_text(source.replace(before, after))
+          PY
+          rm .github/workflows/deepseek-typecheck-fix.yml
+      - name: Commit fixture fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "test(deepseek): complete prefetch settings fixture"
+          git push origin HEAD:agent/deepseek-harness

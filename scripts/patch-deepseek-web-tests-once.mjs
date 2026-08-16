@@ -9,12 +9,15 @@ function replace(path, before, after) {
 
 function addEmptyDeepSeek(path, expected) {
   const source = readFileSync(path, "utf8");
-  const pattern = /^(\s*)grok: \[\],\n\1droid: \[\],/gm;
+  const pattern = /^(\s*)grok: ([^\n]+),\n\1droid:/gm;
   const matches = [...source.matchAll(pattern)];
   if (matches.length !== expected) {
-    throw new Error(`${path}: expected ${expected} empty provider maps, found ${matches.length}`);
+    throw new Error(`${path}: expected ${expected} provider maps, found ${matches.length}`);
   }
-  writeFileSync(path, source.replace(pattern, '$1grok: [],\n$1deepseek: [],\n$1droid: [],'));
+  writeFileSync(
+    path,
+    source.replace(pattern, "$1grok: $2,\n$1deepseek: [],\n$1droid:"),
+  );
 }
 
 addEmptyDeepSeek("apps/web/src/components/chat/ComposerModelEffortPicker.browser.tsx", 1);

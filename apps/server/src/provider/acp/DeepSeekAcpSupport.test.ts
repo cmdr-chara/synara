@@ -1,10 +1,14 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import {
   buildDeepSeekAcpSpawnInput,
   buildDeepSeekHarnessConfig,
   deepSeekPermissionMode,
 } from "./DeepSeekAcpSupport.ts";
+
+afterEach(() => {
+  vi.unstubAllEnvs();
+});
 
 describe("deepSeekPermissionMode", () => {
   it("uses workspace-write unless Synara is in Full Access", () => {
@@ -74,5 +78,20 @@ describe("buildDeepSeekAcpSpawnInput", () => {
       cwd: "/workspace",
       env: { DSH_PERMISSION_MODE: "danger-full-access" },
     });
+  });
+
+  it("preserves the sessions root override without forwarding unrelated Synara state", () => {
+    vi.stubEnv("SYNARA_DEEPSEEK_SESSIONS_ROOT", "/tmp/deepseek-sessions");
+    vi.stubEnv("SYNARA_CONTROL_PLANE_SECRET", "do-not-forward");
+
+    const spawn = buildDeepSeekAcpSpawnInput({
+      settings: undefined,
+      configPath: "/tmp/deepseek/cordis.yml",
+      cwd: "/tmp/project",
+      runtimeMode: "approval-required",
+    });
+
+    expect(spawn.env?.SYNARA_DEEPSEEK_SESSIONS_ROOT).toBe("/tmp/deepseek-sessions");
+    expect(spawn.env?.SYNARA_CONTROL_PLANE_SECRET).toBeUndefined();
   });
 });

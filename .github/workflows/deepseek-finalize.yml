@@ -1,0 +1,49 @@
+name: DeepSeek integration finalize
+
+on:
+  push:
+    branches:
+      - agent/deepseek-harness
+    paths:
+      - .github/workflows/deepseek-finalize.yml
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: agent/deepseek-harness
+          fetch-depth: 0
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: package.json
+      - name: Install dependencies
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: 1
+        run: bun install --frozen-lockfile
+      - name: Apply staged DeepSeek patches
+        run: |
+          node scripts/patch-deepseek-contract-once.mjs
+          node scripts/patch-deepseek-app-settings-tests-once.mjs
+          node scripts/patch-deepseek-web-catalog-once.mjs
+          node scripts/patch-deepseek-web-core-once.mjs
+          node scripts/patch-deepseek-web-tests-once.mjs
+          rm scripts/patch-deepseek-*-once.mjs
+          rm .github/workflows/deepseek-finalize.yml
+      - name: Format repository
+        run: bun run fmt
+      - name: Commit finalized integration
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "feat(deepseek): finalize Synara integration" || exit 0
+          git push origin HEAD:agent/deepseek-harness

@@ -19,8 +19,8 @@ jobs:
           ref: agent/deepseek-harness
           fetch-depth: 0
       - name: Patch provider options expectation
-        shell: python
         run: |
+          python3 - <<'PY'
           from pathlib import Path
 
           path = Path("apps/web/src/session-logic.test.ts")
@@ -33,6 +33,7 @@ jobs:
           if text.count(old) != 1:
               raise SystemExit(f"expected exactly one target block, found {text.count(old)}")
           path.write_text(text.replace(old, new, 1))
+          PY
       - name: Commit patch
         run: |
           if git diff --quiet; then

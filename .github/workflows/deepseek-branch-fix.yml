@@ -1,0 +1,64 @@
+name: DeepSeek Branch Fix
+
+on:
+  push:
+    branches:
+      - agent/deepseek-harness
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: agent/deepseek-harness
+          fetch-depth: 0
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: "1"
+
+      - name: Update DeepSeek provider-health fixtures
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const path = 'apps/server/src/provider/Layers/ProviderHealth.test.ts';
+          let source = fs.readFileSync(path, 'utf8');
+          source = source.replace(
+            '    grok: { enabled: false },\n    droid: { enabled: false },',
+            '    grok: { enabled: false },\n    deepseek: { enabled: false },\n    droid: { enabled: false },',
+          );
+          source = source.replace(
+            '    grok: { ...DEFAULT_SERVER_SETTINGS.providers.grok, enabled: false },\n    droid: { ...DEFAULT_SERVER_SETTINGS.providers.droid, enabled: false },',
+            '    grok: { ...DEFAULT_SERVER_SETTINGS.providers.grok, enabled: false },\n    deepseek: { ...DEFAULT_SERVER_SETTINGS.providers.deepseek, enabled: false },\n    droid: { ...DEFAULT_SERVER_SETTINGS.providers.droid, enabled: false },',
+          );
+          source = source.replaceAll(
+            'assert.strictEqual(statuses.length, 9);',
+            'assert.strictEqual(statuses.length, 10);',
+          );
+          fs.writeFileSync(path, source);
+          NODE
+
+      - name: Format repository changes
+        run: bun run fmt
+
+      - name: Commit fixes
+        run: |
+          if git diff --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps/server/src/provider/Layers/ProviderHealth.ts apps/server/src/provider/Layers/ProviderHealth.test.ts
+          git commit -m "Fix DeepSeek provider health integration"
+          git push origin HEAD:agent/deepseek-harness

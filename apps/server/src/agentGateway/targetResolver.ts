@@ -183,7 +183,7 @@ const PROVIDER_TARGET_OPTION_RULES = {
   deepseek: {
     primaryOptionKey: "",
     options: {},
-  },
+  } as ProviderTargetOptionConfig,
   droid: defineProviderOptionConfig<"droid">({
     primaryOptionKey: "reasoningEffort",
     options: {

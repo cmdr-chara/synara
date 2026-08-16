@@ -92,7 +92,10 @@ export function makeDeepSeekAdapter(options: DeepSeekAdapterLiveOptions = {}) {
     const nowIso = Effect.map(DateTime.now, DateTime.formatIso);
     const nextEventId = Effect.map(Random.nextUUIDv4, (id) => EventId.makeUnsafe(id));
     const makeEventStamp = () => Effect.all({ eventId: nextEventId, createdAt: nowIso });
-    const offerRuntimeEvent = (lifecycleGeneration: string | undefined, event: ProviderRuntimeEvent) =>
+    const offerRuntimeEvent = (
+      lifecycleGeneration: string | undefined,
+      event: ProviderRuntimeEvent,
+    ) =>
       PubSub.publish(
         runtimeEventPubSub,
         stampAcpRuntimeEventLifecycleGeneration(event, lifecycleGeneration),
@@ -244,11 +247,13 @@ export function makeDeepSeekAdapter(options: DeepSeekAdapterLiveOptions = {}) {
           }),
         );
 
-        const started = yield* acp.start().pipe(
-          Effect.mapError((error) =>
-            mapAcpToAdapterError(PROVIDER, input.threadId, "session/start", error),
-          ),
-        );
+        const started = yield* acp
+          .start()
+          .pipe(
+            Effect.mapError((error) =>
+              mapAcpToAdapterError(PROVIDER, input.threadId, "session/start", error),
+            ),
+          );
         const now = yield* nowIso;
         const session: ProviderSession = {
           provider: PROVIDER,
@@ -451,11 +456,13 @@ export function makeDeepSeekAdapter(options: DeepSeekAdapterLiveOptions = {}) {
         });
 
         const promptFiber = yield* Effect.gen(function* () {
-          const response = yield* ctx.acp.prompt({ prompt: [{ type: "text", text }] }).pipe(
-            Effect.mapError((error) =>
-              mapAcpToAdapterError(PROVIDER, ctx.threadId, "session/prompt", error),
-            ),
-          );
+          const response = yield* ctx.acp
+            .prompt({ prompt: [{ type: "text", text }] })
+            .pipe(
+              Effect.mapError((error) =>
+                mapAcpToAdapterError(PROVIDER, ctx.threadId, "session/prompt", error),
+              ),
+            );
           if (ctx.activeTurnId !== turnId) return;
           const completion = classifyAcpPromptTurnCompletion({ stopReason: response.stopReason });
           ctx.activeTurnId = undefined;
@@ -513,7 +520,9 @@ export function makeDeepSeekAdapter(options: DeepSeekAdapterLiveOptions = {}) {
         const ctx = yield* requireSession(threadId);
         if (turnId !== undefined && ctx.activeTurnId !== turnId) return;
         yield* ctx.acp.cancel.pipe(
-          Effect.mapError((error) => mapAcpToAdapterError(PROVIDER, threadId, "session/cancel", error)),
+          Effect.mapError((error) =>
+            mapAcpToAdapterError(PROVIDER, threadId, "session/cancel", error),
+          ),
         );
       });
 
@@ -577,7 +586,9 @@ export function makeDeepSeekAdapter(options: DeepSeekAdapterLiveOptions = {}) {
     const stopAll: DeepSeekAdapterShape["stopAll"] = () =>
       Effect.forEach(Array.from(sessions.values()), stopSessionInternal, { discard: true });
 
-    const getComposerCapabilities: NonNullable<DeepSeekAdapterShape["getComposerCapabilities"]> = () =>
+    const getComposerCapabilities: NonNullable<
+      DeepSeekAdapterShape["getComposerCapabilities"]
+    > = () =>
       Effect.succeed({
         provider: PROVIDER,
         supportsSkillMentions: true,

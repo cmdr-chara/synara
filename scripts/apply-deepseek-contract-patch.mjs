@@ -21,37 +21,45 @@ patchFile("packages/contracts/src/orchestration.ts", [
     after: '  "grok",\n  "deepseek",\n  "droid",',
   },
   {
-    marker: 'export const DeepSeekModelSelection',
-    before: 'export type GrokModelSelection = typeof GrokModelSelection.Type;\n\nexport const DroidModelSelection',
-    after: 'export type GrokModelSelection = typeof GrokModelSelection.Type;\n\nexport const DeepSeekModelSelection = Schema.Struct({\n  provider: Schema.Literal("deepseek"),\n  model: TrimmedNonEmptyString,\n});\nexport type DeepSeekModelSelection = typeof DeepSeekModelSelection.Type;\n\nexport const DroidModelSelection',
+    marker: "export const DeepSeekModelSelection",
+    before:
+      "export type GrokModelSelection = typeof GrokModelSelection.Type;\n\nexport const DroidModelSelection",
+    after:
+      'export type GrokModelSelection = typeof GrokModelSelection.Type;\n\nexport const DeepSeekModelSelection = Schema.Struct({\n  provider: Schema.Literal("deepseek"),\n  model: TrimmedNonEmptyString,\n});\nexport type DeepSeekModelSelection = typeof DeepSeekModelSelection.Type;\n\nexport const DroidModelSelection',
   },
   {
-    marker: '  DeepSeekModelSelection,',
-    before: '  GrokModelSelection,\n  DroidModelSelection,',
-    after: '  GrokModelSelection,\n  DeepSeekModelSelection,\n  DroidModelSelection,',
+    marker: "  DeepSeekModelSelection,",
+    before: "  GrokModelSelection,\n  DroidModelSelection,",
+    after: "  GrokModelSelection,\n  DeepSeekModelSelection,\n  DroidModelSelection,",
   },
   {
-    marker: 'export const DeepSeekProviderStartOptions',
-    before: 'export const GrokProviderStartOptions = Schema.Struct({\n  binaryPath: Schema.optional(TrimmedNonEmptyString),\n});\n\nexport const DroidProviderStartOptions',
-    after: 'export const GrokProviderStartOptions = Schema.Struct({\n  binaryPath: Schema.optional(TrimmedNonEmptyString),\n});\n\nexport const DeepSeekProviderStartOptions = Schema.Struct({\n  binaryPath: Schema.optional(TrimmedNonEmptyString),\n  configPath: Schema.optional(TrimmedNonEmptyString),\n});\n\nexport const DroidProviderStartOptions',
+    marker: "export const DeepSeekProviderStartOptions",
+    before:
+      "export const GrokProviderStartOptions = Schema.Struct({\n  binaryPath: Schema.optional(TrimmedNonEmptyString),\n});\n\nexport const DroidProviderStartOptions",
+    after:
+      "export const GrokProviderStartOptions = Schema.Struct({\n  binaryPath: Schema.optional(TrimmedNonEmptyString),\n});\n\nexport const DeepSeekProviderStartOptions = Schema.Struct({\n  binaryPath: Schema.optional(TrimmedNonEmptyString),\n  configPath: Schema.optional(TrimmedNonEmptyString),\n});\n\nexport const DroidProviderStartOptions",
   },
   {
-    marker: '  deepseek: Schema.optional(DeepSeekProviderStartOptions),',
-    before: '  grok: Schema.optional(GrokProviderStartOptions),\n  droid: Schema.optional(DroidProviderStartOptions),',
-    after: '  grok: Schema.optional(GrokProviderStartOptions),\n  deepseek: Schema.optional(DeepSeekProviderStartOptions),\n  droid: Schema.optional(DroidProviderStartOptions),',
+    marker: "  deepseek: Schema.optional(DeepSeekProviderStartOptions),",
+    before:
+      "  grok: Schema.optional(GrokProviderStartOptions),\n  droid: Schema.optional(DroidProviderStartOptions),",
+    after:
+      "  grok: Schema.optional(GrokProviderStartOptions),\n  deepseek: Schema.optional(DeepSeekProviderStartOptions),\n  droid: Schema.optional(DroidProviderStartOptions),",
   },
 ]);
 
 patchFile("packages/contracts/src/model.ts", [
   {
-    marker: 'const DEEPSEEK_HARNESS_CAPABILITIES',
-    before: 'const GROK_BUILD_CAPABILITIES: ModelCapabilities = {\n  reasoningEffortLevels:',
-    after: 'const DEEPSEEK_HARNESS_CAPABILITIES: ModelCapabilities = {\n  reasoningEffortLevels: [],\n  supportsFastMode: false,\n  supportsThinkingToggle: false,\n  promptInjectedEffortLevels: [],\n  contextWindowOptions: [],\n};\n\nconst GROK_BUILD_CAPABILITIES: ModelCapabilities = {\n  reasoningEffortLevels:',
+    marker: "const DEEPSEEK_HARNESS_CAPABILITIES",
+    before: "const GROK_BUILD_CAPABILITIES: ModelCapabilities = {\n  reasoningEffortLevels:",
+    after:
+      "const DEEPSEEK_HARNESS_CAPABILITIES: ModelCapabilities = {\n  reasoningEffortLevels: [],\n  supportsFastMode: false,\n  supportsThinkingToggle: false,\n  promptInjectedEffortLevels: [],\n  contextWindowOptions: [],\n};\n\nconst GROK_BUILD_CAPABILITIES: ModelCapabilities = {\n  reasoningEffortLevels:",
   },
   {
     marker: '      slug: "deepseek-v4-flash",\n      name: "DeepSeek V4 Flash",',
-    before: '  droid: [',
-    after: '  deepseek: [\n    {\n      slug: "deepseek-v4-pro",\n      name: "DeepSeek V4 Pro",\n      capabilities: DEEPSEEK_HARNESS_CAPABILITIES,\n    },\n    {\n      slug: "deepseek-v4-flash",\n      name: "DeepSeek V4 Flash",\n      capabilities: DEEPSEEK_HARNESS_CAPABILITIES,\n    },\n  ],\n  droid: [',
+    before: "  droid: [",
+    after:
+      '  deepseek: [\n    {\n      slug: "deepseek-v4-pro",\n      name: "DeepSeek V4 Pro",\n      capabilities: DEEPSEEK_HARNESS_CAPABILITIES,\n    },\n    {\n      slug: "deepseek-v4-flash",\n      name: "DeepSeek V4 Flash",\n      capabilities: DEEPSEEK_HARNESS_CAPABILITIES,\n    },\n  ],\n  droid: [',
   },
   {
     marker: '  deepseek: "deepseek-v4-pro",',
@@ -60,8 +68,9 @@ patchFile("packages/contracts/src/model.ts", [
   },
   {
     marker: '  deepseek: {\n    deepseek: "deepseek-v4-pro",',
-    before: '  droid: {',
-    after: '  deepseek: {\n    deepseek: "deepseek-v4-pro",\n    pro: "deepseek-v4-pro",\n    flash: "deepseek-v4-flash",\n    "deepseek-v4-pro": "deepseek-v4-pro",\n    "deepseek-v4-flash": "deepseek-v4-flash",\n  },\n  droid: {',
+    before: "  droid: {",
+    after:
+      '  deepseek: {\n    deepseek: "deepseek-v4-pro",\n    pro: "deepseek-v4-pro",\n    flash: "deepseek-v4-flash",\n    "deepseek-v4-pro": "deepseek-v4-pro",\n    "deepseek-v4-flash": "deepseek-v4-flash",\n  },\n  droid: {',
   },
   {
     marker: '  deepseek: "DeepSeek Harness",',

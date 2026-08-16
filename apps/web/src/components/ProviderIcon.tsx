@@ -69,6 +69,7 @@ export const PROVIDER_ICON_COMPONENT_BY_PROVIDER: Record<ProviderKind, Icon> = {
   cursor: CursorIcon,
   antigravity: AntigravityIcon,
   grok: GrokIcon,
+  deepseek: GrokIcon,
   droid: DroidIcon,
   kilo: KiloIcon,
   opencode: OpenCodeProviderIcon,

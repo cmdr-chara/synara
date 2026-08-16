@@ -140,6 +140,9 @@ export const GrokModelOptions = Schema.Struct({
 });
 export type GrokModelOptions = typeof GrokModelOptions.Type;
 
+export const DeepSeekModelOptions = Schema.Struct({});
+export type DeepSeekModelOptions = typeof DeepSeekModelOptions.Type;
+
 export const DroidModelOptions = Schema.Struct({
   reasoningEffort: Schema.optional(TrimmedNonEmptyString),
 });
@@ -151,6 +154,7 @@ export const ProviderModelOptions = Schema.Struct({
   cursor: Schema.optional(CursorModelOptions),
   antigravity: Schema.optional(AntigravityModelOptions),
   grok: Schema.optional(GrokModelOptions),
+  deepseek: Schema.optional(DeepSeekModelOptions),
   droid: Schema.optional(DroidModelOptions),
   kilo: Schema.optional(OpenCodeModelOptions),
   opencode: Schema.optional(OpenCodeModelOptions),

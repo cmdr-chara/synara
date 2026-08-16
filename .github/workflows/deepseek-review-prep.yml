@@ -1,0 +1,37 @@
+name: DeepSeek review patch prep
+on:
+  push:
+    branches:
+      - tmp/deepseek-review-fixes
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: tmp/deepseek-review-fixes
+          fetch-depth: 0
+      - name: Repair patch anchor
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('.github/workflows/deepseek-review-fixes.yml')
+          text = p.read_text()
+          old = "          r(p, '  readonly runtimeMode: RuntimeMode;\\n}', '  readonly runtimeMode: RuntimeMode;\\n  readonly sessionsRoot?: string;\\n}')"
+          new = '''          r(p,
+            'export interface DeepSeekAcpRuntimeInput extends Omit<\\n  AcpSessionRuntimeOptions,\\n  "authMethodId" | "freshSessionRetry" | "resolveAuthMethodId" | "spawn"\\n> {\\n  readonly settings?: DeepSeekAcpRuntimeSettings;\\n  readonly childProcessSpawner: ChildProcessSpawner;\\n  readonly cwd: string;\\n  readonly runtimeMode: RuntimeMode;\\n}',
+            'export interface DeepSeekAcpRuntimeInput extends Omit<\\n  AcpSessionRuntimeOptions,\\n  "authMethodId" | "freshSessionRetry" | "resolveAuthMethodId" | "spawn"\\n> {\\n  readonly settings?: DeepSeekAcpRuntimeSettings;\\n  readonly childProcessSpawner: ChildProcessSpawner;\\n  readonly cwd: string;\\n  readonly runtimeMode: RuntimeMode;\\n  readonly sessionsRoot?: string;\\n}')'''
+          if text.count(old) != 1:
+              raise SystemExit(f'anchor count: {text.count(old)}')
+          p.write_text(text.replace(old, new, 1))
+          PY
+          git rm .github/workflows/deepseek-review-fixes-v2.yml .github/workflows/deepseek-review-prep.yml
+      - name: Commit repaired workflow
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "chore: repair DeepSeek review patcher"
+          git push origin HEAD:tmp/deepseek-review-fixes

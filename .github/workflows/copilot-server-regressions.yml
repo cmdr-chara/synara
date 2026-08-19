@@ -1,0 +1,31 @@
+name: Copilot Server Regressions
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  focused:
+    if: github.head_ref == 'agent/copilot-cli-acp'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.head_ref }}
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
+      - run: bun install --frozen-lockfile
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: "1"
+      - name: Run focused server regressions
+        shell: bash
+        run: |
+          set +e
+          bun run --cwd apps/server test -- \
+            src/provider/Layers/ProviderHealth.test.ts \
+            src/diagnostics/Layers/ThreadDiagnosticsQuery.test.ts > /tmp/server-focused.log 2>&1
+          status=$?
+          cat /tmp/server-focused.log
+          exit "$status"

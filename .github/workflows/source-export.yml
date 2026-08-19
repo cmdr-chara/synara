@@ -24,3 +24,5 @@ jobs:
           path: |
             .
             !.git
+
+# Fork-only helper. Never intended for upstream.

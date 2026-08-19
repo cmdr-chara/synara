@@ -25,11 +25,16 @@ jobs:
       - run: bun install --frozen-lockfile
         env:
           ELECTRON_SKIP_BINARY_DOWNLOAD: "1"
-      - run: python .automation.py
-      - run: |
-          rm -f .automation.py .automation-touch .github/workflows/branch-worker.yml
+      - name: Apply exact local Copilot wiring patch
+        shell: bash
+        run: |
+          cat .automation.patch.b64.* | base64 -d | gzip -d > /tmp/copilot-wiring.patch
+          git apply --whitespace=nowarn /tmp/copilot-wiring.patch
+          rm -f .automation.patch.b64.* .automation.py .automation-touch .automation-error.log .automation-result
+          rm -f .github/workflows/branch-worker.yml
           bun run fmt
-      - run: |
+      - name: Commit transformed provider wiring
+        run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add -A

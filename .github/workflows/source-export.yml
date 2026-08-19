@@ -18,6 +18,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: synara-source
+          include-hidden-files: true
           path: |
             .
             !.git

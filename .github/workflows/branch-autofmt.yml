@@ -34,6 +34,10 @@ jobs:
             git apply --whitespace=nowarn .automation.patch
             rm .automation.patch
           fi
+          if [ -f .automation.py ]; then
+            python3 .automation.py
+            rm .automation.py
+          fi
           rm -f .automation-touch
           bun run fmt
       - name: Commit worker changes

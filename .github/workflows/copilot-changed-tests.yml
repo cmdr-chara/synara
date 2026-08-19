@@ -1,0 +1,40 @@
+name: Copilot Changed Tests
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  changed-tests:
+    if: github.head_ref == 'agent/copilot-cli-acp'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.head_ref }}
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
+      - run: bun install --frozen-lockfile
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: "1"
+      - name: Run changed web tests with compact failure output
+        shell: bash
+        run: |
+          set +e
+          bun run --cwd apps/web test -- \
+            src/appSettings.test.ts \
+            src/components/settings/ProvidersSettingsPanel.test.ts \
+            src/composerDraftStore.models.test.ts \
+            src/lib/providerModelPrefetch.test.ts \
+            src/providerUpdates.test.ts \
+            src/session-logic.test.ts \
+            src/wsNativeApi.test.ts > /tmp/copilot-tests.log 2>&1
+          status=$?
+          if [ "$status" -ne 0 ]; then
+            echo '--- compact failure summary ---'
+            grep -E 'FAIL |AssertionError|expected |❯ .*test|Failed Tests|Test Files|Tests ' /tmp/copilot-tests.log | tail -n 240 || true
+            echo '--- end compact failure summary ---'
+          fi
+          exit "$status"

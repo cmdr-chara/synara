@@ -8,6 +8,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: copilot-provider-worker
+  cancel-in-progress: true
+
 jobs:
   build-provider:
     if: github.actor != 'github-actions[bot]'
@@ -40,7 +44,6 @@ jobs:
 
           layer_path = Path('apps/server/src/provider/Layers/CopilotAdapter.ts')
           text = layer_path.read_text()
-
           replacements = [
               (' * AcpAdapterLive - configurable stdio Agent Client Protocol provider.', ' * CopilotAdapterLive - GitHub Copilot CLI over Agent Client Protocol.'),
               ('  type AcpServerProviderSettings,\n', ''),
@@ -140,8 +143,8 @@ export function makeCopilotAdapterLive(settings: CopilotAcpRuntimeSettings = {})
           service = service_path.read_text()
           service = service.replace('AcpAdapter - Configurable Agent Client Protocol provider.', 'CopilotAdapter - GitHub Copilot CLI ACP provider.')
           service = service.replace('AcpAdapterShape', 'CopilotAdapterShape')
-          service = service.replace('AcpAdapter extends ServiceMap.Service<AcpAdapter, CopilotAdapterShape>()', 'CopilotAdapter extends ServiceMap.Service<CopilotAdapter, CopilotAdapterShape>()')
           service = service.replace('export class AcpAdapter', 'export class CopilotAdapter')
+          service = service.replace('AcpAdapter extends ServiceMap.Service<AcpAdapter, CopilotAdapterShape>()', 'CopilotAdapter extends ServiceMap.Service<CopilotAdapter, CopilotAdapterShape>()')
           service = service.replace('readonly provider: "acp";', 'readonly provider: "copilot";')
           service = service.replace('"synara/provider/Services/AcpAdapter"', '"synara/provider/Services/CopilotAdapter"')
           service_path.write_text(service)
@@ -160,12 +163,20 @@ export function makeCopilotAdapterLive(settings: CopilotAcpRuntimeSettings = {})
       - name: Format
         run: bun run fmt
       - name: Typecheck core wiring
-        run: bun run typecheck
+        id: typecheck
+        continue-on-error: true
+        run: bun run typecheck 2>&1 | tee .copilot-typecheck.log
 
-      - name: Publish validated core wiring
+      - name: Publish draft core wiring and diagnostics
         run: |
+          if [ "${{ steps.typecheck.outcome }}" = "success" ]; then
+            rm -f .copilot-typecheck.log
+          fi
           git config user.name cmdr-chara
           git config user.email 249489759+cmdr-chara@users.noreply.github.com
-          git add apps packages
+          git add apps packages .copilot-typecheck.log 2>/dev/null || git add apps packages
           git commit -m "feat(provider): wire GitHub Copilot ACP provider"
           git push origin HEAD:agent/copilot-cli-acp
+          if [ "${{ steps.typecheck.outcome }}" != "success" ]; then
+            exit 1
+          fi

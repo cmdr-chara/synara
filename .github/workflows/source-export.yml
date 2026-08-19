@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - agent/source-export
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: read

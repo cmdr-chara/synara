@@ -1,0 +1,171 @@
+name: Copilot Provider Worker
+
+on:
+  push:
+    branches:
+      - agent/copilot-worker
+
+permissions:
+  contents: write
+
+jobs:
+  build-provider:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Stage worker inputs
+        run: |
+          cp copilot-auth.patch /tmp/copilot-auth.patch
+          cp copilot-core.patch /tmp/copilot-core.patch
+          git fetch origin agent/copilot-cli-acp --depth=100
+          git switch -C agent/copilot-cli-acp origin/agent/copilot-cli-acp
+
+      - name: Apply Copilot runtime and contract patches
+        run: |
+          git apply --check /tmp/copilot-auth.patch
+          git apply /tmp/copilot-auth.patch
+          git apply --check /tmp/copilot-core.patch
+          git apply /tmp/copilot-core.patch
+
+      - name: Reuse and specialize the proven ACP adapter lifecycle
+        run: |
+          git show 73e45d82442eae4c46604ea9a7fb06d9e6efc4ff:apps/server/src/provider/Layers/CopilotAdapter.ts > apps/server/src/provider/Layers/CopilotAdapter.ts
+          git show 73e45d82442eae4c46604ea9a7fb06d9e6efc4ff:apps/server/src/provider/Services/CopilotAdapter.ts > apps/server/src/provider/Services/CopilotAdapter.ts
+          python3 - <<'PY'
+          from pathlib import Path
+
+          layer_path = Path('apps/server/src/provider/Layers/CopilotAdapter.ts')
+          text = layer_path.read_text()
+
+          replacements = [
+              (' * AcpAdapterLive - configurable stdio Agent Client Protocol provider.', ' * CopilotAdapterLive - GitHub Copilot CLI over Agent Client Protocol.'),
+              ('  type AcpServerProviderSettings,\n', ''),
+              ('import { makeGenericAcpRuntime, type GenericAcpRuntimeSettings } from "../acp/GenericAcpSupport.ts";',
+               'import { makeCopilotAcpRuntime, type CopilotAcpRuntimeSettings } from "../acp/CopilotAcpSupport.ts";'),
+              ('import { AcpAdapter, type AcpAdapterShape } from "../Services/AcpAdapter.ts";',
+               'import { CopilotAdapter, type CopilotAdapterShape } from "../Services/CopilotAdapter.ts";'),
+              ('const PROVIDER = "acp" as const;', 'const PROVIDER = "copilot" as const;'),
+              ('AcpAdapterShape', 'CopilotAdapterShape'),
+              ('export function makeAcpAdapter(settings: GenericAcpRuntimeSettings) {',
+               'export function makeCopilotAdapter(settings: CopilotAcpRuntimeSettings = {}) {'),
+              ('const configured = input.providerOptions?.acp;', 'const configured = input.providerOptions?.copilot;'),
+              ('Effect.logWarning("acp.turn_completed_without_content"', 'Effect.logWarning("copilot.turn_completed_without_content"'),
+              ('source: "acp", cached: false', 'source: "copilot-acp", cached: false'),
+          ]
+          for old, new in replacements:
+              if old not in text:
+                  raise SystemExit(f'missing expected adapter text: {old!r}')
+              text = text.replace(old, new)
+
+          old_start = '''          const effectiveSettings: GenericAcpRuntimeSettings = {
+            binaryPath: configured?.binaryPath ?? settings.binaryPath,
+            args: configured?.args ?? settings.args,
+          };
+          const acp = yield* makeGenericAcpRuntime({
+            settings: effectiveSettings,
+            childProcessSpawner,
+            cwd,
+            options: {
+              clientInfo: { name: "Synara", version: "0.0.0" },
+              ...(resumeSessionId ? { resumeSessionId } : {}),
+            },
+          }).pipe(
+'''
+          new_start = '''          const binaryPath = configured?.binaryPath ?? settings.binaryPath;
+          const effectiveSettings: CopilotAcpRuntimeSettings = binaryPath ? { binaryPath } : {};
+          const acp = yield* makeCopilotAcpRuntime({
+            copilotSettings: effectiveSettings,
+            childProcessSpawner,
+            cwd,
+            clientInfo: { name: "Synara", version: "0.0.0" },
+            ...(resumeSessionId ? { resumeSessionId } : {}),
+          }).pipe(
+'''
+          if old_start not in text:
+              raise SystemExit('missing generic ACP start block')
+          text = text.replace(old_start, new_start)
+
+          old_discovery = '''          const runtime = yield* makeGenericAcpRuntime({
+            settings: {
+              binaryPath: input.binaryPath ?? settings.binaryPath,
+              args: input.args ?? settings.args,
+            },
+            childProcessSpawner,
+            cwd,
+            options: { clientInfo: { name: "Synara model discovery", version: "0.0.0" } },
+          }).pipe(Effect.provideService(Scope.Scope, scope));
+'''
+          new_discovery = '''          const binaryPath = input.binaryPath ?? settings.binaryPath;
+          const runtime = yield* makeCopilotAcpRuntime({
+            copilotSettings: binaryPath ? { binaryPath } : {},
+            childProcessSpawner,
+            cwd,
+            clientInfo: { name: "Synara model discovery", version: "0.0.0" },
+          }).pipe(Effect.provideService(Scope.Scope, scope));
+'''
+          if old_discovery not in text:
+              raise SystemExit('missing generic ACP discovery block')
+          text = text.replace(old_discovery, new_discovery)
+
+          old_bottom = '''export const AcpAdapterLive = Layer.effect(
+  AcpAdapter,
+  makeAcpAdapter({ binaryPath: "cline", args: ["--acp"] }),
+);
+
+export function makeAcpAdapterLive(
+  settings: Pick<AcpServerProviderSettings, "binaryPath" | "args"> = {
+    binaryPath: "cline",
+    args: ["--acp"],
+  },
+) {
+  return Layer.effect(AcpAdapter, makeAcpAdapter(settings));
+}
+'''
+          new_bottom = '''export const CopilotAdapterLive = Layer.effect(CopilotAdapter, makeCopilotAdapter());
+
+export function makeCopilotAdapterLive(settings: CopilotAcpRuntimeSettings = {}) {
+  return Layer.effect(CopilotAdapter, makeCopilotAdapter(settings));
+}
+'''
+          if old_bottom not in text:
+              raise SystemExit('missing generic ACP adapter footer')
+          text = text.replace(old_bottom, new_bottom)
+          layer_path.write_text(text)
+
+          service_path = Path('apps/server/src/provider/Services/CopilotAdapter.ts')
+          service = service_path.read_text()
+          service = service.replace('AcpAdapter - Configurable Agent Client Protocol provider.', 'CopilotAdapter - GitHub Copilot CLI ACP provider.')
+          service = service.replace('AcpAdapterShape', 'CopilotAdapterShape')
+          service = service.replace('AcpAdapter extends ServiceMap.Service<AcpAdapter, CopilotAdapterShape>()', 'CopilotAdapter extends ServiceMap.Service<CopilotAdapter, CopilotAdapterShape>()')
+          service = service.replace('export class AcpAdapter', 'export class CopilotAdapter')
+          service = service.replace('readonly provider: "acp";', 'readonly provider: "copilot";')
+          service = service.replace('"synara/provider/Services/AcpAdapter"', '"synara/provider/Services/CopilotAdapter"')
+          service_path.write_text(service)
+          PY
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: package.json
+      - name: Install
+        run: bun install --frozen-lockfile
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: "1"
+      - name: Format
+        run: bun run fmt
+      - name: Typecheck core wiring
+        run: bun run typecheck
+
+      - name: Publish validated core wiring
+        run: |
+          git config user.name cmdr-chara
+          git config user.email 249489759+cmdr-chara@users.noreply.github.com
+          git add apps packages
+          git commit -m "feat(provider): wire GitHub Copilot ACP provider"
+          git push origin HEAD:agent/copilot-cli-acp

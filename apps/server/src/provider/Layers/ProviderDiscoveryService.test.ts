@@ -33,7 +33,10 @@ import type { ProviderAdapterShape } from "../Services/ProviderAdapter.ts";
 import { ProviderAdapterRegistry } from "../Services/ProviderAdapterRegistry.ts";
 import { ProviderDiscoveryService } from "../Services/ProviderDiscoveryService.ts";
 import { clearSkillsCatalogCacheForTests } from "../skillsCatalog.ts";
-import { ProviderDiscoveryServiceLive } from "./ProviderDiscoveryService.ts";
+import {
+  ProviderDiscoveryServiceLive,
+  withProviderModelDiscoveryDeadline,
+} from "./ProviderDiscoveryService.ts";
 
 let root: string;
 let homeDir: string;
@@ -229,6 +232,25 @@ describe("ProviderDiscoveryService.getComposerCapabilities", () => {
 });
 
 describe("ProviderDiscoveryService.listModels", () => {
+  it("settles stalled model discovery to a timeout fallback", async () => {
+    const stalled = Effect.promise(
+      () => new Promise<ProviderListModelsResult>(() => undefined),
+    );
+    const result = await Effect.runPromise(
+      withProviderModelDiscoveryDeadline({
+        effect: stalled,
+        provider: "codex",
+        timeoutMs: 5,
+      }),
+    );
+
+    expect(result).toEqual({
+      models: [],
+      source: "timeout",
+      cached: false,
+    });
+  });
+
   it("does not invoke the adapter for a disabled provider", async () => {
     let adapterCalls = 0;
     const result = await runListModels({

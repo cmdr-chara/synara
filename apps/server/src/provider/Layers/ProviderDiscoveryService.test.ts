@@ -233,7 +233,13 @@ describe("ProviderDiscoveryService.getComposerCapabilities", () => {
 
 describe("ProviderDiscoveryService.listModels", () => {
   it("settles stalled model discovery to a timeout fallback", async () => {
-    const stalled = Effect.promise(() => new Promise<ProviderListModelsResult>(() => undefined));
+    const stalled = Effect.sleep(60_000).pipe(
+      Effect.as({
+        models: [],
+        source: "test",
+        cached: false,
+      } satisfies ProviderListModelsResult),
+    );
     const result = await Effect.runPromise(
       withProviderModelDiscoveryDeadline({
         effect: stalled,

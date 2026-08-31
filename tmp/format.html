@@ -1,11 +1,10 @@
 <!doctype html>
 <meta charset="utf-8" />
 <pre id="output">loading</pre>
-<script type="module">
-  import * as prettier from "https://unpkg.com/prettier@3.6.2/standalone.mjs";
-  import estree from "https://unpkg.com/prettier@3.6.2/plugins/estree.mjs";
-  import typescript from "https://unpkg.com/prettier@3.6.2/plugins/typescript.mjs";
-
+<script src="https://unpkg.com/prettier@3.6.2/standalone.js"></script>
+<script src="https://unpkg.com/prettier@3.6.2/plugins/typescript.js"></script>
+<script src="https://unpkg.com/prettier@3.6.2/plugins/estree.js"></script>
+<script>
   const source = `// FILE: providerUsage/http.retryAfter.test.ts
 // Purpose: Verifies strict Retry-After delta-seconds and HTTP-date parsing.
 
@@ -42,12 +41,14 @@ describe("parseRetryAfterMs", () => {
 });
 `;
 
-  try {
-    document.querySelector("#output").textContent = await prettier.format(source, {
-      parser: "typescript",
-      plugins: [typescript, estree],
-    });
-  } catch (error) {
-    document.querySelector("#output").textContent = String(error?.stack ?? error);
-  }
+  (async () => {
+    try {
+      document.querySelector("#output").textContent = await prettier.format(source, {
+        parser: "typescript",
+        plugins: [prettierPlugins.typescript, prettierPlugins.estree],
+      });
+    } catch (error) {
+      document.querySelector("#output").textContent = String(error?.stack ?? error);
+    }
+  })();
 </script>

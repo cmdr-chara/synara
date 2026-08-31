@@ -1,9 +1,6 @@
 <!doctype html>
 <meta charset="utf-8" />
 <pre id="output">loading</pre>
-<script src="https://unpkg.com/prettier@3.6.2/standalone.js"></script>
-<script src="https://unpkg.com/prettier@3.6.2/plugins/typescript.js"></script>
-<script src="https://unpkg.com/prettier@3.6.2/plugins/estree.js"></script>
 <script>
   const source = `// FILE: providerUsage/http.retryAfter.test.ts
 // Purpose: Verifies strict Retry-After delta-seconds and HTTP-date parsing.
@@ -41,8 +38,20 @@ describe("parseRetryAfterMs", () => {
 });
 `;
 
+  const load = (src) =>
+    new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = src;
+      script.onload = resolve;
+      script.onerror = () => reject(new Error(`failed to load ${src}`));
+      document.head.append(script);
+    });
+
   (async () => {
     try {
+      await load("https://unpkg.com/prettier@3.6.2/standalone.js");
+      await load("https://unpkg.com/prettier@3.6.2/plugins/typescript.js");
+      await load("https://unpkg.com/prettier@3.6.2/plugins/estree.js");
       document.querySelector("#output").textContent = await prettier.format(source, {
         parser: "typescript",
         plugins: [prettierPlugins.typescript, prettierPlugins.estree],

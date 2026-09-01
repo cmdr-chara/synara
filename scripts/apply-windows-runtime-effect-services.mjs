@@ -16,8 +16,14 @@ migratePreparedEffectCommands(
 migratePreparedEffectCommands(
   "apps/server/src/provider/Layers/ProviderHealth.ts",
   "../../platform/effectProcessRuntime.ts",
-  [/\s*const prepared = prepareWindowsSafeProcess\(executable, args, \{ env }\);\s*/],
-  [{ command: "executable", args: "args" }],
+  [
+    /\s*const prepared = prepareWindowsSafeProcess\(executable, args, \{ env }\);\s*/,
+    /\s*const prepared = prepareWindowsSafeProcess\(input\.command, input\.args, \{ env: updateEnv }\);\s*/,
+  ],
+  [
+    { command: "executable", args: "args" },
+    { command: "input.command", args: "input.args" },
+  ],
 );
 
 migratePreparedEffectCommands(

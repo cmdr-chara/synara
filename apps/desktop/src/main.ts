@@ -3,7 +3,8 @@
 // Layer: Desktop main process
 // Depends on: Electron, backend startup helpers, browser manager, and update runtime.
 
-import * as ChildProcess from "node:child_process";
+import type { ChildProcess } from "node:child_process";
+import { spawnProcess } from "@synara/shared/processRuntime";
 import * as Crypto from "node:crypto";
 import * as FS from "node:fs";
 import * as OS from "node:os";
@@ -377,7 +378,7 @@ type DesktopUpdateErrorContext = DesktopUpdateState["errorContext"];
 let mainWindow: BrowserWindow | null = null;
 /** Whether the live BrowserWindow was created with `frame: false` (win32/linux). */
 let customTitleBarActive = false;
-let backendProcess: ChildProcess.ChildProcess | null = null;
+let backendProcess: ChildProcess | null = null;
 let backendPort = 0;
 let backendAuthToken = "";
 let backendHttpUrl = "";
@@ -2427,7 +2428,7 @@ function refreshMacIconCacheOnVersionChange(): void {
     // Read-only bundle: fall through to lsregister.
   }
 
-  const child = ChildProcess.spawn(LSREGISTER_PATH, ["-f", bundlePath], { stdio: "ignore" });
+  const child = spawnProcess(LSREGISTER_PATH, ["-f", bundlePath], { stdio: "ignore" });
   child.unref();
   child.once("error", (error) => {
     console.warn("[desktop] Failed to refresh macOS icon cache after update", error);
@@ -3997,7 +3998,7 @@ function startBackend(trigger: BackendStartTrigger = "lifecycle"): void {
     return;
   }
 
-  const child = ChildProcess.spawn(process.execPath, [...backendNodeArgs(), backendEntry], {
+  const child = spawnProcess(process.execPath, [...backendNodeArgs(), backendEntry], {
     cwd: resolveBackendCwd(),
     // In Electron main, process.execPath points to the Electron binary.
     // Run the child in Node mode so this backend process does not become a GUI app instance.
@@ -4107,7 +4108,7 @@ function startBackend(trigger: BackendStartTrigger = "lifecycle"): void {
   });
 }
 
-function takeBackendProcessForShutdown(): ChildProcess.ChildProcess | null {
+function takeBackendProcessForShutdown(): ChildProcess | null {
   cancelBackendReadinessWait();
   backendListeningDetector = null;
   if (restartTimer) {

@@ -165,3 +165,25 @@ export function execProcessFile(
     callback,
   );
 }
+
+export interface ProcessFileResult {
+  readonly stdout: string;
+  readonly stderr: string;
+}
+
+/** Promise counterpart for background jobs and platform services. */
+export function execProcessFilePromise(
+  command: string,
+  args: ReadonlyArray<string>,
+  options: RuntimeExecFileOptions,
+): Promise<ProcessFileResult> {
+  return new Promise((resolve, reject) => {
+    execProcessFile(command, args, options, (error, stdout, stderr) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+      resolve({ stdout, stderr });
+    });
+  });
+}

@@ -1,4 +1,4 @@
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 
@@ -101,7 +101,7 @@ describe("prepareProcess", () => {
   it("supports manual executable paths with spaces and Unicode", () => {
     const executable = path.join(root, "Tools 日本語", "provider.exe");
     const directory = path.dirname(executable);
-    require("node:fs").mkdirSync(directory, { recursive: true });
+    mkdirSync(directory, { recursive: true });
     writeFileSync(executable, "native");
 
     expect(

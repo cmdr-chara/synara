@@ -1766,6 +1766,7 @@ const makeProviderService = (options?: ProviderServiceLiveOptions) =>
                     });
                   }),
                 ),
+                Effect.timeoutOption(PROVIDER_START_SESSION_TIMEOUT),
                 Effect.onInterrupt(() =>
                   Effect.gen(function* () {
                     startupLifecycle.stop("Cancelled");
@@ -1776,7 +1777,6 @@ const makeProviderService = (options?: ProviderServiceLiveOptions) =>
                     });
                   }),
                 ),
-                Effect.timeoutOption(PROVIDER_START_SESSION_TIMEOUT),
               );
               if (Option.isNone(started)) {
                 startupLifecycle.fail("HandshakeTimeout");

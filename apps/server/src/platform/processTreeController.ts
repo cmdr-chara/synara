@@ -187,6 +187,8 @@ function capturedProcessesForSignal(
 export function createProcessTreeKiller(
   dependencies: Partial<ProcessTreeKillerDependencies> = {},
 ): ProcessTreeKiller {
+  const supportsSynchronousCapture =
+    dependencies.captureChildrenMap !== undefined || globalThis.process.platform !== "win32";
   const deps: ProcessTreeKillerDependencies = {
     captureChildrenMap: captureProcessChildrenMapSync,
     readCurrentCommands,
@@ -200,7 +202,7 @@ export function createProcessTreeKiller(
       if (!Number.isInteger(rootPid) || rootPid <= 0) {
         return { descendants: [], captureComplete: false };
       }
-      if (globalThis.process.platform === "win32") {
+      if (!supportsSynchronousCapture) {
         // The synchronous terminal compatibility API cannot query CIM safely.
         // Windows teardown owners must use captureProcessTree below.
         return { descendants: [], captureComplete: false };

@@ -1,0 +1,66 @@
+name: Windows Runtime Validation
+
+on:
+  push:
+    branches:
+      - refactor/windows-runtime
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Runtime Format, Lint, Typecheck, Test
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: package.json
+      - name: Install dependencies
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: "1"
+        run: bun install --frozen-lockfile
+      - name: Format
+        run: bun run fmt:check
+      - name: Lint
+        run: bun run lint
+      - name: Typecheck
+        run: bun run typecheck
+      - name: Runtime tests
+        run: |
+          bun run --cwd packages/shared test src/windowsProcess.test.ts src/platformProcess.test.ts
+          bun run --cwd apps/server test src/executableLookup.test.ts src/processRunner.test.ts src/provider/providerStartupLifecycle.test.ts src/provider/supervisedProcessTeardown.test.ts src/terminal/processTreeKiller.test.ts src/terminal/windowsProcessSnapshot.test.ts src/persistence/MigrationBackup.test.ts
+          bun run --cwd apps/desktop test src/voiceTranscription.test.ts src/electronUpdaterSecurity.test.ts
+
+  windows_process:
+    name: Windows Runtime Regression
+    runs-on: windows-2022
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: package.json
+      - name: Install dependencies
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: "1"
+        run: bun install --frozen-lockfile
+      - name: Verify Windows terminal PTY native dependency under Bun
+        run: bun scripts/node-pty-smoke.mjs
+      - name: Test process planning and lifecycle
+        run: |
+          bun run --cwd packages/shared test src/windowsProcess.test.ts src/platformProcess.test.ts
+          bun run --cwd apps/server test src/windowsProcessEffect.test.ts src/processRunner.test.ts src/provider/providerStartupLifecycle.test.ts src/provider/supervisedProcessTeardown.test.ts src/terminal/processTreeKiller.test.ts src/terminal/windowsProcessSnapshot.test.ts
+      - name: Test desktop shutdown and storage recovery
+        run: |
+          bun run --cwd apps/desktop test src/backendShutdown.windows.integration.test.ts src/desktopMigrationRecovery.test.ts src/voiceTranscription.test.ts src/electronUpdaterSecurity.test.ts
+          bun run --cwd packages/shared test src/migrationRecovery.test.ts
+          bun run --cwd apps/server test src/persistence/MigrationBackup.test.ts src/persistence/Migrations/MigrationReplay.test.ts

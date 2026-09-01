@@ -5,11 +5,10 @@
 import { prepareProcess, type ProcessLaunchInput } from "@synara/shared/platformProcess";
 import { ChildProcess } from "effect/unstable/process";
 
-type EffectCommandOptions = NonNullable<Parameters<typeof ChildProcess.make>[2]>;
 type ProcessPlanningOptions = Pick<ProcessLaunchInput, "platform" | "requireExecutable">;
 
 export type EffectProcessRuntimeOptions = Omit<
-  EffectCommandOptions,
+  ChildProcess.CommandOptions,
   "shell" | "windowsVerbatimArguments"
 > &
   ProcessPlanningOptions;

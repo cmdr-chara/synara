@@ -32,7 +32,7 @@ export interface SupervisedProcessTeardownInput {
 }
 
 export interface ProcessExitHandle {
-  readonly pid?: number;
+  readonly pid: number | undefined;
   readonly exitCode: number | null;
   readonly signalCode: NodeJS.Signals | null;
   once(event: "exit", listener: () => void): unknown;

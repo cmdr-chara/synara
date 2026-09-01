@@ -344,7 +344,7 @@ export function signalProcessTree(input: {
     rootPid: input.rootPid,
     signal: input.signal,
     tree: input.tree ?? { descendants: [], captureComplete: false },
-    includeRootTree: input.includeRootTree,
+    ...(input.includeRootTree !== undefined ? { includeRootTree: input.includeRootTree } : {}),
     onError: input.onError ?? (() => undefined),
   });
 }

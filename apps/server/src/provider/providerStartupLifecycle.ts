@@ -70,7 +70,7 @@ export class ProviderStartupError extends Error {
 
 export class ProviderStartupLifecycle {
   readonly #now: () => number;
-  readonly #onTransition?: (transition: ProviderStartupTransition) => void;
+  readonly #onTransition: ((transition: ProviderStartupTransition) => void) | undefined;
   #phase: ProviderStartupPhase = "discovering";
   #failureReason: ProviderStartupFailureReason | undefined;
   readonly #transitions: ProviderStartupTransition[];

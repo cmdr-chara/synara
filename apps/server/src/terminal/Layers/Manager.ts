@@ -1744,7 +1744,9 @@ export class TerminalManagerRuntime extends EventEmitter<TerminalManagerEvents> 
         rootPid: pid,
         signal,
         tree,
-        includeRootTree: options.includeRootTree,
+        ...(options.includeRootTree !== undefined
+          ? { includeRootTree: options.includeRootTree }
+          : {}),
         onError: (error, context) => {
           this.logger.warn(
             context.source === "tree-kill"

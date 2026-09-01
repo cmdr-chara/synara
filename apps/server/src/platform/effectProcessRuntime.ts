@@ -26,10 +26,10 @@ export function makeEffectProcessCommand(
   const cwd = typeof commandOptions.cwd === "string" ? commandOptions.cwd : undefined;
   const env = commandOptions.env as NodeJS.ProcessEnv | undefined;
   const plan = prepareProcess(command, args, {
-    platform,
-    cwd,
-    env,
-    requireExecutable,
+    ...(platform !== undefined ? { platform } : {}),
+    ...(cwd !== undefined ? { cwd } : {}),
+    ...(env !== undefined ? { env } : {}),
+    ...(requireExecutable !== undefined ? { requireExecutable } : {}),
   });
 
   return ChildProcess.make(plan.command, plan.args, {

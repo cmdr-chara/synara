@@ -191,6 +191,7 @@ export async function superviseProviderStartup<A>(input: {
         ),
       );
     }, input.timeoutMs);
+    timeout.unref?.();
 
     if (input.signal) {
       abortListener = () => {
@@ -213,13 +214,14 @@ export async function superviseProviderStartup<A>(input: {
     return result;
   } catch (cause) {
     const reason = classifyProviderStartupFailure(cause);
+    const failedPhase = lifecycle.phase;
     await cleanup();
     if (reason === "Cancelled") lifecycle.stop("Cancelled");
     else lifecycle.fail(reason);
     if (cause instanceof ProviderStartupError) throw cause;
     throw new ProviderStartupError(
       reason,
-      lifecycle.phase,
+      failedPhase,
       cause instanceof Error ? cause.message : String(cause),
       cause,
     );

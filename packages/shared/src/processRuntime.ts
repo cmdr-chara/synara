@@ -3,10 +3,13 @@
 // Layer: Shared platform runtime
 
 import {
+  execFile as nodeExecFile,
   spawn as nodeSpawn,
   spawnSync as nodeSpawnSync,
   type ChildProcess,
   type ChildProcessWithoutNullStreams,
+  type ExecFileException,
+  type ExecFileOptionsWithStringEncoding,
   type SpawnOptions,
   type SpawnSyncOptionsWithBufferEncoding,
   type SpawnSyncOptionsWithStringEncoding,
@@ -35,12 +38,23 @@ export type RuntimeSpawnSyncBufferOptions = Omit<
 > &
   ProcessPlanningOptions;
 
+export type RuntimeExecFileOptions = Omit<
+  ExecFileOptionsWithStringEncoding,
+  "shell" | "windowsHide" | "windowsVerbatimArguments"
+> &
+  ProcessPlanningOptions;
+
 type PipeStdio = "pipe" | readonly ["pipe", "pipe", "pipe"];
+type PlanningOptions =
+  | RuntimeSpawnOptions
+  | RuntimeSpawnSyncStringOptions
+  | RuntimeSpawnSyncBufferOptions
+  | RuntimeExecFileOptions;
 
 function planFromOptions(
   command: string,
   args: ReadonlyArray<string>,
-  options: RuntimeSpawnOptions | RuntimeSpawnSyncStringOptions | RuntimeSpawnSyncBufferOptions,
+  options: PlanningOptions,
 ): ProcessLaunchPlan {
   return prepareProcess(command, args, {
     platform: options.platform,
@@ -50,11 +64,11 @@ function planFromOptions(
   });
 }
 
-function nodeOptions<T extends RuntimeSpawnOptions>(
+function runtimeOptions<T extends ProcessPlanningOptions>(
   options: T,
 ): Omit<T, "platform" | "requireExecutable"> {
-  const { platform: _platform, requireExecutable: _requireExecutable, ...runtimeOptions } = options;
-  return runtimeOptions;
+  const { platform: _platform, requireExecutable: _requireExecutable, ...nodeOptions } = options;
+  return nodeOptions;
 }
 
 /** Spawn a process without exposing platform-specific Node flags to callers. */
@@ -75,7 +89,7 @@ export function spawnProcess(
 ): ChildProcess {
   const plan = planFromOptions(command, args, options);
   return nodeSpawn(plan.command, plan.args, {
-    ...nodeOptions(options),
+    ...runtimeOptions(options),
     shell: false,
     windowsHide: plan.windowsHide,
     windowsVerbatimArguments: plan.windowsVerbatimArguments,
@@ -96,13 +110,14 @@ export function spawnPlannedProcess(
   options: RuntimeSpawnOptions = {},
 ): ChildProcess {
   return nodeSpawn(plan.command, plan.args, {
-    ...nodeOptions(options),
+    ...runtimeOptions(options),
     shell: false,
     windowsHide: plan.windowsHide,
     windowsVerbatimArguments: plan.windowsVerbatimArguments,
   });
 }
 
+/** Synchronous counterpart used by bounded discovery and compatibility probes. */
 export function spawnProcessSync(
   command: string,
   args: ReadonlyArray<string>,
@@ -119,11 +134,31 @@ export function spawnProcessSync(
   options: RuntimeSpawnSyncStringOptions | RuntimeSpawnSyncBufferOptions = {},
 ): SpawnSyncReturns<string> | SpawnSyncReturns<Buffer> {
   const plan = planFromOptions(command, args, options);
-  const { platform: _platform, requireExecutable: _requireExecutable, ...runtimeOptions } = options;
   return nodeSpawnSync(plan.command, plan.args, {
-    ...runtimeOptions,
+    ...runtimeOptions(options),
     shell: false,
     windowsHide: plan.windowsHide,
     windowsVerbatimArguments: plan.windowsVerbatimArguments,
   }) as SpawnSyncReturns<string> | SpawnSyncReturns<Buffer>;
+}
+
+/** Callback-compatible execFile for SDK hooks that require that interface. */
+export function execProcessFile(
+  command: string,
+  args: ReadonlyArray<string>,
+  options: RuntimeExecFileOptions,
+  callback: (error: ExecFileException | null, stdout: string, stderr: string) => void,
+): ChildProcess {
+  const plan = planFromOptions(command, args, options);
+  return nodeExecFile(
+    plan.command,
+    plan.args,
+    {
+      ...runtimeOptions(options),
+      shell: false,
+      windowsHide: plan.windowsHide,
+      windowsVerbatimArguments: plan.windowsVerbatimArguments,
+    },
+    callback,
+  );
 }

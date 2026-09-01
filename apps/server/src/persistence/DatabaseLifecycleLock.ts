@@ -5,7 +5,11 @@ import { randomUUID } from "node:crypto";
 
 import { Effect } from "effect";
 
-import { PRIVATE_DIRECTORY_MODE, PRIVATE_FILE_MODE } from "../privatePathPermissions.ts";
+import {
+  PRIVATE_DIRECTORY_MODE,
+  PRIVATE_FILE_MODE,
+  syncDirectoryEntry,
+} from "../privatePathPermissions.ts";
 
 const OWNER_FILE_NAME = "owner.json";
 
@@ -36,22 +40,6 @@ export class DatabaseLifecycleLockedError extends Error {
 
 function errnoCode(cause: unknown): string | undefined {
   return (cause as NodeJS.ErrnoException | undefined)?.code;
-}
-
-async function syncDirectory(directoryPath: string): Promise<void> {
-  if (process.platform === "win32") return;
-  const handle = await fs.open(
-    directoryPath,
-    fsConstants.O_RDONLY | fsConstants.O_DIRECTORY | fsConstants.O_NOFOLLOW,
-  );
-  try {
-    await handle.sync().catch((cause) => {
-      const code = errnoCode(cause);
-      if (code !== "EINVAL" && code !== "ENOTSUP" && code !== "EBADF") throw cause;
-    });
-  } finally {
-    await handle.close();
-  }
 }
 
 async function canonicalDatabasePath(dbPath: string): Promise<string> {
@@ -131,7 +119,7 @@ async function writeOwner(lockPath: string, owner: DatabaseLifecycleLockOwner): 
   } finally {
     await handle.close();
   }
-  await syncDirectory(lockPath);
+  await syncDirectoryEntry(lockPath);
 }
 
 async function prepareOwnedDirectory(
@@ -142,7 +130,7 @@ async function prepareOwnedDirectory(
   await fs.mkdir(stagingPath, { mode: PRIVATE_DIRECTORY_MODE });
   try {
     await writeOwner(stagingPath, owner);
-    await syncDirectory(path.dirname(lockPath));
+    await syncDirectoryEntry(path.dirname(lockPath));
     return stagingPath;
   } catch (cause) {
     await fs.rm(stagingPath, { recursive: true, force: true }).catch(() => undefined);
@@ -179,7 +167,7 @@ async function tryPublishOwnedDirectory(
 
   if (!published) return false;
   try {
-    await syncDirectory(path.dirname(targetPath));
+    await syncDirectoryEntry(path.dirname(targetPath));
     return true;
   } catch (cause) {
     await fs.rm(targetPath, { recursive: true, force: true }).catch(() => undefined);
@@ -248,7 +236,7 @@ async function acquireReaperGuard(dbPath: string, lockPath: string): Promise<Rea
         );
       }
       await fs.rename(reaperPath, retiredPath);
-      await syncDirectory(path.dirname(reaperPath));
+      await syncDirectoryEntry(path.dirname(reaperPath));
       retiredPaths.push(retiredPath);
     } catch (cause) {
       if (cause instanceof DatabaseLifecycleLockedError) throw cause;
@@ -274,12 +262,12 @@ async function releaseReaperGuard(dbPath: string, lockPath: string, guard: Reape
   }
   const releasedPath = `${guard.path}.released.${guard.owner.token}.${randomUUID()}`;
   await fs.rename(guard.path, releasedPath);
-  await syncDirectory(path.dirname(guard.path));
+  await syncDirectoryEntry(path.dirname(guard.path));
   await fs.rm(releasedPath, { recursive: true, force: true });
   for (const retiredPath of guard.retiredPaths) {
     await fs.rm(retiredPath, { recursive: true, force: true });
   }
-  await syncDirectory(path.dirname(guard.path));
+  await syncDirectoryEntry(path.dirname(guard.path));
 }
 
 async function reapDeadOwner(
@@ -303,9 +291,9 @@ async function reapDeadOwner(
     }
     const stalePath = `${lockPath}.stale.${observedOwner.token}.${randomUUID()}`;
     await fs.rename(lockPath, stalePath);
-    await syncDirectory(path.dirname(lockPath));
+    await syncDirectoryEntry(path.dirname(lockPath));
     await fs.rm(stalePath, { recursive: true, force: true });
-    await syncDirectory(path.dirname(lockPath));
+    await syncDirectoryEntry(path.dirname(lockPath));
   } finally {
     await releaseReaperGuard(dbPath, lockPath, guard);
   }
@@ -376,9 +364,9 @@ async function release(lock: DatabaseLifecycleLock): Promise<void> {
   }
   const releasedPath = `${lock.lockPath}.released.${lock.owner.token}.${randomUUID()}`;
   await fs.rename(lock.lockPath, releasedPath);
-  await syncDirectory(path.dirname(lock.lockPath));
+  await syncDirectoryEntry(path.dirname(lock.lockPath));
   await fs.rm(releasedPath, { recursive: true, force: true });
-  await syncDirectory(path.dirname(lock.lockPath));
+  await syncDirectoryEntry(path.dirname(lock.lockPath));
 }
 
 const attemptPromise = <A>(action: () => Promise<A>) =>

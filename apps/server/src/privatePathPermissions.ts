@@ -52,6 +52,31 @@ export async function syncDirectoryEntry(
   }
 }
 
+/** Flushes a regular file with the write access Windows FlushFileBuffers requires. */
+export async function syncRegularFile(
+  filePath: string,
+  platform: NodeJS.Platform = process.platform,
+): Promise<void> {
+  const flags = supportsPosixPermissions(platform)
+    ? fs.constants.O_RDWR | fs.constants.O_NOFOLLOW
+    : fs.constants.O_RDWR;
+  const handle = await fs.promises.open(filePath, flags);
+  try {
+    await handle.sync();
+  } finally {
+    await handle.close();
+  }
+}
+
+/** POSIX inode identity is reliable; Windows callers must rely on guarded path checks. */
+export function sameFileIdentity(
+  left: Pick<fs.Stats, "dev" | "ino">,
+  right: Pick<fs.Stats, "dev" | "ino">,
+  platform: NodeJS.Platform = process.platform,
+): boolean {
+  return !supportsPosixPermissions(platform) || (left.dev === right.dev && left.ino === right.ino);
+}
+
 export function ensurePrivateDirectorySync(
   directoryPath: string,
   platform: NodeJS.Platform = process.platform,

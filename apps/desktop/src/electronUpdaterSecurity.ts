@@ -3,19 +3,15 @@
 // Layer: Desktop update runtime
 // Exports: updater patching, shell-free PowerShell signature verification helpers.
 
-import {
-  execFile,
-  spawnSync,
-  type ExecFileException,
-  type ExecFileOptions,
-} from "node:child_process";
+import type { ExecFileException, ExecFileOptions } from "node:child_process";
 import * as Path from "node:path";
 
 import {
   matchesDistinguishedName,
   parseDistinguishedName,
 } from "@synara/shared/windowsCertificate";
-import { prepareWindowsSafeProcess, resolveWindowsSystemRoot } from "@synara/shared/windowsProcess";
+import { execProcessFile, spawnProcessSync } from "@synara/shared/processRuntime";
+import { resolveWindowsSystemRoot } from "@synara/shared/windowsProcess";
 
 export { parseDistinguishedName } from "@synara/shared/windowsCertificate";
 
@@ -109,9 +105,15 @@ function runPowerShell(
     const execFileImpl: ExecFileLike =
       options.execFile ??
       ((file, args, execOptions, callback) => {
-        execFile(file, [...args], execOptions, (error, stdout, stderr) => {
-          callback(error, String(stdout), String(stderr));
-        });
+        const { shell: _shell, windowsHide: _windowsHide, ...runtimeOptions } = execOptions;
+        execProcessFile(
+          file,
+          args,
+          { ...runtimeOptions, platform: "win32" },
+          (error, stdout, stderr) => {
+            callback(error, String(stdout), String(stderr));
+          },
+        );
       });
     execFileImpl(
       buildPowerShellExecutablePath(env),
@@ -279,13 +281,11 @@ export function hardenElectronUpdater(
     ): string {
       this._logger?.info?.(`Executing: ${cmd} with args: ${args}`);
       const mergedEnv = { ...process.env, ...env };
-      const prepared = prepareWindowsSafeProcess(cmd, args, { env: mergedEnv });
-      const response = spawnSync(prepared.command, prepared.args, {
+      const response = spawnProcessSync(cmd, args, {
         env: mergedEnv,
         encoding: "utf8",
-        shell: prepared.shell,
-        windowsHide: prepared.windowsHide,
-        windowsVerbatimArguments: prepared.windowsVerbatimArguments,
+        platform: "win32",
+        requireExecutable: true,
       });
       const { error, status, stdout, stderr } = response;
       if (error) {

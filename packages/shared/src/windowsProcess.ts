@@ -3,8 +3,9 @@
 // Layer: Shared Node runtime utility
 // Exports: command resolution plus safe spawn/spawnSync argument preparation.
 
-import { spawnSync } from "node:child_process";
 import * as Path from "node:path";
+
+import { resolveExecutable } from "./executable";
 
 type SpawnSyncLike = (
   command: string,
@@ -154,10 +155,9 @@ function selectWindowsCommandCandidate(
   return allowedCandidates.find(isWindowsSpawnSafeResolvedCommand) ?? allowedCandidates[0];
 }
 
-// Resolve PATH/PATHEXT commands through where.exe so `.cmd` shims can be wrapped
-// explicitly. Prefer candidates that native spawn can execute or that we can
-// wrap, and skip current-directory hits for PATH commands to avoid restoring
-// shell-style CWD command hijacking.
+// Production resolution shares the same PATH/PATHEXT walk used by health,
+// startup, updates, editors, and version gates. The injected where.exe branch
+// remains only as a deterministic compatibility seam for historical tests.
 export function resolveWindowsCommandPath(
   command: string,
   input: WindowsSafeProcessInput = {},
@@ -169,7 +169,11 @@ export function resolveWindowsCommandPath(
 
   const env = input.env ?? process.env;
   const cwd = input.cwd ?? process.cwd();
-  const result = (input.spawnSync ?? spawnSync)(resolveWindowsWhereExe(env), [command], {
+  if (!input.spawnSync) {
+    return resolveExecutable(command, { platform: "win32", env }) ?? command;
+  }
+
+  const result = input.spawnSync(resolveWindowsWhereExe(env), [command], {
     cwd,
     env,
     encoding: "utf8",

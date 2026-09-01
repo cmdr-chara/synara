@@ -1,0 +1,68 @@
+name: Apply provider lifecycle ordering fix
+
+on:
+  push:
+    branches:
+      - refactor/windows-runtime
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
+      - name: Move external cancellation observation outside timeout
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path("apps/server/src/provider/Layers/ProviderService.ts")
+          source = path.read_text()
+          before = '''                Effect.onInterrupt(() =>
+                    Effect.gen(function* () {
+                      startupLifecycle.stop("Cancelled");
+                      yield* Effect.logInfo("provider.session.start_cancelled", {
+                        threadId,
+                        provider: input.provider,
+                        startup: startupLifecycle.snapshot(),
+                      });
+                    }),
+                  ),
+                  Effect.timeoutOption(PROVIDER_START_SESSION_TIMEOUT),
+          '''
+          after = '''                Effect.timeoutOption(PROVIDER_START_SESSION_TIMEOUT),
+                  Effect.onInterrupt(() =>
+                    Effect.gen(function* () {
+                      startupLifecycle.stop("Cancelled");
+                      yield* Effect.logInfo("provider.session.start_cancelled", {
+                        threadId,
+                        provider: input.provider,
+                        startup: startupLifecycle.snapshot(),
+                      });
+                    }),
+                  ),
+          '''
+          if before in source:
+              path.write_text(source.replace(before, after, 1))
+          elif after not in source:
+              raise SystemExit("Expected provider lifecycle pipeline was not found")
+          PY
+      - name: Format and commit
+        run: |
+          bun install --frozen-lockfile --ignore-scripts
+          bun run fmt
+          if git diff --quiet; then
+            echo "Lifecycle ordering already applied"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps/server/src/provider/Layers/ProviderService.ts
+          git commit -m "fix(provider): distinguish timeout from cancellation"
+          git push origin HEAD

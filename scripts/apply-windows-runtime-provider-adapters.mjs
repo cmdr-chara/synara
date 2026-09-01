@@ -3,7 +3,7 @@ import { migratePreparedEffectCommands, replace } from "./windows-runtime-edit-h
 migratePreparedEffectCommands(
   "apps/server/src/provider/Layers/GrokAdapter.ts",
   "../../platform/effectProcessRuntime.ts",
-  [/\s*const prepared = prepareWindowsSafeProcess\(binaryPath, \["models"\], \{\s*env: childEnv,\s*}\);\s*/],
+  [/\s*const prepared = prepareWindowsSafeProcess\(binaryPath, \["models"\], \{\s*env: childEnv\s*}\);\s*/],
   [{ command: "binaryPath", args: '["models"]' }],
 );
 

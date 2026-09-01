@@ -8,7 +8,7 @@ function emit(stream, payload) {
 }
 
 function keepAlive() {
-  setInterval(() => undefined, 1_000).unref();
+  setInterval(() => undefined, 1_000);
 }
 
 function shutdown() {

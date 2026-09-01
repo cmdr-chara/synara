@@ -56,11 +56,14 @@ function planFromOptions(
   args: ReadonlyArray<string>,
   options: PlanningOptions,
 ): ProcessLaunchPlan {
+  const cwd = typeof options.cwd === "string" ? options.cwd : undefined;
   return prepareProcess(command, args, {
-    platform: options.platform,
-    cwd: typeof options.cwd === "string" ? options.cwd : undefined,
-    env: options.env,
-    requireExecutable: options.requireExecutable,
+    ...(options.platform !== undefined ? { platform: options.platform } : {}),
+    ...(cwd !== undefined ? { cwd } : {}),
+    ...(options.env !== undefined ? { env: options.env } : {}),
+    ...(options.requireExecutable !== undefined
+      ? { requireExecutable: options.requireExecutable }
+      : {}),
   });
 }
 

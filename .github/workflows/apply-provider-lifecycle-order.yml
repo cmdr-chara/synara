@@ -1,4 +1,4 @@
-name: Apply provider lifecycle ordering fix
+name: Apply Windows runtime portability fixes
 
 on:
   push:
@@ -16,53 +16,96 @@ jobs:
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: package.json
-      - name: Move external cancellation observation outside timeout
+      - name: Apply CI-discovered portability fixes
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
 
-          path = Path("apps/server/src/provider/Layers/ProviderService.ts")
-          source = path.read_text()
-          before = '''                Effect.onInterrupt(() =>
-                    Effect.gen(function* () {
-                      startupLifecycle.stop("Cancelled");
-                      yield* Effect.logInfo("provider.session.start_cancelled", {
-                        threadId,
-                        provider: input.provider,
-                        startup: startupLifecycle.snapshot(),
-                      });
-                    }),
-                  ),
-                  Effect.timeoutOption(PROVIDER_START_SESSION_TIMEOUT),
-          '''
-          after = '''                Effect.timeoutOption(PROVIDER_START_SESSION_TIMEOUT),
-                  Effect.onInterrupt(() =>
-                    Effect.gen(function* () {
-                      startupLifecycle.stop("Cancelled");
-                      yield* Effect.logInfo("provider.session.start_cancelled", {
-                        threadId,
-                        provider: input.provider,
-                        startup: startupLifecycle.snapshot(),
-                      });
-                    }),
-                  ),
-          '''
+          test_path = Path("packages/shared/src/platformProcess.test.ts")
+          source = test_path.read_text()
+          before = '  it("keeps the POSIX path shell-free and resolves through the supplied environment", () => {'
+          after = '  it.runIf(process.platform !== "win32")(\n    "keeps the POSIX path shell-free and resolves through the supplied environment",\n    () => {'
           if before in source:
-              path.write_text(source.replace(before, after, 1))
-          elif after not in source:
-              raise SystemExit("Expected provider lifecycle pipeline was not found")
+              source = source.replace(before, after, 1)
+              closing = '''    expect(
+              prepareProcess("tool", ["one", "two"], {
+                platform: "linux",
+                env: { PATH: root },
+                requireExecutable: true,
+              }),
+            ).toMatchObject({
+              command: executable,
+              args: ["one", "two"],
+              shell: false,
+              requestedCommand: "tool",
+              resolvedCommand: executable,
+              executionBackend: "native",
+            });
+          });'''
+              replacement = closing[:-4] + '    },\n  );'
+              if closing not in source:
+                  raise SystemExit("POSIX test closing block was not found")
+              source = source.replace(closing, replacement, 1)
+              test_path.write_text(source)
+          elif 'it.runIf(process.platform !== "win32")' not in source:
+              raise SystemExit("POSIX process planner test was not found")
+
+          tree_path = Path("apps/server/src/platform/processTreeController.ts")
+          source = tree_path.read_text()
+          marker = '''): ProcessTreeKiller {
+            const deps: ProcessTreeKillerDependencies = {'''
+          replacement = '''): ProcessTreeKiller {
+            const supportsSynchronousCapture =
+              dependencies.captureChildrenMap !== undefined || globalThis.process.platform !== "win32";
+            const deps: ProcessTreeKillerDependencies = {'''
+          if marker in source:
+              source = source.replace(marker, replacement, 1)
+          elif "const supportsSynchronousCapture =" not in source:
+              raise SystemExit("Process-tree dependency boundary was not found")
+          old_condition = '      if (globalThis.process.platform === "win32") {'
+          new_condition = "      if (!supportsSynchronousCapture) {"
+          if old_condition in source:
+              source = source.replace(old_condition, new_condition, 1)
+          elif new_condition not in source:
+              raise SystemExit("Windows synchronous capture guard was not found")
+          tree_path.write_text(source)
+
+          provider_path = Path("apps/server/src/provider/Layers/ProviderService.ts")
+          source = provider_path.read_text()
+          lines = source.splitlines(keepends=True)
+          marker_index = next(
+              i for i, line in enumerate(lines)
+              if 'startupLifecycle.transition("handshaking")' in line
+          )
+          timeout_index = next(
+              i for i in range(marker_index, min(len(lines), marker_index + 80))
+              if lines[i].strip() == "Effect.timeoutOption(PROVIDER_START_SESSION_TIMEOUT),"
+          )
+          interrupt_indices = [
+              i for i in range(marker_index, min(len(lines), marker_index + 80))
+              if lines[i].strip() == "Effect.onInterrupt(() =>"
+          ]
+          if len(interrupt_indices) != 1:
+              raise SystemExit(f"Expected one startup interruption handler, found {len(interrupt_indices)}")
+          interrupt_index = interrupt_indices[0]
+          if interrupt_index < timeout_index:
+              timeout_line = lines.pop(timeout_index)
+              lines.insert(interrupt_index, timeout_line)
+              provider_path.write_text("".join(lines))
+          elif timeout_index > interrupt_index:
+              raise SystemExit("Provider startup timeout ordering is ambiguous")
           PY
       - name: Format and commit
         run: |
           bun install --frozen-lockfile --ignore-scripts
           bun run fmt
           if git diff --quiet; then
-            echo "Lifecycle ordering already applied"
+            echo "Portability fixes already applied"
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add apps/server/src/provider/Layers/ProviderService.ts
-          git commit -m "fix(provider): distinguish timeout from cancellation"
+          git add packages/shared/src/platformProcess.test.ts apps/server/src/platform/processTreeController.ts apps/server/src/provider/Layers/ProviderService.ts
+          git commit -m "fix(windows): address CI portability findings"
           git push origin HEAD

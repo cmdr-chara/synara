@@ -37,7 +37,9 @@ export interface ProviderStartupSnapshot {
 
 const TERMINAL_PHASES = new Set<ProviderStartupPhase>(["failed", "stopped"]);
 
-const ALLOWED_TRANSITIONS: Readonly<Record<ProviderStartupPhase, ReadonlySet<ProviderStartupPhase>>> = {
+const ALLOWED_TRANSITIONS: Readonly<
+  Record<ProviderStartupPhase, ReadonlySet<ProviderStartupPhase>>
+> = {
   discovering: new Set(["starting", "failed", "stopped"]),
   starting: new Set(["handshaking", "authenticating", "ready", "failed", "stopped"]),
   handshaking: new Set(["authenticating", "ready", "failed", "stopped"]),
@@ -73,10 +75,12 @@ export class ProviderStartupLifecycle {
   #failureReason: ProviderStartupFailureReason | undefined;
   readonly #transitions: ProviderStartupTransition[];
 
-  constructor(options: {
-    readonly now?: () => number;
-    readonly onTransition?: (transition: ProviderStartupTransition) => void;
-  } = {}) {
+  constructor(
+    options: {
+      readonly now?: () => number;
+      readonly onTransition?: (transition: ProviderStartupTransition) => void;
+    } = {},
+  ) {
     this.#now = options.now ?? Date.now;
     this.#onTransition = options.onTransition;
     this.#transitions = [{ phase: "discovering", at: this.#now() }];
@@ -142,7 +146,8 @@ export function classifyProviderStartupFailure(cause: unknown): ProviderStartupF
     return "ExecutableNotFound";
   }
   if (cause instanceof Error && cause.name === "AbortError") return "Cancelled";
-  const message = cause instanceof Error ? cause.message.toLowerCase() : String(cause).toLowerCase();
+  const message =
+    cause instanceof Error ? cause.message.toLowerCase() : String(cause).toLowerCase();
   if (message.includes("auth") || message.includes("login")) return "AuthenticationFailed";
   if (message.includes("spawn")) return "SpawnFailed";
   if (message.includes("exit") || message.includes("closed before")) return "ExitedDuringStartup";
@@ -172,7 +177,10 @@ export async function superviseProviderStartup<A>(input: {
   const cleanup = async (): Promise<void> => {
     if (cleanupStarted) return;
     cleanupStarted = true;
-    await input.cleanup().then(() => undefined, () => undefined);
+    await input.cleanup().then(
+      () => undefined,
+      () => undefined,
+    );
   };
 
   const control: ProviderStartupControl = {
@@ -196,11 +204,7 @@ export async function superviseProviderStartup<A>(input: {
     if (input.signal) {
       abortListener = () => {
         reject(
-          new ProviderStartupError(
-            "Cancelled",
-            lifecycle.phase,
-            "Provider startup was cancelled.",
-          ),
+          new ProviderStartupError("Cancelled", lifecycle.phase, "Provider startup was cancelled."),
         );
       };
       input.signal.addEventListener("abort", abortListener, { once: true });

@@ -84,10 +84,7 @@ function processAbortError(): Error {
 }
 
 // Process-tree signaling is platform-owned; application code never invokes taskkill.
-function killChild(
-  child: ChildProcessHandle,
-  signal: "SIGTERM" | "SIGKILL" = "SIGTERM",
-): void {
+function killChild(child: ChildProcessHandle, signal: "SIGTERM" | "SIGKILL" = "SIGTERM"): void {
   if (child.pid === undefined) {
     child.kill(signal);
     return;

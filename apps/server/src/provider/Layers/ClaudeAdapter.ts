@@ -514,7 +514,7 @@ interface ClaudeProcessOwner {
 }
 
 function spawnOwnedClaudeCodeProcess(options: ClaudeSpawnOptions): ClaudeOwnedProcess {
-return spawnProcess(options.command, options.args, {
+  return spawnProcess(options.command, options.args, {
     requireExecutable: true,
     ...(options.cwd ? { cwd: options.cwd } : {}),
     env: options.env,
@@ -528,7 +528,7 @@ async function readInstalledClaudeCliVersion(input: {
   readonly cwd?: string;
   readonly env: NodeJS.ProcessEnv;
 }): Promise<string | null> {
-return new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     execProcessFile(
       input.binaryPath,
       ["--version"],

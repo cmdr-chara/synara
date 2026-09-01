@@ -56,8 +56,7 @@ export function prepareProcess(
 ): ProcessLaunchPlan {
   const platform = input.platform ?? process.platform;
   const env = input.env ?? process.env;
-  const wslWorkspace =
-    platform === "win32" && input.cwd ? parseWindowsWslUncPath(input.cwd) : null;
+  const wslWorkspace = platform === "win32" && input.cwd ? parseWindowsWslUncPath(input.cwd) : null;
 
   if (wslWorkspace) {
     const prepared = prepareWindowsSafeProcess(command, args, {

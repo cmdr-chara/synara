@@ -341,7 +341,8 @@ const makeCodexTextGeneration = Effect.gen(function* () {
           outputPath,
           ...imagePaths.flatMap((imagePath) => ["--image", imagePath]),
           "-",
-        ];const command = makeEffectProcessCommand(codexBinaryPath, args, {
+        ];
+        const command = makeEffectProcessCommand(codexBinaryPath, args, {
           cwd,
           env,
           stdin: {

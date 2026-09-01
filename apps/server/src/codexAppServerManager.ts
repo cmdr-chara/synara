@@ -719,7 +719,7 @@ function spawnCodexAppServer(input: {
   readonly cwd: string;
   readonly env: NodeJS.ProcessEnv;
 }): ChildProcessWithoutNullStreams {
-return spawnProcess(input.binaryPath, ["app-server"], {
+  return spawnProcess(input.binaryPath, ["app-server"], {
     requireExecutable: true,
     cwd: input.cwd,
     env: input.env,
@@ -4124,7 +4124,7 @@ function runCodexVersionCommand(input: {
   readonly cwd: string;
   readonly env: NodeJS.ProcessEnv;
 }): Promise<CodexVersionCommandResult> {
-return new Promise<CodexVersionCommandResult>((resolve) => {
+  return new Promise<CodexVersionCommandResult>((resolve) => {
     let child: ChildProcess;
     try {
       child = spawnProcess(input.binaryPath, ["--version"], {

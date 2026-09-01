@@ -659,7 +659,8 @@ const runProviderCommand = (
   env: NodeJS.ProcessEnv,
 ) =>
   Effect.gen(function* () {
-    const spawner = yield* ChildProcessSpawner.ChildProcessSpawner;const command = makeEffectProcessCommand(executable, args, {
+    const spawner = yield* ChildProcessSpawner.ChildProcessSpawner;
+    const command = makeEffectProcessCommand(executable, args, {
       env,
       // Health probes are non-interactive. Leaving stdin as a pipe can keep CLIs
       // such as Antigravity waiting even after a read-only subcommand has finished.
@@ -2587,7 +2588,8 @@ export function makeProviderHealthLive(options?: { readonly providerUpdateTimeou
                 .filter((entry): entry is string => Boolean(entry))
                 .join(OS.platform() === "win32" ? ";" : ":"),
             }
-          : baseEnv;const child = yield* spawner.spawn(
+          : baseEnv;
+        const child = yield* spawner.spawn(
           makeEffectProcessCommand(input.command, input.args, {
             env: updateEnv,
           }),

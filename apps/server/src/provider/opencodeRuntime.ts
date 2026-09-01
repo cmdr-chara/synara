@@ -866,7 +866,8 @@ const makeOpenCodeRuntime = (options?: OpenCodeRuntimeLiveOptions) =>
 
     const runOpenCodeCommand: OpenCodeRuntimeShape["runOpenCodeCommand"] = (input) =>
       Effect.gen(function* () {
-        const childEnv = buildOpenCodeServerProcessEnv({});const child = yield* spawner.spawn(
+        const childEnv = buildOpenCodeServerProcessEnv({});
+        const child = yield* spawner.spawn(
           makeEffectProcessCommand(input.binaryPath, input.args, {
             ...(input.cwd ? { cwd: input.cwd } : {}),
             env: childEnv,
@@ -929,7 +930,8 @@ const makeOpenCodeRuntime = (options?: OpenCodeRuntimeLiveOptions) =>
           ...(input.experimentalWebSockets !== undefined
             ? { experimentalWebSockets: input.experimentalWebSockets }
             : {}),
-        });const child = yield* spawner
+        });
+        const child = yield* spawner
           .spawn(
             makeEffectProcessCommand(input.binaryPath, args, {
               env: childEnv,

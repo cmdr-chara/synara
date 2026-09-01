@@ -2393,7 +2393,8 @@ export function makeGrokAdapter(
         let cliError: unknown;
         let apiError: ProviderAdapterRequestError | undefined;
         const cliModels = yield* Effect.gen(function* () {
-          const childEnv = buildProviderChildEnvironment({ provider: "grok" });const child = yield* childProcessSpawner.spawn(
+          const childEnv = buildProviderChildEnvironment({ provider: "grok" });
+          const child = yield* childProcessSpawner.spawn(
             makeEffectProcessCommand(binaryPath, ["models"], {
               env: childEnv,
             }),

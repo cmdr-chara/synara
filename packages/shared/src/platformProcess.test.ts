@@ -77,7 +77,7 @@ describe("prepareProcess", () => {
       ["tool", cmdPath],
       ["other", batPath],
     ] as const) {
-      const plan = prepareProcess(command, ["path with spaces", "quoted=\"value\"", "日本語"], {
+      const plan = prepareProcess(command, ["path with spaces", 'quoted="value"', "日本語"], {
         platform: "win32",
         env: windowsEnv(),
         requireExecutable: true,

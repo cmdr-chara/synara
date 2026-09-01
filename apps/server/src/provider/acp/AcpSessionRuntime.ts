@@ -1343,7 +1343,8 @@ const makeAcpSessionRuntime = (
     const env = buildProviderChildEnvironment({
       provider: "acp",
       baseEnv: options.spawn.env ? { ...options.spawn.env } : process.env,
-    });const child = yield* spawner
+    });
+    const child = yield* spawner
       .spawn(
         makeEffectProcessCommand(options.spawn.command, options.spawn.args, {
           ...(options.spawn.cwd ? { cwd: options.spawn.cwd } : {}),

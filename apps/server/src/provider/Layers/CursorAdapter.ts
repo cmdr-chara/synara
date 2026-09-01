@@ -1635,7 +1635,8 @@ export function makeCursorAdapter(
           binaryPath: effectiveBinaryPath,
           ...(effectiveApiEndpoint ? { apiEndpoint: effectiveApiEndpoint } : {}),
         });
-        const env = buildCursorAgentHeadlessEnv();const child = yield* childProcessSpawner.spawn(
+        const env = buildCursorAgentHeadlessEnv();
+        const child = yield* childProcessSpawner.spawn(
           makeEffectProcessCommand(command.command, command.args, {
             env,
           }),

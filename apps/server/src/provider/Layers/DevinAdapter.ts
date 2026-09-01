@@ -1203,7 +1203,8 @@ export function makeDevinAdapter(
       return Effect.gen(function* () {
         let discoveryError: string | undefined;
         const cliModels = yield* Effect.gen(function* () {
-          const childEnv = buildProviderChildEnvironment({ provider: PROVIDER });const child = yield* childProcessSpawner.spawn(
+          const childEnv = buildProviderChildEnvironment({ provider: PROVIDER });
+          const child = yield* childProcessSpawner.spawn(
             makeEffectProcessCommand(binaryPath, ["models", "list", "--format", "json"], {
               env: childEnv,
             }),

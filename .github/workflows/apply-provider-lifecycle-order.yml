@@ -25,30 +25,10 @@ jobs:
           test_path = Path("packages/shared/src/platformProcess.test.ts")
           source = test_path.read_text()
           before = '  it("keeps the POSIX path shell-free and resolves through the supplied environment", () => {'
-          after = '  it.runIf(process.platform !== "win32")(\n    "keeps the POSIX path shell-free and resolves through the supplied environment",\n    () => {'
+          after = '  it.skipIf(process.platform === "win32")("keeps the POSIX path shell-free and resolves through the supplied environment", () => {'
           if before in source:
-              source = source.replace(before, after, 1)
-              closing = '''    expect(
-              prepareProcess("tool", ["one", "two"], {
-                platform: "linux",
-                env: { PATH: root },
-                requireExecutable: true,
-              }),
-            ).toMatchObject({
-              command: executable,
-              args: ["one", "two"],
-              shell: false,
-              requestedCommand: "tool",
-              resolvedCommand: executable,
-              executionBackend: "native",
-            });
-          });'''
-              replacement = closing[:-4] + '    },\n  );'
-              if closing not in source:
-                  raise SystemExit("POSIX test closing block was not found")
-              source = source.replace(closing, replacement, 1)
-              test_path.write_text(source)
-          elif 'it.runIf(process.platform !== "win32")' not in source:
+              test_path.write_text(source.replace(before, after, 1))
+          elif 'it.skipIf(process.platform === "win32")' not in source:
               raise SystemExit("POSIX process planner test was not found")
 
           tree_path = Path("apps/server/src/platform/processTreeController.ts")

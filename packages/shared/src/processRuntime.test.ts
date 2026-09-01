@@ -44,7 +44,11 @@ async function collect(
 describe("processRuntime", () => {
   it("runs a native executable with spaces, quotes, empty arguments, and Unicode", async () => {
     const args = ["", "path with spaces", 'quoted="value"', "日本語"];
-    const result = await collect(process.execPath, ["-e", "console.log(JSON.stringify(process.argv.slice(1)))", ...args]);
+    const result = await collect(process.execPath, [
+      "-e",
+      "console.log(JSON.stringify(process.argv.slice(1)))",
+      ...args,
+    ]);
 
     expect(result.code).toBe(0);
     expect(JSON.parse(result.stdout.trim())).toEqual(args);
@@ -76,7 +80,13 @@ describe("processRuntime", () => {
         const script = path.join(root, `echo-args.${extension}`);
         writeFileSync(
           script,
-          ["@echo off", "setlocal DisableDelayedExpansion", "echo(%~1", "echo(%~2", "echo(%~3"].join("\r\n"),
+          [
+            "@echo off",
+            "setlocal DisableDelayedExpansion",
+            "echo(%~1",
+            "echo(%~2",
+            "echo(%~3",
+          ].join("\r\n"),
         );
         const result = await collect(script, ["", "path with spaces", "日本語"]);
         expect(result.code).toBe(0);

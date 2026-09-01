@@ -1,3 +1,4 @@
+import type { ChildProcessWithoutNullStreams } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 import { spawnProcess } from "@synara/shared/processRuntime";
@@ -13,7 +14,7 @@ const FIXTURE = fileURLToPath(new URL("./fixtures/fakeProviderCli.mjs", import.m
 
 type FakeMode = "success" | "slow" | "never" | "auth-failure" | "crash" | "child";
 
-function stopChild(child: ReturnType<typeof spawnProcess> | null): Promise<void> {
+function stopChild(child: ChildProcessWithoutNullStreams | null): Promise<void> {
   if (!child || child.exitCode !== null || child.signalCode !== null) return Promise.resolve();
   return new Promise((resolve) => {
     const timer = setTimeout(() => {
@@ -33,7 +34,7 @@ async function runFakeProvider(input: {
   signal?: AbortSignal;
   lifecycle?: ProviderStartupLifecycle;
 }) {
-  let child: ReturnType<typeof spawnProcess> | null = null;
+  let child: ChildProcessWithoutNullStreams | null = null;
   const cleanup = vi.fn(async () => stopChild(child));
   const result = superviseProviderStartup({
     timeoutMs: input.timeoutMs,

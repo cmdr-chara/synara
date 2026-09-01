@@ -122,7 +122,7 @@ jobs:
   windows_process:
     name: Windows Process Regression
     runs-on: windows-2022
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -145,11 +145,13 @@ jobs:
       - name: Verify Windows terminal PTY native dependency under Bun
         run: bun scripts/node-pty-smoke.mjs
 
-      - name: Test Windows process planning
-        run: bun run --cwd packages/shared test src/windowsProcess.test.ts
+      - name: Test Windows executable and process runtime
+        run: |
+          bun run --cwd packages/shared test src/windowsProcess.test.ts src/platformProcess.test.ts src/processRuntime.test.ts
 
-      - name: Test Effect Windows process spawn
-        run: bun run --cwd apps/server test src/windowsProcessEffect.test.ts
+      - name: Test provider startup and process-tree lifecycle
+        run: |
+          bun run --cwd apps/server test src/windowsProcessEffect.test.ts src/processRunner.test.ts src/platform/processBoundary.test.ts src/provider/providerStartupLifecycle.test.ts src/provider/providerStartupLifecycle.integration.test.ts src/provider/supervisedProcessTeardown.test.ts src/terminal/processTreeKiller.test.ts src/terminal/windowsProcessSnapshot.test.ts
 
       - name: Test Windows desktop backend shutdown
         run: bun run --cwd apps/desktop test src/backendShutdown.windows.integration.test.ts

@@ -1,0 +1,39 @@
+name: Apply Windows runtime refactor
+
+on:
+  push:
+    branches:
+      - refactor/windows-runtime
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply asserted source migrations
+        run: |
+          node scripts/apply-windows-runtime-core.mjs
+          node scripts/apply-windows-runtime-server.mjs
+          node scripts/apply-windows-runtime-desktop.mjs
+          node scripts/apply-windows-runtime-effect-services.mjs
+          node scripts/apply-windows-runtime-provider-adapters.mjs
+          node scripts/apply-windows-runtime-sdk-providers.mjs
+          node scripts/apply-windows-runtime-filesystem.mjs
+          node scripts/apply-windows-runtime-provider-lifecycle.mjs
+
+      - name: Verify and commit migration
+        run: |
+          git diff --check
+          git status --short
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add packages apps
+          git diff --cached --quiet && { echo "No source changes were produced"; exit 1; }
+          git commit -m "refactor(windows): route launches through platform runtime"
+          git push origin HEAD

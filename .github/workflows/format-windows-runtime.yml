@@ -1,0 +1,33 @@
+name: Format Windows runtime refactor
+
+on:
+  push:
+    branches:
+      - refactor/windows-runtime
+
+permissions:
+  contents: write
+
+jobs:
+  format:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
+      - name: Install formatter
+        run: bun install --frozen-lockfile --ignore-scripts
+      - name: Apply repository formatting
+        run: bun run fmt
+      - name: Commit formatting
+        run: |
+          if git diff --quiet; then
+            echo "No formatting changes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps packages .github
+          git commit -m "style: format Windows runtime refactor"
+          git push origin HEAD

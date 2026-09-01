@@ -31,6 +31,18 @@ export function edit(file, transform) {
   write(file, result);
 }
 
+function removeFirstAfter(source, start, pattern, label, file) {
+  const tail = source.slice(start);
+  const flags = pattern.flags.replaceAll("g", "");
+  const matcher = new RegExp(pattern.source, flags);
+  const match = matcher.exec(tail);
+  if (!match || match.index > 2_000) {
+    throw new Error(`${file}: ${label} was not found in the migrated command block`);
+  }
+  const index = start + match.index;
+  return source.slice(0, index) + source.slice(index + match[0].length);
+}
+
 export function migratePreparedEffectCommands(file, importPath, declarations, commands) {
   if (declarations.length !== commands.length) throw new Error(`${file}: migration spec mismatch`);
   edit(file, (initial) => {
@@ -54,27 +66,24 @@ export function migratePreparedEffectCommands(file, importPath, declarations, co
 
       const makeCall = "ChildProcess.make(prepared.command, prepared.args, {";
       if (!source.includes(makeCall)) throw new Error(`${file}: make call ${index} not found`);
-      source = source.replace(
-        makeCall,
-        `makeEffectProcessCommand(${commands[index].command}, ${commands[index].args}, {`,
+      const replacement = `makeEffectProcessCommand(${commands[index].command}, ${commands[index].args}, {`;
+      source = source.replace(makeCall, replacement);
+      const migratedStart = source.indexOf(replacement);
+      source = removeFirstAfter(
+        source,
+        migratedStart,
+        /^\s*shell: prepared\.shell,\n/m,
+        "shell option",
+        file,
+      );
+      source = removeFirstAfter(
+        source,
+        migratedStart,
+        /^\s*\.\.\.\(prepared\.windowsVerbatimArguments \? \{ windowsVerbatimArguments: true \} : \{\}\),\n/m,
+        "verbatim option",
+        file,
       );
     }
-
-    const shellCount = (source.match(/^\s*shell: prepared\.shell,\n/gm) ?? []).length;
-    const verbatimCount =
-      (source.match(
-        /^\s*\.\.\.\(prepared\.windowsVerbatimArguments \? \{ windowsVerbatimArguments: true \} : \{\}\),\n/gm,
-      ) ?? []).length;
-    if (shellCount !== commands.length || verbatimCount !== commands.length) {
-      throw new Error(
-        `${file}: expected ${commands.length} platform option pairs, found ${shellCount}/${verbatimCount}`,
-      );
-    }
-    source = source.replace(/^\s*shell: prepared\.shell,\n/gm, "");
-    source = source.replace(
-      /^\s*\.\.\.\(prepared\.windowsVerbatimArguments \? \{ windowsVerbatimArguments: true \} : \{\}\),\n/gm,
-      "",
-    );
 
     if (!source.includes("ChildProcess.")) {
       source = source.replace(

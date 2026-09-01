@@ -1,0 +1,81 @@
+name: Apply Windows runtime typecheck fixes
+
+on:
+  push:
+    branches: [refactor/windows-runtime]
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
+      - name: Apply exact-optional fixes
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          def replace(path, before, after, count=1):
+              p = Path(path)
+              source = p.read_text()
+              actual = source.count(before)
+              if actual != count:
+                  raise SystemExit(f"{path}: expected {count} matches, found {actual}")
+              p.write_text(source.replace(before, after, count))
+
+          replace(
+              "apps/server/src/platform/supervisedProcessTeardown.ts",
+              "  readonly pid?: number;",
+              "  readonly pid: number | undefined;",
+          )
+          replace(
+              "apps/server/src/persistence/MigrationBackup.ts",
+              'import { constants as fsConstants } from "node:fs";',
+              'import { constants as fsConstants, type Stats } from "node:fs";',
+          )
+          replace(
+              "apps/server/src/platform/effectProcessRuntime.ts",
+              '''  const plan = prepareProcess(command, args, {
+              platform,
+              cwd,
+              env,
+              requireExecutable,
+            });''',
+              '''  const plan = prepareProcess(command, args, {
+              ...(platform !== undefined ? { platform } : {}),
+              ...(cwd !== undefined ? { cwd } : {}),
+              ...(env !== undefined ? { env } : {}),
+              ...(requireExecutable !== undefined ? { requireExecutable } : {}),
+            });''',
+          )
+          replace(
+              "apps/server/src/platform/processTreeController.ts",
+              "    includeRootTree: input.includeRootTree,",
+              "    ...(input.includeRootTree !== undefined\n      ? { includeRootTree: input.includeRootTree }\n      : {}),",
+          )
+          replace(
+              "apps/server/src/provider/providerStartupLifecycle.ts",
+              "  readonly #onTransition?: (transition: ProviderStartupTransition) => void;",
+              "  readonly #onTransition: ((transition: ProviderStartupTransition) => void) | undefined;",
+          )
+          replace(
+              "apps/server/src/terminal/Layers/Manager.ts",
+              "        includeRootTree: options.includeRootTree,",
+              "        ...(options.includeRootTree !== undefined\n          ? { includeRootTree: options.includeRootTree }\n          : {}),",
+          )
+          PY
+      - name: Format and commit
+        run: |
+          bun install --frozen-lockfile --ignore-scripts
+          bun run fmt
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps/server
+          git diff --cached --quiet && { echo "No fixes produced"; exit 1; }
+          git commit -m "fix(windows): satisfy exact optional runtime types"
+          git push origin HEAD

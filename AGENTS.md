@@ -30,6 +30,10 @@ Keep this file about durable repository contracts. Inspect the code and task-spe
 - Transcript auto-follow must be driven by real content progression, not generic activity such as tool rows, reconnects, buffering, or approvals.
 - Avoid measurement/scroll feedback loops when virtualizing or resizing transcript content.
 
+## Toolchain and dependencies
+
+Use the Bun version in `packageManager` and the Node range in `engines` from [package.json](package.json), together with the committed lockfile. Preserve `patchedDependencies`; removing a runtime patch to make installation or typechecking pass is a behavior change, not an environment repair. Keep personal model rankings, pricing assumptions, and credentials out of shared repository instructions.
+
 ## Development and verification
 
 Use the smallest relevant checks while iterating. Before calling a substantial change complete, run the checks that cover the changed contracts; for broad integrated changes this normally includes:
@@ -50,7 +54,7 @@ bun run test:desktop-smoke
 bun run release:smoke
 ```
 
-Run those only when their surface is affected. Use `bun run test`, not bare `bun test`, so the repository's Vitest/Turbo contract is preserved.
+Run those only when their surface is affected. Use `bun run test`, not bare `bun test`, so the repository's Vitest/Turbo contract is preserved. Documentation-only changes need formatting, link, and command-reference checks, not unrelated live provider runs.
 
 When running a development instance alongside another Synara installation, isolate ports and state rather than reusing the user's live instance.
 

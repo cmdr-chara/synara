@@ -47,6 +47,13 @@ export const SETTINGS_SEARCH_ENTRIES: readonly SettingsSearchEntry[] = [
       "Pick the default workspace mode for newly created draft threads. local worktree environment",
   },
   {
+    id: "general:welcome-tour",
+    section: "general",
+    title: "Welcome tour",
+    keywords:
+      "Replay the first-run setup: feature tour, provider selection, appearance, and first project. onboarding welcome wizard getting started setup",
+  },
+  {
     id: "general:project-order",
     section: "general",
     title: "Project order",
@@ -125,12 +132,6 @@ export const SETTINGS_SEARCH_ENTRIES: readonly SettingsSearchEntry[] = [
     keywords: "Show the pinned-messages checklist in the Environment panel.",
   },
   {
-    id: "general:environment-markers",
-    section: "general",
-    title: "Text markers",
-    keywords: "Show highlighted and underlined transcript text in the Environment panel.",
-  },
-  {
     id: "general:environment-instructions",
     section: "general",
     title: "Project instructions",
@@ -155,6 +156,14 @@ export const SETTINGS_SEARCH_ENTRIES: readonly SettingsSearchEntry[] = [
     section: "appearance",
     title: "App icon",
     keywords: "Choose the icon Synara uses in the dock or taskbar desktop application logo.",
+    target: null,
+  },
+  {
+    id: "appearance:custom-title-bar",
+    section: "appearance",
+    title: "Use custom title bar",
+    keywords:
+      "frameless window system title bar Windows Linux caption controls minimize maximize close chrome",
     target: null,
   },
   {
@@ -278,6 +287,20 @@ export const SETTINGS_SEARCH_ENTRIES: readonly SettingsSearchEntry[] = [
     section: "behavior",
     title: "Assistant output",
     keywords: "Show token-by-token output while a response is in progress. streaming",
+  },
+  {
+    id: "behavior:effort-slider",
+    section: "behavior",
+    title: "Effort slider",
+    keywords:
+      "Show reasoning effort as a slider in the composer model menu once a chat has started. fast mode reasoning thinking level picker",
+  },
+  {
+    id: "behavior:auto-open-simulator",
+    section: "behavior",
+    title: "Automatically open simulator",
+    keywords:
+      "Disable automatic iOS Simulator device pane opening. Use Simulator.app without the mirrored panel reopening. background launch",
   },
   {
     id: "behavior:diff-line-wrapping",

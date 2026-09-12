@@ -1,4 +1,5 @@
 import {
+  DEFAULT_MODEL_BY_PROVIDER,
   ProjectId,
   ThreadId,
   type GitWorktreeSetupPhase,
@@ -12,7 +13,7 @@ import {
   type ServerProviderAuthStatus,
   type ThreadId as ThreadIdType,
 } from "@synara/contracts";
-import { normalizeModelSlug } from "@synara/shared/model";
+import { getDefaultModel, normalizeModelSlug } from "@synara/shared/model";
 import { buildSynaraBranchName } from "@synara/shared/git";
 import { isGenericChatThreadTitle } from "@synara/shared/chatThreads";
 import { isGenericTerminalThreadTitle } from "@synara/shared/terminalThreads";
@@ -36,6 +37,10 @@ import {
 } from "../lib/terminalContext";
 import { filterPastedTextsWithText, type PastedTextDraft } from "../lib/composerPastedText";
 import {
+  normalizePullRequestContexts,
+  type PullRequestContextDraft,
+} from "../lib/pullRequestContext";
+import {
   humanizeSubagentStatus,
   normalizeSubagentStatusKind,
   resolveSubagentPresentationForThread,
@@ -46,7 +51,7 @@ import {
   type WorkLogEntry,
 } from "../session-logic";
 import { localSubagentThreadId } from "./ChatView.selectors";
-import type { ProviderModelOption } from "../providerModelOptions";
+import { buildModelSelection, type ProviderModelOption } from "../providerModelOptions";
 
 export const LAST_INVOKED_SCRIPT_BY_PROJECT_KEY = "synara:last-invoked-script-by-project";
 export const DISMISSED_PROVIDER_HEALTH_BANNERS_KEY = "synara:dismissed-provider-health-banners";
@@ -251,22 +256,6 @@ export function shouldEnableComposerPastedTextCollapse(input: {
   return (
     !input.isComposerApprovalState && !input.hasPendingUserInput && !input.showPlanFollowUpPrompt
   );
-}
-
-export function buildComposerMenuSelectionKey(input: {
-  menuOpen: boolean;
-  picker: string | null;
-  triggerKind: string | null;
-  triggerQuery: string;
-  items: readonly { id: string }[];
-}): string | null {
-  if (!input.menuOpen) {
-    return null;
-  }
-  const sourceKey = input.picker
-    ? `picker:${input.picker}`
-    : `trigger:${input.triggerKind ?? "none"}:${input.triggerQuery}`;
-  return `${sourceKey}\u001f${input.items.map((item) => item.id).join("\u001e")}`;
 }
 
 export function buildTranscriptAutoFollowSignal(input: {
@@ -748,6 +737,27 @@ export function resolveThreadDetailHydration(input: {
   return input.detailSyncState === "failed" ? "failed" : "loading";
 }
 
+/**
+ * Fallback model selection for a draft thread before the first server turn exists.
+ * An explicit project default wins; otherwise the user's default provider is used
+ * (pi has no default model, so it is skipped), then codex. The model comes from the
+ * project default only when it matches the chosen provider, otherwise the provider's
+ * own default.
+ */
+export function resolveDraftFallbackModelSelection(input: {
+  projectDefault: ModelSelection | null | undefined;
+  settingsDefaultProvider: ProviderKind;
+}): ModelSelection {
+  const settingsProvider =
+    input.settingsDefaultProvider === "pi" ? null : input.settingsDefaultProvider;
+  const provider = input.projectDefault?.provider ?? settingsProvider ?? "codex";
+  const model =
+    (provider === input.projectDefault?.provider ? input.projectDefault.model : null) ??
+    getDefaultModel(provider) ??
+    DEFAULT_MODEL_BY_PROVIDER.codex;
+  return buildModelSelection(provider, model);
+}
+
 export function buildLocalDraftThread(
   threadId: ThreadId,
   draftThread: DraftThreadState,
@@ -805,6 +815,26 @@ export function filterSidechatTranscriptMessages(
   return isSidechat
     ? messages.filter((message) => message.source !== "fork-import")
     : [...messages];
+}
+
+// Imported fork history should not lock a Side chat's provider before its first native turn.
+export function threadHasProviderLockingMessages(
+  thread: Pick<Thread, "messages" | "sidechatSourceThreadId">,
+): boolean {
+  if (!thread.sidechatSourceThreadId) {
+    return thread.messages.length > 0;
+  }
+  return thread.messages.some((message) => (message.source ?? "native") !== "fork-import");
+}
+
+export function threadHasProviderLockingActivity(
+  thread: Pick<Thread, "messages" | "sidechatSourceThreadId" | "latestTurn" | "session">,
+): boolean {
+  return (
+    thread.latestTurn !== null ||
+    thread.session !== null ||
+    threadHasProviderLockingMessages(thread)
+  );
 }
 
 export function revokeBlobPreviewUrl(previewUrl: string | undefined): void {
@@ -1318,11 +1348,22 @@ export function hasServerAcknowledgedLocalDispatch(input: {
 /** Fail-open bound for the post-ack "awaiting turn start" Thinking bridge. */
 export const LOCAL_DISPATCH_TURN_TAKEOVER_TIMEOUT_MS = 60_000;
 
+/** The exact label set the transcript's working indicator can render. */
+export type WorkingLabel = "Loading" | "Thinking" | `Starting ${string}…`;
+
 export function resolveWorkingLabel(input: {
   isSendBusy: boolean;
   turnTakenOver: boolean;
-}): "Loading" | "Thinking" {
-  return input.isSendBusy && !input.turnTakenOver ? "Loading" : "Thinking";
+  isConnecting?: boolean;
+  providerName?: string;
+}): WorkingLabel {
+  if (input.isSendBusy && !input.turnTakenOver) {
+    return "Loading";
+  }
+  if (input.isConnecting && input.providerName) {
+    return `Starting ${input.providerName}…`;
+  }
+  return "Thinking";
 }
 
 /**
@@ -1457,6 +1498,84 @@ export function resolveQueuedSteerGateTransition(input: {
   };
 }
 
+export function shouldHoldQueuedComposerAutoDispatch(input: {
+  hasQueueableLiveTurn: boolean;
+  phase: SessionPhase;
+  isSendBusy: boolean;
+  isConnecting: boolean;
+  isAwaitingTurnStart: boolean;
+  queuedSteerGate: QueuedSteerGate | null;
+  hasPendingApproval: boolean;
+  hasPendingProgress: boolean;
+  hasPendingUserInput: boolean;
+  queuedTurnCount: number;
+}): boolean {
+  return (
+    input.hasQueueableLiveTurn ||
+    input.phase === "disconnected" ||
+    input.isSendBusy ||
+    input.isConnecting ||
+    input.isAwaitingTurnStart ||
+    input.queuedSteerGate !== null ||
+    input.hasPendingApproval ||
+    input.hasPendingProgress ||
+    input.hasPendingUserInput ||
+    input.queuedTurnCount === 0
+  );
+}
+
+/** The post-ack gap is not live-turn takeover, so hold until `hasLiveTurnTakenOver` or fail-open. */
+export function resolveQueuedComposerAutoDispatchHold(input: {
+  localDispatch: LocalDispatchSnapshot | null;
+  phase: SessionPhase;
+  latestTurn: Thread["latestTurn"] | null;
+  session: Thread["session"] | null;
+  messages: readonly ChatMessage[];
+  isConnecting: boolean;
+  queuedSteerGate: QueuedSteerGate | null;
+  hasPendingApproval: boolean;
+  hasPendingProgress: boolean;
+  hasPendingUserInput: boolean;
+  queuedTurnCount: number;
+  threadError: string | null | undefined;
+  now?: number;
+}): boolean {
+  const isSendBusy =
+    input.localDispatch !== null &&
+    !hasServerAcknowledgedLocalDispatch({
+      localDispatch: input.localDispatch,
+      phase: input.phase,
+      latestTurn: input.latestTurn,
+      session: input.session,
+      messages: input.messages,
+      hasPendingApproval: input.hasPendingApproval,
+      hasPendingUserInput: input.hasPendingUserInput,
+      threadError: input.threadError,
+    });
+  const turnTakenOver = hasLiveTurnTakenOver({
+    localDispatch: input.localDispatch,
+    phase: input.phase,
+    latestTurn: input.latestTurn,
+    session: input.session,
+    hasPendingApproval: input.hasPendingApproval,
+    hasPendingUserInput: input.hasPendingUserInput,
+    threadError: input.threadError,
+    ...(input.now === undefined ? {} : { now: input.now }),
+  });
+  return shouldHoldQueuedComposerAutoDispatch({
+    hasQueueableLiveTurn: input.phase === "running" && input.session?.activeTurnId != null,
+    phase: input.phase,
+    isSendBusy,
+    isConnecting: input.isConnecting,
+    isAwaitingTurnStart: input.localDispatch !== null && !turnTakenOver,
+    queuedSteerGate: input.queuedSteerGate,
+    hasPendingApproval: input.hasPendingApproval,
+    hasPendingProgress: input.hasPendingProgress,
+    hasPendingUserInput: input.hasPendingUserInput,
+    queuedTurnCount: input.queuedTurnCount,
+  });
+}
+
 export const ACTIVE_TURN_LAYOUT_SETTLE_DELAY_MS = 180;
 
 export function shouldStartActiveTurnLayoutGrace(options: {
@@ -1487,11 +1606,13 @@ export function deriveComposerSendState(options: {
   fileCommentCount: number;
   terminalContexts: ReadonlyArray<TerminalContextDraft>;
   pastedTexts: ReadonlyArray<PastedTextDraft>;
+  pullRequestContexts: ReadonlyArray<PullRequestContextDraft>;
 }): {
   trimmedPrompt: string;
   sendableTerminalContexts: TerminalContextDraft[];
   expiredTerminalContextCount: number;
   sendablePastedTexts: PastedTextDraft[];
+  sendablePullRequestContexts: PullRequestContextDraft[];
   hasSendableContent: boolean;
 } {
   const trimmedPrompt = stripInlineTerminalContextPlaceholders(options.prompt).trim();
@@ -1499,11 +1620,13 @@ export function deriveComposerSendState(options: {
   const expiredTerminalContextCount =
     options.terminalContexts.length - sendableTerminalContexts.length;
   const sendablePastedTexts = filterPastedTextsWithText(options.pastedTexts);
+  const sendablePullRequestContexts = normalizePullRequestContexts(options.pullRequestContexts);
   return {
     trimmedPrompt,
     sendableTerminalContexts,
     expiredTerminalContextCount,
     sendablePastedTexts,
+    sendablePullRequestContexts,
     hasSendableContent:
       trimmedPrompt.length > 0 ||
       options.imageCount > 0 ||
@@ -1512,7 +1635,8 @@ export function deriveComposerSendState(options: {
       options.browserAnnotationCount > 0 ||
       options.fileCommentCount > 0 ||
       sendableTerminalContexts.length > 0 ||
-      sendablePastedTexts.length > 0,
+      sendablePastedTexts.length > 0 ||
+      sendablePullRequestContexts.length > 0,
   };
 }
 

@@ -4,6 +4,7 @@
 // Exports: TimelineWorkEntryRow, EditedFileRowContent, prefersCompactWorkEntryRow
 
 import type { TurnId } from "@synara/contracts";
+import { PROVIDER_DESCRIPTORS } from "@synara/shared/providerMetadata";
 import {
   createElement,
   memo,
@@ -25,10 +26,12 @@ import {
   CheckIcon,
   CircleAlertIcon,
   CircleQuestionIcon,
+  ContextCompactionIcon,
   EyeIcon,
   GitHubIcon,
   GlobeIcon,
   HammerIcon,
+  HistoryIcon,
   type LucideIcon,
   McpIcon,
   PencilIcon,
@@ -233,8 +236,14 @@ function workEntryIcon(workEntry: TimelineWorkEntry): LucideIcon {
   // (answer submitted) rather than the generic "info" checkmark.
   if (workEntry.activityKind === "user-input.requested") return CircleQuestionIcon;
   if (workEntry.activityKind === "user-input.resolved") return ArrowUpCircleIcon;
+  if (workEntry.activityKind === "context-compaction") return ContextCompactionIcon;
   // "Moved to background" notices read as a tray drop, not a warning check.
   if (workEntry.nativeEventType === "background_tasks_changed") return BackgroundTrayIcon;
+  if (workEntry.providerContextLifecycle) {
+    return workEntry.providerContextLifecycle.nativeHistory === "unavailable"
+      ? CircleAlertIcon
+      : HistoryIcon;
+  }
 
   if (workEntry.requestKind === "command") return commandWorkEntryIcon(workEntry);
   if (workEntry.requestKind === "file-read") return SearchIcon;
@@ -532,6 +541,7 @@ export const TimelineWorkEntryRow = memo(function TimelineWorkEntryRow(props: {
     ? () => onOpenAgentActivity?.(workEntry.id)
     : undefined;
   const hasToolDetails = Boolean(workEntry.toolDetails);
+  const providerContextLifecycle = workEntry.providerContextLifecycle;
   // File-read rows open the referenced file in the in-app viewer when the
   // hosting surface provides an opener (right-dock file pane / editor pane).
   const opener = useWorkspaceFileOpener();
@@ -547,7 +557,9 @@ export const TimelineWorkEntryRow = memo(function TimelineWorkEntryRow(props: {
   );
   const liveActivityNowMs = useLiveActivityNow(workEntry.liveActivity);
   const liveActivityMetaText = workEntry.liveActivity
-    ? formatLiveActivityMeta(workEntry.liveActivity, liveActivityNowMs)
+    ? formatLiveActivityMeta(workEntry.liveActivity, liveActivityNowMs, {
+        subagent: workEntry.itemType === "collab_agent_tool_call",
+      })
     : null;
 
   // A created-automation row renders as its own card instead of a tool-call line.
@@ -579,7 +591,11 @@ export const TimelineWorkEntryRow = memo(function TimelineWorkEntryRow(props: {
   const canOpenReadFile = readFilePath !== null;
   const canOpenToolDetails =
     !canOpenAgentActivity &&
-    Boolean(workEntry.toolDetails || (workEntry.liveActivity && !canOpenReadFile));
+    Boolean(
+      providerContextLifecycle ||
+      workEntry.toolDetails ||
+      (workEntry.liveActivity && !canOpenReadFile),
+    );
   const openReadFile = readFilePath
     ? () => openWorkspaceFileReference(opener, readFilePath)
     : undefined;
@@ -737,6 +753,11 @@ export const TimelineWorkEntryRow = memo(function TimelineWorkEntryRow(props: {
               <ToolDetailsDisclosure
                 details={workEntry.toolDetails}
                 activity={workEntry.liveActivity}
+                detailContent={
+                  providerContextLifecycle ? (
+                    <ProviderContextLifecycleDetails info={providerContextLifecycle} />
+                  ) : undefined
+                }
                 compact={compact}
                 timestampFormat={timestampFormat}
                 tooltip={toolRowTooltipContent(rawCommand, displayText, displayText)}
@@ -863,12 +884,77 @@ function AgentActivityOpenSurface(props: {
   return <ToolRowTooltip content={props.tooltip}>{surface}</ToolRowTooltip>;
 }
 
+function providerContextLifecycleReasonLabel(
+  reason: NonNullable<TimelineWorkEntry["providerContextLifecycle"]>["restartReason"],
+): string {
+  switch (reason) {
+    case "conversation-rebuilt":
+      return "Conversation rebuilt from a summary";
+    case "fresh-session":
+      return "New session started";
+    case "interrupt-escalation":
+      return "Turn stop escalated to a session restart";
+    case "native-history-unavailable":
+      return "Previous history unavailable";
+    case "native-resume-failed":
+      return "Could not resume the previous session";
+  }
+}
+
+function ProviderContextLifecycleDetails(props: {
+  info: NonNullable<TimelineWorkEntry["providerContextLifecycle"]>;
+}) {
+  const { info } = props;
+  const provider =
+    PROVIDER_DESCRIPTORS.find((descriptor) => descriptor.kind === info.provider)?.displayName ??
+    info.provider;
+  return (
+    <div className="space-y-3" data-provider-context-lifecycle-details="true">
+      <dl className="grid grid-cols-[max-content_minmax(0,1fr)] gap-x-3 gap-y-1.5 rounded-lg border border-border/45 bg-background/60 px-3 py-2.5 text-[11px]">
+        <dt className="text-muted-foreground/56">Provider</dt>
+        <dd className="text-foreground/84">{provider}</dd>
+        <dt className="text-muted-foreground/56">Previous history</dt>
+        <dd className="text-foreground/84">
+          {info.nativeHistory === "available" ? "Available" : "Lost"}
+        </dd>
+        <dt className="text-muted-foreground/56">Session restarted</dt>
+        <dd className="text-foreground/84">{info.sessionRestarted ? "Yes" : "No"}</dd>
+        <dt className="text-muted-foreground/56">Why</dt>
+        <dd className="text-foreground/84">
+          {providerContextLifecycleReasonLabel(info.restartReason)}
+        </dd>
+        <dt className="text-muted-foreground/56">Summary included</dt>
+        <dd className="text-foreground/84">
+          {info.recapInjected ? `${info.recapCharacters.toLocaleString()} characters` : "No"}
+        </dd>
+      </dl>
+      {info.recapPreview ? (
+        <section className="space-y-2">
+          <h3 className="text-[11px] font-medium text-muted-foreground/56">Summary preview</h3>
+          <pre
+            className="max-h-56 overflow-auto whitespace-pre-wrap break-words rounded-lg border border-border/45 bg-background/60 px-3 py-2.5 font-chat-code text-[11px] leading-relaxed text-foreground/84"
+            data-session-context-recap-preview="true"
+          >
+            {info.recapPreview}
+          </pre>
+          {info.recapPreviewTruncated ? (
+            <p className="text-[10px] text-muted-foreground/56">
+              Showing a short preview of the summary sent with your message.
+            </p>
+          ) : null}
+        </section>
+      ) : null}
+    </div>
+  );
+}
+
 function ToolDetailsDisclosure(props: {
   children: ReactNode;
   compact: boolean;
   dataFileChangeRow?: boolean | undefined;
   details?: TimelineWorkEntry["toolDetails"] | undefined;
   activity?: TimelineWorkEntry["liveActivity"] | undefined;
+  detailContent?: ReactNode;
   summaryClassName?: string | undefined;
   timestampFormat: TimestampFormat;
   tooltip?: ReactNode;
@@ -951,11 +1037,13 @@ function ToolDetailsDisclosure(props: {
           contentClassName={cn("min-w-0 pt-2", props.compact ? "ml-5" : "ml-7")}
         >
           <div data-tool-details-inline="true">
-            <ToolCallDetailsContent
-              details={props.details}
-              activity={props.activity}
-              timestampFormat={props.timestampFormat}
-            />
+            {props.detailContent ?? (
+              <ToolCallDetailsContent
+                details={props.details}
+                activity={props.activity}
+                timestampFormat={props.timestampFormat}
+              />
+            )}
           </div>
         </DisclosureRegion>
       ) : null}

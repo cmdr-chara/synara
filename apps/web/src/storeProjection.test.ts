@@ -7,13 +7,11 @@ import {
   ProjectId,
   SpaceId,
   ThreadId,
-  ThreadMarkerId,
   TurnId,
   type OrchestrationReadModel,
   type OrchestrationShellStreamEvent,
-  type ThreadMarker,
 } from "@synara/contracts";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
   applyShellEvent,
@@ -455,32 +453,6 @@ describe("store projection", () => {
     expect(threadsOf(next)[0]?.pinnedMessages).toEqual(pinnedMessages);
     expect(threadsOf(next)[0]?.notes).toBe("remember to rerun typecheck");
     expect(threadsOf(next)[0]?.goal).toBe("Finish the release safely");
-  });
-
-  it("preserves threadMarkers through the normalized read-model projection", () => {
-    const marker: ThreadMarker = {
-      id: ThreadMarkerId.makeUnsafe("marker-1"),
-      messageId: MessageId.makeUnsafe("assistant-marker-1"),
-      startOffset: 6,
-      endOffset: 20,
-      selectedText: "important text",
-      style: "highlight",
-      color: "yellow",
-      label: null,
-      done: false,
-      createdAt: "2026-02-27T00:01:00.000Z",
-      updatedAt: "2026-02-27T00:01:00.000Z",
-    };
-    const next = syncServerReadModel(
-      makeState(makeThread()),
-      makeReadModel(
-        makeReadModelThread({
-          threadMarkers: [marker],
-        }),
-      ),
-    );
-
-    expect(threadsOf(next)[0]?.threadMarkers).toEqual([marker]);
   });
 
   it("applies shell goals without clobbering detail annotations", () => {
@@ -961,7 +933,7 @@ describe("store projection", () => {
             dispatchOrigin: "automation",
             turnId: null,
             createdAt: "2026-02-27T00:00:00.000Z",
-            streaming: false,
+            streaming: true,
             source: "native",
           },
         ],
@@ -998,6 +970,7 @@ describe("store projection", () => {
   });
 
   it("stops preserving a live assistant intro once the read model settles the same turn", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
     const threadId = ThreadId.makeUnsafe("thread-hot-path-settled");
     const turnId = TurnId.makeUnsafe("turn-hot-path-settled");
     const assistantId = MessageId.makeUnsafe("assistant-hot-path-settled");
@@ -1100,10 +1073,14 @@ describe("store projection", () => {
       }),
     );
 
-    expect(next.threadTurnStateById?.[threadId]?.latestTurn?.state).toBe("completed");
-    expect(next.threadTurnStateById?.[threadId]?.latestTurn?.completedAt).toBe(completedAt);
-    expect(next.threadSessionById?.[threadId]?.orchestrationStatus).toBe("ready");
-    expect(next.threadSessionById?.[threadId]?.activeTurnId).toBeUndefined();
+    try {
+      expect(next.threadTurnStateById?.[threadId]?.latestTurn?.state).toBe("completed");
+      expect(next.threadTurnStateById?.[threadId]?.latestTurn?.completedAt).toBe(completedAt);
+      expect(next.threadSessionById?.[threadId]?.orchestrationStatus).toBe("ready");
+      expect(next.threadSessionById?.[threadId]?.activeTurnId).toBeUndefined();
+    } finally {
+      warnSpy.mockRestore();
+    }
   });
 
   it("adopts a settled session when the snapshot's terminal turn supersedes the preserved one", () => {

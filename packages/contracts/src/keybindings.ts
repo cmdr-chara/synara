@@ -39,7 +39,10 @@ export const STATIC_KEYBINDING_COMMANDS = [
   "browser.toggle",
   "device.toggle",
   "diff.toggle",
+  "diff.change.next",
+  "diff.change.previous",
   "composer.focus.toggle",
+  "chat.find",
   "modelPicker.toggle",
   "model.next",
   "model.previous",
@@ -69,6 +72,7 @@ export const STATIC_KEYBINDING_COMMANDS = [
   "chat.visible.next",
   "chat.visible.previous",
   "editor.openFavorite",
+  "editor.file.save",
   "git.commitAndPush",
 ] as const;
 

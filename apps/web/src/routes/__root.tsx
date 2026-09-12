@@ -7,9 +7,11 @@ import {
   type OrchestrationThread,
   type ServerConfig,
   type ServerProviderStatus,
+  type ServerSettingsView,
   type WsCompatibilityError,
 } from "@synara/contracts";
 import { defaultTerminalTitleForCliKind } from "@synara/shared/terminalThreads";
+import { BrowserVaultDialog } from "~/components/BrowserVault";
 import { isThreadDetailEventFor } from "@synara/shared/threadDetailEvents";
 import {
   Outlet,
@@ -19,14 +21,27 @@ import {
   useParams,
   useRouterState,
 } from "@tanstack/react-router";
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import {
+  Suspense,
+  lazy,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Throttler } from "@tanstack/react-pacer";
 
 import { APP_DISPLAY_NAME, APP_VERSION } from "../branding";
 import { DesktopWindowControls } from "../components/DesktopWindowControls";
+import { RunningChatsQuitCoordinator } from "../components/RunningChatsQuitCoordinator";
 import { AppSnapCoordinator } from "../components/AppSnapCoordinator";
 import { AppSnapWelcomeDialog } from "../components/AppSnapWelcomeDialog";
+import { useOnboarding } from "../onboarding/useOnboarding";
+import { SafariAccessOnboarding } from "../components/SafariAccessOnboarding";
+import { QueuedComposerDrainCoordinator } from "../components/QueuedComposerDrainCoordinator";
 import { FeedbackDialog } from "../components/FeedbackDialog";
 import { SETTINGS_TARGETS } from "../settingsNavigation";
 import ShortcutsDialog from "../components/ShortcutsDialog";
@@ -44,6 +59,7 @@ import { useFeedbackDialogStore } from "../feedbackDialogStore";
 import type { FeedbackThreadContext } from "../feedback";
 import { isTerminalFocused } from "../lib/terminalFocus";
 import {
+  invalidateProviderUsageQueries,
   reconcileServerProviderStatuses,
   refreshServerConfigAfterTransportOpen,
   serverConfigQueryOptions,
@@ -75,7 +91,10 @@ import {
 } from "../wsTransportEvents";
 import { providerQueryKeys } from "../lib/providerReactQuery";
 import { invalidateProjectFileQueriesForCwds, projectQueryKeys } from "../lib/projectReactQuery";
-import { collectActiveTerminalThreadIds } from "../lib/terminalStateCleanup";
+import {
+  collectActiveTerminalThreadIds,
+  removeOrphanedTerminalRuntimes,
+} from "../lib/terminalStateCleanup";
 import { useProjectRunStore } from "../projectRunStore";
 import { dockTerminalThreadId } from "../lib/dockTerminalScope";
 import { TaskCompletionNotifications } from "../notifications/taskCompletion";
@@ -95,8 +114,15 @@ import {
   setThreadDetailResumeCursor,
 } from "../threadDetailResumeCursors";
 import { hasPendingTurnDispatch } from "../pendingTurnDispatch";
+import { derivePendingApprovals, derivePendingUserInputs } from "../pendingInteractionDerivation";
 import { canApplyThreadSnapshot, selectOrphanedThreadDetailIds } from "./-threadDetailOwnership";
+import {
+  doesSnapshotSatisfyTerminalFence,
+  isTerminalThreadSessionStatus,
+} from "./-threadTerminalFence";
 import { getThreadFromState, getThreadsFromState } from "../threadDerivation";
+import { coalesceOrchestrationUiEvents } from "../orchestrationEventCoalescing";
+import { isThreadDetailVerifiedInSync } from "../threadDetailCatchupPolicy";
 import { useAppDensity } from "../hooks/useAppDensity";
 import { useChatWidth } from "../hooks/useChatWidth";
 import { useDesktopAppIcon } from "../hooks/useDesktopAppIcon";
@@ -112,6 +138,7 @@ import {
   runEmptyRouteRestoreRefresh,
 } from "../routeRestoreRefreshCoordinator";
 import { useDiffRouteSearch } from "../hooks/useDiffRouteSearch";
+import { useDeviceEventBridge } from "../hooks/useDeviceEventBridge";
 import {
   PROVIDER_AUTH_REFRESH_MIN_INTERVAL_MS,
   useProviderAuthRefreshOnFocus,
@@ -123,7 +150,7 @@ import { resolveVisibleDockSidechatThreadIds } from "../rightDockStore.logic";
 import { arraysShallowEqual } from "../storeNormalization";
 import { providerModelDiscoveryInvalidationFingerprint } from "../lib/providerDiscoveryInvalidation";
 import { providerDiscoveryQueryKeys } from "../lib/providerDiscoveryReactQuery";
-import { useAppSettings } from "../appSettings";
+import { didProviderEnablementChange, useAppSettings } from "../appSettings";
 import { getNavigatorPlatform } from "../lib/utils";
 import {
   getNotifiableProviderUpdateStatuses,
@@ -146,6 +173,8 @@ import { createDesktopProjectRecoveryAttemptGate } from "./-desktopProjectRecove
 const SHELL_SNAPSHOT_BOOTSTRAP_FALLBACK_DELAY_MS = 1_500;
 const THREAD_DETAIL_CATCHUP_INTERVAL_MS = 1_500;
 const THREAD_DETAIL_PROJECTION_RECONCILE_INTERVAL_MS = 4_500;
+/** First terminal-fence reconcile runs quickly so post-settle finals are not left hanging. */
+const THREAD_DETAIL_TERMINAL_FENCE_RECONCILE_DELAY_MS = 500;
 const THREAD_DETAIL_PROJECTION_RECONCILE_MAX_CONCURRENCY = 2;
 // Bounded backoff for the periodic catch-up polls while a healthy live stream
 // keeps delivering everything: consecutive empty replays stretch the 1.5s poll
@@ -154,7 +183,13 @@ const THREAD_DETAIL_PROJECTION_RECONCILE_MAX_CONCURRENCY = 2;
 // repair signal (missing snapshot, pending dispatch, terminal fence, draft
 // promotion), so recovery paths always run at base cadence.
 const THREAD_DETAIL_REPLAY_MAX_NOOP_STREAK = 2;
-const THREAD_DETAIL_PROJECTION_RECONCILE_MAX_NOOP_STREAK = 2;
+// Full projection reconciles are the belt-and-braces resync of a running thread. After
+// the turn's first authoritative resync, a thread the replay poll proves current (see
+// threadDetailCatchupPolicy) skips the fetch and stretches the cadence 4.5s -> 9s -> 18s
+// -> 36s -> 72s. Skips share a deadline measured from the last actual resync, so their
+// accumulated delays cannot postpone that resync beyond 72s.
+const THREAD_DETAIL_PROJECTION_RECONCILE_MAX_NOOP_STREAK = 4;
+const THREAD_DETAIL_PROJECTION_RECONCILE_MAX_INTERVAL_MS = 72_000;
 const PENDING_SHELL_EVENT_BUFFER_LIMIT = 1_024;
 const PENDING_THREAD_EVENT_BUFFER_LIMIT = 512;
 const IMMEDIATE_ASSISTANT_FLUSH_ID_LIMIT = 512;
@@ -228,8 +263,8 @@ function RootRouteView() {
   );
 
   // Single mount point for the Windows caption buttons. The cluster is pinned to the
-  // window's top-right corner (frameless Windows shell) and renders nothing on macOS,
-  // Linux, or the web build, so it is safe to mount unconditionally here — including on
+  // window's top-right corner (frameless Windows/Linux shell) and renders nothing on macOS
+  // or the web build, so it is safe to mount unconditionally here — including on
   // the pre-backend "connecting" screen, so the window stays closable before the
   // renderer connects. Top bars reserve space for it via
   // useDesktopTopBarWindowControlsGutterClassName().
@@ -243,12 +278,18 @@ function RootRouteView() {
   // it last in document order guarantees that subtraction wins. (z above dialogs/toasts
   // so it also stays clickable while a modal is open.)
   const desktopWindowControls = <DesktopWindowControls className="fixed top-0 right-0 z-[250]" />;
+  const desktopChrome = (
+    <>
+      <RunningChatsQuitCoordinator />
+      {desktopWindowControls}
+    </>
+  );
 
   if (compatibilityIssue) {
     return (
       <>
         <TransportCompatibilityView issue={compatibilityIssue} />
-        {desktopWindowControls}
+        {desktopChrome}
       </>
     );
   }
@@ -263,7 +304,7 @@ function RootRouteView() {
             </p>
           </div>
         </div>
-        {desktopWindowControls}
+        {desktopChrome}
       </>
     );
   }
@@ -276,16 +317,21 @@ function RootRouteView() {
           <EventRouter />
           <ProviderStatusRefreshCoordinator />
           <GlobalShortcutsDialog />
+          <BrowserVaultDialog />
           <GlobalFeedbackDialog />
           <GlobalWhatsNewSurface />
           <TaskCompletionNotifications />
-          <AppSnapWelcomeDialog />
+          <QueuedComposerDrainCoordinator />
+          <SafariAccessOnboarding>
+            <AppSnapWelcomeDialog />
+          </SafariAccessOnboarding>
+          <GlobalOnboardingDialog />
           <AppSnapCoordinator />
           <DesktopProjectBootstrap />
           <Outlet />
         </AnchoredToastProvider>
       </ToastProvider>
-      {desktopWindowControls}
+      {desktopChrome}
     </>
   );
 }
@@ -747,6 +793,34 @@ function GlobalFeedbackDialog() {
   return <FeedbackDialog open={isOpen} context={context} onOpenChange={setOpen} />;
 }
 
+// The dialog pulls in the provider sign-in terminal (xterm and addons), so it stays out
+// of the eager router graph and only loads the first time the tour actually opens.
+const OnboardingDialog = lazy(() =>
+  import("../onboarding/OnboardingDialog").then((module) => ({
+    default: module.OnboardingDialog,
+  })),
+);
+
+function GlobalOnboardingDialog() {
+  const onboarding = useOnboarding();
+  // Stay mounted after the first open so the close animation can play and a replay
+  // from Settings does not re-suspend.
+  const [hasOpened, setHasOpened] = useState(false);
+  useEffect(() => {
+    if (onboarding.isOpen) setHasOpened(true);
+  }, [onboarding.isOpen]);
+  if (!hasOpened) return null;
+  return (
+    <Suspense fallback={null}>
+      <OnboardingDialog
+        open={onboarding.isOpen}
+        onOpenChange={onboarding.onOpenChange}
+        onComplete={onboarding.complete}
+      />
+    </Suspense>
+  );
+}
+
 function GlobalWhatsNewSurface() {
   // Single mount point per app session. The hook owns the "popout visible" and
   // "dialog open" booleans and the seen-marker persistence; this component is
@@ -860,43 +934,6 @@ function errorDetails(error: unknown): string {
   }
 }
 
-function coalesceOrchestrationUiEvents(
-  events: ReadonlyArray<OrchestrationEvent>,
-): OrchestrationEvent[] {
-  if (events.length < 2) {
-    return [...events];
-  }
-
-  const coalesced: OrchestrationEvent[] = [];
-  for (const event of events) {
-    const previous = coalesced.at(-1);
-    if (
-      previous?.type === "thread.message-sent" &&
-      event.type === "thread.message-sent" &&
-      previous.payload.threadId === event.payload.threadId &&
-      previous.payload.messageId === event.payload.messageId
-    ) {
-      coalesced[coalesced.length - 1] = {
-        ...event,
-        payload: {
-          ...event.payload,
-          attachments: event.payload.attachments ?? previous.payload.attachments,
-          createdAt: previous.payload.createdAt,
-          text:
-            !event.payload.streaming && event.payload.text.length > 0
-              ? event.payload.text
-              : previous.payload.text + event.payload.text,
-        },
-      };
-      continue;
-    }
-
-    coalesced.push(event);
-  }
-
-  return coalesced;
-}
-
 function appendBounded<T>(items: T[], item: T, limit: number): void {
   const normalizedLimit = Math.max(1, Math.floor(limit));
   if (items.length >= normalizedLimit) {
@@ -968,6 +1005,74 @@ function shouldPollThreadDetailCatchup(threadId: ThreadId): boolean {
   );
 }
 
+function isPendingInteractionDetailMissing(threadId: ThreadId): boolean {
+  const thread = getThreadFromState(useStore.getState(), threadId);
+  if (!thread) {
+    return false;
+  }
+  const options = {
+    latestTurnId: thread.latestTurn?.turnId,
+  };
+  const hasMatchingSettlement = (
+    interactionKind: "approval" | "userInput",
+    request: { readonly requestId: string; readonly lifecycleGeneration?: string },
+  ) =>
+    thread.pendingInteractions?.some(
+      (interaction) =>
+        interaction.interactionKind === interactionKind &&
+        interaction.requestId === request.requestId &&
+        (interaction.lifecycleGeneration ?? undefined) === request.lifecycleGeneration,
+    ) === true;
+
+  if (thread.hasPendingApprovals === true) {
+    const actionableApprovals = derivePendingApprovals(
+      thread.activities,
+      thread.pendingInteractions,
+      {
+        ...options,
+        authoritativeHasPending: true,
+      },
+    );
+    if (actionableApprovals.length === 0) {
+      const replayedApprovals = derivePendingApprovals(thread.activities, undefined, {
+        ...options,
+        authoritativeHasPending: true,
+      });
+      if (
+        replayedApprovals.length === 0 ||
+        replayedApprovals.some((request) => !hasMatchingSettlement("approval", request))
+      ) {
+        return true;
+      }
+    }
+  }
+
+  if (thread.hasPendingUserInput === true) {
+    const actionableUserInputs = derivePendingUserInputs(
+      thread.activities,
+      thread.pendingInteractions,
+      {
+        ...options,
+        authoritativeHasPending: true,
+      },
+    );
+    if (actionableUserInputs.length === 0) {
+      const replayedUserInputs = derivePendingUserInputs(thread.activities, undefined, {
+        ...options,
+        authoritativeHasPending: true,
+      });
+      if (
+        replayedUserInputs.length === 0 ||
+        replayedUserInputs.some((request) => !hasMatchingSettlement("userInput", request))
+      ) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 function shouldReconcileThreadProjection(threadId: ThreadId): boolean {
   const thread = getThreadFromState(useStore.getState(), threadId);
   return (
@@ -976,13 +1081,8 @@ function shouldReconcileThreadProjection(threadId: ThreadId): boolean {
     thread?.latestTurn?.state === "running" ||
     thread?.messages.some((message) => message.role === "assistant" && message.streaming) ===
       true ||
+    isPendingInteractionDetailMissing(threadId) ||
     hasPendingTurnDispatch(threadId)
-  );
-}
-
-function isTerminalThreadSessionStatus(status: string): boolean {
-  return (
-    status === "ready" || status === "interrupted" || status === "stopped" || status === "error"
   );
 }
 
@@ -1009,6 +1109,7 @@ function releaseOrphanedThreadDetail(input: {
 }
 
 function EventRouter() {
+  useDeviceEventBridge();
   const syncServerShellSnapshot = useStore((store) => store.syncServerShellSnapshot);
   const syncServerThreadDetailHotPath = useStore((store) => store.syncServerThreadDetailHotPath);
   const applyShellEvent = useStore((store) => store.applyShellEvent);
@@ -1058,6 +1159,16 @@ function EventRouter() {
   );
   const retainedThreadIds = useRetainedThreadDetailIds();
   const serverThreadIdSet = useMemo(() => new Set(serverThreadIds), [serverThreadIds]);
+  const sidebarThreadSummaryById = useStore((store) => store.sidebarThreadSummaryById);
+  const sidechatThreadIdSet = useMemo(
+    () =>
+      new Set(
+        serverThreadIds.filter((threadId) =>
+          Boolean(sidebarThreadSummaryById[threadId]?.sidechatSourceThreadId),
+        ),
+      ),
+    [serverThreadIds, sidebarThreadSummaryById],
+  );
   // Stabilize the lease array by content: `serverThreads` re-emits on every
   // streaming update, and an identity-changing lease list would enqueue a no-op
   // subscription reconcile per render onto the serialized subscribe chain.
@@ -1065,6 +1176,7 @@ function EventRouter() {
     visibleThreadIds,
     retainedThreadIds,
     serverThreadIds: serverThreadIdSet,
+    retentionExcludedThreadIds: sidechatThreadIdSet,
   });
   const subscribedThreadIdsRef = useRef(nextSubscribedThreadIds);
   const subscribedThreadIds = arraysShallowEqual(
@@ -1106,6 +1218,8 @@ function EventRouter() {
     const immediatelyFlushedAssistantMessageIds = new Set<string>();
     let providerDiscoveryInvalidationFingerprint: string | null = null;
     let shellSnapshotSequence = -1;
+    let shellSubscriptionGeneration = 0;
+    let shellSnapshotReceivedGeneration = -1;
     let pendingShellEvents: OrchestrationShellStreamEvent[] = [];
     const subscribedThreadIds = new Set<ThreadId>();
     const threadSnapshotSequenceById = new Map<ThreadId, number>();
@@ -1115,11 +1229,40 @@ function EventRouter() {
     const threadSnapshotNotFoundRetryAttempted = new Set<ThreadId>();
     const threadReplayRequestInFlight = new Set<ThreadId>();
     const threadProjectionReconcileInFlight = new Map<ThreadId, number>();
+    const threadProjectionReconcilePendingById = new Map<ThreadId, number>();
     const threadProjectionTerminalFencePending = new Set<ThreadId>();
+    // Sequence of the session-set / shell upsert that armed each terminal fence.
+    // Cleared only once a detail snapshot proves post-settle assistant finals
+    // have been projected (see doesSnapshotSatisfyTerminalFence).
+    const threadProjectionTerminalFenceSequenceById = new Map<ThreadId, number>();
+    const threadProjectionTerminalFenceArmedAtById = new Map<ThreadId, number>();
     const threadSubscriptionGenerationById = new Map<ThreadId, number>();
     const nextThreadProjectionReconcileAtById = new Map<ThreadId, number>();
     let nextThreadSubscriptionGeneration = 0;
     let reconcileThreadSubscriptionsChain = Promise.resolve();
+
+    const armThreadProjectionTerminalFence = (threadId: ThreadId, sequence: number): void => {
+      threadProjectionTerminalFencePending.add(threadId);
+      // Keep the earliest arming sequence / clock: a later ready upsert must not
+      // raise the bar past finals that already landed after the first settle.
+      const previousSequence = threadProjectionTerminalFenceSequenceById.get(threadId);
+      if (previousSequence === undefined || sequence < previousSequence) {
+        threadProjectionTerminalFenceSequenceById.set(threadId, sequence);
+      }
+      if (!threadProjectionTerminalFenceArmedAtById.has(threadId)) {
+        threadProjectionTerminalFenceArmedAtById.set(threadId, Date.now());
+      }
+      nextThreadProjectionReconcileAtById.set(
+        threadId,
+        Date.now() + THREAD_DETAIL_TERMINAL_FENCE_RECONCILE_DELAY_MS,
+      );
+    };
+
+    const clearThreadProjectionTerminalFence = (threadId: ThreadId): void => {
+      threadProjectionTerminalFencePending.delete(threadId);
+      threadProjectionTerminalFenceSequenceById.delete(threadId);
+      threadProjectionTerminalFenceArmedAtById.delete(threadId);
+    };
 
     const isDraftThreadAwaitingProjection = (threadId: ThreadId): boolean => {
       if (useComposerDraftStore.getState().draftThreadsByThreadId[threadId] === undefined) {
@@ -1139,13 +1282,27 @@ function EventRouter() {
       replayNoopStreak: number;
       nextReplayAt: number;
       reconcileNoopStreak: number;
+      /** Monotonic count of detail events applied (live or replayed) for this entry. */
+      appliedEventSerial: number;
+      /** `appliedEventSerial` when the latest replay resolved empty; null until one does. */
+      emptyReplayAtEventSerial: number | null;
+      /** Time a full projection snapshot was last applied during this turn. */
+      lastProjectionReconciledAt: number | null;
     }
     const threadCatchupBackoffById = new Map<ThreadId, ThreadCatchupBackoff>();
     const resolveThreadCatchupBackoff = (threadId: ThreadId): ThreadCatchupBackoff => {
       const turnId = getThreadFromState(useStore.getState(), threadId)?.latestTurn?.turnId ?? null;
       let entry = threadCatchupBackoffById.get(threadId);
       if (entry === undefined || entry.turnId !== turnId) {
-        entry = { turnId, replayNoopStreak: 0, nextReplayAt: 0, reconcileNoopStreak: 0 };
+        entry = {
+          turnId,
+          replayNoopStreak: 0,
+          nextReplayAt: 0,
+          reconcileNoopStreak: 0,
+          appliedEventSerial: 0,
+          emptyReplayAtEventSerial: null,
+          lastProjectionReconciledAt: null,
+        };
         threadCatchupBackoffById.set(threadId, entry);
       }
       return entry;
@@ -1157,6 +1314,9 @@ function EventRouter() {
         entry.nextReplayAt = 0;
         return;
       }
+      // An empty replay is proof the client cursor sits at the server's detail head
+      // as of the last applied event.
+      entry.emptyReplayAtEventSerial = entry.appliedEventSerial;
       entry.replayNoopStreak = Math.min(
         entry.replayNoopStreak + 1,
         THREAD_DETAIL_REPLAY_MAX_NOOP_STREAK,
@@ -1173,14 +1333,14 @@ function EventRouter() {
           )
         : 0;
     };
+    // Repair paths never back off and never skip: they exist to fix a client that is
+    // known (or suspected) to be out of sync, and delaying them delays recovery.
+    const hasThreadProjectionRepairPending = (threadId: ThreadId): boolean =>
+      threadProjectionTerminalFencePending.has(threadId) ||
+      isDraftThreadAwaitingProjection(threadId) ||
+      hasPendingTurnDispatch(threadId);
     const nextThreadProjectionReconcileDelayMs = (threadId: ThreadId): number => {
-      // Repair paths never back off: they exist to fix a client that is known
-      // (or suspected) to be out of sync, and delaying them delays recovery.
-      if (
-        threadProjectionTerminalFencePending.has(threadId) ||
-        isDraftThreadAwaitingProjection(threadId) ||
-        hasPendingTurnDispatch(threadId)
-      ) {
+      if (hasThreadProjectionRepairPending(threadId)) {
         const entry = resolveThreadCatchupBackoff(threadId);
         entry.reconcileNoopStreak = 0;
         return THREAD_DETAIL_PROJECTION_RECONCILE_INTERVAL_MS;
@@ -1206,7 +1366,8 @@ function EventRouter() {
       threadSnapshotRefreshPending.delete(threadId);
       threadSnapshotNotFoundRetryAttempted.delete(threadId);
       threadProjectionReconcileInFlight.delete(threadId);
-      threadProjectionTerminalFencePending.delete(threadId);
+      threadProjectionReconcilePendingById.delete(threadId);
+      clearThreadProjectionTerminalFence(threadId);
       threadCatchupBackoffById.delete(threadId);
       nextThreadSubscriptionGeneration += 1;
       threadSubscriptionGenerationById.set(threadId, nextThreadSubscriptionGeneration);
@@ -1242,6 +1403,7 @@ function EventRouter() {
       if (backoff !== undefined) {
         backoff.replayNoopStreak = 0;
         backoff.nextReplayAt = 0;
+        backoff.appliedEventSerial += 1;
       }
       return true;
     };
@@ -1287,7 +1449,8 @@ function EventRouter() {
         threadSnapshotNotFoundRetryAttempted.delete(threadId);
         threadReplayRequestInFlight.delete(threadId);
         threadProjectionReconcileInFlight.delete(threadId);
-        threadProjectionTerminalFencePending.delete(threadId);
+        threadProjectionReconcilePendingById.delete(threadId);
+        clearThreadProjectionTerminalFence(threadId);
         threadSubscriptionGenerationById.delete(threadId);
         nextThreadProjectionReconcileAtById.delete(threadId);
         threadCatchupBackoffById.delete(threadId);
@@ -1397,30 +1560,69 @@ function EventRouter() {
       }
     }
 
-    const applyQueriedShellSnapshot = (snapshot: OrchestrationShellSnapshot) => {
-      if (disposed) return;
+    const applyAuthoritativeShellSnapshot = (snapshot: OrchestrationShellSnapshot) => {
+      if (disposed) return false;
       // A query can resolve after the live shell stream has already moved
       // forward. Never roll the store back behind the EventRouter fence.
       if (shellSnapshotSequence >= 0 && snapshot.snapshotSequence < shellSnapshotSequence) {
-        return;
-      }
-      if (!shouldApplyBootstrapShellSnapshot(snapshot)) {
-        return;
+        return false;
       }
       const promotedDraftThreadIds = collectSubscribedDraftsInShell(snapshot.threads);
       shellSnapshotSequence = snapshot.snapshotSequence;
       syncServerShellSnapshot(snapshot);
       reconcilePromotedDraftsFromShellThreads(snapshot.threads);
-      removeOrphanedTerminalsForCurrentState();
       flushShellBuffer(snapshot.snapshotSequence);
+      removeOrphanedTerminalsForCurrentState();
       reconcileMissingSubscribedThreadProjections(promotedDraftThreadIds);
+      return true;
     };
 
-    const loadShellSnapshotOnce = async () => {
-      if (disposed) return;
+    const applyQueriedShellSnapshot = (snapshot: OrchestrationShellSnapshot) => {
+      if (!shouldApplyBootstrapShellSnapshot(snapshot)) {
+        return false;
+      }
+      return applyAuthoritativeShellSnapshot(snapshot);
+    };
+
+    // The live shell stream normally delivers the bootstrap snapshot. Only
+    // fall back until either the stream or a query has returned one. Collection
+    // emptiness is valid user state, so it cannot indicate whether bootstrap
+    // succeeded. Every extra request recomputes and ships the whole sidebar
+    // (about 1 MB per 600 threads) and queues behind the thread-detail snapshot
+    // on the server's single SQLite connection.
+    const needsBootstrapShellSnapshot = (generation: number) =>
+      shellSnapshotReceivedGeneration < generation;
+
+    const loadBootstrapShellSnapshotIfMissing = async (generation: number) => {
+      if (
+        disposed ||
+        generation !== shellSubscriptionGeneration ||
+        !needsBootstrapShellSnapshot(generation)
+      ) {
+        return;
+      }
       const snapshot = await api.orchestration.getShellSnapshot();
-      if (disposed) return;
-      applyQueriedShellSnapshot(snapshot);
+      if (
+        disposed ||
+        generation !== shellSubscriptionGeneration ||
+        !needsBootstrapShellSnapshot(generation)
+      ) {
+        return;
+      }
+      if (applyAuthoritativeShellSnapshot(snapshot)) {
+        shellSnapshotReceivedGeneration = generation;
+      }
+    };
+
+    // Each subscription generation owns one fallback timer. Deferring it gives
+    // the shell stream's snapshot time to land first, while replacing an older
+    // generation's timer keeps reconnect recovery tied to the current stream.
+    let shellSnapshotFallbackTimer: number | null = null;
+    const scheduleShellSnapshotFallback = (generation: number) => {
+      shellSnapshotFallbackTimer = window.setTimeout(() => {
+        shellSnapshotFallbackTimer = null;
+        void loadBootstrapShellSnapshotIfMissing(generation).catch(() => undefined);
+      }, SHELL_SNAPSHOT_BOOTSTRAP_FALLBACK_DELAY_MS);
     };
 
     const unregisterEmptyRouteRestoreRefresh = registerEmptyRouteRestoreRefresh(() =>
@@ -1438,10 +1640,19 @@ function EventRouter() {
       if (scopedSubscriptionRefresh) {
         return scopedSubscriptionRefresh;
       }
+      shellSubscriptionGeneration += 1;
+      const generation = shellSubscriptionGeneration;
+      if (shellSnapshotFallbackTimer !== null) {
+        window.clearTimeout(shellSnapshotFallbackTimer);
+        shellSnapshotFallbackTimer = null;
+      }
+      scheduleShellSnapshotFallback(generation);
       const refresh = (async () => {
         shellSnapshotSequence = -1;
         pendingShellEvents = [];
-        await api.orchestration.subscribeShell().catch(() => loadShellSnapshotOnce());
+        await api.orchestration
+          .subscribeShell()
+          .catch(() => loadBootstrapShellSnapshotIfMissing(generation));
         await enqueueThreadSubscriptionOperation(async () => {
           threadSnapshotSequenceById.clear();
           pendingThreadEventsById.clear();
@@ -1450,6 +1661,8 @@ function EventRouter() {
           threadReplayRequestInFlight.clear();
           threadProjectionReconcileInFlight.clear();
           threadProjectionTerminalFencePending.clear();
+          threadProjectionTerminalFenceSequenceById.clear();
+          threadProjectionTerminalFenceArmedAtById.clear();
           threadSubscriptionGenerationById.clear();
           nextThreadProjectionReconcileAtById.clear();
           threadCatchupBackoffById.clear();
@@ -1498,6 +1711,7 @@ function EventRouter() {
         activeThreadIds.add(dockTerminalThreadId(activeThreadId));
       }
       removeOrphanedTerminalStates(activeThreadIds);
+      removeOrphanedTerminalRuntimes(activeThreadIds);
     };
 
     const flushPendingDomainEvents = () => {
@@ -1648,18 +1862,23 @@ function EventRouter() {
         });
     };
 
-    const reconcileThreadProjection = async (threadId: ThreadId): Promise<void> => {
+    const reconcileThreadProjection = async (
+      threadId: ThreadId,
+      options?: { readonly queueIfInFlight?: boolean },
+    ): Promise<void> => {
       const subscriptionGeneration = threadSubscriptionGenerationById.get(threadId);
-      if (
-        disposed ||
-        !subscribedThreadIds.has(threadId) ||
-        subscriptionGeneration === undefined ||
-        threadProjectionReconcileInFlight.has(threadId)
-      ) {
+      if (disposed || !subscribedThreadIds.has(threadId) || subscriptionGeneration === undefined) {
+        return;
+      }
+      if (threadProjectionReconcileInFlight.has(threadId)) {
+        if (options?.queueIfInFlight === true) {
+          threadProjectionReconcilePendingById.set(threadId, subscriptionGeneration);
+        }
         return;
       }
       threadProjectionReconcileInFlight.set(threadId, subscriptionGeneration);
       let projectionConfirmed = false;
+      let projectionSatisfiesTerminalFence = false;
       let projectionAttemptFailed = false;
       try {
         const snapshot = await api.orchestration.getThreadDetailSnapshot({ threadId });
@@ -1687,6 +1906,20 @@ function EventRouter() {
           snapshot.thread.latestTurn.turnId === currentThread.latestTurn.turnId &&
           snapshot.thread.latestTurn.state !== "running" &&
           snapshot.thread.latestTurn.completedAt !== null;
+        const fenceIsPending = threadProjectionTerminalFencePending.has(threadId);
+        const fenceSequence = threadProjectionTerminalFenceSequenceById.get(threadId) ?? -1;
+        const fenceArmedAtMs = threadProjectionTerminalFenceArmedAtById.get(threadId) ?? Date.now();
+        projectionSatisfiesTerminalFence =
+          fenceIsPending &&
+          doesSnapshotSatisfyTerminalFence({
+            snapshotSequence: snapshot.snapshotSequence,
+            fenceSequence,
+            sessionStatus: snapshot.thread.session?.status,
+            latestTurn: snapshot.thread.latestTurn,
+            messages: snapshot.thread.messages,
+            armedAtMs: fenceArmedAtMs,
+            nowMs: Date.now(),
+          });
         threadSnapshotSequenceById.set(
           threadId,
           Math.max(currentSequence, snapshot.snapshotSequence),
@@ -1696,10 +1929,15 @@ function EventRouter() {
         // authoritative and can repair a client that advanced its cursor while
         // dropping or failing to reduce one of the corresponding live events.
         const stateBeforeProjectionApply = useStore.getState();
+        // Resolve the entry before applying: when this snapshot is what starts the next
+        // turn, the resync belongs to the turn that requested it, and the new turn must
+        // still get its own.
+        const catchupEntryBeforeApply = resolveThreadCatchupBackoff(threadId);
         syncServerThreadDetailHotPath(snapshot.thread);
         reconcilePromotedDraftFromThreadDetail(snapshot.thread);
         flushThreadBuffer(threadId, snapshot.snapshotSequence);
         projectionConfirmed = true;
+        catchupEntryBeforeApply.lastProjectionReconciledAt = Date.now();
         // No-op: the live stream had already delivered everything the snapshot
         // contains AND applying it changed nothing (no divergence repaired).
         // Any real work — cursor advance or a store change — resets the streak.
@@ -1724,14 +1962,21 @@ function EventRouter() {
           threadProjectionReconcileInFlight.delete(threadId);
         }
         if (threadSubscriptionGenerationById.get(threadId) === subscriptionGeneration) {
+          if (threadProjectionReconcilePendingById.get(threadId) === subscriptionGeneration) {
+            threadProjectionReconcilePendingById.delete(threadId);
+            void reconcileThreadProjection(threadId).catch(() => undefined);
+            return;
+          }
           if (projectionAttemptFailed) {
             // A failed reconcile is not evidence of a quiet healthy stream.
             // Retry it at the base cadence, while preserving backoff when the
             // snapshot was merely superseded by newer live events.
             resolveThreadCatchupBackoff(threadId).reconcileNoopStreak = 0;
           }
-          if (projectionConfirmed) {
-            threadProjectionTerminalFencePending.delete(threadId);
+          // Never retire the fence on a still-running snapshot or one taken at
+          // the exact session-set sequence before buffered assistant finals land.
+          if (projectionConfirmed && projectionSatisfiesTerminalFence) {
+            clearThreadProjectionTerminalFence(threadId);
           }
           if (
             threadProjectionTerminalFencePending.has(threadId) ||
@@ -1765,12 +2010,13 @@ function EventRouter() {
 
     const unsubShellEvent = api.orchestration.onShellEvent((item) => {
       if (item.kind === "snapshot") {
+        shellSnapshotReceivedGeneration = shellSubscriptionGeneration;
         const promotedDraftThreadIds = collectSubscribedDraftsInShell(item.snapshot.threads);
         shellSnapshotSequence = item.snapshot.snapshotSequence;
         syncServerShellSnapshot(item.snapshot);
         reconcilePromotedDraftsFromShellThreads(item.snapshot.threads);
-        removeOrphanedTerminalsForCurrentState();
         flushShellBuffer(item.snapshot.snapshotSequence);
+        removeOrphanedTerminalsForCurrentState();
         reconcileMissingSubscribedThreadProjections(promotedDraftThreadIds);
         return;
       }
@@ -1788,16 +2034,27 @@ function EventRouter() {
         reconcilePromotedDraftsFromShellThreads([item.thread]);
       }
       if (
+        item.kind === "thread-removed" ||
+        item.kind === "project-removed" ||
+        (item.kind === "thread-upserted" && item.thread.archivedAt != null)
+      ) {
+        removeOrphanedTerminalsForCurrentState();
+      }
+      if (
         item.kind === "thread-upserted" &&
         subscribedThreadIds.has(item.thread.id) &&
         item.thread.session !== null &&
         isTerminalThreadSessionStatus(item.thread.session.status)
       ) {
-        threadProjectionTerminalFencePending.add(item.thread.id);
-        nextThreadProjectionReconcileAtById.set(
-          item.thread.id,
-          Date.now() + THREAD_DETAIL_PROJECTION_RECONCILE_INTERVAL_MS,
-        );
+        armThreadProjectionTerminalFence(item.thread.id, item.sequence);
+      } else if (
+        item.kind === "thread-upserted" &&
+        subscribedThreadIds.has(item.thread.id) &&
+        item.thread.session !== null
+      ) {
+        // A new turn needs its own terminal fence and hold clock. Do not let an
+        // unresolved fence from the previous turn carry into the running one.
+        clearThreadProjectionTerminalFence(item.thread.id);
       }
       if (
         item.kind === "thread-upserted" &&
@@ -1810,6 +2067,19 @@ function EventRouter() {
         // update; repeated ready/running/meta updates can otherwise keep
         // cancelling hydration before a snapshot reaches the renderer.
         void reconcileThreadProjection(item.thread.id).catch(() => undefined);
+      }
+      if (
+        item.kind === "thread-upserted" &&
+        subscribedThreadIds.has(item.thread.id) &&
+        isPendingInteractionDetailMissing(item.thread.id)
+      ) {
+        // A shell summary can expose an approval before its detail event reaches
+        // the client (notably for orchestrator-created threads with no projected
+        // session or turn yet). Fetch the authoritative detail immediately so
+        // the composer does not remain an empty, unactionable conversation.
+        void reconcileThreadProjection(item.thread.id, { queueIfInFlight: true }).catch(
+          () => undefined,
+        );
       }
       if (item.kind === "thread-upserted" && subscribedThreadIds.has(item.thread.id)) {
         void replayThreadEvents(item.thread.id, item.sequence).catch(() => undefined);
@@ -1855,21 +2125,21 @@ function EventRouter() {
       }
 
       const threadId = ThreadId.makeUnsafe(String(item.event.aggregateId));
-      if (
-        item.event.type === "thread.session-set" &&
-        isTerminalThreadSessionStatus(item.event.payload.session.status)
-      ) {
-        threadProjectionTerminalFencePending.add(threadId);
-        nextThreadProjectionReconcileAtById.set(
-          threadId,
-          Date.now() + THREAD_DETAIL_PROJECTION_RECONCILE_INTERVAL_MS,
-        );
-      }
       const latestThreadSequence = threadSnapshotSequenceById.get(threadId);
       if (latestThreadSequence === undefined) {
         const pendingThreadEvents = pendingThreadEventsById.get(threadId) ?? [];
         appendBounded(pendingThreadEvents, item.event, PENDING_THREAD_EVENT_BUFFER_LIMIT);
         pendingThreadEventsById.set(threadId, pendingThreadEvents);
+        if (
+          item.event.type === "thread.session-set" &&
+          isTerminalThreadSessionStatus(item.event.payload.session.status)
+        ) {
+          // Arm even while buffered: the immediate reconcile below may return a
+          // premature session-set snapshot, and the fence must outlive it (#548).
+          armThreadProjectionTerminalFence(threadId, item.event.sequence);
+        } else if (item.event.type === "thread.session-set") {
+          clearThreadProjectionTerminalFence(threadId);
+        }
         if (subscribedThreadIds.has(threadId)) {
           void reconcileThreadProjection(threadId).catch(() => undefined);
         }
@@ -1881,10 +2151,22 @@ function EventRouter() {
       if (!applyFencedThreadEvent(threadId, item.event)) {
         return;
       }
-      nextThreadProjectionReconcileAtById.set(
-        threadId,
-        Date.now() + THREAD_DETAIL_PROJECTION_RECONCILE_INTERVAL_MS,
-      );
+      if (
+        item.event.type === "thread.session-set" &&
+        isTerminalThreadSessionStatus(item.event.payload.session.status)
+      ) {
+        // Arm after the generic post-event schedule so the fast first-reconcile
+        // delay is not overwritten back to the slower cadence.
+        armThreadProjectionTerminalFence(threadId, item.event.sequence);
+      } else {
+        if (item.event.type === "thread.session-set") {
+          clearThreadProjectionTerminalFence(threadId);
+        }
+        nextThreadProjectionReconcileAtById.set(
+          threadId,
+          Date.now() + THREAD_DETAIL_PROJECTION_RECONCILE_INTERVAL_MS,
+        );
+      }
     });
     const unsubThreadStreamFailure = onThreadStreamFailure((failure) => {
       const threadId = ThreadId.makeUnsafe(failure.threadId);
@@ -1985,7 +2267,6 @@ function EventRouter() {
         if (disposed) {
           return;
         }
-        await loadShellSnapshotOnce();
 
         if (!payload.bootstrapProjectId || !payload.bootstrapThreadId) {
           return;
@@ -2066,16 +2347,10 @@ function EventRouter() {
         // Model and agent discovery can depend on auth, availability, and installed versions,
         // but not on every provider-status timestamp replay.
         void queryClient.invalidateQueries({
-          queryKey: ["provider-discovery", "models", "kilo"],
-        });
-        void queryClient.invalidateQueries({
           queryKey: ["provider-discovery", "models", "opencode"],
         });
         void queryClient.invalidateQueries({
           queryKey: ["provider-discovery", "models", "cursor"],
-        });
-        void queryClient.invalidateQueries({
-          queryKey: providerDiscoveryQueryKeys.agentsForProvider("kilo"),
         });
         void queryClient.invalidateQueries({
           queryKey: providerDiscoveryQueryKeys.agentsForProvider("opencode"),
@@ -2092,18 +2367,20 @@ function EventRouter() {
       { replayCurrent: true },
     );
     const unsubServerSettingsUpdated = onServerSettingsUpdated((payload) => {
+      const previousSettings = queryClient.getQueryData<ServerSettingsView>(
+        serverQueryKeys.settings(),
+      );
       queryClient.setQueryData(serverQueryKeys.settings(), payload.settings);
+      if (didProviderEnablementChange(previousSettings, payload.settings)) {
+        void queryClient.invalidateQueries({ queryKey: providerDiscoveryQueryKeys.all });
+        void invalidateProviderUsageQueries(queryClient);
+      }
       void queryClient.invalidateQueries({
         queryKey: serverSettingsQueryOptions().queryKey,
       });
     });
     subscribed = true;
     void ensureScopedSubscriptions();
-    // The shell stream normally delivers the sidebar snapshot. If it fails before
-    // the first event, use the same lightweight query instead of the full history.
-    const shellBootstrapFallbackTimer = window.setTimeout(() => {
-      void loadShellSnapshotOnce().catch(() => undefined);
-    }, SHELL_SNAPSHOT_BOOTSTRAP_FALLBACK_DELAY_MS);
     const threadDetailCatchupInterval = window.setInterval(() => {
       const now = Date.now();
       let availableProjectionReconcileSlots = Math.max(
@@ -2148,6 +2425,34 @@ function EventRouter() {
           continue;
         }
         const nextProjectionReconcileAt = nextThreadProjectionReconcileAtById.get(threadId) ?? now;
+        const catchupBackoff = resolveThreadCatchupBackoff(threadId);
+        if (
+          now >= nextProjectionReconcileAt &&
+          !threadProjectionReconcileInFlight.has(threadId) &&
+          !hasThreadProjectionRepairPending(threadId) &&
+          catchupBackoff.lastProjectionReconciledAt !== null &&
+          now <
+            catchupBackoff.lastProjectionReconciledAt +
+              THREAD_DETAIL_PROJECTION_RECONCILE_MAX_INTERVAL_MS &&
+          catchupBackoff.reconcileNoopStreak < THREAD_DETAIL_PROJECTION_RECONCILE_MAX_NOOP_STREAK &&
+          isThreadDetailVerifiedInSync(catchupBackoff)
+        ) {
+          // This turn already had one authoritative projection resync and the replay poll
+          // has since proved the thread current, so re-shipping the full projection would
+          // only repeat what the live stream delivered. Count it as a no-op reconcile and
+          // let the cadence back off within the deadline from the last actual resync.
+          // A skip must not restart that deadline; a new turn or repair bypasses it.
+          noteThreadReconcileResult(threadId, true);
+          nextThreadProjectionReconcileAtById.set(
+            threadId,
+            Math.min(
+              now + nextThreadProjectionReconcileDelayMs(threadId),
+              catchupBackoff.lastProjectionReconciledAt +
+                THREAD_DETAIL_PROJECTION_RECONCILE_MAX_INTERVAL_MS,
+            ),
+          );
+          continue;
+        }
         if (
           availableProjectionReconcileSlots > 0 &&
           !threadProjectionReconcileInFlight.has(threadId) &&
@@ -2162,7 +2467,10 @@ function EventRouter() {
     return () => {
       flushPendingDomainEvents();
       disposed = true;
-      window.clearTimeout(shellBootstrapFallbackTimer);
+      if (shellSnapshotFallbackTimer !== null) {
+        window.clearTimeout(shellSnapshotFallbackTimer);
+        shellSnapshotFallbackTimer = null;
+      }
       window.clearInterval(threadDetailCatchupInterval);
       needsProviderInvalidation = false;
       needsBroadGitInvalidation = false;
@@ -2170,6 +2478,8 @@ function EventRouter() {
       pendingStudioOutputInvalidationThreadIds = new Set();
       threadProjectionReconcileInFlight.clear();
       threadProjectionTerminalFencePending.clear();
+      threadProjectionTerminalFenceSequenceById.clear();
+      threadProjectionTerminalFenceArmedAtById.clear();
       threadSubscriptionGenerationById.clear();
       nextThreadProjectionReconcileAtById.clear();
       threadCatchupBackoffById.clear();

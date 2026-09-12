@@ -3,7 +3,10 @@
 // Layer: Provider runtime tests
 // Exports: Vitest suites for opencodeRuntime.ts
 
-import { Duration, Effect, Exit, Fiber, Layer, Scope, Sink, Stream } from "effect";
+import { pathToFileURL } from "node:url";
+
+import { Deferred, Duration, Effect, Exit, Fiber, Layer, Scope, Sink, Stream } from "effect";
+import type { OpencodeClient } from "@opencode-ai/sdk/v2";
 import { type ChildProcess, ChildProcessSpawner } from "effect/unstable/process";
 import { TestClock } from "effect/testing";
 import type { ChatAttachment } from "@synara/contracts";
@@ -13,8 +16,6 @@ import { describe, expect, it, vi } from "vitest";
 import {
   buildOpenCodePermissionRules,
   buildOpenCodeServerProcessEnv,
-  KILO_CLI_SPEC,
-  KILO_CREDENTIAL_STARTUP_RETRY_DELAYS_MS,
   OpenCodeRuntime,
   OpenCodeRuntimeError,
   makeOpenCodeRuntimeLive,
@@ -150,6 +151,42 @@ function openCodeRuntimePoolTestLayer(state: {
   );
 }
 
+it("bounds optional console discovery and aborts its stalled HTTP request", async () => {
+  const requested = Effect.runSync(Deferred.make<void>());
+  let requestSignal: AbortSignal | undefined;
+  const client = {
+    provider: { list: async () => ({ data: { all: [], connected: [], default: {} } }) },
+    app: { agents: async () => ({ data: [] }) },
+    experimental: {
+      console: {
+        get: async (_input: unknown, options?: { signal?: AbortSignal }) => {
+          requestSignal = options?.signal;
+          Effect.runSync(Deferred.succeed(requested, undefined));
+          return await new Promise(() => {});
+        },
+      },
+    },
+  } as unknown as OpencodeClient;
+  const inventory = await Effect.runPromise(
+    Effect.gen(function* () {
+      const runtime = yield* OpenCodeRuntime;
+      const loading = yield* runtime.loadOpenCodeInventory(client).pipe(Effect.forkChild);
+      yield* Deferred.await(requested);
+      yield* TestClock.adjust("2 seconds");
+      return yield* Fiber.join(loading);
+    }).pipe(
+      Effect.provide(openCodeRuntimePoolTestLayer({ spawnUrls: [], killUrls: [] })),
+      Effect.scoped,
+    ),
+  );
+  expect(inventory).toEqual({
+    providerList: { all: [], connected: [], default: {} },
+    agents: [],
+    consoleState: null,
+  });
+  expect(requestSignal?.aborted).toBe(true);
+});
+
 describe("toOpenCodeFileParts", () => {
   it("materializes image attachments as SDK file parts", () => {
     const attachment = {
@@ -170,7 +207,7 @@ describe("toOpenCodeFileParts", () => {
         type: "file",
         mime: "image/png",
         filename: "screenshot.png",
-        url: "file:///tmp/synara-attachments/screenshot.png",
+        url: pathToFileURL("/tmp/synara-attachments/screenshot.png").href,
       },
     ]);
   });
@@ -377,119 +414,6 @@ describe("OpenCodeRuntime startup diagnostics", () => {
 });
 
 describe("OpenCodeRuntime local server pool", () => {
-  it("retries transient Kilo credential-store startup failures", async () => {
-    let spawnCount = 0;
-    let teardownCount = 0;
-    const spawnerLayer = Layer.succeed(
-      ChildProcessSpawner.ChildProcessSpawner,
-      ChildProcessSpawner.make(() => {
-        spawnCount += 1;
-        if (spawnCount < 3) {
-          return Effect.succeed(
-            mockOpenCodeServerHandle({
-              stdout: "",
-              stderr:
-                '\u001b[91mError: Unexpected error Failed query: update "credential" set "value" = ?\n',
-              pid: spawnCount,
-              exitCode: Effect.succeed(ChildProcessSpawner.ExitCode(1)),
-            }),
-          );
-        }
-        return Effect.succeed(
-          mockOpenCodeServerHandle({
-            stdout: "kilo server listening on http://127.0.0.1:59002\n",
-            stderr: "",
-            pid: spawnCount,
-          }),
-        );
-      }),
-    );
-    const layer = Layer.merge(
-      makeOpenCodeRuntimeLive({
-        netService: {
-          canListenOnHost: () => Effect.succeed(true),
-          isPortAvailableOnLoopback: () => Effect.succeed(true),
-          reserveLoopbackPort: () => Effect.succeed(59_000),
-          findAvailablePort: () => Effect.succeed(59_000),
-        },
-        teardownProcessTree: async () => {
-          teardownCount += 1;
-          return { escalated: false, signalErrors: [] };
-        },
-      }).pipe(Layer.provide(spawnerLayer)),
-      TestClock.layer(),
-    );
-
-    await Effect.runPromise(
-      Effect.scoped(
-        Effect.gen(function* () {
-          const runtime = yield* OpenCodeRuntime;
-          const serverScope = yield* Scope.make();
-          const connectionFiber = yield* runtime
-            .connectToOpenCodeServer({
-              binaryPath: "kilo",
-              cliSpec: KILO_CLI_SPEC,
-              poolIsolationKey: "synara-kilo-thread",
-            })
-            .pipe(Effect.provideService(Scope.Scope, serverScope), Effect.forkChild);
-
-          for (const delayMs of KILO_CREDENTIAL_STARTUP_RETRY_DELAYS_MS) {
-            yield* Effect.yieldNow;
-            yield* TestClock.adjust(Duration.millis(delayMs));
-          }
-
-          const connection = yield* Fiber.join(connectionFiber);
-          expect(connection.url).toBe("http://127.0.0.1:59002");
-          expect(spawnCount).toBe(3);
-          expect(teardownCount).toBe(2);
-
-          yield* Scope.close(serverScope, Exit.void);
-          expect(teardownCount).toBe(3);
-        }),
-      ).pipe(Effect.provide(layer)),
-    );
-  });
-
-  it("does not retry unrelated Kilo startup failures", async () => {
-    let spawnCount = 0;
-    const spawnerLayer = Layer.succeed(
-      ChildProcessSpawner.ChildProcessSpawner,
-      ChildProcessSpawner.make(() => {
-        spawnCount += 1;
-        return Effect.succeed(
-          mockOpenCodeServerHandle({
-            stdout: "",
-            stderr: "Error: invalid Kilo configuration\n",
-            exitCode: Effect.succeed(ChildProcessSpawner.ExitCode(1)),
-          }),
-        );
-      }),
-    );
-    const layer = makeOpenCodeRuntimeLive({
-      netService: {
-        canListenOnHost: () => Effect.succeed(true),
-        isPortAvailableOnLoopback: () => Effect.succeed(true),
-        reserveLoopbackPort: () => Effect.succeed(59_000),
-        findAvailablePort: () => Effect.succeed(59_000),
-      },
-      teardownProcessTree: async () => ({ escalated: false, signalErrors: [] }),
-    }).pipe(Layer.provide(spawnerLayer));
-
-    const error = await Effect.runPromise(
-      Effect.scoped(
-        Effect.gen(function* () {
-          const runtime = yield* OpenCodeRuntime;
-          return yield* runtime
-            .connectToOpenCodeServer({ binaryPath: "kilo", cliSpec: KILO_CLI_SPEC })
-            .pipe(Effect.flip);
-        }),
-      ).pipe(Effect.provide(layer)),
-    );
-
-    expect(spawnCount).toBe(1);
-    expect(error.detail).toContain("invalid Kilo configuration");
-  });
-
   it("keeps server scope closure pending until process-tree exit is proven", async () => {
     let proveExit: (() => void) | undefined;
     const exitProof = new Promise<void>((resolve) => {

@@ -1,5 +1,13 @@
 import { QueryClient, QueryObserver } from "@tanstack/react-query";
 import { describe, expect, it, vi } from "vitest";
+
+const { readWorkingTreeDiff } = vi.hoisted(() => ({
+  readWorkingTreeDiff: vi.fn(async (input: { filePath?: string }) => ({
+    patch: input.filePath ?? "all",
+    truncated: false,
+  })),
+}));
+vi.mock("../nativeApi", () => ({ ensureNativeApi: () => ({ git: { readWorkingTreeDiff } }) }));
 import {
   GIT_WORKING_TREE_DIFF_LIVE_REFETCH_INTERVAL_MS,
   gitQueryKeys,
@@ -14,6 +22,7 @@ import {
   gitRunStackedActionMutationOptions,
   refreshGitActionAvailability,
   refreshGitQueriesForCwd,
+  refreshGitWorkingTreeDiffsForCwd,
 } from "./gitReactQuery";
 
 function deferredVoid() {
@@ -23,6 +32,27 @@ function deferredVoid() {
   });
   return { promise, resolve };
 }
+
+describe("file-scoped working tree diffs", () => {
+  it("keeps each file separate from other files and the repository-wide cache", async () => {
+    const client = new QueryClient();
+    const query = (filePath?: string) => gitWorkingTreeDiffQueryOptions({ cwd: "/repo", filePath });
+    expect(await client.fetchQuery(query())).toEqual({ patch: "all", truncated: false });
+    expect(await client.fetchQuery(query("src/a.ts"))).toEqual({
+      patch: "src/a.ts",
+      truncated: false,
+    });
+    expect(await client.fetchQuery(query("src/b.ts"))).toEqual({
+      patch: "src/b.ts",
+      truncated: false,
+    });
+    expect(readWorkingTreeDiff).toHaveBeenCalledWith({
+      cwd: "/repo",
+      scope: "workingTree",
+      filePath: "src/a.ts",
+    });
+  });
+});
 
 describe("gitMutationKeys", () => {
   it("scopes stacked action keys by cwd", () => {
@@ -284,6 +314,40 @@ describe("git query invalidation", () => {
     unsubscribe();
   });
 
+  it("starts a fresh active diff read when a file event races its cold fetch", async () => {
+    const queryClient = new QueryClient();
+    const cwd = "/repo/cold-diff";
+    const diffKey = gitQueryKeys.workingTreeDiff(cwd, "workingTree");
+    let patch = "old";
+    let diffCalls = 0;
+    const firstDiffGate = deferredVoid();
+    const observer = new QueryObserver(queryClient, {
+      queryKey: diffKey,
+      queryFn: async () => {
+        diffCalls += 1;
+        const observed = patch;
+        if (diffCalls === 1) {
+          await firstDiffGate.promise;
+        }
+        return observed;
+      },
+      retry: false,
+      staleTime: Number.POSITIVE_INFINITY,
+    });
+    const unsubscribe = observer.subscribe(() => undefined);
+    await vi.waitFor(() => expect(diffCalls).toBe(1));
+
+    patch = "fresh";
+    await refreshGitWorkingTreeDiffsForCwd(queryClient, cwd);
+
+    expect(diffCalls).toBe(2);
+    expect(queryClient.getQueryData(diffKey)).toBe("fresh");
+    firstDiffGate.resolve();
+    await Promise.resolve();
+    expect(queryClient.getQueryData(diffKey)).toBe("fresh");
+    unsubscribe();
+  });
+
   it("serializes active expensive Git detail reads after status", async () => {
     const queryClient = new QueryClient();
     const cwd = "/repo/serialized";
@@ -316,6 +380,35 @@ describe("git query invalidation", () => {
 
     expect(calls).toEqual(["status", "stats", "patch"]);
     expect(maxActiveCalls).toBe(1);
+    for (const unsubscribe of unsubscribes) unsubscribe();
+  });
+
+  it("refetches mounted blame and base-blob reads after a repository change", async () => {
+    const queryClient = new QueryClient();
+    const cwd = "/repo/revision-dependent";
+    const calls: string[] = [];
+    const observe = (queryKey: readonly unknown[], label: string) => {
+      queryClient.setQueryData(queryKey, {});
+      const observer = new QueryObserver(queryClient, {
+        queryKey,
+        queryFn: async () => {
+          calls.push(label);
+          return {};
+        },
+        staleTime: Number.POSITIVE_INFINITY,
+      });
+      return observer.subscribe(() => undefined);
+    };
+    const unsubscribes = [
+      observe(gitQueryKeys.status(cwd), "status"),
+      observe(gitQueryKeys.blameLine(cwd, "src/a.ts", 3, null, null), "blame"),
+      observe(gitQueryKeys.fileAtRev(cwd, "src/a.ts", "HEAD", null), "file-at-rev"),
+    ];
+
+    await refreshGitQueriesForCwd(queryClient, cwd);
+
+    expect(calls).toContain("blame");
+    expect(calls).toContain("file-at-rev");
     for (const unsubscribe of unsubscribes) unsubscribe();
   });
 
@@ -375,9 +468,10 @@ describe("git expensive-read capacity retry", () => {
     expect(typeof options.retryDelay).toBe("function");
     if (typeof options.retry !== "function" || typeof options.retryDelay !== "function") return;
 
-    expect(options.retry(0, capacityError)).toBe(true);
-    expect(options.retry(12, capacityError)).toBe(false);
-    expect(options.retryDelay(0, capacityError)).toBe(375);
+    expect(options.retry(0, capacityError as never)).toBe(false);
+    expect(options.retry(0, new Error("network"))).toBe(true);
+    expect(options.retry(3, new Error("network"))).toBe(false);
+    expect(options.retryDelay(0, capacityError as never)).toBe(375);
   });
 });
 

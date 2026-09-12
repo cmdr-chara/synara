@@ -174,6 +174,11 @@ const AVAILABLE_NOW_DEFINITIONS: readonly ShortcutDefinition[] = [
     description: "Focus or blur the chat prompt composer.",
   },
   {
+    command: "chat.find",
+    label: "Find in thread",
+    description: "Search the current transcript and jump to each matching message.",
+  },
+  {
     command: "terminal.toggle",
     label: "Toggle terminal",
     description: "Show or hide the terminal surface for the active thread.",
@@ -182,6 +187,16 @@ const AVAILABLE_NOW_DEFINITIONS: readonly ShortcutDefinition[] = [
     command: "diff.toggle",
     label: "Toggle diff",
     description: "Open or close the working tree diff panel.",
+  },
+  {
+    command: "diff.change.next",
+    label: "Next change",
+    description: "Jump the diff viewport to the next changed file.",
+  },
+  {
+    command: "diff.change.previous",
+    label: "Previous change",
+    description: "Jump the diff viewport to the previous changed file.",
   },
   {
     command: "browser.toggle",
@@ -212,6 +227,11 @@ const AVAILABLE_NOW_DEFINITIONS: readonly ShortcutDefinition[] = [
     command: "editor.openFavorite",
     label: "Open in favorite editor",
     description: "Send the current thread or workspace target to your preferred editor.",
+  },
+  {
+    command: "editor.file.save",
+    label: "Save file",
+    description: "Write the focused editor's unsaved changes back to disk.",
   },
   {
     command: "git.commitAndPush",

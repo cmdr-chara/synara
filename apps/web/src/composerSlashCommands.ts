@@ -1,9 +1,11 @@
 import {
+  PROVIDER_DISPLAY_NAMES,
   THREAD_GOAL_MAX_CHARS,
   type GitBranch,
   type ProviderInteractionMode,
   type ProviderKind,
 } from "@synara/contracts";
+import { DEFAULT_PROVIDER_ORDER } from "./providerOrdering";
 import {
   BUILT_IN_COMPOSER_SLASH_COMMANDS,
   isBuiltInComposerSlashCommandName,
@@ -104,6 +106,7 @@ function shouldKeepBuiltInSlashCommandDespiteNativeCollision(
     // "fork" text command cannot do.
     command === "fork" ||
     command === "goal" ||
+    command === "rename" ||
     (providerUsesAppOwnedReviewSlashCommand(provider) && command === "review")
   );
 }
@@ -123,6 +126,7 @@ export function shouldHideProviderNativeCommandFromComposerMenu(
     (normalizedCommand === "feedback" && appCommandIsAvailable) ||
     (normalizedCommand === "fork" && appCommandIsAvailable) ||
     (normalizedCommand === "goal" && appCommandIsAvailable) ||
+    (normalizedCommand === "rename" && appCommandIsAvailable) ||
     (providerUsesAppOwnedReviewSlashCommand(provider) && normalizedCommand === "review")
   );
 }
@@ -207,7 +211,7 @@ const COMPOSER_SLASH_COMMAND_DEFINITIONS: Record<
   side: {
     command: "side",
     label: "/side",
-    description: "Open a guarded Side from this thread",
+    description: "Open a guarded Side from this thread, optionally on another provider",
     source: "app",
   },
   status: {
@@ -238,6 +242,12 @@ const COMPOSER_SLASH_COMMAND_DEFINITIONS: Record<
     command: "goal",
     label: "/goal",
     description: "Set, edit, pause, resume, or clear this thread's persistent goal",
+    source: "app",
+  },
+  rename: {
+    command: "rename",
+    label: "/rename",
+    description: "Regenerate this thread title, or set an exact title",
     source: "app",
   },
   feedback: {
@@ -318,6 +328,27 @@ export function canOfferForkSlashCommand(input: {
   );
 }
 
+// Structural Side availability: attachments/mode/thread kind. Prompt emptiness is only
+// required when offering `/side` in the composer menu — executing `/side <provider>
+// [prompt]` intentionally carries args in the composer text.
+export function canExecuteSideSlashCommand(input: {
+  imageCount: number;
+  terminalContextCount: number;
+  selectedSkillCount: number;
+  selectedMentionCount: number;
+  interactionMode: ProviderInteractionMode;
+  isSidechat: boolean;
+}): boolean {
+  return (
+    input.imageCount === 0 &&
+    input.terminalContextCount === 0 &&
+    input.selectedSkillCount === 0 &&
+    input.selectedMentionCount === 0 &&
+    input.interactionMode === "default" &&
+    !input.isSidechat
+  );
+}
+
 export function canOfferSideSlashCommand(input: {
   prompt: string;
   imageCount: number;
@@ -329,12 +360,14 @@ export function canOfferSideSlashCommand(input: {
 }): boolean {
   return (
     !hasMeaningfulComposerText(input.prompt) &&
-    input.imageCount === 0 &&
-    input.terminalContextCount === 0 &&
-    input.selectedSkillCount === 0 &&
-    input.selectedMentionCount === 0 &&
-    input.interactionMode === "default" &&
-    !input.isSidechat
+    canExecuteSideSlashCommand({
+      imageCount: input.imageCount,
+      terminalContextCount: input.terminalContextCount,
+      selectedSkillCount: input.selectedSkillCount,
+      selectedMentionCount: input.selectedMentionCount,
+      interactionMode: input.interactionMode,
+      isSidechat: input.isSidechat,
+    })
   );
 }
 
@@ -466,6 +499,7 @@ export function getAvailableComposerSlashCommands(input: {
           "subagents",
           ...(input.canOfferExportCommand ? (["export"] as const) : []),
           "goal",
+          "rename",
           "feedback",
           "automation",
         ]
@@ -480,6 +514,7 @@ export function getAvailableComposerSlashCommands(input: {
           ...(input.canOfferSideCommand ? (["side"] as const) : []),
           ...(input.canOfferExportCommand ? (["export"] as const) : []),
           "goal",
+          "rename",
           "debug",
           "default",
           "feedback",
@@ -513,6 +548,48 @@ export function buildSlashReviewComposerPrompt(args: string): string {
       : basePrompt;
   }
   return `${basePrompt}\nFocus especially on: ${trimmedArgs}`;
+}
+
+export interface SideSlashCommandArgs {
+  targetProvider: ProviderKind | null;
+  prompt: string;
+  unavailableProvider: ProviderKind | null;
+}
+
+function matchSideProviderToken(token: string): ProviderKind | null {
+  const normalized = token.toLowerCase();
+  return (
+    DEFAULT_PROVIDER_ORDER.find(
+      (provider) =>
+        provider.toLowerCase() === normalized ||
+        PROVIDER_DISPLAY_NAMES[provider].toLowerCase() === normalized,
+    ) ?? null
+  );
+}
+
+// `/side [provider] [prompt]`: an optional leading provider token (kind or
+// display name) starts the sidechat on that provider.
+export function parseSideSlashCommandArgs(
+  args: string,
+  input: {
+    currentProvider: ProviderKind;
+    availableTargetProviders: ReadonlyArray<ProviderKind>;
+  },
+): SideSlashCommandArgs {
+  const trimmedArgs = args.trim();
+  const firstToken = trimmedArgs.split(/\s+/, 1)[0] ?? "";
+  const matchedProvider = firstToken.length > 0 ? matchSideProviderToken(firstToken) : null;
+  if (!matchedProvider) {
+    return { targetProvider: null, prompt: trimmedArgs, unavailableProvider: null };
+  }
+  const prompt = trimmedArgs.slice(firstToken.length).trim();
+  if (matchedProvider === input.currentProvider) {
+    return { targetProvider: null, prompt, unavailableProvider: null };
+  }
+  if (!input.availableTargetProviders.includes(matchedProvider)) {
+    return { targetProvider: null, prompt, unavailableProvider: matchedProvider };
+  }
+  return { targetProvider: matchedProvider, prompt, unavailableProvider: null };
 }
 
 // `/fork` optionally accepts only an explicit target shorthand like `/fork local`.

@@ -1,4 +1,5 @@
 import {
+  PROVIDER_DISPLAY_NAMES,
   THREAD_GOAL_MAX_CHARS,
   type MessageId,
   type ModelSelection,
@@ -26,9 +27,13 @@ import {
   parseFastSlashCommandAction,
   parseForkSlashCommandArgs,
   parseGoalSlashCommandArgs,
+  parseSideSlashCommandArgs,
   type ForkSlashCommandTarget,
 } from "../composerSlashCommands";
-import { buildThreadHandoffImportedMessages } from "../lib/threadHandoff";
+import {
+  buildThreadHandoffImportedMessages,
+  resolveThreadHandoffModelSelection,
+} from "../lib/threadHandoff";
 import { toastManager } from "../components/ui/toast";
 import type { ComposerCommandItem } from "../components/chat/ComposerCommandMenu";
 import { buildNextProviderOptions } from "../providerModelOptions";
@@ -41,6 +46,11 @@ import { resolveWsHttpUrl } from "../lib/wsHttpUrl";
 import { useFeedbackDialogStore } from "../feedbackDialogStore";
 import { useComposerDraftStore } from "../composerDraftStore";
 import { dispatchThreadGoal, dispatchThreadGoalPaused } from "../threadGoal";
+import {
+  buildDraftThreadRenameCreateInput,
+  dispatchThreadRename,
+  dispatchThreadTitleRegeneration,
+} from "../lib/threadRename";
 import {
   createOrJoinSidechat,
   createSidechatThread,
@@ -65,9 +75,11 @@ export function useComposerSlashCommands(input: {
   activeThread: Thread | undefined;
   activeRootBranch: string | null;
   isServerThread: boolean;
+  isLocalDraftThread: boolean;
   supportsFastSlashCommand: boolean;
   canOfferCompactCommand: boolean;
-  canOfferSideCommand: boolean;
+  canExecuteSideCommand: boolean;
+  sidechatTargetProviders: ReadonlyArray<ProviderKind>;
   canOfferExportCommand: boolean;
   supportsTextNativeReviewCommand: boolean;
   fastModeEnabled: boolean;
@@ -116,9 +128,11 @@ export function useComposerSlashCommands(input: {
     activeThread,
     activeRootBranch,
     isServerThread,
+    isLocalDraftThread,
     supportsFastSlashCommand,
     canOfferCompactCommand,
-    canOfferSideCommand,
+    canExecuteSideCommand,
+    sidechatTargetProviders,
     canOfferExportCommand,
     supportsTextNativeReviewCommand,
     fastModeEnabled,
@@ -363,6 +377,76 @@ export function useComposerSlashCommands(input: {
     [activeThread?.goal, clearThreadGoal, editorActions, persistThreadGoal, setThreadGoalPaused],
   );
 
+  const runRenameSlashCommand = useCallback(
+    async (args: string) => {
+      if (!activeThread) {
+        toastManager.add({
+          type: "warning",
+          title: "Rename is unavailable",
+          description: "Open a thread before renaming it.",
+        });
+        return;
+      }
+      if (args.length > 0) {
+        if (!isServerThread && !isLocalDraftThread) {
+          toastManager.add({ type: "warning", title: "Rename is unavailable" });
+          return;
+        }
+        const outcome = await dispatchThreadRename({
+          threadId: activeThread.id,
+          newTitle: args,
+          unchangedTitles: [],
+          createIfMissing: isLocalDraftThread
+            ? buildDraftThreadRenameCreateInput(activeThread)
+            : undefined,
+        });
+        if (outcome === "renamed") {
+          toastManager.add({ type: "success", title: "Thread renamed" });
+        } else if (outcome === "unavailable") {
+          toastManager.add({ type: "warning", title: "Rename is unavailable" });
+        } else {
+          toastManager.add({ type: "info", title: "Thread title is unchanged" });
+        }
+        return;
+      }
+
+      if (!isServerThread) {
+        toastManager.add({
+          type: "warning",
+          title: "Nothing to rename yet",
+          description: "Send a message before generating a thread title.",
+        });
+        return;
+      }
+
+      const outcome = await dispatchThreadTitleRegeneration(activeThread.id);
+      if (outcome.status === "renamed") {
+        toastManager.add({
+          type: "success",
+          title: "Thread renamed",
+          description: outcome.title,
+        });
+      } else if (outcome.status === "no-context") {
+        toastManager.add({
+          type: "warning",
+          title: "Nothing to rename yet",
+          description: "Send a message before generating a thread title.",
+        });
+      } else if (outcome.status === "stale") {
+        toastManager.add({
+          type: "info",
+          title: "Newer thread title kept",
+          description: "The generated title was discarded because the title changed.",
+        });
+      } else if (outcome.status === "unavailable") {
+        toastManager.add({ type: "warning", title: "Rename is unavailable" });
+      } else {
+        toastManager.add({ type: "info", title: "Thread title is unchanged" });
+      }
+    },
+    [activeThread, isLocalDraftThread, isServerThread],
+  );
+
   const createForkThreadFromSlashCommand = useCallback(
     async (inputOptions?: {
       target?: ForkSlashCommandTarget;
@@ -430,9 +514,9 @@ export function useComposerSlashCommands(input: {
     ],
   );
 
-  const sidechatCreationBySourceThreadIdRef = useRef(new Map<ThreadId, SidechatCreationFlight>());
+  const sidechatCreationByKeyRef = useRef(new Map<string, SidechatCreationFlight>());
   const createSidechatFromSlashCommand = useCallback(
-    (inputOptions?: { initialPrompt?: string }): Promise<true> => {
+    (inputOptions?: { initialPrompt?: string; targetProvider?: ProviderKind }): Promise<true> => {
       const api = readNativeApi();
       if (
         !api ||
@@ -449,16 +533,28 @@ export function useComposerSlashCommands(input: {
         return Promise.resolve(true);
       }
 
+      const targetProvider = inputOptions?.targetProvider ?? null;
+      const sidechatModelSelection =
+        targetProvider && targetProvider !== selectedModelSelection.provider
+          ? resolveThreadHandoffModelSelection({
+              sourceThread: activeThread,
+              targetProvider,
+              projectDefaultModelSelection: activeProject.defaultModelSelection,
+              stickyModelSelectionByProvider:
+                useComposerDraftStore.getState().stickyModelSelectionByProvider,
+            })
+          : selectedModelSelection;
+
       return createOrJoinSidechat({
-        inFlightBySourceThreadId: sidechatCreationBySourceThreadIdRef.current,
-        sourceThreadId: activeThread.id,
+        inFlightByKey: sidechatCreationByKeyRef.current,
+        flightKey: `${activeThread.id}:${sidechatModelSelection.provider}`,
         initialPrompt: inputOptions?.initialPrompt,
         startCreation: (initialPrompt) =>
           createSidechatThread({
             api,
             project: activeProject,
             sourceThread: activeThread,
-            selectedModelSelection,
+            selectedModelSelection: sidechatModelSelection,
             initialPrompt,
             openSidechat: (sidechatThreadId) => {
               useRightDockStore.getState().openPane(activeThread.id, {
@@ -472,7 +568,7 @@ export function useComposerSlashCommands(input: {
           sendSidechatPrompt({
             api,
             threadId: sidechatThreadId,
-            selectedModelSelection,
+            selectedModelSelection: sidechatModelSelection,
             prompt,
           }),
         onCreationResult: (result) => {
@@ -817,6 +913,20 @@ export function useComposerSlashCommands(input: {
         await runGoalSlashCommand(slashInvocation.args);
         return true;
       }
+      if (slashInvocation.command === "rename") {
+        editorActions.clearComposerSlashDraft();
+        void runRenameSlashCommand(slashInvocation.args).catch((error) => {
+          toastManager.add({
+            type: "error",
+            title: "Could not rename thread",
+            description:
+              error instanceof Error
+                ? error.message
+                : "An error occurred while renaming the thread.",
+          });
+        });
+        return true;
+      }
       if (slashInvocation.command === "subagents") {
         editorActions.setComposerPromptValue(buildSubagentsPrompt(slashInvocation.args));
         return true;
@@ -902,7 +1012,9 @@ export function useComposerSlashCommands(input: {
         return true;
       }
       if (slashInvocation.command === "side") {
-        if (!canOfferSideCommand) {
+        // Execute allows `/side <provider> [prompt]` even though the menu offer still
+        // requires an otherwise-empty composer (the args are meaningful prompt text).
+        if (!canExecuteSideCommand) {
           toastManager.add({
             type: "warning",
             title: "Side is unavailable",
@@ -910,9 +1022,29 @@ export function useComposerSlashCommands(input: {
           });
           return true;
         }
+        const { targetProvider, prompt, unavailableProvider } = parseSideSlashCommandArgs(
+          slashInvocation.args,
+          {
+            currentProvider: selectedModelSelection.provider,
+            availableTargetProviders: sidechatTargetProviders,
+          },
+        );
+        if (unavailableProvider) {
+          toastManager.add({
+            type: "warning",
+            title: `${PROVIDER_DISPLAY_NAMES[unavailableProvider]} is unavailable for Side`,
+            description: "Enable and sign in to that provider, then run /side again.",
+          });
+          return true;
+        }
+        // Hoisted out of the `try` below: React Compiler cannot lower `?:` inside
+        // a try block and would bail out of compiling this whole hook.
+        const sidechatOptions = targetProvider
+          ? { initialPrompt: prompt, targetProvider }
+          : { initialPrompt: prompt };
         try {
           editorActions.clearComposerSlashDraft();
-          await createSidechatFromSlashCommand({ initialPrompt: slashInvocation.args });
+          await createSidechatFromSlashCommand(sidechatOptions);
         } catch (error) {
           toastManager.add({
             type: "error",
@@ -927,7 +1059,7 @@ export function useComposerSlashCommands(input: {
     },
     [
       availableBuiltInSlashCommands,
-      canOfferSideCommand,
+      canExecuteSideCommand,
       checkClaudeFastSlashCommandAvailability,
       compactProviderThread,
       createForkThreadFromSlashCommand,
@@ -939,11 +1071,14 @@ export function useComposerSlashCommands(input: {
       openFeedbackDialog,
       openReviewTargetPicker,
       selectedProvider,
+      selectedModelSelection.provider,
+      sidechatTargetProviders,
       supportsTextNativeReviewCommand,
       runCodexReviewStart,
       runExportSlashCommand,
       runFastSlashCommand,
       runGoalSlashCommand,
+      runRenameSlashCommand,
     ],
   );
 
@@ -954,7 +1089,12 @@ export function useComposerSlashCommands(input: {
         return;
       }
 
-      if (item.command === "model" || item.command === "goal" || item.command === "automation") {
+      if (
+        item.command === "model" ||
+        item.command === "goal" ||
+        item.command === "rename" ||
+        item.command === "automation"
+      ) {
         const replacement = `/${item.command} `;
         const replacementRangeEnd = extendReplacementRangeForTrailingSpace(
           snapshot.value,

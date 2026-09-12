@@ -10,6 +10,7 @@ import {
   IconAlertTriangle,
   IconArchive,
   IconArrowBackUp,
+  IconArrowForwardUp,
   IconArrowDown,
   IconArrowLeft,
   IconArrowRight,
@@ -97,6 +98,7 @@ export const AppsIcon: LucideIcon = (props) => (
 );
 // Composer stacked-panel glyphs (subagent strip / workflow run card).
 export const BackgroundTrayIcon: LucideIcon = centralIconWrapper("arrow-down-wall");
+export const ContextCompactionIcon: LucideIcon = centralIconWrapper("arrows-hide");
 export const PanelExpandIcon: LucideIcon = centralIconWrapper("expand-45");
 export const PanelCollapseIcon: LucideIcon = centralIconWrapper("minimize-45");
 export const BackToParentIcon: LucideIcon = centralIconWrapper("arrow-share-left");
@@ -108,6 +110,10 @@ export const SkillCubeIcon: LucideIcon = centralIconWrapper("building-blocks");
 export const NewThreadIcon: LucideIcon = centralIconWrapper("compose-pencil");
 /** The "+" affordance behind every add/create action (Add project, activity header). */
 export const AddPlusIcon: LucideIcon = centralIconWrapper("plus-medium");
+/** 2x3 dot grip for drag-to-reorder handles (provider rows, sidebar nav customize). */
+export const DragHandleIcon: LucideIcon = centralIconWrapper("dot-grid-2x3");
+/** Sliders glyph for "customize this surface" entries. */
+export const CustomizeIcon: LucideIcon = centralIconWrapper("settings-slider-three");
 export const EraserIcon: LucideIcon = centralIconWrapper("eraser");
 export const ArrowLeftIcon = adaptIcon(IconArrowLeft);
 export const ArrowRightIcon = adaptIcon(IconArrowRight);
@@ -133,10 +139,6 @@ export const ChevronUpIcon = adaptIcon(IconChevronUp);
 export const ChevronsUpDownIcon = adaptIcon(IconSelector);
 export const CircleAlertIcon = adaptIcon(IconAlertCircle);
 export const CircleCheckIcon = adaptIcon(IconCircleCheck);
-// Completed/success status glyph sourced from the Central set so it sits in the
-// same visual language as the other trailing thread-row icons (worktree, fork,
-// pull-request) instead of the react-icons outline check it replaced.
-export const CheckCircle2Icon: LucideIcon = centralIconWrapper("check-circle-2");
 // User-input rows: a question-mark circle while the agent waits for an answer,
 // and an up-arrow circle once the answer is submitted. Sourced from the Central
 // set so they sit visually beside the other timeline glyphs (robot, search, …).
@@ -205,9 +207,6 @@ export const WebSearchIcon: LucideIcon = GlobeIcon;
 export const DeviceMobileIcon: LucideIcon = centralIconWrapper("phone");
 // Hardware-button glyphs for the simulator's control rail.
 export const DeviceHomeIcon: LucideIcon = centralIconWrapper("home");
-export const DeviceLockIcon: LucideIcon = centralIconWrapper("lock");
-export const DeviceVolumeUpIcon: LucideIcon = centralIconWrapper("volume-up");
-export const DeviceVolumeDownIcon: LucideIcon = centralIconWrapper("volume-down");
 export const DeviceShutterIcon: LucideIcon = centralIconWrapper("camera-1");
 // Simulator toolbar: start/stop a screen recording, turn the view, power the
 // device off, and let go of it. The two Tabler glyphs have no Central
@@ -239,6 +238,9 @@ export const Minimize2 = adaptIcon(IconMinimize);
 export const MessageCircleIcon = adaptIcon(IconMessageCircle);
 export const MinusIcon = adaptIcon(IconMinus);
 export const ChatBubbleIcon: LucideIcon = centralIconWrapper("bubble-text");
+// Canonical side-chat glyph — every sidechat surface (right dock pane, environment
+// panel rows, tabs) must use this one so the feature reads consistently.
+export const SidechatIcon: LucideIcon = centralIconWrapper("chat-bubble-7");
 export const MicIcon: LucideIcon = centralIconWrapper("microphone");
 export const PanelLeftIcon = centralIconWrapper("sidebar-simple-left-wide");
 export const PanelRightCloseIcon = centralIconWrapper("sidebar-simple-right-wide");
@@ -294,6 +296,11 @@ export const TextWrapIcon = adaptIcon(IconTextWrap);
 export const Trash2 = adaptIcon(IconTrash);
 export const TriangleAlertIcon = adaptIcon(IconAlertTriangle);
 export const Undo2Icon = adaptIcon(IconArrowBackUp);
+// Single source for every "reset / restore default / revert" affordance (settings
+// row resets, Restore defaults, effort-slider reset, space reset, file revert):
+// the Central reversed counter-clockwise arrow, never a Tabler/Lucide rotate glyph.
+export const ResetIcon: LucideIcon = centralIconWrapper("arrow-rotate-counter-clockwise");
+export const Redo2Icon = adaptIcon(IconArrowForwardUp);
 export const WorktreeIcon = centralIconWrapper("arrow-split-right");
 export const XIcon = adaptIcon(IconX);
 export const ZapIcon = adaptIcon(IconBolt);

@@ -4,6 +4,7 @@ import { THREAD_GOAL_MAX_CHARS } from "@synara/contracts";
 import {
   buildReviewPrompt,
   buildSubagentsPrompt,
+  canExecuteSideSlashCommand,
   canOfferForkSlashCommand,
   canOfferReviewSlashCommand,
   canOfferSideSlashCommand,
@@ -16,6 +17,7 @@ import {
   parseFastSlashCommandAction,
   parseForkSlashCommandArgs,
   parseGoalSlashCommandArgs,
+  parseSideSlashCommandArgs,
   providerSupportsTextNativeReviewCommand,
   shouldHideProviderNativeCommandFromComposerMenu,
 } from "./composerSlashCommands";
@@ -29,6 +31,7 @@ describe("composerSlashCommands", () => {
     expect(isBuiltInComposerSlashCommand("feedback")).toBe(true);
     expect(isBuiltInComposerSlashCommand("debug")).toBe(true);
     expect(isBuiltInComposerSlashCommand("goal")).toBe(true);
+    expect(isBuiltInComposerSlashCommand("rename")).toBe(true);
     expect(isBuiltInComposerSlashCommand("unknown")).toBe(false);
   });
 
@@ -78,6 +81,10 @@ describe("composerSlashCommands", () => {
     expect(parseComposerSlashInvocation("/goal first line\nsecond line")).toEqual({
       command: "goal",
       args: "first line\nsecond line",
+    });
+    expect(parseComposerSlashInvocation("/rename Backend auth")).toEqual({
+      command: "rename",
+      args: "Backend auth",
     });
     expect(parseComposerSlashInvocation("review")).toBeNull();
   });
@@ -172,6 +179,43 @@ describe("composerSlashCommands", () => {
     ).toBe(false);
   });
 
+  it("parses an optional leading provider token in /side args", () => {
+    const context = {
+      currentProvider: "claudeAgent",
+      availableTargetProviders: ["codex", "cursor"],
+    } as const;
+    expect(parseSideSlashCommandArgs("codex is this safe?", context)).toEqual({
+      targetProvider: "codex",
+      prompt: "is this safe?",
+      unavailableProvider: null,
+    });
+    expect(parseSideSlashCommandArgs("Codex", context)).toEqual({
+      targetProvider: "codex",
+      prompt: "",
+      unavailableProvider: null,
+    });
+    expect(parseSideSlashCommandArgs("claude compare this", context)).toEqual({
+      targetProvider: null,
+      prompt: "compare this",
+      unavailableProvider: null,
+    });
+    expect(parseSideSlashCommandArgs("is this safe?", context)).toEqual({
+      targetProvider: null,
+      prompt: "is this safe?",
+      unavailableProvider: null,
+    });
+    expect(parseSideSlashCommandArgs("", context)).toEqual({
+      targetProvider: null,
+      prompt: "",
+      unavailableProvider: null,
+    });
+    expect(parseSideSlashCommandArgs("grok compare this", context)).toEqual({
+      targetProvider: null,
+      prompt: "compare this",
+      unavailableProvider: "grok",
+    });
+  });
+
   it("only offers /side for a main-thread empty default composer", () => {
     expect(
       canOfferSideSlashCommand({
@@ -194,6 +238,42 @@ describe("composerSlashCommands", () => {
         selectedMentionCount: 0,
         interactionMode: "default",
         isSidechat: true,
+      }),
+    ).toBe(false);
+  });
+
+  it("still executes /side when the composer holds provider args", () => {
+    expect(
+      canExecuteSideSlashCommand({
+        imageCount: 0,
+        terminalContextCount: 0,
+        selectedSkillCount: 0,
+        selectedMentionCount: 0,
+        interactionMode: "default",
+        isSidechat: false,
+      }),
+    ).toBe(true);
+
+    expect(
+      canOfferSideSlashCommand({
+        prompt: "Codex",
+        imageCount: 0,
+        terminalContextCount: 0,
+        selectedSkillCount: 0,
+        selectedMentionCount: 0,
+        interactionMode: "default",
+        isSidechat: false,
+      }),
+    ).toBe(false);
+
+    expect(
+      canExecuteSideSlashCommand({
+        imageCount: 1,
+        terminalContextCount: 0,
+        selectedSkillCount: 0,
+        selectedMentionCount: 0,
+        interactionMode: "default",
+        isSidechat: false,
       }),
     ).toBe(false);
   });
@@ -300,6 +380,24 @@ describe("composerSlashCommands", () => {
     expect(shouldHideProviderNativeCommandFromComposerMenu("antigravity", "automation")).toBe(true);
   });
 
+  it("keeps app-owned /rename available despite provider-native collisions", () => {
+    for (const provider of ["codex", "claudeAgent"] as const) {
+      const availableCommands = getAvailableComposerSlashCommands({
+        provider,
+        supportsFastSlashCommand: true,
+        canOfferCompactCommand: true,
+        canOfferReviewCommand: true,
+        canOfferForkCommand: true,
+        canOfferSideCommand: true,
+        canOfferExportCommand: true,
+        providerNativeCommandNames: ["rename"],
+      });
+
+      expect(availableCommands).toContain("rename");
+      expect(shouldHideProviderNativeCommandFromComposerMenu(provider, "rename")).toBe(true);
+    }
+  });
+
   it("keeps Feedback Synara ahead of provider-native /feedback", () => {
     const availableCommands = getAvailableComposerSlashCommands({
       provider: "claudeAgent",
@@ -332,6 +430,7 @@ describe("composerSlashCommands", () => {
       "side",
       "export",
       "goal",
+      "rename",
       "debug",
       "default",
       "feedback",
@@ -463,6 +562,7 @@ describe("composerSlashCommands", () => {
       "subagents",
       "export",
       "goal",
+      "rename",
       "feedback",
       "automation",
     ]);

@@ -55,6 +55,27 @@ function expectSchemaValidActivities(event: ProviderRuntimeEvent, sessionSequenc
   }
 }
 
+it.each(["info", "warning", "error"])("projects Pi %s notifications as notices", (type) => {
+  const [activity] = projectProviderRuntimeActivities(
+    runtimeEvent({
+      provider: "pi",
+      type: "runtime.warning",
+      eventId: "pi-notification",
+      turnId: TURN_ID,
+      payload: { message: "Extension notification", detail: { type } },
+      raw: { source: "pi.sdk.event", method: "extension/ui/notify", payload: { type } },
+    }),
+  );
+
+  expect(activity).toMatchObject({
+    tone: "info",
+    kind: "runtime.warning",
+    summary: type === "info" ? "Pi extension" : "Runtime warning",
+    payload: { message: "Extension notification", detail: "Extension notification" },
+  });
+  expect(() => decodeActivityAppendCommand(activity!)).not.toThrow();
+});
+
 describe("projected activities satisfy the orchestration command schema", () => {
   it("omits an absent approval request id instead of emitting an explicit undefined", () => {
     expectSchemaValidActivities(
@@ -354,6 +375,44 @@ describe("provider runtime activity projection", () => {
     expect(providerActivityUpdateFingerprint(activity!)).toContain('"kind":"tool.updated"');
   });
 
+  it("keeps the fast JSON fingerprint byte-identical to the legacy JSON-like serializer", () => {
+    const [activity] = projectProviderRuntimeActivities(
+      runtimeEvent({
+        type: "tool.progress",
+        eventId: "tool-progress-fingerprint",
+        turnId: TURN_ID,
+        payload: {
+          toolUseId: "tool-fingerprint",
+          toolName: "mcp__github__fetch_pr",
+          summary: "Fetching PR",
+          elapsedSeconds: 2.4,
+        },
+      }),
+    );
+    const legacyFingerprint = JSON.stringify(
+      {
+        kind: activity!.kind,
+        summary: activity!.summary,
+        payload: activity!.payload,
+        turnId: activity!.turnId,
+      },
+      (() => {
+        const seen = new WeakSet<object>();
+        return (_key: string, entry: unknown) => {
+          if (typeof entry === "bigint") return entry.toString();
+          if (typeof entry === "function" || typeof entry === "symbol") return undefined;
+          if (entry && typeof entry === "object") {
+            if (seen.has(entry)) return "[Circular]";
+            seen.add(entry);
+          }
+          return entry;
+        };
+      })(),
+    );
+
+    expect(providerActivityUpdateFingerprint(activity!)).toBe(legacyFingerprint);
+  });
+
   it.each(["antigravity", "codex"] as const)(
     "projects %s tool lifecycle events through the same canonical activities",
     (provider) => {
@@ -567,6 +626,23 @@ describe("provider runtime activity projection", () => {
       },
     });
 
+    const [accountingOnlyUsage] = projectProviderRuntimeActivities(
+      runtimeEvent({
+        type: "thread.token-usage.updated",
+        eventId: "context-usage-accounting-only",
+        provider: "claudeAgent",
+        payload: { usage: { usedTokens: 0, totalProcessedTokens: 340_000 } },
+      }),
+    );
+    expect(accountingOnlyUsage).toMatchObject({
+      kind: "context-window.updated",
+      payload: {
+        usedTokens: 0,
+        totalProcessedTokens: 340_000,
+        provider: "claudeAgent",
+      },
+    });
+
     const [configured] = projectProviderRuntimeActivities(
       runtimeEvent({
         type: "session.configured",
@@ -614,6 +690,8 @@ describe("provider runtime activity projection", () => {
         turnId: TURN_ID,
         payload: {
           state: "completed",
+          tokenAccountingVersion: 1,
+          mainLoopTokens: 1_000,
           modelUsage: {
             "claude-fable-5": {
               inputTokens: 100,
@@ -630,8 +708,17 @@ describe("provider runtime activity projection", () => {
       kind: "turn.completed",
       payload: {
         state: "completed",
+        provider: "claudeAgent",
+        tokenAccountingVersion: 1,
+        mainLoopTokens: 1_000,
         modelUsage: {
-          "claude-fable-5": { inputTokens: 960, outputTokens: 40, totalTokens: 1_000 },
+          "claude-fable-5": {
+            inputTokens: 960,
+            outputTokens: 40,
+            totalTokens: 1_000,
+            cacheReadInputTokens: 800,
+            cacheCreationInputTokens: 60,
+          },
         },
       },
     });
@@ -687,5 +774,122 @@ describe("provider runtime activity projection", () => {
         }),
       ),
     ).toEqual([]);
+  });
+
+  it("keeps routine hook lifecycle internal and surfaces only consequential completions", () => {
+    expect(
+      projectProviderRuntimeActivities(
+        runtimeEvent({
+          type: "hook.started",
+          eventId: "hook-started",
+          turnId: TURN_ID,
+          payload: {
+            hookId: "hook-run-1",
+            hookName: "/Users/example/.codex/hooks.json",
+            hookEvent: "preToolUse",
+          },
+        }),
+      ),
+    ).toEqual([]);
+    expect(
+      projectProviderRuntimeActivities(
+        runtimeEvent({
+          type: "hook.progress",
+          eventId: "hook-progress",
+          turnId: TURN_ID,
+          payload: {
+            hookId: "hook-run-1",
+            stdout: "Still running.",
+          },
+        }),
+      ),
+    ).toEqual([]);
+    expect(
+      projectProviderRuntimeActivities(
+        runtimeEvent({
+          type: "hook.completed",
+          eventId: "hook-success",
+          turnId: TURN_ID,
+          payload: {
+            hookId: "hook-run-1",
+            hookName: "/Users/example/.codex/hooks.json",
+            hookEvent: "preToolUse",
+            outcome: "success",
+            status: "completed",
+            durationMs: 8,
+          },
+        }),
+      ),
+    ).toEqual([]);
+    expect(
+      projectProviderRuntimeActivities(
+        runtimeEvent({
+          type: "hook.completed",
+          eventId: "hook-cancelled",
+          turnId: TURN_ID,
+          payload: {
+            hookId: "hook-run-2",
+            outcome: "cancelled",
+          },
+        }),
+      ),
+    ).toEqual([]);
+
+    const [failed] = projectProviderRuntimeActivities(
+      runtimeEvent({
+        type: "hook.completed",
+        eventId: "hook-failed",
+        turnId: TURN_ID,
+        payload: {
+          hookId: "hook-run-3",
+          hookName: "/Users/example/.codex/hooks.json",
+          hookEvent: "postToolUse",
+          outcome: "error",
+          status: "failed",
+          statusMessage: "Hook process exited with code 1.",
+          durationMs: 20,
+        },
+      }),
+    );
+    expect(failed).toMatchObject({
+      tone: "error",
+      kind: "runtime.warning",
+      summary: "postToolUse hook failed",
+      payload: {
+        message: "Hook process exited with code 1.",
+        hookId: "hook-run-3",
+        hookEvent: "postToolUse",
+        outcome: "error",
+        status: "failed",
+        durationMs: 20,
+      },
+    });
+    expect(() => decodeActivityAppendCommand(failed!)).not.toThrow();
+
+    const [blocked] = projectProviderRuntimeActivities(
+      runtimeEvent({
+        type: "hook.completed",
+        eventId: "hook-blocked",
+        turnId: TURN_ID,
+        payload: {
+          hookId: "hook-run-4",
+          hookEvent: "preToolUse",
+          outcome: "cancelled",
+          status: "blocked",
+          statusMessage: "Policy blocked the command.",
+        },
+      }),
+    );
+    expect(blocked).toMatchObject({
+      tone: "info",
+      kind: "runtime.warning",
+      summary: "preToolUse hook blocked an action",
+      payload: {
+        message: "Policy blocked the command.",
+        outcome: "cancelled",
+        status: "blocked",
+      },
+    });
+    expect(() => decodeActivityAppendCommand(blocked!)).not.toThrow();
   });
 });

@@ -50,12 +50,19 @@ reassigns ownership:
 - `foundations/browser/**`, an isolated browser contract/policy test workspace
 - `scripts/ekop/**`
 - `.github/workflows/ekop.yml`
+- `.github/workflows/ekop-support.yml`, read-only timing-report contract checks
 - `docs/parallel/session-ekop.md`
 - `docs/parallel/integration.md`
 - `docs/architecture/zen-synaric.md`
 - `docs/architecture/browser-host.md`
 - `docs/roadmap/zen-synaric.md`
 - `docs/verification/ekop.md`
+- `docs/verification/gui-acceptance.md`, planned native GUI and measurement journeys
+
+The parent integration-preparation pass explicitly added the two support paths
+above on September 17, 2026. They extend only the already authorized O/P and GUI
+specification scope, not another session's source ownership. The integration audit
+recognizes these exact paths without treating all workflows or documents as owned.
 
 Do not edit the root Cargo manifests/lockfile, database schemas, shared domain
 contracts, controller, shell, panels, input widget, or the A/B/C/D/F/G/H/J/M
@@ -84,11 +91,15 @@ mark E/K/O/P or R/S/T complete from foundations, unit tests or a passing build a
 
 ## Current environment
 
-The first shell probe and an independent Python probe both returned
-`TransportTimeoutError`. Do not repeat the same unavailable local invocation.
-Use the authorized GitHub write path and isolated CI, with no repository secrets,
-no real user projects, and no external model credentials. CI results must be read
-before reporting success.
+Initial shell and Python probes returned `TransportTimeoutError`. The resumed
+pass recovered local execution and the pinned Rust toolchain from checked artifacts.
+GitHub publishing also recovered. The source-export checkpoint is `61aa436...`.
+Do not infer the current environment from the earlier timeout or from a directory
+name alone. Recheck a concrete execution path when resuming.
+
+Use isolated local and CI checks, with no repository secrets, no real user projects
+and no external model credentials. Read exact-candidate CI outcomes before reporting
+success. Preserve concurrent work and recheck the remote ref before publishing.
 
 ## Handoff discipline
 

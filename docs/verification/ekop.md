@@ -96,15 +96,57 @@ SHAs, path overlap, cross-owner edits, shared files and dirty worktree state.
 See [integration.md](../parallel/integration.md). Its tests create disposable Git
 repositories only. It does not fetch or merge the other sessions.
 
-## Next candidate checks
+## Verified support and cross-platform checkpoint
 
-The measurement/integration scripts and GUI specification are a subsequent
-checkpoint. Their self-tests and applicable exact-candidate CI must pass before
-claiming those outcomes verified. Native macOS/Windows application compile lanes
-are groundwork only and do not close P1/P2 interaction acceptance.
+Candidate: `fa16f2d3303f7af363321149c59992772a5a7d0d`.
+[EKOP run 35268552056](https://github.com/cmdr-chara/synara/actions/runs/35268552056)
+completed with all eight jobs successful. The candidate passed native application
+compilation on macOS arm64 and Windows x64, registry/consumer compilation and
+registry/browser-policy tests on all three targets, and the full Linux workspace
+checks, build and isolated native interaction smoke. macOS and Windows compilation
+is not GUI interaction, screen-reader, signing, installer or updater acceptance.
 
-After integration: shared state contracts and GUI R/T/S, remaining E lifecycle
-work, native browser adapter spike, real GUI measurements/accessibility, then
-secure updater/distribution with owner-provided signing/endpoint decisions.
+[Support run 35268552203](https://github.com/cmdr-chara/synara/actions/runs/35268552203)
+passed all three OS jobs for the 10 timing-aggregation regression tests. The
+aggregator validates previously collected samples and emits only local engineering
+reports. It is not a GUI benchmark collector or an automatic diagnostic sender.
+[GUI acceptance matrix](gui-acceptance.md) describes 29 future mode-switching,
+model-picker, browser and privacy journeys. Those journeys are plans, not passed
+interaction tests and not implemented Zen/Synaric layouts.
+
+A checked source bundle from run 35268552056 was independently reopened on Linux.
+Its revision, bundle/lockfile digests and independent root matched. Local checks
+passed 43 registry tests (38 unit and five integration), 13 browser-policy tests,
+seven integration-audit tests, seven process-measurement tests, 10 aggregation
+tests, six publisher tests and nine roadmap-validator tests, plus formatting,
+registry lints and consumer compilation. The browser policy test binary was used
+as a synthetic finite process workload to exercise the measurement/aggregation
+path. Its duration is not Synara application performance evidence.
+
+The original alternate registry/browser drafts were preserved outside tracked
+source rather than applied over concurrent EKOP changes. Later support work is
+additive. No other session was merged or treated as accepted by these checks.
+
+## Read-only audit hardening after the support checkpoint
+
+A disposable Git repository reproduced a file-monitor hook executing during the
+original audit's `git status`, despite no ref change. The regression failed
+before the fix. Invocation-local overrides now disable file monitoring, external
+diff/text-conversion helpers and replacement objects. The audit still detects
+uncommitted work and refuses unrelated history hidden behind replacement objects.
+The supporting ownership ledger also recognizes only the two reviewed new paths:
+`ekop-support.yml` and `gui-acceptance.md`. Unknown paths remain review-required.
+
+The 10 integration-audit tests passed locally on Linux after these changes. The
+existing seven process-measurement tests and 10 aggregation tests were rerun and
+passed. CI must independently verify this subsequent source candidate. The earlier
+`fa16f2d...` result does not grant later commits a pass. The EKOP workflow retains
+its exact downstream candidate SHA and per-platform outcomes for that purpose.
+
+## Remaining work
+
+After authorized integration: shared state contracts and GUI R/T/S, remaining E
+lifecycle work, native browser adapter spike, real GUI measurements/accessibility,
+then secure updater/distribution with owner-provided signing/endpoint decisions.
 No package, updater endpoint, signing identity, account service or telemetry
 collection has been created by this checkpoint.

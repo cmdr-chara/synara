@@ -109,3 +109,18 @@ macOS/Windows compile checks do not establish native interaction acceptance.
 Retain the final candidate, exact commands/results, residual gaps and a clean
 ownership report. Verify protected refs and the absence of unintended PR/release
 side effects before updating the delivery branch.
+
+## Read-only audit hardening
+
+The audit disables Git's configured file-monitor hook for each invocation, disables
+external diff/text-conversion helpers for path comparisons, and ignores replacement
+objects while checking ancestry. These are invocation-local overrides, not edits
+to repository or user configuration. A regression fixture first proves that a
+configured benign file-monitor hook runs under ordinary `git status`, then proves
+that the audit does not run it, still detects uncommitted work, and leaves HEAD
+unchanged. This does not turn an arbitrary repository, Git installation or working
+environment into a sandbox or prove semantic compatibility of the branches.
+
+The reviewed EKOP support workflow and GUI acceptance document are now explicit
+owned paths. Unrelated workflows and verification documents continue to require
+review rather than inheriting a blanket ownership exemption.

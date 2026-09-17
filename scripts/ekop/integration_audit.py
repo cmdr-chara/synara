@@ -8,6 +8,7 @@ import json
 import os
 from pathlib import Path
 import re
+import shlex
 import subprocess
 import tempfile
 import unittest
@@ -36,6 +37,7 @@ OWNED_FILES = {
         "docs/parallel/session-ekop.md", "docs/parallel/integration.md",
         "docs/architecture/zen-synaric.md", "docs/architecture/browser-host.md",
         "docs/roadmap/zen-synaric.md", "docs/verification/ekop.md",
+        ".github/workflows/ekop-support.yml", "docs/verification/gui-acceptance.md",
     },
 }
 
@@ -45,10 +47,13 @@ class AuditError(ValueError):
 
 
 def git(repo: Path, *args: str, check: bool = True) -> subprocess.CompletedProcess:
-    env = dict(os.environ, GIT_OPTIONAL_LOCKS="0", GIT_TERMINAL_PROMPT="0")
+    env = dict(os.environ, GIT_OPTIONAL_LOCKS="0", GIT_TERMINAL_PROMPT="0",
+               GIT_NO_REPLACE_OBJECTS="1")
+    # A read command can otherwise invoke the repository's file-monitor hook.
     try:
         return subprocess.run(
-            ["git", "-C", str(repo), *args], check=check, stdout=subprocess.PIPE,
+            ["git", "--no-pager", "-c", "core.fsmonitor=false", "-C", str(repo), *args],
+            check=check, stdout=subprocess.PIPE,
             stderr=subprocess.PIPE, timeout=30, env=env,
         )
     except (OSError, subprocess.SubprocessError) as exc:
@@ -80,7 +85,8 @@ def owner(path: str) -> str:
 
 def changed_paths(repo: Path, base: str, head: str) -> list[str]:
     # No rename heuristic: both sides of a rename participate in overlap detection.
-    data = git(repo, "diff", "--name-only", "--no-renames", "-z", base, head, "--").stdout
+    data = git(repo, "diff", "--no-ext-diff", "--no-textconv", "--name-only",
+               "--no-renames", "-z", base, head, "--").stdout
     return sorted(part.decode("utf-8", errors="surrogateescape") for part in data.split(b"\0") if part)
 
 
@@ -174,6 +180,13 @@ class Tests(unittest.TestCase):
         result = audit(self.repo, self.base, self.base, {"bcd": "bcd"})
         self.assertTrue(result["sessions"]["bcd"]["ownership_conflicts"])
 
+    def test_reviewed_support_surfaces_belong_only_to_ekop(self):
+        for path in [".github/workflows/ekop-support.yml", "docs/verification/gui-acceptance.md",
+                     "scripts/ekop/support/aggregate_samples.py"]:
+            self.assertEqual(owner(path), "ekop")
+        self.assertEqual(owner(".github/workflows/unreviewed.yml"), "review")
+        self.assertEqual(owner("docs/verification/other-session.md"), "review")
+
     def test_unknown_paths_are_not_silently_declared_owned(self):
         self.branch("ekop", "new-surface.rs")
         result = audit(self.repo, self.base, self.base, {"ekop": "ekop"})
@@ -193,6 +206,38 @@ class Tests(unittest.TestCase):
         self.assertTrue(result["worktree_dirty"])
         self.assertEqual(resolve(self.repo, "HEAD"), before)
         self.assertEqual(dirty.read_text(encoding="utf-8"), "keep me")
+
+    def test_status_does_not_execute_a_configured_file_monitor(self):
+        self.branch("ekop", "crates/synara-registry/fixture.txt")
+        marker = self.repo / ".git" / "monitor-invoked"
+        hook = self.repo / ".git" / "test-monitor.sh"
+        hook.write_text(
+            "#!/bin/sh\nprintf invoked > " + shlex.quote(marker.as_posix())
+            + "\nprintf 'test-token\\0'\n", encoding="utf-8", newline="\n",
+        )
+        hook.chmod(0o700)
+        self.run_git("config", "core.fsmonitor", shlex.quote(hook.as_posix()))
+        # Prove the fixture hook is executable on this host, including Git for Windows.
+        self.run_git("status", "--porcelain=v1", "-z")
+        self.assertTrue(marker.exists(), "Configured file-monitor fixture did not run")
+        marker.unlink()
+        (self.repo / "uncommitted.txt").write_text("preserve", encoding="utf-8")
+        before = resolve(self.repo, "HEAD")
+        result = audit(self.repo, self.base, self.base, {"ekop": "ekop"})
+        self.assertFalse(marker.exists(), "Read-only audit invoked repository-configured code")
+        self.assertTrue(result["worktree_dirty"])
+        self.assertEqual(resolve(self.repo, "HEAD"), before)
+
+    def test_replacement_objects_cannot_hide_unrelated_history(self):
+        self.run_git("checkout", "--orphan", "foreign")
+        self.run_git("rm", "-rf", ".")
+        self.commit("foreign.txt", "foreign")
+        foreign = resolve(self.repo, "HEAD")
+        self.run_git("replace", "--graft", foreign, self.base)
+        # Normal Git sees the synthetic ancestry. The audit must inspect real parents.
+        self.run_git("merge-base", "--is-ancestor", self.base, foreign)
+        with self.assertRaises(AuditError):
+            audit(self.repo, self.base, self.base, {"ekop": "foreign"})
 
     def test_unrelated_root_is_rejected(self):
         self.run_git("checkout", "--orphan", "foreign")

@@ -1,0 +1,81 @@
+name: FGH offline verification inputs
+on:
+  push:
+    branches: [astra/session-fgh]
+    paths: [.github/workflows/fgh-inputs.yml]
+permissions:
+  contents: read
+jobs:
+  inputs:
+    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/session-fgh'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          persist-credentials: false
+      - name: Install pinned toolchain
+        run: rustup toolchain install 1.98.1 --profile minimal
+      - name: Fetch locked dependencies
+        run: cargo +1.98.1 fetch --locked
+      - name: Native development libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil fonts-dejavu-core
+      - name: Export immutable verification inputs
+        shell: bash
+        run: |
+          mkdir -p /tmp/fgh-inputs /tmp/fgh-cargo
+          paths=()
+          for path in registry git; do
+            if test -d "$HOME/.cargo/$path"; then paths+=("$path"); fi
+          done
+          tar -C "$HOME/.cargo" -czf /tmp/fgh-cargo/dependencies.tar.gz "${paths[@]}"
+          sha256sum /tmp/fgh-cargo/dependencies.tar.gz > /tmp/fgh-inputs/dependencies.sha256
+          split -b 400M -d /tmp/fgh-cargo/dependencies.tar.gz /tmp/fgh-cargo/dependencies.part-
+          cp Cargo.lock /tmp/fgh-inputs/Cargo.lock
+          git rev-parse HEAD > /tmp/fgh-inputs/revision.txt
+          python3 - <<'PY'
+          import glob, pathlib, tarfile
+          paths = ['/usr/include', '/usr/lib/x86_64-linux-gnu/pkgconfig', '/usr/share/pkgconfig']
+          names = ['xkbcommon', 'wayland', 'fontconfig', 'freetype', 'asound', 'vulkan', 'EGL', 'GL', 'X', 'xcb', 'ffi', 'zstd', 'brotli', 'bz2', 'png', 'expat', 'uuid', 'z', 'drm', 'gbm', 'udev', 'dbus', 'ssl', 'crypto']
+          for name in names:
+              paths.extend(glob.glob('/usr/lib/x86_64-linux-gnu/lib' + name + '*.so*'))
+          paths.extend(glob.glob('/usr/lib/llvm-*/lib/libclang.so*'))
+          with tarfile.open('/tmp/fgh-inputs/native-sysroot.tar.gz', 'w:gz', dereference=True) as archive:
+              for name in sorted(set(paths)):
+                  if pathlib.Path(name).exists():
+                      archive.add(name, arcname=name.lstrip('/'))
+          PY
+          sha256sum /tmp/fgh-inputs/native-sysroot.tar.gz > /tmp/fgh-inputs/native-sysroot.sha256
+          ls -lh /tmp/fgh-cargo/dependencies.part-*
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: fgh-offline-metadata
+          path: /tmp/fgh-inputs/
+          retention-days: 1
+          compression-level: 0
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: fgh-dependencies-00
+          path: /tmp/fgh-cargo/dependencies.part-00
+          retention-days: 1
+          compression-level: 0
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: fgh-dependencies-01
+          path: /tmp/fgh-cargo/dependencies.part-01
+          retention-days: 1
+          compression-level: 0
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: fgh-dependencies-02
+          path: /tmp/fgh-cargo/dependencies.part-02
+          retention-days: 1
+          compression-level: 0
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: fgh-dependencies-03
+          path: /tmp/fgh-cargo/dependencies.part-03
+          retention-days: 1
+          compression-level: 0

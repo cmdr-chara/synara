@@ -2,8 +2,10 @@ use gpui::Focusable;
 mod conversation;
 mod panels;
 mod registry;
+mod terminal;
 use crate::close::CloseState;
 use crate::input::{EntryEvent, EntryMode, TextEntry};
+use terminal::{TerminalSession, TerminalView};
 use gpui::{
     App, Context, Entity, ScrollHandle, SharedString, Subscription, Window, div, prelude::*, px,
     rgb,
@@ -15,7 +17,7 @@ use std::{
 };
 use synara_agent::{TraceEntry, UiInteraction};
 use synara_core::*;
-use synara_runtime::{FileEntry, NativeTerminal, TerminalSnapshot};
+use synara_runtime::{FileEntry, NativeTerminal, TerminalKey, TerminalModifiers, TerminalRenderSnapshot};
 use synara_workspace::*;
 use tokio::{runtime::Handle, sync::mpsc};
 
@@ -92,11 +94,17 @@ enum Update {
     },
     TerminalStarted {
         root: PathBuf,
-        terminal: Arc<NativeTerminal>,
+        generation: u64,
+        terminal: TerminalSession,
     },
     TerminalOutput {
         root: PathBuf,
-        snapshot: TerminalSnapshot,
+        generation: u64,
+        snapshot: TerminalRenderSnapshot,
+    },
+    TerminalFailed {
+        generation: u64,
+        error: String,
     },
     Tick,
     Done(String),
@@ -122,7 +130,7 @@ pub struct Shell {
     profile_editor: Entity<TextEntry>,
     editor: Entity<TextEntry>,
     commit_message: Entity<TextEntry>,
-    terminal_command: Entity<TextEntry>,
+    terminal_view: Entity<TerminalView>,
     drafts: HashMap<TaskId, String>,
     busy: HashSet<TaskId>,
     connecting: HashSet<TaskId>,
@@ -143,9 +151,10 @@ pub struct Shell {
     git: GitStatus,
     diff: String,
     staged: bool,
-    terminal: Option<Arc<NativeTerminal>>,
+    terminal: Option<TerminalSession>,
     terminal_root: Option<PathBuf>,
-    terminal_snapshot: Option<TerminalSnapshot>,
+    terminal_generation: u64,
+    terminal_starting: bool,
     polling: bool,
     _updates: gpui::Task<()>,
     _subscriptions: Vec<Subscription>,
@@ -222,8 +231,7 @@ impl Shell {
             cx.new(|cx| TextEntry::new("Select a UTF-8 text file", EntryMode::Editor, 480., cx));
         let commit_message =
             cx.new(|cx| TextEntry::new("Commit message", EntryMode::SingleLine, 38., cx));
-        let terminal_command =
-            cx.new(|cx| TextEntry::new("Shell command", EntryMode::SingleLine, 38., cx));
+        let terminal_view = cx.new(TerminalView::new);
         profile_editor.update(cx, |entry, cx| {
             entry.set_text(
                 serde_json::to_string_pretty(&bootstrap.profiles).unwrap_or_default(),
@@ -250,11 +258,6 @@ impl Shell {
             cx.subscribe(&editor, |this, _, event, cx| match event {
                 EntryEvent::Save => this.save_file(cx),
                 _ => cx.notify(),
-            }),
-            cx.subscribe(&terminal_command, |this, _, event, cx| {
-                if matches!(event, EntryEvent::Submit) {
-                    this.send_terminal(cx)
-                }
             }),
         ];
         let project = bootstrap
@@ -294,7 +297,7 @@ impl Shell {
             profile_editor,
             editor,
             commit_message,
-            terminal_command,
+            terminal_view,
             drafts: HashMap::new(),
             busy: HashSet::new(),
             connecting: HashSet::new(),
@@ -317,7 +320,8 @@ impl Shell {
             staged: false,
             terminal: None,
             terminal_root: None,
-            terminal_snapshot: None,
+            terminal_generation: 0,
+            terminal_starting: false,
             polling: false,
             _updates: updates,
             _subscriptions: subscriptions,
@@ -728,54 +732,86 @@ impl Shell {
     }
     fn start_terminal(&mut self, cx: &mut Context<Self>) {
         let Some(root) = self.root() else { return };
-        if self.terminal.is_some() {
+        if self.terminal_starting {
             return;
         }
+        if let Some(terminal) = self.terminal.take() {
+            let _ = terminal.kill();
+        }
+        self.terminal_generation = self.terminal_generation.wrapping_add(1);
+        let generation = self.terminal_generation;
+        self.terminal_starting = true;
+        self.terminal_root = None;
+        self.terminal_view
+            .update(cx, |terminal, cx| terminal.clear_session(cx));
         self.job(async move {
             let cwd = root.clone();
-            let terminal = tokio::task::spawn_blocking(move || {
+            let result = tokio::task::spawn_blocking(move || {
                 #[cfg(windows)]
                 let command = std::env::var("COMSPEC").unwrap_or_else(|_| "cmd.exe".into());
                 #[cfg(not(windows))]
                 let command = std::env::var("SHELL").unwrap_or_else(|_| "/bin/sh".into());
                 NativeTerminal::spawn(&synara_runtime::LaunchSpec::new(command), &cwd, 24, 88)
+                    .map(|terminal| TerminalSession::Local(Arc::new(terminal)))
             })
             .await
-            .map_err(|_| WorkspaceError::Worker)??;
-            Ok(Update::TerminalStarted {
-                root,
-                terminal: Arc::new(terminal),
-            })
+            .map_err(|_| WorkspaceError::Worker)?;
+            match result {
+                Ok(terminal) => Ok(Update::TerminalStarted {
+                    root,
+                    generation,
+                    terminal,
+                }),
+                Err(error) => Ok(Update::TerminalFailed {
+                    generation,
+                    error: error.to_string(),
+                }),
+            }
         });
-        self.notice = Some("Starting a local shell in the selected workspace".into());
+        self.notice = Some("Starting an interactive shell in the selected workspace".into());
         cx.notify();
     }
-    fn terminal_input(&self, bytes: Vec<u8>) {
-        if let Some(terminal) = self.terminal.clone() {
-            self.job(async move {
-                tokio::task::spawn_blocking(move || terminal.input(&bytes))
-                    .await
-                    .map_err(|_| WorkspaceError::Worker)??;
-                Ok(Update::Done(String::new()))
-            });
+
+    fn interrupt_terminal(&mut self, cx: &mut Context<Self>) {
+        if let Some(terminal) = &self.terminal {
+            let result = terminal.key(
+                TerminalKey::Character('c'),
+                TerminalModifiers {
+                    control: true,
+                    ..TerminalModifiers::default()
+                },
+            );
+            if let Err(error) = result {
+                self.error = Some(error.to_string());
+            }
         }
+        cx.notify();
     }
-    fn send_terminal(&mut self, cx: &mut Context<Self>) {
-        let text = self.terminal_command.read(cx).text().to_owned();
-        self.terminal_input(format!("{text}\r").into_bytes());
-        self.terminal_command
-            .update(cx, |entry, cx| entry.clear(cx));
+
+    fn stop_terminal(&mut self, cx: &mut Context<Self>) {
+        if let Some(terminal) = &self.terminal {
+            match terminal.kill() {
+                Ok(()) => self.notice = Some("Shell stop requested".into()),
+                Err(error) => self.error = Some(error.to_string()),
+            }
+        }
+        cx.notify();
     }
     fn poll(&mut self) {
         if let Some(terminal) = self.terminal.clone()
             && self.panel == Panel::Terminal
             && let Some(root) = self.terminal_root.clone()
         {
+            let generation = self.terminal_generation;
             self.job(async move {
-                let snapshot = tokio::task::spawn_blocking(move || terminal.snapshot())
+                let snapshot = tokio::task::spawn_blocking(move || terminal.render_snapshot())
                     .await
                     .map_err(|_| WorkspaceError::Worker)??;
-                Ok(Update::TerminalOutput { root, snapshot })
+                Ok(Update::TerminalOutput {
+                    root,
+                    generation,
+                    snapshot,
+                })
             });
         }
         if self.polling {
@@ -1059,23 +1095,39 @@ impl Shell {
                     self.diff = diff;
                 }
             }
-            Update::TerminalStarted { root, terminal } => {
-                self.terminal = Some(terminal);
+            Update::TerminalStarted {
+                root,
+                generation,
+                terminal,
+            } => {
+                if generation != self.terminal_generation || self.root() != Some(root.clone()) {
+                    let _ = terminal.kill();
+                    return;
+                }
+                self.terminal_starting = false;
+                self.terminal = Some(terminal.clone());
                 self.terminal_root = Some(root);
+                self.terminal_view
+                    .update(cx, |view, cx| view.set_session(terminal, cx));
                 self.notice = None;
                 self.poll();
             }
-            Update::TerminalOutput { root, snapshot } => {
-                if self.terminal_root == Some(root) {
-                    let changed = self.terminal_snapshot.as_ref().is_none_or(|old| {
-                        old.revision != snapshot.revision
-                            || old.exit_code != snapshot.exit_code
-                            || old.error != snapshot.error
-                    });
-                    if !changed {
-                        return;
-                    }
-                    self.terminal_snapshot = Some(snapshot);
+            Update::TerminalOutput {
+                root,
+                generation,
+                snapshot,
+            } => {
+                if generation == self.terminal_generation && self.terminal_root == Some(root) {
+                    self.terminal_view
+                        .update(cx, |view, cx| view.set_snapshot(snapshot, cx));
+                }
+            }
+            Update::TerminalFailed { generation, error } => {
+                if generation == self.terminal_generation {
+                    self.terminal_starting = false;
+                    self.terminal = None;
+                    self.terminal_root = None;
+                    self.error = Some(error);
                 }
             }
             Update::Done(message) => {

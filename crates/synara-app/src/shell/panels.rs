@@ -55,7 +55,14 @@ impl Shell {
             .into_any_element()
     }
     pub(super) fn terminal_panel(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
-        let terminal = self.terminal.clone();
+        let terminal_view = self.terminal_view.clone();
+        let exit_code = terminal_view.read(cx).exit_code();
+        let terminal_error = terminal_view
+            .read(cx)
+            .terminal_error()
+            .map(str::to_owned);
+        let title = terminal_view.read(cx).title().map(str::to_owned);
+        let cwd_hint = terminal_view.read(cx).cwd_hint().map(str::to_owned);
         div()
             .flex()
             .flex_col()
@@ -74,75 +81,78 @@ impl Shell {
                             .flex()
                             .gap_2()
                             .child(
-                                button("start-shell", "Start shell", false).on_click(
-                                    cx.listener(|this, _, _, cx| this.start_terminal(cx)),
-                                ),
+                                button(
+                                    "start-shell",
+                                    if self.terminal.is_some() {
+                                        "Restart shell"
+                                    } else {
+                                        "Start shell"
+                                    },
+                                    false,
+                                )
+                                .on_click(cx.listener(|this, _, _, cx| this.start_terminal(cx))),
                             )
-                            .child(button("interrupt-shell", "Interrupt", false).on_click(
-                                cx.listener(|this, _, _, _| this.terminal_input(vec![3])),
-                            ))
-                            .child(button("stop-shell", "Stop shell", false).on_click(
-                                cx.listener(move |this, _, _, _| {
-                                    if let Some(terminal) = terminal.clone() {
-                                        this.job(async move {
-                                            tokio::task::spawn_blocking(move || terminal.kill())
-                                                .await
-                                                .map_err(|_| WorkspaceError::Worker)??;
-                                            Ok(Update::Done("Shell stopped".into()))
-                                        });
-                                    }
-                                }),
-                            )),
+                            .child(
+                                button("interrupt-shell", "Interrupt", false)
+                                    .on_click(cx.listener(|this, _, _, cx| {
+                                        this.interrupt_terminal(cx)
+                                    })),
+                            )
+                            .child(
+                                button("stop-shell", "Stop shell", false)
+                                    .on_click(cx.listener(|this, _, _, cx| {
+                                        this.stop_terminal(cx)
+                                    })),
+                            ),
                     ),
             )
-            .child(div().text_xs().text_color(rgb(0x9cabbd)).child(
-                self.terminal_root.as_ref().map_or_else(
-                    || "No running shell".into(),
-                    |root| format!("Shell directory: {}", root.display()),
-                ),
-            ))
+            .child(
+                div()
+                    .text_xs()
+                    .text_color(rgb(0x9cabbd))
+                    .child(if self.terminal_starting {
+                        "Starting shell...".into()
+                    } else {
+                        self.terminal_root.as_ref().map_or_else(
+                            || "No running shell".into(),
+                            |root| {
+                                let mut status = format!("Shell directory: {}", root.display());
+                                if let Some(title) = title {
+                                    status.push_str(&format!(" · {title}"));
+                                }
+                                if let Some(cwd) = cwd_hint {
+                                    status.push_str(&format!(" · {cwd}"));
+                                }
+                                status
+                            },
+                        )
+                    }),
+            )
             .child(
                 div()
                     .id("terminal-screen")
                     .flex_1()
                     .min_h_0()
-                    .overflow_y_scroll()
-                    .p_4()
                     .rounded_md()
+                    .border_1()
+                    .border_color(rgb(0x283444))
                     .bg(rgb(0x0b1017))
-                    .font_family("DejaVu Sans Mono")
-                    .child(self.terminal_snapshot.as_ref().map_or_else(
-                        || "Start a shell to run commands in this workspace.".into(),
-                        |s| s.text.clone(),
-                    )),
+                    .child(terminal_view),
             )
+            .children(exit_code.map(|code| {
+                div().text_xs().child(format!(
+                    "Shell exited with status {code}. Historical output is retained."
+                ))
+            }))
             .children(
-                self.terminal_snapshot
-                    .as_ref()
-                    .and_then(|s| s.exit_code)
-                    .map(|code| {
-                        div().text_xs().child(format!(
-                            "Shell exited with status {code}. Historical output is retained."
-                        ))
-                    }),
+                terminal_error
+                    .map(|error| div().text_color(rgb(0xffb1b5)).child(error)),
             )
-            .children(
-                self.terminal_snapshot
-                    .as_ref()
-                    .and_then(|s| s.error.as_ref())
-                    .map(|error| div().text_color(rgb(0xffb1b5)).child(error.clone())),
-            )
-            .child(self.terminal_command.clone())
             .child(
                 div()
-                    .flex()
-                    .justify_between()
-                    .items_center()
-                    .child("Enter sends the command to the shell.")
-                    .child(
-                        button("terminal-send", "Run command", false)
-                            .on_click(cx.listener(|this, _, _, cx| this.send_terminal(cx))),
-                    ),
+                    .text_xs()
+                    .text_color(rgb(0x8e9caf))
+                    .child("Type directly into the terminal. Ctrl+C interrupts. Ctrl+Shift+C copies a selection and Ctrl+Shift+V pastes through review when required."),
             )
             .into_any_element()
     }

@@ -38,19 +38,18 @@ jobs:
         id: apply
         run: |
           python3 - <<'PY'
-          import base64, hashlib, json, os, pathlib, re, subprocess, zlib
+          import hashlib, json, os, pathlib, re, subprocess
           def git(*args):
               return subprocess.check_output(['git', *args], text=True).strip()
           envelope = pathlib.Path('crates/synara-runtime/verification/ajm-checkpoint.json')
-          assert envelope.stat().st_size <= 2_000_000
+          assert envelope.stat().st_size <= 4_000_000
           data = json.loads(envelope.read_text())
           assert re.fullmatch(r'[0-9a-f]{40}', data['base'])
           subprocess.run(['git', 'merge-base', '--is-ancestor', data['base'], 'HEAD'], check=True)
           assert git('merge-base', '1cd24dd6f5ac9571c1ea2b7329bcb5fc1a4ad121', 'HEAD') == '1cd24dd6f5ac9571c1ea2b7329bcb5fc1a4ad121'
           assert git('rev-list', '--max-parents=0', 'HEAD') == '43b1fb89bf19dadc388d18008f9ceb21b8215716'
-          inflater = zlib.decompressobj()
-          patch = inflater.decompress(base64.b64decode(data['patch'], validate=True), 4_000_001)
-          assert len(patch) <= 4_000_000 and inflater.eof and not inflater.unused_data and not inflater.unconsumed_tail
+          patch = data['text_patch'].encode('utf-8')
+          assert len(patch) <= 3_000_000
           assert hashlib.sha256(patch).hexdigest() == data['sha256']
           exact = {'Cargo.lock', 'Cargo.toml', 'ROADMAP.md', 'crates/synara-app/src/shell.rs', 'crates/synara-app/src/shell/panels.rs'}
           prefixes = ('crates/synara-runtime/', 'crates/synara-workspace/', 'crates/synara-app/src/shell/terminal/')
@@ -67,8 +66,7 @@ jobs:
               assert hashes['after'] is None or re.fullmatch(r'[0-9a-f]{40}', hashes['after'])
           subprocess.run(['git', 'apply', '--check', '--index', '-'], input=patch, check=True)
           subprocess.run(['git', 'apply', '--index', '-'], input=patch, check=True)
-          changed = set(git('diff', '--cached', '--name-only').splitlines())
-          assert changed == paths, (changed, paths)
+          assert set(git('diff', '--cached', '--name-only').splitlines()) == paths
           for name, hashes in data['files'].items():
               entry = git('ls-files', '--stage', '--', name).split()
               assert (entry[1] if entry else None) == hashes['after'], f'changed content: {name}'
@@ -148,53 +146,6 @@ jobs:
           rustup toolchain install 1.98.1 --profile minimal --component rustfmt --component clippy
           sudo apt-get update
           sudo apt-get install -y clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil fonts-dejavu-core
-      - name: Export public native development inputs
-        if: contains(github.event.head_commit.message, '[ajm-native-kit]')
-        run: |
-          python3 - <<'PY'
-          import glob, pathlib, re, shutil, subprocess, tarfile
-          root = pathlib.Path('/tmp/ajm-native-kit')
-          library = root / 'usr/lib/x86_64-linux-gnu'
-          library.mkdir(parents=True)
-          shutil.copytree('/usr/include', root / 'usr/include', symlinks=True)
-          shutil.copytree('/usr/lib/x86_64-linux-gnu/pkgconfig', library / 'pkgconfig', symlinks=True)
-          shutil.copytree('/usr/share/pkgconfig', root / 'usr/share/pkgconfig', symlinks=True)
-          seen = {}
-          def add(source):
-              p = pathlib.Path(source)
-              real = p.resolve(strict=True)
-              dest = library / p.name
-              if dest.exists() or dest.is_symlink():
-                  return
-              if real in seen:
-                  dest.symlink_to(seen[real])
-              else:
-                  shutil.copy2(real, dest)
-                  seen[real] = dest.name
-          names = 'fontconfig freetype expat png16 z bz2 brotli* harfbuzz graphite2 asound xcb* X11 X11-xcb Xau Xdmcp Xrandr Xrender Xext Xfixes Xcursor Xinerama xkbcommon* wayland* ffi EGL GL* vulkan ssl crypto zstd xml2 edit tinfo bsd md drm*'
-          for name in names.split():
-              for source in glob.glob('/usr/lib/x86_64-linux-gnu/lib' + name + '.so*'):
-                  add(source)
-          clang = pathlib.Path('/usr/lib/llvm-18/lib/libclang.so')
-          add(clang)
-          for line in subprocess.check_output(['ldd', str(clang)], text=True).splitlines():
-              match = re.search(r'=> (/\S+)', line)
-              if match and pathlib.Path(match.group(1)).name not in {'libc.so.6','libm.so.6','libdl.so.2','libpthread.so.0','libstdc++.so.6','libgcc_s.so.1'}:
-                  add(match.group(1))
-          with tarfile.open('/tmp/ajm-native-kit.tar.gz', 'w:gz') as tar:
-              tar.add(root / 'usr', arcname='usr')
-          assert pathlib.Path('/tmp/ajm-native-kit.tar.gz').stat().st_size < 500_000_000
-          PY
-          sha256sum /tmp/ajm-native-kit.tar.gz > /tmp/ajm-native-kit.sha256
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: contains(github.event.head_commit.message, '[ajm-native-kit]')
-        with:
-          name: ajm-native-development-inputs
-          path: |
-            /tmp/ajm-native-kit.tar.gz
-            /tmp/ajm-native-kit.sha256
-          retention-days: 1
-          compression-level: 0
       - name: Structural checks
         run: |
           set -o pipefail

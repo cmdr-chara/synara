@@ -1,0 +1,42 @@
+name: SSH transport verification
+on:
+  push:
+    branches: [astra/gpui-clean-rewrite]
+    paths:
+      - crates/synara-runtime/**
+      - crates/synara-acp/**
+      - crates/synara-agent/**
+      - crates/synara-core/**
+      - crates/synara-workspace/**
+      - Cargo.lock
+      - Cargo.toml
+      - rust-toolchain.toml
+      - scripts/ssh_smoke.py
+      - .github/workflows/ssh.yml
+permissions:
+  contents: read
+concurrency:
+  group: ssh-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  loopback:
+    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/gpui-clean-rewrite'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      CARGO_BUILD_JOBS: '2'
+      RUSTUP_TOOLCHAIN: '1.98.1'
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          persist-credentials: false
+      - name: Install pinned Rust and OpenSSH
+        run: |
+          rustup toolchain install 1.98.1 --profile minimal
+          sudo apt-get update
+          sudo apt-get install -y openssh-client openssh-server
+          sudo install -d -m 0755 /run/sshd
+      - name: Check fixture syntax
+        run: python3 -m py_compile scripts/ssh_smoke.py
+      - name: Verify isolated SSH transport and generic ACP
+        run: python3 scripts/ssh_smoke.py

@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use std::{sync::Arc, time::Duration};
 use tokio::{
     io::{AsyncRead, AsyncWrite},
-    process::{Child, Command},
+    process::Command,
     sync::watch,
 };
 use tokio_util::sync::CancellationToken;
@@ -83,7 +83,7 @@ pub(crate) fn spawn_owned(mut command: Command) -> Result<SpawnedProcess, Runtim
     }
     let mut child = command.spawn()?;
     let pid = child.id().ok_or(RuntimeError::Closed)?;
-    let guard = ProcessTreeGuard { pid };
+    let guard = ProcessTreeGuard { pid, armed: true };
     let stdin = child.stdin.take().ok_or(RuntimeError::Closed)?;
     let stdout = child.stdout.take().ok_or(RuntimeError::Closed)?;
     let stderr = child.stderr.take().ok_or(RuntimeError::Closed)?;
@@ -94,6 +94,9 @@ pub(crate) fn spawn_owned(mut command: Command) -> Result<SpawnedProcess, Runtim
         stop: stop.clone(),
         exit: exit_rx,
     }));
+    #[cfg(target_os = "linux")]
+    crate::process_linux::supervise(child, guard, stop, exit_tx);
+    #[cfg(not(target_os = "linux"))]
     tokio::spawn(async move {
         let _guard = guard;
         let status = tokio::select! {
@@ -130,7 +133,11 @@ pub(crate) fn spawn_owned(mut command: Command) -> Result<SpawnedProcess, Runtim
     })
 }
 
-async fn stop_child(child: &mut Child, pid: u32) -> std::io::Result<std::process::ExitStatus> {
+#[cfg(not(target_os = "linux"))]
+async fn stop_child(
+    child: &mut tokio::process::Child,
+    pid: u32,
+) -> std::io::Result<std::process::ExitStatus> {
     signal_tree(pid, false);
     match tokio::time::timeout(Duration::from_secs(2), child.wait()).await {
         Ok(status) => status,
@@ -143,12 +150,21 @@ async fn stop_child(child: &mut Child, pid: u32) -> std::io::Result<std::process
 }
 
 /// Drop is also reached when the executor aborts the supervising task.
-struct ProcessTreeGuard {
-    pid: u32,
+pub(crate) struct ProcessTreeGuard {
+    pub(crate) pid: u32,
+    armed: bool,
+}
+impl ProcessTreeGuard {
+    pub(crate) fn kill_and_disarm(&mut self) {
+        if self.armed {
+            signal_tree(self.pid, true);
+            self.armed = false;
+        }
+    }
 }
 impl Drop for ProcessTreeGuard {
     fn drop(&mut self) {
-        signal_tree(self.pid, true);
+        self.kill_and_disarm();
     }
 }
 

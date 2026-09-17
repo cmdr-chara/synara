@@ -42,6 +42,20 @@ impl LaunchSpec {
         {
             return Err(RuntimeError::Invalid("invalid command argument".into()));
         }
+        // Bound the aggregate allocation, not merely each individual entry.
+        let total = self
+            .args
+            .iter()
+            .map(String::len)
+            .chain(
+                self.env
+                    .iter()
+                    .map(|(key, value)| key.len().saturating_add(value.len())),
+            )
+            .try_fold(self.command.as_os_str().len(), usize::checked_add);
+        if total.is_none_or(|total| total > 1024 * 1024) {
+            return Err(RuntimeError::Limit);
+        }
         for (key, value) in &self.env {
             if !valid_env_key(key) || value.contains('\0') || value.len() > 1024 * 1024 {
                 return Err(RuntimeError::Invalid("invalid environment entry".into()));

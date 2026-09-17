@@ -421,6 +421,53 @@ pub fn now_ms() -> i64 {
 mod tests {
     use super::*;
     #[tokio::test]
+    async fn catalog_metadata_tracks_committed_events_before_broadcast() {
+        let service = WorkspaceService::memory().unwrap();
+        let dir = tempfile::tempdir().unwrap();
+        let project = service
+            .add_local_workspace(dir.path().into())
+            .await
+            .unwrap();
+        let task = service
+            .create_task(project.id, "Initial title".into(), "opencode".into())
+            .await
+            .unwrap();
+        let mut changes = service.subscribe();
+        service
+            .record(
+                task.thread_id,
+                ThreadEvent::PromptStarted { turn: "t".into() },
+            )
+            .await
+            .unwrap();
+        changes.recv().await.unwrap();
+        assert_eq!(
+            service.task(task.id).await.unwrap().state,
+            TaskState::Running
+        );
+        service
+            .record(
+                task.thread_id,
+                ThreadEvent::TitleChanged {
+                    title: "Updated title".into(),
+                },
+            )
+            .await
+            .unwrap();
+        service
+            .record(
+                task.thread_id,
+                ThreadEvent::PromptFinished {
+                    reason: "end_turn".into(),
+                },
+            )
+            .await
+            .unwrap();
+        let catalog = service.catalog().await.unwrap();
+        assert_eq!(catalog.tasks[0].title, "Updated title");
+        assert_eq!(catalog.tasks[0].state, TaskState::Completed);
+    }
+    #[tokio::test]
     async fn concurrent_emissions_are_durable_ordered_and_replayable() {
         let service = WorkspaceService::memory().unwrap();
         let dir = tempfile::tempdir().unwrap();

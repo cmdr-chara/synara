@@ -88,11 +88,16 @@ Conversation events are persisted before reaching the interface. The composer
 supports platform text input, IME composition, selection, clipboard and undo/redo.
 Enter sends, Shift+Enter inserts a line, and Stop cancels the active prompt.
 Tool permissions and structured questions require explicit user responses.
+Ctrl+1 through Ctrl+7 switch between Conversation, Files, Changes, Terminal,
+Inspector, Settings and Agents. The platform command modifier is also recognized.
 
 Files provides a UTF-8 editor with dirty state, guarded saves and external-change
 conflict detection. Ctrl+S saves. UTF-8 BOMs and existing line endings are
 preserved. The interactive editor currently limits files to 1 MiB. Symlinks,
-binary content and oversized files produce visible errors.
+binary content and oversized files produce visible errors. Closing with unsaved
+file changes offers Keep working, Discard and close, or Save and close. A failed
+or conflicting save leaves the editor open. An outstanding save must finish before
+close can proceed. The confirmation does not protect against forced OS termination.
 
 Changes shows system Git status and staged/unstaged diffs with literal-path
 staging. Local commits use the configured Git identity, with hooks and signing
@@ -119,6 +124,13 @@ Repository content, agent output and tool requests are untrusted. Filesystem
 callbacks enforce containment and symlink rules. Permissions are not silently
 approved. Agent state and Synara's persistent transcript remain separate.
 
+Task title, activity and recency are projected in the same SQLite transaction as
+each conversation event, before observers receive it. Overlapping permissions keep
+a task waiting until the last response. Schema version 3 backfills older catalogs
+from ordered events without loading full transcripts into memory. A failed
+migration rolls back rather than publishing a partial catalog. Back up the data
+directory before testing a development build. Older builds reject newer schemas.
+
 ## Verification
 
 ```sh
@@ -127,10 +139,31 @@ cargo check --locked --workspace
 cargo clippy --locked --workspace --all-targets --all-features -- -D warnings
 cargo test --locked --workspace
 python3 scripts/audit_workspace.py
+python3 scripts/test_apply_source.py
 ```
 
 Tests do not require vendor credentials. The fixture executable accepts only an
 explicit `--integration-fixture` invocation and is for testing the generic host.
+
+Linux CI also builds the application and exercises actual mouse and keyboard input
+on an isolated Xvfb display. The smoke checks cover streaming, two fixture-agent
+profiles, tool output, permission denial, approved filesystem writes, rejected
+path escapes, offline registry approval, editor close/cancel/save/conflict handling
+and history restoration without agent autostart. Screenshots and results are saved
+as the `native-desktop-smoke` workflow artifact. This is fixture proof, not a live
+vendor-service test or a claim of complete visual/accessibility coverage.
+
+To run the desktop smoke locally on Linux, install Xvfb, libXtst and Pillow, then:
+
+```sh
+cargo build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture
+python3 scripts/native_smoke.py --binary target/debug/synara-app \
+  --fixture target/debug/synara-acp-fixture --output /tmp/synara-native-smoke
+```
+
+The output directory must not already exist. The test never controls an existing
+desktop and never connects a vendor agent. The fixture registry launcher is only
+approved, never executed.
 
 Complete terminal emulation, remote workspace UI,
 browser/device hosting, updater, native credential integration and broader

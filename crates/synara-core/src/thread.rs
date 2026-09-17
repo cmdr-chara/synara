@@ -61,7 +61,7 @@ pub struct Thread {
     text_bytes: usize,
     max_text_bytes: usize,
     max_events: usize,
-    active_turn: Option<String>,
+    activity: ThreadActivity,
     replay_backup: Option<Box<Thread>>,
 }
 
@@ -86,7 +86,7 @@ impl Thread {
             text_bytes: 0,
             max_text_bytes: 64 * 1024 * 1024,
             max_events: 200_000,
-            active_turn: None,
+            activity: ThreadActivity::new("New task".into()),
             replay_backup: None,
         }
     }
@@ -131,12 +131,9 @@ impl Thread {
                 self.plan.clear();
                 self.commands.clear();
                 self.text_bytes = 0;
-                self.active_turn = None;
-                self.state = TaskState::Ready;
             }
             ThreadEvent::HistoryCompleted => {
                 self.replay_backup = None;
-                self.state = TaskState::Ready;
             }
             ThreadEvent::CancellationRequested => {
                 for tool in self.tools.values_mut() {
@@ -162,10 +159,7 @@ impl Thread {
                     },
                 );
             }
-            ThreadEvent::PromptStarted { turn } => {
-                self.active_turn = Some(turn.clone());
-                self.state = TaskState::Running;
-            }
+            ThreadEvent::PromptStarted { .. } => {}
             ThreadEvent::TextDelta {
                 message_id,
                 role,
@@ -229,11 +223,9 @@ impl Thread {
                     });
                 }
                 self.permissions.insert(request.id.clone(), request.clone());
-                self.state = TaskState::Waiting;
             }
             ThreadEvent::PermissionResolved { id, .. } => {
                 self.permissions.remove(id);
-                self.refresh_waiting();
             }
             ThreadEvent::UserInputRequested { request } => {
                 if !self.inputs.contains_key(&request.id) {
@@ -242,11 +234,9 @@ impl Thread {
                     });
                 }
                 self.inputs.insert(request.id.clone(), request.clone());
-                self.state = TaskState::Waiting;
             }
             ThreadEvent::UserInputResolved { id } => {
                 self.inputs.remove(id);
-                self.refresh_waiting();
             }
             ThreadEvent::PlanChanged { entries } => self.plan.clone_from(entries),
             ThreadEvent::UsageChanged { usage } => self.usage = usage.clone(),
@@ -254,10 +244,8 @@ impl Thread {
                 self.configuration = configuration.clone()
             }
             ThreadEvent::CommandsChanged { commands } => self.commands.clone_from(commands),
-            ThreadEvent::TitleChanged { title } => self.title.clone_from(title),
+            ThreadEvent::TitleChanged { .. } => {}
             ThreadEvent::PromptFinished { .. } => {
-                self.active_turn = None;
-                self.state = TaskState::Completed;
                 self.permissions.clear();
                 self.inputs.clear();
             }
@@ -277,8 +265,6 @@ impl Thread {
                     is_error: true,
                 });
                 if !recoverable {
-                    self.state = TaskState::Failed;
-                    self.active_turn = None;
                     self.permissions.clear();
                     self.inputs.clear();
                 }
@@ -294,6 +280,9 @@ impl Thread {
                 })
             }
         }
+        self.activity.apply(&envelope.event);
+        self.state = self.activity.state;
+        self.title.clone_from(&self.activity.title);
         self.text_bytes += added_bytes;
         self.seen.insert(envelope.id, envelope.sequence);
         self.last_sequence = envelope.sequence;
@@ -302,12 +291,6 @@ impl Thread {
 
     pub fn history_in_progress(&self) -> bool {
         self.replay_backup.is_some()
-    }
-
-    fn refresh_waiting(&mut self) {
-        if self.permissions.is_empty() && self.inputs.is_empty() && self.active_turn.is_some() {
-            self.state = TaskState::Running;
-        }
     }
 }
 

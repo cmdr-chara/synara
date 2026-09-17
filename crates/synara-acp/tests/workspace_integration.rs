@@ -223,11 +223,11 @@ async fn registry_binary_uses_the_same_acp_controller_and_preserves_durable_hist
         .create_task(project.id, "Installed agent test".into(), id)
         .await
         .unwrap();
-    let controller = Controller::new(
+    let controller = Arc::new(Controller::new(
         service.clone(),
         Arc::new(AcpBackend::default()),
         Arc::new(DenyInteractions),
-    );
+    ));
     controller.submit(task.id, "hello".into()).await.unwrap();
     assert!(
         service
@@ -274,6 +274,25 @@ async fn registry_binary_uses_the_same_acp_controller_and_preserves_durable_hist
         "project scope"
     );
     std::fs::remove_file(installed.reference.directory.join("scope-proof.txt")).unwrap();
+    let active = controller.clone();
+    let prompt = tokio::spawn(async move { active.submit(task.id, "hold".into()).await });
+    tokio::time::timeout(std::time::Duration::from_secs(3), async {
+        while service.task(task.id).await.unwrap().state != synara_core::TaskState::Running {
+            tokio::task::yield_now().await;
+        }
+    })
+    .await
+    .unwrap();
+    assert!(matches!(
+        service
+            .register_installation(installed.reference.clone())
+            .await,
+        Err(synara_workspace::WorkspaceError::Agent(
+            synara_agent::AgentError::Busy
+        ))
+    ));
+    controller.cancel(task.id).await.unwrap();
+    prompt.await.unwrap().unwrap();
     // Removing a used installation must not leave a durable task with a dangling agent.
     assert!(
         service

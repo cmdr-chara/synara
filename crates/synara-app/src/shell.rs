@@ -2,6 +2,7 @@ use gpui::Focusable;
 mod conversation;
 mod panels;
 mod registry;
+use crate::close::CloseState;
 use crate::input::{EntryEvent, EntryMode, TextEntry};
 use gpui::{
     App, Context, Entity, ScrollHandle, SharedString, Subscription, Window, div, prelude::*, px,
@@ -76,6 +77,7 @@ enum Update {
         root: PathBuf,
         document: Document,
     },
+    SaveFailed(String),
     Saved {
         root: PathBuf,
         path: PathBuf,
@@ -101,6 +103,8 @@ enum Update {
     Error(String),
 }
 pub struct Shell {
+    close: CloseState,
+    close_focus: gpui::FocusHandle,
     registry: registry::RegistryState,
     controller: Arc<Controller>,
     runtime: Handle,
@@ -271,6 +275,8 @@ impl Shell {
                     .map(|t| t.id)
             });
         let mut this = Self {
+            close: CloseState::Open,
+            close_focus: cx.focus_handle(),
             registry,
             controller,
             runtime,
@@ -320,6 +326,50 @@ impl Shell {
             this.select_task(selected, cx);
         }
         this
+    }
+    pub fn request_close(&mut self, window: &mut Window, cx: &mut Context<Self>) -> bool {
+        let dirty = self.dirty(cx);
+        if self.close.request(dirty, self.saving) {
+            cx.quit();
+            true
+        } else {
+            window.focus(&self.close_focus, cx);
+            cx.notify();
+            false
+        }
+    }
+    fn close_panel(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
+        let waiting = self.close == CloseState::WaitingForSave;
+        div().size_full().flex().flex_col().items_center().justify_center()
+            .bg(rgb(0x10151d)).text_color(rgb(0xe3e8f0)).font_family("DejaVu Sans")
+            .child(div().w(px(620.)).p_6().rounded_lg().border_1().border_color(rgb(0x35465b))
+                .flex().flex_col().gap_4().bg(rgb(0x1b2532))
+                .id("close-review").track_focus(&self.close_focus)
+                .on_key_down(cx.listener(|this, event: &gpui::KeyDownEvent, window, cx| {
+                    if event.keystroke.key == "escape" {
+                        this.close.cancel();
+                        window.focus(&this.editor.read(cx).focus_handle(cx), cx);
+                        cx.notify();
+                    }
+                }))
+                .child(div().text_xl().child(if waiting { "Waiting for the file to finish saving" } else { "Save changes before closing Synara?" }))
+                .child(self.document.as_ref().map_or_else(String::new, |d| d.path.display().to_string()))
+                .child("The file remains open if saving fails or the on-disk version has changed. Closing stops active agent and terminal processes.")
+                .children(self.error.as_ref().map(|e| div().text_color(rgb(0xffb1b5)).child(e.clone())))
+                .child(div().flex().gap_3()
+                    .child(button("cancel-close", "Keep working", false).on_click(cx.listener(|this, _, window, cx| {
+                        this.close.cancel();
+                        window.focus(&this.editor.read(cx).focus_handle(cx), cx);
+                        cx.notify();
+                    })))
+                    .children((!waiting).then(|| button("discard-and-close", "Discard and close", false)
+                        .on_click(cx.listener(|this, _, _, cx| { if !this.saving { cx.quit(); } }))))
+                    .children((!waiting).then(|| button("save-and-close", "Save and close", true)
+                        .on_click(cx.listener(|this, _, _, cx| {
+                            this.close = CloseState::WaitingForSave;
+                            this.save_file(cx);
+                        }))))))
+            .into_any_element()
     }
     fn job(
         &self,
@@ -671,7 +721,7 @@ impl Shell {
                     text,
                     version,
                 }),
-                Err(error) => Ok(Update::Error(format!("Save failed: {error}"))),
+                Err(error) => Ok(Update::SaveFailed(format!("Save failed: {error}"))),
             }
         });
         cx.notify();
@@ -772,6 +822,14 @@ impl Shell {
             Update::Catalog(catalog) => self.catalog = catalog,
             Update::WorkspaceAdded(project, catalog) => {
                 self.catalog = catalog;
+                // The user may have edited while the workspace was opening.
+                if self.dirty(cx) || self.saving || self.close != CloseState::Open {
+                    self.notice = Some(
+                        "Workspace added. Save or discard the document before selecting it.".into(),
+                    );
+                    cx.notify();
+                    return;
+                }
                 self.project = Some(project.id);
                 self.selected = None;
                 self.thread = None;
@@ -966,6 +1024,12 @@ impl Shell {
                     self.error = None;
                 }
             }
+            Update::SaveFailed(error) => {
+                tracing::warn!("File save failed. The document remains open.");
+                self.saving = false;
+                self.close.saved(false);
+                self.error = Some(error);
+            }
             Update::Saved {
                 root,
                 path,
@@ -979,6 +1043,9 @@ impl Shell {
                     document.snapshot.text = text;
                     document.snapshot.version = version;
                     self.notice = Some("File saved".into());
+                }
+                if self.close.saved(!self.dirty(cx)) {
+                    cx.quit();
                 }
             }
             Update::Git {
@@ -1018,7 +1085,7 @@ impl Shell {
                 self.refresh_git_if_visible();
             }
             Update::Error(error) => {
-                self.saving = false;
+                // Only a save completion can release the outstanding save guard.
                 self.polling = false;
                 self.error = Some(error);
             }
@@ -1033,6 +1100,7 @@ impl Shell {
     fn set_panel(&mut self, panel: Panel, cx: &mut Context<Self>) {
         self.panel = panel;
         self.error = None;
+        self.notice = None;
         match panel {
             Panel::Registry => self.load_registry_if_needed(cx),
             Panel::Files => self.refresh_files(),
@@ -1076,6 +1144,9 @@ fn truncate(text: &str, limit: usize) -> String {
 }
 impl Render for Shell {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+        if self.close != CloseState::Open {
+            return self.close_panel(cx);
+        }
         if self.focus_composer {
             let focus = self.composer.read(cx).focus_handle(cx);
             window.focus(&focus, cx);
@@ -1083,6 +1154,25 @@ impl Render for Shell {
         }
         div()
             .size_full()
+            .capture_key_down(cx.listener(|this, event: &gpui::KeyDownEvent, _, cx| {
+                let modifiers = event.keystroke.modifiers;
+                if (modifiers.control || modifiers.platform) && !modifiers.alt && !modifiers.shift {
+                    let panel = match event.keystroke.key.as_str() {
+                        "1" => Some(Panel::Conversation),
+                        "2" => Some(Panel::Files),
+                        "3" => Some(Panel::Changes),
+                        "4" => Some(Panel::Terminal),
+                        "5" => Some(Panel::Inspector),
+                        "6" => Some(Panel::Settings),
+                        "7" => Some(Panel::Registry),
+                        _ => None,
+                    };
+                    if let Some(panel) = panel {
+                        this.set_panel(panel, cx);
+                        cx.stop_propagation();
+                    }
+                }
+            }))
             .flex()
             .flex_col()
             .bg(rgb(0x10151d))
@@ -1191,5 +1281,6 @@ impl Render for Shell {
                         |d| format!("ACP · {:?}", d.connection.state),
                     )),
             )
+            .into_any_element()
     }
 }

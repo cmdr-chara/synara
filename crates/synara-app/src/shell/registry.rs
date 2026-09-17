@@ -316,11 +316,15 @@ impl Shell {
             }
         }
         if let Some(catalog) = &self.registry.catalog {
-            body = body.child(
-                div()
-                    .font_weight(gpui::FontWeight::SEMIBOLD)
-                    .child(format!("Catalog · {} agents", catalog.agents.len())),
-            );
+            body = body.child(div().font_weight(gpui::FontWeight::SEMIBOLD).child(format!(
+                "Catalog · {} {}",
+                catalog.agents.len(),
+                if catalog.agents.len() == 1 {
+                    "agent"
+                } else {
+                    "agents"
+                }
+            )));
             for (index, entry) in catalog.agents.iter().enumerate().filter(|(_, a)| {
                 query.is_empty()
                     || format!("{} {} {}", a.name, a.id, a.description)

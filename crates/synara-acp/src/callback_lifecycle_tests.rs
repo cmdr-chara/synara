@@ -1,0 +1,160 @@
+use super::*;
+use async_trait::async_trait;
+use std::{collections::BTreeMap, sync::atomic::Ordering};
+use synara_agent::{DenyInteractions, EventSink, InteractionHandler, SessionOptions};
+use synara_core::UserInputRequest;
+use synara_runtime::LocalHost;
+use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader, duplex, split};
+use tokio::sync::Notify;
+use tokio_util::sync::CancellationToken;
+
+struct Events;
+#[async_trait]
+impl EventSink for Events {
+    async fn emit(&self, _: ThreadId, _: ThreadEvent) -> AgentResult<()> {
+        Ok(())
+    }
+}
+
+fn context(directory: &std::path::Path) -> ConnectionContext {
+    ConnectionContext {
+        host: Arc::new(LocalHost),
+        cwd: directory.into(),
+        events: Arc::new(Events),
+        interactions: Arc::new(DenyInteractions),
+    }
+}
+
+struct TurnEndingConsent(Arc<SessionState>);
+#[async_trait]
+impl InteractionHandler for TurnEndingConsent {
+    async fn permission(
+        &self,
+        context: InteractionContext,
+        _: PermissionRequest,
+    ) -> AgentResult<Option<String>> {
+        context.cancelled.cancel();
+        self.0.active.store(false, Ordering::Release);
+        *self.0.turn.lock().unwrap() = self.0.lifetime.child_token();
+        Ok(Some("allow".into()))
+    }
+    async fn input(
+        &self,
+        _: InteractionContext,
+        _: UserInputRequest,
+    ) -> AgentResult<UserInputResponse> {
+        Ok(UserInputResponse::Cancel)
+    }
+}
+
+#[tokio::test]
+async fn completed_turn_cannot_promote_stale_approval_to_session_consent() {
+    let directory = tempfile::tempdir().unwrap();
+    let mut context = context(directory.path());
+    let options = SessionOptions::new(ThreadId::new(), directory.path().into());
+    let state = SessionState::build(
+        "session".into(),
+        &options,
+        &context,
+        CancellationToken::new(),
+    )
+    .await
+    .unwrap();
+    state.active.store(true, Ordering::Release);
+    context.interactions = Arc::new(TurnEndingConsent(state.clone()));
+    let services = CallbackServices::new(context, Arc::new(Sessions::default()));
+    assert!(matches!(
+        services
+            .local_approval(&state, "Write one file".into())
+            .await,
+        Err(AgentError::Cancelled)
+    ));
+    assert!(!state.lifetime.is_cancelled());
+    assert!(!state.turn.lock().unwrap().is_cancelled());
+}
+
+struct ExpiredInputConsent(Arc<Notify>);
+#[async_trait]
+impl InteractionHandler for ExpiredInputConsent {
+    async fn permission(
+        &self,
+        _: InteractionContext,
+        _: PermissionRequest,
+    ) -> AgentResult<Option<String>> {
+        Ok(None)
+    }
+    async fn input(
+        &self,
+        context: InteractionContext,
+        _: UserInputRequest,
+    ) -> AgentResult<UserInputResponse> {
+        self.0.notify_one();
+        context.cancelled.cancelled().await;
+        // A custom handler is untrusted even when it returns an affirmative result.
+        Ok(UserInputResponse::Accept {
+            values: BTreeMap::new(),
+        })
+    }
+}
+
+#[tokio::test]
+async fn login_form_expires_when_its_parent_request_completes() {
+    let directory = tempfile::tempdir().unwrap();
+    let mut context = context(directory.path());
+    let entered = Arc::new(Notify::new());
+    context.interactions = Arc::new(ExpiredInputConsent(entered.clone()));
+    let services = Arc::new(CallbackServices::new(
+        context,
+        Arc::new(Sessions::default()),
+    ));
+    let (client, agent) = duplex(65536);
+    let (reader, writer) = split(client);
+    let (peer, _incoming) = RpcPeer::start(
+        Box::new(reader),
+        Box::new(writer),
+        Box::new(tokio::io::empty()),
+    );
+    let caller = peer.clone();
+    let pending = tokio::spawn(async move {
+        caller
+            .request(
+                "authenticate",
+                json!({"methodId":"login"}),
+                Duration::from_secs(5),
+            )
+            .await
+    });
+    let mut agent = BufReader::new(agent);
+    let mut line = String::new();
+    tokio::time::timeout(Duration::from_secs(2), agent.read_line(&mut line))
+        .await
+        .unwrap()
+        .unwrap();
+    let parent: Value = serde_json::from_str(&line).unwrap();
+    let callback_peer = peer.clone();
+    let callback = tokio::spawn(async move {
+        services
+            .elicit(
+                json!({
+                    "requestId":parent["id"], "mode":"url", "elicitationId":"login-url",
+                    "message":"Login", "url":"https://example.com/login"
+                }),
+                &callback_peer,
+            )
+            .await
+    });
+    tokio::time::timeout(Duration::from_secs(2), entered.notified())
+        .await
+        .unwrap();
+    agent.get_mut().write_all(format!("{}\n", json!({
+        "jsonrpc":"2.0", "id":serde_json::from_str::<Value>(&line).unwrap()["id"], "result":{}
+    })).as_bytes()).await.unwrap();
+    pending.await.unwrap().unwrap();
+    let result = tokio::time::timeout(Duration::from_secs(2), callback)
+        .await
+        .unwrap()
+        .unwrap()
+        .unwrap();
+    assert_eq!(result, json!({"action":"cancel"}));
+    assert!(!peer.cancelled().is_cancelled());
+}

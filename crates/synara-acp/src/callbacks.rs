@@ -58,6 +58,10 @@ impl CallbackServices {
         session: &SessionState,
         request: PermissionRequest,
     ) -> AgentResult<Option<String>> {
+        // Capture ownership once. Looking it up after awaiting the UI can select
+        // a later turn or the session lifetime and resurrect stale approval.
+        let interaction = session.interaction();
+        let cancelled = interaction.cancelled.clone();
         session
             .emit(
                 &self.context,
@@ -70,9 +74,9 @@ impl CallbackServices {
         let result = self
             .context
             .interactions
-            .permission(session.interaction(), request.clone())
+            .permission(interaction, request.clone())
             .await;
-        let result = if session.interaction().cancelled.is_cancelled() {
+        let result = if cancelled.is_cancelled() {
             Ok(None)
         } else {
             result
@@ -376,13 +380,13 @@ impl CallbackServices {
             let id = params
                 .get("requestId")
                 .ok_or_else(|| wire::invalid("elicitation scope missing"))?;
-            if !peer.has_pending(&RpcId::parse(id)?) {
-                return Err(wire::invalid("elicitation refers to an inactive request"));
-            }
+            let cancelled = peer
+                .request_lifetime(&RpcId::parse(id)?)
+                .ok_or_else(|| wire::invalid("elicitation refers to an inactive request"))?;
             InteractionContext {
                 thread_id: self.connection_thread,
                 session_id: "connection".into(),
-                cancelled: peer.cancelled(),
+                cancelled,
             }
         };
         let request = elicitation::parse(&params, Uuid::new_v4().to_string())?;
@@ -480,3 +484,7 @@ mod tests {
         assert_eq!(terminal_text(&snapshot, 0).0, "");
     }
 }
+
+#[cfg(test)]
+#[path = "callback_lifecycle_tests.rs"]
+mod lifecycle_tests;

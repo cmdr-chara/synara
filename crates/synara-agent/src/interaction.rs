@@ -104,9 +104,14 @@ impl InteractionHandler for InteractionBroker {
             receiver.await.map_err(|_| AgentError::Cancelled)
         };
         let selected = tokio::select! {
+            biased;
             () = cancellation.cancelled() => None,
             result = tokio::time::timeout(self.timeout, future) => result.ok().and_then(Result::ok).flatten(),
         };
+        // A ready UI reply must not revive consent belonging to a cancelled turn.
+        if cancellation.is_cancelled() {
+            return Ok(None);
+        }
         if selected.as_ref().is_some_and(|id| !allowed.contains(id)) {
             return Err(AgentError::Invalid("unknown permission choice".into()));
         }
@@ -134,9 +139,13 @@ impl InteractionHandler for InteractionBroker {
             receiver.await.map_err(|_| AgentError::Cancelled)
         };
         let result = tokio::select! {
+            biased;
             () = cancellation.cancelled() => UserInputResponse::Cancel,
             result = tokio::time::timeout(self.timeout, future) => result.ok().and_then(Result::ok).unwrap_or(UserInputResponse::Cancel),
         };
+        if cancellation.is_cancelled() {
+            return Ok(UserInputResponse::Cancel);
+        }
         if let UserInputResponse::Accept { values } = &result {
             validate_input(&schema, values)?;
         }
@@ -318,3 +327,7 @@ mod tests {
         );
     }
 }
+
+#[cfg(test)]
+#[path = "interaction_lifecycle_tests.rs"]
+mod lifecycle_tests;

@@ -131,6 +131,13 @@ Windows ConPTY or macOS acceptance.
 
 ## B. Complete generic agent and connection lifecycle
 
+BCD checkpoint in progress on `astra/session-bcd`: request-scoped cancellation
+now expires login forms with their parent RPC, and terminal transport failures
+retain their first diagnostic. New deterministic request/interaction tests are
+being verified. B2/B5 and D5/D6 remain partial until the candidate-specific
+checks and the remaining acceptance matrix pass. See
+[the BCD handoff](docs/bcd-session-handoff.md) for scope and open gates.
+
 Status: **Partial**. Ownership: `synara-agent`, `synara-acp`, `synara-runtime`.
 
 - [ ] B1 Audit ACP method/capability coverage against current primary protocol and

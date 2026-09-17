@@ -1,0 +1,25 @@
+[package]
+name = "synara-workspace"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+
+[dependencies]
+synara-core = { path = "../synara-core" }
+synara-runtime = { path = "../synara-runtime" }
+synara-agent = { path = "../synara-agent" }
+rusqlite = { version = "=0.40.2", features = ["bundled"] }
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+async-trait.workspace = true
+uuid.workspace = true
+sha2.workspace = true
+hex.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true
+
+[lints]
+workspace = true

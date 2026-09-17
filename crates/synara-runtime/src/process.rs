@@ -1,7 +1,11 @@
 use crate::RuntimeError;
 use serde::{Deserialize, Serialize};
 use std::{sync::Arc, time::Duration};
-use tokio::{io::{AsyncRead, AsyncWrite}, process::{Child, Command}, sync::watch};
+use tokio::{
+    io::{AsyncRead, AsyncWrite},
+    process::{Child, Command},
+    sync::watch,
+};
 use tokio_util::sync::CancellationToken;
 
 pub type ProcessReader = Box<dyn AsyncRead + Unpin + Send>;
@@ -13,7 +17,11 @@ pub struct ProcessExit {
     pub signal: Option<i32>,
     pub error: Option<String>,
 }
-impl ProcessExit { pub fn success(&self) -> bool { self.code == Some(0) && self.error.is_none() } }
+impl ProcessExit {
+    pub fn success(&self) -> bool {
+        self.code == Some(0) && self.error.is_none()
+    }
+}
 
 pub struct SpawnedProcess {
     pub stdin: ProcessWriter,
@@ -24,29 +32,52 @@ pub struct SpawnedProcess {
 
 #[derive(Clone)]
 pub struct ProcessHandle(Arc<ProcessOwner>);
-struct ProcessOwner { pid: u32, stop: CancellationToken, exit: watch::Receiver<Option<ProcessExit>> }
-impl Drop for ProcessOwner { fn drop(&mut self) { self.stop.cancel(); } }
+struct ProcessOwner {
+    pid: u32,
+    stop: CancellationToken,
+    exit: watch::Receiver<Option<ProcessExit>>,
+}
+impl Drop for ProcessOwner {
+    fn drop(&mut self) {
+        self.stop.cancel();
+    }
+}
 impl ProcessHandle {
-    pub fn pid(&self) -> u32 { self.0.pid }
-    pub fn exit(&self) -> Option<ProcessExit> { self.0.exit.borrow().clone() }
+    pub fn pid(&self) -> u32 {
+        self.0.pid
+    }
+    pub fn exit(&self) -> Option<ProcessExit> {
+        self.0.exit.borrow().clone()
+    }
     pub async fn wait(&self) -> Result<ProcessExit, RuntimeError> {
         let mut rx = self.0.exit.clone();
         loop {
-            if let Some(exit) = rx.borrow().clone() { return Ok(exit); }
+            if let Some(exit) = rx.borrow().clone() {
+                return Ok(exit);
+            }
             rx.changed().await.map_err(|_| RuntimeError::Closed)?;
         }
     }
-    pub fn request_stop(&self) { self.0.stop.cancel(); }
+    pub fn request_stop(&self) {
+        self.0.stop.cancel();
+    }
     pub async fn shutdown(&self) -> Result<ProcessExit, RuntimeError> {
         self.request_stop();
-        tokio::time::timeout(Duration::from_secs(8), self.wait()).await.map_err(|_| RuntimeError::Timeout)?
+        tokio::time::timeout(Duration::from_secs(8), self.wait())
+            .await
+            .map_err(|_| RuntimeError::Timeout)?
     }
 }
 
 /// Configure ownership before spawning, so cleanup never depends on the GUI remaining alive.
 pub(crate) fn spawn_owned(mut command: Command) -> Result<SpawnedProcess, RuntimeError> {
-    command.stdin(std::process::Stdio::piped()).stdout(std::process::Stdio::piped()).stderr(std::process::Stdio::piped()).kill_on_drop(true);
-    #[cfg(unix)] {
+    command
+        .stdin(std::process::Stdio::piped())
+        .stdout(std::process::Stdio::piped())
+        .stderr(std::process::Stdio::piped())
+        .kill_on_drop(true);
+    #[cfg(unix)]
+    {
         use std::os::unix::process::CommandExt;
         command.as_std_mut().process_group(0);
     }
@@ -58,7 +89,11 @@ pub(crate) fn spawn_owned(mut command: Command) -> Result<SpawnedProcess, Runtim
     let stderr = child.stderr.take().ok_or(RuntimeError::Closed)?;
     let stop = CancellationToken::new();
     let (exit_tx, exit_rx) = watch::channel(None);
-    let handle = ProcessHandle(Arc::new(ProcessOwner { pid, stop: stop.clone(), exit: exit_rx }));
+    let handle = ProcessHandle(Arc::new(ProcessOwner {
+        pid,
+        stop: stop.clone(),
+        exit: exit_rx,
+    }));
     tokio::spawn(async move {
         let _guard = guard;
         let status = tokio::select! {
@@ -67,15 +102,32 @@ pub(crate) fn spawn_owned(mut command: Command) -> Result<SpawnedProcess, Runtim
         };
         let exit = match status {
             Ok(status) => {
-                #[cfg(unix)] let signal = { use std::os::unix::process::ExitStatusExt; status.signal() };
-                #[cfg(not(unix))] let signal = None;
-                ProcessExit { code: status.code(), signal, error: None }
+                #[cfg(unix)]
+                let signal = {
+                    use std::os::unix::process::ExitStatusExt;
+                    status.signal()
+                };
+                #[cfg(not(unix))]
+                let signal = None;
+                ProcessExit {
+                    code: status.code(),
+                    signal,
+                    error: None,
+                }
             }
-            Err(error) => ProcessExit { error: Some(error.to_string()), ..ProcessExit::default() },
+            Err(error) => ProcessExit {
+                error: Some(error.to_string()),
+                ..ProcessExit::default()
+            },
         };
         let _ = exit_tx.send(Some(exit));
     });
-    Ok(SpawnedProcess { stdin: Box::new(stdin), stdout: Box::new(stdout), stderr: Box::new(stderr), handle })
+    Ok(SpawnedProcess {
+        stdin: Box::new(stdin),
+        stdout: Box::new(stdout),
+        stderr: Box::new(stderr),
+        handle,
+    })
 }
 
 async fn stop_child(child: &mut Child, pid: u32) -> std::io::Result<std::process::ExitStatus> {
@@ -91,21 +143,50 @@ async fn stop_child(child: &mut Child, pid: u32) -> std::io::Result<std::process
 }
 
 /// Drop is also reached when the executor aborts the supervising task.
-struct ProcessTreeGuard { pid: u32 }
-impl Drop for ProcessTreeGuard { fn drop(&mut self) { signal_tree(self.pid, true); } }
+struct ProcessTreeGuard {
+    pid: u32,
+}
+impl Drop for ProcessTreeGuard {
+    fn drop(&mut self) {
+        signal_tree(self.pid, true);
+    }
+}
 
 pub(crate) fn signal_tree(pid: u32, force: bool) {
-    #[cfg(unix)] {
-        use nix::{sys::signal::{Signal, killpg}, unistd::Pid};
-        if let Ok(raw) = i32::try_from(pid) {
-            if raw > 0 { let _ = killpg(Pid::from_raw(raw), if force { Signal::SIGKILL } else { Signal::SIGTERM }); }
+    #[cfg(unix)]
+    {
+        use nix::{
+            sys::signal::{Signal, killpg},
+            unistd::Pid,
+        };
+        if let Ok(raw) = i32::try_from(pid)
+            && raw > 0
+        {
+            let _ = killpg(
+                Pid::from_raw(raw),
+                if force {
+                    Signal::SIGKILL
+                } else {
+                    Signal::SIGTERM
+                },
+            );
         }
     }
-    #[cfg(windows)] {
+    #[cfg(windows)]
+    {
         let mut command = std::process::Command::new("taskkill");
         command.args(["/PID", &pid.to_string(), "/T"]);
-        if force { command.arg("/F"); }
-        let _ = command.stdin(std::process::Stdio::null()).stdout(std::process::Stdio::null()).stderr(std::process::Stdio::null()).status();
+        if force {
+            command.arg("/F");
+        }
+        let _ = command
+            .stdin(std::process::Stdio::null())
+            .stdout(std::process::Stdio::null())
+            .stderr(std::process::Stdio::null())
+            .status();
     }
-    #[cfg(not(any(unix, windows)))] { let _ = (pid, force); }
+    #[cfg(not(any(unix, windows)))]
+    {
+        let _ = (pid, force);
+    }
 }

@@ -8,7 +8,7 @@ use std::{
 };
 use synara_agent::*;
 use synara_core::*;
-use synara_runtime::{ExecutionHost, LocalHost, SshHost, SshTarget};
+use synara_runtime::{ExecutionHost, LocalHost};
 use tokio::sync::Mutex;
 
 #[derive(Clone, Debug)]
@@ -88,13 +88,20 @@ impl Controller {
     }
     async fn context(&self, task: &Task) -> WorkspaceResult<ConnectionContext> {
         let workspace = self.workspace.workspace_for_task(task).await?;
-        let host: Arc<dyn ExecutionHost> = match workspace.location {
+        let host: Arc<dyn ExecutionHost> = match &workspace.location {
             WorkspaceLocation::Local { .. } => Arc::new(LocalHost),
-            WorkspaceLocation::Ssh {
-                host, port, user, ..
-            } => Arc::new(SshHost {
-                target: SshTarget { host, port, user },
-            }),
+            WorkspaceLocation::Ssh { .. } => {
+                let profile = self
+                    .workspace
+                    .ssh_profile(workspace.id)
+                    .await?
+                    .ok_or_else(|| {
+                        WorkspaceError::Invalid(
+                            "remote workspace is missing its pinned SSH connection profile".into(),
+                        )
+                    })?;
+                Arc::new(profile.host(&workspace)?)
+            }
         };
         Ok(ConnectionContext {
             host,

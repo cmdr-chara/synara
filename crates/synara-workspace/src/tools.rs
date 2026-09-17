@@ -1,5 +1,5 @@
 use crate::{WorkspaceError, WorkspaceResult};
-use std::{path::PathBuf, time::Duration};
+use std::{path::PathBuf, sync::Arc, time::Duration};
 use synara_runtime::{
     ExecutionHost, FileEntry, FileSnapshot, FileVersion, LaunchSpec, LocalHost, RuntimeError,
     WorkspaceFs,
@@ -77,10 +77,17 @@ pub struct GitStatus {
 #[derive(Clone)]
 pub struct GitService {
     root: PathBuf,
+    host: Arc<dyn ExecutionHost>,
 }
 impl GitService {
     pub fn new(root: PathBuf) -> Self {
-        Self { root }
+        Self {
+            root,
+            host: Arc::new(LocalHost),
+        }
+    }
+    pub fn with_host(root: PathBuf, host: Arc<dyn ExecutionHost>) -> Self {
+        Self { root, host }
     }
     async fn run(&self, args: Vec<String>, max_bytes: usize) -> WorkspaceResult<Vec<u8>> {
         let mut launch = LaunchSpec::new("git");
@@ -91,11 +98,15 @@ impl GitService {
             "core.fsmonitor=false".into(),
             "-c".into(),
             "core.hooksPath=/dev/null".into(),
+            "-c".into(),
+            "credential.interactive=false".into(),
         ];
         launch.args.extend(args);
-        launch.env.insert("GIT_TERMINAL_PROMPT".into(), "0".into());
-        launch.env.insert("GIT_OPTIONAL_LOCKS".into(), "0".into());
-        let process = LocalHost.spawn(&launch, &self.root).await?;
+        if self.host.is_local() {
+            launch.env.insert("GIT_TERMINAL_PROMPT".into(), "0".into());
+            launch.env.insert("GIT_OPTIONAL_LOCKS".into(), "0".into());
+        }
+        let process = self.host.spawn(&launch, &self.root).await?;
         let handle = process.handle.clone();
         let operation = async move {
             let read = async |stream: synara_runtime::ProcessReader,
@@ -180,16 +191,34 @@ impl GitService {
         Ok(String::from_utf8_lossy(&bytes).into_owned())
     }
     async fn checked_path(&self, path: PathBuf) -> WorkspaceResult<String> {
-        let root = self.root.clone();
-        tokio::task::spawn_blocking(move || {
-            let relative = WorkspaceFs::open(&root)?.relative(&path)?;
-            relative.into_os_string().into_string().map_err(|_| {
-                RuntimeError::Unsupported("this Git action requires a UTF-8 filename".into())
+        if self.host.is_local() {
+            let root = self.root.clone();
+            return tokio::task::spawn_blocking(move || {
+                let relative = WorkspaceFs::open(&root)?.relative(&path)?;
+                relative.into_os_string().into_string().map_err(|_| {
+                    RuntimeError::Unsupported("this Git action requires a UTF-8 filename".into())
+                })
             })
+            .await
+            .map_err(|_| WorkspaceError::Worker)?
+            .map_err(Into::into);
+        }
+        if path.is_absolute()
+            || path.components().any(|component| {
+                !matches!(
+                    component,
+                    std::path::Component::Normal(_) | std::path::Component::CurDir
+                )
+            })
+        {
+            return Err(RuntimeError::Denied(
+                "remote Git path must stay inside the selected workspace".into(),
+            )
+            .into());
+        }
+        path.into_os_string().into_string().map_err(|_| {
+            RuntimeError::Unsupported("remote Git actions require UTF-8 filenames".into()).into()
         })
-        .await
-        .map_err(|_| WorkspaceError::Worker)?
-        .map_err(Into::into)
     }
     pub async fn stage(&self, path: PathBuf) -> WorkspaceResult<()> {
         let path = self.checked_path(path).await?;

@@ -13,6 +13,13 @@ pub async fn list_files(root: PathBuf, directory: PathBuf) -> WorkspaceResult<Ve
         .map_err(|_| WorkspaceError::Worker)?
         .map_err(Into::into)
 }
+
+pub async fn list_remote_files(
+    filesystem: synara_runtime::RemoteWorkspaceFs,
+    directory: PathBuf,
+) -> WorkspaceResult<Vec<FileEntry>> {
+    filesystem.entries(&directory).await.map_err(Into::into)
+}
 #[derive(Clone, Debug)]
 pub struct Document {
     pub path: PathBuf,
@@ -34,6 +41,22 @@ pub async fn open_document(root: PathBuf, path: PathBuf) -> WorkspaceResult<Docu
     .map_err(|_| WorkspaceError::Worker)?
     .map_err(Into::into)
 }
+
+pub async fn open_remote_document(
+    filesystem: synara_runtime::RemoteWorkspaceFs,
+    path: PathBuf,
+) -> WorkspaceResult<Document> {
+    let path = filesystem.relative(&path)?;
+    let snapshot = filesystem.read(&path).await?;
+    if snapshot.text.len() > MAX_EDITOR_BYTES {
+        return Err(RuntimeError::Unsupported(
+            "native editing is limited to 1 MiB per document".into(),
+        )
+        .into());
+    }
+    Ok(Document { path, snapshot })
+}
+
 pub async fn save_document(
     root: PathBuf,
     document: Document,
@@ -54,6 +77,26 @@ pub async fn save_document(
     .map_err(|_| WorkspaceError::Worker)?
     .map_err(Into::into)
 }
+
+pub async fn save_remote_document(
+    filesystem: synara_runtime::RemoteWorkspaceFs,
+    document: Document,
+    text: String,
+) -> WorkspaceResult<FileVersion> {
+    if text.len() > MAX_EDITOR_BYTES {
+        return Err(RuntimeError::Limit.into());
+    }
+    filesystem
+        .write(
+            &document.path,
+            &text,
+            Some(&document.snapshot.version),
+            document.snapshot.utf8_bom,
+        )
+        .await
+        .map_err(Into::into)
+}
+
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct GitEntry {
     pub path: PathBuf,

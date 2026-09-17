@@ -6,6 +6,7 @@ Keys are temporary, generated only for this fixture and never uploaded as artifa
 """
 from __future__ import annotations
 
+import argparse
 import os
 from pathlib import Path
 import pwd
@@ -51,6 +52,17 @@ def await_server(server: subprocess.Popen, port: int) -> None:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--native-only', action='store_true')
+    parser.add_argument('--native-binary', type=Path)
+    parser.add_argument('--fixture', type=Path)
+    parser.add_argument('--native-output', type=Path)
+    options = parser.parse_args()
+    native_values = [options.native_binary, options.fixture, options.native_output]
+    if any(value is not None for value in native_values) and not all(
+        value is not None for value in native_values
+    ):
+        raise SystemExit('Native SSH smoke requires --native-binary, --fixture and --native-output')
     if sys.platform != 'linux' or os.geteuid() == 0:
         raise SystemExit('Run this Linux fixture as an ordinary user, not as root')
     tools = {name: shutil.which(name) for name in ['ssh', 'ssh-keygen', 'sshd', 'cargo', 'git']}
@@ -146,12 +158,21 @@ def main() -> None:
                     start_new_session=True,
                 )
                 await_server(server, port)
-                for package in ['synara-runtime', 'synara-workspace', 'synara-acp']:
+                if not options.native_only:
+                    for package in ['synara-runtime', 'synara-workspace', 'synara-acp']:
+                        run([
+                            tools['cargo'], 'test', '--locked', '-p', package,
+                            '--test', 'ssh_live', '--', '--ignored', '--test-threads=1',
+                        ], cwd=ROOT, env=env)
+                if options.native_binary is not None:
                     run([
-                        tools['cargo'], 'test', '--locked', '-p', package,
-                        '--test', 'ssh_live', '--', '--ignored', '--test-threads=1',
+                        sys.executable,
+                        str(ROOT / 'scripts' / 'remote_native_smoke.py'),
+                        '--binary', str(options.native_binary),
+                        '--fixture', str(options.fixture),
+                        '--output', str(options.native_output),
                     ], cwd=ROOT, env=env)
-            print('PASS: isolated SSH transport, remote FS/PTTY/Git and ACP integration')
+            print('PASS: isolated SSH transport, remote FS/PTY/Git and ACP integration')
         except Exception:
             if log.exists():
                 # sshd logs authentication metadata, never private key contents.

@@ -175,7 +175,10 @@ async fn authentication_is_agent_owned_and_retryable() {
         h.connection.new_session(h.options()).await,
         Err(AgentError::AuthenticationRequired)
     ));
-    assert_eq!(h.connection.info().state, ConnectionState::Authenticating);
+    assert_eq!(
+        h.connection.info().state,
+        ConnectionState::AuthenticationRequired
+    );
     h.connection.authenticate("test-login").await.unwrap();
     let session = h.session().await;
     assert!(session.prompt(Prompt::text("hello")).await.is_ok());

@@ -76,6 +76,10 @@ impl Fixture {
         let session = params["sessionId"].as_str().unwrap_or("").to_owned();
         match value["method"].as_str() {
             Some("initialize") => {
+                if self.profile == "init-reject" {
+                    self.error(id, -32603);
+                    return;
+                }
                 if params["protocolVersion"] != 1 {
                     self.error(id, -32602);
                     return;
@@ -83,11 +87,25 @@ impl Fixture {
                 let caps = if self.profile == "beta" {
                     json!({"promptCapabilities":{}})
                 } else {
-                    json!({"loadSession":true,"promptCapabilities":{"image":true},"sessionCapabilities":{"list":{},"resume":{},"close":{},"delete":{},"additionalDirectories":{}},"authCapabilities":{"logout":true}})
+                    json!({"loadSession":true,"promptCapabilities":{"image":true},"sessionCapabilities":{"list":{},"resume":{},"close":{},"delete":{},"additionalDirectories":{}},"auth":{"logout":{}}})
                 };
                 self.ok(id,json!({"protocolVersion":1,"agentInfo":{"name":format!("fixture-{}",self.profile),"version":"1.0.0"},"agentCapabilities":caps,"authMethods":[{"id":"test-login","name":"Test login"}]}));
             }
             Some("authenticate") => {
+                match self.profile.as_str() {
+                    "auth-hold" => {
+                        self.send(
+                            json!({"jsonrpc":"2.0", "method":"fixture/auth_entered", "params":{}}),
+                        );
+                        return;
+                    }
+                    "auth-denied" => {
+                        self.error(id, -32000);
+                        return;
+                    }
+                    "auth-crash" => std::process::exit(24),
+                    _ => {}
+                }
                 self.authenticated = true;
                 self.ok(id, json!({}));
             }
@@ -96,6 +114,12 @@ impl Fixture {
                 self.ok(id, json!({}));
             }
             Some("session/new") => {
+                if self.profile == "new-hold" {
+                    self.send(
+                        json!({"jsonrpc":"2.0", "method":"fixture/setup_entered", "params":{}}),
+                    );
+                    return;
+                }
                 if !self.authenticated {
                     self.error(id, -32000);
                     return;
@@ -255,7 +279,10 @@ fn main() {
         std::process::exit(2);
     }
     let profile = args.next().unwrap_or("alpha".into());
-    let authenticated = profile != "auth";
+    if let Some(path) = std::env::var_os("SYNARA_FIXTURE_PID_FILE") {
+        std::fs::write(path, std::process::id().to_string()).unwrap();
+    }
+    let authenticated = !profile.starts_with("auth");
     let mut fixture = Fixture {
         profile,
         authenticated,

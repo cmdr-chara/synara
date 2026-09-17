@@ -162,6 +162,17 @@ Acceptance: one adapter passes protocol, lifecycle and concurrency tests for
 multiple agent configurations. ACP dependency upgrades stay inside the adapter
 boundary rather than changing unrelated domain or UI types.
 
+BCD isolated continuation: first interaction candidate
+`a3693807deb7531959a14051c249a71f311e310e` passed full Linux checks and native smoke
+in [run 35255541692](https://github.com/cmdr-chara/synara/actions/runs/35255541692).
+The next B2/B3/B4 slice adds explicit authentication-required state, prevents late
+login/setup resurrection, rejects duplicate task ownership, serializes shutdown
+against connection acquisition and tests two-session cancellation/permission
+isolation. Focused local Linux tests and Clippy passed. Candidate-wide verification
+remains required before closing any complete task. See the
+[BCD handoff](docs/bcd-session-handoff.md) for evidence and the terminal-lifetime
+request reserved for A/J/M.
+
 ## C. Prove real-agent interoperability
 
 Status: **Partial**, reviewed-release installation and no-credentials proof passed.

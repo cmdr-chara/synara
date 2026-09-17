@@ -228,6 +228,7 @@ impl AgentSession for AcpSession {
         }
         let _mutation = self.state.mutation_gate.lock().await;
         self.ensure_open()?;
+        let configuration = self.configuration();
         if !configuration.models.iter().any(|model| model.value == id) {
             return Err(AgentError::Unsupported("model selector".into()));
         }
@@ -255,6 +256,9 @@ impl AgentSession for AcpSession {
             return Ok(());
         }
         let _mutation = self.state.mutation_gate.lock().await;
+        if self.state.closed.load(Ordering::Acquire) {
+            return Ok(());
+        }
         self.cancel().await?;
         let _operation = tokio::time::timeout(
             self.connection.timeouts.cancellation,

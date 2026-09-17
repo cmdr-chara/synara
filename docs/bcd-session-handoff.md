@@ -16,11 +16,40 @@ failure is retained instead of being overwritten by a concurrent teardown.
 
 Focused tests cover completed-turn approval, parent-login completion, overlapping
 permissions, expired reply channels, cancellation/reply races and request-token
-isolation. Evidence is pending the candidate-specific verification run.
+isolation. Candidate `a3693807deb7531959a14051c249a71f311e310e` passed all required
+Linux checks and isolated native desktop smoke in
+[run 35255541692](https://github.com/cmdr-chara/synara/actions/runs/35255541692).
+The run was triggered by carrier `e39459f3384504493aea502fff55b33bc3f32ac2`,
+but its recorded checkout and source snapshot identify the candidate above.
+
+## Connection and session ownership slice
+
+B2/B3/B4 and D5: **PARTIAL**, final candidate verification pending. Authentication
+required now has its own protocol-independent state, distinct from a login in
+progress. Authentication, logout and setup completions cannot revive a disconnected
+transport. Concurrent authentication returns Busy. Dropped or timed-out login
+ownership fails closed instead of leaving an invisible operation. The fixture's
+logout capability now uses the pinned protocol's structured `auth.logout` field.
+
+One connection rejects duplicate task/session ownership before a second setup RPC.
+Registration and disconnect share a state-map boundary. Concurrent session close
+sends one remote close. Manager shutdown waits for an in-flight connect and then
+closes it, rather than detaching a slot that can later acquire a live process.
+An invalid restart does not disconnect the existing connection.
+
+Local Linux x86_64, pinned Rust 1.98.1: `cargo test --locked -p synara-agent
+-p synara-acp --all-targets` and focused all-feature Clippy passed. Thirteen new
+external-process lifecycle tests cover login success/failure/timeout/owner-drop,
+process exit, negotiated logout, concurrent sessions, cancellation and permission
+isolation, close, duplicate ownership and initialization cleanup. Three manager
+regressions cover shutdown/acquisition, invalid restart and auth-state reuse.
+The initial three handshake test failures were a test-observability mistake:
+extension method names are deliberately redacted in traces. Tests now wait for
+the fixture's redacted inbound handshake without weakening production redaction.
 
 ## Open gates
 
-B1/B3/B4/B6/B7 and D1/D2/D3/D4/D7: **NOT TOUCHED** in this checkpoint.
+B1/B6/B7 and D1/D2/D3/D4/D7: **NOT TOUCHED** in these checkpoints.
 C1/C2: prior evidence retained, not re-executed. C3/C4 authenticated workflows:
 **BLOCKED**, no user-authorized vendor credentials were supplied to this session.
 C5/C6: **NOT TOUCHED**. No real agent has been executed in this session.
@@ -33,8 +62,10 @@ actual emitted source commit rather than the package-carrier commit.
 
 ## Integration boundary
 
-This slice changes `synara-agent` and `synara-acp` interaction code only, plus BCD
-verification and documentation. No runtime, PTY, SSH, terminal-rendering or
+These slices change `synara-agent` and `synara-acp`, plus BCD verification and
+documentation. Shared edits: `synara-core/src/model.rs` adds the explicit
+`AuthenticationRequired` enum variant, and the conversation connection header
+uses that state instead of matching error text. No shared runtime API changes. No runtime, PTY, SSH, terminal-rendering or
 terminal-test changes. The existing source publisher remains unchanged.
 
 A/J/M request: inspect terminal spawn's post-approval lifetime check separately.

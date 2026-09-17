@@ -228,37 +228,26 @@ impl Shell {
                     ),
             );
         }
-        if (self
-            .details
-            .as_ref()
-            .is_some_and(|d| d.connection.state == ConnectionState::Authenticating)
-            || self
-                .error
-                .as_ref()
-                .is_some_and(|e| e.to_ascii_lowercase().contains("authentication")))
-            && let Some(details) = &self.details
-        {
-            root = root.child(
-                div()
-                    .px_5()
-                    .py_2()
-                    .flex()
-                    .gap_2()
-                    .child("Authentication required:")
-                    .children(details.connection.authentication.iter().enumerate().map(
-                        |(index, method)| {
-                            let method = method.id.clone();
-                            button(
-                                ("login", index),
-                                details.connection.authentication[index].name.clone(),
-                                false,
-                            )
-                            .on_click(cx.listener(
-                                move |this, _, _, cx| this.authenticate(method.clone(), cx),
-                            ))
-                        },
-                    )),
-            );
+        if let Some(details) = &self.details {
+            match details.connection.state {
+                ConnectionState::Authenticating => {
+                    root = root.child(div().px_5().py_2().child("Authentication in progress..."));
+                }
+                ConnectionState::AuthenticationRequired => {
+                    root = root.child(
+                        div().px_5().py_2().flex().gap_2().child("Authentication required:")
+                            .children(details.connection.authentication.iter().enumerate().map(|(index, method)| {
+                                let id = method.id.clone();
+                                button(("login", index), method.name.clone(), false)
+                                    .on_click(cx.listener(move |this, _, _, cx| this.authenticate(id.clone(), cx)))
+                            }))
+                            .when(details.connection.authentication.is_empty(), |el| {
+                                el.child("No supported login flow was advertised. Authenticate the agent externally, then restart.")
+                            }),
+                    );
+                }
+                _ => {}
+            }
         }
         root = root.child(
             div()

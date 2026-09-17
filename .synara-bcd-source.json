@@ -1,1 +1,0 @@
-{"mode":"diff","base_commit":"63d11187179dfd82e8ce673551afbe9973247abe","parts":[".synara-transfer-0000",".synara-transfer-0001",".synara-transfer-0002",".synara-transfer-0003",".synara-transfer-0004"],"sha256":"32e27caeb5623683248e710aceb5d1daa970629191cfbe612e5390462f3c2e79","message":"fix(acp): enforce connection lifecycle and multi-session ownership"}

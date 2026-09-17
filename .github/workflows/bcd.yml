@@ -10,18 +10,41 @@ concurrency:
   group: bcd-${{ github.ref }}
   cancel-in-progress: false
 jobs:
+  source:
+    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/session-bcd'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    outputs:
+      revision: ${{ steps.publish.outputs.revision }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          fetch-depth: 1000
+      - name: Publisher ownership regression tests
+        run: |
+          python3 scripts/test_bcd_source.py
+          python3 scripts/test_apply_source.py
+      - name: Pinned formatter
+        run: rustup toolchain install 1.98.1 --profile minimal --component rustfmt
+      - name: Apply an optional BCD-only checked source delta
+        id: publish
+        run: python3 scripts/apply_bcd_source.py
   snapshot:
+    needs: source
     if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/session-bcd'
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
-          fetch-depth: 1
+          ref: ${{ needs.source.outputs.revision }}
+          fetch-depth: 1000
           persist-credentials: false
       - name: Archive tracked candidate only
         run: |
-          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD)" = "${{ needs.source.outputs.revision }}"
           mkdir -p "$RUNNER_TEMP/bcd-source"
           git archive --format=tar.gz HEAD > "$RUNNER_TEMP/bcd-source/source.tar.gz"
           git rev-parse HEAD > "$RUNNER_TEMP/bcd-source/revision.txt"
@@ -32,6 +55,7 @@ jobs:
           retention-days: 3
           if-no-files-found: error
   linux:
+    needs: source
     if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/session-bcd'
     runs-on: ubuntu-24.04
     timeout-minutes: 35
@@ -41,13 +65,14 @@ jobs:
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
-          fetch-depth: 1
+          ref: ${{ needs.source.outputs.revision }}
+          fetch-depth: 1000
           persist-credentials: false
       - name: Record exact candidate
         run: |
           mkdir -p "$RUNNER_TEMP/bcd-evidence"
           git rev-parse HEAD | tee "$RUNNER_TEMP/bcd-evidence/revision.txt"
-          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD)" = "${{ needs.source.outputs.revision }}"
       - name: Install pinned Rust toolchain
         run: rustup toolchain install 1.98.1 --profile minimal --component rustfmt --component clippy
       - name: Native system libraries
@@ -86,6 +111,7 @@ jobs:
       - name: Roadmap validation
         if: ${{ !cancelled() }}
         run: |
+          python3 scripts/test_bcd_source.py
           python3 scripts/check_roadmap.py --self-test
           python3 scripts/check_roadmap.py
       - name: Build native application and ACP fixture

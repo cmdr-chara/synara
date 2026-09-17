@@ -1,0 +1,158 @@
+name: Native verification
+
+on:
+  push:
+    branches: [astra/gpui-clean-rewrite]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  source:
+    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/gpui-clean-rewrite'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    outputs:
+      revision: ${{ steps.publish.outputs.revision }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          fetch-depth: 2
+      - name: Apply an optional checked source package
+        id: publish
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import base64, gzip, hashlib, io, json, os, pathlib, re, subprocess
+          root = pathlib.Path.cwd().resolve()
+          payload = root / '.synara-source.json'
+          workflow = '.github/workflows/native.yml'
+          branch = 'refs/heads/astra/gpui-clean-rewrite'
+          def git(*args):
+              return subprocess.check_output(['git', *args], text=True).strip()
+          revision = git('rev-parse', 'HEAD')
+          if payload.exists():
+              if payload.stat().st_size > 8 * 1024 * 1024:
+                  raise SystemExit('Source package exceeds transport limit')
+              package = json.loads(payload.read_text())
+              parents = git('show', '-s', '--format=%P', 'HEAD').split()
+              if parents != [package['base_commit']]:
+                  raise SystemExit('Source package base does not match its parent')
+              remote = git('ls-remote', 'origin', branch).split()[0]
+              if remote != revision:
+                  raise SystemExit('Branch changed while source package was queued')
+              compressed = base64.b64decode(package['gzip_base64'], validate=True)
+              with gzip.GzipFile(fileobj=io.BytesIO(compressed)) as stream:
+                  data = stream.read(20 * 1024 * 1024 + 1)
+              if len(data) > 20 * 1024 * 1024:
+                  raise SystemExit('Expanded source package exceeds limit')
+              if hashlib.sha256(data).hexdigest() != package['sha256']:
+                  raise SystemExit('Source package checksum mismatch')
+              files = json.loads(data)
+              if not isinstance(files, dict) or not 1 <= len(files) <= 2000:
+                  raise SystemExit('Invalid source file map')
+              def safe_path(name):
+                  if not isinstance(name, str) or not re.fullmatch(r'[A-Za-z0-9_./-]+', name):
+                      raise SystemExit('Invalid source path')
+                  path = pathlib.PurePosixPath(name)
+                  if path.is_absolute() or any(part in ('..', '.git') for part in path.parts):
+                      raise SystemExit('Unsafe source path')
+                  if str(path) != name or name == '.synara-source.json':
+                      raise SystemExit('Noncanonical source path')
+                  if name.startswith('.github/workflows/'):
+                      raise SystemExit('Workflow changes require a separate reviewed commit')
+                  target = root / path
+                  if not target.resolve().is_relative_to(root):
+                      raise SystemExit('Source path escapes checkout')
+                  for parent in (target, *target.parents):
+                      if parent == root:
+                          break
+                      if parent.is_symlink():
+                          raise SystemExit('Symlink in source path')
+                  return target
+              for name, content in files.items():
+                  safe_path(name)
+                  if not isinstance(content, str) or '\x00' in content or len(content.encode()) > 2 * 1024 * 1024:
+                      raise SystemExit('Invalid source file contents')
+              tracked = subprocess.check_output(['git', 'ls-files', '-z']).decode().split('\0')
+              for name in filter(None, tracked):
+                  if name not in files and name not in (workflow, '.synara-source.json'):
+                      safe_path(name).unlink(missing_ok=True)
+              for name, content in files.items():
+                  target = safe_path(name)
+                  target.parent.mkdir(parents=True, exist_ok=True)
+                  target.write_text(content, encoding='utf-8', newline='')
+              payload.unlink()
+              subprocess.run(['git', 'add', '--all'], check=True)
+              message = package.get('message', 'feat: integrate native source checkpoint')
+              if not isinstance(message, str) or not 1 <= len(message) <= 200 or '\n' in message:
+                  raise SystemExit('Invalid commit message')
+              subprocess.run(['git', '-c', 'user.name=github-actions[bot]', '-c', 'user.email=41898282+github-actions[bot]@users.noreply.github.com', 'commit', '-m', message], check=True)
+              subprocess.run(['git', 'push', 'origin', f'HEAD:{branch}'], check=True)
+              revision = git('rev-parse', 'HEAD')
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write(f'revision={revision}\n')
+          PY
+
+  linux:
+    needs: source
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          ref: ${{ needs.source.outputs.revision }}
+          fetch-depth: 1000
+          persist-credentials: false
+      - name: Install pinned Rust toolchain
+        run: rustup toolchain install 1.98.1 --profile minimal --component rustfmt --component clippy
+      - name: Native system libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev xvfb mesa-vulkan-drivers
+      - name: Workspace structure
+        if: hashFiles('scripts/audit_workspace.py') != ''
+        run: python3 scripts/audit_workspace.py
+      - name: Formatting
+        if: hashFiles('Cargo.toml') != ''
+        run: cargo +1.98.1 fmt --check
+      - name: Compile
+        if: always() && hashFiles('Cargo.toml') != ''
+        run: cargo +1.98.1 check --workspace
+      - name: Lints
+        if: always() && hashFiles('Cargo.toml') != ''
+        run: cargo +1.98.1 clippy --workspace --all-targets --all-features -- -D warnings
+      - name: Tests
+        if: always() && hashFiles('Cargo.toml') != ''
+        run: cargo +1.98.1 test --workspace
+      - name: Export reproducible build inputs
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p /tmp/native-build-inputs
+          git bundle create /tmp/native-build-inputs/source.bundle HEAD
+          git rev-parse HEAD > /tmp/native-build-inputs/revision.txt
+          if test -d "$HOME/.rustup/toolchains/1.98.1-x86_64-unknown-linux-gnu"; then
+            tar -C "$HOME/.rustup/toolchains" -czf /tmp/native-build-inputs/toolchain.tar.gz 1.98.1-x86_64-unknown-linux-gnu
+          fi
+          paths=()
+          for path in registry git; do
+            if test -d "$HOME/.cargo/$path"; then paths+=("$path"); fi
+          done
+          if test "${#paths[@]}" -gt 0; then
+            tar -C "$HOME/.cargo" -czf /tmp/native-build-inputs/dependencies.tar.gz "${paths[@]}"
+          fi
+          if test -f Cargo.lock; then cp Cargo.lock /tmp/native-build-inputs/Cargo.lock; fi
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-linux-build-inputs
+          path: /tmp/native-build-inputs/
+          retention-days: 1
+          compression-level: 0

@@ -4,6 +4,7 @@ use cap_std::{
     ambient_authority,
     fs::{Dir, OpenOptions},
 };
+use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::{
     ffi::OsString,
@@ -12,15 +13,15 @@ use std::{
     sync::Mutex,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 pub struct FileVersion(pub String);
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct FileSnapshot {
     pub text: String,
     pub version: FileVersion,
     pub utf8_bom: bool,
 }
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 pub struct FileEntry {
     pub name: String,
     pub relative_path: PathBuf,

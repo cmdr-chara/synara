@@ -1,4 +1,7 @@
-use crate::{AgentProfile, StorageError, Store, default_profiles, validate_profiles};
+use crate::{
+    AgentProfile, NewSshWorkspace, SshWorkspaceProfile, StorageError, Store, default_profiles,
+    upsert_ssh_profile, validate_profiles,
+};
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 use std::{
@@ -8,7 +11,7 @@ use std::{
 };
 use synara_agent::{AgentError, AgentResult, EventSink};
 use synara_core::*;
-use synara_runtime::{RuntimeError, WorkspaceFs};
+use synara_runtime::{PinnedSshHost, RemoteWorkspaceFs, RuntimeError, WorkspaceFs};
 use tokio::sync::broadcast;
 
 #[derive(Debug, thiserror::Error)]
@@ -117,6 +120,128 @@ impl WorkspaceService {
         })
         .await
     }
+
+    /// Enroll a remote workspace only after the pinned host and remote helper
+    /// prove the requested root. Private key contents are never persisted.
+    pub async fn add_ssh_workspace(
+        &self,
+        request: NewSshWorkspace,
+    ) -> WorkspaceResult<Project> {
+        request.validate()?;
+        let host = PinnedSshHost::new(
+            request.target.clone(),
+            &request.known_hosts,
+            &request.identity_file,
+        )?;
+        let remote = RemoteWorkspaceFs::connect(
+            host,
+            PathBuf::from(&request.root),
+            &request.helper,
+        )
+        .await?;
+        let root = remote.root_identity().to_owned();
+        let target = request.target;
+        let name = if request.name.trim().is_empty() {
+            target.host.clone()
+        } else {
+            request.name.trim().to_owned()
+        };
+        let known_hosts = request.known_hosts;
+        let identity_file = request.identity_file;
+        let helper = request.helper;
+
+        self.access(move |store| {
+            let existing = catalog(store)?;
+            if let Some(workspace) = existing.workspaces.iter().find(|workspace| {
+                matches!(
+                    &workspace.location,
+                    WorkspaceLocation::Ssh {
+                        host,
+                        port,
+                        user,
+                        root: candidate,
+                    } if host == &target.host
+                        && *port == target.port
+                        && user == &target.user
+                        && candidate == &root
+                )
+            }) {
+                let project = existing
+                    .projects
+                    .iter()
+                    .find(|project| {
+                        project.workspace_id == workspace.id
+                            && project.relative_directory.as_os_str().is_empty()
+                    })
+                    .ok_or(WorkspaceError::NotFound)?
+                    .clone();
+                let mut profiles: Vec<SshWorkspaceProfile> =
+                    store.preference("ssh_profiles")?.unwrap_or_default();
+                upsert_ssh_profile(
+                    &mut profiles,
+                    SshWorkspaceProfile {
+                        workspace_id: workspace.id,
+                        known_hosts,
+                        identity_file,
+                        helper,
+                    },
+                )?;
+                store.set_preference("ssh_profiles", &profiles)?;
+                return Ok(project);
+            }
+
+            let workspace = Workspace {
+                id: WorkspaceId::new(),
+                name: name.clone(),
+                location: WorkspaceLocation::Ssh {
+                    host: target.host,
+                    port: target.port,
+                    user: target.user,
+                    root,
+                },
+            };
+            let project = Project {
+                id: ProjectId::new(),
+                workspace_id: workspace.id,
+                name,
+                relative_directory: PathBuf::new(),
+            };
+            let mut profiles: Vec<SshWorkspaceProfile> =
+                store.preference("ssh_profiles")?.unwrap_or_default();
+            upsert_ssh_profile(
+                &mut profiles,
+                SshWorkspaceProfile {
+                    workspace_id: workspace.id,
+                    known_hosts,
+                    identity_file,
+                    helper,
+                },
+            )?;
+            store.create_workspace_project_with_preference(
+                &workspace,
+                &project,
+                "ssh_profiles",
+                &profiles,
+            )?;
+            Ok(project)
+        })
+        .await
+    }
+
+    pub async fn ssh_profile(
+        &self,
+        workspace: WorkspaceId,
+    ) -> WorkspaceResult<Option<SshWorkspaceProfile>> {
+        self.access(move |store| {
+            let profiles: Vec<SshWorkspaceProfile> =
+                store.preference("ssh_profiles")?.unwrap_or_default();
+            Ok(profiles
+                .into_iter()
+                .find(|profile| profile.workspace_id == workspace))
+        })
+        .await
+    }
+
     pub async fn create_task(
         &self,
         project: ProjectId,

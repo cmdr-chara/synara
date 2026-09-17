@@ -2,6 +2,8 @@ mod profiles;
 mod service;
 mod storage;
 pub use profiles::*;
+mod remote;
+pub use remote::*;
 pub use service::*;
 pub use storage::*;
 

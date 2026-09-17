@@ -132,6 +132,42 @@ PRAGMA user_version=2;")?;
         tx.commit()?;
         Ok(())
     }
+    pub fn create_workspace_project_with_preference<T: serde::Serialize>(
+        &mut self,
+        workspace: &Workspace,
+        project: &Project,
+        key: &str,
+        value: &T,
+    ) -> StorageResult<()> {
+        if workspace.id != project.workspace_id || !valid_preference_key(key) {
+            return Err(StorageError::Identity);
+        }
+        let workspace_data = encode(workspace)?;
+        let project_data = encode(project)?;
+        let preference_data = encode(value)?;
+        let tx = self
+            .connection
+            .transaction_with_behavior(TransactionBehavior::Immediate)?;
+        tx.execute(
+            "INSERT INTO workspaces(id,data) VALUES(?1,?2)",
+            params![workspace.id.to_string(), workspace_data],
+        )?;
+        tx.execute(
+            "INSERT INTO projects(id,workspace_id,data) VALUES(?1,?2,?3)",
+            params![
+                project.id.to_string(),
+                project.workspace_id.to_string(),
+                project_data
+            ],
+        )?;
+        tx.execute(
+            "INSERT INTO preferences(key,data) VALUES(?1,?2) ON CONFLICT(key) DO UPDATE SET data=excluded.data",
+            params![key, preference_data],
+        )?;
+        tx.commit()?;
+        Ok(())
+    }
+
     pub fn save_workspace(&self, workspace: &Workspace) -> StorageResult<()> {
         self.connection.execute("INSERT INTO workspaces(id,data) VALUES(?1,?2) ON CONFLICT(id) DO UPDATE SET data=excluded.data",params![workspace.id.to_string(),encode(workspace)?])?;
         Ok(())
@@ -352,10 +388,7 @@ PRAGMA user_version=2;")?;
         data.map(|data| decode(&data)).transpose()
     }
     pub fn set_preference<T: serde::Serialize>(&self, key: &str, value: &T) -> StorageResult<()> {
-        if !matches!(
-            key,
-            "appearance" | "selection" | "window" | "agent_profiles"
-        ) {
+        if !valid_preference_key(key) {
             return Err(StorageError::Limit);
         }
         self.connection.execute("INSERT INTO preferences(key,data) VALUES(?1,?2) ON CONFLICT(key) DO UPDATE SET data=excluded.data",params![key,encode(value)?])?;
@@ -397,6 +430,13 @@ fn update_activity(
     )?;
     Ok(())
 }
+fn valid_preference_key(key: &str) -> bool {
+    matches!(
+        key,
+        "appearance" | "selection" | "window" | "agent_profiles" | "ssh_profiles"
+    )
+}
+
 fn encode<T: serde::Serialize>(value: &T) -> StorageResult<String> {
     let text = serde_json::to_string(value)?;
     if text.len() > 8 * 1024 * 1024 {

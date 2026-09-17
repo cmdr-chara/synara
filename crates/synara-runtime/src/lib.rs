@@ -3,6 +3,9 @@ mod bounded;
 mod filesystem;
 mod host;
 mod process;
+mod remote_fs;
+#[cfg(unix)]
+mod remote_terminal;
 #[cfg(target_os = "linux")]
 mod process_linux;
 mod ssh;
@@ -14,6 +17,9 @@ pub use bounded::*;
 pub use filesystem::*;
 pub use host::*;
 pub use process::*;
+pub use remote_fs::*;
+#[cfg(unix)]
+pub use remote_terminal::*;
 pub use ssh::*;
 pub use terminal::*;
 pub use terminal_input::*;
@@ -37,4 +43,6 @@ pub enum RuntimeError {
     Timeout,
     #[error("resource is no longer available")]
     Closed,
+    #[error("a remote guarded write may have completed but its acknowledgement was lost")]
+    WriteOutcomeUnknown,
 }

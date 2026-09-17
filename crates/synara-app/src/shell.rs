@@ -800,34 +800,84 @@ impl Shell {
         });
     }
     fn refresh_files(&self) {
-        if let Some(root) = self.root() {
-            let directory = self.directory.clone();
-            self.job(async move {
-                let entries = list_files(root.clone(), directory.clone()).await?;
-                Ok(Update::Files {
-                    root,
-                    directory,
-                    entries,
-                })
-            });
-        }
+        let Some(target) = self.workspace_target() else {
+            return;
+        };
+        let root = target.root().clone();
+        let directory = self.directory.clone();
+        let workspace_service = self.controller.workspace.clone();
+        self.job(async move {
+            let entries = match target {
+                WorkspaceTarget::Local { root } => list_files(root, directory.clone()).await?,
+                WorkspaceTarget::Ssh { workspace, root } => {
+                    let filesystem =
+                        remote_filesystem(workspace_service, workspace, root).await?;
+                    list_remote_files(filesystem, directory.clone()).await?
+                }
+            };
+            Ok(Update::Files {
+                root,
+                directory,
+                entries,
+            })
+        });
     }
+
     fn refresh_git(&self) {
-        if let Some(root) = self.root() {
-            let staged = self.staged;
-            self.job(async move {
-                let git = GitService::new(root.clone());
-                let status = git.status().await?;
-                let diff = git.diff(staged, None).await?;
-                Ok(Update::Git {
-                    root,
-                    status,
-                    diff,
-                    staged,
-                })
-            });
-        }
+        let Some(target) = self.workspace_target() else {
+            return;
+        };
+        let root = target.root().clone();
+        let staged = self.staged;
+        let workspace_service = self.controller.workspace.clone();
+        self.job(async move {
+            let git = git_service(workspace_service, target).await?;
+            let status = git.status().await?;
+            let diff = git.diff(staged, None).await?;
+            Ok(Update::Git {
+                root,
+                status,
+                diff,
+                staged,
+            })
+        });
     }
+
+    fn git_index_path(&self, path: PathBuf, unstage: bool) {
+        let Some(target) = self.workspace_target() else {
+            return;
+        };
+        let workspace_service = self.controller.workspace.clone();
+        self.job(async move {
+            let git = git_service(workspace_service, target).await?;
+            if unstage {
+                git.unstage(path).await?;
+            } else {
+                git.stage(path).await?;
+            }
+            Ok(Update::Done("Index updated".into()))
+        });
+    }
+
+    fn commit_git(&mut self, message: String, cx: &mut Context<Self>) {
+        if message.trim().is_empty() {
+            self.error = Some("Enter a commit message first.".into());
+            cx.notify();
+            return;
+        }
+        let Some(target) = self.workspace_target() else {
+            return;
+        };
+        let workspace_service = self.controller.workspace.clone();
+        self.job(async move {
+            git_service(workspace_service, target)
+                .await?
+                .commit(message)
+                .await?;
+            Ok(Update::Done("Commit created in the selected workspace".into()))
+        });
+    }
+
     fn open_file(&mut self, path: PathBuf, cx: &mut Context<Self>) {
         if self.dirty(cx) || self.saving {
             self.error =
@@ -835,26 +885,49 @@ impl Shell {
             cx.notify();
             return;
         }
-        if let Some(root) = self.root() {
-            self.job(async move {
-                let document = open_document(root.clone(), path).await?;
-                Ok(Update::Document { root, document })
-            });
-        }
+        let Some(target) = self.workspace_target() else {
+            return;
+        };
+        let root = target.root().clone();
+        let workspace_service = self.controller.workspace.clone();
+        self.job(async move {
+            let document = match target {
+                WorkspaceTarget::Local { root } => open_document(root, path).await?,
+                WorkspaceTarget::Ssh { workspace, root } => {
+                    let filesystem =
+                        remote_filesystem(workspace_service, workspace, root).await?;
+                    open_remote_document(filesystem, path).await?
+                }
+            };
+            Ok(Update::Document { root, document })
+        });
     }
+
     fn save_file(&mut self, cx: &mut Context<Self>) {
         if self.saving {
             return;
         }
-        let (Some(root), Some(document)) = (self.root(), self.document.clone()) else {
+        let (Some(target), Some(document)) = (self.workspace_target(), self.document.clone()) else {
             return;
         };
+        let root = target.root().clone();
         let text = self.editor.read(cx).text().to_owned();
+        let workspace_service = self.controller.workspace.clone();
         self.saving = true;
         self.error = None;
         self.job(async move {
             let path = document.path.clone();
-            match save_document(root.clone(), document, text.clone()).await {
+            let result = match target {
+                WorkspaceTarget::Local { root } => {
+                    save_document(root, document, text.clone()).await
+                }
+                WorkspaceTarget::Ssh { workspace, root } => {
+                    let filesystem =
+                        remote_filesystem(workspace_service, workspace, root).await?;
+                    save_remote_document(filesystem, document, text.clone()).await
+                }
+            };
+            match result {
                 Ok(version) => Ok(Update::Saved {
                     root,
                     path,
@@ -867,7 +940,10 @@ impl Shell {
         cx.notify();
     }
     fn start_terminal(&mut self, cx: &mut Context<Self>) {
-        let Some(root) = self.root() else { return };
+        let Some(target) = self.workspace_target() else {
+            return;
+        };
+        let root = target.root().clone();
         if self.terminal_starting {
             return;
         }
@@ -880,18 +956,66 @@ impl Shell {
         self.terminal_root = None;
         self.terminal_view
             .update(cx, |terminal, cx| terminal.clear_session(cx));
+        let workspace_service = self.controller.workspace.clone();
         self.job(async move {
-            let cwd = root.clone();
-            let result = tokio::task::spawn_blocking(move || {
-                #[cfg(windows)]
-                let command = std::env::var("COMSPEC").unwrap_or_else(|_| "cmd.exe".into());
-                #[cfg(not(windows))]
-                let command = std::env::var("SHELL").unwrap_or_else(|_| "/bin/sh".into());
-                NativeTerminal::spawn(&synara_runtime::LaunchSpec::new(command), &cwd, 24, 88)
-                    .map(|terminal| TerminalSession::Local(Arc::new(terminal)))
-            })
-            .await
-            .map_err(|_| WorkspaceError::Worker)?;
+            let result = match target {
+                WorkspaceTarget::Local { root: cwd } => {
+                    tokio::task::spawn_blocking(move || {
+                        #[cfg(windows)]
+                        let command =
+                            std::env::var("COMSPEC").unwrap_or_else(|_| "cmd.exe".into());
+                        #[cfg(not(windows))]
+                        let command =
+                            std::env::var("SHELL").unwrap_or_else(|_| "/bin/sh".into());
+                        NativeTerminal::spawn(
+                            &synara_runtime::LaunchSpec::new(command),
+                            &cwd,
+                            24,
+                            88,
+                        )
+                        .map(|terminal| TerminalSession::Local(Arc::new(terminal)))
+                    })
+                    .await
+                    .map_err(|_| WorkspaceError::Worker)?
+                    .map_err(WorkspaceError::from)
+                }
+                WorkspaceTarget::Ssh { workspace, root } => {
+                    #[cfg(unix)]
+                    {
+                        let profile = workspace_service
+                            .ssh_profile(workspace.id)
+                            .await?
+                            .ok_or_else(|| {
+                                WorkspaceError::Invalid(
+                                    "remote workspace is missing its pinned SSH profile".into(),
+                                )
+                            })?;
+                        let host = profile.host(&workspace)?;
+                        tokio::task::spawn_blocking(move || {
+                            synara_runtime::RemoteTerminal::spawn(
+                                &host,
+                                &synara_runtime::LaunchSpec::new("/bin/sh"),
+                                &root,
+                                24,
+                                88,
+                            )
+                            .map(|terminal| TerminalSession::Remote(Arc::new(terminal)))
+                        })
+                        .await
+                        .map_err(|_| WorkspaceError::Worker)?
+                        .map_err(WorkspaceError::from)
+                    }
+                    #[cfg(not(unix))]
+                    {
+                        let _ = (workspace_service, workspace, root);
+                        Err(WorkspaceError::Runtime(
+                            synara_runtime::RuntimeError::Unsupported(
+                                "remote interactive terminals currently require the validated Unix PTY backend".into(),
+                            ),
+                        ))
+                    }
+                }
+            };
             match result {
                 Ok(terminal) => Ok(Update::TerminalStarted {
                     root,

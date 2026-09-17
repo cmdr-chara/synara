@@ -75,18 +75,27 @@ fn partial_download_failure_keeps_previous_version_and_removes_staging() {
     impl Downloader for Interrupted {
         fn download(&self, _: &str, output: &mut dyn Write, _: u64) -> Result<()> {
             output.write_all(b"partial")?;
-            Err(RegistryError::Network("interrupted fixture download".into()))
+            Err(RegistryError::Network(
+                "interrupted fixture download".into(),
+            ))
         }
     }
     let root = tempfile::tempdir().unwrap();
     let store = RegistryStore::open(root.path()).unwrap();
-    let old = store.install(&plan(b"old", "1.0.0", ""), &Bytes(b"old".to_vec())).unwrap();
+    let old = store
+        .install(&plan(b"old", "1.0.0", ""), &Bytes(b"old".to_vec()))
+        .unwrap();
     let failed = store.install(&plan(b"new", "2.0.0", ""), &Interrupted);
     assert!(matches!(failed, Err(RegistryError::Network(_))));
     assert_eq!(store.installed().unwrap().len(), 1);
-    assert_eq!(fs::read(old.reference.agent_spec().unwrap().launch.command).unwrap(), b"old");
+    assert_eq!(
+        fs::read(old.reference.agent_spec().unwrap().launch.command).unwrap(),
+        b"old"
+    );
     assert_no_staging(&store);
-    let new = store.install(&plan(b"new", "2.0.0", ""), &Bytes(b"new".to_vec())).unwrap();
+    let new = store
+        .install(&plan(b"new", "2.0.0", ""), &Bytes(b"new".to_vec()))
+        .unwrap();
     assert_eq!(store.installed().unwrap().len(), 2);
     store.remove(&new.reference).unwrap();
     assert!(old.reference.agent_spec().is_ok());
@@ -94,12 +103,29 @@ fn partial_download_failure_keeps_previous_version_and_removes_staging() {
 
 #[test]
 fn hostile_archive_paths_fail_before_publishing_a_new_version() {
-    for name in ["../escape", "/absolute", "C:/escape", "a/../escape", "a\\..\\escape", "COM¹.exe", "LPT².txt", "a:stream", "bin/agent\u{202e}exe"] {
+    for name in [
+        "../escape",
+        "/absolute",
+        "C:/escape",
+        "a/../escape",
+        "a\\..\\escape",
+        "COM¹.exe",
+        "LPT².txt",
+        "a:stream",
+        "bin/agent\u{202e}exe",
+    ] {
         let root = tempfile::tempdir().unwrap();
         let store = RegistryStore::open(root.path()).unwrap();
-        let old = store.install(&plan(b"old", "1.0.0", ""), &Bytes(b"old".to_vec())).unwrap();
+        let old = store
+            .install(&plan(b"old", "1.0.0", ""), &Bytes(b"old".to_vec()))
+            .unwrap();
         let bytes = archive(&[("agent", b"new"), (name, b"bad")]);
-        assert!(store.install(&plan(&bytes, "2.0.0", ".tar.gz"), &Bytes(bytes)).is_err(), "accepted {name:?}");
+        assert!(
+            store
+                .install(&plan(&bytes, "2.0.0", ".tar.gz"), &Bytes(bytes))
+                .is_err(),
+            "accepted {name:?}"
+        );
         assert_eq!(store.installed().unwrap().len(), 1);
         assert!(old.reference.agent_spec().is_ok());
         assert_no_staging(&store);
@@ -111,7 +137,11 @@ fn failure_after_a_valid_member_does_not_leave_a_partially_installed_agent() {
     let root = tempfile::tempdir().unwrap();
     let store = RegistryStore::open(root.path()).unwrap();
     let bytes = archive(&[("agent", b"first"), ("AGENT", b"duplicate")]);
-    assert!(store.install(&plan(&bytes, "1.0.0", ".tgz"), &Bytes(bytes)).is_err());
+    assert!(
+        store
+            .install(&plan(&bytes, "1.0.0", ".tgz"), &Bytes(bytes))
+            .is_err()
+    );
     assert!(store.installed().unwrap().is_empty());
     assert_no_staging(&store);
 }
@@ -120,12 +150,22 @@ fn failure_after_a_valid_member_does_not_leave_a_partially_installed_agent() {
 fn renamed_installation_reference_cannot_revalidate_another_receipt() {
     let root = tempfile::tempdir().unwrap();
     let store = RegistryStore::open(root.path()).unwrap();
-    let old = store.install(&plan(b"old", "1.0.0", ""), &Bytes(b"old".to_vec())).unwrap();
-    let new = store.install(&plan(b"new", "2.0.0", ""), &Bytes(b"new".to_vec())).unwrap();
+    let old = store
+        .install(&plan(b"old", "1.0.0", ""), &Bytes(b"old".to_vec()))
+        .unwrap();
+    let new = store
+        .install(&plan(b"new", "2.0.0", ""), &Bytes(b"new".to_vec()))
+        .unwrap();
     let mut reference = old.reference.clone();
     reference.directory = new.reference.directory.clone();
-    assert!(matches!(reference.agent_spec(), Err(RegistryError::Changed)));
-    assert!(matches!(store.remove(&reference), Err(RegistryError::Changed)));
+    assert!(matches!(
+        reference.agent_spec(),
+        Err(RegistryError::Changed)
+    ));
+    assert!(matches!(
+        store.remove(&reference),
+        Err(RegistryError::Changed)
+    ));
     assert!(old.reference.agent_spec().is_ok());
     assert!(new.reference.agent_spec().is_ok());
 }
@@ -139,22 +179,31 @@ fn concurrent_mutations_refuse_the_active_install_lock() {
     impl Downloader for Paused {
         fn download(&self, _: &str, output: &mut dyn Write, _: u64) -> Result<()> {
             self.started.send(()).unwrap();
-            self.released.lock().unwrap().recv_timeout(Duration::from_secs(10)).unwrap();
+            self.released
+                .lock()
+                .unwrap()
+                .recv_timeout(Duration::from_secs(10))
+                .unwrap();
             output.write_all(b"new")?;
             Ok(())
         }
     }
     let root = tempfile::tempdir().unwrap();
     let store = RegistryStore::open(root.path()).unwrap();
-    let old = store.install(&plan(b"old", "1.0.0", ""), &Bytes(b"old".to_vec())).unwrap();
+    let old = store
+        .install(&plan(b"old", "1.0.0", ""), &Bytes(b"old".to_vec()))
+        .unwrap();
     let (started_tx, started_rx) = mpsc::sync_channel(1);
     let (release_tx, release_rx) = mpsc::sync_channel(1);
     let worker_store = store.clone();
     let handle = std::thread::spawn(move || {
-        worker_store.install(&plan(b"new", "2.0.0", ""), &Paused {
-            started: started_tx,
-            released: Mutex::new(release_rx),
-        })
+        worker_store.install(
+            &plan(b"new", "2.0.0", ""),
+            &Paused {
+                started: started_tx,
+                released: Mutex::new(release_rx),
+            },
+        )
     });
     started_rx.recv_timeout(Duration::from_secs(10)).unwrap();
     let remove = store.remove(&old.reference);

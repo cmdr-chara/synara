@@ -2,106 +2,29 @@ name: SSH transport verification
 on:
   push:
     branches: [astra/gpui-clean-rewrite, astra/session-ajm]
-    paths:
-      - crates/synara-runtime/**
-      - crates/synara-app/**
-      - crates/synara-acp/**
-      - crates/synara-agent/**
-      - crates/synara-core/**
-      - crates/synara-workspace/**
-      - Cargo.lock
-      - Cargo.toml
-      - ROADMAP.md
-      - rust-toolchain.toml
-      - scripts/ssh_smoke.py
-      - .github/workflows/ssh.yml
 permissions:
   contents: read
 concurrency:
   group: ssh-${{ github.ref }}
   cancel-in-progress: false
+env:
+  CARGO_BUILD_JOBS: '2'
+  RUSTUP_TOOLCHAIN: '1.98.1'
 jobs:
-  publish-ajm:
-    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/session-ajm' && contains(github.event.head_commit.message, '[ajm-apply]')
-    runs-on: ubuntu-24.04
-    timeout-minutes: 5
-    permissions:
-      contents: write
-    outputs:
-      candidate: ${{ steps.apply.outputs.candidate }}
-    steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
-        with:
-          fetch-depth: 1000
-          persist-credentials: false
-      - name: Apply an exact, scope-limited source checkpoint
-        id: apply
-        run: |
-          python3 - <<'PY'
-          import hashlib, json, os, pathlib, re, subprocess
-          def git(*args):
-              return subprocess.check_output(['git', *args], text=True).strip()
-          envelope = pathlib.Path('crates/synara-runtime/verification/ajm-checkpoint.json')
-          assert envelope.stat().st_size <= 4_000_000
-          data = json.loads(envelope.read_text())
-          assert re.fullmatch(r'[0-9a-f]{40}', data['base'])
-          subprocess.run(['git', 'merge-base', '--is-ancestor', data['base'], 'HEAD'], check=True)
-          assert git('merge-base', '1cd24dd6f5ac9571c1ea2b7329bcb5fc1a4ad121', 'HEAD') == '1cd24dd6f5ac9571c1ea2b7329bcb5fc1a4ad121'
-          assert git('rev-list', '--max-parents=0', 'HEAD') == '43b1fb89bf19dadc388d18008f9ceb21b8215716'
-          patch = data['text_patch'].encode('utf-8')
-          assert len(patch) <= 3_000_000
-          assert hashlib.sha256(patch).hexdigest() == data['sha256']
-          exact = {'Cargo.lock', 'Cargo.toml', 'ROADMAP.md', 'crates/synara-app/src/shell.rs', 'crates/synara-app/src/shell/panels.rs'}
-          prefixes = ('crates/synara-runtime/', 'crates/synara-workspace/', 'crates/synara-app/src/shell/terminal/')
-          paths = set(data['files'])
-          assert paths and len(paths) <= 80 and str(envelope) not in paths
-          for name, hashes in data['files'].items():
-              path = pathlib.PurePosixPath(name)
-              assert not path.is_absolute() and '..' not in path.parts and '.git' not in path.parts
-              assert all(ord(c) >= 32 for c in name)
-              assert name in exact or name.startswith(prefixes) or name == 'crates/synara-app/src/shell/terminal.rs'
-              entry = git('ls-tree', 'HEAD', '--', name).split()
-              current = entry[2] if entry else None
-              assert current == hashes['before'], f'changed base: {name}'
-              assert hashes['after'] is None or re.fullmatch(r'[0-9a-f]{40}', hashes['after'])
-          subprocess.run(['git', 'apply', '--check', '--index', '-'], input=patch, check=True)
-          subprocess.run(['git', 'apply', '--index', '-'], input=patch, check=True)
-          assert set(git('diff', '--cached', '--name-only').splitlines()) == paths
-          for name, hashes in data['files'].items():
-              entry = git('ls-files', '--stage', '--', name).split()
-              assert (entry[1] if entry else None) == hashes['after'], f'changed content: {name}'
-              assert not entry or entry[0] == '100644', f'non-regular source: {name}'
-          message = data['message']
-          assert isinstance(message, str) and 1 <= len(message) <= 200 and '\n' not in message
-          subprocess.run(['git', 'rm', '--', str(envelope)], check=True)
-          subprocess.run(['git', '-c', 'user.name=Synara AJM checkpoint', '-c', 'user.email=synara-ajm@users.noreply.github.com', 'commit', '-m', message], check=True)
-          candidate = git('rev-parse', 'HEAD')
-          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
-              output.write(f'candidate={candidate}\n')
-          print(f'Exact source candidate: {candidate}')
-          PY
-      - name: Publish only a fast-forward of the isolated session branch
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          set +x
-          test "$(git ls-remote origin refs/heads/astra/session-ajm | cut -f1)" = "$GITHUB_SHA"
-          auth="$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)"
-          git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic $auth" push origin HEAD:refs/heads/astra/session-ajm
-          unset auth GH_TOKEN
   loopback:
-    needs: [publish-ajm]
-    if: always() && !cancelled() && (needs.publish-ajm.result == 'success' || needs.publish-ajm.result == 'skipped') && github.repository == 'cmdr-chara/synara' && (github.ref == 'refs/heads/astra/gpui-clean-rewrite' || github.ref == 'refs/heads/astra/session-ajm')
+    if: github.repository == 'cmdr-chara/synara' && (github.ref == 'refs/heads/astra/gpui-clean-rewrite' || github.ref == 'refs/heads/astra/session-ajm')
     runs-on: ubuntu-24.04
     timeout-minutes: 20
-    env:
-      CARGO_BUILD_JOBS: '2'
-      RUSTUP_TOOLCHAIN: '1.98.1'
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
-          ref: ${{ needs.publish-ajm.outputs.candidate || github.sha }}
+          ref: ${{ github.sha }}
           persist-credentials: false
+      - name: Record exact SSH candidate
+        run: |
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          mkdir -p /tmp/ajm-ssh-evidence
+          git rev-parse HEAD > /tmp/ajm-ssh-evidence/revision.txt
       - name: Install pinned Rust and OpenSSH
         run: |
           rustup toolchain install 1.98.1 --profile minimal
@@ -113,39 +36,47 @@ jobs:
       - name: Verify isolated SSH transport and generic ACP
         run: |
           set -o pipefail
-          { git rev-parse HEAD; python3 scripts/ssh_smoke.py; } 2>&1 | tee /tmp/ajm-ssh.log
+          { git rev-parse HEAD; python3 scripts/ssh_smoke.py; } 2>&1 | tee /tmp/ajm-ssh-evidence/ssh.log
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:
           name: ajm-ssh-evidence
-          path: /tmp/ajm-ssh.log
+          path: /tmp/ajm-ssh-evidence/
           retention-days: 7
+          if-no-files-found: error
   ajm-linux:
-    needs: [publish-ajm]
-    if: always() && !cancelled() && (needs.publish-ajm.result == 'success' || needs.publish-ajm.result == 'skipped') && github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/session-ajm'
+    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/session-ajm'
     runs-on: ubuntu-24.04
     timeout-minutes: 35
     env:
-      CARGO_BUILD_JOBS: '2'
-      RUSTUP_TOOLCHAIN: '1.98.1'
+      SMOKE_DIR: /tmp/synara-ajm-smoke-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
-          ref: ${{ needs.publish-ajm.outputs.candidate || github.sha }}
-          fetch-depth: 1000
+          ref: ${{ github.sha }}
+          fetch-depth: 0
           persist-credentials: false
-      - name: Verify isolated lineage and preserve candidate
+      - name: Verify isolated lineage and preserve exact candidate
         run: |
+          mkdir -p /tmp/ajm-evidence
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           test "$(git merge-base 1cd24dd6f5ac9571c1ea2b7329bcb5fc1a4ad121 HEAD)" = 1cd24dd6f5ac9571c1ea2b7329bcb5fc1a4ad121
           test "$(git rev-list --max-parents=0 HEAD)" = 43b1fb89bf19dadc388d18008f9ceb21b8215716
-          mkdir -p /tmp/ajm-evidence
+          test -z "$(git rev-list --min-parents=2 1cd24dd6f5ac9571c1ea2b7329bcb5fc1a4ad121..HEAD)"
+          test ! -e crates/synara-runtime/verification/ajm-checkpoint.json
           git rev-parse HEAD > /tmp/ajm-evidence/revision.txt
           git bundle create /tmp/ajm-evidence/source.bundle HEAD
+          git diff --stat 1cd24dd6f5ac9571c1ea2b7329bcb5fc1a4ad121 HEAD > /tmp/ajm-evidence/changed-files.txt
+      - name: Verify parallel write ownership
+        run: |
+          set -o pipefail
+          { python3 crates/synara-runtime/verification/check_ajm_scope.py --self-test && python3 crates/synara-runtime/verification/check_ajm_scope.py; } 2>&1 | tee /tmp/ajm-evidence/scope.log
       - name: Install pinned Rust and native libraries
         run: |
           rustup toolchain install 1.98.1 --profile minimal --component rustfmt --component clippy
           sudo apt-get update
           sudo apt-get install -y clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil fonts-dejavu-core
+          { rustc --version; cargo --version; uname -a; } > /tmp/ajm-evidence/environment.txt
       - name: Structural checks
         run: |
           set -o pipefail
@@ -178,15 +109,22 @@ jobs:
         timeout-minutes: 3
         run: |
           set -o pipefail
-          python3 scripts/native_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/synara-ajm-smoke 2>&1 | tee /tmp/ajm-evidence/smoke.log
+          python3 scripts/native_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output "$SMOKE_DIR" 2>&1 | tee /tmp/ajm-evidence/smoke.log
+      - name: Verify checks did not change tracked source
+        if: always()
+        run: |
+          git status --porcelain=v1 > /tmp/ajm-evidence/worktree-status.txt
+          git diff --exit-code
+          git diff --cached --exit-code
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:
           name: ajm-linux-evidence
           path: |
             /tmp/ajm-evidence/
-            /tmp/synara-ajm-smoke/*.png
-            /tmp/synara-ajm-smoke/*.log
-            /tmp/synara-ajm-smoke/result.json
+            ${{ env.SMOKE_DIR }}/*.png
+            ${{ env.SMOKE_DIR }}/*.log
+            ${{ env.SMOKE_DIR }}/result.json
           retention-days: 7
-          if-no-files-found: warn
+          if-no-files-found: error

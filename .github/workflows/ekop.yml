@@ -91,3 +91,31 @@ jobs:
           path: ${{ runner.temp }}/synara-ekop-smoke/result.json
           retention-days: 7
           if-no-files-found: warn
+  source-checkpoint:
+    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/session-ekop'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Export independently rooted candidate source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-list --max-parents=0 HEAD)" = '43b1fb89bf19dadc388d18008f9ceb21b8215716'
+          export_dir="$RUNNER_TEMP/ekop-source"
+          mkdir "$export_dir"
+          git bundle create "$export_dir/source.bundle" HEAD
+          git bundle verify "$export_dir/source.bundle"
+          git rev-parse HEAD > "$export_dir/revision.txt"
+          cp Cargo.lock "$export_dir/Cargo.lock"
+          (cd "$export_dir" && sha256sum source.bundle Cargo.lock revision.txt > SHA256SUMS)
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ekop-source-checkpoint
+          path: ${{ runner.temp }}/ekop-source/
+          retention-days: 1
+          if-no-files-found: error

@@ -65,7 +65,7 @@ verify that terminal exit/wait drains captured output before returning a snapsho
 ## Schema/configuration and custom profile slice
 
 B1/B6 and C5/C6: **PARTIAL**, next candidate verification pending. Stable lifecycle
-request/response schema validation now also covers resume6/close/list/delete,
+request/response schema validation now also covers resume/close/list/delete,
 authentication/logout, modes, config options and elicitation callbacks. The SDK
 schema still does not replace adapter resource bounds and semantic validation.
 The audit caught a missing `type: "boolean"` discriminator in configuration writes.
@@ -100,7 +100,7 @@ documentation. Shared edits: `synara-core/src/model.rs` adds the explicit
 uses that state instead of matching error text. No shared runtime API changes. No runtime, PTY, SSH, terminal-rendering or
 terminal-test changes. The existing source publisher remains unchanged.
 
-A/J/M equest: inspect terminal spawn's post-approval lifetime check separately.
+A/J/M request: inspect terminal spawn's post-approval lifetime check separately.
 `CallbackServices::create_terminal` currently obtains `session.interaction()` again
 after asynchronous spawn. A cancelled turn can end before that second lookup,
 which may observe the session lifetime instead of the original turn. This session
@@ -155,7 +155,7 @@ used offline Cargo with an isolated cache and target directory.
 | `python3 scripts/check_roadmap.py --self-test` | PASS, 9 tests |
 | `python3 scripts/check_roadmap.py` | PASS, existing 3 checked tasks unchanged |
 | `python3 scripts/audit_workspace.py` | Exited 0 for structure. Its root check sees the shallow boundary, so this is NOT full historical-root proof |
-| Workspace `cargo check , all-targets/all-features Clippy, `cargo test` | BLOCKED, missing native `fontconfig.pc` |
+| Workspace `cargo check`, all-targets/all-features Clippy, `cargo test` | BLOCKED, missing native `fontconfig.pc` |
 | Native application/fixture build | BLOCKED by the same native dependency |
 | Native desktop smoke on the recovery candidate | BLOCKED, no native candidate binary. The prior smoke is not reused as proof of this candidate |
 
@@ -171,7 +171,7 @@ No vendor executable or provider credential was used in this recovery.
 D3: **PARTIAL**. The test compilation defect is corrected, but the corrected
 GPUI tests, interactive scroll ownership and long-transcript desktop behavior
 still need a runnable native verification environment. No D task is closed.
-D5/D6/D7: **PARTIAL** in the fourth checkpoint, with fresh non-GUI unteraction and
+D5/D6/D7: **PARTIAL** in the fourth checkpoint, with fresh non-GUI interaction and
 validation evidence. Positive/rejected forms and permissions, stale/overlapping
 requests, keyboard interaction and restoration still require native acceptance.
 D1/D2/D4: **NOT TOUCHED** by this recovery. Their remaining rendering, ordering,

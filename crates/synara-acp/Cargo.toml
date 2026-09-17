@@ -19,6 +19,7 @@ hex.workspace = true
 uuid.workspace = true
 
 [dev-dependencies]
+synara-registry = { path = "../synara-registry" }
 synara-workspace = { path = "../synara-workspace" }
 tempfile.workspace = true
 

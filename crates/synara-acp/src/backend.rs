@@ -77,7 +77,8 @@ impl AgentBackend for AcpBackend {
         if !context.cwd.is_absolute() {
             return Err(wire::invalid("connection directory must be absolute"));
         }
-        let process = context.host.spawn(&spec.launch, &context.cwd).await?;
+        let directory = spec.launch_directory.as_deref().unwrap_or(&context.cwd);
+        let process = context.host.spawn(&spec.launch, directory).await?;
         let (rpc, incoming) = RpcPeer::start(process.stdout, process.stdin, process.stderr);
         let sessions = Arc::new(Sessions::default());
         let callbacks = Arc::new(CallbackServices::new(context.clone(), sessions.clone()));

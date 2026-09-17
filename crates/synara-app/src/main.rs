@@ -125,6 +125,7 @@ fn run() -> Result<()> {
                 .await?;
         }
         Ok::<_, synara_workspace::WorkspaceError>(shell::Bootstrap {
+            agent_directory: options.data.join("agents"),
             catalog: workspace.catalog().await?,
             profiles: workspace.profiles().await?,
             selection: workspace.selection().await?,

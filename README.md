@@ -50,6 +50,37 @@ launch environment and are not written to the profiles database. Do not place
 secrets in command arguments. Profiles are editable in Settings. Models, modes,
 authentication methods and configuration are discovered from the agent.
 
+## Agent Registry
+
+The Agents tab browses the official ACP Registry. Refresh retrieves the index over
+HTTPS. Review shows the publisher origin, version, platform, arguments, public
+environment defaults and license link before approval. Merely browsing or adding
+an agent never starts it. Select the added agent for a task to connect.
+
+Binary installations require a publisher-provided SHA-256 checksum. The installer
+verifies the download before extracting into a private staging directory, rejects
+traversal, links, device files and case-colliding entries, and limits download and
+expanded sizes. ZIP, gzip/bzip2 TAR and raw binaries are supported. Executable and
+receipt changes are checked before a new process starts. A missing checksum is a
+visible unsupported distribution, not implicit approval.
+
+npm and uv entries create an explicitly approved, version-pinned launcher. Their
+package manager downloads code on first connection and owns dependency integrity
+and its cache. Synara does not claim to verify those packages as binary archives.
+Managed agents start outside the project directory so a repository's local package
+configuration cannot silently replace the approved launcher. ACP session paths
+still identify the selected workspace. Registry installations are local. Remote
+workspaces require a custom profile for an agent installed on the SSH host.
+
+New versions are shown separately and never installed automatically. An update
+keeps the previous installation until explicit removal. Removal refuses to strand
+a task assigned to that installation, and does not delete conversations, vendor
+credentials or npm/uv caches. The catalog is cached for offline browsing. Failed
+refreshes preserve the previous valid cache.
+
+An external agent still runs as your operating-system account. Callback path
+containment is not an operating-system sandbox. Only approve publishers you trust.
+
 ## Desktop workflow
 
 Create or open a workspace, create a task, choose an agent and send a prompt.
@@ -82,6 +113,7 @@ is visible rather than silently discarding saved history.
 - `synara-runtime`: process ownership, contained filesystem, PTY and execution hosts.
 - `synara-workspace`: SQLite, durable event delivery, controller, profiles and tools.
 - `synara-app`: native GPUI shell and input surfaces.
+- `synara-registry`: validated metadata, approved launchers and bounded installations.
 
 Repository content, agent output and tool requests are untrusted. Filesystem
 callbacks enforce containment and symlink rules. Permissions are not silently
@@ -100,7 +132,7 @@ python3 scripts/audit_workspace.py
 Tests do not require vendor credentials. The fixture executable accepts only an
 explicit `--integration-fixture` invocation and is for testing the generic host.
 
-Agent registry installation, complete terminal emulation, remote workspace UI,
+Complete terminal emulation, remote workspace UI,
 browser/device hosting, updater, native credential integration and broader
 platform/performance hardening remain under development. Live vendor-agent
 validation is separate from fixture tests.

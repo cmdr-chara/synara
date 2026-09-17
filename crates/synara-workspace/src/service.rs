@@ -207,6 +207,71 @@ impl WorkspaceService {
         self.access(move |store| Ok(store.set_preference("agent_profiles", &profiles)?))
             .await
     }
+    /// Publish one managed profile without losing concurrent edits to other profiles.
+    pub async fn register_installation(
+        &self,
+        reference: synara_registry::RegistryReference,
+    ) -> WorkspaceResult<Vec<AgentProfile>> {
+        let profile = tokio::task::spawn_blocking(move || AgentProfile::from_registry(reference))
+            .await
+            .map_err(|_| WorkspaceError::Worker)??;
+        self.access(move |store| {
+            let mut profiles: Vec<AgentProfile> = store
+                .preference("agent_profiles")?
+                .unwrap_or_else(default_profiles);
+            if catalog(store)?.tasks.iter().any(|task| {
+                task.agent_id == profile.id
+                    && matches!(task.state, TaskState::Running | TaskState::Waiting)
+            }) {
+                return Err(AgentError::Busy.into());
+            }
+            if let Some(old) = profiles.iter_mut().find(|p| p.id == profile.id) {
+                if old.registry.is_none() {
+                    return Err(WorkspaceError::Invalid(
+                        "this ID belongs to a custom agent profile".into(),
+                    ));
+                }
+                *old = profile;
+            } else {
+                profiles.push(profile);
+            }
+            validate_profiles(&profiles)?;
+            store.set_preference("agent_profiles", &profiles)?;
+            Ok(profiles)
+        })
+        .await
+    }
+    /// Unregister only the exact approved receipt, and never strand an assigned task.
+    pub async fn unregister_installation(
+        &self,
+        reference: synara_registry::RegistryReference,
+    ) -> WorkspaceResult<Vec<AgentProfile>> {
+        self.access(move |store| {
+            let mut profiles: Vec<AgentProfile> = store
+                .preference("agent_profiles")?
+                .unwrap_or_else(default_profiles);
+            if let Some(profile) = profiles
+                .iter()
+                .find(|p| p.registry.as_ref() == Some(&reference))
+            {
+                if catalog(store)?
+                    .tasks
+                    .iter()
+                    .any(|task| task.agent_id == profile.id)
+                {
+                    return Err(WorkspaceError::Invalid(
+                        "select another agent for this installation's tasks before removing it"
+                            .into(),
+                    ));
+                }
+                profiles.retain(|p| p.registry.as_ref() != Some(&reference));
+                validate_profiles(&profiles)?;
+                store.set_preference("agent_profiles", &profiles)?;
+            }
+            Ok(profiles)
+        })
+        .await
+    }
     pub async fn set_task_agent(&self, id: TaskId, agent: String) -> WorkspaceResult<Task> {
         self.access(move |store| {
             let profiles = store

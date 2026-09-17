@@ -154,6 +154,8 @@ impl Fixture {
             Some("session/prompt") => {
                 let text = params["prompt"][0]["text"].as_str().unwrap_or("");
                 match text {
+                    "read-scope" => self.request(session.clone(),id,"read","fs/read_text_file",json!({"sessionId":session,"path":format!("{}/scope-proof.txt", self.sessions[&session])}),None),
+                    "startup-directory" => self.finish(&session, id, &std::env::current_dir().unwrap().to_string_lossy()),
                     "hold"|"timeout"=>{ self.text(&session,"Started waiting"); self.pending.insert(session,id); }
                     "crash"=> std::process::exit(23),
                     "malformed"=>{println!("not JSON");io::stdout().flush().unwrap();}

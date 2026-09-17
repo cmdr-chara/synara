@@ -1,6 +1,7 @@
 use gpui::Focusable;
 mod conversation;
 mod panels;
+mod registry;
 use crate::input::{EntryEvent, EntryMode, TextEntry};
 use gpui::{
     App, Context, Entity, ScrollHandle, SharedString, Subscription, Window, div, prelude::*, px,
@@ -18,6 +19,7 @@ use synara_workspace::*;
 use tokio::{runtime::Handle, sync::mpsc};
 
 pub struct Bootstrap {
+    pub agent_directory: PathBuf,
     pub catalog: Catalog,
     pub profiles: Vec<AgentProfile>,
     pub selection: Selection,
@@ -30,6 +32,7 @@ enum Panel {
     Terminal,
     Inspector,
     Settings,
+    Registry,
 }
 type InteractionKey = (ThreadId, String);
 struct FormState {
@@ -39,6 +42,7 @@ struct FormState {
     error: Option<String>,
 }
 enum Update {
+    Registry(Box<registry::RegistryReply>),
     Catalog(Catalog),
     WorkspaceAdded(Project, Catalog),
     TaskCreated(Task, Catalog),
@@ -97,6 +101,7 @@ enum Update {
     Error(String),
 }
 pub struct Shell {
+    registry: registry::RegistryState,
     controller: Arc<Controller>,
     runtime: Handle,
     sender: async_channel::Sender<Update>,
@@ -221,7 +226,9 @@ impl Shell {
                 cx,
             )
         });
+        let registry = registry::RegistryState::new(bootstrap.agent_directory, cx);
         let subscriptions = vec![
+            cx.subscribe(&registry.query, |_, _, _, cx| cx.notify()),
             cx.subscribe(&composer, |this, _, event, cx| match event {
                 EntryEvent::Submit => this.send_prompt(cx),
                 _ => cx.notify(),
@@ -264,6 +271,7 @@ impl Shell {
                     .map(|t| t.id)
             });
         let mut this = Self {
+            registry,
             controller,
             runtime,
             sender,
@@ -748,6 +756,7 @@ impl Shell {
     }
     fn receive(&mut self, update: Update, cx: &mut Context<Self>) {
         match update {
+            Update::Registry(reply) => self.registry_reply(*reply, cx),
             Update::Tick => {
                 self.pending.retain(|_, p| match p {
                     UiInteraction::Permission {
@@ -1025,6 +1034,7 @@ impl Shell {
         self.panel = panel;
         self.error = None;
         match panel {
+            Panel::Registry => self.load_registry_if_needed(cx),
             Panel::Files => self.refresh_files(),
             Panel::Changes => self.refresh_git(),
             Panel::Inspector | Panel::Terminal => self.poll(),
@@ -1115,6 +1125,7 @@ impl Render for Shell {
                                 (Panel::Terminal, "Terminal"),
                                 (Panel::Inspector, "Inspector"),
                                 (Panel::Settings, "Settings"),
+                                (Panel::Registry, "Agents"),
                             ]
                             .into_iter()
                             .map(|(panel, label)| {
@@ -1156,6 +1167,7 @@ impl Render for Shell {
                                 Panel::Terminal => self.terminal_panel(cx),
                                 Panel::Inspector => self.inspector_panel(cx),
                                 Panel::Settings => self.settings_panel(cx),
+                                Panel::Registry => self.registry_panel(cx),
                             }),
                     ),
             )

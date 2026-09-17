@@ -124,6 +124,10 @@ enum Update {
         generation: u64,
         error: String,
     },
+    TerminalShutdown {
+        generation: u64,
+        error: Option<String>,
+    },
     Tick,
     Done(String),
     Error(String),
@@ -180,6 +184,7 @@ pub struct Shell {
     terminal_root: Option<PathBuf>,
     terminal_generation: u64,
     terminal_starting: bool,
+    terminal_closing: bool,
     polling: bool,
     _updates: gpui::Task<()>,
     _subscriptions: Vec<Subscription>,
@@ -394,6 +399,7 @@ impl Shell {
             terminal_root: None,
             terminal_generation: 0,
             terminal_starting: false,
+            terminal_closing: false,
             polling: false,
             _updates: updates,
             _subscriptions: subscriptions,
@@ -404,18 +410,50 @@ impl Shell {
         this
     }
     pub fn request_close(&mut self, window: &mut Window, cx: &mut Context<Self>) -> bool {
+        if self.terminal_closing {
+            return false;
+        }
         let dirty = self.dirty(cx);
         if self.close.request(dirty, self.saving) {
-            cx.quit();
-            true
+            self.begin_quit(cx);
+            false
         } else {
             window.focus(&self.close_focus, cx);
             cx.notify();
             false
         }
     }
+
+    fn begin_quit(&mut self, cx: &mut Context<Self>) {
+        if self.terminal_closing {
+            return;
+        }
+        let Some(terminal) = self.terminal.clone() else {
+            cx.quit();
+            return;
+        };
+        self.terminal_closing = true;
+        let generation = self.terminal_generation;
+        self.notice = Some("Stopping the terminal before closing Synara...".into());
+        self.job(async move {
+            let result = async {
+                terminal.kill()?;
+                tokio::time::timeout(std::time::Duration::from_secs(5), terminal.wait())
+                    .await
+                    .map_err(|_| synara_runtime::RuntimeError::Timeout)??;
+                Ok::<(), synara_runtime::RuntimeError>(())
+            }
+            .await;
+            Ok(Update::TerminalShutdown {
+                generation,
+                error: result.err().map(|error| error.to_string()),
+            })
+        });
+        cx.notify();
+    }
     fn close_panel(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
         let waiting = self.close == CloseState::WaitingForSave;
+        let terminal_closing = self.terminal_closing;
         div().size_full().flex().flex_col().items_center().justify_center()
             .bg(rgb(0x10151d)).text_color(rgb(0xe3e8f0)).font_family("DejaVu Sans")
             .child(div().w(px(620.)).p_6().rounded_lg().border_1().border_color(rgb(0x35465b))
@@ -428,7 +466,13 @@ impl Shell {
                         cx.notify();
                     }
                 }))
-                .child(div().text_xl().child(if waiting { "Waiting for the file to finish saving" } else { "Save changes before closing Synara?" }))
+                .child(div().text_xl().child(if terminal_closing {
+                    "Stopping terminal before closing Synara"
+                } else if waiting {
+                    "Waiting for the file to finish saving"
+                } else {
+                    "Save changes before closing Synara?"
+                }))
                 .child(self.document.as_ref().map_or_else(String::new, |d| d.path.display().to_string()))
                 .child("The file remains open if saving fails or the on-disk version has changed. Closing stops active agent and terminal processes.")
                 .children(self.error.as_ref().map(|e| div().text_color(rgb(0xffb1b5)).child(e.clone())))
@@ -438,9 +482,9 @@ impl Shell {
                         window.focus(&this.editor.read(cx).focus_handle(cx), cx);
                         cx.notify();
                     })))
-                    .children((!waiting).then(|| button("discard-and-close", "Discard and close", false)
-                        .on_click(cx.listener(|this, _, _, cx| { if !this.saving { cx.quit(); } }))))
-                    .children((!waiting).then(|| button("save-and-close", "Save and close", true)
+                    .children((!waiting && !terminal_closing).then(|| button("discard-and-close", "Discard and close", false)
+                        .on_click(cx.listener(|this, _, _, cx| { if !this.saving { this.begin_quit(cx); } }))))
+                    .children((!waiting && !terminal_closing).then(|| button("save-and-close", "Save and close", true)
                         .on_click(cx.listener(|this, _, _, cx| {
                             this.close = CloseState::WaitingForSave;
                             this.save_file(cx);
@@ -1341,7 +1385,7 @@ impl Shell {
                     self.notice = Some("File saved".into());
                 }
                 if self.close.saved(!self.dirty(cx)) {
-                    cx.quit();
+                    self.begin_quit(cx);
                 }
             }
             Update::Git {
@@ -1388,6 +1432,23 @@ impl Shell {
                     self.terminal = None;
                     self.terminal_root = None;
                     self.error = Some(error);
+                }
+            }
+            Update::TerminalShutdown { generation, error } => {
+                if generation != self.terminal_generation {
+                    return;
+                }
+                self.terminal_closing = false;
+                if let Some(error) = error {
+                    self.close.cancel();
+                    self.error = Some(format!(
+                        "Terminal shutdown failed; Synara stayed open to preserve process ownership: {error}"
+                    ));
+                } else {
+                    self.terminal = None;
+                    self.terminal_root = None;
+                    cx.quit();
+                    return;
                 }
             }
             Update::Done(message) => {
@@ -1493,7 +1554,7 @@ fn truncate(text: &str, limit: usize) -> String {
 }
 impl Render for Shell {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
-        if self.close != CloseState::Open {
+        if self.close != CloseState::Open || self.terminal_closing {
             return self.close_panel(cx);
         }
         if self.focus_composer {

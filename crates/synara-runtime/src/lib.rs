@@ -3,12 +3,14 @@ mod bounded;
 mod filesystem;
 mod host;
 mod process;
+mod ssh;
 mod terminal;
 
 pub use bounded::*;
 pub use filesystem::*;
 pub use host::*;
 pub use process::*;
+pub use ssh::*;
 pub use terminal::*;
 
 #[derive(Debug, thiserror::Error)]

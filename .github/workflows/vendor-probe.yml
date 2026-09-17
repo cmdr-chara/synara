@@ -1,0 +1,48 @@
+name: Reviewed vendor ACP probe
+on:
+  push:
+    branches: [astra/gpui-clean-rewrite]
+    paths:
+      - crates/synara-acp/tests/vendor_probe.rs
+      - crates/synara-acp/tests/fixtures/vendor_releases.json
+      - .github/workflows/vendor-probe.yml
+permissions:
+  contents: read
+concurrency:
+  group: vendor-probe-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  no-credentials:
+    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/gpui-clean-rewrite'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      RUSTUP_TOOLCHAIN: '1.98.1'
+      CARGO_BUILD_JOBS: '2'
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          persist-credentials: false
+      - name: Verify Rust and external JavaScript runtime
+        run: |
+          rustup toolchain install 1.98.1 --profile minimal
+          node --version
+          node -e 'if (Number(process.versions.node.split(".")[0]) < 20) process.exit(1)'
+      - name: Validate probe tests and reviewed release manifests
+        run: cargo test --locked -p synara-acp --test vendor_probe
+      - name: Install checked releases and exercise generic ACP without credentials
+        timeout-minutes: 6
+        env:
+          SYNARA_VENDOR_PROBE: approved-release-check
+          SYNARA_VENDOR_REPORT: ${{ runner.temp }}/synara-vendor-report/results.json
+        run: |
+          umask 077
+          mkdir "$RUNNER_TEMP/synara-vendor-report"
+          cargo test --locked -p synara-acp --test vendor_probe -- --ignored --nocapture --test-threads=1
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: vendor-acp-probe
+          path: ${{ runner.temp }}/synara-vendor-report/results.json
+          if-no-files-found: warn
+          retention-days: 7

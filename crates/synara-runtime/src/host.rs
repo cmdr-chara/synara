@@ -186,27 +186,39 @@ impl SshHost {
             .command
             .to_str()
             .ok_or_else(|| RuntimeError::Invalid("remote command must be UTF-8".into()))?;
+        if executable.starts_with('-') {
+            return Err(RuntimeError::Invalid(
+                "remote executable must not be a shell exec option".into(),
+            ));
+        }
         let command = std::iter::once(executable)
             .chain(launch.args.iter().map(String::as_str))
             .map(shell_quote)
             .collect::<Vec<_>>()
             .join(" ");
         let remote = format!("cd -- {} && exec {}", shell_quote(cwd), command);
-        let mut args = vec![
-            "-T".into(),
-            "-o".into(),
-            "BatchMode=yes".into(),
-            "-o".into(),
-            "StrictHostKeyChecking=yes".into(),
-            "-o".into(),
-            "ConnectTimeout=15".into(),
-            "-o".into(),
-            "ServerAliveInterval=30".into(),
-            "-o".into(),
-            "ServerAliveCountMax=3".into(),
-            "-p".into(),
-            self.target.port.to_string(),
-        ];
+        let mut args = vec!["-T".into()];
+        // A background agent transport must not inherit interactive forwarding or
+        // attach to a pre-existing connection with a different trust decision.
+        for option in [
+            "BatchMode=yes",
+            "StrictHostKeyChecking=yes",
+            "ConnectTimeout=15",
+            "ServerAliveInterval=30",
+            "ServerAliveCountMax=3",
+            "ForwardAgent=no",
+            "ForwardX11=no",
+            "ClearAllForwardings=yes",
+            "PermitLocalCommand=no",
+            "ControlMaster=no",
+            "ControlPath=none",
+            "ControlPersist=no",
+            "RequestTTY=no",
+            "ForkAfterAuthentication=no",
+        ] {
+            args.extend(["-o".into(), option.into()]);
+        }
+        args.extend(["-p".into(), self.target.port.to_string()]);
         if let Some(user) = &self.target.user {
             args.extend(["-l".into(), user.clone()]);
         }
@@ -270,6 +282,36 @@ mod tests {
                 .last()
                 .unwrap()
                 .contains("'a'\"'\"'; touch /tmp/x; '\"'\"''")
+        );
+    }
+    #[test]
+    fn ssh_background_transport_disables_ambient_forwarding_and_multiplexing() {
+        let host = SshHost {
+            target: SshTarget {
+                host: "example.test".into(),
+                port: 22,
+                user: None,
+            },
+        };
+        let command = host
+            .command(&LaunchSpec::new("agent"), Path::new("/srv/project"))
+            .unwrap();
+        for option in [
+            "ForwardAgent=no",
+            "ForwardX11=no",
+            "ClearAllForwardings=yes",
+            "PermitLocalCommand=no",
+            "ControlMaster=no",
+            "ControlPath=none",
+            "ControlPersist=no",
+            "RequestTTY=no",
+            "ForkAfterAuthentication=no",
+        ] {
+            assert!(command.args.iter().any(|arg| arg == option), "{option}");
+        }
+        assert!(
+            host.command(&LaunchSpec::new("-a"), Path::new("/srv/project"))
+                .is_err()
         );
     }
     #[test]

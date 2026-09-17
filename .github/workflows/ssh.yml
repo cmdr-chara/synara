@@ -152,22 +152,38 @@ jobs:
         if: contains(github.event.head_commit.message, '[ajm-native-kit]')
         run: |
           python3 - <<'PY'
-          import glob, pathlib, shutil, tarfile
+          import glob, pathlib, re, shutil, subprocess, tarfile
           root = pathlib.Path('/tmp/ajm-native-kit')
-          (root / 'usr/lib/x86_64-linux-gnu').mkdir(parents=True)
+          library = root / 'usr/lib/x86_64-linux-gnu'
+          library.mkdir(parents=True)
           shutil.copytree('/usr/include', root / 'usr/include', symlinks=True)
-          shutil.copytree('/usr/lib/x86_64-linux-gnu/pkgconfig', root / 'usr/lib/x86_64-linux-gnu/pkgconfig', symlinks=True)
+          shutil.copytree('/usr/lib/x86_64-linux-gnu/pkgconfig', library / 'pkgconfig', symlinks=True)
           shutil.copytree('/usr/share/pkgconfig', root / 'usr/share/pkgconfig', symlinks=True)
-          names = 'fontconfig freetype expat png16 z bz2 brotli* harfbuzz graphite2 asound xcb* X11 X11-xcb Xau Xdmcp Xrandr Xrender Xext Xfixes Xcursor Xinerama xkbcommon* wayland* ffi EGL GL* vulkan ssl crypto zstd clang* LLVM* xml2 edit tinfo bsd md drm*'
+          seen = {}
+          def add(source):
+              p = pathlib.Path(source)
+              real = p.resolve(strict=True)
+              dest = library / p.name
+              if dest.exists() or dest.is_symlink():
+                  return
+              if real in seen:
+                  dest.symlink_to(seen[real])
+              else:
+                  shutil.copy2(real, dest)
+                  seen[real] = dest.name
+          names = 'fontconfig freetype expat png16 z bz2 brotli* harfbuzz graphite2 asound xcb* X11 X11-xcb Xau Xdmcp Xrandr Xrender Xext Xfixes Xcursor Xinerama xkbcommon* wayland* ffi EGL GL* vulkan ssl crypto zstd xml2 edit tinfo bsd md drm*'
           for name in names.split():
               for source in glob.glob('/usr/lib/x86_64-linux-gnu/lib' + name + '.so*'):
-                  p = pathlib.Path(source)
-                  shutil.copy2(p, root / 'usr/lib/x86_64-linux-gnu' / p.name)
-          for source in glob.glob('/usr/lib/llvm-*/lib/libclang.so*'):
-              p = pathlib.Path(source)
-              shutil.copy2(p, root / 'usr/lib/x86_64-linux-gnu' / p.name)
+                  add(source)
+          clang = pathlib.Path('/usr/lib/llvm-18/lib/libclang.so')
+          add(clang)
+          for line in subprocess.check_output(['ldd', str(clang)], text=True).splitlines():
+              match = re.search(r'=> (/\S+)', line)
+              if match and pathlib.Path(match.group(1)).name not in {'libc.so.6','libm.so.6','libdl.so.2','libpthread.so.0','libstdc++.so.6','libgcc_s.so.1'}:
+                  add(match.group(1))
           with tarfile.open('/tmp/ajm-native-kit.tar.gz', 'w:gz') as tar:
               tar.add(root / 'usr', arcname='usr')
+          assert pathlib.Path('/tmp/ajm-native-kit.tar.gz').stat().st_size < 500_000_000
           PY
           sha256sum /tmp/ajm-native-kit.tar.gz > /tmp/ajm-native-kit.sha256
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

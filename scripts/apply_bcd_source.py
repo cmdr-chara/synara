@@ -2,6 +2,7 @@
 """Reuse the checked source publisher with an exclusive B/C/D write allowlist."""
 import json
 import os
+import re
 from pathlib import Path, PurePosixPath
 import runpy
 import subprocess
@@ -36,6 +37,22 @@ def allowed(name):
     return name in EXACT or name.startswith(PREFIXES)
 
 
+def validate_package(package):
+    if not isinstance(package, dict) or package.get('mode') != 'diff':
+        raise SystemExit('BCD publisher only accepts explicit source deltas')
+    if set(package) - {'mode', 'base_commit', 'gzip_base64', 'parts', 'sha256', 'message'}:
+        raise SystemExit('Unsupported BCD package field')
+    encoded = package.get('gzip_base64')
+    parts = package.get('parts')
+    if isinstance(encoded, str) and parts is None:
+        return
+    if encoded is not None or not isinstance(parts, list) or not 1 <= len(parts) <= 64:
+        raise SystemExit('Choose one bounded BCD transfer representation')
+    if any(not isinstance(name, str) or not re.fullmatch(r'\.synara-transfer-[0-9]{4}', name)
+           for name in parts) or len(set(parts)) != len(parts):
+        raise SystemExit('Invalid BCD transfer parts')
+
+
 def main():
     if os.environ.get('GITHUB_REPOSITORY') != 'cmdr-chara/synara' or os.environ.get('GITHUB_REF') != BRANCH:
         raise SystemExit('BCD publisher refuses every other repository or ref')
@@ -45,10 +62,7 @@ def main():
         if path.is_symlink() or path.stat().st_size > 8 * 1024 * 1024:
             raise SystemExit('Invalid BCD source package')
         package = json.loads(path.read_text())
-        if not isinstance(package, dict) or package.get('mode') != 'diff':
-            raise SystemExit('BCD publisher only accepts explicit source deltas')
-        if set(package) - {'mode', 'base_commit', 'gzip_base64', 'sha256', 'message'}:
-            raise SystemExit('Unsupported BCD package field')
+        validate_package(package)
     loaded = runpy.run_path(str(Path(__file__).with_name('apply_source.py')))
     scope = loaded['main'].__globals__
     validate_path = scope['source_path']

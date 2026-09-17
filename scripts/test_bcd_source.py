@@ -9,6 +9,23 @@ import apply_bcd_source as publisher
 
 
 class BcdPublisherTests(unittest.TestCase):
+    def test_checked_single_and_partitioned_diff_packages(self):
+        publisher.validate_package({'mode': 'diff', 'gzip_base64': 'bounded-data'})
+        publisher.validate_package({'mode': 'diff', 'parts': ['.synara-transfer-0001']})
+        for package in (
+            {'mode': 'snapshot', 'gzip_base64': 'data'},
+            {'mode': 'diff'},
+            {'mode': 'diff', 'parts': []},
+            {'mode': 'diff', 'parts': ['.synara-transfer-0001'] * 2},
+            {'mode': 'diff', 'parts': ['../escape']},
+            {'mode': 'diff', 'parts': [None]},
+            {'mode': 'diff', 'parts': ['.synara-transfer-0001'], 'gzip_base64': 'data'},
+            {'mode': 'diff', 'gzip_base64': 'data', 'delete': ['ROADMAP.md']},
+        ):
+            with self.subTest(package=package), self.assertRaises(SystemExit):
+                publisher.validate_package(package)
+
+
     def test_owned_and_narrow_shared_paths(self):
         for name in ('crates/synara-agent/src/interaction.rs',
                      'crates/synara-acp/src/callbacks.rs',

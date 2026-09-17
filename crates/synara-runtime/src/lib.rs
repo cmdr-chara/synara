@@ -5,6 +5,7 @@ mod host;
 mod process;
 mod ssh;
 mod terminal;
+mod terminal_input;
 
 pub use bounded::*;
 pub use filesystem::*;
@@ -12,6 +13,7 @@ pub use host::*;
 pub use process::*;
 pub use ssh::*;
 pub use terminal::*;
+pub use terminal_input::*;
 
 #[derive(Debug, thiserror::Error)]
 pub enum RuntimeError {

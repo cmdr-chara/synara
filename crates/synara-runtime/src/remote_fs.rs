@@ -10,7 +10,7 @@ use crate::{
 };
 use serde::{Deserialize, Serialize};
 use std::{
-    io::{BufRead, Write},
+    io::{BufRead, Read, Write},
     path::{Component, Path, PathBuf},
     time::Duration,
 };
@@ -226,7 +226,7 @@ impl RemoteWorkspaceFs {
         bom: bool,
         create_new: bool,
     ) -> Result<FileVersion, RuntimeError> {
-        if text.len().saturating_add(usize::from(bom) * 3) > 8 * 1024 * 1024 {
+        if text.len().saturating_add(if bom { 3 } else { 0 }) > 8 * 1024 * 1024 {
             return Err(RuntimeError::Limit);
         }
         let path = self.relative(path)?;

@@ -5,8 +5,9 @@ adapter connects installed agents to durable tasks, conversations, permissions,
 filesystem services and terminals. Agent runtimes remain external processes.
 
 This branch is a development build, not a production release. Linux compilation,
-fixture-agent integration and a native X11 window have been exercised. macOS,
-Windows and live SSH behavior have not yet been validated.
+fixture-agent integration, native X11 interaction and a controlled loopback SSH
+server have been exercised. macOS, Windows and a complete remote-workspace
+workflow have not yet been validated.
 
 ## Delivery roadmap
 
@@ -135,6 +136,11 @@ group/world writable. Only the selected identity is offered, without ssh-agent.
 Unknown or changed hosts must be enrolled through a separately trusted process.
 Synara never silently accepts a key to make a connection work.
 
+Connection files and their parent directories remain user-trusted local inputs.
+Metadata revalidation is not an atomic filesystem sandbox against another process
+with the same account replacing files between validation and OpenSSH opening them.
+The pinned API selects a trust store, not immutable key bytes inside the process.
+
 This is a runtime API foundation, not a completed remote workspace UI. Remote
 filesystem, Git, PTY, forwarding and remote-process cleanup need their own
 implementation and verification. A local SSH process exiting does not establish
@@ -171,6 +177,8 @@ cargo clippy --locked --workspace --all-targets --all-features -- -D warnings
 cargo test --locked --workspace
 python3 scripts/audit_workspace.py
 python3 scripts/test_apply_source.py
+python3 scripts/check_roadmap.py --self-test
+python3 scripts/check_roadmap.py
 ```
 
 Tests do not require vendor credentials. The fixture executable accepts only an

@@ -1,5 +1,7 @@
 //! Explicit SSH trust and identity files for managed, non-interactive connections.
-use crate::{ExecutionHost, LaunchSpec, LocalHost, RuntimeError, SpawnedProcess, SshHost, SshTarget};
+use crate::{
+    ExecutionHost, LaunchSpec, LocalHost, RuntimeError, SpawnedProcess, SshHost, SshTarget,
+};
 use async_trait::async_trait;
 use std::path::{Path, PathBuf};
 

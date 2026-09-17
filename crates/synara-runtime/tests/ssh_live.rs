@@ -96,7 +96,8 @@ async fn ssh_stdio_remains_binary_transparent() {
     let (root, target) = fixture();
     let host = PinnedSshHost::new(target, root.join("known hosts"), root.join("identity")).unwrap();
     let bytes = b"first\0second\nthird\xff\r\n";
-    let (output, diagnostic, exit) = execute(&host, LaunchSpec::new("/bin/cat"), &root, bytes).await;
+    let (output, diagnostic, exit) =
+        execute(&host, LaunchSpec::new("/bin/cat"), &root, bytes).await;
     assert!(exit.success(), "{}", String::from_utf8_lossy(&diagnostic));
     assert_eq!(output, bytes);
 }
@@ -141,8 +142,12 @@ async fn ssh_rejects_unknown_and_changed_host_keys_without_execution() {
 #[ignore = "requires the isolated server from scripts/ssh_smoke.py"]
 async fn ssh_rejects_an_unapproved_identity() {
     let (root, target) = fixture();
-    let host = PinnedSshHost::new(target, root.join("known hosts"), root.join("wrong identity"))
-        .unwrap();
+    let host = PinnedSshHost::new(
+        target,
+        root.join("known hosts"),
+        root.join("wrong identity"),
+    )
+    .unwrap();
     let (output, diagnostic, exit) = execute(&host, LaunchSpec::new("/bin/true"), &root, b"").await;
     assert_eq!(exit.code, Some(255));
     assert!(output.is_empty());
@@ -173,9 +178,16 @@ fn ssh_effective_configuration_overrides_ambient_forwarding() {
         "requesttty false",
         "forkafterauthentication no",
     ] {
-        assert!(config.lines().any(|line| line == expected), "{expected}\n{config}");
+        assert!(
+            config.lines().any(|line| line == expected),
+            "{expected}\n{config}"
+        );
     }
     assert!(!config.lines().any(|line| line.starts_with("localforward ")));
-    assert!(!config.lines().any(|line| line.starts_with("remoteforward ")));
+    assert!(
+        !config
+            .lines()
+            .any(|line| line.starts_with("remoteforward "))
+    );
     assert!(!config.lines().any(|line| line.starts_with("controlpath ")));
 }

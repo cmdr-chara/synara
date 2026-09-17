@@ -4,6 +4,28 @@ This is the implementation and verification backlog for the native Rust/GPUI
 Synara application. It covers the whole agreed product, not just the next demo.
 It is a living engineering document, not a release announcement.
 
+## Current checkpoint
+
+The roadmap and README navigation are published. The roadmap structure validator
+has passed its nine regression tests and validates 17 workstreams with 97 tasks.
+This is a coverage/navigation check, not a product-completion score.
+
+SSH transport advanced in `500d6622345366e8e41c152312274e4b10cbf033`.
+[SSH verification run 35243900061](https://github.com/cmdr-chara/synara/actions/runs/35243900061)
+passed six runtime integration tests and one ACP integration test covering two
+fixture-agent profiles. The tests use a real OpenSSH server restricted to loopback
+with disposable identity and host keys. They prove literal cwd/argument handling,
+binary-transparent stdio, separate stderr, remote exit reporting, rejection of
+unknown/changed host keys and wrong identities, and effective forwarding policy.
+They do not prove a remote desktop workflow, remote descendant cleanup or a real
+vendor service. Initial native compile and Clippy passed, but formatting failed.
+The formatting correction and full final-candidate verification must remain part
+of this checkpoint's acceptance, not be hidden by the passing SSH job.
+
+The direct terminal-grid work is still pending recovery. Local execution returned
+transport timeouts, so this checkpoint deliberately changed independent SSH files
+and did not replace the pending terminal implementation.
+
 ## How to read and maintain this roadmap
 
 - **Integrated** means code is present in the published branch. It does not imply
@@ -261,8 +283,14 @@ Platform-native UX and credential behavior need real per-platform tests.
 
 ## J. SSH and remote development
 
-Status: **Partial foundation**, remote product path open. Ownership: execution host,
-workspace services and native remote UI.
+Status: **Partial**, pinned transport and controlled-server proof integrated.
+Ownership: execution host, workspace services and native remote UI.
+
+The current checkpoint proves selected identity/trust files, no silent host-key
+enrollment, argument/cwd quoting, separated streams and the same ACP adapter over
+real SSH for two fixture configurations. J1/J2/J7 remain open for their remaining
+UI, remote-ownership and full-workspace requirements. Remote filesystem callbacks
+must stay unavailable until they can enforce remote containment.
 
 - [ ] J1 Complete host profiles, identity/authentication, known-host verification,
   explicit host-key enrollment and actionable changed-key refusal.
@@ -417,6 +445,8 @@ cargo clippy --locked --workspace --all-targets --all-features -- -D warnings
 cargo test --locked --workspace
 python3 scripts/audit_workspace.py
 python3 scripts/test_apply_source.py
+python3 scripts/check_roadmap.py --self-test
+python3 scripts/check_roadmap.py
 cargo build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture
 python3 scripts/native_smoke.py --binary target/debug/synara-app \
   --fixture target/debug/synara-acp-fixture --output /tmp/synara-roadmap-smoke
@@ -425,6 +455,10 @@ python3 scripts/native_smoke.py --binary target/debug/synara-app \
 Use a fresh smoke output directory and an isolated display/test data directory.
 Never control the user's desktop or run test commands inside an unrelated user
 project. Install requirements only through an authorized environment path.
+
+SSH acceptance additionally requires `python3 scripts/ssh_smoke.py` on Linux with
+OpenSSH installed, running as an ordinary user. It explicitly executes the seven
+server-dependent `ssh_live` tests that the ordinary test suite leaves ignored.
 
 For each accepted task, retain this evidence shape in a checkpoint or test report:
 
@@ -462,10 +496,12 @@ Remaining limitations:
 
 ## Immediate execution queue
 
-1. Publish this roadmap and keep it linked from the README.
+1. Finish final-candidate native, static and SSH verification for the pinned
+   transport checkpoint. Keep the published roadmap and its README link current.
 2. Recover and finish A1-A7. If local execution remains unavailable, preserve that
    gate and advance independent, non-overlapping work using the remote branch and
    CI rather than overwriting the pending terminal implementation.
-3. Advance controlled SSH/runtime verification (J/M) or real-agent protocol proof
-   (C) while strengthening the local user path and addressing failures found.
+3. Continue the remaining J1-J7 remote workspace boundaries or real-agent protocol
+   proof C1-C6. The controlled SSH transport milestone is no longer unimplemented,
+   but remote UI, filesystem/PTY/Git and descendant cleanup remain open.
 4. Update this roadmap with actual evidence at the next published checkpoint.

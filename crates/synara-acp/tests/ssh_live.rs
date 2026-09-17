@@ -89,13 +89,19 @@ async fn two_agent_profiles_use_the_same_acp_backend_over_ssh() {
             format!("fixture-{profile}")
         );
         assert!(connection.info().host.starts_with("SSH "));
-        assert_eq!(connection.info().capabilities.load_session, profile == "alpha");
+        assert_eq!(
+            connection.info().capabilities.load_session,
+            profile == "alpha"
+        );
         let session = connection
             .new_session(SessionOptions::new(ThreadId::new(), cwd))
             .await
             .unwrap();
         assert_eq!(session.configuration().options[0].choices[0].value, profile);
-        assert_eq!(session.prompt(Prompt::text("hello")).await.unwrap(), "end_turn");
+        assert_eq!(
+            session.prompt(Prompt::text("hello")).await.unwrap(),
+            "end_turn"
+        );
         let text: String = events
             .0
             .lock()

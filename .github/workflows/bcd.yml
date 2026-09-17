@@ -31,6 +31,38 @@ jobs:
       - name: Apply an optional BCD-only checked source delta
         id: publish
         run: python3 scripts/apply_bcd_source.py
+  toolchain:
+    needs: source
+    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/session-bcd' && contains(github.event.head_commit.message, '[offline-toolchain]')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          ref: ${{ needs.source.outputs.revision }}
+          persist-credentials: false
+      - name: Export pinned tools and public dependency source only
+        run: |
+          rustup toolchain install 1.98.1 --profile minimal --component rustfmt --component clippy
+          mkdir -p "$RUNNER_TEMP/bcd-offline/tools" "$RUNNER_TEMP/bcd-offline/sources"
+          tar -C "$HOME/.rustup/toolchains" -cJf "$RUNNER_TEMP/bcd-offline/tools/toolchain.tar.xz" 1.98.1-x86_64-unknown-linux-gnu
+          cargo vendor --locked "$RUNNER_TEMP/bcd-vendor" > "$RUNNER_TEMP/bcd-offline/sources/config.toml"
+          tar -C "$RUNNER_TEMP" -cJf "$RUNNER_TEMP/bcd-offline/sources/vendor.tar.xz" bcd-vendor
+          sha256sum Cargo.lock > "$RUNNER_TEMP/bcd-offline/sources/lock.sha256"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bcd-offline-tools
+          path: ${{ runner.temp }}/bcd-offline/tools/
+          compression-level: 0
+          retention-days: 1
+          if-no-files-found: error
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bcd-offline-sources
+          path: ${{ runner.temp }}/bcd-offline/sources/
+          compression-level: 0
+          retention-days: 1
+          if-no-files-found: error
   snapshot:
     needs: source
     if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/session-bcd'

@@ -1,15 +1,17 @@
 name: SSH transport verification
 on:
   push:
-    branches: [astra/gpui-clean-rewrite]
+    branches: [astra/gpui-clean-rewrite, astra/session-ajm]
     paths:
       - crates/synara-runtime/**
+      - crates/synara-app/**
       - crates/synara-acp/**
       - crates/synara-agent/**
       - crates/synara-core/**
       - crates/synara-workspace/**
       - Cargo.lock
       - Cargo.toml
+      - ROADMAP.md
       - rust-toolchain.toml
       - scripts/ssh_smoke.py
       - .github/workflows/ssh.yml
@@ -20,7 +22,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   loopback:
-    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/gpui-clean-rewrite'
+    if: github.repository == 'cmdr-chara/synara' && (github.ref == 'refs/heads/astra/gpui-clean-rewrite' || github.ref == 'refs/heads/astra/session-ajm')
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
@@ -39,4 +41,80 @@ jobs:
       - name: Check fixture syntax
         run: python3 -m py_compile scripts/ssh_smoke.py
       - name: Verify isolated SSH transport and generic ACP
-        run: python3 scripts/ssh_smoke.py
+        run: |
+          set -o pipefail
+          python3 scripts/ssh_smoke.py 2>&1 | tee /tmp/ajm-ssh.log
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: ajm-ssh-evidence
+          path: /tmp/ajm-ssh.log
+          retention-days: 7
+  ajm-linux:
+    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/session-ajm'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      CARGO_BUILD_JOBS: '2'
+      RUSTUP_TOOLCHAIN: '1.98.1'
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          fetch-depth: 1000
+          persist-credentials: false
+      - name: Verify isolated lineage and preserve candidate
+        run: |
+          test "$(git merge-base 1cd24dd6f5ac9571c1ea2b7329bcb5fc1a4ad121 HEAD)" = 1cd24dd6f5ac9571c1ea2b7329bcb5fc1a4ad121
+          test "$(git rev-list --max-parents=0 HEAD)" = 43b1fb89bf19dadc388d18008f9ceb21b8215716
+          mkdir -p /tmp/ajm-evidence
+          git rev-parse HEAD > /tmp/ajm-evidence/revision.txt
+          git bundle create /tmp/ajm-evidence/source.bundle HEAD
+      - name: Install pinned Rust and native libraries
+        run: |
+          rustup toolchain install 1.98.1 --profile minimal --component rustfmt --component clippy
+          sudo apt-get update
+          sudo apt-get install -y clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil fonts-dejavu-core
+      - name: Structural checks
+        run: |
+          set -o pipefail
+          { python3 scripts/audit_workspace.py && python3 scripts/test_apply_source.py && python3 scripts/check_roadmap.py --self-test && python3 scripts/check_roadmap.py; } 2>&1 | tee /tmp/ajm-evidence/structure.log
+      - name: Formatting
+        if: always()
+        run: |
+          set -o pipefail
+          cargo fmt --check 2>&1 | tee /tmp/ajm-evidence/fmt.log
+      - name: Compile workspace
+        if: always()
+        run: |
+          set -o pipefail
+          cargo check --locked --workspace 2>&1 | tee /tmp/ajm-evidence/check.log
+      - name: Lint all targets and features
+        if: always()
+        run: |
+          set -o pipefail
+          cargo clippy --locked --workspace --all-targets --all-features -- -D warnings 2>&1 | tee /tmp/ajm-evidence/clippy.log
+      - name: Workspace regression tests
+        if: always()
+        run: |
+          set -o pipefail
+          cargo test --locked --workspace 2>&1 | tee /tmp/ajm-evidence/test.log
+      - name: Build native smoke binaries
+        run: |
+          set -o pipefail
+          cargo build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture 2>&1 | tee /tmp/ajm-evidence/build.log
+      - name: Isolated native desktop smoke
+        timeout-minutes: 3
+        run: |
+          set -o pipefail
+          python3 scripts/native_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/synara-ajm-smoke 2>&1 | tee /tmp/ajm-evidence/smoke.log
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: ajm-linux-evidence
+          path: |
+            /tmp/ajm-evidence/
+            /tmp/synara-ajm-smoke/*.png
+            /tmp/synara-ajm-smoke/*.log
+            /tmp/synara-ajm-smoke/result.json
+          retention-days: 7
+          if-no-files-found: warn

@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/synara-core", "crates/synara-runtime"]
+members = ["crates/synara-core", "crates/synara-runtime", "crates/synara-agent", "crates/synara-acp", "crates/synara-workspace", "crates/synara-app"]
 resolver = "3"
 
 [workspace.package]
@@ -31,3 +31,9 @@ unsafe_code = "forbid"
 lto = "thin"
 codegen-units = 1
 strip = "debuginfo"
+
+[profile.dev]
+debug = 0
+
+[profile.test]
+debug = 0

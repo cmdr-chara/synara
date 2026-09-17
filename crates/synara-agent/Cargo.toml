@@ -1,0 +1,20 @@
+[package]
+name = "synara-agent"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+[dependencies]
+synara-core = { path = "../synara-core" }
+synara-runtime = { path = "../synara-runtime" }
+async-trait.workspace = true
+serde.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+tokio-util.workspace = true
+sha2.workspace = true
+hex.workspace = true
+
+[lints]
+workspace = true

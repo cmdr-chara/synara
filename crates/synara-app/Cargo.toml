@@ -1,0 +1,24 @@
+[package]
+name = "synara-app"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+
+[dependencies]
+synara-core = { path = "../synara-core" }
+synara-agent = { path = "../synara-agent" }
+synara-acp = { path = "../synara-acp" }
+synara-runtime = { path = "../synara-runtime" }
+synara-workspace = { path = "../synara-workspace" }
+gpui = { git = "https://github.com/zed-industries/zed", rev = "aec7395e30feba9139c9ab8b9444d672882ddf41" }
+gpui_platform = { git = "https://github.com/zed-industries/zed", rev = "aec7395e30feba9139c9ab8b9444d672882ddf41", features = ["font-kit", "wayland", "x11"] }
+async-channel = "2.5"
+anyhow.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+
+[lints]
+workspace = true

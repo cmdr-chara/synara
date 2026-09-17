@@ -4,17 +4,25 @@ use uuid::Uuid;
 
 macro_rules! id_type {
     ($name:ident) => {
-        #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+        #[derive(
+            Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize,
+        )]
         #[serde(transparent)]
         pub struct $name(pub Uuid);
         impl $name {
-            pub fn new() -> Self { Self(Uuid::new_v4()) }
+            pub fn new() -> Self {
+                Self(Uuid::new_v4())
+            }
         }
         impl Default for $name {
-            fn default() -> Self { Self::new() }
+            fn default() -> Self {
+                Self::new()
+            }
         }
         impl std::fmt::Display for $name {
-            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result { self.0.fmt(f) }
+            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                self.0.fmt(f)
+            }
         }
     };
 }
@@ -28,8 +36,15 @@ id_type!(EventId);
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum WorkspaceLocation {
-    Local { root: PathBuf },
-    Ssh { host: String, port: u16, user: Option<String>, root: String },
+    Local {
+        root: PathBuf,
+    },
+    Ssh {
+        host: String,
+        port: u16,
+        user: Option<String>,
+        root: String,
+    },
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -49,7 +64,15 @@ pub struct Project {
 
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
-pub enum TaskState { #[default] Ready, Running, Waiting, Completed, Failed, Archived }
+pub enum TaskState {
+    #[default]
+    Ready,
+    Running,
+    Waiting,
+    Completed,
+    Failed,
+    Archived,
+}
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Task {
@@ -74,7 +97,15 @@ pub struct SessionReference {
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum ConnectionState {
-    #[default] Disconnected, Starting, Initializing, Authenticating, Connected, Failed, Restarting, Exited,
+    #[default]
+    Disconnected,
+    Starting,
+    Initializing,
+    Authenticating,
+    Connected,
+    Failed,
+    Restarting,
+    Exited,
 }
 
 #[derive(Clone, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
@@ -94,17 +125,32 @@ pub struct AgentCapabilities {
 }
 
 #[derive(Clone, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
-pub struct AgentIdentity { pub name: String, pub title: Option<String>, pub version: String }
+pub struct AgentIdentity {
+    pub name: String,
+    pub title: Option<String>,
+    pub version: String,
+}
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
-pub struct AuthMethod { pub id: String, pub name: String, pub description: Option<String> }
+pub struct AuthMethod {
+    pub id: String,
+    pub name: String,
+    pub description: Option<String>,
+}
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
-pub enum ConfigValue { Boolean { value: bool }, Select { value: String } }
+pub enum ConfigValue {
+    Boolean { value: bool },
+    Select { value: String },
+}
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct SelectChoice { pub value: String, pub label: String, pub group: Option<String> }
+pub struct SelectChoice {
+    pub value: String,
+    pub label: String,
+    pub group: Option<String>,
+}
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SessionOption {
@@ -117,7 +163,11 @@ pub struct SessionOption {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
-pub struct SessionMode { pub id: String, pub name: String, pub description: Option<String> }
+pub struct SessionMode {
+    pub id: String,
+    pub name: String,
+    pub description: Option<String>,
+}
 
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 pub struct SessionConfiguration {
@@ -129,23 +179,49 @@ pub struct SessionConfiguration {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
-pub struct SlashCommand { pub name: String, pub description: String, pub argument_hint: Option<String> }
+pub struct SlashCommand {
+    pub name: String,
+    pub description: String,
+    pub argument_hint: Option<String>,
+}
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
-pub enum Role { User, Assistant, Reasoning }
+pub enum Role {
+    User,
+    Assistant,
+    Reasoning,
+}
 
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
-pub enum ToolStatus { #[default] Pending, Running, Completed, Failed }
+pub enum ToolStatus {
+    #[default]
+    Pending,
+    Running,
+    Completed,
+    Failed,
+    Cancelled,
+}
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum ToolOutput {
-    Text { text: String },
-    Diff { path: String, before: Option<String>, after: Option<String> },
-    Terminal { id: String },
-    Resource { uri: String, name: String },
+    Text {
+        text: String,
+    },
+    Diff {
+        path: String,
+        before: Option<String>,
+        after: Option<String>,
+    },
+    Terminal {
+        id: String,
+    },
+    Resource {
+        uri: String,
+        name: String,
+    },
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
@@ -159,10 +235,19 @@ pub struct ToolPatch {
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
-pub enum PermissionKind { AllowOnce, AllowAlways, DenyOnce, DenyAlways }
+pub enum PermissionKind {
+    AllowOnce,
+    AllowAlways,
+    DenyOnce,
+    DenyAlways,
+}
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
-pub struct PermissionChoice { pub id: String, pub label: String, pub kind: PermissionKind }
+pub struct PermissionChoice {
+    pub id: String,
+    pub label: String,
+    pub kind: PermissionKind,
+}
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PermissionRequest {
@@ -175,14 +260,34 @@ pub struct PermissionRequest {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum InputFieldKind {
-    Text { min_length: Option<usize>, max_length: Option<usize>, format: Option<String> },
+    Text {
+        min_length: Option<usize>,
+        max_length: Option<usize>,
+        format: Option<String>,
+    },
     Boolean,
-    Number { integer: bool, minimum: Option<f64>, maximum: Option<f64> },
-    Choice { options: Vec<SelectChoice> },
+    Number {
+        integer: bool,
+        minimum: Option<f64>,
+        maximum: Option<f64>,
+    },
+    Choice {
+        options: Vec<SelectChoice>,
+    },
+    MultiChoice {
+        options: Vec<SelectChoice>,
+        minimum: Option<usize>,
+        maximum: Option<usize>,
+    },
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct InputField { pub id: String, pub label: String, pub required: bool, pub kind: InputFieldKind }
+pub struct InputField {
+    pub id: String,
+    pub label: String,
+    pub required: bool,
+    pub kind: InputFieldKind,
+}
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct UserInputRequest {
@@ -194,14 +299,29 @@ pub struct UserInputRequest {
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(untagged)]
-pub enum InputValue { Text(String), Boolean(bool), Number(f64) }
+pub enum InputValue {
+    Text(String),
+    Boolean(bool),
+    Number(f64),
+    Strings(Vec<String>),
+}
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "action", rename_all = "snake_case")]
-pub enum UserInputResponse { Accept { values: BTreeMap<String, InputValue> }, Decline, Cancel }
+pub enum UserInputResponse {
+    Accept {
+        values: BTreeMap<String, InputValue>,
+    },
+    Decline,
+    Cancel,
+}
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
-pub struct PlanEntry { pub text: String, pub status: String, pub priority: String }
+pub struct PlanEntry {
+    pub text: String,
+    pub status: String,
+    pub priority: String,
+}
 
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 pub struct Usage {
@@ -213,26 +333,80 @@ pub struct Usage {
     pub output_tokens: Option<u64>,
 }
 
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+pub struct TerminalRecord {
+    pub text: String,
+    pub truncated: bool,
+    pub exit_code: Option<u32>,
+}
+
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum ThreadEvent {
-    PromptStarted { turn: String },
-    TextDelta { message_id: Option<String>, role: Role, text: String },
-    ToolChanged { patch: ToolPatch },
-    PermissionRequested { request: PermissionRequest },
-    PermissionResolved { id: String, selected: Option<String> },
-    UserInputRequested { request: UserInputRequest },
-    UserInputResolved { id: String },
-    PlanChanged { entries: Vec<PlanEntry> },
-    UsageChanged { usage: Usage },
-    ConfigurationChanged { configuration: SessionConfiguration },
-    CommandsChanged { commands: Vec<SlashCommand> },
-    TitleChanged { title: String },
-    PromptFinished { reason: String },
-    SessionStatus { status: String },
-    ContextCompaction { message: String },
-    Error { message: String, recoverable: bool },
-    Notice { message: String },
+    HistoryStarted,
+    HistoryCompleted,
+    CancellationRequested,
+    TerminalOutput {
+        id: String,
+        text: String,
+        truncated: bool,
+        exit_code: Option<u32>,
+    },
+    PromptStarted {
+        turn: String,
+    },
+    TextDelta {
+        message_id: Option<String>,
+        role: Role,
+        text: String,
+    },
+    ToolChanged {
+        patch: ToolPatch,
+    },
+    PermissionRequested {
+        request: PermissionRequest,
+    },
+    PermissionResolved {
+        id: String,
+        selected: Option<String>,
+    },
+    UserInputRequested {
+        request: UserInputRequest,
+    },
+    UserInputResolved {
+        id: String,
+    },
+    PlanChanged {
+        entries: Vec<PlanEntry>,
+    },
+    UsageChanged {
+        usage: Usage,
+    },
+    ConfigurationChanged {
+        configuration: SessionConfiguration,
+    },
+    CommandsChanged {
+        commands: Vec<SlashCommand>,
+    },
+    TitleChanged {
+        title: String,
+    },
+    PromptFinished {
+        reason: String,
+    },
+    SessionStatus {
+        status: String,
+    },
+    ContextCompaction {
+        message: String,
+    },
+    Error {
+        message: String,
+        recoverable: bool,
+    },
+    Notice {
+        message: String,
+    },
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]

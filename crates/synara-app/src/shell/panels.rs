@@ -41,16 +41,15 @@ impl Shell {
                     let path=entry.path.clone();let unstage=entry.staged();
                     div().p_2().rounded_md().bg(rgb(0x1b2532)).child(format!("{}{}  {}",entry.index_status,entry.worktree_status,entry.path.display()))
                         .child(button(("git-action",index),if unstage{"Unstage"}else{"Stage"},false).mt_2().on_click(cx.listener(move |this,_,_,_|{
-                            if let Some(root)=this.root(){let path=path.clone();this.job(async move {let git=GitService::new(root);if unstage{git.unstage(path).await?;}else{git.stage(path).await?;}Ok(Update::Done("Index updated".into()))});}
+                            this.git_index_path(path.clone(),unstage);
                         })))
                 })).children(self.git.entries.is_empty().then(||div().p_3().child("No changed files"))))
                 .child(div().id("diff-output").flex_1().min_w_0().overflow_y_scroll().p_3().rounded_md().bg(rgb(0x151e28)).font_family("DejaVu Sans Mono").text_xs().child(if self.diff.is_empty(){"No diff in this view. Untracked files must be staged before Git can show their diff.".into()}else{truncate(&self.diff,256*1024)})))
             .child(self.commit_message.clone())
-            .child(div().flex().justify_between().items_center().child(div().text_xs().text_color(rgb(0x96a5b9)).child("Commit writes only to the selected local workspace. Hooks and signing are disabled for this action."))
+            .child(div().flex().justify_between().items_center().child(div().text_xs().text_color(rgb(0x96a5b9)).child("Commit writes only to the selected workspace. Hooks and signing are disabled for this action."))
                 .child(button("commit-staged","Commit staged changes",false).on_click(cx.listener(|this,_,_,cx|{
-                    let Some(root)=this.root() else{return};let message=this.commit_message.read(cx).text().to_owned();
-                    if message.trim().is_empty(){this.error=Some("Enter a commit message first.".into());cx.notify();return;}
-                    this.job(async move {GitService::new(root).commit(message).await?;Ok(Update::Done("Commit created locally".into()))});
+                    let message=this.commit_message.read(cx).text().to_owned();
+                    this.commit_git(message,cx);
                 }))))
             .into_any_element()
     }
@@ -156,6 +155,73 @@ impl Shell {
             )
             .into_any_element()
     }
+    pub(super) fn remote_panel(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
+        let status = self.workspace_target().map_or_else(
+            || "No workspace selected.".into(),
+            |target| match target {
+                WorkspaceTarget::Local { root } => {
+                    format!("Current workspace is local: {}", root.display())
+                }
+                WorkspaceTarget::Ssh { workspace, root } => {
+                    let label = match workspace.location {
+                        WorkspaceLocation::Ssh {
+                            host,
+                            port,
+                            user,
+                            ..
+                        } => format!(
+                            "{}{}:{port}",
+                            user.map_or_else(String::new, |user| format!("{user}@")),
+                            host
+                        ),
+                        WorkspaceLocation::Local { .. } => unreachable!(),
+                    };
+                    format!("Current workspace is remote: {label} · {}", root.display())
+                }
+            },
+        );
+        div()
+            .flex()
+            .flex_col()
+            .flex_1()
+            .min_h_0()
+            .p_4()
+            .gap_3()
+            .child(div().text_lg().child("Remote workspace"))
+            .child(div().text_xs().text_color(rgb(0x9cabbd)).child(
+                "SSH enrollment is fail-closed: Synara uses only the pinned known_hosts file and explicit identity below. Ambient SSH config, agent auth, forwarding and multiplexing are disabled. The remote helper must already be installed on the target host.",
+            ))
+            .child(div().text_xs().text_color(rgb(0xaebbd0)).child(status))
+            .child(
+                div()
+                    .flex()
+                    .flex_col()
+                    .gap_2()
+                    .child(div().flex().gap_2().child(self.remote_host.clone()).child(self.remote_port.clone()))
+                    .child(self.remote_user.clone())
+                    .child(self.remote_root.clone())
+                    .child(self.remote_known_hosts.clone())
+                    .child(self.remote_identity.clone())
+                    .child(self.remote_helper.clone()),
+            )
+            .child(
+                div()
+                    .flex()
+                    .justify_between()
+                    .items_center()
+                    .child(div().text_xs().text_color(rgb(0x8e9caf)).child(
+                        "Host keys must be enrolled out-of-band. Synara never auto-accepts or writes host keys.",
+                    ))
+                    .child(
+                        button("open-remote-workspace", "Verify and open remote workspace", false)
+                            .on_click(cx.listener(|this, _, _, cx| {
+                                this.open_remote_workspace(cx)
+                            })),
+                    ),
+            )
+            .into_any_element()
+    }
+
     pub(super) fn inspector_panel(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
         let trace = serde_json::to_string_pretty(&self.trace).unwrap_or_default();
         let mut panel=div().flex().flex_col().flex_1().min_h_0().p_4().gap_3()

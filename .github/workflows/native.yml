@@ -26,6 +26,7 @@ jobs:
         run: python3 scripts/apply_source.py
   linux:
     needs: source
+    timeout-minutes: 35
     runs-on: ubuntu-24.04
     permissions:
       contents: read
@@ -40,11 +41,20 @@ jobs:
       - name: Native system libraries
         run: |
           sudo apt-get update
-          sudo apt-get install -y clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev xvfb mesa-vulkan-drivers xdotool
+          sudo apt-get install -y clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil fonts-dejavu-core
       - name: Fetch pinned dependencies
-        run: cargo +1.98.1 fetch
+        run: cargo +1.98.1 fetch --locked
+      - name: Choose dependency cache export
+        id: cache
+        shell: bash
+        run: |
+          if git rev-parse --verify HEAD^ >/dev/null 2>&1 && git diff --quiet HEAD^ HEAD -- Cargo.lock rust-toolchain.toml; then
+            echo 'export=false' >> "$GITHUB_OUTPUT"
+          else
+            echo 'export=true' >> "$GITHUB_OUTPUT"
+          fi
       - name: Export dependency and native development cache
-        if: always()
+        if: always() && steps.cache.outputs.export == 'true'
         shell: bash
         run: |
           mkdir -p /tmp/native-metadata /tmp/native-cache
@@ -70,28 +80,28 @@ jobs:
           split -b 400M -d /tmp/native-cache/dependencies.tar.gz /tmp/native-cache/dependencies.part-
           sha256sum /tmp/native-cache/dependencies.tar.gz > /tmp/native-metadata/dependencies.sha256
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always()
+        if: always() && steps.cache.outputs.export == 'true'
         with:
           name: native-metadata
           path: /tmp/native-metadata/
           retention-days: 1
           compression-level: 0
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always()
+        if: always() && steps.cache.outputs.export == 'true'
         with:
           name: native-dependencies-00
           path: /tmp/native-cache/dependencies.part-00
           retention-days: 1
           compression-level: 0
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always()
+        if: always() && steps.cache.outputs.export == 'true'
         with:
           name: native-dependencies-01
           path: /tmp/native-cache/dependencies.part-01
           retention-days: 1
           compression-level: 0
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always()
+        if: always() && steps.cache.outputs.export == 'true'
         with:
           name: native-dependencies-02
           path: /tmp/native-cache/dependencies.part-02
@@ -103,13 +113,31 @@ jobs:
         run: cargo +1.98.1 fmt --check
       - name: Compile
         if: always()
-        run: cargo +1.98.1 check --workspace
+        run: cargo +1.98.1 check --locked --workspace
       - name: Lints
         if: always()
-        run: cargo +1.98.1 clippy --workspace --all-targets --all-features -- -D warnings
+        run: cargo +1.98.1 clippy --locked --workspace --all-targets --all-features -- -D warnings
       - name: Tests
         if: always()
-        run: cargo +1.98.1 test --workspace
+        run: cargo +1.98.1 test --locked --workspace
+      - name: Publisher regression tests
+        if: always()
+        run: python3 scripts/test_apply_source.py
+      - name: Build native application and ACP fixture
+        run: cargo +1.98.1 build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture
+      - name: Native desktop interaction smoke
+        timeout-minutes: 3
+        run: python3 scripts/native_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/synara-native-smoke
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-desktop-smoke
+          path: |
+            /tmp/synara-native-smoke/*.png
+            /tmp/synara-native-smoke/*.log
+            /tmp/synara-native-smoke/result.json
+          retention-days: 7
+          if-no-files-found: warn
       - name: Export reproducible verification inputs
         if: always()
         run: |

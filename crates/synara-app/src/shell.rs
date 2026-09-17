@@ -36,6 +36,24 @@ enum Panel {
     Inspector,
     Settings,
     Registry,
+    Remote,
+}
+#[derive(Clone)]
+enum WorkspaceTarget {
+    Local {
+        root: PathBuf,
+    },
+    Ssh {
+        workspace: Workspace,
+        root: PathBuf,
+    },
+}
+impl WorkspaceTarget {
+    fn root(&self) -> &PathBuf {
+        match self {
+            Self::Local { root } | Self::Ssh { root, .. } => root,
+        }
+    }
 }
 type InteractionKey = (ThreadId, String);
 struct FormState {
@@ -126,6 +144,13 @@ pub struct Shell {
     trace: Vec<TraceEntry>,
     composer: Entity<TextEntry>,
     workspace_path: Entity<TextEntry>,
+    remote_host: Entity<TextEntry>,
+    remote_port: Entity<TextEntry>,
+    remote_user: Entity<TextEntry>,
+    remote_root: Entity<TextEntry>,
+    remote_known_hosts: Entity<TextEntry>,
+    remote_identity: Entity<TextEntry>,
+    remote_helper: Entity<TextEntry>,
     task_title: Entity<TextEntry>,
     profile_editor: Entity<TextEntry>,
     editor: Entity<TextEntry>,
@@ -223,6 +248,46 @@ impl Shell {
         });
         let workspace_path =
             cx.new(|cx| TextEntry::new("Workspace directory", EntryMode::SingleLine, 38., cx));
+        let remote_host =
+            cx.new(|cx| TextEntry::new("SSH host", EntryMode::SingleLine, 36., cx));
+        let remote_port =
+            cx.new(|cx| TextEntry::new("SSH port", EntryMode::SingleLine, 36., cx));
+        remote_port.update(cx, |entry, cx| entry.set_text("22".into(), cx));
+        let remote_user =
+            cx.new(|cx| TextEntry::new("SSH user (optional)", EntryMode::SingleLine, 36., cx));
+        let remote_root = cx.new(|cx| {
+            TextEntry::new(
+                "Remote absolute workspace root",
+                EntryMode::SingleLine,
+                36.,
+                cx,
+            )
+        });
+        let remote_known_hosts = cx.new(|cx| {
+            TextEntry::new(
+                "Local pinned known_hosts path",
+                EntryMode::SingleLine,
+                36.,
+                cx,
+            )
+        });
+        let remote_identity = cx.new(|cx| {
+            TextEntry::new(
+                "Local private identity path",
+                EntryMode::SingleLine,
+                36.,
+                cx,
+            )
+        });
+        let remote_helper = cx.new(|cx| {
+            TextEntry::new(
+                "Remote synara-remote-fs path",
+                EntryMode::SingleLine,
+                36.,
+                cx,
+            )
+        });
+        remote_helper.update(cx, |entry, cx| entry.set_text("synara-remote-fs".into(), cx));
         let task_title =
             cx.new(|cx| TextEntry::new("New task title", EntryMode::SingleLine, 36., cx));
         let profile_editor = cx
@@ -293,6 +358,13 @@ impl Shell {
             trace: vec![],
             composer,
             workspace_path,
+            remote_host,
+            remote_port,
+            remote_user,
+            remote_root,
+            remote_known_hosts,
+            remote_identity,
+            remote_helper,
             task_title,
             profile_editor,
             editor,
@@ -391,21 +463,29 @@ impl Shell {
         let id = self.selected?;
         self.catalog.tasks.iter().find(|t| t.id == id)
     }
-    fn root(&self) -> Option<PathBuf> {
+    fn workspace_target(&self) -> Option<WorkspaceTarget> {
         let project = self
             .catalog
             .projects
             .iter()
-            .find(|p| Some(p.id) == self.project)?;
+            .find(|project| Some(project.id) == self.project)?;
         let workspace = self
             .catalog
             .workspaces
             .iter()
-            .find(|w| w.id == project.workspace_id)?;
+            .find(|workspace| workspace.id == project.workspace_id)?;
         match &workspace.location {
-            WorkspaceLocation::Local { root } => Some(root.join(&project.relative_directory)),
-            _ => None,
+            WorkspaceLocation::Local { root } => Some(WorkspaceTarget::Local {
+                root: root.join(&project.relative_directory),
+            }),
+            WorkspaceLocation::Ssh { root, .. } => Some(WorkspaceTarget::Ssh {
+                workspace: workspace.clone(),
+                root: PathBuf::from(root).join(&project.relative_directory),
+            }),
         }
+    }
+    fn root(&self) -> Option<PathBuf> {
+        self.workspace_target().map(|target| target.root().clone())
     }
     fn dirty(&self, cx: &App) -> bool {
         self.document
@@ -543,6 +623,62 @@ impl Shell {
         })
         .detach();
     }
+    fn open_remote_workspace(&mut self, cx: &mut Context<Self>) {
+        if self.dirty(cx) || self.saving {
+            self.error =
+                Some("Save or discard the open document before switching workspaces.".into());
+            cx.notify();
+            return;
+        }
+        let host = self.remote_host.read(cx).text().trim().to_owned();
+        let root = self.remote_root.read(cx).text().trim().to_owned();
+        let known_hosts = PathBuf::from(self.remote_known_hosts.read(cx).text().trim());
+        let identity_file = PathBuf::from(self.remote_identity.read(cx).text().trim());
+        let helper = PathBuf::from(self.remote_helper.read(cx).text().trim());
+        let user = self.remote_user.read(cx).text().trim().to_owned();
+        let port = match self.remote_port.read(cx).text().trim().parse::<u16>() {
+            Ok(port) if port != 0 => port,
+            _ => {
+                self.error = Some("SSH port must be an integer from 1 through 65535.".into());
+                cx.notify();
+                return;
+            }
+        };
+        if host.is_empty()
+            || root.is_empty()
+            || known_hosts.as_os_str().is_empty()
+            || identity_file.as_os_str().is_empty()
+            || helper.as_os_str().is_empty()
+        {
+            self.error = Some(
+                "Host, remote root, pinned known_hosts, identity and remote helper are required."
+                    .into(),
+            );
+            cx.notify();
+            return;
+        }
+        let request = NewSshWorkspace {
+            name: host.clone(),
+            target: synara_runtime::SshTarget {
+                host,
+                port,
+                user: (!user.is_empty()).then_some(user),
+            },
+            root,
+            known_hosts,
+            identity_file,
+            helper,
+        };
+        let workspace = self.controller.workspace.clone();
+        self.error = None;
+        self.notice = Some("Verifying pinned SSH trust and remote workspace root...".into());
+        self.job(async move {
+            let project = workspace.add_ssh_workspace(request).await?;
+            Ok(Update::WorkspaceAdded(project, workspace.catalog().await?))
+        });
+        cx.notify();
+    }
+
     fn create_task(&mut self, cx: &mut Context<Self>) {
         let Some(project) = self.project else {
             self.error = Some("Open a workspace first.".into());
@@ -1181,6 +1317,43 @@ fn button(
         .hover(|s| s.bg(rgb(0x35465b)))
         .child(text.into())
 }
+async fn remote_filesystem(
+    workspace_service: WorkspaceService,
+    workspace: Workspace,
+    root: PathBuf,
+) -> WorkspaceResult<synara_runtime::RemoteWorkspaceFs> {
+    let profile = workspace_service
+        .ssh_profile(workspace.id)
+        .await?
+        .ok_or_else(|| {
+            WorkspaceError::Invalid("remote workspace is missing its pinned SSH profile".into())
+        })?;
+    profile.filesystem(&workspace, &root).await
+}
+
+async fn git_service(
+    workspace_service: WorkspaceService,
+    target: WorkspaceTarget,
+) -> WorkspaceResult<GitService> {
+    match target {
+        WorkspaceTarget::Local { root } => Ok(GitService::new(root)),
+        WorkspaceTarget::Ssh { workspace, root } => {
+            let profile = workspace_service
+                .ssh_profile(workspace.id)
+                .await?
+                .ok_or_else(|| {
+                    WorkspaceError::Invalid(
+                        "remote workspace is missing its pinned SSH profile".into(),
+                    )
+                })?;
+            Ok(GitService::with_host(
+                root,
+                Arc::new(profile.host(&workspace)?),
+            ))
+        }
+    }
+}
+
 fn truncate(text: &str, limit: usize) -> String {
     if text.len() <= limit {
         return text.into();
@@ -1217,6 +1390,7 @@ impl Render for Shell {
                         "5" => Some(Panel::Inspector),
                         "6" => Some(Panel::Settings),
                         "7" => Some(Panel::Registry),
+                        "8" => Some(Panel::Remote),
                         _ => None,
                     };
                     if let Some(panel) = panel {
@@ -1268,6 +1442,7 @@ impl Render for Shell {
                                 (Panel::Inspector, "Inspector"),
                                 (Panel::Settings, "Settings"),
                                 (Panel::Registry, "Agents"),
+                                (Panel::Remote, "Remote"),
                             ]
                             .into_iter()
                             .map(|(panel, label)| {
@@ -1310,6 +1485,7 @@ impl Render for Shell {
                                 Panel::Inspector => self.inspector_panel(cx),
                                 Panel::Settings => self.settings_panel(cx),
                                 Panel::Registry => self.registry_panel(cx),
+                                Panel::Remote => self.remote_panel(cx),
                             }),
                     ),
             )
@@ -1325,7 +1501,7 @@ impl Render for Shell {
                     .text_xs()
                     .text_color(rgb(0x98a6b8))
                     .child(self.root().map_or_else(
-                        || "No local workspace selected".into(),
+                        || "No workspace selected".into(),
                         |p| p.display().to_string(),
                     ))
                     .child(self.details.as_ref().map_or_else(

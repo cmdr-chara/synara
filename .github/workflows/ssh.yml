@@ -118,3 +118,31 @@ jobs:
             /tmp/synara-ajm-smoke/result.json
           retention-days: 7
           if-no-files-found: warn
+  ajm-buildkit:
+    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/session-ajm' && contains(github.event.head_commit.message, '[ajm-buildkit]')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      RUSTUP_TOOLCHAIN: '1.98.1'
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          persist-credentials: false
+      - name: Export public pinned dependencies and isolated toolchain
+        run: |
+          rustup toolchain install 1.98.1 --profile minimal --component rustfmt --component clippy
+          mkdir -p /tmp/ajm-buildkit
+          cargo vendor --locked --versioned-dirs /tmp/ajm-buildkit/vendor > /tmp/ajm-buildkit/config.toml
+          cp -a "$HOME/.rustup/toolchains/1.98.1-x86_64-unknown-linux-gnu" /tmp/ajm-buildkit/toolchain
+          git rev-parse HEAD > /tmp/ajm-buildkit/revision.txt
+          cp Cargo.lock /tmp/ajm-buildkit/Cargo.lock
+          tar -C /tmp/ajm-buildkit -czf /tmp/ajm-buildkit.tar.gz toolchain vendor config.toml revision.txt Cargo.lock
+          sha256sum /tmp/ajm-buildkit.tar.gz > /tmp/ajm-buildkit.sha256
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ajm-offline-buildkit
+          path: |
+            /tmp/ajm-buildkit.tar.gz
+            /tmp/ajm-buildkit.sha256
+          retention-days: 1
+          compression-level: 0

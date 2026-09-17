@@ -533,6 +533,7 @@ impl gpui::Render for TerminalView {
                     )
                     .child(
                         div()
+                            .id("terminal-paste-preview")
                             .max_h(px(120.))
                             .overflow_y_scroll()
                             .whitespace_pre()
@@ -788,7 +789,7 @@ fn paint_grid(
             origin,
             px(LINE_HEIGHT),
             TextAlign::Left,
-            Some(bounds),
+            Some(bounds.size.width),
             window,
             cx,
         );
@@ -796,7 +797,7 @@ fn paint_grid(
             origin,
             px(LINE_HEIGHT),
             TextAlign::Left,
-            Some(bounds),
+            Some(bounds.size.width),
             window,
             cx,
         );
@@ -832,7 +833,7 @@ fn paint_preedit(
         origin,
         px(LINE_HEIGHT),
         TextAlign::Left,
-        Some(bounds),
+        Some(bounds.size.width),
         window,
         cx,
     );
@@ -840,7 +841,7 @@ fn paint_preedit(
         origin,
         px(LINE_HEIGHT),
         TextAlign::Left,
-        Some(bounds),
+        Some(bounds.size.width),
         window,
         cx,
     );

@@ -10,6 +10,7 @@ concurrency:
 env:
   RUSTUP_TOOLCHAIN: 1.98.1
   CARGO_BUILD_JOBS: '2'
+  PYTHONUTF8: '1'
 jobs:
   source:
     if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/session-ekop'
@@ -101,6 +102,53 @@ jobs:
         run: |
           rustc --edition 2024 -D warnings --test foundations/browser/lib.rs -o "$RUNNER_TEMP/browser-policy-tests.exe"
           "$RUNNER_TEMP/browser-policy-tests.exe"
+      - name: Integration and privacy-safe measurement harness tests
+        if: success() || failure()
+        run: |
+          python3 --version
+          python3 scripts/ekop/integration_audit.py --self-test
+          python3 scripts/ekop/measure.py --self-test
+      - name: Synthetic measurement harness check, not application performance
+        run: |
+          python3 scripts/ekop/measure.py --candidate "$(git rev-parse HEAD)" --runs 3 --warmups 1 --timeout 10 --output "$RUNNER_TEMP/ekop-synthetic.json" -- python3 -c 'pass'
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: ekop-synthetic-${{ matrix.label }}
+          path: ${{ runner.temp }}/ekop-synthetic.json
+          retention-days: 7
+          if-no-files-found: warn
+  native-app-compile:
+    needs: source
+    name: app-compile-${{ matrix.label }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-15
+            label: macos-arm64
+            host: aarch64-apple-darwin
+          - os: windows-2025
+            label: windows-x64
+            host: x86_64-pc-windows-msvc
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          ref: ${{ needs.source.outputs.revision }}
+          persist-credentials: false
+      - name: Verify native toolchain and candidate
+        run: |
+          rustup toolchain install 1.98.1 --profile minimal
+          rustc -vV
+          rustc -vV | grep -F 'host: ${{ matrix.host }}'
+          git rev-parse HEAD
+      - name: Compile native GPUI application, not GUI interaction acceptance
+        run: cargo check --locked -p synara-app
   linux-native:
     needs: source
     runs-on: ubuntu-24.04

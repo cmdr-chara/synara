@@ -118,31 +118,48 @@ jobs:
             /tmp/synara-ajm-smoke/result.json
           retention-days: 7
           if-no-files-found: warn
-  ajm-buildkit:
-    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/session-ajm' && contains(github.event.head_commit.message, '[ajm-buildkit]')
+  ajm-support:
+    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/session-ajm' && contains(github.event.head_commit.message, '[ajm-support]')
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 15
     env:
       RUSTUP_TOOLCHAIN: '1.98.1'
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
           persist-credentials: false
-      - name: Export public pinned dependencies and isolated toolchain
+      - name: Resolve parser upgrade in an isolated scratch manifest
         run: |
-          rustup toolchain install 1.98.1 --profile minimal --component rustfmt --component clippy
-          mkdir -p /tmp/ajm-buildkit
-          cargo vendor --locked --versioned-dirs /tmp/ajm-buildkit/vendor > /tmp/ajm-buildkit/config.toml
-          cp -a "$HOME/.rustup/toolchains/1.98.1-x86_64-unknown-linux-gnu" /tmp/ajm-buildkit/toolchain
-          git rev-parse HEAD > /tmp/ajm-buildkit/revision.txt
-          cp Cargo.lock /tmp/ajm-buildkit/Cargo.lock
-          tar -C /tmp/ajm-buildkit -czf /tmp/ajm-buildkit.tar.gz toolchain vendor config.toml revision.txt Cargo.lock
-          sha256sum /tmp/ajm-buildkit.tar.gz > /tmp/ajm-buildkit.sha256
+          rustup toolchain install 1.98.1 --profile minimal
+          mkdir -p /tmp/ajm-parser-probe/src /tmp/ajm-support/bin /tmp/ajm-support/lib
+          printf '[package]\nname="ajm-parser-probe"\nversion="0.0.0"\nedition="2024"\n[dependencies]\nvt100="=0.16.2"\n' > /tmp/ajm-parser-probe/Cargo.toml
+          printf 'fn main() {}\n' > /tmp/ajm-parser-probe/src/main.rs
+          cargo vendor --manifest-path /tmp/ajm-parser-probe/Cargo.toml --versioned-dirs /tmp/ajm-support/vendor > /tmp/ajm-support/config.toml
+          cp /tmp/ajm-parser-probe/Cargo.lock /tmp/ajm-support/parser.lock
+      - name: Preserve only test-tool executables and library dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openssh-client openssh-server
+          cp /usr/bin/ssh /usr/bin/ssh-keygen /usr/sbin/sshd /tmp/ajm-support/bin/
+          ldd /usr/bin/ssh /usr/bin/ssh-keygen /usr/sbin/sshd > /tmp/ajm-support/libraries.txt
+          python3 - <<'PY'
+          import pathlib, re, shutil
+          root = pathlib.Path('/tmp/ajm-support')
+          for line in (root / 'libraries.txt').read_text().splitlines():
+              match = re.search(r'=> (/\S+)', line)
+              if match:
+                  path = pathlib.Path(match.group(1))
+                  if path.name not in {'libc.so.6', 'libm.so.6', 'libdl.so.2', 'libpthread.so.0', 'libresolv.so.2'}:
+                      shutil.copy2(path, root / 'lib' / path.name)
+          PY
+          git rev-parse HEAD > /tmp/ajm-support/revision.txt
+          tar -C /tmp/ajm-support -czf /tmp/ajm-support.tar.gz vendor config.toml parser.lock bin lib libraries.txt revision.txt
+          sha256sum /tmp/ajm-support.tar.gz > /tmp/ajm-support.sha256
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: ajm-offline-buildkit
+          name: ajm-runtime-support
           path: |
-            /tmp/ajm-buildkit.tar.gz
-            /tmp/ajm-buildkit.sha256
+            /tmp/ajm-support.tar.gz
+            /tmp/ajm-support.sha256
           retention-days: 1
           compression-level: 0

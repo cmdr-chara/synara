@@ -38,6 +38,8 @@ pub enum AgentError {
 
 #[derive(Clone, Debug)]
 pub struct AgentSpec {
+    /// Agent startup may use a private directory without changing session workspace scope.
+    pub launch_directory: Option<PathBuf>,
     pub id: String,
     pub name: String,
     pub origin: String,
@@ -54,6 +56,15 @@ impl AgentSpec {
             || self.name.is_empty()
         {
             return Err(AgentError::Invalid("invalid agent identity".into()));
+        }
+        if self
+            .launch_directory
+            .as_ref()
+            .is_some_and(|path| !path.is_absolute())
+        {
+            return Err(AgentError::Invalid(
+                "agent startup directory must be absolute".into(),
+            ));
         }
         self.launch.validate()?;
         Ok(())

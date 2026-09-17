@@ -50,6 +50,37 @@ launch environment and are not written to the profiles database. Do not place
 secrets in command arguments. Profiles are editable in Settings. Models, modes,
 authentication methods and configuration are discovered from the agent.
 
+## Agent Registry
+
+The Agents tab browses the official ACP Registry. Refresh retrieves the index over
+HTTPS. Review shows the publisher origin, version, platform, arguments, public
+environment defaults and license link before approval. Merely browsing or adding
+an agent never starts it. Select the added agent for a task to connect.
+
+Binary installations require a publisher-provided SHA-256 checksum. The installer
+verifies the download before extracting into a private staging directory, rejects
+traversal, links, device files and case-colliding entries, and limits download and
+expanded sizes. ZIP, gzip/bzip2 TAR and raw binaries are supported. Executable and
+receipt changes are checked before a new process starts. A missing checksum is a
+visible unsupported distribution, not implicit approval.
+
+npm and uv entries create an explicitly approved, version-pinned launcher. Their
+package manager downloads code on first connection and owns dependency integrity
+and its cache. Synara does not claim to verify those packages as binary archives.
+Managed agents start outside the project directory so a repository's local package
+configuration cannot silently replace the approved launcher. ACP session paths
+still identify the selected workspace. Registry installations are local. Remote
+workspaces require a custom profile for an agent installed on the SSH host.
+
+New versions are shown separately and never installed automatically. An update
+keeps the previous installation until explicit removal. Removal refuses to strand
+a task assigned to that installation, and does not delete conversations, vendor
+credentials or npm/uv caches. The catalog is cached for offline browsing. Failed
+refreshes preserve the previous valid cache.
+
+An external agent still runs as your operating-system account. Callback path
+containment is not an operating-system sandbox. Only approve publishers you trust.
+
 ## Desktop workflow
 
 Create or open a workspace, create a task, choose an agent and send a prompt.
@@ -57,11 +88,16 @@ Conversation events are persisted before reaching the interface. The composer
 supports platform text input, IME composition, selection, clipboard and undo/redo.
 Enter sends, Shift+Enter inserts a line, and Stop cancels the active prompt.
 Tool permissions and structured questions require explicit user responses.
+Ctrl+1 through Ctrl+7 switch between Conversation, Files, Changes, Terminal,
+Inspector, Settings and Agents. The platform command modifier is also recognized.
 
 Files provides a UTF-8 editor with dirty state, guarded saves and external-change
 conflict detection. Ctrl+S saves. UTF-8 BOMs and existing line endings are
 preserved. The interactive editor currently limits files to 1 MiB. Symlinks,
-binary content and oversized files produce visible errors.
+binary content and oversized files produce visible errors. Closing with unsaved
+file changes offers Keep working, Discard and close, or Save and close. A failed
+or conflicting save leaves the editor open. An outstanding save must finish before
+close can proceed. The confirmation does not protect against forced OS termination.
 
 Changes shows system Git status and staged/unstaged diffs with literal-path
 staging. Local commits use the configured Git identity, with hooks and signing
@@ -82,10 +118,18 @@ is visible rather than silently discarding saved history.
 - `synara-runtime`: process ownership, contained filesystem, PTY and execution hosts.
 - `synara-workspace`: SQLite, durable event delivery, controller, profiles and tools.
 - `synara-app`: native GPUI shell and input surfaces.
+- `synara-registry`: validated metadata, approved launchers and bounded installations.
 
 Repository content, agent output and tool requests are untrusted. Filesystem
 callbacks enforce containment and symlink rules. Permissions are not silently
 approved. Agent state and Synara's persistent transcript remain separate.
+
+Task title, activity and recency are projected in the same SQLite transaction as
+each conversation event, before observers receive it. Overlapping permissions keep
+a task waiting until the last response. Schema version 3 backfills older catalogs
+from ordered events without loading full transcripts into memory. A failed
+migration rolls back rather than publishing a partial catalog. Back up the data
+directory before testing a development build. Older builds reject newer schemas.
 
 ## Verification
 
@@ -95,12 +139,33 @@ cargo check --locked --workspace
 cargo clippy --locked --workspace --all-targets --all-features -- -D warnings
 cargo test --locked --workspace
 python3 scripts/audit_workspace.py
+python3 scripts/test_apply_source.py
 ```
 
 Tests do not require vendor credentials. The fixture executable accepts only an
 explicit `--integration-fixture` invocation and is for testing the generic host.
 
-Agent registry installation, complete terminal emulation, remote workspace UI,
+Linux CI also builds the application and exercises actual mouse and keyboard input
+on an isolated Xvfb display. The smoke checks cover streaming, two fixture-agent
+profiles, tool output, permission denial, approved filesystem writes, rejected
+path escapes, offline registry approval, editor close/cancel/save/conflict handling
+and history restoration without agent autostart. Screenshots and results are saved
+as the `native-desktop-smoke` workflow artifact. This is fixture proof, not a live
+vendor-service test or a claim of complete visual/accessibility coverage.
+
+To run the desktop smoke locally on Linux, install Xvfb, libXtst and Pillow, then:
+
+```sh
+cargo build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture
+python3 scripts/native_smoke.py --binary target/debug/synara-app \
+  --fixture target/debug/synara-acp-fixture --output /tmp/synara-native-smoke
+```
+
+The output directory must not already exist. The test never controls an existing
+desktop and never connects a vendor agent. The fixture registry launcher is only
+approved, never executed.
+
+Complete terminal emulation, remote workspace UI,
 browser/device hosting, updater, native credential integration and broader
 platform/performance hardening remain under development. Live vendor-agent
 validation is separate from fixture tests.

@@ -15,6 +15,7 @@ async fn workspace(profile: &str) -> (WorkspaceService, Task, tempfile::TempDir)
         .unwrap();
     workspace
         .save_profiles(vec![AgentProfile {
+            registry: None,
             id: profile.into(),
             name: profile.into(),
             command: env!("CARGO_BIN_EXE_synara-acp-fixture").into(),
@@ -163,4 +164,162 @@ async fn auth_required_connection_can_be_authenticated_before_creating_a_session
         .unwrap();
     controller.submit(task.id, "hello".into()).await.unwrap();
     controller.shutdown().await.unwrap();
+}
+
+#[tokio::test]
+async fn registry_binary_uses_the_same_acp_controller_and_preserves_durable_history() {
+    use sha2::{Digest, Sha256};
+    use std::io::Write;
+    use synara_registry::{Downloader, Platform, Registry, RegistryStore};
+    struct FixtureDownload(Vec<u8>);
+    impl Downloader for FixtureDownload {
+        fn download(
+            &self,
+            _: &str,
+            out: &mut dyn Write,
+            limit: u64,
+        ) -> synara_registry::Result<()> {
+            assert!((self.0.len() as u64) < limit);
+            out.write_all(&self.0)?;
+            Ok(())
+        }
+    }
+    let root = tempfile::tempdir().unwrap();
+    let bytes = std::fs::read(env!("CARGO_BIN_EXE_synara-acp-fixture")).unwrap();
+    let target = Platform::current().unwrap().key();
+    let document = serde_json::json!({"version":"1.0.0","agents":[{
+        "id":"registry-fixture","name":"Registry Fixture","version":"1.0.0",
+        "description":"Independently authored integration fixture", "license_url":"https://example.com/license",
+        "distribution":{"binary":{target:{"archive":"https://example.com/fixture", "cmd":if cfg!(windows){"fixture.exe"}else{"fixture"}, "sha256":hex::encode(Sha256::digest(&bytes)), "args":["--integration-fixture","alpha"]}}}
+    }]});
+    let registry = Registry::parse(&serde_json::to_vec(&document).unwrap()).unwrap();
+    let store = RegistryStore::open(root.path().join("agents")).unwrap();
+    let installed = store
+        .install(
+            &registry.agents[0]
+                .plan(Platform::current().unwrap())
+                .unwrap(),
+            &FixtureDownload(bytes),
+        )
+        .unwrap();
+    let service = WorkspaceService::open(root.path().join("workspace.sqlite3"))
+        .await
+        .unwrap();
+    let profiles = service
+        .register_installation(installed.reference.clone())
+        .await
+        .unwrap();
+    let id = profiles
+        .iter()
+        .find(|p| p.registry.is_some())
+        .unwrap()
+        .id
+        .clone();
+    let project = service
+        .add_local_workspace(root.path().into())
+        .await
+        .unwrap();
+    let task = service
+        .create_task(project.id, "Installed agent test".into(), id)
+        .await
+        .unwrap();
+    let controller = Arc::new(Controller::new(
+        service.clone(),
+        Arc::new(AcpBackend::default()),
+        Arc::new(DenyInteractions),
+    ));
+    controller.submit(task.id, "hello".into()).await.unwrap();
+    assert!(
+        service
+            .thread(task.thread_id)
+            .await
+            .unwrap()
+            .messages
+            .iter()
+            .any(|m| m.role == Role::Assistant && m.text == "Hello from alpha")
+    );
+    controller
+        .submit(task.id, "startup-directory".into())
+        .await
+        .unwrap();
+    let actual = service.thread(task.thread_id).await.unwrap();
+    assert!(
+        actual.messages.iter().any(|m| m.role == Role::Assistant
+            && m.text == installed.reference.directory.to_string_lossy())
+    );
+    assert_ne!(installed.reference.directory, task.working_directory);
+    std::fs::write(
+        task.working_directory.join("scope-proof.txt"),
+        "project scope",
+    )
+    .unwrap();
+    std::fs::write(
+        installed.reference.directory.join("scope-proof.txt"),
+        "installation scope",
+    )
+    .unwrap();
+    controller
+        .submit(task.id, "read-scope".into())
+        .await
+        .unwrap();
+    assert_eq!(
+        service
+            .thread(task.thread_id)
+            .await
+            .unwrap()
+            .messages
+            .last()
+            .unwrap()
+            .text,
+        "project scope"
+    );
+    std::fs::remove_file(installed.reference.directory.join("scope-proof.txt")).unwrap();
+    let active = controller.clone();
+    let prompt = tokio::spawn(async move { active.submit(task.id, "hold".into()).await });
+    tokio::time::timeout(std::time::Duration::from_secs(3), async {
+        while service.task(task.id).await.unwrap().state != synara_core::TaskState::Running {
+            tokio::task::yield_now().await;
+        }
+    })
+    .await
+    .unwrap();
+    assert!(matches!(
+        service
+            .register_installation(installed.reference.clone())
+            .await,
+        Err(synara_workspace::WorkspaceError::Agent(
+            synara_agent::AgentError::Busy
+        ))
+    ));
+    controller.cancel(task.id).await.unwrap();
+    prompt.await.unwrap().unwrap();
+    // Removing a used installation must not leave a durable task with a dangling agent.
+    assert!(
+        service
+            .unregister_installation(installed.reference.clone())
+            .await
+            .is_err()
+    );
+    controller
+        .switch_agent(task.id, "opencode".into())
+        .await
+        .unwrap();
+    service
+        .unregister_installation(installed.reference.clone())
+        .await
+        .unwrap();
+    controller.shutdown().await.unwrap();
+    store.remove(&installed.reference).unwrap();
+    let reopened = WorkspaceService::open(root.path().join("workspace.sqlite3"))
+        .await
+        .unwrap();
+    assert!(
+        reopened
+            .thread(task.thread_id)
+            .await
+            .unwrap()
+            .messages
+            .iter()
+            .any(|m| m.role == Role::Assistant)
+    );
 }

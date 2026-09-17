@@ -49,7 +49,7 @@ impl Store {
     fn initialize(mut connection: Connection) -> StorageResult<Self> {
         connection.busy_timeout(Duration::from_secs(3))?;
         let version: i64 = connection.query_row("PRAGMA user_version", [], |row| row.get(0))?;
-        if version > 2 {
+        if version > 3 {
             return Err(StorageError::NewerSchema);
         }
         connection.execute_batch("PRAGMA foreign_keys=ON; PRAGMA trusted_schema=OFF; PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL;")?;
@@ -63,6 +63,45 @@ impl Store {
             tx.execute_batch("CREATE TABLE event_heads(thread_id TEXT PRIMARY KEY REFERENCES tasks(thread_id), sequence INTEGER NOT NULL CHECK(sequence>=0), bytes INTEGER NOT NULL CHECK(bytes>=0));
 INSERT INTO event_heads SELECT thread_id,MAX(sequence),SUM(length(CAST(data AS BLOB))) FROM events GROUP BY thread_id;
 PRAGMA user_version=2;")?;
+            tx.commit()?;
+        }
+        if version < 3 {
+            let tx = connection.transaction_with_behavior(TransactionBehavior::Immediate)?;
+            tx.execute_batch("CREATE TABLE thread_activity(thread_id TEXT PRIMARY KEY REFERENCES tasks(thread_id), sequence INTEGER NOT NULL CHECK(sequence>=0), data TEXT NOT NULL);")?;
+            // Backfill on the blocking storage worker. The migration and catalog repair
+            // are one transaction, so a failed replay preserves the previous schema.
+            let tasks: Vec<Task> = {
+                let mut query = tx.prepare("SELECT data FROM tasks")?;
+                let mut rows = query.query([])?;
+                let mut tasks = vec![];
+                while let Some(row) = rows.next()? {
+                    if tasks.len() >= 10_000 {
+                        return Err(StorageError::Limit);
+                    }
+                    tasks.push(decode(&row.get::<_, String>(0)?)?);
+                }
+                tasks
+            };
+            for task in tasks {
+                let mut activity = ThreadActivity::new(task.title.clone());
+                let mut sequence = 0_i64;
+                let mut timestamp = task.updated_at_ms;
+                {
+                    let mut query = tx.prepare("SELECT sequence,timestamp_ms,data FROM events WHERE thread_id=?1 ORDER BY sequence")?;
+                    let mut rows = query.query([task.thread_id.to_string()])?;
+                    while let Some(row) = rows.next()? {
+                        let next: i64 = row.get(0)?;
+                        if next != sequence + 1 || next > 200_000 {
+                            return Err(StorageError::Sequence);
+                        }
+                        sequence = next;
+                        timestamp = timestamp.max(row.get(1)?);
+                        activity.apply(&decode::<ThreadEvent>(&row.get::<_, String>(2)?)?);
+                    }
+                }
+                update_activity(&tx, task, sequence, timestamp, &activity)?;
+            }
+            tx.execute_batch("PRAGMA user_version=3")?;
             tx.commit()?;
         }
         Ok(Self { connection })
@@ -213,6 +252,32 @@ PRAGMA user_version=2;")?;
             "INSERT INTO event_heads(thread_id,sequence,bytes) VALUES(?1,?2,?3) ON CONFLICT(thread_id) DO UPDATE SET sequence=excluded.sequence,bytes=excluded.bytes",
             params![envelope.thread_id.to_string(), sequence, total_bytes],
         )?;
+        let task_data: String = transaction.query_row(
+            "SELECT data FROM tasks WHERE thread_id=?1",
+            [envelope.thread_id.to_string()],
+            |r| r.get(0),
+        )?;
+        let task: Task = decode(&task_data)?;
+        let stored: Option<(i64, String)> = transaction
+            .query_row(
+                "SELECT sequence,data FROM thread_activity WHERE thread_id=?1",
+                [envelope.thread_id.to_string()],
+                |r| Ok((r.get(0)?, r.get(1)?)),
+            )
+            .optional()?;
+        let mut activity = match stored {
+            Some((previous, data)) if previous == last => decode::<ThreadActivity>(&data)?,
+            None if last == 0 => ThreadActivity::new(task.title.clone()),
+            _ => return Err(StorageError::Sequence),
+        };
+        activity.apply(&envelope.event);
+        update_activity(
+            &transaction,
+            task,
+            sequence,
+            envelope.timestamp_ms,
+            &activity,
+        )?;
         transaction.commit()?;
         Ok(true)
     }
@@ -312,6 +377,25 @@ PRAGMA user_version=2;")?;
         }
         Ok(results)
     }
+}
+fn update_activity(
+    tx: &rusqlite::Transaction<'_>,
+    mut task: Task,
+    sequence: i64,
+    timestamp: i64,
+    activity: &ThreadActivity,
+) -> StorageResult<()> {
+    if task.state != TaskState::Archived {
+        task.state = activity.state;
+    }
+    task.title.clone_from(&activity.title);
+    task.updated_at_ms = task.updated_at_ms.max(timestamp);
+    tx.execute("INSERT INTO thread_activity(thread_id,sequence,data) VALUES(?1,?2,?3) ON CONFLICT(thread_id) DO UPDATE SET sequence=excluded.sequence,data=excluded.data", params![task.thread_id.to_string(), sequence, encode(activity)?])?;
+    tx.execute(
+        "UPDATE tasks SET data=?1,updated_ms=?2 WHERE id=?3",
+        params![encode(&task)?, task.updated_at_ms, task.id.to_string()],
+    )?;
+    Ok(())
 }
 fn encode<T: serde::Serialize>(value: &T) -> StorageResult<String> {
     let text = serde_json::to_string(value)?;
@@ -453,13 +537,194 @@ mod tests {
         assert!(store.events(task.thread_id, 0, 0).unwrap().is_empty());
     }
     #[test]
+    fn activity_and_task_state_survive_restart_and_overlapping_permissions() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("state.sqlite3");
+        let mut store = Store::open(&path).unwrap();
+        let task = seed(&store);
+        let emit = |store: &mut Store, event| {
+            let mut e =
+                super::tests::event(&task, store.last_sequence(task.thread_id).unwrap() + 1);
+            e.event = event;
+            store.append(&e).unwrap();
+        };
+        emit(
+            &mut store,
+            ThreadEvent::PromptStarted {
+                turn: "turn".into(),
+            },
+        );
+        for id in ["first", "second"] {
+            emit(
+                &mut store,
+                ThreadEvent::PermissionRequested {
+                    request: PermissionRequest {
+                        id: id.into(),
+                        title: "Run?".into(),
+                        tool_id: None,
+                        choices: vec![],
+                    },
+                },
+            );
+        }
+        drop(store);
+        let mut store = Store::open(&path).unwrap();
+        assert_eq!(
+            store.task(task.id).unwrap().unwrap().state,
+            TaskState::Waiting
+        );
+        emit(
+            &mut store,
+            ThreadEvent::PermissionResolved {
+                id: "first".into(),
+                selected: None,
+            },
+        );
+        assert_eq!(
+            store.task(task.id).unwrap().unwrap().state,
+            TaskState::Waiting
+        );
+        emit(
+            &mut store,
+            ThreadEvent::PermissionResolved {
+                id: "second".into(),
+                selected: None,
+            },
+        );
+        assert_eq!(
+            store.task(task.id).unwrap().unwrap().state,
+            TaskState::Running
+        );
+        emit(
+            &mut store,
+            ThreadEvent::PromptFinished {
+                reason: "end_turn".into(),
+            },
+        );
+        assert_eq!(
+            store.task(task.id).unwrap().unwrap().state,
+            TaskState::Completed
+        );
+    }
+    #[test]
+    fn schema_two_backfills_metadata_and_preserves_transcript_and_session() {
+        let mut store = Store::memory().unwrap();
+        let task = seed(&store);
+        let mut e = event(&task, 1);
+        e.event = ThreadEvent::TitleChanged {
+            title: "Agent title".into(),
+        };
+        store.append(&e).unwrap();
+        let mut e = event(&task, 2);
+        e.event = ThreadEvent::PromptStarted { turn: "t".into() };
+        store.append(&e).unwrap();
+        // Reconstruct a v2 catalog containing the previously stale metadata.
+        store.save_task(&task).unwrap();
+        store
+            .connection
+            .execute_batch("DROP TABLE thread_activity; PRAGMA user_version=2")
+            .unwrap();
+        let mut store = Store::initialize(store.connection).unwrap();
+        let repaired = store.task(task.id).unwrap().unwrap();
+        assert_eq!(repaired.title, "Agent title");
+        assert_eq!(repaired.state, TaskState::Running);
+        assert_eq!(store.last_sequence(task.thread_id).unwrap(), 2);
+        store.append(&event(&task, 3)).unwrap();
+        assert_eq!(
+            store.replay(task.thread_id).unwrap().state,
+            TaskState::Running
+        );
+    }
+    #[test]
+    fn failed_schema_two_backfill_rolls_back_without_partial_catalog_repair() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("bad-v2.sqlite3");
+        let mut store = Store::open(&path).unwrap();
+        let task = seed(&store);
+        store.append(&event(&task, 1)).unwrap();
+        store
+            .connection
+            .execute_batch(
+                "DROP TABLE thread_activity; PRAGMA user_version=2; UPDATE events SET sequence=4",
+            )
+            .unwrap();
+        drop(store);
+        assert!(matches!(Store::open(&path), Err(StorageError::Sequence)));
+        let db = Connection::open(path).unwrap();
+        let version: i64 = db
+            .query_row("PRAGMA user_version", [], |r| r.get(0))
+            .unwrap();
+        assert_eq!(version, 2);
+        let tables: i64 = db
+            .query_row(
+                "SELECT COUNT(*) FROM sqlite_master WHERE name='thread_activity'",
+                [],
+                |r| r.get(0),
+            )
+            .unwrap();
+        assert_eq!(tables, 0);
+        let sequence: i64 = db
+            .query_row("SELECT sequence FROM events", [], |r| r.get(0))
+            .unwrap();
+        assert_eq!(sequence, 4);
+    }
+    #[test]
+    fn stale_activity_rejects_append_atomically() {
+        let mut store = Store::memory().unwrap();
+        let task = seed(&store);
+        store.append(&event(&task, 1)).unwrap();
+        store
+            .connection
+            .execute("UPDATE thread_activity SET sequence=0", [])
+            .unwrap();
+        assert!(matches!(
+            store.append(&event(&task, 2)),
+            Err(StorageError::Sequence)
+        ));
+        assert_eq!(store.last_sequence(task.thread_id).unwrap(), 1);
+        assert_eq!(store.events(task.thread_id, 0, 10).unwrap().len(), 1);
+    }
+    #[test]
+    fn failed_history_restores_title_consistently_in_catalog_and_transcript() {
+        let mut store = Store::memory().unwrap();
+        let task = seed(&store);
+        for (n, content) in [
+            ThreadEvent::TitleChanged {
+                title: "Original".into(),
+            },
+            ThreadEvent::HistoryStarted,
+            ThreadEvent::TitleChanged {
+                title: "Partial replay".into(),
+            },
+            ThreadEvent::Error {
+                message: "Replay failed".into(),
+                recoverable: false,
+            },
+        ]
+        .into_iter()
+        .enumerate()
+        {
+            let mut e = event(&task, n as u64 + 1);
+            e.event = content;
+            store.append(&e).unwrap();
+        }
+        let task = store.task(task.id).unwrap().unwrap();
+        let thread = store.replay(task.thread_id).unwrap();
+        assert_eq!(task.title, "Original");
+        assert_eq!(task.title, thread.title);
+        assert_eq!(task.state, thread.state);
+        assert_eq!(task.state, TaskState::Failed);
+    }
+    #[test]
     fn schema_one_migrates_existing_event_heads() {
         let mut store = Store::memory().unwrap();
         let task = seed(&store);
         store.append(&event(&task, 1)).unwrap();
         store
             .connection
-            .execute_batch("DROP TABLE event_heads; PRAGMA user_version=1")
+            .execute_batch(
+                "DROP TABLE thread_activity; DROP TABLE event_heads; PRAGMA user_version=1",
+            )
             .unwrap();
         let mut store = Store::initialize(store.connection).unwrap();
         assert_eq!(store.last_sequence(task.thread_id).unwrap(), 1);

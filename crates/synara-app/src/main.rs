@@ -1,3 +1,4 @@
+mod close;
 mod input;
 mod shell;
 use anyhow::{Context as _, Result, bail};
@@ -125,6 +126,7 @@ fn run() -> Result<()> {
                 .await?;
         }
         Ok::<_, synara_workspace::WorkspaceError>(shell::Bootstrap {
+            agent_directory: options.data.join("agents"),
             catalog: workspace.catalog().await?,
             profiles: workspace.profiles().await?,
             selection: workspace.selection().await?,
@@ -147,11 +149,15 @@ fn run() -> Result<()> {
             },
             move |window, cx| {
                 window.set_window_title("Synara");
-                window.on_window_should_close(cx, |_, cx| {
-                    cx.quit();
-                    true
+                let shell = cx.new(|cx| {
+                    shell::Shell::new(app_controller, handle, bootstrap, interactions, cx)
                 });
-                cx.new(|cx| shell::Shell::new(app_controller, handle, bootstrap, interactions, cx))
+                let weak = shell.downgrade();
+                window.on_window_should_close(cx, move |window, cx| {
+                    weak.update(cx, |shell, cx| shell.request_close(window, cx))
+                        .unwrap_or(false)
+                });
+                shell
             },
         );
         if let Err(error) = result {

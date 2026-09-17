@@ -5,6 +5,7 @@ edition.workspace = true
 publish.workspace = true
 
 [dependencies]
+synara-registry = { path = "../synara-registry" }
 synara-core = { path = "../synara-core" }
 synara-agent = { path = "../synara-agent" }
 synara-acp = { path = "../synara-acp" }

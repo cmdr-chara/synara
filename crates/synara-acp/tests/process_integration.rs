@@ -83,6 +83,7 @@ impl Harness {
         let directory = tempfile::tempdir().unwrap();
         let events = Arc::new(Events::default());
         let spec = AgentSpec {
+            launch_directory: None,
             id: profile.into(),
             name: profile.into(),
             origin: "test fixture".into(),

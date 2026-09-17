@@ -8,6 +8,7 @@ from pathlib import Path
 import re
 import subprocess
 import sys
+import tempfile
 import unittest
 
 COMMON_BASE = "1cd24dd6f5ac9571c1ea2b7329bcb5fc1a4ad121"
@@ -31,7 +32,7 @@ PROTECTED_FILES = frozenset({
 
 
 def unowned_roadmap(text: str) -> str:
-    """Retain all bytes outside the three uniquely named owned sections."""
+    """Retain all text outside the three uniquely named owned sections."""
     blocks = re.split(r"(?m)(?=^## )", text)
     headings = [block.partition("\n")[0] for block in blocks]
     for heading in OWNED_HEADINGS:
@@ -61,7 +62,9 @@ def verify(root: Path, base: str) -> None:
         raise ValueError("base must be a full lowercase commit SHA")
     if git(root, "merge-base", base, "HEAD").strip() != base:
         raise ValueError("the common base is not an ancestor of this candidate")
-    paths = git(root, "diff", "--name-only", "-z", base, "HEAD").split("\0")
+    # Include both the deleted source and added destination of every rename.
+    # Name-only rename detection otherwise hides a protected source pathname.
+    paths = git(root, "diff", "--no-renames", "--name-only", "-z", base, "HEAD").split("\0")
     violations = protected_changes([path for path in paths if path])
     if violations:
         raise ValueError("changes outside A/J/M ownership: " + ", ".join(violations))
@@ -129,6 +132,38 @@ class OwnershipTests(unittest.TestCase):
             "crates/synara-app/src/shell/panels.rs",
             ".github/workflows/ssh.yml", "ROADMAP.md", "Cargo.lock",
         ]), [])
+
+    def test_renaming_protected_file_into_owned_directory_is_rejected(self) -> None:
+        # Only disposable source is committed. No real workspace or user config is changed.
+        with tempfile.TemporaryDirectory(prefix="synara-ajm-scope-") as temporary:
+            root = Path(temporary)
+            git(root, "init", "--quiet", "--template=")
+            hooks = root / "empty-hooks"
+            hooks.mkdir()
+            old = "docs/agent-compatibility.md"
+            new = "crates/synara-runtime/renamed.md"
+            (root / old).parent.mkdir(parents=True)
+            (root / new).parent.mkdir(parents=True)
+            (root / old).write_text("protected fixture content\n", encoding="utf-8")
+            (root / "ROADMAP.md").write_text(self.text, encoding="utf-8")
+            git(root, "add", "--", "ROADMAP.md", old)
+            commit_options = (
+                "-c", "user.name=AJM scope test",
+                "-c", "user.email=ajm-scope@example.invalid",
+                "-c", "commit.gpgsign=false",
+                "-c", f"core.hooksPath={hooks}",
+            )
+            git(root, *commit_options, "commit", "--quiet", "-m", "fixture base")
+            base = git(root, "rev-parse", "HEAD").strip()
+            git(root, "mv", "--", old, new)
+            git(root, *commit_options, "commit", "--quiet", "-m", "fixture rename")
+            renamed_paths = git(
+                root, "diff", "--find-renames", "--name-only", "-z", base, "HEAD"
+            ).split("\0")
+            self.assertIn(new, renamed_paths)
+            self.assertNotIn(old, renamed_paths)
+            with self.assertRaisesRegex(ValueError, "docs/agent-compatibility"):
+                verify(root, base)
 
 
 def main() -> int:

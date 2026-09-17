@@ -1,0 +1,1183 @@
+use gpui::Focusable;
+mod conversation;
+mod panels;
+use crate::input::{EntryEvent, EntryMode, TextEntry};
+use gpui::{
+    App, Context, Entity, ScrollHandle, SharedString, Subscription, Window, div, prelude::*, px,
+    rgb,
+};
+use std::{
+    collections::{BTreeMap, HashMap, HashSet},
+    path::PathBuf,
+    sync::Arc,
+};
+use synara_agent::{TraceEntry, UiInteraction};
+use synara_core::*;
+use synara_runtime::{FileEntry, NativeTerminal, TerminalSnapshot};
+use synara_workspace::*;
+use tokio::{runtime::Handle, sync::mpsc};
+
+pub struct Bootstrap {
+    pub catalog: Catalog,
+    pub profiles: Vec<AgentProfile>,
+    pub selection: Selection,
+}
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum Panel {
+    Conversation,
+    Files,
+    Changes,
+    Terminal,
+    Inspector,
+    Settings,
+}
+type InteractionKey = (ThreadId, String);
+struct FormState {
+    request: UserInputRequest,
+    inputs: BTreeMap<String, Entity<TextEntry>>,
+    values: BTreeMap<String, InputValue>,
+    error: Option<String>,
+}
+enum Update {
+    Catalog(Catalog),
+    WorkspaceAdded(Project, Catalog),
+    TaskCreated(Task, Catalog),
+    ThreadLoaded(Task, Box<Thread>),
+    Event(EventEnvelope),
+    Hydrate,
+    Interaction(UiInteraction),
+    Connected {
+        task: TaskId,
+        details: Option<SessionDetails>,
+        error: Option<String>,
+    },
+    PromptDone {
+        task: TaskId,
+        details: Option<SessionDetails>,
+        error: Option<String>,
+    },
+    Details {
+        task: TaskId,
+        details: Option<SessionDetails>,
+        trace: Vec<TraceEntry>,
+    },
+    Profiles(Vec<AgentProfile>),
+    AgentChanged(Task),
+    Files {
+        root: PathBuf,
+        directory: PathBuf,
+        entries: Vec<FileEntry>,
+    },
+    Document {
+        root: PathBuf,
+        document: Document,
+    },
+    Saved {
+        root: PathBuf,
+        path: PathBuf,
+        text: String,
+        version: synara_runtime::FileVersion,
+    },
+    Git {
+        root: PathBuf,
+        status: GitStatus,
+        diff: String,
+        staged: bool,
+    },
+    TerminalStarted {
+        root: PathBuf,
+        terminal: Arc<NativeTerminal>,
+    },
+    TerminalOutput {
+        root: PathBuf,
+        snapshot: TerminalSnapshot,
+    },
+    Tick,
+    Done(String),
+    Error(String),
+}
+pub struct Shell {
+    controller: Arc<Controller>,
+    runtime: Handle,
+    sender: async_channel::Sender<Update>,
+    catalog: Catalog,
+    profiles: Vec<AgentProfile>,
+    project: Option<ProjectId>,
+    selected: Option<TaskId>,
+    thread: Option<Thread>,
+    details: Option<SessionDetails>,
+    trace: Vec<TraceEntry>,
+    composer: Entity<TextEntry>,
+    workspace_path: Entity<TextEntry>,
+    task_title: Entity<TextEntry>,
+    profile_editor: Entity<TextEntry>,
+    editor: Entity<TextEntry>,
+    commit_message: Entity<TextEntry>,
+    terminal_command: Entity<TextEntry>,
+    drafts: HashMap<TaskId, String>,
+    busy: HashSet<TaskId>,
+    connecting: HashSet<TaskId>,
+    panel: Panel,
+    error: Option<String>,
+    notice: Option<String>,
+    focus_composer: bool,
+    scroll: ScrollHandle,
+    scroll_owner: ScrollOwnership,
+    transcript_start: Option<usize>,
+    pending: HashMap<InteractionKey, UiInteraction>,
+    forms: HashMap<InteractionKey, FormState>,
+    files: Vec<FileEntry>,
+    directory: PathBuf,
+    file_page: usize,
+    document: Option<Document>,
+    saving: bool,
+    git: GitStatus,
+    diff: String,
+    staged: bool,
+    terminal: Option<Arc<NativeTerminal>>,
+    terminal_root: Option<PathBuf>,
+    terminal_snapshot: Option<TerminalSnapshot>,
+    polling: bool,
+    _updates: gpui::Task<()>,
+    _subscriptions: Vec<Subscription>,
+}
+impl Shell {
+    pub fn new(
+        controller: Arc<Controller>,
+        runtime: Handle,
+        bootstrap: Bootstrap,
+        mut interactions: mpsc::Receiver<UiInteraction>,
+        cx: &mut Context<Self>,
+    ) -> Self {
+        let (sender, receiver) = async_channel::bounded(128);
+        let mut events = controller.workspace.subscribe();
+        let forward = sender.clone();
+        runtime.spawn(async move {
+            loop {
+                let update = match events.recv().await {
+                    Ok(event) => Update::Event(event),
+                    Err(tokio::sync::broadcast::error::RecvError::Lagged(_)) => Update::Hydrate,
+                    Err(_) => break,
+                };
+                if forward.send(update).await.is_err() {
+                    break;
+                }
+            }
+        });
+        let forward = sender.clone();
+        runtime.spawn(async move {
+            while let Some(interaction) = interactions.recv().await {
+                if forward
+                    .send(Update::Interaction(interaction))
+                    .await
+                    .is_err()
+                {
+                    break;
+                }
+            }
+        });
+        let forward = sender.clone();
+        runtime.spawn(async move {
+            loop {
+                tokio::time::sleep(std::time::Duration::from_millis(500)).await;
+                if forward.send(Update::Tick).await.is_err() {
+                    break;
+                }
+            }
+        });
+        let updates = cx.spawn(async move |view, cx| {
+            while let Ok(update) = receiver.recv().await {
+                if view
+                    .update(cx, |this, cx| this.receive(update, cx))
+                    .is_err()
+                {
+                    break;
+                }
+            }
+        });
+        let composer = cx.new(|cx| {
+            TextEntry::new(
+                "Describe the task. Enter sends, Shift+Enter adds a line.",
+                EntryMode::Composer,
+                118.,
+                cx,
+            )
+        });
+        let workspace_path =
+            cx.new(|cx| TextEntry::new("Workspace directory", EntryMode::SingleLine, 38., cx));
+        let task_title =
+            cx.new(|cx| TextEntry::new("New task title", EntryMode::SingleLine, 36., cx));
+        let profile_editor = cx
+            .new(|cx| TextEntry::new("Agent launch profiles (JSON)", EntryMode::Editor, 390., cx));
+        let editor =
+            cx.new(|cx| TextEntry::new("Select a UTF-8 text file", EntryMode::Editor, 480., cx));
+        let commit_message =
+            cx.new(|cx| TextEntry::new("Commit message", EntryMode::SingleLine, 38., cx));
+        let terminal_command =
+            cx.new(|cx| TextEntry::new("Shell command", EntryMode::SingleLine, 38., cx));
+        profile_editor.update(cx, |entry, cx| {
+            entry.set_text(
+                serde_json::to_string_pretty(&bootstrap.profiles).unwrap_or_default(),
+                cx,
+            )
+        });
+        let subscriptions = vec![
+            cx.subscribe(&composer, |this, _, event, cx| match event {
+                EntryEvent::Submit => this.send_prompt(cx),
+                _ => cx.notify(),
+            }),
+            cx.subscribe(&workspace_path, |this, _, event, cx| {
+                if matches!(event, EntryEvent::Submit) {
+                    this.open_workspace(cx)
+                }
+            }),
+            cx.subscribe(&task_title, |this, _, event, cx| {
+                if matches!(event, EntryEvent::Submit) {
+                    this.create_task(cx)
+                }
+            }),
+            cx.subscribe(&editor, |this, _, event, cx| match event {
+                EntryEvent::Save => this.save_file(cx),
+                _ => cx.notify(),
+            }),
+            cx.subscribe(&terminal_command, |this, _, event, cx| {
+                if matches!(event, EntryEvent::Submit) {
+                    this.send_terminal(cx)
+                }
+            }),
+        ];
+        let project = bootstrap
+            .selection
+            .project
+            .filter(|id| bootstrap.catalog.projects.iter().any(|p| p.id == *id))
+            .or_else(|| bootstrap.catalog.projects.first().map(|p| p.id));
+        let selected = bootstrap
+            .selection
+            .task
+            .filter(|id| bootstrap.catalog.tasks.iter().any(|t| t.id == *id))
+            .or_else(|| {
+                bootstrap
+                    .catalog
+                    .tasks
+                    .iter()
+                    .find(|t| Some(t.project_id) == project)
+                    .map(|t| t.id)
+            });
+        let mut this = Self {
+            controller,
+            runtime,
+            sender,
+            catalog: bootstrap.catalog,
+            profiles: bootstrap.profiles,
+            project,
+            selected: None,
+            thread: None,
+            details: None,
+            trace: vec![],
+            composer,
+            workspace_path,
+            task_title,
+            profile_editor,
+            editor,
+            commit_message,
+            terminal_command,
+            drafts: HashMap::new(),
+            busy: HashSet::new(),
+            connecting: HashSet::new(),
+            panel: Panel::Conversation,
+            error: None,
+            notice: None,
+            focus_composer: false,
+            scroll: ScrollHandle::new(),
+            scroll_owner: ScrollOwnership::Following,
+            transcript_start: None,
+            pending: HashMap::new(),
+            forms: HashMap::new(),
+            files: vec![],
+            directory: PathBuf::new(),
+            file_page: 0,
+            document: None,
+            saving: false,
+            git: GitStatus::default(),
+            diff: String::new(),
+            staged: false,
+            terminal: None,
+            terminal_root: None,
+            terminal_snapshot: None,
+            polling: false,
+            _updates: updates,
+            _subscriptions: subscriptions,
+        };
+        if let Some(selected) = selected {
+            this.select_task(selected, cx);
+        }
+        this
+    }
+    fn job(
+        &self,
+        task: impl std::future::Future<Output = WorkspaceResult<Update>> + Send + 'static,
+    ) {
+        let sender = self.sender.clone();
+        self.runtime.spawn(async move {
+            let update = task
+                .await
+                .unwrap_or_else(|error| Update::Error(error.to_string()));
+            let _ = sender.send(update).await;
+        });
+    }
+    fn task(&self) -> Option<&Task> {
+        let id = self.selected?;
+        self.catalog.tasks.iter().find(|t| t.id == id)
+    }
+    fn root(&self) -> Option<PathBuf> {
+        let project = self
+            .catalog
+            .projects
+            .iter()
+            .find(|p| Some(p.id) == self.project)?;
+        let workspace = self
+            .catalog
+            .workspaces
+            .iter()
+            .find(|w| w.id == project.workspace_id)?;
+        match &workspace.location {
+            WorkspaceLocation::Local { root } => Some(root.join(&project.relative_directory)),
+            _ => None,
+        }
+    }
+    fn dirty(&self, cx: &App) -> bool {
+        self.document
+            .as_ref()
+            .is_some_and(|d| self.editor.read(cx).text() != d.snapshot.text)
+    }
+    fn replace_task(&mut self, task: Task) {
+        if let Some(existing) = self.catalog.tasks.iter_mut().find(|t| t.id == task.id) {
+            *existing = task;
+        } else {
+            self.catalog.tasks.insert(0, task);
+        }
+    }
+    fn select_task(&mut self, id: TaskId, cx: &mut Context<Self>) {
+        let Some(task) = self
+            .catalog
+            .tasks
+            .iter()
+            .find(|task| task.id == id)
+            .cloned()
+        else {
+            return;
+        };
+        if Some(task.project_id) != self.project && (self.dirty(cx) || self.saving) {
+            self.error =
+                Some("Save or discard the open document before switching projects.".into());
+            cx.notify();
+            return;
+        }
+        if let Some(previous) = self.selected {
+            self.drafts
+                .insert(previous, self.composer.read(cx).text().to_owned());
+        }
+        if Some(task.project_id) != self.project {
+            self.document = None;
+            self.files.clear();
+            self.directory.clear();
+            self.git = GitStatus::default();
+            self.diff.clear();
+        }
+        self.selected = Some(id);
+        self.project = Some(task.project_id);
+        self.details = None;
+        self.trace.clear();
+        self.thread = Some(Thread::new(task.thread_id));
+        self.error = None;
+        self.composer.update(cx, |entry, cx| {
+            entry.set_text(self.drafts.get(&id).cloned().unwrap_or_default(), cx)
+        });
+        self.scroll = ScrollHandle::new();
+        self.scroll_owner = ScrollOwnership::Following;
+        self.transcript_start = None;
+        self.focus_composer = true;
+        let workspace = self.controller.workspace.clone();
+        self.job(async move {
+            workspace
+                .save_selection(Selection {
+                    project: Some(task.project_id),
+                    task: Some(id),
+                })
+                .await?;
+            let thread = workspace.thread(task.thread_id).await?;
+            Ok(Update::ThreadLoaded(task, Box::new(thread)))
+        });
+        if self.panel == Panel::Files {
+            self.refresh_files();
+        }
+        if self.panel == Panel::Changes {
+            self.refresh_git();
+        }
+        cx.notify();
+    }
+    fn hydrate(&self) {
+        if let Some(task) = self.task().cloned() {
+            let workspace = self.controller.workspace.clone();
+            self.job(async move {
+                let thread = workspace.thread(task.thread_id).await?;
+                Ok(Update::ThreadLoaded(task, Box::new(thread)))
+            });
+        }
+    }
+    fn open_workspace(&mut self, cx: &mut Context<Self>) {
+        let text = self.workspace_path.read(cx).text().trim().to_owned();
+        if text.is_empty() {
+            self.error = Some("Enter an existing absolute directory or use Browse.".into());
+            cx.notify();
+            return;
+        }
+        let path = PathBuf::from(text);
+        if !path.is_absolute() {
+            self.error = Some("The workspace directory must be an absolute path.".into());
+            cx.notify();
+            return;
+        }
+        if self.dirty(cx) || self.saving {
+            self.error =
+                Some("Save or discard the open document before switching workspaces.".into());
+            cx.notify();
+            return;
+        }
+        let workspace = self.controller.workspace.clone();
+        self.error = None;
+        self.job(async move {
+            let project = workspace.add_local_workspace(path).await?;
+            Ok(Update::WorkspaceAdded(project, workspace.catalog().await?))
+        });
+    }
+    fn browse_workspace(&mut self, cx: &mut Context<Self>) {
+        let picker = cx.prompt_for_paths(gpui::PathPromptOptions {
+            files: false,
+            directories: true,
+            multiple: false,
+            prompt: Some("Open workspace".into()),
+        });
+        cx.spawn(async move |view, cx| {
+            let result = picker.await;
+            let _ = view.update(cx, |this, cx| match result {
+                Ok(Ok(Some(paths))) => {
+                    if let Some(path) = paths.into_iter().next() {
+                        this.workspace_path.update(cx, |entry, cx| {
+                            entry.set_text(path.to_string_lossy().into_owned(), cx)
+                        });
+                        this.open_workspace(cx);
+                    }
+                }
+                Ok(Ok(None)) => {}
+                _ => {
+                    this.error = Some(
+                        "The system file picker could not open. Enter the workspace path instead."
+                            .into(),
+                    );
+                    cx.notify();
+                }
+            });
+        })
+        .detach();
+    }
+    fn create_task(&mut self, cx: &mut Context<Self>) {
+        let Some(project) = self.project else {
+            self.error = Some("Open a workspace first.".into());
+            cx.notify();
+            return;
+        };
+        let Some(agent) = self.profiles.first().map(|p| p.id.clone()) else {
+            return;
+        };
+        let title = self.task_title.read(cx).text().trim().to_owned();
+        let title = if title.is_empty() {
+            "New task".into()
+        } else {
+            title
+        };
+        let workspace = self.controller.workspace.clone();
+        self.job(async move {
+            let task = workspace.create_task(project, title, agent).await?;
+            Ok(Update::TaskCreated(task, workspace.catalog().await?))
+        });
+    }
+    fn connect(&mut self, operation: &str, cx: &mut Context<Self>) {
+        let Some(id) = self.selected else { return };
+        if self.connecting.contains(&id) {
+            return;
+        }
+        self.connecting.insert(id);
+        self.error = None;
+        let controller = self.controller.clone();
+        let operation = operation.to_owned();
+        self.job(async move {
+            let result = match operation.as_str() {
+                "restart" => controller.restart(id).await,
+                "fresh" => controller.fresh_session(id).await,
+                _ => controller.connect(id).await,
+            };
+            let details = controller.details(id).await.ok().flatten();
+            Ok(Update::Connected {
+                task: id,
+                details,
+                error: result.err().map(|e| e.to_string()),
+            })
+        });
+        cx.notify();
+    }
+    fn authenticate(&mut self, method: String, cx: &mut Context<Self>) {
+        let Some(id) = self.selected else { return };
+        if self.connecting.contains(&id) {
+            return;
+        }
+        self.connecting.insert(id);
+        let controller = self.controller.clone();
+        self.error = None;
+        self.job(async move {
+            let result = controller.authenticate(id, method).await;
+            let details = controller.details(id).await.ok().flatten();
+            Ok(Update::Connected {
+                task: id,
+                details,
+                error: result.err().map(|e| e.to_string()),
+            })
+        });
+        cx.notify();
+    }
+    fn send_prompt(&mut self, cx: &mut Context<Self>) {
+        let Some(id) = self.selected else {
+            self.error = Some("Create or select a task first.".into());
+            cx.notify();
+            return;
+        };
+        if self.busy.contains(&id) || self.connecting.contains(&id) {
+            return;
+        }
+        let text = self.composer.read(cx).text().to_owned();
+        if text.trim().is_empty() {
+            return;
+        }
+        self.busy.insert(id);
+        self.error = None;
+        self.notice = None;
+        self.scroll_owner = ScrollOwnership::Following;
+        self.transcript_start = None;
+        self.scroll.scroll_to_bottom();
+        let controller = self.controller.clone();
+        self.job(async move {
+            let result = controller.submit(id, text).await;
+            let details = controller.details(id).await.ok().flatten();
+            Ok(Update::PromptDone {
+                task: id,
+                details,
+                error: result.err().map(|e| e.to_string()),
+            })
+        });
+        cx.notify();
+    }
+    fn cancel(&mut self, cx: &mut Context<Self>) {
+        if let Some(id) = self.selected {
+            let controller = self.controller.clone();
+            self.job(async move {
+                controller.cancel(id).await?;
+                Ok(Update::Done("Cancellation requested".into()))
+            });
+        }
+        cx.notify();
+    }
+    fn save_profiles(&mut self, cx: &mut Context<Self>) {
+        let profiles = match parse_profiles(self.profile_editor.read(cx).text()) {
+            Ok(p) => p,
+            Err(e) => {
+                self.error = Some(e.to_string());
+                cx.notify();
+                return;
+            }
+        };
+        let workspace = self.controller.workspace.clone();
+        self.job(async move {
+            workspace.save_profiles(profiles.clone()).await?;
+            Ok(Update::Profiles(profiles))
+        });
+    }
+    fn refresh_files(&self) {
+        if let Some(root) = self.root() {
+            let directory = self.directory.clone();
+            self.job(async move {
+                let entries = list_files(root.clone(), directory.clone()).await?;
+                Ok(Update::Files {
+                    root,
+                    directory,
+                    entries,
+                })
+            });
+        }
+    }
+    fn refresh_git(&self) {
+        if let Some(root) = self.root() {
+            let staged = self.staged;
+            self.job(async move {
+                let git = GitService::new(root.clone());
+                let status = git.status().await?;
+                let diff = git.diff(staged, None).await?;
+                Ok(Update::Git {
+                    root,
+                    status,
+                    diff,
+                    staged,
+                })
+            });
+        }
+    }
+    fn open_file(&mut self, path: PathBuf, cx: &mut Context<Self>) {
+        if self.dirty(cx) || self.saving {
+            self.error =
+                Some("Save or discard the current document before opening another file.".into());
+            cx.notify();
+            return;
+        }
+        if let Some(root) = self.root() {
+            self.job(async move {
+                let document = open_document(root.clone(), path).await?;
+                Ok(Update::Document { root, document })
+            });
+        }
+    }
+    fn save_file(&mut self, cx: &mut Context<Self>) {
+        if self.saving {
+            return;
+        }
+        let (Some(root), Some(document)) = (self.root(), self.document.clone()) else {
+            return;
+        };
+        let text = self.editor.read(cx).text().to_owned();
+        self.saving = true;
+        self.error = None;
+        self.job(async move {
+            let path = document.path.clone();
+            match save_document(root.clone(), document, text.clone()).await {
+                Ok(version) => Ok(Update::Saved {
+                    root,
+                    path,
+                    text,
+                    version,
+                }),
+                Err(error) => Ok(Update::Error(format!("Save failed: {error}"))),
+            }
+        });
+        cx.notify();
+    }
+    fn start_terminal(&mut self, cx: &mut Context<Self>) {
+        let Some(root) = self.root() else { return };
+        if self.terminal.is_some() {
+            return;
+        }
+        self.job(async move {
+            let cwd = root.clone();
+            let terminal = tokio::task::spawn_blocking(move || {
+                #[cfg(windows)]
+                let command = std::env::var("COMSPEC").unwrap_or_else(|_| "cmd.exe".into());
+                #[cfg(not(windows))]
+                let command = std::env::var("SHELL").unwrap_or_else(|_| "/bin/sh".into());
+                NativeTerminal::spawn(&synara_runtime::LaunchSpec::new(command), &cwd, 24, 88)
+            })
+            .await
+            .map_err(|_| WorkspaceError::Worker)??;
+            Ok(Update::TerminalStarted {
+                root,
+                terminal: Arc::new(terminal),
+            })
+        });
+        self.notice = Some("Starting a local shell in the selected workspace".into());
+        cx.notify();
+    }
+    fn terminal_input(&self, bytes: Vec<u8>) {
+        if let Some(terminal) = self.terminal.clone() {
+            self.job(async move {
+                tokio::task::spawn_blocking(move || terminal.input(&bytes))
+                    .await
+                    .map_err(|_| WorkspaceError::Worker)??;
+                Ok(Update::Done(String::new()))
+            });
+        }
+    }
+    fn send_terminal(&mut self, cx: &mut Context<Self>) {
+        let text = self.terminal_command.read(cx).text().to_owned();
+        self.terminal_input(format!("{text}\r").into_bytes());
+        self.terminal_command
+            .update(cx, |entry, cx| entry.clear(cx));
+    }
+    fn poll(&mut self) {
+        if let Some(terminal) = self.terminal.clone()
+            && self.panel == Panel::Terminal
+            && let Some(root) = self.terminal_root.clone()
+        {
+            self.job(async move {
+                let snapshot = tokio::task::spawn_blocking(move || terminal.snapshot())
+                    .await
+                    .map_err(|_| WorkspaceError::Worker)??;
+                Ok(Update::TerminalOutput { root, snapshot })
+            });
+        }
+        if self.polling {
+            return;
+        }
+        if let Some(id) = self.selected
+            && (self.panel == Panel::Inspector
+                || self.busy.contains(&id)
+                || self.connecting.contains(&id))
+        {
+            self.polling = true;
+            let controller = self.controller.clone();
+            let inspect = self.panel == Panel::Inspector;
+            self.job(async move {
+                let details = controller.details(id).await?;
+                let trace = if inspect {
+                    controller.trace(id, false).await?
+                } else {
+                    vec![]
+                };
+                Ok(Update::Details {
+                    task: id,
+                    details,
+                    trace,
+                })
+            });
+        }
+    }
+    fn receive(&mut self, update: Update, cx: &mut Context<Self>) {
+        match update {
+            Update::Tick => {
+                self.pending.retain(|_, p| match p {
+                    UiInteraction::Permission {
+                        context, response, ..
+                    } => !context.cancelled.is_cancelled() && !response.is_closed(),
+                    UiInteraction::Input {
+                        context, response, ..
+                    } => !context.cancelled.is_cancelled() && !response.is_closed(),
+                });
+                self.poll();
+                return;
+            }
+            Update::Catalog(catalog) => self.catalog = catalog,
+            Update::WorkspaceAdded(project, catalog) => {
+                self.catalog = catalog;
+                self.project = Some(project.id);
+                self.selected = None;
+                self.thread = None;
+                self.document = None;
+                self.files.clear();
+                self.directory.clear();
+                self.create_task(cx);
+            }
+            Update::TaskCreated(task, catalog) => {
+                self.catalog = catalog;
+                self.task_title.update(cx, |entry, cx| entry.clear(cx));
+                self.select_task(task.id, cx);
+            }
+            Update::ThreadLoaded(task, thread) => {
+                if self.selected == Some(task.id)
+                    && self.thread.as_ref().is_none_or(|old| {
+                        old.id != thread.id || old.last_sequence <= thread.last_sequence
+                    })
+                {
+                    self.thread = Some(*thread);
+                    self.replace_task(task);
+                    if self.scroll_owner == ScrollOwnership::Following {
+                        self.scroll.scroll_to_bottom();
+                    }
+                }
+            }
+            Update::Event(envelope) => {
+                if let Some(task) = self
+                    .catalog
+                    .tasks
+                    .iter_mut()
+                    .find(|t| t.thread_id == envelope.thread_id)
+                {
+                    task.updated_at_ms = envelope.timestamp_ms;
+                    if let ThreadEvent::TitleChanged { title } = &envelope.event {
+                        task.title = title.clone();
+                    }
+                }
+                if self
+                    .thread
+                    .as_ref()
+                    .is_some_and(|thread| thread.id == envelope.thread_id)
+                {
+                    let follows = self.scroll_owner.should_follow(&envelope.event);
+                    if let ThreadEvent::TextDelta {
+                        role: Role::User,
+                        text,
+                        ..
+                    } = &envelope.event
+                        && self.composer.read(cx).text() == text
+                    {
+                        self.composer.update(cx, |entry, cx| entry.clear(cx));
+                        if let Some(id) = self.selected {
+                            self.drafts.remove(&id);
+                        }
+                    }
+                    let result = self.thread.as_mut().unwrap().apply(&envelope);
+                    if let Err(error) = result {
+                        if matches!(error, ReplayError::Sequence { .. }) {
+                            self.hydrate();
+                        } else {
+                            self.error = Some(format!("Conversation update failed: {error}"));
+                        }
+                    }
+                    if follows && self.transcript_start.is_none() {
+                        self.scroll.scroll_to_bottom();
+                    }
+                    if let Some(thread) = &self.thread
+                        && let Some(task) = self
+                            .catalog
+                            .tasks
+                            .iter_mut()
+                            .find(|t| Some(t.id) == self.selected)
+                    {
+                        task.state = thread.state;
+                    }
+                }
+            }
+            Update::Hydrate => self.hydrate(),
+            Update::Interaction(interaction) => {
+                let key = match &interaction {
+                    UiInteraction::Permission {
+                        context, request, ..
+                    } => (context.thread_id, request.id.clone()),
+                    UiInteraction::Input {
+                        context, request, ..
+                    } => {
+                        let key = (context.thread_id, request.id.clone());
+                        let mut inputs = BTreeMap::new();
+                        let mut values = BTreeMap::new();
+                        for field in &request.fields {
+                            match field.kind {
+                                InputFieldKind::Text { .. } | InputFieldKind::Number { .. } => {
+                                    inputs.insert(
+                                        field.id.clone(),
+                                        cx.new(|cx| {
+                                            TextEntry::new(
+                                                &field.label,
+                                                EntryMode::SingleLine,
+                                                36.,
+                                                cx,
+                                            )
+                                        }),
+                                    );
+                                }
+                                InputFieldKind::Boolean => {
+                                    values.insert(field.id.clone(), InputValue::Boolean(false));
+                                }
+                                _ => {}
+                            }
+                        }
+                        self.forms.insert(
+                            key.clone(),
+                            FormState {
+                                request: request.clone(),
+                                inputs,
+                                values,
+                                error: None,
+                            },
+                        );
+                        key
+                    }
+                };
+                self.pending.insert(key, interaction);
+            }
+            Update::Connected {
+                task,
+                details,
+                error,
+            } => {
+                self.connecting.remove(&task);
+                if self.selected == Some(task) {
+                    self.details = details;
+                    self.error = error;
+                }
+            }
+            Update::PromptDone {
+                task,
+                details,
+                error,
+            } => {
+                self.busy.remove(&task);
+                if self.selected == Some(task) {
+                    self.details = details;
+                    self.error = error;
+                }
+                self.hydrate();
+            }
+            Update::Details {
+                task,
+                details,
+                trace,
+            } => {
+                self.polling = false;
+                if self.selected == Some(task) {
+                    self.details = details;
+                    if self.panel == Panel::Inspector {
+                        self.trace = trace;
+                    }
+                }
+            }
+            Update::Profiles(profiles) => {
+                self.profiles = profiles;
+                self.notice = Some(
+                    "Agent profiles saved. Launch changes apply when a task reconnects.".into(),
+                );
+                self.error = None;
+            }
+            Update::AgentChanged(task) => {
+                self.replace_task(task.clone());
+                if self.selected == Some(task.id) {
+                    self.details = None;
+                }
+                self.notice = Some("Agent changed. Existing transcript is preserved.".into());
+            }
+            Update::Files {
+                root,
+                directory,
+                entries,
+            } => {
+                if self.root() == Some(root) && self.directory == directory {
+                    self.files = entries;
+                    self.file_page = 0;
+                }
+            }
+            Update::Document { root, document } => {
+                if self.root() == Some(root) && !self.dirty(cx) && !self.saving {
+                    self.editor.update(cx, |entry, cx| {
+                        entry.set_text(document.snapshot.text.clone(), cx)
+                    });
+                    self.document = Some(document);
+                    self.error = None;
+                }
+            }
+            Update::Saved {
+                root,
+                path,
+                text,
+                version,
+            } => {
+                self.saving = false;
+                if self.root() == Some(root)
+                    && let Some(document) = self.document.as_mut().filter(|d| d.path == path)
+                {
+                    document.snapshot.text = text;
+                    document.snapshot.version = version;
+                    self.notice = Some("File saved".into());
+                }
+            }
+            Update::Git {
+                root,
+                status,
+                diff,
+                staged,
+            } => {
+                if self.root() == Some(root) && self.staged == staged {
+                    self.git = status;
+                    self.diff = diff;
+                }
+            }
+            Update::TerminalStarted { root, terminal } => {
+                self.terminal = Some(terminal);
+                self.terminal_root = Some(root);
+                self.notice = None;
+                self.poll();
+            }
+            Update::TerminalOutput { root, snapshot } => {
+                if self.terminal_root == Some(root) {
+                    let changed = self.terminal_snapshot.as_ref().is_none_or(|old| {
+                        old.revision != snapshot.revision
+                            || old.exit_code != snapshot.exit_code
+                            || old.error != snapshot.error
+                    });
+                    if !changed {
+                        return;
+                    }
+                    self.terminal_snapshot = Some(snapshot);
+                }
+            }
+            Update::Done(message) => {
+                if !message.is_empty() {
+                    self.notice = Some(message);
+                }
+                self.refresh_git_if_visible();
+            }
+            Update::Error(error) => {
+                self.saving = false;
+                self.polling = false;
+                self.error = Some(error);
+            }
+        }
+        cx.notify();
+    }
+    fn refresh_git_if_visible(&self) {
+        if self.panel == Panel::Changes {
+            self.refresh_git();
+        }
+    }
+    fn set_panel(&mut self, panel: Panel, cx: &mut Context<Self>) {
+        self.panel = panel;
+        self.error = None;
+        match panel {
+            Panel::Files => self.refresh_files(),
+            Panel::Changes => self.refresh_git(),
+            Panel::Inspector | Panel::Terminal => self.poll(),
+            _ => {}
+        }
+        cx.notify();
+    }
+}
+fn button(
+    id: impl Into<gpui::ElementId>,
+    text: impl Into<SharedString>,
+    active: bool,
+) -> gpui::Stateful<gpui::Div> {
+    div()
+        .id(id)
+        .px_3()
+        .py_1()
+        .rounded_md()
+        .bg(rgb(if active { 0x2b4665 } else { 0x202936 }))
+        .border_1()
+        .border_color(rgb(if active { 0x628db9 } else { 0x344050 }))
+        .text_sm()
+        .cursor_pointer()
+        .hover(|s| s.bg(rgb(0x35465b)))
+        .child(text.into())
+}
+fn truncate(text: &str, limit: usize) -> String {
+    if text.len() <= limit {
+        return text.into();
+    }
+    let mut end = limit;
+    while !text.is_char_boundary(end) {
+        end -= 1;
+    }
+    format!(
+        "{}\n[Display shortened. Copy the full content to inspect it.]",
+        &text[..end]
+    )
+}
+impl Render for Shell {
+    fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+        if self.focus_composer {
+            let focus = self.composer.read(cx).focus_handle(cx);
+            window.focus(&focus, cx);
+            self.focus_composer = false;
+        }
+        div()
+            .size_full()
+            .flex()
+            .flex_col()
+            .bg(rgb(0x10151d))
+            .text_color(rgb(0xe3e8f0))
+            .font_family("DejaVu Sans")
+            .text_sm()
+            .child(
+                div()
+                    .h(px(53.))
+                    .flex()
+                    .items_center()
+                    .justify_between()
+                    .px_5()
+                    .border_b_1()
+                    .border_color(rgb(0x2a3442))
+                    .child(
+                        div()
+                            .flex()
+                            .items_center()
+                            .gap_3()
+                            .child(
+                                div()
+                                    .text_xl()
+                                    .font_weight(gpui::FontWeight::BOLD)
+                                    .child("Synara"),
+                            )
+                            .child(
+                                div()
+                                    .text_xs()
+                                    .text_color(rgb(0x8593a6))
+                                    .child("NATIVE WORKSPACE"),
+                            ),
+                    )
+                    .child(
+                        div().flex().gap_2().children(
+                            [
+                                (Panel::Conversation, "Conversation"),
+                                (Panel::Files, "Files"),
+                                (Panel::Changes, "Changes"),
+                                (Panel::Terminal, "Terminal"),
+                                (Panel::Inspector, "Inspector"),
+                                (Panel::Settings, "Settings"),
+                            ]
+                            .into_iter()
+                            .map(|(panel, label)| {
+                                button(label, label, self.panel == panel).on_click(
+                                    cx.listener(move |this, _, _, cx| this.set_panel(panel, cx)),
+                                )
+                            }),
+                        ),
+                    ),
+            )
+            .child(
+                div()
+                    .flex()
+                    .flex_1()
+                    .min_h_0()
+                    .child(self.sidebar(cx))
+                    .child(
+                        div()
+                            .flex()
+                            .flex_col()
+                            .flex_1()
+                            .min_w_0()
+                            .min_h_0()
+                            .children(self.error.as_ref().map(|error| {
+                                div()
+                                    .px_4()
+                                    .py_2()
+                                    .bg(rgb(0x41272d))
+                                    .text_color(rgb(0xffc8ca))
+                                    .child(error.clone())
+                            }))
+                            .children(self.notice.as_ref().map(|notice| {
+                                div().px_4().py_2().bg(rgb(0x1c3244)).child(notice.clone())
+                            }))
+                            .child(match self.panel {
+                                Panel::Conversation => self.conversation(cx),
+                                Panel::Files => self.files_panel(cx),
+                                Panel::Changes => self.git_panel(cx),
+                                Panel::Terminal => self.terminal_panel(cx),
+                                Panel::Inspector => self.inspector_panel(cx),
+                                Panel::Settings => self.settings_panel(cx),
+                            }),
+                    ),
+            )
+            .child(
+                div()
+                    .h(px(27.))
+                    .px_4()
+                    .flex()
+                    .items_center()
+                    .justify_between()
+                    .border_t_1()
+                    .border_color(rgb(0x2a3442))
+                    .text_xs()
+                    .text_color(rgb(0x98a6b8))
+                    .child(self.root().map_or_else(
+                        || "No local workspace selected".into(),
+                        |p| p.display().to_string(),
+                    ))
+                    .child(self.details.as_ref().map_or_else(
+                        || "ACP · disconnected".into(),
+                        |d| format!("ACP · {:?}", d.connection.state),
+                    )),
+            )
+    }
+}

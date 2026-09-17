@@ -1,0 +1,801 @@
+use super::*;
+impl Shell {
+    pub(super) fn sidebar(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
+        div().w(px(238.)).flex_shrink_0().flex().flex_col().gap_3().p_3().bg(rgb(0x141b25)).border_r_1().border_color(rgb(0x2a3442))
+            .child(div().flex().justify_between().items_center().child(div().text_xs().text_color(rgb(0x8d9bb0)).child("WORKSPACES"))
+                .child(button("refresh-catalog","Refresh",false).on_click(cx.listener(|this,_,_,_|{let workspace=this.controller.workspace.clone();this.job(async move {Ok(Update::Catalog(workspace.catalog().await?))});}))))
+            .child(self.workspace_path.clone())
+            .child(div().flex().gap_2().child(button("open-workspace","Open",false).on_click(cx.listener(|this,_,_,cx|this.open_workspace(cx))))
+                .child(button("browse-workspace","Browse",false).on_click(cx.listener(|this,_,_,cx|this.browse_workspace(cx)))))
+            .child(div().id("project-list").max_h(px(180.)).overflow_y_scroll().flex().flex_col().gap_1().children(self.catalog.projects.iter().enumerate().map(|(index,project)|{
+                let id=project.id;
+                button(("project",index),project.name.clone(),Some(id)==self.project).on_click(cx.listener(move |this,_,_,cx|{
+                    if this.dirty(cx)||this.saving {this.error=Some("Save or discard the open document before switching projects.".into());cx.notify();return;}
+                    if let Some(task)=this.catalog.tasks.iter().find(|t|t.project_id==id){let task=task.id;this.select_task(task,cx);}
+                    else {this.project=Some(id);this.selected=None;this.thread=None;this.document=None;this.files.clear();this.directory.clear();this.create_task(cx);}
+                }))
+            })))
+            .child(div().h(px(1.)).bg(rgb(0x2a3442)))
+            .child(div().text_xs().text_color(rgb(0x8d9bb0)).child("TASKS"))
+            .child(self.task_title.clone())
+            .child(button("create-task","+ New task",false).on_click(cx.listener(|this,_,_,cx|this.create_task(cx))))
+            .child(div().id("task-list").flex_1().min_h_0().overflow_y_scroll().flex().flex_col().gap_2().children(self.catalog.tasks.iter().filter(|t|Some(t.project_id)==self.project).enumerate().map(|(index,task)|{
+                let id=task.id;
+                div().id(("task",index)).p_2().rounded_md().bg(rgb(if self.selected==Some(id){0x293e57}else{0x1a2330})).cursor_pointer().hover(|s|s.bg(rgb(0x2a3749)))
+                    .on_click(cx.listener(move |this,_,_,cx|this.select_task(id,cx)))
+                    .child(div().font_weight(gpui::FontWeight::MEDIUM).child(truncate(&task.title,80)))
+                    .child(div().mt_1().text_xs().text_color(rgb(0x9aa9bd)).child(format!("{} · {}",task.agent_id,if self.busy.contains(&id){"working"}else{match task.state {TaskState::Failed=>"failed",TaskState::Completed=>"complete",TaskState::Waiting=>"waiting",_=>"ready"}})))
+            })))
+            .child(div().text_xs().text_color(rgb(0x8492a7)).child("Local history. External agents.\nPermissions stay in your control."))
+            .into_any_element()
+    }
+    pub(super) fn conversation(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
+        let Some(thread) = &self.thread else {
+            return div().flex_1().flex().flex_col().justify_center().items_center().gap_3().p_8()
+                .child(div().text_2xl().child("Bring your work into focus"))
+                .child("Open a local directory, create a task, and choose your coding agent.")
+                .child("Agent commands are configured in Settings. No agent starts until you connect or send a prompt.")
+                .into_any_element();
+        };
+        let id = thread.id;
+        let total = thread.timeline.len();
+        let start = self
+            .transcript_start
+            .unwrap_or_else(|| total.saturating_sub(200));
+        let end = (start + 200).min(total);
+        let configuration = &thread.configuration;
+        let title = self.task().map_or("Task", |t| t.title.as_str());
+        let busy = self.selected.is_some_and(|id| self.busy.contains(&id));
+        let connecting = self
+            .selected
+            .is_some_and(|id| self.connecting.contains(&id));
+        let mut root = div().flex().flex_col().flex_1().min_h_0().child(
+            div()
+                .px_5()
+                .py_3()
+                .flex()
+                .items_center()
+                .justify_between()
+                .gap_3()
+                .border_b_1()
+                .border_color(rgb(0x293442))
+                .child(
+                    div()
+                        .text_lg()
+                        .font_weight(gpui::FontWeight::SEMIBOLD)
+                        .child(truncate(title, 150)),
+                )
+                .child(
+                    div()
+                        .flex()
+                        .gap_2()
+                        .children(self.profiles.iter().enumerate().map(|(index, profile)| {
+                            let agent = profile.id.clone();
+                            let active = self.task().is_some_and(|t| t.agent_id == agent);
+                            button(("agent", index), profile.name.clone(), active).on_click(
+                                cx.listener(move |this, _, _, cx| {
+                                    if let Some(task) = this.selected {
+                                        if this.busy.contains(&task)
+                                            || this.connecting.contains(&task)
+                                        {
+                                            return;
+                                        }
+                                        let agent = agent.clone();
+                                        let controller = this.controller.clone();
+                                        this.job(async move {
+                                            Ok(Update::AgentChanged(
+                                                controller.switch_agent(task, agent).await?,
+                                            ))
+                                        });
+                                    }
+                                    cx.notify();
+                                }),
+                            )
+                        }))
+                        .child(
+                            button(
+                                "connect-agent",
+                                if connecting {
+                                    "Connecting..."
+                                } else {
+                                    "Connect"
+                                },
+                                false,
+                            )
+                            .on_click(cx.listener(|this, _, _, cx| this.connect("connect", cx))),
+                        ),
+                ),
+        );
+        if !configuration.options.is_empty()
+            || !configuration.modes.is_empty()
+            || !configuration.models.is_empty()
+        {
+            root = root.child(
+                div()
+                    .px_5()
+                    .py_2()
+                    .flex()
+                    .flex_wrap()
+                    .gap_2()
+                    .children(
+                        configuration
+                            .options
+                            .iter()
+                            .enumerate()
+                            .map(|(index, option)| {
+                                let key = option.id.clone();
+                                let current = match &option.current {
+                                    ConfigValue::Boolean { value } => {
+                                        if *value {
+                                            "On".into()
+                                        } else {
+                                            "Off".into()
+                                        }
+                                    }
+                                    ConfigValue::Select { value } => option
+                                        .choices
+                                        .iter()
+                                        .find(|c| c.value == *value)
+                                        .map_or_else(|| value.clone(), |c| c.label.clone()),
+                                };
+                                let next = match &option.current {
+                                    ConfigValue::Boolean { value } => {
+                                        ConfigValue::Boolean { value: !*value }
+                                    }
+                                    ConfigValue::Select { value } => {
+                                        let index = option
+                                            .choices
+                                            .iter()
+                                            .position(|c| c.value == *value)
+                                            .unwrap_or(0);
+                                        ConfigValue::Select {
+                                            value: option
+                                                .choices
+                                                .get((index + 1) % option.choices.len().max(1))
+                                                .map_or_else(|| value.clone(), |c| c.value.clone()),
+                                        }
+                                    }
+                                };
+                                button(
+                                    ("configuration", index),
+                                    format!("{}: {}", option.name, current),
+                                    false,
+                                )
+                                .on_click(cx.listener(
+                                    move |this, _, _, _| {
+                                        if let Some(id) = this.selected {
+                                            let controller = this.controller.clone();
+                                            let key = key.clone();
+                                            let value = next.clone();
+                                            this.job(async move {
+                                                controller.set_option(id, key, value).await?;
+                                                Ok(Update::Done("Session setting updated".into()))
+                                            });
+                                        }
+                                    },
+                                ))
+                            }),
+                    )
+                    .children(configuration.modes.iter().enumerate().map(|(index, mode)| {
+                        let key = mode.id.clone();
+                        button(
+                            ("mode", index),
+                            mode.name.clone(),
+                            configuration.current_mode.as_deref() == Some(&mode.id),
+                        )
+                        .on_click(cx.listener(move |this, _, _, _| {
+                            if let Some(id) = this.selected {
+                                let controller = this.controller.clone();
+                                let key = key.clone();
+                                this.job(async move {
+                                    controller.set_mode(id, key).await?;
+                                    Ok(Update::Done("Session mode updated".into()))
+                                });
+                            }
+                        }))
+                    }))
+                    .children(
+                        configuration
+                            .models
+                            .iter()
+                            .filter(|_| {
+                                !configuration
+                                    .options
+                                    .iter()
+                                    .any(|o| o.category.as_deref() == Some("model"))
+                            })
+                            .enumerate()
+                            .map(|(index, model)| {
+                                let key = model.value.clone();
+                                button(
+                                    ("model", index),
+                                    model.label.clone(),
+                                    configuration.current_model.as_deref() == Some(&model.value),
+                                )
+                                .on_click(cx.listener(
+                                    move |this, _, _, _| {
+                                        if let Some(id) = this.selected {
+                                            let controller = this.controller.clone();
+                                            let key = key.clone();
+                                            this.job(async move {
+                                                controller.set_model(id, key).await?;
+                                                Ok(Update::Done("Session model updated".into()))
+                                            });
+                                        }
+                                    },
+                                ))
+                            }),
+                    ),
+            );
+        }
+        if (self
+            .details
+            .as_ref()
+            .is_some_and(|d| d.connection.state == ConnectionState::Authenticating)
+            || self
+                .error
+                .as_ref()
+                .is_some_and(|e| e.to_ascii_lowercase().contains("authentication")))
+            && let Some(details) = &self.details
+        {
+            root = root.child(
+                div()
+                    .px_5()
+                    .py_2()
+                    .flex()
+                    .gap_2()
+                    .child("Authentication required:")
+                    .children(details.connection.authentication.iter().enumerate().map(
+                        |(index, method)| {
+                            let method = method.id.clone();
+                            button(
+                                ("login", index),
+                                details.connection.authentication[index].name.clone(),
+                                false,
+                            )
+                            .on_click(cx.listener(
+                                move |this, _, _, cx| this.authenticate(method.clone(), cx),
+                            ))
+                        },
+                    )),
+            );
+        }
+        root = root.child(
+            div()
+                .id("transcript")
+                .flex_1()
+                .min_h_0()
+                .overflow_y_scroll()
+                .track_scroll(&self.scroll)
+                .px_5()
+                .py_4()
+                .flex()
+                .flex_col()
+                .gap_4()
+                .on_scroll_wheel(cx.listener(|this, _, _, cx| {
+                    this.scroll_owner = ScrollOwnership::User;
+                    if this.transcript_start.is_none() {
+                        this.transcript_start = Some(
+                            this.thread
+                                .as_ref()
+                                .map_or(0, |t| t.timeline.len().saturating_sub(200)),
+                        );
+                    }
+                    cx.notify();
+                }))
+                .children((start > 0).then(|| {
+                    button("earlier-transcript", "Show earlier history", false).on_click(
+                        cx.listener(move |this, _, _, cx| {
+                            this.scroll_owner = ScrollOwnership::User;
+                            this.transcript_start = Some(start.saturating_sub(200));
+                            this.scroll.set_offset(gpui::point(px(0.), px(0.)));
+                            cx.notify();
+                        }),
+                    )
+                }))
+                .children((total == 0).then(|| {
+                    div().p_6().rounded_lg().bg(rgb(0x17202c)).child(
+                        "Ready when you are. Your conversation will be saved on this computer.",
+                    )
+                }))
+                .children((start..end).map(|index| self.transcript_item(thread, index, cx)))
+                .children((end < total).then(|| {
+                    button("later-transcript", "Show later history", false).on_click(cx.listener(
+                        move |this, _, _, cx| {
+                            this.transcript_start = Some(end);
+                            this.scroll.set_offset(gpui::point(px(0.), px(0.)));
+                            cx.notify();
+                        },
+                    ))
+                }))
+                .children((!thread.plan.is_empty()).then(|| {
+                    div()
+                        .p_3()
+                        .rounded_md()
+                        .bg(rgb(0x1a2633))
+                        .child(div().font_weight(gpui::FontWeight::SEMIBOLD).child("Plan"))
+                        .children(thread.plan.iter().map(|entry| {
+                            div()
+                                .mt_1()
+                                .child(format!("{} · {}", entry.status, entry.text))
+                        }))
+                })),
+        );
+        root = root.child(
+            div()
+                .px_5()
+                .py_3()
+                .flex()
+                .flex_col()
+                .gap_2()
+                .border_t_1()
+                .border_color(rgb(0x2a3442))
+                .child(
+                    div()
+                        .flex()
+                        .justify_between()
+                        .items_center()
+                        .child(div().text_xs().text_color(rgb(0x99aac0)).child(format!(
+                                "{:?} · {} events{}",
+                                thread.state,
+                                thread.last_sequence,
+                                thread
+                                    .usage
+                                    .context_used
+                                    .map_or(String::new(), |n| format!(" · context {n}"))
+                            )))
+                        .children(
+                            (self.scroll_owner == ScrollOwnership::User
+                                || self.transcript_start.is_some())
+                            .then(|| {
+                                button("jump-latest", "Jump to latest", false).on_click(
+                                    cx.listener(|this, _, _, cx| {
+                                        this.scroll_owner.jump_to_latest();
+                                        this.transcript_start = None;
+                                        this.scroll.scroll_to_bottom();
+                                        cx.notify();
+                                    }),
+                                )
+                            }),
+                        ),
+                )
+                .child(self.composer.clone())
+                .children(
+                    self.composer
+                        .read(cx)
+                        .error
+                        .as_ref()
+                        .map(|error| div().text_color(rgb(0xffa9ac)).child(error.clone())),
+                )
+                .child(
+                    div()
+                        .flex()
+                        .justify_between()
+                        .items_center()
+                        .child(
+                            div()
+                                .text_xs()
+                                .text_color(rgb(0x8f9caf))
+                                .child("Enter to send  ·  Shift+Enter for a new line"),
+                        )
+                        .child(if busy {
+                            button("cancel-prompt", "Stop", true)
+                                .on_click(cx.listener(|this, _, _, cx| this.cancel(cx)))
+                        } else {
+                            button("send-prompt", "Send", true)
+                                .on_click(cx.listener(|this, _, _, cx| this.send_prompt(cx)))
+                        }),
+                ),
+        );
+        let _ = id;
+        root.into_any_element()
+    }
+    fn transcript_item(
+        &self,
+        thread: &Thread,
+        index: usize,
+        cx: &mut Context<Self>,
+    ) -> gpui::AnyElement {
+        match &thread.timeline[index] {
+            TranscriptItem::Message { index: message } => {
+                let message = &thread.messages[*message];
+                let text = message.text.clone();
+                div()
+                    .id(("message", index))
+                    .p_4()
+                    .rounded_lg()
+                    .bg(rgb(match message.role {
+                        Role::User => 0x1e3044,
+                        Role::Assistant => 0x19212c,
+                        Role::Reasoning => 0x211f2c,
+                    }))
+                    .child(
+                        div()
+                            .flex()
+                            .justify_between()
+                            .items_center()
+                            .mb_2()
+                            .child(
+                                div()
+                                    .text_xs()
+                                    .font_weight(gpui::FontWeight::SEMIBOLD)
+                                    .text_color(rgb(0xa7bada))
+                                    .child(match message.role {
+                                        Role::User => "YOU",
+                                        Role::Assistant => "ASSISTANT",
+                                        Role::Reasoning => "THINKING",
+                                    }),
+                            )
+                            .child(button(("copy-message", index), "Copy", false).on_click(
+                                move |_, _, cx| {
+                                    cx.write_to_clipboard(gpui::ClipboardItem::new_string(
+                                        text.clone(),
+                                    ))
+                                },
+                            )),
+                    )
+                    .child(div().w_full().child(truncate(&message.text, 64 * 1024)))
+                    .into_any_element()
+            }
+            TranscriptItem::Tool { id } => {
+                let Some(tool) = thread.tools.get(id) else {
+                    return div().into_any_element();
+                };
+                div()
+                    .p_3()
+                    .rounded_md()
+                    .border_1()
+                    .border_color(rgb(0x394252))
+                    .bg(rgb(0x172029))
+                    .child(
+                        div()
+                            .font_weight(gpui::FontWeight::MEDIUM)
+                            .child(format!("{} · {:?}", tool.title, tool.status)),
+                    )
+                    .children(tool.output.iter().map(|output| {
+                        match output {
+                            ToolOutput::Text { text } => div()
+                                .mt_2()
+                                .font_family("DejaVu Sans Mono")
+                                .text_xs()
+                                .child(truncate(text, 16 * 1024)),
+                            ToolOutput::Diff {
+                                path,
+                                before,
+                                after,
+                            } => div()
+                                .mt_2()
+                                .font_family("DejaVu Sans Mono")
+                                .text_xs()
+                                .child(format!(
+                                    "{}\n{}\n{}",
+                                    path,
+                                    before.as_deref().map_or(String::new(), |s| format!(
+                                        "Before:\n{}",
+                                        truncate(s, 8000)
+                                    )),
+                                    after.as_deref().map_or(String::new(), |s| format!(
+                                        "After:\n{}",
+                                        truncate(s, 8000)
+                                    ))
+                                )),
+                            ToolOutput::Terminal { id } => div()
+                                .mt_2()
+                                .font_family("DejaVu Sans Mono")
+                                .text_xs()
+                                .child(thread.terminals.get(id).map_or_else(
+                                    || format!("Terminal {id}"),
+                                    |record| {
+                                        format!(
+                                            "Terminal {} · exit {:?}\n{}",
+                                            id,
+                                            record.exit_code,
+                                            truncate(&record.text, 16000)
+                                        )
+                                    },
+                                )),
+                            ToolOutput::Resource { uri, name } => {
+                                div().mt_2().child(format!("{name} · {uri}"))
+                            }
+                        }
+                    }))
+                    .into_any_element()
+            }
+            TranscriptItem::Permission { id } => {
+                let key = (thread.id, id.clone());
+                let request = self.pending.get(&key).and_then(|p| match p {
+                    UiInteraction::Permission { request, .. } => Some(request),
+                    _ => None,
+                });
+                if let Some(request) = request {
+                    div()
+                        .p_4()
+                        .rounded_md()
+                        .bg(rgb(0x3a3020))
+                        .border_1()
+                        .border_color(rgb(0x88703f))
+                        .child(
+                            div()
+                                .font_weight(gpui::FontWeight::SEMIBOLD)
+                                .child(request.title.clone()),
+                        )
+                        .child(
+                            div()
+                                .text_xs()
+                                .mt_1()
+                                .child("The agent is waiting for your decision."),
+                        )
+                        .child(
+                            div()
+                                .mt_3()
+                                .flex()
+                                .flex_wrap()
+                                .gap_2()
+                                .children(request.choices.iter().enumerate().map(
+                                    |(index, choice)| {
+                                        let key = key.clone();
+                                        let selected = choice.id.clone();
+                                        button(
+                                            ("permission-choice", index),
+                                            choice.label.clone(),
+                                            false,
+                                        )
+                                        .on_click(
+                                            cx.listener(move |this, _, _, cx| {
+                                                this.answer_permission(
+                                                    key.clone(),
+                                                    Some(selected.clone()),
+                                                    cx,
+                                                )
+                                            }),
+                                        )
+                                    },
+                                ))
+                                .child(
+                                    button("cancel-permission", "Cancel request", false).on_click(
+                                        cx.listener(move |this, _, _, cx| {
+                                            this.answer_permission(key.clone(), None, cx)
+                                        }),
+                                    ),
+                                ),
+                        )
+                        .into_any_element()
+                } else {
+                    div()
+                        .px_3()
+                        .py_1()
+                        .text_xs()
+                        .text_color(rgb(0x94a2b4))
+                        .child("Permission request resolved or expired")
+                        .into_any_element()
+                }
+            }
+            TranscriptItem::Input { id } => self.input_request((thread.id, id.clone()), cx),
+            TranscriptItem::Notice { text, is_error } => div()
+                .p_3()
+                .rounded_md()
+                .bg(rgb(if *is_error { 0x3a242a } else { 0x1b2b38 }))
+                .child(truncate(text, 16000))
+                .into_any_element(),
+        }
+    }
+    fn answer_permission(
+        &mut self,
+        key: InteractionKey,
+        selected: Option<String>,
+        cx: &mut Context<Self>,
+    ) {
+        if let Some(UiInteraction::Permission { response, .. }) = self.pending.remove(&key)
+            && response.send(selected).is_err()
+        {
+            self.error = Some("This permission request is no longer active.".into());
+        }
+        cx.notify();
+    }
+    fn input_request(&self, key: InteractionKey, cx: &mut Context<Self>) -> gpui::AnyElement {
+        let Some(form) = self
+            .forms
+            .get(&key)
+            .filter(|_| self.pending.contains_key(&key))
+        else {
+            return div()
+                .text_xs()
+                .text_color(rgb(0x94a2b4))
+                .child("User input request resolved or expired")
+                .into_any_element();
+        };
+        let mut panel = div()
+            .p_4()
+            .rounded_md()
+            .border_1()
+            .border_color(rgb(0x657fad))
+            .bg(rgb(0x1e2b40))
+            .child(
+                div()
+                    .font_weight(gpui::FontWeight::SEMIBOLD)
+                    .child(form.request.message.clone()),
+            );
+        if let Some(url) = &form.request.url {
+            let url = url.clone();
+            panel = panel.child(
+                button("open-input-url", "Open requested website", false)
+                    .mt_2()
+                    .on_click(cx.listener(move |this, _, _, cx| {
+                        if url.starts_with("https://") || url.starts_with("http://") {
+                            cx.open_url(&url);
+                        } else {
+                            this.error = Some("Only HTTP and HTTPS links may be opened.".into());
+                            cx.notify();
+                        }
+                    })),
+            );
+        }
+        for field in &form.request.fields {
+            let mut row = div().mt_3().flex().flex_col().gap_1().child(format!(
+                "{}{}",
+                field.label,
+                if field.required { " *" } else { "" }
+            ));
+            if let Some(input) = form.inputs.get(&field.id) {
+                row = row.child(input.clone());
+            }
+            match &field.kind {
+                InputFieldKind::Boolean => {
+                    let key = key.clone();
+                    let field_id = field.id.clone();
+                    let value =
+                        matches!(form.values.get(&field.id), Some(InputValue::Boolean(true)));
+                    row = row.child(
+                        button(
+                            SharedString::from(field.id.clone()),
+                            if value { "Yes" } else { "No" },
+                            value,
+                        )
+                        .on_click(cx.listener(move |this, _, _, cx| {
+                            if let Some(form) = this.forms.get_mut(&key) {
+                                form.values
+                                    .insert(field_id.clone(), InputValue::Boolean(!value));
+                            }
+                            cx.notify();
+                        })),
+                    );
+                }
+                InputFieldKind::Choice { options }
+                | InputFieldKind::MultiChoice { options, .. } => {
+                    let multi = matches!(field.kind, InputFieldKind::MultiChoice { .. });
+                    row = row.child(div().flex().flex_wrap().gap_2().children(
+                        options.iter().enumerate().map(|(index, option)| {
+                            let selected = match form.values.get(&field.id) {
+                                Some(InputValue::Text(value)) => value == &option.value,
+                                Some(InputValue::Strings(values)) => values.contains(&option.value),
+                                _ => false,
+                            };
+                            let key = key.clone();
+                            let field = field.id.clone();
+                            let value = option.value.clone();
+                            button(("input-option", index), option.label.clone(), selected)
+                                .on_click(cx.listener(move |this, _, _, cx| {
+                                    if let Some(form) = this.forms.get_mut(&key) {
+                                        if multi {
+                                            let mut values = match form.values.get(&field) {
+                                                Some(InputValue::Strings(values)) => values.clone(),
+                                                _ => vec![],
+                                            };
+                                            if selected {
+                                                values.retain(|v| v != &value);
+                                            } else {
+                                                values.push(value.clone());
+                                            }
+                                            form.values
+                                                .insert(field.clone(), InputValue::Strings(values));
+                                        } else {
+                                            form.values.insert(
+                                                field.clone(),
+                                                InputValue::Text(value.clone()),
+                                            );
+                                        }
+                                    }
+                                    cx.notify();
+                                }))
+                        }),
+                    ));
+                }
+                _ => {}
+            }
+            panel = panel.child(row);
+        }
+        if let Some(error) = &form.error {
+            panel = panel.child(div().mt_2().text_color(rgb(0xffb8bc)).child(error.clone()));
+        }
+        let decline = key.clone();
+        let cancel = key.clone();
+        panel
+            .child(
+                div()
+                    .mt_3()
+                    .flex()
+                    .gap_2()
+                    .child(button("submit-input", "Submit", true).on_click(cx.listener(
+                        move |this, _, _, cx| {
+                            this.answer_input(key.clone(), true, UserInputResponse::Cancel, cx)
+                        },
+                    )))
+                    .child(
+                        button("decline-input", "Decline", false).on_click(cx.listener(
+                            move |this, _, _, cx| {
+                                this.answer_input(
+                                    decline.clone(),
+                                    false,
+                                    UserInputResponse::Decline,
+                                    cx,
+                                )
+                            },
+                        )),
+                    )
+                    .child(
+                        button("cancel-input", "Cancel", false).on_click(cx.listener(
+                            move |this, _, _, cx| {
+                                this.answer_input(
+                                    cancel.clone(),
+                                    false,
+                                    UserInputResponse::Cancel,
+                                    cx,
+                                )
+                            },
+                        )),
+                    ),
+            )
+            .into_any_element()
+    }
+    fn answer_input(
+        &mut self,
+        key: InteractionKey,
+        accept: bool,
+        fallback: UserInputResponse,
+        cx: &mut Context<Self>,
+    ) {
+        let response = if accept {
+            let Some(form) = self.forms.get_mut(&key) else {
+                return;
+            };
+            let mut values = form.values.clone();
+            for field in &form.request.fields {
+                if let Some(input) = form.inputs.get(&field.id) {
+                    let text = input.read(cx).text();
+                    if text.is_empty() && !field.required {
+                        continue;
+                    }
+                    let value = match field.kind {
+                        InputFieldKind::Number { .. } => match text.parse::<f64>() {
+                            Ok(value) => InputValue::Number(value),
+                            Err(_) => {
+                                form.error = Some(format!("{} must be a number", field.label));
+                                cx.notify();
+                                return;
+                            }
+                        },
+                        _ => InputValue::Text(text.into()),
+                    };
+                    values.insert(field.id.clone(), value);
+                }
+            }
+            if let Err(error) = synara_agent::validate_input(&form.request, &values) {
+                form.error = Some(error.to_string());
+                cx.notify();
+                return;
+            }
+            UserInputResponse::Accept { values }
+        } else {
+            fallback
+        };
+        if let Some(UiInteraction::Input {
+            response: sender, ..
+        }) = self.pending.remove(&key)
+            && sender.send(response).is_err()
+        {
+            self.error = Some("This input request is no longer active.".into());
+        }
+        self.forms.remove(&key);
+        cx.notify();
+    }
+}

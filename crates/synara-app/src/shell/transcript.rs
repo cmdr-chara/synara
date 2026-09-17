@@ -301,22 +301,14 @@ mod tests {
             }),
         );
         assert!(!state.is_following());
-        assert_eq!(
-            state.list.logical_scroll_top(),
-            ListOffset {
-                item_ix: 45,
-                offset_in_item: px(12.)
-            }
-        );
+        let offset = state.list.logical_scroll_top();
+        assert_eq!(offset.item_ix, 45);
+        assert_eq!(offset.offset_in_item, px(12.));
         assert_eq!(state.list.item_count(), 10_001);
         state.sync(&thread, None);
-        assert_eq!(
-            state.list.logical_scroll_top(),
-            ListOffset {
-                item_ix: 45,
-                offset_in_item: px(12.)
-            }
-        );
+        let offset = state.list.logical_scroll_top();
+        assert_eq!(offset.item_ix, 45);
+        assert_eq!(offset.offset_in_item, px(12.));
         state.follow();
         assert!(state.is_following());
         assert_eq!(state.list.logical_scroll_top().item_ix, 10_001);

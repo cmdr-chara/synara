@@ -8,6 +8,13 @@ This branch is a development build, not a production release. Linux compilation,
 fixture-agent integration and a native X11 window have been exercised. macOS,
 Windows and live SSH behavior have not yet been validated.
 
+## Delivery roadmap
+
+[ROADMAP.md](ROADMAP.md) tracks the complete product scope, delivery order,
+implementation ownership and acceptance gates. It distinguishes published
+functionality from unverified local work and remaining systems. Completion is
+recorded with candidate-specific evidence, not inferred from a percentage.
+
 ## Run
 
 Install the pinned Rust toolchain and the native libraries for your platform.
@@ -110,6 +117,30 @@ capabilities. Restart affects tasks sharing the same agent process and directory
 Starting a new agent session preserves the local transcript. Failed restoration
 is visible rather than silently discarding saved history.
 
+## SSH transport boundary
+
+The Rust runtime provides `SshHost` for user-configured hosts and `PinnedSshHost`
+for explicitly selected identity and known-hosts files. Both use the existing
+`ExecutionHost` interface, so ACP does not need a separate remote backend.
+Background agent transports disable agent/X11/port forwarding, local commands,
+connection multiplexing, pseudo-terminal allocation and background detachment.
+`SshHost` still reads the user's trusted SSH configuration for host resolution and
+authentication. It is not safe to point that configuration at repository content.
+
+`PinnedSshHost` ignores user/system SSH configuration and alternate host-key
+sources. It requires existing absolute regular files, rejects configuration
+expansion characters and revalidates file metadata before each launch. On Unix,
+private identities must exclude group/other access and trust files must not be
+group/world writable. Only the selected identity is offered, without ssh-agent.
+Unknown or changed hosts must be enrolled through a separately trusted process.
+Synara never silently accepts a key to make a connection work.
+
+This is a runtime API foundation, not a completed remote workspace UI. Remote
+filesystem, Git, PTY, forwarding and remote-process cleanup need their own
+implementation and verification. A local SSH process exiting does not establish
+that every remote descendant has exited. Encrypted-key interaction and platform
+credential selection are tracked in the roadmap.
+
 ## Architecture and safety
 
 - `synara-core`: protocol-independent domain, conversation reducer and text model.
@@ -164,6 +195,20 @@ python3 scripts/native_smoke.py --binary target/debug/synara-app \
 The output directory must not already exist. The test never controls an existing
 desktop and never connects a vendor agent. The fixture registry launcher is only
 approved, never executed.
+
+For controlled SSH testing on Linux, install OpenSSH client/server and run as an
+ordinary user, not root:
+
+```sh
+python3 scripts/ssh_smoke.py
+```
+
+The harness generates temporary keys, binds a disposable server only to loopback,
+and explicitly runs the `ssh_live` integration tests. It does not edit the user's
+SSH configuration or existing trust/authorization files. The ordinary test suite
+lists these tests as ignored because they require this server fixture. The SSH CI
+job must run them explicitly. This tests real SSH transport with fixture agents on
+the same machine, not vendor credentials or a complete remote desktop workflow.
 
 Complete terminal emulation, remote workspace UI,
 browser/device hosting, updater, native credential integration and broader

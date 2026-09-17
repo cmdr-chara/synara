@@ -124,7 +124,8 @@ passed the full workspace and native smoke suite on its rerun. The initial focus
 repeat exposed an intermittent terminal-output assertion, recorded in the BCD
 handoff and not suppressed or modified by this lane.
 
-The next custom-command proof is **implemented, candidate verification pending**:
+The custom-command proof **passed locally** on source candidate
+`3e91c35a440d6af7f6ec98029738b4dc53f7d6c7`, Debian 13 x86_64, Rust 1.98.1:
 `cargo test --locked -p synara-acp --test custom_profile`. It launches the same
 `synara-acp-fixture`, advertised version `1.0.0`, from a copied executable path
 containing spaces and Unicode through a profile saved to and reloaded from SQLite.
@@ -154,3 +155,13 @@ process failure, never a claimed authenticated-vendor failure.
 This is custom-profile interoperability with a deterministic external executable,
 not OpenCode/Gemini authenticated support. Real model calls, vendor auth, native
 vendor login and vendor session restoration remain untested here.
+
+Recovery verification on September 17, 2026 also passed 151 non-GUI workspace
+tests and focused all-feature ACP/agent/core Clippy on that source candidate.
+Nine opt-in/helper entries remained ignored, including the live vendor probe.
+The custom-profile parent did execute its guarded helper, as described above.
+No additional vendor executable, vendor authentication or credentials were used.
+Full workspace checks and the native build were blocked locally by a missing
+`fontconfig.pc`, and package installation failed on DNS resolution. Therefore
+this result does not close the remaining C5/C6 native UX or complete-candidate
+verification gates, and does not extend the authenticated compatibility matrix.

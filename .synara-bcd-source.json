@@ -1,0 +1,1 @@
+{"mode":"diff","base_commit":"0e9e66d46b68c27e1e50ebca1b0d63328f0c6756","parts":[".synara-transfer-0000",".synara-transfer-0001",".synara-transfer-0002",".synara-transfer-0003"],"sha256":"ea2a883b22668a15f80ad683b7d07e8b95b1ffc467ec897431a6ac18c64422ea","message":"fix(acp): validate lifecycle schemas and prove custom command profiles"}

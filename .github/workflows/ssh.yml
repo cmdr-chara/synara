@@ -67,6 +67,10 @@ jobs:
           git rev-parse HEAD > /tmp/ajm-evidence/revision.txt
           git bundle create /tmp/ajm-evidence/source.bundle HEAD
           git diff --stat 1cd24dd6f5ac9571c1ea2b7329bcb5fc1a4ad121 HEAD > /tmp/ajm-evidence/changed-files.txt
+      - name: Verify parallel write ownership
+        run: |
+          set -o pipefail
+          { python3 crates/synara-runtime/verification/check_ajm_scope.py --self-test && python3 crates/synara-runtime/verification/check_ajm_scope.py; } 2>&1 | tee /tmp/ajm-evidence/scope.log
       - name: Install pinned Rust and native libraries
         run: |
           rustup toolchain install 1.98.1 --profile minimal --component rustfmt --component clippy

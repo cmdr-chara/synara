@@ -108,6 +108,44 @@ performance measurement and platform checks run alongside implementation.
 
 Status: **Partial / pending recovery**. Ownership: `synara-runtime`, `synara-app`.
 
+### AJM branch checkpoint, September 17, 2026
+
+The parallel A/J/M mission is authorized to publish only `astra/session-ajm`,
+starting at `1cd24dd6f5ac9571c1ea2b7329bcb5fc1a4ad121`. It must not write the
+integration branch, merge another session, or create a PR. The integration-wide
+policy elsewhere in this roadmap is not authorization to bypass this isolation.
+
+Published implementation candidate:
+`b4d0c1bc288aad5df3a3186a62d40169b6a5151e`, Linux x86-64, Ubuntu 24.04, Rust 1.98.1.
+[Run 35263664268](https://github.com/cmdr-chara/synara/actions/runs/35263664268)
+passed formatting, workspace check, strict Clippy, workspace tests, structural
+checks, native build, the existing native desktop smoke, and loopback SSH tests.
+That run was triggered by staging commit `605a5b18d8b9cfd8c5d6b6a43c964ffdda2d1f95`
+but checked the applied implementation candidate above. Its source bundle and
+revision file are the evidence of the actual tested checkout.
+
+The published terminal backend includes native cell snapshots, xterm key encoding,
+reviewed/sanitized paste preparation, bounded scrollback, terminal replies and
+Linux PTY lifecycle regressions. The replacement GPUI terminal surface and its
+new interaction tests are not in this published implementation candidate. Existing
+native smoke success does not prove the replacement surface, selection, IME,
+paste-review dialog or its window-close path.
+
+Later handoffs reported additional work under `/mnt/data/synara-ajm` and test
+artifacts under `/mnt/data/ajm-finish`. Those are temporary execution paths, not
+project dependencies. The latest recovery attempt returned transport timeouts
+from both shell and Python execution, including a minimal executable probe. The
+local diff and reported new GUI test results could not be re-read. Preserve that
+work and recover the complete diff before resolving shared-file overlaps. Do not
+replace the local worktree with a fresh clone and call the unpublished work saved.
+
+Independent cleanup was published as
+`0fa1ff027859b81e0a159c33dcd0c7ead352e8e8`: the SSH/AJM workflow no longer applies
+source envelopes or pushes commits. It has read-only repository permissions,
+checks out the exact push SHA, validates ancestry, and records the tested revision
+in each evidence artifact. New results must be correlated with that revision.
+The cleanup does not close A1-A7 or claim recovery of the unpublished GUI.
+
 - [ ] A1 Recover the previous local diff without resetting, cleaning or replacing
   uncommitted work. Compare every file with the published baseline. Preserve a
   recoverable checkpoint before resolving overlaps.
@@ -316,6 +354,25 @@ real SSH for two fixture configurations. J1/J2/J7 remain open for their remainin
 UI, remote-ownership and full-workspace requirements. Remote filesystem callbacks
 must stay unavailable until they can enforce remote containment.
 
+AJM publication boundary: implementation candidate
+`b4d0c1bc288aad5df3a3186a62d40169b6a5151e` retains the pinned SSH transport and its
+controlled-server verification, including
+[run 35263664268](https://github.com/cmdr-chara/synara/actions/runs/35263664268).
+The remote filesystem helper, remote PTY adapter, remote Git and native Remote
+panel were reported in later local handoffs, not published in that candidate.
+Those reports are not substitutes for recovered source and candidate-specific
+runtime and GUI test artifacts. J3-J5 and the remote UI portion of J7 stay open.
+
+Recovery must include the complete host-aware service and GUI integration diff,
+not only the individually attached `remote_fs.rs`, `remote_terminal.rs` and helper
+entry point. Verify guarded writes, explicit unknown-write outcomes, no local
+fallback, retained terminal state and fresh reconnect identity after recovery.
+ACP remote filesystem callback routing remains a dependency to hand to the B/C/D
+owner rather than implementing it in this isolated branch. Never advertise local
+callbacks as remote filesystem support. J6 remains unimplemented and forwarding
+must remain disabled. Termination of a local SSH client is not evidence that all
+remote descendants terminated.
+
 - [ ] J1 Complete host profiles, identity/authentication, known-host verification,
   explicit host-key enrollment and actionable changed-key refusal.
 - [ ] J2 Prove remote cwd/environment/executable quoting, agent stdio transport and
@@ -370,6 +427,22 @@ with reliable disconnect/cleanup and no undocumented privilege escalation.
 ## M. Application runtime and service boundaries
 
 Status: **Partial**. Ownership: `synara-runtime` and platform adapters.
+
+AJM implementation candidate `b4d0c1bc288aad5df3a3186a62d40169b6a5151e` publishes
+Linux process-group supervision that cleans up before reaping the leader, along
+with aggregate launch-allocation bounds. The earlier terminal ownership changes
+are in the same ancestry. Linux workspace and loopback SSH checks passed in
+[run 35263664268](https://github.com/cmdr-chara/synara/actions/runs/35263664268).
+This advances M1/M2/M4 without closing their broader acceptance requirements.
+
+Missing evidence includes the unpublished terminal GUI's close/restart path,
+final remote-helper integration, Windows Job Objects/ConPTY and macOS behavior.
+Later locally reported background-startup changes must be recovered and retested
+rather than assumed present. Process-group/session cleanup is not an operating
+system sandbox and does not contain a process that deliberately detaches outside
+the owned boundary. No Windows, macOS or complete remote-descendant guarantee is
+inferred from the Linux tests. M3 remote-service acceptance awaits recovery of the
+bounded helper protocol and its full negative-path tests.
 
 - [ ] M1 Complete POSIX process groups, Windows process trees/Job Objects and
   PTY/ConPTY lifetime ownership, including spawn and partial-start failures.

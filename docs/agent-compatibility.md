@@ -113,3 +113,44 @@ Missing credentials do not justify approving or bypassing authentication.
 - [Gemini CLI 0.60.0 release](https://github.com/google-gemini/gemini-cli/releases/tag/v0.60.0)
 - [Gemini CLI package/runtime metadata](https://github.com/google-gemini/gemini-cli/blob/v0.60.0/package.json)
 - [Gemini release bundle packaging](https://github.com/google-gemini/gemini-cli/blob/v0.60.0/.github/actions/publish-release/action.yml)
+
+## BCD custom-command and lifecycle extension
+
+The BCD branch retains the vendor evidence above without rerunning those releases.
+No vendor executable or provider credential has been used during this extension.
+Candidate `0e9e66d46b68c27e1e50ebca1b0d63328f0c6756`, Linux x64,
+[run 35258450705](https://github.com/cmdr-chara/synara/actions/runs/35258450705),
+passed the full workspace and native smoke suite on its rerun. The initial focused
+repeat exposed an intermittent terminal-output assertion, recorded in the BCD
+handoff and not suppressed or modified by this lane.
+
+The next custom-command proof is **implemented, candidate verification pending**:
+`cargo test --locked -p synara-acp --test custom_profile`. It launches the same
+`synara-acp-fixture`, advertised version `1.0.0`, from a copied executable path
+containing spaces and Unicode through a profile saved to and reloaded from SQLite.
+The parent creates a clean environment and supplies only synthetic test values.
+The child exercises two profile configurations, with and without one explicitly
+inherited variable name. No source changes distinguish those configurations.
+
+The ordinary test invokes its guarded helper in a separate process. The helper's
+`ignored` marker does not skip the proof: the parent invokes that helper explicitly
+and checks its exit status. No test mutates process-global environment unsafely.
+
+Methods exercised: `initialize`, `session/new`, two `session/prompt` calls per
+profile, and connection shutdown. Observed fixture capabilities: load, resume,
+close, list, delete, additional directories, images and logout. Session responses
+include modes, select configuration and boolean configuration. Capabilities not
+exercised by this particular proof are not claimed as additional results.
+
+Assertions cover literal spaces, Unicode and shell metacharacters in arguments,
+correct session working directory, one connection/session across two prompts,
+allowlisted-variable presence, unlisted-variable absence and no shell injection.
+Fixture replies expose only environment-presence/correctness booleans, never the
+synthetic value. Profiles, database/WAL files, traces and child diagnostics are
+checked for absence of that value. Public fixture identity and argument strings
+are not credentials. Failure classification is a local assertion, protocol or
+process failure, never a claimed authenticated-vendor failure.
+
+This is custom-profile interoperability with a deterministic external executable,
+not OpenCode/Gemini authenticated support. Real model calls, vendor auth, native
+vendor login and vendor session restoration remain untested here.

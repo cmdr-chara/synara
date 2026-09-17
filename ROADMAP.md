@@ -146,7 +146,7 @@ Status: **Partial**. Ownership: `synara-agent`, `synara-acp`, `synara-runtime`.
   fail, exit, restart and disconnect transitions, including crash during requests.
 - [ ] B3 Complete capability-driven new/load/resume/close/list/delete session
   behavior where supported, extra directories, titles and concurrent loading.
-- [ ] B4 Prove a connection owns multiple sessions without duplicate ownership,
+- [x] B4 Prove a connection owns multiple sessions without duplicate ownership,
   process-per-message behavior or cross-task event leakage.
 - [ ] B5 Cover malformed/oversized frames, partial reads, contaminated stdout,
   stderr floods, unknown methods, request-ID correlation, EOF, cancellation,
@@ -168,8 +168,14 @@ in [run 35255541692](https://github.com/cmdr-chara/synara/actions/runs/352555416
 The next B2/B3/B4 slice adds explicit authentication-required state, prevents late
 login/setup resurrection, rejects duplicate task ownership, serializes shutdown
 against connection acquisition and tests two-session cancellation/permission
-isolation. Focused local Linux tests and Clippy passed. Candidate-wide verification
-remains required before closing any complete task. See the
+isolation. Candidate `0e9e66d46b68c27e1e50ebca1b0d63328f0c6756` passed full
+Linux verification and desktop smoke in rerun
+[35258450705](https://github.com/cmdr-chara/synara/actions/runs/35258450705).
+B4 passes on that candidate: `lifecycle_integration`, manager ownership tests and
+`process_integration` prove shared connection ownership, no duplicate session for
+a thread, repeated prompts without respawn and isolated events/cancellation. B2/B3
+remain partial. The terminal-output flake observed on the initial focused repeat
+is recorded, not fixed or suppressed by BCD. See the
 [BCD handoff](docs/bcd-session-handoff.md) for evidence and the terminal-lifetime
 request reserved for A/J/M.
 

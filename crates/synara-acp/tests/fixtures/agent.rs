@@ -7,6 +7,7 @@ use std::{
 
 struct Fixture {
     profile: String,
+    launch_arguments: Vec<String>,
     authenticated: bool,
     next_session: u64,
     next_callback: u64,
@@ -158,6 +159,10 @@ impl Fixture {
                 self.ok(id, json!({}));
             }
             Some("session/set_config_option") => {
+                if params["value"].is_boolean() && params["type"] != "boolean" {
+                    self.error(id, -32602);
+                    return;
+                }
                 let mut config = self.configuration();
                 if let Some(options) = config["configOptions"].as_array_mut() {
                     for option in options {
@@ -178,6 +183,16 @@ impl Fixture {
             Some("session/prompt") => {
                 let text = params["prompt"][0]["text"].as_str().unwrap_or("");
                 match text {
+                    "launch-proof" => {
+                        let inherited = std::env::var("SYNARA_BCD_CANARY").ok();
+                        self.finish(&session, id, &json!({
+                            "args": self.launch_arguments,
+                            "cwd": std::env::current_dir().unwrap(),
+                            "canaryPresent": inherited.is_some(),
+                            "canaryCorrect": inherited.as_deref() == Some("synthetic-value-not-a-credential-🦀"),
+                            "unlistedPresent": std::env::var_os("SYNARA_BCD_UNLISTED").is_some(),
+                        }).to_string());
+                    }
                     "read-scope" => self.request(session.clone(),id,"read","fs/read_text_file",json!({"sessionId":session,"path":format!("{}/scope-proof.txt", self.sessions[&session])}),None),
                     "startup-directory" => self.finish(&session, id, &std::env::current_dir().unwrap().to_string_lossy()),
                     "hold"|"timeout"=>{ self.text(&session,"Started waiting"); self.pending.insert(session,id); }
@@ -282,9 +297,11 @@ fn main() {
     if let Some(path) = std::env::var_os("SYNARA_FIXTURE_PID_FILE") {
         std::fs::write(path, std::process::id().to_string()).unwrap();
     }
+    let launch_arguments = args.collect();
     let authenticated = !profile.starts_with("auth");
     let mut fixture = Fixture {
         profile,
+        launch_arguments,
         authenticated,
         next_session: 0,
         next_callback: 0,

@@ -24,7 +24,7 @@ but its recorded checkout and source snapshot identify the candidate above.
 
 ## Connection and session ownership slice
 
-B2/B3/B4 and D5: **PARTIAL**, final candidate verification pending. Authentication
+B2/B3 and D5: **PARTIAL**. B4: **PASS** for the Linux candidate and evidence below. Authentication
 required now has its own protocol-independent state, distinct from a login in
 progress. Authentication, logout and setup completions cannot revive a disconnected
 transport. Concurrent authentication returns Busy. Dropped or timed-out login
@@ -47,12 +47,44 @@ The initial three handshake test failures were a test-observability mistake:
 extension method names are deliberately redacted in traces. Tests now wait for
 the fixture's redacted inbound handshake without weakening production redaction.
 
+Candidate `0e9e66d46b68c27e1e50ebca1b0d63328f0c6756` passed every required
+Linux workspace check, focused tests and isolated desktop smoke in the rerun of
+[run 35258450705](https://github.com/cmdr-chara/synara/actions/runs/35258450705).
+B4 evidence is `lifecycle_integration` (13 tests), the manager ownership tests and
+`process_integration`'s two-agent/configuration coverage. One connection owns two
+sessions, rejects duplicate thread IDs before sending setup, isolates permissions
+and cancellation, and routes each event to its original thread.
+
+The initial focused repeat failed the existing
+`terminal_callbacks_release_live_resources_but_keep_history` assertion at
+`process_integration.rs:330` (missing `terminal-proof`). The full suite in that same
+run passed, and the rerun passed both. This is retained as a flaky terminal-output
+handoff, not hidden by retries or claimed as a resolved runtime issue. A/J/M should
+verify that terminal exit/wait drains captured output before returning a snapshot.
+
+## Schema/configuration and custom profile slice
+
+B1/B6 and C5/C6: **PARTIAL**, next candidate verification pending. Stable lifecycle
+request/response schema validation now also covers resume/close/list/delete,
+authentication/logout, modes, config options and elicitation callbacks. The SDK
+schema still does not replace adapter resource bounds and semantic validation.
+The audit caught a missing `type: "boolean"` discriminator in configuration writes.
+The adapter now emits it and a fixture rejects the old malformed request. Select
+values retain their compatible string representation.
+
+`custom_profile` exercises a persisted, user-defined command profile with spaces,
+Unicode, literal shell metacharacters and a controlled environment. The same
+backend launches both configurations. Only variable names are stored. No provider
+credentials or real vendor executables are used. Focused tests and Clippy pass
+locally with the pinned toolchain. The compatibility document states exactly what
+this fixture-based result can and cannot prove.
+
 ## Open gates
 
-B1/B6/B7 and D1/D2/D3/D4/D7: **NOT TOUCHED** in these checkpoints.
+B7 and D1/D2/D3/D4/D7: **NOT TOUCHED** in these checkpoints.
 C1/C2: prior evidence retained, not re-executed. C3/C4 authenticated workflows:
 **BLOCKED**, no user-authorized vendor credentials were supplied to this session.
-C5/C6: **NOT TOUCHED**. No real agent has been executed in this session.
+C5/C6: **PARTIAL**, as described above. No real agent has been executed in this session.
 Credentials used: **no**.
 
 Native Linux checks run through the isolated BCD workflow. The source publisher

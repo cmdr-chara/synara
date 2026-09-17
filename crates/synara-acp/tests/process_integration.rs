@@ -293,6 +293,27 @@ async fn selectors_use_advertised_values_and_update_configuration() {
             value: "alternate".into()
         }
     );
+    for value in [false, true] {
+        let config = session
+            .set_option("review", ConfigValue::Boolean { value })
+            .await
+            .unwrap();
+        assert_eq!(
+            config
+                .options
+                .iter()
+                .find(|option| option.id == "review")
+                .unwrap()
+                .current,
+            ConfigValue::Boolean { value }
+        );
+    }
+    assert!(
+        session
+            .set_option("model", ConfigValue::Boolean { value: false })
+            .await
+            .is_err()
+    );
     session.set_mode("plan").await.unwrap();
     assert_eq!(
         session.configuration().current_mode.as_deref(),

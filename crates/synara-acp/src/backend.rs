@@ -81,9 +81,14 @@ impl AgentBackend for AcpBackend {
         let process = context.host.spawn(&spec.launch, directory).await?;
         let (rpc, incoming) = RpcPeer::start(process.stdout, process.stdin, process.stderr);
         let sessions = Arc::new(Sessions::default());
-        let callbacks = Arc::new(CallbackServices::new(context.clone(), sessions.clone()));
+        let connection_id = ConnectionId::new();
+        let callbacks = Arc::new(CallbackServices::new(
+            context.clone(),
+            sessions.clone(),
+            connection_id,
+        ));
         let (state, _) = watch::channel(ConnectionInfo {
-            id: ConnectionId::new(),
+            id: connection_id,
             state: ConnectionState::Initializing,
             identity: None,
             capabilities: AgentCapabilities::default(),

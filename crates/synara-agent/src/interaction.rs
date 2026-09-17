@@ -1,14 +1,23 @@
-use crate::{AgentError, AgentResult};
+use crate::{AgentError, AgentResult, validate_input_request};
 use async_trait::async_trait;
 use std::{collections::BTreeMap, time::Duration};
 use synara_core::{
-    InputFieldKind, InputValue, PermissionRequest, ThreadId, UserInputRequest, UserInputResponse,
+    ConnectionId, InputFieldKind, InputValue, PermissionRequest, ThreadId, UserInputRequest,
+    UserInputResponse,
 };
 use tokio::sync::{mpsc, oneshot};
 use tokio_util::sync::CancellationToken;
 
+/// Presentation ownership is explicit. Protocol session IDs are opaque strings.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum InteractionScope {
+    Session,
+    Connection(ConnectionId),
+}
+
 #[derive(Clone, Debug)]
 pub struct InteractionContext {
+    pub scope: InteractionScope,
     pub thread_id: ThreadId,
     pub session_id: String,
     pub cancelled: CancellationToken,
@@ -59,6 +68,23 @@ pub enum UiInteraction {
         request: UserInputRequest,
         response: oneshot::Sender<UserInputResponse>,
     },
+}
+
+impl UiInteraction {
+    pub fn context(&self) -> &InteractionContext {
+        match self {
+            Self::Permission { context, .. } | Self::Input { context, .. } => context,
+        }
+    }
+
+    /// Check at enqueue, render and response time, not only on a periodic UI tick.
+    pub fn is_active(&self) -> bool {
+        !self.context().cancelled.is_cancelled()
+            && match self {
+                Self::Permission { response, .. } => !response.is_closed(),
+                Self::Input { response, .. } => !response.is_closed(),
+            }
+    }
 }
 
 pub struct InteractionBroker {
@@ -123,6 +149,7 @@ impl InteractionHandler for InteractionBroker {
         context: InteractionContext,
         request: UserInputRequest,
     ) -> AgentResult<UserInputResponse> {
+        validate_input_request(&request)?;
         let (response, receiver) = oneshot::channel();
         let cancellation = context.cancelled.clone();
         let schema = request.clone();
@@ -157,6 +184,7 @@ pub fn validate_input(
     schema: &UserInputRequest,
     values: &BTreeMap<String, InputValue>,
 ) -> AgentResult<()> {
+    validate_input_request(schema)?;
     if schema.url.is_some() {
         return if values.is_empty() {
             Ok(())
@@ -190,12 +218,13 @@ pub fn validate_input(
                 InputFieldKind::Text {
                     min_length,
                     max_length,
-                    ..
+                    format,
                 },
                 InputValue::Text(text),
             ) => {
                 let count = text.chars().count();
                 text.len() <= 64 * 1024
+                    && crate::input_validation::valid_text_format(text, format.as_deref())
                     && min_length.is_none_or(|min| count >= min)
                     && max_length.is_none_or(|max| count <= max)
             }
@@ -252,6 +281,7 @@ mod tests {
 
     fn context() -> InteractionContext {
         InteractionContext {
+            scope: InteractionScope::Session,
             thread_id: ThreadId::new(),
             session_id: "session".into(),
             cancelled: CancellationToken::new(),

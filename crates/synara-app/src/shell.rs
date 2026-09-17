@@ -2,18 +2,16 @@ use gpui::Focusable;
 mod conversation;
 mod panels;
 mod registry;
+mod transcript;
 use crate::close::CloseState;
 use crate::input::{EntryEvent, EntryMode, TextEntry};
-use gpui::{
-    App, Context, Entity, ScrollHandle, SharedString, Subscription, Window, div, prelude::*, px,
-    rgb,
-};
+use gpui::{App, Context, Entity, SharedString, Subscription, Window, div, prelude::*, px, rgb};
 use std::{
     collections::{BTreeMap, HashMap, HashSet},
     path::PathBuf,
     sync::Arc,
 };
-use synara_agent::{TraceEntry, UiInteraction};
+use synara_agent::{InteractionScope, TraceEntry, UiInteraction};
 use synara_core::*;
 use synara_runtime::{FileEntry, NativeTerminal, TerminalSnapshot};
 use synara_workspace::*;
@@ -130,9 +128,7 @@ pub struct Shell {
     error: Option<String>,
     notice: Option<String>,
     focus_composer: bool,
-    scroll: ScrollHandle,
-    scroll_owner: ScrollOwnership,
-    transcript_start: Option<usize>,
+    transcript: transcript::TranscriptState,
     pending: HashMap<InteractionKey, UiInteraction>,
     forms: HashMap<InteractionKey, FormState>,
     files: Vec<FileEntry>,
@@ -302,9 +298,7 @@ impl Shell {
             error: None,
             notice: None,
             focus_composer: false,
-            scroll: ScrollHandle::new(),
-            scroll_owner: ScrollOwnership::Following,
-            transcript_start: None,
+            transcript: transcript::TranscriptState::new(),
             pending: HashMap::new(),
             forms: HashMap::new(),
             files: vec![],
@@ -451,9 +445,7 @@ impl Shell {
         self.composer.update(cx, |entry, cx| {
             entry.set_text(self.drafts.get(&id).cloned().unwrap_or_default(), cx)
         });
-        self.scroll = ScrollHandle::new();
-        self.scroll_owner = ScrollOwnership::Following;
-        self.transcript_start = None;
+        self.transcript = transcript::TranscriptState::new();
         self.focus_composer = true;
         let workspace = self.controller.workspace.clone();
         self.job(async move {
@@ -619,9 +611,7 @@ impl Shell {
         self.busy.insert(id);
         self.error = None;
         self.notice = None;
-        self.scroll_owner = ScrollOwnership::Following;
-        self.transcript_start = None;
-        self.scroll.scroll_to_bottom();
+        self.transcript.follow();
         let controller = self.controller.clone();
         self.job(async move {
             let result = controller.submit(id, text).await;
@@ -808,14 +798,17 @@ impl Shell {
         match update {
             Update::Registry(reply) => self.registry_reply(*reply, cx),
             Update::Tick => {
-                self.pending.retain(|_, p| match p {
-                    UiInteraction::Permission {
-                        context, response, ..
-                    } => !context.cancelled.is_cancelled() && !response.is_closed(),
-                    UiInteraction::Input {
-                        context, response, ..
-                    } => !context.cancelled.is_cancelled() && !response.is_closed(),
+                let previous = self.pending.len();
+                self.pending.retain(|key, interaction| {
+                    if !interaction.is_active() {
+                        self.transcript.interaction_changed(key);
+                    }
+                    interaction.is_active()
                 });
+                self.forms.retain(|key, _| self.pending.contains_key(key));
+                if self.pending.len() != previous {
+                    cx.notify();
+                }
                 self.poll();
                 return;
             }
@@ -849,11 +842,9 @@ impl Shell {
                         old.id != thread.id || old.last_sequence <= thread.last_sequence
                     })
                 {
+                    self.transcript.sync(&thread, None);
                     self.thread = Some(*thread);
                     self.replace_task(task);
-                    if self.scroll_owner == ScrollOwnership::Following {
-                        self.scroll.scroll_to_bottom();
-                    }
                 }
             }
             Update::Event(envelope) => {
@@ -873,7 +864,6 @@ impl Shell {
                     .as_ref()
                     .is_some_and(|thread| thread.id == envelope.thread_id)
                 {
-                    let follows = self.scroll_owner.should_follow(&envelope.event);
                     if let ThreadEvent::TextDelta {
                         role: Role::User,
                         text,
@@ -894,8 +884,8 @@ impl Shell {
                             self.error = Some(format!("Conversation update failed: {error}"));
                         }
                     }
-                    if follows && self.transcript_start.is_none() {
-                        self.scroll.scroll_to_bottom();
+                    if let Some(thread) = &self.thread {
+                        self.transcript.sync(thread, Some(&envelope.event));
                     }
                     if let Some(thread) = &self.thread
                         && let Some(task) = self
@@ -910,6 +900,9 @@ impl Shell {
             }
             Update::Hydrate => self.hydrate(),
             Update::Interaction(interaction) => {
+                if !interaction.is_active() {
+                    return;
+                }
                 let key = match &interaction {
                     UiInteraction::Permission {
                         context, request, ..
@@ -953,6 +946,7 @@ impl Shell {
                         key
                     }
                 };
+                self.transcript.interaction_changed(&key);
                 self.pending.insert(key, interaction);
             }
             Update::Connected {

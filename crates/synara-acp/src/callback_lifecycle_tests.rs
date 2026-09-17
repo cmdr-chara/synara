@@ -62,7 +62,8 @@ async fn completed_turn_cannot_promote_stale_approval_to_session_consent() {
     .unwrap();
     state.active.store(true, Ordering::Release);
     context.interactions = Arc::new(TurnEndingConsent(state.clone()));
-    let services = CallbackServices::new(context, Arc::new(Sessions::default()));
+    let services =
+        CallbackServices::new(context, Arc::new(Sessions::default()), ConnectionId::new());
     assert!(matches!(
         services
             .local_approval(&state, "Write one file".into())
@@ -88,6 +89,10 @@ impl InteractionHandler for ExpiredInputConsent {
         context: InteractionContext,
         _: UserInputRequest,
     ) -> AgentResult<UserInputResponse> {
+        assert!(matches!(
+            context.scope,
+            synara_agent::InteractionScope::Connection(_)
+        ));
         self.0.notify_one();
         context.cancelled.cancelled().await;
         // A custom handler is untrusted even when it returns an affirmative result.
@@ -106,6 +111,7 @@ async fn login_form_expires_when_its_parent_request_completes() {
     let services = Arc::new(CallbackServices::new(
         context,
         Arc::new(Sessions::default()),
+        ConnectionId::new(),
     ));
     let (client, agent) = duplex(65536);
     let (reader, writer) = split(client);
@@ -157,4 +163,69 @@ async fn login_form_expires_when_its_parent_request_completes() {
         .unwrap();
     assert_eq!(result, json!({"action":"cancel"}));
     assert!(!peer.cancelled().is_cancelled());
+}
+
+#[derive(Default)]
+struct RecordingEvents(std::sync::Mutex<Vec<(ThreadId, ThreadEvent)>>);
+#[async_trait]
+impl EventSink for RecordingEvents {
+    async fn emit(&self, thread: ThreadId, event: ThreadEvent) -> AgentResult<()> {
+        self.0.lock().unwrap().push((thread, event));
+        Ok(())
+    }
+}
+#[tokio::test]
+async fn opaque_session_named_connection_is_not_mistaken_for_login_scope() {
+    let directory = tempfile::tempdir().unwrap();
+    let mut context = context(directory.path());
+    let events = Arc::new(RecordingEvents::default());
+    context.events = events.clone();
+    let options = SessionOptions::new(ThreadId::new(), directory.path().into());
+    let state = SessionState::build(
+        "connection".into(),
+        &options,
+        &context,
+        CancellationToken::new(),
+    )
+    .await
+    .unwrap();
+    let sessions = Arc::new(Sessions::default());
+    sessions
+        .states
+        .lock()
+        .unwrap()
+        .insert(state.id.clone(), state);
+    let services = CallbackServices::new(context, sessions, ConnectionId::new());
+    let (client, _agent) = duplex(65536);
+    let (reader, writer) = split(client);
+    let (peer, _incoming) = RpcPeer::start(
+        Box::new(reader),
+        Box::new(writer),
+        Box::new(tokio::io::empty()),
+    );
+    let response = services
+        .elicit(
+            json!({"sessionId":"connection","mode":"url","elicitationId":"url",
+        "url":"https://example.com/login?state=synthetic-canary", "message":"synthetic-canary"}),
+            &peer,
+        )
+        .await
+        .unwrap();
+    assert_eq!(response, json!({"action":"cancel"}));
+    let stored = events.0.lock().unwrap();
+    assert_eq!(stored.len(), 2);
+    assert!(
+        stored
+            .iter()
+            .all(|(thread, _)| *thread == options.thread_id)
+    );
+    let ThreadEvent::UserInputRequested { request } = &stored[0].1 else {
+        panic!("request expected")
+    };
+    assert!(request.url.is_none());
+    assert!(!request.message.contains("synthetic-canary"));
+    assert!(matches!(
+        &stored[1].1,
+        ThreadEvent::UserInputResolved { .. }
+    ));
 }

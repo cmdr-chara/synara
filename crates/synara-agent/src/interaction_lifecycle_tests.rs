@@ -3,6 +3,7 @@ use synara_core::{PermissionChoice, PermissionKind};
 
 fn scope() -> InteractionContext {
     InteractionContext {
+        scope: InteractionScope::Session,
         thread_id: ThreadId::new(),
         session_id: "session".into(),
         cancelled: CancellationToken::new(),
@@ -147,4 +148,38 @@ async fn expired_permission_and_question_close_the_response_channels() {
             })
             .is_err()
     );
+}
+
+#[test]
+fn presentation_activity_requires_both_a_live_owner_and_a_live_response_channel() {
+    let context = scope();
+    let cancelled = context.cancelled.clone();
+    let (response, receiver) = oneshot::channel();
+    let interaction = UiInteraction::Permission {
+        context,
+        request: permission(),
+        response,
+    };
+    assert!(interaction.is_active());
+    cancelled.cancel();
+    assert!(!interaction.is_active());
+    drop(receiver);
+    let (response, receiver) = oneshot::channel();
+    let interaction = UiInteraction::Input {
+        context: scope(),
+        request: question(),
+        response,
+    };
+    assert!(interaction.is_active());
+    drop(receiver);
+    assert!(!interaction.is_active());
+}
+
+#[tokio::test]
+async fn malformed_forms_are_rejected_before_queueing_or_asking_for_consent() {
+    let (broker, mut ui) = InteractionBroker::new();
+    let mut request = question();
+    request.url = Some("file:///tmp/credential".into());
+    assert!(broker.input(scope(), request).await.is_err());
+    assert!(ui.try_recv().is_err());
 }

@@ -18,9 +18,23 @@ with disposable identity and host keys. They prove literal cwd/argument handling
 binary-transparent stdio, separate stderr, remote exit reporting, rejection of
 unknown/changed host keys and wrong identities, and effective forwarding policy.
 They do not prove a remote desktop workflow, remote descendant cleanup or a real
-vendor service. Initial native compile and Clippy passed, but formatting failed.
-The formatting correction and full final-candidate verification must remain part
-of this checkpoint's acceptance, not be hidden by the passing SSH job.
+vendor service. After formatting corrections, candidate
+`98956cf2f9185592985e0ac3a4051009362ee415` passed static, SSH and full Linux native
+verification, including desktop interaction smoke, in
+[run 35245383218](https://github.com/cmdr-chara/synara/actions/runs/35245383218).
+
+Real vendor interoperability advanced in
+`a02d6b16468782e7b9d7be9158d3afc80d5e26c1`.
+[Vendor probe run 35246447427](https://github.com/cmdr-chara/synara/actions/runs/35246447427)
+installed checksum-pinned official OpenCode 1.18.31 and Gemini CLI 0.60.0 releases
+through Synara's registry service and initialized both through the same ACP
+backend. OpenCode created a session. Gemini returned an explicit authentication
+requirement. Both disconnected successfully. No credentials, authentication calls
+or prompts were used. This closes C1/C2 for the tested Linux OpenCode release,
+not C3/C4 authenticated workflows. [Compatibility evidence](docs/agent-compatibility.md)
+records versions, scope, results and remaining limitations. The first vendor
+candidate's separate formatting failure was identified for correction. Each
+subsequent candidate still needs its own applicable checks.
 
 The direct terminal-grid work is still pending recovery. Local execution returned
 transport timeouts, so this checkpoint deliberately changed independent SSH files
@@ -67,6 +81,8 @@ The branch contains these integrated development foundations:
 Baseline CI: [Native verification run 35237792208](https://github.com/cmdr-chara/synara/actions/runs/35237792208).
 The workflow's source job may create an integration commit. Correlate the actual
 checked-out revision, not only the workflow trigger SHA, before reusing evidence.
+The table describes that baseline. New SSH and vendor protocol evidence is recorded
+in the current checkpoint and its lane below, without rewriting earlier results.
 
 The previous local handoff reported direct terminal input/grid rendering, PTY
 resize, scrollback, reviewed paste and foreground-job cleanup under
@@ -141,11 +157,19 @@ boundary rather than changing unrelated domain or UI types.
 
 ## C. Prove real-agent interoperability
 
-Status: **Open**, beyond fixture proof. Ownership: agent integration and QA.
+Status: **Partial**, reviewed-release installation and no-credentials proof passed.
+Ownership: agent integration and QA.
 
-- [ ] C1 Install an official OpenCode distribution in an isolated test environment
+C1/C2 evidence: candidate `a02d6b16468782e7b9d7be9158d3afc80d5e26c1`, Linux x64,
+OpenCode 1.18.31, `cargo test --locked -p synara-acp --test vendor_probe -- --ignored
+--nocapture --test-threads=1`, successful CI run `35246447427`. Gemini CLI 0.60.0
+also passed initialization and explicit auth-required detection in the same run.
+See [the compatibility matrix](docs/agent-compatibility.md). Authenticated coding
+and the native vendor-agent interaction path remain unverified.
+
+- [x] C1 Install an official OpenCode distribution in an isolated test environment
   with reviewed origin/version and launch it through the generic ACP backend.
-- [ ] C2 Verify identity, initialize/capabilities and session creation without
+- [x] C2 Verify identity, initialize/capabilities and session creation without
   credentials where possible. Distinguish auth-required from protocol failure.
 - [ ] C3 With separately supplied authorized credentials, complete prompt,
   streaming, tools, permission allow/deny, cancellation and session restoration.
@@ -460,6 +484,12 @@ SSH acceptance additionally requires `python3 scripts/ssh_smoke.py` on Linux wit
 OpenSSH installed, running as an ordinary user. It explicitly executes the seven
 server-dependent `ssh_live` tests that the ordinary test suite leaves ignored.
 
+Vendor protocol acceptance additionally requires the explicitly opted-in
+`vendor_probe` test and reviewed release manifest. See
+[agent-compatibility.md](docs/agent-compatibility.md) for isolation, commands,
+results and the distinction between an auth-required response and authenticated
+coding. Ordinary workspace tests never download or launch vendor releases.
+
 For each accepted task, retain this evidence shape in a checkpoint or test report:
 
 ```text
@@ -496,12 +526,12 @@ Remaining limitations:
 
 ## Immediate execution queue
 
-1. Finish final-candidate native, static and SSH verification for the pinned
-   transport checkpoint. Keep the published roadmap and its README link current.
+1. Finish final-candidate native, static, SSH and vendor-probe verification. Keep
+   the published roadmap and its README link current with exact evidence.
 2. Recover and finish A1-A7. If local execution remains unavailable, preserve that
    gate and advance independent, non-overlapping work using the remote branch and
    CI rather than overwriting the pending terminal implementation.
-3. Continue the remaining J1-J7 remote workspace boundaries or real-agent protocol
-   proof C1-C6. The controlled SSH transport milestone is no longer unimplemented,
-   but remote UI, filesystem/PTY/Git and descendant cleanup remain open.
+3. Continue J1-J7 remote workspace boundaries and the local application workflow.
+   C1/C2 now have real OpenCode release evidence. C3/C4 need separately authorized
+   provider credentials, while fixture coverage and no-credentials work can proceed.
 4. Update this roadmap with actual evidence at the next published checkpoint.

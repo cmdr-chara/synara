@@ -145,8 +145,12 @@ async fn probe(entry: &AgentEntry, root: &Path) -> Value {
         }
     };
     let info = connection.info();
+    let identity_matches = info.identity.as_ref().is_some_and(|identity| {
+        identity.name.eq_ignore_ascii_case(&entry.id) && identity.version == entry.version
+    });
     report["initialization"] = json!("passed");
     report["agent_identity"] = json!(info.identity);
+    report["identity_matches_release"] = json!(identity_matches);
     report["capabilities"] = json!(info.capabilities);
     report["authentication_method_count"] = json!(info.authentication.len());
     let session_ok = match connection
@@ -169,7 +173,10 @@ async fn probe(entry: &AgentEntry, root: &Path) -> Value {
         }
     };
     let trace = connection.trace();
-    let methods: Vec<_> = trace.iter().filter_map(|event| event.method.as_deref()).collect();
+    let methods: Vec<_> = trace
+        .iter()
+        .filter_map(|event| event.method.as_deref())
+        .collect();
     let no_auth_or_prompt = !methods
         .iter()
         .any(|method| matches!(*method, "authenticate" | "session/prompt"));
@@ -183,7 +190,7 @@ async fn probe(entry: &AgentEntry, root: &Path) -> Value {
         }
     };
     report["disconnected"] = json!(disconnected);
-    report["passed"] = json!(session_ok && no_auth_or_prompt && disconnected);
+    report["passed"] = json!(identity_matches && session_ok && no_auth_or_prompt && disconnected);
     report
 }
 
@@ -212,6 +219,7 @@ async fn reviewed_releases_initialize_without_credentials() {
         results.push(probe(entry, root.path()).await);
         let document = json!({
             "format": 1,
+            "candidate_commit": std::env::var("GITHUB_SHA").ok(),
             "scope": "release installation and no-credentials ACP initialization/session probe",
             "os": std::env::consts::OS,
             "arch": std::env::consts::ARCH,
@@ -220,7 +228,8 @@ async fn reviewed_releases_initialize_without_credentials() {
         file.set_len(0).unwrap();
         use std::io::{Seek, SeekFrom};
         file.seek(SeekFrom::Start(0)).unwrap();
-        file.write_all(&serde_json::to_vec_pretty(&document).unwrap()).unwrap();
+        file.write_all(&serde_json::to_vec_pretty(&document).unwrap())
+            .unwrap();
         file.sync_all().unwrap();
     }
     println!("{}", serde_json::to_string_pretty(&results).unwrap());

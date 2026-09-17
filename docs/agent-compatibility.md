@@ -13,6 +13,38 @@ separate when deciding whether a particular release is supported.
 | No-credentials ACP probe | Vendor executable initialization, advertised capabilities, session creation or explicit auth-required response, disconnect | Model calls, subscription login, tools, authenticated restoration |
 | Authenticated end-to-end | Real prompts, streaming, tools, consent, cancel and restart with authorized credentials | Other versions, platforms or every optional capability |
 
+## Verified no-credentials results
+
+Candidate: `a02d6b16468782e7b9d7be9158d3afc80d5e26c1`.
+[CI run 35246447427](https://github.com/cmdr-chara/synara/actions/runs/35246447427),
+job `105287756520`, completed successfully on September 17, 2026.
+Environment: Ubuntu 24.04.5 x64, Rust 1.98.1, Node 22.23.2 for the external
+JavaScript agent. The structured `vendor-acp-probe` report was retained as
+artifact `10508335643`. The job log also contains the redacted report.
+
+| Release | Installation | ACP identity | Initialize | New session | Disconnect |
+| --- | --- | --- | --- | --- | --- |
+| OpenCode 1.18.31 | Archive digest and receipt verified | OpenCode / 1.18.31 | Passed | Created, two configuration options returned | Passed |
+| Gemini CLI 0.60.0 | Archive digest and receipt verified | gemini-cli / 0.60.0 | Passed | Explicit authentication-required response | Passed |
+
+Both used Synara's existing registry installer and the same generic `AcpBackend`.
+The recorded methods were `initialize` and `session/new`. Neither agent received
+provider credentials, an authentication call or a prompt. Gemini's successful
+auth-boundary detection is not a successful authenticated session.
+
+OpenCode advertised load, resume, close and list sessions. Gemini advertised load
+sessions but not resume, close or list. These are capability-discovery observations,
+not evidence that all those operations have been exercised with either vendor.
+The reports also retain the other normalized capability flags. The initial probe
+recorded matching identities. Subsequent probe code additionally enforces an
+identity/version match and embeds the CI candidate SHA in the artifact itself.
+Each later candidate must still pass its own applicable checks.
+
+The two ordinary probe tests (manifest validation and diagnostic redaction) passed.
+The explicit network/executable test passed with both releases. The initial
+candidate had an unrelated Rust formatting failure in this new test source, so the
+vendor result alone must not be used as a green full-workspace acceptance result.
+
 ## Opt-in release probe
 
 `crates/synara-acp/tests/fixtures/vendor_releases.json` is an explicitly reviewed
@@ -59,19 +91,20 @@ manifest and redaction logic but leaves the network/executable probe ignored.
 The `Reviewed vendor ACP probe` workflow explicitly runs it and retains only the
 structured `vendor-acp-probe` report artifact, not downloaded programs, home
 directories or keys. The workflow has no provider secrets and no repository-write
-permission. Its existence is not evidence that the probe passed. Use its exact
-candidate run and report.
+permission. Its existence is not evidence that a later candidate passed. Use its
+exact candidate run and report.
 
-## Current evidence and remaining gates
+## Remaining gates
 
-Fixture agents have exercised local desktop behavior and controlled real SSH.
-The first reviewed vendor probe is pending its own CI evidence. Do not mark an
-agent release compatible until the report identifies its actual result.
+This evidence closes roadmap C1 and C2 for the specified Linux OpenCode release.
+Gemini provides a second independent vendor's initialization and auth-boundary
+proof without another backend, but does not close C4's authenticated journey.
 
-Remaining roadmap gates include C1-C6 and E2/E7. Authenticated prompts, tool calls,
-permission outcomes, cancellation, session restoration and the native vendor-agent
-UI journey remain separate checks. Missing credentials do not justify approving
-or bypassing an authentication boundary.
+Authenticated prompts, tool calls, permission outcomes, cancellation, session
+restoration and the native vendor-agent UI journey remain separate checks.
+Registry platform/distribution coverage and generic custom-command UX also remain
+open where the roadmap requires more than these two release installations.
+Missing credentials do not justify approving or bypassing authentication.
 
 ## Primary references for the initial pins
 

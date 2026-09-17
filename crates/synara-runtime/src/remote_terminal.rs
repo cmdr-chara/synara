@@ -2,7 +2,7 @@
 //! Synara's already-owned native PTY. Resize and input therefore use the same
 //! terminal parser and lifecycle code as local shells.
 use crate::{
-    LaunchSpec, NativeTerminal, PasteDecision, PinnedSshHost, PreparedPaste, RuntimeError,
+    ExecutionHost, LaunchSpec, NativeTerminal, PasteDecision, PinnedSshHost, PreparedPaste, RuntimeError,
     TerminalKey, TerminalModifiers, TerminalRenderSnapshot, TerminalSnapshot,
 };
 use std::path::Path;

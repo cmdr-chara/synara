@@ -1,0 +1,30 @@
+name: EKOP timing sample contract
+on:
+  push:
+    branches: [astra/session-ekop]
+permissions:
+  contents: read
+concurrency:
+  group: ekop-support-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  samples:
+    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/session-ekop'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-15, windows-2025, ubuntu-24.04]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 8
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          persist-credentials: false
+      - name: Validate exact candidate timing-report contract
+        run: |
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python3 -m unittest discover -s scripts/ekop/support -p 'test_aggregate_samples.py' -v
+          git diff --exit-code

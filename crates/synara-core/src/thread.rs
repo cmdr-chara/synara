@@ -300,6 +300,10 @@ impl Thread {
         Ok(true)
     }
 
+    pub fn history_in_progress(&self) -> bool {
+        self.replay_backup.is_some()
+    }
+
     fn refresh_waiting(&mut self) {
         if self.permissions.is_empty() && self.inputs.is_empty() && self.active_turn.is_some() {
             self.state = TaskState::Running;

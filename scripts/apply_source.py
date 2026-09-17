@@ -101,6 +101,16 @@ def main():
             target = source_path(name)
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_text(content, encoding='utf-8', newline='')
+        expected_lock = package.get('lock_sha256')
+        if expected_lock is not None:
+            if not isinstance(expected_lock, str) or not re.fullmatch(r'[a-f0-9]{64}', expected_lock):
+                raise SystemExit('Invalid expected lockfile digest')
+            lockfile = ROOT / 'Cargo.lock'
+            if not lockfile.exists():
+                subprocess.run(['rustup', 'toolchain', 'install', '1.98.1', '--profile', 'minimal'], check=True)
+                subprocess.run(['cargo', '+1.98.1', 'generate-lockfile'], check=True)
+            if lockfile.is_symlink() or hashlib.sha256(lockfile.read_bytes()).hexdigest() != expected_lock:
+                raise SystemExit('Resolved lockfile differs from the locally verified checkpoint')
         PAYLOAD.unlink()
         for name in parts:
             (ROOT / name).unlink()

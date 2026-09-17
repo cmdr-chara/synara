@@ -1,0 +1,93 @@
+name: EKOP isolated verification
+on:
+  push:
+    branches: [astra/session-ekop]
+permissions:
+  contents: read
+concurrency:
+  group: ekop-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  RUSTUP_TOOLCHAIN: 1.98.1
+  CARGO_BUILD_JOBS: '2'
+jobs:
+  registry:
+    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/session-ekop'
+    name: registry-${{ matrix.label }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-15
+            label: macos-arm64
+            host: aarch64-apple-darwin
+          - os: windows-2025
+            label: windows-x64
+            host: x86_64-pc-windows-msvc
+          - os: ubuntu-24.04
+            label: linux-x64
+            host: x86_64-unknown-linux-gnu
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          persist-credentials: false
+      - name: Install and verify pinned native toolchain
+        run: |
+          rustup toolchain install 1.98.1 --profile minimal --component rustfmt --component clippy
+          rustc -vV
+          rustc -vV | grep -F 'host: ${{ matrix.host }}'
+          git rev-parse HEAD
+      - name: Formatting
+        run: cargo fmt --check
+      - name: Compile registry and existing consumers
+        if: success() || failure()
+        run: cargo check --locked -p synara-registry -p synara-workspace -p synara-acp
+      - name: Registry lints
+        if: success() || failure()
+        run: cargo clippy --locked -p synara-registry --all-targets -- -D warnings
+      - name: Registry positive and negative tests
+        if: success() || failure()
+        run: cargo test --locked -p synara-registry
+  linux-native:
+    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/session-ekop'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          persist-credentials: false
+          fetch-depth: 1000
+      - name: Install pinned Rust and native development libraries
+        run: |
+          rustup toolchain install 1.98.1 --profile minimal --component clippy --component rustfmt
+          sudo apt-get update
+          sudo apt-get install -y clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil fonts-dejavu-core
+      - name: Workspace structure and publisher tests
+        run: |
+          python3 scripts/audit_workspace.py
+          python3 scripts/test_apply_source.py
+          python3 scripts/check_roadmap.py --self-test
+          python3 scripts/check_roadmap.py
+      - name: Workspace compilation and lints
+        run: |
+          cargo check --locked --workspace
+          cargo clippy --locked --workspace --all-targets --all-features -- -D warnings
+      - name: Workspace tests
+        run: cargo test --locked --workspace
+      - name: Build native app and test fixture
+        run: cargo build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture
+      - name: Isolated native interaction smoke
+        timeout-minutes: 4
+        run: python3 scripts/native_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output "$RUNNER_TEMP/synara-ekop-smoke"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: ekop-linux-native-smoke
+          path: ${{ runner.temp }}/synara-ekop-smoke/result.json
+          retention-days: 7
+          if-no-files-found: warn

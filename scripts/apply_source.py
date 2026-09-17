@@ -36,6 +36,26 @@ def source_path(name):
             raise SystemExit('Symlink in source path')
     return target
 
+def apply_diff(data):
+    # Validate destinations before applying a bounded UTF-8 delta to the index.
+    data.decode('utf-8')
+    if b'GIT binary patch' in data or b'Binary files ' in data:
+        raise SystemExit('Binary source deltas are not supported')
+    for mode in re.findall(rb'(?m)^(?:new file mode|new mode) ([0-9]+)$', data):
+        if mode not in (b'100644', b'100755'):
+            raise SystemExit('Source deltas cannot create links or submodules')
+    stats = subprocess.check_output(['git', 'apply', '--numstat', '-z', '-'], input=data)
+    rows = [row for row in stats.split(b'\0') if row]
+    if not 1 <= len(rows) <= 2000:
+        raise SystemExit('Invalid source delta file count')
+    for row in rows:
+        parts = row.split(b'\t', 2)
+        if len(parts) != 3 or not parts[2] or not all(part.isdigit() for part in parts[:2]):
+            raise SystemExit('Renames and binary source deltas are not supported')
+        source_path(parts[2].decode('utf-8'))
+    subprocess.run(['git', 'apply', '--index', '--check', '--whitespace=error-all', '-'], input=data, check=True)
+    subprocess.run(['git', 'apply', '--index', '--whitespace=error-all', '-'], input=data, check=True)
+
 def main():
     if os.environ.get('GITHUB_REPOSITORY') != 'cmdr-chara/synara' or os.environ.get('GITHUB_REF') != BRANCH:
         raise SystemExit('This publisher only writes the authorized rewrite branch')
@@ -73,15 +93,20 @@ def main():
             data = stream.read(20 * 1024 * 1024 + 1)
         if len(data) > 20 * 1024 * 1024 or hashlib.sha256(data).hexdigest() != package['sha256']:
             raise SystemExit('Source package checksum or size mismatch')
-        files = json.loads(data)
-        if not isinstance(files, dict) or not 1 <= len(files) <= 2000:
+        mode = package.get('mode', 'snapshot')
+        if mode == 'diff':
+            apply_diff(data)
+            files = {}
+        else:
+            files = json.loads(data)
+        if not isinstance(files, dict) or not (0 if mode == 'diff' else 1) <= len(files) <= 2000:
             raise SystemExit('Invalid source file map')
         for name, content in files.items():
             source_path(name)
             if not isinstance(content, str) or '\x00' in content or len(content.encode()) > 2 * 1024 * 1024:
                 raise SystemExit('Invalid source file contents')
         mode = package.get('mode', 'snapshot')
-        if mode not in ('snapshot', 'patch'):
+        if mode not in ('snapshot', 'patch', 'diff'):
             raise SystemExit('Invalid source application mode')
         deleted = package.get('delete', [])
         if not isinstance(deleted, list) or len(deleted) > 2000:
@@ -118,6 +143,10 @@ def main():
         if not isinstance(message, str) or not 1 <= len(message) <= 200 or '\n' in message:
             raise SystemExit('Invalid commit message')
         subprocess.run(['git', 'add', '--all'], check=True)
+        expected_tree = package.get('expected_tree')
+        if expected_tree is not None:
+            if not isinstance(expected_tree, str) or not re.fullmatch(r'[a-f0-9]{40}', expected_tree) or git('write-tree') != expected_tree:
+                raise SystemExit('Published tree differs from the checked source checkpoint')
         subprocess.run(['git', '-c', 'user.name=github-actions[bot]', '-c', 'user.email=41898282+github-actions[bot]@users.noreply.github.com', 'commit', '-m', message], check=True)
         subprocess.run(['git', 'push', 'origin', f'HEAD:{BRANCH}'], check=True)
         revision = git('rev-parse', 'HEAD')

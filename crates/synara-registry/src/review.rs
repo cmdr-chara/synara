@@ -124,7 +124,10 @@ mod tests {
     fn installed(root: &std::path::Path) -> InstalledAgent {
         crate::RegistryStore::open(root)
             .unwrap()
-            .install(&entry("1.9.0").plan(Platform::current().unwrap()).unwrap(), &Never)
+            .install(
+                &entry("1.9.0").plan(Platform::current().unwrap()).unwrap(),
+                &Never,
+            )
             .unwrap()
     }
 

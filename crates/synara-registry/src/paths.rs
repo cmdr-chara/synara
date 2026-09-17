@@ -7,7 +7,9 @@ const MAX_PATH_DEPTH: usize = 64;
 pub(crate) fn relative_path(value: &str) -> Result<PathBuf> {
     if value.is_empty()
         || value.len() > 2048
-        || value.chars().any(|c| c.is_control() || directional_control(c))
+        || value
+            .chars()
+            .any(|c| c.is_control() || directional_control(c))
     {
         return Err(RegistryError::Invalid(
             "empty, oversized or control-bearing archive path".into(),
@@ -117,8 +119,14 @@ mod tests {
 
     #[test]
     fn rejects_windows_device_aliases_before_touching_the_filesystem() {
-        for name in ["COM¹", "com²", "COM³", "LPT¹", "lpt²", "LPT³", "CONIN$", "CONOUT$"] {
-            for path in [name.to_owned(), format!("bin/{name}.exe"), format!("{name}/child")] {
+        for name in [
+            "COM¹", "com²", "COM³", "LPT¹", "lpt²", "LPT³", "CONIN$", "CONOUT$",
+        ] {
+            for path in [
+                name.to_owned(),
+                format!("bin/{name}.exe"),
+                format!("{name}/child"),
+            ] {
                 assert!(relative_path(&path).is_err(), "accepted {path:?}");
             }
         }

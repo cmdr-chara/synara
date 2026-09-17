@@ -83,11 +83,8 @@ impl Shell {
                 tokio::task::spawn_blocking(move || {
                     let store = RegistryStore::open(root)?;
                     let downloader = HttpsDownloader::default();
-                    let snapshot = store.load_catalog(if network {
-                        Some(&downloader)
-                    } else {
-                        None
-                    })?;
+                    let snapshot =
+                        store.load_catalog(if network { Some(&downloader) } else { None })?;
                     Ok::<_, synara_registry::RegistryError>(RegistryReply::Loaded(
                         snapshot,
                         store.installed()?,
@@ -201,10 +198,11 @@ impl Shell {
                     .register_installation(reference)
                     .await
                     .map_err(|e| e.to_string())?;
-                let list = tokio::task::spawn_blocking(move || RegistryStore::open(root)?.installed())
-                    .await
-                    .map_err(|_| "Registry worker stopped")?
-                    .map_err(|e| e.to_string())?;
+                let list =
+                    tokio::task::spawn_blocking(move || RegistryStore::open(root)?.installed())
+                        .await
+                        .map_err(|_| "Registry worker stopped")?
+                        .map_err(|e| e.to_string())?;
                 Ok(RegistryReply::Changed(
                     list,
                     profiles,
@@ -287,7 +285,13 @@ impl Shell {
             body = body.child(div().p_3().text_color(rgb(0xc9b7a2)).child(notice.clone()));
         }
         if let Some(error) = &self.registry.error {
-            body = body.child(div().p_3().rounded_md().bg(rgb(0x41272d)).child(error.clone()));
+            body = body.child(
+                div()
+                    .p_3()
+                    .rounded_md()
+                    .bg(rgb(0x41272d))
+                    .child(error.clone()),
+            );
         }
         if let Some(plan) = &self.registry.review {
             let mut review = div()
@@ -309,7 +313,12 @@ impl Shell {
                 )))
                 .child(div().text_sm().child("An agent runs with your account's permissions. Callback containment is not an OS sandbox. Approve only publishers you trust."));
             if let Some(note) = &self.registry.review_note {
-                review = review.child(div().text_sm().text_color(rgb(0xc9b7a2)).child(note.clone()));
+                review = review.child(
+                    div()
+                        .text_sm()
+                        .text_color(rgb(0xc9b7a2))
+                        .child(note.clone()),
+                );
             }
             if let Some(license) = plan.license_url().map(str::to_owned) {
                 review = review.child(
@@ -324,20 +333,26 @@ impl Shell {
                     .child(
                         button(
                             "registry-confirm",
-                            if plan.package_managed() { "Approve pinned launcher" } else { "Approve download and install" },
+                            if plan.package_managed() {
+                                "Approve pinned launcher"
+                            } else {
+                                "Approve download and install"
+                            },
                             true,
                         )
                         .on_click(cx.listener(|this, _, _, cx| this.install_reviewed_agent(cx))),
                     )
-                    .child(button("registry-cancel", "Cancel", false).on_click(cx.listener(
-                        |this, _, _, cx| {
-                            if !this.registry.busy {
-                                this.registry.review = None;
-                                this.registry.review_note = None;
-                                cx.notify();
-                            }
-                        },
-                    ))),
+                    .child(
+                        button("registry-cancel", "Cancel", false).on_click(cx.listener(
+                            |this, _, _, cx| {
+                                if !this.registry.busy {
+                                    this.registry.review = None;
+                                    this.registry.review_note = None;
+                                    cx.notify();
+                                }
+                            },
+                        )),
+                    ),
             );
             body = body.child(review);
         }
@@ -353,49 +368,103 @@ impl Shell {
             );
         }
         if !self.registry.installed.is_empty() {
-            body = body.child(div().font_weight(gpui::FontWeight::SEMIBOLD).child("Installed / approved launchers"));
+            body = body.child(
+                div()
+                    .font_weight(gpui::FontWeight::SEMIBOLD)
+                    .child("Installed / approved launchers"),
+            );
             for (index, agent) in self.registry.installed.iter().enumerate() {
-                let enabled = self.profiles.iter().any(|p| p.registry.as_ref() == Some(&agent.reference));
+                let enabled = self
+                    .profiles
+                    .iter()
+                    .any(|p| p.registry.as_ref() == Some(&agent.reference));
                 let enable = agent.reference.clone();
                 let remove = enable.clone();
-                body = body.child(
-                    div().p_3().bg(rgb(0x1b2532)).rounded_md().flex().justify_between().gap_3()
-                        .child(div().flex_1().min_w_0().child(format!(
-                            "{} {} · {}", agent.plan.name(), agent.plan.version(),
-                            if enabled { "Enabled" } else { "Not selected as current version" },
-                        )))
-                        .child(div().flex().gap_2()
-                            .children((!enabled).then(|| button(("registry-enable", index), "Enable", false)
-                                .on_click(cx.listener(move |this, _, _, cx| this.enable_registry_agent(enable.clone(), cx)))))
-                            .child(button(("registry-remove", index), "Remove", false).on_click(cx.listener(move |this, _, _, cx| {
-                                if !this.registry.busy {
-                                    this.registry.remove = Some(remove.clone());
-                                    this.registry.review = None;
-                                    this.registry.review_note = None;
-                                    cx.notify();
-                                }
-                            })))),
-                );
+                body =
+                    body.child(
+                        div()
+                            .p_3()
+                            .bg(rgb(0x1b2532))
+                            .rounded_md()
+                            .flex()
+                            .justify_between()
+                            .gap_3()
+                            .child(div().flex_1().min_w_0().child(format!(
+                                "{} {} · {}",
+                                agent.plan.name(),
+                                agent.plan.version(),
+                                if enabled {
+                                    "Enabled"
+                                } else {
+                                    "Not selected as current version"
+                                },
+                            )))
+                            .child(
+                                div()
+                                    .flex()
+                                    .gap_2()
+                                    .children((!enabled).then(|| {
+                                        button(("registry-enable", index), "Enable", false)
+                                            .on_click(cx.listener(move |this, _, _, cx| {
+                                                this.enable_registry_agent(enable.clone(), cx)
+                                            }))
+                                    }))
+                                    .child(
+                                        button(("registry-remove", index), "Remove", false)
+                                            .on_click(cx.listener(move |this, _, _, cx| {
+                                                if !this.registry.busy {
+                                                    this.registry.remove = Some(remove.clone());
+                                                    this.registry.review = None;
+                                                    this.registry.review_note = None;
+                                                    cx.notify();
+                                                }
+                                            })),
+                                    ),
+                            ),
+                    );
             }
         }
         if let Some(catalog) = &self.registry.catalog {
             body = body.child(div().font_weight(gpui::FontWeight::SEMIBOLD).child(format!(
-                "Catalog · {} {}", catalog.agents.len(),
-                if catalog.agents.len() == 1 { "agent" } else { "agents" },
+                "Catalog · {} {}",
+                catalog.agents.len(),
+                if catalog.agents.len() == 1 {
+                    "agent"
+                } else {
+                    "agents"
+                },
             )));
             for (index, entry) in catalog.agents.iter().enumerate().filter(|(_, a)| {
                 query.is_empty()
-                    || format!("{} {} {}", a.name, a.id, a.description).to_lowercase().contains(&query)
+                    || format!("{} {} {}", a.name, a.id, a.description)
+                        .to_lowercase()
+                        .contains(&query)
             }) {
                 let plan = Platform::current().and_then(|platform| entry.plan(platform));
-                let reviews: Vec<_> = self.registry.installed.iter()
+                let reviews: Vec<_> = self
+                    .registry
+                    .installed
+                    .iter()
                     .filter(|agent| agent.plan.id() == entry.id)
-                    .filter_map(|agent| catalog.review_update(agent, agent.plan.platform()).ok().flatten())
+                    .filter_map(|agent| {
+                        catalog
+                            .review_update(agent, agent.plan.platform())
+                            .ok()
+                            .flatten()
+                    })
                     .collect();
-                let installed = reviews.iter().any(|review| review.relation == VersionRelation::Unchanged);
-                let revised = reviews.iter().any(|review| review.relation == VersionRelation::Revised);
-                let older = reviews.iter().any(|review| review.relation == VersionRelation::Older);
-                let newer = reviews.iter().any(|review| review.relation == VersionRelation::Newer);
+                let installed = reviews
+                    .iter()
+                    .any(|review| review.relation == VersionRelation::Unchanged);
+                let revised = reviews
+                    .iter()
+                    .any(|review| review.relation == VersionRelation::Revised);
+                let older = reviews
+                    .iter()
+                    .any(|review| review.relation == VersionRelation::Older);
+                let newer = reviews
+                    .iter()
+                    .any(|review| review.relation == VersionRelation::Newer);
                 let note = if revised {
                     Some("Same version, changed metadata. Review the new origin, arguments, environment and integrity policy before approving a separate installation.".to_string())
                 } else if older {
@@ -405,25 +474,67 @@ impl Shell {
                 } else {
                     None
                 };
-                let badge = if revised { " · Revised metadata" } else if older { " · Older version" } else if newer { " · Update available" } else { "" };
-                let mut row = div().p_3().rounded_md().bg(rgb(0x1b2532)).flex().flex_col().gap_2()
-                    .child(div().font_weight(gpui::FontWeight::SEMIBOLD).child(format!("{} · {}{badge}", entry.name, entry.version)))
-                    .child(div().text_sm().text_color(rgb(0xa7b5c7)).child(entry.description.clone()));
+                let badge = if revised {
+                    " · Revised metadata"
+                } else if older {
+                    " · Older version"
+                } else if newer {
+                    " · Update available"
+                } else {
+                    ""
+                };
+                let mut row = div()
+                    .p_3()
+                    .rounded_md()
+                    .bg(rgb(0x1b2532))
+                    .flex()
+                    .flex_col()
+                    .gap_2()
+                    .child(
+                        div()
+                            .font_weight(gpui::FontWeight::SEMIBOLD)
+                            .child(format!("{} · {}{badge}", entry.name, entry.version)),
+                    )
+                    .child(
+                        div()
+                            .text_sm()
+                            .text_color(rgb(0xa7b5c7))
+                            .child(entry.description.clone()),
+                    );
                 match plan {
                     Ok(plan) if !installed => {
-                        let label = if plan.package_managed() { "Review launcher" } else { "Review download" };
-                        row = row.child(button(("registry-review", index), label, false).on_click(cx.listener(move |this, _, _, cx| {
-                            if !this.registry.busy {
-                                this.registry.review = Some(plan.clone());
-                                this.registry.review_note = note.clone();
-                                this.registry.remove = None;
-                                this.registry.error = None;
-                                cx.notify();
-                            }
-                        })));
+                        let label = if plan.package_managed() {
+                            "Review launcher"
+                        } else {
+                            "Review download"
+                        };
+                        row = row.child(button(("registry-review", index), label, false).on_click(
+                            cx.listener(move |this, _, _, cx| {
+                                if !this.registry.busy {
+                                    this.registry.review = Some(plan.clone());
+                                    this.registry.review_note = note.clone();
+                                    this.registry.remove = None;
+                                    this.registry.error = None;
+                                    cx.notify();
+                                }
+                            }),
+                        ));
                     }
-                    Ok(_) => row = row.child(div().text_sm().child("This exact configuration is installed")),
-                    Err(error) => row = row.child(div().text_sm().text_color(rgb(0xc9b7a2)).child(error.to_string())),
+                    Ok(_) => {
+                        row = row.child(
+                            div()
+                                .text_sm()
+                                .child("This exact configuration is installed"),
+                        )
+                    }
+                    Err(error) => {
+                        row = row.child(
+                            div()
+                                .text_sm()
+                                .text_color(rgb(0xc9b7a2))
+                                .child(error.to_string()),
+                        )
+                    }
                 }
                 body = body.child(row);
             }

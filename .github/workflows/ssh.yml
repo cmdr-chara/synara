@@ -148,6 +148,37 @@ jobs:
           rustup toolchain install 1.98.1 --profile minimal --component rustfmt --component clippy
           sudo apt-get update
           sudo apt-get install -y clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil fonts-dejavu-core
+      - name: Export public native development inputs
+        if: contains(github.event.head_commit.message, '[ajm-native-kit]')
+        run: |
+          python3 - <<'PY'
+          import glob, pathlib, shutil, tarfile
+          root = pathlib.Path('/tmp/ajm-native-kit')
+          (root / 'usr/lib/x86_64-linux-gnu').mkdir(parents=True)
+          shutil.copytree('/usr/include', root / 'usr/include', symlinks=True)
+          shutil.copytree('/usr/lib/x86_64-linux-gnu/pkgconfig', root / 'usr/lib/x86_64-linux-gnu/pkgconfig', symlinks=True)
+          shutil.copytree('/usr/share/pkgconfig', root / 'usr/share/pkgconfig', symlinks=True)
+          names = 'fontconfig freetype expat png16 z bz2 brotli* harfbuzz graphite2 asound xcb* X11 X11-xcb Xau Xdmcp Xrandr Xrender Xext Xfixes Xcursor Xinerama xkbcommon* wayland* ffi EGL GL* vulkan ssl crypto zstd clang* LLVM* xml2 edit tinfo bsd md drm*'
+          for name in names.split():
+              for source in glob.glob('/usr/lib/x86_64-linux-gnu/lib' + name + '.so*'):
+                  p = pathlib.Path(source)
+                  shutil.copy2(p, root / 'usr/lib/x86_64-linux-gnu' / p.name)
+          for source in glob.glob('/usr/lib/llvm-*/lib/libclang.so*'):
+              p = pathlib.Path(source)
+              shutil.copy2(p, root / 'usr/lib/x86_64-linux-gnu' / p.name)
+          with tarfile.open('/tmp/ajm-native-kit.tar.gz', 'w:gz') as tar:
+              tar.add(root / 'usr', arcname='usr')
+          PY
+          sha256sum /tmp/ajm-native-kit.tar.gz > /tmp/ajm-native-kit.sha256
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: contains(github.event.head_commit.message, '[ajm-native-kit]')
+        with:
+          name: ajm-native-development-inputs
+          path: |
+            /tmp/ajm-native-kit.tar.gz
+            /tmp/ajm-native-kit.sha256
+          retention-days: 1
+          compression-level: 0
       - name: Structural checks
         run: |
           set -o pipefail

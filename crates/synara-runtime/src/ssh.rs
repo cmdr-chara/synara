@@ -74,6 +74,47 @@ impl PinnedSshHost {
         spec.args = args;
         Ok(spec)
     }
+
+    /// Build an interactive SSH transport whose local process is owned by Synara's
+    /// native PTY. OpenSSH escape processing is disabled so terminal input cannot
+    /// mutate connection state outside the reviewed Synara controls.
+    pub fn pty_command(
+        &self,
+        launch: &LaunchSpec,
+        cwd: &Path,
+    ) -> Result<LaunchSpec, RuntimeError> {
+        let mut spec = self.command(launch, cwd)?;
+        let Some(no_tty) = spec.args.iter().position(|argument| argument == "-T") else {
+            return Err(RuntimeError::Invalid(
+                "SSH command is missing its non-interactive TTY guard".into(),
+            ));
+        };
+        spec.args.remove(no_tty);
+        let Some(request_tty) = spec
+            .args
+            .iter_mut()
+            .find(|argument| argument.as_str() == "RequestTTY=no")
+        else {
+            return Err(RuntimeError::Invalid(
+                "SSH command is missing its TTY policy".into(),
+            ));
+        };
+        *request_tty = "RequestTTY=force".into();
+        let boundary = spec
+            .args
+            .iter()
+            .position(|argument| argument == "--")
+            .ok_or_else(|| RuntimeError::Invalid("SSH command boundary is missing".into()))?;
+        spec.args.splice(
+            boundary..boundary,
+            [
+                "-tt".into(),
+                "-o".into(),
+                "EscapeChar=none".into(),
+            ],
+        );
+        Ok(spec)
+    }
 }
 
 #[async_trait]
@@ -172,6 +213,35 @@ mod tests {
             port: 2222,
             user: Some("developer".into()),
         }
+    }
+
+    #[test]
+    fn interactive_transport_disables_openssh_escapes() {
+        let (_root, known, identity) = files();
+        let host = PinnedSshHost::new(target(), &known, &identity).unwrap();
+        let launch = host
+            .pty_command(&LaunchSpec::new("/bin/sh"), Path::new("/project"))
+            .unwrap();
+        assert!(launch.args.iter().any(|argument| argument == "-tt"));
+        assert!(
+            launch
+                .args
+                .iter()
+                .any(|argument| argument == "EscapeChar=none")
+        );
+        assert!(
+            launch
+                .args
+                .iter()
+                .any(|argument| argument == "RequestTTY=force")
+        );
+        assert!(!launch.args.iter().any(|argument| argument == "-T"));
+        assert!(
+            !launch
+                .args
+                .iter()
+                .any(|argument| argument == "RequestTTY=no")
+        );
     }
 
     #[test]

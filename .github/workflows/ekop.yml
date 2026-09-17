@@ -11,8 +11,48 @@ env:
   RUSTUP_TOOLCHAIN: 1.98.1
   CARGO_BUILD_JOBS: '2'
 jobs:
-  registry:
+  source:
     if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/session-ekop'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    permissions:
+      contents: write
+    outputs:
+      revision: ${{ steps.source.outputs.revision }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          fetch-depth: 0
+      - name: Format owned source and publish exact test candidate
+        id: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-list --max-parents=0 HEAD)" = '43b1fb89bf19dadc388d18008f9ceb21b8215716'
+          test "$(git ls-remote origin refs/heads/astra/session-ekop | cut -f1)" = "$GITHUB_SHA"
+          rustup toolchain install 1.98.1 --profile minimal --component rustfmt
+          cargo fmt -p synara-registry
+          rustfmt --edition 2024 crates/synara-app/src/shell/registry.rs
+          if test -f foundations/browser/lib.rs; then rustfmt --edition 2024 foundations/browser/lib.rs; fi
+          python3 - <<'PY'
+          import subprocess
+          paths = subprocess.check_output(['git', 'diff', '--name-only', '-z']).decode().split('\0')
+          for path in filter(None, paths):
+              if not (path.startswith('crates/synara-registry/') or path == 'crates/synara-app/src/shell/registry.rs' or path == 'foundations/browser/lib.rs'):
+                  raise SystemExit('Formatter changed an unowned path: ' + path)
+          PY
+          git diff --check
+          if ! git diff --quiet; then
+            git add -- crates/synara-registry crates/synara-app/src/shell/registry.rs
+            if test -f foundations/browser/lib.rs; then git add -- foundations/browser/lib.rs; fi
+            git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'style(ekop): format owned Rust sources with pinned toolchain'
+            git push origin HEAD:refs/heads/astra/session-ekop
+          fi
+          echo "revision=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo "Verified source candidate: $(git rev-parse HEAD)" >> "$GITHUB_STEP_SUMMARY"
+  registry:
+    needs: source
     name: registry-${{ matrix.label }}
     strategy:
       fail-fast: false
@@ -35,6 +75,7 @@ jobs:
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
+          ref: ${{ needs.source.outputs.revision }}
           persist-credentials: false
       - name: Install and verify pinned native toolchain
         run: |
@@ -43,7 +84,9 @@ jobs:
           rustc -vV | grep -F 'host: ${{ matrix.host }}'
           git rev-parse HEAD
       - name: Formatting
-        run: cargo fmt --check
+        run: |
+          cargo fmt --check
+          rustfmt --edition 2024 --check foundations/browser/lib.rs
       - name: Compile registry and existing consumers
         if: success() || failure()
         run: cargo check --locked -p synara-registry -p synara-workspace -p synara-acp
@@ -53,13 +96,19 @@ jobs:
       - name: Registry positive and negative tests
         if: success() || failure()
         run: cargo test --locked -p synara-registry
+      - name: Browser policy foundation tests, not native embedding acceptance
+        if: success() || failure()
+        run: |
+          rustc --edition 2024 -D warnings --test foundations/browser/lib.rs -o "$RUNNER_TEMP/browser-policy-tests.exe"
+          "$RUNNER_TEMP/browser-policy-tests.exe"
   linux-native:
-    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/session-ekop'
+    needs: source
     runs-on: ubuntu-24.04
     timeout-minutes: 35
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
+          ref: ${{ needs.source.outputs.revision }}
           persist-credentials: false
           fetch-depth: 1000
       - name: Install pinned Rust and native development libraries
@@ -75,6 +124,7 @@ jobs:
           python3 scripts/check_roadmap.py
       - name: Workspace compilation and lints
         run: |
+          cargo fmt --check
           cargo check --locked --workspace
           cargo clippy --locked --workspace --all-targets --all-features -- -D warnings
       - name: Workspace tests
@@ -92,19 +142,22 @@ jobs:
           retention-days: 7
           if-no-files-found: warn
   source-checkpoint:
-    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/session-ekop'
+    needs: source
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
+          ref: ${{ needs.source.outputs.revision }}
           persist-credentials: false
           fetch-depth: 0
       - name: Export independently rooted candidate source
+        env:
+          CANDIDATE: ${{ needs.source.outputs.revision }}
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD)" = "$CANDIDATE"
           test "$(git rev-list --max-parents=0 HEAD)" = '43b1fb89bf19dadc388d18008f9ceb21b8215716'
           export_dir="$RUNNER_TEMP/ekop-source"
           mkdir "$export_dir"

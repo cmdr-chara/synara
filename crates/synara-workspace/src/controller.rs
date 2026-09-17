@@ -128,8 +128,19 @@ impl Controller {
                 "application is shutting down".into(),
             ));
         }
+        if profile.registry.is_some()
+            && matches!(
+                self.workspace.workspace_for_task(task).await?.location,
+                WorkspaceLocation::Ssh { .. }
+            )
+        {
+            return Err(WorkspaceError::Invalid("registry installations are local. Configure an agent installed on the SSH host instead".into()));
+        }
         let context = self.context(task).await?;
-        let spec = profile.launch_spec()?;
+        let profile = profile.clone();
+        let spec = tokio::task::spawn_blocking(move || profile.launch_spec())
+            .await
+            .map_err(|_| WorkspaceError::Worker)??;
         let connection = if restart {
             self.manager
                 .restart(self.backend.as_ref(), &spec, context)

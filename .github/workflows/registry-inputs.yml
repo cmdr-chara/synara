@@ -1,0 +1,44 @@
+name: Registry verification inputs
+on:
+  push:
+    branches: [astra/gpui-clean-rewrite]
+    paths: [.github/workflows/registry-inputs.yml]
+permissions:
+  contents: read
+jobs:
+  inputs:
+    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/gpui-clean-rewrite'
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Resolve pinned archive and HTTPS libraries
+        shell: bash
+        run: |
+          set -euo pipefail
+          rustup toolchain install 1.98.1 --profile minimal
+          mkdir -p /tmp/registry-inputs/src /tmp/registry-export
+          cat > /tmp/registry-inputs/Cargo.toml <<'EOF'
+          [package]
+          name = "synara-registry-inputs"
+          version = "0.0.0"
+          edition = "2024"
+          [dependencies]
+          ureq = { version = "=3.4.0", default-features = false, features = ["rustls"] }
+          tar = { version = "=0.4.46", default-features = false }
+          zip = { version = "=8.6.0", default-features = false, features = ["deflate"] }
+          flate2 = "1.1"
+          bzip2 = "0.6"
+          url = "2.5"
+          semver = { version = "1.0", features = ["serde"] }
+          EOF
+          printf 'fn main() {}\n' > /tmp/registry-inputs/src/main.rs
+          cargo +1.98.1 fetch --manifest-path /tmp/registry-inputs/Cargo.toml
+          cp /tmp/registry-inputs/Cargo.lock /tmp/registry-export/registry-dependencies.lock
+          tar -C "$HOME/.cargo" -czf /tmp/registry-export/dependencies.tar.gz registry/index registry/cache
+          curl --fail --silent --show-error --location --proto '=https' --proto-redir '=https' --max-time 60 --max-filesize 8388608 https://cdn.agentclientprotocol.com/registry/v1/latest/registry.json -o /tmp/registry-export/registry.json
+          sha256sum /tmp/registry-export/dependencies.tar.gz /tmp/registry-export/registry.json > /tmp/registry-export/SHA256SUMS
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: registry-verification-inputs
+          path: /tmp/registry-export/
+          retention-days: 1
+          if-no-files-found: error

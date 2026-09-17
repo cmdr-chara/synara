@@ -10,6 +10,8 @@ use synara_runtime::{LaunchSpec, valid_env_key};
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(deny_unknown_fields)]
 pub struct AgentProfile {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub registry: Option<synara_registry::RegistryReference>,
     pub id: String,
     pub name: String,
     pub command: PathBuf,
@@ -31,6 +33,11 @@ impl AgentProfile {
         {
             return Err(AgentError::Invalid("invalid agent profile".into()));
         }
+        if let Some(reference) = &self.registry {
+            reference
+                .validate()
+                .map_err(|error| AgentError::Invalid(error.to_string()))?;
+        }
         self.spec_with_environment(|_| None)?.validate()
     }
     fn spec_with_environment(
@@ -44,6 +51,7 @@ impl AgentProfile {
             }
         }
         Ok(AgentSpec {
+            launch_directory: None,
             id: self.id.clone(),
             name: self.name.clone(),
             origin: "User-configured local executable".into(),
@@ -54,9 +62,40 @@ impl AgentProfile {
             },
         })
     }
+    pub fn from_registry(reference: synara_registry::RegistryReference) -> AgentResult<Self> {
+        let spec = reference
+            .agent_spec()
+            .map_err(|error| AgentError::Invalid(error.to_string()))?;
+        Ok(Self {
+            registry: Some(reference),
+            id: spec.id,
+            name: spec.name,
+            command: spec.launch.command,
+            args: spec.launch.args,
+            inherit_env: vec![],
+        })
+    }
     pub fn launch_spec(&self) -> AgentResult<AgentSpec> {
         self.validate()?;
-        let spec = self.spec_with_environment(|key| std::env::var(key).ok())?;
+        let spec = if let Some(reference) = &self.registry {
+            let mut spec = reference
+                .agent_spec()
+                .map_err(|error| AgentError::Invalid(error.to_string()))?;
+            if spec.id != self.id
+                || spec.launch.command != self.command
+                || spec.launch.args != self.args
+            {
+                return Err(AgentError::Invalid("managed launch fields differ from the approved installation. Use a custom profile for overrides".into()));
+            }
+            for key in &self.inherit_env {
+                if let Ok(value) = std::env::var(key) {
+                    spec.launch.env.insert(key.clone(), value);
+                }
+            }
+            spec
+        } else {
+            self.spec_with_environment(|key| std::env::var(key).ok())?
+        };
         spec.validate()?;
         Ok(spec)
     }
@@ -65,6 +104,7 @@ impl AgentProfile {
 pub fn default_profiles() -> Vec<AgentProfile> {
     vec![
         AgentProfile {
+            registry: None,
             id: "opencode".into(),
             name: "OpenCode".into(),
             command: "opencode".into(),
@@ -72,6 +112,7 @@ pub fn default_profiles() -> Vec<AgentProfile> {
             inherit_env: vec![],
         },
         AgentProfile {
+            registry: None,
             id: "gemini".into(),
             name: "Gemini CLI".into(),
             command: "gemini".into(),

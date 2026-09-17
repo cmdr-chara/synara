@@ -95,6 +95,10 @@ fn connection_key(spec: &AgentSpec, context: &ConnectionContext) -> String {
         part(key.as_bytes());
         part(value.as_bytes());
     }
+    part(&[u8::from(spec.launch_directory.is_some())]);
+    if let Some(directory) = &spec.launch_directory {
+        part(directory.as_os_str().as_encoded_bytes());
+    }
     part(context.cwd.as_os_str().as_encoded_bytes());
     part(context.host.label().as_bytes());
     hex::encode(hash.finalize())
@@ -166,6 +170,7 @@ mod tests {
             interactions: Arc::new(DenyInteractions),
         };
         let spec = AgentSpec {
+            launch_directory: None,
             id: "fixture".into(),
             name: "Fixture".into(),
             origin: "test".into(),

@@ -1,0 +1,41 @@
+{
+  "version": "1.0.0",
+  "agents": [
+    {
+      "id": "opencode",
+      "name": "OpenCode",
+      "version": "1.18.31",
+      "description": "Explicitly reviewed official release used only by the no-credentials compatibility probe.",
+      "repository": "https://github.com/anomalyco/opencode",
+      "license_url": "https://github.com/anomalyco/opencode/blob/v1.18.31/LICENSE",
+      "distribution": {
+        "binary": {
+          "linux-x86_64": {
+            "archive": "https://github.com/anomalyco/opencode/releases/download/v1.18.31/opencode-linux-x64-baseline.tar.gz",
+            "sha256": "b283e8dbe9e6fc224bb4b79992ce3bd2174b8b7b0c3e7d1b4e6024a1d11edc84",
+            "cmd": "./opencode",
+            "args": ["acp"]
+          }
+        }
+      }
+    },
+    {
+      "id": "gemini-cli",
+      "name": "Gemini CLI",
+      "version": "0.60.0",
+      "description": "Official JavaScript release bundle, hosted externally by Node during the no-credentials compatibility probe.",
+      "repository": "https://github.com/google-gemini/gemini-cli",
+      "license_url": "https://github.com/google-gemini/gemini-cli/blob/v0.60.0/LICENSE",
+      "distribution": {
+        "binary": {
+          "linux-x86_64": {
+            "archive": "https://github.com/google-gemini/gemini-cli/releases/download/v0.60.0/gemini-cli-bundle.zip",
+            "sha256": "4d3b42ceaaddf13f8a6b048326dfa727808810913ff7148b85d1cd6b3f796fc7",
+            "cmd": "./gemini.js",
+            "args": ["--acp"]
+          }
+        }
+      }
+    }
+  ]
+}

@@ -3,6 +3,8 @@ mod bounded;
 mod filesystem;
 mod host;
 mod process;
+#[cfg(target_os = "linux")]
+mod process_linux;
 mod ssh;
 mod terminal;
 mod terminal_input;

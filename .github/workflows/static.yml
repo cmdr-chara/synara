@@ -1,0 +1,25 @@
+name: Roadmap and formatting
+on:
+  push:
+    branches: [astra/gpui-clean-rewrite]
+permissions:
+  contents: read
+jobs:
+  static:
+    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/gpui-clean-rewrite'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          persist-credentials: false
+      - name: Roadmap validator regression tests
+        run: python3 scripts/check_roadmap.py --self-test
+      - name: Validate roadmap and README navigation
+        run: python3 scripts/check_roadmap.py
+      - name: Install pinned formatter
+        if: always()
+        run: rustup toolchain install 1.98.1 --profile minimal --component rustfmt
+      - name: Check Rust formatting without a full native build
+        if: always()
+        run: cargo +1.98.1 fmt --check

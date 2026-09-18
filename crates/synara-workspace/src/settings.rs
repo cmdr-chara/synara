@@ -1,4 +1,6 @@
-use crate::{StorageError, StorageResult, Store, WorkspaceError, WorkspaceResult, WorkspaceService};
+use crate::{
+    StorageError, StorageResult, Store, WorkspaceError, WorkspaceResult, WorkspaceService,
+};
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 
@@ -102,11 +104,11 @@ impl AppSettings {
         let mut shortcuts = HashSet::new();
         for binding in &self.keybindings {
             if !valid_binding_text(&binding.command) || !valid_binding_text(&binding.shortcut) {
-                return Err(WorkspaceError::Invalid(
-                    "invalid custom keybinding".into(),
-                ));
+                return Err(WorkspaceError::Invalid("invalid custom keybinding".into()));
             }
-            if !commands.insert(binding.command.as_str()) || !shortcuts.insert(binding.shortcut.as_str()) {
+            if !commands.insert(binding.command.as_str())
+                || !shortcuts.insert(binding.shortcut.as_str())
+            {
                 return Err(WorkspaceError::Invalid(
                     "custom keybindings must have unique commands and shortcuts".into(),
                 ));
@@ -128,9 +130,7 @@ fn validate_font_family(value: Option<&str>) -> WorkspaceResult<()> {
 }
 
 fn valid_binding_text(value: &str) -> bool {
-    !value.is_empty()
-        && value.len() <= MAX_BINDING_BYTES
-        && !value.chars().any(char::is_control)
+    !value.is_empty() && value.len() <= MAX_BINDING_BYTES && !value.chars().any(char::is_control)
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -170,9 +170,9 @@ fn load(store: &Store) -> StorageResult<LoadedSettings> {
         return Ok(LoadedSettings::defaults(SettingsRecovery::Malformed));
     };
     if version != u64::from(SETTINGS_VERSION) {
-        return Ok(LoadedSettings::defaults(SettingsRecovery::UnsupportedVersion {
-            found: version,
-        }));
+        return Ok(LoadedSettings::defaults(
+            SettingsRecovery::UnsupportedVersion { found: version },
+        ));
     }
     let settings: AppSettings = match serde_json::from_value(value) {
         Ok(settings) => settings,

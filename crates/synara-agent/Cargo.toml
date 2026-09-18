@@ -10,6 +10,7 @@ synara-core = { path = "../synara-core" }
 synara-runtime = { path = "../synara-runtime" }
 async-trait.workspace = true
 serde.workspace = true
+serde_json.workspace = true
 thiserror.workspace = true
 tokio.workspace = true
 tokio-util.workspace = true

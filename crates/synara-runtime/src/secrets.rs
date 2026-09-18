@@ -14,7 +14,10 @@ pub struct SecretReference {
 }
 
 impl SecretReference {
-    pub fn new(service: impl Into<String>, account: impl Into<String>) -> Result<Self, RuntimeError> {
+    pub fn new(
+        service: impl Into<String>,
+        account: impl Into<String>,
+    ) -> Result<Self, RuntimeError> {
         let reference = Self {
             service: service.into(),
             account: account.into(),
@@ -78,8 +81,7 @@ pub enum SecretStoreState {
 pub trait SecretStore: Send + Sync {
     fn state(&self) -> SecretStoreState;
 
-    async fn read(&self, reference: &SecretReference)
-    -> Result<Option<SecretValue>, RuntimeError>;
+    async fn read(&self, reference: &SecretReference) -> Result<Option<SecretValue>, RuntimeError>;
 
     async fn write(
         &self,
@@ -113,12 +115,14 @@ impl UnavailableSecretStore {
 
     fn error(self) -> RuntimeError {
         match self.state {
-            SecretStoreState::Locked => RuntimeError::Denied(
-                "the operating-system credential store is locked".into(),
-            ),
-            SecretStoreState::Unavailable | SecretStoreState::Available => RuntimeError::Unsupported(
-                "an operating-system credential store is unavailable".into(),
-            ),
+            SecretStoreState::Locked => {
+                RuntimeError::Denied("the operating-system credential store is locked".into())
+            }
+            SecretStoreState::Unavailable | SecretStoreState::Available => {
+                RuntimeError::Unsupported(
+                    "an operating-system credential store is unavailable".into(),
+                )
+            }
         }
     }
 }
@@ -129,10 +133,7 @@ impl SecretStore for UnavailableSecretStore {
         self.state
     }
 
-    async fn read(
-        &self,
-        reference: &SecretReference,
-    ) -> Result<Option<SecretValue>, RuntimeError> {
+    async fn read(&self, reference: &SecretReference) -> Result<Option<SecretValue>, RuntimeError> {
         reference.validate()?;
         Err(self.error())
     }

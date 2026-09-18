@@ -21,6 +21,7 @@ async fn workspace(profile: &str) -> (WorkspaceService, Task, tempfile::TempDir)
             command: env!("CARGO_BIN_EXE_synara-acp-fixture").into(),
             args: vec!["--integration-fixture".into(), profile.into()],
             inherit_env: vec![],
+            secret_env: Default::default(),
         }])
         .await
         .unwrap();

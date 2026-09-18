@@ -109,7 +109,11 @@ def main():
                 return False
             with sqlite3.connect(database.as_uri() + '?mode=ro', uri=True) as db:
                 rows = [row[0] for row in db.execute('SELECT data FROM workspaces')]
-            return any('"Ssh"' in row and str(remote_project) in row for row in rows)
+            return any(
+                json.loads(row).get('location', {}).get('kind') == 'ssh'
+                and str(remote_project) in row
+                for row in rows
+            )
 
         wait_until(enrolled, 'persisted pinned remote workspace', 20)
         checks.append('remote-panel-pinned-enrollment')

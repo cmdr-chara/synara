@@ -1,0 +1,81 @@
+name: Native UI reference inputs
+on:
+  push:
+    branches: [astra/gpui-clean-rewrite]
+    paths: [.github/workflows/ui-reference.yml]
+permissions:
+  contents: read
+jobs:
+  reference:
+    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/gpui-clean-rewrite'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      REFERENCE_REVISION: 33333439c4b9c74d0097bc01196cccc921f67cf3
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          fetch-depth: 1000
+          persist-credentials: false
+      - name: Capture immutable visual references outside the source tree
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, os, pathlib, struct, subprocess, urllib.request
+          root = pathlib.Path(os.environ['RUNNER_TEMP']) / 'synara-ui-reference'
+          root.mkdir()
+          revision = os.environ['REFERENCE_REVISION']
+          assert len(revision) == 40 and all(c in '0123456789abcdef' for c in revision)
+          manifest = {'reference_repository': 'Emanuele-web04/synara',
+                      'reference_revision': revision,
+                      'native_revision': subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(),
+                      'use': 'Visual comparison evidence only. Not application assets.', 'images': []}
+          for name in ['readme-split-view-dark.png', 'readme-appearance-dark.png']:
+              path = 'assets/prod/' + name
+              url = 'https://raw.githubusercontent.com/Emanuele-web04/synara/' + revision + '/' + path
+              with urllib.request.urlopen(url, timeout=30) as response:
+                  data = response.read(16 * 1024 * 1024 + 1)
+              assert len(data) <= 16 * 1024 * 1024, 'reference exceeds evidence limit'
+              assert data[:8] == b'\x89PNG\r\n\x1a\n' and data[12:16] == b'IHDR', 'not a PNG reference'
+              width, height = struct.unpack('>II', data[16:24])
+              (root / name).write_bytes(data)
+              manifest['images'].append({'path': path, 'url': url, 'width': width, 'height': height,
+                                         'sha256': hashlib.sha256(data).hexdigest()})
+          (root / 'reference.json').write_text(json.dumps(manifest, indent=2) + '\n')
+          subprocess.run(['git', 'bundle', 'create', str(root / 'native-source.bundle'), 'HEAD'], check=True)
+          print(json.dumps(manifest, indent=2))
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: native-ui-reference-inputs
+          path: ${{ runner.temp }}/synara-ui-reference/
+          retention-days: 7
+          if-no-files-found: error
+      - name: Native development libraries for isolated offline verification
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev
+      - name: Export public native development inputs
+        run: |
+          python3 - <<'PY'
+          import glob, hashlib, os, pathlib, tarfile
+          root = pathlib.Path(os.environ['RUNNER_TEMP']) / 'synara-ui-native-inputs'
+          root.mkdir()
+          paths = ['/usr/include', '/usr/lib/x86_64-linux-gnu/pkgconfig', '/usr/share/pkgconfig']
+          names = ['xkbcommon', 'wayland', 'fontconfig', 'freetype', 'asound', 'vulkan', 'EGL', 'GL', 'X', 'xcb', 'ffi', 'zstd', 'brotli', 'bz2', 'png', 'expat', 'uuid', 'z', 'drm', 'gbm', 'udev', 'dbus', 'ssl', 'crypto']
+          for name in names:
+              paths.extend(glob.glob('/usr/lib/x86_64-linux-gnu/lib' + name + '*.so*'))
+          paths.extend(glob.glob('/usr/lib/llvm-*/lib/libclang.so*'))
+          archive_path = root / 'native-sysroot.tar.gz'
+          with tarfile.open(archive_path, 'w:gz', dereference=True) as archive:
+              for name in sorted(set(paths)):
+                  if pathlib.Path(name).exists():
+                      archive.add(name, arcname=name.lstrip('/'))
+          (root / 'SHA256SUMS').write_text(hashlib.file_digest(archive_path.open('rb'), 'sha256').hexdigest() + '  native-sysroot.tar.gz\n')
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: native-ui-development-inputs
+          path: ${{ runner.temp }}/synara-ui-native-inputs/
+          retention-days: 3
+          compression-level: 0
+          if-no-files-found: error

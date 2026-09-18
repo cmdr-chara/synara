@@ -1,0 +1,47 @@
+name: Scoped Git backend formatting
+on:
+  push:
+    branches: [astra/gpui-clean-rewrite]
+    paths:
+      - 'crates/synara-workspace/src/git_operations/**'
+      - '.github/workflows/backend-git-format.yml'
+permissions:
+  contents: read
+concurrency:
+  group: git-backend-format-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  format:
+    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/gpui-clean-rewrite'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          fetch-depth: 0
+      - name: Install pinned formatter
+        run: rustup toolchain install 1.98.1 --profile minimal --component rustfmt
+      - name: Format only the new backend module and publish without overwriting concurrent work
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REPOSITORY" = cmdr-chara/synara
+          test "$GITHUB_REF" = refs/heads/astra/gpui-clean-rewrite
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-list --max-parents=0 HEAD)" = 43b1fb89bf19dadc388d18008f9ceb21b8215716
+          rustfmt +1.98.1 --edition 2024 crates/synara-workspace/src/git_operations/mod.rs
+          python3 - <<'PY'
+          import subprocess
+          paths = subprocess.check_output(['git', 'diff', '--name-only', '-z']).decode().split('\0')
+          if any(path and not path.startswith('crates/synara-workspace/src/git_operations/') for path in paths):
+              raise SystemExit('Formatter touched a path outside the exclusive backend scope')
+          PY
+          git diff --check
+          if ! git diff --quiet; then
+            git add -- crates/synara-workspace/src/git_operations
+            git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' -c core.hooksPath=/dev/null -c commit.gpgSign=false commit -m 'style(git): format typed backend operation service'
+            git push origin HEAD:refs/heads/astra/gpui-clean-rewrite
+          fi
+          printf 'Formatted candidate: `%s`\n' "$(git rev-parse HEAD)" >> "$GITHUB_STEP_SUMMARY"

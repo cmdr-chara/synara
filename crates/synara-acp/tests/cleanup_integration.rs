@@ -284,3 +284,46 @@ async fn cancelling_during_prompt_start_delivery_never_launches_late_work() {
 async fn cancelling_during_user_text_delivery_never_launches_late_work() {
     cancel_before_dispatch(Stall::UserText).await;
 }
+
+#[tokio::test]
+async fn crash_rejects_new_sessions_and_disconnects_before_blocked_error_delivery() {
+    let h = Harness::new(Stall::Failure).await;
+    let waiting = h.session().await;
+    let owner = waiting.clone();
+    let prompt = tokio::spawn(async move { owner.prompt(Prompt::text("hold")).await });
+    h.events.text(waiting.thread_id(), "Started waiting").await;
+    let other = h.session().await;
+    let crash = tokio::spawn(async move { other.prompt(Prompt::text("crash")).await });
+    let entered = tokio::time::timeout(Duration::from_secs(5), h.events.entered.notified()).await;
+    let failed = matches!(
+        h.connection.info().state,
+        ConnectionState::Failed | ConnectionState::Exited
+    );
+    let new_session = h
+        .connection
+        .new_session(SessionOptions::new(
+            ThreadId::new(),
+            h.directory.path().into(),
+        ))
+        .await;
+    let disconnect = tokio::time::timeout(Duration::from_secs(5), h.connection.disconnect()).await;
+    // Release and collect every fixture owner even on a regression failure.
+    h.events.release.cancel();
+    prompt.abort();
+    crash.abort();
+    let _ = prompt.await;
+    let _ = crash.await;
+    assert!(
+        entered.is_ok(),
+        "crash never reached the diagnostic barrier"
+    );
+    assert!(
+        failed,
+        "blocked diagnostics hid the failed connection state"
+    );
+    assert!(matches!(new_session, Err(AgentError::Disconnected(_))));
+    assert!(
+        matches!(disconnect, Ok(Ok(()))),
+        "diagnostics blocked explicit disconnect"
+    );
+}

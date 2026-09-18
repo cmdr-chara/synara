@@ -94,7 +94,9 @@ pub struct DevServerCandidate {
     pub remote_port: u16,
 }
 
-pub fn discover_loopback_dev_servers(output: &str) -> Result<Vec<DevServerCandidate>, RuntimeError> {
+pub fn discover_loopback_dev_servers(
+    output: &str,
+) -> Result<Vec<DevServerCandidate>, RuntimeError> {
     if output.len() > 64 * 1024 {
         return Err(RuntimeError::Limit);
     }

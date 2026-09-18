@@ -891,7 +891,6 @@ fn terminal_color(color: TerminalColor, default: u32) -> u32 {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::*;

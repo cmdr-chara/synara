@@ -1,0 +1,49 @@
+name: Security and dependency audit
+on:
+  push:
+    branches: [astra/gpui-clean-rewrite]
+    paths:
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - 'crates/**/Cargo.toml'
+      - 'scripts/dependency_inventory.py'
+      - '.github/workflows/security.yml'
+permissions:
+  contents: read
+concurrency:
+  group: security-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  CARGO_BUILD_JOBS: '2'
+  PYTHONDONTWRITEBYTECODE: '1'
+jobs:
+  rustsec:
+    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/gpui-clean-rewrite'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          persist-credentials: false
+      - name: Install pinned Rust toolchain
+        run: rustup toolchain install 1.98.1 --profile minimal
+      - name: Verify dependency inventory helper
+        run: python3 scripts/dependency_inventory.py --self-test
+      - name: Generate dependency and license inventory
+        run: |
+          mkdir "$RUNNER_TEMP/synara-security"
+          python3 scripts/dependency_inventory.py --output "$RUNNER_TEMP/synara-security/dependencies.json"
+      - name: Install pinned RustSec audit client
+        run: cargo +1.98.1 install cargo-audit --locked --version 0.22.2
+      - name: Audit locked dependency graph against current RustSec advisories
+        shell: bash
+        run: |
+          set -o pipefail
+          cargo audit --json | tee "$RUNNER_TEMP/synara-security/rustsec.json"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: security-audit
+          path: ${{ runner.temp }}/synara-security/
+          retention-days: 7
+          if-no-files-found: warn

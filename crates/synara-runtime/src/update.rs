@@ -91,14 +91,17 @@ impl UpdateManifest {
             || self.artifact.byte_length > MAX_ARTIFACT_BYTES
             || self.min_data_schema > self.max_data_schema
         {
-            return Err(RuntimeError::Invalid("invalid update manifest fields".into()));
+            return Err(RuntimeError::Invalid(
+                "invalid update manifest fields".into(),
+            ));
         }
         if self.artifact.platform != platform || self.artifact.architecture != architecture {
             return Err(RuntimeError::Unsupported(
                 "update artifact does not match this target".into(),
             ));
         }
-        if current_data_schema < self.min_data_schema || current_data_schema > self.max_data_schema {
+        if current_data_schema < self.min_data_schema || current_data_schema > self.max_data_schema
+        {
             return Err(RuntimeError::Unsupported(
                 "update is incompatible with the current data schema".into(),
             ));
@@ -122,7 +125,11 @@ impl UpdateManifest {
 impl VerifiedUpdate {
     /// Stage a verified download into a caller-chosen new path. The destination
     /// is never overwritten. Any incomplete or mismatched file is removed.
-    pub fn stage<R: Read>(&self, mut reader: R, destination: &Path) -> Result<PathBuf, RuntimeError> {
+    pub fn stage<R: Read>(
+        &self,
+        mut reader: R,
+        destination: &Path,
+    ) -> Result<PathBuf, RuntimeError> {
         if !destination.is_absolute() {
             return Err(RuntimeError::Invalid(
                 "update staging destination must be absolute".into(),
@@ -160,9 +167,7 @@ impl VerifiedUpdate {
                 if count == 0 {
                     break;
                 }
-                total = total
-                    .checked_add(count as u64)
-                    .ok_or(RuntimeError::Limit)?;
+                total = total.checked_add(count as u64).ok_or(RuntimeError::Limit)?;
                 if total > self.artifact_byte_length || total > MAX_ARTIFACT_BYTES {
                     return Err(RuntimeError::Limit);
                 }
@@ -237,9 +242,7 @@ pub struct UpdateHandoff {
 }
 
 fn valid_label(value: &str) -> bool {
-    !value.is_empty()
-        && value.len() <= MAX_TEXT_BYTES
-        && !value.chars().any(char::is_control)
+    !value.is_empty() && value.len() <= MAX_TEXT_BYTES && !value.chars().any(char::is_control)
 }
 
 #[cfg(test)]
@@ -346,9 +349,7 @@ mod tests {
         let payload = b"verified artifact bytes";
         let (_, update) = signed(payload, 3);
         let destination = root.path().join("staged.bin");
-        update
-            .stage(Cursor::new(payload), &destination)
-            .unwrap();
+        update.stage(Cursor::new(payload), &destination).unwrap();
         assert_eq!(fs::read(&destination).unwrap(), payload);
         assert!(update.stage(Cursor::new(payload), &destination).is_err());
 
@@ -371,10 +372,6 @@ mod tests {
         assert!(encoded.contains("0.2.0-dev"));
         assert!(!encoded.contains("signature"));
         assert!(!encoded.contains("endpoint"));
-        assert!(
-            update
-                .handoff(staged.clone(), staged, rollback)
-                .is_err()
-        );
+        assert!(update.handoff(staged.clone(), staged, rollback).is_err());
     }
 }

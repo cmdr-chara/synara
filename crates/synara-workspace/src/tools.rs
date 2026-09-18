@@ -485,7 +485,12 @@ mod tests {
             git.stage(name.into()).await.unwrap();
         }
         assert!(!git.status().await.unwrap().entries.is_empty());
-        assert!(git.diff(true, None).await.unwrap().contains("space name.txt"));
+        assert!(
+            git.diff(true, None)
+                .await
+                .unwrap()
+                .contains("space name.txt")
+        );
     }
     #[tokio::test]
     async fn unstage_keeps_head_working_edits_and_unrelated_staging() {

@@ -53,20 +53,26 @@ impl Store {
             return Err(StorageError::NewerSchema);
         }
         connection.execute_batch("PRAGMA foreign_keys=ON; PRAGMA trusted_schema=OFF; PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL;")?;
+        if version == 3 {
+            return Ok(Self { connection });
+        }
+        // Re-read the schema after acquiring the writer lock: another opener may
+        // have migrated it while this connection was waiting. Keep the complete
+        // upgrade atomic, including event-head and activity backfills.
+        let tx = connection.transaction_with_behavior(TransactionBehavior::Immediate)?;
+        let version: i64 = tx.query_row("PRAGMA user_version", [], |row| row.get(0))?;
+        if version > 3 {
+            return Err(StorageError::NewerSchema);
+        }
         if version == 0 {
-            let tx = connection.transaction_with_behavior(TransactionBehavior::Immediate)?;
             tx.execute_batch("CREATE TABLE workspaces(id TEXT PRIMARY KEY, data TEXT NOT NULL);\nCREATE TABLE projects(id TEXT PRIMARY KEY, workspace_id TEXT NOT NULL REFERENCES workspaces(id), data TEXT NOT NULL);\nCREATE TABLE tasks(id TEXT PRIMARY KEY, project_id TEXT NOT NULL REFERENCES projects(id), thread_id TEXT NOT NULL UNIQUE, updated_ms INTEGER NOT NULL, data TEXT NOT NULL);\nCREATE TABLE sessions(thread_id TEXT PRIMARY KEY REFERENCES tasks(thread_id), data TEXT NOT NULL);\nCREATE TABLE events(thread_id TEXT NOT NULL REFERENCES tasks(thread_id), sequence INTEGER NOT NULL CHECK(sequence>0), id TEXT NOT NULL UNIQUE, timestamp_ms INTEGER NOT NULL, data TEXT NOT NULL, PRIMARY KEY(thread_id,sequence));\nCREATE INDEX task_recency ON tasks(updated_ms DESC);\nCREATE TABLE preferences(key TEXT PRIMARY KEY, data TEXT NOT NULL);\nPRAGMA user_version=1;")?;
-            tx.commit()?;
         }
         if version < 2 {
-            let tx = connection.transaction_with_behavior(TransactionBehavior::Immediate)?;
             tx.execute_batch("CREATE TABLE event_heads(thread_id TEXT PRIMARY KEY REFERENCES tasks(thread_id), sequence INTEGER NOT NULL CHECK(sequence>=0), bytes INTEGER NOT NULL CHECK(bytes>=0));
 INSERT INTO event_heads SELECT thread_id,MAX(sequence),SUM(length(CAST(data AS BLOB))) FROM events GROUP BY thread_id;
 PRAGMA user_version=2;")?;
-            tx.commit()?;
         }
         if version < 3 {
-            let tx = connection.transaction_with_behavior(TransactionBehavior::Immediate)?;
             tx.execute_batch("CREATE TABLE thread_activity(thread_id TEXT PRIMARY KEY REFERENCES tasks(thread_id), sequence INTEGER NOT NULL CHECK(sequence>=0), data TEXT NOT NULL);")?;
             // Backfill on the blocking storage worker. The migration and catalog repair
             // are one transaction, so a failed replay preserves the previous schema.
@@ -102,8 +108,8 @@ PRAGMA user_version=2;")?;
                 update_activity(&tx, task, sequence, timestamp, &activity)?;
             }
             tx.execute_batch("PRAGMA user_version=3")?;
-            tx.commit()?;
         }
+        tx.commit()?;
         Ok(Self { connection })
     }
     pub fn create_workspace_project(
@@ -197,7 +203,7 @@ PRAGMA user_version=2;")?;
     }
     pub fn tasks(&self, project: ProjectId) -> StorageResult<Vec<Task>> {
         self.query_json(
-            "SELECT data FROM tasks WHERE project_id=?1 ORDER BY updated_ms DESC",
+            "SELECT data FROM tasks WHERE project_id=?1 ORDER BY updated_ms DESC, id ASC",
             [project.to_string()],
         )
     }
@@ -768,6 +774,154 @@ mod tests {
             .unwrap();
         let mut store = Store::initialize(store.connection).unwrap();
         assert_eq!(store.last_sequence(task.thread_id).unwrap(), 1);
+        store.append(&event(&task, 2)).unwrap();
+        assert_eq!(store.replay(task.thread_id).unwrap().last_sequence, 2);
+    }
+
+    #[test]
+    fn task_recency_ties_have_stable_order_across_updates_and_reopen() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("task-order.sqlite3");
+        let store = Store::open(&path).unwrap();
+        let older = seed(&store);
+        let mut first = Task {
+            id: TaskId::new(),
+            thread_id: ThreadId::new(),
+            updated_at_ms: 100,
+            ..older.clone()
+        };
+        let mut second = Task {
+            id: TaskId::new(),
+            thread_id: ThreadId::new(),
+            ..first.clone()
+        };
+        if first.id.to_string() > second.id.to_string() {
+            std::mem::swap(&mut first, &mut second);
+        }
+        // Deliberately insert equal-recency tasks in reverse identity order.
+        store.save_task(&second).unwrap();
+        store.save_task(&first).unwrap();
+        let expected = vec![first.id, second.id, older.id];
+        let task_ids = |store: &Store| {
+            store
+                .tasks(older.project_id)
+                .unwrap()
+                .into_iter()
+                .map(|task| task.id)
+                .collect::<Vec<_>>()
+        };
+        assert_eq!(task_ids(&store), expected);
+        second.title = "Renamed without changing recency".into();
+        store.save_task(&second).unwrap();
+        assert_eq!(task_ids(&store), expected);
+        drop(store);
+        let store = Store::open(&path).unwrap();
+        assert_eq!(task_ids(&store), expected);
+        assert_eq!(store.task(second.id).unwrap().unwrap().title, second.title);
+    }
+    #[test]
+    fn failed_schema_one_backfill_rolls_back_the_entire_upgrade() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("bad-v1.sqlite3");
+        let mut store = Store::open(&path).unwrap();
+        let task = seed(&store);
+        store.append(&event(&task, 1)).unwrap();
+        let before = encode(&store.task(task.id).unwrap().unwrap()).unwrap();
+        store
+            .connection
+            .execute_batch(
+                "DROP TABLE thread_activity; DROP TABLE event_heads;
+                 PRAGMA user_version=1; UPDATE events SET sequence=4",
+            )
+            .unwrap();
+        drop(store);
+        assert!(matches!(Store::open(&path), Err(StorageError::Sequence)));
+        let db = Connection::open(&path).unwrap();
+        let version: i64 = db
+            .query_row("PRAGMA user_version", [], |row| row.get(0))
+            .unwrap();
+        assert_eq!(version, 1);
+        let new_tables: i64 = db
+            .query_row(
+                "SELECT COUNT(*) FROM sqlite_master
+                 WHERE name IN ('event_heads', 'thread_activity')",
+                [],
+                |row| row.get(0),
+            )
+            .unwrap();
+        assert_eq!(new_tables, 0);
+        let sequence: i64 = db
+            .query_row("SELECT sequence FROM events", [], |row| row.get(0))
+            .unwrap();
+        assert_eq!(sequence, 4);
+        let after: String = db
+            .query_row("SELECT data FROM tasks", [], |row| row.get(0))
+            .unwrap();
+        assert_eq!(after, before);
+    }
+    #[test]
+    fn failed_fresh_schema_creation_preserves_existing_tables() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("existing.sqlite3");
+        let db = Connection::open(&path).unwrap();
+        db.execute_batch(
+            "CREATE TABLE event_heads(marker TEXT NOT NULL);
+             INSERT INTO event_heads VALUES('preserve me')",
+        )
+        .unwrap();
+        drop(db);
+        assert!(Store::open(&path).is_err());
+        let db = Connection::open(&path).unwrap();
+        let version: i64 = db
+            .query_row("PRAGMA user_version", [], |row| row.get(0))
+            .unwrap();
+        assert_eq!(version, 0);
+        let tables: i64 = db
+            .query_row(
+                "SELECT COUNT(*) FROM sqlite_master WHERE type='table'",
+                [],
+                |row| row.get(0),
+            )
+            .unwrap();
+        assert_eq!(tables, 1);
+        let marker: String = db
+            .query_row("SELECT marker FROM event_heads", [], |row| row.get(0))
+            .unwrap();
+        assert_eq!(marker, "preserve me");
+    }
+    #[test]
+    fn concurrent_openers_preserve_one_migrated_catalog() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("concurrent-v1.sqlite3");
+        let mut store = Store::open(&path).unwrap();
+        let task = seed(&store);
+        store.append(&event(&task, 1)).unwrap();
+        store
+            .connection
+            .execute_batch(
+                "DROP TABLE thread_activity; DROP TABLE event_heads; PRAGMA user_version=1",
+            )
+            .unwrap();
+        drop(store);
+        let barrier = std::sync::Arc::new(std::sync::Barrier::new(8));
+        let workers: Vec<_> = (0..8)
+            .map(|_| {
+                let path = path.clone();
+                let barrier = barrier.clone();
+                let thread = task.thread_id;
+                std::thread::spawn(move || {
+                    barrier.wait();
+                    let store = Store::open(&path)?;
+                    assert_eq!(store.last_sequence(thread)?, 1);
+                    assert_eq!(store.replay(thread)?.last_sequence, 1);
+                    StorageResult::Ok(())
+                })
+            })
+            .collect();
+        for worker in workers {
+            worker.join().unwrap().unwrap();
+        }
+        let mut store = Store::open(&path).unwrap();
         store.append(&event(&task, 2)).unwrap();
         assert_eq!(store.replay(task.thread_id).unwrap().last_sequence, 2);
     }

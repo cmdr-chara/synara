@@ -1,0 +1,169 @@
+name: BCD isolated verification
+on:
+  push:
+    branches: [astra/session-bcd]
+permissions:
+  contents: read
+env:
+  CARGO_BUILD_JOBS: '2'
+concurrency:
+  group: bcd-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  source:
+    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/session-bcd'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    outputs:
+      revision: ${{ steps.publish.outputs.revision }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          fetch-depth: 1000
+      - name: Publisher ownership regression tests
+        run: |
+          python3 scripts/test_bcd_source.py
+          python3 scripts/test_apply_source.py
+      - name: Pinned formatter
+        run: rustup toolchain install 1.98.1 --profile minimal --component rustfmt
+      - name: Apply an optional BCD-only checked source delta
+        id: publish
+        run: python3 scripts/apply_bcd_source.py
+  toolchain:
+    needs: source
+    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/session-bcd' && contains(github.event.head_commit.message, '[offline-toolchain]')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          ref: ${{ needs.source.outputs.revision }}
+          persist-credentials: false
+      - name: Export pinned tools and public dependency source only
+        run: |
+          rustup toolchain install 1.98.1 --profile minimal --component rustfmt --component clippy
+          mkdir -p "$RUNNER_TEMP/bcd-offline/tools" "$RUNNER_TEMP/bcd-offline/sources"
+          tar -C "$HOME/.rustup/toolchains" -cJf "$RUNNER_TEMP/bcd-offline/tools/toolchain.tar.xz" 1.98.1-x86_64-unknown-linux-gnu
+          cargo vendor --locked "$RUNNER_TEMP/bcd-vendor" > "$RUNNER_TEMP/bcd-offline/sources/config.toml"
+          tar -C "$RUNNER_TEMP" -cJf "$RUNNER_TEMP/bcd-offline/sources/vendor.tar.xz" bcd-vendor
+          sha256sum Cargo.lock > "$RUNNER_TEMP/bcd-offline/sources/lock.sha256"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bcd-offline-tools
+          path: ${{ runner.temp }}/bcd-offline/tools/
+          compression-level: 0
+          retention-days: 1
+          if-no-files-found: error
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bcd-offline-sources
+          path: ${{ runner.temp }}/bcd-offline/sources/
+          compression-level: 0
+          retention-days: 1
+          if-no-files-found: error
+  snapshot:
+    needs: source
+    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/session-bcd'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          ref: ${{ needs.source.outputs.revision }}
+          fetch-depth: 1000
+          persist-credentials: false
+      - name: Archive tracked candidate only
+        run: |
+          test "$(git rev-parse HEAD)" = "${{ needs.source.outputs.revision }}"
+          mkdir -p "$RUNNER_TEMP/bcd-source"
+          git archive --format=tar.gz HEAD > "$RUNNER_TEMP/bcd-source/source.tar.gz"
+          git rev-parse HEAD > "$RUNNER_TEMP/bcd-source/revision.txt"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bcd-source-snapshot
+          path: ${{ runner.temp }}/bcd-source/
+          retention-days: 3
+          if-no-files-found: error
+  linux:
+    needs: source
+    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/session-bcd'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          ref: ${{ needs.source.outputs.revision }}
+          fetch-depth: 1000
+          persist-credentials: false
+      - name: Record exact candidate
+        run: |
+          mkdir -p "$RUNNER_TEMP/bcd-evidence"
+          git rev-parse HEAD | tee "$RUNNER_TEMP/bcd-evidence/revision.txt"
+          test "$(git rev-parse HEAD)" = "${{ needs.source.outputs.revision }}"
+      - name: Install pinned Rust toolchain
+        run: rustup toolchain install 1.98.1 --profile minimal --component rustfmt --component clippy
+      - name: Native system libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil fonts-dejavu-core
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: bcd-linux-${{ hashFiles('Cargo.lock', 'rust-toolchain.toml') }}
+      - name: Fetch pinned dependencies
+        run: cargo fetch --locked
+      - name: Formatting
+        run: cargo fmt --check 2>&1 | tee "$RUNNER_TEMP/bcd-evidence/fmt.log"
+      - name: Compile
+        if: ${{ !cancelled() }}
+        run: cargo check --locked --workspace 2>&1 | tee "$RUNNER_TEMP/bcd-evidence/check.log"
+      - name: Lints
+        if: ${{ !cancelled() }}
+        run: cargo clippy --locked --workspace --all-targets --all-features -- -D warnings 2>&1 | tee "$RUNNER_TEMP/bcd-evidence/clippy.log"
+      - name: Workspace tests
+        if: ${{ !cancelled() }}
+        run: cargo test --locked --workspace 2>&1 | tee "$RUNNER_TEMP/bcd-evidence/test.log"
+      - name: Focused agent, protocol and conversation tests
+        if: ${{ !cancelled() }}
+        run: cargo test --locked -p synara-agent -p synara-acp -p synara-core 2>&1 | tee "$RUNNER_TEMP/bcd-evidence/focused.log"
+      - name: Workspace boundary audit
+        if: ${{ !cancelled() }}
+        run: python3 scripts/audit_workspace.py 2>&1 | tee "$RUNNER_TEMP/bcd-evidence/audit.log"
+      - name: Publisher regression tests
+        if: ${{ !cancelled() }}
+        run: python3 scripts/test_apply_source.py 2>&1 | tee "$RUNNER_TEMP/bcd-evidence/publisher.log"
+      - name: Roadmap validation
+        if: ${{ !cancelled() }}
+        run: |
+          python3 scripts/test_bcd_source.py
+          python3 scripts/check_roadmap.py --self-test
+          python3 scripts/check_roadmap.py
+      - name: Build native application and ACP fixture
+        if: ${{ !cancelled() }}
+        run: cargo build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture 2>&1 | tee "$RUNNER_TEMP/bcd-evidence/build.log"
+      - name: Native desktop interaction smoke
+        if: ${{ !cancelled() }}
+        timeout-minutes: 3
+        run: python3 scripts/native_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output "$RUNNER_TEMP/synara-bcd-smoke" 2>&1 | tee "$RUNNER_TEMP/bcd-evidence/smoke.log"
+      - name: Verify clean candidate
+        if: ${{ !cancelled() }}
+        run: git diff --exit-code
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: bcd-candidate-evidence
+          path: |
+            ${{ runner.temp }}/bcd-evidence/
+            ${{ runner.temp }}/synara-bcd-smoke/*.png
+            ${{ runner.temp }}/synara-bcd-smoke/*.log
+            ${{ runner.temp }}/synara-bcd-smoke/result.json
+          retention-days: 7
+          if-no-files-found: warn

@@ -169,6 +169,13 @@ Windows ConPTY or macOS acceptance.
 
 ## B. Complete generic agent and connection lifecycle
 
+BCD checkpoint in progress on `astra/session-bcd`: request-scoped cancellation
+now expires login forms with their parent RPC, and terminal transport failures
+retain their first diagnostic. New deterministic request/interaction tests are
+being verified. B2/B5 and D5/D6 remain partial until the candidate-specific
+checks and the remaining acceptance matrix pass. See
+[the BCD handoff](docs/bcd-session-handoff.md) for scope and open gates.
+
 Status: **Partial**. Ownership: `synara-agent`, `synara-acp`, `synara-runtime`.
 
 - [ ] B1 Audit ACP method/capability coverage against current primary protocol and
@@ -177,7 +184,7 @@ Status: **Partial**. Ownership: `synara-agent`, `synara-acp`, `synara-runtime`.
   fail, exit, restart and disconnect transitions, including crash during requests.
 - [ ] B3 Complete capability-driven new/load/resume/close/list/delete session
   behavior where supported, extra directories, titles and concurrent loading.
-- [ ] B4 Prove a connection owns multiple sessions without duplicate ownership,
+- [x] B4 Prove a connection owns multiple sessions without duplicate ownership,
   process-per-message behavior or cross-task event leakage.
 - [ ] B5 Cover malformed/oversized frames, partial reads, contaminated stdout,
   stderr floods, unknown methods, request-ID correlation, EOF, cancellation,
@@ -192,6 +199,23 @@ Status: **Partial**. Ownership: `synara-agent`, `synara-acp`, `synara-runtime`.
 Acceptance: one adapter passes protocol, lifecycle and concurrency tests for
 multiple agent configurations. ACP dependency upgrades stay inside the adapter
 boundary rather than changing unrelated domain or UI types.
+
+BCD isolated continuation: first interaction candidate
+`a3693807deb7531959a14051c249a71f311e310e` passed full Linux checks and native smoke
+in [run 35255541692](https://github.com/cmdr-chara/synara/actions/runs/35255541692).
+The next B2/B3/B4 slice adds explicit authentication-required state, prevents late
+login/setup resurrection, rejects duplicate task ownership, serializes shutdown
+against connection acquisition and tests two-session cancellation/permission
+isolation. Candidate `0e9e66d46b68c27e1e50ebca1b0d63328f0c6756` passed full
+Linux verification and desktop smoke in rerun
+[35258450705](https://github.com/cmdr-chara/synara/actions/runs/35258450705).
+B4 passes on that candidate: `lifecycle_integration`, manager ownership tests and
+`process_integration` prove shared connection ownership, no duplicate session for
+a thread, repeated prompts without respawn and isolated events/cancellation. B2/B3
+remain partial. The terminal-output flake observed on the initial focused repeat
+is recorded, not fixed or suppressed by BCD. See the
+[BCD handoff](docs/bcd-session-handoff.md) for evidence and the terminal-lifetime
+request reserved for A/J/M.
 
 ## C. Prove real-agent interoperability
 

@@ -6,9 +6,12 @@ use crate::{
 };
 use serde_json::{Value, json};
 use std::{collections::HashMap, path::PathBuf, sync::Arc, time::Duration};
-use synara_agent::{AgentError, AgentResult, ConnectionContext, InteractionContext};
+use synara_agent::{
+    AgentError, AgentResult, ConnectionContext, InteractionContext, InteractionScope,
+};
 use synara_core::{
-    PermissionChoice, PermissionKind, PermissionRequest, ThreadEvent, ThreadId, UserInputResponse,
+    ConnectionId, PermissionChoice, PermissionKind, PermissionRequest, ThreadEvent, ThreadId,
+    UserInputResponse,
 };
 use synara_runtime::{LaunchSpec, NativeTerminal, RuntimeError, TerminalSnapshot};
 use tokio::sync::Mutex;
@@ -23,17 +26,23 @@ pub(crate) struct CallbackServices {
     context: ConnectionContext,
     sessions: Arc<Sessions>,
     terminals: Mutex<HashMap<String, TerminalEntry>>,
-    elicitations: Mutex<HashMap<String, ThreadId>>,
+    elicitations: Arc<crate::elicitation_registry::Registry>,
     connection_thread: ThreadId,
+    connection_id: ConnectionId,
 }
 impl CallbackServices {
-    pub fn new(context: ConnectionContext, sessions: Arc<Sessions>) -> Self {
+    pub fn new(
+        context: ConnectionContext,
+        sessions: Arc<Sessions>,
+        connection_id: ConnectionId,
+    ) -> Self {
         Self {
             context,
             sessions,
             terminals: Mutex::new(HashMap::new()),
-            elicitations: Mutex::new(HashMap::new()),
+            elicitations: Arc::new(crate::elicitation_registry::Registry::default()),
             connection_thread: ThreadId::new(),
+            connection_id,
         }
     }
     pub async fn handle(&self, method: &str, params: Value, peer: &RpcPeer) -> AgentResult<Value> {
@@ -58,6 +67,10 @@ impl CallbackServices {
         session: &SessionState,
         request: PermissionRequest,
     ) -> AgentResult<Option<String>> {
+        // Capture ownership once. Looking it up after awaiting the UI can select
+        // a later turn or the session lifetime and resurrect stale approval.
+        let interaction = session.interaction();
+        let cancelled = interaction.cancelled.clone();
         session
             .emit(
                 &self.context,
@@ -70,9 +83,9 @@ impl CallbackServices {
         let result = self
             .context
             .interactions
-            .permission(session.interaction(), request.clone())
+            .permission(interaction, request.clone())
             .await;
-        let result = if session.interaction().cancelled.is_cancelled() {
+        let result = if cancelled.is_cancelled() {
             Ok(None)
         } else {
             result
@@ -367,7 +380,7 @@ impl CallbackServices {
         }
     }
     async fn elicit(&self, params: Value, peer: &RpcPeer) -> AgentResult<Value> {
-        let interaction = if params.get("sessionId").is_some() {
+        let mut interaction = if params.get("sessionId").is_some() {
             if params.get("requestId").is_some() {
                 return Err(wire::invalid("elicitation has conflicting scopes"));
             }
@@ -376,32 +389,43 @@ impl CallbackServices {
             let id = params
                 .get("requestId")
                 .ok_or_else(|| wire::invalid("elicitation scope missing"))?;
-            if !peer.has_pending(&RpcId::parse(id)?) {
-                return Err(wire::invalid("elicitation refers to an inactive request"));
-            }
+            let cancelled = peer
+                .request_lifetime(&RpcId::parse(id)?)
+                .ok_or_else(|| wire::invalid("elicitation refers to an inactive request"))?;
             InteractionContext {
+                scope: InteractionScope::Connection(self.connection_id),
                 thread_id: self.connection_thread,
                 session_id: "connection".into(),
-                cancelled: peer.cancelled(),
+                cancelled,
             }
         };
         let request = elicitation::parse(&params, Uuid::new_v4().to_string())?;
         let request_id = request.id.clone();
-        if let Some(elicitation_id) = params.get("elicitationId").and_then(Value::as_str) {
-            let mut requests = self.elicitations.lock().await;
-            if requests.len() >= 64 || requests.contains_key(elicitation_id) {
-                return Err(AgentError::Limit);
-            }
-            requests.insert(elicitation_id.into(), interaction.thread_id);
-        }
+        let owner = interaction.cancelled.clone();
+        interaction.cancelled = owner.child_token();
+        let mut registration = if request.url.is_some() {
+            Some(self.elicitations.register(
+                &wire::id(&params, "elicitationId")?,
+                &request.id,
+                owner,
+                interaction.cancelled.clone(),
+            )?)
+        } else {
+            None
+        };
         // Request-scoped login prompts use the broker without inventing persistent task ownership.
-        if interaction.session_id != "connection" {
+        if interaction.scope == InteractionScope::Session {
             self.context
                 .events
                 .emit(
                     interaction.thread_id,
                     ThreadEvent::UserInputRequested {
-                        request: request.clone(),
+                        request: if request.url.is_some() {
+                            let mut durable = request.clone();
+                            durable.url = None;
+                            durable.message = "Agent requested a website interaction. Its address is not stored in conversation history.".into();
+                            durable
+                        } else { request.clone() },
                     },
                 )
                 .await?;
@@ -411,7 +435,7 @@ impl CallbackServices {
             .interactions
             .input(interaction.clone(), request.clone())
             .await;
-        if interaction.session_id != "connection" {
+        if interaction.scope == InteractionScope::Session {
             self.context
                 .events
                 .emit(
@@ -429,6 +453,9 @@ impl CallbackServices {
             UserInputResponse::Accept { values } => {
                 synara_agent::validate_input(&request, &values)?;
                 if request.url.is_some() {
+                    if let Some(registration) = &mut registration {
+                        registration.accepted();
+                    }
                     json!({"action":"accept"})
                 } else {
                     json!({"action":"accept","content":values})
@@ -440,7 +467,7 @@ impl CallbackServices {
     }
     pub async fn elicitation_complete(&self, params: &Value) {
         if let Some(id) = params.get("elicitationId").and_then(Value::as_str) {
-            self.elicitations.lock().await.remove(id);
+            self.elicitations.complete(id);
         }
     }
 }
@@ -480,3 +507,7 @@ mod tests {
         assert_eq!(terminal_text(&snapshot, 0).0, "");
     }
 }
+
+#[cfg(test)]
+#[path = "callback_lifecycle_tests.rs"]
+mod lifecycle_tests;

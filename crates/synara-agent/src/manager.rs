@@ -2,7 +2,7 @@ use crate::{AgentBackend, AgentConnection, AgentError, AgentResult, AgentSpec, C
 use sha2::{Digest, Sha256};
 use std::{collections::HashMap, sync::Arc};
 use synara_core::ConnectionState;
-use tokio::sync::Mutex;
+use tokio::sync::{Mutex, RwLock};
 
 type Slot = Arc<Mutex<Option<Arc<dyn AgentConnection>>>>;
 
@@ -10,6 +10,7 @@ type Slot = Arc<Mutex<Option<Arc<dyn AgentConnection>>>>;
 #[derive(Default)]
 pub struct ConnectionManager {
     slots: Mutex<HashMap<String, Slot>>,
+    lifecycle: RwLock<()>,
 }
 impl ConnectionManager {
     pub async fn connection(
@@ -19,12 +20,15 @@ impl ConnectionManager {
         context: ConnectionContext,
     ) -> AgentResult<Arc<dyn AgentConnection>> {
         spec.validate()?;
+        let _lifetime = self.lifecycle.read().await;
         let slot = self.slot(spec, &context).await?;
         let mut owned = slot.lock().await;
         if let Some(connection) = &*owned {
             if matches!(
                 connection.info().state,
-                ConnectionState::Connected | ConnectionState::Authenticating
+                ConnectionState::Connected
+                    | ConnectionState::AuthenticationRequired
+                    | ConnectionState::Authenticating
             ) {
                 return Ok(connection.clone());
             }
@@ -42,6 +46,8 @@ impl ConnectionManager {
         spec: &AgentSpec,
         context: ConnectionContext,
     ) -> AgentResult<Arc<dyn AgentConnection>> {
+        spec.validate()?;
+        let _lifetime = self.lifecycle.read().await;
         let slot = self.slot(spec, &context).await?;
         let mut owned = slot.lock().await;
         if let Some(connection) = owned.take() {
@@ -65,6 +71,9 @@ impl ConnectionManager {
     }
 
     pub async fn disconnect_all(&self) -> AgentResult<()> {
+        // Do not detach a slot while a connect/restart operation is still filling it.
+        // New acquisitions begin only after this shutdown boundary has completed.
+        let _lifetime = self.lifecycle.write().await;
         let slots = std::mem::take(&mut *self.slots.lock().await);
         let mut failure = None;
         for slot in slots.into_values() {
@@ -184,6 +193,133 @@ mod tests {
         assert_eq!(backend.0.load(Ordering::SeqCst), 1);
         manager.restart(&backend, &spec, context).await.unwrap();
         assert_eq!(backend.0.load(Ordering::SeqCst), 2);
+        manager.disconnect_all().await.unwrap();
+    }
+
+    fn fixture() -> (AgentSpec, ConnectionContext) {
+        let (events, _receiver) = mpsc::channel(32);
+        (
+            AgentSpec {
+                launch_directory: None,
+                id: "fixture".into(),
+                name: "Fixture".into(),
+                origin: "test".into(),
+                launch: LaunchSpec::new("fixture"),
+            },
+            ConnectionContext {
+                host: Arc::new(LocalHost),
+                cwd: std::env::temp_dir(),
+                events: Arc::new(ChannelEvents(events)),
+                interactions: Arc::new(DenyInteractions),
+            },
+        )
+    }
+
+    struct HeldBackend {
+        backend: FakeBackend,
+        entered: tokio::sync::Notify,
+        release: tokio::sync::Notify,
+    }
+    #[async_trait]
+    impl AgentBackend for HeldBackend {
+        async fn connect(
+            &self,
+            spec: &AgentSpec,
+            context: ConnectionContext,
+        ) -> AgentResult<Arc<dyn AgentConnection>> {
+            let connection = self.backend.connect(spec, context).await?;
+            self.entered.notify_one();
+            self.release.notified().await;
+            Ok(connection)
+        }
+    }
+
+    #[tokio::test]
+    async fn shutdown_waits_for_a_slot_being_connected_then_disconnects_it() {
+        let manager = Arc::new(ConnectionManager::default());
+        let backend = Arc::new(HeldBackend {
+            backend: FakeBackend(AtomicUsize::new(0)),
+            entered: tokio::sync::Notify::new(),
+            release: tokio::sync::Notify::new(),
+        });
+        let (spec, context) = fixture();
+        let connect = {
+            let manager = manager.clone();
+            let backend = backend.clone();
+            let spec = spec.clone();
+            let context = context.clone();
+            tokio::spawn(async move { manager.connection(backend.as_ref(), &spec, context).await })
+        };
+        backend.entered.notified().await;
+        let shutdown = manager.disconnect_all();
+        tokio::pin!(shutdown);
+        tokio::select! {
+            biased;
+            _ = &mut shutdown => panic!("shutdown detached a live connection acquisition"),
+            () = tokio::task::yield_now() => {}
+        }
+        backend.release.notify_one();
+        tokio::time::timeout(std::time::Duration::from_secs(1), &mut shutdown)
+            .await
+            .unwrap()
+            .unwrap();
+        let connection = connect.await.unwrap().unwrap();
+        assert_eq!(connection.info().state, ConnectionState::Disconnected);
+        assert!(manager.slots.lock().await.is_empty());
+        let replacement = manager
+            .connection(&backend.backend, &spec, context)
+            .await
+            .unwrap();
+        assert_ne!(connection.info().id, replacement.info().id);
+        assert_eq!(backend.backend.0.load(Ordering::SeqCst), 2);
+        manager.disconnect_all().await.unwrap();
+    }
+
+    #[tokio::test]
+    async fn invalid_restart_does_not_disconnect_the_owned_connection() {
+        let manager = ConnectionManager::default();
+        let backend = FakeBackend(AtomicUsize::new(0));
+        let (mut spec, context) = fixture();
+        let connection = manager
+            .connection(&backend, &spec, context.clone())
+            .await
+            .unwrap();
+        spec.name.clear();
+        assert!(matches!(
+            manager.restart(&backend, &spec, context).await,
+            Err(AgentError::Invalid(_))
+        ));
+        assert_eq!(connection.info().state, ConnectionState::Connected);
+        assert_eq!(backend.0.load(Ordering::SeqCst), 1);
+        manager.disconnect_all().await.unwrap();
+    }
+
+    #[tokio::test]
+    async fn authentication_required_connection_is_reused_without_a_second_process() {
+        let manager = ConnectionManager::default();
+        let backend = FakeBackend(AtomicUsize::new(0));
+        let (spec, context) = fixture();
+        let mut info = backend
+            .connect(&spec, context.clone())
+            .await
+            .unwrap()
+            .info();
+        info.state = ConnectionState::AuthenticationRequired;
+        let (state, _) = watch::channel(info);
+        let connection = Arc::new(FakeConnection(state));
+        *manager.slot(&spec, &context).await.unwrap().lock().await = Some(connection.clone());
+        for expected in [
+            ConnectionState::AuthenticationRequired,
+            ConnectionState::Authenticating,
+        ] {
+            connection.0.send_modify(|info| info.state = expected);
+            let reused = manager
+                .connection(&backend, &spec, context.clone())
+                .await
+                .unwrap();
+            assert_eq!(reused.info().id, connection.info().id);
+            assert_eq!(backend.0.load(Ordering::SeqCst), 1);
+        }
         manager.disconnect_all().await.unwrap();
     }
 }

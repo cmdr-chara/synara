@@ -134,7 +134,13 @@ fn checked_file(path: &Path, private: bool) -> Result<String, RuntimeError> {
             "SSH connection files must use absolute paths".into(),
         ));
     }
-    let metadata = std::fs::symlink_metadata(path)?;
+    let metadata = std::fs::symlink_metadata(path).map_err(|error| {
+        RuntimeError::Invalid(format!(
+            "SSH {} file is unavailable at {}: {error}",
+            if private { "identity" } else { "known-hosts" },
+            path.display()
+        ))
+    })?;
     if !metadata.file_type().is_file() {
         return Err(RuntimeError::Denied(
             "SSH connection file must be a regular non-symlink file".into(),

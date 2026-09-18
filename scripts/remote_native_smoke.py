@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 import sqlite3
+import shutil
 import subprocess
 import time
 
@@ -66,6 +67,15 @@ def main():
     checks = []
     try:
         env = {key: os.environ[key] for key in ('PATH', 'LD_LIBRARY_PATH') if key in os.environ}
+        env['PATH'] = os.pathsep.join(
+            part for part in ('/usr/bin', '/bin', env.get('PATH', '')) if part
+        )
+        trust = remote_fixture / 'known hosts'
+        identity = remote_fixture / 'identity'
+        helper = Path(str(helper)).resolve()
+        for required in (trust, identity, helper):
+            assert required.is_file(), f'missing remote smoke input: {required}'
+        assert shutil.which('ssh', path=env['PATH']), 'OpenSSH client is absent from native smoke PATH'
         env.update(
             DISPLAY=desktop.name,
             XDG_RUNTIME_DIR=str(runtime),
@@ -97,8 +107,8 @@ def main():
         set_field(desktop, 1070, 200, os.environ['SYNARA_SSH_SMOKE_PORT'])
         set_field(desktop, 800, 242, os.environ['SYNARA_SSH_SMOKE_USER'])
         set_field(desktop, 800, 285, str(remote_project))
-        set_field(desktop, 800, 328, str(remote_fixture / 'known hosts'))
-        set_field(desktop, 800, 370, str(remote_fixture / 'identity'))
+        set_field(desktop, 800, 328, str(trust))
+        set_field(desktop, 800, 370, str(identity))
         set_field(desktop, 800, 413, os.environ['SYNARA_REMOTE_FS_HELPER'])
         desktop.screenshot('remote-enrollment')
         desktop.click(1218, 476)

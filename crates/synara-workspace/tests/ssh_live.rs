@@ -76,8 +76,7 @@ async fn explicit_forwarding_uses_pinned_ssh_loopback_and_cleans_up() {
     let local_probe = TcpListener::bind((Ipv4Addr::LOCALHOST, 0)).unwrap();
     let local_port = local_probe.local_addr().unwrap().port();
     drop(local_probe);
-    let host =
-        PinnedSshHost::new(target, root.join("known hosts"), root.join("identity")).unwrap();
+    let host = PinnedSshHost::new(target, root.join("known hosts"), root.join("identity")).unwrap();
     let forward = host
         .open_forward(
             ApprovedPortForward::agent_approved(local_port, remote_port, "ssh-live-forward")

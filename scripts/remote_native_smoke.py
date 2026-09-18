@@ -101,7 +101,7 @@ def main():
         set_field(desktop, 800, 370, str(remote_fixture / 'identity'))
         set_field(desktop, 800, 413, os.environ['SYNARA_REMOTE_FS_HELPER'])
         desktop.screenshot('remote-enrollment')
-        desktop.click(1218, 456)
+        desktop.click(1218, 476)
 
         database = data / 'native-workspace.sqlite3'
         def enrolled():

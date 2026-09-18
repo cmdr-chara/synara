@@ -27,7 +27,11 @@ pub(super) fn launch(
     arguments: Vec<String>,
     local: bool,
 ) -> LaunchSpec {
-    let mut command = vec!["--no-pager".into(), "--literal-pathspecs".into()];
+    // These typed operations accept refs and explicit worktree destinations, not
+    // pathspecs. A global --literal-pathspecs leaks into stash's internal clean
+    // command and prevents its generated pathspecs from removing saved files.
+    // Literal stage/unstage paths remain protected by the separate GitService.
+    let mut command = vec!["--no-pager".into()];
     let mut config = |value: &str| {
         command.extend(["-c".into(), value.into()]);
     };
@@ -137,6 +141,32 @@ pub(super) fn classify(stderr: &[u8]) -> GitOperationErrorKind {
     } else {
         Failed
     }
+}
+
+/// Push --porcelain reports per-ref rejection status on stdout, not stderr.
+/// Inspect only its tab-delimited status field. Ref names, remote banners, and
+/// hook messages must not be mistaken for a non-fast-forward rejection.
+pub(super) fn classify_push(stdout: &[u8], stderr: &[u8]) -> GitOperationErrorKind {
+    for line in stdout.split(|byte| *byte == b'\n') {
+        let line = line.strip_suffix(b"\r").unwrap_or(line);
+        let mut fields = line.splitn(3, |byte| *byte == b'\t');
+        if fields.next() != Some(b"!") {
+            continue;
+        }
+        let Some(refspec) = fields.next() else {
+            continue;
+        };
+        if !refspec.starts_with(b"refs/heads/") || !refspec.contains(&b':') {
+            continue;
+        }
+        if matches!(
+            fields.next(),
+            Some(b"[rejected] (non-fast-forward)" | b"[rejected] (fetch first)")
+        ) {
+            return GitOperationErrorKind::NonFastForward;
+        }
+    }
+    classify(stderr)
 }
 
 async fn read(
@@ -259,7 +289,11 @@ impl GitOperations {
                     async { process.handle.wait().await.map_err(|_| Failed) }
                 )?;
                 if !exit.success() {
-                    return Err(classify(&stderr));
+                    return Err(if plan.push_porcelain {
+                        classify_push(&stdout, &stderr)
+                    } else {
+                        classify(&stderr)
+                    });
                 }
                 Ok(GitOperationOutput {
                     stdout,

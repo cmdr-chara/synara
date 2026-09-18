@@ -1,6 +1,6 @@
 # Typed Git operation backend
 
-Status: IMPLEMENTED, CI acceptance pending. This is not a claim that H or the
+Status: LOCAL BACKEND ACCEPTANCE PASS, final-candidate native CI pending. This is not a claim that H or the
 backend completion mission is complete. No product-UI files are changed.
 
 ## Contract for the frontend
@@ -51,7 +51,7 @@ failure waits at most eight additional seconds for process-exit confirmation.
 `cleanup_confirmed` describes owned process exit, not remotely detached descendants.
 Remote errors never retry against the local filesystem or local Git.
 
-## Acceptance evidence to collect
+## Acceptance evidence
 
 The added unit/integration suite covers input and policy boundaries, unavailable
 remote Git, queue saturation, queued cancellation/deadline, branch lifecycle,
@@ -73,3 +73,37 @@ No credentials, production repositories, PRs or releases are used as test fixtur
 - https://git-scm.com/docs/git-push
 - https://git-scm.com/docs/git-stash
 - https://git-scm.com/docs/git-worktree
+
+### Stash and porcelain-push regression checkpoint
+
+Baseline: `24e5923bcfb51a1c0c3ef571e25c917910f4807d`.
+Linux x64, Rust 1.98.1, Git 2.47.3, locked offline dependencies.
+
+The baseline focused suite reproduced both failures: 15 passed, 2 failed.
+Global `--literal-pathspecs` was inherited by stash's internal cleanup, so a
+successful `SaveStash` left included untracked files in place. Typed operations
+accept no caller pathspecs, so that global switch is removed only from this
+service. The older path-oriented `GitService` keeps literal stage/unstage behavior.
+A controlled four-filename experiment reproduced leftover files with the switch
+and complete cleanup without it. The expanded roundtrip covers Unicode, spaces,
+leading dashes, bracket characters, nested paths, and retention of ignored files.
+
+Push `--porcelain` writes per-ref rejections on stdout. The runner now selects a
+push-only parser, recognizes exact tab-delimited rejected status records, and
+falls back to bounded stderr categorization. Banners, ref names, hook rejections,
+malformed records and invalid UTF-8 are not treated as non-fast-forward results.
+Neither output stream is copied into diagnostic errors or progress.
+
+Observed local verification for this checkpoint:
+
+- Focused typed-Git suite: 19 passed, 0 failed.
+- Backend check and strict Clippy with all targets/features: PASS.
+- Backend all-features tests: 268 passed, 0 failed,
+  15 ignored. Ignored live SSH/vendor journeys are not claimed here.
+- Workspace structure, 12 audit regressions, 6 publisher regressions,
+  9 roadmap self-tests, roadmap validation and formatting: PASS.
+
+The exact-candidate Linux native and three-OS backend workflows must still be
+accepted. Authenticated remote-network Git and real signing are not claimed from
+the disposable local bare-remote fixtures. H2-H5 remain open for their complete
+acceptance scope, including the host-aware integration matrix.

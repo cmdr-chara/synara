@@ -230,6 +230,7 @@ fn remote_urls_reject_helpers_credentials_and_options() {
 #[test]
 fn launch_policy_is_explicit_and_remote_environment_is_fixed() {
     let local = runner::launch(&GitOperationOptions::default(), vec!["status".into()], true);
+    assert!(!local.args.iter().any(|arg| arg == "--literal-pathspecs"));
     for argument in [
         "protocol.allow=never",
         "protocol.ext.allow=never",
@@ -591,7 +592,19 @@ async fn stash_roundtrip_uses_object_identity_and_retains_recovery_copy() {
     let root = fixture(true);
     let service = GitOperations::new(root.path().into());
     std::fs::write(root.path().join("base.txt"), "saved work\n").unwrap();
-    std::fs::write(root.path().join("untracked naïve.txt"), "untracked\n").unwrap();
+    let untracked = [
+        "untracked naïve.txt",
+        "-leading.txt",
+        "[pattern].txt",
+        "nested/新.txt",
+    ];
+    for name in untracked {
+        let path = root.path().join(name);
+        std::fs::create_dir_all(path.parent().unwrap()).unwrap();
+        std::fs::write(path, name).unwrap();
+    }
+    std::fs::write(root.path().join(".git/info/exclude"), "ignored.txt\n").unwrap();
+    std::fs::write(root.path().join("ignored.txt"), "retained private file\n").unwrap();
     run(
         &service,
         GitOperation::SaveStash {
@@ -607,7 +620,16 @@ async fn stash_roundtrip_uses_object_identity_and_retains_recovery_copy() {
         std::fs::read(root.path().join("base.txt")).unwrap(),
         b"original\n"
     );
-    assert!(!root.path().join("untracked naïve.txt").exists());
+    for name in untracked {
+        assert!(
+            !root.path().join(name).exists(),
+            "saved file still present: {name}"
+        );
+    }
+    assert_eq!(
+        std::fs::read(root.path().join("ignored.txt")).unwrap(),
+        b"retained private file\n"
+    );
     run(
         &service,
         GitOperation::ApplyStash {
@@ -619,9 +641,15 @@ async fn stash_roundtrip_uses_object_identity_and_retains_recovery_copy() {
         std::fs::read(root.path().join("base.txt")).unwrap(),
         b"saved work\n"
     );
+    for name in untracked {
+        assert_eq!(
+            std::fs::read(root.path().join(name)).unwrap(),
+            name.as_bytes()
+        );
+    }
     assert_eq!(
-        std::fs::read(root.path().join("untracked naïve.txt")).unwrap(),
-        b"untracked\n"
+        std::fs::read(root.path().join("ignored.txt")).unwrap(),
+        b"retained private file\n"
     );
     assert_eq!(run(&service, GitOperation::Stashes).await.stdout, list);
     std::fs::write(root.path().join("base.txt"), "new unsaved work\n").unwrap();
@@ -932,6 +960,73 @@ mod ownership {
         assert_eq!(
             std::fs::read(root.path().join(".git/config")).unwrap(),
             config
+        );
+    }
+}
+
+#[test]
+fn push_porcelain_rejections_are_parsed_only_from_status_records() {
+    use GitOperationErrorKind::{Authentication, Failed, NonFastForward};
+    for reason in ["non-fast-forward", "fetch first"] {
+        let stdout = format!(
+            "To https://example.invalid/repo\r\n!\trefs/heads/main:refs/heads/main\t[rejected] ({reason})\r\nDone\r\n"
+        );
+        assert_eq!(
+            runner::classify_push(stdout.as_bytes(), b"error: failed to push some refs"),
+            NonFastForward
+        );
+    }
+    for stdout in [
+        "remote: non-fast-forward\n",
+        "! refs/heads/main:refs/heads/main [rejected] (fetch first)\n",
+        "!\trefs/heads/main:refs/heads/main\t[remote rejected] (fetch first)\n",
+        "=\trefs/heads/fetch-first:refs/heads/main\t[up to date]\n",
+        "!\trefs/heads/main:refs/heads/main\t[rejected] (stale info)\n",
+        "!\trefs/heads/main\t[rejected] (fetch first)\n",
+        "!\trefs/heads/fetch-first:refs/heads/main\t[remote rejected] (hook declined)\n",
+        "!\trefs/heads/main:refs/heads/main\t[rejected] (fetch first) extra\n",
+        "!\trefs/tags/main:refs/tags/main\t[rejected] (fetch first)\n",
+    ] {
+        assert_eq!(
+            runner::classify_push(stdout.as_bytes(), b"error: failed to push some refs"),
+            Failed,
+            "{stdout:?}"
+        );
+    }
+    assert_eq!(
+        runner::classify_push(
+            b"!\tinvalid\t[rejected] (fetch first)\n",
+            b"Authentication failed: SECRET_CANARY"
+        ),
+        Authentication
+    );
+    assert_eq!(runner::classify_push(b"\xff\x00invalid", b""), Failed);
+}
+
+#[test]
+fn only_push_operations_select_porcelain_failure_parsing() {
+    let push = plan::build(
+        GitOperation::Push {
+            remote: "origin".into(),
+            local_branch: "main".into(),
+            remote_branch: "main".into(),
+        },
+        &options().policy,
+        true,
+    )
+    .unwrap();
+    assert!(push.push_porcelain);
+    for operation in [
+        GitOperation::Stashes,
+        GitOperation::Branches,
+        GitOperation::ApplyStash {
+            object_id: "a".repeat(40),
+        },
+    ] {
+        assert!(
+            !plan::build(operation, &options().policy, true)
+                .unwrap()
+                .push_porcelain
         );
     }
 }

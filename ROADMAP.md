@@ -387,6 +387,15 @@ open.
 - [ ] H5 Reuse host-aware services for remote Git. Bound command output and keep
   commands asynchronous to GPUI.
 
+Typed backend operations now expose explicit branch/remotes/fetch/fast-forward
+pull/non-force push/worktree/stash actions with bounded progress, cancellation,
+separate mutation/execution/network consent and redacted error categories.
+The stash cleanup and porcelain push rejection regressions are fixed and the
+expanded 19-test typed-Git suite passes locally. The full local backend suite,
+strict Clippy and formatting also pass. Exact-candidate native and host-aware
+acceptance are still pending, so no whole H gate is closed from this checkpoint.
+See [typed Git operations](docs/verification/git-operations.md).
+
 Acceptance: isolated repository tests cover success/failure for each offered UI
 operation. No user repository is used as a destructive test fixture.
 

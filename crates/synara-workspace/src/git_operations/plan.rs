@@ -9,6 +9,7 @@ type Result<T> = std::result::Result<T, GitOperationErrorKind>;
 pub(super) struct Plan {
     pub args: Vec<String>,
     pub mutation: bool,
+    pub push_porcelain: bool,
 }
 
 fn args(values: &[&str]) -> Vec<String> {
@@ -152,6 +153,7 @@ pub(super) fn build(
 ) -> Result<Plan> {
     use GitOperation::*;
     let updating_remote = matches!(&operation, SetRemoteUrl { .. });
+    let push_porcelain = matches!(&operation, Push { .. });
     let (command, mutation, executes_repository, network) = match operation {
         Branches => (
             args(&[
@@ -387,5 +389,6 @@ pub(super) fn build(
     Ok(Plan {
         args: command,
         mutation,
+        push_porcelain,
     })
 }

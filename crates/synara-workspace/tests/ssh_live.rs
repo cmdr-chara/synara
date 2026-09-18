@@ -1,8 +1,14 @@
 //! Live remote Git verification against scripts/ssh_smoke.py.
 #![cfg(unix)]
 
-use std::{path::PathBuf, sync::Arc};
-use synara_runtime::{PinnedSshHost, SshTarget};
+use std::{
+    io::{Read, Write},
+    net::{Ipv4Addr, SocketAddr, TcpListener, TcpStream},
+    path::PathBuf,
+    sync::Arc,
+    time::Duration,
+};
+use synara_runtime::{ApprovedPortForward, PinnedSshHost, SshTarget};
 use synara_workspace::{
     GitNetworkPolicy, GitOperation, GitOperationErrorKind, GitOperationOptions, GitOperationOutput,
     GitOperationPolicy, GitOperations, GitService,
@@ -45,6 +51,75 @@ fn git(args: &[&str], cwd: &std::path::Path) -> String {
         String::from_utf8_lossy(&output.stderr)
     );
     String::from_utf8(output.stdout).unwrap()
+}
+
+#[tokio::test]
+#[ignore = "requires the isolated server from scripts/ssh_smoke.py"]
+async fn explicit_forwarding_uses_pinned_ssh_loopback_and_cleans_up() {
+    let (root, target) = fixture();
+    let remote_listener = TcpListener::bind((Ipv4Addr::LOCALHOST, 0)).unwrap();
+    let remote_port = remote_listener.local_addr().unwrap().port();
+    let server = tokio::task::spawn_blocking(move || {
+        for _ in 0..4 {
+            let (mut stream, _) = remote_listener.accept().unwrap();
+            let mut request = [0_u8; 4];
+            if stream.read_exact(&mut request).is_err() {
+                continue;
+            }
+            assert_eq!(&request, b"ping");
+            stream.write_all(b"pong").unwrap();
+            return;
+        }
+        panic!("forward never delivered the test payload");
+    });
+
+    let local_probe = TcpListener::bind((Ipv4Addr::LOCALHOST, 0)).unwrap();
+    let local_port = local_probe.local_addr().unwrap().port();
+    drop(local_probe);
+    let host = PinnedSshHost::new(target, root.join("known hosts"), root.join("identity")).unwrap();
+    let forward = host
+        .open_forward(
+            ApprovedPortForward::agent_approved(local_port, remote_port, "ssh-live-forward")
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert!(forward.alive());
+    let address = SocketAddr::from((Ipv4Addr::LOCALHOST, local_port));
+    let response = tokio::task::spawn_blocking(move || {
+        let mut stream = TcpStream::connect_timeout(&address, Duration::from_secs(2)).unwrap();
+        stream.write_all(b"ping").unwrap();
+        let mut response = [0_u8; 4];
+        stream.read_exact(&mut response).unwrap();
+        response
+    })
+    .await
+    .unwrap();
+    assert_eq!(&response, b"pong");
+    server.await.unwrap();
+    forward.close().await.unwrap();
+
+    let deadline = std::time::Instant::now() + Duration::from_secs(2);
+    loop {
+        match TcpListener::bind((Ipv4Addr::LOCALHOST, local_port)) {
+            Ok(listener) => {
+                drop(listener);
+                break;
+            }
+            Err(_) if std::time::Instant::now() < deadline => {
+                std::thread::sleep(Duration::from_millis(25));
+            }
+            Err(error) => panic!("forward listener leaked after shutdown: {error}"),
+        }
+    }
+
+    let occupied = TcpListener::bind((Ipv4Addr::LOCALHOST, local_port)).unwrap();
+    assert!(
+        host.open_forward(ApprovedPortForward::manual(local_port, remote_port).unwrap())
+            .await
+            .is_err()
+    );
+    drop(occupied);
 }
 
 #[tokio::test]

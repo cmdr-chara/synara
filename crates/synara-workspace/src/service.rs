@@ -36,7 +36,7 @@ pub struct Catalog {
     pub projects: Vec<Project>,
     pub tasks: Vec<Task>,
 }
-#[derive(Clone, Debug, Default, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Selection {
     pub project: Option<ProjectId>,
     pub task: Option<TaskId>,
@@ -144,6 +144,145 @@ impl WorkspaceService {
 
     /// Enroll a remote workspace only after the pinned host and remote helper
     /// prove the requested root. Private key contents are never persisted.
+    pub async fn create_project(
+        &self,
+        workspace_id: WorkspaceId,
+        name: String,
+        relative_directory: PathBuf,
+    ) -> WorkspaceResult<Project> {
+        let name = catalog_name(&name, "project")?;
+        self.access(move |store| {
+            let existing = catalog(store)?;
+            let workspace = existing
+                .workspaces
+                .iter()
+                .find(|workspace| workspace.id == workspace_id)
+                .ok_or(WorkspaceError::NotFound)?;
+            if existing.projects.iter().any(|project| {
+                project.workspace_id == workspace_id
+                    && project.relative_directory == relative_directory
+            }) {
+                return Err(WorkspaceError::Invalid(
+                    "this project directory is already registered".into(),
+                ));
+            }
+            let project = Project {
+                id: ProjectId::new(),
+                workspace_id,
+                name,
+                relative_directory,
+            };
+            project_directory(workspace, &project)?;
+            store.save_project(&project)?;
+            Ok(project)
+        })
+        .await
+    }
+
+    pub async fn rename_workspace(
+        &self,
+        id: WorkspaceId,
+        name: String,
+    ) -> WorkspaceResult<Workspace> {
+        let name = catalog_name(&name, "workspace")?;
+        self.access(move |store| {
+            let mut workspace = catalog(store)?
+                .workspaces
+                .into_iter()
+                .find(|workspace| workspace.id == id)
+                .ok_or(WorkspaceError::NotFound)?;
+            workspace.name = name;
+            store.save_workspace(&workspace)?;
+            Ok(workspace)
+        })
+        .await
+    }
+
+    pub async fn rename_project(&self, id: ProjectId, name: String) -> WorkspaceResult<Project> {
+        let name = catalog_name(&name, "project")?;
+        self.access(move |store| {
+            let mut project = catalog(store)?
+                .projects
+                .into_iter()
+                .find(|project| project.id == id)
+                .ok_or(WorkspaceError::NotFound)?;
+            project.name = name;
+            store.save_project(&project)?;
+            Ok(project)
+        })
+        .await
+    }
+
+    pub async fn rename_task(&self, id: TaskId, title: String) -> WorkspaceResult<Task> {
+        let title = catalog_name(&title, "task")?;
+        let task = self.task(id).await?;
+        self.record(task.thread_id, ThreadEvent::TitleChanged { title })
+            .await?;
+        self.task(id).await
+    }
+
+    pub async fn archive_task(&self, id: TaskId) -> WorkspaceResult<Task> {
+        self.access(move |store| {
+            let mut task = store.task(id)?.ok_or(WorkspaceError::NotFound)?;
+            if matches!(task.state, TaskState::Running | TaskState::Waiting) {
+                return Err(AgentError::Busy.into());
+            }
+            if task.state != TaskState::Archived {
+                task.state = TaskState::Archived;
+                task.updated_at_ms = now_ms();
+                store.save_task(&task)?;
+            }
+            Ok(task)
+        })
+        .await
+    }
+
+    pub async fn delete_task(&self, id: TaskId) -> WorkspaceResult<()> {
+        self.access(move |store| {
+            if !store.delete_task(id)? {
+                return Err(WorkspaceError::NotFound);
+            }
+            Ok(())
+        })
+        .await
+    }
+
+    pub async fn delete_project(&self, id: ProjectId) -> WorkspaceResult<()> {
+        self.access(move |store| {
+            if !store.delete_project(id)? {
+                return Err(WorkspaceError::NotFound);
+            }
+            Ok(())
+        })
+        .await
+    }
+
+    pub async fn delete_workspace(&self, id: WorkspaceId) -> WorkspaceResult<()> {
+        self.access(move |store| {
+            if !store.delete_workspace(id)? {
+                return Err(WorkspaceError::NotFound);
+            }
+            Ok(())
+        })
+        .await
+    }
+
+    pub async fn recent_tasks(&self, limit: usize) -> WorkspaceResult<Vec<Task>> {
+        if limit == 0 || limit > 500 {
+            return Err(WorkspaceError::Invalid(
+                "recent-task limit must be between 1 and 500".into(),
+            ));
+        }
+        Ok(self
+            .catalog()
+            .await?
+            .tasks
+            .into_iter()
+            .filter(|task| task.state != TaskState::Archived)
+            .take(limit)
+            .collect())
+    }
+
     pub async fn add_ssh_workspace(&self, request: NewSshWorkspace) -> WorkspaceResult<Project> {
         request.validate()?;
         let host = PinnedSshHost::new(
@@ -324,12 +463,58 @@ impl WorkspaceService {
             .await
     }
     pub async fn selection(&self) -> WorkspaceResult<Selection> {
-        self.access(|store| Ok(store.preference("selection")?.unwrap_or_default()))
-            .await
+        self.access(|store| {
+            let mut value: Selection = store.preference("selection")?.unwrap_or_default();
+            let c = catalog(store)?;
+            if value
+                .project
+                .is_some_and(|id| !c.projects.iter().any(|project| project.id == id))
+            {
+                value = Selection::default();
+            }
+            if let Some(task_id) = value.task {
+                let valid = value.project.is_some_and(|project_id| {
+                    c.tasks.iter().any(|task| {
+                        task.id == task_id
+                            && task.project_id == project_id
+                            && task.state != TaskState::Archived
+                    })
+                });
+                if !valid {
+                    value.task = None;
+                }
+            }
+            store.set_preference("selection", &value)?;
+            Ok(value)
+        })
+        .await
     }
     pub async fn save_selection(&self, value: Selection) -> WorkspaceResult<()> {
-        self.access(move |store| Ok(store.set_preference("selection", &value)?))
-            .await
+        self.access(move |store| {
+            let c = catalog(store)?;
+            if let Some(project) = value.project
+                && !c.projects.iter().any(|item| item.id == project)
+            {
+                return Err(WorkspaceError::NotFound);
+            }
+            if let Some(task) = value.task {
+                let Some(project) = value.project else {
+                    return Err(WorkspaceError::Invalid(
+                        "a selected task must belong to a selected project".into(),
+                    ));
+                };
+                if !c.tasks.iter().any(|item| {
+                    item.id == task
+                        && item.project_id == project
+                        && item.state != TaskState::Archived
+                }) {
+                    return Err(WorkspaceError::NotFound);
+                }
+            }
+            store.set_preference("selection", &value)?;
+            Ok(())
+        })
+        .await
     }
     pub async fn profiles(&self) -> WorkspaceResult<Vec<AgentProfile>> {
         self.access(|store| {
@@ -521,6 +706,19 @@ fn catalog(store: &Store) -> WorkspaceResult<Catalog> {
         tasks,
     })
 }
+fn catalog_name(value: &str, kind: &str) -> WorkspaceResult<String> {
+    let value = value.trim();
+    if value.is_empty()
+        || value.len() > 400
+        || value.chars().any(|character| character.is_control())
+    {
+        return Err(WorkspaceError::Invalid(format!(
+            "{kind} name must contain text and fit within 400 bytes"
+        )));
+    }
+    Ok(value.to_owned())
+}
+
 fn project_directory(workspace: &Workspace, project: &Project) -> WorkspaceResult<PathBuf> {
     if project.relative_directory.components().any(|c| {
         !matches!(
@@ -686,6 +884,86 @@ mod tests {
         assert!(thread.permissions.is_empty());
         assert_eq!(service.recover_interrupted().await.unwrap(), 0);
     }
+    #[tokio::test]
+    async fn catalog_lifecycle_renames_archives_deletes_and_repairs_selection() {
+        let service = WorkspaceService::memory().unwrap();
+        let dir = tempfile::tempdir().unwrap();
+        std::fs::create_dir(dir.path().join("sub")).unwrap();
+        let root = service
+            .add_local_workspace(dir.path().into())
+            .await
+            .unwrap();
+        let workspace_id = service.catalog().await.unwrap().workspaces[0].id;
+        let sub = service
+            .create_project(workspace_id, "Sub".into(), PathBuf::from("sub"))
+            .await
+            .unwrap();
+        service
+            .rename_workspace(workspace_id, "Renamed workspace".into())
+            .await
+            .unwrap();
+        service
+            .rename_project(sub.id, "Renamed project".into())
+            .await
+            .unwrap();
+        let task = service
+            .create_task(sub.id, "Initial".into(), "opencode".into())
+            .await
+            .unwrap();
+        let task = service
+            .rename_task(task.id, "Renamed task".into())
+            .await
+            .unwrap();
+        assert_eq!(task.title, "Renamed task");
+        service
+            .save_selection(Selection {
+                project: Some(sub.id),
+                task: Some(task.id),
+            })
+            .await
+            .unwrap();
+        assert_eq!(service.recent_tasks(10).await.unwrap().len(), 1);
+        service.archive_task(task.id).await.unwrap();
+        assert!(service.recent_tasks(10).await.unwrap().is_empty());
+        let selection = service.selection().await.unwrap();
+        assert_eq!(selection.project, Some(sub.id));
+        assert_eq!(selection.task, None);
+        service.delete_task(task.id).await.unwrap();
+        service.delete_project(sub.id).await.unwrap();
+        assert_eq!(service.selection().await.unwrap(), Selection::default());
+        service.delete_project(root.id).await.unwrap();
+        service.delete_workspace(workspace_id).await.unwrap();
+        assert!(service.catalog().await.unwrap().workspaces.is_empty());
+    }
+
+    #[tokio::test]
+    async fn active_tasks_cannot_be_archived_or_deleted_without_archival() {
+        let service = WorkspaceService::memory().unwrap();
+        let dir = tempfile::tempdir().unwrap();
+        let project = service
+            .add_local_workspace(dir.path().into())
+            .await
+            .unwrap();
+        let task = service
+            .create_task(project.id, "Task".into(), "opencode".into())
+            .await
+            .unwrap();
+        assert!(service.delete_task(task.id).await.is_err());
+        service
+            .record(
+                task.thread_id,
+                ThreadEvent::PromptStarted {
+                    turn: "turn".into(),
+                },
+            )
+            .await
+            .unwrap();
+        assert!(matches!(
+            service.archive_task(task.id).await,
+            Err(WorkspaceError::Agent(AgentError::Busy))
+        ));
+    }
+
     #[tokio::test]
     async fn readding_workspace_does_not_duplicate_projects() {
         let service = WorkspaceService::memory().unwrap();

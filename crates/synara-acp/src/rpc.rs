@@ -419,10 +419,7 @@ fn dispatch(value: Value, state: &State, incoming: &mpsc::Sender<Incoming>) -> A
             if requests.len() >= 64 {
                 return Err(AgentError::Limit);
             }
-            if requests
-                .insert(id.clone(), cancellation.clone())
-                .is_some()
-            {
+            if requests.insert(id.clone(), cancellation.clone()).is_some() {
                 return Err(invalid("duplicate incoming request ID"));
             }
             Incoming::Request {

@@ -525,12 +525,7 @@ fn database_path(path: &Path) -> StorageResult<std::path::PathBuf> {
 fn valid_preference_key(key: &str) -> bool {
     matches!(
         key,
-        "appearance"
-            | "selection"
-            | "window"
-            | "agent_profiles"
-            | "ssh_profiles"
-            | "settings"
+        "appearance" | "selection" | "window" | "agent_profiles" | "ssh_profiles" | "settings"
     )
 }
 

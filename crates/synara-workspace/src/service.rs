@@ -1,6 +1,6 @@
 use crate::{
     AgentProfile, NewSshWorkspace, SshWorkspaceProfile, StorageError, Store, default_profiles,
-    upsert_ssh_profile, validate_profiles,
+    parse_profiles, upsert_ssh_profile, validate_profiles,
 };
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
@@ -528,8 +528,125 @@ impl WorkspaceService {
     }
     pub async fn save_profiles(&self, profiles: Vec<AgentProfile>) -> WorkspaceResult<()> {
         validate_profiles(&profiles)?;
-        self.access(move |store| Ok(store.set_preference("agent_profiles", &profiles)?))
-            .await
+        self.access(move |store| {
+            let current: Vec<AgentProfile> = store
+                .preference("agent_profiles")?
+                .unwrap_or_else(default_profiles);
+            let catalog = catalog(store)?;
+            for task in &catalog.tasks {
+                let previous = current.iter().find(|profile| profile.id == task.agent_id);
+                let replacement = profiles.iter().find(|profile| profile.id == task.agent_id);
+                if replacement.is_none() {
+                    return Err(WorkspaceError::Invalid(
+                        "select another agent for assigned tasks before removing this profile"
+                            .into(),
+                    ));
+                }
+                if previous != replacement {
+                    if matches!(task.state, TaskState::Running | TaskState::Waiting) {
+                        return Err(AgentError::Busy.into());
+                    }
+                    store.forget_session(task.thread_id)?;
+                }
+            }
+            store.set_preference("agent_profiles", &profiles)?;
+            Ok(())
+        })
+        .await
+    }
+
+    pub async fn upsert_custom_profile(
+        &self,
+        profile: AgentProfile,
+    ) -> WorkspaceResult<Vec<AgentProfile>> {
+        if profile.registry.is_some() {
+            return Err(WorkspaceError::Invalid(
+                "managed registry profiles cannot be edited as custom profiles".into(),
+            ));
+        }
+        profile.validate()?;
+        let mut profiles = self.profiles().await?;
+        if let Some(existing) = profiles.iter_mut().find(|item| item.id == profile.id) {
+            if existing.registry.is_some() {
+                return Err(WorkspaceError::Invalid(
+                    "this ID belongs to a managed registry profile".into(),
+                ));
+            }
+            *existing = profile;
+        } else {
+            profiles.push(profile);
+        }
+        self.save_profiles(profiles.clone()).await?;
+        Ok(profiles)
+    }
+
+    pub async fn delete_custom_profile(&self, id: String) -> WorkspaceResult<Vec<AgentProfile>> {
+        let mut profiles = self.profiles().await?;
+        let Some(profile) = profiles.iter().find(|profile| profile.id == id) else {
+            return Err(WorkspaceError::NotFound);
+        };
+        if profile.registry.is_some() {
+            return Err(WorkspaceError::Invalid(
+                "managed registry profiles must be removed through the installation workflow"
+                    .into(),
+            ));
+        }
+        if self
+            .catalog()
+            .await?
+            .tasks
+            .iter()
+            .any(|task| task.agent_id == id)
+        {
+            return Err(WorkspaceError::Invalid(
+                "select another agent for assigned tasks before deleting this profile".into(),
+            ));
+        }
+        profiles.retain(|profile| profile.id != id);
+        self.save_profiles(profiles.clone()).await?;
+        Ok(profiles)
+    }
+
+    pub async fn export_custom_profiles(&self) -> WorkspaceResult<String> {
+        let profiles: Vec<_> = self
+            .profiles()
+            .await?
+            .into_iter()
+            .filter(|profile| profile.registry.is_none())
+            .collect();
+        let encoded = serde_json::to_string_pretty(&profiles)
+            .map_err(|_| WorkspaceError::Invalid("profiles could not be exported".into()))?;
+        if encoded.len() > 1024 * 1024 {
+            return Err(AgentError::Limit.into());
+        }
+        Ok(encoded)
+    }
+
+    pub async fn import_custom_profiles(
+        &self,
+        encoded: String,
+    ) -> WorkspaceResult<Vec<AgentProfile>> {
+        let imported = parse_profiles(&encoded)?;
+        if imported.iter().any(|profile| profile.registry.is_some()) {
+            return Err(WorkspaceError::Invalid(
+                "custom profile imports cannot contain managed registry receipts".into(),
+            ));
+        }
+        let mut profiles = self.profiles().await?;
+        for profile in imported {
+            if let Some(existing) = profiles.iter_mut().find(|item| item.id == profile.id) {
+                if existing.registry.is_some() {
+                    return Err(WorkspaceError::Invalid(
+                        "an imported custom profile collides with a managed registry ID".into(),
+                    ));
+                }
+                *existing = profile;
+            } else {
+                profiles.push(profile);
+            }
+        }
+        self.save_profiles(profiles.clone()).await?;
+        Ok(profiles)
     }
     /// Publish one managed profile without losing concurrent edits to other profiles.
     pub async fn register_installation(
@@ -962,6 +1079,118 @@ mod tests {
             service.archive_task(task.id).await,
             Err(WorkspaceError::Agent(AgentError::Busy))
         ));
+    }
+
+    #[tokio::test]
+    async fn custom_profile_crud_exports_only_secret_references_and_invalidates_stale_sessions() {
+        let service = WorkspaceService::memory().unwrap();
+        let dir = tempfile::tempdir().unwrap();
+        let project = service
+            .add_local_workspace(dir.path().into())
+            .await
+            .unwrap();
+        let profile = AgentProfile {
+            registry: None,
+            id: "custom-secret".into(),
+            name: "Custom".into(),
+            command: "/opt/custom-agent".into(),
+            args: vec!["acp".into()],
+            inherit_env: vec![],
+            secret_env: std::collections::BTreeMap::from([(
+                "API_TOKEN".into(),
+                synara_runtime::SecretReference::new("dev.synara", "agent/custom-secret").unwrap(),
+            )]),
+        };
+        service
+            .upsert_custom_profile(profile.clone())
+            .await
+            .unwrap();
+        let exported = service.export_custom_profiles().await.unwrap();
+        assert!(exported.contains("agent/custom-secret"));
+        assert!(!exported.contains("secret-canary"));
+
+        let task = service
+            .create_task(project.id, "Task".into(), profile.id.clone())
+            .await
+            .unwrap();
+        service
+            .save_session(
+                task.thread_id,
+                SessionReference {
+                    agent_id: profile.id.clone(),
+                    remote_id: "old-session".into(),
+                    working_directory: task.working_directory.clone(),
+                    title: None,
+                },
+            )
+            .await
+            .unwrap();
+        let mut edited = profile.clone();
+        edited.name = "Edited".into();
+        service.upsert_custom_profile(edited.clone()).await.unwrap();
+        assert!(service.session(task.thread_id).await.unwrap().is_none());
+        assert_eq!(
+            service
+                .profiles()
+                .await
+                .unwrap()
+                .into_iter()
+                .find(|item| item.id == profile.id)
+                .unwrap()
+                .name,
+            "Edited"
+        );
+        assert!(
+            service
+                .delete_custom_profile(profile.id.clone())
+                .await
+                .is_err()
+        );
+
+        let mut running = edited.clone();
+        running.name = "Blocked".into();
+        service
+            .record(
+                task.thread_id,
+                ThreadEvent::PromptStarted {
+                    turn: "running".into(),
+                },
+            )
+            .await
+            .unwrap();
+        assert!(matches!(
+            service.upsert_custom_profile(running).await,
+            Err(WorkspaceError::Agent(AgentError::Busy))
+        ));
+
+        service
+            .record(
+                task.thread_id,
+                ThreadEvent::PromptFinished {
+                    reason: "end_turn".into(),
+                },
+            )
+            .await
+            .unwrap();
+        service
+            .set_task_agent(task.id, "opencode".into())
+            .await
+            .unwrap();
+        service
+            .delete_custom_profile(profile.id.clone())
+            .await
+            .unwrap();
+        assert!(
+            service
+                .profiles()
+                .await
+                .unwrap()
+                .iter()
+                .all(|item| item.id != profile.id)
+        );
+
+        let imported = service.import_custom_profiles(exported).await.unwrap();
+        assert!(imported.iter().any(|item| item.id == profile.id));
     }
 
     #[tokio::test]

@@ -39,8 +39,10 @@ jobs:
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
-          fetch-depth: 0
+          fetch-depth: 1
           persist-credentials: false
+      - name: Fetch only native rewrite history
+        run: git fetch --quiet --no-tags --unshallow origin "$GITHUB_SHA"
       - name: Install pinned toolchain
         run: rustup toolchain install 1.98.1 --profile minimal --component rustfmt --component clippy
       - name: Identify exact candidate and native host
@@ -65,16 +67,16 @@ jobs:
         run: cargo +1.98.1 fmt --check
       - name: Backend compile
         if: always()
-        run: cargo +1.98.1 check --locked --workspace --exclude synara-app
+        run: cargo +1.98.1 check --quiet --locked --workspace --exclude synara-app
       - name: Backend lints
         if: always()
-        run: cargo +1.98.1 clippy --locked --workspace --exclude synara-app --all-targets --all-features -- -D warnings
+        run: cargo +1.98.1 clippy --quiet --locked --workspace --exclude synara-app --all-targets --all-features -- -D warnings
       - name: Backend tests
         if: always()
-        run: cargo +1.98.1 test --locked --workspace --exclude synara-app --all-features
+        run: cargo +1.98.1 test --quiet --locked --workspace --exclude synara-app --all-features --no-fail-fast
       - name: Native application compilation on macOS and Windows
-        if: runner.os != 'Linux'
-        run: cargo +1.98.1 check --locked -p synara-app
+        if: always() && runner.os != 'Linux'
+        run: cargo +1.98.1 check --quiet --locked -p synara-app
       - name: Verify source was not modified by checks
         if: always()
         run: git diff --exit-code

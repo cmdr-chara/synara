@@ -6,6 +6,29 @@ use synara_core::Role;
 use synara_workspace::{Controller, WorkspaceService, parse_profiles};
 
 const CANARY: &str = "synthetic-value-not-a-credential-🦀";
+const STAGES: &[&str] = &[
+    "start",
+    "copy-agent",
+    "open-workspace",
+    "parse-profile",
+    "reload-profile",
+    "create-task",
+    "first-prompt",
+    "second-prompt",
+    "identity",
+    "transcript",
+    "arguments",
+    "environment",
+    "working-directory",
+    "trace",
+    "shutdown",
+    "complete",
+];
+
+fn checkpoint(stage: &str) {
+    assert!(STAGES.contains(&stage));
+    eprintln!("profile-checkpoint:{stage}");
+}
 
 #[tokio::test]
 async fn custom_command_profile_preserves_arguments_and_only_inherits_named_variables() {
@@ -27,7 +50,6 @@ async fn custom_command_profile_preserves_arguments_and_only_inherits_named_vari
         .env("XDG_DATA_HOME", root.path().join("data"))
         .env("XDG_CACHE_HOME", root.path().join("cache"))
         .kill_on_drop(true);
-    // Windows process creation requires the system directory, never a user profile.
     if let Some(value) = std::env::var_os("SystemRoot") {
         child.env("SystemRoot", value);
     }
@@ -35,8 +57,20 @@ async fn custom_command_profile_preserves_arguments_and_only_inherits_named_vari
         .await
         .expect("isolated custom-profile proof exceeded its deadline")
         .unwrap();
-    // Do not include subprocess output: future failures must not dump inherited values.
-    assert!(result.status.success(), "isolated profile proof failed");
+    // Only fixed, allowlisted checkpoint names may leave the isolated test.
+    // Never print arbitrary panic text, process output, paths or environment.
+    let stderr = String::from_utf8_lossy(&result.stderr);
+    let last_stage = stderr
+        .lines()
+        .filter_map(|line| line.strip_prefix("profile-checkpoint:"))
+        .filter(|stage| STAGES.contains(stage))
+        .next_back()
+        .unwrap_or("no-checkpoint");
+    assert!(
+        result.status.success(),
+        "isolated profile proof failed after {last_stage} (exit {:?})",
+        result.status.code()
+    );
     assert!(!contains(&result.stdout, CANARY.as_bytes()));
     assert!(!contains(&result.stderr, CANARY.as_bytes()));
     assert_no_persisted_canary(root.path());
@@ -71,15 +105,18 @@ async fn custom_profile_child_entry() {
     let Some(root) = std::env::var_os("SYNARA_BCD_CHILD_ROOT") else {
         return;
     };
+    checkpoint("start");
     let root = std::path::PathBuf::from(root);
     let executable = root
         .join("agent binaries with spaces 🦀")
         .join(format!("custom agent æ{}", std::env::consts::EXE_SUFFIX));
+    checkpoint("copy-agent");
     std::fs::create_dir_all(executable.parent().unwrap()).unwrap();
     std::fs::copy(env!("CARGO_BIN_EXE_synara-acp-fixture"), &executable).unwrap();
     let cwd = root.join("project with spaces 日本語");
     std::fs::create_dir(&cwd).unwrap();
     let db = root.join("synara.sqlite3");
+    checkpoint("open-workspace");
     let workspace = WorkspaceService::open(db.clone()).await.unwrap();
     let project = workspace.add_local_workspace(cwd.clone()).await.unwrap();
     let extra = vec![
@@ -99,11 +136,13 @@ async fn custom_profile_child_entry() {
         }])
         .to_string();
         assert!(!json.contains(CANARY));
+        checkpoint("parse-profile");
         let profiles = parse_profiles(&json).unwrap();
         workspace.save_profiles(profiles.clone()).await.unwrap();
-        // The process is launched from the persisted profile, not the original Rust value.
+        checkpoint("reload-profile");
         let reloaded = WorkspaceService::open(db.clone()).await.unwrap();
         assert_eq!(reloaded.profiles().await.unwrap(), profiles);
+        checkpoint("create-task");
         let task = reloaded
             .create_task(project.id, id.into(), id.into())
             .await
@@ -113,22 +152,26 @@ async fn custom_profile_child_entry() {
             Arc::new(AcpBackend::default()),
             Arc::new(DenyInteractions),
         );
+        checkpoint("first-prompt");
         controller
             .submit(task.id, "launch-proof".into())
             .await
             .unwrap();
         let first = controller.details(task.id).await.unwrap().unwrap();
+        checkpoint("second-prompt");
         controller
             .submit(task.id, "launch-proof".into())
             .await
             .unwrap();
         let second = controller.details(task.id).await.unwrap().unwrap();
+        checkpoint("identity");
         assert_eq!(first.connection.id, second.connection.id);
         assert_eq!(first.session_id, second.session_id);
         assert_eq!(
             first.connection.identity.as_ref().unwrap().version.as_str(),
             "1.0.0"
         );
+        checkpoint("transcript");
         let thread = reloaded.thread(task.thread_id).await.unwrap();
         let replies = thread
             .messages
@@ -138,17 +181,29 @@ async fn custom_profile_child_entry() {
         assert_eq!(replies.len(), 2);
         for message in replies {
             let proof: serde_json::Value = serde_json::from_str(&message.text).unwrap();
+            checkpoint("arguments");
             assert_eq!(proof["args"], serde_json::json!(extra));
+            checkpoint("environment");
             assert_eq!(proof["canaryPresent"], inherited);
             assert_eq!(proof["canaryCorrect"], inherited);
             assert_eq!(proof["unlistedPresent"], false);
-            assert_eq!(proof["cwd"], serde_json::json!(cwd));
+            checkpoint("working-directory");
+            // macOS /var and Windows extended-length paths have canonical aliases.
+            // Prove the actual directory identity, not one textual spelling of it.
+            let actual_cwd = Path::new(proof["cwd"].as_str().unwrap());
+            assert_eq!(
+                std::fs::canonicalize(actual_cwd).unwrap(),
+                std::fs::canonicalize(&cwd).unwrap()
+            );
         }
+        checkpoint("trace");
         for trace in controller.trace(task.id, false).await.unwrap() {
             assert!(!format!("{trace:?}").contains(CANARY));
         }
+        checkpoint("shutdown");
         controller.shutdown().await.unwrap();
         assert!(!cwd.join("SHOULD_NOT_EXIST").exists());
         assert!(!cwd.join("ALSO_MUST_NOT_EXIST").exists());
     }
+    checkpoint("complete");
 }

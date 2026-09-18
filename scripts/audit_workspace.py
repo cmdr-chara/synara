@@ -53,7 +53,7 @@ def audit(root, *, check_git=True):
         if not directory.is_relative_to(root):
             errors.append('workspace member escapes repository')
             continue
-        member = str(directory.relative_to(root))
+        member = directory.relative_to(root).as_posix()
         path = directory / 'Cargo.toml'
         if not path.is_file():
             errors.append(f'{member}: manifest missing')
@@ -88,15 +88,13 @@ def audit(root, *, check_git=True):
                 if 'path' in value and not (base / value['path'] / 'Cargo.toml').is_file():
                     errors.append(f'{member}: missing dependency {name}')
         for source in rust_sources(directory):
-            relative = str(source.relative_to(root))
+            relative = source.relative_to(root).as_posix()
             if source.is_symlink():
                 errors.append(f'{relative}: symlinked Rust source is not auditable')
                 continue
             text = source.read_text(encoding='utf-8')
             if not adapter:
                 for alias in aliases:
-                    # Covers qualified paths, use aliases and extern-crate forms,
-                    # including raw identifiers and whitespace before ::.
                     pattern = rf'(?<![\w])(?:r#)?{re.escape(alias)}\s*(?:::|\bas\b|;)'
                     if re.search(pattern, text):
                         errors.append(f'{relative}: protocol boundary violation')
@@ -105,7 +103,7 @@ def audit(root, *, check_git=True):
                 errors.append(f'{relative}: unfinished executable path')
     for source in (root / 'crates').rglob('*'):
         if source.suffix in {'.ts', '.tsx', '.js', '.jsx'}:
-            errors.append(f'{source.relative_to(root)}: non-Rust core source')
+            errors.append(f'{source.relative_to(root).as_posix()}: non-Rust core source')
     parents = []
     if check_git:
         parents = subprocess.check_output(

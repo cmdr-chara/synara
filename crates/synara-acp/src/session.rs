@@ -18,6 +18,11 @@ impl AgentSession for AcpSession {
         self.state.configuration.read().unwrap().clone()
     }
     async fn prompt(&self, prompt: Prompt) -> AgentResult<String> {
+        let cancellation = self
+            .state
+            .cancellation_gate
+            .try_lock()
+            .map_err(|_| AgentError::Busy)?;
         let _operation = self
             .state
             .prompt_gate
@@ -35,6 +40,7 @@ impl AgentSession for AcpSession {
             session: self,
             complete: false,
         };
+        drop(cancellation);
         self.state
             .emit(
                 &self.connection.context,
@@ -63,23 +69,48 @@ impl AgentSession for AcpSession {
             )
             .await?;
         let cancellation = self.state.turn.lock().unwrap().clone();
-        let operation = self.connection.call(
-            "session/prompt",
-            json!({"sessionId":self.id(),"prompt":content}),
-            self.connection.timeouts.prompt,
-        );
-        tokio::pin!(operation);
-        let response = tokio::select! {
-            result = &mut operation => result,
-            () = cancellation.cancelled() => {
-                match tokio::time::timeout(self.connection.timeouts.cancellation,&mut operation).await {
-                    Ok(result) => result,
-                    Err(_) => {
-                        self.connection.rpc.fail("agent did not acknowledge cancellation");
-                        Err(AgentError::Disconnected("Agent did not acknowledge cancellation. Restart the connection.".into()))
-                    }
+        // Cancellation may have completed while the durable prompt events were
+        // being delivered. Serialize enqueue against cancel, not response wait:
+        // either no prompt is queued, or its frame precedes session/cancel.
+        let pending = tokio::select! {
+            biased;
+            () = cancellation.cancelled() => Err(AgentError::Cancelled),
+            gate = self.state.cancellation_gate.lock() => {
+                let _gate = gate;
+                if cancellation.is_cancelled() {
+                    Err(AgentError::Cancelled)
+                } else {
+                    self.connection.begin_call(
+                        "session/prompt",
+                        json!({"sessionId":self.id(),"prompt":content}),
+                        self.connection.timeouts.prompt,
+                    ).await
                 }
             }
+        };
+        let response = match pending {
+            Ok(pending) => {
+                let operation = pending.wait();
+                tokio::pin!(operation);
+                let result = tokio::select! {
+                    result = &mut operation => result,
+                    () = cancellation.cancelled() => {
+                        match tokio::time::timeout(
+                            self.connection.timeouts.cancellation, &mut operation
+                        ).await {
+                            Ok(result) => result,
+                            Err(_) => {
+                                self.connection.rpc.fail("agent did not acknowledge cancellation");
+                                Err(AgentError::Disconnected(
+                                    "Agent did not acknowledge cancellation. Restart the connection.".into()
+                                ))
+                            }
+                        }
+                    }
+                };
+                self.connection.call_result("session/prompt", result)
+            }
+            Err(error) => Err(error),
         };
         let response = match response {
             Ok(result) => {
@@ -127,23 +158,31 @@ impl AgentSession for AcpSession {
         }
     }
     async fn cancel(&self) -> AgentResult<()> {
+        // Do not let a late cancellation event clear the next turn's interactions.
+        let _cancellation = self.state.cancellation_gate.lock().await;
         if !self.state.active.load(Ordering::Acquire) {
             return Ok(());
         }
         self.state.turn.lock().unwrap().cancel();
-        self.state
-            .emit(&self.connection.context, ThreadEvent::CancellationRequested)
-            .await?;
+        // Control-plane cancellation and resource cleanup must run even when the
+        // event consumer is blocked or has failed. Report delivery separately.
         let result = self
             .connection
             .rpc
             .notify("session/cancel", json!({"sessionId":self.id()}))
             .await;
-        self.connection
+        let cleanup = self
+            .connection
             .callbacks
             .stop_terminals(Some(self.id()))
             .await;
-        result
+        let delivered = self
+            .state
+            .emit(&self.connection.context, ThreadEvent::CancellationRequested)
+            .await;
+        result?;
+        cleanup?;
+        delivered
     }
     async fn set_option(&self, id: &str, value: ConfigValue) -> AgentResult<SessionConfiguration> {
         let _mutation = self.state.mutation_gate.lock().await;
@@ -281,7 +320,8 @@ impl AgentSession for AcpSession {
                 )
                 .await?;
         }
-        self.connection
+        let cleanup = self
+            .connection
             .callbacks
             .stop_terminals(Some(self.id()))
             .await;
@@ -293,14 +333,17 @@ impl AgentSession for AcpSession {
             .lock()
             .unwrap()
             .remove(self.id());
-        self.state
+        let delivered = self
+            .state
             .emit(
                 &self.connection.context,
                 ThreadEvent::SessionStatus {
                     status: "Session closed".into(),
                 },
             )
-            .await
+            .await;
+        cleanup?;
+        delivered
     }
 }
 struct ActivePrompt<'a> {

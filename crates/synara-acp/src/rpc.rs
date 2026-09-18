@@ -10,11 +10,17 @@ use std::{
 };
 use synara_agent::{AgentError, AgentResult, TraceEntry};
 use synara_runtime::{ProcessReader, ProcessWriter};
+#[cfg(test)]
+use tokio::io::AsyncWriteExt;
 use tokio::{
-    io::{AsyncReadExt, AsyncWriteExt},
+    io::AsyncReadExt,
     sync::{mpsc, oneshot, watch},
 };
 use tokio_util::sync::CancellationToken;
+
+#[path = "rpc_outbound.rs"]
+mod outbound;
+use outbound::{OutboundQueue, write_loop};
 
 const MAX_FRAME: usize = 8 * 1024 * 1024;
 const MAX_PENDING: usize = 128;
@@ -109,7 +115,7 @@ impl Drop for Owner {
 #[derive(Clone)]
 pub(crate) struct RpcPeer {
     owner: Arc<Owner>,
-    writer: mpsc::Sender<Vec<u8>>,
+    writer: OutboundQueue,
     incoming: mpsc::Sender<Incoming>,
     next: Arc<AtomicU64>,
 }
@@ -127,7 +133,7 @@ impl RpcPeer {
             stop: CancellationToken::new(),
             failure,
         });
-        let (outgoing_tx, outgoing_rx) = mpsc::channel(64);
+        let (outgoing_tx, outgoing_rx) = OutboundQueue::new();
         let (incoming_tx, incoming_rx) = mpsc::channel(256);
         tokio::spawn(read_loop(reader, state.clone(), incoming_tx.clone()));
         tokio::spawn(write_loop(writer, state.clone(), outgoing_rx));
@@ -172,12 +178,29 @@ impl RpcPeer {
         params: Value,
         timeout: Duration,
     ) -> AgentResult<Value> {
+        self.begin_request(method, params, timeout)
+            .await?
+            .wait()
+            .await
+    }
+    /// Queue a request before allowing an ordered control notification to follow.
+    /// Dropping the returned owner still removes its pending ID and queued frame.
+    pub async fn begin_request(
+        &self,
+        method: &str,
+        params: Value,
+        timeout: Duration,
+    ) -> AgentResult<PendingResponse> {
+        let deadline = tokio::time::Instant::now()
+            .checked_add(timeout)
+            .ok_or_else(|| invalid("request deadline is out of range"))?;
         validate_method(method)?;
         let id = RpcId::String(format!(
             "synara-{}",
             self.next.fetch_add(1, Ordering::Relaxed)
         ));
         let (sender, receiver) = oneshot::channel();
+        let lifetime = self.state().stop.child_token();
         {
             let mut pending = self.state().pending.lock().unwrap();
             if self.state().stop.is_cancelled() {
@@ -191,29 +214,36 @@ impl RpcPeer {
                 Pending {
                     sender,
                     method: method.into(),
-                    lifetime: RequestLifetime(self.state().stop.child_token()),
+                    lifetime: RequestLifetime(lifetime.clone()),
                 },
             );
         }
-        let _guard = PendingGuard {
+        let guard = PendingGuard {
             state: Arc::downgrade(self.state()),
             id: id.clone(),
         };
-        let operation = async {
-            self.send(json!({"jsonrpc":"2.0", "id":id.value(), "method":method, "params":params}))
-                .await?;
-            receiver
-                .await
-                .map_err(|_| AgentError::Disconnected("response channel closed".into()))?
-        };
-        tokio::time::timeout(timeout, operation)
-            .await
-            .map_err(|_| AgentError::Timeout)?
+        tokio::time::timeout_at(
+            deadline,
+            self.send(
+                json!({"jsonrpc":"2.0", "id":id.value(), "method":method, "params":params}),
+                Some(lifetime),
+            ),
+        )
+        .await
+        .map_err(|_| AgentError::Timeout)??;
+        Ok(PendingResponse {
+            receiver,
+            deadline,
+            _guard: guard,
+        })
     }
     pub async fn notify(&self, method: &str, params: Value) -> AgentResult<()> {
         validate_method(method)?;
-        self.send(json!({"jsonrpc":"2.0", "method":method, "params":params}))
-            .await
+        self.send(
+            json!({"jsonrpc":"2.0", "method":method, "params":params}),
+            None,
+        )
+        .await
     }
     pub async fn reply(&self, id: RpcId, result: AgentResult<Value>) -> AgentResult<()> {
         if !self.state().incoming_ids.lock().unwrap().remove(&id) {
@@ -232,7 +262,7 @@ impl RpcPeer {
                 json!({"jsonrpc":"2.0", "id":id.value(), "error":{"code":code,"message":message}})
             }
         };
-        self.send(value).await
+        self.send(value, None).await
     }
     pub async fn barrier(&self) -> AgentResult<()> {
         let (sender, receiver) = oneshot::channel();
@@ -244,19 +274,21 @@ impl RpcPeer {
             } => result,
         }
     }
-    async fn send(&self, value: Value) -> AgentResult<()> {
-        let mut bytes = serde_json::to_vec(&value).map_err(|_| invalid("invalid JSON message"))?;
-        if bytes.len() > MAX_FRAME {
-            return Err(AgentError::Limit);
-        }
-        bytes.push(b'\n');
-        self.state().trace.lock().unwrap().push("out", &value);
-        tokio::select! {
-            () = self.state().stop.cancelled() => Err(AgentError::Disconnected("connection closed".into())),
-            result = tokio::time::timeout(Duration::from_secs(10), self.writer.send(bytes)) => {
-                result.map_err(|_| AgentError::Timeout)?.map_err(|_| AgentError::Disconnected("writer closed".into()))
-            }
-        }
+    async fn send(&self, value: Value, lifetime: Option<CancellationToken>) -> AgentResult<()> {
+        self.writer.send(value, self.state(), lifetime).await
+    }
+}
+pub(crate) struct PendingResponse {
+    receiver: oneshot::Receiver<AgentResult<Value>>,
+    deadline: tokio::time::Instant,
+    _guard: PendingGuard,
+}
+impl PendingResponse {
+    pub async fn wait(self) -> AgentResult<Value> {
+        tokio::time::timeout_at(self.deadline, self.receiver)
+            .await
+            .map_err(|_| AgentError::Timeout)?
+            .map_err(|_| AgentError::Disconnected("response channel closed".into()))?
     }
 }
 struct PendingGuard {
@@ -422,27 +454,6 @@ fn dispatch(value: Value, state: &State, incoming: &mpsc::Sender<Incoming>) -> A
     }
     Ok(())
 }
-async fn write_loop(
-    mut writer: ProcessWriter,
-    state: Arc<State>,
-    mut outgoing: mpsc::Receiver<Vec<u8>>,
-) {
-    loop {
-        let frame = tokio::select! { () = state.stop.cancelled() => break, frame = outgoing.recv() => frame };
-        let Some(frame) = frame else {
-            break;
-        };
-        let result = tokio::select! {
-            () = state.stop.cancelled() => break,
-            result = tokio::time::timeout(Duration::from_secs(30), async { writer.write_all(&frame).await?; writer.flush().await }) => result,
-        };
-        if !matches!(result, Ok(Ok(()))) {
-            state.fail("protocol stdin write failed");
-            break;
-        }
-    }
-    let _ = tokio::time::timeout(Duration::from_secs(1), writer.shutdown()).await;
-}
 async fn stderr_loop(mut stderr: ProcessReader, state: Arc<State>) {
     let mut bytes = [0; 4096];
     loop {
@@ -580,6 +591,58 @@ mod tests {
         let mut line = String::new();
         agent.read_line(&mut line).await.unwrap();
         assert_eq!(serde_json::from_str::<Value>(&line).unwrap()["id"], 7);
+    }
+    #[tokio::test]
+    async fn prepared_request_is_enqueued_before_a_following_control_notification() {
+        let (peer, _incoming, agent) = pair();
+        let response = peer
+            .begin_request("session/prompt", json!({}), Duration::from_secs(2))
+            .await
+            .unwrap();
+        peer.notify("session/cancel", json!({})).await.unwrap();
+        let mut agent = BufReader::new(agent);
+        let mut line = String::new();
+        agent.read_line(&mut line).await.unwrap();
+        let request: Value = serde_json::from_str(&line).unwrap();
+        assert_eq!(request["method"], "session/prompt");
+        line.clear();
+        agent.read_line(&mut line).await.unwrap();
+        assert_eq!(
+            serde_json::from_str::<Value>(&line).unwrap()["method"],
+            "session/cancel"
+        );
+        agent
+            .get_mut()
+            .write_all(
+                format!(
+                    "{}\n",
+                    json!({"jsonrpc":"2.0","id":request["id"],"result":{"stopReason":"cancelled"}})
+                )
+                .as_bytes(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(response.wait().await.unwrap()["stopReason"], "cancelled");
+        assert!(peer.state().pending.lock().unwrap().is_empty());
+    }
+
+    #[tokio::test]
+    async fn prepared_response_keeps_its_original_deadline_and_drop_ownership() {
+        let (peer, _incoming, _agent) = pair();
+        let response = peer
+            .begin_request("session/prompt", json!({}), Duration::from_secs(2))
+            .await
+            .unwrap();
+        assert_eq!(peer.state().pending.lock().unwrap().len(), 1);
+        drop(response);
+        assert!(peer.state().pending.lock().unwrap().is_empty());
+        let response = peer
+            .begin_request("session/prompt", json!({}), Duration::from_millis(20))
+            .await
+            .unwrap();
+        tokio::time::sleep(Duration::from_millis(30)).await;
+        assert!(matches!(response.wait().await, Err(AgentError::Timeout)));
+        assert!(peer.state().pending.lock().unwrap().is_empty());
     }
 }
 

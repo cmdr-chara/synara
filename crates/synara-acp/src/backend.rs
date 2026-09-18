@@ -1,6 +1,6 @@
 use crate::{
     callbacks::CallbackServices,
-    rpc::{Incoming, RpcPeer},
+    rpc::{Incoming, PendingResponse, RpcPeer},
     scope::{SessionState, Sessions},
     wire,
 };
@@ -198,7 +198,19 @@ impl Connection {
 
     pub async fn call(&self, method: &str, params: Value, timeout: Duration) -> AgentResult<Value> {
         crate::schema::request(method, &params)?;
-        match self.rpc.request(method, params, timeout).await {
+        self.call_result(method, self.rpc.request(method, params, timeout).await)
+    }
+    pub async fn begin_call(
+        &self,
+        method: &str,
+        params: Value,
+        timeout: Duration,
+    ) -> AgentResult<PendingResponse> {
+        crate::schema::request(method, &params)?;
+        self.rpc.begin_request(method, params, timeout).await
+    }
+    pub fn call_result(&self, method: &str, result: AgentResult<Value>) -> AgentResult<Value> {
+        match result {
             Ok(value) => {
                 if let Err(error) = crate::schema::response(method, &value) {
                     self.rpc.fail("response schema mismatch");
@@ -284,21 +296,42 @@ impl Connection {
             .values()
             .cloned()
             .collect();
-        for session in sessions {
+        for session in &sessions {
             session.lifetime.cancel();
             session.turn.lock().unwrap().cancel();
             session.active.store(false, Ordering::Release);
-            let _ = session
-                .emit(
+        }
+        let cleanup = self.callbacks.stop_terminals(None).await;
+        let deadline = tokio::time::Instant::now() + Duration::from_secs(15);
+        let mut diagnostics_failed = false;
+        for session in sessions {
+            let delivered = tokio::time::timeout_at(
+                deadline,
+                session.emit(
                     &self.context,
                     ThreadEvent::Error {
                         message: reason.clone(),
                         recoverable: false,
                     },
-                )
-                .await;
+                ),
+            )
+            .await;
+            if !matches!(delivered, Ok(Ok(()))) {
+                diagnostics_failed = true;
+                break;
+            }
         }
-        self.callbacks.stop_terminals(None).await;
+        if cleanup.is_err() || diagnostics_failed {
+            self.state.send_if_modified(|state| {
+                if state.state != ConnectionState::Failed {
+                    return false;
+                }
+                state.error = Some(format!(
+                    "{reason}. Cleanup or final diagnostic delivery did not complete."
+                ));
+                true
+            });
+        }
         self.process.request_stop();
     }
 }
@@ -471,7 +504,7 @@ impl AgentConnection for AcpConnection {
                 )
                 .await;
             session.lifetime.cancel();
-            connection.callbacks.stop_terminals(Some(id)).await;
+            let _ = connection.callbacks.stop_terminals(Some(id)).await;
             connection.sessions.states.lock().unwrap().remove(id);
             return Err(error);
         }
@@ -623,9 +656,9 @@ impl AgentConnection for AcpConnection {
             session.turn.lock().unwrap().cancel();
             session.closed.store(true, Ordering::Release);
         }
-        self.0.callbacks.stop_terminals(None).await;
+        let cleanup = self.0.callbacks.stop_terminals(None).await;
         self.0.process.shutdown().await?;
-        Ok(())
+        cleanup
     }
 }
 struct CreatingGuard {

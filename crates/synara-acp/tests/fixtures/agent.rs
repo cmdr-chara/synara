@@ -3,7 +3,14 @@ use serde_json::{Value, json};
 use std::{
     collections::HashMap,
     io::{self, BufRead, Write},
+    path::{Path, PathBuf},
 };
+
+// Canonical Windows paths can use the verbatim prefix, where appending a '/'
+// does not introduce a path separator. Keep fixture requests native and valid.
+fn session_path(root: &str, name: &str) -> PathBuf {
+    Path::new(root).join(name)
+}
 
 struct Fixture {
     profile: String,
@@ -193,15 +200,16 @@ impl Fixture {
                             "unlistedPresent": std::env::var_os("SYNARA_BCD_UNLISTED").is_some(),
                         }).to_string());
                     }
-                    "read-scope" => self.request(session.clone(),id,"read","fs/read_text_file",json!({"sessionId":session,"path":format!("{}/scope-proof.txt", self.sessions[&session])}),None),
+                    "read-scope" => self.request(session.clone(),id,"read","fs/read_text_file",json!({"sessionId":session,"path":session_path(&self.sessions[&session], "scope-proof.txt")}),None),
                     "startup-directory" => self.finish(&session, id, &std::env::current_dir().unwrap().to_string_lossy()),
                     "hold"|"timeout"=>{ self.text(&session,"Started waiting"); self.pending.insert(session,id); }
                     "crash"=> std::process::exit(23),
                     "malformed"=>{println!("not JSON");io::stdout().flush().unwrap();}
                     "permission"=> self.request(session.clone(),id,"permission","session/request_permission",json!({"sessionId":session,"toolCall":{"toolCallId":"tool-1","title":"Read a file","status":"pending"},"options":[{"optionId":"allow","name":"Allow once","kind":"allow_once"},{"optionId":"deny","name":"Deny","kind":"reject_once"}]}),None),
-                    "files"=> {let path=format!("{}/created.txt",self.sessions[&session]); self.request(session.clone(),id,"write","fs/write_text_file",json!({"sessionId":session,"path":path,"content":"native 🦀\n"}),None);}
+                    "files"=> {let path=session_path(&self.sessions[&session], "created.txt"); self.request(session.clone(),id,"write","fs/write_text_file",json!({"sessionId":session,"path":path,"content":"native 🦀\n"}),None);}
                     "escape"=>self.request(session.clone(),id,"escape","fs/read_text_file",json!({"sessionId":session,"path":"/etc/passwd"}),None),
                     "unknown-owner"=>self.request(session,id,"escape","fs/read_text_file",json!({"sessionId":"not-owned","path":"/etc/passwd"}),None),
+                    "terminal-hold"=>self.request(session.clone(),id,"terminal-hold","terminal/create",json!({"sessionId":session,"command":"/bin/sh","args":["-c","echo $$ > cleanup-terminal.pid; exec sleep 60"],"outputByteLimit":1024}),None),
                     "terminal"=>self.request(session.clone(),id,"terminal-create","terminal/create",json!({"sessionId":session,"command":"/bin/sh","args":["-c","printf 'terminal-proof\\n'"],"outputByteLimit":1024}),None),
                     "input"=>self.request(session.clone(),id,"input","elicitation/create",json!({"sessionId":session,"mode":"form","message":"Pick a value","requestedSchema":{"type":"object","properties":{"name":{"type":"string"}},"required":["name"]}}),None),
                     _=>{self.text(&session,"Hello ");self.text(&session,"from ");self.text(&session,&self.profile);self.update(&session,json!({"sessionUpdate":"tool_call","toolCallId":"tool-1","title":"Inspect","status":"in_progress","content":[{"type":"content","content":{"type":"text","text":"tool output"}}]}));self.update(&session,json!({"sessionUpdate":"tool_call_update","toolCallId":"tool-1","status":"completed"}));self.ok(id,json!({"stopReason":"end_turn"}));}
@@ -227,7 +235,7 @@ impl Fixture {
                             .unwrap_or("invalid"),
                     ),
                     "write" => {
-                        let path = format!("{}/created.txt", self.sessions[&s]);
+                        let path = session_path(&self.sessions[&s], "created.txt");
                         self.request(
                             s.clone(),
                             p,
@@ -242,6 +250,10 @@ impl Fixture {
                         p,
                         value["result"]["content"].as_str().unwrap_or("no content"),
                     ),
+                    "terminal-hold" => {
+                        self.text(&s, "Terminal waiting");
+                        self.pending.insert(s, p);
+                    }
                     "terminal-create" => {
                         let terminal = value["result"]["terminalId"].as_str().unwrap().to_owned();
                         self.request(
@@ -315,6 +327,25 @@ fn main() {
         };
         if let Ok(value) = serde_json::from_str(&line) {
             fixture.receive(value);
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn callback_paths_keep_the_session_root_as_their_parent() {
+        let root = if cfg!(windows) {
+            r"\\?\C:\Synara fixture 🦀"
+        } else {
+            "/Synara fixture 🦀"
+        };
+        for name in ["scope-proof.txt", "created.txt"] {
+            let path = session_path(root, name);
+            assert_eq!(path.parent(), Some(Path::new(root)));
+            assert_eq!(path.file_name(), Some(std::ffi::OsStr::new(name)));
         }
     }
 }

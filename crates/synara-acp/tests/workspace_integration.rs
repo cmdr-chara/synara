@@ -243,11 +243,21 @@ async fn registry_binary_uses_the_same_acp_controller_and_preserves_durable_hist
         .await
         .unwrap();
     let actual = service.thread(task.thread_id).await.unwrap();
-    assert!(
-        actual.messages.iter().any(|m| m.role == Role::Assistant
-            && m.text == installed.reference.directory.to_string_lossy())
-    );
-    assert_ne!(installed.reference.directory, task.working_directory);
+    let reported = actual
+        .messages
+        .iter()
+        .rev()
+        .find(|message| message.role == Role::Assistant)
+        .expect("fixture must report its startup directory");
+    let reported = std::path::Path::new(&reported.text);
+    assert!(reported.is_absolute(), "fixture cwd must be absolute");
+    // Windows may report a regular drive path while canonical installation
+    // metadata uses a verbatim path. Compare filesystem identity, not spelling.
+    let reported = std::fs::canonicalize(reported).unwrap();
+    let installation = std::fs::canonicalize(&installed.reference.directory).unwrap();
+    let project_directory = std::fs::canonicalize(&task.working_directory).unwrap();
+    assert_eq!(reported, installation);
+    assert_ne!(reported, project_directory);
     std::fs::write(
         task.working_directory.join("scope-proof.txt"),
         "project scope",

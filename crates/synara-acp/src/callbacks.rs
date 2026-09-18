@@ -344,7 +344,7 @@ impl CallbackServices {
             _ => Ok(json!({})),
         }
     }
-    pub async fn stop_terminals(&self, session_id: Option<&str>) {
+    pub async fn stop_terminals(&self, session_id: Option<&str>) -> AgentResult<()> {
         let terminals = {
             let mut entries = self.terminals.lock().await;
             let ids: Vec<_> = entries
@@ -356,17 +356,44 @@ impl CallbackServices {
                 .filter_map(|id| entries.remove(&id).map(|entry| (id, entry)))
                 .collect::<Vec<_>>()
         };
+        let mut failure = None;
+        // kill only sets the worker's stop flag and unparks it on both platforms.
+        // Signal every owner before awaiting any process or diagnostic consumer.
+        for (_, entry) in &terminals {
+            if let Err(error) = entry.terminal.kill() {
+                failure.get_or_insert(AgentError::Runtime(error));
+            }
+        }
+        let exit_deadline = tokio::time::Instant::now() + Duration::from_secs(3);
+        for (_, entry) in &terminals {
+            match tokio::time::timeout_at(exit_deadline, entry.terminal.wait()).await {
+                Ok(Ok(_)) => {}
+                Ok(Err(error)) => {
+                    failure.get_or_insert(AgentError::Runtime(error));
+                }
+                Err(_) => {
+                    failure.get_or_insert(AgentError::Runtime(RuntimeError::Timeout));
+                    break;
+                }
+            }
+        }
+        // Final output is best effort, but a delivery failure is returned, not
+        // silently treated as a successful cleanup. The budget is shared by all
+        // terminals rather than multiplied by the number of owned processes.
+        let delivery_deadline = tokio::time::Instant::now() + Duration::from_secs(15);
         for (id, entry) in terminals {
-            let terminal = entry.terminal.clone();
-            let _ = tokio::task::spawn_blocking(move || terminal.kill()).await;
-            let _ = tokio::time::timeout(Duration::from_secs(3), entry.terminal.wait()).await;
-            if let (Ok(session), Ok(snapshot)) = (
-                self.sessions.get(&entry.session_id),
-                entry.terminal.snapshot(),
-            ) {
+            if let Ok(session) = self.sessions.get(&entry.session_id) {
+                let snapshot = match entry.terminal.snapshot() {
+                    Ok(snapshot) => snapshot,
+                    Err(error) => {
+                        failure.get_or_insert(AgentError::Runtime(error));
+                        continue;
+                    }
+                };
                 let (text, truncated) = terminal_text(&snapshot, entry.output_limit);
-                let _ = session
-                    .emit(
+                let result = tokio::time::timeout_at(
+                    delivery_deadline,
+                    session.emit(
                         &self.context,
                         ThreadEvent::TerminalOutput {
                             id,
@@ -374,10 +401,16 @@ impl CallbackServices {
                             truncated,
                             exit_code: snapshot.exit_code,
                         },
-                    )
-                    .await;
+                    ),
+                )
+                .await;
+                if !matches!(result, Ok(Ok(()))) {
+                    failure.get_or_insert(AgentError::EventDelivery);
+                    break;
+                }
             }
         }
+        failure.map_or(Ok(()), Err)
     }
     async fn elicit(&self, params: Value, peer: &RpcPeer) -> AgentResult<Value> {
         let mut interaction = if params.get("sessionId").is_some() {

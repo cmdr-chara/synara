@@ -56,7 +56,10 @@ async fn failure(peer: &RpcPeer) -> String {
 
 fn request(peer: &RpcPeer, method: &'static str) -> tokio::task::JoinHandle<AgentResult<Value>> {
     let peer = peer.clone();
-    tokio::spawn(async move { peer.request(method, json!({}), Duration::from_secs(30)).await })
+    tokio::spawn(async move {
+        peer.request(method, json!({}), Duration::from_secs(30))
+            .await
+    })
 }
 
 #[tokio::test]
@@ -93,7 +96,10 @@ async fn stdout_contamination_malformed_json_and_invalid_utf8_fail_closed() {
     for bytes in [b"startup banner\n".as_slice(), b"{\n", b"\xff\n"] {
         let (peer, _incoming, mut agent) = pair(Box::new(tokio::io::empty()));
         agent.write_all(bytes).await.unwrap();
-        assert_eq!(failure(&peer).await, "malformed or oversized protocol frame");
+        assert_eq!(
+            failure(&peer).await,
+            "malformed or oversized protocol frame"
+        );
     }
 }
 
@@ -104,7 +110,10 @@ async fn oversized_unterminated_stdout_is_bounded() {
     let _ = tokio::time::timeout(Duration::from_secs(5), agent.write_all(&bytes))
         .await
         .unwrap();
-    assert_eq!(failure(&peer).await, "malformed or oversized protocol frame");
+    assert_eq!(
+        failure(&peer).await,
+        "malformed or oversized protocol frame"
+    );
 }
 
 #[tokio::test]
@@ -281,9 +290,12 @@ async fn unsupported_callback_replies_use_protocol_errors_not_host_details() {
     else {
         panic!("expected callback")
     };
-    peer.reply(id, Err(AgentError::Unsupported("private-host-canary".into())))
-        .await
-        .unwrap();
+    peer.reply(
+        id,
+        Err(AgentError::Unsupported("private-host-canary".into())),
+    )
+    .await
+    .unwrap();
     let reply = next_line(&mut agent).await;
     assert_eq!(reply["error"]["code"], -32601);
     assert!(!reply.to_string().contains("private-host-canary"));
@@ -312,7 +324,11 @@ async fn stderr_floods_remain_bounded_redacted_and_independent_of_protocol_outpu
     let trace = peer.trace();
     assert!(trace.len() <= 512);
     assert!(trace.iter().any(|entry| entry.kind == "stderr"));
-    assert!(!serde_json::to_string(&trace).unwrap().contains("stderr-secret"));
+    assert!(
+        !serde_json::to_string(&trace)
+            .unwrap()
+            .contains("stderr-secret")
+    );
     assert!(!peer.cancelled().is_cancelled());
 }
 

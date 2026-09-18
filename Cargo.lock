@@ -5838,6 +5838,7 @@ dependencies = [
  "async-trait",
  "hex",
  "serde",
+ "serde_json",
  "sha2",
  "synara-core",
  "synara-runtime",

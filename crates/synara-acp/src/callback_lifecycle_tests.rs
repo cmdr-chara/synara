@@ -247,7 +247,6 @@ impl EventSink for BlockedTerminalEvents {
 
 // Both NativeTerminal implementations make kill a nonblocking stop request.
 // A slow output consumer must not keep any of the other owned PTYs alive.
-#[cfg(unix)]
 #[tokio::test]
 async fn terminal_cleanup_stops_every_process_before_delivering_output() {
     let directory = tempfile::tempdir().unwrap();
@@ -278,8 +277,16 @@ async fn terminal_cleanup_stops_every_process_before_delivering_output() {
     ));
     let mut terminals = Vec::new();
     for id in ["first", "second"] {
-        let mut launch = LaunchSpec::new("/bin/sh");
-        launch.args = vec!["-c".into(), "exec sleep 60".into()];
+        let mut launch = LaunchSpec::new(std::env::current_exe().unwrap());
+        launch.args = vec![
+            "--exact".into(),
+            "callbacks::lifecycle_tests::terminal_cleanup_child".into(),
+            "--ignored".into(),
+            "--nocapture".into(),
+        ];
+        launch
+            .env
+            .insert("SYNARA_TERMINAL_CLEANUP_CHILD".into(), "1".into());
         let cwd = directory.path().to_owned();
         let terminal = Arc::new(
             tokio::task::spawn_blocking(move || NativeTerminal::spawn(&launch, &cwd, 24, 80))
@@ -297,6 +304,20 @@ async fn terminal_cleanup_stops_every_process_before_delivering_output() {
         );
         terminals.push(terminal);
     }
+    tokio::time::timeout(Duration::from_secs(10), async {
+        for terminal in &terminals {
+            while !terminal
+                .snapshot()
+                .unwrap()
+                .text
+                .contains("terminal-cleanup-ready")
+            {
+                tokio::time::sleep(Duration::from_millis(10)).await;
+            }
+        }
+    })
+    .await
+    .unwrap();
     let worker_services = services.clone();
     let cleanup = tokio::spawn(async move { worker_services.stop_terminals(None).await });
     tokio::time::timeout(Duration::from_secs(5), events.entered.notified())
@@ -325,4 +346,17 @@ async fn terminal_cleanup_stops_every_process_before_delivering_output() {
         "blocked diagnostics delayed another terminal's cleanup"
     );
     assert!(services.terminals.lock().await.is_empty());
+}
+
+#[test]
+#[ignore = "native PTY/ConPTY child fixture invoked only by terminal cleanup tests"]
+fn terminal_cleanup_child() {
+    use std::io::Write;
+    assert_eq!(
+        std::env::var("SYNARA_TERMINAL_CLEANUP_CHILD").as_deref(),
+        Ok("1")
+    );
+    writeln!(std::io::stdout(), "terminal-cleanup-ready").unwrap();
+    std::io::stdout().flush().unwrap();
+    std::thread::sleep(Duration::from_secs(60));
 }

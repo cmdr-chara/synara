@@ -1,7 +1,7 @@
 use crate::trace::TraceLog;
 use serde_json::{Value, json};
 use std::{
-    collections::{HashMap, HashSet},
+    collections::HashMap,
     sync::{
         Arc, Mutex, Weak,
         atomic::{AtomicU64, Ordering},
@@ -56,6 +56,7 @@ pub(crate) enum Incoming {
         id: RpcId,
         method: String,
         params: Value,
+        cancellation: CancellationToken,
     },
     Notification {
         method: String,
@@ -77,7 +78,7 @@ impl Drop for RequestLifetime {
 }
 struct State {
     pending: Mutex<HashMap<RpcId, Pending>>,
-    incoming_ids: Mutex<HashSet<RpcId>>,
+    incoming: Mutex<HashMap<RpcId, CancellationToken>>,
     trace: Mutex<TraceLog>,
     stop: CancellationToken,
     failure: watch::Sender<Option<String>>,
@@ -128,7 +129,7 @@ impl RpcPeer {
         let (failure, _) = watch::channel(None);
         let state = Arc::new(State {
             pending: Mutex::new(HashMap::new()),
-            incoming_ids: Mutex::new(HashSet::new()),
+            incoming: Mutex::new(HashMap::new()),
             trace: Mutex::new(TraceLog::default()),
             stop: CancellationToken::new(),
             failure,
@@ -246,7 +247,7 @@ impl RpcPeer {
         .await
     }
     pub async fn reply(&self, id: RpcId, result: AgentResult<Value>) -> AgentResult<()> {
-        if !self.state().incoming_ids.lock().unwrap().remove(&id) {
+        if self.state().incoming.lock().unwrap().remove(&id).is_none() {
             return Err(invalid("response ID does not own an incoming request"));
         }
         let value = match result {
@@ -397,19 +398,35 @@ fn dispatch(value: Value, state: &State, incoming: &mpsc::Sender<Incoming>) -> A
         if !params.is_object() {
             return Err(invalid("ACP parameters must be an object"));
         }
+        if method == "$/cancel_request" {
+            if object.contains_key("id") {
+                return Err(invalid("protocol cancellation must be a notification"));
+            }
+            crate::schema::protocol_notification(method, &params)?;
+            let request_id = params
+                .get("requestId")
+                .ok_or_else(|| invalid("protocol cancellation request ID missing"))
+                .and_then(RpcId::parse)?;
+            if let Some(cancellation) = state.incoming.lock().unwrap().get(&request_id) {
+                cancellation.cancel();
+            }
+            return Ok(());
+        }
         let message = if let Some(id) = object.get("id") {
             let id = RpcId::parse(id)?;
-            let mut ids = state.incoming_ids.lock().unwrap();
-            if ids.len() >= 64 {
+            let cancellation = state.stop.child_token();
+            let mut requests = state.incoming.lock().unwrap();
+            if requests.len() >= 64 {
                 return Err(AgentError::Limit);
             }
-            if !ids.insert(id.clone()) {
+            if requests.insert(id.clone(), cancellation.clone()).is_some() {
                 return Err(invalid("duplicate incoming request ID"));
             }
             Incoming::Request {
                 id,
                 method: method.into(),
                 params,
+                cancellation,
             }
         } else {
             Incoming::Notification {
@@ -571,6 +588,40 @@ mod tests {
             Err(AgentError::Disconnected(_))
         ));
     }
+    #[tokio::test]
+    async fn protocol_cancellation_cancels_owned_callback_without_closing_transport() {
+        let (peer, mut incoming, mut agent) = pair();
+        agent
+            .write_all(
+                b"{\"jsonrpc\":\"2.0\",\"id\":7,\"method\":\"terminal/output\",\"params\":{}}\n",
+            )
+            .await
+            .unwrap();
+        let Some(Incoming::Request {
+            id, cancellation, ..
+        }) = incoming.recv().await
+        else {
+            panic!("request expected")
+        };
+        agent
+            .write_all(
+                b"{\"jsonrpc\":\"2.0\",\"method\":\"$/cancel_request\",\"params\":{\"requestId\":7}}\n",
+            )
+            .await
+            .unwrap();
+        tokio::time::timeout(Duration::from_secs(1), cancellation.cancelled())
+            .await
+            .unwrap();
+        assert!(!peer.cancelled().is_cancelled());
+        peer.reply(id, Err(AgentError::Cancelled)).await.unwrap();
+        let mut agent = BufReader::new(agent);
+        let mut line = String::new();
+        agent.read_line(&mut line).await.unwrap();
+        let response: Value = serde_json::from_str(&line).unwrap();
+        assert_eq!(response["id"], 7);
+        assert_eq!(response["error"]["code"], -32800);
+    }
+
     #[tokio::test]
     async fn client_callbacks_require_an_owned_request_id() {
         let (peer, mut incoming, mut agent) = pair();

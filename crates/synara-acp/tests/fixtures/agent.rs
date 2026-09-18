@@ -180,7 +180,7 @@ impl Fixture {
                 }
                 self.ok(id, config);
             }
-            Some("session/set_mode" | "session/set_model") => self.ok(id, json!({})),
+            Some("session/set_mode") => self.ok(id, json!({})),
             Some("session/cancel") => {
                 if let Some(prompt) = self.pending.remove(&session) {
                     self.text(&session, "Late update before cancellation");

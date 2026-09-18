@@ -272,7 +272,9 @@ mod tests {
             profiles[0]
                 .launch_spec_with_secret_store(&UnavailableSecretStore::unavailable())
                 .await,
-            Err(AgentError::Runtime(synara_runtime::RuntimeError::Unsupported(_)))
+            Err(AgentError::Runtime(
+                synara_runtime::RuntimeError::Unsupported(_)
+            ))
         ));
     }
 

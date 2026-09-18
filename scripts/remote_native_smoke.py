@@ -93,15 +93,15 @@ def main():
         desktop.key('8', ('Control_L',))
         time.sleep(0.7)
         # Fixed 1420x930 AJM layout. Keep a screenshot before submission for diagnostics.
-        set_field(desktop, 510, 190, '127.0.0.1')
-        set_field(desktop, 1040, 190, os.environ['SYNARA_SSH_SMOKE_PORT'])
-        set_field(desktop, 700, 235, os.environ['SYNARA_SSH_SMOKE_USER'])
-        set_field(desktop, 700, 279, str(remote_project))
-        set_field(desktop, 700, 323, str(remote_fixture / 'known hosts'))
-        set_field(desktop, 700, 367, str(remote_fixture / 'identity'))
-        set_field(desktop, 700, 411, os.environ['SYNARA_REMOTE_FS_HELPER'])
+        set_field(desktop, 520, 200, '127.0.0.1')
+        set_field(desktop, 1070, 200, os.environ['SYNARA_SSH_SMOKE_PORT'])
+        set_field(desktop, 800, 242, os.environ['SYNARA_SSH_SMOKE_USER'])
+        set_field(desktop, 800, 285, str(remote_project))
+        set_field(desktop, 800, 328, str(remote_fixture / 'known hosts'))
+        set_field(desktop, 800, 370, str(remote_fixture / 'identity'))
+        set_field(desktop, 800, 413, os.environ['SYNARA_REMOTE_FS_HELPER'])
         desktop.screenshot('remote-enrollment')
-        desktop.click(1120, 469)
+        desktop.click(1218, 456)
 
         database = data / 'native-workspace.sqlite3'
         def enrolled():

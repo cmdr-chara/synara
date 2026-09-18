@@ -1,10 +1,10 @@
 use crate::{WorkspaceError, WorkspaceResult};
 use std::{path::PathBuf, sync::Arc, time::Duration};
 use synara_runtime::{
-    ExecutionHost, FileEntry, FileSnapshot, FileVersion, LaunchSpec, LocalHost, RuntimeError,
-    WorkspaceFs,
+    ExecutionHost, FileEntry, FileSnapshot, FileVersion, LaunchSpec, LocalHost, ProcessHandle,
+    RuntimeError, WorkspaceFs,
 };
-use tokio::io::AsyncReadExt;
+use tokio::{io::AsyncReadExt, time::Instant};
 
 pub const MAX_EDITOR_BYTES: usize = 1024 * 1024;
 pub async fn list_files(root: PathBuf, directory: PathBuf) -> WorkspaceResult<Vec<FileEntry>> {
@@ -122,6 +122,25 @@ pub struct GitService {
     root: PathBuf,
     host: Arc<dyn ExecutionHost>,
 }
+// Every service call owns the stop request even when other components retain a
+// process handle. Aborting/dropping the async call must not orphan its command.
+struct GitProcessGuard(ProcessHandle);
+impl Drop for GitProcessGuard {
+    fn drop(&mut self) {
+        self.0.request_stop();
+    }
+}
+fn git_spawn_error(error: RuntimeError) -> WorkspaceError {
+    use crate::GitOperationErrorKind;
+    let kind = match error {
+        RuntimeError::Io(error) if error.kind() == std::io::ErrorKind::NotFound => {
+            GitOperationErrorKind::MissingGit
+        }
+        RuntimeError::Timeout => GitOperationErrorKind::Timeout,
+        _ => GitOperationErrorKind::Failed,
+    };
+    WorkspaceError::Invalid(kind.to_string())
+}
 impl GitService {
     pub fn new(root: PathBuf) -> Self {
         Self {
@@ -133,6 +152,15 @@ impl GitService {
         Self { root, host }
     }
     async fn run(&self, args: Vec<String>, max_bytes: usize) -> WorkspaceResult<Vec<u8>> {
+        self.run_until(args, max_bytes, Instant::now() + Duration::from_secs(30))
+            .await
+    }
+    async fn run_until(
+        &self,
+        args: Vec<String>,
+        max_bytes: usize,
+        deadline: Instant,
+    ) -> WorkspaceResult<Vec<u8>> {
         let mut launch = LaunchSpec::new("git");
         launch.args = vec![
             "--no-pager".into(),
@@ -149,8 +177,12 @@ impl GitService {
             launch.env.insert("GIT_TERMINAL_PROMPT".into(), "0".into());
             launch.env.insert("GIT_OPTIONAL_LOCKS".into(), "0".into());
         }
-        let process = self.host.spawn(&launch, &self.root).await?;
-        let handle = process.handle.clone();
+        let process = tokio::time::timeout_at(deadline, self.host.spawn(&launch, &self.root))
+            .await
+            .map_err(|_| RuntimeError::Timeout)?
+            .map_err(git_spawn_error)?;
+        let owner = GitProcessGuard(process.handle.clone());
+        drop(process.stdin);
         let operation = async move {
             let read = async |stream: synara_runtime::ProcessReader,
                               limit: usize|
@@ -160,7 +192,9 @@ impl GitService {
                     .take(limit as u64 + 1)
                     .read_to_end(&mut bytes)
                     .await
-                    .map_err(RuntimeError::Io)?;
+                    .map_err(|_| {
+                        WorkspaceError::Invalid(crate::GitOperationErrorKind::Failed.to_string())
+                    })?;
                 if bytes.len() > limit {
                     return Err(RuntimeError::Limit.into());
                 }
@@ -169,24 +203,23 @@ impl GitService {
             let (stdout, stderr, status) = tokio::try_join!(
                 read(process.stdout, max_bytes),
                 read(process.stderr, 64 * 1024),
-                async { process.handle.wait().await.map_err(WorkspaceError::from) }
+                async { process.handle.wait().await.map_err(git_spawn_error) }
             )?;
             if !status.success() {
-                return Err(WorkspaceError::Invalid(format!(
-                    "Git failed: {}",
-                    String::from_utf8_lossy(&stderr).trim()
-                )));
+                return Err(WorkspaceError::Invalid(
+                    crate::git_operations::classify_failure(&stderr).to_string(),
+                ));
             }
             Ok(stdout)
         };
-        match tokio::time::timeout(Duration::from_secs(30), operation).await {
+        match tokio::time::timeout_at(deadline, operation).await {
             Ok(Ok(bytes)) => Ok(bytes),
             Ok(Err(error)) => {
-                let _ = handle.shutdown().await;
+                let _ = owner.0.shutdown().await;
                 Err(error)
             }
             Err(_) => {
-                let _ = handle.shutdown().await;
+                let _ = owner.0.shutdown().await;
                 Err(RuntimeError::Timeout.into())
             }
         }
@@ -545,3 +578,7 @@ mod tests {
         }
     }
 }
+
+#[cfg(test)]
+#[path = "tools/git_lifecycle_tests.rs"]
+mod git_lifecycle_tests;

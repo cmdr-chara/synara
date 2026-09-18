@@ -1,5 +1,6 @@
 //! Execution resources and filesystem capabilities, independent of the desktop UI.
 mod bounded;
+mod device;
 mod filesystem;
 mod host;
 mod platform;
@@ -16,6 +17,7 @@ mod terminal_input;
 mod terminal_screen;
 
 pub use bounded::*;
+pub use device::*;
 pub use filesystem::*;
 pub use host::*;
 pub use platform::*;

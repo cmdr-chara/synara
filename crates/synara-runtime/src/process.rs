@@ -83,7 +83,20 @@ pub(crate) fn spawn_owned(mut command: Command) -> Result<SpawnedProcess, Runtim
     }
     let mut child = command.spawn()?;
     let pid = child.id().ok_or(RuntimeError::Closed)?;
-    let guard = ProcessTreeGuard { pid, armed: true };
+    #[cfg(windows)]
+    let job = match windows_job(&child) {
+        Ok(job) => Some(job),
+        Err(error) => {
+            let _ = child.start_kill();
+            return Err(error);
+        }
+    };
+    let guard = ProcessTreeGuard {
+        pid,
+        armed: true,
+        #[cfg(windows)]
+        job,
+    };
     let stdin = child.stdin.take().ok_or(RuntimeError::Closed)?;
     let stdout = child.stdout.take().ok_or(RuntimeError::Closed)?;
     let stderr = child.stderr.take().ok_or(RuntimeError::Closed)?;
@@ -153,10 +166,17 @@ async fn stop_child(
 pub(crate) struct ProcessTreeGuard {
     pub(crate) pid: u32,
     armed: bool,
+    #[cfg(windows)]
+    job: Option<win32job::Job>,
 }
 impl ProcessTreeGuard {
     pub(crate) fn kill_and_disarm(&mut self) {
         if self.armed {
+            #[cfg(windows)]
+            if self.job.take().is_some() {
+                self.armed = false;
+                return;
+            }
             signal_tree(self.pid, true);
             self.armed = false;
         }
@@ -166,6 +186,22 @@ impl Drop for ProcessTreeGuard {
     fn drop(&mut self) {
         self.kill_and_disarm();
     }
+}
+
+#[cfg(windows)]
+fn windows_job(child: &tokio::process::Child) -> Result<win32job::Job, RuntimeError> {
+    let job_error = |error: win32job::JobError| {
+        RuntimeError::Io(std::io::Error::other(format!(
+            "Windows process-tree ownership failed: {error}"
+        )))
+    };
+    let job = win32job::Job::create().map_err(job_error)?;
+    let mut limits = job.query_extended_limit_info().map_err(job_error)?;
+    limits.limit_kill_on_job_close();
+    job.set_extended_limit_info(&limits).map_err(job_error)?;
+    let handle = child.raw_handle().ok_or(RuntimeError::Closed)?;
+    job.assign_process(handle as isize).map_err(job_error)?;
+    Ok(job)
 }
 
 pub(crate) fn signal_tree(pid: u32, force: bool) {

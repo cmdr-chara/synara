@@ -30,5 +30,8 @@ nix = { version = "0.30", features = ["signal", "process"] }
 [target.'cfg(target_os = "linux")'.dependencies]
 rustix = { version = "=1.1.5", features = ["process", "event"] }
 
+[target.'cfg(windows)'.dependencies]
+win32job = "=2.0.3"
+
 [dev-dependencies]
 tempfile.workspace = true

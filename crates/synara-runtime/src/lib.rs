@@ -1,5 +1,6 @@
 //! Execution resources and filesystem capabilities, independent of the desktop UI.
 mod bounded;
+mod device;
 mod filesystem;
 mod host;
 mod platform;
@@ -14,8 +15,10 @@ mod ssh;
 mod terminal;
 mod terminal_input;
 mod terminal_screen;
+mod update;
 
 pub use bounded::*;
+pub use device::*;
 pub use filesystem::*;
 pub use host::*;
 pub use platform::*;
@@ -28,6 +31,7 @@ pub use ssh::*;
 pub use terminal::*;
 pub use terminal_input::*;
 pub use terminal_screen::*;
+pub use update::*;
 
 #[derive(Debug, thiserror::Error)]
 pub enum RuntimeError {

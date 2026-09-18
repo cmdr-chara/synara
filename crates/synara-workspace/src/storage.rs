@@ -2,7 +2,7 @@ mod recovery;
 pub use recovery::*;
 
 use rusqlite::{Connection, OpenFlags, OptionalExtension, TransactionBehavior, params};
-use std::{path::Path, time::Duration};
+use std::{path::{Path, PathBuf}, time::Duration};
 use synara_core::*;
 
 #[derive(Debug, thiserror::Error)]
@@ -19,6 +19,8 @@ pub enum StorageError {
     Sequence,
     #[error("persisted object ownership cannot be changed")]
     Identity,
+    #[error("persisted object still owns child records")]
+    NotEmpty,
     #[error("stored data exceeds the configured limit")]
     Limit,
     #[error("recovery was cancelled")]
@@ -231,6 +233,58 @@ PRAGMA user_version=2;")?;
             )
             .optional()?;
         data.map(|data| decode(&data)).transpose()
+    }
+    pub fn delete_task(&mut self, id: TaskId) -> StorageResult<bool> {
+        let Some(task) = self.task(id)? else {
+            return Ok(false);
+        };
+        if task.state != TaskState::Archived {
+            return Err(StorageError::Identity);
+        }
+        let tx = self
+            .connection
+            .transaction_with_behavior(TransactionBehavior::Immediate)?;
+        tx.execute("DELETE FROM sessions WHERE thread_id=?1", [task.thread_id.to_string()])?;
+        tx.execute("DELETE FROM events WHERE thread_id=?1", [task.thread_id.to_string()])?;
+        tx.execute(
+            "DELETE FROM event_heads WHERE thread_id=?1",
+            [task.thread_id.to_string()],
+        )?;
+        tx.execute(
+            "DELETE FROM thread_activity WHERE thread_id=?1",
+            [task.thread_id.to_string()],
+        )?;
+        let changed = tx.execute("DELETE FROM tasks WHERE id=?1", [id.to_string()])?;
+        tx.commit()?;
+        Ok(changed == 1)
+    }
+    pub fn delete_project(&mut self, id: ProjectId) -> StorageResult<bool> {
+        let count: i64 = self.connection.query_row(
+            "SELECT COUNT(*) FROM tasks WHERE project_id=?1",
+            [id.to_string()],
+            |row| row.get(0),
+        )?;
+        if count != 0 {
+            return Err(StorageError::NotEmpty);
+        }
+        Ok(self
+            .connection
+            .execute("DELETE FROM projects WHERE id=?1", [id.to_string()])?
+            == 1)
+    }
+    pub fn delete_workspace(&mut self, id: WorkspaceId) -> StorageResult<bool> {
+        let count: i64 = self.connection.query_row(
+            "SELECT COUNT(*) FROM projects WHERE workspace_id=?1",
+            [id.to_string()],
+            |row| row.get(0),
+        )?;
+        if count != 0 {
+            return Err(StorageError::NotEmpty);
+        }
+        Ok(self
+            .connection
+            .execute("DELETE FROM workspaces WHERE id=?1", [id.to_string()])?
+            == 1)
     }
     pub fn save_session(&self, thread: ThreadId, session: &SessionReference) -> StorageResult<()> {
         self.connection.execute("INSERT INTO sessions(thread_id,data) VALUES(?1,?2) ON CONFLICT(thread_id) DO UPDATE SET data=excluded.data",params![thread.to_string(),encode(session)?])?;
@@ -524,6 +578,49 @@ mod tests {
             },
         }
     }
+    #[test]
+    fn deletion_requires_archival_and_preserves_parent_ownership_rules() {
+        let mut store = Store::memory().unwrap();
+        let workspace = Workspace {
+            id: WorkspaceId::new(),
+            name: "Workspace".into(),
+            location: WorkspaceLocation::Local {
+                root: std::env::temp_dir(),
+            },
+        };
+        let project = Project {
+            id: ProjectId::new(),
+            workspace_id: workspace.id,
+            name: "Project".into(),
+            relative_directory: PathBuf::new(),
+        };
+        store
+            .create_workspace_project(&workspace, &project)
+            .unwrap();
+        let mut task = Task {
+            id: TaskId::new(),
+            project_id: project.id,
+            title: "Task".into(),
+            state: TaskState::Ready,
+            thread_id: ThreadId::new(),
+            agent_id: "agent".into(),
+            working_directory: std::env::temp_dir(),
+            updated_at_ms: 1,
+        };
+        store.save_task(&task).unwrap();
+        assert!(matches!(store.delete_task(task.id), Err(StorageError::Identity)));
+        assert!(matches!(
+            store.delete_project(project.id),
+            Err(StorageError::NotEmpty)
+        ));
+        task.state = TaskState::Archived;
+        store.save_task(&task).unwrap();
+        assert!(store.delete_task(task.id).unwrap());
+        assert!(store.delete_project(project.id).unwrap());
+        assert!(store.delete_workspace(workspace.id).unwrap());
+        assert!(!store.delete_task(task.id).unwrap());
+    }
+
     #[test]
     fn workspace_and_conversation_survive_reopen() {
         let dir = tempfile::tempdir().unwrap();

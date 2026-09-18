@@ -581,9 +581,11 @@ fn execute_helper_operation(
             directory,
             query,
             max_matches,
-        } => Ok(RemoteFsValue::Search(
-            fs.search_text(&directory, &query, max_matches)?,
-        )),
+        } => Ok(RemoteFsValue::Search(fs.search_text(
+            &directory,
+            &query,
+            max_matches,
+        )?)),
         RemoteFsOperation::Write {
             path,
             text,

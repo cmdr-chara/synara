@@ -42,10 +42,7 @@ pub async fn create_remote_directory(
     filesystem: synara_runtime::RemoteWorkspaceFs,
     path: PathBuf,
 ) -> WorkspaceResult<()> {
-    filesystem
-        .create_directory(&path)
-        .await
-        .map_err(Into::into)
+    filesystem.create_directory(&path).await.map_err(Into::into)
 }
 pub async fn delete_empty_directory(root: PathBuf, path: PathBuf) -> WorkspaceResult<()> {
     tokio::task::spawn_blocking(move || WorkspaceFs::open(&root)?.remove_empty_directory(&path))
@@ -167,11 +164,7 @@ pub async fn rename_document(
     tokio::task::spawn_blocking(move || {
         let fs = WorkspaceFs::open(&root)?;
         let destination = fs.relative(&destination)?;
-        fs.rename_file(
-            &document.path,
-            &destination,
-            &document.snapshot.version,
-        )?;
+        fs.rename_file(&document.path, &destination, &document.snapshot.version)?;
         let snapshot = fs.read(&destination)?;
         Ok(Document {
             path: destination,
@@ -190,11 +183,7 @@ pub async fn rename_remote_document(
 ) -> WorkspaceResult<Document> {
     let destination = filesystem.relative(&destination)?;
     filesystem
-        .rename_file(
-            &document.path,
-            &destination,
-            &document.snapshot.version,
-        )
+        .rename_file(&document.path, &destination, &document.snapshot.version)
         .await?;
     let snapshot = filesystem.read(&destination).await?;
     Ok(Document {

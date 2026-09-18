@@ -357,11 +357,7 @@ impl WorkspaceFs {
         Ok(published)
     }
 
-    pub fn remove_file(
-        &self,
-        path: &Path,
-        expected: &FileVersion,
-    ) -> Result<(), RuntimeError> {
+    pub fn remove_file(&self, path: &Path, expected: &FileVersion) -> Result<(), RuntimeError> {
         let _lock = self.write_lock.lock().map_err(|_| RuntimeError::Closed)?;
         let relative = self.relative(path)?;
         if self.read(&relative)?.version != *expected {
@@ -554,12 +550,18 @@ mod tests {
         let text = fs.probe(Path::new("text")).unwrap();
         assert_eq!(text.mode, FileMode::Utf8Text);
         assert!(text.utf8_bom);
-        assert_eq!(fs.probe(Path::new("binary")).unwrap().mode, FileMode::Binary);
+        assert_eq!(
+            fs.probe(Path::new("binary")).unwrap().mode,
+            FileMode::Binary
+        );
         assert_eq!(
             fs.probe(Path::new("non-utf8")).unwrap().mode,
             FileMode::NonUtf8
         );
-        assert_eq!(fs.probe(Path::new("large")).unwrap().mode, FileMode::TooLarge);
+        assert_eq!(
+            fs.probe(Path::new("large")).unwrap().mode,
+            FileMode::TooLarge
+        );
     }
 
     #[test]
@@ -567,7 +569,8 @@ mod tests {
         let root = tempfile::tempdir().unwrap();
         let fs = WorkspaceFs::open(root.path()).unwrap();
         fs.create_directory(Path::new("dir")).unwrap();
-        fs.write_new(Path::new("dir/a.txt"), "first", false).unwrap();
+        fs.write_new(Path::new("dir/a.txt"), "first", false)
+            .unwrap();
         let document = fs.read(Path::new("dir/a.txt")).unwrap();
         fs.rename_file(
             Path::new("dir/a.txt"),
@@ -577,7 +580,8 @@ mod tests {
         .unwrap();
         assert!(fs.read(Path::new("dir/a.txt")).is_err());
         assert_eq!(fs.read(Path::new("dir/b.txt")).unwrap().text, "first");
-        fs.write_new(Path::new("dir/c.txt"), "occupied", false).unwrap();
+        fs.write_new(Path::new("dir/c.txt"), "occupied", false)
+            .unwrap();
         let current = fs.read(Path::new("dir/b.txt")).unwrap();
         assert!(matches!(
             fs.rename_file(
@@ -617,10 +621,7 @@ mod tests {
         assert_eq!(matches[0].column, 1);
         assert_eq!(matches[1].relative_path, Path::new("nested/b.txt"));
         assert_eq!(matches[1].column, 3);
-        assert_eq!(
-            fs.search_text(Path::new(""), "needle", 1).unwrap().len(),
-            1
-        );
+        assert_eq!(fs.search_text(Path::new(""), "needle", 1).unwrap().len(), 1);
     }
 
     #[test]

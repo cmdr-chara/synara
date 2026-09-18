@@ -160,18 +160,27 @@ struct PendingNavigation {
 #[serde(rename_all = "snake_case")]
 pub enum InputEvent {
     Text(String),
-    Key { key: String, pressed: bool },
-    Pointer { x: i32, y: i32, button: u8, pressed: bool },
-    Scroll { x: i32, y: i32 },
+    Key {
+        key: String,
+        pressed: bool,
+    },
+    Pointer {
+        x: i32,
+        y: i32,
+        button: u8,
+        pressed: bool,
+    },
+    Scroll {
+        x: i32,
+        y: i32,
+    },
 }
 impl InputEvent {
     fn validate(&self) -> Result<()> {
         match self {
             Self::Text(value) if value.len() <= MAX_INPUT_BYTES && !value.contains('\0') => Ok(()),
             Self::Key { key, .. }
-                if !key.is_empty()
-                    && key.len() <= 128
-                    && !key.chars().any(char::is_control) =>
+                if !key.is_empty() && key.len() <= 128 && !key.chars().any(char::is_control) =>
             {
                 Ok(())
             }
@@ -185,12 +194,23 @@ impl InputEvent {
 #[serde(tag = "operation", rename_all = "snake_case", deny_unknown_fields)]
 pub enum BrowserOperation {
     ReadDocument,
-    Screenshot { full_page: bool },
-    Input { event: InputEvent },
-    Download { download_id: String },
-    Upload { chooser_id: String, file_token: String },
+    Screenshot {
+        full_page: bool,
+    },
+    Input {
+        event: InputEvent,
+    },
+    Download {
+        download_id: String,
+    },
+    Upload {
+        chooser_id: String,
+        file_token: String,
+    },
     ClipboardRead,
-    ClipboardWrite { text: String },
+    ClipboardWrite {
+        text: String,
+    },
 }
 impl BrowserOperation {
     fn validate(&self) -> Result<()> {
@@ -213,9 +233,7 @@ impl BrowserOperation {
             {
                 Ok(())
             }
-            Self::ReadDocument
-            | Self::Screenshot { .. }
-            | Self::ClipboardRead => Ok(()),
+            Self::ReadDocument | Self::Screenshot { .. } | Self::ClipboardRead => Ok(()),
             _ => Err(BrowserError::Invalid),
         }
     }
@@ -289,7 +307,11 @@ impl BrowserHost {
 
     /// A native popup inherits the exact storage/authority profile of its opener.
     pub fn open_popup(&mut self, opener: HostTabId) -> Result<HostTabId> {
-        let profile = self.tabs.get(&opener).ok_or(BrowserError::MissingTab)?.profile;
+        let profile = self
+            .tabs
+            .get(&opener)
+            .ok_or(BrowserError::MissingTab)?
+            .profile;
         self.open_tab(profile)
     }
 
@@ -373,7 +395,8 @@ impl BrowserHost {
                 _ => {}
             }
         }
-        self.policy.commit_navigation(pending.policy, policy_origin)?;
+        self.policy
+            .commit_navigation(pending.policy, policy_origin)?;
         let state = self
             .tabs
             .get_mut(&pending.tab)
@@ -441,7 +464,10 @@ impl BrowserHost {
         let prompt = self
             .policy
             .request(state.policy, task, operation.action(), now_ms)?;
-        self.next_request = self.next_request.checked_add(1).ok_or(BrowserError::Limit)?;
+        self.next_request = self
+            .next_request
+            .checked_add(1)
+            .ok_or(BrowserError::Limit)?;
         let id = HostRequestId(self.next_request);
         self.pending.insert(
             id,
@@ -465,9 +491,7 @@ impl BrowserHost {
             .pending
             .remove(&request)
             .ok_or(BrowserError::MissingRequest)?;
-        let grant = self
-            .policy
-            .resolve(pending.policy_request, allow, now_ms)?;
+        let grant = self.policy.resolve(pending.policy_request, allow, now_ms)?;
         Ok(grant.map(|policy_grant| ApprovedOperation {
             policy_grant,
             tab: pending.tab,
@@ -485,7 +509,11 @@ impl BrowserHost {
             .tabs
             .get(&approved.tab)
             .ok_or(BrowserError::MissingTab)?;
-        if state.profile != (BrowserProfile::AgentTask { task: approved.task }) {
+        if state.profile
+            != (BrowserProfile::AgentTask {
+                task: approved.task,
+            })
+        {
             return Err(BrowserError::WrongContext);
         }
         self.policy.consume(
@@ -573,7 +601,8 @@ mod tests {
     fn loaded(host: &mut BrowserHost, profile: BrowserProfile) -> HostTabId {
         let tab = host.open_tab(profile).unwrap();
         let nav = host.begin_navigation(tab, NavigationKind::Push).unwrap();
-        host.commit_navigation(nav, doc("example.test", "/")).unwrap();
+        host.commit_navigation(nav, doc("example.test", "/"))
+            .unwrap();
         tab
     }
 
@@ -607,19 +636,27 @@ mod tests {
         let tab = loaded(&mut host, BrowserProfile::Manual);
         for path in ["/two", "/three"] {
             let nav = host.begin_navigation(tab, NavigationKind::Push).unwrap();
-            host.commit_navigation(nav, doc("example.test", path)).unwrap();
+            host.commit_navigation(nav, doc("example.test", path))
+                .unwrap();
         }
         let nav = host.begin_navigation(tab, NavigationKind::Back).unwrap();
-        host.commit_navigation(nav, doc("example.test", "/two")).unwrap();
+        host.commit_navigation(nav, doc("example.test", "/two"))
+            .unwrap();
         assert_eq!(host.history(tab).unwrap().current, Some(1));
         let nav = host.begin_navigation(tab, NavigationKind::Forward).unwrap();
-        host.commit_navigation(nav, doc("example.test", "/three")).unwrap();
+        host.commit_navigation(nav, doc("example.test", "/three"))
+            .unwrap();
         let nav = host.begin_navigation(tab, NavigationKind::Reload).unwrap();
-        host.commit_navigation(nav, doc("example.test", "/three")).unwrap();
+        host.commit_navigation(nav, doc("example.test", "/three"))
+            .unwrap();
         let nav = host.begin_navigation(tab, NavigationKind::Replace).unwrap();
-        host.commit_navigation(nav, doc("example.test", "/replaced")).unwrap();
-        let nav = host.begin_navigation(tab, NavigationKind::Redirect).unwrap();
-        host.commit_navigation(nav, doc("redirect.test", "/final")).unwrap();
+        host.commit_navigation(nav, doc("example.test", "/replaced"))
+            .unwrap();
+        let nav = host
+            .begin_navigation(tab, NavigationKind::Redirect)
+            .unwrap();
+        host.commit_navigation(nav, doc("redirect.test", "/final"))
+            .unwrap();
         let history = host.history(tab).unwrap();
         assert_eq!(history.entries.len(), 3);
         assert_eq!(history.entries[2], doc("redirect.test", "/final"));
@@ -639,7 +676,10 @@ mod tests {
                 0,
             )
             .unwrap();
-        let approved = host.resolve_agent_operation(request, true, 1).unwrap().unwrap();
+        let approved = host
+            .resolve_agent_operation(request, true, 1)
+            .unwrap()
+            .unwrap();
         let command = host.dispatch_agent_operation(approved, 2).unwrap();
         assert_eq!(
             command.operation,
@@ -649,25 +689,16 @@ mod tests {
         );
 
         let request = host
-            .request_agent_operation(
-                tab,
-                7,
-                BrowserOperation::Screenshot { full_page: false },
-                3,
-            )
+            .request_agent_operation(tab, 7, BrowserOperation::Screenshot { full_page: false }, 3)
             .unwrap();
         let _ = host.begin_navigation(tab, NavigationKind::Reload).unwrap();
         assert!(host.resolve_agent_operation(request, true, 4).is_err());
 
         let nav = host.begin_navigation(tab, NavigationKind::Push).unwrap();
-        host.commit_navigation(nav, doc("example.test", "/after")).unwrap();
+        host.commit_navigation(nav, doc("example.test", "/after"))
+            .unwrap();
         let request = host
-            .request_agent_operation(
-                tab,
-                7,
-                BrowserOperation::Screenshot { full_page: true },
-                5,
-            )
+            .request_agent_operation(tab, 7, BrowserOperation::Screenshot { full_page: true }, 5)
             .unwrap();
         host.crash(tab).unwrap();
         assert!(host.resolve_agent_operation(request, true, 6).is_err());
@@ -703,7 +734,8 @@ mod tests {
         trailing.push(0);
         assert_eq!(decode_command(&trailing), Err(BrowserError::MalformedFrame));
 
-        let unknown = br#"{"tab":1,"partition":"manual","operation":{"operation":"shell","command":"rm"}}"#;
+        let unknown =
+            br#"{"tab":1,"partition":"manual","operation":{"operation":"shell","command":"rm"}}"#;
         let mut frame = Vec::new();
         frame.extend_from_slice(&(unknown.len() as u32).to_le_bytes());
         frame.extend_from_slice(unknown);
@@ -722,7 +754,9 @@ mod tests {
     #[test]
     fn hostile_origins_urls_tokens_and_context_claims_fail_closed() {
         let mut host = BrowserHost::default();
-        let tab = host.open_tab(BrowserProfile::AgentTask { task: 7 }).unwrap();
+        let tab = host
+            .open_tab(BrowserProfile::AgentTask { task: 7 })
+            .unwrap();
         let nav = host.begin_navigation(tab, NavigationKind::Push).unwrap();
         let mut invalid = doc("example.test", "/");
         invalid.origin.host = "example.test@evil.test".into();
@@ -734,13 +768,14 @@ mod tests {
         assert!(host.commit_navigation(nav, invalid).is_err());
 
         let nav = host.begin_navigation(tab, NavigationKind::Push).unwrap();
-        host.commit_navigation(nav, doc("example.test", "/")).unwrap();
+        host.commit_navigation(nav, doc("example.test", "/"))
+            .unwrap();
         assert!(matches!(
             host.request_agent_operation(tab, 8, BrowserOperation::ReadDocument, 0),
             Err(BrowserError::WrongContext)
         ));
-        assert!(host
-            .request_agent_operation(
+        assert!(
+            host.request_agent_operation(
                 tab,
                 7,
                 BrowserOperation::Upload {
@@ -749,7 +784,8 @@ mod tests {
                 },
                 0,
             )
-            .is_err());
+            .is_err()
+        );
     }
 
     #[test]

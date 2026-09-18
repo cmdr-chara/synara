@@ -17,6 +17,8 @@ jobs:
         run: python3 scripts/check_roadmap.py --self-test
       - name: Validate roadmap and README navigation
         run: python3 scripts/check_roadmap.py
+      - name: Development packaging regression tests
+        run: python3 scripts/package_dev.py --self-test
       - name: Install pinned formatter
         if: always()
         run: rustup toolchain install 1.98.1 --profile minimal --component rustfmt

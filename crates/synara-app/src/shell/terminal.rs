@@ -890,3 +890,32 @@ fn terminal_color(color: TerminalColor, default: u32) -> u32 {
         }
     }
 }
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn ime_utf16_ranges_preserve_surrogate_boundaries() {
+        let text = "a😀é";
+        assert_eq!(utf16_range_to_bytes(text, 0..1), Some(0..1));
+        assert_eq!(utf16_range_to_bytes(text, 1..3), Some(1..5));
+        assert_eq!(utf16_range_to_bytes(text, 3..4), Some(5..7));
+        assert_eq!(utf16_range_to_bytes(text, 2..3), None);
+        assert_eq!(utf16_range_to_bytes(text, 3..2), None);
+    }
+
+    #[test]
+    fn cell_selection_is_order_independent_and_inclusive() {
+        let forward = Some(((1, 3), (2, 5)));
+        let reverse = Some(((2, 5), (1, 3)));
+        for selection in [forward, reverse] {
+            assert!(selected(selection, 1, 3));
+            assert!(selected(selection, 2, 5));
+            assert!(selected(selection, 2, 0));
+            assert!(!selected(selection, 1, 2));
+            assert!(!selected(selection, 3, 0));
+        }
+    }
+}

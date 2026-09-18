@@ -396,6 +396,13 @@ strict Clippy and formatting also pass. Exact-candidate native and host-aware
 acceptance are still pending, so no whole H gate is closed from this checkpoint.
 See [typed Git operations](docs/verification/git-operations.md).
 
+Pinned SSH tests now cover typed branches, stash/worktree recovery and explicit
+fetch/pull/push, including divergence and changed-key refusal. The existing
+`GitService` gains stop-on-drop ownership, a startup-inclusive deadline and
+fixed-category diagnostics without changing frontend signatures. Final-candidate
+native platform checks remain required for the new cleanup slice.
+
+
 Acceptance: isolated repository tests cover success/failure for each offered UI
 operation. No user repository is used as a destructive test fixture.
 

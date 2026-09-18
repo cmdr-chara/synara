@@ -107,3 +107,42 @@ The exact-candidate Linux native and three-OS backend workflows must still be
 accepted. Authenticated remote-network Git and real signing are not claimed from
 the disposable local bare-remote fixtures. H2-H5 remain open for their complete
 acceptance scope, including the host-aware integration matrix.
+
+
+### Pinned SSH operation acceptance
+
+Candidate: `12a85fc5a38be7e03bffdffb3d6012c2ff05c38c`.
+[SSH run 35386247911](https://github.com/cmdr-chara/synara/actions/runs/35386247911)
+passed against the isolated loopback server. The five workspace SSH tests include
+status/stage/diff/commit, rejection of a changed host key, typed branch/stash/worktree
+recovery, explicit fetch/fast-forward pull/non-force push with divergence refusal,
+and a mutation refusing trust failure even when the same path is usable locally.
+The new journeys use pinned ephemeral fixture keys and disposable repositories.
+They are not evidence for production credentials or remotely detached descendants.
+
+### Existing GitService cancellation and diagnostic boundary
+
+The existing `GitService` public signatures and literal filename behavior are
+unchanged. Each call now retains a dedicated stop-on-drop owner, closes stdin,
+and includes host startup in the same 30-second deadline as output collection.
+Failure still waits for bounded process cleanup. Aborting a future requests stop
+even if another component retains a process handle. Raw stderr, host errors and
+stream errors are not copied into Display or Debug diagnostics. Failed Git output
+is converted to the same fixed error categories used by `GitOperations`.
+Successful status/diff contents remain untrusted, potentially private user data.
+
+Two isolated regressions failed on the original GitService: aborting a task left
+its process alive under a retained handle, and a failed command leaked a credential
+canary through stderr diagnostics. Both pass with the fix. Six lifecycle tests now
+cover abort, bounded stdout/stderr, deadline, host-startup timeout, missing/failed
+host without local fallback, secret-canary diagnostics, stdin EOF and final output.
+They re-execute an explicitly selected child fixture in the native Rust test binary,
+not an OS-specific shell. The child entry is intentionally ignored by ordinary test
+discovery but is invoked by the lifecycle tests on every target.
+
+The final slice passes local Linux backend check, strict all-target/all-feature
+Clippy, formatting, and the repository-owned audit/publisher/roadmap checks.
+Native Windows/macOS lifecycle results must be recorded before claiming acceptance
+on those targets. The independently added cross-platform ACP crash test also keeps
+the error-delivery fixture exercised on targets without Linux `/proc`, removing the
+observed strict-lint failure without suppressing the warning or removing coverage.

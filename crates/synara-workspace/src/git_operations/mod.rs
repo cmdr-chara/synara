@@ -8,6 +8,11 @@
 mod plan;
 mod runner;
 
+// Shared fixed-category diagnostics for the legacy status/diff service.
+pub(crate) fn classify_failure(stderr: &[u8]) -> GitOperationErrorKind {
+    runner::classify(stderr)
+}
+
 use std::{path::PathBuf, sync::Arc, time::Duration};
 use synara_runtime::{ExecutionHost, LocalHost};
 use tokio::sync::{Mutex, Semaphore, watch};

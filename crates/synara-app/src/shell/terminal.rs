@@ -536,7 +536,7 @@ impl gpui::Render for TerminalView {
                             .id("terminal-paste-preview")
                             .max_h(px(120.))
                             .overflow_y_scroll()
-                            .whitespace_pre()
+                            .whitespace_normal()
                             .child(preview),
                     )
                     .child(

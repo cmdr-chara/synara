@@ -5,8 +5,8 @@
 //! during enrollment. If a write acknowledgement is lost, Synara reports an
 //! unknown outcome instead of retrying a possibly completed write.
 use crate::{
-    ExecutionHost, FileEntry, FileSnapshot, FileVersion, LaunchSpec, PinnedSshHost, RuntimeError,
-    WorkspaceFs,
+    ExecutionHost, FileEntry, FileProbe, FileSnapshot, FileVersion, LaunchSpec, PinnedSshHost,
+    RuntimeError, SearchMatch, WorkspaceFs,
 };
 use serde::{Deserialize, Serialize};
 use std::{
@@ -30,6 +30,29 @@ enum RemoteFsOperation {
     },
     Read {
         path: PathBuf,
+    },
+    Probe {
+        path: PathBuf,
+    },
+    CreateDirectory {
+        path: PathBuf,
+    },
+    RenameFile {
+        from: PathBuf,
+        to: PathBuf,
+        expected: FileVersion,
+    },
+    RemoveFile {
+        path: PathBuf,
+        expected: FileVersion,
+    },
+    RemoveEmptyDirectory {
+        path: PathBuf,
+    },
+    SearchText {
+        directory: PathBuf,
+        query: String,
+        max_matches: usize,
     },
     Write {
         path: PathBuf,
@@ -58,7 +81,10 @@ enum RemoteFsValue {
     Identity,
     Entries(Vec<FileEntry>),
     Snapshot(FileSnapshot),
+    Probe(FileProbe),
+    Search(Vec<SearchMatch>),
     Version(FileVersion),
+    Unit,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -202,6 +228,115 @@ impl RemoteWorkspaceFs {
             .await?
         {
             RemoteFsValue::Snapshot(snapshot) => Ok(snapshot),
+            _ => Err(RuntimeError::Invalid(
+                "remote helper returned the wrong response type".into(),
+            )),
+        }
+    }
+
+    pub async fn probe(&self, path: &Path) -> Result<FileProbe, RuntimeError> {
+        let path = self.relative(path)?;
+        match self
+            .operation(RemoteFsOperation::Probe { path }, false)
+            .await?
+        {
+            RemoteFsValue::Probe(probe) => Ok(probe),
+            _ => Err(RuntimeError::Invalid(
+                "remote helper returned the wrong response type".into(),
+            )),
+        }
+    }
+
+    pub async fn create_directory(&self, path: &Path) -> Result<(), RuntimeError> {
+        let path = self.relative(path)?;
+        match self
+            .operation(RemoteFsOperation::CreateDirectory { path }, true)
+            .await?
+        {
+            RemoteFsValue::Unit => Ok(()),
+            _ => Err(RuntimeError::WriteOutcomeUnknown),
+        }
+    }
+
+    pub async fn rename_file(
+        &self,
+        from: &Path,
+        to: &Path,
+        expected: &FileVersion,
+    ) -> Result<FileVersion, RuntimeError> {
+        let from = self.relative(from)?;
+        let to = self.relative(to)?;
+        match self
+            .operation(
+                RemoteFsOperation::RenameFile {
+                    from,
+                    to,
+                    expected: expected.clone(),
+                },
+                true,
+            )
+            .await?
+        {
+            RemoteFsValue::Version(version) => Ok(version),
+            _ => Err(RuntimeError::WriteOutcomeUnknown),
+        }
+    }
+
+    pub async fn remove_file(
+        &self,
+        path: &Path,
+        expected: &FileVersion,
+    ) -> Result<(), RuntimeError> {
+        let path = self.relative(path)?;
+        match self
+            .operation(
+                RemoteFsOperation::RemoveFile {
+                    path,
+                    expected: expected.clone(),
+                },
+                true,
+            )
+            .await?
+        {
+            RemoteFsValue::Unit => Ok(()),
+            _ => Err(RuntimeError::WriteOutcomeUnknown),
+        }
+    }
+
+    pub async fn remove_empty_directory(&self, path: &Path) -> Result<(), RuntimeError> {
+        let path = self.relative(path)?;
+        match self
+            .operation(RemoteFsOperation::RemoveEmptyDirectory { path }, true)
+            .await?
+        {
+            RemoteFsValue::Unit => Ok(()),
+            _ => Err(RuntimeError::WriteOutcomeUnknown),
+        }
+    }
+
+    pub async fn search_text(
+        &self,
+        directory: &Path,
+        query: &str,
+        max_matches: usize,
+    ) -> Result<Vec<SearchMatch>, RuntimeError> {
+        let directory = if directory.as_os_str().is_empty() {
+            PathBuf::new()
+        } else {
+            self.relative(directory)?
+        };
+        match self
+            .operation(
+                RemoteFsOperation::SearchText {
+                    directory,
+                    query: query.to_owned(),
+                    max_matches,
+                },
+                false,
+            )
+            .await?
+        {
+            RemoteFsValue::Search(matches) => Ok(matches),
             _ => Err(RuntimeError::Invalid(
                 "remote helper returned the wrong response type".into(),
             )),
@@ -426,6 +561,31 @@ fn execute_helper_operation(
         RemoteFsOperation::Identity => Ok(RemoteFsValue::Identity),
         RemoteFsOperation::Entries { path } => Ok(RemoteFsValue::Entries(fs.entries(&path)?)),
         RemoteFsOperation::Read { path } => Ok(RemoteFsValue::Snapshot(fs.read(&path)?)),
+        RemoteFsOperation::Probe { path } => Ok(RemoteFsValue::Probe(fs.probe(&path)?)),
+        RemoteFsOperation::CreateDirectory { path } => {
+            fs.create_directory(&path)?;
+            Ok(RemoteFsValue::Unit)
+        }
+        RemoteFsOperation::RenameFile { from, to, expected } => Ok(RemoteFsValue::Version(
+            fs.rename_file(&from, &to, &expected)?,
+        )),
+        RemoteFsOperation::RemoveFile { path, expected } => {
+            fs.remove_file(&path, &expected)?;
+            Ok(RemoteFsValue::Unit)
+        }
+        RemoteFsOperation::RemoveEmptyDirectory { path } => {
+            fs.remove_empty_directory(&path)?;
+            Ok(RemoteFsValue::Unit)
+        }
+        RemoteFsOperation::SearchText {
+            directory,
+            query,
+            max_matches,
+        } => Ok(RemoteFsValue::Search(fs.search_text(
+            &directory,
+            &query,
+            max_matches,
+        )?)),
         RemoteFsOperation::Write {
             path,
             text,

@@ -173,7 +173,9 @@ impl TerminalView {
     }
 
     pub(super) fn exit_code(&self) -> Option<u32> {
-        self.snapshot.as_ref().and_then(|snapshot| snapshot.exit_code)
+        self.snapshot
+            .as_ref()
+            .and_then(|snapshot| snapshot.exit_code)
     }
 
     pub(super) fn terminal_error(&self) -> Option<&str> {
@@ -296,12 +298,7 @@ impl TerminalView {
         cx.notify();
     }
 
-    fn send_key(
-        &mut self,
-        key: TerminalKey,
-        modifiers: TerminalModifiers,
-        cx: &mut Context<Self>,
-    ) {
+    fn send_key(&mut self, key: TerminalKey, modifiers: TerminalModifiers, cx: &mut Context<Self>) {
         let Some(session) = &self.session else {
             return;
         };
@@ -355,10 +352,11 @@ impl TerminalView {
             "delete" => Some(TerminalKey::Delete),
             "pageup" => Some(TerminalKey::PageUp),
             "pagedown" => Some(TerminalKey::PageDown),
-            value if value
-                .strip_prefix('f')
-                .and_then(|number| number.parse::<u8>().ok())
-                .is_some_and(|number| (1..=12).contains(&number)) =>
+            value
+                if value
+                    .strip_prefix('f')
+                    .and_then(|number| number.parse::<u8>().ok())
+                    .is_some_and(|number| (1..=12).contains(&number)) =>
             {
                 Some(TerminalKey::Function(
                     value[1..].parse::<u8>().expect("validated function key"),
@@ -665,13 +663,7 @@ impl EntityInputHandler for TerminalView {
         Some(0)
     }
 
-    fn set_selected_text_range(
-        &mut self,
-        _: Range<usize>,
-        _: &mut Window,
-        _: &mut Context<Self>,
-    ) {
-    }
+    fn set_selected_text_range(&mut self, _: Range<usize>, _: &mut Window, _: &mut Context<Self>) {}
 
     fn text_length_utf16(&mut self, _: &mut Window, _: &mut Context<Self>) -> Option<usize> {
         Some(self.preedit.encode_utf16().count())
@@ -819,12 +811,10 @@ fn paint_preedit(
         color: Some(rgb(0x8bb9f5).into()),
         wavy: false,
     });
-    let line = window.text_system().shape_line(
-        SharedString::from(text.to_owned()),
-        px(14.),
-        &[run],
-        None,
-    );
+    let line =
+        window
+            .text_system()
+            .shape_line(SharedString::from(text.to_owned()), px(14.), &[run], None);
     let origin = gpui::point(
         bounds.left() + px(f32::from(cursor.1) * CELL_WIDTH),
         bounds.top() + px(f32::from(cursor.0) * LINE_HEIGHT),
@@ -847,11 +837,7 @@ fn paint_preedit(
     );
 }
 
-fn selected(
-    selection: Option<((u16, u16), (u16, u16))>,
-    row: u16,
-    column: u16,
-) -> bool {
+fn selected(selection: Option<((u16, u16), (u16, u16))>, row: u16, column: u16) -> bool {
     let Some((start, end)) = selection else {
         return false;
     };

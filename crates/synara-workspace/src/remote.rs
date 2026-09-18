@@ -23,10 +23,7 @@ impl SshWorkspaceProfile {
             ));
         }
         let WorkspaceLocation::Ssh {
-            host,
-            port,
-            user,
-            ..
+            host, port, user, ..
         } = &workspace.location
         else {
             return Err(WorkspaceError::Invalid(
@@ -89,7 +86,10 @@ pub(crate) fn upsert_ssh_profile(
     profiles: &mut Vec<SshWorkspaceProfile>,
     profile: SshWorkspaceProfile,
 ) -> WorkspaceResult<()> {
-    if profiles.len() >= 256 && !profiles.iter().any(|item| item.workspace_id == profile.workspace_id)
+    if profiles.len() >= 256
+        && !profiles
+            .iter()
+            .any(|item| item.workspace_id == profile.workspace_id)
     {
         return Err(synara_runtime::RuntimeError::Limit.into());
     }

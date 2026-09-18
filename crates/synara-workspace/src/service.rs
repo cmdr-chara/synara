@@ -123,22 +123,15 @@ impl WorkspaceService {
 
     /// Enroll a remote workspace only after the pinned host and remote helper
     /// prove the requested root. Private key contents are never persisted.
-    pub async fn add_ssh_workspace(
-        &self,
-        request: NewSshWorkspace,
-    ) -> WorkspaceResult<Project> {
+    pub async fn add_ssh_workspace(&self, request: NewSshWorkspace) -> WorkspaceResult<Project> {
         request.validate()?;
         let host = PinnedSshHost::new(
             request.target.clone(),
             &request.known_hosts,
             &request.identity_file,
         )?;
-        let remote = RemoteWorkspaceFs::connect(
-            host,
-            PathBuf::from(&request.root),
-            &request.helper,
-        )
-        .await?;
+        let remote =
+            RemoteWorkspaceFs::connect(host, PathBuf::from(&request.root), &request.helper).await?;
         let root = remote.root_identity().to_owned();
         let target = request.target;
         let name = if request.name.trim().is_empty() {

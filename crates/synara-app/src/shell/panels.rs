@@ -56,10 +56,7 @@ impl Shell {
     pub(super) fn terminal_panel(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
         let terminal_view = self.terminal_view.clone();
         let exit_code = terminal_view.read(cx).exit_code();
-        let terminal_error = terminal_view
-            .read(cx)
-            .terminal_error()
-            .map(str::to_owned);
+        let terminal_error = terminal_view.read(cx).terminal_error().map(str::to_owned);
         let title = terminal_view.read(cx).title().map(str::to_owned);
         let cwd_hint = terminal_view.read(cx).cwd_hint().map(str::to_owned);
         div()
@@ -165,10 +162,7 @@ impl Shell {
                 WorkspaceTarget::Ssh { workspace, root } => {
                     let label = match workspace.location {
                         WorkspaceLocation::Ssh {
-                            host,
-                            port,
-                            user,
-                            ..
+                            host, port, user, ..
                         } => format!(
                             "{}{}:{port}",
                             user.map_or_else(String::new, |user| format!("{user}@")),

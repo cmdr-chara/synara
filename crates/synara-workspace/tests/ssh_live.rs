@@ -35,21 +35,37 @@ async fn remote_git_uses_pinned_transport_for_status_stage_diff_and_commit() {
     std::fs::create_dir(&project).unwrap();
     git(&["init", "-q"], &project);
     git(&["config", "user.name", "Synara SSH fixture"], &project);
-    git(&["config", "user.email", "fixture@example.invalid"], &project);
+    git(
+        &["config", "user.email", "fixture@example.invalid"],
+        &project,
+    );
     std::fs::write(project.join("tracked.txt"), "base\n").unwrap();
     git(&["add", "--", "tracked.txt"], &project);
     git(&["commit", "-q", "-m", "base"], &project);
     std::fs::write(project.join("tracked.txt"), "changed\n").unwrap();
 
-    let host =
-        PinnedSshHost::new(target, root.join("known hosts"), root.join("identity")).unwrap();
+    let host = PinnedSshHost::new(target, root.join("known hosts"), root.join("identity")).unwrap();
     let service = GitService::with_host(project.clone(), Arc::new(host));
     let status = service.status().await.unwrap();
-    assert!(status.entries.iter().any(|entry| entry.path == PathBuf::from("tracked.txt")));
-    assert!(service.diff(false, None).await.unwrap().contains("+changed"));
+    assert!(
+        status
+            .entries
+            .iter()
+            .any(|entry| entry.path == PathBuf::from("tracked.txt"))
+    );
+    assert!(
+        service
+            .diff(false, None)
+            .await
+            .unwrap()
+            .contains("+changed")
+    );
     service.stage(PathBuf::from("tracked.txt")).await.unwrap();
     assert!(service.diff(true, None).await.unwrap().contains("+changed"));
-    service.commit("remote fixture commit".into()).await.unwrap();
+    service
+        .commit("remote fixture commit".into())
+        .await
+        .unwrap();
     assert!(service.status().await.unwrap().entries.is_empty());
 }
 

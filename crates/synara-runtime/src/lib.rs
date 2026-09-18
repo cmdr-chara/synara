@@ -3,11 +3,11 @@ mod bounded;
 mod filesystem;
 mod host;
 mod process;
+#[cfg(target_os = "linux")]
+mod process_linux;
 mod remote_fs;
 #[cfg(unix)]
 mod remote_terminal;
-#[cfg(target_os = "linux")]
-mod process_linux;
 mod ssh;
 mod terminal;
 mod terminal_input;

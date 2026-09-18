@@ -5,7 +5,6 @@ mod registry;
 mod terminal;
 use crate::close::CloseState;
 use crate::input::{EntryEvent, EntryMode, TextEntry};
-use terminal::{TerminalSession, TerminalView};
 use gpui::{
     App, Context, Entity, ScrollHandle, SharedString, Subscription, Window, div, prelude::*, px,
     rgb,
@@ -17,8 +16,11 @@ use std::{
 };
 use synara_agent::{TraceEntry, UiInteraction};
 use synara_core::*;
-use synara_runtime::{FileEntry, NativeTerminal, TerminalKey, TerminalModifiers, TerminalRenderSnapshot};
+use synara_runtime::{
+    FileEntry, NativeTerminal, TerminalKey, TerminalModifiers, TerminalRenderSnapshot,
+};
 use synara_workspace::*;
+use terminal::{TerminalSession, TerminalView};
 use tokio::{runtime::Handle, sync::mpsc};
 
 pub struct Bootstrap {
@@ -40,13 +42,8 @@ enum Panel {
 }
 #[derive(Clone)]
 enum WorkspaceTarget {
-    Local {
-        root: PathBuf,
-    },
-    Ssh {
-        workspace: Workspace,
-        root: PathBuf,
-    },
+    Local { root: PathBuf },
+    Ssh { workspace: Workspace, root: PathBuf },
 }
 impl WorkspaceTarget {
     fn root(&self) -> &PathBuf {
@@ -253,10 +250,8 @@ impl Shell {
         });
         let workspace_path =
             cx.new(|cx| TextEntry::new("Workspace directory", EntryMode::SingleLine, 38., cx));
-        let remote_host =
-            cx.new(|cx| TextEntry::new("SSH host", EntryMode::SingleLine, 36., cx));
-        let remote_port =
-            cx.new(|cx| TextEntry::new("SSH port", EntryMode::SingleLine, 36., cx));
+        let remote_host = cx.new(|cx| TextEntry::new("SSH host", EntryMode::SingleLine, 36., cx));
+        let remote_port = cx.new(|cx| TextEntry::new("SSH port", EntryMode::SingleLine, 36., cx));
         remote_port.update(cx, |entry, cx| entry.set_text("22".into(), cx));
         let remote_user =
             cx.new(|cx| TextEntry::new("SSH user (optional)", EntryMode::SingleLine, 36., cx));
@@ -292,7 +287,9 @@ impl Shell {
                 cx,
             )
         });
-        remote_helper.update(cx, |entry, cx| entry.set_text("synara-remote-fs".into(), cx));
+        remote_helper.update(cx, |entry, cx| {
+            entry.set_text("synara-remote-fs".into(), cx)
+        });
         let task_title =
             cx.new(|cx| TextEntry::new("New task title", EntryMode::SingleLine, 36., cx));
         let profile_editor = cx
@@ -854,8 +851,7 @@ impl Shell {
             let entries = match target {
                 WorkspaceTarget::Local { root } => list_files(root, directory.clone()).await?,
                 WorkspaceTarget::Ssh { workspace, root } => {
-                    let filesystem =
-                        remote_filesystem(workspace_service, workspace, root).await?;
+                    let filesystem = remote_filesystem(workspace_service, workspace, root).await?;
                     list_remote_files(filesystem, directory.clone()).await?
                 }
             };
@@ -918,7 +914,9 @@ impl Shell {
                 .await?
                 .commit(message)
                 .await?;
-            Ok(Update::Done("Commit created in the selected workspace".into()))
+            Ok(Update::Done(
+                "Commit created in the selected workspace".into(),
+            ))
         });
     }
 
@@ -938,8 +936,7 @@ impl Shell {
             let document = match target {
                 WorkspaceTarget::Local { root } => open_document(root, path).await?,
                 WorkspaceTarget::Ssh { workspace, root } => {
-                    let filesystem =
-                        remote_filesystem(workspace_service, workspace, root).await?;
+                    let filesystem = remote_filesystem(workspace_service, workspace, root).await?;
                     open_remote_document(filesystem, path).await?
                 }
             };
@@ -951,7 +948,8 @@ impl Shell {
         if self.saving {
             return;
         }
-        let (Some(target), Some(document)) = (self.workspace_target(), self.document.clone()) else {
+        let (Some(target), Some(document)) = (self.workspace_target(), self.document.clone())
+        else {
             return;
         };
         let root = target.root().clone();
@@ -966,8 +964,7 @@ impl Shell {
                     save_document(root, document, text.clone()).await
                 }
                 WorkspaceTarget::Ssh { workspace, root } => {
-                    let filesystem =
-                        remote_filesystem(workspace_service, workspace, root).await?;
+                    let filesystem = remote_filesystem(workspace_service, workspace, root).await?;
                     save_remote_document(filesystem, document, text.clone()).await
                 }
             };

@@ -195,7 +195,6 @@ fn ssh_effective_configuration_overrides_ambient_forwarding() {
     assert!(!config.lines().any(|line| line.starts_with("controlpath ")));
 }
 
-
 fn remote_helper() -> PathBuf {
     let helper = PathBuf::from(
         std::env::var_os("SYNARA_REMOTE_FS_HELPER").expect("ssh_smoke.py builds the helper"),
@@ -208,8 +207,7 @@ fn remote_helper() -> PathBuf {
 #[ignore = "requires the isolated server from scripts/ssh_smoke.py"]
 async fn remote_filesystem_is_guarded_and_workspace_bound() {
     let (root, target) = fixture();
-    let host =
-        PinnedSshHost::new(target, root.join("known hosts"), root.join("identity")).unwrap();
+    let host = PinnedSshHost::new(target, root.join("known hosts"), root.join("identity")).unwrap();
     let project = root.join("remote-fs-project");
     std::fs::create_dir(&project).unwrap();
     std::fs::write(project.join("note.txt"), "before\n").unwrap();
@@ -225,7 +223,11 @@ async fn remote_filesystem_is_guarded_and_workspace_bound() {
     );
     let entries = remote.entries(std::path::Path::new(".")).await.unwrap();
     assert!(entries.iter().any(|entry| entry.name == "note.txt"));
-    assert!(entries.iter().any(|entry| entry.name == "escape" && entry.symlink));
+    assert!(
+        entries
+            .iter()
+            .any(|entry| entry.name == "escape" && entry.symlink)
+    );
 
     let original = remote.read(std::path::Path::new("note.txt")).await.unwrap();
     let version = remote
@@ -238,7 +240,10 @@ async fn remote_filesystem_is_guarded_and_workspace_bound() {
         .await
         .unwrap();
     assert_ne!(version, original.version);
-    assert_eq!(std::fs::read_to_string(project.join("note.txt")).unwrap(), "after\n");
+    assert_eq!(
+        std::fs::read_to_string(project.join("note.txt")).unwrap(),
+        "after\n"
+    );
     assert!(matches!(
         remote
             .write(
@@ -264,8 +269,7 @@ async fn remote_filesystem_is_guarded_and_workspace_bound() {
 #[ignore = "requires the isolated server from scripts/ssh_smoke.py"]
 async fn remote_filesystem_detects_workspace_identity_changes() {
     let (root, target) = fixture();
-    let host =
-        PinnedSshHost::new(target, root.join("known hosts"), root.join("identity")).unwrap();
+    let host = PinnedSshHost::new(target, root.join("known hosts"), root.join("identity")).unwrap();
     let first = root.join("identity-first");
     let second = root.join("identity-second");
     let link = root.join("identity-root");
@@ -291,16 +295,9 @@ async fn remote_filesystem_detects_workspace_identity_changes() {
 #[ignore = "requires the isolated server from scripts/ssh_smoke.py"]
 async fn remote_terminal_preserves_pty_resize_interrupt_and_history() {
     let (root, target) = fixture();
-    let host =
-        PinnedSshHost::new(target, root.join("known hosts"), root.join("identity")).unwrap();
-    let terminal = RemoteTerminal::spawn(
-        &host,
-        &LaunchSpec::new("/bin/sh"),
-        &root,
-        24,
-        80,
-    )
-    .unwrap();
+    let host = PinnedSshHost::new(target, root.join("known hosts"), root.join("identity")).unwrap();
+    let terminal =
+        RemoteTerminal::spawn(&host, &LaunchSpec::new("/bin/sh"), &root, 24, 80).unwrap();
     let first_session = terminal.session_id();
     terminal.resize(31, 97).unwrap();
     tokio::time::sleep(Duration::from_millis(300)).await;
@@ -343,14 +340,8 @@ async fn remote_terminal_preserves_pty_resize_interrupt_and_history() {
     assert!(snapshot.text.contains("31 97"), "{}", snapshot.text);
     assert!(snapshot.text.contains("__SYNARA_INTERRUPT__"));
 
-    let replacement = RemoteTerminal::spawn(
-        &host,
-        &LaunchSpec::new("/bin/sh"),
-        &root,
-        24,
-        80,
-    )
-    .unwrap();
+    let replacement =
+        RemoteTerminal::spawn(&host, &LaunchSpec::new("/bin/sh"), &root, 24, 80).unwrap();
     assert_ne!(replacement.session_id(), first_session);
     replacement.text("exit").unwrap();
     replacement

@@ -13,30 +13,45 @@ jobs:
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
+          fetch-depth: 1000
           persist-credentials: false
-      - name: Export checksum-verified terminal source delta
+      - name: Export checksum-verified native presentation inputs
         run: |
           python3 - <<'PY'
-          import hashlib, json, os, pathlib, tomllib, urllib.request
+          import hashlib, json, os, pathlib, subprocess, tomllib, urllib.request
           root = pathlib.Path(os.environ['RUNNER_TEMP']) / 'ui-locked-dependencies'
           root.mkdir()
           packages = tomllib.loads(pathlib.Path('Cargo.lock').read_text())['package']
-          manifest = []
+          selected = []
           for name in ('vt100', 'vte'):
               matches = [p for p in packages if p['name'] == name and p.get('source') == 'registry+https://github.com/rust-lang/crates.io-index']
               assert len(matches) == 1, 'ambiguous locked source'
-              package = matches[0]
-              version = package['version']
+              selected.append(matches[0])
+          # Ordinary MIT Rust dependencies for native Markdown parsing. No HTML
+          # renderer, browser infrastructure or frontend source is imported.
+          for name, version in [('pulldown-cmark', '0.13.4'), ('unicase', '2.8.1')]:
+              url = 'https://index.crates.io/' + name[:2] + '/' + name[2:4] + '/' + name
+              with urllib.request.urlopen(url, timeout=30) as response:
+                  data = response.read(4 * 1024 * 1024 + 1)
+              assert len(data) <= 4 * 1024 * 1024, 'index exceeds input limit'
+              matches = [json.loads(line) for line in data.splitlines() if json.loads(line)['vers'] == version]
+              assert len(matches) == 1 and not matches[0].get('yanked'), 'unavailable pinned dependency'
+              selected.append({'name': name, 'version': version, 'checksum': matches[0]['cksum']})
+          manifest = []
+          for package in selected:
+              name, version = package['name'], package['version']
               assert all(c in '0123456789.' for c in version), 'unsupported version syntax'
               filename = name + '-' + version + '.crate'
               url = 'https://static.crates.io/crates/' + name + '/' + filename
               with urllib.request.urlopen(url, timeout=30) as response:
                   data = response.read(16 * 1024 * 1024 + 1)
               assert len(data) <= 16 * 1024 * 1024, 'crate exceeds input limit'
-              assert hashlib.sha256(data).hexdigest() == package['checksum'], 'locked checksum mismatch'
+              assert hashlib.sha256(data).hexdigest() == package['checksum'], 'source checksum mismatch'
               (root / filename).write_bytes(data)
               manifest.append({'file': filename, 'url': url, 'sha256': package['checksum']})
           (root / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
+          subprocess.run(['git', 'bundle', 'create', str(root / 'native-source.bundle'), 'HEAD'], check=True)
+          (root / 'revision.txt').write_text(subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True))
           PY
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:

@@ -397,6 +397,93 @@ async fn overlapping_permissions_are_owned_by_their_original_task() {
 }
 
 #[tokio::test]
+async fn negotiated_session_lifecycle_covers_titles_restore_list_delete_and_extra_directories() {
+    let h = Harness::start("alpha").await;
+    let thread = ThreadId::new();
+    let extra = h.directory.path().join("extra");
+    std::fs::create_dir(&extra).unwrap();
+    let mut options = h.options(thread);
+    options.additional_directories.push(extra);
+    let created = h.connection.new_session(options).await.unwrap();
+    assert!(
+        h.events
+            .items
+            .lock()
+            .unwrap()
+            .iter()
+            .any(|(owner, event)| *owner == thread
+                && matches!(
+                    event,
+                    ThreadEvent::TitleChanged { title } if title == "Fixture task"
+                ))
+    );
+
+    let page = h.connection.list_sessions(None, None).await.unwrap();
+    assert!(
+        page.sessions
+            .iter()
+            .any(|item| item.id == created.id() && item.title.as_deref() == Some("Fixture task"))
+    );
+
+    let history_thread = ThreadId::new();
+    let resume_thread = ThreadId::new();
+    let (history, resumed) = tokio::join!(
+        h.connection.restore_session(
+            "saved-history",
+            h.options(history_thread),
+            RestoreMode::ReplayHistory
+        ),
+        h.connection.restore_session(
+            "saved-resume",
+            h.options(resume_thread),
+            RestoreMode::ResumeWithoutReplay
+        )
+    );
+    let history = history.unwrap();
+    let resumed = resumed.unwrap();
+    assert_eq!(h.events.assistant(history_thread), "Earlier answer");
+    assert_eq!(h.events.assistant(resume_thread), "");
+
+    let page = h.connection.list_sessions(None, None).await.unwrap();
+    for id in [created.id(), history.id(), resumed.id()] {
+        assert!(page.sessions.iter().any(|item| item.id == id));
+    }
+
+    created.close().await.unwrap();
+    history.close().await.unwrap();
+    resumed.close().await.unwrap();
+    h.connection
+        .delete_session("detached-session")
+        .await
+        .unwrap();
+    assert_eq!(calls(&h.connection, "session/load"), 1);
+    assert_eq!(calls(&h.connection, "session/resume"), 1);
+    assert_eq!(calls(&h.connection, "session/delete"), 1);
+    h.connection.disconnect().await.unwrap();
+}
+
+#[tokio::test]
+async fn model_selection_uses_stable_config_options() {
+    let h = Harness::start("alpha").await;
+    let session = h.session(ThreadId::new()).await;
+    session.set_model("alternate").await.unwrap();
+    assert_eq!(calls(&h.connection, "session/set_config_option"), 1);
+    let option = session
+        .configuration()
+        .options
+        .into_iter()
+        .find(|option| option.category.as_deref() == Some("model"))
+        .unwrap();
+    assert_eq!(
+        option.current,
+        ConfigValue::Select {
+            value: "alternate".into()
+        }
+    );
+    h.connection.disconnect().await.unwrap();
+}
+
+#[tokio::test]
 async fn concurrent_close_is_idempotent_and_does_not_send_two_remote_closes() {
     let h = Harness::start("alpha").await;
     let session = h.session(ThreadId::new()).await;

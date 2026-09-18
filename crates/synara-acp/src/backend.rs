@@ -704,14 +704,18 @@ async fn dispatch_loop(connection: Weak<Connection>, mut incoming: mpsc::Receive
                         };
                         if let Err(error) = result { owner.failed(format!("Agent update could not be applied: {error}")).await; break; }
                     }
-                    Incoming::Request { id,method,params } => {
+                    Incoming::Request { id,method,params,cancellation } => {
                         let Ok(permit) = semaphore.clone().try_acquire_owned() else {
                             let _ = owner.rpc.reply(id,Err(AgentError::Limit)).await;
                             continue;
                         };
                         callbacks.spawn(async move {
                             let _permit = permit;
-                            let result = tokio::time::timeout(std::time::Duration::from_secs(310), owner.callbacks.handle(&method,params,&owner.rpc)).await.unwrap_or(Err(AgentError::Timeout));
+                            let result = tokio::select! {
+                                biased;
+                                () = cancellation.cancelled() => Err(AgentError::Cancelled),
+                                result = tokio::time::timeout(std::time::Duration::from_secs(310), owner.callbacks.handle(&method,params,&owner.rpc)) => result.unwrap_or(Err(AgentError::Timeout)),
+                            };
                             let _ = owner.rpc.reply(id,result).await;
                         });
                     }

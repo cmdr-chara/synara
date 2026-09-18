@@ -297,19 +297,6 @@ pub(crate) fn configuration(
             })
             .collect::<AgentResult<_>>()?;
     }
-    if let Some(models) = value.get("models").filter(|item| item.is_object()) {
-        configuration.current_model = optional_string(models, "currentModelId");
-        configuration.models = array(models, "availableModels", 512)?
-            .iter()
-            .map(|item| {
-                Ok(SelectChoice {
-                    value: id(item, "modelId")?,
-                    label: string(item, "name")?.into(),
-                    group: None,
-                })
-            })
-            .collect::<AgentResult<_>>()?;
-    }
     if let Some(mode) = value.get("currentModeId").and_then(Value::as_str) {
         configuration.current_mode = Some(mode.into());
     }
@@ -555,6 +542,146 @@ mod tests {
             ConfigValue::Boolean { value: false }
         );
     }
+    #[test]
+    fn removed_legacy_model_fields_do_not_enter_the_domain_configuration() {
+        let previous = SessionConfiguration {
+            current_model: Some("domain-model".into()),
+            models: vec![SelectChoice {
+                value: "domain-model".into(),
+                label: "Domain model".into(),
+                group: None,
+            }],
+            ..SessionConfiguration::default()
+        };
+        let config = configuration(
+            &json!({
+                "models":{
+                    "currentModelId":"legacy",
+                    "availableModels":[{"modelId":"legacy","name":"Legacy"}]
+                },
+                "configOptions":[{
+                    "id":"model",
+                    "name":"Model",
+                    "category":"model",
+                    "type":"select",
+                    "currentValue":"stable",
+                    "options":[{"value":"stable","name":"Stable"}]
+                }]
+            }),
+            &previous,
+        )
+        .unwrap();
+        assert_eq!(config.current_model.as_deref(), Some("domain-model"));
+        assert_eq!(config.models, previous.models);
+        assert_eq!(config.options[0].category.as_deref(), Some("model"));
+    }
+
+    #[test]
+    fn negotiated_session_parameters_cover_directories_and_mcp_transports() {
+        let root = std::env::temp_dir().join("synara-acp-session-params");
+        let mut options = SessionOptions::new(ThreadId::new(), root.clone());
+        options.additional_directories.push(root.join("extra"));
+        options.context_servers.push(ContextServer::Process {
+            name: "process".into(),
+            command: std::env::current_exe()
+                .unwrap()
+                .to_string_lossy()
+                .into_owned(),
+            args: vec!["--fixture".into()],
+            env: BTreeMap::from([("MODE".into(), "test".into())]),
+        });
+        options.context_servers.push(ContextServer::Http {
+            name: "http".into(),
+            url: "https://example.invalid/mcp".into(),
+            headers: BTreeMap::from([("X-Test".into(), "value".into())]),
+        });
+        options
+            .context_servers
+            .push(ContextServer::ServerSentEvents {
+                name: "sse".into(),
+                url: "https://example.invalid/events".into(),
+                headers: BTreeMap::new(),
+            });
+        let capabilities = AgentCapabilities {
+            additional_directories: true,
+            mcp_http: true,
+            mcp_sse: true,
+            ..AgentCapabilities::default()
+        };
+        let params = session_params(&options, &capabilities).unwrap();
+        assert_eq!(params["additionalDirectories"].as_array().unwrap().len(), 1);
+        assert_eq!(params["mcpServers"].as_array().unwrap().len(), 3);
+        assert_eq!(params["mcpServers"][1]["type"], "http");
+        assert_eq!(params["mcpServers"][2]["type"], "sse");
+
+        let mut unsupported = capabilities.clone();
+        unsupported.mcp_http = false;
+        assert!(matches!(
+            session_params(&options, &unsupported),
+            Err(AgentError::Unsupported(_))
+        ));
+        unsupported.mcp_http = true;
+        unsupported.additional_directories = false;
+        assert!(matches!(
+            session_params(&options, &unsupported),
+            Err(AgentError::Unsupported(_))
+        ));
+    }
+
+    #[test]
+    fn dynamic_configuration_and_commands_translate_without_protocol_types() {
+        let previous = configuration(
+            &json!({
+                "configOptions":[{
+                    "id":"review",
+                    "name":"Review",
+                    "type":"boolean",
+                    "currentValue":true
+                }]
+            }),
+            &SessionConfiguration::default(),
+        )
+        .unwrap();
+        let events = update(
+            &json!({
+                "sessionUpdate":"config_option_update",
+                "configOptions":[{
+                    "id":"review",
+                    "name":"Review",
+                    "type":"boolean",
+                    "currentValue":false
+                }]
+            }),
+            &previous,
+        )
+        .unwrap();
+        let ThreadEvent::ConfigurationChanged { configuration } = &events[0] else {
+            panic!("configuration update expected")
+        };
+        assert_eq!(
+            configuration.options[0].current,
+            ConfigValue::Boolean { value: false }
+        );
+
+        let events = update(
+            &json!({
+                "sessionUpdate":"available_commands_update",
+                "availableCommands":[{
+                    "name":"review",
+                    "description":"Review changes",
+                    "input":{"hint":"path"}
+                }]
+            }),
+            configuration,
+        )
+        .unwrap();
+        let ThreadEvent::CommandsChanged { commands } = &events[0] else {
+            panic!("commands update expected")
+        };
+        assert_eq!(commands[0].name, "review");
+        assert_eq!(commands[0].argument_hint.as_deref(), Some("path"));
+    }
+
     #[test]
     fn partial_tool_patch_does_not_invent_empty_content() {
         let patch = tool_patch(&json!({"toolCallId":"a","status":"completed"})).unwrap();

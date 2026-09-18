@@ -252,6 +252,10 @@ impl TerminalView {
         let Some(text) = cx.read_from_clipboard().and_then(|item| item.text()) else {
             return;
         };
+        self.prepare_paste(text, cx);
+    }
+
+    fn prepare_paste(&mut self, text: String, cx: &mut Context<Self>) {
         let paste = match PreparedPaste::new(&text) {
             Ok(paste) => paste,
             Err(error) => {
@@ -573,6 +577,17 @@ impl gpui::Render for TerminalView {
 }
 
 impl EntityInputHandler for TerminalView {
+    fn paste(
+        &mut self,
+        item: ClipboardItem,
+        _: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
+        if let Some(text) = item.text() {
+            self.prepare_paste(text, cx);
+        }
+    }
+
     fn text_for_range(
         &mut self,
         range: Range<usize>,

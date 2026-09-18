@@ -577,12 +577,7 @@ impl gpui::Render for TerminalView {
 }
 
 impl EntityInputHandler for TerminalView {
-    fn paste(
-        &mut self,
-        item: ClipboardItem,
-        _: &mut Window,
-        cx: &mut Context<Self>,
-    ) {
+    fn paste(&mut self, item: ClipboardItem, _: &mut Window, cx: &mut Context<Self>) {
         if let Some(text) = item.text() {
             self.prepare_paste(text, cx);
         }

@@ -462,8 +462,7 @@ impl Shell {
     fn retire_terminal(&self, terminal: TerminalSession) {
         self.runtime.spawn(async move {
             let _ = terminal.kill();
-            let _ =
-                tokio::time::timeout(std::time::Duration::from_secs(5), terminal.wait()).await;
+            let _ = tokio::time::timeout(std::time::Duration::from_secs(5), terminal.wait()).await;
         });
     }
     fn close_panel(&self, cx: &mut Context<Self>) -> gpui::AnyElement {

@@ -63,8 +63,7 @@ pub struct DeviceDescriptor {
 
 impl DeviceDescriptor {
     pub fn validate(&self) -> Result<(), RuntimeError> {
-        if !valid_text(&self.name, MAX_LABEL_BYTES)
-            || !valid_text(&self.platform, MAX_LABEL_BYTES)
+        if !valid_text(&self.name, MAX_LABEL_BYTES) || !valid_text(&self.platform, MAX_LABEL_BYTES)
         {
             return Err(RuntimeError::Invalid("invalid device metadata".into()));
         }
@@ -124,7 +123,10 @@ impl DeviceFrame {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case", deny_unknown_fields)]
 pub enum DeviceInput {
-    Tap { x: u32, y: u32 },
+    Tap {
+        x: u32,
+        y: u32,
+    },
     Swipe {
         from_x: u32,
         from_y: u32,
@@ -132,8 +134,12 @@ pub enum DeviceInput {
         to_y: u32,
         duration_ms: u32,
     },
-    Text { text: String },
-    Key { key: String },
+    Text {
+        text: String,
+    },
+    Key {
+        key: String,
+    },
 }
 
 impl DeviceInput {
@@ -189,19 +195,25 @@ impl DeviceInputConsent {
 #[serde(tag = "command", rename_all = "snake_case", deny_unknown_fields)]
 pub enum DeviceControl {
     Discover,
-    Attach { id: DeviceId },
+    Attach {
+        id: DeviceId,
+    },
     Resize {
         session_id: String,
         width: u32,
         height: u32,
     },
-    Detach { session_id: String },
+    Detach {
+        session_id: String,
+    },
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "event", rename_all = "snake_case", deny_unknown_fields)]
 pub enum DeviceControlEvent {
-    Devices { devices: Vec<DeviceDescriptor> },
+    Devices {
+        devices: Vec<DeviceDescriptor>,
+    },
     Attached {
         session_id: String,
         device: DeviceDescriptor,
@@ -214,8 +226,12 @@ pub enum DeviceControlEvent {
         byte_length: usize,
         sequence: u64,
     },
-    Disconnected { session_id: String },
-    Error { code: String },
+    Disconnected {
+        session_id: String,
+    },
+    Error {
+        code: String,
+    },
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -328,7 +344,9 @@ impl DevicePacket {
 
     pub fn decode_control<T: for<'de> Deserialize<'de>>(&self) -> Result<T, RuntimeError> {
         if self.kind != DevicePacketKind::Control {
-            return Err(RuntimeError::Invalid("expected device control packet".into()));
+            return Err(RuntimeError::Invalid(
+                "expected device control packet".into(),
+            ));
         }
         serde_json::from_slice(&self.payload)
             .map_err(|_| RuntimeError::Invalid("invalid device control payload".into()))
@@ -467,7 +485,9 @@ fn validate_dimensions(width: u32, height: u32) -> Result<(), RuntimeError> {
 
 fn validate_point(x: u32, y: u32) -> Result<(), RuntimeError> {
     if x > MAX_DIMENSION || y > MAX_DIMENSION {
-        return Err(RuntimeError::Invalid("device input coordinate is out of range".into()));
+        return Err(RuntimeError::Invalid(
+            "device input coordinate is out of range".into(),
+        ));
     }
     Ok(())
 }
@@ -476,7 +496,9 @@ fn validate_session_id(session_id: &str) -> Result<(), RuntimeError> {
     if valid_text(session_id, MAX_ID_BYTES) {
         Ok(())
     } else {
-        Err(RuntimeError::Invalid("invalid device session identifier".into()))
+        Err(RuntimeError::Invalid(
+            "invalid device session identifier".into(),
+        ))
     }
 }
 
@@ -506,7 +528,10 @@ mod tests {
         for index in 0..=MAX_DEVICES {
             devices.push(descriptor(&format!("device-{index}")));
         }
-        assert!(matches!(validate_discovery(&devices), Err(RuntimeError::Limit)));
+        assert!(matches!(
+            validate_discovery(&devices),
+            Err(RuntimeError::Limit)
+        ));
     }
 
     #[test]
@@ -533,11 +558,13 @@ mod tests {
         let packet = DevicePacket::input("session-1", &input, &consent).unwrap();
         assert_eq!(packet.kind, DevicePacketKind::Input);
         assert!(String::from_utf8(packet.payload).unwrap().contains("hello"));
-        assert!(DeviceInput::Text {
-            text: "\0".repeat(MAX_TEXT_INPUT_BYTES)
-        }
-        .validate()
-        .is_err());
+        assert!(
+            DeviceInput::Text {
+                text: "\0".repeat(MAX_TEXT_INPUT_BYTES)
+            }
+            .validate()
+            .is_err()
+        );
     }
 
     #[test]
@@ -552,7 +579,10 @@ mod tests {
             DeviceControl::Resize { .. }
         ));
         state.disconnect();
-        assert!(matches!(state.accept_frame(&frame), Err(RuntimeError::Closed)));
+        assert!(matches!(
+            state.accept_frame(&frame),
+            Err(RuntimeError::Closed)
+        ));
         assert!(matches!(state.resize(320, 640), Err(RuntimeError::Closed)));
     }
 

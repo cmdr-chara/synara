@@ -72,7 +72,7 @@ def main():
         )
         trust = remote_fixture / 'known hosts'
         identity = remote_fixture / 'identity'
-        helper = Path(str(helper)).resolve()
+        helper = Path(os.environ['SYNARA_REMOTE_FS_HELPER']).resolve()
         for required in (trust, identity, helper):
             assert required.is_file(), f'missing remote smoke input: {required}'
         assert shutil.which('ssh', path=env['PATH']), 'OpenSSH client is absent from native smoke PATH'
@@ -109,7 +109,7 @@ def main():
         set_field(desktop, 800, 285, str(remote_project))
         set_field(desktop, 800, 328, str(trust))
         set_field(desktop, 800, 370, str(identity))
-        set_field(desktop, 800, 413, os.environ['SYNARA_REMOTE_FS_HELPER'])
+        set_field(desktop, 800, 413, str(helper))
         desktop.screenshot('remote-enrollment')
         desktop.click(1218, 476)
 

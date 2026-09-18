@@ -131,10 +131,13 @@ async fn ssh_transport_disconnect_is_observable_and_next_spawn_reconnects() {
     let mut process = host.spawn(&launch, &root).await.unwrap();
 
     let mut ready = [0u8; 5];
-    tokio::time::timeout(Duration::from_secs(10), process.stdout.read_exact(&mut ready))
-        .await
-        .expect("SSH fixture did not become ready")
-        .unwrap();
+    tokio::time::timeout(
+        Duration::from_secs(10),
+        process.stdout.read_exact(&mut ready),
+    )
+    .await
+    .expect("SSH fixture did not become ready")
+    .unwrap();
     assert_eq!(&ready, b"ready");
 
     let handle = process.handle.clone();

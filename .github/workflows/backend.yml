@@ -1,0 +1,84 @@
+name: Backend acceptance
+on:
+  push:
+    branches: [astra/gpui-clean-rewrite]
+    paths:
+      - 'crates/**'
+      - 'scripts/**'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - 'docs/verification/**'
+      - 'docs/database-recovery.md'
+      - 'rust-toolchain.toml'
+      - '.github/workflows/backend.yml'
+permissions:
+  contents: read
+concurrency:
+  group: backend-${{ github.ref }}
+  cancel-in-progress: false
+env:
+  CARGO_BUILD_JOBS: '2'
+  PYTHONDONTWRITEBYTECODE: '1'
+  GIT_TERMINAL_PROMPT: '0'
+jobs:
+  portable:
+    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/gpui-clean-rewrite'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            host: x86_64-unknown-linux-gnu
+          - os: macos-15
+            host: aarch64-apple-darwin
+          - os: windows-2025
+            host: x86_64-pc-windows-msvc
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Fetch only native rewrite history
+        run: git fetch --quiet --no-tags --unshallow origin "$GITHUB_SHA"
+      - name: Install pinned toolchain
+        run: rustup toolchain install 1.98.1 --profile minimal --component rustfmt --component clippy
+      - name: Identify exact candidate and native host
+        env:
+          EXPECTED_HOST: ${{ matrix.host }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          cargo +1.98.1 --version
+          rustc +1.98.1 -vV
+          test "$(rustc +1.98.1 -vV | sed -n 's/^host: //p' | tr -d '\r')" = "$EXPECTED_HOST"
+          python -c "import platform; print(platform.platform(), platform.machine())"
+      - name: Structural and publisher regressions
+        run: |
+          set -euo pipefail
+          python scripts/test_audit_workspace.py
+          python scripts/audit_workspace.py
+          python scripts/test_apply_source.py
+          python scripts/check_roadmap.py --self-test
+          python scripts/check_roadmap.py
+      - name: Formatting
+        run: cargo +1.98.1 fmt --check
+      - name: Backend compile
+        if: always()
+        run: cargo +1.98.1 check --quiet --locked --workspace --exclude synara-app
+      - name: Backend lints
+        if: always()
+        run: cargo +1.98.1 clippy --quiet --locked --workspace --exclude synara-app --all-targets --all-features -- -D warnings
+      - name: Backend tests
+        if: always()
+        run: cargo +1.98.1 test --quiet --locked --workspace --exclude synara-app --all-features --no-fail-fast
+      - name: Native application compilation on macOS and Windows
+        if: always() && runner.os != 'Linux'
+        run: cargo +1.98.1 check --quiet --locked -p synara-app
+      - name: Verify source was not modified by checks
+        if: always()
+        run: git diff --exit-code

@@ -9,7 +9,7 @@ synara-registry = { path = "../synara-registry" }
 synara-core = { path = "../synara-core" }
 synara-runtime = { path = "../synara-runtime" }
 synara-agent = { path = "../synara-agent" }
-rusqlite = { version = "=0.40.2", features = ["bundled"] }
+rusqlite = { version = "=0.40.2", features = ["bundled", "backup", "hooks", "limits"] }
 serde.workspace = true
 serde_json.workspace = true
 thiserror.workspace = true
@@ -20,7 +20,6 @@ uuid.workspace = true
 sha2.workspace = true
 hex.workspace = true
 
-[dev-dependencies]
 tempfile.workspace = true
 
 [lints]

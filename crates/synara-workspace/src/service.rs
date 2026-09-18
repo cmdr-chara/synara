@@ -47,6 +47,27 @@ pub struct WorkspaceService {
     events: broadcast::Sender<EventEnvelope>,
 }
 impl WorkspaceService {
+    /// Explicitly requested backup. No automatic export, upload, or process launch.
+    pub async fn backup_to(
+        &self,
+        path: PathBuf,
+        options: crate::RecoveryOptions,
+    ) -> WorkspaceResult<crate::RecoveryReceipt> {
+        self.access(move |store| Ok(store.backup_to(&path, &options)?))
+            .await
+    }
+    /// Return a new database file for a later explicit open. Never replace the active store.
+    pub async fn restore_to(
+        backup: PathBuf,
+        destination: PathBuf,
+        options: crate::RecoveryOptions,
+    ) -> WorkspaceResult<crate::RecoveryReceipt> {
+        tokio::task::spawn_blocking(move || Store::restore_to(&backup, &destination, &options))
+            .await
+            .map_err(|_| WorkspaceError::Worker)?
+            .map_err(Into::into)
+    }
+
     pub async fn open(path: PathBuf) -> WorkspaceResult<Self> {
         let store = tokio::task::spawn_blocking(move || Store::open(&path))
             .await

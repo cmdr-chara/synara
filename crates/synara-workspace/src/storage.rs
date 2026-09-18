@@ -1,3 +1,6 @@
+mod recovery;
+pub use recovery::*;
+
 use rusqlite::{Connection, OpenFlags, OptionalExtension, TransactionBehavior, params};
 use std::{path::Path, time::Duration};
 use synara_core::*;
@@ -18,6 +21,14 @@ pub enum StorageError {
     Identity,
     #[error("stored data exceeds the configured limit")]
     Limit,
+    #[error("recovery was cancelled")]
+    RecoveryCancelled,
+    #[error("recovery exceeded its deadline")]
+    RecoveryTimeout,
+    #[error("backup is not a supported, consistent Synara database")]
+    InvalidBackup,
+    #[error("recovery destination already exists or is not an explicit new file")]
+    RecoveryDestination,
     #[error("conversation replay: {0}")]
     Replay(#[from] ReplayError),
 }
@@ -28,8 +39,11 @@ pub struct Store {
 }
 impl Store {
     pub fn open(path: &Path) -> StorageResult<Self> {
+        // Resolve OS aliases in the chosen directory (e.g. macOS /var -> /private/var),
+        // but never canonicalize/follow the database leaf itself.
+        let path = database_path(path)?;
         let connection = Connection::open_with_flags(
-            path,
+            &path,
             OpenFlags::SQLITE_OPEN_READ_WRITE
                 | OpenFlags::SQLITE_OPEN_CREATE
                 | OpenFlags::SQLITE_OPEN_NO_MUTEX
@@ -435,6 +449,14 @@ fn update_activity(
         params![encode(&task)?, task.updated_at_ms, task.id.to_string()],
     )?;
     Ok(())
+}
+fn database_path(path: &Path) -> StorageResult<std::path::PathBuf> {
+    let name = path.file_name().ok_or(StorageError::Identity)?;
+    let parent = path
+        .parent()
+        .filter(|p| !p.as_os_str().is_empty())
+        .unwrap_or(Path::new("."));
+    Ok(parent.canonicalize()?.join(name))
 }
 fn valid_preference_key(key: &str) -> bool {
     matches!(

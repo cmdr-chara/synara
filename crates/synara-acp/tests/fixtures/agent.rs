@@ -209,6 +209,7 @@ impl Fixture {
                     "files"=> {let path=session_path(&self.sessions[&session], "created.txt"); self.request(session.clone(),id,"write","fs/write_text_file",json!({"sessionId":session,"path":path,"content":"native 🦀\n"}),None);}
                     "escape"=>self.request(session.clone(),id,"escape","fs/read_text_file",json!({"sessionId":session,"path":"/etc/passwd"}),None),
                     "unknown-owner"=>self.request(session,id,"escape","fs/read_text_file",json!({"sessionId":"not-owned","path":"/etc/passwd"}),None),
+                    "terminal-hold"=>self.request(session.clone(),id,"terminal-hold","terminal/create",json!({"sessionId":session,"command":"/bin/sh","args":["-c","echo $$ > cleanup-terminal.pid; exec sleep 60"],"outputByteLimit":1024}),None),
                     "terminal"=>self.request(session.clone(),id,"terminal-create","terminal/create",json!({"sessionId":session,"command":"/bin/sh","args":["-c","printf 'terminal-proof\\n'"],"outputByteLimit":1024}),None),
                     "input"=>self.request(session.clone(),id,"input","elicitation/create",json!({"sessionId":session,"mode":"form","message":"Pick a value","requestedSchema":{"type":"object","properties":{"name":{"type":"string"}},"required":["name"]}}),None),
                     _=>{self.text(&session,"Hello ");self.text(&session,"from ");self.text(&session,&self.profile);self.update(&session,json!({"sessionUpdate":"tool_call","toolCallId":"tool-1","title":"Inspect","status":"in_progress","content":[{"type":"content","content":{"type":"text","text":"tool output"}}]}));self.update(&session,json!({"sessionUpdate":"tool_call_update","toolCallId":"tool-1","status":"completed"}));self.ok(id,json!({"stopReason":"end_turn"}));}
@@ -249,6 +250,10 @@ impl Fixture {
                         p,
                         value["result"]["content"].as_str().unwrap_or("no content"),
                     ),
+                    "terminal-hold" => {
+                        self.text(&s, "Terminal waiting");
+                        self.pending.insert(s, p);
+                    }
                     "terminal-create" => {
                         let terminal = value["result"]["terminalId"].as_str().unwrap().to_owned();
                         self.request(

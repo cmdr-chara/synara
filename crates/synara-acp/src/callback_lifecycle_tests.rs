@@ -229,3 +229,100 @@ async fn opaque_session_named_connection_is_not_mistaken_for_login_scope() {
         ThreadEvent::UserInputResolved { .. }
     ));
 }
+
+struct BlockedTerminalEvents {
+    entered: Notify,
+}
+#[async_trait]
+impl EventSink for BlockedTerminalEvents {
+    async fn emit(&self, _: ThreadId, event: ThreadEvent) -> AgentResult<()> {
+        if matches!(event, ThreadEvent::TerminalOutput { .. }) {
+            self.entered.notify_one();
+            std::future::pending().await
+        } else {
+            Ok(())
+        }
+    }
+}
+
+// Both NativeTerminal implementations make kill a nonblocking stop request.
+// A slow output consumer must not keep any of the other owned PTYs alive.
+#[cfg(unix)]
+#[tokio::test]
+async fn terminal_cleanup_stops_every_process_before_delivering_output() {
+    let directory = tempfile::tempdir().unwrap();
+    let mut context = context(directory.path());
+    let events = Arc::new(BlockedTerminalEvents {
+        entered: Notify::new(),
+    });
+    context.events = events.clone();
+    let options = SessionOptions::new(ThreadId::new(), directory.path().into());
+    let session = SessionState::build(
+        "cleanup".into(),
+        &options,
+        &context,
+        CancellationToken::new(),
+    )
+    .await
+    .unwrap();
+    let sessions = Arc::new(Sessions::default());
+    sessions
+        .states
+        .lock()
+        .unwrap()
+        .insert(session.id.clone(), session);
+    let services = Arc::new(CallbackServices::new(
+        context,
+        sessions,
+        ConnectionId::new(),
+    ));
+    let mut terminals = Vec::new();
+    for id in ["first", "second"] {
+        let mut launch = LaunchSpec::new("/bin/sh");
+        launch.args = vec!["-c".into(), "exec sleep 60".into()];
+        let cwd = directory.path().to_owned();
+        let terminal = Arc::new(
+            tokio::task::spawn_blocking(move || NativeTerminal::spawn(&launch, &cwd, 24, 80))
+                .await
+                .unwrap()
+                .unwrap(),
+        );
+        services.terminals.lock().await.insert(
+            id.into(),
+            TerminalEntry {
+                session_id: "cleanup".into(),
+                terminal: terminal.clone(),
+                output_limit: 1024,
+            },
+        );
+        terminals.push(terminal);
+    }
+    let worker_services = services.clone();
+    let cleanup = tokio::spawn(async move { worker_services.stop_terminals(None).await });
+    tokio::time::timeout(Duration::from_secs(5), events.entered.notified())
+        .await
+        .unwrap();
+    let result = tokio::time::timeout(Duration::from_secs(2), async {
+        for terminal in &terminals {
+            terminal.wait().await.unwrap();
+        }
+    })
+    .await;
+    // Always stop the isolated fixture, including when the unfixed path fails.
+    for terminal in &terminals {
+        terminal.kill().unwrap();
+    }
+    cleanup.abort();
+    let _ = cleanup.await;
+    for terminal in &terminals {
+        tokio::time::timeout(Duration::from_secs(5), terminal.wait())
+            .await
+            .unwrap()
+            .unwrap();
+    }
+    assert!(
+        result.is_ok(),
+        "blocked diagnostics delayed another terminal's cleanup"
+    );
+    assert!(services.terminals.lock().await.is_empty());
+}

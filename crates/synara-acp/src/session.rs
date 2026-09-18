@@ -18,6 +18,11 @@ impl AgentSession for AcpSession {
         self.state.configuration.read().unwrap().clone()
     }
     async fn prompt(&self, prompt: Prompt) -> AgentResult<String> {
+        let cancellation = self
+            .state
+            .cancellation_gate
+            .try_lock()
+            .map_err(|_| AgentError::Busy)?;
         let _operation = self
             .state
             .prompt_gate
@@ -35,6 +40,7 @@ impl AgentSession for AcpSession {
             session: self,
             complete: false,
         };
+        drop(cancellation);
         self.state
             .emit(
                 &self.connection.context,
@@ -127,23 +133,31 @@ impl AgentSession for AcpSession {
         }
     }
     async fn cancel(&self) -> AgentResult<()> {
+        // Do not let a late cancellation event clear the next turn's interactions.
+        let _cancellation = self.state.cancellation_gate.lock().await;
         if !self.state.active.load(Ordering::Acquire) {
             return Ok(());
         }
         self.state.turn.lock().unwrap().cancel();
-        self.state
-            .emit(&self.connection.context, ThreadEvent::CancellationRequested)
-            .await?;
+        // Control-plane cancellation and resource cleanup must run even when the
+        // event consumer is blocked or has failed. Report delivery separately.
         let result = self
             .connection
             .rpc
             .notify("session/cancel", json!({"sessionId":self.id()}))
             .await;
-        self.connection
+        let cleanup = self
+            .connection
             .callbacks
             .stop_terminals(Some(self.id()))
             .await;
-        result
+        let delivered = self
+            .state
+            .emit(&self.connection.context, ThreadEvent::CancellationRequested)
+            .await;
+        result?;
+        cleanup?;
+        delivered
     }
     async fn set_option(&self, id: &str, value: ConfigValue) -> AgentResult<SessionConfiguration> {
         let _mutation = self.state.mutation_gate.lock().await;
@@ -281,7 +295,8 @@ impl AgentSession for AcpSession {
                 )
                 .await?;
         }
-        self.connection
+        let cleanup = self
+            .connection
             .callbacks
             .stop_terminals(Some(self.id()))
             .await;
@@ -293,14 +308,17 @@ impl AgentSession for AcpSession {
             .lock()
             .unwrap()
             .remove(self.id());
-        self.state
+        let delivered = self
+            .state
             .emit(
                 &self.connection.context,
                 ThreadEvent::SessionStatus {
                     status: "Session closed".into(),
                 },
             )
-            .await
+            .await;
+        cleanup?;
+        delivered
     }
 }
 struct ActivePrompt<'a> {

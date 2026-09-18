@@ -1,0 +1,46 @@
+name: Native UI locked dependency inputs
+on:
+  push:
+    branches: [astra/gpui-clean-rewrite]
+    paths: [.github/workflows/ui-dependencies.yml]
+permissions:
+  contents: read
+jobs:
+  inputs:
+    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/gpui-clean-rewrite'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          persist-credentials: false
+      - name: Export checksum-verified terminal source delta
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, os, pathlib, tomllib, urllib.request
+          root = pathlib.Path(os.environ['RUNNER_TEMP']) / 'ui-locked-dependencies'
+          root.mkdir()
+          packages = tomllib.loads(pathlib.Path('Cargo.lock').read_text())['package']
+          manifest = []
+          for name in ('vt100', 'vte'):
+              matches = [p for p in packages if p['name'] == name and p.get('source') == 'registry+https://github.com/rust-lang/crates.io-index']
+              assert len(matches) == 1, 'ambiguous locked source'
+              package = matches[0]
+              version = package['version']
+              assert all(c in '0123456789.' for c in version), 'unsupported version syntax'
+              filename = name + '-' + version + '.crate'
+              url = 'https://static.crates.io/crates/' + name + '/' + filename
+              with urllib.request.urlopen(url, timeout=30) as response:
+                  data = response.read(16 * 1024 * 1024 + 1)
+              assert len(data) <= 16 * 1024 * 1024, 'crate exceeds input limit'
+              assert hashlib.sha256(data).hexdigest() == package['checksum'], 'locked checksum mismatch'
+              (root / filename).write_bytes(data)
+              manifest.append({'file': filename, 'url': url, 'sha256': package['checksum']})
+          (root / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: native-ui-locked-dependency-delta
+          path: ${{ runner.temp }}/ui-locked-dependencies/
+          retention-days: 3
+          if-no-files-found: error

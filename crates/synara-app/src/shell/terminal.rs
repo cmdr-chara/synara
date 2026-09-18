@@ -901,8 +901,10 @@ mod tests {
         assert_eq!(utf16_range_to_bytes(text, 0..1), Some(0..1));
         assert_eq!(utf16_range_to_bytes(text, 1..3), Some(1..5));
         assert_eq!(utf16_range_to_bytes(text, 3..4), Some(5..7));
-        assert_eq!(utf16_range_to_bytes(text, 2..3), None);
-        assert_eq!(utf16_range_to_bytes(text, 3..2), None);
+        assert!(utf16_range_to_bytes(text, 2..3).is_none());
+        let reversed_start = 3;
+        let reversed_end = 2;
+        assert!(utf16_range_to_bytes(text, reversed_start..reversed_end).is_none());
     }
 
     #[test]

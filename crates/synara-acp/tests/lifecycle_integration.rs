@@ -397,6 +397,27 @@ async fn overlapping_permissions_are_owned_by_their_original_task() {
 }
 
 #[tokio::test]
+async fn model_selection_uses_stable_config_options() {
+    let h = Harness::start("alpha").await;
+    let session = h.session(ThreadId::new()).await;
+    session.set_model("alternate").await.unwrap();
+    assert_eq!(calls(&h.connection, "session/set_config_option"), 1);
+    let option = session
+        .configuration()
+        .options
+        .into_iter()
+        .find(|option| option.category.as_deref() == Some("model"))
+        .unwrap();
+    assert_eq!(
+        option.current,
+        ConfigValue::Select {
+            value: "alternate".into()
+        }
+    );
+    h.connection.disconnect().await.unwrap();
+}
+
+#[tokio::test]
 async fn concurrent_close_is_idempotent_and_does_not_send_two_remote_closes() {
     let h = Harness::start("alpha").await;
     let session = h.session(ThreadId::new()).await;

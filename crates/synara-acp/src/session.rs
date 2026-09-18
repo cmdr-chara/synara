@@ -260,41 +260,17 @@ impl AgentSession for AcpSession {
             .await
     }
     async fn set_model(&self, id: &str) -> AgentResult<()> {
-        // Configuration-based model selectors take precedence over the older optional selector.
+        // ACP removed the never-stabilized session/set_model method. Stable v1
+        // model selection is represented by a model-category config option.
         let configuration = self.configuration();
-        if let Some(option) = configuration
+        let option = configuration
             .options
             .iter()
             .find(|option| option.category.as_deref() == Some("model"))
-        {
-            self.set_option(&option.id, ConfigValue::Select { value: id.into() })
-                .await?;
-            return Ok(());
-        }
-        let _mutation = self.state.mutation_gate.lock().await;
-        self.ensure_open()?;
-        let configuration = self.configuration();
-        if !configuration.models.iter().any(|model| model.value == id) {
-            return Err(AgentError::Unsupported("model selector".into()));
-        }
-        self.connection
-            .call(
-                "session/set_model",
-                json!({"sessionId":self.id(),"modelId":id}),
-                self.connection.timeouts.operation,
-            )
+            .ok_or_else(|| AgentError::Unsupported("model configuration option".into()))?;
+        self.set_option(&option.id, ConfigValue::Select { value: id.into() })
             .await?;
-        self.connection.rpc.barrier().await?;
-        let _update = self.state.update_gate.lock().await;
-        let mut configuration = self.configuration();
-        configuration.current_model = Some(id.into());
-        *self.state.configuration.write().unwrap() = configuration.clone();
-        self.state
-            .emit(
-                &self.connection.context,
-                ThreadEvent::ConfigurationChanged { configuration },
-            )
-            .await
+        Ok(())
     }
     async fn close(&self) -> AgentResult<()> {
         if self.state.closed.load(Ordering::Acquire) {

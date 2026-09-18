@@ -297,19 +297,6 @@ pub(crate) fn configuration(
             })
             .collect::<AgentResult<_>>()?;
     }
-    if let Some(models) = value.get("models").filter(|item| item.is_object()) {
-        configuration.current_model = optional_string(models, "currentModelId");
-        configuration.models = array(models, "availableModels", 512)?
-            .iter()
-            .map(|item| {
-                Ok(SelectChoice {
-                    value: id(item, "modelId")?,
-                    label: string(item, "name")?.into(),
-                    group: None,
-                })
-            })
-            .collect::<AgentResult<_>>()?;
-    }
     if let Some(mode) = value.get("currentModeId").and_then(Value::as_str) {
         configuration.current_mode = Some(mode.into());
     }
@@ -555,6 +542,40 @@ mod tests {
             ConfigValue::Boolean { value: false }
         );
     }
+    #[test]
+    fn removed_legacy_model_fields_do_not_enter_the_domain_configuration() {
+        let previous = SessionConfiguration {
+            current_model: Some("domain-model".into()),
+            models: vec![SelectChoice {
+                value: "domain-model".into(),
+                label: "Domain model".into(),
+                group: None,
+            }],
+            ..SessionConfiguration::default()
+        };
+        let config = configuration(
+            &json!({
+                "models":{
+                    "currentModelId":"legacy",
+                    "availableModels":[{"modelId":"legacy","name":"Legacy"}]
+                },
+                "configOptions":[{
+                    "id":"model",
+                    "name":"Model",
+                    "category":"model",
+                    "type":"select",
+                    "currentValue":"stable",
+                    "options":[{"value":"stable","name":"Stable"}]
+                }]
+            }),
+            &previous,
+        )
+        .unwrap();
+        assert_eq!(config.current_model.as_deref(), Some("domain-model"));
+        assert_eq!(config.models, previous.models);
+        assert_eq!(config.options[0].category.as_deref(), Some("model"));
+    }
+
     #[test]
     fn partial_tool_patch_does_not_invent_empty_content() {
         let patch = tool_patch(&json!({"toolCallId":"a","status":"completed"})).unwrap();

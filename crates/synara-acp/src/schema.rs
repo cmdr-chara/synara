@@ -49,6 +49,12 @@ pub(crate) fn response(method: &str, value: &Value) -> AgentResult<()> {
         _ => Ok(()),
     }
 }
+pub(crate) fn protocol_notification(method: &str, value: &Value) -> AgentResult<()> {
+    match method {
+        "$/cancel_request" => validate::<v1::CancelRequestNotification>(value, method),
+        _ => Ok(()),
+    }
+}
 pub(crate) fn callback(method: &str, value: &Value) -> AgentResult<()> {
     match method {
         "elicitation/create" => validate::<v1::CreateElicitationRequest>(value, method),
@@ -115,6 +121,15 @@ mod tests {
         assert!(response("session/set_config_option", &json!({"configOptions":[]})).is_ok());
         assert!(response("session/prompt", &json!({})).is_err());
         assert!(response("session/new", &json!({})).is_err());
+    }
+
+    #[test]
+    fn protocol_cancellation_uses_the_pinned_stable_schema() {
+        assert!(
+            protocol_notification("$/cancel_request", &json!({"requestId":"request-1"})).is_ok()
+        );
+        assert!(protocol_notification("$/cancel_request", &json!({})).is_err());
+        assert!(protocol_notification("$/cancel_request", &json!({"requestId":false})).is_err());
     }
 
     #[test]

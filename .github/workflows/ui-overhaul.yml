@@ -33,7 +33,7 @@ jobs:
           PY
   linux:
     needs: source
-    timeout-minutes: 40
+    timeout-minutes: 45
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
@@ -43,31 +43,55 @@ jobs:
           persist-credentials: false
       - name: Install pinned toolchain
         run: rustup toolchain install 1.98.1 --profile minimal --component rustfmt --component clippy
-      - name: Export offline formatting tools
+      - name: Export offline toolchain
+        if: hashFiles('crates/synara-app/src/design.rs') == ''
         run: |
-          mkdir -p /tmp/ui-tools
-          cp "$HOME/.rustup/toolchains/1.98.1-x86_64-unknown-linux-gnu/bin/rustfmt" /tmp/ui-tools/
-          ldd /tmp/ui-tools/rustfmt
+          mkdir -p /tmp/ui-toolchain
+          tar -C "$HOME/.rustup/toolchains" -czf /tmp/ui-toolchain/toolchain.tar.gz 1.98.1-x86_64-unknown-linux-gnu
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: hashFiles('crates/synara-app/src/design.rs') == ''
         with:
-          name: ui-formatting-tools
-          path: /tmp/ui-tools/
+          name: ui-offline-toolchain
+          path: /tmp/ui-toolchain/
           retention-days: 1
+          compression-level: 0
       - name: Native system libraries
         run: |
           sudo apt-get update
           sudo apt-get install -y clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil fonts-dejavu-core
       - name: Fetch pinned dependencies
         run: cargo +1.98.1 fetch --locked
-      - name: Export GPUI API source for offline implementation
+      - name: Export reproducible offline development inputs
+        if: hashFiles('crates/synara-app/src/design.rs') == ''
         run: |
-          mkdir -p /tmp/ui-api
-          find "$HOME/.cargo/registry/src" -maxdepth 2 -type d -name 'gpui-*' -exec cp -r '{}' /tmp/ui-api/ \;
+          mkdir -p /tmp/ui-dependencies /tmp/ui-system
+          tar -C "$HOME/.cargo" -czf /tmp/ui-dependencies/cargo.tar.gz registry git
+          python3 - <<'PY'
+          import glob, pathlib, tarfile
+          paths = ['/usr/include', '/usr/lib/x86_64-linux-gnu/pkgconfig', '/usr/share/pkgconfig']
+          names = ['xkbcommon', 'wayland', 'fontconfig', 'freetype', 'asound', 'vulkan', 'EGL', 'GL', 'X', 'xcb', 'ffi', 'zstd', 'brotli', 'bz2', 'png', 'expat', 'uuid', 'z', 'drm', 'gbm', 'udev', 'dbus', 'ssl', 'crypto']
+          for name in names:
+              paths.extend(glob.glob('/usr/lib/x86_64-linux-gnu/lib' + name + '*.so*'))
+          paths.extend(glob.glob('/usr/lib/llvm-*/lib/libclang.so*'))
+          with tarfile.open('/tmp/ui-system/sysroot.tar.gz', 'w:gz', dereference=True) as archive:
+              for name in sorted(set(paths)):
+                  if pathlib.Path(name).exists():
+                      archive.add(name, arcname=name.lstrip('/'))
+          PY
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: hashFiles('crates/synara-app/src/design.rs') == ''
         with:
-          name: ui-gpui-api
-          path: /tmp/ui-api/
+          name: ui-offline-dependencies
+          path: /tmp/ui-dependencies/
           retention-days: 1
+          compression-level: 0
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: hashFiles('crates/synara-app/src/design.rs') == ''
+        with:
+          name: ui-offline-system
+          path: /tmp/ui-system/
+          retention-days: 1
+          compression-level: 0
       - name: Workspace structure
         run: python3 scripts/audit_workspace.py
       - name: Formatting
@@ -113,6 +137,7 @@ jobs:
           for binary in synara-app synara-acp-fixture; do
             if test -f "target/debug/$binary"; then
               cp "target/debug/$binary" /tmp/ui-build/
+              strip "/tmp/ui-build/$binary"
             fi
           done
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

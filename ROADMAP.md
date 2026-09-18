@@ -202,6 +202,19 @@ Acceptance remains open because the complete current-protocol capability matrix,
 all malformed-transport cases and the full negotiated config/MCP surface have not
 been accepted as one final matrix.
 
+Backend cleanup checkpoint: cancellation reaches the external agent before a
+blocked/failed event consumer is awaited. All callback terminals receive stop
+requests before exit/output waits, and connection failure cleans them before
+error delivery. Shared exit/output budgets prevent per-terminal multiplication.
+Three regressions fail on the original implementation and pass after the fix.
+The follow-up also prevents a prompt from being launched after cancellation
+completed during delayed initial-event delivery. FIFO enqueue is serialized with
+cancel, while response ownership retains its original deadline and drop cleanup.
+Linux backend verification passes 249 tests with strict Clippy and formatting.
+See [cleanup backpressure evidence](docs/verification/acp-cleanup-backpressure.md).
+B2/B5 remain open for their complete integrated acceptance matrices, not because
+this published cleanup slice is missing.
+
 ## C. Prove real-agent interoperability
 
 Status: **Partial**, reviewed-release and custom-profile proof integrated.
@@ -479,7 +492,10 @@ The integrated A/J/M work includes POSIX process-group supervision, aggregate
 launch-allocation bounds, PTY lifetime tests, shutdown ordering and host-aware
 remote helper boundaries. Linux regression coverage proves foreground-job cleanup,
 normal/partial-start teardown, repeated terminal cycles and final-output retention.
-The native application now shuts down its owned terminal before exit.
+The native application now shuts down its owned terminal before exit. Callback
+terminal cleanup is now independent of blocked event/error consumers, with
+shared teardown budgets and explicit diagnostic failure reporting. See the
+[ACP cleanup checkpoint](docs/verification/acp-cleanup-backpressure.md).
 
 - [ ] M1 Complete POSIX process groups, Windows process trees/Job Objects and
   PTY/ConPTY lifetime ownership, including spawn and partial-start failures.

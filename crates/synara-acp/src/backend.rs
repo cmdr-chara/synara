@@ -350,6 +350,9 @@ impl AgentConnection for AcpConnection {
     fn clear_trace(&self) {
         self.0.rpc.clear_trace();
     }
+    fn process_id(&self) -> Option<u32> {
+        Some(self.0.process.pid())
+    }
     async fn new_session(&self, options: SessionOptions) -> AgentResult<Arc<dyn AgentSession>> {
         let connection = &self.0;
         let _setup = connection.setup_gate.lock().await;

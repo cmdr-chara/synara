@@ -26,8 +26,12 @@ pub(super) fn branch(value: &str) -> Result<()> {
         || value.contains("..")
         || value.contains("@{")
         || value.contains("//")
-        || value.chars().any(|c| c.is_control() || c.is_whitespace() || "~^:?*[\\".contains(c))
-        || value.split('/').any(|part| part.starts_with('.') || part.ends_with(".lock"))
+        || value
+            .chars()
+            .any(|c| c.is_control() || c.is_whitespace() || "~^:?*[\\".contains(c))
+        || value
+            .split('/')
+            .any(|part| part.starts_with('.') || part.ends_with(".lock"))
     {
         return Err(GitOperationErrorKind::InvalidInput);
     }
@@ -70,14 +74,19 @@ fn start(value: &str) -> Result<()> {
 }
 
 fn path(value: PathBuf, local: bool) -> Result<String> {
-    let value = value.into_os_string().into_string()
+    let value = value
+        .into_os_string()
+        .into_string()
         .map_err(|_| GitOperationErrorKind::InvalidInput)?;
     if value.is_empty()
         || value.len() > 4096
         || value.chars().any(char::is_control)
         || (local && !std::path::Path::new(&value).is_absolute())
         || (!local && !value.starts_with('/'))
-        || value.replace('\\', "/").split('/').any(|p| matches!(p, "." | ".."))
+        || value
+            .replace('\\', "/")
+            .split('/')
+            .any(|p| matches!(p, "." | ".."))
     {
         return Err(GitOperationErrorKind::InvalidInput);
     }
@@ -112,7 +121,9 @@ fn url(value: &str) -> Result<()> {
     let host = if ssh {
         if let Some((user, host)) = authority.split_once('@') {
             if user.is_empty()
-                || !user.bytes().all(|b| b.is_ascii_alphanumeric() || b"._-".contains(&b))
+                || !user
+                    .bytes()
+                    .all(|b| b.is_ascii_alphanumeric() || b"._-".contains(&b))
             {
                 return Err(GitOperationErrorKind::InvalidInput);
             }
@@ -125,7 +136,9 @@ fn url(value: &str) -> Result<()> {
     };
     if host.is_empty()
         || host.starts_with('-')
-        || !host.bytes().all(|b| b.is_ascii_alphanumeric() || b".:-[]".contains(&b))
+        || !host
+            .bytes()
+            .all(|b| b.is_ascii_alphanumeric() || b".:-[]".contains(&b))
     {
         return Err(GitOperationErrorKind::InvalidInput);
     }
@@ -140,26 +153,57 @@ pub(super) fn build(
     use GitOperation::*;
     let updating_remote = matches!(&operation, SetRemoteUrl { .. });
     let (command, mutation, executes_repository, network) = match operation {
-        Branches => (args(&["for-each-ref", "--format=%(refname)%00%(objectname)%00%(HEAD)%00", "refs/heads/"]), false, false, false),
+        Branches => (
+            args(&[
+                "for-each-ref",
+                "--format=%(refname)%00%(objectname)%00%(HEAD)%00",
+                "refs/heads/",
+            ]),
+            false,
+            false,
+            false,
+        ),
         RemoteNames => (args(&["remote"]), false, false, false),
         RemoteUrl { name, push } => {
             remote(&name)?;
             let mut command = args(&["remote", "get-url", "--all"]);
-            if push { command.push("--push".into()); }
+            if push {
+                command.push("--push".into());
+            }
             command.extend(args(&["--", &name]));
             (command, false, false, false)
         }
-        Worktrees => (args(&["worktree", "list", "--porcelain", "-z"]), false, false, false),
-        Stashes => (args(&["stash", "list", "-z", "--format=%H%x00%gs"]), false, false, false),
+        Worktrees => (
+            args(&["worktree", "list", "--porcelain", "-z"]),
+            false,
+            false,
+            false,
+        ),
+        Stashes => (
+            args(&["stash", "list", "-z", "--format=%H%x00%gs"]),
+            false,
+            false,
+            false,
+        ),
         CreateBranch { name, start: at } => {
             branch(&name)?;
             start(&at)?;
-            (args(&["branch", "--no-track", "--", &name, &at]), true, false, false)
+            (
+                args(&["branch", "--no-track", "--", &name, &at]),
+                true,
+                false,
+                false,
+            )
         }
         RenameBranch { old, new } => {
             branch(&old)?;
             branch(&new)?;
-            (args(&["branch", "-m", "--", &old, &new]), true, false, false)
+            (
+                args(&["branch", "-m", "--", &old, &new]),
+                true,
+                false,
+                false,
+            )
         }
         DeleteBranch { name } => {
             branch(&name)?;
@@ -167,57 +211,163 @@ pub(super) fn build(
         }
         SwitchBranch { name } => {
             branch(&name)?;
-            (args(&["switch", "--no-guess", "--no-recurse-submodules", "--", &name]), true, true, false)
+            (
+                args(&[
+                    "switch",
+                    "--no-guess",
+                    "--no-recurse-submodules",
+                    "--",
+                    &name,
+                ]),
+                true,
+                true,
+                false,
+            )
         }
-        AddRemote { name, url: endpoint } | SetRemoteUrl { name, url: endpoint } => {
+        AddRemote {
+            name,
+            url: endpoint,
+        }
+        | SetRemoteUrl {
+            name,
+            url: endpoint,
+        } => {
             remote(&name)?;
             url(&endpoint)?;
             let verb = if updating_remote { "set-url" } else { "add" };
-            (args(&["remote", verb, "--", &name, &endpoint]), true, false, false)
+            (
+                args(&["remote", verb, "--", &name, &endpoint]),
+                true,
+                false,
+                false,
+            )
         }
         RemoveRemote { name } => {
             remote(&name)?;
             (args(&["remote", "remove", "--", &name]), true, false, false)
         }
-        Fetch { remote: name, branch: selected } => {
+        Fetch {
+            remote: name,
+            branch: selected,
+        } => {
             remote(&name)?;
             branch(&selected)?;
             let refspec = format!("refs/heads/{selected}:refs/remotes/{name}/{selected}");
-            (args(&["fetch", "--no-tags", "--no-recurse-submodules", "--no-write-fetch-head", "--no-auto-maintenance", "--refmap=", "--", &name, &refspec]), true, true, true)
+            (
+                args(&[
+                    "fetch",
+                    "--no-tags",
+                    "--no-recurse-submodules",
+                    "--no-write-fetch-head",
+                    "--no-auto-maintenance",
+                    "--refmap=",
+                    "--",
+                    &name,
+                    &refspec,
+                ]),
+                true,
+                true,
+                true,
+            )
         }
-        PullFastForward { remote: name, branch: selected } => {
+        PullFastForward {
+            remote: name,
+            branch: selected,
+        } => {
             remote(&name)?;
             branch(&selected)?;
             let source = format!("refs/heads/{selected}");
-            (args(&["-c", "merge.autoStash=false", "pull", "--ff-only", "--no-rebase", "--no-autostash", "--no-recurse-submodules", "--no-tags", "--no-edit", "--", &name, &source]), true, true, true)
+            (
+                args(&[
+                    "-c",
+                    "merge.autoStash=false",
+                    "pull",
+                    "--ff-only",
+                    "--no-rebase",
+                    "--no-autostash",
+                    "--no-recurse-submodules",
+                    "--no-tags",
+                    "--no-edit",
+                    "--",
+                    &name,
+                    &source,
+                ]),
+                true,
+                true,
+                true,
+            )
         }
-        Push { remote: name, local_branch, remote_branch } => {
+        Push {
+            remote: name,
+            local_branch,
+            remote_branch,
+        } => {
             remote(&name)?;
             branch(&local_branch)?;
             branch(&remote_branch)?;
             let mirror = format!("remote.{name}.mirror=false");
             let refspec = format!("refs/heads/{local_branch}:refs/heads/{remote_branch}");
-            (args(&["-c", &mirror, "push", "--porcelain", "--no-follow-tags", "--recurse-submodules=no", "--", &name, &refspec]), true, true, true)
+            (
+                args(&[
+                    "-c",
+                    &mirror,
+                    "push",
+                    "--porcelain",
+                    "--no-follow-tags",
+                    "--recurse-submodules=no",
+                    "--",
+                    &name,
+                    &refspec,
+                ]),
+                true,
+                true,
+                true,
+            )
         }
-        AddWorktree { path: destination, branch: selected } => {
+        AddWorktree {
+            path: destination,
+            branch: selected,
+        } => {
             let destination = path(destination, local)?;
             branch(&selected)?;
-            (args(&["worktree", "add", "--", &destination, &selected]), true, true, false)
+            (
+                args(&["worktree", "add", "--", &destination, &selected]),
+                true,
+                true,
+                false,
+            )
         }
         RemoveWorktree { path: destination } => {
             let destination = path(destination, local)?;
-            (args(&["worktree", "remove", "--", &destination]), true, true, false)
+            (
+                args(&["worktree", "remove", "--", &destination]),
+                true,
+                true,
+                false,
+            )
         }
-        SaveStash { message: text, include_untracked } => {
+        SaveStash {
+            message: text,
+            include_untracked,
+        } => {
             message(&text, 4096)?;
             let mut command = args(&["stash", "push", "-m", &text]);
-            if include_untracked { command.push("--include-untracked".into()); }
+            if include_untracked {
+                command.push("--include-untracked".into());
+            }
             command.push("--".into());
             (command, true, true, false)
         }
-        ApplyStash { object_id: identity } => {
+        ApplyStash {
+            object_id: identity,
+        } => {
             object_id(&identity)?;
-            (args(&["stash", "apply", "--", &identity]), true, true, false)
+            (
+                args(&["stash", "apply", "--", &identity]),
+                true,
+                true,
+                false,
+            )
         }
         Commit { message: text } => {
             message(&text, 64 * 1024)?;
@@ -234,5 +384,8 @@ pub(super) fn build(
     {
         return Err(GitOperationErrorKind::ConsentRequired);
     }
-    Ok(Plan { args: command, mutation })
+    Ok(Plan {
+        args: command,
+        mutation,
+    })
 }

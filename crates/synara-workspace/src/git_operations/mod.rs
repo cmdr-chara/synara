@@ -78,25 +78,68 @@ impl Default for GitOperationOptions {
 pub enum GitOperation {
     Branches,
     RemoteNames,
-    RemoteUrl { name: String, push: bool },
+    RemoteUrl {
+        name: String,
+        push: bool,
+    },
     Worktrees,
     Stashes,
-    CreateBranch { name: String, start: String },
-    RenameBranch { old: String, new: String },
-    DeleteBranch { name: String },
-    SwitchBranch { name: String },
-    AddRemote { name: String, url: String },
-    SetRemoteUrl { name: String, url: String },
-    RemoveRemote { name: String },
-    Fetch { remote: String, branch: String },
-    PullFastForward { remote: String, branch: String },
-    Push { remote: String, local_branch: String, remote_branch: String },
-    AddWorktree { path: PathBuf, branch: String },
-    RemoveWorktree { path: PathBuf },
-    SaveStash { message: String, include_untracked: bool },
+    CreateBranch {
+        name: String,
+        start: String,
+    },
+    RenameBranch {
+        old: String,
+        new: String,
+    },
+    DeleteBranch {
+        name: String,
+    },
+    SwitchBranch {
+        name: String,
+    },
+    AddRemote {
+        name: String,
+        url: String,
+    },
+    SetRemoteUrl {
+        name: String,
+        url: String,
+    },
+    RemoveRemote {
+        name: String,
+    },
+    Fetch {
+        remote: String,
+        branch: String,
+    },
+    PullFastForward {
+        remote: String,
+        branch: String,
+    },
+    Push {
+        remote: String,
+        local_branch: String,
+        remote_branch: String,
+    },
+    AddWorktree {
+        path: PathBuf,
+        branch: String,
+    },
+    RemoveWorktree {
+        path: PathBuf,
+    },
+    SaveStash {
+        message: String,
+        include_untracked: bool,
+    },
     /// Applying by object identity retains the stash, even on conflict.
-    ApplyStash { object_id: String },
-    Commit { message: String },
+    ApplyStash {
+        object_id: String,
+    },
+    Commit {
+        message: String,
+    },
 }
 
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
@@ -176,7 +219,11 @@ pub struct GitOperationError {
 }
 impl GitOperationError {
     fn before_spawn(kind: GitOperationErrorKind) -> Self {
-        Self { kind, may_have_mutated: false, cleanup_confirmed: true }
+        Self {
+            kind,
+            may_have_mutated: false,
+            cleanup_confirmed: true,
+        }
     }
 }
 

@@ -1,7 +1,7 @@
 use super::{
     GitCredentialPolicy, GitHookPolicy, GitNetworkPolicy, GitOperationError, GitOperationErrorKind,
-    GitOperationOptions, GitOperationOutput, GitOperationPhase, GitOperationProgress, GitOperations,
-    GitSigningPolicy, plan::Plan,
+    GitOperationOptions, GitOperationOutput, GitOperationPhase, GitOperationProgress,
+    GitOperations, GitSigningPolicy, plan::Plan,
 };
 use std::time::Duration;
 use synara_runtime::{LaunchSpec, ProcessHandle, ProcessReader, RuntimeError};
@@ -22,7 +22,11 @@ fn early(kind: GitOperationErrorKind) -> GitOperationError {
     GitOperationError::before_spawn(kind)
 }
 
-pub(super) fn launch(options: &GitOperationOptions, arguments: Vec<String>, local: bool) -> LaunchSpec {
+pub(super) fn launch(
+    options: &GitOperationOptions,
+    arguments: Vec<String>,
+    local: bool,
+) -> LaunchSpec {
     let mut command = vec!["--no-pager".into(), "--literal-pathspecs".into()];
     let mut config = |value: &str| {
         command.extend(["-c".into(), value.into()]);
@@ -59,7 +63,9 @@ pub(super) fn launch(options: &GitOperationOptions, arguments: Vec<String>, loca
             config("http.followRedirects=false");
             if options.policy.network == GitNetworkPolicy::HttpsAndSsh {
                 config("protocol.ssh.allow=always");
-                config("core.sshCommand=ssh -oBatchMode=yes -oStrictHostKeyChecking=yes -oForwardAgent=no -oForwardX11=no -oClearAllForwardings=yes -oPermitLocalCommand=no -oControlMaster=no -oControlPath=none -oControlPersist=no");
+                config(
+                    "core.sshCommand=ssh -oBatchMode=yes -oStrictHostKeyChecking=yes -oForwardAgent=no -oForwardX11=no -oClearAllForwardings=yes -oPermitLocalCommand=no -oControlMaster=no -oControlPath=none -oControlPersist=no",
+                );
             }
         }
         GitNetworkPolicy::LocalFilesystem => config("protocol.file.allow=always"),
@@ -142,7 +148,10 @@ async fn read(
     let mut bytes = Vec::with_capacity(limit);
     let mut chunk = [0u8; 8192];
     loop {
-        let count = stream.read(&mut chunk).await.map_err(|_| GitOperationErrorKind::Failed)?;
+        let count = stream
+            .read(&mut chunk)
+            .await
+            .map_err(|_| GitOperationErrorKind::Failed)?;
         if count == 0 {
             return Ok(bytes);
         }
@@ -178,7 +187,9 @@ impl GitOperations {
             progress.send_modify(|state| {
                 state.phase = match &result {
                     Ok(_) => GitOperationPhase::Completed,
-                    Err(error) if error.kind == GitOperationErrorKind::Cancelled => GitOperationPhase::Cancelled,
+                    Err(error) if error.kind == GitOperationErrorKind::Cancelled => {
+                        GitOperationPhase::Cancelled
+                    }
                     Err(_) => GitOperationPhase::Failed,
                 };
             });
@@ -201,7 +212,11 @@ impl GitOperations {
         {
             return Err(early(InvalidInput));
         }
-        let _queue = self.queue.clone().try_acquire_owned().map_err(|_| early(QueueFull))?;
+        let _queue = self
+            .queue
+            .clone()
+            .try_acquire_owned()
+            .map_err(|_| early(QueueFull))?;
         let deadline = Instant::now() + options.timeout;
         let _serial = tokio::select! {
             biased;
@@ -229,14 +244,27 @@ impl GitOperations {
         let result = {
             let operation = async {
                 let (stdout, stderr, exit) = tokio::try_join!(
-                    read(process.stdout, options.max_stdout_bytes, false, progress.clone()),
-                    read(process.stderr, options.max_stderr_bytes, true, progress.clone()),
+                    read(
+                        process.stdout,
+                        options.max_stdout_bytes,
+                        false,
+                        progress.clone()
+                    ),
+                    read(
+                        process.stderr,
+                        options.max_stderr_bytes,
+                        true,
+                        progress.clone()
+                    ),
                     async { process.handle.wait().await.map_err(|_| Failed) }
                 )?;
                 if !exit.success() {
                     return Err(classify(&stderr));
                 }
-                Ok(GitOperationOutput { stdout, stderr_bytes: stderr.len() })
+                Ok(GitOperationOutput {
+                    stdout,
+                    stderr_bytes: stderr.len(),
+                })
             };
             tokio::select! {
                 biased;

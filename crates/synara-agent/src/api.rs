@@ -158,7 +158,10 @@ fn sanitize_trace(mut entries: Vec<TraceEntry>) -> (Vec<TraceEntry>, bool) {
             .request_id
             .take()
             .map(|value| bounded_inspector_text(&value));
-        entry.method = entry.method.take().map(|value| bounded_inspector_text(&value));
+        entry.method = entry
+            .method
+            .take()
+            .map(|value| bounded_inspector_text(&value));
         entry.shape = bounded_inspector_text(&entry.shape);
     }
     (entries, truncated)

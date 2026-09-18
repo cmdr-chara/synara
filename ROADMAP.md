@@ -660,14 +660,3 @@ Remaining limitations:
    contract, record actual agents/platforms tested, verify the independent root and
    protected refs, and publish only `astra/gpui-clean-rewrite`.
 
-
-
-1. Finish final-candidate native, static, SSH and vendor-probe verification. Keep
-   the published roadmap and its README link current with exact evidence.
-2. Recover and finish A1-A7. If local execution remains unavailable, preserve that
-   gate and advance independent, non-overlapping work using the remote branch and
-   CI rather than overwriting the pending terminal implementation.
-3. Continue J1-J7 remote workspace boundaries and the local application workflow.
-   C1/C2 now have real OpenCode release evidence. C3/C4 need separately authorized
-   provider credentials, while fixture coverage and no-credentials work can proceed.
-4. Update this roadmap with actual evidence at the next published checkpoint.

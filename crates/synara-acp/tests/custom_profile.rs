@@ -1,0 +1,154 @@
+//! The custom-profile path is exercised in an isolated child, without global env mutation.
+use std::{path::Path, sync::Arc, time::Duration};
+use synara_acp::AcpBackend;
+use synara_agent::DenyInteractions;
+use synara_core::Role;
+use synara_workspace::{Controller, WorkspaceService, parse_profiles};
+
+const CANARY: &str = "synthetic-value-not-a-credential-🦀";
+
+#[tokio::test]
+async fn custom_command_profile_preserves_arguments_and_only_inherits_named_variables() {
+    let root = tempfile::tempdir().unwrap();
+    let mut child = tokio::process::Command::new(std::env::current_exe().unwrap());
+    child
+        .args([
+            "--ignored",
+            "--exact",
+            "custom_profile_child_entry",
+            "--nocapture",
+        ])
+        .env_clear()
+        .env("SYNARA_BCD_CHILD_ROOT", root.path())
+        .env("SYNARA_BCD_CANARY", CANARY)
+        .env("SYNARA_BCD_UNLISTED", CANARY)
+        .env("HOME", root.path())
+        .env("XDG_CONFIG_HOME", root.path().join("config"))
+        .env("XDG_DATA_HOME", root.path().join("data"))
+        .env("XDG_CACHE_HOME", root.path().join("cache"))
+        .kill_on_drop(true);
+    // Windows process creation requires the system directory, never a user profile.
+    if let Some(value) = std::env::var_os("SystemRoot") {
+        child.env("SystemRoot", value);
+    }
+    let result = tokio::time::timeout(Duration::from_secs(30), child.output())
+        .await
+        .expect("isolated custom-profile proof exceeded its deadline")
+        .unwrap();
+    // Do not include subprocess output: future failures must not dump inherited values.
+    assert!(result.status.success(), "isolated profile proof failed");
+    assert!(!contains(&result.stdout, CANARY.as_bytes()));
+    assert!(!contains(&result.stderr, CANARY.as_bytes()));
+    assert_no_persisted_canary(root.path());
+}
+
+fn contains(bytes: &[u8], needle: &[u8]) -> bool {
+    bytes.windows(needle.len()).any(|window| window == needle)
+}
+
+fn assert_no_persisted_canary(root: &Path) {
+    for entry in std::fs::read_dir(root).unwrap() {
+        let entry = entry.unwrap();
+        if entry.file_type().unwrap().is_dir() {
+            assert_no_persisted_canary(&entry.path());
+        } else if entry
+            .path()
+            .extension()
+            .is_some_and(|ext| ext == "sqlite3" || ext == "json")
+            || entry.file_name().to_string_lossy().contains("sqlite3-")
+        {
+            assert!(
+                !contains(&std::fs::read(entry.path()).unwrap(), CANARY.as_bytes()),
+                "a synthetic inherited value reached persistent storage"
+            );
+        }
+    }
+}
+
+#[tokio::test]
+#[ignore = "invoked only by the parent test in a clean child environment"]
+async fn custom_profile_child_entry() {
+    let Some(root) = std::env::var_os("SYNARA_BCD_CHILD_ROOT") else {
+        return;
+    };
+    let root = std::path::PathBuf::from(root);
+    let executable = root
+        .join("agent binaries with spaces 🦀")
+        .join(format!("custom agent æ{}", std::env::consts::EXE_SUFFIX));
+    std::fs::create_dir_all(executable.parent().unwrap()).unwrap();
+    std::fs::copy(env!("CARGO_BIN_EXE_synara-acp-fixture"), &executable).unwrap();
+    let cwd = root.join("project with spaces 日本語");
+    std::fs::create_dir(&cwd).unwrap();
+    let db = root.join("synara.sqlite3");
+    let workspace = WorkspaceService::open(db.clone()).await.unwrap();
+    let project = workspace.add_local_workspace(cwd.clone()).await.unwrap();
+    let extra = vec![
+        "literal argument with spaces",
+        "æ 日本語 🦀",
+        "$(touch SHOULD_NOT_EXIST)",
+        "; touch ALSO_MUST_NOT_EXIST",
+    ];
+    for (id, inherited) in [("custom-with-env", true), ("custom-without-env", false)] {
+        let args = [vec!["--integration-fixture", "custom"], extra.clone()].concat();
+        let json = serde_json::json!([{
+            "id": id,
+            "name": "User supplied profile æ",
+            "command": executable,
+            "args": args,
+            "inherit_env": if inherited { vec!["SYNARA_BCD_CANARY"] } else { vec![] },
+        }])
+        .to_string();
+        assert!(!json.contains(CANARY));
+        let profiles = parse_profiles(&json).unwrap();
+        workspace.save_profiles(profiles.clone()).await.unwrap();
+        // The process is launched from the persisted profile, not the original Rust value.
+        let reloaded = WorkspaceService::open(db.clone()).await.unwrap();
+        assert_eq!(reloaded.profiles().await.unwrap(), profiles);
+        let task = reloaded
+            .create_task(project.id, id.into(), id.into())
+            .await
+            .unwrap();
+        let controller = Controller::new(
+            reloaded.clone(),
+            Arc::new(AcpBackend::default()),
+            Arc::new(DenyInteractions),
+        );
+        controller
+            .submit(task.id, "launch-proof".into())
+            .await
+            .unwrap();
+        let first = controller.details(task.id).await.unwrap().unwrap();
+        controller
+            .submit(task.id, "launch-proof".into())
+            .await
+            .unwrap();
+        let second = controller.details(task.id).await.unwrap().unwrap();
+        assert_eq!(first.connection.id, second.connection.id);
+        assert_eq!(first.session_id, second.session_id);
+        assert_eq!(
+            first.connection.identity.as_ref().unwrap().version.as_str(),
+            "1.0.0"
+        );
+        let thread = reloaded.thread(task.thread_id).await.unwrap();
+        let replies = thread
+            .messages
+            .iter()
+            .filter(|message| message.role == Role::Assistant)
+            .collect::<Vec<_>>();
+        assert_eq!(replies.len(), 2);
+        for message in replies {
+            let proof: serde_json::Value = serde_json::from_str(&message.text).unwrap();
+            assert_eq!(proof["args"], serde_json::json!(extra));
+            assert_eq!(proof["canaryPresent"], inherited);
+            assert_eq!(proof["canaryCorrect"], inherited);
+            assert_eq!(proof["unlistedPresent"], false);
+            assert_eq!(proof["cwd"], serde_json::json!(cwd));
+        }
+        for trace in controller.trace(task.id, false).await.unwrap() {
+            assert!(!format!("{trace:?}").contains(CANARY));
+        }
+        controller.shutdown().await.unwrap();
+        assert!(!cwd.join("SHOULD_NOT_EXIST").exists());
+        assert!(!cwd.join("ALSO_MUST_NOT_EXIST").exists());
+    }
+}

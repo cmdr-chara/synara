@@ -154,12 +154,14 @@ impl AgentSession for AcpSession {
             .iter()
             .find(|option| option.id == id)
             .ok_or_else(|| AgentError::Unsupported("configuration option".into()))?;
-        let value = match (&option.current, value) {
-            (ConfigValue::Boolean { .. }, ConfigValue::Boolean { value }) => json!(value),
+        let (value, value_type) = match (&option.current, value) {
+            (ConfigValue::Boolean { .. }, ConfigValue::Boolean { value }) => {
+                (json!(value), Some("boolean"))
+            }
             (ConfigValue::Select { .. }, ConfigValue::Select { value })
                 if option.choices.iter().any(|choice| choice.value == value) =>
             {
-                json!(value)
+                (json!(value), None)
             }
             _ => {
                 return Err(wire::invalid(
@@ -167,11 +169,15 @@ impl AgentSession for AcpSession {
                 ));
             }
         };
+        let mut params = json!({"sessionId":self.id(),"configId":id,"value":value});
+        if let Some(value_type) = value_type {
+            params["type"] = json!(value_type);
+        }
         let result = self
             .connection
             .call(
                 "session/set_config_option",
-                json!({"sessionId":self.id(),"configId":id,"value":value}),
+                params,
                 self.connection.timeouts.operation,
             )
             .await?;
@@ -228,6 +234,7 @@ impl AgentSession for AcpSession {
         }
         let _mutation = self.state.mutation_gate.lock().await;
         self.ensure_open()?;
+        let configuration = self.configuration();
         if !configuration.models.iter().any(|model| model.value == id) {
             return Err(AgentError::Unsupported("model selector".into()));
         }
@@ -255,6 +262,9 @@ impl AgentSession for AcpSession {
             return Ok(());
         }
         let _mutation = self.state.mutation_gate.lock().await;
+        if self.state.closed.load(Ordering::Acquire) {
+            return Ok(());
+        }
         self.cancel().await?;
         let _operation = tokio::time::timeout(
             self.connection.timeouts.cancellation,

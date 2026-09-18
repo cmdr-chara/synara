@@ -86,6 +86,9 @@ class Desktop:
         bind(self.x, 'XFree', [ptr])
         bind(self.x, 'XGetGeometry', [ptr, ulong, C.POINTER(ulong), C.POINTER(integer),
                                     C.POINTER(integer), *([C.POINTER(C.c_uint)] * 4)])
+        bind(self.x, 'XTranslateCoordinates', [ptr, ulong, ulong, integer, integer,
+                                              C.POINTER(integer), C.POINTER(integer),
+                                              C.POINTER(ulong)])
         bind(self.x, 'XSetInputFocus', [ptr, ulong, integer, ulong])
         bind(self.x, 'XStringToKeysym', [C.c_char_p], ulong)
         bind(self.x, 'XKeysymToKeycode', [ptr, ulong], C.c_ubyte)
@@ -135,6 +138,22 @@ class Desktop:
         if not 0 <= x < width or not 0 <= y < height:
             raise ValueError('Input must remain within the owned native window')
         self.xt.XTestFakeMotionEvent(self.display, -1, left + x, top + y, 0)
+        for down in (1, 0):
+            self.xt.XTestFakeButtonEvent(self.display, 1, down, 0)
+        self.x.XFlush(self.display)
+        time.sleep(0.25)
+
+    def click_client(self, x, y):
+        _, _, width, height = self.geometry()
+        if not 0 <= x < width or not 0 <= y < height:
+            raise ValueError('Input must remain within the owned native window')
+        root_x, root_y, child = C.c_int(), C.c_int(), C.c_ulong()
+        if not self.x.XTranslateCoordinates(
+                self.display, self.window, self.root, 0, 0,
+                C.byref(root_x), C.byref(root_y), C.byref(child)):
+            raise RuntimeError('Could not translate native client coordinates')
+        self.xt.XTestFakeMotionEvent(
+            self.display, -1, root_x.value + x, root_y.value + y, 0)
         for down in (1, 0):
             self.xt.XTestFakeButtonEvent(self.display, 1, down, 0)
         self.x.XFlush(self.display)

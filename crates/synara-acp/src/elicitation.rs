@@ -4,26 +4,15 @@ use std::collections::HashSet;
 use synara_agent::{AgentError, AgentResult};
 use synara_core::{InputField, InputFieldKind, SelectChoice, UserInputRequest};
 
-/// Validation never fetches the URL or starts a browser. Opening it is an explicit UI action.
-pub(crate) fn safe_web_url(value: &str) -> AgentResult<()> {
-    let rest = value
-        .strip_prefix("https://")
-        .or_else(|| value.strip_prefix("http://"))
-        .ok_or_else(|| invalid("elicitation URL must use HTTP or HTTPS"))?;
-    let authority = rest.split(['/', '?', '#']).next().unwrap_or_default();
-    if value.len() > 8192
-        || authority.is_empty()
-        || authority.contains(['@', '\\', '%'])
-        || value
-            .chars()
-            .any(|ch| ch.is_control() || ch.is_whitespace())
-    {
-        return Err(invalid("invalid elicitation URL"));
-    }
-    Ok(())
-}
+pub(crate) use synara_agent::validate_web_url as safe_web_url;
 
 pub(crate) fn parse(value: &Value, request_id: String) -> AgentResult<UserInputRequest> {
+    let request = parse_inner(value, request_id)?;
+    synara_agent::validate_input_request(&request)?;
+    Ok(request)
+}
+
+fn parse_inner(value: &Value, request_id: String) -> AgentResult<UserInputRequest> {
     let message = string(value, "message")?.to_owned();
     if message.len() > 64 * 1024 {
         return Err(AgentError::Limit);
@@ -90,9 +79,23 @@ pub(crate) fn parse(value: &Value, request_id: String) -> AgentResult<UserInputR
                         "sensitive values must use a URL authentication flow, not a form",
                     ));
                 }
+                if [
+                    "pattern",
+                    "multipleOf",
+                    "exclusiveMinimum",
+                    "exclusiveMaximum",
+                    "allOf",
+                    "not",
+                ]
+                .iter()
+                .any(|key| property.get(key).is_some_and(|v| !v.is_null()))
+                {
+                    return Err(AgentError::Unsupported("elicitation constraint".into()));
+                }
                 let kind = match property.get("type").and_then(Value::as_str) {
                     Some("string") | None
-                        if property.get("enum").is_some() || property.get("oneOf").is_some() =>
+                        if property.get("enum").is_some_and(|v| !v.is_null())
+                            || property.get("oneOf").is_some_and(|v| !v.is_null()) =>
                     {
                         InputFieldKind::Choice {
                             options: enum_choices(property)?,
@@ -140,6 +143,7 @@ pub(crate) fn parse(value: &Value, request_id: String) -> AgentResult<UserInputR
 fn bound(value: &Value, key: &str) -> AgentResult<Option<usize>> {
     value
         .get(key)
+        .filter(|value| !value.is_null())
         .map(|value| {
             value
                 .as_u64()
@@ -151,6 +155,7 @@ fn bound(value: &Value, key: &str) -> AgentResult<Option<usize>> {
 fn number_bound(value: &Value, key: &str) -> AgentResult<Option<f64>> {
     value
         .get(key)
+        .filter(|value| !value.is_null())
         .map(|value| {
             value
                 .as_f64()

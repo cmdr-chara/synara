@@ -2,7 +2,10 @@
 #![cfg(unix)]
 
 use std::{path::PathBuf, time::Duration};
-use synara_runtime::{ExecutionHost, LaunchSpec, PinnedSshHost, ProcessExit, SshHost, SshTarget};
+use synara_runtime::{
+    ExecutionHost, LaunchSpec, PinnedSshHost, ProcessExit, RemoteTerminal, RemoteWorkspaceFs,
+    RuntimeError, SshHost, SshTarget, TerminalKey, TerminalModifiers,
+};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 
 fn fixture() -> (PathBuf, SshTarget) {
@@ -120,6 +123,40 @@ async fn ssh_keeps_stderr_separate_and_reports_remote_exit() {
 
 #[tokio::test]
 #[ignore = "requires the isolated server from scripts/ssh_smoke.py"]
+async fn ssh_transport_disconnect_is_observable_and_next_spawn_reconnects() {
+    let (root, target) = fixture();
+    let host = PinnedSshHost::new(target, root.join("known hosts"), root.join("identity")).unwrap();
+    let mut launch = LaunchSpec::new("/bin/sh");
+    launch.args = vec!["-c".into(), "printf ready; sleep 60".into()];
+    let mut process = host.spawn(&launch, &root).await.unwrap();
+
+    let mut ready = [0u8; 5];
+    tokio::time::timeout(
+        Duration::from_secs(10),
+        process.stdout.read_exact(&mut ready),
+    )
+    .await
+    .expect("SSH fixture did not become ready")
+    .unwrap();
+    assert_eq!(&ready, b"ready");
+
+    let handle = process.handle.clone();
+    handle.request_stop();
+    let exit = tokio::time::timeout(Duration::from_secs(10), handle.wait())
+        .await
+        .expect("local SSH transport did not report disconnect")
+        .unwrap();
+    assert!(!exit.success());
+
+    let mut reconnect = LaunchSpec::new("/bin/sh");
+    reconnect.args = vec!["-c".into(), "printf reconnected".into()];
+    let (output, diagnostic, exit) = execute(&host, reconnect, &root, b"").await;
+    assert!(exit.success(), "{}", String::from_utf8_lossy(&diagnostic));
+    assert_eq!(output, b"reconnected");
+}
+
+#[tokio::test]
+#[ignore = "requires the isolated server from scripts/ssh_smoke.py"]
 async fn ssh_rejects_unknown_and_changed_host_keys_without_execution() {
     let (root, target) = fixture();
     for trust in ["unknown hosts", "changed hosts"] {
@@ -190,4 +227,162 @@ fn ssh_effective_configuration_overrides_ambient_forwarding() {
             .any(|line| line.starts_with("remoteforward "))
     );
     assert!(!config.lines().any(|line| line.starts_with("controlpath ")));
+}
+
+fn remote_helper() -> PathBuf {
+    let helper = PathBuf::from(
+        std::env::var_os("SYNARA_REMOTE_FS_HELPER").expect("ssh_smoke.py builds the helper"),
+    );
+    assert!(helper.is_absolute());
+    helper
+}
+
+#[tokio::test]
+#[ignore = "requires the isolated server from scripts/ssh_smoke.py"]
+async fn remote_filesystem_is_guarded_and_workspace_bound() {
+    let (root, target) = fixture();
+    let host = PinnedSshHost::new(target, root.join("known hosts"), root.join("identity")).unwrap();
+    let project = root.join("remote-fs-project");
+    std::fs::create_dir(&project).unwrap();
+    std::fs::write(project.join("note.txt"), "before\n").unwrap();
+    std::fs::write(root.join("outside.txt"), "outside\n").unwrap();
+    std::os::unix::fs::symlink(root.join("outside.txt"), project.join("escape")).unwrap();
+
+    let remote = RemoteWorkspaceFs::connect(host, &project, remote_helper())
+        .await
+        .unwrap();
+    assert_eq!(
+        remote.root_identity(),
+        std::fs::canonicalize(&project).unwrap().to_str().unwrap()
+    );
+    let entries = remote.entries(std::path::Path::new(".")).await.unwrap();
+    assert!(entries.iter().any(|entry| entry.name == "note.txt"));
+    assert!(
+        entries
+            .iter()
+            .any(|entry| entry.name == "escape" && entry.symlink)
+    );
+
+    let original = remote.read(std::path::Path::new("note.txt")).await.unwrap();
+    let version = remote
+        .write(
+            std::path::Path::new("note.txt"),
+            "after\n",
+            Some(&original.version),
+            false,
+        )
+        .await
+        .unwrap();
+    assert_ne!(version, original.version);
+    assert_eq!(
+        std::fs::read_to_string(project.join("note.txt")).unwrap(),
+        "after\n"
+    );
+    assert!(matches!(
+        remote
+            .write(
+                std::path::Path::new("note.txt"),
+                "stale\n",
+                Some(&original.version),
+                false,
+            )
+            .await,
+        Err(RuntimeError::Conflict)
+    ));
+    assert!(matches!(
+        remote.read(std::path::Path::new("escape")).await,
+        Err(RuntimeError::Denied(_))
+    ));
+    assert!(matches!(
+        remote.read(std::path::Path::new("../outside.txt")).await,
+        Err(RuntimeError::Denied(_))
+    ));
+}
+
+#[tokio::test]
+#[ignore = "requires the isolated server from scripts/ssh_smoke.py"]
+async fn remote_filesystem_detects_workspace_identity_changes() {
+    let (root, target) = fixture();
+    let host = PinnedSshHost::new(target, root.join("known hosts"), root.join("identity")).unwrap();
+    let first = root.join("identity-first");
+    let second = root.join("identity-second");
+    let link = root.join("identity-root");
+    std::fs::create_dir(&first).unwrap();
+    std::fs::create_dir(&second).unwrap();
+    std::fs::write(first.join("first.txt"), "first").unwrap();
+    std::fs::write(second.join("second.txt"), "second").unwrap();
+    std::os::unix::fs::symlink(&first, &link).unwrap();
+
+    let remote = RemoteWorkspaceFs::connect(host, &link, remote_helper())
+        .await
+        .unwrap();
+    std::fs::remove_file(&link).unwrap();
+    std::os::unix::fs::symlink(&second, &link).unwrap();
+
+    assert!(matches!(
+        remote.entries(std::path::Path::new(".")).await,
+        Err(RuntimeError::Denied(_))
+    ));
+}
+
+#[tokio::test]
+#[ignore = "requires the isolated server from scripts/ssh_smoke.py"]
+async fn remote_terminal_preserves_pty_resize_interrupt_and_history() {
+    let (root, target) = fixture();
+    let host = PinnedSshHost::new(target, root.join("known hosts"), root.join("identity")).unwrap();
+    let terminal =
+        RemoteTerminal::spawn(&host, &LaunchSpec::new("/bin/sh"), &root, 24, 80).unwrap();
+    let first_session = terminal.session_id();
+    terminal.resize(31, 97).unwrap();
+    tokio::time::sleep(Duration::from_millis(300)).await;
+    terminal
+        .text("printf '__SYNARA_REMOTE_PTY__ '; stty size")
+        .unwrap();
+    terminal
+        .key(TerminalKey::Enter, TerminalModifiers::default())
+        .unwrap();
+    terminal.text("sleep 30").unwrap();
+    terminal
+        .key(TerminalKey::Enter, TerminalModifiers::default())
+        .unwrap();
+    tokio::time::sleep(Duration::from_millis(250)).await;
+    terminal
+        .key(
+            TerminalKey::Character('c'),
+            TerminalModifiers {
+                control: true,
+                ..TerminalModifiers::default()
+            },
+        )
+        .unwrap();
+    terminal.text("printf '__SYNARA_INTERRUPT__'").unwrap();
+    terminal
+        .key(TerminalKey::Enter, TerminalModifiers::default())
+        .unwrap();
+    terminal.text("exit").unwrap();
+    terminal
+        .key(TerminalKey::Enter, TerminalModifiers::default())
+        .unwrap();
+
+    let code = tokio::time::timeout(Duration::from_secs(20), terminal.wait())
+        .await
+        .expect("remote PTY did not exit")
+        .unwrap();
+    assert_eq!(code, 0);
+    let snapshot = terminal.snapshot().unwrap();
+    assert!(snapshot.text.contains("__SYNARA_REMOTE_PTY__"));
+    assert!(snapshot.text.contains("31 97"), "{}", snapshot.text);
+    assert!(snapshot.text.contains("__SYNARA_INTERRUPT__"));
+
+    let replacement =
+        RemoteTerminal::spawn(&host, &LaunchSpec::new("/bin/sh"), &root, 24, 80).unwrap();
+    assert_ne!(replacement.session_id(), first_session);
+    replacement.text("exit").unwrap();
+    replacement
+        .key(TerminalKey::Enter, TerminalModifiers::default())
+        .unwrap();
+    tokio::time::timeout(Duration::from_secs(20), replacement.wait())
+        .await
+        .expect("replacement remote PTY did not exit")
+        .unwrap();
 }

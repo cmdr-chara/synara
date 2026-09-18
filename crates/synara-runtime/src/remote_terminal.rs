@@ -2,8 +2,8 @@
 //! Synara's already-owned native PTY. Resize and input therefore use the same
 //! terminal parser and lifecycle code as local shells.
 use crate::{
-    ExecutionHost, LaunchSpec, NativeTerminal, PasteDecision, PinnedSshHost, PreparedPaste, RuntimeError,
-    TerminalKey, TerminalModifiers, TerminalRenderSnapshot, TerminalSnapshot,
+    ExecutionHost, LaunchSpec, NativeTerminal, PasteDecision, PinnedSshHost, PreparedPaste,
+    RuntimeError, TerminalKey, TerminalModifiers, TerminalRenderSnapshot, TerminalSnapshot,
 };
 use std::path::Path;
 use uuid::Uuid;
@@ -52,19 +52,11 @@ impl RemoteTerminal {
         self.inner.text(text)
     }
 
-    pub fn key(
-        &self,
-        key: TerminalKey,
-        modifiers: TerminalModifiers,
-    ) -> Result<(), RuntimeError> {
+    pub fn key(&self, key: TerminalKey, modifiers: TerminalModifiers) -> Result<(), RuntimeError> {
         self.inner.key(key, modifiers)
     }
 
-    pub fn paste(
-        &self,
-        paste: PreparedPaste,
-        decision: PasteDecision,
-    ) -> Result<(), RuntimeError> {
+    pub fn paste(&self, paste: PreparedPaste, decision: PasteDecision) -> Result<(), RuntimeError> {
         self.inner.paste(paste, decision)
     }
 

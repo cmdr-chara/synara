@@ -90,6 +90,7 @@ impl SessionState {
     }
     pub fn interaction(&self) -> InteractionContext {
         InteractionContext {
+            scope: synara_agent::InteractionScope::Session,
             thread_id: self.thread_id,
             session_id: self.id.clone(),
             cancelled: if self.active.load(std::sync::atomic::Ordering::Acquire) {

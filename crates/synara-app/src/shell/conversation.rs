@@ -38,11 +38,6 @@ impl Shell {
                 .into_any_element();
         };
         let id = thread.id;
-        let total = thread.timeline.len();
-        let start = self
-            .transcript_start
-            .unwrap_or_else(|| total.saturating_sub(200));
-        let end = (start + 200).min(total);
         let configuration = &thread.configuration;
         let title = self.task().map_or("Task", |t| t.title.as_str());
         let busy = self.selected.is_some_and(|id| self.busy.contains(&id));
@@ -228,99 +223,58 @@ impl Shell {
                     ),
             );
         }
-        if (self
-            .details
-            .as_ref()
-            .is_some_and(|d| d.connection.state == ConnectionState::Authenticating)
-            || self
-                .error
-                .as_ref()
-                .is_some_and(|e| e.to_ascii_lowercase().contains("authentication")))
-            && let Some(details) = &self.details
-        {
-            root = root.child(
-                div()
-                    .px_5()
-                    .py_2()
-                    .flex()
-                    .gap_2()
-                    .child("Authentication required:")
-                    .children(details.connection.authentication.iter().enumerate().map(
-                        |(index, method)| {
-                            let method = method.id.clone();
-                            button(
-                                ("login", index),
-                                details.connection.authentication[index].name.clone(),
-                                false,
-                            )
-                            .on_click(cx.listener(
-                                move |this, _, _, cx| this.authenticate(method.clone(), cx),
-                            ))
-                        },
-                    )),
-            );
+        if let Some(details) = &self.details {
+            match details.connection.state {
+                ConnectionState::Authenticating => {
+                    root = root.child(div().px_5().py_2().child("Authentication in progress..."));
+                }
+                ConnectionState::AuthenticationRequired => {
+                    root = root.child(
+                        div().px_5().py_2().flex().gap_2().child("Authentication required:")
+                            .children(details.connection.authentication.iter().enumerate().map(|(index, method)| {
+                                let id = method.id.clone();
+                                button(("login", index), method.name.clone(), false)
+                                    .on_click(cx.listener(move |this, _, _, cx| this.authenticate(id.clone(), cx)))
+                            }))
+                            .when(details.connection.authentication.is_empty(), |el| {
+                                el.child("No supported login flow was advertised. Authenticate the agent externally, then restart.")
+                            }),
+                    );
+                }
+                _ => {}
+            }
         }
-        root = root.child(
-            div()
-                .id("transcript")
-                .flex_1()
-                .min_h_0()
-                .overflow_y_scroll()
-                .track_scroll(&self.scroll)
-                .px_5()
-                .py_4()
-                .flex()
-                .flex_col()
-                .gap_4()
-                .on_scroll_wheel(cx.listener(|this, _, _, cx| {
-                    this.scroll_owner = ScrollOwnership::User;
-                    if this.transcript_start.is_none() {
-                        this.transcript_start = Some(
-                            this.thread
-                                .as_ref()
-                                .map_or(0, |t| t.timeline.len().saturating_sub(200)),
-                        );
-                    }
-                    cx.notify();
-                }))
-                .children((start > 0).then(|| {
-                    button("earlier-transcript", "Show earlier history", false).on_click(
-                        cx.listener(move |this, _, _, cx| {
-                            this.scroll_owner = ScrollOwnership::User;
-                            this.transcript_start = Some(start.saturating_sub(200));
-                            this.scroll.set_offset(gpui::point(px(0.), px(0.)));
-                            cx.notify();
-                        }),
-                    )
-                }))
-                .children((total == 0).then(|| {
-                    div().p_6().rounded_lg().bg(rgb(0x17202c)).child(
-                        "Ready when you are. Your conversation will be saved on this computer.",
-                    )
-                }))
-                .children((start..end).map(|index| self.transcript_item(thread, index, cx)))
-                .children((end < total).then(|| {
-                    button("later-transcript", "Show later history", false).on_click(cx.listener(
-                        move |this, _, _, cx| {
-                            this.transcript_start = Some(end);
-                            this.scroll.set_offset(gpui::point(px(0.), px(0.)));
-                            cx.notify();
-                        },
-                    ))
-                }))
-                .children((!thread.plan.is_empty()).then(|| {
+        // Login/configuration questions have no durable task thread yet. Render them
+        // only for the selected connection, using the same native question panel.
+        if let Some(connection_id) = self.details.as_ref().map(|details| details.connection.id) {
+            let mut login_questions: Vec<_> = self
+                .pending
+                .iter()
+                .filter(|(_, interaction)| {
+                    interaction.is_active()
+                        && interaction.context().scope
+                            == InteractionScope::Connection(connection_id)
+                })
+                .map(|(key, _)| key.clone())
+                .collect();
+            login_questions.sort();
+            if !login_questions.is_empty() {
+                root = root.child(
                     div()
-                        .p_3()
-                        .rounded_md()
-                        .bg(rgb(0x1a2633))
-                        .child(div().font_weight(gpui::FontWeight::SEMIBOLD).child("Plan"))
-                        .children(thread.plan.iter().map(|entry| {
-                            div()
-                                .mt_1()
-                                .child(format!("{} · {}", entry.status, entry.text))
-                        }))
-                })),
-        );
+                        .px_5()
+                        .py_3()
+                        .max_h(px(360.))
+                        .id("connection-questions")
+                        .overflow_y_scroll()
+                        .children(
+                            login_questions
+                                .into_iter()
+                                .map(|key| self.input_request(key, cx)),
+                        ),
+                );
+            }
+        }
+        root = root.child(self.virtual_transcript(cx));
         root = root.child(
             div()
                 .px_5()
@@ -344,20 +298,14 @@ impl Shell {
                                     .context_used
                                     .map_or(String::new(), |n| format!(" · context {n}"))
                             )))
-                        .children(
-                            (self.scroll_owner == ScrollOwnership::User
-                                || self.transcript_start.is_some())
-                            .then(|| {
-                                button("jump-latest", "Jump to latest", false).on_click(
-                                    cx.listener(|this, _, _, cx| {
-                                        this.scroll_owner.jump_to_latest();
-                                        this.transcript_start = None;
-                                        this.scroll.scroll_to_bottom();
-                                        cx.notify();
-                                    }),
-                                )
-                            }),
-                        ),
+                        .children((!self.transcript.is_following()).then(|| {
+                            button("jump-latest", "Jump to latest", false).on_click(cx.listener(
+                                |this, _, _, cx| {
+                                    this.transcript.follow();
+                                    cx.notify();
+                                },
+                            ))
+                        })),
                 )
                 .child(self.composer.clone())
                 .children(
@@ -390,7 +338,7 @@ impl Shell {
         let _ = id;
         root.into_any_element()
     }
-    fn transcript_item(
+    pub(super) fn transcript_item(
         &self,
         thread: &Thread,
         index: usize,
@@ -503,10 +451,14 @@ impl Shell {
             }
             TranscriptItem::Permission { id } => {
                 let key = (thread.id, id.clone());
-                let request = self.pending.get(&key).and_then(|p| match p {
-                    UiInteraction::Permission { request, .. } => Some(request),
-                    _ => None,
-                });
+                let request =
+                    self.pending
+                        .get(&key)
+                        .filter(|p| p.is_active())
+                        .and_then(|p| match p {
+                            UiInteraction::Permission { request, .. } => Some(request),
+                            _ => None,
+                        });
                 if let Some(request) = request {
                     div()
                         .p_4()
@@ -585,7 +537,14 @@ impl Shell {
         selected: Option<String>,
         cx: &mut Context<Self>,
     ) {
-        if let Some(UiInteraction::Permission { response, .. }) = self.pending.remove(&key)
+        if self
+            .pending
+            .get(&key)
+            .is_none_or(|request| !request.is_active())
+        {
+            self.pending.remove(&key);
+            self.error = Some("This permission request is no longer active.".into());
+        } else if let Some(UiInteraction::Permission { response, .. }) = self.pending.remove(&key)
             && response.send(selected).is_err()
         {
             self.error = Some("This permission request is no longer active.".into());
@@ -596,7 +555,7 @@ impl Shell {
         let Some(form) = self
             .forms
             .get(&key)
-            .filter(|_| self.pending.contains_key(&key))
+            .filter(|_| self.pending.get(&key).is_some_and(UiInteraction::is_active))
         else {
             return div()
                 .text_xs()
@@ -617,16 +576,31 @@ impl Shell {
             );
         if let Some(url) = &form.request.url {
             let url = url.clone();
+            let url_key = key.clone();
+            let destination = url.split(['?', '#']).next().unwrap_or_default().to_owned();
+            panel = panel.child(
+                div()
+                    .mt_2()
+                    .text_xs()
+                    .child(format!("Agent-provided website: {destination}")),
+            );
             panel = panel.child(
                 button("open-input-url", "Open requested website", false)
                     .mt_2()
                     .on_click(cx.listener(move |this, _, _, cx| {
-                        if url.starts_with("https://") || url.starts_with("http://") {
+                        if !this
+                            .pending
+                            .get(&url_key)
+                            .is_some_and(UiInteraction::is_active)
+                        {
+                            this.error = Some("This website request is no longer active.".into());
+                        } else if synara_agent::validate_web_url(&url).is_ok() {
                             cx.open_url(&url);
                         } else {
-                            this.error = Some("Only HTTP and HTTPS links may be opened.".into());
-                            cx.notify();
+                            this.error =
+                                Some("The requested website address is not supported.".into());
                         }
+                        cx.notify();
                     })),
             );
         }
@@ -754,6 +728,13 @@ impl Shell {
         fallback: UserInputResponse,
         cx: &mut Context<Self>,
     ) {
+        if !self.pending.get(&key).is_some_and(UiInteraction::is_active) {
+            self.pending.remove(&key);
+            self.forms.remove(&key);
+            self.error = Some("This input request is no longer active.".into());
+            cx.notify();
+            return;
+        }
         let response = if accept {
             let Some(form) = self.forms.get_mut(&key) else {
                 return;

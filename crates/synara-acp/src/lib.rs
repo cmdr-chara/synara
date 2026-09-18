@@ -1,6 +1,7 @@
 mod backend;
 mod callbacks;
 mod elicitation;
+mod elicitation_registry;
 mod rpc;
 mod schema;
 mod scope;

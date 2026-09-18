@@ -25,8 +25,12 @@ const OPERATION_TIMEOUT: Duration = Duration::from_secs(30);
 #[serde(tag = "operation", rename_all = "snake_case")]
 enum RemoteFsOperation {
     Identity,
-    Entries { path: PathBuf },
-    Read { path: PathBuf },
+    Entries {
+        path: PathBuf,
+    },
+    Read {
+        path: PathBuf,
+    },
     Write {
         path: PathBuf,
         text: String,
@@ -145,7 +149,9 @@ impl RemoteWorkspaceFs {
             })
             .await?;
         response.result.map_err(RemoteFsFailure::into_runtime)?;
-        if response.root.is_empty() || !response.root.starts_with('/') || response.root.contains('\0')
+        if response.root.is_empty()
+            || !response.root.starts_with('/')
+            || response.root.contains('\0')
         {
             return Err(RuntimeError::Denied(
                 "remote helper returned an invalid workspace identity".into(),
@@ -191,7 +197,10 @@ impl RemoteWorkspaceFs {
 
     pub async fn read(&self, path: &Path) -> Result<FileSnapshot, RuntimeError> {
         let path = self.relative(path)?;
-        match self.operation(RemoteFsOperation::Read { path }, false).await? {
+        match self
+            .operation(RemoteFsOperation::Read { path }, false)
+            .await?
+        {
             RemoteFsValue::Snapshot(snapshot) => Ok(snapshot),
             _ => Err(RuntimeError::Invalid(
                 "remote helper returned the wrong response type".into(),
@@ -268,8 +277,9 @@ impl RemoteWorkspaceFs {
     }
 
     async fn exchange(&self, request: RemoteFsRequest) -> Result<RemoteFsResponse, RuntimeError> {
-        let mut payload = serde_json::to_vec(&request)
-            .map_err(|_| RuntimeError::Invalid("could not encode remote filesystem request".into()))?;
+        let mut payload = serde_json::to_vec(&request).map_err(|_| {
+            RuntimeError::Invalid("could not encode remote filesystem request".into())
+        })?;
         if payload.len() > REQUEST_LIMIT {
             return Err(RuntimeError::Limit);
         }
@@ -379,9 +389,8 @@ pub fn remote_fs_helper_main() -> Result<(), RuntimeError> {
     if read.read_line(&mut line)? == 0 || line.len() > REQUEST_LIMIT + 1 {
         return Err(RuntimeError::Limit);
     }
-    let request: RemoteFsRequest = serde_json::from_str(line.trim_end()).map_err(|_| {
-        RuntimeError::Invalid("malformed remote filesystem helper request".into())
-    })?;
+    let request: RemoteFsRequest = serde_json::from_str(line.trim_end())
+        .map_err(|_| RuntimeError::Invalid("malformed remote filesystem helper request".into()))?;
     let result = if request
         .expected_root
         .as_ref()
@@ -415,9 +424,7 @@ fn execute_helper_operation(
 ) -> Result<RemoteFsValue, RuntimeError> {
     match operation {
         RemoteFsOperation::Identity => Ok(RemoteFsValue::Identity),
-        RemoteFsOperation::Entries { path } => {
-            Ok(RemoteFsValue::Entries(fs.entries(&path)?))
-        }
+        RemoteFsOperation::Entries { path } => Ok(RemoteFsValue::Entries(fs.entries(&path)?)),
         RemoteFsOperation::Read { path } => Ok(RemoteFsValue::Snapshot(fs.read(&path)?)),
         RemoteFsOperation::Write {
             path,

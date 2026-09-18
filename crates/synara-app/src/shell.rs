@@ -425,13 +425,24 @@ impl Shell {
         if self.terminal_closing {
             return;
         }
+        self.terminal_closing = true;
+        if self.terminal_starting {
+            self.notice = Some("Waiting for terminal startup before closing Synara...".into());
+            cx.notify();
+            return;
+        }
         let Some(terminal) = self.terminal.clone() else {
+            self.terminal_closing = false;
             cx.quit();
             return;
         };
-        self.terminal_closing = true;
         let generation = self.terminal_generation;
         self.notice = Some("Stopping the terminal before closing Synara...".into());
+        self.queue_terminal_shutdown(terminal, generation);
+        cx.notify();
+    }
+
+    fn queue_terminal_shutdown(&self, terminal: TerminalSession, generation: u64) {
         self.job(async move {
             let result = async {
                 terminal.kill()?;
@@ -446,7 +457,14 @@ impl Shell {
                 error: result.err().map(|error| error.to_string()),
             })
         });
-        cx.notify();
+    }
+
+    fn retire_terminal(&self, terminal: TerminalSession) {
+        self.runtime.spawn(async move {
+            let _ = terminal.kill();
+            let _ =
+                tokio::time::timeout(std::time::Duration::from_secs(5), terminal.wait()).await;
+        });
     }
     fn close_panel(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
         let waiting = self.close == CloseState::WaitingForSave;
@@ -463,7 +481,9 @@ impl Shell {
                         cx.notify();
                     }
                 }))
-                .child(div().text_xl().child(if terminal_closing {
+                .child(div().text_xl().child(if terminal_closing && self.terminal_starting {
+                    "Waiting for terminal startup before closing Synara"
+                } else if terminal_closing {
                     "Stopping terminal before closing Synara"
                 } else if waiting {
                     "Waiting for the file to finish saving"
@@ -474,11 +494,11 @@ impl Shell {
                 .child("The file remains open if saving fails or the on-disk version has changed. Closing stops active agent and terminal processes.")
                 .children(self.error.as_ref().map(|e| div().text_color(rgb(0xffb1b5)).child(e.clone())))
                 .child(div().flex().gap_3()
-                    .child(button("cancel-close", "Keep working", false).on_click(cx.listener(|this, _, window, cx| {
+                    .children((!terminal_closing).then(|| button("cancel-close", "Keep working", false).on_click(cx.listener(|this, _, window, cx| {
                         this.close.cancel();
                         window.focus(&this.editor.read(cx).focus_handle(cx), cx);
                         cx.notify();
-                    })))
+                    }))))
                     .children((!waiting && !terminal_closing).then(|| button("discard-and-close", "Discard and close", false)
                         .on_click(cx.listener(|this, _, _, cx| { if !this.saving { this.begin_quit(cx); } }))))
                     .children((!waiting && !terminal_closing).then(|| button("save-and-close", "Save and close", true)
@@ -985,12 +1005,10 @@ impl Shell {
             return;
         };
         let root = target.root().clone();
-        if self.terminal_starting {
+        if self.terminal_starting || self.terminal_closing {
             return;
         }
-        if let Some(terminal) = self.terminal.take() {
-            let _ = terminal.kill();
-        }
+        let previous = self.terminal.take();
         self.terminal_generation = self.terminal_generation.wrapping_add(1);
         let generation = self.terminal_generation;
         self.terminal_starting = true;
@@ -999,6 +1017,22 @@ impl Shell {
             .update(cx, |terminal, cx| terminal.clear_session(cx));
         let workspace_service = self.controller.workspace.clone();
         self.job(async move {
+            if let Some(previous) = previous {
+                let cleanup = async {
+                    previous.kill()?;
+                    tokio::time::timeout(std::time::Duration::from_secs(5), previous.wait())
+                        .await
+                        .map_err(|_| synara_runtime::RuntimeError::Timeout)??;
+                    Ok::<(), synara_runtime::RuntimeError>(())
+                }
+                .await;
+                if let Err(error) = cleanup {
+                    return Ok(Update::TerminalFailed {
+                        generation,
+                        error: format!("previous terminal cleanup failed: {error}"),
+                    });
+                }
+            }
             let result = match target {
                 WorkspaceTarget::Local { root: cwd } => {
                     tokio::task::spawn_blocking(move || {
@@ -1402,16 +1436,21 @@ impl Shell {
                 terminal,
             } => {
                 if generation != self.terminal_generation || self.root() != Some(root.clone()) {
-                    let _ = terminal.kill();
+                    self.retire_terminal(terminal);
                     return;
                 }
                 self.terminal_starting = false;
                 self.terminal = Some(terminal.clone());
                 self.terminal_root = Some(root);
                 self.terminal_view
-                    .update(cx, |view, cx| view.set_session(terminal, cx));
-                self.notice = None;
-                self.poll();
+                    .update(cx, |view, cx| view.set_session(terminal.clone(), cx));
+                if self.terminal_closing {
+                    self.notice = Some("Stopping the terminal before closing Synara...".into());
+                    self.queue_terminal_shutdown(terminal, generation);
+                } else {
+                    self.notice = None;
+                    self.poll();
+                }
             }
             Update::TerminalOutput {
                 root,
@@ -1428,7 +1467,15 @@ impl Shell {
                     self.terminal_starting = false;
                     self.terminal = None;
                     self.terminal_root = None;
-                    self.error = Some(error);
+                    if self.terminal_closing {
+                        self.terminal_closing = false;
+                        self.close.cancel();
+                        self.error = Some(format!(
+                            "Terminal startup or retirement failed while closing; Synara stayed open to preserve process ownership: {error}"
+                        ));
+                    } else {
+                        self.error = Some(error);
+                    }
                 }
             }
             Update::TerminalShutdown { generation, error } => {

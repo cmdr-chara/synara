@@ -130,7 +130,7 @@ def main():
 
         # Text fields consume some control-number combinations through IME/focus handling.
         # Click the actual navigation tab so this smoke exercises the intended panel.
-        desktop.click(785, 5)
+        desktop.click(818, 24)
         time.sleep(1.1)
         desktop.screenshot('remote-files')
         desktop.click(310, 170)
@@ -146,7 +146,7 @@ def main():
         )
         checks.append('remote-files-guarded-save')
 
-        desktop.click(954, 5)
+        desktop.click(992, 24)
         time.sleep(0.7)
         desktop.click(1040, 82)
         time.sleep(1.2)

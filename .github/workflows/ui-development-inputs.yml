@@ -5,49 +5,40 @@ on:
     paths: [.github/workflows/ui-development-inputs.yml]
 permissions:
   contents: read
-  actions: read
 jobs:
   inputs:
     if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/session-ui-overhaul'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
-        with:
-          persist-credentials: false
-      - name: Split the verified dependency export into bounded downloads
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Install software Vulkan renderer
         run: |
-          mkdir -p /tmp/ui-inputs
-          curl --fail --location --retry 3 -H "Authorization: Bearer $GH_TOKEN" -H 'Accept: application/vnd.github+json' https://api.github.com/repos/cmdr-chara/synara/actions/artifacts/10547428028/zip -o /tmp/dependencies.zip
-          unzip -q /tmp/dependencies.zip -d /tmp/ui-inputs
-          split -b 400M -d /tmp/ui-inputs/cargo.tar.gz /tmp/ui-inputs/cargo.part-
-          sha256sum /tmp/ui-inputs/cargo.tar.gz > /tmp/ui-inputs/cargo.sha256
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: ui-cargo-00
-          path: /tmp/ui-inputs/cargo.part-00
-          retention-days: 1
-          compression-level: 0
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: ui-cargo-01
-          path: /tmp/ui-inputs/cargo.part-01
-          retention-days: 1
-          compression-level: 0
-      - name: Read-only reference snapshots, outside the Synara source tree
+          sudo apt-get update
+          sudo apt-get install -y mesa-vulkan-drivers
+      - name: Export software renderer and its non-system dependencies
         run: |
-          mkdir -p /tmp/ui-references
-          cp /tmp/ui-inputs/cargo.sha256 /tmp/ui-references/
-          git fetch --no-tags --depth=1 https://github.com/cmdr-chara/synara.git main
-          git rev-parse FETCH_HEAD > /tmp/ui-references/synara-main-revision.txt
-          git archive --format=tar.gz FETCH_HEAD apps/web/src KEYBINDINGS.md README.md assets > /tmp/ui-references/synara-main.tar.gz
-          git clone --depth=1 https://github.com/zeronsh/zeron.git /tmp/zeron-reference
-          git -C /tmp/zeron-reference rev-parse HEAD > /tmp/ui-references/zeron-revision.txt
-          git -C /tmp/zeron-reference archive --format=tar.gz HEAD crates/ui/src crates/theme/src ARCHITECTURE.md README.md docs > /tmp/ui-references/zeron-reference.tar.gz
+          mkdir -p /tmp/ui-vulkan/lib
+          python3 - <<'PY'
+          import pathlib, subprocess, shutil, re, json
+          source = pathlib.Path('/usr/lib/x86_64-linux-gnu/libvulkan_lvp.so')
+          destination = pathlib.Path('/tmp/ui-vulkan/lib')
+          excluded = re.compile(r'^(libc\.so|libm\.so|libpthread\.so|libdl\.so|librt\.so|ld-linux)')
+          pending, seen = [source], set()
+          while pending:
+              path = pending.pop()
+              if path.name in seen or excluded.match(path.name):
+                  continue
+              seen.add(path.name)
+              shutil.copyfile(path.resolve(), destination / path.name)
+              output = subprocess.check_output(['ldd', str(path)], text=True)
+              for line in output.splitlines():
+                  match = re.search(r'=> (/\S+)', line)
+                  if match:
+                      pending.append(pathlib.Path(match[1]))
+          pathlib.Path('/tmp/ui-vulkan/lvp.json').write_text(json.dumps({'file_format_version':'1.0.0','ICD':{'library_path':'lib/libvulkan_lvp.so','api_version':'1.4.0'}}))
+          PY
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: ui-reference-snapshots
-          path: /tmp/ui-references/
+          name: ui-vulkan-runtime
+          path: /tmp/ui-vulkan/
           retention-days: 1

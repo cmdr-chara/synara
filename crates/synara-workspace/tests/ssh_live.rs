@@ -341,7 +341,7 @@ async fn remote_typed_fetch_pull_push_keep_divergent_head_and_files() {
         (&first, &a, "first divergence\n"),
         (&second, &b, "second divergence\n"),
     ] {
-        std::fs::write(project.join("tracked.txt")), content).unwrap();
+        std::fs::write(project.join("tracked.txt"), content).unwrap();
         git(&["add", "--", "tracked.txt"], project);
         typed(
             service,

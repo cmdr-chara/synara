@@ -1,8 +1,8 @@
 use crate::{WorkspaceError, WorkspaceResult};
 use std::{path::PathBuf, sync::Arc, time::Duration};
 use synara_runtime::{
-    ExecutionHost, FileEntry, FileSnapshot, FileVersion, LaunchSpec, LocalHost, ProcessHandle,
-    RuntimeError, WorkspaceFs,
+    ExecutionHost, FileEntry, FileProbe, FileSnapshot, FileVersion, LaunchSpec, LocalHost,
+    ProcessHandle, RuntimeError, SearchMatch, WorkspaceFs,
 };
 use tokio::{io::AsyncReadExt, time::Instant};
 
@@ -19,6 +19,72 @@ pub async fn list_remote_files(
     directory: PathBuf,
 ) -> WorkspaceResult<Vec<FileEntry>> {
     filesystem.entries(&directory).await.map_err(Into::into)
+}
+pub async fn probe_file(root: PathBuf, path: PathBuf) -> WorkspaceResult<FileProbe> {
+    tokio::task::spawn_blocking(move || WorkspaceFs::open(&root)?.probe(&path))
+        .await
+        .map_err(|_| WorkspaceError::Worker)?
+        .map_err(Into::into)
+}
+pub async fn probe_remote_file(
+    filesystem: synara_runtime::RemoteWorkspaceFs,
+    path: PathBuf,
+) -> WorkspaceResult<FileProbe> {
+    filesystem.probe(&path).await.map_err(Into::into)
+}
+pub async fn create_directory(root: PathBuf, path: PathBuf) -> WorkspaceResult<()> {
+    tokio::task::spawn_blocking(move || WorkspaceFs::open(&root)?.create_directory(&path))
+        .await
+        .map_err(|_| WorkspaceError::Worker)?
+        .map_err(Into::into)
+}
+pub async fn create_remote_directory(
+    filesystem: synara_runtime::RemoteWorkspaceFs,
+    path: PathBuf,
+) -> WorkspaceResult<()> {
+    filesystem
+        .create_directory(&path)
+        .await
+        .map_err(Into::into)
+}
+pub async fn delete_empty_directory(root: PathBuf, path: PathBuf) -> WorkspaceResult<()> {
+    tokio::task::spawn_blocking(move || WorkspaceFs::open(&root)?.remove_empty_directory(&path))
+        .await
+        .map_err(|_| WorkspaceError::Worker)?
+        .map_err(Into::into)
+}
+pub async fn delete_remote_empty_directory(
+    filesystem: synara_runtime::RemoteWorkspaceFs,
+    path: PathBuf,
+) -> WorkspaceResult<()> {
+    filesystem
+        .remove_empty_directory(&path)
+        .await
+        .map_err(Into::into)
+}
+pub async fn search_files(
+    root: PathBuf,
+    directory: PathBuf,
+    query: String,
+    max_matches: usize,
+) -> WorkspaceResult<Vec<SearchMatch>> {
+    tokio::task::spawn_blocking(move || {
+        WorkspaceFs::open(&root)?.search_text(&directory, &query, max_matches)
+    })
+    .await
+    .map_err(|_| WorkspaceError::Worker)?
+    .map_err(Into::into)
+}
+pub async fn search_remote_files(
+    filesystem: synara_runtime::RemoteWorkspaceFs,
+    directory: PathBuf,
+    query: String,
+    max_matches: usize,
+) -> WorkspaceResult<Vec<SearchMatch>> {
+    filesystem
+        .search_text(&directory, &query, max_matches)
+        .await
+        .map_err(Into::into)
 }
 #[derive(Clone, Debug)]
 pub struct Document {
@@ -55,6 +121,105 @@ pub async fn open_remote_document(
         .into());
     }
     Ok(Document { path, snapshot })
+}
+
+pub async fn create_document(
+    root: PathBuf,
+    path: PathBuf,
+    text: String,
+    bom: bool,
+) -> WorkspaceResult<Document> {
+    if text.len() > MAX_EDITOR_BYTES {
+        return Err(RuntimeError::Limit.into());
+    }
+    tokio::task::spawn_blocking(move || {
+        let fs = WorkspaceFs::open(&root)?;
+        let path = fs.relative(&path)?;
+        fs.write_new(&path, &text, bom)?;
+        let snapshot = fs.read(&path)?;
+        Ok(Document { path, snapshot })
+    })
+    .await
+    .map_err(|_| WorkspaceError::Worker)?
+    .map_err(Into::into)
+}
+
+pub async fn create_remote_document(
+    filesystem: synara_runtime::RemoteWorkspaceFs,
+    path: PathBuf,
+    text: String,
+    bom: bool,
+) -> WorkspaceResult<Document> {
+    if text.len() > MAX_EDITOR_BYTES {
+        return Err(RuntimeError::Limit.into());
+    }
+    let path = filesystem.relative(&path)?;
+    filesystem.write_new(&path, &text, bom).await?;
+    let snapshot = filesystem.read(&path).await?;
+    Ok(Document { path, snapshot })
+}
+
+pub async fn rename_document(
+    root: PathBuf,
+    document: Document,
+    destination: PathBuf,
+) -> WorkspaceResult<Document> {
+    tokio::task::spawn_blocking(move || {
+        let fs = WorkspaceFs::open(&root)?;
+        let destination = fs.relative(&destination)?;
+        fs.rename_file(
+            &document.path,
+            &destination,
+            &document.snapshot.version,
+        )?;
+        let snapshot = fs.read(&destination)?;
+        Ok(Document {
+            path: destination,
+            snapshot,
+        })
+    })
+    .await
+    .map_err(|_| WorkspaceError::Worker)?
+    .map_err(Into::into)
+}
+
+pub async fn rename_remote_document(
+    filesystem: synara_runtime::RemoteWorkspaceFs,
+    document: Document,
+    destination: PathBuf,
+) -> WorkspaceResult<Document> {
+    let destination = filesystem.relative(&destination)?;
+    filesystem
+        .rename_file(
+            &document.path,
+            &destination,
+            &document.snapshot.version,
+        )
+        .await?;
+    let snapshot = filesystem.read(&destination).await?;
+    Ok(Document {
+        path: destination,
+        snapshot,
+    })
+}
+
+pub async fn delete_document(root: PathBuf, document: Document) -> WorkspaceResult<()> {
+    tokio::task::spawn_blocking(move || {
+        WorkspaceFs::open(&root)?.remove_file(&document.path, &document.snapshot.version)
+    })
+    .await
+    .map_err(|_| WorkspaceError::Worker)?
+    .map_err(Into::into)
+}
+
+pub async fn delete_remote_document(
+    filesystem: synara_runtime::RemoteWorkspaceFs,
+    document: Document,
+) -> WorkspaceResult<()> {
+    filesystem
+        .remove_file(&document.path, &document.snapshot.version)
+        .await
+        .map_err(Into::into)
 }
 
 pub async fn save_document(

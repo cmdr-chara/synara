@@ -128,7 +128,9 @@ def main():
         wait_until(enrolled, 'persisted pinned remote workspace', 20)
         checks.append('remote-panel-pinned-enrollment')
 
-        desktop.key('2', ('Control_L',))
+        # Text fields consume some control-number combinations through IME/focus handling.
+        # Click the actual navigation tab so this smoke exercises the intended panel.
+        desktop.click(785, 24)
         time.sleep(1.1)
         desktop.screenshot('remote-files')
         desktop.click(310, 170)
@@ -144,7 +146,7 @@ def main():
         )
         checks.append('remote-files-guarded-save')
 
-        desktop.key('4', ('Control_L',))
+        desktop.click(954, 24)
         time.sleep(0.7)
         desktop.click(1040, 82)
         time.sleep(1.2)

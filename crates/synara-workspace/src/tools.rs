@@ -129,7 +129,7 @@ pub async fn create_document(
     if text.len() > MAX_EDITOR_BYTES {
         return Err(RuntimeError::Limit.into());
     }
-    tokio::task::spawn_blocking(move || {
+    tokio::task::spawn_blocking(move || -> Result<Document, RuntimeError> {
         let fs = WorkspaceFs::open(&root)?;
         let path = fs.relative(&path)?;
         fs.write_new(&path, &text, bom)?;
@@ -161,7 +161,7 @@ pub async fn rename_document(
     document: Document,
     destination: PathBuf,
 ) -> WorkspaceResult<Document> {
-    tokio::task::spawn_blocking(move || {
+    tokio::task::spawn_blocking(move || -> Result<Document, RuntimeError> {
         let fs = WorkspaceFs::open(&root)?;
         let destination = fs.relative(&destination)?;
         fs.rename_file(&document.path, &destination, &document.snapshot.version)?;

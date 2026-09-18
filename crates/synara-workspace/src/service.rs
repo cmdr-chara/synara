@@ -198,11 +198,7 @@ impl WorkspaceService {
         .await
     }
 
-    pub async fn rename_project(
-        &self,
-        id: ProjectId,
-        name: String,
-    ) -> WorkspaceResult<Project> {
+    pub async fn rename_project(&self, id: ProjectId, name: String) -> WorkspaceResult<Project> {
         let name = catalog_name(&name, "project")?;
         self.access(move |store| {
             let mut project = catalog(store)?
@@ -914,7 +910,10 @@ mod tests {
             .create_task(sub.id, "Initial".into(), "opencode".into())
             .await
             .unwrap();
-        let task = service.rename_task(task.id, "Renamed task".into()).await.unwrap();
+        let task = service
+            .rename_task(task.id, "Renamed task".into())
+            .await
+            .unwrap();
         assert_eq!(task.title, "Renamed task");
         service
             .save_selection(Selection {
@@ -953,7 +952,9 @@ mod tests {
         service
             .record(
                 task.thread_id,
-                ThreadEvent::PromptStarted { turn: "turn".into() },
+                ThreadEvent::PromptStarted {
+                    turn: "turn".into(),
+                },
             )
             .await
             .unwrap();

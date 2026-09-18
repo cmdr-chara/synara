@@ -2,7 +2,7 @@ mod recovery;
 pub use recovery::*;
 
 use rusqlite::{Connection, OpenFlags, OptionalExtension, TransactionBehavior, params};
-use std::{path::{Path, PathBuf}, time::Duration};
+use std::{path::Path, time::Duration};
 use synara_core::*;
 
 #[derive(Debug, thiserror::Error)]
@@ -244,8 +244,14 @@ PRAGMA user_version=2;")?;
         let tx = self
             .connection
             .transaction_with_behavior(TransactionBehavior::Immediate)?;
-        tx.execute("DELETE FROM sessions WHERE thread_id=?1", [task.thread_id.to_string()])?;
-        tx.execute("DELETE FROM events WHERE thread_id=?1", [task.thread_id.to_string()])?;
+        tx.execute(
+            "DELETE FROM sessions WHERE thread_id=?1",
+            [task.thread_id.to_string()],
+        )?;
+        tx.execute(
+            "DELETE FROM events WHERE thread_id=?1",
+            [task.thread_id.to_string()],
+        )?;
         tx.execute(
             "DELETE FROM event_heads WHERE thread_id=?1",
             [task.thread_id.to_string()],
@@ -592,7 +598,7 @@ mod tests {
             id: ProjectId::new(),
             workspace_id: workspace.id,
             name: "Project".into(),
-            relative_directory: PathBuf::new(),
+            relative_directory: std::path::PathBuf::new(),
         };
         store
             .create_workspace_project(&workspace, &project)
@@ -608,7 +614,10 @@ mod tests {
             updated_at_ms: 1,
         };
         store.save_task(&task).unwrap();
-        assert!(matches!(store.delete_task(task.id), Err(StorageError::Identity)));
+        assert!(matches!(
+            store.delete_task(task.id),
+            Err(StorageError::Identity)
+        ));
         assert!(matches!(
             store.delete_project(project.id),
             Err(StorageError::NotEmpty)

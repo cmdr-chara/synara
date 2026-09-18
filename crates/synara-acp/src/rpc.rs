@@ -61,6 +61,13 @@ pub(crate) enum Incoming {
 struct Pending {
     sender: oneshot::Sender<AgentResult<Value>>,
     method: String,
+    lifetime: RequestLifetime,
+}
+struct RequestLifetime(CancellationToken);
+impl Drop for RequestLifetime {
+    fn drop(&mut self) {
+        self.0.cancel();
+    }
 }
 struct State {
     pending: Mutex<HashMap<RpcId, Pending>>,
@@ -71,11 +78,18 @@ struct State {
 }
 impl State {
     fn fail(&self, reason: &str) {
-        if self.stop.is_cancelled() {
+        // First failure owns the diagnostic even when EOF, shutdown and a writer
+        // error race. Do not replace it with a later teardown symptom.
+        if !self.failure.send_if_modified(|failure| {
+            if failure.is_some() {
+                return false;
+            }
+            *failure = Some(reason.into());
+            true
+        }) {
             return;
         }
         self.trace.lock().unwrap().lifecycle(reason);
-        self.failure.send_replace(Some(reason.into()));
         self.stop.cancel();
         for (_, pending) in self.pending.lock().unwrap().drain() {
             let _ = pending
@@ -132,8 +146,13 @@ impl RpcPeer {
     pub fn cancelled(&self) -> CancellationToken {
         self.state().stop.clone()
     }
-    pub fn has_pending(&self, id: &RpcId) -> bool {
-        self.state().pending.lock().unwrap().contains_key(id)
+    pub fn request_lifetime(&self, id: &RpcId) -> Option<CancellationToken> {
+        self.state()
+            .pending
+            .lock()
+            .unwrap()
+            .get(id)
+            .map(|pending| pending.lifetime.0.clone())
     }
     pub fn failures(&self) -> watch::Receiver<Option<String>> {
         self.state().failure.subscribe()
@@ -172,6 +191,7 @@ impl RpcPeer {
                 Pending {
                     sender,
                     method: method.into(),
+                    lifetime: RequestLifetime(self.state().stop.child_token()),
                 },
             );
         }
@@ -395,6 +415,7 @@ fn dispatch(value: Value, state: &State, incoming: &mpsc::Sender<Incoming>) -> A
             Ok(object.get("result").cloned().unwrap_or(Value::Null))
         };
         if let Some(pending) = state.pending.lock().unwrap().remove(&id) {
+            pending.lifetime.0.cancel();
             let _method = pending.method;
             let _ = pending.sender.send(result);
         }
@@ -561,3 +582,7 @@ mod tests {
         assert_eq!(serde_json::from_str::<Value>(&line).unwrap()["id"], 7);
     }
 }
+
+#[cfg(test)]
+#[path = "rpc_lifecycle_tests.rs"]
+mod lifecycle_tests;

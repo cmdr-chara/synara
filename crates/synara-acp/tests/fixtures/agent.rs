@@ -7,6 +7,7 @@ use std::{
 
 struct Fixture {
     profile: String,
+    launch_arguments: Vec<String>,
     authenticated: bool,
     next_session: u64,
     next_callback: u64,
@@ -76,6 +77,10 @@ impl Fixture {
         let session = params["sessionId"].as_str().unwrap_or("").to_owned();
         match value["method"].as_str() {
             Some("initialize") => {
+                if self.profile == "init-reject" {
+                    self.error(id, -32603);
+                    return;
+                }
                 if params["protocolVersion"] != 1 {
                     self.error(id, -32602);
                     return;
@@ -83,11 +88,25 @@ impl Fixture {
                 let caps = if self.profile == "beta" {
                     json!({"promptCapabilities":{}})
                 } else {
-                    json!({"loadSession":true,"promptCapabilities":{"image":true},"sessionCapabilities":{"list":{},"resume":{},"close":{},"delete":{},"additionalDirectories":{}},"authCapabilities":{"logout":true}})
+                    json!({"loadSession":true,"promptCapabilities":{"image":true},"sessionCapabilities":{"list":{},"resume":{},"close":{},"delete":{},"additionalDirectories":{}},"auth":{"logout":{}}})
                 };
                 self.ok(id,json!({"protocolVersion":1,"agentInfo":{"name":format!("fixture-{}",self.profile),"version":"1.0.0"},"agentCapabilities":caps,"authMethods":[{"id":"test-login","name":"Test login"}]}));
             }
             Some("authenticate") => {
+                match self.profile.as_str() {
+                    "auth-hold" => {
+                        self.send(
+                            json!({"jsonrpc":"2.0", "method":"fixture/auth_entered", "params":{}}),
+                        );
+                        return;
+                    }
+                    "auth-denied" => {
+                        self.error(id, -32000);
+                        return;
+                    }
+                    "auth-crash" => std::process::exit(24),
+                    _ => {}
+                }
                 self.authenticated = true;
                 self.ok(id, json!({}));
             }
@@ -96,6 +115,12 @@ impl Fixture {
                 self.ok(id, json!({}));
             }
             Some("session/new") => {
+                if self.profile == "new-hold" {
+                    self.send(
+                        json!({"jsonrpc":"2.0", "method":"fixture/setup_entered", "params":{}}),
+                    );
+                    return;
+                }
                 if !self.authenticated {
                     self.error(id, -32000);
                     return;
@@ -134,6 +159,10 @@ impl Fixture {
                 self.ok(id, json!({}));
             }
             Some("session/set_config_option") => {
+                if params["value"].is_boolean() && params["type"] != "boolean" {
+                    self.error(id, -32602);
+                    return;
+                }
                 let mut config = self.configuration();
                 if let Some(options) = config["configOptions"].as_array_mut() {
                     for option in options {
@@ -154,6 +183,16 @@ impl Fixture {
             Some("session/prompt") => {
                 let text = params["prompt"][0]["text"].as_str().unwrap_or("");
                 match text {
+                    "launch-proof" => {
+                        let inherited = std::env::var("SYNARA_BCD_CANARY").ok();
+                        self.finish(&session, id, &json!({
+                            "args": self.launch_arguments,
+                            "cwd": std::env::current_dir().unwrap(),
+                            "canaryPresent": inherited.is_some(),
+                            "canaryCorrect": inherited.as_deref() == Some("synthetic-value-not-a-credential-🦀"),
+                            "unlistedPresent": std::env::var_os("SYNARA_BCD_UNLISTED").is_some(),
+                        }).to_string());
+                    }
                     "read-scope" => self.request(session.clone(),id,"read","fs/read_text_file",json!({"sessionId":session,"path":format!("{}/scope-proof.txt", self.sessions[&session])}),None),
                     "startup-directory" => self.finish(&session, id, &std::env::current_dir().unwrap().to_string_lossy()),
                     "hold"|"timeout"=>{ self.text(&session,"Started waiting"); self.pending.insert(session,id); }
@@ -255,9 +294,14 @@ fn main() {
         std::process::exit(2);
     }
     let profile = args.next().unwrap_or("alpha".into());
-    let authenticated = profile != "auth";
+    if let Some(path) = std::env::var_os("SYNARA_FIXTURE_PID_FILE") {
+        std::fs::write(path, std::process::id().to_string()).unwrap();
+    }
+    let launch_arguments = args.collect();
+    let authenticated = !profile.starts_with("auth");
     let mut fixture = Fixture {
         profile,
+        launch_arguments,
         authenticated,
         next_session: 0,
         next_callback: 0,

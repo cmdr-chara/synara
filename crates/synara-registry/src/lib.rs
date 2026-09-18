@@ -1,12 +1,16 @@
 //! Registry metadata and explicitly approved installations for the generic agent host.
+mod catalog;
 mod download;
 mod install;
 mod model;
 mod paths;
+mod review;
 
+pub use catalog::{CatalogSnapshot, CatalogSource, CatalogWarning};
 pub use download::{Downloader, HttpsDownloader};
 pub use install::{InstalledAgent, RegistryReference, RegistryStore};
 pub use model::{AgentEntry, Distribution, InstallPlan, PackageTarget, Platform, Registry};
+pub use review::{UpdateReview, VersionRelation};
 
 pub const REGISTRY_URL: &str =
     "https://cdn.agentclientprotocol.com/registry/v1/latest/registry.json";

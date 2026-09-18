@@ -78,11 +78,7 @@ impl PinnedSshHost {
     /// Build an interactive SSH transport whose local process is owned by Synara's
     /// native PTY. OpenSSH escape processing is disabled so terminal input cannot
     /// mutate connection state outside the reviewed Synara controls.
-    pub fn pty_command(
-        &self,
-        launch: &LaunchSpec,
-        cwd: &Path,
-    ) -> Result<LaunchSpec, RuntimeError> {
+    pub fn pty_command(&self, launch: &LaunchSpec, cwd: &Path) -> Result<LaunchSpec, RuntimeError> {
         let mut spec = self.command(launch, cwd)?;
         let Some(no_tty) = spec.args.iter().position(|argument| argument == "-T") else {
             return Err(RuntimeError::Invalid(
@@ -107,11 +103,7 @@ impl PinnedSshHost {
             .ok_or_else(|| RuntimeError::Invalid("SSH command boundary is missing".into()))?;
         spec.args.splice(
             boundary..boundary,
-            [
-                "-tt".into(),
-                "-o".into(),
-                "EscapeChar=none".into(),
-            ],
+            ["-tt".into(), "-o".into(), "EscapeChar=none".into()],
         );
         Ok(spec)
     }
@@ -142,7 +134,13 @@ fn checked_file(path: &Path, private: bool) -> Result<String, RuntimeError> {
             "SSH connection files must use absolute paths".into(),
         ));
     }
-    let metadata = std::fs::symlink_metadata(path)?;
+    let metadata = std::fs::symlink_metadata(path).map_err(|error| {
+        RuntimeError::Invalid(format!(
+            "SSH {} file is unavailable at {}: {error}",
+            if private { "identity" } else { "known-hosts" },
+            path.display()
+        ))
+    })?;
     if !metadata.file_type().is_file() {
         return Err(RuntimeError::Denied(
             "SSH connection file must be a regular non-symlink file".into(),

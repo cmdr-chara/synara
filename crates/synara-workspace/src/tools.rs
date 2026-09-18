@@ -271,8 +271,10 @@ impl GitService {
     }
     pub async fn unstage(&self, path: PathBuf) -> WorkspaceResult<()> {
         let path = self.checked_path(path).await?;
+        // Path-only reset also works before the first commit. It changes only
+        // the selected index entry, never HEAD or working-tree file contents.
         self.run(
-            vec!["restore".into(), "--staged".into(), "--".into(), path],
+            vec!["reset".into(), "--quiet".into(), "--".into(), path],
             64 * 1024,
         )
         .await?;
@@ -424,5 +426,122 @@ mod tests {
         git.unstage("[literal].txt".into()).await.unwrap();
         assert!(git.diff(true, None).await.unwrap().is_empty());
         assert!(git.stage("../escape".into()).await.is_err());
+    }
+
+    async fn git_fixture(root: &Path) -> GitService {
+        let git = GitService::new(root.into());
+        for args in [
+            vec!["init", "--quiet"],
+            vec!["config", "--local", "user.email", "test@example.invalid"],
+            vec!["config", "--local", "user.name", "Test"],
+        ] {
+            git.run(args.into_iter().map(str::to_owned).collect(), 8192)
+                .await
+                .unwrap();
+        }
+        git
+    }
+    async fn indexed_paths(git: &GitService) -> std::collections::BTreeSet<PathBuf> {
+        git.run(vec!["ls-files".into(), "-z".into()], 64 * 1024)
+            .await
+            .unwrap()
+            .split(|byte| *byte == 0)
+            .filter(|path| !path.is_empty())
+            .map(path_from_bytes)
+            .collect()
+    }
+    #[tokio::test]
+    async fn unstage_before_first_commit_preserves_literal_files_and_other_entries() {
+        let root = tempfile::tempdir().unwrap();
+        let git = git_fixture(root.path()).await;
+        let names = [
+            "space name.txt",
+            "unicodé.txt",
+            "[literal].txt",
+            "literal.txt",
+            "-leading.txt",
+            "nested/child.txt",
+        ];
+        for name in names {
+            let path = root.path().join(name);
+            std::fs::create_dir_all(path.parent().unwrap()).unwrap();
+            std::fs::write(&path, name.as_bytes()).unwrap();
+            git.stage(name.into()).await.unwrap();
+        }
+        let all: std::collections::BTreeSet<_> =
+            names.iter().map(|name| PathBuf::from(*name)).collect();
+        assert_eq!(indexed_paths(&git).await, all);
+        for name in names {
+            git.unstage(name.into()).await.unwrap();
+            let mut remaining = all.clone();
+            remaining.remove(Path::new(name));
+            assert_eq!(indexed_paths(&git).await, remaining);
+            for preserved in names {
+                assert_eq!(
+                    std::fs::read(root.path().join(preserved)).unwrap(),
+                    preserved.as_bytes()
+                );
+            }
+            git.stage(name.into()).await.unwrap();
+        }
+        assert!(!git.status().await.unwrap().entries.is_empty());
+        assert!(
+            git.diff(true, None)
+                .await
+                .unwrap()
+                .contains("space name.txt")
+        );
+    }
+    #[tokio::test]
+    async fn unstage_keeps_head_working_edits_and_unrelated_staging() {
+        for detached in [false, true] {
+            let root = tempfile::tempdir().unwrap();
+            let git = git_fixture(root.path()).await;
+            for name in ["selected.txt", "other.txt"] {
+                std::fs::write(root.path().join(name), "original\n").unwrap();
+                git.stage(name.into()).await.unwrap();
+            }
+            git.commit("initial".into()).await.unwrap();
+            if detached {
+                git.run(
+                    vec![
+                        "checkout".into(),
+                        "--detach".into(),
+                        "--quiet".into(),
+                        "HEAD".into(),
+                    ],
+                    8192,
+                )
+                .await
+                .unwrap();
+            }
+            let head_args = vec!["rev-parse".into(), "--verify".into(), "HEAD".into()];
+            let head = git.run(head_args.clone(), 8192).await.unwrap();
+            let branch = git.status().await.unwrap().branch;
+            std::fs::write(root.path().join("selected.txt"), "staged\n").unwrap();
+            git.stage("selected.txt".into()).await.unwrap();
+            std::fs::write(root.path().join("selected.txt"), "working copy\n").unwrap();
+            std::fs::write(root.path().join("other.txt"), "other staged\n").unwrap();
+            git.stage("other.txt".into()).await.unwrap();
+            git.unstage("selected.txt".into()).await.unwrap();
+            assert_eq!(git.run(head_args, 8192).await.unwrap(), head);
+            assert_eq!(git.status().await.unwrap().branch, branch);
+            assert_eq!(
+                std::fs::read(root.path().join("selected.txt")).unwrap(),
+                b"working copy\n"
+            );
+            assert!(
+                git.diff(true, Some("selected.txt".into()))
+                    .await
+                    .unwrap()
+                    .is_empty()
+            );
+            assert!(
+                git.diff(true, Some("other.txt".into()))
+                    .await
+                    .unwrap()
+                    .contains("+other staged")
+            );
+        }
     }
 }

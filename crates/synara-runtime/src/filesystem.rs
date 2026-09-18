@@ -83,6 +83,11 @@ impl WorkspaceFs {
     }
     fn read_bytes(&self, path: &Path) -> Result<Vec<u8>, RuntimeError> {
         let (dir, name) = self.parent(path)?;
+        if dir.symlink_metadata(&name)?.file_type().is_symlink() {
+            return Err(RuntimeError::Denied(
+                "symbolic links are not readable workspace files".into(),
+            ));
+        }
         let mut options = OpenOptions::new();
         options.read(true).follow(FollowSymlinks::No);
         let file = dir.open_with(name, &options)?;

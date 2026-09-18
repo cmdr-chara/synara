@@ -3,22 +3,22 @@ mod conversation;
 mod panels;
 mod registry;
 mod terminal;
+mod transcript;
 use crate::close::CloseState;
 use crate::input::{EntryEvent, EntryMode, TextEntry};
-use terminal::{TerminalSession, TerminalView};
-use gpui::{
-    App, Context, Entity, ScrollHandle, SharedString, Subscription, Window, div, prelude::*, px,
-    rgb,
-};
+use gpui::{App, Context, Entity, SharedString, Subscription, Window, div, prelude::*, px, rgb};
 use std::{
     collections::{BTreeMap, HashMap, HashSet},
     path::PathBuf,
     sync::Arc,
 };
-use synara_agent::{TraceEntry, UiInteraction};
+use synara_agent::{InteractionScope, TraceEntry, UiInteraction};
 use synara_core::*;
-use synara_runtime::{FileEntry, NativeTerminal, TerminalKey, TerminalModifiers, TerminalRenderSnapshot};
+use synara_runtime::{
+    FileEntry, NativeTerminal, TerminalKey, TerminalModifiers, TerminalRenderSnapshot,
+};
 use synara_workspace::*;
+use terminal::{TerminalSession, TerminalView};
 use tokio::{runtime::Handle, sync::mpsc};
 
 pub struct Bootstrap {
@@ -40,13 +40,8 @@ enum Panel {
 }
 #[derive(Clone)]
 enum WorkspaceTarget {
-    Local {
-        root: PathBuf,
-    },
-    Ssh {
-        workspace: Workspace,
-        root: PathBuf,
-    },
+    Local { root: PathBuf },
+    Ssh { workspace: Workspace, root: PathBuf },
 }
 impl WorkspaceTarget {
     fn root(&self) -> &PathBuf {
@@ -124,6 +119,10 @@ enum Update {
         generation: u64,
         error: String,
     },
+    TerminalShutdown {
+        generation: u64,
+        error: Option<String>,
+    },
     Tick,
     Done(String),
     Error(String),
@@ -163,9 +162,7 @@ pub struct Shell {
     error: Option<String>,
     notice: Option<String>,
     focus_composer: bool,
-    scroll: ScrollHandle,
-    scroll_owner: ScrollOwnership,
-    transcript_start: Option<usize>,
+    transcript: transcript::TranscriptState,
     pending: HashMap<InteractionKey, UiInteraction>,
     forms: HashMap<InteractionKey, FormState>,
     files: Vec<FileEntry>,
@@ -180,6 +177,7 @@ pub struct Shell {
     terminal_root: Option<PathBuf>,
     terminal_generation: u64,
     terminal_starting: bool,
+    terminal_closing: bool,
     polling: bool,
     _updates: gpui::Task<()>,
     _subscriptions: Vec<Subscription>,
@@ -248,10 +246,8 @@ impl Shell {
         });
         let workspace_path =
             cx.new(|cx| TextEntry::new("Workspace directory", EntryMode::SingleLine, 38., cx));
-        let remote_host =
-            cx.new(|cx| TextEntry::new("SSH host", EntryMode::SingleLine, 36., cx));
-        let remote_port =
-            cx.new(|cx| TextEntry::new("SSH port", EntryMode::SingleLine, 36., cx));
+        let remote_host = cx.new(|cx| TextEntry::new("SSH host", EntryMode::SingleLine, 36., cx));
+        let remote_port = cx.new(|cx| TextEntry::new("SSH port", EntryMode::SingleLine, 36., cx));
         remote_port.update(cx, |entry, cx| entry.set_text("22".into(), cx));
         let remote_user =
             cx.new(|cx| TextEntry::new("SSH user (optional)", EntryMode::SingleLine, 36., cx));
@@ -287,7 +283,9 @@ impl Shell {
                 cx,
             )
         });
-        remote_helper.update(cx, |entry, cx| entry.set_text("synara-remote-fs".into(), cx));
+        remote_helper.update(cx, |entry, cx| {
+            entry.set_text("synara-remote-fs".into(), cx)
+        });
         let task_title =
             cx.new(|cx| TextEntry::new("New task title", EntryMode::SingleLine, 36., cx));
         let profile_editor = cx
@@ -377,9 +375,7 @@ impl Shell {
             error: None,
             notice: None,
             focus_composer: false,
-            scroll: ScrollHandle::new(),
-            scroll_owner: ScrollOwnership::Following,
-            transcript_start: None,
+            transcript: transcript::TranscriptState::new(),
             pending: HashMap::new(),
             forms: HashMap::new(),
             files: vec![],
@@ -394,6 +390,7 @@ impl Shell {
             terminal_root: None,
             terminal_generation: 0,
             terminal_starting: false,
+            terminal_closing: false,
             polling: false,
             _updates: updates,
             _subscriptions: subscriptions,
@@ -404,18 +401,67 @@ impl Shell {
         this
     }
     pub fn request_close(&mut self, window: &mut Window, cx: &mut Context<Self>) -> bool {
+        if self.terminal_closing {
+            return false;
+        }
         let dirty = self.dirty(cx);
         if self.close.request(dirty, self.saving) {
-            cx.quit();
-            true
+            self.begin_quit(cx);
+            false
         } else {
             window.focus(&self.close_focus, cx);
             cx.notify();
             false
         }
     }
+
+    fn begin_quit(&mut self, cx: &mut Context<Self>) {
+        if self.terminal_closing {
+            return;
+        }
+        self.terminal_closing = true;
+        if self.terminal_starting {
+            self.notice = Some("Waiting for terminal startup before closing Synara...".into());
+            cx.notify();
+            return;
+        }
+        let Some(terminal) = self.terminal.clone() else {
+            self.terminal_closing = false;
+            cx.quit();
+            return;
+        };
+        let generation = self.terminal_generation;
+        self.notice = Some("Stopping the terminal before closing Synara...".into());
+        self.queue_terminal_shutdown(terminal, generation);
+        cx.notify();
+    }
+
+    fn queue_terminal_shutdown(&self, terminal: TerminalSession, generation: u64) {
+        self.job(async move {
+            let result = async {
+                terminal.kill()?;
+                tokio::time::timeout(std::time::Duration::from_secs(5), terminal.wait())
+                    .await
+                    .map_err(|_| synara_runtime::RuntimeError::Timeout)??;
+                Ok::<(), synara_runtime::RuntimeError>(())
+            }
+            .await;
+            Ok(Update::TerminalShutdown {
+                generation,
+                error: result.err().map(|error| error.to_string()),
+            })
+        });
+    }
+
+    fn retire_terminal(&self, terminal: TerminalSession) {
+        self.runtime.spawn(async move {
+            let _ = terminal.kill();
+            let _ = tokio::time::timeout(std::time::Duration::from_secs(5), terminal.wait()).await;
+        });
+    }
     fn close_panel(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
         let waiting = self.close == CloseState::WaitingForSave;
+        let terminal_closing = self.terminal_closing;
         div().size_full().flex().flex_col().items_center().justify_center()
             .bg(rgb(0x10151d)).text_color(rgb(0xe3e8f0)).font_family("DejaVu Sans")
             .child(div().w(px(620.)).p_6().rounded_lg().border_1().border_color(rgb(0x35465b))
@@ -428,19 +474,27 @@ impl Shell {
                         cx.notify();
                     }
                 }))
-                .child(div().text_xl().child(if waiting { "Waiting for the file to finish saving" } else { "Save changes before closing Synara?" }))
+                .child(div().text_xl().child(if terminal_closing && self.terminal_starting {
+                    "Waiting for terminal startup before closing Synara"
+                } else if terminal_closing {
+                    "Stopping terminal before closing Synara"
+                } else if waiting {
+                    "Waiting for the file to finish saving"
+                } else {
+                    "Save changes before closing Synara?"
+                }))
                 .child(self.document.as_ref().map_or_else(String::new, |d| d.path.display().to_string()))
                 .child("The file remains open if saving fails or the on-disk version has changed. Closing stops active agent and terminal processes.")
                 .children(self.error.as_ref().map(|e| div().text_color(rgb(0xffb1b5)).child(e.clone())))
                 .child(div().flex().gap_3()
-                    .child(button("cancel-close", "Keep working", false).on_click(cx.listener(|this, _, window, cx| {
+                    .children((!terminal_closing).then(|| button("cancel-close", "Keep working", false).on_click(cx.listener(|this, _, window, cx| {
                         this.close.cancel();
                         window.focus(&this.editor.read(cx).focus_handle(cx), cx);
                         cx.notify();
-                    })))
-                    .children((!waiting).then(|| button("discard-and-close", "Discard and close", false)
-                        .on_click(cx.listener(|this, _, _, cx| { if !this.saving { cx.quit(); } }))))
-                    .children((!waiting).then(|| button("save-and-close", "Save and close", true)
+                    }))))
+                    .children((!waiting && !terminal_closing).then(|| button("discard-and-close", "Discard and close", false)
+                        .on_click(cx.listener(|this, _, _, cx| { if !this.saving { this.begin_quit(cx); } }))))
+                    .children((!waiting && !terminal_closing).then(|| button("save-and-close", "Save and close", true)
                         .on_click(cx.listener(|this, _, _, cx| {
                             this.close = CloseState::WaitingForSave;
                             this.save_file(cx);
@@ -535,9 +589,7 @@ impl Shell {
         self.composer.update(cx, |entry, cx| {
             entry.set_text(self.drafts.get(&id).cloned().unwrap_or_default(), cx)
         });
-        self.scroll = ScrollHandle::new();
-        self.scroll_owner = ScrollOwnership::Following;
-        self.transcript_start = None;
+        self.transcript = transcript::TranscriptState::new();
         self.focus_composer = true;
         let workspace = self.controller.workspace.clone();
         self.job(async move {
@@ -759,9 +811,7 @@ impl Shell {
         self.busy.insert(id);
         self.error = None;
         self.notice = None;
-        self.scroll_owner = ScrollOwnership::Following;
-        self.transcript_start = None;
-        self.scroll.scroll_to_bottom();
+        self.transcript.follow();
         let controller = self.controller.clone();
         self.job(async move {
             let result = controller.submit(id, text).await;
@@ -810,8 +860,7 @@ impl Shell {
             let entries = match target {
                 WorkspaceTarget::Local { root } => list_files(root, directory.clone()).await?,
                 WorkspaceTarget::Ssh { workspace, root } => {
-                    let filesystem =
-                        remote_filesystem(workspace_service, workspace, root).await?;
+                    let filesystem = remote_filesystem(workspace_service, workspace, root).await?;
                     list_remote_files(filesystem, directory.clone()).await?
                 }
             };
@@ -874,7 +923,9 @@ impl Shell {
                 .await?
                 .commit(message)
                 .await?;
-            Ok(Update::Done("Commit created in the selected workspace".into()))
+            Ok(Update::Done(
+                "Commit created in the selected workspace".into(),
+            ))
         });
     }
 
@@ -894,8 +945,7 @@ impl Shell {
             let document = match target {
                 WorkspaceTarget::Local { root } => open_document(root, path).await?,
                 WorkspaceTarget::Ssh { workspace, root } => {
-                    let filesystem =
-                        remote_filesystem(workspace_service, workspace, root).await?;
+                    let filesystem = remote_filesystem(workspace_service, workspace, root).await?;
                     open_remote_document(filesystem, path).await?
                 }
             };
@@ -907,7 +957,8 @@ impl Shell {
         if self.saving {
             return;
         }
-        let (Some(target), Some(document)) = (self.workspace_target(), self.document.clone()) else {
+        let (Some(target), Some(document)) = (self.workspace_target(), self.document.clone())
+        else {
             return;
         };
         let root = target.root().clone();
@@ -922,8 +973,7 @@ impl Shell {
                     save_document(root, document, text.clone()).await
                 }
                 WorkspaceTarget::Ssh { workspace, root } => {
-                    let filesystem =
-                        remote_filesystem(workspace_service, workspace, root).await?;
+                    let filesystem = remote_filesystem(workspace_service, workspace, root).await?;
                     save_remote_document(filesystem, document, text.clone()).await
                 }
             };
@@ -944,12 +994,10 @@ impl Shell {
             return;
         };
         let root = target.root().clone();
-        if self.terminal_starting {
+        if self.terminal_starting || self.terminal_closing {
             return;
         }
-        if let Some(terminal) = self.terminal.take() {
-            let _ = terminal.kill();
-        }
+        let previous = self.terminal.take();
         self.terminal_generation = self.terminal_generation.wrapping_add(1);
         let generation = self.terminal_generation;
         self.terminal_starting = true;
@@ -958,6 +1006,22 @@ impl Shell {
             .update(cx, |terminal, cx| terminal.clear_session(cx));
         let workspace_service = self.controller.workspace.clone();
         self.job(async move {
+            if let Some(previous) = previous {
+                let cleanup = async {
+                    previous.kill()?;
+                    tokio::time::timeout(std::time::Duration::from_secs(5), previous.wait())
+                        .await
+                        .map_err(|_| synara_runtime::RuntimeError::Timeout)??;
+                    Ok::<(), synara_runtime::RuntimeError>(())
+                }
+                .await;
+                if let Err(error) = cleanup {
+                    return Ok(Update::TerminalFailed {
+                        generation,
+                        error: format!("previous terminal cleanup failed: {error}"),
+                    });
+                }
+            }
             let result = match target {
                 WorkspaceTarget::Local { root: cwd } => {
                     tokio::task::spawn_blocking(move || {
@@ -1104,14 +1168,17 @@ impl Shell {
         match update {
             Update::Registry(reply) => self.registry_reply(*reply, cx),
             Update::Tick => {
-                self.pending.retain(|_, p| match p {
-                    UiInteraction::Permission {
-                        context, response, ..
-                    } => !context.cancelled.is_cancelled() && !response.is_closed(),
-                    UiInteraction::Input {
-                        context, response, ..
-                    } => !context.cancelled.is_cancelled() && !response.is_closed(),
+                let previous = self.pending.len();
+                self.pending.retain(|key, interaction| {
+                    if !interaction.is_active() {
+                        self.transcript.interaction_changed(key);
+                    }
+                    interaction.is_active()
                 });
+                self.forms.retain(|key, _| self.pending.contains_key(key));
+                if self.pending.len() != previous {
+                    cx.notify();
+                }
                 self.poll();
                 return;
             }
@@ -1145,11 +1212,9 @@ impl Shell {
                         old.id != thread.id || old.last_sequence <= thread.last_sequence
                     })
                 {
+                    self.transcript.sync(&thread, None);
                     self.thread = Some(*thread);
                     self.replace_task(task);
-                    if self.scroll_owner == ScrollOwnership::Following {
-                        self.scroll.scroll_to_bottom();
-                    }
                 }
             }
             Update::Event(envelope) => {
@@ -1169,7 +1234,6 @@ impl Shell {
                     .as_ref()
                     .is_some_and(|thread| thread.id == envelope.thread_id)
                 {
-                    let follows = self.scroll_owner.should_follow(&envelope.event);
                     if let ThreadEvent::TextDelta {
                         role: Role::User,
                         text,
@@ -1190,8 +1254,8 @@ impl Shell {
                             self.error = Some(format!("Conversation update failed: {error}"));
                         }
                     }
-                    if follows && self.transcript_start.is_none() {
-                        self.scroll.scroll_to_bottom();
+                    if let Some(thread) = &self.thread {
+                        self.transcript.sync(thread, Some(&envelope.event));
                     }
                     if let Some(thread) = &self.thread
                         && let Some(task) = self
@@ -1206,6 +1270,9 @@ impl Shell {
             }
             Update::Hydrate => self.hydrate(),
             Update::Interaction(interaction) => {
+                if !interaction.is_active() {
+                    return;
+                }
                 let key = match &interaction {
                     UiInteraction::Permission {
                         context, request, ..
@@ -1249,6 +1316,7 @@ impl Shell {
                         key
                     }
                 };
+                self.transcript.interaction_changed(&key);
                 self.pending.insert(key, interaction);
             }
             Update::Connected {
@@ -1341,7 +1409,7 @@ impl Shell {
                     self.notice = Some("File saved".into());
                 }
                 if self.close.saved(!self.dirty(cx)) {
-                    cx.quit();
+                    self.begin_quit(cx);
                 }
             }
             Update::Git {
@@ -1361,16 +1429,21 @@ impl Shell {
                 terminal,
             } => {
                 if generation != self.terminal_generation || self.root() != Some(root.clone()) {
-                    let _ = terminal.kill();
+                    self.retire_terminal(terminal);
                     return;
                 }
                 self.terminal_starting = false;
                 self.terminal = Some(terminal.clone());
                 self.terminal_root = Some(root);
                 self.terminal_view
-                    .update(cx, |view, cx| view.set_session(terminal, cx));
-                self.notice = None;
-                self.poll();
+                    .update(cx, |view, cx| view.set_session(terminal.clone(), cx));
+                if self.terminal_closing {
+                    self.notice = Some("Stopping the terminal before closing Synara...".into());
+                    self.queue_terminal_shutdown(terminal, generation);
+                } else {
+                    self.notice = None;
+                    self.poll();
+                }
             }
             Update::TerminalOutput {
                 root,
@@ -1387,7 +1460,32 @@ impl Shell {
                     self.terminal_starting = false;
                     self.terminal = None;
                     self.terminal_root = None;
-                    self.error = Some(error);
+                    if self.terminal_closing {
+                        self.terminal_closing = false;
+                        self.close.cancel();
+                        self.error = Some(format!(
+                            "Terminal startup or retirement failed while closing; Synara stayed open to preserve process ownership: {error}"
+                        ));
+                    } else {
+                        self.error = Some(error);
+                    }
+                }
+            }
+            Update::TerminalShutdown { generation, error } => {
+                if generation != self.terminal_generation {
+                    return;
+                }
+                self.terminal_closing = false;
+                if let Some(error) = error {
+                    self.close.cancel();
+                    self.error = Some(format!(
+                        "Terminal shutdown failed; Synara stayed open to preserve process ownership: {error}"
+                    ));
+                } else {
+                    self.terminal = None;
+                    self.terminal_root = None;
+                    cx.quit();
+                    return;
                 }
             }
             Update::Done(message) => {
@@ -1493,7 +1591,7 @@ fn truncate(text: &str, limit: usize) -> String {
 }
 impl Render for Shell {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
-        if self.close != CloseState::Open {
+        if self.close != CloseState::Open || self.terminal_closing {
             return self.close_panel(cx);
         }
         if self.focus_composer {

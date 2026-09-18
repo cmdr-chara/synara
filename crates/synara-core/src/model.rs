@@ -101,6 +101,7 @@ pub enum ConnectionState {
     Disconnected,
     Starting,
     Initializing,
+    AuthenticationRequired,
     Authenticating,
     Connected,
     Failed,

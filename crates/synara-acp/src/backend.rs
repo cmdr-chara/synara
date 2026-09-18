@@ -81,9 +81,14 @@ impl AgentBackend for AcpBackend {
         let process = context.host.spawn(&spec.launch, directory).await?;
         let (rpc, incoming) = RpcPeer::start(process.stdout, process.stdin, process.stderr);
         let sessions = Arc::new(Sessions::default());
-        let callbacks = Arc::new(CallbackServices::new(context.clone(), sessions.clone()));
+        let connection_id = ConnectionId::new();
+        let callbacks = Arc::new(CallbackServices::new(
+            context.clone(),
+            sessions.clone(),
+            connection_id,
+        ));
         let (state, _) = watch::channel(ConnectionInfo {
-            id: ConnectionId::new(),
+            id: connection_id,
             state: ConnectionState::Initializing,
             identity: None,
             capabilities: AgentCapabilities::default(),
@@ -115,13 +120,13 @@ impl AgentBackend for AcpBackend {
                 .call("initialize", params, connection.timeouts.initialize)
                 .await?;
             let (capabilities, identity, authentication) = wire::initialization(&response)?;
-            connection.state.send_modify(|state| {
+            connection.update_live(|state| {
                 state.state = ConnectionState::Connected;
                 state.capabilities = capabilities;
                 state.identity = identity;
                 state.authentication = authentication;
                 state.error = None;
-            });
+            })?;
             Ok::<_, AgentError>(())
         }
         .await;
@@ -134,6 +139,63 @@ impl AgentBackend for AcpBackend {
     }
 }
 impl Connection {
+    /// A late completion must never revive a disconnected or failed transport.
+    fn update_live(&self, update: impl FnOnce(&mut ConnectionInfo)) -> AgentResult<()> {
+        let changed = self.state.send_if_modified(|state| {
+            if self.rpc.cancelled().is_cancelled()
+                || matches!(
+                    state.state,
+                    ConnectionState::Disconnected
+                        | ConnectionState::Failed
+                        | ConnectionState::Exited
+                )
+            {
+                return false;
+            }
+            update(state);
+            true
+        });
+        if changed {
+            Ok(())
+        } else {
+            Err(AgentError::Disconnected(
+                "connection is no longer live".into(),
+            ))
+        }
+    }
+
+    fn ensure_thread_available(&self, thread_id: ThreadId) -> AgentResult<()> {
+        let states = self.sessions.states.lock().unwrap();
+        if states
+            .values()
+            .any(|session| session.thread_id == thread_id)
+        {
+            return Err(AgentError::Busy);
+        }
+        if states.len() >= 64 {
+            return Err(AgentError::Limit);
+        }
+        Ok(())
+    }
+
+    fn register_session(&self, session: Arc<SessionState>) -> AgentResult<()> {
+        let mut states = self.sessions.states.lock().unwrap();
+        // This check and insertion share the same lock as disconnect's drain.
+        self.ensure_connected()?;
+        if states.contains_key(&session.id)
+            || states
+                .values()
+                .any(|owned| owned.thread_id == session.thread_id)
+        {
+            return Err(AgentError::Busy);
+        }
+        if states.len() >= 64 {
+            return Err(AgentError::Limit);
+        }
+        states.insert(session.id.clone(), session);
+        Ok(())
+    }
+
     pub async fn call(&self, method: &str, params: Value, timeout: Duration) -> AgentResult<Value> {
         crate::schema::request(method, &params)?;
         match self.rpc.request(method, params, timeout).await {
@@ -145,10 +207,12 @@ impl Connection {
                 Ok(value)
             }
             Err(AgentError::Remote { code: -32000, .. }) => {
-                self.state.send_modify(|state| {
-                    state.state = ConnectionState::Authenticating;
+                self.update_live(|state| {
+                    if state.state != ConnectionState::Authenticating || method == "authenticate" {
+                        state.state = ConnectionState::AuthenticationRequired;
+                    }
                     state.error = Some("Authentication required".into());
-                });
+                })?;
                 Err(AgentError::AuthenticationRequired)
             }
             Err(AgentError::Remote { code: -32800, .. }) => Err(AgentError::Cancelled),
@@ -156,8 +220,13 @@ impl Connection {
         }
     }
     pub fn ensure_connected(&self) -> AgentResult<()> {
+        if self.rpc.cancelled().is_cancelled() {
+            return Err(AgentError::Disconnected("agent transport is closed".into()));
+        }
         match self.state.borrow().state {
-            ConnectionState::Connected | ConnectionState::Authenticating => Ok(()),
+            ConnectionState::Connected => Ok(()),
+            ConnectionState::AuthenticationRequired => Err(AgentError::AuthenticationRequired),
+            ConnectionState::Authenticating => Err(AgentError::Busy),
             _ => Err(AgentError::Disconnected("agent is not connected".into())),
         }
     }
@@ -171,6 +240,9 @@ impl Connection {
             .ok_or_else(|| wire::invalid("session update missing"))?;
         let session = self.sessions.states.lock().unwrap().get(&id).cloned();
         if let Some(session) = session {
+            if session.closed.load(Ordering::Acquire) || session.lifetime.is_cancelled() {
+                return Ok(());
+            }
             session.apply_update(&self.context, update).await
         } else if self.sessions.creating.load(Ordering::Acquire) > 0 {
             let mut updates = self.sessions.early_updates.lock().unwrap();
@@ -194,12 +266,16 @@ impl Connection {
         {
             return;
         }
-        self.process.request_stop();
-        self.rpc.fail("connection failed");
-        self.state.send_modify(|state| {
+        self.state.send_if_modified(|state| {
+            if state.state == ConnectionState::Disconnected {
+                return false;
+            }
             state.state = ConnectionState::Failed;
             state.error = Some(reason.clone());
+            true
         });
+        self.process.request_stop();
+        self.rpc.fail("connection failed");
         let sessions: Vec<_> = self
             .sessions
             .states
@@ -245,9 +321,7 @@ impl AgentConnection for AcpConnection {
         let connection = &self.0;
         let _setup = connection.setup_gate.lock().await;
         connection.ensure_connected()?;
-        if connection.sessions.states.lock().unwrap().len() >= 64 {
-            return Err(AgentError::Limit);
-        }
+        connection.ensure_thread_available(options.thread_id)?;
         let params = wire::session_params(&options, &connection.capabilities())?;
         // Validate filesystem ownership before asking the external agent to start work.
         let prepared = SessionState::build(
@@ -290,12 +364,7 @@ impl AgentConnection for AcpConnection {
             wire::configuration(&response, &SessionConfiguration::default())?;
         let session = Arc::new(prepared);
         let lock = session.update_gate.lock().await;
-        connection
-            .sessions
-            .states
-            .lock()
-            .unwrap()
-            .insert(id.clone(), session.clone());
+        connection.register_session(session.clone())?;
         let configuration = session.configuration.read().unwrap().clone();
         session
             .emit(
@@ -312,6 +381,7 @@ impl AgentConnection for AcpConnection {
             }
         }
         drop(lock);
+        connection.ensure_connected()?;
         setup_owner.completed = true;
         Ok(Arc::new(AcpSession {
             connection: connection.clone(),
@@ -341,9 +411,7 @@ impl AgentConnection for AcpConnection {
         if connection.sessions.states.lock().unwrap().contains_key(id) {
             return Err(AgentError::Busy);
         }
-        if connection.sessions.states.lock().unwrap().len() >= 64 {
-            return Err(AgentError::Limit);
-        }
+        connection.ensure_thread_available(options.thread_id)?;
         let mut params = wire::session_params(&options, &capabilities)?;
         params["sessionId"] = json!(id);
         let session = SessionState::build(
@@ -353,22 +421,20 @@ impl AgentConnection for AcpConnection {
             connection.rpc.cancelled().child_token(),
         )
         .await?;
-        if mode == RestoreMode::ReplayHistory {
-            session
-                .emit(&connection.context, ThreadEvent::HistoryStarted)
-                .await?;
-        }
-        connection
-            .sessions
-            .states
-            .lock()
-            .unwrap()
-            .insert(id.into(), session.clone());
         let mut setup_owner = SetupOwner {
             connection,
             completed: false,
         };
         let result = async {
+            {
+                let _update = session.update_gate.lock().await;
+                connection.register_session(session.clone())?;
+                if mode == RestoreMode::ReplayHistory {
+                    session
+                        .emit(&connection.context, ThreadEvent::HistoryStarted)
+                        .await?;
+                }
+            }
             let result = connection
                 .call(method, params, connection.timeouts.operation)
                 .await?;
@@ -387,6 +453,7 @@ impl AgentConnection for AcpConnection {
                     .emit(&connection.context, ThreadEvent::HistoryCompleted)
                     .await?;
             }
+            connection.ensure_connected()?;
             Ok::<_, AgentError>(())
         }
         .await;
@@ -419,6 +486,7 @@ impl AgentConnection for AcpConnection {
         cwd: Option<String>,
         cursor: Option<String>,
     ) -> AgentResult<SessionPage> {
+        self.0.ensure_connected()?;
         if !self.0.capabilities().list_sessions {
             return Err(AgentError::Unsupported("session listing".into()));
         }
@@ -453,6 +521,9 @@ impl AgentConnection for AcpConnection {
         })
     }
     async fn delete_session(&self, id: &str) -> AgentResult<()> {
+        let _setup = self.0.setup_gate.lock().await;
+        self.0.ensure_connected()?;
+        wire::id(&json!({"sessionId":id}), "sessionId")?;
         if !self.0.capabilities().delete_session {
             return Err(AgentError::Unsupported("session deletion".into()));
         }
@@ -469,7 +540,7 @@ impl AgentConnection for AcpConnection {
         Ok(())
     }
     async fn authenticate(&self, method: &str) -> AgentResult<()> {
-        let _auth = self.0.auth_gate.lock().await;
+        let _auth = self.0.auth_gate.try_lock().map_err(|_| AgentError::Busy)?;
         if !self
             .0
             .state
@@ -480,9 +551,14 @@ impl AgentConnection for AcpConnection {
         {
             return Err(wire::invalid("authentication method was not advertised"));
         }
-        self.0
-            .state
-            .send_modify(|state| state.state = ConnectionState::Authenticating);
+        self.0.update_live(|state| {
+            state.state = ConnectionState::Authenticating;
+            state.error = None;
+        })?;
+        let mut owner = AuthenticationOwner {
+            connection: &self.0,
+            completed: false,
+        };
         let result = self
             .0
             .call(
@@ -491,59 +567,63 @@ impl AgentConnection for AcpConnection {
                 self.0.timeouts.authentication,
             )
             .await;
+        owner.completed = true;
         match result {
-            Ok(_) => {
-                self.0.state.send_modify(|state| {
-                    state.state = ConnectionState::Connected;
-                    state.error = None;
-                });
-                Ok(())
-            }
+            Ok(_) => self.0.update_live(|state| {
+                state.state = ConnectionState::Connected;
+                state.error = None;
+            }),
             Err(error) => {
-                self.0
-                    .state
-                    .send_modify(|state| state.error = Some(error.to_string()));
+                if matches!(error, AgentError::Timeout) {
+                    self.0
+                        .rpc
+                        .fail("authentication deadline expired before completion");
+                }
+                let _ = self.0.update_live(|state| {
+                    state.state = ConnectionState::AuthenticationRequired;
+                    state.error = Some(error.to_string());
+                });
                 Err(error)
             }
         }
     }
     async fn logout(&self) -> AgentResult<()> {
+        let _auth = self.0.auth_gate.try_lock().map_err(|_| AgentError::Busy)?;
+        self.0.ensure_connected()?;
         if !self.0.capabilities().logout {
             return Err(AgentError::Unsupported("logout".into()));
         }
-        let _auth = self.0.auth_gate.lock().await;
-        self.0
+        let mut owner = AuthenticationOwner {
+            connection: &self.0,
+            completed: false,
+        };
+        let result = self
+            .0
             .call("logout", json!({}), self.0.timeouts.operation)
-            .await?;
-        self.0
-            .state
-            .send_modify(|state| state.state = ConnectionState::Authenticating);
-        Ok(())
+            .await;
+        owner.completed = true;
+        if matches!(result, Err(AgentError::Timeout)) {
+            self.0.rpc.fail("logout deadline expired before completion");
+        }
+        result?;
+        self.0.update_live(|state| {
+            state.state = ConnectionState::AuthenticationRequired;
+            state.error = Some("Authentication required".into());
+        })
     }
     async fn disconnect(&self) -> AgentResult<()> {
-        let sessions: Vec<_> = self
-            .0
-            .sessions
-            .states
-            .lock()
-            .unwrap()
-            .values()
-            .cloned()
-            .collect();
-        for session in &sessions {
-            session.lifetime.cancel();
-            session.turn.lock().unwrap().cancel();
-        }
-        self.0.callbacks.stop_terminals(None).await;
-        for session in &sessions {
-            session.closed.store(true, Ordering::Release);
-        }
-        self.0.sessions.states.lock().unwrap().clear();
         self.0.state.send_modify(|state| {
             state.state = ConnectionState::Disconnected;
             state.error = None;
         });
         self.0.rpc.fail("connection disconnected");
+        let sessions = std::mem::take(&mut *self.0.sessions.states.lock().unwrap());
+        for session in sessions.values() {
+            session.lifetime.cancel();
+            session.turn.lock().unwrap().cancel();
+            session.closed.store(true, Ordering::Release);
+        }
+        self.0.callbacks.stop_terminals(None).await;
         self.0.process.shutdown().await?;
         Ok(())
     }
@@ -641,6 +721,20 @@ impl Drop for SetupOwner<'_> {
             self.connection
                 .rpc
                 .fail("session setup did not complete under an owner");
+        }
+    }
+}
+
+struct AuthenticationOwner<'a> {
+    connection: &'a Connection,
+    completed: bool,
+}
+impl Drop for AuthenticationOwner<'_> {
+    fn drop(&mut self) {
+        if !self.completed {
+            self.connection
+                .rpc
+                .fail("authentication owner dropped before completion");
         }
     }
 }

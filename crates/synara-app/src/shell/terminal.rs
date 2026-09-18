@@ -173,7 +173,9 @@ impl TerminalView {
     }
 
     pub(super) fn exit_code(&self) -> Option<u32> {
-        self.snapshot.as_ref().and_then(|snapshot| snapshot.exit_code)
+        self.snapshot
+            .as_ref()
+            .and_then(|snapshot| snapshot.exit_code)
     }
 
     pub(super) fn terminal_error(&self) -> Option<&str> {
@@ -250,6 +252,10 @@ impl TerminalView {
         let Some(text) = cx.read_from_clipboard().and_then(|item| item.text()) else {
             return;
         };
+        self.prepare_paste(text, cx);
+    }
+
+    fn prepare_paste(&mut self, text: String, cx: &mut Context<Self>) {
         let paste = match PreparedPaste::new(&text) {
             Ok(paste) => paste,
             Err(error) => {
@@ -296,12 +302,7 @@ impl TerminalView {
         cx.notify();
     }
 
-    fn send_key(
-        &mut self,
-        key: TerminalKey,
-        modifiers: TerminalModifiers,
-        cx: &mut Context<Self>,
-    ) {
+    fn send_key(&mut self, key: TerminalKey, modifiers: TerminalModifiers, cx: &mut Context<Self>) {
         let Some(session) = &self.session else {
             return;
         };
@@ -355,10 +356,11 @@ impl TerminalView {
             "delete" => Some(TerminalKey::Delete),
             "pageup" => Some(TerminalKey::PageUp),
             "pagedown" => Some(TerminalKey::PageDown),
-            value if value
-                .strip_prefix('f')
-                .and_then(|number| number.parse::<u8>().ok())
-                .is_some_and(|number| (1..=12).contains(&number)) =>
+            value
+                if value
+                    .strip_prefix('f')
+                    .and_then(|number| number.parse::<u8>().ok())
+                    .is_some_and(|number| (1..=12).contains(&number)) =>
             {
                 Some(TerminalKey::Function(
                     value[1..].parse::<u8>().expect("validated function key"),
@@ -533,9 +535,10 @@ impl gpui::Render for TerminalView {
                     )
                     .child(
                         div()
+                            .id("terminal-paste-preview")
                             .max_h(px(120.))
                             .overflow_y_scroll()
-                            .whitespace_pre()
+                            .whitespace_normal()
                             .child(preview),
                     )
                     .child(
@@ -574,6 +577,12 @@ impl gpui::Render for TerminalView {
 }
 
 impl EntityInputHandler for TerminalView {
+    fn paste(&mut self, item: ClipboardItem, _: &mut Window, cx: &mut Context<Self>) {
+        if let Some(text) = item.text() {
+            self.prepare_paste(text, cx);
+        }
+    }
+
     fn text_for_range(
         &mut self,
         range: Range<usize>,
@@ -664,13 +673,7 @@ impl EntityInputHandler for TerminalView {
         Some(0)
     }
 
-    fn set_selected_text_range(
-        &mut self,
-        _: Range<usize>,
-        _: &mut Window,
-        _: &mut Context<Self>,
-    ) {
-    }
+    fn set_selected_text_range(&mut self, _: Range<usize>, _: &mut Window, _: &mut Context<Self>) {}
 
     fn text_length_utf16(&mut self, _: &mut Window, _: &mut Context<Self>) -> Option<usize> {
         Some(self.preedit.encode_utf16().count())
@@ -788,7 +791,7 @@ fn paint_grid(
             origin,
             px(LINE_HEIGHT),
             TextAlign::Left,
-            Some(bounds),
+            Some(bounds.size.width),
             window,
             cx,
         );
@@ -796,7 +799,7 @@ fn paint_grid(
             origin,
             px(LINE_HEIGHT),
             TextAlign::Left,
-            Some(bounds),
+            Some(bounds.size.width),
             window,
             cx,
         );
@@ -818,12 +821,10 @@ fn paint_preedit(
         color: Some(rgb(0x8bb9f5).into()),
         wavy: false,
     });
-    let line = window.text_system().shape_line(
-        SharedString::from(text.to_owned()),
-        px(14.),
-        &[run],
-        None,
-    );
+    let line =
+        window
+            .text_system()
+            .shape_line(SharedString::from(text.to_owned()), px(14.), &[run], None);
     let origin = gpui::point(
         bounds.left() + px(f32::from(cursor.1) * CELL_WIDTH),
         bounds.top() + px(f32::from(cursor.0) * LINE_HEIGHT),
@@ -832,7 +833,7 @@ fn paint_preedit(
         origin,
         px(LINE_HEIGHT),
         TextAlign::Left,
-        Some(bounds),
+        Some(bounds.size.width),
         window,
         cx,
     );
@@ -840,17 +841,13 @@ fn paint_preedit(
         origin,
         px(LINE_HEIGHT),
         TextAlign::Left,
-        Some(bounds),
+        Some(bounds.size.width),
         window,
         cx,
     );
 }
 
-fn selected(
-    selection: Option<((u16, u16), (u16, u16))>,
-    row: u16,
-    column: u16,
-) -> bool {
+fn selected(selection: Option<((u16, u16), (u16, u16))>, row: u16, column: u16) -> bool {
     let Some((start, end)) = selection else {
         return false;
     };
@@ -890,6 +887,36 @@ fn terminal_color(color: TerminalColor, default: u32) -> u32 {
         TerminalColor::Indexed(index) => {
             let level = 8 + u32::from(index - 232) * 10;
             (level << 16) | (level << 8) | level
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn ime_utf16_ranges_preserve_surrogate_boundaries() {
+        let text = "a😀é";
+        assert_eq!(utf16_range_to_bytes(text, 0..1), Some(0..1));
+        assert_eq!(utf16_range_to_bytes(text, 1..3), Some(1..5));
+        assert_eq!(utf16_range_to_bytes(text, 3..4), Some(5..7));
+        assert!(utf16_range_to_bytes(text, 2..3).is_none());
+        let reversed_start = 3;
+        let reversed_end = 2;
+        assert!(utf16_range_to_bytes(text, reversed_start..reversed_end).is_none());
+    }
+
+    #[test]
+    fn cell_selection_is_order_independent_and_inclusive() {
+        let forward = Some(((1, 3), (2, 5)));
+        let reverse = Some(((2, 5), (1, 3)));
+        for selection in [forward, reverse] {
+            assert!(selected(selection, 1, 3));
+            assert!(selected(selection, 2, 5));
+            assert!(selected(selection, 2, 0));
+            assert!(!selected(selection, 1, 2));
+            assert!(!selected(selection, 3, 0));
         }
     }
 }

@@ -18,18 +18,27 @@ IME, window teardown, navigation callbacks and crash recovery before a platform
 backend is selected for production. Do not import the legacy Synara application or
 upstream implementation code to perform the spike.
 
-## Executable policy
+## Executable policy and host domain
 
-`foundations/browser/lib.rs` is a dependency-free Rust policy foundation with an
-independent test target. It intentionally does not modify the shared Cargo
-workspace while BCD/AJM/FGH are running. It is NOT wired into the application.
+`foundations/browser/lib.rs` remains the dependency-free consent policy and its
+independent test target. `crates/synara-browser` now reuses that policy inside
+the normal Rust workspace and owns the typed browser-host domain. It is still not
+a native web engine or a claim of application embedding.
 
-The implemented policy provides bounded tabs and consent records, distinct manual,
-agent-task and authentication contexts, document generations, one-operation
-grants, expiry, revocation on navigation/close/crash, and stale-callback rejection.
-An agent cannot access manual or authentication tabs through this API. Sharing an
-existing manual tab requires a future explicit sharing flow, never a silent
-context change. Restart begins with no grants.
+The host domain provides bounded tabs and history, push/replace/reload/back/
+forward/redirect transitions, popup profile inheritance, crash/close cleanup,
+distinct manual/agent/authentication storage partitions, immutable one-operation
+agent approvals, task shutdown revocation and a length-delimited typed IPC command
+vocabulary. Commands cover only document read, screenshot, input, download,
+upload and clipboard actions. Upload/download identifiers are opaque tokens rather
+than filesystem paths, and there is no generic method string, shell command or
+page-to-host RPC surface.
+
+The consent policy provides document generations, one-operation grants, expiry,
+revocation on navigation/close/crash and stale-callback rejection. An agent cannot
+access manual or authentication tabs through this API. Sharing an existing manual
+or authenticated tab still requires a future explicit sharing flow, never a
+silent context change. Restart begins with no grants.
 
 ## Native adapter obligations
 
@@ -69,11 +78,13 @@ context change. Restart begins with no grants.
 
 ## Acceptance still open
 
-A real native browsing surface, tabs/history UI, DOM/capture/input adapter,
-permission cards, initial agent navigation, authenticated-browser sharing,
-profile persistence, downloads, OAuth integration and platform-level security
-checks remain open. Policy unit tests do not close K1-K5 or prove browser sandboxing.
-The terminal or device helper must not become a generic privileged browser bridge.
+A real native browsing surface, platform URL/origin callbacks, DOM/capture/input
+adapter, permission cards, initial blank-tab agent navigation, authenticated-
+browser sharing, native profile persistence, download/upload implementation,
+OAuth integration and platform-level security checks remain open. The typed host
+domain closes backend ambiguity around state, consent and IPC, but it does not by
+itself close K1-K5 or prove browser sandboxing. The terminal or device helper must
+not become a generic privileged browser bridge.
 
 ## Test command
 

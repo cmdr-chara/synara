@@ -3,6 +3,8 @@ mod bounded;
 mod filesystem;
 mod host;
 mod process;
+mod platform;
+mod secrets;
 #[cfg(target_os = "linux")]
 mod process_linux;
 mod remote_fs;
@@ -17,7 +19,9 @@ pub use bounded::*;
 pub use filesystem::*;
 pub use host::*;
 pub use process::*;
+pub use platform::*;
 pub use remote_fs::*;
+pub use secrets::*;
 #[cfg(unix)]
 pub use remote_terminal::*;
 pub use ssh::*;

@@ -459,13 +459,17 @@ PRAGMA user_version=2;")?;
         &self,
         key: &str,
     ) -> StorageResult<Option<T>> {
-        let data: Option<String> = self
+        self.preference_raw(key)?
+            .map(|data| decode(&data))
+            .transpose()
+    }
+    pub(crate) fn preference_raw(&self, key: &str) -> StorageResult<Option<String>> {
+        Ok(self
             .connection
             .query_row("SELECT data FROM preferences WHERE key=?1", [key], |row| {
                 row.get(0)
             })
-            .optional()?;
-        data.map(|data| decode(&data)).transpose()
+            .optional()?)
     }
     pub fn set_preference<T: serde::Serialize>(&self, key: &str, value: &T) -> StorageResult<()> {
         if !valid_preference_key(key) {
@@ -521,7 +525,12 @@ fn database_path(path: &Path) -> StorageResult<std::path::PathBuf> {
 fn valid_preference_key(key: &str) -> bool {
     matches!(
         key,
-        "appearance" | "selection" | "window" | "agent_profiles" | "ssh_profiles"
+        "appearance"
+            | "selection"
+            | "window"
+            | "agent_profiles"
+            | "ssh_profiles"
+            | "settings"
     )
 }
 

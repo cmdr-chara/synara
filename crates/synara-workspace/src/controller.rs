@@ -8,7 +8,7 @@ use std::{
 };
 use synara_agent::*;
 use synara_core::*;
-use synara_runtime::{ExecutionHost, LocalHost};
+use synara_runtime::{ExecutionHost, LocalHost, SecretStore, UnavailableSecretStore};
 use tokio::sync::Mutex;
 
 #[derive(Clone, Debug)]
@@ -53,6 +53,7 @@ pub struct Controller {
     pub workspace: WorkspaceService,
     backend: Arc<dyn AgentBackend>,
     interactions: Arc<dyn InteractionHandler>,
+    secrets: Arc<dyn SecretStore>,
     manager: ConnectionManager,
     tasks: Mutex<HashMap<TaskId, Arc<TaskSlot>>>,
     closing: AtomicBool,
@@ -64,10 +65,25 @@ impl Controller {
         backend: Arc<dyn AgentBackend>,
         interactions: Arc<dyn InteractionHandler>,
     ) -> Self {
+        Self::with_secret_store(
+            workspace,
+            backend,
+            interactions,
+            Arc::new(UnavailableSecretStore::unavailable()),
+        )
+    }
+
+    pub fn with_secret_store(
+        workspace: WorkspaceService,
+        backend: Arc<dyn AgentBackend>,
+        interactions: Arc<dyn InteractionHandler>,
+        secrets: Arc<dyn SecretStore>,
+    ) -> Self {
         Self {
             workspace,
             backend,
             interactions,
+            secrets,
             manager: ConnectionManager::default(),
             tasks: Mutex::new(HashMap::new()),
             closing: AtomicBool::new(false),
@@ -144,10 +160,9 @@ impl Controller {
             return Err(WorkspaceError::Invalid("registry installations are local. Configure an agent installed on the SSH host instead".into()));
         }
         let context = self.context(task).await?;
-        let profile = profile.clone();
-        let spec = tokio::task::spawn_blocking(move || profile.launch_spec())
-            .await
-            .map_err(|_| WorkspaceError::Worker)??;
+        let spec = profile
+            .launch_spec_with_secret_store(self.secrets.as_ref())
+            .await?;
         let connection = if restart {
             self.manager
                 .restart(self.backend.as_ref(), &spec, context)

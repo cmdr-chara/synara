@@ -53,6 +53,7 @@ impl SessionState {
                 let base = base
                     .canonicalize()
                     .map_err(synara_runtime::RuntimeError::from)?;
+                let requested_cwd = cwd.clone();
                 let cwd = cwd
                     .canonicalize()
                     .map_err(synara_runtime::RuntimeError::from)?;
@@ -61,7 +62,7 @@ impl SessionState {
                         "session directory is outside the selected workspace",
                     ));
                 }
-                let mut roots = vec![Arc::new(WorkspaceFs::open(&cwd)?)];
+                let mut roots = vec![Arc::new(WorkspaceFs::open(&requested_cwd)?)];
                 // Additional roots come only from the trusted UI/API caller, never from agent callbacks.
                 for directory in directories {
                     roots.push(Arc::new(WorkspaceFs::open(&directory)?));
@@ -106,7 +107,7 @@ impl SessionState {
         }
         self.roots
             .iter()
-            .filter(|root| path.starts_with(root.root()))
+            .filter(|root| root.relative(path).is_ok())
             .max_by_key(|root| root.root().as_os_str().len())
             .cloned()
             .ok_or_else(|| {

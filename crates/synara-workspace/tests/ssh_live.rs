@@ -51,7 +51,7 @@ async fn remote_git_uses_pinned_transport_for_status_stage_diff_and_commit() {
         status
             .entries
             .iter()
-            .any(|entry| entry.path == PathBuf::from("tracked.txt"))
+            .any(|entry| entry.path == std::path::Path::new("tracked.txt"))
     );
     assert!(
         service

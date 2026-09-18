@@ -320,6 +320,16 @@ deterministic. Broader workspace/product flows remain open.
 - [ ] F6 Keep local/remote identity separate. Never interpret a remote path through
   local filesystem callbacks or silently substitute a local execution host.
 
+Backend recovery checkpoint: `Store::backup_to`, `Store::restore_to` and asynchronous
+`WorkspaceService` wrappers now provide bounded online SQLite snapshots and
+no-clobber restore into a new path. They validate schema, integrity, foreign keys,
+JSON identities and event-head metadata, migrate supported older copies in staging,
+and support cancellation/deadlines. Originals and active stores are never replaced.
+Linux regression evidence covers WAL snapshots, concurrent writes, corrupt/newer/
+hostile inputs, symlinks, SQLite-full rollback and safe service boundaries. Native
+macOS/Windows CI is pending for this checkpoint, so F4 remains unchecked until that
+matrix is accepted. See [database recovery](docs/database-recovery.md).
+
 Acceptance: restart and interrupted-write tests preserve domain state or show an
 actionable failure, never a silently empty replacement database.
 

@@ -119,3 +119,20 @@ separate. This does not claim native UI, keychain, browser or device acceptance.
 
 State: OPEN pending results for the published checkpoint. No roadmap checkbox is
 closed from the existence of a workflow or an unexecuted test.
+
+
+### Recoverable SQLite snapshots and platform path identity
+
+Implemented bounded, cancellation-aware online backup and restore-to-new-path APIs,
+private staging, no-clobber publication, schema/integrity/foreign-key/identity checks,
+read-only older-schema import, rollback tests and asynchronous service entry points.
+The same checkpoint fixes the concrete macOS system-directory alias failure without
+following database leaves, and retains workspace root aliases through capability
+handles. It also corrects the observed Windows fixture path type and lint/format
+failures. No product UI changes are included.
+
+Local Linux checks use the recovered exact Rust 1.98.1 toolchain and locked offline
+inputs. Focused recovery tests and backend Clippy pass. Publication-specific native
+CI and full backend results will be appended after observation. F4 remains OPEN
+pending that verification. Other open items retain their inventory above, including
+work that is still implementable. They are not relabeled as external blockers.

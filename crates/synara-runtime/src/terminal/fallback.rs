@@ -336,13 +336,15 @@ fn write_input_loop(
             let out = output.lock().map_err(|_| RuntimeError::Closed)?;
             match input {
                 Input::Bytes(bytes) => Ok(bytes),
-                Input::Key(key, modifiers) => Ok(encode_terminal_key(
-                    key,
-                    modifiers,
-                    out.screen.application_cursor(),
-                )
-                .unwrap_or_default()),
-                Input::Paste(paste, decision) => paste.encode(decision, out.screen.bracketed_paste()),
+                Input::Key(key, modifiers) => {
+                    Ok(
+                        encode_terminal_key(key, modifiers, out.screen.application_cursor())
+                            .unwrap_or_default(),
+                    )
+                }
+                Input::Paste(paste, decision) => {
+                    paste.encode(decision, out.screen.bracketed_paste())
+                }
             }
         })();
         // No screen mutex is held across a potentially blocked pipe write.

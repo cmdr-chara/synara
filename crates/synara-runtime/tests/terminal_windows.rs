@@ -30,7 +30,12 @@ fn conpty_fixture_entry() {
 }
 
 fn launch(mode: &str) -> LaunchSpec {
-    let mut launch = LaunchSpec::new(std::env::current_exe().unwrap().to_string_lossy().into_owned());
+    let mut launch = LaunchSpec::new(
+        std::env::current_exe()
+            .unwrap()
+            .to_string_lossy()
+            .into_owned(),
+    );
     launch.args = vec![
         "--ignored".into(),
         "--exact".into(),
@@ -62,7 +67,10 @@ async fn conpty_output_is_retained_and_renderable_after_shutdown() {
     assert_eq!(grid.columns, 100);
     assert_eq!(grid.cells.len(), 2400);
     assert!(grid.revision > 0);
-    assert!(matches!(terminal.text("late input"), Err(RuntimeError::Closed)));
+    assert!(matches!(
+        terminal.text("late input"),
+        Err(RuntimeError::Closed)
+    ));
     terminal.scrollback(100).unwrap();
     terminal.kill().unwrap();
     terminal.kill().unwrap();
@@ -126,7 +134,7 @@ async fn conpty_flood_is_bounded_and_resize_remains_responsive() {
 #[test]
 fn conpty_partial_start_and_invalid_dimensions_fail_without_a_child() {
     let root = tempfile::tempdir().unwrap();
-    let missing = LaunchSpec::new(root.path().join("does-not-exist.exe").to_string_lossy());
+    let missing = LaunchSpec::new(root.path().join("does-not-exist.exe"));
     assert!(NativeTerminal::spawn(&missing, root.path(), 24, 80).is_err());
     assert!(NativeTerminal::spawn(&launch("blocked"), root.path(), 0, 80).is_err());
     assert!(NativeTerminal::spawn(&launch("blocked"), root.path(), 200, 500).is_err());

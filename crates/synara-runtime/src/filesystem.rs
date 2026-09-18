@@ -33,16 +33,19 @@ pub struct FileEntry {
 /// canonicalize-then-open strings, retain the workspace boundary during concurrent renames.
 pub struct WorkspaceFs {
     root: PathBuf,
+    requested_root: PathBuf,
     dir: Dir,
     max_bytes: usize,
     write_lock: Mutex<()>,
 }
 impl WorkspaceFs {
     pub fn open(root: &Path) -> Result<Self, RuntimeError> {
+        let requested_root = std::path::absolute(root)?;
         let root = root.canonicalize()?;
         let dir = Dir::open_ambient_dir(&root, ambient_authority())?;
         Ok(Self {
             root,
+            requested_root,
             dir,
             max_bytes: 8 * 1024 * 1024,
             write_lock: Mutex::new(()),
@@ -54,6 +57,7 @@ impl WorkspaceFs {
     pub fn relative(&self, path: &Path) -> Result<PathBuf, RuntimeError> {
         let relative = if path.is_absolute() {
             path.strip_prefix(&self.root)
+                .or_else(|_| path.strip_prefix(&self.requested_root))
                 .map_err(|_| RuntimeError::Denied("path is outside this workspace".into()))?
         } else {
             path
@@ -350,5 +354,29 @@ mod tests {
         assert!(fs.read(Path::new("link/secret")).is_err());
         assert!(fs.write(Path::new("link/new"), "bad", None, false).is_err());
         assert!(!outside.path().join("new").exists());
+    }
+}
+
+#[cfg(all(test, unix))]
+mod root_alias_tests {
+    use super::*;
+    #[test]
+    fn chosen_root_alias_is_bound_to_the_open_directory_not_later_alias_changes() {
+        let directory = tempfile::tempdir().unwrap();
+        let original = directory.path().join("original");
+        let outside = directory.path().join("outside");
+        std::fs::create_dir(&original).unwrap();
+        std::fs::create_dir(&outside).unwrap();
+        std::fs::write(original.join("file"), "original").unwrap();
+        std::fs::write(outside.join("file"), "outside").unwrap();
+        let alias = directory.path().join("alias");
+        std::os::unix::fs::symlink(&original, &alias).unwrap();
+        let fs = WorkspaceFs::open(&alias).unwrap();
+        assert_eq!(fs.read(&alias.join("file")).unwrap().text, "original");
+        std::fs::remove_file(&alias).unwrap();
+        std::os::unix::fs::symlink(&outside, &alias).unwrap();
+        assert_eq!(fs.read(&alias.join("file")).unwrap().text, "original");
+        assert!(fs.read(&outside.join("file")).is_err());
+        assert!(fs.read(&alias.join("../outside/file")).is_err());
     }
 }

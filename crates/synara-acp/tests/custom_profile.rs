@@ -63,8 +63,7 @@ async fn custom_command_profile_preserves_arguments_and_only_inherits_named_vari
     let last_stage = stderr
         .lines()
         .filter_map(|line| line.strip_prefix("profile-checkpoint:"))
-        .filter(|stage| STAGES.contains(stage))
-        .next_back()
+        .rfind(|stage| STAGES.contains(stage))
         .unwrap_or("no-checkpoint");
     assert!(
         result.status.success(),

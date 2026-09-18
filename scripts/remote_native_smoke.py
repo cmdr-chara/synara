@@ -148,7 +148,7 @@ def main():
 
         desktop.click(992, 24)
         time.sleep(0.7)
-        desktop.click(1040, 82)
+        desktop.click(1142, 82)
         time.sleep(1.2)
         desktop.click(790, 300)
         type_text(desktop, 'touch remote-ui-terminal-marker\n')
@@ -157,7 +157,7 @@ def main():
         desktop.screenshot('remote-terminal')
 
         # Restart through the same native terminal surface and prove stale-session isolation.
-        desktop.click(1040, 82)
+        desktop.click(1142, 82)
         time.sleep(1.2)
         desktop.click(790, 300)
         type_text(desktop, 'touch remote-ui-terminal-restarted\n')

@@ -6,39 +6,59 @@ It is a living engineering document, not a release announcement.
 
 ## Current checkpoint
 
-The roadmap and README navigation are published. The roadmap structure validator
-has passed its nine regression tests and validates 17 workstreams with 97 tasks.
-This is a coverage/navigation check, not a product-completion score.
+The four isolated implementation sessions have now been consolidated into the
+delivery branch. Current integrated candidate:
+`084a31db3df39440caf1523290ea721fdcbac7ca`.
 
-SSH transport advanced in `500d6622345366e8e41c152312274e4b10cbf033`.
-[SSH verification run 35243900061](https://github.com/cmdr-chara/synara/actions/runs/35243900061)
-passed six runtime integration tests and one ACP integration test covering two
-fixture-agent profiles. The tests use a real OpenSSH server restricted to loopback
-with disposable identity and host keys. They prove literal cwd/argument handling,
-binary-transparent stdio, separate stderr, remote exit reporting, rejection of
-unknown/changed host keys and wrong identities, and effective forwarding policy.
-They do not prove a remote desktop workflow, remote descendant cleanup or a real
-vendor service. After formatting corrections, candidate
-`98956cf2f9185592985e0ac3a4051009362ee415` passed static, SSH and full Linux native
-verification, including desktop interaction smoke, in
-[run 35245383218](https://github.com/cmdr-chara/synara/actions/runs/35245383218).
+Integrated session heads:
 
-Real vendor interoperability advanced in
-`a02d6b16468782e7b9d7be9158d3afc80d5e26c1`.
-[Vendor probe run 35246447427](https://github.com/cmdr-chara/synara/actions/runs/35246447427)
-installed checksum-pinned official OpenCode 1.18.31 and Gemini CLI 0.60.0 releases
-through Synara's registry service and initialized both through the same ACP
-backend. OpenCode created a session. Gemini returned an explicit authentication
-requirement. Both disconnected successfully. No credentials, authentication calls
-or prompts were used. This closes C1/C2 for the tested Linux OpenCode release,
-not C3/C4 authenticated workflows. [Compatibility evidence](docs/agent-compatibility.md)
-records versions, scope, results and remaining limitations. The first vendor
-candidate's separate formatting failure was identified for correction. Each
-subsequent candidate still needs its own applicable checks.
+- A/J/M: `7d22346c6664700859c14550fc861de5b9b3660f`
+- B/C/D: `f1e021905c59f081ba4aeee1f7dcb152d5f94aaa`
+- E/K/O/P: `fc4e27d41f96f65258ab7471b6871e9830ce057f`
+- F/G/H: `c835ee23d6fa43577bb3c7c50419cca5af2a301a`
 
-The direct terminal-grid work is still pending recovery. Local execution returned
-transport timeouts, so this checkpoint deliberately changed independent SSH files
-and did not replace the pending terminal implementation.
+The integration commits are `0750080f81a5684f6fe22afd91082cbea98b9777`,
+`7a88d1709492af8e87bee85205c3854f8cdc227a` and
+`3aac06a75020df78c74492232d071e0e79699d21`, followed by formatting correction
+`084a31db3df39440caf1523290ea721fdcbac7ca`. All four session heads are ancestors
+of the integrated candidate.
+
+Candidate-specific verification on September 18, 2026:
+
+- [Roadmap and formatting run 35341346630](https://github.com/cmdr-chara/synara/actions/runs/35341346630): PASS.
+- [SSH transport verification run 35341346636](https://github.com/cmdr-chara/synara/actions/runs/35341346636): PASS.
+- [Native verification run 35341346711](https://github.com/cmdr-chara/synara/actions/runs/35341346711): PASS, including formatting, workspace check, strict Clippy, workspace tests, native application/ACP fixture build and isolated GPUI desktop interaction smoke.
+
+The parentless rewrite root remains
+`43b1fb89bf19dadc388d18008f9ceb21b8215716`. Protected refs remained unchanged
+during integration: `main` at `657389cc86f345bcb7b11c843670fcdee326e91d`
+and `archive/pre-rewrite-main-2026-09-17` at
+`29b826b8d8e73cc270e311a4c0031b629316b2ec`. No PR was created.
+
+Important integrated progress since the earlier baseline:
+
+- the recovered native terminal surface, guarded paste, scrollback, selection/IME
+  handling and Linux PTY/process cleanup are now published;
+- pinned SSH workspaces now include remote files, guarded saves, remote PTY, Git,
+  reconnect handling and native Remote-panel coverage;
+- ACP connection/session ownership, scoped permissions/questions, bounded input
+  validation, custom command profiles and virtual transcript state are integrated;
+- registry recovery/integrity work, browser-host policy foundations, measurement
+  tooling and cross-platform compile groundwork are integrated;
+- SQLite migration/concurrent-open hardening, deterministic task ordering and
+  literal Git unstage behavior are integrated.
+
+Session completion does not mean every roadmap acceptance gate is closed. Real
+authenticated vendor journeys, full browser embedding, Apple device tooling,
+settings/secrets/platform UX, security/inspector completion, native macOS/Windows
+interaction acceptance and final delivery remain open where listed below.
+
+The GPUI application is functional and interaction-tested, but its visual shell is
+still prototype-quality. The next product-level UI pass will work directly on this
+branch, preserving the Rust backend while reimplementing the mature Synara
+Electron/main UX in native GPUI. Zeron is an architecture/design-quality reference
+only: study its GPUI structure and principles, but do not copy source, assets,
+exact tokens or distinctive compositions.
 
 ## How to read and maintain this roadmap
 
@@ -65,31 +85,36 @@ step instead of leaving an undocumented working tree.
 ## Audited baseline
 
 Baseline source: `1994d0346ff389b9c016690d7f77a204f7de3656`.
-The branch contains these integrated development foundations:
+The table below records the earlier baseline and is retained for comparison.
 
 | Area | Existing foundation | Remaining qualification |
 | --- | --- | --- |
 | Native desktop | GPUI shell, tabs, composer and platform text input | Accessibility, sustained-use testing and other platforms remain open |
-| Agent host | Generic ACP transport, negotiation, sessions and connection ownership | Live vendor interoperability and complete optional-capability coverage remain open |
-| Conversation | Normalized events, streaming, tools, permission and question surfaces | Long transcripts, follow/queue behavior and edge-case UX need further proof |
-| Workspaces | SQLite catalog, tasks, durable event delivery and startup restoration | Broader multi-project workflows, backup/recovery and remote UI remain open |
+| Agent host | Generic ACP transport, negotiation, sessions and connection ownership | Authenticated vendor interoperability and complete optional-capability coverage remain open |
+| Conversation | Normalized events, streaming, tools, permission and question surfaces | Product-level transcript/composer polish and broader long-session evidence remain open |
+| Workspaces | SQLite catalog, tasks, durable event delivery and startup restoration | Broader multi-project workflows, backup/recovery and product UX remain open |
 | Files and Git | Bounded UTF-8 editing, guarded saves, close confirmation, status/diff/staging/commit | Richer editor and Git operations remain open |
-| Registry | Catalog UI, explicit review, pinned package launchers and checked binary installation | Real distribution/platform matrix and update lifecycle need further proof |
-| Terminal/runtime | PTY shell, bounded history and process/execution-host services | Direct terminal grid and foreground-job cleanup are pending recovery/acceptance |
-| Verification | Linux build, lints, fixtures and native Xvfb interaction smoke | No general macOS, Windows, Wayland, SSH or live-provider acceptance claim |
+| Registry | Catalog UI, explicit review, pinned package launchers and checked binary installation | Full install/update lifecycle and real-distribution matrix remain open |
+| Terminal/runtime | PTY shell, bounded history and process/execution-host services | Cross-platform PTY/process acceptance remains open |
+| Verification | Linux build, lints, fixtures and native Xvfb interaction smoke | Native macOS/Windows interaction, Wayland and authenticated vendor acceptance remain open |
 
-Baseline CI: [Native verification run 35237792208](https://github.com/cmdr-chara/synara/actions/runs/35237792208).
-The workflow's source job may create an integration commit. Correlate the actual
-checked-out revision, not only the workflow trigger SHA, before reusing evidence.
-The table describes that baseline. New SSH and vendor protocol evidence is recorded
-in the current checkpoint and its lane below, without rewriting earlier results.
+Baseline CI:
+[Native verification run 35237792208](https://github.com/cmdr-chara/synara/actions/runs/35237792208).
 
-The previous local handoff reported direct terminal input/grid rendering, PTY
-resize, scrollback, reviewed paste and foreground-job cleanup under
-`/mnt/data/synara-native`. That path is a temporary execution workspace, not a
-portable project dependency. Recovery and comparison with remote are required
-before this work can be accepted. The latest recovery attempt encountered local
-execution transport timeouts. The remote branch remains accessible.
+### Integrated delta after the parallel sessions
+
+| Area | Integrated progress | Still open |
+| --- | --- | --- |
+| Terminal/runtime | Direct GPUI terminal grid, xterm key/mode handling, Unicode/wide cells, selection/copy, IME/preedit, reviewed paste, bounded scrollback, resize and Linux foreground-job cleanup | Windows ConPTY/Job Objects, macOS PTY lifecycle and broader platform acceptance |
+| Remote/SSH | Pinned trust, enrollment diagnostics, remote files/saves, PTY, Git, reconnect identity and native remote-workspace smoke | Explicit forwarding/development-server flow and stronger remote descendant-cleanup guarantees |
+| Agent/conversation | Connection/session ownership, authentication-required state, stale interaction expiry, scoped permissions/questions, input validation, custom command profiles and virtual transcript state | Authenticated real-agent end-to-end journeys and remaining B/D acceptance matrix |
+| Registry/browser/performance | Registry recovery and immutable review hardening, browser consent/lifecycle policy foundation, measurement/aggregation harnesses and GUI acceptance specification | Actual embedded browser, application performance baselines, accessibility runs and updater/distribution work |
+| Storage/Git | Atomic migration hardening, concurrent opener coverage, deterministic task ordering and literal unstage behavior including pre-first-commit | Full workspace/editor/Git product workflow matrix |
+| Integration | All four session heads consolidated under the independent root with final Linux native and SSH verification green | Product UI overhaul and remaining roadmap lanes below |
+
+Historical session handoff documents remain useful evidence for individual
+checkpoints, but statements that terminal or remote work are merely "pending
+recovery" are superseded by the integrated candidate above.
 
 ## Delivery order
 
@@ -106,77 +131,54 @@ performance measurement and platform checks run alongside implementation.
 
 ## A. Recover and complete the native terminal
 
-Status: **Partial / pending recovery**. Ownership: `synara-runtime`, `synara-app`.
+Status: **Integrated and verified on Linux; cross-platform acceptance remains open**.
+Ownership: `synara-runtime`, `synara-app`.
 
-### AJM branch checkpoint, September 17, 2026
+The previously unpublished terminal work was recovered and is now part of the
+delivery branch through A/J/M head
+`7d22346c6664700859c14550fc861de5b9b3660f`. The integrated implementation
+includes the direct native GPUI terminal surface, cell/style rendering,
+Unicode/wide-cell handling, cursor and terminal metadata, application-cursor and
+bracketed-paste modes, selection/copy, GPUI text-input/IME handling, guarded
+clipboard paste review, user-owned scrollback, resize and retained final output.
 
-The parallel A/J/M mission is authorized to publish only `astra/session-ajm`,
-starting at `1cd24dd6f5ac9571c1ea2b7329bcb5fc1a4ad121`. It must not write the
-integration branch, merge another session, or create a PR. The integration-wide
-policy elsewhere in this roadmap is not authorization to bypass this isolation.
+Linux PTY regressions cover direct control input, resize ordering, final-output
+retention, bounded input, repeated start/stop, partial-start cleanup and foreground
+jobs in separate process groups. The final integrated native verification and SSH
+runs are recorded in the current checkpoint.
 
-Published implementation candidate:
-`b4d0c1bc288aad5df3a3186a62d40169b6a5151e`, Linux x86-64, Ubuntu 24.04, Rust 1.98.1.
-[Run 35263664268](https://github.com/cmdr-chara/synara/actions/runs/35263664268)
-passed formatting, workspace check, strict Clippy, workspace tests, structural
-checks, native build, the existing native desktop smoke, and loopback SSH tests.
-That run was triggered by staging commit `605a5b18d8b9cfd8c5d6b6a43c964ffdda2d1f95`
-but checked the applied implementation candidate above. Its source bundle and
-revision file are the evidence of the actual tested checkout.
-
-The published terminal backend includes native cell snapshots, xterm key encoding,
-reviewed/sanitized paste preparation, bounded scrollback, terminal replies and
-Linux PTY lifecycle regressions. The replacement GPUI terminal surface and its
-new interaction tests are not in this published implementation candidate. Existing
-native smoke success does not prove the replacement surface, selection, IME,
-paste-review dialog or its window-close path.
-
-Later handoffs reported additional work under `/mnt/data/synara-ajm` and test
-artifacts under `/mnt/data/ajm-finish`. Those are temporary execution paths, not
-project dependencies. The latest recovery attempt returned transport timeouts
-from both shell and Python execution, including a minimal executable probe. The
-local diff and reported new GUI test results could not be re-read. Preserve that
-work and recover the complete diff before resolving shared-file overlaps. Do not
-replace the local worktree with a fresh clone and call the unpublished work saved.
-
-Independent cleanup was published as
-`0fa1ff027859b81e0a159c33dcd0c7ead352e8e8`: the SSH/AJM workflow no longer applies
-source envelopes or pushes commits. It has read-only repository permissions,
-checks out the exact push SHA, validates ancestry, and records the tested revision
-in each evidence artifact. New results must be correlated with that revision.
-The cleanup does not close A1-A7 or claim recovery of the unpublished GUI.
-
-- [ ] A1 Recover the previous local diff without resetting, cleaning or replacing
+- [x] A1 Recover the previous local diff without resetting, cleaning or replacing
   uncommitted work. Compare every file with the published baseline. Preserve a
   recoverable checkpoint before resolving overlaps.
-- [ ] A2 Integrate direct keyboard input, native cell rendering, ANSI colors,
+- [x] A2 Integrate direct keyboard input, native cell rendering, ANSI colors,
   Unicode/wide characters, cursor, title and working-directory updates.
-- [ ] A3 Exercise interactive shells, control keys, application cursor modes,
+- [x] A3 Exercise interactive shells, control keys, application cursor modes,
   alternate screen, terminal replies, resize, focus, selection/copy and IME.
-- [ ] A4 Complete bounded scrollback and user-owned scroll position. Retain final
+- [x] A4 Complete bounded scrollback and user-owned scroll position. Retain final
   output after process exit without retaining dead PTY resources.
-- [ ] A5 Require deliberate review for dangerous pasted control sequences or
+- [x] A5 Require deliberate review for dangerous pasted control sequences or
   multiline commands. Support bracketed paste without silent execution.
-- [ ] A6 Prove interrupt, stop, close and restart clean up the shell and foreground
+- [x] A6 Prove interrupt, stop, close and restart clean up the shell and foreground
   job/process group. Cover exit-before-stop, concurrent stop and reader teardown.
-- [ ] A7 Run full desktop regression and focused terminal tests, then publish the
+- [x] A7 Run full desktop regression and focused terminal tests, then publish the
   coherent terminal checkpoint. Extend CI smoke to the accepted behavior.
 
-Acceptance: a real PTY shell accepts input in the native grid, resizes and renders
-correctly, preserves history, never pastes an unreviewed command into execution,
-and leaves no owned foreground process after shutdown. Linux proof does not close
-Windows ConPTY or macOS acceptance.
+Acceptance for the Linux implementation is met by the focused PTY/terminal tests
+and integrated native smoke. This does not establish Windows ConPTY/Job Object or
+macOS terminal acceptance; those platform gates remain under M/P.
 
 ## B. Complete generic agent and connection lifecycle
 
-BCD checkpoint in progress on `astra/session-bcd`: request-scoped cancellation
-now expires login forms with their parent RPC, and terminal transport failures
-retain their first diagnostic. New deterministic request/interaction tests are
-being verified. B2/B5 and D5/D6 remain partial until the candidate-specific
-checks and the remaining acceptance matrix pass. See
-[the BCD handoff](docs/bcd-session-handoff.md) for scope and open gates.
+Status: **Integrated foundations; acceptance remains partial**.
+Ownership: `synara-agent`, `synara-acp`, `synara-runtime`.
 
-Status: **Partial**. Ownership: `synara-agent`, `synara-acp`, `synara-runtime`.
+The B/C/D session head
+`f1e021905c59f081ba4aeee1f7dcb152d5f94aaa` is now integrated. It adds explicit
+authentication-required state, stronger connect/auth/disconnect ownership,
+multi-session isolation, stale interaction expiry, bounded input/schema validation
+and deterministic shutdown behavior. The final integrated workspace checks and
+native smoke pass, superseding the earlier branch-publication blocker. Historical
+slice-level evidence remains in [the BCD handoff](docs/bcd-session-handoff.md).
 
 - [ ] B1 Audit ACP method/capability coverage against current primary protocol and
   pinned Rust SDK documentation. Keep stable/unstable behavior explicit.
@@ -196,30 +198,13 @@ Status: **Partial**. Ownership: `synara-agent`, `synara-acp`, `synara-runtime`.
   Preserve protocol-independent backend/connection/session contracts. Add boundary
   checks so only `synara-acp` depends directly on ACP schema types.
 
-Acceptance: one adapter passes protocol, lifecycle and concurrency tests for
-multiple agent configurations. ACP dependency upgrades stay inside the adapter
-boundary rather than changing unrelated domain or UI types.
-
-BCD isolated continuation: first interaction candidate
-`a3693807deb7531959a14051c249a71f311e310e` passed full Linux checks and native smoke
-in [run 35255541692](https://github.com/cmdr-chara/synara/actions/runs/35255541692).
-The next B2/B3/B4 slice adds explicit authentication-required state, prevents late
-login/setup resurrection, rejects duplicate task ownership, serializes shutdown
-against connection acquisition and tests two-session cancellation/permission
-isolation. Candidate `0e9e66d46b68c27e1e50ebca1b0d63328f0c6756` passed full
-Linux verification and desktop smoke in rerun
-[35258450705](https://github.com/cmdr-chara/synara/actions/runs/35258450705).
-B4 passes on that candidate: `lifecycle_integration`, manager ownership tests and
-`process_integration` prove shared connection ownership, no duplicate session for
-a thread, repeated prompts without respawn and isolated events/cancellation. B2/B3
-remain partial. The terminal-output flake observed on the initial focused repeat
-is recorded, not fixed or suppressed by BCD. See the
-[BCD handoff](docs/bcd-session-handoff.md) for evidence and the terminal-lifetime
-request reserved for A/J/M.
+Acceptance remains open because the complete current-protocol capability matrix,
+all malformed-transport cases and the full negotiated config/MCP surface have not
+been accepted as one final matrix.
 
 ## C. Prove real-agent interoperability
 
-Status: **Partial**, reviewed-release installation and no-credentials proof passed.
+Status: **Partial**, reviewed-release and custom-profile proof integrated.
 Ownership: agent integration and QA.
 
 C1/C2 evidence: candidate `a02d6b16468782e7b9d7be9158d3afc80d5e26c1`, Linux x64,
@@ -237,10 +222,16 @@ and the native vendor-agent interaction path remain unverified.
   streaming, tools, permission allow/deny, cancellation and session restoration.
 - [ ] C4 Repeat with a second independently implemented ACP-compatible vendor
   agent without adding another full backend.
-- [ ] C5 Repeat with a user-defined command/args/environment profile without source
+- [x] C5 Repeat with a user-defined command/args/environment profile without source
   changes, including paths and arguments containing spaces and Unicode.
 - [ ] C6 Record executable/version, OS, supported methods, unsupported features,
   results and redacted diagnostics. Do not fabricate provider/model availability.
+
+The integrated B/C/D branch adds a persisted custom-command fixture covering spaces,
+Unicode, literal shell metacharacters and controlled environment-variable names
+through the same generic backend, closing C5. C3/C4 remain open because no
+user-authorized vendor credentials were supplied for authenticated prompt/tool
+journeys.
 
 Acceptance: a compatibility matrix distinguishes fixture, no-credential protocol
 and authenticated end-to-end results. Missing credentials leave C3/C4 open but do
@@ -248,7 +239,14 @@ not prevent transport, registry, UI or other independent work.
 
 ## D. Conversation, permissions and structured questions
 
-Status: **Partial**. Ownership: `synara-core`, `synara-agent`, `synara-app`.
+Status: **Partial, with scoped interactions and virtual transcript state integrated**.
+Ownership: `synara-core`, `synara-agent`, `synara-app`.
+
+The integrated B/C/D work adds bounded typed-input validation, request-scoped
+question/permission lifetime handling and virtual transcript scroll ownership.
+Final native CI proves that this combined source compiles, tests and opens in the
+GPUI desktop, but it does not yet close the long-conversation and complete
+interaction acceptance matrix below.
 
 - [ ] D1 Complete rendering and durable replay for user/assistant text, thinking,
   tool lifecycle/results/failures, plans, usage, compaction, status and errors.
@@ -271,7 +269,14 @@ requests, concurrent requests, keyboard operation and restored conversations.
 
 ## E. Registry, installation and custom agents
 
-Status: **Partial**. Ownership: `synara-registry`, `synara-workspace`, `synara-app`.
+Status: **Partial, registry recovery/integrity hardening integrated**.
+Ownership: `synara-registry`, `synara-workspace`, `synara-app`.
+
+The integrated E/K/O/P work adds offline catalog fallback, immutable review
+fingerprints, update classification, path hardening and interrupted-install
+recovery tests. macOS arm64, Windows x64 and Linux registry/consumer compile-test
+groundwork passed in the isolated session. Full E lifecycle acceptance remains
+open as listed below.
 
 - [ ] E1 Keep official registry schema, origin, cache, metadata and platform matching
   current. Validate unsupported schema versions and failed/offline refresh behavior.
@@ -294,7 +299,13 @@ recoverable failure and no automatic launch merely from browsing/importing.
 
 ## F. Workspaces, projects, tasks and persistence
 
-Status: **Partial**. Ownership: `synara-core`, `synara-workspace`, `synara-app`.
+Status: **Partial, persistence hardening integrated**.
+Ownership: `synara-core`, `synara-workspace`, `synara-app`.
+
+The F/G/H integration hardens SQLite schema upgrades into one immediate
+transaction, rechecks schema state under the writer lock, adds rollback and
+concurrent-opener regression coverage and makes equal-recency task ordering
+deterministic. Broader workspace/product flows remain open.
 
 - [ ] F1 Complete multi-workspace/project/task create, select, rename, archive,
   recent-work and deletion workflows with clear data-retention behavior.
@@ -333,7 +344,14 @@ formatting, and oversized/untrusted inputs do not freeze or escape the workspace
 
 ## H. Git workflows
 
-Status: **Partial**. Ownership: Rust system-Git service and Changes UI.
+Status: **Partial, literal unstage hardening integrated**.
+Ownership: Rust system-Git service and Changes UI.
+
+The F/G/H integration switches path-only unstage to a literal reset form that also
+works before the first commit and adds coverage for spaces, Unicode, bracket
+characters, leading dashes, nested paths, detached HEAD and preservation of
+unrelated staged/working-tree content. The broader Git workflow matrix remains
+open.
 
 - [ ] H1 Harden status, staged/unstaged diff, literal-path stage/unstage and commit
   for unusual filenames, nested directories, detached HEAD and empty repositories.
@@ -369,54 +387,48 @@ Platform-native UX and credential behavior need real per-platform tests.
 
 ## J. SSH and remote development
 
-Status: **Partial**, pinned transport and controlled-server proof integrated.
+Status: **Integrated Linux remote workflow; forwarding and stronger cleanup gates remain open**.
 Ownership: execution host, workspace services and native remote UI.
 
-The current checkpoint proves selected identity/trust files, no silent host-key
-enrollment, argument/cwd quoting, separated streams and the same ACP adapter over
-real SSH for two fixture configurations. J1/J2/J7 remain open for their remaining
-UI, remote-ownership and full-workspace requirements. Remote filesystem callbacks
-must stay unavailable until they can enforce remote containment.
+The recovered A/J/M implementation is integrated. It provides pinned host/identity
+configuration, explicit enrollment diagnostics, fail-closed trust behavior,
+structured remote execution, guarded remote filesystem access, remote document
+save helpers, remote PTY, host-aware Git, persisted remote workspace identity,
+disconnect observation/fresh reconnect and a native Remote panel.
 
-AJM publication boundary: implementation candidate
-`b4d0c1bc288aad5df3a3186a62d40169b6a5151e` retains the pinned SSH transport and its
-controlled-server verification, including
-[run 35263664268](https://github.com/cmdr-chara/synara/actions/runs/35263664268).
-The remote filesystem helper, remote PTY adapter, remote Git and native Remote
-panel were reported in later local handoffs, not published in that candidate.
-Those reports are not substitutes for recovered source and candidate-specific
-runtime and GUI test artifacts. J3-J5 and the remote UI portion of J7 stay open.
+Controlled loopback SSH verification passes on the final integrated candidate.
+Native remote smoke exercises enrollment, files and terminal interaction. This is
+real SSH evidence, not a mock transport. It still does not prove explicit
+development-server forwarding or complete cleanup of every remotely detached
+descendant.
 
-Recovery must include the complete host-aware service and GUI integration diff,
-not only the individually attached `remote_fs.rs`, `remote_terminal.rs` and helper
-entry point. Verify guarded writes, explicit unknown-write outcomes, no local
-fallback, retained terminal state and fresh reconnect identity after recovery.
-ACP remote filesystem callback routing remains a dependency to hand to the B/C/D
-owner rather than implementing it in this isolated branch. Never advertise local
-callbacks as remote filesystem support. J6 remains unimplemented and forwarding
-must remain disabled. Termination of a local SSH client is not evidence that all
-remote descendants terminated.
-
-- [ ] J1 Complete host profiles, identity/authentication, known-host verification,
+- [x] J1 Complete host profiles, identity/authentication, known-host verification,
   explicit host-key enrollment and actionable changed-key refusal.
-- [ ] J2 Prove remote cwd/environment/executable quoting, agent stdio transport and
+- [x] J2 Prove remote cwd/environment/executable quoting, agent stdio transport and
   remote process ownership through the same backend as local execution.
-- [ ] J3 Implement remote filesystem read/write/explorer and guarded saves with
+- [x] J3 Implement remote filesystem read/write/explorer and guarded saves with
   remote containment. Never fall back to local paths on transport failure.
-- [ ] J4 Add remote PTY input/output/resize, Git and local/remote task association.
+- [x] J4 Add remote PTY input/output/resize, Git and local/remote task association.
 - [ ] J5 Implement reconnect, network loss, timeouts, session ownership and cleanup.
   Killing a local SSH client is not proof of remote process cleanup.
 - [ ] J6 Add explicit port forwarding, remote development-server discovery and
   consented browser connection with loopback/security defaults.
-- [ ] J7 Test against a controlled SSH server with pinned host keys, then exercise
+- [x] J7 Test against a controlled SSH server with pinned host keys, then exercise
   the native remote-workspace journey. Include failure and hostile-input cases.
 
-Acceptance: remote files, agent, terminal and Git operate on the selected host,
-unknown/changed hosts fail closed, and disconnects preserve data and ownership.
+Acceptance is partial: files, agent transport, terminal and Git run on the selected
+host with fail-closed trust and reconnect coverage. J5 remains open for stronger
+remote descendant/process ownership guarantees, and J6 remains unimplemented.
 
 ## K. Browser host
 
-Status: **Open**. Ownership: narrow native browser-host boundary and GPUI shell.
+Status: **Foundation integrated; native browser embedding remains open**.
+Ownership: narrow native browser-host boundary and GPUI shell.
+
+The E/K/O/P session contributes a standalone browser consent/lifecycle policy with
+one-shot grants, revocation on navigation/close/crash, expiry and negative tests.
+No embedded browser engine, tab surface, capture path or helper IPC is wired into
+the application yet, so K1-K5 remain open.
 
 - [ ] K1 Select a supported embedding boundary per target and keep the application
   domain in Rust. Document process, rendering and IPC ownership.
@@ -450,23 +462,14 @@ with reliable disconnect/cleanup and no undocumented privilege escalation.
 
 ## M. Application runtime and service boundaries
 
-Status: **Partial**. Ownership: `synara-runtime` and platform adapters.
+Status: **Partial, Linux process/PTY ownership substantially advanced**.
+Ownership: `synara-runtime` and platform adapters.
 
-AJM implementation candidate `b4d0c1bc288aad5df3a3186a62d40169b6a5151e` publishes
-Linux process-group supervision that cleans up before reaping the leader, along
-with aggregate launch-allocation bounds. The earlier terminal ownership changes
-are in the same ancestry. Linux workspace and loopback SSH checks passed in
-[run 35263664268](https://github.com/cmdr-chara/synara/actions/runs/35263664268).
-This advances M1/M2/M4 without closing their broader acceptance requirements.
-
-Missing evidence includes the unpublished terminal GUI's close/restart path,
-final remote-helper integration, Windows Job Objects/ConPTY and macOS behavior.
-Later locally reported background-startup changes must be recovered and retested
-rather than assumed present. Process-group/session cleanup is not an operating
-system sandbox and does not contain a process that deliberately detaches outside
-the owned boundary. No Windows, macOS or complete remote-descendant guarantee is
-inferred from the Linux tests. M3 remote-service acceptance awaits recovery of the
-bounded helper protocol and its full negative-path tests.
+The integrated A/J/M work includes POSIX process-group supervision, aggregate
+launch-allocation bounds, PTY lifetime tests, shutdown ordering and host-aware
+remote helper boundaries. Linux regression coverage proves foreground-job cleanup,
+normal/partial-start teardown, repeated terminal cycles and final-output retention.
+The native application now shuts down its owned terminal before exit.
 
 - [ ] M1 Complete POSIX process groups, Windows process trees/Job Objects and
   PTY/ConPTY lifetime ownership, including spawn and partial-start failures.
@@ -477,8 +480,9 @@ bounded helper protocol and its full negative-path tests.
 - [ ] M4 Ensure agents, terminals and browser/device helpers do not become orphaned
   after task close, restart, connection failure or application shutdown.
 
-Acceptance: lifecycle and resource tests measure owned processes/readers/handles
-before and after repeated cycles, with platform-specific evidence.
+Linux evidence closes important implementation slices but not the cross-platform
+wording of M1, browser/device ownership in M4 or the complete service-boundary
+matrix. Windows Job Objects/ConPTY and macOS lifecycle acceptance remain open.
 
 ## N. Security, logging and ACP inspector
 
@@ -503,7 +507,13 @@ smoke. Callback containment is not described as an OS sandbox.
 
 ## O. Performance and accessibility evidence
 
-Status: **Open**. Ownership: native UI, services and QA.
+Status: **Groundwork integrated; product measurements/accessibility evidence open**.
+Ownership: native UI, services and QA.
+
+The E/K/O/P integration adds bounded process measurement and sample aggregation
+harnesses plus a detailed GUI/performance/accessibility acceptance matrix. These
+tools are verification groundwork, not application benchmark results. O1-O4 stay
+open until real named-hardware workloads and accessibility journeys are recorded.
 
 - [ ] O1 Establish reproducible startup, idle RAM/CPU, composer, transcript,
   terminal and large-file/diff benchmarks on named hardware/builds.
@@ -518,7 +528,12 @@ No claim that a Rust/GPUI implementation is automatically faster or accessible.
 
 ## P. Cross-platform, distribution and updater
 
-Status: **Open**, Linux development proof already exists.
+Status: **Cross-platform compile groundwork integrated; native acceptance remains open**.
+
+The E/K/O/P session verified registry/consumer and browser-policy foundations on
+macOS arm64, Windows x64 and Linux x64, and compiled the native application on
+macOS arm64 and Windows x64. Those results do not constitute native GUI,
+terminal, credential, installer or updater acceptance, so P1-P5 remain open.
 
 - [ ] P1 Add native build/test lanes for macOS arm64 and Windows x64 and retain
   Linux x64. Exercise X11 and Wayland separately.
@@ -537,7 +552,12 @@ results. CI cross-compilation alone does not qualify a target as supported.
 
 ## Q. Final integration, documentation and delivery
 
-Status: **Open**, applied at every checkpoint.
+Status: **Open for final delivery; current parallel-session integration completed**.
+
+The four completed session branches are now integrated on the independent rewrite
+lineage and the exact combined candidate passed static, SSH and native Linux
+verification. Q remains a final-candidate gate because the product UI overhaul and
+other open lanes below must be reverified again before delivery.
 
 - [ ] Q1 Run the applicable verification commands below against the exact final
   candidate, not only an earlier green commit.
@@ -622,6 +642,25 @@ Remaining limitations:
 | Security, performance, platform acceptance and documentation | N, O, P, Q |
 
 ## Immediate execution queue
+
+1. Replace the prototype-quality GPUI shell with the product UI overhaul directly
+   on `astra/gpui-clean-rewrite`. Preserve the Rust backend and mature Synara
+   Electron/main workflows. Use Zeron only as a GPUI architecture/design-quality
+   reference and independently implement Synara-owned components, tokens and
+   composition without copying source/assets or reproducing it one-to-one.
+2. Finish I and N alongside the UI work: settings/platform UX, authentication and
+   secret handling, security boundaries, diagnostics and ACP inspector.
+3. Continue the remaining product gates that are not blocked by credentials or
+   platform hardware: B/C/D acceptance gaps, E lifecycle, K native browser adapter,
+   J5/J6 remote cleanup/forwarding and O/P real measurement/platform evidence.
+   C3/C4 require separately authorized vendor credentials. L requires supported
+   Apple hardware/OS evidence and remains lower priority than the core desktop path.
+4. Run Q against the exact final candidate only after the product UI and applicable
+   open lanes are integrated: synchronize docs, run the complete verification
+   contract, record actual agents/platforms tested, verify the independent root and
+   protected refs, and publish only `astra/gpui-clean-rewrite`.
+
+
 
 1. Finish final-candidate native, static, SSH and vendor-probe verification. Keep
    the published roadmap and its README link current with exact evidence.

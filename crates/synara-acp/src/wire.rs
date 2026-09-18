@@ -595,11 +595,13 @@ mod tests {
             url: "https://example.invalid/mcp".into(),
             headers: BTreeMap::from([("X-Test".into(), "value".into())]),
         });
-        options.context_servers.push(ContextServer::ServerSentEvents {
-            name: "sse".into(),
-            url: "https://example.invalid/events".into(),
-            headers: BTreeMap::new(),
-        });
+        options
+            .context_servers
+            .push(ContextServer::ServerSentEvents {
+                name: "sse".into(),
+                url: "https://example.invalid/events".into(),
+                headers: BTreeMap::new(),
+            });
         let capabilities = AgentCapabilities {
             additional_directories: true,
             mcp_http: true,

@@ -422,8 +422,7 @@ async fn negotiated_session_lifecycle_covers_titles_restore_list_delete_and_extr
     assert!(
         page.sessions
             .iter()
-            .any(|item| item.id == created.id()
-                && item.title.as_deref() == Some("Fixture task"))
+            .any(|item| item.id == created.id() && item.title.as_deref() == Some("Fixture task"))
     );
 
     let history_thread = ThreadId::new();
@@ -453,7 +452,10 @@ async fn negotiated_session_lifecycle_covers_titles_restore_list_delete_and_extr
     created.close().await.unwrap();
     history.close().await.unwrap();
     resumed.close().await.unwrap();
-    h.connection.delete_session("detached-session").await.unwrap();
+    h.connection
+        .delete_session("detached-session")
+        .await
+        .unwrap();
     assert_eq!(calls(&h.connection, "session/load"), 1);
     assert_eq!(calls(&h.connection, "session/resume"), 1);
     assert_eq!(calls(&h.connection, "session/delete"), 1);

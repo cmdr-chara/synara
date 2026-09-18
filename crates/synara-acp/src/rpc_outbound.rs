@@ -1,7 +1,7 @@
 //! Bounded, cancellation-aware ownership of protocol output.
 use super::{MAX_FRAME, State};
 use serde_json::Value;
-use std::{io, sync::Arc, time::Duration};
+use std::{fmt, io, sync::Arc, time::Duration};
 use synara_agent::{AgentError, AgentResult};
 use synara_runtime::ProcessWriter;
 use tokio::{
@@ -14,11 +14,20 @@ use tokio_util::sync::CancellationToken;
 // This is a byte budget, not a claim about total process memory or Value storage.
 const MAX_OUTBOUND_BYTES: usize = 2 * (MAX_FRAME + 1);
 
-#[derive(Debug)]
 pub(super) struct Frame {
     bytes: Vec<u8>,
     lifetime: Option<CancellationToken>,
     _budget: OwnedSemaphorePermit,
+}
+
+impl fmt::Debug for Frame {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter
+            .debug_struct("Frame")
+            .field("byte_count", &self.bytes.len())
+            .field("request_scoped", &self.lifetime.is_some())
+            .finish_non_exhaustive()
+    }
 }
 
 #[derive(Clone)]
@@ -57,7 +66,8 @@ impl OutboundQueue {
             let mut buffer = CappedBuffer(Vec::new());
             serde_json::to_writer(&mut buffer, &value).map_err(|_| AgentError::Limit)?;
             buffer.0.push(b'\n');
-            let unused = MAX_FRAME + 1 - buffer.0.len();
+            // Account for allocated capacity, not only logical payload length.
+            let unused = MAX_FRAME + 1 - buffer.0.capacity();
             drop(budget.split(unused).expect("reserved maximum frame size"));
             state.trace.lock().unwrap().push("out", &value);
             self.sender
@@ -87,7 +97,19 @@ impl io::Write for CappedBuffer {
         if bytes.len() > MAX_FRAME.saturating_sub(self.0.len()) {
             return Err(io::Error::other("protocol frame exceeds limit"));
         }
-        self.0.reserve_exact(bytes.len());
+        // Grow geometrically for escaped strings/arrays without Vec's implicit
+        // doubling past the reserved maximum when the delimiter is appended.
+        let required = self.0.len() + bytes.len() + 1;
+        if required > self.0.capacity() {
+            let capacity = self
+                .0
+                .capacity()
+                .max(64)
+                .saturating_mul(2)
+                .max(required)
+                .min(MAX_FRAME + 1);
+            self.0.reserve_exact(capacity - self.0.len());
+        }
         self.0.extend_from_slice(bytes);
         Ok(bytes.len())
     }
@@ -156,8 +178,11 @@ pub(super) async fn write_loop(
         let Some(frame) = frame else {
             break;
         };
-        match tokio::time::timeout(Duration::from_secs(30), write_frame(&mut writer, &state, &frame))
-            .await
+        match tokio::time::timeout(
+            Duration::from_secs(30),
+            write_frame(&mut writer, &state, &frame),
+        )
+        .await
         {
             Ok(Ok(())) => {}
             Ok(Err(reason)) => {
@@ -178,3 +203,42 @@ pub(super) async fn write_loop(
 #[cfg(test)]
 #[path = "rpc_outbound_tests.rs"]
 mod tests;
+
+#[cfg(test)]
+mod allocation_tests {
+    use super::*;
+    use std::io::Write;
+
+    #[test]
+    fn maximum_frame_and_delimiter_fit_the_reserved_capacity() {
+        let mut buffer = CappedBuffer(Vec::new());
+        buffer.write_all(&vec![b'x'; MAX_FRAME]).unwrap();
+        assert!(buffer.0.capacity() <= MAX_FRAME + 1);
+        let capacity = buffer.0.capacity();
+        buffer.0.push(b'\n');
+        assert_eq!(buffer.0.capacity(), capacity);
+    }
+
+    #[test]
+    fn many_small_segments_preserve_contents_and_the_capacity_cap() {
+        let mut buffer = CappedBuffer(Vec::new());
+        for _ in 0..4096 {
+            buffer.write_all(b"abcdef").unwrap();
+        }
+        assert_eq!(buffer.0, b"abcdef".repeat(4096));
+        assert!(buffer.0.capacity() <= MAX_FRAME + 1);
+    }
+
+    #[tokio::test]
+    async fn frame_debug_never_includes_protocol_contents() {
+        let budget = Arc::new(Semaphore::new(128));
+        let frame = Frame {
+            bytes: b"secret-canary-never-log".to_vec(),
+            lifetime: None,
+            _budget: budget.acquire_many_owned(128).await.unwrap(),
+        };
+        let debug = format!("{frame:?}");
+        assert!(debug.contains("byte_count"));
+        assert!(!debug.contains("secret-canary"));
+    }
+}

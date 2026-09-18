@@ -123,6 +123,37 @@ async fn ssh_keeps_stderr_separate_and_reports_remote_exit() {
 
 #[tokio::test]
 #[ignore = "requires the isolated server from scripts/ssh_smoke.py"]
+async fn ssh_transport_disconnect_is_observable_and_next_spawn_reconnects() {
+    let (root, target) = fixture();
+    let host = PinnedSshHost::new(target, root.join("known hosts"), root.join("identity")).unwrap();
+    let mut launch = LaunchSpec::new("/bin/sh");
+    launch.args = vec!["-c".into(), "printf ready; sleep 60".into()];
+    let mut process = host.spawn(&launch, &root).await.unwrap();
+
+    let mut ready = [0u8; 5];
+    tokio::time::timeout(Duration::from_secs(10), process.stdout.read_exact(&mut ready))
+        .await
+        .expect("SSH fixture did not become ready")
+        .unwrap();
+    assert_eq!(&ready, b"ready");
+
+    let handle = process.handle.clone();
+    handle.request_stop();
+    let exit = tokio::time::timeout(Duration::from_secs(10), handle.wait())
+        .await
+        .expect("local SSH transport did not report disconnect")
+        .unwrap();
+    assert!(!exit.success());
+
+    let mut reconnect = LaunchSpec::new("/bin/sh");
+    reconnect.args = vec!["-c".into(), "printf reconnected".into()];
+    let (output, diagnostic, exit) = execute(&host, reconnect, &root, b"").await;
+    assert!(exit.success(), "{}", String::from_utf8_lossy(&diagnostic));
+    assert_eq!(output, b"reconnected");
+}
+
+#[tokio::test]
+#[ignore = "requires the isolated server from scripts/ssh_smoke.py"]
 async fn ssh_rejects_unknown_and_changed_host_keys_without_execution() {
     let (root, target) = fixture();
     for trust in ["unknown hosts", "changed hosts"] {

@@ -72,3 +72,39 @@ Ignored tests require opt-in vendor or controlled SSH environments. No vendor
 credentials were used and no authenticated agent journey is claimed.
 Native application and macOS/Windows verification are CI gates, not local results.
 This is an accepted Linux cleanup slice, not completion of the entire B-P mission.
+
+## Follow-up: cancellation before prompt dispatch
+
+The first checkpoint is published as
+`8669aed933e42206e9445567fd9360c22315bd86`. Native verification run
+[35377512238](https://github.com/cmdr-chara/synara/actions/runs/35377512238)
+passed on that applied source revision, as confirmed by its exported revision
+artifact. The workflow's trigger SHA is the preceding checked-source carrier,
+not the applied source commit.
+
+A follow-up adversarial pass found a separate race: cancellation could complete
+while `PromptStarted` or user-text delivery was delayed, after which the prompt
+would still be sent. Both new integration regressions reproduce this on the
+published first checkpoint. They pass after serializing request enqueue against
+cancellation. A cancelled, not-yet-enqueued turn finishes locally without launching
+agent work, and the same connection/session can be reused.
+
+`RpcPeer::begin_request` separates FIFO enqueue from waiting for the response.
+The returned owner retains pending-ID cleanup and the original absolute deadline.
+The prompt holds the cancellation gate only through enqueue, never through the
+agent's response. Thus an enqueued prompt precedes its cancellation notification.
+No caller-facing `AgentBackend`, `AgentConnection` or `AgentSession` signature changed.
+
+Additional deciding tests:
+
+- `cancelling_during_prompt_start_delivery_never_launches_late_work`
+- `cancelling_during_user_text_delivery_never_launches_late_work`
+- `prepared_request_is_enqueued_before_a_following_control_notification`
+- `prepared_response_keeps_its_original_deadline_and_drop_ownership`
+
+The same complete local verification commands above pass for this follow-up:
+249 backend tests passed, 0 failed and 15 intentionally ignored. Formatting,
+backend compile, strict all-target/all-feature Clippy, the 12 structural guard
+regressions, six publisher regressions and nine roadmap self-tests pass.
+Native and other-platform acceptance must be attached to the subsequently
+published follow-up revision, not inferred from the earlier run.

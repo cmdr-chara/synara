@@ -69,23 +69,48 @@ impl AgentSession for AcpSession {
             )
             .await?;
         let cancellation = self.state.turn.lock().unwrap().clone();
-        let operation = self.connection.call(
-            "session/prompt",
-            json!({"sessionId":self.id(),"prompt":content}),
-            self.connection.timeouts.prompt,
-        );
-        tokio::pin!(operation);
-        let response = tokio::select! {
-            result = &mut operation => result,
-            () = cancellation.cancelled() => {
-                match tokio::time::timeout(self.connection.timeouts.cancellation,&mut operation).await {
-                    Ok(result) => result,
-                    Err(_) => {
-                        self.connection.rpc.fail("agent did not acknowledge cancellation");
-                        Err(AgentError::Disconnected("Agent did not acknowledge cancellation. Restart the connection.".into()))
-                    }
+        // Cancellation may have completed while the durable prompt events were
+        // being delivered. Serialize enqueue against cancel, not response wait:
+        // either no prompt is queued, or its frame precedes session/cancel.
+        let pending = tokio::select! {
+            biased;
+            () = cancellation.cancelled() => Err(AgentError::Cancelled),
+            gate = self.state.cancellation_gate.lock() => {
+                let _gate = gate;
+                if cancellation.is_cancelled() {
+                    Err(AgentError::Cancelled)
+                } else {
+                    self.connection.begin_call(
+                        "session/prompt",
+                        json!({"sessionId":self.id(),"prompt":content}),
+                        self.connection.timeouts.prompt,
+                    ).await
                 }
             }
+        };
+        let response = match pending {
+            Ok(pending) => {
+                let operation = pending.wait();
+                tokio::pin!(operation);
+                let result = tokio::select! {
+                    result = &mut operation => result,
+                    () = cancellation.cancelled() => {
+                        match tokio::time::timeout(
+                            self.connection.timeouts.cancellation, &mut operation
+                        ).await {
+                            Ok(result) => result,
+                            Err(_) => {
+                                self.connection.rpc.fail("agent did not acknowledge cancellation");
+                                Err(AgentError::Disconnected(
+                                    "Agent did not acknowledge cancellation. Restart the connection.".into()
+                                ))
+                            }
+                        }
+                    }
+                };
+                self.connection.call_result("session/prompt", result)
+            }
+            Err(error) => Err(error),
         };
         let response = match response {
             Ok(result) => {

@@ -1,6 +1,6 @@
 use crate::{
     callbacks::CallbackServices,
-    rpc::{Incoming, RpcPeer},
+    rpc::{Incoming, PendingResponse, RpcPeer},
     scope::{SessionState, Sessions},
     wire,
 };
@@ -198,7 +198,19 @@ impl Connection {
 
     pub async fn call(&self, method: &str, params: Value, timeout: Duration) -> AgentResult<Value> {
         crate::schema::request(method, &params)?;
-        match self.rpc.request(method, params, timeout).await {
+        self.call_result(method, self.rpc.request(method, params, timeout).await)
+    }
+    pub async fn begin_call(
+        &self,
+        method: &str,
+        params: Value,
+        timeout: Duration,
+    ) -> AgentResult<PendingResponse> {
+        crate::schema::request(method, &params)?;
+        self.rpc.begin_request(method, params, timeout).await
+    }
+    pub fn call_result(&self, method: &str, result: AgentResult<Value>) -> AgentResult<Value> {
+        match result {
             Ok(value) => {
                 if let Err(error) = crate::schema::response(method, &value) {
                     self.rpc.fail("response schema mismatch");

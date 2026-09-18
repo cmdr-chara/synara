@@ -14,6 +14,8 @@ use tokio_util::sync::CancellationToken;
 enum Stall {
     Cancellation,
     Failure,
+    PromptStart,
+    UserText,
 }
 struct Events {
     stall: Stall,
@@ -59,10 +61,20 @@ impl EventSink for Events {
             (&self.stall, &event),
             (Stall::Cancellation, ThreadEvent::CancellationRequested)
                 | (Stall::Failure, ThreadEvent::Error { .. })
+                | (Stall::PromptStart, ThreadEvent::PromptStarted { .. })
+                | (
+                    Stall::UserText,
+                    ThreadEvent::TextDelta {
+                        role: Role::User,
+                        ..
+                    }
+                )
         ) {
             self.entered.notify_one();
             self.release.cancelled().await;
-            return Err(AgentError::EventDelivery);
+            if matches!(self.stall, Stall::Cancellation | Stall::Failure) {
+                return Err(AgentError::EventDelivery);
+            }
         }
         self.items.lock().unwrap().push((thread, event));
         self.changed.notify_waiters();
@@ -220,4 +232,55 @@ async fn connection_failure_reaps_callback_terminal_before_blocked_error_deliver
     let _ = prompt.await;
     let _ = crash.await;
     assert!(gone, "failure diagnostics delayed owned terminal cleanup");
+}
+
+async fn cancel_before_dispatch(stall: Stall) {
+    let h = Harness::new(stall).await;
+    let session = h.session().await;
+    let owner = session.clone();
+    let mut prompt = tokio::spawn(async move { owner.prompt(Prompt::text("hold")).await });
+    tokio::time::timeout(Duration::from_secs(5), h.events.entered.notified())
+        .await
+        .expect("initial prompt delivery did not reach the test barrier");
+    let cancelled = tokio::time::timeout(Duration::from_secs(2), session.cancel()).await;
+    h.events.release.cancel();
+    let completion = tokio::time::timeout(Duration::from_secs(5), &mut prompt).await;
+    let dispatched =
+        h.connection.trace().iter().any(|entry| {
+            entry.direction == "out" && entry.method.as_deref() == Some("session/prompt")
+        });
+    let live = h.connection.info().state == ConnectionState::Connected;
+    prompt.abort();
+    let reuse = if live {
+        session.prompt(Prompt::text("next")).await
+    } else {
+        Err(AgentError::Disconnected(
+            "regression closed the connection".into(),
+        ))
+    };
+    let _ = h.connection.disconnect().await;
+    assert!(
+        matches!(cancelled, Ok(Ok(()))),
+        "pre-dispatch cancellation was blocked"
+    );
+    assert!(
+        !dispatched,
+        "a prompt was launched after its cancellation had already completed"
+    );
+    assert!(matches!(completion, Ok(Ok(Ok(reason))) if reason == "cancelled"));
+    assert!(live, "local pre-dispatch cancellation broke the connection");
+    assert!(
+        reuse.is_ok(),
+        "the cancelled local turn prevented session reuse"
+    );
+}
+
+#[tokio::test]
+async fn cancelling_during_prompt_start_delivery_never_launches_late_work() {
+    cancel_before_dispatch(Stall::PromptStart).await;
+}
+
+#[tokio::test]
+async fn cancelling_during_user_text_delivery_never_launches_late_work() {
+    cancel_before_dispatch(Stall::UserText).await;
 }

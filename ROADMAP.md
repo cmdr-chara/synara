@@ -207,7 +207,10 @@ blocked/failed event consumer is awaited. All callback terminals receive stop
 requests before exit/output waits, and connection failure cleans them before
 error delivery. Shared exit/output budgets prevent per-terminal multiplication.
 Three regressions fail on the original implementation and pass after the fix.
-Linux backend verification passes 245 tests with strict Clippy and formatting.
+The follow-up also prevents a prompt from being launched after cancellation
+completed during delayed initial-event delivery. FIFO enqueue is serialized with
+cancel, while response ownership retains its original deadline and drop cleanup.
+Linux backend verification passes 249 tests with strict Clippy and formatting.
 See [cleanup backpressure evidence](docs/verification/acp-cleanup-backpressure.md).
 B2/B5 remain open for their complete integrated acceptance matrices, not because
 this published cleanup slice is missing.

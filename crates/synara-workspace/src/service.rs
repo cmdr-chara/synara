@@ -1101,7 +1101,10 @@ mod tests {
                 synara_runtime::SecretReference::new("dev.synara", "agent/custom-secret").unwrap(),
             )]),
         };
-        service.upsert_custom_profile(profile.clone()).await.unwrap();
+        service
+            .upsert_custom_profile(profile.clone())
+            .await
+            .unwrap();
         let exported = service.export_custom_profiles().await.unwrap();
         assert!(exported.contains("agent/custom-secret"));
         assert!(!exported.contains("secret-canary"));
@@ -1137,7 +1140,12 @@ mod tests {
                 .name,
             "Edited"
         );
-        assert!(service.delete_custom_profile(profile.id.clone()).await.is_err());
+        assert!(
+            service
+                .delete_custom_profile(profile.id.clone())
+                .await
+                .is_err()
+        );
 
         let mut running = edited.clone();
         running.name = "Blocked".into();
@@ -1164,7 +1172,10 @@ mod tests {
             )
             .await
             .unwrap();
-        service.set_task_agent(task.id, "opencode".into()).await.unwrap();
+        service
+            .set_task_agent(task.id, "opencode".into())
+            .await
+            .unwrap();
         service
             .delete_custom_profile(profile.id.clone())
             .await

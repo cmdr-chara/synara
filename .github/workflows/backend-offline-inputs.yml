@@ -1,0 +1,76 @@
+name: Backend offline verification inputs
+on:
+  push:
+    branches: [astra/gpui-clean-rewrite]
+    paths: [.github/workflows/backend-offline-inputs.yml]
+permissions:
+  contents: read
+jobs:
+  inputs:
+    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/gpui-clean-rewrite'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Install exact verification toolchain
+        run: rustup toolchain install 1.98.1 --profile minimal --component rustfmt --component clippy
+      - name: Fetch locked public dependencies
+        run: cargo +1.98.1 fetch --locked
+      - name: Export bounded offline inputs without credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-list --max-parents=0 HEAD)" = 43b1fb89bf19dadc388d18008f9ceb21b8215716
+          mkdir -p /tmp/backend-toolchain /tmp/backend-dependencies
+          toolchain="$(rustup toolchain list | awk '/^1.98.1-x86_64-unknown-linux-gnu/{print $1}')"
+          test "$toolchain" = 1.98.1-x86_64-unknown-linux-gnu
+          tar -C "$HOME/.rustup/toolchains/$toolchain" -czf /tmp/backend-toolchain/rust-1.98.1.tar.gz bin lib libexec etc share
+          git bundle create /tmp/backend-toolchain/source.bundle HEAD
+          git rev-parse HEAD > /tmp/backend-toolchain/revision.txt
+          cp Cargo.lock /tmp/backend-toolchain/Cargo.lock
+          paths=()
+          for path in registry git; do
+            if test -d "$HOME/.cargo/$path"; then paths+=("$path"); fi
+          done
+          tar -C "$HOME/.cargo" -czf /tmp/backend-dependencies/dependencies.tar.gz "${paths[@]}"
+          sha256sum /tmp/backend-dependencies/dependencies.tar.gz > /tmp/backend-toolchain/dependencies.sha256
+          (cd /tmp/backend-toolchain && sha256sum rust-1.98.1.tar.gz source.bundle Cargo.lock revision.txt > SHA256SUMS)
+          split -b 400M -d /tmp/backend-dependencies/dependencies.tar.gz /tmp/backend-dependencies/dependencies.part-
+          ls -lh /tmp/backend-dependencies/dependencies.part-*
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: backend-toolchain
+          path: /tmp/backend-toolchain/
+          retention-days: 1
+          compression-level: 0
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: backend-dependencies-00
+          path: /tmp/backend-dependencies/dependencies.part-00
+          retention-days: 1
+          compression-level: 0
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: backend-dependencies-01
+          path: /tmp/backend-dependencies/dependencies.part-01
+          retention-days: 1
+          compression-level: 0
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: backend-dependencies-02
+          path: /tmp/backend-dependencies/dependencies.part-02
+          retention-days: 1
+          compression-level: 0
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: backend-dependencies-03
+          path: /tmp/backend-dependencies/dependencies.part-03
+          retention-days: 1
+          compression-level: 0
+          if-no-files-found: ignore

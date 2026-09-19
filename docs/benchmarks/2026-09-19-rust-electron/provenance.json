@@ -4,7 +4,7 @@
     "branch": "cmdr-chara/native-ui-parity",
     "uncommitted_changes": true,
     "source_sha256": "a4b879908ba239ee9adf2c119a8924755889da1522e209e3c6c2bf15b465edd5",
-    "source_manifest": "../../ui/parity-port-evidence.json",
+    "source_manifest": "benchmark-source-manifest.json",
     "binary_sha256": "a8db443d89ef423974487547e707559863b30c4d542bbd48c3f929e7928caa51",
     "binary_bytes": 43405312,
     "build_command": "cargo build --locked --release -p synara-app --bin synara-app",

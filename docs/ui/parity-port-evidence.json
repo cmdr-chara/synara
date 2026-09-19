@@ -4,12 +4,13 @@
   "baseline": "3df6a174419b997ee2ef47cd03b25b9024ec9e9e",
   "branch": "cmdr-chara/native-ui-parity",
   "published": true,
-  "source_sha256": "a4b879908ba239ee9adf2c119a8924755889da1522e209e3c6c2bf15b465edd5",
+  "source_sha256": "061f25cf82d2b0e4185dead316802509de0068266f6d55cf252969f5ab0dc364",
   "source_hash_format": "Sorted UTF-8 relative path + NUL + file bytes + NUL, concatenated",
   "source_paths": [
     ".github/workflows/native.yml",
     "Cargo.lock",
     "Cargo.toml",
+    "LICENSE",
     "crates/synara-acp/Cargo.toml",
     "crates/synara-acp/src/backend.rs",
     "crates/synara-acp/src/callback_lifecycle_tests.rs",
@@ -111,7 +112,6 @@
     "crates/synara-app/assets/licenses/CalSans-OFL.txt",
     "crates/synara-app/assets/licenses/React-Icons-MIT.txt",
     "crates/synara-app/assets/licenses/Simple-Icons-CC0.txt",
-    "crates/synara-app/assets/licenses/Synara-source-MIT.txt",
     "crates/synara-app/assets/licenses/Tabler-MIT.txt",
     "crates/synara-app/assets/synara.svg",
     "crates/synara-app/src/close.rs",
@@ -488,7 +488,8 @@
     "No remote CI result is claimed by this local verification",
     "21 workspace tests remain explicitly ignored",
     "Older strict settings readers fall back to defaults on new preference fields; raw settings remain intact until saved",
-    "Automated interaction evidence is Linux/X11 only; visible Wayland startup is separately recorded"
+    "Automated interaction evidence is Linux/X11 only; visible Wayland startup is separately recorded",
+    "The later first-party license/Help metadata change was compiled and checked separately from the prior full native interaction suites; the historical benchmark retains its frozen source manifest."
   ],
   "release_confirmation": {
     "status": "passed",
@@ -514,5 +515,12 @@
     "status": "passed",
     "scope": "Empty home on matched private Xvfb software renderers; five warm runs plus one fresh-profile run per app."
   },
-  "published_remote_branch": "origin/astra/gpui-clean-rewrite"
+  "published_remote_branch": "origin/astra/gpui-clean-rewrite",
+  "license_notice_verification": {
+    "status": "passed",
+    "checks": 10,
+    "suite": "scripts/native_presentation_smoke.py",
+    "evidence_path": "/tmp/synara-logo-provenance-check-20260919/result.json",
+    "stage": "After removing the historical upstream license copy and recording the Synara logo and third-party icon sources in Help."
+  }
 }

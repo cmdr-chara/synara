@@ -17,6 +17,7 @@ jobs:
       contents: write
     outputs:
       revision: ${{ steps.publish.outputs.revision }}
+      scope: ${{ steps.scope.outputs.scope }}
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
@@ -24,8 +25,21 @@ jobs:
       - name: Apply an optional checked source package
         id: publish
         run: python3 scripts/apply_source.py
+      - name: Select verification from the actual changed paths
+        id: scope
+        env:
+          BASE_REVISION: ${{ github.event.before }}
+          CANDIDATE_REVISION: ${{ steps.publish.outputs.revision }}
+        run: python3 scripts/native_ui_scope.py "$BASE_REVISION" "$CANDIDATE_REVISION" >> "$GITHUB_OUTPUT"
+  presentation:
+    needs: source
+    if: needs.source.outputs.scope == 'presentation'
+    uses: ./.github/workflows/ui-presentation.yml
+    with:
+      revision: ${{ needs.source.outputs.revision }}
   linux:
     needs: source
+    if: needs.source.outputs.scope != 'presentation' && needs.source.outputs.scope != 'docs'
     timeout-minutes: 35
     runs-on: ubuntu-24.04
     permissions:

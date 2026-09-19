@@ -1,0 +1,75 @@
+name: Archived native UI recovery audit
+on:
+  push:
+    branches: [astra/gpui-clean-rewrite]
+    paths: [.github/workflows/ui-recovery-audit.yml]
+permissions:
+  contents: read
+jobs:
+  inspect:
+    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/gpui-clean-rewrite'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - name: Decode an immutable source envelope without executing or applying its contents
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import base64, gzip, hashlib, io, json, os, pathlib, urllib.request, zlib
+          repository = 'cmdr-chara/synara'
+          source_blob = '1a9f70e44a8b9cb7aadb150ee2ab5da936c0f840'
+          root = pathlib.Path(os.environ['RUNNER_TEMP']) / 'native-recovery-audit'
+          root.mkdir()
+          def api(route, body=None):
+              request = urllib.request.Request('https://api.github.com/repos/' + repository + '/' + route,
+                  data=None if body is None else json.dumps(body).encode(),
+                  headers={'Accept': 'application/vnd.github+json', 'User-Agent': 'Synara-source-recovery', 'Authorization': 'Bearer ' + os.environ['GH_TOKEN']})
+              with urllib.request.urlopen(request, timeout=30) as response:
+                  data = response.read(4 * 1024 * 1024 + 1)
+              assert len(data) <= 4 * 1024 * 1024
+              return json.loads(data)
+          blob = api('git/blobs/' + source_blob)
+          data = base64.b64decode(blob['content'])
+          assert hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest() == source_blob
+          package = json.loads(data)
+          report = {'source_blob': source_blob, 'source_commit': '6bdd1614e60fb598f9e75484a34e86f69ae58335',
+              'base_commit': package.get('base_commit'), 'mode': package.get('mode'),
+              'applied': False, 'ref_updated': False, 'files': []}
+          try:
+              encoded = package.get('gzip_base64')
+              assert isinstance(encoded, str) and len(encoded) < 4 * 1024 * 1024
+              compressed = base64.b64decode(encoded, validate=True)
+              with gzip.GzipFile(fileobj=io.BytesIO(compressed)) as stream:
+                  decoded = stream.read(20 * 1024 * 1024 + 1)
+              assert len(decoded) <= 20 * 1024 * 1024
+              report['sha256'] = hashlib.sha256(decoded).hexdigest()
+              report['checksum_matches'] = report['sha256'] == package.get('sha256')
+              assert report['checksum_matches'], 'source envelope checksum mismatch'
+              sources = json.loads(decoded)
+              assert isinstance(sources, dict) and 0 < len(sources) < 2000
+              for name, content in sources.items():
+                  path = pathlib.PurePosixPath(name)
+                  assert not path.is_absolute() and '..' not in path.parts and '.git' not in path.parts
+                  assert isinstance(content, str) and len(content.encode()) < 2 * 1024 * 1024
+                  raw = content.encode()
+                  sha = api('git/blobs', {'encoding': 'base64', 'content': base64.b64encode(raw).decode()})['sha']
+                  assert sha == hashlib.sha1(b'blob ' + str(len(raw)).encode() + b'\0' + raw).hexdigest()
+                  report['files'].append({'path': name, 'sha': sha, 'bytes': len(raw), 'lines': len(content.splitlines())})
+              (root / 'source-envelope.json').write_bytes(decoded)
+              report['status'] = 'decoded-for-review-only'
+          except (AssertionError, ValueError, OSError, EOFError, zlib.error) as error:
+              report['status'] = 'unverified-envelope'
+              report['error_type'] = type(error).__name__
+              report['error'] = str(error)[:240]
+          (root / 'report.json').write_text(json.dumps(report, indent=2) + '\n')
+          print(json.dumps(report, indent=2))
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: native-ui-recovery-audit
+          path: ${{ runner.temp }}/native-recovery-audit/
+          retention-days: 7
+          if-no-files-found: error

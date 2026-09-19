@@ -237,6 +237,20 @@ impl WorkspaceService {
         .await
     }
 
+    /// Restore the last durable conversation state without replaying any actions.
+    pub async fn unarchive_task(&self, id: TaskId) -> WorkspaceResult<Task> {
+        self.access(move |store| {
+            let mut task = store.task(id)?.ok_or(WorkspaceError::NotFound)?;
+            if task.state == TaskState::Archived {
+                task.state = store.replay(task.thread_id)?.state;
+                task.updated_at_ms = now_ms();
+                store.save_task(&task)?;
+            }
+            Ok(task)
+        })
+        .await
+    }
+
     pub async fn delete_task(&self, id: TaskId) -> WorkspaceResult<()> {
         self.access(move |store| {
             if !store.delete_task(id)? {
@@ -401,6 +415,17 @@ impl WorkspaceService {
         title: String,
         agent_id: String,
     ) -> WorkspaceResult<Task> {
+        self.create_scoped_task(project, title, agent_id, TaskScope::Project)
+            .await
+    }
+
+    pub async fn create_scoped_task(
+        &self,
+        project: ProjectId,
+        title: String,
+        agent_id: String,
+        scope: TaskScope,
+    ) -> WorkspaceResult<Task> {
         if title.trim().is_empty() || title.len() > 400 || title.contains('\0') {
             return Err(WorkspaceError::Invalid(
                 "a task needs a title of at most 400 bytes".into(),
@@ -434,6 +459,7 @@ impl WorkspaceService {
                 agent_id,
                 working_directory,
                 updated_at_ms: now_ms(),
+                scope,
             };
             store.save_task(&task)?;
             Ok(task)
@@ -874,6 +900,51 @@ pub fn now_ms() -> i64 {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[tokio::test]
+    async fn scoped_tasks_survive_reopen_and_legacy_tasks_default_to_project() {
+        let dir = tempfile::tempdir().unwrap();
+        let db = dir.path().join("workspace.sqlite3");
+        let service = WorkspaceService::open(db.clone()).await.unwrap();
+        let project = service
+            .add_local_workspace(dir.path().into())
+            .await
+            .unwrap();
+        let legacy = service
+            .create_task(project.id, "Legacy".into(), "opencode".into())
+            .await
+            .unwrap();
+        let mut json = serde_json::to_value(&legacy).unwrap();
+        json.as_object_mut().unwrap().remove("scope");
+        let old: Task = serde_json::from_value(json).unwrap();
+        assert_eq!(old.scope, TaskScope::Project);
+        let mut ids = vec![(legacy.id, TaskScope::Project)];
+        for scope in [TaskScope::Chat, TaskScope::Studio] {
+            let task = service
+                .create_scoped_task(project.id, "New chat".into(), "opencode".into(), scope)
+                .await
+                .unwrap();
+            ids.push((task.id, scope));
+        }
+        service.archive_task(ids[2].0).await.unwrap();
+        drop(service);
+        let reopened = WorkspaceService::open(db).await.unwrap();
+        for (id, scope) in &ids {
+            assert_eq!(reopened.task(*id).await.unwrap().scope, *scope);
+        }
+        assert_eq!(reopened.catalog().await.unwrap().tasks.len(), 3);
+        let restored = reopened.unarchive_task(ids[2].0).await.unwrap();
+        assert_eq!(restored.state, TaskState::Ready);
+        assert_eq!(restored.scope, TaskScope::Studio);
+        assert!(
+            reopened
+                .thread(restored.thread_id)
+                .await
+                .unwrap()
+                .timeline
+                .is_empty()
+        );
+    }
+
     #[tokio::test]
     async fn catalog_metadata_tracks_committed_events_before_broadcast() {
         let service = WorkspaceService::memory().unwrap();

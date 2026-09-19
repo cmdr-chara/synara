@@ -9,6 +9,17 @@ pub struct Message {
     pub text: String,
 }
 
+/// Presentation metadata reconstructed from the same durable events as the text.
+#[derive(Clone, Debug, PartialEq)]
+pub struct TurnSummary {
+    pub id: String,
+    pub started_at_ms: i64,
+    pub finished_at_ms: Option<i64>,
+    pub first_timeline_index: usize,
+    pub end_timeline_index: usize,
+    pub failed: bool,
+}
+
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 pub struct Tool {
     pub id: String,
@@ -47,6 +58,8 @@ pub struct Thread {
     pub title: String,
     pub state: TaskState,
     pub messages: Vec<Message>,
+    pub message_timestamps: BTreeMap<String, i64>,
+    pub turns: Vec<TurnSummary>,
     pub tools: BTreeMap<String, Tool>,
     pub terminals: BTreeMap<String, TerminalRecord>,
     pub permissions: BTreeMap<String, PermissionRequest>,
@@ -72,6 +85,8 @@ impl Thread {
             title: "New task".into(),
             state: TaskState::Ready,
             messages: vec![],
+            message_timestamps: BTreeMap::new(),
+            turns: vec![],
             tools: BTreeMap::new(),
             terminals: BTreeMap::new(),
             permissions: BTreeMap::new(),
@@ -123,6 +138,8 @@ impl Thread {
                     self.replay_backup = Some(Box::new(self.clone()));
                 }
                 self.messages.clear();
+                self.message_timestamps.clear();
+                self.turns.clear();
                 self.tools.clear();
                 self.terminals.clear();
                 self.timeline.clear();
@@ -159,7 +176,16 @@ impl Thread {
                     },
                 );
             }
-            ThreadEvent::PromptStarted { .. } => {}
+            ThreadEvent::PromptStarted { turn } => {
+                self.turns.push(TurnSummary {
+                    id: turn.clone(),
+                    started_at_ms: envelope.timestamp_ms,
+                    finished_at_ms: None,
+                    first_timeline_index: self.timeline.len(),
+                    end_timeline_index: self.timeline.len(),
+                    failed: false,
+                });
+            }
             ThreadEvent::TextDelta {
                 message_id,
                 role,
@@ -191,6 +217,8 @@ impl Thread {
                         text: text.clone(),
                     });
                     self.timeline.push(TranscriptItem::Message { index });
+                    self.message_timestamps
+                        .insert(self.messages[index].id.clone(), envelope.timestamp_ms);
                 }
             }
             ThreadEvent::ToolChanged { patch } => {
@@ -246,6 +274,9 @@ impl Thread {
             ThreadEvent::CommandsChanged { commands } => self.commands.clone_from(commands),
             ThreadEvent::TitleChanged { .. } => {}
             ThreadEvent::PromptFinished { .. } => {
+                if let Some(turn) = self.turns.last_mut() {
+                    turn.finished_at_ms = Some(envelope.timestamp_ms.max(turn.started_at_ms));
+                }
                 self.permissions.clear();
                 self.inputs.clear();
             }
@@ -265,6 +296,14 @@ impl Thread {
                     is_error: true,
                 });
                 if !recoverable {
+                    if let Some(turn) = self
+                        .turns
+                        .last_mut()
+                        .filter(|turn| turn.finished_at_ms.is_none())
+                    {
+                        turn.finished_at_ms = Some(envelope.timestamp_ms.max(turn.started_at_ms));
+                        turn.failed = true;
+                    }
                     self.permissions.clear();
                     self.inputs.clear();
                 }
@@ -279,6 +318,9 @@ impl Thread {
                     is_error: false,
                 })
             }
+        }
+        if let Some(turn) = self.turns.last_mut() {
+            turn.end_timeline_index = self.timeline.len();
         }
         self.activity.apply(&envelope.event);
         self.state = self.activity.state;
@@ -329,6 +371,145 @@ mod tests {
         };
         assert_eq!(thread.apply(&envelope), Ok(true));
     }
+    #[test]
+    fn turn_metadata_replays_timestamps_without_stream_or_duplicate_drift() {
+        let id = ThreadId::new();
+        let events = [
+            (1000, ThreadEvent::PromptStarted { turn: "one".into() }),
+            (
+                1010,
+                ThreadEvent::TextDelta {
+                    message_id: Some("u".into()),
+                    role: Role::User,
+                    text: "hello".into(),
+                },
+            ),
+            (
+                2000,
+                ThreadEvent::TextDelta {
+                    message_id: Some("a".into()),
+                    role: Role::Assistant,
+                    text: "First".into(),
+                },
+            ),
+            (
+                3000,
+                ThreadEvent::TextDelta {
+                    message_id: Some("a".into()),
+                    role: Role::Assistant,
+                    text: " answer".into(),
+                },
+            ),
+            (
+                89000,
+                ThreadEvent::PromptFinished {
+                    reason: "end_turn".into(),
+                },
+            ),
+            (90000, ThreadEvent::PromptStarted { turn: "two".into() }),
+            (
+                90010,
+                ThreadEvent::TextDelta {
+                    message_id: Some("u2".into()),
+                    role: Role::User,
+                    text: "again".into(),
+                },
+            ),
+            (
+                89999,
+                ThreadEvent::Error {
+                    message: "Turn failed".into(),
+                    recoverable: false,
+                },
+            ),
+        ]
+        .into_iter()
+        .enumerate()
+        .map(|(i, (timestamp_ms, event))| EventEnvelope {
+            id: EventId::new(),
+            thread_id: id,
+            sequence: i as u64 + 1,
+            timestamp_ms,
+            event,
+        })
+        .collect::<Vec<_>>();
+        let mut live = Thread::new(id);
+        for event in &events {
+            assert_eq!(live.apply(event), Ok(true));
+            assert_eq!(live.apply(event), Ok(false));
+        }
+        assert_eq!(live.message_timestamps["a"], 2000);
+        assert_eq!(live.turns[0].finished_at_ms, Some(89000));
+        assert_eq!(
+            (
+                live.turns[0].first_timeline_index,
+                live.turns[0].end_timeline_index
+            ),
+            (0, 2)
+        );
+        assert_eq!(
+            (
+                live.turns[1].first_timeline_index,
+                live.turns[1].end_timeline_index
+            ),
+            (2, 4)
+        );
+        assert_eq!(live.turns[1].finished_at_ms, Some(90000)); // Clock skew cannot create a negative duration.
+        assert!(live.turns[1].failed);
+        let mut restored = Thread::new(id);
+        for event in &events {
+            restored.apply(event).unwrap();
+        }
+        assert_eq!(restored.turns, live.turns);
+        assert_eq!(restored.message_timestamps, live.message_timestamps);
+    }
+
+    #[test]
+    fn failed_history_refresh_restores_completed_turn_metadata() {
+        let mut thread = Thread::new(ThreadId::new());
+        apply(
+            &mut thread,
+            ThreadEvent::PromptStarted {
+                turn: "kept".into(),
+            },
+        );
+        apply(
+            &mut thread,
+            ThreadEvent::TextDelta {
+                message_id: Some("a".into()),
+                role: Role::Assistant,
+                text: "Kept answer".into(),
+            },
+        );
+        apply(
+            &mut thread,
+            ThreadEvent::PromptFinished {
+                reason: "end_turn".into(),
+            },
+        );
+        let stamps = thread.message_timestamps.clone();
+        apply(&mut thread, ThreadEvent::HistoryStarted);
+        assert!(thread.turns.is_empty());
+        apply(
+            &mut thread,
+            ThreadEvent::PromptStarted {
+                turn: "incomplete-import".into(),
+            },
+        );
+        apply(
+            &mut thread,
+            ThreadEvent::Error {
+                message: "Import failed".into(),
+                recoverable: false,
+            },
+        );
+        assert_eq!(thread.turns.len(), 1);
+        assert_eq!(thread.turns[0].id, "kept");
+        assert!(!thread.turns[0].failed);
+        assert_eq!(thread.message_timestamps, stamps);
+        assert_eq!(thread.messages[0].text, "Kept answer");
+    }
+
     #[test]
     fn streaming_text_coalesces_without_merging_across_tools() {
         let mut t = Thread::new(ThreadId::new());

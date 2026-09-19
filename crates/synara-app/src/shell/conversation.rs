@@ -1,199 +1,19 @@
 use super::*;
+use gpui::{Animation, AnimationExt};
 impl Shell {
-    pub(super) fn conversation(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
+    pub(super) fn conversation(&self, window: &Window, cx: &mut Context<Self>) -> gpui::AnyElement {
         let Some(thread) = &self.thread else {
-            return div().flex_1().flex().flex_col().justify_center().items_center().gap_3().p_8()
-                .child(div().text_2xl().child("Bring your work into focus"))
-                .child("Open a local directory, create a task, and choose your coding agent.")
-                .child("Agent commands are configured in Settings. No agent starts until you connect or send a prompt.")
+            return div()
+                .flex()
+                .flex_col()
+                .flex_1()
+                .min_h_0()
+                .child(self.welcome())
+                .child(self.composer_panel(window, cx))
                 .into_any_element();
         };
-        let id = thread.id;
-        let configuration = &thread.configuration;
-        let title = self.task().map_or("Task", |t| t.title.as_str());
-        let busy = self.selected.is_some_and(|id| self.busy.contains(&id));
-        let connecting = self
-            .selected
-            .is_some_and(|id| self.connecting.contains(&id));
-        let mut root = div().flex().flex_col().flex_1().min_h_0().child(
-            div()
-                .px_5()
-                .py_3()
-                .flex()
-                .items_center()
-                .justify_between()
-                .gap_3()
-                .border_b_1()
-                .border_color(rgb(0x293442))
-                .child(
-                    div()
-                        .text_lg()
-                        .font_weight(gpui::FontWeight::SEMIBOLD)
-                        .child(truncate(title, 150)),
-                )
-                .child(
-                    div()
-                        .flex()
-                        .gap_2()
-                        .children(self.profiles.iter().enumerate().map(|(index, profile)| {
-                            let agent = profile.id.clone();
-                            let active = self.task().is_some_and(|t| t.agent_id == agent);
-                            button(("agent", index), profile.name.clone(), active).on_click(
-                                cx.listener(move |this, _, _, cx| {
-                                    if let Some(task) = this.selected {
-                                        if this.busy.contains(&task)
-                                            || this.connecting.contains(&task)
-                                        {
-                                            return;
-                                        }
-                                        let agent = agent.clone();
-                                        let controller = this.controller.clone();
-                                        this.job(async move {
-                                            Ok(Update::AgentChanged(
-                                                controller.switch_agent(task, agent).await?,
-                                            ))
-                                        });
-                                    }
-                                    cx.notify();
-                                }),
-                            )
-                        }))
-                        .child(
-                            button(
-                                "connect-agent",
-                                if connecting {
-                                    "Connecting..."
-                                } else {
-                                    "Connect"
-                                },
-                                false,
-                            )
-                            .on_click(cx.listener(|this, _, _, cx| this.connect("connect", cx))),
-                        ),
-                ),
-        );
-        if !configuration.options.is_empty()
-            || !configuration.modes.is_empty()
-            || !configuration.models.is_empty()
-        {
-            root = root.child(
-                div()
-                    .px_5()
-                    .py_2()
-                    .flex()
-                    .flex_wrap()
-                    .gap_2()
-                    .children(
-                        configuration
-                            .options
-                            .iter()
-                            .enumerate()
-                            .map(|(index, option)| {
-                                let key = option.id.clone();
-                                let current = match &option.current {
-                                    ConfigValue::Boolean { value } => {
-                                        if *value {
-                                            "On".into()
-                                        } else {
-                                            "Off".into()
-                                        }
-                                    }
-                                    ConfigValue::Select { value } => option
-                                        .choices
-                                        .iter()
-                                        .find(|c| c.value == *value)
-                                        .map_or_else(|| value.clone(), |c| c.label.clone()),
-                                };
-                                let next = match &option.current {
-                                    ConfigValue::Boolean { value } => {
-                                        ConfigValue::Boolean { value: !*value }
-                                    }
-                                    ConfigValue::Select { value } => {
-                                        let index = option
-                                            .choices
-                                            .iter()
-                                            .position(|c| c.value == *value)
-                                            .unwrap_or(0);
-                                        ConfigValue::Select {
-                                            value: option
-                                                .choices
-                                                .get((index + 1) % option.choices.len().max(1))
-                                                .map_or_else(|| value.clone(), |c| c.value.clone()),
-                                        }
-                                    }
-                                };
-                                button(
-                                    ("configuration", index),
-                                    format!("{}: {}", option.name, current),
-                                    false,
-                                )
-                                .on_click(cx.listener(
-                                    move |this, _, _, _| {
-                                        if let Some(id) = this.selected {
-                                            let controller = this.controller.clone();
-                                            let key = key.clone();
-                                            let value = next.clone();
-                                            this.job(async move {
-                                                controller.set_option(id, key, value).await?;
-                                                Ok(Update::Done("Session setting updated".into()))
-                                            });
-                                        }
-                                    },
-                                ))
-                            }),
-                    )
-                    .children(configuration.modes.iter().enumerate().map(|(index, mode)| {
-                        let key = mode.id.clone();
-                        button(
-                            ("mode", index),
-                            mode.name.clone(),
-                            configuration.current_mode.as_deref() == Some(&mode.id),
-                        )
-                        .on_click(cx.listener(move |this, _, _, _| {
-                            if let Some(id) = this.selected {
-                                let controller = this.controller.clone();
-                                let key = key.clone();
-                                this.job(async move {
-                                    controller.set_mode(id, key).await?;
-                                    Ok(Update::Done("Session mode updated".into()))
-                                });
-                            }
-                        }))
-                    }))
-                    .children(
-                        configuration
-                            .models
-                            .iter()
-                            .filter(|_| {
-                                !configuration
-                                    .options
-                                    .iter()
-                                    .any(|o| o.category.as_deref() == Some("model"))
-                            })
-                            .enumerate()
-                            .map(|(index, model)| {
-                                let key = model.value.clone();
-                                button(
-                                    ("model", index),
-                                    model.label.clone(),
-                                    configuration.current_model.as_deref() == Some(&model.value),
-                                )
-                                .on_click(cx.listener(
-                                    move |this, _, _, _| {
-                                        if let Some(id) = this.selected {
-                                            let controller = this.controller.clone();
-                                            let key = key.clone();
-                                            this.job(async move {
-                                                controller.set_model(id, key).await?;
-                                                Ok(Update::Done("Session model updated".into()))
-                                            });
-                                        }
-                                    },
-                                ))
-                            }),
-                    ),
-            );
-        }
+        let empty = thread.timeline.is_empty() && thread.plan.is_empty();
+        let mut root = div().flex().flex_col().flex_1().min_h_0().min_w_0();
         if let Some(details) = &self.details {
             match details.connection.state {
                 ConnectionState::Authenticating => {
@@ -245,69 +65,22 @@ impl Shell {
                 );
             }
         }
-        root = root.child(self.virtual_transcript(cx));
-        root = root.child(
-            div()
-                .px_5()
-                .py_3()
-                .flex()
-                .flex_col()
-                .gap_2()
-                .border_t_1()
-                .border_color(rgb(0x2a3442))
-                .child(
-                    div()
-                        .flex()
-                        .justify_between()
-                        .items_center()
-                        .child(div().text_xs().text_color(rgb(0x99aac0)).child(format!(
-                                "{:?} · {} events{}",
-                                thread.state,
-                                thread.last_sequence,
-                                thread
-                                    .usage
-                                    .context_used
-                                    .map_or(String::new(), |n| format!(" · context {n}"))
-                            )))
-                        .children((!self.transcript.is_following()).then(|| {
-                            button("jump-latest", "Jump to latest", false).on_click(cx.listener(
-                                |this, _, _, cx| {
-                                    this.transcript.follow();
-                                    cx.notify();
-                                },
-                            ))
-                        })),
-                )
-                .child(self.composer.clone())
-                .children(
-                    self.composer
-                        .read(cx)
-                        .error
-                        .as_ref()
-                        .map(|error| div().text_color(rgb(0xffa9ac)).child(error.clone())),
-                )
-                .child(
-                    div()
-                        .flex()
-                        .justify_between()
-                        .items_center()
-                        .child(
-                            div()
-                                .text_xs()
-                                .text_color(rgb(0x8f9caf))
-                                .child("Enter to send  ·  Shift+Enter for a new line"),
-                        )
-                        .child(if busy {
-                            button("cancel-prompt", "Stop", true)
-                                .on_click(cx.listener(|this, _, _, cx| this.cancel(cx)))
-                        } else {
-                            button("send-prompt", "Send", true)
-                                .on_click(cx.listener(|this, _, _, cx| this.send_prompt(cx)))
-                        }),
-                ),
-        );
-        let _ = id;
-        root.into_any_element()
+        root = root.child(if empty {
+            self.welcome()
+        } else {
+            self.virtual_transcript(cx)
+        });
+        root = root.child(self.composer_panel(window, cx));
+        root.with_animation(
+            SharedString::from(format!("conversation-entry-{}", thread.id)),
+            Animation::new(crate::ui::motion::PANE_DURATION)
+                .with_easing(crate::ui::motion::ease_out),
+            |el, progress| {
+                tracing::debug!(target: "synara_ui_layout", surface = "conversation", progress, "motion-frame");
+                el.opacity(progress)
+            },
+        )
+        .into_any_element()
     }
     pub(super) fn transcript_item(
         &self,
@@ -317,44 +90,7 @@ impl Shell {
     ) -> gpui::AnyElement {
         match &thread.timeline[index] {
             TranscriptItem::Message { index: message } => {
-                let message = &thread.messages[*message];
-                let text = message.text.clone();
-                div()
-                    .id(("message", index))
-                    .p_4()
-                    .rounded_lg()
-                    .bg(rgb(match message.role {
-                        Role::User => 0x1e3044,
-                        Role::Assistant => 0x19212c,
-                        Role::Reasoning => 0x211f2c,
-                    }))
-                    .child(
-                        div()
-                            .flex()
-                            .justify_between()
-                            .items_center()
-                            .mb_2()
-                            .child(
-                                div()
-                                    .text_xs()
-                                    .font_weight(gpui::FontWeight::SEMIBOLD)
-                                    .text_color(rgb(0xa7bada))
-                                    .child(match message.role {
-                                        Role::User => "YOU",
-                                        Role::Assistant => "ASSISTANT",
-                                        Role::Reasoning => "THINKING",
-                                    }),
-                            )
-                            .child(button(("copy-message", index), "Copy", false).on_click(
-                                move |_, _, cx| {
-                                    cx.write_to_clipboard(gpui::ClipboardItem::new_string(
-                                        text.clone(),
-                                    ))
-                                },
-                            )),
-                    )
-                    .child(div().w_full().child(truncate(&message.text, 64 * 1024)))
-                    .into_any_element()
+                self.message_row(&thread.messages[*message], index, cx)
             }
             TranscriptItem::Tool { id } => {
                 let Some(tool) = thread.tools.get(id) else {
@@ -364,8 +100,8 @@ impl Shell {
                     .p_3()
                     .rounded_md()
                     .border_1()
-                    .border_color(rgb(0x394252))
-                    .bg(rgb(0x172029))
+                    .border_color(rgb(crate::ui::palette().border))
+                    .bg(rgb(crate::ui::palette().canvas))
                     .child(
                         div()
                             .font_weight(gpui::FontWeight::MEDIUM)
@@ -375,7 +111,7 @@ impl Shell {
                         match output {
                             ToolOutput::Text { text } => div()
                                 .mt_2()
-                                .font_family("DejaVu Sans Mono")
+                                .font_family(crate::ui::code_font())
                                 .text_xs()
                                 .child(truncate(text, 16 * 1024)),
                             ToolOutput::Diff {
@@ -384,7 +120,7 @@ impl Shell {
                                 after,
                             } => div()
                                 .mt_2()
-                                .font_family("DejaVu Sans Mono")
+                                .font_family(crate::ui::code_font())
                                 .text_xs()
                                 .child(format!(
                                     "{}\n{}\n{}",
@@ -400,7 +136,7 @@ impl Shell {
                                 )),
                             ToolOutput::Terminal { id } => div()
                                 .mt_2()
-                                .font_family("DejaVu Sans Mono")
+                                .font_family(crate::ui::code_font())
                                 .text_xs()
                                 .child(thread.terminals.get(id).map_or_else(
                                     || format!("Terminal {id}"),
@@ -463,6 +199,15 @@ impl Shell {
                                             choice.label.clone(),
                                             false,
                                         )
+                                        .relative()
+                                        .child(crate::ui::layout_probe(match choice.kind {
+                                            PermissionKind::AllowOnce => "permission-allow-once",
+                                            PermissionKind::AllowAlways => {
+                                                "permission-allow-always"
+                                            }
+                                            PermissionKind::DenyOnce => "permission-deny-once",
+                                            PermissionKind::DenyAlways => "permission-deny-always",
+                                        }))
                                         .on_click(
                                             cx.listener(move |this, _, _, cx| {
                                                 this.answer_permission(
@@ -495,9 +240,13 @@ impl Shell {
             }
             TranscriptItem::Input { id } => self.input_request((thread.id, id.clone()), cx),
             TranscriptItem::Notice { text, is_error } => div()
-                .p_3()
-                .rounded_md()
-                .bg(rgb(if *is_error { 0x3a242a } else { 0x1b2b38 }))
+                .flex()
+                .items_start()
+                .gap_2()
+                .text_size(px(15.))
+                .line_height(px(24.))
+                .text_color(rgb(crate::ui::palette().muted))
+                .children(is_error.then(|| crate::ui::icon(crate::ui::Glyph::Error).mt_1()))
                 .child(truncate(text, 16000))
                 .into_any_element(),
         }

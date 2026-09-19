@@ -1,0 +1,42 @@
+{
+  "rust": {
+    "baseline": "3df6a174419b997ee2ef47cd03b25b9024ec9e9e",
+    "branch": "cmdr-chara/native-ui-parity",
+    "uncommitted_changes": true,
+    "source_sha256": "a4b879908ba239ee9adf2c119a8924755889da1522e209e3c6c2bf15b465edd5",
+    "source_manifest": "../../ui/parity-port-evidence.json",
+    "binary_sha256": "a8db443d89ef423974487547e707559863b30c4d542bbd48c3f929e7928caa51",
+    "binary_bytes": 43405312,
+    "build_command": "cargo build --locked --release -p synara-app --bin synara-app",
+    "compiler": "rustc 1.98.1 (48a229cea 2026-09-01) (Arch Linux rust 1:1.98.1-1)"
+  },
+  "electron": {
+    "version": "0.8.4",
+    "commit": "70f5ed0e4757c0f69891b258171da80d324f0e18",
+    "source_tag": "v0.8.4",
+    "lockfile_sha256": "4cab68e0eda57f3fd071175de904f84845d750995cf7623601d657663f0e77ff",
+    "binary_sha256": "933487402a8ccb7de988e016827107b4c351bafe56a635120336896b74b414b3",
+    "app_asar_sha256": "e78d0d63c1c9ee2cf0e91c4be8fa62d0b6db514342c80c9f907dbc63225120ad",
+    "appimage_sha256": "6e8ff6a2e4e48a617727de019c80936e06a575a639f69e413171498d84af5637",
+    "appimage_bytes": 394271741
+  },
+  "harness_sha256": "c1df9f03e1793ad37d07fc2398002e71c086118e604d664a81ff807ae8eac485",
+  "desktop_helper_sha256": "3f12a935d3c52ab5d79bb948cae3bea08e7c4b4e4abac1278158084e321f72dc",
+  "host": {
+    "scaling_governor": "powersave",
+    "scaling_driver": "intel_pstate",
+    "energy_performance_preference": "performance",
+    "power_supply": {
+      "ucsi-source-psy-USBC000:002": "0",
+      "ucsi-source-psy-USBC000:001": "1",
+      "ACAD": "1"
+    },
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01) (Arch Linux rust 1:1.98.1-1)",
+    "baseline": "3df6a174419b997ee2ef47cd03b25b9024ec9e9e",
+    "branch": "cmdr-chara/native-ui-parity"
+  },
+  "captures_reviewed": [
+    "electron-warm-1.png",
+    "rust-warm-1.png"
+  ]
+}

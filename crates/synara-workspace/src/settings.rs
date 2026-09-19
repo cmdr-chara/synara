@@ -36,9 +36,19 @@ impl Default for FontPreferences {
     }
 }
 
+#[derive(Clone, Copy, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum DarkThemePreference {
+    #[default]
+    Synara,
+    Dracula,
+}
+
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct AppearanceSettings {
+    #[serde(default)]
+    pub dark_theme: DarkThemePreference,
     #[serde(default)]
     pub theme: ThemePreference,
     #[serde(default)]
@@ -62,6 +72,38 @@ pub struct AppSettings {
     pub appearance: AppearanceSettings,
     #[serde(default)]
     pub keybindings: Vec<KeyBinding>,
+    #[serde(default)]
+    pub general: GeneralSettings,
+    #[serde(default)]
+    pub profile: ProfileSettings,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(default, deny_unknown_fields)]
+pub struct GeneralSettings {
+    pub default_provider: Option<String>,
+    pub show_chats: bool,
+    pub show_studio: bool,
+    pub alphabetical_projects: bool,
+    pub oldest_threads_first: bool,
+}
+impl Default for GeneralSettings {
+    fn default() -> Self {
+        Self {
+            default_provider: None,
+            show_chats: true,
+            show_studio: true,
+            alphabetical_projects: false,
+            oldest_threads_first: false,
+        }
+    }
+}
+
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(default, deny_unknown_fields)]
+pub struct ProfileSettings {
+    pub name: String,
+    pub username: String,
 }
 
 impl Default for AppSettings {
@@ -70,6 +112,8 @@ impl Default for AppSettings {
             version: SETTINGS_VERSION,
             appearance: AppearanceSettings::default(),
             keybindings: Vec::new(),
+            general: GeneralSettings::default(),
+            profile: ProfileSettings::default(),
         }
     }
 }
@@ -79,6 +123,19 @@ impl AppSettings {
         if self.version != SETTINGS_VERSION {
             return Err(WorkspaceError::Invalid(
                 "unsupported settings schema version".into(),
+            ));
+        }
+        if self
+            .general
+            .default_provider
+            .as_ref()
+            .is_some_and(|id| id.is_empty() || id.len() > 128 || id.chars().any(char::is_control))
+            || [&self.profile.name, &self.profile.username]
+                .iter()
+                .any(|value| value.len() > 120 || value.chars().any(char::is_control))
+        {
+            return Err(WorkspaceError::Invalid(
+                "invalid general or profile settings".into(),
             ));
         }
         validate_font_family(self.appearance.fonts.ui_family.as_deref())?;
@@ -211,6 +268,18 @@ impl WorkspaceService {
 mod tests {
     use super::*;
 
+    #[test]
+    fn existing_settings_keep_theme_and_fonts_when_new_sections_are_absent() {
+        let old = serde_json::json!({"version":1, "appearance":{"theme":"dark", "fonts":{"ui_family":"Liberation Sans", "ui_size":14.0, "code_family":null, "code_size":13.0}, "reduced_motion":true}, "keybindings":[]});
+        let settings: AppSettings = serde_json::from_value(old).unwrap();
+        settings.validate().unwrap();
+        assert_eq!(settings.appearance.theme, ThemePreference::Dark);
+        assert_eq!(settings.appearance.dark_theme, DarkThemePreference::Synara);
+        assert!(settings.appearance.reduced_motion);
+        assert!(settings.general.show_chats && settings.general.show_studio);
+        assert_eq!(settings.profile, ProfileSettings::default());
+    }
+
     #[tokio::test]
     async fn defaults_are_explicit_and_round_trip() {
         let service = WorkspaceService::memory().unwrap();
@@ -220,6 +289,13 @@ mod tests {
 
         let mut changed = loaded.settings;
         changed.appearance.theme = ThemePreference::Dark;
+        changed.appearance.dark_theme = DarkThemePreference::Dracula;
+        changed.general.alphabetical_projects = true;
+        changed.general.show_studio = false;
+        changed.profile = ProfileSettings {
+            name: "Native user".into(),
+            username: "native".into(),
+        };
         changed.appearance.fonts.ui_size = 16.0;
         changed.keybindings.push(KeyBinding {
             command: "conversation.cancel".into(),

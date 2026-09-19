@@ -23,6 +23,7 @@ fn seed(store: &Store, root: &Path) -> Task {
         agent_id: "never-launch-this-profile".into(),
         working_directory: root.into(),
         updated_at_ms: 0,
+        scope: TaskScope::Project,
     };
     store.save_task(&task).unwrap();
     task

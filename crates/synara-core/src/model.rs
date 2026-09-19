@@ -84,6 +84,18 @@ pub struct Task {
     pub agent_id: String,
     pub working_directory: PathBuf,
     pub updated_at_ms: i64,
+    #[serde(default)]
+    pub scope: TaskScope,
+}
+
+/// Sidebar ownership. Older native records are project conversations.
+#[derive(Clone, Copy, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum TaskScope {
+    #[default]
+    Project,
+    Chat,
+    Studio,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

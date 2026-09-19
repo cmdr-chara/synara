@@ -1,0 +1,83 @@
+{
+  "rust": {
+    "first_mapped_window_ms": {
+      "median": 145.0171829997089,
+      "min": 134.77666900007534,
+      "max": 155.73901200014006
+    },
+    "pss_kib_median": {
+      "median": 153233,
+      "min": 153065,
+      "max": 153512
+    },
+    "uss_kib_median": {
+      "median": 142636,
+      "min": 142484,
+      "max": 142888
+    },
+    "rss_kib_median": {
+      "median": 217884,
+      "min": 217756,
+      "max": 218052
+    },
+    "idle_cpu_one_core_percent": {
+      "median": 0.29967001359977424,
+      "min": 0.2996548980916159,
+      "max": 0.4989731989301012
+    },
+    "process_count_median": {
+      "median": 1,
+      "min": 1,
+      "max": 1
+    },
+    "host_cpu_all_cores_percent": {
+      "median": 6.597022291683807,
+      "min": 6.356525319061346,
+      "max": 9.690145475466426
+    },
+    "warm_run_count": 5
+  },
+  "electron": {
+    "first_mapped_window_ms": {
+      "median": 534.9802900000213,
+      "min": 514.3801450003593,
+      "max": 567.903263000062
+    },
+    "pss_kib_median": {
+      "median": 667569,
+      "min": 663698,
+      "max": 670825
+    },
+    "uss_kib_median": {
+      "median": 509988,
+      "min": 506196,
+      "max": 514272
+    },
+    "rss_kib_median": {
+      "median": 1197056,
+      "min": 1191244,
+      "max": 1199608
+    },
+    "idle_cpu_one_core_percent": {
+      "median": 1.8965979101693837,
+      "min": 1.8965290949661804,
+      "max": 1.9967766388149313
+    },
+    "process_count_median": {
+      "median": 8,
+      "min": 8,
+      "max": 8
+    },
+    "host_cpu_all_cores_percent": {
+      "median": 6.817994900896451,
+      "min": 6.033987357359827,
+      "max": 7.909187771494142
+    },
+    "warm_run_count": 5
+  },
+  "comparison": {
+    "rust_pss_reduction_percent": 77.04611807917982,
+    "rust_window_mapping_reduction_percent": 72.89298583323452,
+    "window_mapping_ratio_electron_over_rust": 3.689082072440307
+  }
+}

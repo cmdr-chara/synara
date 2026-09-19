@@ -571,6 +571,7 @@ mod tests {
             agent_id: "custom".into(),
             working_directory: "/tmp".into(),
             updated_at_ms: 0,
+            scope: TaskScope::Project,
         };
         store.save_task(&task).unwrap();
         task
@@ -616,6 +617,7 @@ mod tests {
             agent_id: "agent".into(),
             working_directory: std::env::temp_dir(),
             updated_at_ms: 1,
+            scope: TaskScope::Project,
         };
         store.save_task(&task).unwrap();
         assert!(matches!(

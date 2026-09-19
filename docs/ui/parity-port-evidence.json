@@ -1,0 +1,518 @@
+{
+  "date": "2026-09-19",
+  "status": "passed-local-scoped-checks",
+  "baseline": "3df6a174419b997ee2ef47cd03b25b9024ec9e9e",
+  "branch": "cmdr-chara/native-ui-parity",
+  "published": true,
+  "source_sha256": "a4b879908ba239ee9adf2c119a8924755889da1522e209e3c6c2bf15b465edd5",
+  "source_hash_format": "Sorted UTF-8 relative path + NUL + file bytes + NUL, concatenated",
+  "source_paths": [
+    ".github/workflows/native.yml",
+    "Cargo.lock",
+    "Cargo.toml",
+    "crates/synara-acp/Cargo.toml",
+    "crates/synara-acp/src/backend.rs",
+    "crates/synara-acp/src/callback_lifecycle_tests.rs",
+    "crates/synara-acp/src/callbacks.rs",
+    "crates/synara-acp/src/elicitation.rs",
+    "crates/synara-acp/src/elicitation_registry.rs",
+    "crates/synara-acp/src/lib.rs",
+    "crates/synara-acp/src/rpc.rs",
+    "crates/synara-acp/src/rpc_lifecycle_tests.rs",
+    "crates/synara-acp/src/rpc_outbound.rs",
+    "crates/synara-acp/src/rpc_outbound_tests.rs",
+    "crates/synara-acp/src/rpc_protocol_tests.rs",
+    "crates/synara-acp/src/schema.rs",
+    "crates/synara-acp/src/scope.rs",
+    "crates/synara-acp/src/session.rs",
+    "crates/synara-acp/src/trace.rs",
+    "crates/synara-acp/src/wire.rs",
+    "crates/synara-acp/tests/cleanup_integration.rs",
+    "crates/synara-acp/tests/custom_profile.rs",
+    "crates/synara-acp/tests/fixtures/agent.rs",
+    "crates/synara-acp/tests/fixtures/vendor_releases.json",
+    "crates/synara-acp/tests/lifecycle_integration.rs",
+    "crates/synara-acp/tests/process_integration.rs",
+    "crates/synara-acp/tests/ssh_live.rs",
+    "crates/synara-acp/tests/vendor_probe.rs",
+    "crates/synara-acp/tests/workspace_integration.rs",
+    "crates/synara-agent/Cargo.toml",
+    "crates/synara-agent/src/api.rs",
+    "crates/synara-agent/src/input_validation.rs",
+    "crates/synara-agent/src/input_validation_tests.rs",
+    "crates/synara-agent/src/interaction.rs",
+    "crates/synara-agent/src/interaction_lifecycle_tests.rs",
+    "crates/synara-agent/src/lib.rs",
+    "crates/synara-agent/src/manager.rs",
+    "crates/synara-app/Cargo.toml",
+    "crates/synara-app/assets/NOTICE.md",
+    "crates/synara-app/assets/fonts/CalSans-Regular.ttf",
+    "crates/synara-app/assets/icons/manifest.json",
+    "crates/synara-app/assets/icons/providers/openai.svg",
+    "crates/synara-app/assets/icons/synara/archive.svg",
+    "crates/synara-app/assets/icons/synara/arrow-left-right.svg",
+    "crates/synara-app/assets/icons/synara/arrow-up.svg",
+    "crates/synara-app/assets/icons/synara/bell.svg",
+    "crates/synara-app/assets/icons/synara/brain.svg",
+    "crates/synara-app/assets/icons/synara/branch-simple.svg",
+    "crates/synara-app/assets/icons/synara/branch.svg",
+    "crates/synara-app/assets/icons/synara/building-blocks.svg",
+    "crates/synara-app/assets/icons/synara/changes.svg",
+    "crates/synara-app/assets/icons/synara/chat-bubble-7.svg",
+    "crates/synara-app/assets/icons/synara/circle-questionmark.svg",
+    "crates/synara-app/assets/icons/synara/clock.svg",
+    "crates/synara-app/assets/icons/synara/color-palette.svg",
+    "crates/synara-app/assets/icons/synara/columns-3-wide.svg",
+    "crates/synara-app/assets/icons/synara/compose-pencil.svg",
+    "crates/synara-app/assets/icons/synara/console.svg",
+    "crates/synara-app/assets/icons/synara/folder-2.svg",
+    "crates/synara-app/assets/icons/synara/folders.svg",
+    "crates/synara-app/assets/icons/synara/gauge.svg",
+    "crates/synara-app/assets/icons/synara/globe.svg",
+    "crates/synara-app/assets/icons/synara/magnifying-glass.svg",
+    "crates/synara-app/assets/icons/synara/microphone.svg",
+    "crates/synara-app/assets/icons/synara/notes.svg",
+    "crates/synara-app/assets/icons/synara/opencode.svg",
+    "crates/synara-app/assets/icons/synara/pin.svg",
+    "crates/synara-app/assets/icons/synara/plugin-1.svg",
+    "crates/synara-app/assets/icons/synara/pull-request.svg",
+    "crates/synara-app/assets/icons/synara/puzzle.svg",
+    "crates/synara-app/assets/icons/synara/robot.svg",
+    "crates/synara-app/assets/icons/synara/screen-capture.svg",
+    "crates/synara-app/assets/icons/synara/settings-gear-4.svg",
+    "crates/synara-app/assets/icons/synara/settings-slider-hor.svg",
+    "crates/synara-app/assets/icons/synara/shield-code.svg",
+    "crates/synara-app/assets/icons/synara/shortcut.svg",
+    "crates/synara-app/assets/icons/synara/sidebar-simple-left-wide.svg",
+    "crates/synara-app/assets/icons/synara/sidebar-simple-right-wide.svg",
+    "crates/synara-app/assets/icons/synara/square-behind-square-6.svg",
+    "crates/synara-app/assets/icons/synara/stop-fill.svg",
+    "crates/synara-app/assets/icons/synara/target-arrow.svg",
+    "crates/synara-app/assets/icons/synara/toolbox.svg",
+    "crates/synara-app/assets/icons/synara/user.svg",
+    "crates/synara-app/assets/icons/synara/window.svg",
+    "crates/synara-app/assets/icons/tabler/alert-circle.svg",
+    "crates/synara-app/assets/icons/tabler/arrow-down.svg",
+    "crates/synara-app/assets/icons/tabler/arrow-left.svg",
+    "crates/synara-app/assets/icons/tabler/arrow-right.svg",
+    "crates/synara-app/assets/icons/tabler/bug.svg",
+    "crates/synara-app/assets/icons/tabler/check.svg",
+    "crates/synara-app/assets/icons/tabler/chevron-down.svg",
+    "crates/synara-app/assets/icons/tabler/chevron-right.svg",
+    "crates/synara-app/assets/icons/tabler/dots.svg",
+    "crates/synara-app/assets/icons/tabler/file.svg",
+    "crates/synara-app/assets/icons/tabler/list-details.svg",
+    "crates/synara-app/assets/icons/tabler/maximize.svg",
+    "crates/synara-app/assets/icons/tabler/minimize.svg",
+    "crates/synara-app/assets/icons/tabler/minus.svg",
+    "crates/synara-app/assets/icons/tabler/paperclip.svg",
+    "crates/synara-app/assets/icons/tabler/plus.svg",
+    "crates/synara-app/assets/icons/tabler/x.svg",
+    "crates/synara-app/assets/licenses/CalSans-OFL.txt",
+    "crates/synara-app/assets/licenses/React-Icons-MIT.txt",
+    "crates/synara-app/assets/licenses/Simple-Icons-CC0.txt",
+    "crates/synara-app/assets/licenses/Synara-source-MIT.txt",
+    "crates/synara-app/assets/licenses/Tabler-MIT.txt",
+    "crates/synara-app/assets/synara.svg",
+    "crates/synara-app/src/close.rs",
+    "crates/synara-app/src/input.rs",
+    "crates/synara-app/src/main.rs",
+    "crates/synara-app/src/shell.rs",
+    "crates/synara-app/src/shell/activity.rs",
+    "crates/synara-app/src/shell/chrome.rs",
+    "crates/synara-app/src/shell/composer.rs",
+    "crates/synara-app/src/shell/controls.rs",
+    "crates/synara-app/src/shell/conversation.rs",
+    "crates/synara-app/src/shell/dock.rs",
+    "crates/synara-app/src/shell/messages.rs",
+    "crates/synara-app/src/shell/navigation.rs",
+    "crates/synara-app/src/shell/overview.rs",
+    "crates/synara-app/src/shell/panels.rs",
+    "crates/synara-app/src/shell/registry.rs",
+    "crates/synara-app/src/shell/settings.rs",
+    "crates/synara-app/src/shell/terminal.rs",
+    "crates/synara-app/src/shell/transcript.rs",
+    "crates/synara-app/src/ui.rs",
+    "crates/synara-app/src/ui/icons.rs",
+    "crates/synara-app/src/ui/markdown.rs",
+    "crates/synara-app/src/ui/menu.rs",
+    "crates/synara-app/src/ui/motion.rs",
+    "crates/synara-browser/Cargo.toml",
+    "crates/synara-browser/src/lib.rs",
+    "crates/synara-core/Cargo.toml",
+    "crates/synara-core/src/activity.rs",
+    "crates/synara-core/src/lib.rs",
+    "crates/synara-core/src/model.rs",
+    "crates/synara-core/src/text.rs",
+    "crates/synara-core/src/thread.rs",
+    "crates/synara-registry/Cargo.toml",
+    "crates/synara-registry/examples/inspect_index.rs",
+    "crates/synara-registry/src/catalog.rs",
+    "crates/synara-registry/src/download.rs",
+    "crates/synara-registry/src/install.rs",
+    "crates/synara-registry/src/lib.rs",
+    "crates/synara-registry/src/model.rs",
+    "crates/synara-registry/src/paths.rs",
+    "crates/synara-registry/src/review.rs",
+    "crates/synara-registry/tests/recovery_and_archives.rs",
+    "crates/synara-runtime/Cargo.toml",
+    "crates/synara-runtime/src/bin/synara-remote-fs.rs",
+    "crates/synara-runtime/src/bounded.rs",
+    "crates/synara-runtime/src/device.rs",
+    "crates/synara-runtime/src/filesystem.rs",
+    "crates/synara-runtime/src/host.rs",
+    "crates/synara-runtime/src/lib.rs",
+    "crates/synara-runtime/src/platform.rs",
+    "crates/synara-runtime/src/process.rs",
+    "crates/synara-runtime/src/process_linux.rs",
+    "crates/synara-runtime/src/remote_fs.rs",
+    "crates/synara-runtime/src/remote_terminal.rs",
+    "crates/synara-runtime/src/secrets.rs",
+    "crates/synara-runtime/src/ssh.rs",
+    "crates/synara-runtime/src/terminal.rs",
+    "crates/synara-runtime/src/terminal/fallback.rs",
+    "crates/synara-runtime/src/terminal/posix.rs",
+    "crates/synara-runtime/src/terminal/session.rs",
+    "crates/synara-runtime/src/terminal_input.rs",
+    "crates/synara-runtime/src/terminal_screen.rs",
+    "crates/synara-runtime/src/update.rs",
+    "crates/synara-runtime/tests/process_ownership.rs",
+    "crates/synara-runtime/tests/process_windows.rs",
+    "crates/synara-runtime/tests/ssh_live.rs",
+    "crates/synara-runtime/tests/terminal_lifecycle.rs",
+    "crates/synara-runtime/tests/terminal_parser.rs",
+    "crates/synara-runtime/tests/terminal_windows.rs",
+    "crates/synara-runtime/verification/check_ajm_scope.py",
+    "crates/synara-workspace/Cargo.toml",
+    "crates/synara-workspace/src/controller.rs",
+    "crates/synara-workspace/src/git_operations/mod.rs",
+    "crates/synara-workspace/src/git_operations/plan.rs",
+    "crates/synara-workspace/src/git_operations/runner.rs",
+    "crates/synara-workspace/src/git_operations/tests.rs",
+    "crates/synara-workspace/src/lib.rs",
+    "crates/synara-workspace/src/profiles.rs",
+    "crates/synara-workspace/src/remote.rs",
+    "crates/synara-workspace/src/service.rs",
+    "crates/synara-workspace/src/settings.rs",
+    "crates/synara-workspace/src/storage.rs",
+    "crates/synara-workspace/src/storage/recovery.rs",
+    "crates/synara-workspace/src/storage/recovery/tests.rs",
+    "crates/synara-workspace/src/tools.rs",
+    "crates/synara-workspace/src/tools/git_lifecycle_tests.rs",
+    "crates/synara-workspace/tests/ssh_live.rs",
+    "scripts/native_chat_smoke.py",
+    "scripts/native_controls_smoke.py",
+    "scripts/native_navigation_smoke.py",
+    "scripts/native_presentation_smoke.py",
+    "scripts/native_smoke.py",
+    "scripts/native_studio_settings_smoke.py"
+  ],
+  "binaries": {
+    "debug": {
+      "sha256": "6c1d7b438845585c17f705d12b2a66bbc4430d2f82a70d901824bd9b08dd0ef6",
+      "bytes": 166808528
+    },
+    "release": {
+      "sha256": "a8db443d89ef423974487547e707559863b30c4d542bbd48c3f929e7928caa51",
+      "bytes": 43405312
+    }
+  },
+  "toolchain": "rustc 1.98.1 (48a229cea 2026-09-01) (Arch Linux rust 1:1.98.1-1)",
+  "tests": {
+    "workspace": {
+      "passed": 360,
+      "failed": 0,
+      "ignored": 21
+    },
+    "workspace_log": "/tmp/synara-review.PmX7Op-evidence/studio-workspace-tests.log",
+    "stage": "Before final Settings spacing/reset and named draft Enter edits; final app tests and native journeys cover later application changes",
+    "final_app": {
+      "passed": 24,
+      "failed": 0,
+      "log": "/tmp/synara-review.PmX7Op-evidence/studio-app-tests.log"
+    }
+  },
+  "gates": {
+    "build_debug": "passed",
+    "build_release": "passed",
+    "fmt": "passed",
+    "strict_workspace_clippy": "passed",
+    "diff_check": "passed",
+    "workspace_structure": "passed",
+    "full_electron_parity": "open"
+  },
+  "native_suites": {
+    "desktop": {
+      "status": "passed",
+      "checks": [
+        "native-composer-streaming-and-tool-completion",
+        "native-permission-denial",
+        "workspace-filesystem-callbacks",
+        "workspace-escape-rejected",
+        "second-fixture-through-same-native-controller",
+        "offline-registry-review-and-approval-without-execution",
+        "dirty-close-cancel-preserves-document",
+        "guarded-save-before-native-close",
+        "durable-history-restored-without-autostart",
+        "save-conflict-preserves-external-change-and-open-editor",
+        "explicit-discard-does-not-overwrite-disk"
+      ],
+      "agents": [
+        "fixture-alpha",
+        "fixture-beta"
+      ],
+      "evidence_path": "/tmp/synara-review.PmX7Op-evidence/studio-desktop/result.json",
+      "stage": "Final presentation and scoped chat code; before named draft Enter routing"
+    },
+    "navigation": {
+      "status": "passed",
+      "checks": [
+        "mode-menu-keyboard-dismissal-and-agent-settings-approval",
+        "retired-approval-control-restores-shell-keyboard-navigation",
+        "native-key-release-creates-exactly-one-backend-thread",
+        "sidebar-new-thread-uses-controller-and-durable-acp-streaming",
+        "history-traversal-restores-selection-and-thread-drafts",
+        "compact-thread-row-preserves-draft-and-submits-to-own-backend-thread",
+        "sidebar-collapse-is-presentation-only",
+        "native-resize-retains-process-and-selection",
+        "native-window-closes-through-owned-controller"
+      ],
+      "platform": "Linux/X11/private Xvfb",
+      "initial_window": [
+        1420,
+        930
+      ],
+      "evidence_path": "/tmp/synara-review.PmX7Op-evidence/studio-navigation-final/result.json",
+      "stage": "Final presentation and scoped chat code; before named draft Enter routing"
+    },
+    "controls": {
+      "status": "passed",
+      "checks": [
+        "agent-menu-release-activation-and-escape-focus-without-autostart",
+        "new-composer-submits-through-real-selected-agent",
+        "model-choices-are-explicit-acknowledged-once-and-noop-when-selected",
+        "mode-picker-uses-the-controller-and-durable-events",
+        "boolean-picker-sends-an-explicit-advertised-value",
+        "escape-and-clickaway-preserve-draft-without-submission",
+        "busy-selectors-do-not-mutate-and-stop-cancels-the-real-request",
+        "responsive-composer-and-anchored-menus-at-four-native-window-sizes",
+        "restart-restores-agent-and-transcript-without-autostart"
+      ],
+      "agents": [
+        "fixture-alpha",
+        "fixture-beta"
+      ],
+      "evidence_path": "/tmp/synara-review.PmX7Op-evidence/studio-controls/result.json",
+      "stage": "Before final sidebar draft filtering and Settings-only spacing/reset changes; ACP/composer behavior unchanged afterward"
+    },
+    "chat": {
+      "status": "passed",
+      "checks": [
+        "workspace-launcher-keeps-transcript-and-composer-in-equal-left-pane",
+        "workspace-opening-renders-intermediate-drawer-widths",
+        "explorer-has-240px-tree-and-separate-empty-document-surface",
+        "five-row-add-menu-spans-composer-and-dismisses-without-agent-events",
+        "activity-expansion-is-local-and-preserves-durable-transcript",
+        "split-composer-and-add-menu-remain-inside-intermediate-window"
+      ],
+      "platform": "Linux/X11/private Xvfb",
+      "scale": 1.25,
+      "content": "Inert transcript fixture shaped from user-provided reference",
+      "evidence_path": "/tmp/synara-review.PmX7Op-evidence/studio-chat/result.json",
+      "stage": "Before final sidebar draft filtering and Settings-only changes; transcript/dock/Add code unchanged afterward"
+    },
+    "presentation": {
+      "status": "passed",
+      "checks": [
+        "home-composer-cap-centering-bottom-anchor-at-four-native-sizes",
+        "popup-opening-renders-intermediate-fade-and-scale-frames",
+        "project-picker-dismissal-and-current-project-selection-do-not-start-an-agent",
+        "search-can-open-type-and-close-without-changing-agent-state",
+        "kanban-opens-a-real-catalog-task-and-help-returns-without-an-agent-launch",
+        "drawer-renders-intermediate-frames-and-settles-without-mount-animation",
+        "rapid-drawer-reversal-settles-in-the-requested-state",
+        "streaming-updates-do-not-restart-conversation-entry-animation",
+        "new-user-message-animates-once-and-settles-during-streaming",
+        "persisted-reduced-motion-disables-drawer-and-pane-transitions"
+      ],
+      "platform": "Linux/X11/private Xvfb",
+      "reference_scale": 1.25,
+      "content": "Isolated visual catalog, matching the supplied sidebar row lengths and count",
+      "evidence_path": "/tmp/synara-review.PmX7Op-evidence/studio-presentation-final/result.json",
+      "stage": "Final application code"
+    },
+    "studio_settings": {
+      "status": "passed",
+      "checks": [
+        "repeated-new-thread-keeps-one-selected-empty-draft",
+        "new-chat-sends-to-independent-thread-and-gets-prompt-title",
+        "Studio-has-independent-working-directory-conversation-and-restored-drafts",
+        "restore-defaults-updates-saved-preferences-and-font-editors",
+        "font-motion-profile-and-Studio-visibility-settings-save-and-preserve-chats",
+        "settings-navigation-real-theme-and-order-controls-persist-without-changing-chat",
+        "Studio-selection-and-settings-survive-restart",
+        "named-draft-Enter-uses-the-visible-Studio-scope"
+      ],
+      "platform": "Linux/X11/private Xvfb",
+      "evidence_path": "/tmp/synara-review.PmX7Op-evidence/studio-settings-validated/result.json",
+      "stage": "Final application code; includes named draft Enter"
+    }
+  },
+  "native_checks_total": 53,
+  "icons": {
+    "manifest": "crates/synara-app/assets/icons/manifest.json",
+    "manifest_sha256": "5a0f0ecd15a88e4251f6056d6a13e4e7070782be1b125db24dcec2f816420e26",
+    "glyphs": 61,
+    "svg_files": 60,
+    "all_manifest_hashes_verified": true
+  },
+  "captures": [
+    {
+      "path": "docs/ui/captures/parity-chat-add-menu.png",
+      "sha256": "6dffafb2a96f4c1f1221243f600ebfffe13bee281d845d139bfebc57c2238ae2",
+      "stage": "Initial presentation port"
+    },
+    {
+      "path": "docs/ui/captures/parity-chat-explorer.png",
+      "sha256": "f5dbaaf4d5a3faffeb79ea5c991c3106cd98c2b3a6e0975c345821dcb3733471",
+      "stage": "Initial presentation port"
+    },
+    {
+      "path": "docs/ui/captures/parity-chat-full.png",
+      "sha256": "c711cde1cb218b6efdb568aa620f888e30f14761178661873c797b8405b41c3f",
+      "stage": "Initial presentation port"
+    },
+    {
+      "path": "docs/ui/captures/parity-chat-narrow.png",
+      "sha256": "59cf4acbc1697a099e4d11ca00b6abae3c46f2d8f87310b22c66f370b950a4e3",
+      "stage": "Initial presentation port"
+    },
+    {
+      "path": "docs/ui/captures/parity-chat-workspace.png",
+      "sha256": "d2ace766cbeeece76f3ff88879f3161cfe20e34107761b292f6d34a299cc25f5",
+      "stage": "Initial presentation port"
+    },
+    {
+      "path": "docs/ui/captures/parity-home-1536.png",
+      "sha256": "174638fc7a9744bdc01fa269afb920b484c5b005a789f887dc57e918fce4d663",
+      "stage": "Initial presentation port"
+    },
+    {
+      "path": "docs/ui/captures/parity-home-960.png",
+      "sha256": "82b13b826c827bcd63295112011afb1738abe3d275078c995b85f608c9d24c3b",
+      "stage": "Initial presentation port"
+    },
+    {
+      "path": "docs/ui/captures/parity-settings-agents.png",
+      "sha256": "7842af33c78b73c2ea28317522456ae6fa6911098902bc136e5e54b5b7043345",
+      "stage": "Studio/Settings continuation"
+    },
+    {
+      "path": "docs/ui/captures/parity-settings-appearance-dracula.png",
+      "sha256": "a5fd88ad6d71520f36f5364aa8713d20225557de0e51acff235d4899dddfc60e",
+      "stage": "Studio/Settings continuation"
+    },
+    {
+      "path": "docs/ui/captures/parity-settings-appearance-light.png",
+      "sha256": "df9c6559e305922bca54247d1123b16392d507476d0d3030666d9d4228e2a7e2",
+      "stage": "Studio/Settings continuation"
+    },
+    {
+      "path": "docs/ui/captures/parity-settings-general.png",
+      "sha256": "56999786c76ded3d6873c3bb21a37c6bf56a6f66e8bf55729a5f32e536f8556d",
+      "stage": "Studio/Settings continuation"
+    },
+    {
+      "path": "docs/ui/captures/parity-settings-profile.png",
+      "sha256": "633c1b191a6a64e5aff365fb52d3783e07759f9b15d201cc803f319f771ec4b4",
+      "stage": "Studio/Settings continuation"
+    },
+    {
+      "path": "docs/ui/captures/parity-studio-chat.png",
+      "sha256": "3e4355a16b5c4ed58b85519e6c5c5f2a03978a15020ad4e269973ec8a987137f",
+      "stage": "Studio/Settings continuation"
+    },
+    {
+      "path": "docs/ui/captures/parity-studio-switcher.png",
+      "sha256": "9bc46824fd2ac105b8f4db8842ed7f501195d9f109e6f69bfc14409fef97f3e6",
+      "stage": "Studio/Settings continuation"
+    },
+    {
+      "path": "docs/ui/captures/parity-studio.png",
+      "sha256": "4e59c44035d12785fb89094e98bdbf24041eb9501c4db0546e344e6cf707ff0f",
+      "stage": "Studio/Settings continuation"
+    }
+  ],
+  "desktop_launch": {
+    "binary": "target/release/synara-app",
+    "pid": 108166,
+    "platform": "Wayland",
+    "mapped": true,
+    "window_size": [
+      1536,
+      864
+    ],
+    "workspace": 5,
+    "log": "/tmp/synara-native-session-kc3p3c3e/app.log",
+    "scope": "Visible startup only; no interaction automation against the user profile"
+  },
+  "previous_verification": {
+    "source_sha256": "20076651e574b65be1ca656310d5fb3b9e56ae9b51a360e2fc1f1db68903903e",
+    "native_checks_total": 45,
+    "status": "Historical initial presentation/icon port; superseded for current source"
+  },
+  "failure_resolutions": [
+    {
+      "case": "Generic and project tooltips attached to one action panicked GPUI",
+      "fix": "Keep the explicit project tooltip only; generic label tooltips removed",
+      "verification": "All native suites launch and interact successfully"
+    },
+    {
+      "case": "Settings section kept the previous scroll offset",
+      "fix": "Reset the shared scroll handle when changing settings sections",
+      "verification": "Native Settings journeys scroll Appearance, Profile and General"
+    },
+    {
+      "case": "Keyboard named Studio draft used project creation",
+      "fix": "Use the visible Studio/Chat scope on Enter as on the Create button",
+      "verification": "named-draft-Enter-uses-the-visible-Studio-scope"
+    },
+    {
+      "case": "Test harness upper-case text and empty clipboard assertions",
+      "fix": "Synthesize Shift for uppercase; check empty editor with an appended sentinel; wait for exact clipboard publication",
+      "verification": "Native profile/font persistence and reset assertions pass"
+    }
+  ],
+  "limitations": [
+    "Full feature and animation parity remains open; see parity-port.md",
+    "No remote CI result is claimed by this local verification",
+    "21 workspace tests remain explicitly ignored",
+    "Older strict settings readers fall back to defaults on new preference fields; raw settings remain intact until saved",
+    "Automated interaction evidence is Linux/X11 only; visible Wayland startup is separately recorded"
+  ],
+  "release_confirmation": {
+    "status": "passed",
+    "checks": [
+      "repeated-new-thread-keeps-one-selected-empty-draft",
+      "new-chat-sends-to-independent-thread-and-gets-prompt-title",
+      "Studio-has-independent-working-directory-conversation-and-restored-drafts",
+      "restore-defaults-updates-saved-preferences-and-font-editors",
+      "font-motion-profile-and-Studio-visibility-settings-save-and-preserve-chats",
+      "settings-navigation-real-theme-and-order-controls-persist-without-changing-chat",
+      "Studio-selection-and-settings-survive-restart",
+      "named-draft-Enter-uses-the-visible-Studio-scope"
+    ],
+    "platform": "Linux/X11/private Xvfb",
+    "binary": "target/release/synara-app",
+    "evidence_path": "/tmp/synara-review.PmX7Op-evidence/studio-settings-release/result.json",
+    "scope": "Repeated the eight Studio/Settings journeys against the optimized release binary after the benchmark; the 53 unique native checks above are unchanged."
+  },
+  "performance_baseline": {
+    "report": "docs/benchmarks/2026-09-19-rust-electron/README.md",
+    "raw_samples": "docs/benchmarks/2026-09-19-rust-electron/raw-results.json",
+    "formal_launches": 12,
+    "status": "passed",
+    "scope": "Empty home on matched private Xvfb software renderers; five warm runs plus one fresh-profile run per app."
+  },
+  "published_remote_branch": "origin/astra/gpui-clean-rewrite"
+}

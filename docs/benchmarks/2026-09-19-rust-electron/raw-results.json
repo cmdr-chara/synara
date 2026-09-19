@@ -1,0 +1,5687 @@
+{
+  "started_at_utc": "2026-09-19T19:49:36.131073+00:00",
+  "platform": "Linux-7.2.5-1-cachyos-bore-x86_64-with-glibc2.44",
+  "cpu_count": 12,
+  "cpuinfo": "13th Gen Intel(R) Core(TM) i5-1334U",
+  "memory": "MemTotal:       32535784 kB",
+  "conditions": {
+    "graphics": "private Xvfb/X11; LIBGL_ALWAYS_SOFTWARE=1; separate probes verified Rust wgpu GL llvmpipe and Electron ANGLE llvmpipe with software compositing",
+    "window": [
+      1420,
+      930
+    ],
+    "scale": 1,
+    "settle_after_map_s": 15,
+    "idle_sample_s": 10,
+    "os_cache": "not dropped; fresh profile is not cold filesystem cache",
+    "warmups": "one measured fresh-profile run per app, excluded from warm medians",
+    "order": "alternating pairs",
+    "workload": "empty home, no chats/projects/agents; Electron onboarding/update checks disabled"
+  },
+  "binary_sha256": {
+    "rust": "a8db443d89ef423974487547e707559863b30c4d542bbd48c3f929e7928caa51",
+    "electron": "933487402a8ccb7de988e016827107b4c351bafe56a635120336896b74b414b3"
+  },
+  "runs": [
+    {
+      "kind": "electron",
+      "label": "electron-fresh",
+      "command": [
+        "/tmp/synara-comparison-20260919/electron/synara",
+        "--no-sandbox",
+        "--ozone-platform=x11"
+      ],
+      "status": "passed",
+      "started_at_utc": "2026-09-19T19:49:36.306301+00:00",
+      "first_mapped_window_ms": 749.9050289998195,
+      "initial_geometry": [
+        -4,
+        0,
+        1428,
+        934
+      ],
+      "idle_geometry": [
+        0,
+        0,
+        1420,
+        930
+      ],
+      "samples": [
+        {
+          "elapsed_s": 0.021251299000141444,
+          "processes": {
+            "127425": {
+              "name": "synara",
+              "ticks": 9,
+              "rss_kib": 86756,
+              "pss_kib": 28029,
+              "uss_kib": 16584
+            },
+            "127492": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 78240,
+              "pss_kib": 26786,
+              "uss_kib": 9260
+            },
+            "127368": {
+              "name": "synara",
+              "ticks": 128,
+              "rss_kib": 321380,
+              "pss_kib": 196188,
+              "uss_kib": 164076
+            },
+            "127497": {
+              "name": "synara",
+              "ticks": 225,
+              "rss_kib": 297700,
+              "pss_kib": 227128,
+              "uss_kib": 209192
+            },
+            "127370": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 59148,
+              "pss_kib": 12105,
+              "uss_kib": 868
+            },
+            "127371": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58520,
+              "pss_kib": 10200,
+              "uss_kib": 820
+            },
+            "127508": {
+              "name": "synara",
+              "ticks": 165,
+              "rss_kib": 245844,
+              "pss_kib": 173722,
+              "uss_kib": 140840
+            },
+            "127422": {
+              "name": "synara",
+              "ticks": 59,
+              "rss_kib": 177064,
+              "pss_kib": 94296,
+              "uss_kib": 64060
+            }
+          },
+          "rss_kib": 1324652,
+          "pss_kib": 768454,
+          "uss_kib": 605700
+        },
+        {
+          "elapsed_s": 1.026769300000069,
+          "processes": {
+            "127425": {
+              "name": "synara",
+              "ticks": 9,
+              "rss_kib": 86756,
+              "pss_kib": 28029,
+              "uss_kib": 16584
+            },
+            "127492": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 78240,
+              "pss_kib": 26786,
+              "uss_kib": 9260
+            },
+            "127368": {
+              "name": "synara",
+              "ticks": 128,
+              "rss_kib": 321380,
+              "pss_kib": 196188,
+              "uss_kib": 164076
+            },
+            "127497": {
+              "name": "synara",
+              "ticks": 226,
+              "rss_kib": 297700,
+              "pss_kib": 227104,
+              "uss_kib": 209168
+            },
+            "127370": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 59148,
+              "pss_kib": 12105,
+              "uss_kib": 868
+            },
+            "127371": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58520,
+              "pss_kib": 10200,
+              "uss_kib": 820
+            },
+            "127508": {
+              "name": "synara",
+              "ticks": 166,
+              "rss_kib": 245844,
+              "pss_kib": 173726,
+              "uss_kib": 140844
+            },
+            "127422": {
+              "name": "synara",
+              "ticks": 60,
+              "rss_kib": 177064,
+              "pss_kib": 94296,
+              "uss_kib": 64060
+            }
+          },
+          "rss_kib": 1324652,
+          "pss_kib": 768434,
+          "uss_kib": 605680
+        },
+        {
+          "elapsed_s": 2.0182710119997864,
+          "processes": {
+            "127425": {
+              "name": "synara",
+              "ticks": 9,
+              "rss_kib": 86756,
+              "pss_kib": 28029,
+              "uss_kib": 16584
+            },
+            "127492": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 78240,
+              "pss_kib": 26786,
+              "uss_kib": 9260
+            },
+            "127368": {
+              "name": "synara",
+              "ticks": 128,
+              "rss_kib": 321380,
+              "pss_kib": 196188,
+              "uss_kib": 164076
+            },
+            "127497": {
+              "name": "synara",
+              "ticks": 226,
+              "rss_kib": 297700,
+              "pss_kib": 227040,
+              "uss_kib": 209104
+            },
+            "127370": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 59148,
+              "pss_kib": 12105,
+              "uss_kib": 868
+            },
+            "127371": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58520,
+              "pss_kib": 10200,
+              "uss_kib": 820
+            },
+            "127508": {
+              "name": "synara",
+              "ticks": 166,
+              "rss_kib": 245844,
+              "pss_kib": 173726,
+              "uss_kib": 140844
+            },
+            "127422": {
+              "name": "synara",
+              "ticks": 61,
+              "rss_kib": 177004,
+              "pss_kib": 94272,
+              "uss_kib": 64036
+            }
+          },
+          "rss_kib": 1324592,
+          "pss_kib": 768346,
+          "uss_kib": 605592
+        },
+        {
+          "elapsed_s": 3.018115332999969,
+          "processes": {
+            "127425": {
+              "name": "synara",
+              "ticks": 9,
+              "rss_kib": 86756,
+              "pss_kib": 28029,
+              "uss_kib": 16584
+            },
+            "127492": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 78240,
+              "pss_kib": 26786,
+              "uss_kib": 9260
+            },
+            "127368": {
+              "name": "synara",
+              "ticks": 128,
+              "rss_kib": 321380,
+              "pss_kib": 196188,
+              "uss_kib": 164076
+            },
+            "127497": {
+              "name": "synara",
+              "ticks": 227,
+              "rss_kib": 297828,
+              "pss_kib": 227012,
+              "uss_kib": 209076
+            },
+            "127370": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 59148,
+              "pss_kib": 12105,
+              "uss_kib": 868
+            },
+            "127371": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58520,
+              "pss_kib": 10200,
+              "uss_kib": 820
+            },
+            "127508": {
+              "name": "synara",
+              "ticks": 166,
+              "rss_kib": 245844,
+              "pss_kib": 173734,
+              "uss_kib": 140852
+            },
+            "127422": {
+              "name": "synara",
+              "ticks": 63,
+              "rss_kib": 176892,
+              "pss_kib": 94272,
+              "uss_kib": 64036
+            }
+          },
+          "rss_kib": 1324608,
+          "pss_kib": 768326,
+          "uss_kib": 605572
+        },
+        {
+          "elapsed_s": 4.020154984999863,
+          "processes": {
+            "127425": {
+              "name": "synara",
+              "ticks": 9,
+              "rss_kib": 86756,
+              "pss_kib": 28029,
+              "uss_kib": 16584
+            },
+            "127492": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 78240,
+              "pss_kib": 26786,
+              "uss_kib": 9260
+            },
+            "127368": {
+              "name": "synara",
+              "ticks": 128,
+              "rss_kib": 321380,
+              "pss_kib": 196188,
+              "uss_kib": 164076
+            },
+            "127497": {
+              "name": "synara",
+              "ticks": 227,
+              "rss_kib": 297828,
+              "pss_kib": 227016,
+              "uss_kib": 209080
+            },
+            "127370": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 59148,
+              "pss_kib": 12105,
+              "uss_kib": 868
+            },
+            "127371": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58520,
+              "pss_kib": 10200,
+              "uss_kib": 820
+            },
+            "127508": {
+              "name": "synara",
+              "ticks": 166,
+              "rss_kib": 245844,
+              "pss_kib": 173702,
+              "uss_kib": 140820
+            },
+            "127422": {
+              "name": "synara",
+              "ticks": 64,
+              "rss_kib": 176876,
+              "pss_kib": 94272,
+              "uss_kib": 64036
+            }
+          },
+          "rss_kib": 1324592,
+          "pss_kib": 768298,
+          "uss_kib": 605544
+        },
+        {
+          "elapsed_s": 5.018686147000153,
+          "processes": {
+            "127425": {
+              "name": "synara",
+              "ticks": 9,
+              "rss_kib": 86756,
+              "pss_kib": 28029,
+              "uss_kib": 16584
+            },
+            "127492": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 78240,
+              "pss_kib": 26786,
+              "uss_kib": 9260
+            },
+            "127368": {
+              "name": "synara",
+              "ticks": 128,
+              "rss_kib": 321380,
+              "pss_kib": 196188,
+              "uss_kib": 164076
+            },
+            "127497": {
+              "name": "synara",
+              "ticks": 228,
+              "rss_kib": 297932,
+              "pss_kib": 226996,
+              "uss_kib": 209060
+            },
+            "127370": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 59148,
+              "pss_kib": 12104,
+              "uss_kib": 868
+            },
+            "127371": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58520,
+              "pss_kib": 10199,
+              "uss_kib": 820
+            },
+            "127508": {
+              "name": "synara",
+              "ticks": 166,
+              "rss_kib": 245844,
+              "pss_kib": 173702,
+              "uss_kib": 140820
+            },
+            "127422": {
+              "name": "synara",
+              "ticks": 64,
+              "rss_kib": 176900,
+              "pss_kib": 94296,
+              "uss_kib": 64060
+            }
+          },
+          "rss_kib": 1324720,
+          "pss_kib": 768300,
+          "uss_kib": 605548
+        },
+        {
+          "elapsed_s": 6.020628425999803,
+          "processes": {
+            "127425": {
+              "name": "synara",
+              "ticks": 9,
+              "rss_kib": 86756,
+              "pss_kib": 28029,
+              "uss_kib": 16584
+            },
+            "127492": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 78240,
+              "pss_kib": 26786,
+              "uss_kib": 9260
+            },
+            "127368": {
+              "name": "synara",
+              "ticks": 128,
+              "rss_kib": 321380,
+              "pss_kib": 196188,
+              "uss_kib": 164076
+            },
+            "127497": {
+              "name": "synara",
+              "ticks": 228,
+              "rss_kib": 297932,
+              "pss_kib": 227036,
+              "uss_kib": 209100
+            },
+            "127370": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 59148,
+              "pss_kib": 12105,
+              "uss_kib": 868
+            },
+            "127371": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58520,
+              "pss_kib": 10200,
+              "uss_kib": 820
+            },
+            "127508": {
+              "name": "synara",
+              "ticks": 167,
+              "rss_kib": 245844,
+              "pss_kib": 173706,
+              "uss_kib": 140824
+            },
+            "127422": {
+              "name": "synara",
+              "ticks": 66,
+              "rss_kib": 176912,
+              "pss_kib": 94296,
+              "uss_kib": 64060
+            }
+          },
+          "rss_kib": 1324732,
+          "pss_kib": 768346,
+          "uss_kib": 605592
+        },
+        {
+          "elapsed_s": 7.018525610999859,
+          "processes": {
+            "127425": {
+              "name": "synara",
+              "ticks": 9,
+              "rss_kib": 86756,
+              "pss_kib": 28031,
+              "uss_kib": 16584
+            },
+            "127492": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 78240,
+              "pss_kib": 26786,
+              "uss_kib": 9260
+            },
+            "127368": {
+              "name": "synara",
+              "ticks": 128,
+              "rss_kib": 321380,
+              "pss_kib": 196188,
+              "uss_kib": 164076
+            },
+            "127497": {
+              "name": "synara",
+              "ticks": 229,
+              "rss_kib": 297932,
+              "pss_kib": 227036,
+              "uss_kib": 209100
+            },
+            "127370": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 59148,
+              "pss_kib": 12105,
+              "uss_kib": 868
+            },
+            "127371": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58520,
+              "pss_kib": 10200,
+              "uss_kib": 820
+            },
+            "127508": {
+              "name": "synara",
+              "ticks": 167,
+              "rss_kib": 245844,
+              "pss_kib": 173724,
+              "uss_kib": 140840
+            },
+            "127422": {
+              "name": "synara",
+              "ticks": 67,
+              "rss_kib": 176940,
+              "pss_kib": 94296,
+              "uss_kib": 64060
+            }
+          },
+          "rss_kib": 1324760,
+          "pss_kib": 768366,
+          "uss_kib": 605608
+        },
+        {
+          "elapsed_s": 8.018770141000005,
+          "processes": {
+            "127425": {
+              "name": "synara",
+              "ticks": 9,
+              "rss_kib": 86756,
+              "pss_kib": 28031,
+              "uss_kib": 16584
+            },
+            "127492": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 78240,
+              "pss_kib": 26786,
+              "uss_kib": 9260
+            },
+            "127368": {
+              "name": "synara",
+              "ticks": 128,
+              "rss_kib": 321380,
+              "pss_kib": 196188,
+              "uss_kib": 164076
+            },
+            "127497": {
+              "name": "synara",
+              "ticks": 229,
+              "rss_kib": 297932,
+              "pss_kib": 227040,
+              "uss_kib": 209104
+            },
+            "127370": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 59148,
+              "pss_kib": 12105,
+              "uss_kib": 868
+            },
+            "127371": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58520,
+              "pss_kib": 10200,
+              "uss_kib": 820
+            },
+            "127508": {
+              "name": "synara",
+              "ticks": 167,
+              "rss_kib": 245844,
+              "pss_kib": 173724,
+              "uss_kib": 140840
+            },
+            "127422": {
+              "name": "synara",
+              "ticks": 68,
+              "rss_kib": 176976,
+              "pss_kib": 94272,
+              "uss_kib": 64036
+            }
+          },
+          "rss_kib": 1324796,
+          "pss_kib": 768346,
+          "uss_kib": 605588
+        },
+        {
+          "elapsed_s": 9.018378585999926,
+          "processes": {
+            "127425": {
+              "name": "synara",
+              "ticks": 9,
+              "rss_kib": 86756,
+              "pss_kib": 28031,
+              "uss_kib": 16584
+            },
+            "127492": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 78240,
+              "pss_kib": 26786,
+              "uss_kib": 9260
+            },
+            "127368": {
+              "name": "synara",
+              "ticks": 128,
+              "rss_kib": 321380,
+              "pss_kib": 196188,
+              "uss_kib": 164076
+            },
+            "127497": {
+              "name": "synara",
+              "ticks": 230,
+              "rss_kib": 297932,
+              "pss_kib": 227044,
+              "uss_kib": 209108
+            },
+            "127370": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 59148,
+              "pss_kib": 12105,
+              "uss_kib": 868
+            },
+            "127371": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58520,
+              "pss_kib": 10200,
+              "uss_kib": 820
+            },
+            "127508": {
+              "name": "synara",
+              "ticks": 167,
+              "rss_kib": 245844,
+              "pss_kib": 173724,
+              "uss_kib": 140840
+            },
+            "127422": {
+              "name": "synara",
+              "ticks": 69,
+              "rss_kib": 176884,
+              "pss_kib": 94272,
+              "uss_kib": 64036
+            }
+          },
+          "rss_kib": 1324704,
+          "pss_kib": 768350,
+          "uss_kib": 605592
+        },
+        {
+          "elapsed_s": 10.01846623199981,
+          "processes": {
+            "127425": {
+              "name": "synara",
+              "ticks": 9,
+              "rss_kib": 86756,
+              "pss_kib": 28031,
+              "uss_kib": 16584
+            },
+            "127492": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 78240,
+              "pss_kib": 26786,
+              "uss_kib": 9260
+            },
+            "127368": {
+              "name": "synara",
+              "ticks": 128,
+              "rss_kib": 321380,
+              "pss_kib": 196188,
+              "uss_kib": 164076
+            },
+            "127497": {
+              "name": "synara",
+              "ticks": 231,
+              "rss_kib": 297932,
+              "pss_kib": 227032,
+              "uss_kib": 209096
+            },
+            "127370": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 59148,
+              "pss_kib": 12105,
+              "uss_kib": 868
+            },
+            "127371": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58520,
+              "pss_kib": 10200,
+              "uss_kib": 820
+            },
+            "127508": {
+              "name": "synara",
+              "ticks": 167,
+              "rss_kib": 245844,
+              "pss_kib": 173736,
+              "uss_kib": 140852
+            },
+            "127422": {
+              "name": "synara",
+              "ticks": 70,
+              "rss_kib": 176884,
+              "pss_kib": 94272,
+              "uss_kib": 64036
+            }
+          },
+          "rss_kib": 1324704,
+          "pss_kib": 768350,
+          "uss_kib": 605592
+        }
+      ],
+      "idle_seconds": 10.01847802400016,
+      "idle_cpu_one_core_percent": 1.8964956507848598,
+      "host_cpu_all_cores_percent": 5.806240275161745,
+      "process_count_median": 8,
+      "rss_kib_median": 1324704,
+      "rss_kib_observed_peak": 1324796,
+      "pss_kib_median": 768346,
+      "pss_kib_observed_peak": 768454,
+      "uss_kib_median": 605592,
+      "uss_kib_observed_peak": 605700,
+      "exit_code": 0
+    },
+    {
+      "kind": "rust",
+      "label": "rust-fresh",
+      "command": [
+        "/tmp/synara-comparison-20260919/rust/synara-app",
+        "--data-dir",
+        "/tmp/synara-comparison-20260919/final/rust/data/native"
+      ],
+      "status": "passed",
+      "started_at_utc": "2026-09-19T19:50:03.226377+00:00",
+      "first_mapped_window_ms": 217.86115000031714,
+      "initial_geometry": [
+        92,
+        35,
+        1420,
+        930
+      ],
+      "idle_geometry": [
+        0,
+        0,
+        1420,
+        930
+      ],
+      "samples": [
+        {
+          "elapsed_s": 0.0107329130000835,
+          "processes": {
+            "128168": {
+              "name": "synara-app",
+              "ticks": 65,
+              "rss_kib": 242064,
+              "pss_kib": 177023,
+              "uss_kib": 166084
+            }
+          },
+          "rss_kib": 242064,
+          "pss_kib": 177023,
+          "uss_kib": 166084
+        },
+        {
+          "elapsed_s": 1.0109828909999123,
+          "processes": {
+            "128168": {
+              "name": "synara-app",
+              "ticks": 65,
+              "rss_kib": 242064,
+              "pss_kib": 177023,
+              "uss_kib": 166084
+            }
+          },
+          "rss_kib": 242064,
+          "pss_kib": 177023,
+          "uss_kib": 166084
+        },
+        {
+          "elapsed_s": 2.0107829560001846,
+          "processes": {
+            "128168": {
+              "name": "synara-app",
+              "ticks": 65,
+              "rss_kib": 242064,
+              "pss_kib": 177023,
+              "uss_kib": 166084
+            }
+          },
+          "rss_kib": 242064,
+          "pss_kib": 177023,
+          "uss_kib": 166084
+        },
+        {
+          "elapsed_s": 3.010824018999756,
+          "processes": {
+            "128168": {
+              "name": "synara-app",
+              "ticks": 66,
+              "rss_kib": 242064,
+              "pss_kib": 177023,
+              "uss_kib": 166084
+            }
+          },
+          "rss_kib": 242064,
+          "pss_kib": 177023,
+          "uss_kib": 166084
+        },
+        {
+          "elapsed_s": 4.010912508999809,
+          "processes": {
+            "128168": {
+              "name": "synara-app",
+              "ticks": 66,
+              "rss_kib": 242064,
+              "pss_kib": 177023,
+              "uss_kib": 166084
+            }
+          },
+          "rss_kib": 242064,
+          "pss_kib": 177023,
+          "uss_kib": 166084
+        },
+        {
+          "elapsed_s": 5.01108373299985,
+          "processes": {
+            "128168": {
+              "name": "synara-app",
+              "ticks": 66,
+              "rss_kib": 242064,
+              "pss_kib": 177023,
+              "uss_kib": 166084
+            }
+          },
+          "rss_kib": 242064,
+          "pss_kib": 177023,
+          "uss_kib": 166084
+        },
+        {
+          "elapsed_s": 6.010920016,
+          "processes": {
+            "128168": {
+              "name": "synara-app",
+              "ticks": 67,
+              "rss_kib": 242064,
+              "pss_kib": 177023,
+              "uss_kib": 166084
+            }
+          },
+          "rss_kib": 242064,
+          "pss_kib": 177023,
+          "uss_kib": 166084
+        },
+        {
+          "elapsed_s": 7.011023492999811,
+          "processes": {
+            "128168": {
+              "name": "synara-app",
+              "ticks": 67,
+              "rss_kib": 242064,
+              "pss_kib": 177023,
+              "uss_kib": 166084
+            }
+          },
+          "rss_kib": 242064,
+          "pss_kib": 177023,
+          "uss_kib": 166084
+        },
+        {
+          "elapsed_s": 8.011227050999878,
+          "processes": {
+            "128168": {
+              "name": "synara-app",
+              "ticks": 67,
+              "rss_kib": 242064,
+              "pss_kib": 177023,
+              "uss_kib": 166084
+            }
+          },
+          "rss_kib": 242064,
+          "pss_kib": 177023,
+          "uss_kib": 166084
+        },
+        {
+          "elapsed_s": 9.011820229000023,
+          "processes": {
+            "128168": {
+              "name": "synara-app",
+              "ticks": 67,
+              "rss_kib": 242064,
+              "pss_kib": 177023,
+              "uss_kib": 166084
+            }
+          },
+          "rss_kib": 242064,
+          "pss_kib": 177023,
+          "uss_kib": 166084
+        },
+        {
+          "elapsed_s": 10.010959466999793,
+          "processes": {
+            "128168": {
+              "name": "synara-app",
+              "ticks": 68,
+              "rss_kib": 242064,
+              "pss_kib": 177023,
+              "uss_kib": 166084
+            }
+          },
+          "rss_kib": 242064,
+          "pss_kib": 177023,
+          "uss_kib": 166084
+        }
+      ],
+      "idle_seconds": 10.010971241999869,
+      "idle_cpu_one_core_percent": 0.2996712234487148,
+      "host_cpu_all_cores_percent": 6.247950147589377,
+      "process_count_median": 1,
+      "rss_kib_median": 242064,
+      "rss_kib_observed_peak": 242064,
+      "pss_kib_median": 177023,
+      "pss_kib_observed_peak": 177023,
+      "uss_kib_median": 166084,
+      "uss_kib_observed_peak": 166084,
+      "exit_code": 0
+    },
+    {
+      "kind": "rust",
+      "label": "rust-warm-1",
+      "command": [
+        "/tmp/synara-comparison-20260919/rust/synara-app",
+        "--data-dir",
+        "/tmp/synara-comparison-20260919/final/rust/data/native"
+      ],
+      "status": "passed",
+      "started_at_utc": "2026-09-19T19:50:29.590305+00:00",
+      "first_mapped_window_ms": 144.57602899983613,
+      "initial_geometry": [
+        92,
+        35,
+        1420,
+        930
+      ],
+      "idle_geometry": [
+        0,
+        0,
+        1420,
+        930
+      ],
+      "samples": [
+        {
+          "elapsed_s": 0.01715216499997041,
+          "processes": {
+            "128911": {
+              "name": "synara-app",
+              "ticks": 32,
+              "rss_kib": 218052,
+              "pss_kib": 153512,
+              "uss_kib": 142888
+            }
+          },
+          "rss_kib": 218052,
+          "pss_kib": 153512,
+          "uss_kib": 142888
+        },
+        {
+          "elapsed_s": 1.0123344019998513,
+          "processes": {
+            "128911": {
+              "name": "synara-app",
+              "ticks": 32,
+              "rss_kib": 218052,
+              "pss_kib": 153512,
+              "uss_kib": 142888
+            }
+          },
+          "rss_kib": 218052,
+          "pss_kib": 153512,
+          "uss_kib": 142888
+        },
+        {
+          "elapsed_s": 2.0112570269998287,
+          "processes": {
+            "128911": {
+              "name": "synara-app",
+              "ticks": 32,
+              "rss_kib": 218052,
+              "pss_kib": 153512,
+              "uss_kib": 142888
+            }
+          },
+          "rss_kib": 218052,
+          "pss_kib": 153512,
+          "uss_kib": 142888
+        },
+        {
+          "elapsed_s": 3.0292735459997857,
+          "processes": {
+            "128911": {
+              "name": "synara-app",
+              "ticks": 32,
+              "rss_kib": 218052,
+              "pss_kib": 153512,
+              "uss_kib": 142888
+            }
+          },
+          "rss_kib": 218052,
+          "pss_kib": 153512,
+          "uss_kib": 142888
+        },
+        {
+          "elapsed_s": 4.0109532420001415,
+          "processes": {
+            "128911": {
+              "name": "synara-app",
+              "ticks": 33,
+              "rss_kib": 218052,
+              "pss_kib": 153512,
+              "uss_kib": 142888
+            }
+          },
+          "rss_kib": 218052,
+          "pss_kib": 153512,
+          "uss_kib": 142888
+        },
+        {
+          "elapsed_s": 5.015058948999922,
+          "processes": {
+            "128911": {
+              "name": "synara-app",
+              "ticks": 33,
+              "rss_kib": 218052,
+              "pss_kib": 153512,
+              "uss_kib": 142888
+            }
+          },
+          "rss_kib": 218052,
+          "pss_kib": 153512,
+          "uss_kib": 142888
+        },
+        {
+          "elapsed_s": 6.01215233899984,
+          "processes": {
+            "128911": {
+              "name": "synara-app",
+              "ticks": 33,
+              "rss_kib": 218052,
+              "pss_kib": 153512,
+              "uss_kib": 142888
+            }
+          },
+          "rss_kib": 218052,
+          "pss_kib": 153512,
+          "uss_kib": 142888
+        },
+        {
+          "elapsed_s": 7.011510541000007,
+          "processes": {
+            "128911": {
+              "name": "synara-app",
+              "ticks": 33,
+              "rss_kib": 218052,
+              "pss_kib": 153512,
+              "uss_kib": 142888
+            }
+          },
+          "rss_kib": 218052,
+          "pss_kib": 153512,
+          "uss_kib": 142888
+        },
+        {
+          "elapsed_s": 8.011570223000035,
+          "processes": {
+            "128911": {
+              "name": "synara-app",
+              "ticks": 34,
+              "rss_kib": 218052,
+              "pss_kib": 153512,
+              "uss_kib": 142888
+            }
+          },
+          "rss_kib": 218052,
+          "pss_kib": 153512,
+          "uss_kib": 142888
+        },
+        {
+          "elapsed_s": 9.01102087199979,
+          "processes": {
+            "128911": {
+              "name": "synara-app",
+              "ticks": 35,
+              "rss_kib": 218052,
+              "pss_kib": 153512,
+              "uss_kib": 142888
+            }
+          },
+          "rss_kib": 218052,
+          "pss_kib": 153512,
+          "uss_kib": 142888
+        },
+        {
+          "elapsed_s": 10.011023163000118,
+          "processes": {
+            "128911": {
+              "name": "synara-app",
+              "ticks": 35,
+              "rss_kib": 218052,
+              "pss_kib": 153512,
+              "uss_kib": 142888
+            }
+          },
+          "rss_kib": 218052,
+          "pss_kib": 153512,
+          "uss_kib": 142888
+        }
+      ],
+      "idle_seconds": 10.01103305100014,
+      "idle_cpu_one_core_percent": 0.29966937325217285,
+      "host_cpu_all_cores_percent": 8.70811829278283,
+      "process_count_median": 1,
+      "rss_kib_median": 218052,
+      "rss_kib_observed_peak": 218052,
+      "pss_kib_median": 153512,
+      "pss_kib_observed_peak": 153512,
+      "uss_kib_median": 142888,
+      "uss_kib_observed_peak": 142888,
+      "exit_code": 0
+    },
+    {
+      "kind": "electron",
+      "label": "electron-warm-1",
+      "command": [
+        "/tmp/synara-comparison-20260919/electron/synara",
+        "--no-sandbox",
+        "--ozone-platform=x11"
+      ],
+      "status": "passed",
+      "started_at_utc": "2026-09-19T19:50:55.883671+00:00",
+      "first_mapped_window_ms": 567.903263000062,
+      "initial_geometry": [
+        0,
+        0,
+        1420,
+        930
+      ],
+      "idle_geometry": [
+        0,
+        0,
+        1420,
+        930
+      ],
+      "samples": [
+        {
+          "elapsed_s": 0.019539463999990403,
+          "processes": {
+            "129819": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58660,
+              "pss_kib": 10194,
+              "uss_kib": 808
+            },
+            "129865": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 78228,
+              "pss_kib": 26852,
+              "uss_kib": 9212
+            },
+            "129871": {
+              "name": "synara",
+              "ticks": 151,
+              "rss_kib": 251300,
+              "pss_kib": 180798,
+              "uss_kib": 163120
+            },
+            "129814": {
+              "name": "synara",
+              "ticks": 98,
+              "rss_kib": 261852,
+              "pss_kib": 162108,
+              "uss_kib": 133584
+            },
+            "129849": {
+              "name": "synara",
+              "ticks": 43,
+              "rss_kib": 154024,
+              "pss_kib": 72621,
+              "uss_kib": 43208
+            },
+            "129818": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58948,
+              "pss_kib": 12004,
+              "uss_kib": 920
+            },
+            "129883": {
+              "name": "synara",
+              "ticks": 167,
+              "rss_kib": 244036,
+              "pss_kib": 173016,
+              "uss_kib": 140548
+            },
+            "129852": {
+              "name": "synara",
+              "ticks": 3,
+              "rss_kib": 84324,
+              "pss_kib": 26331,
+              "uss_kib": 14856
+            }
+          },
+          "rss_kib": 1191372,
+          "pss_kib": 663924,
+          "uss_kib": 506256
+        },
+        {
+          "elapsed_s": 1.0241761490001409,
+          "processes": {
+            "129819": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58660,
+              "pss_kib": 10195,
+              "uss_kib": 808
+            },
+            "129865": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 78228,
+              "pss_kib": 26853,
+              "uss_kib": 9212
+            },
+            "129871": {
+              "name": "synara",
+              "ticks": 152,
+              "rss_kib": 251300,
+              "pss_kib": 180807,
+              "uss_kib": 163128
+            },
+            "129814": {
+              "name": "synara",
+              "ticks": 98,
+              "rss_kib": 261852,
+              "pss_kib": 162109,
+              "uss_kib": 133584
+            },
+            "129849": {
+              "name": "synara",
+              "ticks": 43,
+              "rss_kib": 153748,
+              "pss_kib": 72346,
+              "uss_kib": 42932
+            },
+            "129818": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58948,
+              "pss_kib": 12005,
+              "uss_kib": 920
+            },
+            "129883": {
+              "name": "synara",
+              "ticks": 167,
+              "rss_kib": 244036,
+              "pss_kib": 173021,
+              "uss_kib": 140552
+            },
+            "129852": {
+              "name": "synara",
+              "ticks": 3,
+              "rss_kib": 84324,
+              "pss_kib": 26332,
+              "uss_kib": 14856
+            }
+          },
+          "rss_kib": 1191096,
+          "pss_kib": 663668,
+          "uss_kib": 505992
+        },
+        {
+          "elapsed_s": 2.017061582000224,
+          "processes": {
+            "129819": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58660,
+              "pss_kib": 10195,
+              "uss_kib": 808
+            },
+            "129865": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 78228,
+              "pss_kib": 26853,
+              "uss_kib": 9212
+            },
+            "129871": {
+              "name": "synara",
+              "ticks": 152,
+              "rss_kib": 251300,
+              "pss_kib": 180775,
+              "uss_kib": 163096
+            },
+            "129814": {
+              "name": "synara",
+              "ticks": 98,
+              "rss_kib": 261852,
+              "pss_kib": 162109,
+              "uss_kib": 133584
+            },
+            "129849": {
+              "name": "synara",
+              "ticks": 45,
+              "rss_kib": 154024,
+              "pss_kib": 72622,
+              "uss_kib": 43208
+            },
+            "129818": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58948,
+              "pss_kib": 12005,
+              "uss_kib": 920
+            },
+            "129883": {
+              "name": "synara",
+              "ticks": 169,
+              "rss_kib": 244164,
+              "pss_kib": 173089,
+              "uss_kib": 140620
+            },
+            "129852": {
+              "name": "synara",
+              "ticks": 3,
+              "rss_kib": 84324,
+              "pss_kib": 26332,
+              "uss_kib": 14856
+            }
+          },
+          "rss_kib": 1191500,
+          "pss_kib": 663980,
+          "uss_kib": 506304
+        },
+        {
+          "elapsed_s": 3.0280001959999936,
+          "processes": {
+            "129819": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58660,
+              "pss_kib": 10195,
+              "uss_kib": 808
+            },
+            "129865": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 78228,
+              "pss_kib": 26853,
+              "uss_kib": 9212
+            },
+            "129871": {
+              "name": "synara",
+              "ticks": 153,
+              "rss_kib": 251300,
+              "pss_kib": 180755,
+              "uss_kib": 163076
+            },
+            "129814": {
+              "name": "synara",
+              "ticks": 98,
+              "rss_kib": 261852,
+              "pss_kib": 162109,
+              "uss_kib": 133584
+            },
+            "129849": {
+              "name": "synara",
+              "ticks": 45,
+              "rss_kib": 153748,
+              "pss_kib": 72346,
+              "uss_kib": 42932
+            },
+            "129818": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58948,
+              "pss_kib": 12005,
+              "uss_kib": 920
+            },
+            "129883": {
+              "name": "synara",
+              "ticks": 169,
+              "rss_kib": 244164,
+              "pss_kib": 173097,
+              "uss_kib": 140628
+            },
+            "129852": {
+              "name": "synara",
+              "ticks": 3,
+              "rss_kib": 84324,
+              "pss_kib": 26332,
+              "uss_kib": 14856
+            }
+          },
+          "rss_kib": 1191224,
+          "pss_kib": 663692,
+          "uss_kib": 506016
+        },
+        {
+          "elapsed_s": 4.0161584390002645,
+          "processes": {
+            "129819": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58660,
+              "pss_kib": 10195,
+              "uss_kib": 808
+            },
+            "129865": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 78228,
+              "pss_kib": 26853,
+              "uss_kib": 9212
+            },
+            "129871": {
+              "name": "synara",
+              "ticks": 153,
+              "rss_kib": 251300,
+              "pss_kib": 180755,
+              "uss_kib": 163076
+            },
+            "129814": {
+              "name": "synara",
+              "ticks": 98,
+              "rss_kib": 261852,
+              "pss_kib": 162109,
+              "uss_kib": 133584
+            },
+            "129849": {
+              "name": "synara",
+              "ticks": 46,
+              "rss_kib": 154024,
+              "pss_kib": 72622,
+              "uss_kib": 43208
+            },
+            "129818": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58948,
+              "pss_kib": 12005,
+              "uss_kib": 920
+            },
+            "129883": {
+              "name": "synara",
+              "ticks": 169,
+              "rss_kib": 244164,
+              "pss_kib": 173097,
+              "uss_kib": 140628
+            },
+            "129852": {
+              "name": "synara",
+              "ticks": 3,
+              "rss_kib": 84324,
+              "pss_kib": 26332,
+              "uss_kib": 14856
+            }
+          },
+          "rss_kib": 1191500,
+          "pss_kib": 663968,
+          "uss_kib": 506292
+        },
+        {
+          "elapsed_s": 5.01629092200028,
+          "processes": {
+            "129819": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58660,
+              "pss_kib": 10195,
+              "uss_kib": 808
+            },
+            "129865": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 78228,
+              "pss_kib": 26853,
+              "uss_kib": 9212
+            },
+            "129871": {
+              "name": "synara",
+              "ticks": 154,
+              "rss_kib": 251300,
+              "pss_kib": 180755,
+              "uss_kib": 163076
+            },
+            "129814": {
+              "name": "synara",
+              "ticks": 98,
+              "rss_kib": 261852,
+              "pss_kib": 162109,
+              "uss_kib": 133584
+            },
+            "129849": {
+              "name": "synara",
+              "ticks": 48,
+              "rss_kib": 154024,
+              "pss_kib": 72622,
+              "uss_kib": 43208
+            },
+            "129818": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58948,
+              "pss_kib": 12005,
+              "uss_kib": 920
+            },
+            "129883": {
+              "name": "synara",
+              "ticks": 169,
+              "rss_kib": 244164,
+              "pss_kib": 173069,
+              "uss_kib": 140600
+            },
+            "129852": {
+              "name": "synara",
+              "ticks": 3,
+              "rss_kib": 84324,
+              "pss_kib": 26332,
+              "uss_kib": 14856
+            }
+          },
+          "rss_kib": 1191500,
+          "pss_kib": 663940,
+          "uss_kib": 506264
+        },
+        {
+          "elapsed_s": 6.016199844000312,
+          "processes": {
+            "129819": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58660,
+              "pss_kib": 10196,
+              "uss_kib": 808
+            },
+            "129865": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 78228,
+              "pss_kib": 26853,
+              "uss_kib": 9212
+            },
+            "129871": {
+              "name": "synara",
+              "ticks": 154,
+              "rss_kib": 251300,
+              "pss_kib": 180828,
+              "uss_kib": 163148
+            },
+            "129814": {
+              "name": "synara",
+              "ticks": 98,
+              "rss_kib": 261852,
+              "pss_kib": 162110,
+              "uss_kib": 133584
+            },
+            "129849": {
+              "name": "synara",
+              "ticks": 48,
+              "rss_kib": 153892,
+              "pss_kib": 72623,
+              "uss_kib": 43208
+            },
+            "129818": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58948,
+              "pss_kib": 12006,
+              "uss_kib": 920
+            },
+            "129883": {
+              "name": "synara",
+              "ticks": 170,
+              "rss_kib": 244164,
+              "pss_kib": 173077,
+              "uss_kib": 140608
+            },
+            "129852": {
+              "name": "synara",
+              "ticks": 3,
+              "rss_kib": 84324,
+              "pss_kib": 26333,
+              "uss_kib": 14856
+            }
+          },
+          "rss_kib": 1191368,
+          "pss_kib": 664026,
+          "uss_kib": 506344
+        },
+        {
+          "elapsed_s": 7.017387353000231,
+          "processes": {
+            "129819": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58660,
+              "pss_kib": 10196,
+              "uss_kib": 808
+            },
+            "129865": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 78228,
+              "pss_kib": 26853,
+              "uss_kib": 9212
+            },
+            "129871": {
+              "name": "synara",
+              "ticks": 155,
+              "rss_kib": 251156,
+              "pss_kib": 180632,
+              "uss_kib": 162952
+            },
+            "129814": {
+              "name": "synara",
+              "ticks": 98,
+              "rss_kib": 261852,
+              "pss_kib": 162110,
+              "uss_kib": 133584
+            },
+            "129849": {
+              "name": "synara",
+              "ticks": 49,
+              "rss_kib": 153896,
+              "pss_kib": 72623,
+              "uss_kib": 43208
+            },
+            "129818": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58948,
+              "pss_kib": 12006,
+              "uss_kib": 920
+            },
+            "129883": {
+              "name": "synara",
+              "ticks": 170,
+              "rss_kib": 244164,
+              "pss_kib": 173085,
+              "uss_kib": 140616
+            },
+            "129852": {
+              "name": "synara",
+              "ticks": 3,
+              "rss_kib": 84324,
+              "pss_kib": 26333,
+              "uss_kib": 14856
+            }
+          },
+          "rss_kib": 1191228,
+          "pss_kib": 663838,
+          "uss_kib": 506156
+        },
+        {
+          "elapsed_s": 8.018494831000226,
+          "processes": {
+            "129819": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58660,
+              "pss_kib": 10196,
+              "uss_kib": 808
+            },
+            "129865": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 78228,
+              "pss_kib": 26853,
+              "uss_kib": 9212
+            },
+            "129871": {
+              "name": "synara",
+              "ticks": 156,
+              "rss_kib": 251156,
+              "pss_kib": 180616,
+              "uss_kib": 162936
+            },
+            "129814": {
+              "name": "synara",
+              "ticks": 98,
+              "rss_kib": 261852,
+              "pss_kib": 162110,
+              "uss_kib": 133584
+            },
+            "129849": {
+              "name": "synara",
+              "ticks": 50,
+              "rss_kib": 153644,
+              "pss_kib": 72347,
+              "uss_kib": 42932
+            },
+            "129818": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58948,
+              "pss_kib": 12006,
+              "uss_kib": 920
+            },
+            "129883": {
+              "name": "synara",
+              "ticks": 170,
+              "rss_kib": 244164,
+              "pss_kib": 173087,
+              "uss_kib": 140616
+            },
+            "129852": {
+              "name": "synara",
+              "ticks": 3,
+              "rss_kib": 84324,
+              "pss_kib": 26335,
+              "uss_kib": 14856
+            }
+          },
+          "rss_kib": 1190976,
+          "pss_kib": 663550,
+          "uss_kib": 505864
+        },
+        {
+          "elapsed_s": 9.01766593900038,
+          "processes": {
+            "129819": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58660,
+              "pss_kib": 10196,
+              "uss_kib": 808
+            },
+            "129865": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 78228,
+              "pss_kib": 26853,
+              "uss_kib": 9212
+            },
+            "129871": {
+              "name": "synara",
+              "ticks": 156,
+              "rss_kib": 251156,
+              "pss_kib": 180668,
+              "uss_kib": 162988
+            },
+            "129814": {
+              "name": "synara",
+              "ticks": 98,
+              "rss_kib": 261852,
+              "pss_kib": 162110,
+              "uss_kib": 133584
+            },
+            "129849": {
+              "name": "synara",
+              "ticks": 52,
+              "rss_kib": 153912,
+              "pss_kib": 72623,
+              "uss_kib": 43208
+            },
+            "129818": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58948,
+              "pss_kib": 12006,
+              "uss_kib": 920
+            },
+            "129883": {
+              "name": "synara",
+              "ticks": 170,
+              "rss_kib": 244164,
+              "pss_kib": 173091,
+              "uss_kib": 140620
+            },
+            "129852": {
+              "name": "synara",
+              "ticks": 3,
+              "rss_kib": 84324,
+              "pss_kib": 26335,
+              "uss_kib": 14856
+            }
+          },
+          "rss_kib": 1191244,
+          "pss_kib": 663882,
+          "uss_kib": 506196
+        },
+        {
+          "elapsed_s": 10.017923497000083,
+          "processes": {
+            "129819": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58660,
+              "pss_kib": 10196,
+              "uss_kib": 808
+            },
+            "129865": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 78228,
+              "pss_kib": 26853,
+              "uss_kib": 9212
+            },
+            "129871": {
+              "name": "synara",
+              "ticks": 158,
+              "rss_kib": 251156,
+              "pss_kib": 180668,
+              "uss_kib": 162988
+            },
+            "129814": {
+              "name": "synara",
+              "ticks": 98,
+              "rss_kib": 261852,
+              "pss_kib": 162110,
+              "uss_kib": 133584
+            },
+            "129849": {
+              "name": "synara",
+              "ticks": 52,
+              "rss_kib": 153852,
+              "pss_kib": 72623,
+              "uss_kib": 43208
+            },
+            "129818": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58948,
+              "pss_kib": 12006,
+              "uss_kib": 920
+            },
+            "129883": {
+              "name": "synara",
+              "ticks": 170,
+              "rss_kib": 244164,
+              "pss_kib": 173091,
+              "uss_kib": 140620
+            },
+            "129852": {
+              "name": "synara",
+              "ticks": 3,
+              "rss_kib": 84324,
+              "pss_kib": 26335,
+              "uss_kib": 14856
+            }
+          },
+          "rss_kib": 1191184,
+          "pss_kib": 663882,
+          "uss_kib": 506196
+        }
+      ],
+      "idle_seconds": 10.017937855000127,
+      "idle_cpu_one_core_percent": 1.8965979101693837,
+      "host_cpu_all_cores_percent": 6.83306055646481,
+      "process_count_median": 8,
+      "rss_kib_median": 1191244,
+      "rss_kib_observed_peak": 1191500,
+      "pss_kib_median": 663882,
+      "pss_kib_observed_peak": 664026,
+      "uss_kib_median": 506196,
+      "uss_kib_observed_peak": 506344,
+      "exit_code": 0
+    },
+    {
+      "kind": "electron",
+      "label": "electron-warm-2",
+      "command": [
+        "/tmp/synara-comparison-20260919/electron/synara",
+        "--no-sandbox",
+        "--ozone-platform=x11"
+      ],
+      "status": "passed",
+      "started_at_utc": "2026-09-19T19:51:22.604261+00:00",
+      "first_mapped_window_ms": 514.3801450003593,
+      "initial_geometry": [
+        0,
+        0,
+        1420,
+        930
+      ],
+      "idle_geometry": [
+        0,
+        0,
+        1420,
+        930
+      ],
+      "samples": [
+        {
+          "elapsed_s": 0.02619602799995846,
+          "processes": {
+            "130754": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 59544,
+              "pss_kib": 12163,
+              "uss_kib": 896
+            },
+            "130755": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58656,
+              "pss_kib": 10272,
+              "uss_kib": 832
+            },
+            "130822": {
+              "name": "synara",
+              "ticks": 147,
+              "rss_kib": 250392,
+              "pss_kib": 180799,
+              "uss_kib": 163472
+            },
+            "130803": {
+              "name": "synara",
+              "ticks": 41,
+              "rss_kib": 154416,
+              "pss_kib": 72399,
+              "uss_kib": 42996
+            },
+            "130806": {
+              "name": "synara",
+              "ticks": 5,
+              "rss_kib": 84016,
+              "pss_kib": 26092,
+              "uss_kib": 14956
+            },
+            "130839": {
+              "name": "synara",
+              "ticks": 140,
+              "rss_kib": 245256,
+              "pss_kib": 174212,
+              "uss_kib": 142032
+            },
+            "130811": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 78560,
+              "pss_kib": 26806,
+              "uss_kib": 9168
+            },
+            "130750": {
+              "name": "synara",
+              "ticks": 104,
+              "rss_kib": 268844,
+              "pss_kib": 168135,
+              "uss_kib": 139976
+            }
+          },
+          "rss_kib": 1199684,
+          "pss_kib": 670878,
+          "uss_kib": 514328
+        },
+        {
+          "elapsed_s": 1.0162992710002072,
+          "processes": {
+            "130754": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 59544,
+              "pss_kib": 12164,
+              "uss_kib": 896
+            },
+            "130755": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58656,
+              "pss_kib": 10273,
+              "uss_kib": 832
+            },
+            "130822": {
+              "name": "synara",
+              "ticks": 147,
+              "rss_kib": 250392,
+              "pss_kib": 180803,
+              "uss_kib": 163476
+            },
+            "130803": {
+              "name": "synara",
+              "ticks": 42,
+              "rss_kib": 154348,
+              "pss_kib": 72331,
+              "uss_kib": 42928
+            },
+            "130806": {
+              "name": "synara",
+              "ticks": 5,
+              "rss_kib": 84016,
+              "pss_kib": 26093,
+              "uss_kib": 14956
+            },
+            "130839": {
+              "name": "synara",
+              "ticks": 140,
+              "rss_kib": 245256,
+              "pss_kib": 174220,
+              "uss_kib": 142040
+            },
+            "130811": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 78560,
+              "pss_kib": 26806,
+              "uss_kib": 9168
+            },
+            "130750": {
+              "name": "synara",
+              "ticks": 104,
+              "rss_kib": 268844,
+              "pss_kib": 168135,
+              "uss_kib": 139976
+            }
+          },
+          "rss_kib": 1199616,
+          "pss_kib": 670825,
+          "uss_kib": 514272
+        },
+        {
+          "elapsed_s": 2.0164698520002275,
+          "processes": {
+            "130754": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 59544,
+              "pss_kib": 12164,
+              "uss_kib": 896
+            },
+            "130755": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58656,
+              "pss_kib": 10273,
+              "uss_kib": 832
+            },
+            "130822": {
+              "name": "synara",
+              "ticks": 147,
+              "rss_kib": 250392,
+              "pss_kib": 180775,
+              "uss_kib": 163448
+            },
+            "130803": {
+              "name": "synara",
+              "ticks": 43,
+              "rss_kib": 154360,
+              "pss_kib": 72399,
+              "uss_kib": 42996
+            },
+            "130806": {
+              "name": "synara",
+              "ticks": 5,
+              "rss_kib": 84016,
+              "pss_kib": 26093,
+              "uss_kib": 14956
+            },
+            "130839": {
+              "name": "synara",
+              "ticks": 141,
+              "rss_kib": 245384,
+              "pss_kib": 174284,
+              "uss_kib": 142104
+            },
+            "130811": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 78560,
+              "pss_kib": 26806,
+              "uss_kib": 9168
+            },
+            "130750": {
+              "name": "synara",
+              "ticks": 104,
+              "rss_kib": 268844,
+              "pss_kib": 168135,
+              "uss_kib": 139976
+            }
+          },
+          "rss_kib": 1199756,
+          "pss_kib": 670929,
+          "uss_kib": 514376
+        },
+        {
+          "elapsed_s": 3.016174716000023,
+          "processes": {
+            "130754": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 59544,
+              "pss_kib": 12164,
+              "uss_kib": 896
+            },
+            "130755": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58656,
+              "pss_kib": 10273,
+              "uss_kib": 832
+            },
+            "130822": {
+              "name": "synara",
+              "ticks": 149,
+              "rss_kib": 250216,
+              "pss_kib": 180691,
+              "uss_kib": 163364
+            },
+            "130803": {
+              "name": "synara",
+              "ticks": 44,
+              "rss_kib": 154240,
+              "pss_kib": 72331,
+              "uss_kib": 42928
+            },
+            "130806": {
+              "name": "synara",
+              "ticks": 5,
+              "rss_kib": 84016,
+              "pss_kib": 26093,
+              "uss_kib": 14956
+            },
+            "130839": {
+              "name": "synara",
+              "ticks": 141,
+              "rss_kib": 245384,
+              "pss_kib": 174288,
+              "uss_kib": 142108
+            },
+            "130811": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 78560,
+              "pss_kib": 26806,
+              "uss_kib": 9168
+            },
+            "130750": {
+              "name": "synara",
+              "ticks": 104,
+              "rss_kib": 268844,
+              "pss_kib": 168135,
+              "uss_kib": 139976
+            }
+          },
+          "rss_kib": 1199460,
+          "pss_kib": 670781,
+          "uss_kib": 514228
+        },
+        {
+          "elapsed_s": 4.0202587500002664,
+          "processes": {
+            "130754": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 59544,
+              "pss_kib": 12164,
+              "uss_kib": 896
+            },
+            "130755": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58656,
+              "pss_kib": 10273,
+              "uss_kib": 832
+            },
+            "130822": {
+              "name": "synara",
+              "ticks": 150,
+              "rss_kib": 250216,
+              "pss_kib": 180731,
+              "uss_kib": 163404
+            },
+            "130803": {
+              "name": "synara",
+              "ticks": 46,
+              "rss_kib": 154380,
+              "pss_kib": 72399,
+              "uss_kib": 42996
+            },
+            "130806": {
+              "name": "synara",
+              "ticks": 5,
+              "rss_kib": 84016,
+              "pss_kib": 26093,
+              "uss_kib": 14956
+            },
+            "130839": {
+              "name": "synara",
+              "ticks": 141,
+              "rss_kib": 245384,
+              "pss_kib": 174288,
+              "uss_kib": 142108
+            },
+            "130811": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 78560,
+              "pss_kib": 26806,
+              "uss_kib": 9168
+            },
+            "130750": {
+              "name": "synara",
+              "ticks": 104,
+              "rss_kib": 268844,
+              "pss_kib": 168135,
+              "uss_kib": 139976
+            }
+          },
+          "rss_kib": 1199600,
+          "pss_kib": 670889,
+          "uss_kib": 514336
+        },
+        {
+          "elapsed_s": 5.016828428000281,
+          "processes": {
+            "130754": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 59544,
+              "pss_kib": 12164,
+              "uss_kib": 896
+            },
+            "130755": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58656,
+              "pss_kib": 10273,
+              "uss_kib": 832
+            },
+            "130822": {
+              "name": "synara",
+              "ticks": 150,
+              "rss_kib": 250216,
+              "pss_kib": 180747,
+              "uss_kib": 163420
+            },
+            "130803": {
+              "name": "synara",
+              "ticks": 46,
+              "rss_kib": 154364,
+              "pss_kib": 72399,
+              "uss_kib": 42996
+            },
+            "130806": {
+              "name": "synara",
+              "ticks": 5,
+              "rss_kib": 84016,
+              "pss_kib": 26093,
+              "uss_kib": 14956
+            },
+            "130839": {
+              "name": "synara",
+              "ticks": 141,
+              "rss_kib": 245208,
+              "pss_kib": 174280,
+              "uss_kib": 142100
+            },
+            "130811": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 78560,
+              "pss_kib": 26806,
+              "uss_kib": 9168
+            },
+            "130750": {
+              "name": "synara",
+              "ticks": 104,
+              "rss_kib": 268844,
+              "pss_kib": 168135,
+              "uss_kib": 139976
+            }
+          },
+          "rss_kib": 1199408,
+          "pss_kib": 670897,
+          "uss_kib": 514344
+        },
+        {
+          "elapsed_s": 6.017118579999988,
+          "processes": {
+            "130754": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 59544,
+              "pss_kib": 12164,
+              "uss_kib": 896
+            },
+            "130755": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58656,
+              "pss_kib": 10273,
+              "uss_kib": 832
+            },
+            "130822": {
+              "name": "synara",
+              "ticks": 151,
+              "rss_kib": 250344,
+              "pss_kib": 180795,
+              "uss_kib": 163468
+            },
+            "130803": {
+              "name": "synara",
+              "ticks": 47,
+              "rss_kib": 154436,
+              "pss_kib": 72399,
+              "uss_kib": 42996
+            },
+            "130806": {
+              "name": "synara",
+              "ticks": 5,
+              "rss_kib": 84016,
+              "pss_kib": 26093,
+              "uss_kib": 14956
+            },
+            "130839": {
+              "name": "synara",
+              "ticks": 141,
+              "rss_kib": 245208,
+              "pss_kib": 174284,
+              "uss_kib": 142104
+            },
+            "130811": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 78560,
+              "pss_kib": 26806,
+              "uss_kib": 9168
+            },
+            "130750": {
+              "name": "synara",
+              "ticks": 104,
+              "rss_kib": 268844,
+              "pss_kib": 168135,
+              "uss_kib": 139976
+            }
+          },
+          "rss_kib": 1199608,
+          "pss_kib": 670949,
+          "uss_kib": 514396
+        },
+        {
+          "elapsed_s": 7.017818634000378,
+          "processes": {
+            "130754": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 59544,
+              "pss_kib": 12164,
+              "uss_kib": 896
+            },
+            "130755": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58656,
+              "pss_kib": 10273,
+              "uss_kib": 832
+            },
+            "130822": {
+              "name": "synara",
+              "ticks": 152,
+              "rss_kib": 250208,
+              "pss_kib": 180611,
+              "uss_kib": 163284
+            },
+            "130803": {
+              "name": "synara",
+              "ticks": 48,
+              "rss_kib": 154436,
+              "pss_kib": 72399,
+              "uss_kib": 42996
+            },
+            "130806": {
+              "name": "synara",
+              "ticks": 5,
+              "rss_kib": 84016,
+              "pss_kib": 26095,
+              "uss_kib": 14956
+            },
+            "130839": {
+              "name": "synara",
+              "ticks": 141,
+              "rss_kib": 245208,
+              "pss_kib": 174286,
+              "uss_kib": 142104
+            },
+            "130811": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 78560,
+              "pss_kib": 26806,
+              "uss_kib": 9168
+            },
+            "130750": {
+              "name": "synara",
+              "ticks": 104,
+              "rss_kib": 268844,
+              "pss_kib": 168135,
+              "uss_kib": 139976
+            }
+          },
+          "rss_kib": 1199472,
+          "pss_kib": 670769,
+          "uss_kib": 514212
+        },
+        {
+          "elapsed_s": 8.016907373000322,
+          "processes": {
+            "130754": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 59544,
+              "pss_kib": 12164,
+              "uss_kib": 896
+            },
+            "130755": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58656,
+              "pss_kib": 10273,
+              "uss_kib": 832
+            },
+            "130822": {
+              "name": "synara",
+              "ticks": 152,
+              "rss_kib": 250208,
+              "pss_kib": 180611,
+              "uss_kib": 163284
+            },
+            "130803": {
+              "name": "synara",
+              "ticks": 48,
+              "rss_kib": 154368,
+              "pss_kib": 72331,
+              "uss_kib": 42928
+            },
+            "130806": {
+              "name": "synara",
+              "ticks": 5,
+              "rss_kib": 84016,
+              "pss_kib": 26095,
+              "uss_kib": 14956
+            },
+            "130839": {
+              "name": "synara",
+              "ticks": 142,
+              "rss_kib": 245208,
+              "pss_kib": 174254,
+              "uss_kib": 142072
+            },
+            "130811": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 78560,
+              "pss_kib": 26806,
+              "uss_kib": 9168
+            },
+            "130750": {
+              "name": "synara",
+              "ticks": 104,
+              "rss_kib": 268844,
+              "pss_kib": 168135,
+              "uss_kib": 139976
+            }
+          },
+          "rss_kib": 1199404,
+          "pss_kib": 670669,
+          "uss_kib": 514112
+        },
+        {
+          "elapsed_s": 9.024928641000315,
+          "processes": {
+            "130754": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 59544,
+              "pss_kib": 12164,
+              "uss_kib": 896
+            },
+            "130755": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58656,
+              "pss_kib": 10273,
+              "uss_kib": 832
+            },
+            "130822": {
+              "name": "synara",
+              "ticks": 153,
+              "rss_kib": 250436,
+              "pss_kib": 180663,
+              "uss_kib": 163336
+            },
+            "130803": {
+              "name": "synara",
+              "ticks": 50,
+              "rss_kib": 154488,
+              "pss_kib": 72399,
+              "uss_kib": 42996
+            },
+            "130806": {
+              "name": "synara",
+              "ticks": 5,
+              "rss_kib": 84016,
+              "pss_kib": 26095,
+              "uss_kib": 14956
+            },
+            "130839": {
+              "name": "synara",
+              "ticks": 142,
+              "rss_kib": 245208,
+              "pss_kib": 174258,
+              "uss_kib": 142076
+            },
+            "130811": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 78560,
+              "pss_kib": 26806,
+              "uss_kib": 9168
+            },
+            "130750": {
+              "name": "synara",
+              "ticks": 104,
+              "rss_kib": 268844,
+              "pss_kib": 168135,
+              "uss_kib": 139976
+            }
+          },
+          "rss_kib": 1199752,
+          "pss_kib": 670793,
+          "uss_kib": 514236
+        },
+        {
+          "elapsed_s": 10.01802595700019,
+          "processes": {
+            "130754": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 59544,
+              "pss_kib": 12163,
+              "uss_kib": 896
+            },
+            "130755": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58656,
+              "pss_kib": 10272,
+              "uss_kib": 832
+            },
+            "130822": {
+              "name": "synara",
+              "ticks": 154,
+              "rss_kib": 250436,
+              "pss_kib": 180686,
+              "uss_kib": 163360
+            },
+            "130803": {
+              "name": "synara",
+              "ticks": 51,
+              "rss_kib": 154488,
+              "pss_kib": 72398,
+              "uss_kib": 42996
+            },
+            "130806": {
+              "name": "synara",
+              "ticks": 5,
+              "rss_kib": 84016,
+              "pss_kib": 26094,
+              "uss_kib": 14956
+            },
+            "130839": {
+              "name": "synara",
+              "ticks": 142,
+              "rss_kib": 245208,
+              "pss_kib": 174262,
+              "uss_kib": 142080
+            },
+            "130811": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 78560,
+              "pss_kib": 26806,
+              "uss_kib": 9168
+            },
+            "130750": {
+              "name": "synara",
+              "ticks": 104,
+              "rss_kib": 268844,
+              "pss_kib": 168134,
+              "uss_kib": 139976
+            }
+          },
+          "rss_kib": 1199752,
+          "pss_kib": 670815,
+          "uss_kib": 514264
+        }
+      ],
+      "idle_seconds": 10.018038211000203,
+      "idle_cpu_one_core_percent": 1.8965789109425881,
+      "host_cpu_all_cores_percent": 7.909187771494142,
+      "process_count_median": 8,
+      "rss_kib_median": 1199608,
+      "rss_kib_observed_peak": 1199756,
+      "pss_kib_median": 670825,
+      "pss_kib_observed_peak": 670949,
+      "uss_kib_median": 514272,
+      "uss_kib_observed_peak": 514396,
+      "exit_code": 0
+    },
+    {
+      "kind": "rust",
+      "label": "rust-warm-2",
+      "command": [
+        "/tmp/synara-comparison-20260919/rust/synara-app",
+        "--data-dir",
+        "/tmp/synara-comparison-20260919/final/rust/data/native"
+      ],
+      "status": "passed",
+      "started_at_utc": "2026-09-19T19:51:48.847795+00:00",
+      "first_mapped_window_ms": 155.73901200014006,
+      "initial_geometry": [
+        92,
+        35,
+        1420,
+        930
+      ],
+      "idle_geometry": [
+        0,
+        0,
+        1420,
+        930
+      ],
+      "samples": [
+        {
+          "elapsed_s": 0.012516755999968154,
+          "processes": {
+            "131551": {
+              "name": "synara-app",
+              "ticks": 33,
+              "rss_kib": 218040,
+              "pss_kib": 153169,
+              "uss_kib": 142568
+            }
+          },
+          "rss_kib": 218040,
+          "pss_kib": 153169,
+          "uss_kib": 142568
+        },
+        {
+          "elapsed_s": 1.0166243419998864,
+          "processes": {
+            "131551": {
+              "name": "synara-app",
+              "ticks": 34,
+              "rss_kib": 218040,
+              "pss_kib": 153169,
+              "uss_kib": 142568
+            }
+          },
+          "rss_kib": 218040,
+          "pss_kib": 153169,
+          "uss_kib": 142568
+        },
+        {
+          "elapsed_s": 2.0109891289998814,
+          "processes": {
+            "131551": {
+              "name": "synara-app",
+              "ticks": 35,
+              "rss_kib": 218040,
+              "pss_kib": 153169,
+              "uss_kib": 142568
+            }
+          },
+          "rss_kib": 218040,
+          "pss_kib": 153169,
+          "uss_kib": 142568
+        },
+        {
+          "elapsed_s": 3.0147204670001884,
+          "processes": {
+            "131551": {
+              "name": "synara-app",
+              "ticks": 35,
+              "rss_kib": 218040,
+              "pss_kib": 153169,
+              "uss_kib": 142568
+            }
+          },
+          "rss_kib": 218040,
+          "pss_kib": 153169,
+          "uss_kib": 142568
+        },
+        {
+          "elapsed_s": 4.010847700999875,
+          "processes": {
+            "131551": {
+              "name": "synara-app",
+              "ticks": 35,
+              "rss_kib": 218040,
+              "pss_kib": 153169,
+              "uss_kib": 142568
+            }
+          },
+          "rss_kib": 218040,
+          "pss_kib": 153169,
+          "uss_kib": 142568
+        },
+        {
+          "elapsed_s": 5.010924096000053,
+          "processes": {
+            "131551": {
+              "name": "synara-app",
+              "ticks": 35,
+              "rss_kib": 218040,
+              "pss_kib": 153169,
+              "uss_kib": 142568
+            }
+          },
+          "rss_kib": 218040,
+          "pss_kib": 153169,
+          "uss_kib": 142568
+        },
+        {
+          "elapsed_s": 6.010774109000067,
+          "processes": {
+            "131551": {
+              "name": "synara-app",
+              "ticks": 36,
+              "rss_kib": 218040,
+              "pss_kib": 153169,
+              "uss_kib": 142568
+            }
+          },
+          "rss_kib": 218040,
+          "pss_kib": 153169,
+          "uss_kib": 142568
+        },
+        {
+          "elapsed_s": 7.010845754999991,
+          "processes": {
+            "131551": {
+              "name": "synara-app",
+              "ticks": 36,
+              "rss_kib": 218040,
+              "pss_kib": 153169,
+              "uss_kib": 142568
+            }
+          },
+          "rss_kib": 218040,
+          "pss_kib": 153169,
+          "uss_kib": 142568
+        },
+        {
+          "elapsed_s": 8.011070461000145,
+          "processes": {
+            "131551": {
+              "name": "synara-app",
+              "ticks": 37,
+              "rss_kib": 218040,
+              "pss_kib": 153169,
+              "uss_kib": 142568
+            }
+          },
+          "rss_kib": 218040,
+          "pss_kib": 153169,
+          "uss_kib": 142568
+        },
+        {
+          "elapsed_s": 9.011489657999846,
+          "processes": {
+            "131551": {
+              "name": "synara-app",
+              "ticks": 38,
+              "rss_kib": 218040,
+              "pss_kib": 153169,
+              "uss_kib": 142568
+            }
+          },
+          "rss_kib": 218040,
+          "pss_kib": 153169,
+          "uss_kib": 142568
+        },
+        {
+          "elapsed_s": 10.020567439999922,
+          "processes": {
+            "131551": {
+              "name": "synara-app",
+              "ticks": 38,
+              "rss_kib": 218040,
+              "pss_kib": 153169,
+              "uss_kib": 142568
+            }
+          },
+          "rss_kib": 218040,
+          "pss_kib": 153169,
+          "uss_kib": 142568
+        }
+      ],
+      "idle_seconds": 10.020578280999871,
+      "idle_cpu_one_core_percent": 0.4989731989301012,
+      "host_cpu_all_cores_percent": 6.563421828908556,
+      "process_count_median": 1,
+      "rss_kib_median": 218040,
+      "rss_kib_observed_peak": 218040,
+      "pss_kib_median": 153169,
+      "pss_kib_observed_peak": 153169,
+      "uss_kib_median": 142568,
+      "uss_kib_observed_peak": 142568,
+      "exit_code": 0
+    },
+    {
+      "kind": "rust",
+      "label": "rust-warm-3",
+      "command": [
+        "/tmp/synara-comparison-20260919/rust/synara-app",
+        "--data-dir",
+        "/tmp/synara-comparison-20260919/final/rust/data/native"
+      ],
+      "status": "passed",
+      "started_at_utc": "2026-09-19T19:52:14.735129+00:00",
+      "first_mapped_window_ms": 134.77666900007534,
+      "initial_geometry": [
+        92,
+        35,
+        1420,
+        930
+      ],
+      "idle_geometry": [
+        0,
+        0,
+        1420,
+        930
+      ],
+      "samples": [
+        {
+          "elapsed_s": 0.010832976000074268,
+          "processes": {
+            "132236": {
+              "name": "synara-app",
+              "ticks": 31,
+              "rss_kib": 217884,
+              "pss_kib": 153233,
+              "uss_kib": 142636
+            }
+          },
+          "rss_kib": 217884,
+          "pss_kib": 153233,
+          "uss_kib": 142636
+        },
+        {
+          "elapsed_s": 1.0109873650003465,
+          "processes": {
+            "132236": {
+              "name": "synara-app",
+              "ticks": 32,
+              "rss_kib": 217884,
+              "pss_kib": 153233,
+              "uss_kib": 142636
+            }
+          },
+          "rss_kib": 217884,
+          "pss_kib": 153233,
+          "uss_kib": 142636
+        },
+        {
+          "elapsed_s": 2.013156743000309,
+          "processes": {
+            "132236": {
+              "name": "synara-app",
+              "ticks": 32,
+              "rss_kib": 217884,
+              "pss_kib": 153233,
+              "uss_kib": 142636
+            }
+          },
+          "rss_kib": 217884,
+          "pss_kib": 153233,
+          "uss_kib": 142636
+        },
+        {
+          "elapsed_s": 3.0121435640003256,
+          "processes": {
+            "132236": {
+              "name": "synara-app",
+              "ticks": 32,
+              "rss_kib": 217884,
+              "pss_kib": 153233,
+              "uss_kib": 142636
+            }
+          },
+          "rss_kib": 217884,
+          "pss_kib": 153233,
+          "uss_kib": 142636
+        },
+        {
+          "elapsed_s": 4.016717751000215,
+          "processes": {
+            "132236": {
+              "name": "synara-app",
+              "ticks": 32,
+              "rss_kib": 217884,
+              "pss_kib": 153233,
+              "uss_kib": 142636
+            }
+          },
+          "rss_kib": 217884,
+          "pss_kib": 153233,
+          "uss_kib": 142636
+        },
+        {
+          "elapsed_s": 5.0109556400002475,
+          "processes": {
+            "132236": {
+              "name": "synara-app",
+              "ticks": 32,
+              "rss_kib": 217884,
+              "pss_kib": 153233,
+              "uss_kib": 142636
+            }
+          },
+          "rss_kib": 217884,
+          "pss_kib": 153233,
+          "uss_kib": 142636
+        },
+        {
+          "elapsed_s": 6.011079014000188,
+          "processes": {
+            "132236": {
+              "name": "synara-app",
+              "ticks": 32,
+              "rss_kib": 217884,
+              "pss_kib": 153233,
+              "uss_kib": 142636
+            }
+          },
+          "rss_kib": 217884,
+          "pss_kib": 153233,
+          "uss_kib": 142636
+        },
+        {
+          "elapsed_s": 7.011089919999904,
+          "processes": {
+            "132236": {
+              "name": "synara-app",
+              "ticks": 33,
+              "rss_kib": 217884,
+              "pss_kib": 153233,
+              "uss_kib": 142636
+            }
+          },
+          "rss_kib": 217884,
+          "pss_kib": 153233,
+          "uss_kib": 142636
+        },
+        {
+          "elapsed_s": 8.01242462900018,
+          "processes": {
+            "132236": {
+              "name": "synara-app",
+              "ticks": 34,
+              "rss_kib": 217884,
+              "pss_kib": 153233,
+              "uss_kib": 142636
+            }
+          },
+          "rss_kib": 217884,
+          "pss_kib": 153233,
+          "uss_kib": 142636
+        },
+        {
+          "elapsed_s": 9.01225793499998,
+          "processes": {
+            "132236": {
+              "name": "synara-app",
+              "ticks": 34,
+              "rss_kib": 217884,
+              "pss_kib": 153233,
+              "uss_kib": 142636
+            }
+          },
+          "rss_kib": 217884,
+          "pss_kib": 153233,
+          "uss_kib": 142636
+        },
+        {
+          "elapsed_s": 10.011003302000063,
+          "processes": {
+            "132236": {
+              "name": "synara-app",
+              "ticks": 34,
+              "rss_kib": 217884,
+              "pss_kib": 153233,
+              "uss_kib": 142636
+            }
+          },
+          "rss_kib": 217884,
+          "pss_kib": 153233,
+          "uss_kib": 142636
+        }
+      ],
+      "idle_seconds": 10.011011658999905,
+      "idle_cpu_one_core_percent": 0.29967001359977424,
+      "host_cpu_all_cores_percent": 9.690145475466426,
+      "process_count_median": 1,
+      "rss_kib_median": 217884,
+      "rss_kib_observed_peak": 217884,
+      "pss_kib_median": 153233,
+      "pss_kib_observed_peak": 153233,
+      "uss_kib_median": 142636,
+      "uss_kib_observed_peak": 142636,
+      "exit_code": 0
+    },
+    {
+      "kind": "electron",
+      "label": "electron-warm-3",
+      "command": [
+        "/tmp/synara-comparison-20260919/electron/synara",
+        "--no-sandbox",
+        "--ozone-platform=x11"
+      ],
+      "status": "passed",
+      "started_at_utc": "2026-09-19T19:52:40.591633+00:00",
+      "first_mapped_window_ms": 536.551122000219,
+      "initial_geometry": [
+        0,
+        0,
+        1420,
+        930
+      ],
+      "idle_geometry": [
+        0,
+        0,
+        1420,
+        930
+      ],
+      "samples": [
+        {
+          "elapsed_s": 0.017054502999599208,
+          "processes": {
+            "133090": {
+              "name": "synara",
+              "ticks": 100,
+              "rss_kib": 265528,
+              "pss_kib": 165183,
+              "uss_kib": 136936
+            },
+            "133093": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 59064,
+              "pss_kib": 12017,
+              "uss_kib": 820
+            },
+            "133094": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58552,
+              "pss_kib": 10288,
+              "uss_kib": 832
+            },
+            "133158": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 78704,
+              "pss_kib": 26904,
+              "uss_kib": 9124
+            },
+            "133164": {
+              "name": "synara",
+              "ticks": 138,
+              "rss_kib": 249432,
+              "pss_kib": 179663,
+              "uss_kib": 162092
+            },
+            "133143": {
+              "name": "synara",
+              "ticks": 42,
+              "rss_kib": 154924,
+              "pss_kib": 72907,
+              "uss_kib": 43284
+            },
+            "133177": {
+              "name": "synara",
+              "ticks": 134,
+              "rss_kib": 242400,
+              "pss_kib": 170839,
+              "uss_kib": 138348
+            },
+            "133146": {
+              "name": "synara",
+              "ticks": 4,
+              "rss_kib": 83556,
+              "pss_kib": 25967,
+              "uss_kib": 14932
+            }
+          },
+          "rss_kib": 1192160,
+          "pss_kib": 663768,
+          "uss_kib": 506368
+        },
+        {
+          "elapsed_s": 1.0213366819998555,
+          "processes": {
+            "133090": {
+              "name": "synara",
+              "ticks": 100,
+              "rss_kib": 265528,
+              "pss_kib": 165183,
+              "uss_kib": 136936
+            },
+            "133093": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 59064,
+              "pss_kib": 12017,
+              "uss_kib": 820
+            },
+            "133094": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58552,
+              "pss_kib": 10288,
+              "uss_kib": 832
+            },
+            "133158": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 78704,
+              "pss_kib": 26904,
+              "uss_kib": 9124
+            },
+            "133164": {
+              "name": "synara",
+              "ticks": 139,
+              "rss_kib": 249560,
+              "pss_kib": 179647,
+              "uss_kib": 162076
+            },
+            "133143": {
+              "name": "synara",
+              "ticks": 43,
+              "rss_kib": 154924,
+              "pss_kib": 72907,
+              "uss_kib": 43284
+            },
+            "133177": {
+              "name": "synara",
+              "ticks": 134,
+              "rss_kib": 242400,
+              "pss_kib": 170839,
+              "uss_kib": 138348
+            },
+            "133146": {
+              "name": "synara",
+              "ticks": 4,
+              "rss_kib": 83556,
+              "pss_kib": 25967,
+              "uss_kib": 14932
+            }
+          },
+          "rss_kib": 1192288,
+          "pss_kib": 663752,
+          "uss_kib": 506352
+        },
+        {
+          "elapsed_s": 2.017254490999676,
+          "processes": {
+            "133090": {
+              "name": "synara",
+              "ticks": 100,
+              "rss_kib": 265528,
+              "pss_kib": 165184,
+              "uss_kib": 136936
+            },
+            "133093": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 59064,
+              "pss_kib": 12018,
+              "uss_kib": 820
+            },
+            "133094": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58552,
+              "pss_kib": 10289,
+              "uss_kib": 832
+            },
+            "133158": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 78704,
+              "pss_kib": 26904,
+              "uss_kib": 9124
+            },
+            "133164": {
+              "name": "synara",
+              "ticks": 139,
+              "rss_kib": 249560,
+              "pss_kib": 179644,
+              "uss_kib": 162072
+            },
+            "133143": {
+              "name": "synara",
+              "ticks": 43,
+              "rss_kib": 154924,
+              "pss_kib": 72908,
+              "uss_kib": 43284
+            },
+            "133177": {
+              "name": "synara",
+              "ticks": 134,
+              "rss_kib": 242400,
+              "pss_kib": 170895,
+              "uss_kib": 138404
+            },
+            "133146": {
+              "name": "synara",
+              "ticks": 4,
+              "rss_kib": 83556,
+              "pss_kib": 25968,
+              "uss_kib": 14932
+            }
+          },
+          "rss_kib": 1192288,
+          "pss_kib": 663810,
+          "uss_kib": 506404
+        },
+        {
+          "elapsed_s": 3.0180170929997985,
+          "processes": {
+            "133090": {
+              "name": "synara",
+              "ticks": 100,
+              "rss_kib": 265528,
+              "pss_kib": 165184,
+              "uss_kib": 136936
+            },
+            "133093": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 59064,
+              "pss_kib": 12018,
+              "uss_kib": 820
+            },
+            "133094": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58552,
+              "pss_kib": 10289,
+              "uss_kib": 832
+            },
+            "133158": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 78704,
+              "pss_kib": 26904,
+              "uss_kib": 9124
+            },
+            "133164": {
+              "name": "synara",
+              "ticks": 140,
+              "rss_kib": 249560,
+              "pss_kib": 179652,
+              "uss_kib": 162080
+            },
+            "133143": {
+              "name": "synara",
+              "ticks": 45,
+              "rss_kib": 154884,
+              "pss_kib": 72908,
+              "uss_kib": 43284
+            },
+            "133177": {
+              "name": "synara",
+              "ticks": 134,
+              "rss_kib": 242400,
+              "pss_kib": 170835,
+              "uss_kib": 138344
+            },
+            "133146": {
+              "name": "synara",
+              "ticks": 4,
+              "rss_kib": 83556,
+              "pss_kib": 25968,
+              "uss_kib": 14932
+            }
+          },
+          "rss_kib": 1192248,
+          "pss_kib": 663758,
+          "uss_kib": 506352
+        },
+        {
+          "elapsed_s": 4.016592700999809,
+          "processes": {
+            "133090": {
+              "name": "synara",
+              "ticks": 100,
+              "rss_kib": 265528,
+              "pss_kib": 165184,
+              "uss_kib": 136936
+            },
+            "133093": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 59064,
+              "pss_kib": 12018,
+              "uss_kib": 820
+            },
+            "133094": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58552,
+              "pss_kib": 10289,
+              "uss_kib": 832
+            },
+            "133158": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 78704,
+              "pss_kib": 26904,
+              "uss_kib": 9124
+            },
+            "133164": {
+              "name": "synara",
+              "ticks": 142,
+              "rss_kib": 249560,
+              "pss_kib": 179668,
+              "uss_kib": 162096
+            },
+            "133143": {
+              "name": "synara",
+              "ticks": 46,
+              "rss_kib": 154928,
+              "pss_kib": 72908,
+              "uss_kib": 43284
+            },
+            "133177": {
+              "name": "synara",
+              "ticks": 135,
+              "rss_kib": 242400,
+              "pss_kib": 170739,
+              "uss_kib": 138248
+            },
+            "133146": {
+              "name": "synara",
+              "ticks": 4,
+              "rss_kib": 83556,
+              "pss_kib": 25968,
+              "uss_kib": 14932
+            }
+          },
+          "rss_kib": 1192292,
+          "pss_kib": 663678,
+          "uss_kib": 506272
+        },
+        {
+          "elapsed_s": 5.016843373000029,
+          "processes": {
+            "133090": {
+              "name": "synara",
+              "ticks": 100,
+              "rss_kib": 265528,
+              "pss_kib": 165184,
+              "uss_kib": 136936
+            },
+            "133093": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 59064,
+              "pss_kib": 12018,
+              "uss_kib": 820
+            },
+            "133094": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58552,
+              "pss_kib": 10289,
+              "uss_kib": 832
+            },
+            "133158": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 78704,
+              "pss_kib": 26904,
+              "uss_kib": 9124
+            },
+            "133164": {
+              "name": "synara",
+              "ticks": 142,
+              "rss_kib": 249560,
+              "pss_kib": 179608,
+              "uss_kib": 162036
+            },
+            "133143": {
+              "name": "synara",
+              "ticks": 46,
+              "rss_kib": 154928,
+              "pss_kib": 72908,
+              "uss_kib": 43284
+            },
+            "133177": {
+              "name": "synara",
+              "ticks": 135,
+              "rss_kib": 242400,
+              "pss_kib": 170747,
+              "uss_kib": 138256
+            },
+            "133146": {
+              "name": "synara",
+              "ticks": 4,
+              "rss_kib": 83556,
+              "pss_kib": 25968,
+              "uss_kib": 14932
+            }
+          },
+          "rss_kib": 1192292,
+          "pss_kib": 663626,
+          "uss_kib": 506220
+        },
+        {
+          "elapsed_s": 6.016525961999832,
+          "processes": {
+            "133090": {
+              "name": "synara",
+              "ticks": 100,
+              "rss_kib": 265528,
+              "pss_kib": 165184,
+              "uss_kib": 136936
+            },
+            "133093": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 59064,
+              "pss_kib": 12018,
+              "uss_kib": 820
+            },
+            "133094": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58552,
+              "pss_kib": 10289,
+              "uss_kib": 832
+            },
+            "133158": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 78704,
+              "pss_kib": 26904,
+              "uss_kib": 9124
+            },
+            "133164": {
+              "name": "synara",
+              "ticks": 143,
+              "rss_kib": 249560,
+              "pss_kib": 179676,
+              "uss_kib": 162104
+            },
+            "133143": {
+              "name": "synara",
+              "ticks": 49,
+              "rss_kib": 154932,
+              "pss_kib": 72908,
+              "uss_kib": 43284
+            },
+            "133177": {
+              "name": "synara",
+              "ticks": 135,
+              "rss_kib": 242400,
+              "pss_kib": 170751,
+              "uss_kib": 138260
+            },
+            "133146": {
+              "name": "synara",
+              "ticks": 4,
+              "rss_kib": 83556,
+              "pss_kib": 25968,
+              "uss_kib": 14932
+            }
+          },
+          "rss_kib": 1192296,
+          "pss_kib": 663698,
+          "uss_kib": 506292
+        },
+        {
+          "elapsed_s": 7.016521469999589,
+          "processes": {
+            "133090": {
+              "name": "synara",
+              "ticks": 100,
+              "rss_kib": 265528,
+              "pss_kib": 165184,
+              "uss_kib": 136936
+            },
+            "133093": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 59064,
+              "pss_kib": 12018,
+              "uss_kib": 820
+            },
+            "133094": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58552,
+              "pss_kib": 10289,
+              "uss_kib": 832
+            },
+            "133158": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 78704,
+              "pss_kib": 26904,
+              "uss_kib": 9124
+            },
+            "133164": {
+              "name": "synara",
+              "ticks": 143,
+              "rss_kib": 249388,
+              "pss_kib": 179660,
+              "uss_kib": 162088
+            },
+            "133143": {
+              "name": "synara",
+              "ticks": 50,
+              "rss_kib": 154932,
+              "pss_kib": 72908,
+              "uss_kib": 43284
+            },
+            "133177": {
+              "name": "synara",
+              "ticks": 135,
+              "rss_kib": 242400,
+              "pss_kib": 170755,
+              "uss_kib": 138264
+            },
+            "133146": {
+              "name": "synara",
+              "ticks": 4,
+              "rss_kib": 83556,
+              "pss_kib": 25968,
+              "uss_kib": 14932
+            }
+          },
+          "rss_kib": 1192124,
+          "pss_kib": 663686,
+          "uss_kib": 506280
+        },
+        {
+          "elapsed_s": 8.016949728999862,
+          "processes": {
+            "133090": {
+              "name": "synara",
+              "ticks": 100,
+              "rss_kib": 265528,
+              "pss_kib": 165184,
+              "uss_kib": 136936
+            },
+            "133093": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 59064,
+              "pss_kib": 12018,
+              "uss_kib": 820
+            },
+            "133094": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58552,
+              "pss_kib": 10289,
+              "uss_kib": 832
+            },
+            "133158": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 78704,
+              "pss_kib": 26904,
+              "uss_kib": 9124
+            },
+            "133164": {
+              "name": "synara",
+              "ticks": 144,
+              "rss_kib": 249388,
+              "pss_kib": 179672,
+              "uss_kib": 162100
+            },
+            "133143": {
+              "name": "synara",
+              "ticks": 52,
+              "rss_kib": 155036,
+              "pss_kib": 72908,
+              "uss_kib": 43284
+            },
+            "133177": {
+              "name": "synara",
+              "ticks": 135,
+              "rss_kib": 242400,
+              "pss_kib": 170759,
+              "uss_kib": 138268
+            },
+            "133146": {
+              "name": "synara",
+              "ticks": 4,
+              "rss_kib": 83556,
+              "pss_kib": 25969,
+              "uss_kib": 14932
+            }
+          },
+          "rss_kib": 1192228,
+          "pss_kib": 663703,
+          "uss_kib": 506296
+        },
+        {
+          "elapsed_s": 9.016257759999917,
+          "processes": {
+            "133090": {
+              "name": "synara",
+              "ticks": 100,
+              "rss_kib": 265528,
+              "pss_kib": 165184,
+              "uss_kib": 136936
+            },
+            "133093": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 59064,
+              "pss_kib": 12018,
+              "uss_kib": 820
+            },
+            "133094": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58552,
+              "pss_kib": 10289,
+              "uss_kib": 832
+            },
+            "133158": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 78704,
+              "pss_kib": 26904,
+              "uss_kib": 9124
+            },
+            "133164": {
+              "name": "synara",
+              "ticks": 144,
+              "rss_kib": 249384,
+              "pss_kib": 179276,
+              "uss_kib": 161704
+            },
+            "133143": {
+              "name": "synara",
+              "ticks": 52,
+              "rss_kib": 155036,
+              "pss_kib": 72908,
+              "uss_kib": 43284
+            },
+            "133177": {
+              "name": "synara",
+              "ticks": 136,
+              "rss_kib": 242400,
+              "pss_kib": 170763,
+              "uss_kib": 138272
+            },
+            "133146": {
+              "name": "synara",
+              "ticks": 4,
+              "rss_kib": 83556,
+              "pss_kib": 25969,
+              "uss_kib": 14932
+            }
+          },
+          "rss_kib": 1192224,
+          "pss_kib": 663311,
+          "uss_kib": 505904
+        },
+        {
+          "elapsed_s": 10.016130737999902,
+          "processes": {
+            "133090": {
+              "name": "synara",
+              "ticks": 100,
+              "rss_kib": 265528,
+              "pss_kib": 165184,
+              "uss_kib": 136936
+            },
+            "133093": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 59064,
+              "pss_kib": 12018,
+              "uss_kib": 820
+            },
+            "133094": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58552,
+              "pss_kib": 10289,
+              "uss_kib": 832
+            },
+            "133158": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 78704,
+              "pss_kib": 26904,
+              "uss_kib": 9124
+            },
+            "133164": {
+              "name": "synara",
+              "ticks": 145,
+              "rss_kib": 249384,
+              "pss_kib": 179276,
+              "uss_kib": 161704
+            },
+            "133143": {
+              "name": "synara",
+              "ticks": 53,
+              "rss_kib": 154956,
+              "pss_kib": 72908,
+              "uss_kib": 43284
+            },
+            "133177": {
+              "name": "synara",
+              "ticks": 136,
+              "rss_kib": 242400,
+              "pss_kib": 170763,
+              "uss_kib": 138272
+            },
+            "133146": {
+              "name": "synara",
+              "ticks": 4,
+              "rss_kib": 83556,
+              "pss_kib": 25969,
+              "uss_kib": 14932
+            }
+          },
+          "rss_kib": 1192144,
+          "pss_kib": 663311,
+          "uss_kib": 505904
+        }
+      ],
+      "idle_seconds": 10.016142822999882,
+      "idle_cpu_one_core_percent": 1.9967766388149313,
+      "host_cpu_all_cores_percent": 6.12311991452289,
+      "process_count_median": 8,
+      "rss_kib_median": 1192248,
+      "rss_kib_observed_peak": 1192296,
+      "pss_kib_median": 663698,
+      "pss_kib_observed_peak": 663810,
+      "uss_kib_median": 506292,
+      "uss_kib_observed_peak": 506404,
+      "exit_code": 0
+    },
+    {
+      "kind": "electron",
+      "label": "electron-warm-4",
+      "command": [
+        "/tmp/synara-comparison-20260919/electron/synara",
+        "--no-sandbox",
+        "--ozone-platform=x11"
+      ],
+      "status": "passed",
+      "started_at_utc": "2026-09-19T19:53:06.854980+00:00",
+      "first_mapped_window_ms": 525.7261080000717,
+      "initial_geometry": [
+        0,
+        0,
+        1420,
+        930
+      ],
+      "idle_geometry": [
+        0,
+        0,
+        1420,
+        930
+      ],
+      "samples": [
+        {
+          "elapsed_s": 0.016406377000294015,
+          "processes": {
+            "133892": {
+              "name": "synara",
+              "ticks": 143,
+              "rss_kib": 252216,
+              "pss_kib": 182187,
+              "uss_kib": 164568
+            },
+            "133868": {
+              "name": "synara",
+              "ticks": 41,
+              "rss_kib": 154204,
+              "pss_kib": 72309,
+              "uss_kib": 42648
+            },
+            "133871": {
+              "name": "synara",
+              "ticks": 5,
+              "rss_kib": 83572,
+              "pss_kib": 25956,
+              "uss_kib": 14968
+            },
+            "133905": {
+              "name": "synara",
+              "ticks": 132,
+              "rss_kib": 243860,
+              "pss_kib": 172413,
+              "uss_kib": 139868
+            },
+            "133815": {
+              "name": "synara",
+              "ticks": 98,
+              "rss_kib": 266148,
+              "pss_kib": 165203,
+              "uss_kib": 136860
+            },
+            "133819": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 59156,
+              "pss_kib": 12082,
+              "uss_kib": 844
+            },
+            "133820": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 58948,
+              "pss_kib": 10278,
+              "uss_kib": 856
+            },
+            "133886": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 78728,
+              "pss_kib": 26865,
+              "uss_kib": 9100
+            }
+          },
+          "rss_kib": 1196832,
+          "pss_kib": 667293,
+          "uss_kib": 509712
+        },
+        {
+          "elapsed_s": 1.021947984000235,
+          "processes": {
+            "133892": {
+              "name": "synara",
+              "ticks": 143,
+              "rss_kib": 252216,
+              "pss_kib": 182187,
+              "uss_kib": 164568
+            },
+            "133868": {
+              "name": "synara",
+              "ticks": 42,
+              "rss_kib": 155388,
+              "pss_kib": 72581,
+              "uss_kib": 42920
+            },
+            "133871": {
+              "name": "synara",
+              "ticks": 5,
+              "rss_kib": 83572,
+              "pss_kib": 25956,
+              "uss_kib": 14968
+            },
+            "133905": {
+              "name": "synara",
+              "ticks": 132,
+              "rss_kib": 243860,
+              "pss_kib": 172417,
+              "uss_kib": 139872
+            },
+            "133815": {
+              "name": "synara",
+              "ticks": 98,
+              "rss_kib": 266148,
+              "pss_kib": 165203,
+              "uss_kib": 136860
+            },
+            "133819": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 59156,
+              "pss_kib": 12082,
+              "uss_kib": 844
+            },
+            "133820": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 58948,
+              "pss_kib": 10278,
+              "uss_kib": 856
+            },
+            "133886": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 78728,
+              "pss_kib": 26865,
+              "uss_kib": 9100
+            }
+          },
+          "rss_kib": 1198016,
+          "pss_kib": 667569,
+          "uss_kib": 509988
+        },
+        {
+          "elapsed_s": 2.016542452000067,
+          "processes": {
+            "133892": {
+              "name": "synara",
+              "ticks": 144,
+              "rss_kib": 252216,
+              "pss_kib": 182127,
+              "uss_kib": 164508
+            },
+            "133868": {
+              "name": "synara",
+              "ticks": 43,
+              "rss_kib": 154428,
+              "pss_kib": 72585,
+              "uss_kib": 42924
+            },
+            "133871": {
+              "name": "synara",
+              "ticks": 5,
+              "rss_kib": 83572,
+              "pss_kib": 25956,
+              "uss_kib": 14968
+            },
+            "133905": {
+              "name": "synara",
+              "ticks": 133,
+              "rss_kib": 243860,
+              "pss_kib": 172477,
+              "uss_kib": 139932
+            },
+            "133815": {
+              "name": "synara",
+              "ticks": 98,
+              "rss_kib": 266148,
+              "pss_kib": 165203,
+              "uss_kib": 136860
+            },
+            "133819": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 59156,
+              "pss_kib": 12082,
+              "uss_kib": 844
+            },
+            "133820": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 58948,
+              "pss_kib": 10278,
+              "uss_kib": 856
+            },
+            "133886": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 78728,
+              "pss_kib": 26865,
+              "uss_kib": 9100
+            }
+          },
+          "rss_kib": 1197056,
+          "pss_kib": 667573,
+          "uss_kib": 509992
+        },
+        {
+          "elapsed_s": 3.016586945000199,
+          "processes": {
+            "133892": {
+              "name": "synara",
+              "ticks": 144,
+              "rss_kib": 252216,
+              "pss_kib": 182123,
+              "uss_kib": 164504
+            },
+            "133868": {
+              "name": "synara",
+              "ticks": 44,
+              "rss_kib": 154360,
+              "pss_kib": 72517,
+              "uss_kib": 42856
+            },
+            "133871": {
+              "name": "synara",
+              "ticks": 5,
+              "rss_kib": 83572,
+              "pss_kib": 25958,
+              "uss_kib": 14968
+            },
+            "133905": {
+              "name": "synara",
+              "ticks": 133,
+              "rss_kib": 244116,
+              "pss_kib": 172507,
+              "uss_kib": 139960
+            },
+            "133815": {
+              "name": "synara",
+              "ticks": 98,
+              "rss_kib": 266148,
+              "pss_kib": 165203,
+              "uss_kib": 136860
+            },
+            "133819": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 59156,
+              "pss_kib": 12082,
+              "uss_kib": 844
+            },
+            "133820": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 58948,
+              "pss_kib": 10278,
+              "uss_kib": 856
+            },
+            "133886": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 78728,
+              "pss_kib": 26865,
+              "uss_kib": 9100
+            }
+          },
+          "rss_kib": 1197244,
+          "pss_kib": 667533,
+          "uss_kib": 509948
+        },
+        {
+          "elapsed_s": 4.017173570000068,
+          "processes": {
+            "133892": {
+              "name": "synara",
+              "ticks": 145,
+              "rss_kib": 252216,
+              "pss_kib": 182155,
+              "uss_kib": 164536
+            },
+            "133868": {
+              "name": "synara",
+              "ticks": 46,
+              "rss_kib": 154368,
+              "pss_kib": 73881,
+              "uss_kib": 44220
+            },
+            "133871": {
+              "name": "synara",
+              "ticks": 5,
+              "rss_kib": 83572,
+              "pss_kib": 25958,
+              "uss_kib": 14968
+            },
+            "133905": {
+              "name": "synara",
+              "ticks": 133,
+              "rss_kib": 244116,
+              "pss_kib": 172407,
+              "uss_kib": 139860
+            },
+            "133815": {
+              "name": "synara",
+              "ticks": 98,
+              "rss_kib": 266148,
+              "pss_kib": 165203,
+              "uss_kib": 136860
+            },
+            "133819": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 59156,
+              "pss_kib": 12082,
+              "uss_kib": 844
+            },
+            "133820": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 58948,
+              "pss_kib": 10278,
+              "uss_kib": 856
+            },
+            "133886": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 78728,
+              "pss_kib": 26865,
+              "uss_kib": 9100
+            }
+          },
+          "rss_kib": 1197252,
+          "pss_kib": 668829,
+          "uss_kib": 511244
+        },
+        {
+          "elapsed_s": 5.017138979000265,
+          "processes": {
+            "133892": {
+              "name": "synara",
+              "ticks": 145,
+              "rss_kib": 252216,
+              "pss_kib": 182183,
+              "uss_kib": 164564
+            },
+            "133868": {
+              "name": "synara",
+              "ticks": 47,
+              "rss_kib": 154044,
+              "pss_kib": 72309,
+              "uss_kib": 42648
+            },
+            "133871": {
+              "name": "synara",
+              "ticks": 5,
+              "rss_kib": 83572,
+              "pss_kib": 25958,
+              "uss_kib": 14968
+            },
+            "133905": {
+              "name": "synara",
+              "ticks": 133,
+              "rss_kib": 244116,
+              "pss_kib": 172415,
+              "uss_kib": 139868
+            },
+            "133815": {
+              "name": "synara",
+              "ticks": 98,
+              "rss_kib": 266148,
+              "pss_kib": 165203,
+              "uss_kib": 136860
+            },
+            "133819": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 59156,
+              "pss_kib": 12082,
+              "uss_kib": 844
+            },
+            "133820": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 58948,
+              "pss_kib": 10278,
+              "uss_kib": 856
+            },
+            "133886": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 78728,
+              "pss_kib": 26865,
+              "uss_kib": 9100
+            }
+          },
+          "rss_kib": 1196928,
+          "pss_kib": 667293,
+          "uss_kib": 509708
+        },
+        {
+          "elapsed_s": 6.01675143500006,
+          "processes": {
+            "133892": {
+              "name": "synara",
+              "ticks": 146,
+              "rss_kib": 252216,
+              "pss_kib": 182191,
+              "uss_kib": 164572
+            },
+            "133868": {
+              "name": "synara",
+              "ticks": 48,
+              "rss_kib": 154312,
+              "pss_kib": 72581,
+              "uss_kib": 42920
+            },
+            "133871": {
+              "name": "synara",
+              "ticks": 5,
+              "rss_kib": 83572,
+              "pss_kib": 25958,
+              "uss_kib": 14968
+            },
+            "133905": {
+              "name": "synara",
+              "ticks": 133,
+              "rss_kib": 244116,
+              "pss_kib": 172415,
+              "uss_kib": 139868
+            },
+            "133815": {
+              "name": "synara",
+              "ticks": 98,
+              "rss_kib": 266148,
+              "pss_kib": 165203,
+              "uss_kib": 136860
+            },
+            "133819": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 59156,
+              "pss_kib": 12082,
+              "uss_kib": 844
+            },
+            "133820": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 58948,
+              "pss_kib": 10278,
+              "uss_kib": 856
+            },
+            "133886": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 78728,
+              "pss_kib": 26865,
+              "uss_kib": 9100
+            }
+          },
+          "rss_kib": 1197196,
+          "pss_kib": 667573,
+          "uss_kib": 509988
+        },
+        {
+          "elapsed_s": 7.017652041000019,
+          "processes": {
+            "133892": {
+              "name": "synara",
+              "ticks": 147,
+              "rss_kib": 251776,
+              "pss_kib": 181795,
+              "uss_kib": 164176
+            },
+            "133868": {
+              "name": "synara",
+              "ticks": 49,
+              "rss_kib": 154352,
+              "pss_kib": 73561,
+              "uss_kib": 43900
+            },
+            "133871": {
+              "name": "synara",
+              "ticks": 5,
+              "rss_kib": 83572,
+              "pss_kib": 25958,
+              "uss_kib": 14968
+            },
+            "133905": {
+              "name": "synara",
+              "ticks": 134,
+              "rss_kib": 244116,
+              "pss_kib": 172419,
+              "uss_kib": 139872
+            },
+            "133815": {
+              "name": "synara",
+              "ticks": 98,
+              "rss_kib": 266148,
+              "pss_kib": 165203,
+              "uss_kib": 136860
+            },
+            "133819": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 59156,
+              "pss_kib": 12082,
+              "uss_kib": 844
+            },
+            "133820": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 58948,
+              "pss_kib": 10278,
+              "uss_kib": 856
+            },
+            "133886": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 78728,
+              "pss_kib": 26865,
+              "uss_kib": 9100
+            }
+          },
+          "rss_kib": 1196796,
+          "pss_kib": 668161,
+          "uss_kib": 510576
+        },
+        {
+          "elapsed_s": 8.017400212000211,
+          "processes": {
+            "133892": {
+              "name": "synara",
+              "ticks": 147,
+              "rss_kib": 251776,
+              "pss_kib": 181795,
+              "uss_kib": 164176
+            },
+            "133868": {
+              "name": "synara",
+              "ticks": 50,
+              "rss_kib": 154304,
+              "pss_kib": 72521,
+              "uss_kib": 42860
+            },
+            "133871": {
+              "name": "synara",
+              "ticks": 5,
+              "rss_kib": 83572,
+              "pss_kib": 25958,
+              "uss_kib": 14968
+            },
+            "133905": {
+              "name": "synara",
+              "ticks": 134,
+              "rss_kib": 244116,
+              "pss_kib": 172427,
+              "uss_kib": 139880
+            },
+            "133815": {
+              "name": "synara",
+              "ticks": 98,
+              "rss_kib": 266148,
+              "pss_kib": 165203,
+              "uss_kib": 136860
+            },
+            "133819": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 59156,
+              "pss_kib": 12082,
+              "uss_kib": 844
+            },
+            "133820": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 58948,
+              "pss_kib": 10278,
+              "uss_kib": 856
+            },
+            "133886": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 78728,
+              "pss_kib": 26865,
+              "uss_kib": 9100
+            }
+          },
+          "rss_kib": 1196748,
+          "pss_kib": 667129,
+          "uss_kib": 509544
+        },
+        {
+          "elapsed_s": 9.017679171000054,
+          "processes": {
+            "133892": {
+              "name": "synara",
+              "ticks": 148,
+              "rss_kib": 252032,
+              "pss_kib": 181895,
+              "uss_kib": 164276
+            },
+            "133868": {
+              "name": "synara",
+              "ticks": 51,
+              "rss_kib": 154444,
+              "pss_kib": 72589,
+              "uss_kib": 42928
+            },
+            "133871": {
+              "name": "synara",
+              "ticks": 6,
+              "rss_kib": 83572,
+              "pss_kib": 25960,
+              "uss_kib": 14968
+            },
+            "133905": {
+              "name": "synara",
+              "ticks": 134,
+              "rss_kib": 244116,
+              "pss_kib": 172441,
+              "uss_kib": 139892
+            },
+            "133815": {
+              "name": "synara",
+              "ticks": 98,
+              "rss_kib": 266148,
+              "pss_kib": 165203,
+              "uss_kib": 136860
+            },
+            "133819": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 59156,
+              "pss_kib": 12082,
+              "uss_kib": 844
+            },
+            "133820": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 58948,
+              "pss_kib": 10278,
+              "uss_kib": 856
+            },
+            "133886": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 78728,
+              "pss_kib": 26865,
+              "uss_kib": 9100
+            }
+          },
+          "rss_kib": 1197144,
+          "pss_kib": 667313,
+          "uss_kib": 509724
+        },
+        {
+          "elapsed_s": 10.018327655000121,
+          "processes": {
+            "133892": {
+              "name": "synara",
+              "ticks": 149,
+              "rss_kib": 252032,
+              "pss_kib": 181895,
+              "uss_kib": 164276
+            },
+            "133868": {
+              "name": "synara",
+              "ticks": 52,
+              "rss_kib": 154168,
+              "pss_kib": 73605,
+              "uss_kib": 43944
+            },
+            "133871": {
+              "name": "synara",
+              "ticks": 6,
+              "rss_kib": 83572,
+              "pss_kib": 25960,
+              "uss_kib": 14968
+            },
+            "133905": {
+              "name": "synara",
+              "ticks": 134,
+              "rss_kib": 244116,
+              "pss_kib": 172441,
+              "uss_kib": 139892
+            },
+            "133815": {
+              "name": "synara",
+              "ticks": 98,
+              "rss_kib": 266148,
+              "pss_kib": 165203,
+              "uss_kib": 136860
+            },
+            "133819": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 59156,
+              "pss_kib": 12082,
+              "uss_kib": 844
+            },
+            "133820": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 58948,
+              "pss_kib": 10278,
+              "uss_kib": 856
+            },
+            "133886": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 78728,
+              "pss_kib": 26865,
+              "uss_kib": 9100
+            }
+          },
+          "rss_kib": 1196868,
+          "pss_kib": 668329,
+          "uss_kib": 510740
+        }
+      ],
+      "idle_seconds": 10.018338932999995,
+      "idle_cpu_one_core_percent": 1.996338927416483,
+      "host_cpu_all_cores_percent": 6.033987357359827,
+      "process_count_median": 8,
+      "rss_kib_median": 1197056,
+      "rss_kib_observed_peak": 1198016,
+      "pss_kib_median": 667569,
+      "pss_kib_observed_peak": 668829,
+      "uss_kib_median": 509988,
+      "uss_kib_observed_peak": 511244,
+      "exit_code": 0
+    },
+    {
+      "kind": "rust",
+      "label": "rust-warm-4",
+      "command": [
+        "/tmp/synara-comparison-20260919/rust/synara-app",
+        "--data-dir",
+        "/tmp/synara-comparison-20260919/final/rust/data/native"
+      ],
+      "status": "passed",
+      "started_at_utc": "2026-09-19T19:53:33.110355+00:00",
+      "first_mapped_window_ms": 145.0171829997089,
+      "initial_geometry": [
+        92,
+        35,
+        1420,
+        930
+      ],
+      "idle_geometry": [
+        0,
+        0,
+        1420,
+        930
+      ],
+      "samples": [
+        {
+          "elapsed_s": 0.01152236100006121,
+          "processes": {
+            "134569": {
+              "name": "synara-app",
+              "ticks": 31,
+              "rss_kib": 217776,
+              "pss_kib": 153423,
+              "uss_kib": 142800
+            }
+          },
+          "rss_kib": 217776,
+          "pss_kib": 153423,
+          "uss_kib": 142800
+        },
+        {
+          "elapsed_s": 1.0125403430001825,
+          "processes": {
+            "134569": {
+              "name": "synara-app",
+              "ticks": 31,
+              "rss_kib": 217776,
+              "pss_kib": 153423,
+              "uss_kib": 142800
+            }
+          },
+          "rss_kib": 217776,
+          "pss_kib": 153423,
+          "uss_kib": 142800
+        },
+        {
+          "elapsed_s": 2.011896863000402,
+          "processes": {
+            "134569": {
+              "name": "synara-app",
+              "ticks": 32,
+              "rss_kib": 217776,
+              "pss_kib": 153423,
+              "uss_kib": 142800
+            }
+          },
+          "rss_kib": 217776,
+          "pss_kib": 153423,
+          "uss_kib": 142800
+        },
+        {
+          "elapsed_s": 3.0118472940002903,
+          "processes": {
+            "134569": {
+              "name": "synara-app",
+              "ticks": 32,
+              "rss_kib": 217776,
+              "pss_kib": 153423,
+              "uss_kib": 142800
+            }
+          },
+          "rss_kib": 217776,
+          "pss_kib": 153423,
+          "uss_kib": 142800
+        },
+        {
+          "elapsed_s": 4.013329981000425,
+          "processes": {
+            "134569": {
+              "name": "synara-app",
+              "ticks": 32,
+              "rss_kib": 217776,
+              "pss_kib": 153423,
+              "uss_kib": 142800
+            }
+          },
+          "rss_kib": 217776,
+          "pss_kib": 153423,
+          "uss_kib": 142800
+        },
+        {
+          "elapsed_s": 5.01213449900024,
+          "processes": {
+            "134569": {
+              "name": "synara-app",
+              "ticks": 33,
+              "rss_kib": 217776,
+              "pss_kib": 153423,
+              "uss_kib": 142800
+            }
+          },
+          "rss_kib": 217776,
+          "pss_kib": 153423,
+          "uss_kib": 142800
+        },
+        {
+          "elapsed_s": 6.011767813000006,
+          "processes": {
+            "134569": {
+              "name": "synara-app",
+              "ticks": 33,
+              "rss_kib": 217776,
+              "pss_kib": 153423,
+              "uss_kib": 142800
+            }
+          },
+          "rss_kib": 217776,
+          "pss_kib": 153423,
+          "uss_kib": 142800
+        },
+        {
+          "elapsed_s": 7.011897729000339,
+          "processes": {
+            "134569": {
+              "name": "synara-app",
+              "ticks": 33,
+              "rss_kib": 217776,
+              "pss_kib": 153423,
+              "uss_kib": 142800
+            }
+          },
+          "rss_kib": 217776,
+          "pss_kib": 153423,
+          "uss_kib": 142800
+        },
+        {
+          "elapsed_s": 8.012387754000429,
+          "processes": {
+            "134569": {
+              "name": "synara-app",
+              "ticks": 33,
+              "rss_kib": 217776,
+              "pss_kib": 153423,
+              "uss_kib": 142800
+            }
+          },
+          "rss_kib": 217776,
+          "pss_kib": 153423,
+          "uss_kib": 142800
+        },
+        {
+          "elapsed_s": 9.01325088800013,
+          "processes": {
+            "134569": {
+              "name": "synara-app",
+              "ticks": 34,
+              "rss_kib": 217776,
+              "pss_kib": 153423,
+              "uss_kib": 142800
+            }
+          },
+          "rss_kib": 217776,
+          "pss_kib": 153423,
+          "uss_kib": 142800
+        },
+        {
+          "elapsed_s": 10.011506333000398,
+          "processes": {
+            "134569": {
+              "name": "synara-app",
+              "ticks": 34,
+              "rss_kib": 217776,
+              "pss_kib": 153423,
+              "uss_kib": 142800
+            }
+          },
+          "rss_kib": 217776,
+          "pss_kib": 153423,
+          "uss_kib": 142800
+        }
+      ],
+      "idle_seconds": 10.011516645000029,
+      "idle_cpu_one_core_percent": 0.2996548980916159,
+      "host_cpu_all_cores_percent": 6.597022291683807,
+      "process_count_median": 1,
+      "rss_kib_median": 217776,
+      "rss_kib_observed_peak": 217776,
+      "pss_kib_median": 153423,
+      "pss_kib_observed_peak": 153423,
+      "uss_kib_median": 142800,
+      "uss_kib_observed_peak": 142800,
+      "exit_code": 0
+    },
+    {
+      "kind": "rust",
+      "label": "rust-warm-5",
+      "command": [
+        "/tmp/synara-comparison-20260919/rust/synara-app",
+        "--data-dir",
+        "/tmp/synara-comparison-20260919/final/rust/data/native"
+      ],
+      "status": "passed",
+      "started_at_utc": "2026-09-19T19:53:58.977728+00:00",
+      "first_mapped_window_ms": 146.04126899985204,
+      "initial_geometry": [
+        92,
+        35,
+        1420,
+        930
+      ],
+      "idle_geometry": [
+        0,
+        0,
+        1420,
+        930
+      ],
+      "samples": [
+        {
+          "elapsed_s": 0.011939590000110911,
+          "processes": {
+            "135305": {
+              "name": "synara-app",
+              "ticks": 30,
+              "rss_kib": 217756,
+              "pss_kib": 153065,
+              "uss_kib": 142484
+            }
+          },
+          "rss_kib": 217756,
+          "pss_kib": 153065,
+          "uss_kib": 142484
+        },
+        {
+          "elapsed_s": 1.0129079379998984,
+          "processes": {
+            "135305": {
+              "name": "synara-app",
+              "ticks": 30,
+              "rss_kib": 217756,
+              "pss_kib": 153065,
+              "uss_kib": 142484
+            }
+          },
+          "rss_kib": 217756,
+          "pss_kib": 153065,
+          "uss_kib": 142484
+        },
+        {
+          "elapsed_s": 2.011293284000203,
+          "processes": {
+            "135305": {
+              "name": "synara-app",
+              "ticks": 31,
+              "rss_kib": 217756,
+              "pss_kib": 153065,
+              "uss_kib": 142484
+            }
+          },
+          "rss_kib": 217756,
+          "pss_kib": 153065,
+          "uss_kib": 142484
+        },
+        {
+          "elapsed_s": 3.0118083620000107,
+          "processes": {
+            "135305": {
+              "name": "synara-app",
+              "ticks": 31,
+              "rss_kib": 217756,
+              "pss_kib": 153065,
+              "uss_kib": 142484
+            }
+          },
+          "rss_kib": 217756,
+          "pss_kib": 153065,
+          "uss_kib": 142484
+        },
+        {
+          "elapsed_s": 4.012738612000248,
+          "processes": {
+            "135305": {
+              "name": "synara-app",
+              "ticks": 31,
+              "rss_kib": 217756,
+              "pss_kib": 153065,
+              "uss_kib": 142484
+            }
+          },
+          "rss_kib": 217756,
+          "pss_kib": 153065,
+          "uss_kib": 142484
+        },
+        {
+          "elapsed_s": 5.012279321999813,
+          "processes": {
+            "135305": {
+              "name": "synara-app",
+              "ticks": 32,
+              "rss_kib": 217756,
+              "pss_kib": 153065,
+              "uss_kib": 142484
+            }
+          },
+          "rss_kib": 217756,
+          "pss_kib": 153065,
+          "uss_kib": 142484
+        },
+        {
+          "elapsed_s": 6.011530931999914,
+          "processes": {
+            "135305": {
+              "name": "synara-app",
+              "ticks": 33,
+              "rss_kib": 217756,
+              "pss_kib": 153065,
+              "uss_kib": 142484
+            }
+          },
+          "rss_kib": 217756,
+          "pss_kib": 153065,
+          "uss_kib": 142484
+        },
+        {
+          "elapsed_s": 7.011536473999968,
+          "processes": {
+            "135305": {
+              "name": "synara-app",
+              "ticks": 33,
+              "rss_kib": 217756,
+              "pss_kib": 153065,
+              "uss_kib": 142484
+            }
+          },
+          "rss_kib": 217756,
+          "pss_kib": 153065,
+          "uss_kib": 142484
+        },
+        {
+          "elapsed_s": 8.011056230000122,
+          "processes": {
+            "135305": {
+              "name": "synara-app",
+              "ticks": 33,
+              "rss_kib": 217756,
+              "pss_kib": 153065,
+              "uss_kib": 142484
+            }
+          },
+          "rss_kib": 217756,
+          "pss_kib": 153065,
+          "uss_kib": 142484
+        },
+        {
+          "elapsed_s": 9.010843561000002,
+          "processes": {
+            "135305": {
+              "name": "synara-app",
+              "ticks": 33,
+              "rss_kib": 217756,
+              "pss_kib": 153065,
+              "uss_kib": 142484
+            }
+          },
+          "rss_kib": 217756,
+          "pss_kib": 153065,
+          "uss_kib": 142484
+        },
+        {
+          "elapsed_s": 10.01114305100009,
+          "processes": {
+            "135305": {
+              "name": "synara-app",
+              "ticks": 34,
+              "rss_kib": 217756,
+              "pss_kib": 153065,
+              "uss_kib": 142484
+            }
+          },
+          "rss_kib": 217756,
+          "pss_kib": 153065,
+          "uss_kib": 142484
+        }
+      ],
+      "idle_seconds": 10.011152648000007,
+      "idle_cpu_one_core_percent": 0.399554391051974,
+      "host_cpu_all_cores_percent": 6.356525319061346,
+      "process_count_median": 1,
+      "rss_kib_median": 217756,
+      "rss_kib_observed_peak": 217756,
+      "pss_kib_median": 153065,
+      "pss_kib_observed_peak": 153065,
+      "uss_kib_median": 142484,
+      "uss_kib_observed_peak": 142484,
+      "exit_code": 0
+    },
+    {
+      "kind": "electron",
+      "label": "electron-warm-5",
+      "command": [
+        "/tmp/synara-comparison-20260919/electron/synara",
+        "--no-sandbox",
+        "--ozone-platform=x11"
+      ],
+      "status": "passed",
+      "started_at_utc": "2026-09-19T19:54:24.845286+00:00",
+      "first_mapped_window_ms": 534.9802900000213,
+      "initial_geometry": [
+        0,
+        0,
+        1420,
+        930
+      ],
+      "idle_geometry": [
+        0,
+        0,
+        1420,
+        930
+      ],
+      "samples": [
+        {
+          "elapsed_s": 0.027860501000304794,
+          "processes": {
+            "136035": {
+              "name": "synara",
+              "ticks": 39,
+              "rss_kib": 153504,
+              "pss_kib": 71993,
+              "uss_kib": 42556
+            },
+            "136038": {
+              "name": "synara",
+              "ticks": 5,
+              "rss_kib": 84192,
+              "pss_kib": 26199,
+              "uss_kib": 15076
+            },
+            "135943": {
+              "name": "synara",
+              "ticks": 106,
+              "rss_kib": 268376,
+              "pss_kib": 168580,
+              "uss_kib": 140312
+            },
+            "136073": {
+              "name": "synara",
+              "ticks": 140,
+              "rss_kib": 245840,
+              "pss_kib": 174211,
+              "uss_kib": 141552
+            },
+            "135946": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58512,
+              "pss_kib": 11756,
+              "uss_kib": 848
+            },
+            "135948": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 58868,
+              "pss_kib": 10156,
+              "uss_kib": 816
+            },
+            "136046": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 79540,
+              "pss_kib": 27134,
+              "uss_kib": 9120
+            },
+            "136052": {
+              "name": "synara",
+              "ticks": 148,
+              "rss_kib": 249300,
+              "pss_kib": 180081,
+              "uss_kib": 162624
+            }
+          },
+          "rss_kib": 1198132,
+          "pss_kib": 670110,
+          "uss_kib": 512904
+        },
+        {
+          "elapsed_s": 1.0278802440002437,
+          "processes": {
+            "136035": {
+              "name": "synara",
+              "ticks": 39,
+              "rss_kib": 153712,
+              "pss_kib": 72201,
+              "uss_kib": 42764
+            },
+            "136038": {
+              "name": "synara",
+              "ticks": 5,
+              "rss_kib": 84192,
+              "pss_kib": 26199,
+              "uss_kib": 15076
+            },
+            "135943": {
+              "name": "synara",
+              "ticks": 106,
+              "rss_kib": 268376,
+              "pss_kib": 168580,
+              "uss_kib": 140312
+            },
+            "136073": {
+              "name": "synara",
+              "ticks": 140,
+              "rss_kib": 245840,
+              "pss_kib": 174211,
+              "uss_kib": 141552
+            },
+            "135946": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58512,
+              "pss_kib": 11756,
+              "uss_kib": 848
+            },
+            "135948": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 58868,
+              "pss_kib": 10156,
+              "uss_kib": 816
+            },
+            "136046": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 79540,
+              "pss_kib": 27134,
+              "uss_kib": 9120
+            },
+            "136052": {
+              "name": "synara",
+              "ticks": 148,
+              "rss_kib": 249300,
+              "pss_kib": 180085,
+              "uss_kib": 162628
+            }
+          },
+          "rss_kib": 1198340,
+          "pss_kib": 670322,
+          "uss_kib": 513116
+        },
+        {
+          "elapsed_s": 2.016772074000073,
+          "processes": {
+            "136035": {
+              "name": "synara",
+              "ticks": 40,
+              "rss_kib": 153852,
+              "pss_kib": 72269,
+              "uss_kib": 42832
+            },
+            "136038": {
+              "name": "synara",
+              "ticks": 5,
+              "rss_kib": 84192,
+              "pss_kib": 26199,
+              "uss_kib": 15076
+            },
+            "135943": {
+              "name": "synara",
+              "ticks": 106,
+              "rss_kib": 268376,
+              "pss_kib": 168580,
+              "uss_kib": 140312
+            },
+            "136073": {
+              "name": "synara",
+              "ticks": 140,
+              "rss_kib": 245840,
+              "pss_kib": 174283,
+              "uss_kib": 141624
+            },
+            "135946": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58512,
+              "pss_kib": 11756,
+              "uss_kib": 848
+            },
+            "135948": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 58868,
+              "pss_kib": 10156,
+              "uss_kib": 816
+            },
+            "136046": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 79540,
+              "pss_kib": 27134,
+              "uss_kib": 9120
+            },
+            "136052": {
+              "name": "synara",
+              "ticks": 149,
+              "rss_kib": 249300,
+              "pss_kib": 180081,
+              "uss_kib": 162624
+            }
+          },
+          "rss_kib": 1198480,
+          "pss_kib": 670458,
+          "uss_kib": 513252
+        },
+        {
+          "elapsed_s": 3.0175294969999413,
+          "processes": {
+            "136035": {
+              "name": "synara",
+              "ticks": 42,
+              "rss_kib": 153772,
+              "pss_kib": 72201,
+              "uss_kib": 42764
+            },
+            "136038": {
+              "name": "synara",
+              "ticks": 5,
+              "rss_kib": 84192,
+              "pss_kib": 26199,
+              "uss_kib": 15076
+            },
+            "135943": {
+              "name": "synara",
+              "ticks": 106,
+              "rss_kib": 268376,
+              "pss_kib": 168580,
+              "uss_kib": 140312
+            },
+            "136073": {
+              "name": "synara",
+              "ticks": 140,
+              "rss_kib": 245840,
+              "pss_kib": 174287,
+              "uss_kib": 141628
+            },
+            "135946": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58512,
+              "pss_kib": 11756,
+              "uss_kib": 848
+            },
+            "135948": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 58868,
+              "pss_kib": 10156,
+              "uss_kib": 816
+            },
+            "136046": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 79540,
+              "pss_kib": 27134,
+              "uss_kib": 9120
+            },
+            "136052": {
+              "name": "synara",
+              "ticks": 149,
+              "rss_kib": 249300,
+              "pss_kib": 180053,
+              "uss_kib": 162596
+            }
+          },
+          "rss_kib": 1198400,
+          "pss_kib": 670366,
+          "uss_kib": 513160
+        },
+        {
+          "elapsed_s": 4.017722244000197,
+          "processes": {
+            "136035": {
+              "name": "synara",
+              "ticks": 43,
+              "rss_kib": 153912,
+              "pss_kib": 72265,
+              "uss_kib": 42828
+            },
+            "136038": {
+              "name": "synara",
+              "ticks": 5,
+              "rss_kib": 84192,
+              "pss_kib": 26199,
+              "uss_kib": 15076
+            },
+            "135943": {
+              "name": "synara",
+              "ticks": 106,
+              "rss_kib": 268376,
+              "pss_kib": 168580,
+              "uss_kib": 140312
+            },
+            "136073": {
+              "name": "synara",
+              "ticks": 141,
+              "rss_kib": 245840,
+              "pss_kib": 174287,
+              "uss_kib": 141628
+            },
+            "135946": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58512,
+              "pss_kib": 11756,
+              "uss_kib": 848
+            },
+            "135948": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 58868,
+              "pss_kib": 10156,
+              "uss_kib": 816
+            },
+            "136046": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 79540,
+              "pss_kib": 27134,
+              "uss_kib": 9120
+            },
+            "136052": {
+              "name": "synara",
+              "ticks": 150,
+              "rss_kib": 249300,
+              "pss_kib": 180077,
+              "uss_kib": 162620
+            }
+          },
+          "rss_kib": 1198540,
+          "pss_kib": 670454,
+          "uss_kib": 513248
+        },
+        {
+          "elapsed_s": 5.02347776400029,
+          "processes": {
+            "136035": {
+              "name": "synara",
+              "ticks": 44,
+              "rss_kib": 153692,
+              "pss_kib": 71993,
+              "uss_kib": 42556
+            },
+            "136038": {
+              "name": "synara",
+              "ticks": 5,
+              "rss_kib": 84192,
+              "pss_kib": 26199,
+              "uss_kib": 15076
+            },
+            "135943": {
+              "name": "synara",
+              "ticks": 106,
+              "rss_kib": 268376,
+              "pss_kib": 168580,
+              "uss_kib": 140312
+            },
+            "136073": {
+              "name": "synara",
+              "ticks": 141,
+              "rss_kib": 245840,
+              "pss_kib": 174291,
+              "uss_kib": 141632
+            },
+            "135946": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58512,
+              "pss_kib": 11756,
+              "uss_kib": 848
+            },
+            "135948": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 58868,
+              "pss_kib": 10156,
+              "uss_kib": 816
+            },
+            "136046": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 79540,
+              "pss_kib": 27134,
+              "uss_kib": 9120
+            },
+            "136052": {
+              "name": "synara",
+              "ticks": 150,
+              "rss_kib": 249300,
+              "pss_kib": 180085,
+              "uss_kib": 162628
+            }
+          },
+          "rss_kib": 1198320,
+          "pss_kib": 670194,
+          "uss_kib": 512988
+        },
+        {
+          "elapsed_s": 6.0173724920000495,
+          "processes": {
+            "136035": {
+              "name": "synara",
+              "ticks": 46,
+              "rss_kib": 153732,
+              "pss_kib": 72265,
+              "uss_kib": 42828
+            },
+            "136038": {
+              "name": "synara",
+              "ticks": 5,
+              "rss_kib": 84192,
+              "pss_kib": 26199,
+              "uss_kib": 15076
+            },
+            "135943": {
+              "name": "synara",
+              "ticks": 106,
+              "rss_kib": 268376,
+              "pss_kib": 168580,
+              "uss_kib": 140312
+            },
+            "136073": {
+              "name": "synara",
+              "ticks": 141,
+              "rss_kib": 245840,
+              "pss_kib": 174299,
+              "uss_kib": 141640
+            },
+            "135946": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58512,
+              "pss_kib": 11756,
+              "uss_kib": 848
+            },
+            "135948": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 58868,
+              "pss_kib": 10156,
+              "uss_kib": 816
+            },
+            "136046": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 79540,
+              "pss_kib": 27134,
+              "uss_kib": 9120
+            },
+            "136052": {
+              "name": "synara",
+              "ticks": 151,
+              "rss_kib": 249428,
+              "pss_kib": 180029,
+              "uss_kib": 162572
+            }
+          },
+          "rss_kib": 1198488,
+          "pss_kib": 670418,
+          "uss_kib": 513212
+        },
+        {
+          "elapsed_s": 7.017513863000204,
+          "processes": {
+            "136035": {
+              "name": "synara",
+              "ticks": 47,
+              "rss_kib": 153816,
+              "pss_kib": 72269,
+              "uss_kib": 42832
+            },
+            "136038": {
+              "name": "synara",
+              "ticks": 5,
+              "rss_kib": 84192,
+              "pss_kib": 26201,
+              "uss_kib": 15076
+            },
+            "135943": {
+              "name": "synara",
+              "ticks": 106,
+              "rss_kib": 268376,
+              "pss_kib": 168580,
+              "uss_kib": 140312
+            },
+            "136073": {
+              "name": "synara",
+              "ticks": 141,
+              "rss_kib": 245840,
+              "pss_kib": 174301,
+              "uss_kib": 141640
+            },
+            "135946": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58512,
+              "pss_kib": 11756,
+              "uss_kib": 848
+            },
+            "135948": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 58868,
+              "pss_kib": 10156,
+              "uss_kib": 816
+            },
+            "136046": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 79540,
+              "pss_kib": 27134,
+              "uss_kib": 9120
+            },
+            "136052": {
+              "name": "synara",
+              "ticks": 152,
+              "rss_kib": 248860,
+              "pss_kib": 179565,
+              "uss_kib": 162108
+            }
+          },
+          "rss_kib": 1198004,
+          "pss_kib": 669962,
+          "uss_kib": 512752
+        },
+        {
+          "elapsed_s": 8.018964603000313,
+          "processes": {
+            "136035": {
+              "name": "synara",
+              "ticks": 47,
+              "rss_kib": 153748,
+              "pss_kib": 72201,
+              "uss_kib": 42764
+            },
+            "136038": {
+              "name": "synara",
+              "ticks": 5,
+              "rss_kib": 84192,
+              "pss_kib": 26201,
+              "uss_kib": 15076
+            },
+            "135943": {
+              "name": "synara",
+              "ticks": 106,
+              "rss_kib": 268376,
+              "pss_kib": 168580,
+              "uss_kib": 140312
+            },
+            "136073": {
+              "name": "synara",
+              "ticks": 142,
+              "rss_kib": 245840,
+              "pss_kib": 174285,
+              "uss_kib": 141624
+            },
+            "135946": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58512,
+              "pss_kib": 11756,
+              "uss_kib": 848
+            },
+            "135948": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 58868,
+              "pss_kib": 10156,
+              "uss_kib": 816
+            },
+            "136046": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 79540,
+              "pss_kib": 27134,
+              "uss_kib": 9120
+            },
+            "136052": {
+              "name": "synara",
+              "ticks": 152,
+              "rss_kib": 248860,
+              "pss_kib": 179593,
+              "uss_kib": 162136
+            }
+          },
+          "rss_kib": 1197936,
+          "pss_kib": 669906,
+          "uss_kib": 512696
+        },
+        {
+          "elapsed_s": 9.017853126000318,
+          "processes": {
+            "136035": {
+              "name": "synara",
+              "ticks": 49,
+              "rss_kib": 153764,
+              "pss_kib": 72269,
+              "uss_kib": 42832
+            },
+            "136038": {
+              "name": "synara",
+              "ticks": 5,
+              "rss_kib": 84192,
+              "pss_kib": 26201,
+              "uss_kib": 15076
+            },
+            "135943": {
+              "name": "synara",
+              "ticks": 106,
+              "rss_kib": 268376,
+              "pss_kib": 168580,
+              "uss_kib": 140312
+            },
+            "136073": {
+              "name": "synara",
+              "ticks": 142,
+              "rss_kib": 245968,
+              "pss_kib": 174297,
+              "uss_kib": 141636
+            },
+            "135946": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58512,
+              "pss_kib": 11756,
+              "uss_kib": 848
+            },
+            "135948": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 58868,
+              "pss_kib": 10156,
+              "uss_kib": 816
+            },
+            "136046": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 79540,
+              "pss_kib": 27134,
+              "uss_kib": 9120
+            },
+            "136052": {
+              "name": "synara",
+              "ticks": 153,
+              "rss_kib": 249116,
+              "pss_kib": 179729,
+              "uss_kib": 162272
+            }
+          },
+          "rss_kib": 1198336,
+          "pss_kib": 670122,
+          "uss_kib": 512912
+        },
+        {
+          "elapsed_s": 10.018289382000148,
+          "processes": {
+            "136035": {
+              "name": "synara",
+              "ticks": 50,
+              "rss_kib": 153472,
+              "pss_kib": 71993,
+              "uss_kib": 42556
+            },
+            "136038": {
+              "name": "synara",
+              "ticks": 5,
+              "rss_kib": 84192,
+              "pss_kib": 26201,
+              "uss_kib": 15076
+            },
+            "135943": {
+              "name": "synara",
+              "ticks": 106,
+              "rss_kib": 268376,
+              "pss_kib": 168580,
+              "uss_kib": 140312
+            },
+            "136073": {
+              "name": "synara",
+              "ticks": 142,
+              "rss_kib": 245968,
+              "pss_kib": 174297,
+              "uss_kib": 141636
+            },
+            "135946": {
+              "name": "synara",
+              "ticks": 1,
+              "rss_kib": 58512,
+              "pss_kib": 11756,
+              "uss_kib": 848
+            },
+            "135948": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 58868,
+              "pss_kib": 10156,
+              "uss_kib": 816
+            },
+            "136046": {
+              "name": "synara",
+              "ticks": 2,
+              "rss_kib": 79540,
+              "pss_kib": 27134,
+              "uss_kib": 9120
+            },
+            "136052": {
+              "name": "synara",
+              "ticks": 154,
+              "rss_kib": 249116,
+              "pss_kib": 179749,
+              "uss_kib": 162292
+            }
+          },
+          "rss_kib": 1198044,
+          "pss_kib": 669866,
+          "uss_kib": 512656
+        }
+      ],
+      "idle_seconds": 10.01830135399996,
+      "idle_cpu_one_core_percent": 1.8965290949661804,
+      "host_cpu_all_cores_percent": 6.817994900896451,
+      "process_count_median": 8,
+      "rss_kib_median": 1198336,
+      "rss_kib_observed_peak": 1198540,
+      "pss_kib_median": 670194,
+      "pss_kib_observed_peak": 670458,
+      "uss_kib_median": 512988,
+      "uss_kib_observed_peak": 513252,
+      "exit_code": 0
+    }
+  ],
+  "status": "passed",
+  "finished_at_utc": "2026-09-19T19:54:51.113085+00:00"
+}

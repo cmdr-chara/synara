@@ -127,6 +127,12 @@ fn run() -> Result<()> {
                 .await?;
         }
         Ok::<_, synara_workspace::WorkspaceError>(shell::Bootstrap {
+            scratch_directory: options
+                .data
+                .canonicalize()
+                .map_err(synara_runtime::RuntimeError::Io)?
+                .join("chats"),
+            settings: workspace.settings().await?.settings,
             agent_directory: options.data.join("agents"),
             catalog: workspace.catalog().await?,
             profiles: workspace.profiles().await?,
@@ -141,33 +147,46 @@ fn run() -> Result<()> {
     ));
     let app_controller = controller.clone();
     let handle = runtime.handle().clone();
-    gpui_platform::application().run(move |cx: &mut App| {
-        let bounds = Bounds::centered(None, size(px(1420.), px(930.)), cx);
-        let result = cx.open_window(
-            WindowOptions {
-                window_bounds: Some(WindowBounds::Windowed(bounds)),
-                ..Default::default()
-            },
-            move |window, cx| {
-                window.set_window_title("Synara");
-                let shell = cx.new(|cx| {
-                    shell::Shell::new(app_controller, handle, bootstrap, interactions, cx)
-                });
-                let weak = shell.downgrade();
-                window.on_window_should_close(cx, move |window, cx| {
-                    weak.update(cx, |shell, cx| shell.request_close(window, cx))
-                        .unwrap_or(false)
-                });
-                shell
-            },
-        );
-        if let Err(error) = result {
-            tracing::error!(%error,"Could not open the native window");
-            cx.quit();
-            return;
-        }
-        cx.activate(true);
-    });
+    gpui_platform::application()
+        .with_assets(ui::Assets)
+        .run(move |cx: &mut App| {
+            if let Err(error) =
+                cx.text_system()
+                    .add_fonts(vec![std::borrow::Cow::Borrowed(include_bytes!(
+                        "../assets/fonts/CalSans-Regular.ttf"
+                    ))])
+            {
+                tracing::warn!(%error, "Could not load the bundled Synara wordmark font");
+            }
+            cx.set_reduce_motion(bootstrap.settings.appearance.reduced_motion);
+            let bounds = Bounds::centered(None, size(px(1420.), px(930.)), cx);
+            let result = cx.open_window(
+                WindowOptions {
+                    window_bounds: Some(WindowBounds::Windowed(bounds)),
+                    window_decorations: Some(gpui::WindowDecorations::Client),
+                    app_owns_titlebar_drag: true,
+                    ..Default::default()
+                },
+                move |window, cx| {
+                    window.set_window_title("Synara");
+                    let shell = cx.new(|cx| {
+                        shell::Shell::new(app_controller, handle, bootstrap, interactions, cx)
+                    });
+                    let weak = shell.downgrade();
+                    window.on_window_should_close(cx, move |window, cx| {
+                        weak.update(cx, |shell, cx| shell.request_close(window, cx))
+                            .unwrap_or(false)
+                    });
+                    shell
+                },
+            );
+            if let Err(error) = result {
+                tracing::error!(%error,"Could not open the native window");
+                cx.quit();
+                return;
+            }
+            cx.activate(true);
+        });
     runtime.block_on(controller.shutdown())?;
     runtime.shutdown_timeout(std::time::Duration::from_secs(5));
     Ok(())

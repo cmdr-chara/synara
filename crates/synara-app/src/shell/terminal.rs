@@ -432,7 +432,7 @@ impl gpui::Render for TerminalView {
             .flex()
             .flex_col()
             .bg(rgb(DEFAULT_BACKGROUND))
-            .font_family("DejaVu Sans Mono")
+            .font_family(crate::ui::code_font())
             .cursor_text()
             .on_key_down(cx.listener(Self::key))
             .on_mouse_down(

@@ -6,6 +6,16 @@ It is a living engineering document, not a release announcement.
 
 ## Current checkpoint
 
+Conversation/composer continuation from `1548e3ade5a0ea292b560727af579ae0a5a16ca0`:
+compact native session pickers, explicit backend-acknowledged configuration,
+capped composer and message hierarchy are implemented as a new verification
+candidate. The existing native input, durable transcript and backend ownership
+remain intact. Native interaction and visual acceptance must be recorded on this
+candidate before treating it as delivered product parity. See
+[conversation/session controls](docs/ui/session-controls.md). This does not close
+the full D/I gates or supersede the complete parity gaps below.
+
+
 The four isolated implementation sessions have now been consolidated into the
 delivery branch. Current integrated candidate:
 `084a31db3df39440caf1523290ea721fdcbac7ca`.

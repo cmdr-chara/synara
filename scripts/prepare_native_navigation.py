@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
-"""Assemble exact native source objects in an isolated candidate checkout.
-
-No ref updates. Existing-file blob guards preserve concurrent user work.
-"""
+"""Assemble exact native source in an isolated checkout without updating refs."""
 import base64
 import hashlib
 import json
@@ -28,8 +25,8 @@ INPUTS = {
     'crates/synara-app/src/shell/conversation.rs': '9138b9d86c81adca913c7817a9b399a37352ebf2',
     'crates/synara-app/src/ui.rs': '7462cbaf2acc7edf08565ac96856d3ac8eb48b66',
     'crates/synara-app/src/shell/navigation.rs': '9c4c17efd1d3ecc33ff8aef5a29d52a0217e8bf1',
-    'crates/synara-app/src/shell/chrome.rs': 'fe002623909c2d47a7b1f092f5c554085224688f',
-    'scripts/native_navigation_smoke.py': '6c3316bb1d6b195400e9278069c2618cae39a6fc',
+    'crates/synara-app/src/shell/chrome.rs': '968dc8f36a7f1f49ba00d833467bdadc23a3cb74',
+    'scripts/native_navigation_smoke.py': 'e8b50905becaaa01fd4f28f26e24f872a9dfa87f',
     'scripts/native_smoke.py': '9093a935597886d08dc407c828981b9f97e65538',
     '.github/workflows/native.yml': 'f452d27659fd45be9085290714bf3212b5679f96',
     'ROADMAP.md': '6afa4a5886e74170e012c54a237631ea61b9a22a',
@@ -54,7 +51,7 @@ def main():
     evidence.mkdir(exist_ok=True)
     (evidence / 'inputs.json').write_text(json.dumps(INPUTS, indent=2) + '\n')
     for name, sha in EXPECTED.items():
-        assert blob_sha(Path(name).read_bytes()) == sha, 'source changed: ' + name
+        assert blob_sha(Path(name).read_bytes()) == sha, 'concurrent source change: ' + name
     for name, sha in INPUTS.items():
         path = Path(name)
         assert name in EXPECTED or not path.exists(), 'new path already exists: ' + name
@@ -71,44 +68,6 @@ def main():
         data.decode('utf-8')
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(data)
-
-    path = Path('crates/synara-app/src/shell/chrome.rs')
-    text = path.read_text()
-    old = '''        if !self.navigation.initialized {
-            self.navigation.initialized = true;
-            window.focus(&self.navigation.root_focus, cx);
-        }'''
-    new = '''        if !self.navigation.initialized {
-            self.navigation.initialized = true;
-            let root_focus = self.navigation.root_focus.clone();
-            self._subscriptions.push(cx.on_focus_out(
-                &root_focus,
-                window,
-                |this, event, window, cx| {
-                    if this.close != CloseState::Open || this.terminal_closing {
-                        return;
-                    }
-                    // A removed transient button can leave a live focus ID with
-                    // no dispatch path. Restore only that retired focus (or no
-                    // focus), never a deliberate move into another modal/view.
-                    if window.focused(cx).is_some_and(|focus| focus != event.blurred) {
-                        return;
-                    }
-                    tracing::debug!(target: "synara_ui_layout", "retired-focus-restored");
-                    if this.navigation.menu_open {
-                        window.focus(&this.navigation.menu_focus[this.navigation.menu_index], cx);
-                    } else if this.panel == Panel::Registry {
-                        window.focus(&this.registry.query.read(cx).focus_handle(cx), cx);
-                    } else {
-                        window.focus(&this.navigation.root_focus, cx);
-                    }
-                    cx.notify();
-                },
-            ));
-            window.focus(&root_focus, cx);
-        }'''
-    assert text.count(old) == 1, 'focus initialization changed'
-    path.write_text(text.replace(old, new, 1), encoding='utf-8', newline='')
     Path('.github/workflows/ui-checkpoint.yml').unlink()
     Path('.github/workflows/ui-recovery-audit.yml').unlink()
     Path(__file__).unlink()

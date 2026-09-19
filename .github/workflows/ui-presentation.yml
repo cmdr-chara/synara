@@ -31,39 +31,302 @@ jobs:
           assert generator.count(old) == 1
           generator = generator.replace(old, new)
           exec(compile(generator, '<checked-parity-candidate>', 'exec'))
+          smoke = 'scripts/native_model_draft_smoke.py'
+          edit(smoke, 'close(s); s.launch(); ui=s.desktop', 'close(s); s.launch(preserve_selection=True); ui=s.desktop', count=3)
+          edit(smoke, 'from native_navigation_smoke import selection, key_edge, task_count', 'from native_navigation_smoke import selection, key_edge, task_count, event_cursor, prompt_finished')
+          edit(smoke, "s.click_control('composer-input'); assert ui.copy_input()=='chat draft'", "s.click_control('composer-input'); observed=ui.copy_input(); assert observed=='chat draft', (observed, selection(s), chat, preference(s,'task-draft:'+chat))", count=2)
+          edit(smoke, "              before=s.prompt('hello'); s.finished(before)".lstrip(), "before=event_cursor(s,chat); ui.focus(); ui.key('a',('Control_L',)); s.prompt('hello'); wait_until(lambda:prompt_finished(s,chat,before),'selected chat completion')")
+          # A modal owns the window while close-time draft writes drain. This also
+          # prevents a new dirty file edit from bypassing the earlier close review.
+          draft = 'crates/synara-app/src/shell/drafts.rs'
+          edit(draft, 'quitting: bool,', 'pub quitting: bool,')
+          edit(draft, '          impl Shell {'.lstrip(), '''impl Shell {
+              pub(super) fn draft_close_panel(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
+                  let cancel = cx.listener(|this: &mut Self, _: &(), _, cx| {
+                      this.draft_state.quitting = false;
+                      this.close.cancel();
+                      this.focus_composer = this.panel == Panel::Conversation;
+                      cx.notify();
+                  });
+                  div().id("saving-chat-drafts").role(gpui::Role::Dialog)
+                      .aria_label("Saving chat drafts before closing")
+                      .track_focus(&self.close_focus).tab_group().size_full()
+                      .flex().flex_col().items_center().justify_center().gap_4()
+                      .bg(rgb(crate::ui::palette().canvas)).text_color(rgb(crate::ui::palette().text))
+                      .child("Saving chat drafts...")
+                      .child(crate::ui::action("cancel-draft-close", "Keep Synara open", None, false, cancel))
+                      .on_key_down(cx.listener(|this, event: &gpui::KeyDownEvent, _, cx| {
+                          if event.keystroke.key == "escape" {
+                              this.draft_state.quitting = false;
+                              this.close.cancel();
+                              this.focus_composer = this.panel == Panel::Conversation;
+                              cx.notify();
+                          }
+                          cx.stop_propagation();
+                      })).into_any_element()
+              }''')
+          chrome = 'crates/synara-app/src/shell/chrome.rs'
+          edit(chrome, '        ui::configure(&self.settings.value.appearance, window.appearance());', '''        ui::configure(&self.settings.value.appearance, window.appearance());
+                  if self.draft_state.quitting {
+                      window.focus(&self.close_focus, cx);
+                      return self.draft_close_panel(cx);
+                  }''')
+          edit(chrome, '                    if this.close != CloseState::Open || this.terminal_closing {', '                    if this.close != CloseState::Open || this.terminal_closing || this.draft_state.quitting {')
+          edit(shell, '        if self.terminal_closing {\n            return false;\n        }', '        if self.terminal_closing || self.draft_state.quitting {\n            return false;\n        }')
+          # Chat preferences are additive, defaulted and applied only after a
+          # successful settings save, never optimistically to the text editor.
+          settings = 'crates/synara-workspace/src/settings.rs'
+          edit(settings, 'pub const SETTINGS_VERSION:', 'mod chat;\npub use chat::ChatSettings;\n\npub const SETTINGS_VERSION:')
+          edit(settings, '    pub profile: ProfileSettings,', '    pub profile: ProfileSettings,\n    #[serde(default)]\n    pub chat: ChatSettings,')
+          edit(settings, '            profile: ProfileSettings::default(),', '            profile: ProfileSettings::default(),\n            chat: ChatSettings::default(),')
+          add('crates/synara-workspace/src/settings/chat.rs', r'''
+          //! User-owned chat behavior, independent of provider approval policies.
+          use serde::{Deserialize, Serialize};
+          #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+          #[serde(default, deny_unknown_fields)]
+          pub struct ChatSettings {
+              pub send_on_enter: bool,
+              pub show_timestamps: bool,
+          }
+          impl Default for ChatSettings {
+              fn default() -> Self { Self { send_on_enter: true, show_timestamps: true } }
+          }
+          #[cfg(test)]
+          mod tests {
+              use super::*;
+              use crate::{AppSettings, WorkspaceService};
+              #[test]
+              fn old_settings_get_compatible_chat_defaults() {
+                  let old = serde_json::json!({"version":1});
+                  let settings: AppSettings = serde_json::from_value(old).unwrap();
+                  assert_eq!(settings.chat, ChatSettings::default());
+                  settings.validate().unwrap();
+              }
+              #[test]
+              fn malformed_chat_settings_are_not_coerced() {
+                  for chat in [serde_json::json!({"send_on_enter":"false"}), serde_json::json!({"show_timestamps":null}), serde_json::json!({"unknown":true})] {
+                      assert!(serde_json::from_value::<AppSettings>(serde_json::json!({"version":1,"chat":chat})).is_err());
+                  }
+              }
+              #[tokio::test]
+              async fn chat_behavior_survives_reopen_and_resets_without_changing_profile() {
+                  let dir = tempfile::tempdir().unwrap(); let path = dir.path().join("settings.db");
+                  let service = WorkspaceService::open(path.clone()).await.unwrap();
+                  let mut settings = service.settings().await.unwrap().settings;
+                  settings.profile.name = "Test profile".into();
+                  settings.chat.send_on_enter = false; settings.chat.show_timestamps = false;
+                  service.save_settings(settings).await.unwrap(); drop(service);
+                  let service = WorkspaceService::open(path).await.unwrap();
+                  let mut settings = service.settings().await.unwrap().settings;
+                  assert!(!settings.chat.send_on_enter && !settings.chat.show_timestamps);
+                  settings.chat = ChatSettings::default(); service.save_settings(settings).await.unwrap();
+                  let saved = service.settings().await.unwrap().settings;
+                  assert_eq!(saved.profile.name, "Test profile"); assert_eq!(saved.chat, ChatSettings::default());
+              }
+          }
+          ''')
+          input_path = 'crates/synara-app/src/input.rs'
+          edit(input_path, 'const LINE_HEIGHT:', 'mod policy;\n\nconst LINE_HEIGHT:')
+          edit(input_path, '    picker_chrome: bool,', '    picker_chrome: bool,\n    send_on_enter: bool,')
+          edit(input_path, '            picker_chrome: false,', '            picker_chrome: false,\n            send_on_enter: true,')
+          edit(input_path, '    pub fn text(&self) -> &str {', '    pub fn set_send_on_enter(&mut self, enabled: bool) { self.send_on_enter = enabled; }\n\n    pub fn text(&self) -> &str {')
+          edit(input_path, '''                if self.mode == EntryMode::SingleLine
+                              || (self.mode == EntryMode::Composer && !shift)
+                              || command
+                          {
+                              cx.emit(EntryEvent::Submit);''', '''                if policy::submits_enter(self.mode, self.send_on_enter, command, shift, modifiers.alt) {
+                              if !event.is_held { cx.emit(EntryEvent::Submit); }''')
+          add('crates/synara-app/src/input/policy.rs', r'''
+          //! Composer key policy leaves single-line controls and file editors independent.
+          use super::EntryMode;
+          pub(super) fn submits_enter(mode: EntryMode, send_on_enter: bool, command: bool, shift: bool, alt: bool) -> bool {
+              match mode {
+                  EntryMode::SingleLine => true,
+                  EntryMode::Composer => !shift && !alt && (command || send_on_enter),
+                  EntryMode::Editor => command,
+              }
+          }
+          #[cfg(test)]
+          mod tests {
+              use super::*;
+              #[test]
+              fn disabled_enter_is_newline_but_control_or_command_enter_sends() {
+                  assert!(!submits_enter(EntryMode::Composer,false,false,false,false));
+                  assert!(submits_enter(EntryMode::Composer,false,true,false,false));
+                  assert!(submits_enter(EntryMode::Composer,true,false,false,false));
+              }
+              #[test]
+              fn_shift_and_alt_enter_do_not_send_composer_text() {
+                  for enabled in [false,true] { for command in [false,true] {
+                      assert!(!submits_enter(EntryMode::Composer,enabled,command,true,false));
+                      assert!(!submits_enter(EntryMode::Composer,enabled,command,false,true));
+                  }}
+              }
+              #[test]
+              fn file_and_single_line_controls_do_not_inherit_chat_policy() {
+                  assert!(submits_enter(EntryMode::SingleLine,false,false,false,false));
+                  assert!(!submits_enter(EntryMode::Editor,true,false,false,false));
+                  assert!(submits_enter(EntryMode::Editor,false,true,false,false));
+              }
+          }
+          ''')
+          # Correct the function token before formatting; no test is removed.
+          edit('crates/synara-app/src/input/policy.rs', '              fn_shift'.lstrip(), 'fn shift')
+          edit(shell, '        if let Some(selected) = selected {\n            this.select_task(selected, cx);', '''        this.composer.update(cx, |entry, _| entry.set_send_on_enter(this.settings.value.chat.send_on_enter));
+                  if let Some(selected) = selected {
+                      this.select_task(selected, cx);''')
+          edit(shell, '                    self.settings.value = *settings;', '                    self.settings.value = *settings;\n                    self.composer.update(cx, |entry, _| entry.set_send_on_enter(self.settings.value.chat.send_on_enter));')
+          ui_settings = 'crates/synara-app/src/shell/settings.rs'
+          edit(ui_settings, '\nuse super::*;\n', '\nuse super::*;\nmod chat;\n')
+          ui_text = Path(ui_settings).read_text()
+          begin = ui_text.index('            Section::Behavior => ')
+          end = ui_text.index('            Section::Notifications => ', begin)
+          edit(ui_settings, ui_text[begin:end], '            Section::Behavior => self.chat_settings(cx),\n')
+          edit(ui_settings, '                                    Section::General | Section::Appearance', '                                    Section::General | Section::Appearance | Section::Behavior')
+          edit(ui_settings, '                                                    _ => {\n                                                        settings.general =', '                                                    Section::Behavior => { settings.chat = ChatSettings::default(); }\n                                                    _ => {\n                                                        settings.general =')
+          add('crates/synara-app/src/shell/settings/chat.rs', r'''
+          //! Native, persisted chat behavior controls. Approval authority is unchanged.
+          use super::*;
+          impl Shell {
+              pub(super) fn chat_settings(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
+                  div().child(heading("Writing messages"))
+                      .child(card()
+                          .child(row("Enter to send", "When off, Enter adds a new line. Ctrl+Enter or Command+Enter sends. Shift+Enter always adds a new line.",
+                              self.toggle("chat-send-enter", "Enter to send", self.settings.value.chat.send_on_enter, |s| s.chat.send_on_enter = !s.chat.send_on_enter, cx)))
+                          .child(row("Message timestamps", "Show local timestamps alongside completed assistant responses.",
+                              self.toggle("chat-timestamps", "Message timestamps", self.settings.value.chat.show_timestamps, |s| s.chat.show_timestamps = !s.chat.show_timestamps, cx))))
+                      .child(heading("Conversation"))
+                      .child(card()
+                          .child(row("Drafts", "Unsent text is saved separately for each chat and restored without starting an agent.", "Saved automatically"))
+                          .child(row("Permissions", "The agent asks before actions that need approval. Changing writing preferences does not change approval policy.", "Ask permission"))
+                          .child(row("Work summaries", "Expand Worked for to read agent commentary and commands.", "")))
+                      .into_any_element()
+              }
+          }
+          ''')
+          messages = 'crates/synara-app/src/shell/messages.rs'
+          edit(messages, '            .and_then(|thread| thread.message_timestamps.get(&message.id))', '            .filter(|_| self.settings.value.chat.show_timestamps)\n            .and_then(|thread| thread.message_timestamps.get(&message.id))')
+          edit(messages, '                    .children(timestamp)))', '                    .children(timestamp.map(|text| div().relative().child(ui::layout_probe("message-timestamp")).child(text)))))')
+          # The provider-tab presentation changes the native test navigation,
+          # not the assertions or underlying fixture/provider contracts.
+          core_smoke = 'scripts/native_smoke.py'
+          edit(core_smoke, "        ui.key('Home')\n        ui.key('Down')\n        ui.key('Return')", "        self.click_control('model-source', slot=2)\n        ui.key('Home')\n        ui.key('Return')")
+          search_smoke = 'scripts/native_picker_search_smoke.py'
+          edit(search_smoke, "    search(scenario, 'BETA coding', 1)", "    scenario.click_control('model-source', slot=2)\n    search(scenario, 'BETA coding', 1)")
+          add('scripts/native_chat_behavior_smoke.py', r'''
+          #!/usr/bin/env python3
+          """Persisted chat key behavior and timestamp display with real native input."""
+          import argparse, json, re
+          from pathlib import Path
+          from native_smoke import Scenario, wait_until
+          from native_model_draft_smoke import preference, close
+          def settings(s): return preference(s,'settings') or {}
+          def log(s): return re.sub(r'\x1b\[[0-9;]*[A-Za-z]','',Path(s.log.name).read_text())
+          def run(s):
+              s.launch(); ui=s.desktop
+              before=s.prompt('hello'); s.finished(before)
+              assert s.control_bounds('message-timestamp')
+              ui.key('6',('Control_L',)); s.click_control('behavior')
+              s.click_control('chat-send-enter'); wait_until(lambda:settings(s).get('chat',{}).get('send_on_enter') is False,'saved Enter preference')
+              s.click_control('chat-timestamps'); wait_until(lambda:settings(s).get('chat',{}).get('show_timestamps') is False,'saved timestamp preference')
+              ui.screenshot('chat-behavior-settings')
+              start=len(log(s)); ui.key('1',('Control_L',)); s.click_control('composer-input')
+              assert 'control="message-timestamp"' not in log(s)[start:]
+              before=s.events(); ui.text('first'); ui.key('Return'); ui.text('second')
+              assert ui.copy_input()=='first\nsecond'
+              assert s.events()==before
+              s.checks.append('disabled-enter-inserts-newline-without-starting-a-turn')
+              ui.focus(); ui.key('a',('Control_L',)); ui.text('hello'); before=len(s.events()); ui.key('Return',('Control_L',)); s.finished(before)
+              s.checks.append('control-enter-sends-through-the-existing-controller')
+              s.checks.append('timestamp-toggle-changes-native-rendering-not-transcript-events')
+              before=s.events(); close(s); s.launch(preserve_selection=True); ui=s.desktop
+              assert s.events()==before
+              assert settings(s)['chat']=={'send_on_enter':False,'show_timestamps':False}
+              s.click_control('composer-input'); ui.text('kept'); ui.key('Return'); ui.text('draft')
+              assert ui.copy_input()=='kept\ndraft' and s.events()==before
+              s.checks.append('chat-preferences-and-key-policy-survive-restart-without-autostart')
+              ui.key('6',('Control_L',)); s.click_control('behavior'); s.click_control('settings-restore')
+              wait_until(lambda:settings(s).get('chat')=={'send_on_enter':True,'show_timestamps':True},'chat-only defaults')
+              ui.key('1',('Control_L',)); s.click_control('composer-input'); ui.key('a',('Control_L',)); ui.text('hello')
+              before=len(s.events()); ui.key('Return'); s.finished(before)
+              s.checks.append('restore-chat-defaults-reactivates-enter-send-and-timestamps')
+          def main():
+              p=argparse.ArgumentParser();p.add_argument('--binary',type=Path,required=True);p.add_argument('--fixture',type=Path,required=True);p.add_argument('--output',type=Path,required=True)
+              s=Scenario(p.parse_args()); result={'status':'failed','checks':s.checks,'platform':'Linux/X11/private Xvfb'}
+              try:run(s);result['status']='passed'
+              except BaseException as e:
+                  result['error']=str(e)
+                  if s.process and s.process.poll() is None:s.desktop.screenshot('failure')
+                  raise
+              finally:s.close();(s.output/'result.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2))
+          if __name__=='__main__':main()
+          ''')
+          # Expand the closed path set only alongside tests that exercise these
+          # shared input, settings, storage and close-time responsibilities.
+          scope = 'scripts/native_ui_scope.py'
+          scope_tests = 'scripts/test_native_ui_scope.py'
+          edit(scope_tests, "            'crates/synara-app/src/input.rs', 'crates/synara-app/src/shell.rs',\n", '')
+          edit(scope_tests, "            'rust-toolchain.toml', 'scripts/native_smoke.py',", "            'rust-toolchain.toml', 'crates/synara-runtime/src/lib.rs',")
+          edit(scope_tests, '    def test_empty_diff_is_not_assumed_verified(self):', '''    def test_chat_preferences_and_input_have_expanded_focused_coverage(self):
+                  for path in ['crates/synara-app/src/input.rs', 'crates/synara-app/src/shell.rs',
+                               'crates/synara-workspace/src/storage.rs', 'crates/synara-workspace/src/settings/chat.rs',
+                               'scripts/native_smoke.py', 'scripts/native_chat_behavior_smoke.py']:
+                      with self.subTest(path=path):
+                          self.assertEqual(scope_for_paths([path]), 'presentation')
+
+              def test_empty_diff_is_not_assumed_verified(self):''')
+          text = Path(scope).read_text()
+          extras = [p for p in sorted(changed) if repr(p) not in text and '"'+p+'"' not in text]
+          edit(scope, 'UI_PATHS = frozenset({', 'UI_PATHS = frozenset({\n'+''.join('    '+repr(p)+',\n' for p in extras))
+          Path('/tmp/synara-parity-paths.json').write_text(json.dumps(sorted(changed)))
           PY
       - name: Install pinned Rust toolchain
-        run: rustup toolchain install 1.98.1 --profile minimal --component rustfmt
+        run: rustup toolchain install 1.98.1 --profile minimal --component rustfmt --component clippy
       - name: Native system libraries
         run: |
           sudo apt-get update
           sudo apt-get install -y clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil xclip fonts-dejavu-core fonts-liberation
-      - name: Format candidate and validate Python
+      - name: Format candidate and validate checks
         run: |
           cargo +1.98.1 fmt -p synara-app -p synara-workspace
-          python3 -m py_compile scripts/native_model_draft_smoke.py scripts/native_controls_smoke.py
+          python3 -m py_compile scripts/native_model_draft_smoke.py scripts/native_chat_behavior_smoke.py scripts/native_controls_smoke.py scripts/native_picker_search_smoke.py
+          python3 scripts/test_native_ui_scope.py
           python3 scripts/check_roadmap.py
-      - name: Chat preference storage regressions
-        run: cargo +1.98.1 test --locked -p synara-workspace storage::chat_preferences::tests
+      - name: Chat preference and settings storage regressions
+        run: |
+          cargo +1.98.1 test --locked -p synara-workspace --lib storage::chat_preferences::tests
+          cargo +1.98.1 test --locked -p synara-workspace --lib settings::
       - name: Draft ordering and model interaction regressions
         run: |
           cargo +1.98.1 test --locked -p synara-app --bin synara-app shell::drafts::tests
           cargo +1.98.1 test --locked -p synara-app --bin synara-app ui::menu
           cargo +1.98.1 test --locked -p synara-app --bin synara-app shell::controls::tests
+          cargo +1.98.1 test --locked -p synara-app --bin synara-app input::policy::tests
+          cargo +1.98.1 test --locked -p synara-app --bin synara-app close::tests
+      - name: Lint changed packages
+        run: cargo +1.98.1 clippy --locked --no-deps -p synara-app -p synara-workspace --all-targets -- -D warnings
       - name: Build native application and fixture
         id: build
         run: cargo +1.98.1 build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture
       - name: Native model and durable draft journeys
         timeout-minutes: 4
         run: python3 scripts/native_model_draft_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-model-drafts
-      - name: Native session control regressions
+      - name: Native editable chat behavior
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        timeout-minutes: 3
+        run: python3 scripts/native_chat_behavior_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-chat-behavior
+      - name: Native session and search regressions
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         timeout-minutes: 4
-        run: python3 scripts/native_controls_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-controls
-      - name: Native chat creation and Studio regressions
+        run: |
+          python3 scripts/native_controls_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-controls
+          python3 scripts/native_picker_search_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-search
+      - name: Native creation and guarded-close regressions
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         timeout-minutes: 4
-        run: python3 scripts/native_studio_settings_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-studio-drafts
+        run: |
+          python3 scripts/native_studio_settings_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-studio-drafts
+          python3 scripts/native_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-close
       - name: Export checked source delta for plugin publication
         run: |
           python3 - <<'PY'
@@ -75,7 +338,7 @@ jobs:
           assert not unexpected,unexpected
           data=subprocess.check_output(['git','diff','--cached','--no-ext-diff','--no-renames','--binary'])
           assert b'GIT binary patch' not in data
-          package={'base_commit':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'mode':'diff','sha256':hashlib.sha256(data).hexdigest(),'gzip_base64':base64.b64encode(gzip.compress(data,mtime=0)).decode(),'message':'feat(ui): add provider tabs, saved model favorites and durable chat drafts'}
+          package={'base_commit':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'mode':'diff','sha256':hashlib.sha256(data).hexdigest(),'gzip_base64':base64.b64encode(gzip.compress(data,mtime=0)).decode(),'message':'feat(ui): add provider favorites, durable drafts and editable chat behavior'}
           Path('/tmp/ui-candidate').mkdir(exist_ok=True)
           Path('/tmp/ui-candidate/source.patch').write_bytes(data)
           Path('/tmp/ui-candidate/package.json').write_text(json.dumps(package))

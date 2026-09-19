@@ -6,6 +6,39 @@ It is a living engineering document, not a release announcement.
 
 ## Current checkpoint
 
+### September 20: searchable choices and rich native chat
+
+Source checkpoint: `917f7a0a96ff41c6a026ff0ed9a749f2556cdda8`, continuing
+`386e1b2a309b947bec1ddd9fe0e70e4f80a6a2a7` on `astra/gpui-clean-rewrite`.
+The product reference for this continuation is Electron Synara
+`948875954f432978eab7dd5fa44c3028b8d99a81`, not the older audit revision.
+
+D1/D8 now include searchable native model/agent choices, stable action identity
+after filtering, safe empty results, release-only selection and draft-preserving
+dismissal. Native chat adds aligned Markdown tables, read-only task checkboxes,
+fenced-code language labels and exact code copying using Synara's bundled icons.
+The existing controller, durable events, compact Add menu and reduced-motion
+boundary remain authoritative. Search does not restart the menu's entrance.
+
+The [checkpoint and verification receipt](docs/ui/parity-9488759.md) records the
+exact candidates, focused Rust and native X11 results, failure corrections and
+remaining limitations. The focused lane covers 20 Rust tests, seven test-selector
+regressions and 24 native interaction checks, including actual ACP model changes,
+code clipboard contents, narrow layouts and restart. Unknown/backend/dependency
+changes still select full native verification; documentation-only changes do not
+rebuild the application.
+
+This is a bounded D1/D8 continuation, not completion of either gate. Provider
+tabs/starred presets, the remaining composer controls, browser, Studio outputs,
+approval-policy parity and broader settings workflows remain open. The supplied
+73-screen archive still needs full native visual comparison: local image and
+execution tools failed in this continuation, so CI interaction evidence is not
+claimed as pixel-level acceptance. Existing chat creation, Studio scope and basic
+settings were already implemented before this slice. I10 and final delivery
+remain open. The earlier checkpoints below are retained as historical evidence.
+
+### Earlier integrated checkpoints
+
 Conversation/composer continuation from `1548e3ade5a0ea292b560727af579ae0a5a16ca0`:
 compact native session pickers, explicit backend-acknowledged configuration,
 capped composer and message hierarchy are implemented as a new verification
@@ -300,6 +333,15 @@ question/permission lifetime handling and virtual transcript scroll ownership.
 Final native CI proves that this combined source compiles, tests and opens in the
 GPUI desktop, but it does not yet close the long-conversation and complete
 interaction acceptance matrix below.
+
+D1/D8 presentation continuation: native GFM tables/task lists and code-copy actions
+now render from durable messages. Searchable model/agent choices preserve the
+controller's original indices and require a matching key release. The receipt in
+[parity-9488759.md](docs/ui/parity-9488759.md) covers positive and rejected search,
+actual model acknowledgement, Unicode copy, narrow table layout and restored
+transcripts. Full D1/D8 remain unchecked: rich media, structured tool cards,
+provider tabs/starred presets, mentions and the other listed controls are not
+completed by this slice. No approval policy or backend capability was invented.
 
 - [ ] D1 Complete rendering and durable replay for user/assistant text, thinking,
   tool lifecycle/results/failures, plans, usage, compaction, status and errors.

@@ -1,9 +1,15 @@
 //! Native presentation primitives. Product state and operations stay in the controller.
+pub mod menu;
 use gpui::{
     Context, Div, ElementId, FontWeight, PathBuilder, SharedString, Stateful, Window, canvas, div,
     point, prelude::*, px, rgb, rgba,
 };
 
+pub const CHAT_WIDTH: f32 = 768.0;
+pub const COMPOSER_INPUT_HEIGHT: f32 = 82.0;
+pub const MENU_WIDTH: f32 = 304.0;
+pub const MENU_ROW_HEIGHT: f32 = 42.0;
+pub const MENU_MAX_HEIGHT: f32 = 294.0;
 pub const SIDEBAR_WIDTH: f32 = 238.0;
 pub const ROW_HEIGHT: f32 = 30.0;
 pub const CHROME_HEIGHT: f32 = 53.0;
@@ -166,10 +172,22 @@ pub enum Glyph {
     Terminal,
     Files,
     Changes,
+    Send,
+    Stop,
+    Copy,
 }
 impl Glyph {
     fn paths(self) -> &'static [&'static [(f32, f32)]] {
         match self {
+            Self::Copy => &[
+                &[(8., 8.), (21., 8.), (21., 21.), (8., 21.), (8., 8.)],
+                &[(4., 16.), (3., 16.), (3., 3.), (16., 3.), (16., 4.)],
+            ],
+            Self::Send => &[
+                &[(12., 20.), (12., 4.)],
+                &[(5., 11.), (12., 4.), (19., 11.)],
+            ],
+            Self::Stop => &[&[(5., 5.), (19., 5.), (19., 19.), (5., 19.), (5., 5.)]],
             Self::Folder => &[&[
                 (2., 5.),
                 (8., 5.),
@@ -263,4 +281,50 @@ pub fn icon(glyph: Glyph) -> impl IntoElement {
     )
     .size(px(14.0))
     .flex_shrink_0()
+}
+
+/// A named compact action, with native press/release behavior and guarded disablement.
+pub fn icon_button(
+    id: &'static str,
+    label: &'static str,
+    glyph: Glyph,
+    disabled: bool,
+    activate: impl Fn(&(), &mut Window, &mut gpui::App) + 'static,
+) -> Stateful<Div> {
+    div()
+        .id(id)
+        .role(gpui::Role::Button)
+        .aria_label(label)
+        .when(disabled, |el| el.aria_description("Currently unavailable"))
+        .tab_index(0)
+        .size(px(30.))
+        .flex_shrink_0()
+        .flex()
+        .items_center()
+        .justify_center()
+        .rounded_full()
+        .border_1()
+        .border_color(rgba(0))
+        .bg(rgb(DARK.selected))
+        .cursor_pointer()
+        .hover(|style| style.bg(rgb(DARK.hover)))
+        .focus(|style| style.border_color(rgb(DARK.focus)))
+        .when(disabled, |el| el.opacity(0.4).cursor_default())
+        .tooltip(move |_, cx| cx.new(|_| Tooltip(label.into())).into())
+        .on_click(move |_, window, cx| {
+            if !disabled {
+                activate(&(), window, cx);
+            }
+        })
+        .relative()
+        .child(icon(glyph))
+}
+
+/// Opt-in geometry diagnostics only. Never logs labels, paths, prompts or request IDs.
+pub fn layout_probe(id: &'static str) -> impl IntoElement {
+    canvas(move |bounds, _, _| {
+        tracing::debug!(target: "synara_ui_layout", control = id,
+            x = f32::from(bounds.origin.x), y = f32::from(bounds.origin.y),
+            width = f32::from(bounds.size.width), height = f32::from(bounds.size.height), "control-layout");
+    }, |_, _, _, _| {}).absolute().top_0().left_0().size_full()
 }

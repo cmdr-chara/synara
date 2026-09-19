@@ -1,6 +1,9 @@
 use gpui::Focusable;
 mod chrome;
+mod composer;
+mod controls;
 mod conversation;
+mod messages;
 mod navigation;
 mod panels;
 mod registry;
@@ -84,7 +87,11 @@ enum Update {
         trace: Vec<TraceEntry>,
     },
     Profiles(Vec<AgentProfile>),
-    AgentChanged(Task),
+    ControlFinished {
+        task: TaskId,
+        result: WorkspaceResult<Option<Task>>,
+        details: Option<SessionDetails>,
+    },
     Files {
         root: PathBuf,
         directory: PathBuf,
@@ -130,6 +137,7 @@ enum Update {
     Error(String),
 }
 pub struct Shell {
+    controls: controls::ControlState,
     navigation: navigation::NavigationState,
     close: CloseState,
     close_focus: gpui::FocusHandle,
@@ -241,9 +249,9 @@ impl Shell {
         });
         let composer = cx.new(|cx| {
             TextEntry::new(
-                "Describe the task. Enter sends, Shift+Enter adds a line.",
+                "Ask for follow-up changes",
                 EntryMode::Composer,
-                118.,
+                crate::ui::COMPOSER_INPUT_HEIGHT,
                 cx,
             )
         });
@@ -344,6 +352,7 @@ impl Shell {
                     .map(|t| t.id)
             });
         let mut this = Self {
+            controls: controls::ControlState::new(cx),
             navigation: navigation::NavigationState::new(cx),
             close: CloseState::Open,
             close_focus: cx.focus_handle(),
@@ -585,6 +594,7 @@ impl Shell {
             self.git = GitStatus::default();
             self.diff.clear();
         }
+        self.controls.retire();
         self.selected = Some(id);
         self.project = Some(task.project_id);
         self.details = None;
@@ -759,7 +769,7 @@ impl Shell {
     }
     fn connect(&mut self, operation: &str, cx: &mut Context<Self>) {
         let Some(id) = self.selected else { return };
-        if self.connecting.contains(&id) {
+        if self.connecting.contains(&id) || self.controls.is_pending(id) {
             return;
         }
         self.connecting.insert(id);
@@ -783,7 +793,7 @@ impl Shell {
     }
     fn authenticate(&mut self, method: String, cx: &mut Context<Self>) {
         let Some(id) = self.selected else { return };
-        if self.connecting.contains(&id) {
+        if self.connecting.contains(&id) || self.controls.is_pending(id) {
             return;
         }
         self.connecting.insert(id);
@@ -806,7 +816,8 @@ impl Shell {
             cx.notify();
             return;
         };
-        if self.busy.contains(&id) || self.connecting.contains(&id) {
+        if self.busy.contains(&id) || self.connecting.contains(&id) || self.controls.is_pending(id)
+        {
             return;
         }
         let text = self.composer.read(cx).text().to_owned();
@@ -1367,12 +1378,28 @@ impl Shell {
                 );
                 self.error = None;
             }
-            Update::AgentChanged(task) => {
-                self.replace_task(task.clone());
-                if self.selected == Some(task.id) {
-                    self.details = None;
+            Update::ControlFinished {
+                task,
+                result,
+                details,
+            } => {
+                self.controls.completed(task);
+                match result {
+                    Ok(changed) => {
+                        if let Some(changed) = changed {
+                            self.replace_task(changed);
+                        }
+                        if self.selected == Some(task) {
+                            self.details = details;
+                            self.error = None;
+                        }
+                    }
+                    Err(error) => {
+                        if self.selected == Some(task) {
+                            self.error = Some(error.to_string());
+                        }
+                    }
                 }
-                self.notice = Some("Agent changed. Existing transcript is preserved.".into());
             }
             Update::Files {
                 root,
@@ -1513,6 +1540,7 @@ impl Shell {
         }
     }
     fn set_panel(&mut self, panel: Panel, cx: &mut Context<Self>) {
+        self.controls.retire();
         self.panel = panel;
         self.error = None;
         self.notice = None;

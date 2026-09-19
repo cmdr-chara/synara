@@ -265,7 +265,10 @@ impl Shell {
         })
         .flex_1()
         .min_h_0()
-        .px_5()
+        .w_full()
+        .max_w(px(crate::ui::CHAT_WIDTH))
+        .mx_auto()
+        .px_3()
         .py_4()
         .into_any_element()
     }

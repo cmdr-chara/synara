@@ -10,6 +10,7 @@ import json
 import os
 from pathlib import Path
 import select
+import re
 import sqlite3
 import subprocess
 import time
@@ -297,6 +298,23 @@ class Scenario:
         return text in ''.join(e.get('text', '') for e in self.events()[after:]
                                if e['type'] == 'text_delta' and e.get('role') == 'assistant')
 
+    def control_bounds(self, control):
+        # Named, non-content layout metadata from the actual native rendering.
+        # No screenshot OCR, guessed scaled pixels or synthetic backend mutation.
+        text = re.sub(r'\x1b\[[0-9;]*[A-Za-z]', '', Path(self.log.name).read_text(errors='replace'))
+        rows = [line for line in text.splitlines() if 'control-layout' in line
+                and ('control="' + control + '"') in line]
+        if not rows:
+            return None
+        values = dict(re.findall(r'\b(x|y|width|height)=(-?[0-9]+(?:\.[0-9]+)?)', rows[-1]))
+        if len(values) != 4:
+            return None
+        return tuple(float(values[key]) for key in ('x', 'y', 'width', 'height'))
+
+    def click_control(self, control):
+        x, y, width, height = wait_until(lambda: self.control_bounds(control), control + ' native geometry')
+        self.desktop.click_client(round(x + width / 2), round(y + height / 2))
+
     def prompt(self, text):
         before = len(self.events())
         _, _, width, height = self.desktop.geometry()
@@ -326,7 +344,7 @@ class Scenario:
         wait_until(lambda: self.task()['state'] == 'waiting', 'permission waiting state')
         time.sleep(0.4)
         ui.screenshot('permission')
-        ui.click(418, 642)  # Deny in the fixed 1420x930 native layout.
+        self.click_control('permission-deny-once')
         self.finished(before)
         assert any(e['type'] == 'permission_resolved' and e['selected'] == 'deny'
                    for e in self.events()[before:])
@@ -336,7 +354,7 @@ class Scenario:
         wait_until(lambda: self.task()['state'] == 'waiting', 'write permission')
         assert not (self.project / 'created.txt').exists(), 'Write must wait for approval'
         time.sleep(0.3)
-        ui.click(320, 642)
+        self.click_control('permission-allow-once')
         self.finished(before)
         assert (self.project / 'created.txt').read_text(encoding='utf-8') == 'native 🦀\n'
         self.checks.append('workspace-filesystem-callbacks')
@@ -347,7 +365,9 @@ class Scenario:
 
         # Switch profiles through the actual selector. No new backend or persisted SQL mutation.
         _, _, width, height = ui.geometry()
-        ui.click(width - 170, 80)
+        self.click_control('agent-picker')
+        ui.key('End')
+        ui.key('Return')
         wait_until(lambda: self.task()['agent_id'] == 'beta', 'second fixture selected')
         before = self.prompt('hello')
         self.finished(before)

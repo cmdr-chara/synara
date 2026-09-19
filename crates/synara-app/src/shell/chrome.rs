@@ -83,6 +83,7 @@ impl Shell {
                                 if this.navigation.menu_open {
                                     this.dismiss_tools(window, cx);
                                 } else {
+                                    this.controls.retire();
                                     this.navigation.menu_index = 0;
                                     this.navigation.menu_open = true;
                                     window.focus(&this.navigation.menu_focus[0], cx);
@@ -179,7 +180,9 @@ impl Render for Shell {
                         return;
                     }
                     tracing::debug!(target: "synara_ui_layout", "retired-focus-restored");
-                    if this.navigation.menu_open {
+                    if this.controls.is_open() {
+                        return;
+                    } else if this.navigation.menu_open {
                         window.focus(&this.navigation.menu_focus[this.navigation.menu_index], cx);
                     } else if this.panel == Panel::Registry {
                         window.focus(&this.registry.query.read(cx).focus_handle(cx), cx);
@@ -193,7 +196,7 @@ impl Render for Shell {
         }
         // Backend completion may request composer focus. Keep that request pending
         // while a menu owns focus, rather than stealing focus from its keyboard user.
-        if self.focus_composer && !self.navigation.menu_open {
+        if self.focus_composer && !self.navigation.menu_open && !self.controls.is_open() {
             let focus = self.composer.read(cx).focus_handle(cx);
             window.focus(&focus, cx);
             self.focus_composer = false;
@@ -302,7 +305,7 @@ impl Render for Shell {
                                     .child(notice.clone())
                             }))
                             .child(match self.panel {
-                                Panel::Conversation => self.conversation(cx),
+                                Panel::Conversation => self.conversation(window, cx),
                                 Panel::Files => self.files_panel(cx),
                                 Panel::Changes => self.git_panel(cx),
                                 Panel::Terminal => self.terminal_panel(cx),
@@ -340,6 +343,7 @@ impl Render for Shell {
                     )),
             )
             .children(self.navigation.menu_open.then(|| self.tools_overlay(cx)))
+            .children(self.controls.is_open().then(|| self.control_overlay(cx)))
             .into_any_element()
     }
 }

@@ -350,7 +350,12 @@ impl TextEntry {
             .windows(2)
             .map(|range| {
                 let mut run = window.text_style().to_run(range[1] - range[0]);
-                run.color = rgb(if empty { 0x747e90 } else { 0xe5e9f0 }).into();
+                run.color = rgb(if empty {
+                    crate::ui::DARK.muted
+                } else {
+                    crate::ui::DARK.text
+                })
+                .into();
                 if !empty
                     && range[0] >= selection.start
                     && range[1] <= selection.end
@@ -449,6 +454,8 @@ impl Render for TextEntry {
                 0x344054
             }))
             .rounded_md()
+            .when(self.mode == EntryMode::Composer, |el| el
+                .bg(gpui::rgba(0)).border_0().rounded_none().font_family(crate::ui::UI_FONT))
             .cursor_text()
             .on_key_down(cx.listener(Self::key))
             .on_mouse_down(

@@ -1,0 +1,130 @@
+{
+  "baseline": "1548e3ade5a0ea292b560727af579ae0a5a16ca0",
+  "environment": "Debian 13 x86_64, Rust 1.98.1, isolated pinned dependency and native development inputs",
+  "checks": [
+    {
+      "command": [
+        "cargo",
+        "fmt",
+        "--check"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 1.29,
+      "log": "verify-0.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "check",
+        "--locked",
+        "--workspace"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 5.4,
+      "log": "verify-1.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "--workspace",
+        "--all-targets",
+        "--all-features",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 6.23,
+      "log": "verify-2.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--workspace"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 66.13,
+      "log": "verify-3.log"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/audit_workspace.py"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 2.06,
+      "log": "verify-4.log"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check_roadmap.py",
+        "--self-test"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 2.12,
+      "log": "verify-5.log"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check_roadmap.py"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 2.09,
+      "log": "verify-6.log"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/test_apply_source.py"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 2.74,
+      "log": "verify-7.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "build",
+        "--locked",
+        "-p",
+        "synara-app",
+        "--bin",
+        "synara-app",
+        "-p",
+        "synara-acp",
+        "--bin",
+        "synara-acp-fixture"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 15.12,
+      "log": "verify-8.log"
+    }
+  ],
+  "workspace_tests": {
+    "passed": 348,
+    "failed": 0,
+    "ignored": 21
+  },
+  "native_gui": "Not executed successfully locally: no usable Vulkan ICD. Await native CI.",
+  "source_sha256": {
+    ".github/workflows/native.yml": "25b2a75b88867521cf1ffd23ba0f5b9687a943b287891d471fdd911561cb3f0e",
+    "crates/synara-app/src/input.rs": "c276db7a750d155fb6c03356c584dc513b087ea2480c2d476cfb210cb52fb4ad",
+    "crates/synara-app/src/shell.rs": "95ae2c546720ca4713368bc575f9cfbe1e37e22b833645465384c6064143b290",
+    "crates/synara-app/src/shell/chrome.rs": "995d9ffee9eda5063f56328377560394f7941990a6324bcaf9ebed8eed857e54",
+    "crates/synara-app/src/shell/composer.rs": "ecd43030a816e88388d06985377ccf1ce0040f3708dc1fe36fc3dd638faa2771",
+    "crates/synara-app/src/shell/controls.rs": "60149d496e4e10978ca67d2d92da47e1dfebb8aea7edf1ff7dcbe05fe9d9d608",
+    "crates/synara-app/src/shell/conversation.rs": "b835a7eb2b7aeca5e3c4d3398ffae95787f2ab609eeb3d71978aa9a3d1fd4392",
+    "crates/synara-app/src/shell/messages.rs": "1a5af122f2b88747fcf431631386311a6bb852936482022ae64a4a4a98b1c32d",
+    "crates/synara-app/src/shell/transcript.rs": "f1ba7bb6555a25e91ab48d752f0f4bd4f88e24c7e3b92afb079e6efcafdedbc5",
+    "crates/synara-app/src/ui.rs": "9cf8e0cced98c83b308cda0873616d7b4fc11fba1da9f79a43e4f81681d7bfb9",
+    "crates/synara-app/src/ui/menu.rs": "4f8aafe70490a0a5718485ae820441293286ffccd8d2cf5e0ad7f50190f7a303",
+    "scripts/native_controls_smoke.py": "480b4833582f64149ef40ac98c632818f1ec1fa24b8f9d040dd98e7a91d3caca",
+    "scripts/native_smoke.py": "78590610295465aa9f829fd11b010fd5c5bf94e7237b0d2201d6c6ae64ac2166"
+  }
+}

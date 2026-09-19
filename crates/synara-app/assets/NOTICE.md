@@ -1,5 +1,9 @@
 # Native UI assets
 
+The native Rust/GPUI application's first-party copyright and MIT license are
+recorded in the repository's root `LICENSE`. Imported artwork and fonts retain
+the separate source and license records below.
+
 - `synara.svg`: Synara's logo from Emanuele-web04/synara, revision
   `33333439c4b9c74d0097bc01196cccc921f67cf3`, `assets/prod/logo.svg`.
   Reused at the user's request to preserve their Synara identity.
@@ -28,5 +32,7 @@
 `icons/manifest.json` records each native glyph's exact source and SHA-256.
 No Electron application logic is embedded or executed by these static assets.
 
-The font and icon notices are also embedded in the application's Help panel.
+The current font and icon notices are also embedded in the application's Help
+panel. The original Synara source license is retained here with the imported
+assets as a historical permission notice.
 No wallpaper or desktop notification from the user's captures is an app asset.

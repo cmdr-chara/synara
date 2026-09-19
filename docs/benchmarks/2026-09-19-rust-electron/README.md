@@ -1,7 +1,8 @@
 # Rust/GPUI and Electron Synara benchmark
 
 Recorded locally on 2026-09-19. This compares the current optimized native rewrite
-with the installed Electron Synara 0.8.4 production package. Both use isolated,
+with the installed Electron Synara 0.8.4 production package, as built before
+subsequent license metadata changes. Both use isolated,
 empty profiles on one private Xvfb display. The user's running app and profile
 were left intact.
 
@@ -63,8 +64,8 @@ memory, GPU VRAM or total operating-system cost.
   `70f5ed0e4757c0f69891b258171da80d324f0e18`, tag `v0.8.4`.
   `Chrome/150.0.7871.224`, Electron 43.4.1 (reported by the packaged runtime).
 - Exact binary, archive, source and harness hashes are in
-  [provenance.json](provenance.json). The source manifest is the native UI
-  [verification receipt](../../ui/parity-port-evidence.json).
+  [provenance.json](provenance.json). The source manifest is the frozen
+  [benchmark source manifest](benchmark-source-manifest.json).
 
 - CPU: 13th Gen Intel(R) Core(TM) i5-1334U; 12 logical cores.
 - RAM: 31.0 GiB; kernel/platform: `Linux-7.2.5-1-cachyos-bore-x86_64-with-glibc2.44`.

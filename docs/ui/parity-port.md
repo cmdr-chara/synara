@@ -138,9 +138,10 @@ Window maximize/restore and menu selection also use the original Tabler glyphs.
 The mapping covers 61 glyph names backed by 60 SVG files. Each source and SHA-256
 is recorded in [`icons/manifest.json`](../../crates/synara-app/assets/icons/manifest.json).
 Source notices and font/icon licenses are retained in
-[`assets/NOTICE.md`](../../crates/synara-app/assets/NOTICE.md) and exposed in Help.
-The original repository notice is retained; Central artwork is not relabeled as
-Lucide or relicensed by this port.
+[`assets/NOTICE.md`](../../crates/synara-app/assets/NOTICE.md). The native
+application's [MIT license](../../LICENSE) and current asset notices appear in
+Help. The original repository's license notice remains with imported assets;
+Central artwork is not relabeled as Lucide or relicensed by this port.
 The Linux UI uses Liberation Sans, matching the inspected local system-ui font
 resolution. This is an asset provenance record, not a legal clearance claim for
 other content or the entire Electron repository.

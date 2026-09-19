@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
-"""Assemble the reviewed, independently authored native navigation checkpoint.
+"""Assemble reviewed native source without updating any ref.
 
-Temporary continuation tooling, removed from the promoted candidate. This does
-not update any Git ref. Expected blob identities protect concurrent source work.
+Temporary continuation tooling. Exact blob guards preserve concurrent work.
 """
 import base64
 import hashlib
@@ -20,10 +19,10 @@ EXPECTED = {
     '.github/workflows/native.yml': '6b034788e1273ff60242af93ff2b446d5ea733a5',
 }
 INPUTS = {
-    'crates/synara-app/src/ui.rs': 'cd1b958e5c94711114177f3fadc4e4fb1cb7a38d',
+    'crates/synara-app/src/ui.rs': 'f2ba4390813f68e2374daf0ba4d3cc6e34329ca7',
     'crates/synara-app/src/shell/navigation.rs': 'b46d84e45f4916d332129c5fba90ff52b1a7de6a',
     'crates/synara-app/src/shell/chrome.rs': '95dd558ad8230a651c4a037927407001be74cf8b',
-    'scripts/native_navigation_smoke.py': '3828aa8b6fa961c3b6be4a35fe31c96cbffcc9b9',
+    'scripts/native_navigation_smoke.py': '1b1a60142b670778dfd99273211d6efe89cb059a',
     'docs/ui/native-navigation.md': '3db2250b966aa004bcc3babcd7d5efd22f0e1a93',
 }
 
@@ -73,18 +72,8 @@ def main():
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(data)
 
-    p = 'crates/synara-app/src/ui.rs'
-    text = replace(Path(p).read_text(),
-        '.bg(if selected { rgb(DARK.selected).into() } else { rgba(0x00000000).into() })',
-        '.bg(rgba(if selected { (DARK.selected << 8) | 0xff } else { 0 }))')
-    text = replace(text, '    Chevron,\n', '    Chevron,\n    ChevronRight,\n')
-    text = replace(text, '            Self::Chevron => &[&[(6., 9.), (12., 15.), (18., 9.)]],',
-        '            Self::Chevron => &[&[(6., 9.), (12., 15.), (18., 9.)]],\n            Self::ChevronRight => &[&[(9., 6.), (15., 12.), (9., 18.)]],')
-    write(p, text)
-
     p = 'crates/synara-app/src/shell/navigation.rs'
     text = Path(p).read_text()
-    # Anchor the outer imports together. An inner test module also uses super::*.
     text = replace(text, 'use super::*;\nuse crate::ui::{self, DARK, Glyph};',
         'use super::*;\nuse crate::ui::{self, DARK, Glyph};\nuse gpui::FocusHandle;')
     text = replace(text, 'Some(Glyph::Chevron), self.navigation.projects_open,',
@@ -119,6 +108,13 @@ def main():
     assert start < end
     write(p, text[:start] + text[end:])
 
+    p = 'scripts/native_navigation_smoke.py'
+    text = Path(p).read_text()
+    # Check the exact persisted user prompt, not arbitrary text in serialized JSON.
+    # This fixture has no private user input. A mismatch prints only its synthetic prompt.
+    text = replace(text, "    assert 'saved draft' in json.dumps(scenario.events()[before:])",
+        "    submitted = [e.get('text') for e in scenario.events()[before:] if e.get('type') == 'text_delta' and e.get('role') == 'user']\n    assert submitted == ['saved draft'], f'Synthetic restored draft mismatch: {submitted!r}'")
+    write(p, text)
     p = '.github/workflows/native.yml'
     extra = '\n'.join([
         '      - name: Native navigation and backend interaction smoke',

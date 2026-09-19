@@ -29,8 +29,8 @@ jobs:
       - name: Install repository toolchain and native libraries
         run: |
           rustup toolchain install 1.98.1 --profile minimal --component rustfmt --component clippy
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil python3-yaml fonts-dejavu-core
+          sudo apt-get update -qq > "$RUNNER_TEMP/ui-evidence/libraries.log" 2>&1
+          sudo apt-get install -y -qq clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil python3-yaml fonts-dejavu-core >> "$RUNNER_TEMP/ui-evidence/libraries.log" 2>&1
       - name: Format and validate the exact candidate
         id: verify
         run: |
@@ -41,8 +41,9 @@ jobs:
           git diff --cached --stat
           git write-tree > "$RUNNER_TEMP/ui-evidence/tested-tree.txt"
           git diff --cached --binary > "$RUNNER_TEMP/ui-evidence/source.patch"
-          python3 - <<'PY' 2>&1 | tee "$RUNNER_TEMP/ui-evidence/checks.log"
+          python3 - <<'PY'
           import json, os, pathlib, shlex, subprocess, yaml
+          root = pathlib.Path(os.environ['RUNNER_TEMP']) / 'ui-evidence'
           with open('.github/workflows/native.yml') as f:
               native = yaml.safe_load(f)
           assert any(s.get('name') == 'Native navigation and backend interaction smoke' for s in native['jobs']['linux']['steps'])
@@ -61,10 +62,15 @@ jobs:
           results = []
           for command in checks:
               print('CHECK: ' + command, flush=True)
-              completed = subprocess.run(shlex.split(command))
+              with (root / 'checks.log').open('a') as log:
+                  log.write('\nCHECK: ' + command + '\n')
+                  log.flush()
+                  completed = subprocess.run(shlex.split(command), stdout=log, stderr=subprocess.STDOUT)
               results.append({'command': command, 'exit_code': completed.returncode})
-              pathlib.Path(os.environ['RUNNER_TEMP'], 'ui-evidence', 'checks.json').write_text(json.dumps(results, indent=2) + '\n')
+              (root / 'checks.json').write_text(json.dumps(results, indent=2) + '\n')
+              print('RESULT: ' + str(completed.returncode), flush=True)
               if completed.returncode:
+                  print('\n'.join((root / 'checks.log').read_text().splitlines()[-100:]))
                   raise SystemExit(completed.returncode)
           PY
       - name: Existing native desktop contract
@@ -77,7 +83,7 @@ jobs:
         if: always() && steps.verify.outcome == 'success'
         timeout-minutes: 4
         run: python3 scripts/native_navigation_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output "$RUNNER_TEMP/ui-evidence/navigation"
-      - name: Preserve exact candidate objects for review without moving a ref
+      - name: Export verified source blobs for connector-controlled publication
         if: always() && steps.verify.outcome == 'success'
         env:
           GH_TOKEN: ${{ github.token }}
@@ -125,31 +131,29 @@ jobs:
           allowed.update(image['path'] for image in receipt['screenshots'])
           changed = subprocess.check_output(['git', 'diff', '--cached', '--name-only', '-z']).decode().strip('\0').split('\0')
           assert set(changed) <= allowed
-          def api(route, body=None):
-              request = urllib.request.Request('https://api.github.com/repos/cmdr-chara/synara/' + route,
-                  data=None if body is None else json.dumps(body).encode(),
-                  headers={'Accept': 'application/vnd.github+json', 'User-Agent': 'Synara-native-verification', 'Authorization': 'Bearer ' + os.environ['GH_TOKEN']})
-              with urllib.request.urlopen(request, timeout=30) as response:
-                  return json.load(response)
-          entries = []
+          manifest = {'parent': os.environ['GITHUB_SHA'],
+                      'base_tree': subprocess.check_output(['git', 'rev-parse', 'HEAD^{tree}'], text=True).strip(),
+                      'expected_tree': subprocess.check_output(['git', 'write-tree'], text=True).strip(),
+                      'interaction_gate': receipt['interaction_gate'], 'ref_updated': False, 'entries': []}
           for name in changed:
               path = pathlib.Path(name)
               sha = None
               if path.exists():
                   data = path.read_bytes()
                   assert len(data) < 2 * 1024 * 1024
-                  sha = api('git/blobs', {'encoding': 'base64', 'content': base64.b64encode(data).decode()})['sha']
-              entries.append({'path': name, 'mode': '100644', 'type': 'blob', 'sha': sha})
-          parent = os.environ['GITHUB_SHA']
-          base = api('git/commits/' + parent)['tree']['sha']
-          tree = api('git/trees', {'base_tree': base, 'tree': entries})['sha']
-          assert tree == subprocess.check_output(['git', 'write-tree'], text=True).strip()
-          message = 'feat(ui): native navigation and backend interaction checkpoint' if accepted else 'wip(ui): preserve native navigation candidate for diagnosis'
-          commit = api('git/commits', {'message': message, 'tree': tree, 'parents': [parent]})
-          output = {'candidate': commit['sha'], 'tree': tree, 'parent': parent, 'ref_updated': False,
-                    'interaction_gate': receipt['interaction_gate'], 'visual_parity': 'not claimed'}
-          (root / 'candidate.json').write_text(json.dumps(output, indent=2) + '\n')
-          print(json.dumps(output, indent=2))
+                  expected = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
+                  request = urllib.request.Request('https://api.github.com/repos/cmdr-chara/synara/git/blobs',
+                      data=json.dumps({'encoding': 'base64', 'content': base64.b64encode(data).decode()}).encode(),
+                      headers={'Accept': 'application/vnd.github+json', 'User-Agent': 'Synara-native-verification', 'Authorization': 'Bearer ' + os.environ['GH_TOKEN']})
+                  with urllib.request.urlopen(request, timeout=30) as response:
+                      sha = json.load(response)['sha']
+                  assert sha == expected
+              manifest['entries'].append({'path': name, 'mode': '100644', 'type': 'blob', 'sha': sha})
+              (root / 'tree-entries.json').write_text(json.dumps(manifest, indent=2) + '\n')
+          print('CONNECTOR_TREE_MANIFEST\n' + json.dumps(manifest, indent=2))
+          # Deliberately no tree, commit or ref mutation with the workflow token.
+          # The authenticated connector reviews the manifest, constructs the exact
+          # tree and publishes only after the interaction gate has passed.
           PY
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()

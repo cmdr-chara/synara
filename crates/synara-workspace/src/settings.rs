@@ -1,6 +1,4 @@
-use crate::{
-    StorageError, StorageResult, Store, WorkspaceError, WorkspaceResult, WorkspaceService,
-};
+use crate::{StorageResult, Store, WorkspaceError, WorkspaceResult, WorkspaceService};
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 
@@ -302,17 +300,19 @@ mod tests {
 
     #[test]
     fn duplicate_or_hostile_keybindings_are_rejected() {
-        let mut settings = AppSettings::default();
-        settings.keybindings = vec![
-            KeyBinding {
-                command: "conversation.send".into(),
-                shortcut: "ctrl+enter".into(),
-            },
-            KeyBinding {
-                command: "conversation.cancel".into(),
-                shortcut: "ctrl+enter".into(),
-            },
-        ];
+        let mut settings = AppSettings {
+            keybindings: vec![
+                KeyBinding {
+                    command: "conversation.send".into(),
+                    shortcut: "ctrl+enter".into(),
+                },
+                KeyBinding {
+                    command: "conversation.cancel".into(),
+                    shortcut: "ctrl+enter".into(),
+                },
+            ],
+            ..Default::default()
+        };
         assert!(settings.validate().is_err());
         settings.keybindings[1].shortcut = "ctrl+escape\n".into();
         assert!(settings.validate().is_err());

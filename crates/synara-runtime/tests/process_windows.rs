@@ -12,7 +12,7 @@ fn windows_process_fixture() {
     match mode.as_str() {
         "parent" => {
             let executable = std::env::current_exe().unwrap();
-            let child = std::process::Command::new(executable)
+            let mut child = std::process::Command::new(executable)
                 .args([
                     "--ignored",
                     "--exact",
@@ -27,9 +27,21 @@ fn windows_process_fixture() {
                 .spawn()
                 .unwrap();
             std::fs::write(directory.join("child.pid"), child.id().to_string()).unwrap();
-            std::fs::write(directory.join("parent.pid"), std::process::id().to_string()).unwrap();
+            // Reap if the leaf exits first. Deliberately do not join: the parent
+            // must be able to exit normally while the owned descendant is live.
+            std::thread::spawn(move || {
+                let _ = child.wait();
+            });
+            let deadline = std::time::Instant::now() + Duration::from_secs(15);
+            while !directory.join("release-parent").exists() {
+                assert!(std::time::Instant::now() < deadline, "parent not released");
+                std::thread::sleep(Duration::from_millis(10));
+            }
         }
-        "leaf" => std::thread::sleep(Duration::from_secs(60)),
+        "leaf" => {
+            std::fs::write(directory.join("leaf.ready"), b"ready").unwrap();
+            std::thread::sleep(Duration::from_secs(60));
+        }
         _ => panic!("unknown fixture mode"),
     }
 }
@@ -55,7 +67,8 @@ fn launch(root: &Path) -> LaunchSpec {
 async fn child_pid(root: &Path) -> u32 {
     tokio::time::timeout(Duration::from_secs(5), async {
         loop {
-            if let Ok(text) = std::fs::read_to_string(root.join("child.pid"))
+            if root.join("leaf.ready").exists()
+                && let Ok(text) = std::fs::read_to_string(root.join("child.pid"))
                 && let Ok(pid) = text.parse()
             {
                 return pid;
@@ -64,7 +77,7 @@ async fn child_pid(root: &Path) -> u32 {
         }
     })
     .await
-    .expect("fixture did not publish its child PID")
+    .expect("fixture did not publish its live child PID")
 }
 
 fn running(pid: u32) -> bool {
@@ -84,9 +97,14 @@ fn running(pid: u32) -> bool {
 #[tokio::test]
 async fn normal_parent_exit_releases_job_and_kills_owned_descendant() {
     let root = tempfile::tempdir().unwrap();
-    let process = LocalHost.spawn(&launch(root.path()), root.path()).await.unwrap();
+    let process = LocalHost
+        .spawn(&launch(root.path()), root.path())
+        .await
+        .unwrap();
     let child = child_pid(root.path()).await;
     assert!(running(child), "fixture descendant never started");
+    // Avoid racing successful Job Object cleanup against the liveness proof.
+    std::fs::write(root.path().join("release-parent"), b"release").unwrap();
 
     let exit = tokio::time::timeout(Duration::from_secs(5), process.handle.wait())
         .await

@@ -79,6 +79,7 @@ impl TextEntry {
         self.buffer.text()
     }
     pub fn set_text(&mut self, text: String, cx: &mut Context<Self>) {
+        tracing::debug!(target: "synara_ui_layout", composer = self.mode == EntryMode::Composer, editor = self.mode == EntryMode::Editor, empty = text.is_empty(), "input-replaced");
         self.buffer = TextBuffer::new(text);
         self.undo.clear();
         self.redo.clear();
@@ -323,6 +324,9 @@ impl TextEntry {
         cx.stop_propagation();
     }
     fn prepare(&mut self, bounds: Bounds<Pixels>, window: &mut Window) {
+        if self.bounds != bounds {
+            tracing::debug!(target: "synara_ui_layout", composer = self.mode == EntryMode::Composer, editor = self.mode == EntryMode::Editor, ?bounds, "input-layout");
+        }
         self.bounds = bounds;
         let empty = self.buffer.text().is_empty();
         let text: SharedString = if empty {
@@ -433,6 +437,7 @@ impl Render for TextEntry {
             .id("text-entry")
             .key_context("SynaraTextEntry")
             .track_focus(&self.focus)
+            .tab_index(0)
             .w_full()
             .h(px(self.height))
             .p_2()
@@ -449,6 +454,7 @@ impl Render for TextEntry {
             .on_mouse_down(
                 MouseButton::Left,
                 cx.listener(|this, event: &gpui::MouseDownEvent, window, cx| {
+                    tracing::debug!(target: "synara_ui_layout", composer = this.mode == EntryMode::Composer, editor = this.mode == EntryMode::Editor, position = ?event.position, "input-mouse-focus");
                     window.focus(&this.focus, cx);
                     let index = this.index_at(event.position);
                     this.select_to(index, event.modifiers.shift, cx);

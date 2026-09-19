@@ -702,3 +702,4 @@ Remaining limitations:
    contract, record actual agents/platforms tested, verify the independent root and
    protected refs, and publish only `astra/gpui-clean-rewrite`.
 
+Native navigation continuation (September 19, 2026): the published-source shell has a modular navigation/design foundation, backend-owned project/chat actions and a native keyboard-menu regression in regular CI. This is a partial checkpoint, not recovery of the unpublished local UI or a visual-parity claim. See `docs/ui/native-navigation.md` and the exact-candidate evidence receipt. Existing unfinished roadmap items remain open.

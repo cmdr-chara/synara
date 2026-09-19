@@ -174,6 +174,18 @@ class Desktop:
         self.x.XFlush(self.display)
         time.sleep(0.035)
 
+    def copy_input(self):
+        self.key('a', ('Control_L',))
+        self.key('c', ('Control_L',))
+        env = {key: os.environ[key] for key in ('PATH', 'LD_LIBRARY_PATH') if key in os.environ}
+        env['DISPLAY'] = self.name
+        result = subprocess.run(['xclip', '-selection', 'clipboard', '-out'], env=env,
+                                stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=3)
+        if result.returncode:
+            raise AssertionError('Owned native input did not publish a clipboard selection')
+        assert len(result.stdout) <= 1024 * 1024
+        return result.stdout.decode('utf-8')
+
     def text(self, value):
         for char in value:
             self.key({' ': 'space', '-': 'minus', '\n': 'Return', '.': 'period'}.get(char, char))
@@ -254,7 +266,7 @@ class Scenario:
         env = {key: os.environ[key] for key in ('PATH', 'LD_LIBRARY_PATH') if key in os.environ}
         env.update(DISPLAY=self.desktop.name, XDG_RUNTIME_DIR=str(self.runtime),
                    HOME=str(self.output / 'home'), GPUI_PLATFORM='x11',
-                   LIBGL_ALWAYS_SOFTWARE='1', RUST_LOG='synara=info,gpui=warn')
+                   LIBGL_ALWAYS_SOFTWARE='1', RUST_LOG='synara=info,synara_ui_layout=debug,gpui=warn')
         args = [str(self.binary), '--workspace', str(self.project), '--data-dir', str(self.data)]
         if self.launch_count == 0:
             args.extend(['--agents', str(self.profiles)])
@@ -363,8 +375,12 @@ class Scenario:
         ui.click(310, 194)  # document.txt follows created.txt in the sorted explorer.
         time.sleep(0.4)
         ui.click(850, 190)
-        ui.key('a', ('Control_L',))
+        loaded = ui.copy_input()
+        assert loaded == 'original text\n', f'Editor was not loaded before edit: {loaded!r}'
         ui.text('edited text\n')
+        edited = ui.copy_input()
+        assert edited == 'edited text\n', f'Editor did not receive synthetic edit: {edited!r}'
+        ui.screenshot('editor-before-close')
         ui.request_close()
         assert self.process.poll() is None, 'Dirty close must not terminate the app'
         ui.screenshot('dirty-close')
@@ -436,6 +452,8 @@ def main():
         result['status'] = 'passed'
     except BaseException as error:
         result['error'] = str(error)
+        if scenario.log:
+            print('\n'.join(line for line in Path(scenario.log.name).read_text(errors='replace').splitlines() if 'synara_ui_layout' in line)[-12000:])
         if scenario.process and scenario.process.poll() is None:
             scenario.desktop.screenshot('failure')
         raise

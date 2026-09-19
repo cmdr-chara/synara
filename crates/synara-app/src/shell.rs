@@ -1,5 +1,7 @@
 use gpui::Focusable;
+mod chrome;
 mod conversation;
+mod navigation;
 mod panels;
 mod registry;
 mod terminal;
@@ -128,6 +130,7 @@ enum Update {
     Error(String),
 }
 pub struct Shell {
+    navigation: navigation::NavigationState,
     close: CloseState,
     close_focus: gpui::FocusHandle,
     registry: registry::RegistryState,
@@ -341,6 +344,7 @@ impl Shell {
                     .map(|t| t.id)
             });
         let mut this = Self {
+            navigation: navigation::NavigationState::new(cx),
             close: CloseState::Open,
             close_focus: cx.focus_handle(),
             registry,
@@ -405,6 +409,7 @@ impl Shell {
             return false;
         }
         let dirty = self.dirty(cx);
+        tracing::debug!(target: "synara_ui_layout", dirty, saving = self.saving, document = self.document.is_some(), "close-request");
         if self.close.request(dirty, self.saving) {
             self.begin_quit(cx);
             false
@@ -1526,19 +1531,9 @@ fn button(
     text: impl Into<SharedString>,
     active: bool,
 ) -> gpui::Stateful<gpui::Div> {
-    div()
-        .id(id)
-        .px_3()
-        .py_1()
-        .rounded_md()
-        .bg(rgb(if active { 0x2b4665 } else { 0x202936 }))
-        .border_1()
-        .border_color(rgb(if active { 0x628db9 } else { 0x344050 }))
-        .text_sm()
-        .cursor_pointer()
-        .hover(|s| s.bg(rgb(0x35465b)))
-        .child(text.into())
+    crate::ui::button(id, text, active)
 }
+
 async fn remote_filesystem(
     workspace_service: WorkspaceService,
     workspace: Workspace,
@@ -1588,149 +1583,4 @@ fn truncate(text: &str, limit: usize) -> String {
         "{}\n[Display shortened. Copy the full content to inspect it.]",
         &text[..end]
     )
-}
-impl Render for Shell {
-    fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
-        if self.close != CloseState::Open || self.terminal_closing {
-            return self.close_panel(cx);
-        }
-        if self.focus_composer {
-            let focus = self.composer.read(cx).focus_handle(cx);
-            window.focus(&focus, cx);
-            self.focus_composer = false;
-        }
-        div()
-            .size_full()
-            .capture_key_down(cx.listener(|this, event: &gpui::KeyDownEvent, _, cx| {
-                let modifiers = event.keystroke.modifiers;
-                if (modifiers.control || modifiers.platform) && !modifiers.alt && !modifiers.shift {
-                    let panel = match event.keystroke.key.as_str() {
-                        "1" => Some(Panel::Conversation),
-                        "2" => Some(Panel::Files),
-                        "3" => Some(Panel::Changes),
-                        "4" => Some(Panel::Terminal),
-                        "5" => Some(Panel::Inspector),
-                        "6" => Some(Panel::Settings),
-                        "7" => Some(Panel::Registry),
-                        "8" => Some(Panel::Remote),
-                        _ => None,
-                    };
-                    if let Some(panel) = panel {
-                        this.set_panel(panel, cx);
-                        cx.stop_propagation();
-                    }
-                }
-            }))
-            .flex()
-            .flex_col()
-            .bg(rgb(0x10151d))
-            .text_color(rgb(0xe3e8f0))
-            .font_family("DejaVu Sans")
-            .text_sm()
-            .child(
-                div()
-                    .h(px(53.))
-                    .flex()
-                    .items_center()
-                    .justify_between()
-                    .px_5()
-                    .border_b_1()
-                    .border_color(rgb(0x2a3442))
-                    .child(
-                        div()
-                            .flex()
-                            .items_center()
-                            .gap_3()
-                            .child(
-                                div()
-                                    .text_xl()
-                                    .font_weight(gpui::FontWeight::BOLD)
-                                    .child("Synara"),
-                            )
-                            .child(
-                                div()
-                                    .text_xs()
-                                    .text_color(rgb(0x8593a6))
-                                    .child("NATIVE WORKSPACE"),
-                            ),
-                    )
-                    .child(
-                        div().flex().gap_2().children(
-                            [
-                                (Panel::Conversation, "Conversation"),
-                                (Panel::Files, "Files"),
-                                (Panel::Changes, "Changes"),
-                                (Panel::Terminal, "Terminal"),
-                                (Panel::Inspector, "Inspector"),
-                                (Panel::Settings, "Settings"),
-                                (Panel::Registry, "Agents"),
-                                (Panel::Remote, "Remote"),
-                            ]
-                            .into_iter()
-                            .map(|(panel, label)| {
-                                button(label, label, self.panel == panel).on_click(
-                                    cx.listener(move |this, _, _, cx| this.set_panel(panel, cx)),
-                                )
-                            }),
-                        ),
-                    ),
-            )
-            .child(
-                div()
-                    .flex()
-                    .flex_1()
-                    .min_h_0()
-                    .child(self.sidebar(cx))
-                    .child(
-                        div()
-                            .flex()
-                            .flex_col()
-                            .flex_1()
-                            .min_w_0()
-                            .min_h_0()
-                            .children(self.error.as_ref().map(|error| {
-                                div()
-                                    .px_4()
-                                    .py_2()
-                                    .bg(rgb(0x41272d))
-                                    .text_color(rgb(0xffc8ca))
-                                    .child(error.clone())
-                            }))
-                            .children(self.notice.as_ref().map(|notice| {
-                                div().px_4().py_2().bg(rgb(0x1c3244)).child(notice.clone())
-                            }))
-                            .child(match self.panel {
-                                Panel::Conversation => self.conversation(cx),
-                                Panel::Files => self.files_panel(cx),
-                                Panel::Changes => self.git_panel(cx),
-                                Panel::Terminal => self.terminal_panel(cx),
-                                Panel::Inspector => self.inspector_panel(cx),
-                                Panel::Settings => self.settings_panel(cx),
-                                Panel::Registry => self.registry_panel(cx),
-                                Panel::Remote => self.remote_panel(cx),
-                            }),
-                    ),
-            )
-            .child(
-                div()
-                    .h(px(27.))
-                    .px_4()
-                    .flex()
-                    .items_center()
-                    .justify_between()
-                    .border_t_1()
-                    .border_color(rgb(0x2a3442))
-                    .text_xs()
-                    .text_color(rgb(0x98a6b8))
-                    .child(self.root().map_or_else(
-                        || "No workspace selected".into(),
-                        |p| p.display().to_string(),
-                    ))
-                    .child(self.details.as_ref().map_or_else(
-                        || "ACP · disconnected".into(),
-                        |d| format!("ACP · {:?}", d.connection.state),
-                    )),
-            )
-            .into_any_element()
-    }
 }

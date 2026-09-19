@@ -1,0 +1,104 @@
+{
+  "parent": "b13fe6bed9b3699f00a6bdb6a2b40f3740cad9db",
+  "tested_source_tree": "0f313d0a5907bd7fdd786f85bcd6e865a66b73dc",
+  "run": "https://github.com/cmdr-chara/synara/actions/runs/35440664654",
+  "platform": "Linux/X11/Xvfb",
+  "visual_comparison": "not yet inspected",
+  "verification": [
+    {
+      "command": "cargo +1.98.1 fmt --check",
+      "exit_code": 0
+    },
+    {
+      "command": "cargo +1.98.1 check --quiet --locked --workspace",
+      "exit_code": 0
+    },
+    {
+      "command": "cargo +1.98.1 clippy --quiet --locked --workspace --all-targets --all-features -- -D warnings",
+      "exit_code": 0
+    },
+    {
+      "command": "cargo +1.98.1 test --quiet --locked --workspace",
+      "exit_code": 0
+    },
+    {
+      "command": "python3 scripts/audit_workspace.py",
+      "exit_code": 0
+    },
+    {
+      "command": "python3 scripts/check_roadmap.py --self-test",
+      "exit_code": 0
+    },
+    {
+      "command": "python3 scripts/check_roadmap.py",
+      "exit_code": 0
+    },
+    {
+      "command": "python3 scripts/test_audit_workspace.py",
+      "exit_code": 0
+    },
+    {
+      "command": "python3 scripts/test_apply_source.py",
+      "exit_code": 0
+    },
+    {
+      "command": "cargo +1.98.1 build --quiet --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture",
+      "exit_code": 0
+    }
+  ],
+  "native_smoke": {
+    "desktop": {
+      "status": "passed",
+      "checks": [
+        "native-composer-streaming-and-tool-completion",
+        "native-permission-denial",
+        "workspace-filesystem-callbacks",
+        "workspace-escape-rejected",
+        "second-fixture-through-same-native-controller",
+        "offline-registry-review-and-approval-without-execution",
+        "dirty-close-cancel-preserves-document",
+        "guarded-save-before-native-close",
+        "durable-history-restored-without-autostart",
+        "save-conflict-preserves-external-change-and-open-editor",
+        "explicit-discard-does-not-overwrite-disk"
+      ],
+      "agents": [
+        "fixture-alpha",
+        "fixture-beta"
+      ]
+    },
+    "navigation": {
+      "status": "passed",
+      "checks": [
+        "tools-keyboard-selection-escape-focus-restoration-and-real-agent-approval",
+        "retired-approval-control-restores-shell-keyboard-navigation",
+        "native-key-release-creates-exactly-one-backend-thread",
+        "sidebar-new-thread-uses-controller-and-durable-acp-streaming",
+        "compact-thread-row-preserves-draft-and-submits-to-own-backend-thread",
+        "sidebar-collapse-is-presentation-only",
+        "native-resize-retains-process-and-selection",
+        "native-window-closes-through-owned-controller"
+      ],
+      "platform": "Linux/X11/private Xvfb",
+      "initial_window": [
+        1420,
+        930
+      ]
+    }
+  },
+  "screenshots": [
+    {
+      "path": "docs/ui/captures/navigation-initial.png",
+      "sha256": "de0ca9561db84c847197e5e17e00b346e7f9765e63101c7467fb0b441ba3326f"
+    },
+    {
+      "path": "docs/ui/captures/tools-open.png",
+      "sha256": "a90e6ba50aa4adfa4f73687ae05fe5dcfb136d0b6968351927b56cec2e7cc9ac"
+    },
+    {
+      "path": "docs/ui/captures/navigation-960.png",
+      "sha256": "40980d5264e5ac1dd7b18d0ebf800aa5b13954b9f0f1f566179af6f160bd5ee7"
+    }
+  ],
+  "interaction_gate": "passed"
+}

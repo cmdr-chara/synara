@@ -11,6 +11,7 @@ const STAGES: &[&str] = &[
     "copy-agent",
     "open-workspace",
     "parse-profile",
+    "preserve-assigned-profile",
     "reload-profile",
     "create-task",
     "first-prompt",
@@ -124,6 +125,7 @@ async fn custom_profile_child_entry() {
         "$(touch SHOULD_NOT_EXIST)",
         "; touch ALSO_MUST_NOT_EXIST",
     ];
+    let mut registered_profiles = Vec::new();
     for (id, inherited) in [("custom-with-env", true), ("custom-without-env", false)] {
         let args = [vec!["--integration-fixture", "custom"], extra.clone()].concat();
         let json = serde_json::json!([{
@@ -137,10 +139,21 @@ async fn custom_profile_child_entry() {
         assert!(!json.contains(CANARY));
         checkpoint("parse-profile");
         let profiles = parse_profiles(&json).unwrap();
-        workspace.save_profiles(profiles.clone()).await.unwrap();
+        if !registered_profiles.is_empty() {
+            checkpoint("preserve-assigned-profile");
+            // The first task still refers to its profile after disconnect. A
+            // replacement list must not orphan that persisted association.
+            assert!(workspace.save_profiles(profiles.clone()).await.is_err());
+            assert_eq!(workspace.profiles().await.unwrap(), registered_profiles);
+        }
+        registered_profiles.extend(profiles);
+        workspace
+            .save_profiles(registered_profiles.clone())
+            .await
+            .unwrap();
         checkpoint("reload-profile");
         let reloaded = WorkspaceService::open(db.clone()).await.unwrap();
-        assert_eq!(reloaded.profiles().await.unwrap(), profiles);
+        assert_eq!(reloaded.profiles().await.unwrap(), registered_profiles);
         checkpoint("create-task");
         let task = reloaded
             .create_task(project.id, id.into(), id.into())

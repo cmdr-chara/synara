@@ -1,6 +1,7 @@
 mod close;
 mod input;
 mod shell;
+mod ui;
 use anyhow::{Context as _, Result, bail};
 use gpui::{App, Bounds, WindowBounds, WindowOptions, prelude::*, px, size};
 use std::{path::PathBuf, sync::Arc};

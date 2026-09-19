@@ -1,34 +1,5 @@
 use super::*;
 impl Shell {
-    pub(super) fn sidebar(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
-        div().w(px(238.)).flex_shrink_0().flex().flex_col().gap_3().p_3().bg(rgb(0x141b25)).border_r_1().border_color(rgb(0x2a3442))
-            .child(div().flex().justify_between().items_center().child(div().text_xs().text_color(rgb(0x8d9bb0)).child("WORKSPACES"))
-                .child(button("refresh-catalog","Refresh",false).on_click(cx.listener(|this,_,_,_|{let workspace=this.controller.workspace.clone();this.job(async move {Ok(Update::Catalog(workspace.catalog().await?))});}))))
-            .child(self.workspace_path.clone())
-            .child(div().flex().gap_2().child(button("open-workspace","Open",false).on_click(cx.listener(|this,_,_,cx|this.open_workspace(cx))))
-                .child(button("browse-workspace","Browse",false).on_click(cx.listener(|this,_,_,cx|this.browse_workspace(cx)))))
-            .child(div().id("project-list").max_h(px(180.)).overflow_y_scroll().flex().flex_col().gap_1().children(self.catalog.projects.iter().enumerate().map(|(index,project)|{
-                let id=project.id;
-                button(("project",index),project.name.clone(),Some(id)==self.project).on_click(cx.listener(move |this,_,_,cx|{
-                    if this.dirty(cx)||this.saving {this.error=Some("Save or discard the open document before switching projects.".into());cx.notify();return;}
-                    if let Some(task)=this.catalog.tasks.iter().find(|t|t.project_id==id){let task=task.id;this.select_task(task,cx);}
-                    else {this.project=Some(id);this.selected=None;this.thread=None;this.document=None;this.files.clear();this.directory.clear();this.create_task(cx);}
-                }))
-            })))
-            .child(div().h(px(1.)).bg(rgb(0x2a3442)))
-            .child(div().text_xs().text_color(rgb(0x8d9bb0)).child("TASKS"))
-            .child(self.task_title.clone())
-            .child(button("create-task","+ New task",false).on_click(cx.listener(|this,_,_,cx|this.create_task(cx))))
-            .child(div().id("task-list").flex_1().min_h_0().overflow_y_scroll().flex().flex_col().gap_2().children(self.catalog.tasks.iter().filter(|t|Some(t.project_id)==self.project).enumerate().map(|(index,task)|{
-                let id=task.id;
-                div().id(("task",index)).p_2().rounded_md().bg(rgb(if self.selected==Some(id){0x293e57}else{0x1a2330})).cursor_pointer().hover(|s|s.bg(rgb(0x2a3749)))
-                    .on_click(cx.listener(move |this,_,_,cx|this.select_task(id,cx)))
-                    .child(div().font_weight(gpui::FontWeight::MEDIUM).child(truncate(&task.title,80)))
-                    .child(div().mt_1().text_xs().text_color(rgb(0x9aa9bd)).child(format!("{} · {}",task.agent_id,if self.busy.contains(&id){"working"}else{match task.state {TaskState::Failed=>"failed",TaskState::Completed=>"complete",TaskState::Waiting=>"waiting",_=>"ready"}})))
-            })))
-            .child(div().text_xs().text_color(rgb(0x8492a7)).child("Local history. External agents.\nPermissions stay in your control."))
-            .into_any_element()
-    }
     pub(super) fn conversation(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
         let Some(thread) = &self.thread else {
             return div().flex_1().flex().flex_col().justify_center().items_center().gap_3().p_8()

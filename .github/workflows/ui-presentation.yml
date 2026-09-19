@@ -34,7 +34,8 @@ jobs:
         run: cargo +1.98.1 fmt --check -p synara-app
       - name: Presentation unit regressions
         if: ${{ !cancelled() }}
-        run: cargo +1.98.1 test --locked -p synara-app --bin synara-app ui::
+        run: |
+          cargo +1.98.1 test --locked -p synara-app --bin synara-app ui::
       - name: Session choice contract regressions
         if: ${{ !cancelled() }}
         run: cargo +1.98.1 test --locked -p synara-app --bin synara-app shell::controls::tests

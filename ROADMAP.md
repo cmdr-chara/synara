@@ -6,6 +6,39 @@ It is a living engineering document, not a release announcement.
 
 ## Current checkpoint
 
+### September 20: searchable choices and rich native chat
+
+Source checkpoint: `917f7a0a96ff41c6a026ff0ed9a749f2556cdda8`, continuing
+`386e1b2a309b947bec1ddd9fe0e70e4f80a6a2a7` on `astra/gpui-clean-rewrite`.
+The product reference for this continuation is Electron Synara
+`948875954f432978eab7dd5fa44c3028b8d99a81`, not the older audit revision.
+
+D1/D8 now include searchable native model/agent choices, stable action identity
+after filtering, safe empty results, release-only selection and draft-preserving
+dismissal. Native chat adds aligned Markdown tables, read-only task checkboxes,
+fenced-code language labels and exact code copying using Synara's bundled icons.
+The existing controller, durable events, compact Add menu and reduced-motion
+boundary remain authoritative. Search does not restart the menu's entrance.
+
+The [checkpoint and verification receipt](docs/ui/parity-9488759.md) records the
+exact candidates, focused Rust and native X11 results, failure corrections and
+remaining limitations. The focused lane covers 20 Rust tests, seven test-selector
+regressions and 24 native interaction checks, including actual ACP model changes,
+code clipboard contents, narrow layouts and restart. Unknown/backend/dependency
+changes still select full native verification; documentation-only changes do not
+rebuild the application.
+
+This is a bounded D1/D8 continuation, not completion of either gate. Provider
+tabs/starred presets, the remaining composer controls, browser, Studio outputs,
+approval-policy parity and broader settings workflows remain open. The supplied
+73-screen archive still needs full native visual comparison: local image and
+execution tools failed in this continuation, so CI interaction evidence is not
+claimed as pixel-level acceptance. Existing chat creation, Studio scope and basic
+settings were already implemented before this slice. I10 and final delivery
+remain open. The earlier checkpoints below are retained as historical evidence.
+
+### Earlier integrated checkpoints
+
 Conversation/composer continuation from `1548e3ade5a0ea292b560727af579ae0a5a16ca0`:
 compact native session pickers, explicit backend-acknowledged configuration,
 capped composer and message hierarchy are implemented as a new verification
@@ -63,12 +96,16 @@ authenticated vendor journeys, full browser embedding, Apple device tooling,
 settings/secrets/platform UX, security/inspector completion, native macOS/Windows
 interaction acceptance and final delivery remain open where listed below.
 
-The GPUI application is functional and interaction-tested, but its visual shell is
-still prototype-quality. The next product-level UI pass will work directly on this
-branch, preserving the Rust backend while reimplementing the mature Synara
-Electron/main UX in native GPUI. Zeron is an architecture/design-quality reference
-only: study its GPUI structure and principles, but do not copy source, assets,
-exact tokens or distinctive compositions.
+The GPUI application is functional and interaction-tested. The September 19
+presentation pass brought its main shell, icons, chat layout, Studio switcher and
+basic settings closer to Synara, but functional parity remains open. The
+[Electron-to-GPUI feature audit](docs/ui/electron-vs-gpui-feature-gap.md) compares
+73 user-visible features against Electron revision `73cd1811a81e4a62b6199a722fd6fac379abf9ba`
+and native revision `c8e06e7d57c01b96744989746146fcfd507a3aa0`. It is a
+source audit, not runtime acceptance. Continue the native GPUI migration on
+`astra/gpui-clean-rewrite`, preserving the Rust backend and independently
+implementing Synara's product flows. Zeron remains an architecture/design-quality
+reference only; do not copy its source, assets, tokens or compositions.
 
 ## How to read and maintain this roadmap
 
@@ -139,6 +176,30 @@ recovery" are superseded by the integrated candidate above.
 These milestones are dependency groupings, not stopping points. Security,
 performance measurement and platform checks run alongside implementation.
 
+### Electron feature-parity gate
+
+The [feature-gap audit](docs/ui/electron-vs-gpui-feature-gap.md) is the dated
+inventory for this migration. Its “Present/partial” entries are not completed
+gates. Every missing or partial row must be implemented, explicitly excluded by
+an owner decision, or documented as a deliberate capability-driven difference.
+Before closing a row, record a native interaction check against the corresponding
+Electron flow, including restart/recovery, keyboard operation and supported
+platforms where relevant. Do not close a whole route because its sidebar label
+or placeholder screen exists.
+
+| Electron surface | Roadmap tasks owning remaining parity |
+| --- | --- |
+| Sidebar, projects, Spaces, import and search | F1, F7, F8 |
+| Transcript, composer, attachments, voice, handoff and Environment | D1–D4, D8–D12 |
+| Plugin/skill discovery and provider setup | B6, E6–E8, I6 |
+| Studio and Kanban | F9, F10 |
+| Pull requests and Git | H2–H6 |
+| Automations and scheduler | F11 |
+| Files, diff, dock, side chats and terminal tabs | A8, G1–G8 |
+| Settings, desktop capture and notifications | I1–I10 |
+| Embedded browser and device | K1–K6, L1–L5 |
+| Packaging, updater, cross-platform and accessibility | O1–O4, P1–P6 |
+
 ## A. Recover and complete the native terminal
 
 Status: **Integrated and verified on Linux; cross-platform acceptance remains open**.
@@ -172,6 +233,8 @@ runs are recorded in the current checkpoint.
   job/process group. Cover exit-before-stop, concurrent stop and reader teardown.
 - [x] A7 Run full desktop regression and focused terminal tests, then publish the
   coherent terminal checkpoint. Extend CI smoke to the accepted behavior.
+- [ ] A8 Add multiple terminal tabs and split/resize behavior, search and session
+  management. Prove independent PTY ownership and cleanup for each tab.
 
 Acceptance for the Linux implementation is met by the focused PTY/terminal tests
 and integrated native smoke. This does not establish Windows ConPTY/Job Object or
@@ -271,6 +334,15 @@ Final native CI proves that this combined source compiles, tests and opens in th
 GPUI desktop, but it does not yet close the long-conversation and complete
 interaction acceptance matrix below.
 
+D1/D8 presentation continuation: native GFM tables/task lists and code-copy actions
+now render from durable messages. Searchable model/agent choices preserve the
+controller's original indices and require a matching key release. The receipt in
+[parity-9488759.md](docs/ui/parity-9488759.md) covers positive and rejected search,
+actual model acknowledgement, Unicode copy, narrow table layout and restored
+transcripts. Full D1/D8 remain unchecked: rich media, structured tool cards,
+provider tabs/starred presets, mentions and the other listed controls are not
+completed by this slice. No approval policy or backend capability was invented.
+
 - [ ] D1 Complete rendering and durable replay for user/assistant text, thinking,
   tool lifecycle/results/failures, plans, usage, compaction, status and errors.
 - [ ] D2 Test stream ordering, duplicate handling, interrupted turns, overlapping
@@ -286,6 +358,23 @@ interaction acceptance matrix below.
   interactions where protocol permits. Validate required fields and cancellation.
 - [ ] D7 Ensure agent text/links/tool output cannot trigger commands, unsafe URLs,
   credential exposure or UI actions without an explicit trust boundary.
+- [ ] D8 Complete the Electron composer interaction set: file/folder/thread/
+  agent/skill mentions, slash-command discovery, model/effort presets and
+  capability-aware plan, goal, debug and fast controls. Unsupported actions must
+  not appear functional.
+- [ ] D9 Add edit/resend and safe turn rollback where supported, message fork and
+  pin, transcript find/minimap and structured tool/result cards. Preserve durable
+  history and require explicit confirmation for file-affecting rollback.
+- [ ] D10 Build the per-chat Environment surface: usage, branch/PR/automation
+  context, pinned checklist, notes, project instructions, recap, local servers,
+  editor targets and side-chat links. Persist user-owned state separately from
+  agent-generated text.
+- [ ] D11 Add image paste/drop/preview and generated-image presentation, window
+  context and voice recording/transcription through explicit platform permission
+  and attachment boundaries. Test failure, cancellation and restart paths.
+- [ ] D12 Implement provider/worktree handoff, cross-surface context, temporary
+  chats and safe thread export/share. Define persistence and deletion semantics
+  before exposing these actions.
 
 Acceptance: native UI tests cover both positive and rejected interactions, stale
 requests, concurrent requests, keyboard operation and restored conversations.
@@ -316,6 +405,9 @@ open as listed below.
   non-secret defaults. Store secret references, not literal secrets.
 - [ ] E7 Validate installed profiles through the same backend on each supported
   target. Show incompatible/unsupported distributions instead of guessing.
+- [ ] E8 Provide plugin and skill discovery, search, installed-state display and
+  capability-aware enable/disable management. Keep agent-owned extensions and
+  Synara-owned installation consent separate.
 
 Acceptance: fixture and real-distribution tests demonstrate consent, integrity,
 recoverable failure and no automatic launch merely from browsing/importing.
@@ -342,6 +434,18 @@ deterministic. Broader workspace/product flows remain open.
   missing directories, missing agents and failed session restoration.
 - [ ] F6 Keep local/remote identity separate. Never interpret a remote path through
   local filesystem callbacks or silently substitute a local execution host.
+- [ ] F7 Add Synara Spaces, including create/edit/delete, rename/reorder, project
+  assignment, activity state and restoration without losing existing projects.
+- [ ] F8 Complete project create/import/edit/pin/order and provider-thread import;
+  add combined project/thread/command search and the missing sidebar context
+  actions. Verify duplicate prevention and safe handling of missing paths.
+- [ ] F9 Complete Studio beyond a separate chat scope: generated output tree,
+  image previews and attributed files that reopen with their conversation.
+- [ ] F10 Complete Kanban overview and project boards with new-task drafting,
+  project/provider selection, status movement and clear run/stop semantics.
+- [ ] F11 Implement automation definitions, durable scheduling and run history,
+  plus create/edit/pause/resume/run/stop/delete UI. Cover time zones, missed runs,
+  failure/stop policy, thread ownership and restart without duplicate execution.
 
 Backend recovery checkpoint: `Store::backup_to`, `Store::restore_to` and asynchronous
 `WorkspaceService` wrappers now provide bounded online SQLite snapshots and
@@ -371,6 +475,11 @@ Status: **Partial**. Ownership: workspace file services and native editor UI.
 - [ ] G5 Complete staged/unstaged diff presentation, navigation, binary/renamed/
   deleted files, large-diff limits and link-back to the corresponding editor file.
 - [ ] G6 Keep scans, reads, search and diff computation off the rendering thread.
+- [ ] G7 Complete workspace dock tabs, adjustable/maximized splits and side chats;
+  persist layout deliberately and test narrow-window keyboard/focus behavior.
+- [ ] G8 Add cross-surface editor context and selection-to-chat with reviewed
+  references, multi-file tabs and the missing rich diff navigation/review UI.
+  Keep file authority and Git mutation in their existing services.
 
 Acceptance: edit/save/reopen and conflict-recovery journeys preserve content and
 formatting, and oversized/untrusted inputs do not freeze or escape the workspace.
@@ -396,6 +505,10 @@ open.
   concurrent index changes without discarding user changes.
 - [ ] H5 Reuse host-aware services for remote Git. Bound command output and keep
   commands asynchronous to GPUI.
+- [ ] H6 Implement the Pull requests route: repository discovery, list/search/
+  filters, detail/code/timeline/checks/reviews and authorized create, draft/ready,
+  close/reopen and merge actions. Handle auth, unavailable repositories and
+  concurrent remote changes without altering unrelated Git state.
 
 Typed backend operations now expose explicit branch/remotes/fetch/fast-forward
 pull/non-force push/worktree/stash actions with bounded progress, cancellation,
@@ -430,6 +543,23 @@ Status: **Partial / Open**. Ownership: workspace settings and platform boundary.
   accessibility labels, contrast and keyboard-only workflows.
 - [ ] I5 Keep any future direct `ModelProvider` separate from coding-agent backends.
   Do not build redundant provider runtimes merely to duplicate agent behavior.
+- [ ] I6 Finish all 15 native settings sections against the feature-gap audit.
+  In particular, make Chat behavior editable; add editable keybindings, provider
+  usage/limits, richer profile insights, models/writing and archived deletion.
+  Keep unavailable provider data visibly unavailable rather than invented.
+- [ ] I7 Complete Appearance preferences: custom light/dark theme colors and
+  import/export, app icon/title bar, density, chat width, typography/terminal
+  sizes, time format, contrast and translucent sidebar, with reduced-motion and
+  restore-defaults behavior.
+- [ ] I8 Add native notification preferences/test delivery and AppSnap/window
+  capture setup, permissions, shortcut and attachment flow on supported systems.
+  Expose a clear unsupported state elsewhere.
+- [ ] I9 Add managed MCP connection pairing/test/revoke and managed-worktree
+  inspection/cleanup in Settings, subject to explicit consent and safe secret/
+  linked-conversation handling.
+- [ ] I10 Compare native main, chat, Studio, settings and dock screenshots and
+  interactions with Synara's owned UI at common scales. Finish missing menu,
+  popup and work-detail transitions; verify focus, hit testing and reduced motion.
 
 Acceptance: secret-canary tests cover storage, logs, export and screenshots.
 Platform-native UX and credential behavior need real per-platform tests.
@@ -489,6 +619,9 @@ the application yet, so K1-K5 remain open.
   permissions and bounded IPC, not a general privileged command bridge.
 - [ ] K5 Test browser/helper shutdown, downloads, auth isolation and malicious
   content on each implemented platform.
+- [ ] K6 Match the Electron browser workflow after the safe host exists: local
+  server discovery, tab actions, controlled screenshots/annotations and approved
+  agent automation. Keep cookie/vault and download handling inside K3–K5 policy.
 
 Acceptance: embedded content cannot access workspace or application credentials
 outside a reviewed permission boundary. Browser delays do not block M1/M2.
@@ -505,6 +638,8 @@ required by supported APIs.
   display resize and explicit user-directed input.
 - [ ] L4 Test on actual supported Apple hardware/OS. Make unsupported platforms
   explicit. Do not call an untested IPC mock device support.
+- [ ] L5 Provide the native device viewer, frame/input controls and agent-visible
+  device tools only after L2–L4 prove their supported helper and permission path.
 
 Acceptance: a real supported simulator/device can be displayed and controlled,
 with reliable disconnect/cleanup and no undocumented privilege escalation.
@@ -598,6 +733,9 @@ terminal, credential, installer or updater acceptance, so P1-P5 remain open.
 - [ ] P5 Obtain owner decisions for project licensing, signing identities,
   distribution/update endpoints and supported OS minimums. Do not invent terms,
   publish packages or create a release without separate authority.
+- [ ] P6 Exercise packaged-app desktop journeys on each advertised OS, including
+  notifications, file/window capture where supported, restart/restore and update
+  failure recovery. Record feature exclusions and platform-specific differences.
 
 Acceptance: each advertised target has its own working artifact and interaction
 results. CI cross-compilation alone does not qualify a target as supported.
@@ -614,7 +752,9 @@ other open lanes below must be reverified again before delivery.
 - [ ] Q1 Run the applicable verification commands below against the exact final
   candidate, not only an earlier green commit.
 - [ ] Q2 Map every implemented UI feature to tests and every remaining requested
-  feature to an open task here. Remove dead scaffolding and stale claims.
+  feature in the [Electron feature-gap audit](docs/ui/electron-vs-gpui-feature-gap.md)
+  to an open task here or an explicit owner-approved exclusion. Remove dead
+  scaffolding and stale claims.
 - [ ] Q3 Synchronize README, settings/profile examples, architecture boundaries,
   compatibility matrix, security notes, migration/backup and troubleshooting docs.
 - [ ] Q4 Check formatting, secrets, dependency notices and generated/vendor
@@ -685,7 +825,12 @@ Remaining limitations:
 | Permissions, elicitations, filesystem/terminal callbacks | A, B, D, G, N |
 | Registry metadata/distributions, secure install and inspector | E, N |
 | Workspace/projects/tasks, SQLite, settings and restoration | F, I |
+| Spaces, project/thread import, sidebar search and Studio outputs | F7–F9 |
+| Kanban task creation/movement and Automations | F10–F11 |
 | Editor/explorer, diffs and system Git workflows | G, H |
+| Pull request discovery, review and authorized actions | H6 |
+| Chat actions, multimodal input, handoff and Environment context | D8–D12 |
+| Plugins, skills and complete settings/appearance | E8, I6–I10 |
 | Native terminal, PTY/ConPTY and process supervision | A, M |
 | SSH, remote files/agents/PTY/Git and forwarding | J |
 | Browser, OAuth, downloads and automation | K, I, N |
@@ -695,21 +840,23 @@ Remaining limitations:
 
 ## Immediate execution queue
 
-1. Replace the prototype-quality GPUI shell with the product UI overhaul directly
-   on `astra/gpui-clean-rewrite`. Preserve the Rust backend and mature Synara
-   Electron/main workflows. Use Zeron only as a GPUI architecture/design-quality
-   reference and independently implement Synara-owned components, tokens and
-   composition without copying source/assets or reproducing it one-to-one.
-2. Finish I and N alongside the UI work: settings/platform UX, authentication and
-   secret handling, security boundaries, diagnostics and ACP inspector.
-3. Continue the remaining product gates that are not blocked by credentials or
-   platform hardware: B/C/D acceptance gaps, E lifecycle, K native browser adapter,
-   J5/J6 remote cleanup/forwarding and O/P real measurement/platform evidence.
-   C3/C4 require separately authorized vendor credentials. L requires supported
-   Apple hardware/OS evidence and remains lower priority than the core desktop path.
-4. Run Q against the exact final candidate only after the product UI and applicable
-   open lanes are integrated: synchronize docs, run the complete verification
-   contract, record actual agents/platforms tested, verify the independent root and
-   protected refs, and publish only `astra/gpui-clean-rewrite`.
+1. Complete the main chat journey first (D8–D12): composer discovery, attachments,
+   queue/steer, rich transcript actions and Environment context. Keep the
+   independently authored Synara visual/motion pass in I10 aligned with each
+   implemented flow.
+2. Deliver the missing whole routes and sidebar workflows (F7–F11, H6): Spaces,
+   imports/search, Studio outputs, Kanban task creation, Automations and Pull
+   requests. Treat scheduler and remote PR actions as backend work with explicit
+   authorization and recovery, not just screen reconstruction.
+3. Complete workspace and settings depth (A8, E8, G7–G8, I6–I9), then Browser
+   and supported Device tools (K/L). Finish I/N security and secrets alongside
+   these flows. Continue B/C acceptance, E lifecycle, J5/J6 remote cleanup and
+   O/P measurement/platform evidence. C3/C4 require separately authorized vendor
+   credentials; L requires supported Apple hardware/OS evidence.
+4. For each feature, compare the native interaction to the dated
+   [feature-gap audit](docs/ui/electron-vs-gpui-feature-gap.md) and record exact
+   candidate/runtime evidence. Run Q against the final integrated candidate,
+   synchronize docs, verify the independent root and protected refs, and publish
+   only `astra/gpui-clean-rewrite`.
 
 Native navigation continuation (September 19, 2026): the published-source shell has a modular navigation/design foundation, backend-owned project/chat actions and a native keyboard-menu regression in regular CI. This is a partial checkpoint, not recovery of the unpublished local UI or a visual-parity claim. See `docs/ui/native-navigation.md` and the exact-candidate evidence receipt. Existing unfinished roadmap items remain open.

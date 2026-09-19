@@ -27,10 +27,10 @@ jobs:
           source = subprocess.check_output(['git','show','a1fe9d7fe853a971160b36555c39f2e1caccb38b:.github/workflows/ui-presentation.yml'], text=True)
           generator = textwrap.dedent(source.split("          python3 - <<'PY'\n",1)[1].split('\n          PY',1)[0])
           exec(compile(generator, '<tested-parity-candidate>', 'exec'))
-          # Only the harness changes here. Window focus alone does not choose an
-          # editor after an external X11 clipboard client or a popup has owned it.
+          # Window focus alone does not choose an editor after an external X11
+          # clipboard client or a popup has owned it. Keep the exact-text assertion.
           edit('scripts/native_controls_smoke.py', "    ui.focus()\n    ui.key('a', ('Control_L',))\n    ui.text('hold')\n    assert ui.copy_input() == 'hold', 'The busy-state probe requires exactly hold'", "    ui.focus()\n    scenario.click_control('composer-input')\n    ui.key('a', ('Control_L',))\n    ui.text('hold')\n    observed = ui.copy_input()\n    assert observed == 'hold', f'The busy-state probe requires exactly hold, got {observed!r}'")
-          edit('scripts/native_picker_search_smoke.py', "    ui = scenario.desktop\n    ui.key('a', ('Control_L',))", "    ui = scenario.desktop\n    scenario.click_control('choice-search')\n    ui.key('a', ('Control_L',))")
+          edit('scripts/native_picker_search_smoke.py', "def search(scenario, query, expected):\n    scenario.desktop.key", "def search(scenario, query, expected):\n    scenario.click_control('choice-search')\n    scenario.desktop.key")
           Path('/tmp/synara-parity-paths.json').write_text(json.dumps(sorted(changed)))
           PY
       - name: Install pinned formatter and native dependencies
@@ -66,18 +66,44 @@ jobs:
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         timeout-minutes: 3
         run: python3 scripts/native_picker_search_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-search
-      - name: Export verified source delta for plugin publication
+      - name: Record verified roadmap progress and export source
         run: |
           python3 - <<'PY'
-          import base64,gzip,hashlib,json,subprocess
+          import base64,gzip,hashlib,json,os,subprocess
           from pathlib import Path
           paths=json.loads(Path('/tmp/synara-parity-paths.json').read_text())
+          revision=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
+          run='https://github.com/cmdr-chara/synara/actions/runs/'+os.environ['GITHUB_RUN_ID']
+          earlier='https://github.com/cmdr-chara/synara/actions/runs/35476586720/job/105986775858'
+          receipt = '# Provider favorites, durable drafts and Chat behavior\n\nDate: September 20, 2026 (Europe/Rome).\n\n'
+          receipt += '## Implemented slice\n\nProvider-icon tabs and a Starred tab now filter native model choices without changing their controller indices. Advertised model favorites persist by agent, selector and value. Starring never selects a model, starts an agent or sends text. Explicit Connect and advertised mode/config choices are available in the same picker. The model list uses compact rows, native search, saved UI fonts, the existing 150 ms entrance and reduced motion. The two added Tabler star paths match the icon family used by Electron 9488759.\n\n'
+          receipt += 'Drafts are stored per task, separately from messages and settings. Writes are debounced, serialized and coalesced. Late loads and user-message echoes cannot erase newer edits, including identically retyped text. Drafts restore without starting agents. Deleting a task removes its draft in the same transaction. Closing drains writes in a native modal, supports cancellation, and keeps text available on a save error.\n\n'
+          receipt += 'Chat settings now edit Enter-to-send and message timestamps, persist them and restore only Chat defaults. Shift+Enter adds a line. With Enter-to-send disabled, Ctrl+Enter or Command+Enter still sends. Settings apply after successful persistence. No permission policy, protocol schema or dependency was changed.\n\n'
+          receipt += '## Verification evidence\n\nPlatform: Ubuntu 24.04 x64, Rust 1.98.1, locked GPUI, private X11/Xvfb with owned SQLite/project data and ACP fixture agents.\n\n'
+          receipt += f'The candidate generated at `a1fe9d7fe853a971160b36555c39f2e1caccb38b` passed [storage/settings, draft/menu/control/input/close unit tests, changed-package strict Clippy, app/fixture build, native model/draft, native Chat behavior, Studio creation and guarded-close journeys]({earlier}). That run as a whole FAILED its combined legacy session/search step. It is not reported as an overall pass.\n\n'
+          receipt += f'The same application generator was reused unchanged for `{revision}`. Only the legacy test input targeting was corrected: explicitly select the owned composer/search editor after native clipboard and popup operations. The exact text, event and release-only assertions remain. [This focused follow-up]({run}) passed both native session-control and filtered-search suites, formatting, scope tests and application/fixture build. Already-passing application unit/lint/new native journeys were not repeated in this follow-up.\n\n'
+          receipt += 'The earlier restart test incorrectly launched with --workspace for the original project, overriding saved chat selection. It now requests restoration explicitly and checks task-scoped events for the selected chat. This was a harness correction, not a claim that a product restart defect was fixed.\n\n'
+          receipt += '## Reference and remaining gaps\n\nReference: Emanuele-web04/synara at `948875954f432978eab7dd5fa44c3028b8d99a81`. The requested 73-image archive was retried through local and independent file-access paths. The local host and image access continued to return transport timeouts, and the file-library searches did not recover the archive. No 73-screen inspection or pixel-level visual acceptance is claimed. Native test captures are retained with the workflow artifacts for seven days.\n\n'
+          receipt += 'D4/D8/F2/I6/I10 advanced but remain open as whole gates. Favorites currently save model identity, not complete model-plus-effort trait presets, and only currently advertised choices can be applied. Full browser embedding, approval-policy parity, Studio output/image trees, Kanban task creation, Spaces, automation scheduling, attachments/voice, richer transcript actions, remaining settings and cross-platform GUI acceptance are still open. Native model-provider authentication and actual OS IME/screen-reader journeys were not tested.\n\n'
+          receipt += '## Publication integrity\n\nThe source delta is exported only after the selected checks pass. It is applied through the existing branch/root-guarded source publisher. Final publication must remove the temporary generator workflow and verify these source blob identities. No changes to main, archived history, PRs or releases are authorized by this checkpoint.\n\n```text\n'
+          for p in paths:
+              receipt += subprocess.check_output(['git','hash-object',p],text=True).strip()+'  '+p+'\n'
+          receipt += '```\n'
+          doc='docs/ui/parity-model-drafts.md'
+          assert not Path(doc).exists()
+          Path(doc).write_text(receipt,encoding='utf-8')
+          roadmap=Path('ROADMAP.md'); text=roadmap.read_text(); marker='## Current checkpoint\n'
+          assert text.count(marker)==1
+          delta='\nProvider favorites, durable drafts and editable Chat behavior (September 20, 2026):\nprovider-icon/Starred tabs, explicitly acknowledged model selection, persisted model\nfavorites, per-chat draft restoration, ordered close-time saving and Enter/timestamp\npreferences are implemented in the checked source delta. Targeted storage/input/UI\ntests, strict changed-package Clippy and native fixture journeys provide bounded\nacceptance. See [the exact candidate and evidence](docs/ui/parity-model-drafts.md).\nThe first combined run had a legacy input-targeting failure, retained in the\nrecord; the focused follow-up validates the correction without weakening assertions.\nD4/D8/F2/I6/I10 remain open for their full scope. The 73-image reference archive\nstill could not be opened after renewed transport/file-access attempts, so this is\nnot a complete visual-parity or cross-platform acceptance claim.\n\n'
+          roadmap.write_text(text.replace(marker,marker+delta),encoding='utf-8')
+          paths += [doc,'ROADMAP.md']
+          subprocess.run(['python3','scripts/check_roadmap.py'],check=True)
           subprocess.run(['git','add','--',*paths],check=True)
           unexpected=set(subprocess.check_output(['git','diff','--name-only'],text=True).splitlines())
           assert not unexpected,unexpected
           data=subprocess.check_output(['git','diff','--cached','--no-ext-diff','--no-renames','--binary'])
           assert b'GIT binary patch' not in data
-          package={'base_commit':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'mode':'diff','sha256':hashlib.sha256(data).hexdigest(),'gzip_base64':base64.b64encode(gzip.compress(data,mtime=0)).decode(),'message':'feat(ui): add provider favorites, durable drafts and editable chat behavior'}
+          package={'base_commit':revision,'mode':'diff','sha256':hashlib.sha256(data).hexdigest(),'gzip_base64':base64.b64encode(gzip.compress(data,mtime=0)).decode(),'message':'feat(ui): add provider favorites, durable drafts and editable chat behavior'}
           Path('/tmp/ui-candidate').mkdir(exist_ok=True)
           Path('/tmp/ui-candidate/source.patch').write_bytes(data)
           Path('/tmp/ui-candidate/package.json').write_text(json.dumps(package))

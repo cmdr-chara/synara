@@ -41,7 +41,7 @@ jobs:
       - name: Native system libraries
         run: |
           sudo apt-get update
-          sudo apt-get install -y clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil fonts-dejavu-core
+          sudo apt-get install -y clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil xclip fonts-dejavu-core
       - name: Fetch pinned dependencies
         run: cargo +1.98.1 fetch --locked
       - name: Choose dependency cache export
@@ -136,6 +136,18 @@ jobs:
             /tmp/synara-native-smoke/*.png
             /tmp/synara-native-smoke/*.log
             /tmp/synara-native-smoke/result.json
+          retention-days: 7
+          if-no-files-found: warn
+      - name: Native navigation and backend interaction smoke
+        timeout-minutes: 4
+        run: python3 scripts/native_navigation_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/synara-navigation-smoke
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-navigation-smoke
+          path: |
+            /tmp/synara-navigation-smoke/*.png
+            /tmp/synara-navigation-smoke/result.json
           retention-days: 7
           if-no-files-found: warn
       - name: Export reproducible verification inputs

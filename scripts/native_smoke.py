@@ -176,8 +176,14 @@ class Desktop:
         time.sleep(0.035)
 
     def copy_input(self):
+        # xclip is an external X11 selection requester and may leave native window
+        # focus elsewhere. Reassert the owned app window before dispatching copy
+        # shortcuts so a prior clipboard read cannot make the next assertion read
+        # stale clipboard contents.
+        self.focus()
         self.key('a', ('Control_L',))
         self.key('c', ('Control_L',))
+        time.sleep(0.12)
         env = {key: os.environ[key] for key in ('PATH', 'LD_LIBRARY_PATH') if key in os.environ}
         env['DISPLAY'] = self.name
         result = subprocess.run(['xclip', '-selection', 'clipboard', '-out'], env=env,

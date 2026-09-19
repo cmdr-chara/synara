@@ -4,9 +4,11 @@ The native Rust/GPUI application's first-party copyright and MIT license are
 recorded in the repository's root `LICENSE`. Imported artwork and fonts retain
 the separate source and license records below.
 
-- `synara.svg`: Synara's logo from Emanuele-web04/synara, revision
-  `33333439c4b9c74d0097bc01196cccc921f67cf3`, `assets/prod/logo.svg`.
-  Reused at the user's request to preserve their Synara identity.
+- `synara.svg`: Synara's logo from Emanuele-web04/synara,
+  `assets/prod/logo.svg`, byte-identical to Emanuele Di Pietro's
+  `2bc6ac0ff` "Refresh app icon assets" commit. Emanuele's earlier
+  `17d5614f8` commit renamed the branding to Synara. Reused at the user's
+  request to preserve their Synara identity.
 - `fonts/CalSans-Regular.ttf`: unmodified Cal Sans from Google Fonts,
   Git blob `8704264069e7d660454b244797a3f1bb1d94a9c2`,
   https://github.com/google/fonts/tree/main/ofl/calsans.
@@ -18,7 +20,6 @@ the separate source and license records below.
   (and `central-icons-fill/stop.svg` for Stop). These are existing Synara product
   assets reused at the user's request. Central Icons is a third-party icon
   library, https://centralicons.com/; this record does not relicense its artwork.
-  The source repository's notice is retained in `licenses/Synara-source-MIT.txt`.
 - `icons/tabler/*.svg`: the corresponding Tabler outlines, version 3.44.0,
   matching Synara's pinned `@tabler/icons-react` dependency and component choices.
   Source: https://github.com/tabler/tabler-icons/tree/v3.44.0/icons/outline.
@@ -32,7 +33,7 @@ the separate source and license records below.
 `icons/manifest.json` records each native glyph's exact source and SHA-256.
 No Electron application logic is embedded or executed by these static assets.
 
-The current font and icon notices are also embedded in the application's Help
-panel. The original Synara source license is retained here with the imported
-assets as a historical permission notice.
+The current first-party, font, and icon notices are also embedded in the
+application's Help panel. The native UI does not import the Electron source
+license or frontend code. The original logo and icon sources are recorded above.
 No wallpaper or desktop notification from the user's captures is an app asset.

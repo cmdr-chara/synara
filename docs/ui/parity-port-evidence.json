@@ -4,7 +4,7 @@
   "baseline": "3df6a174419b997ee2ef47cd03b25b9024ec9e9e",
   "branch": "cmdr-chara/native-ui-parity",
   "published": true,
-  "source_sha256": "b2b08cfee3674fc209724d80c00564cb4470a822d8efa8172ab3f6c36fd6c21a",
+  "source_sha256": "061f25cf82d2b0e4185dead316802509de0068266f6d55cf252969f5ab0dc364",
   "source_hash_format": "Sorted UTF-8 relative path + NUL + file bytes + NUL, concatenated",
   "source_paths": [
     ".github/workflows/native.yml",
@@ -112,7 +112,6 @@
     "crates/synara-app/assets/licenses/CalSans-OFL.txt",
     "crates/synara-app/assets/licenses/React-Icons-MIT.txt",
     "crates/synara-app/assets/licenses/Simple-Icons-CC0.txt",
-    "crates/synara-app/assets/licenses/Synara-source-MIT.txt",
     "crates/synara-app/assets/licenses/Tabler-MIT.txt",
     "crates/synara-app/assets/synara.svg",
     "crates/synara-app/src/close.rs",
@@ -521,7 +520,7 @@
     "status": "passed",
     "checks": 10,
     "suite": "scripts/native_presentation_smoke.py",
-    "evidence_path": "/tmp/synara-license-help-check-20260919/result.json",
-    "stage": "After adding the native root MIT notice and updating Help; imported upstream notice preserved separately."
+    "evidence_path": "/tmp/synara-logo-provenance-check-20260919/result.json",
+    "stage": "After removing the historical upstream license copy and recording the Synara logo and third-party icon sources in Help."
   }
 }

@@ -140,8 +140,9 @@ is recorded in [`icons/manifest.json`](../../crates/synara-app/assets/icons/mani
 Source notices and font/icon licenses are retained in
 [`assets/NOTICE.md`](../../crates/synara-app/assets/NOTICE.md). The native
 application's [MIT license](../../LICENSE) and current asset notices appear in
-Help. The original repository's license notice remains with imported assets;
-Central artwork is not relabeled as Lucide or relicensed by this port.
+Help. The original logo is traced to Emanuele's Synara rebrand commits, and
+the Central artwork is recorded as third-party material; it is not relabeled
+as Lucide or relicensed by this port.
 The Linux UI uses Liberation Sans, matching the inspected local system-ui font
 resolution. This is an asset provenance record, not a legal clearance claim for
 other content or the entire Electron repository.

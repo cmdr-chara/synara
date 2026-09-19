@@ -65,7 +65,9 @@ memory, GPU VRAM or total operating-system cost.
   `Chrome/150.0.7871.224`, Electron 43.4.1 (reported by the packaged runtime).
 - Exact binary, archive, source and harness hashes are in
   [provenance.json](provenance.json). The source manifest is the frozen
-  [benchmark source manifest](benchmark-source-manifest.json).
+  [benchmark source manifest](benchmark-source-manifest.json). It records the
+  source tree at measurement time, including a license file since removed from
+  the current branch; it is not a current file inventory.
 
 - CPU: 13th Gen Intel(R) Core(TM) i5-1334U; 12 logical cores.
 - RAM: 31.0 GiB; kernel/platform: `Linux-7.2.5-1-cachyos-bore-x86_64-with-glibc2.44`.

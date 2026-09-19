@@ -13,26 +13,24 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Decode an immutable source envelope without executing or applying its contents
+      - name: Check canonical transport padding against immutable payload integrity
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           python3 - <<'PY'
-          import base64, gzip, hashlib, io, json, os, pathlib, urllib.request, zlib
-          repository = 'cmdr-chara/synara'
+          import base64, gzip, hashlib, io, json, os, pathlib, re, urllib.request, zlib
           source_blob = '1a9f70e44a8b9cb7aadb150ee2ab5da936c0f840'
           root = pathlib.Path(os.environ['RUNNER_TEMP']) / 'native-recovery-audit'
           root.mkdir()
           def api(route, body=None):
-              request = urllib.request.Request('https://api.github.com/repos/' + repository + '/' + route,
+              request = urllib.request.Request('https://api.github.com/repos/cmdr-chara/synara/' + route,
                   data=None if body is None else json.dumps(body).encode(),
                   headers={'Accept': 'application/vnd.github+json', 'User-Agent': 'Synara-source-recovery', 'Authorization': 'Bearer ' + os.environ['GH_TOKEN']})
               with urllib.request.urlopen(request, timeout=30) as response:
                   data = response.read(4 * 1024 * 1024 + 1)
               assert len(data) <= 4 * 1024 * 1024
               return json.loads(data)
-          blob = api('git/blobs/' + source_blob)
-          data = base64.b64decode(blob['content'])
+          data = base64.b64decode(api('git/blobs/' + source_blob)['content'])
           assert hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest() == source_blob
           package = json.loads(data)
           report = {'source_blob': source_blob, 'source_commit': '6bdd1614e60fb598f9e75484a34e86f69ae58335',
@@ -41,22 +39,20 @@ jobs:
           try:
               encoded = package.get('gzip_base64')
               assert isinstance(encoded, str) and len(encoded) < 4 * 1024 * 1024
-              # The strict audit found bytes after Base64 padding. A bounded
-              # prefix salvage is accepted ONLY if gzip integrity and the exact
-              # original uncompressed SHA-256 both match. No guessed source.
-              end = encoded.find('=')
-              if end != -1:
-                  while end < len(encoded) and encoded[end] == '=':
-                      end += 1
-                  report['trailing_encoded_bytes'] = len(encoded) - end
-                  encoded = encoded[:end]
+              # Canonicalize only trailing transport padding. Interior characters,
+              # compressed bytes, gzip CRC and original SHA-256 are not repaired.
+              assert re.fullmatch(r'[A-Za-z0-9+/]+={0,16}', encoded)
+              unpadded = encoded.rstrip('=')
+              report['original_padding'] = len(encoded) - len(unpadded)
+              report['encoded_length_modulo_four'] = len(encoded) % 4
+              encoded = unpadded + '=' * (-len(unpadded) % 4)
               compressed = base64.b64decode(encoded, validate=True)
               with gzip.GzipFile(fileobj=io.BytesIO(compressed)) as stream:
                   decoded = stream.read(20 * 1024 * 1024 + 1)
               assert len(decoded) <= 20 * 1024 * 1024
               report['sha256'] = hashlib.sha256(decoded).hexdigest()
               report['checksum_matches'] = report['sha256'] == package.get('sha256')
-              assert report['checksum_matches'], 'source envelope checksum mismatch'
+              assert report['checksum_matches'], 'original source SHA-256 differs'
               sources = json.loads(decoded)
               assert isinstance(sources, dict) and 0 < len(sources) < 2000
               for name, content in sources.items():

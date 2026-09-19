@@ -84,7 +84,10 @@ fn running(pid: u32) -> bool {
 #[tokio::test]
 async fn normal_parent_exit_releases_job_and_kills_owned_descendant() {
     let root = tempfile::tempdir().unwrap();
-    let process = LocalHost.spawn(&launch(root.path()), root.path()).await.unwrap();
+    let process = LocalHost
+        .spawn(&launch(root.path()), root.path())
+        .await
+        .unwrap();
     let child = child_pid(root.path()).await;
     assert!(running(child), "fixture descendant never started");
 

@@ -1,6 +1,4 @@
-use crate::{
-    StorageError, StorageResult, Store, WorkspaceError, WorkspaceResult, WorkspaceService,
-};
+use crate::{StorageResult, Store, WorkspaceError, WorkspaceResult, WorkspaceService};
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 

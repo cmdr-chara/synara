@@ -41,6 +41,15 @@ jobs:
           try:
               encoded = package.get('gzip_base64')
               assert isinstance(encoded, str) and len(encoded) < 4 * 1024 * 1024
+              # The strict audit found bytes after Base64 padding. A bounded
+              # prefix salvage is accepted ONLY if gzip integrity and the exact
+              # original uncompressed SHA-256 both match. No guessed source.
+              end = encoded.find('=')
+              if end != -1:
+                  while end < len(encoded) and encoded[end] == '=':
+                      end += 1
+                  report['trailing_encoded_bytes'] = len(encoded) - end
+                  encoded = encoded[:end]
               compressed = base64.b64decode(encoded, validate=True)
               with gzip.GzipFile(fileobj=io.BytesIO(compressed)) as stream:
                   decoded = stream.read(20 * 1024 * 1024 + 1)

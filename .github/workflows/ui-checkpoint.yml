@@ -38,6 +38,7 @@ jobs:
               'crates/synara-app/src/shell.rs': '7e0e217b73491823732199a54374a286f13a027f',
               'crates/synara-app/src/input.rs': '6b85843db1cda6372048795400cfbcfd9cc7a77f',
               'crates/synara-app/src/shell/conversation.rs': 'db645ae0bd7a67326df576c1fc902fcafb809113',
+              '.github/workflows/native.yml': '6b034788e1273ff60242af93ff2b446d5ea733a5',
           }
           for name, sha in expected.items():
               assert blob_sha(pathlib.Path(name).read_bytes()) == sha, 'concurrent source change: ' + name
@@ -51,8 +52,8 @@ jobs:
           for name, sha in inputs.items():
               path = pathlib.Path(name)
               assert not path.exists(), 'new source path already exists: ' + name
-              url = 'https://api.github.com/repos/cmdr-chara/synara/git/blobs/' + sha
-              request = urllib.request.Request(url, headers={'Accept': 'application/vnd.github+json', 'User-Agent': 'Synara-native-verification'})
+              request = urllib.request.Request('https://api.github.com/repos/cmdr-chara/synara/git/blobs/' + sha,
+                  headers={'Accept': 'application/vnd.github+json', 'User-Agent': 'Synara-native-verification'})
               with urllib.request.urlopen(request, timeout=30) as response:
                   payload = json.loads(response.read(1024 * 1024))
               assert payload['encoding'] == 'base64' and payload['size'] < 128 * 1024
@@ -67,7 +68,8 @@ jobs:
           text = replace(text, '            Self::Chevron => &[&[(6., 9.), (12., 15.), (18., 9.)]],', '            Self::Chevron => &[&[(6., 9.), (12., 15.), (18., 9.)]],\n            Self::ChevronRight => &[&[(9., 6.), (15., 12.), (9., 18.)]],')
           p.write_text(text)
           p = pathlib.Path('crates/synara-app/src/shell/navigation.rs')
-          text = replace(p.read_text(), 'Some(Glyph::Chevron), self.navigation.projects_open,', 'Some(if self.navigation.projects_open { Glyph::Chevron } else { Glyph::ChevronRight }), false,')
+          text = replace(p.read_text(), 'use super::*;\n', 'use super::*;\nuse gpui::FocusHandle;\n')
+          text = replace(text, 'Some(Glyph::Chevron), self.navigation.projects_open,', 'Some(if self.navigation.projects_open { Glyph::Chevron } else { Glyph::ChevronRight }), false,')
           text = replace(text, 'Some(Glyph::Chevron), self.navigation.chats_open,', 'Some(if self.navigation.chats_open { Glyph::Chevron } else { Glyph::ChevronRight }), false,')
           text = replace(text, '                            if this.project.is_some() {', '                            this.navigation.task_page = 0;\n                            if this.project.is_some() {')
           p.write_text(text)
@@ -90,13 +92,30 @@ jobs:
           start, end = text.index('    pub(super) fn sidebar('), text.index('    pub(super) fn conversation(')
           assert start < end
           p.write_text(text[:start] + text[end:])
+          p = pathlib.Path('.github/workflows/native.yml')
+          text = p.read_text()
+          extra = '''      - name: Native navigation and backend interaction smoke
+                  timeout-minutes: 4
+                  run: python3 scripts/native_navigation_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/synara-navigation-smoke
+                - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+                  if: always()
+                  with:
+                    name: native-navigation-smoke
+                    path: |
+                      /tmp/synara-navigation-smoke/*.png
+                      /tmp/synara-navigation-smoke/result.json
+                    retention-days: 7
+                    if-no-files-found: warn
+          '''
+          # Dedent the continuation lines while preserving the YAML step's six spaces.
+          extra = extra.splitlines()[0] + '\n' + '\n'.join(line[10:] for line in extra.splitlines()[1:]) + '\n'
+          text = replace(text, '      - name: Export reproducible verification inputs\n', extra + '      - name: Export reproducible verification inputs\n')
+          p.write_text(text)
           p = pathlib.Path('ROADMAP.md')
           text = p.read_text()
-          note = '\n\nNative navigation continuation (September 19, 2026): the published-source shell now has a modular navigation/design foundation, backend-owned project/chat actions and a native keyboard-menu regression. This is a partial checkpoint, not recovery of the unpublished local UI or a visual-parity claim. See `docs/ui/native-navigation.md` and its candidate-specific evidence receipt. Existing unfinished roadmap items remain open.\n'
+          note = '\n\nNative navigation continuation (September 19, 2026): the published-source shell now has a modular navigation/design foundation, backend-owned project/chat actions and a native keyboard-menu regression in regular native CI. This is a partial checkpoint, not recovery of the unpublished local UI or a visual-parity claim. See `docs/ui/native-navigation.md` and its candidate-specific evidence receipt. Existing unfinished roadmap items remain open.\n'
           assert 'Native navigation continuation (September 19, 2026)' not in text
           p.write_text(text.rstrip() + note)
-          # The candidate contains no persistent mutation workflow. This job only
-          # creates reviewed Git objects; a separate non-forced ref update promotes it.
           pathlib.Path('.github/workflows/ui-checkpoint.yml').unlink()
           root = pathlib.Path(os.environ['RUNNER_TEMP']) / 'ui-evidence'
           root.mkdir()
@@ -111,23 +130,34 @@ jobs:
         run: |
           set -euo pipefail
           cargo +1.98.1 fmt -p synara-app
-          git add -- crates/synara-app/src scripts/native_navigation_smoke.py docs/ui/native-navigation.md ROADMAP.md .github/workflows/ui-checkpoint.yml
+          git add -- crates/synara-app/src scripts/native_navigation_smoke.py docs/ui/native-navigation.md ROADMAP.md .github/workflows/ui-checkpoint.yml .github/workflows/native.yml
           git diff --cached --check
           git diff --cached --stat
           git write-tree > "$RUNNER_TEMP/ui-evidence/tested-tree.txt"
           git diff --cached --binary > "$RUNNER_TEMP/ui-evidence/source.patch"
-          {
-            cargo +1.98.1 fmt --check
-            cargo +1.98.1 check --quiet --locked --workspace
-            cargo +1.98.1 clippy --quiet --locked --workspace --all-targets --all-features -- -D warnings
-            cargo +1.98.1 test --quiet --locked --workspace
-            python3 scripts/audit_workspace.py
-            python3 scripts/check_roadmap.py --self-test
-            python3 scripts/check_roadmap.py
-            python3 scripts/test_audit_workspace.py
-            python3 scripts/test_apply_source.py
-            cargo +1.98.1 build --quiet --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture
-          } 2>&1 | tee "$RUNNER_TEMP/ui-evidence/checks.log"
+          python3 - <<'PY' 2>&1 | tee "$RUNNER_TEMP/ui-evidence/checks.log"
+          import json, os, pathlib, shlex, subprocess
+          checks = [
+              'cargo +1.98.1 fmt --check',
+              'cargo +1.98.1 check --quiet --locked --workspace',
+              'cargo +1.98.1 clippy --quiet --locked --workspace --all-targets --all-features -- -D warnings',
+              'cargo +1.98.1 test --quiet --locked --workspace',
+              'python3 scripts/audit_workspace.py',
+              'python3 scripts/check_roadmap.py --self-test',
+              'python3 scripts/check_roadmap.py',
+              'python3 scripts/test_audit_workspace.py',
+              'python3 scripts/test_apply_source.py',
+              'cargo +1.98.1 build --quiet --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture',
+          ]
+          results = []
+          for command in checks:
+              print('CHECK: ' + command, flush=True)
+              completed = subprocess.run(shlex.split(command))
+              results.append({'command': command, 'exit_code': completed.returncode})
+              pathlib.Path(os.environ['RUNNER_TEMP'], 'ui-evidence', 'checks.json').write_text(json.dumps(results, indent=2) + '\n')
+              if completed.returncode:
+                  raise SystemExit(completed.returncode)
+          PY
       - name: Existing native desktop contract
         timeout-minutes: 4
         run: python3 scripts/native_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output "$RUNNER_TEMP/ui-evidence/desktop"
@@ -144,11 +174,12 @@ jobs:
           tested = (root / 'tested-tree.txt').read_text().strip()
           assert subprocess.check_output(['git', 'write-tree'], text=True).strip() == tested
           subprocess.run(['git', 'diff', '--exit-code'], check=True)
+          checks = json.loads((root / 'checks.json').read_text())
+          assert len(checks) == 10 and all(check['exit_code'] == 0 for check in checks)
           receipt = {'parent': os.environ['GITHUB_SHA'], 'tested_source_tree': tested,
                      'run': 'https://github.com/cmdr-chara/synara/actions/runs/' + os.environ['GITHUB_RUN_ID'],
                      'platform': 'Linux/X11/Xvfb', 'visual_comparison': 'not yet inspected',
-                     'verification': ['format', 'workspace check', 'strict Clippy', 'workspace tests', 'workspace audit', 'roadmap self-test', 'roadmap audit', 'publisher regressions', 'native app build'],
-                     'native_smoke': {}, 'screenshots': []}
+                     'verification': checks, 'native_smoke': {}, 'screenshots': []}
           for name in ('desktop', 'navigation'):
               result = json.loads((root / name / 'result.json').read_text())
               assert result['status'] == 'passed'
@@ -160,7 +191,7 @@ jobs:
           destination.write_text(json.dumps(receipt, indent=2) + '\n')
           subprocess.run(['git', 'add', str(destination)], check=True)
           allowed = {
-              '.github/workflows/ui-checkpoint.yml', 'ROADMAP.md',
+              '.github/workflows/ui-checkpoint.yml', '.github/workflows/native.yml', 'ROADMAP.md',
               'crates/synara-app/src/main.rs', 'crates/synara-app/src/shell.rs',
               'crates/synara-app/src/input.rs', 'crates/synara-app/src/ui.rs',
               'crates/synara-app/src/shell/conversation.rs',
@@ -183,8 +214,7 @@ jobs:
               if path.exists():
                   data = path.read_bytes()
                   assert len(data) < 256 * 1024
-                  blob = api('git/blobs', {'encoding': 'base64', 'content': base64.b64encode(data).decode()})
-                  sha = blob['sha']
+                  sha = api('git/blobs', {'encoding': 'base64', 'content': base64.b64encode(data).decode()})['sha']
               entries.append({'path': name, 'mode': '100644', 'type': 'blob', 'sha': sha})
           base = api('git/commits/' + parent)['tree']['sha']
           tree = api('git/trees', {'base_tree': base, 'tree': entries})['sha']

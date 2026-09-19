@@ -19,18 +19,19 @@ EXPECTED = {
     '.github/workflows/native.yml': '6b034788e1273ff60242af93ff2b446d5ea733a5',
     'scripts/native_smoke.py': '49c3ebfb0a206b84e82dacf64bd76a0d57c72dd2',
     'ROADMAP.md': '1d8bd9b6fd30b27099ff3986e0614bc76c4b1fa1',
-    '.github/workflows/ui-recovery-audit.yml': '185e9497cd0c923a2afee441b6d4af6d4db25840',
+    '.github/workflows/ui-recovery-audit.yml': 'ef4dd7645f3adce008f993955c36bf3779916627',
 }
 INPUTS = {
     'crates/synara-app/src/main.rs': '99f860d0b8d6cc3734cca2f9aaaa3fd4100e2dea',
-    'crates/synara-app/src/shell.rs': '0d2bce5172ba0b133661fe88f350c14e6db3ec9f',
-    'crates/synara-app/src/input.rs': '5e8a677123cddf3a72f3a122399a458f2c151a4e',
+    'crates/synara-app/src/shell.rs': '10dec9591609d0a58e2af9aa8f0821d06dcd164f',
+    'crates/synara-app/src/input.rs': '59be67637dfef8fd67ed8efd3d023c05605e66e8',
     'crates/synara-app/src/shell/conversation.rs': '9138b9d86c81adca913c7817a9b399a37352ebf2',
     'crates/synara-app/src/ui.rs': '7462cbaf2acc7edf08565ac96856d3ac8eb48b66',
     'crates/synara-app/src/shell/navigation.rs': '9c4c17efd1d3ecc33ff8aef5a29d52a0217e8bf1',
     'crates/synara-app/src/shell/chrome.rs': 'fe002623909c2d47a7b1f092f5c554085224688f',
-    'scripts/native_navigation_smoke.py': '6ea0af9987cec3aa10bb914e52e4100c87294669',
-    '.github/workflows/native.yml': '87ee65a4575f104d3feabcc9a0417cb924fe0600',
+    'scripts/native_navigation_smoke.py': '6c3316bb1d6b195400e9278069c2618cae39a6fc',
+    'scripts/native_smoke.py': '9093a935597886d08dc407c828981b9f97e65538',
+    '.github/workflows/native.yml': 'f452d27659fd45be9085290714bf3212b5679f96',
     'ROADMAP.md': '6afa4a5886e74170e012c54a237631ea61b9a22a',
     'docs/ui/native-navigation.md': '3db2250b966aa004bcc3babcd7d5efd22f0e1a93',
 }
@@ -44,16 +45,6 @@ def blob_sha(data):
     return hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
 
 
-def replace(text, old, new):
-    if text.count(old) != 1:
-        raise RuntimeError('source anchor is not unique: ' + old[:80])
-    return text.replace(old, new, 1)
-
-
-def write(path, text):
-    Path(path).write_text(text, encoding='utf-8', newline='')
-
-
 def main():
     assert os.environ['GITHUB_REPOSITORY'] == 'cmdr-chara/synara'
     assert os.environ['GITHUB_REF'] == 'refs/heads/astra/gpui-clean-rewrite'
@@ -61,7 +52,7 @@ def main():
     assert git('rev-list', '--max-parents=0', 'HEAD') == '43b1fb89bf19dadc388d18008f9ceb21b8215716'
     evidence = Path(os.environ['RUNNER_TEMP']) / 'ui-evidence'
     evidence.mkdir(exist_ok=True)
-    write(evidence / 'inputs.json', json.dumps(INPUTS, indent=2) + '\n')
+    (evidence / 'inputs.json').write_text(json.dumps(INPUTS, indent=2) + '\n')
     for name, sha in EXPECTED.items():
         assert blob_sha(Path(name).read_bytes()) == sha, 'source changed: ' + name
     for name, sha in INPUTS.items():
@@ -81,56 +72,43 @@ def main():
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(data)
 
-    # Non-content debug metadata distinguishes missed hit targets from state loss.
-    # No typed characters, key sequences, paths or credentials are logged.
-    p = 'crates/synara-app/src/input.rs'
-    text = Path(p).read_text()
-    text = replace(text, '        self.bounds = bounds;',
-        '        if self.bounds != bounds {\n            tracing::debug!(target: "synara_ui_layout", composer = self.mode == EntryMode::Composer, editor = self.mode == EntryMode::Editor, ?bounds, "input-layout");\n        }\n        self.bounds = bounds;')
-    text = replace(text, '                    window.focus(&this.focus, cx);',
-        '                    tracing::debug!(target: "synara_ui_layout", composer = this.mode == EntryMode::Composer, editor = this.mode == EntryMode::Editor, position = ?event.position, "input-mouse-focus");\n                    window.focus(&this.focus, cx);')
-    text = replace(text, '        self.buffer = TextBuffer::new(text);',
-        '        tracing::debug!(target: "synara_ui_layout", composer = self.mode == EntryMode::Composer, editor = self.mode == EntryMode::Editor, empty = text.is_empty(), "input-replaced");\n        self.buffer = TextBuffer::new(text);')
-    write(p, text)
-    p = 'crates/synara-app/src/shell.rs'
-    text = Path(p).read_text()
-    text = replace(text, '        let dirty = self.dirty(cx);\n        if self.close.request(dirty, self.saving) {',
-        '        let dirty = self.dirty(cx);\n        tracing::debug!(target: "synara_ui_layout", dirty, saving = self.saving, document = self.document.is_some(), "close-request");\n        if self.close.request(dirty, self.saving) {')
-    write(p, text)
-
-    p = 'scripts/native_smoke.py'
-    text = Path(p).read_text()
-    method = '''    def copy_input(self):
-        self.key('a', ('Control_L',))
-        self.key('c', ('Control_L',))
-        env = {key: os.environ[key] for key in ('PATH', 'LD_LIBRARY_PATH') if key in os.environ}
-        env['DISPLAY'] = self.name
-        result = subprocess.run(['xclip', '-selection', 'clipboard', '-out'], env=env,
-                                stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=3)
-        if result.returncode:
-            raise AssertionError('Owned native input did not publish a clipboard selection')
-        assert len(result.stdout) <= 1024 * 1024
-        return result.stdout.decode('utf-8')
-
-'''
-    text = replace(text, '    def text(self, value):\n', method + '    def text(self, value):\n')
-    text = replace(text, "RUST_LOG='synara=info,gpui=warn'", "RUST_LOG='synara=info,synara_ui_layout=debug,gpui=warn'")
-    old = "        ui.click(850, 190)\n        ui.key('a', ('Control_L',))\n        ui.text('edited text\\n')"
-    new = "        ui.click(850, 190)\n        loaded = ui.copy_input()\n        assert loaded == 'original text\\n', f'Editor was not loaded before edit: {loaded!r}'\n        ui.text('edited text\\n')\n        edited = ui.copy_input()\n        assert edited == 'edited text\\n', f'Editor did not receive synthetic edit: {edited!r}'\n        ui.screenshot('editor-before-close')"
-    text = replace(text, old, new)
-    # Failure-only diagnostics are restricted to the non-content metadata target.
-    text = replace(text, "        result['error'] = str(error)\n", "        result['error'] = str(error)\n        if scenario.log:\n            print('\\n'.join(line for line in Path(scenario.log.name).read_text(errors='replace').splitlines() if 'synara_ui_layout' in line)[-12000:])\n")
-    write(p, text)
-    p = 'scripts/native_navigation_smoke.py'
-    text = Path(p).read_text()
-    text = replace(text, "    ui.text('saved draft')\n", "    ui.text('saved draft')\n    initial_draft = ui.copy_input()\n    assert initial_draft == 'saved draft', f'Composer did not receive the initial draft: {initial_draft!r}'\n")
-    text = replace(text, "    before = len(scenario.events())\n    ui.key('Return')", "    restored = ui.copy_input()\n    assert restored == 'saved draft', f'Synthetic draft not restored: {restored!r}'\n    before = len(scenario.events())\n    ui.key('Return')")
-    text = replace(text, "        result['error'] = str(error)\n", "        result['error'] = str(error)\n        if scenario.log:\n            print('\\n'.join(line for line in Path(scenario.log.name).read_text(errors='replace').splitlines() if 'synara_ui_layout' in line)[-12000:])\n")
-    write(p, text)
-    p = '.github/workflows/native.yml'
-    text = Path(p).read_text()
-    text = replace(text, 'python3-pil', 'python3-pil xclip')
-    write(p, text)
+    path = Path('crates/synara-app/src/shell/chrome.rs')
+    text = path.read_text()
+    old = '''        if !self.navigation.initialized {
+            self.navigation.initialized = true;
+            window.focus(&self.navigation.root_focus, cx);
+        }'''
+    new = '''        if !self.navigation.initialized {
+            self.navigation.initialized = true;
+            let root_focus = self.navigation.root_focus.clone();
+            self._subscriptions.push(cx.on_focus_out(
+                &root_focus,
+                window,
+                |this, event, window, cx| {
+                    if this.close != CloseState::Open || this.terminal_closing {
+                        return;
+                    }
+                    // A removed transient button can leave a live focus ID with
+                    // no dispatch path. Restore only that retired focus (or no
+                    // focus), never a deliberate move into another modal/view.
+                    if window.focused(cx).is_some_and(|focus| focus != event.blurred) {
+                        return;
+                    }
+                    tracing::debug!(target: "synara_ui_layout", "retired-focus-restored");
+                    if this.navigation.menu_open {
+                        window.focus(&this.navigation.menu_focus[this.navigation.menu_index], cx);
+                    } else if this.panel == Panel::Registry {
+                        window.focus(&this.registry.query.read(cx).focus_handle(cx), cx);
+                    } else {
+                        window.focus(&this.navigation.root_focus, cx);
+                    }
+                    cx.notify();
+                },
+            ));
+            window.focus(&root_focus, cx);
+        }'''
+    assert text.count(old) == 1, 'focus initialization changed'
+    path.write_text(text.replace(old, new, 1), encoding='utf-8', newline='')
     Path('.github/workflows/ui-checkpoint.yml').unlink()
     Path('.github/workflows/ui-recovery-audit.yml').unlink()
     Path(__file__).unlink()

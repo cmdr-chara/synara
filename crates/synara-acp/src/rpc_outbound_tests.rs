@@ -2,7 +2,7 @@ use super::super::{Incoming, Owner, RpcPeer, TraceLog};
 use super::*;
 use serde_json::json;
 use std::{
-    collections::{HashMap, HashSet},
+    collections::HashMap,
     sync::{Mutex, atomic::AtomicU64},
 };
 use tokio::{
@@ -14,7 +14,7 @@ fn peer_without_writer() -> (RpcPeer, mpsc::Receiver<Frame>) {
     let (failure, _) = watch::channel(None);
     let state = Arc::new(State {
         pending: Mutex::new(HashMap::new()),
-        incoming_ids: Mutex::new(HashSet::new()),
+        incoming: Mutex::new(HashMap::new()),
         trace: Mutex::new(TraceLog::default()),
         stop: CancellationToken::new(),
         failure,

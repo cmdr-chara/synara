@@ -150,6 +150,19 @@ jobs:
             /tmp/synara-navigation-smoke/result.json
           retention-days: 7
           if-no-files-found: warn
+      - name: Native composer and session control smoke
+        timeout-minutes: 4
+        run: python3 scripts/native_controls_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/synara-controls-smoke
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-controls-smoke
+          path: |
+            /tmp/synara-controls-smoke/*.png
+            /tmp/synara-controls-smoke/*.log
+            /tmp/synara-controls-smoke/result.json
+          retention-days: 7
+          if-no-files-found: warn
       - name: Export reproducible verification inputs
         if: always()
         run: |

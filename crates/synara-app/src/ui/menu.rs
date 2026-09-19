@@ -185,9 +185,9 @@ impl ChoiceMenu {
         // Native IME confirmation/cancellation belongs to the text entry, not
         // the menu. In particular, committing preedit must never pick a model.
         let composing = search_focused
-            && self
-                .search
-                .update(cx, |entry, cx| entry.marked_text_range(window, cx).is_some());
+            && self.search.update(cx, |entry, cx| {
+                entry.marked_text_range(window, cx).is_some()
+            });
         if event.prefer_character_input || composing {
             self.navigation.armed = None;
             return;
@@ -325,6 +325,7 @@ impl Render for ChoiceMenu {
                 el.child(
                     div()
                         .id("choice-search")
+                        .relative()
                         .aria_label("Search choices")
                         .px(scaled(4.))
                         .pb(scaled(4.))
@@ -357,7 +358,10 @@ impl Render for ChoiceMenu {
                                             } else {
                                                 gpui::Role::MenuItemRadio
                                             })
-                                            .aria_label(format!("{} {}", choice.label, choice.detail))
+                                            .aria_label(format!(
+                                                "{} {}",
+                                                choice.label, choice.detail
+                                            ))
                                             .aria_selected(choice.selected)
                                             .when_some(choice.unavailable.clone(), |el, reason| {
                                                 el.aria_description(reason).cursor_default()
@@ -381,7 +385,9 @@ impl Render for ChoiceMenu {
                                             .cursor_pointer()
                                             .hover(|style| style.bg(rgb(palette().hover)))
                                             .child(if let Some(glyph) = choice.icon {
-                                                super::icon(glyph).size(scaled(14.)).into_any_element()
+                                                super::icon(glyph)
+                                                    .size(scaled(14.))
+                                                    .into_any_element()
                                             } else {
                                                 div()
                                                     .w(scaled(14.))
@@ -422,13 +428,16 @@ impl Render for ChoiceMenu {
                                                     }),
                                             )
                                             .children(
-                                                (choice.selected && choice.icon.is_some())
-                                                    .then(|| super::icon(Glyph::Check).size(scaled(14.))),
+                                                (choice.selected && choice.icon.is_some()).then(
+                                                    || super::icon(Glyph::Check).size(scaled(14.)),
+                                                ),
                                             )
                                             .when_some(choice.unavailable.clone(), |el, reason| {
                                                 el.tooltip(move |_, cx| {
-                                                    cx.new(|_| super::Tooltip(reason.clone().into()))
-                                                        .into()
+                                                    cx.new(|_| {
+                                                        super::Tooltip(reason.clone().into())
+                                                    })
+                                                    .into()
                                                 })
                                             })
                                             .on_click(cx.listener(move |this, _, window, cx| {

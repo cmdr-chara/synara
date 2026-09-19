@@ -301,24 +301,20 @@ fn render_code(block: &Block, id: &str) -> gpui::AnyElement {
                 .text_color(rgb(palette().muted))
                 .child(block.language.clone().unwrap_or_else(|| "Code".into()))
                 .child(
-                    button_shell(
-                        SharedString::from(format!("{id}-copy")),
-                        "Copy code",
-                        false,
-                    )
-                    .relative()
-                    .flex()
-                    .items_center()
-                    .gap_1()
-                    .text_size(px(11.))
-                    .px_2()
-                    .child(icon(Glyph::Copy).size(px(13.)))
-                    .child("Copy")
-                    .child(layout_probe("markdown-copy"))
-                    .on_click(move |_, _, cx| {
-                        cx.write_to_clipboard(gpui::ClipboardItem::new_string(code.clone()));
-                        cx.stop_propagation();
-                    }),
+                    button_shell(SharedString::from(format!("{id}-copy")), "Copy code", false)
+                        .relative()
+                        .flex()
+                        .items_center()
+                        .gap_1()
+                        .text_size(px(11.))
+                        .px_2()
+                        .child(icon(Glyph::Copy).size(px(13.)))
+                        .child("Copy")
+                        .child(layout_probe("markdown-copy"))
+                        .on_click(move |_, _, cx| {
+                            cx.write_to_clipboard(gpui::ClipboardItem::new_string(code.clone()));
+                            cx.stop_propagation();
+                        }),
                 ),
         )
         .child(
@@ -378,7 +374,11 @@ pub fn render(source: &str, message_id: &str) -> gpui::AnyElement {
                     if let Some(checked) = block.task {
                         div()
                             .id(SharedString::from(format!("{id}-task")))
-                            .aria_label(if checked { "Completed" } else { "Not completed" })
+                            .aria_label(if checked {
+                                "Completed"
+                            } else {
+                                "Not completed"
+                            })
                             .flex_shrink_0()
                             .mt(px(4.))
                             .size(px(14.))

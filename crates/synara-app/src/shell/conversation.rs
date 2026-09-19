@@ -1,31 +1,19 @@
 use super::*;
+use gpui::{Animation, AnimationExt};
 impl Shell {
     pub(super) fn conversation(&self, window: &Window, cx: &mut Context<Self>) -> gpui::AnyElement {
         let Some(thread) = &self.thread else {
-            return self.welcome();
+            return div()
+                .flex()
+                .flex_col()
+                .flex_1()
+                .min_h_0()
+                .child(self.welcome())
+                .child(self.composer_panel(window, cx))
+                .into_any_element();
         };
-        let title = self.task().map_or("New thread", |task| task.title.as_str());
         let empty = thread.timeline.is_empty() && thread.plan.is_empty();
         let mut root = div().flex().flex_col().flex_1().min_h_0().min_w_0();
-        if !empty {
-            root = root.child(
-                div()
-                    .h(px(40.))
-                    .flex_shrink_0()
-                    .px_5()
-                    .flex()
-                    .items_center()
-                    .border_b_1()
-                    .border_color(rgb(crate::ui::DARK.border))
-                    .child(
-                        div()
-                            .min_w_0()
-                            .text_ellipsis()
-                            .text_size(px(13.))
-                            .child(title.to_owned()),
-                    ),
-            );
-        }
         if let Some(details) = &self.details {
             match details.connection.state {
                 ConnectionState::Authenticating => {
@@ -83,7 +71,16 @@ impl Shell {
             self.virtual_transcript(cx)
         });
         root = root.child(self.composer_panel(window, cx));
-        root.into_any_element()
+        root.with_animation(
+            SharedString::from(format!("conversation-entry-{}", thread.id)),
+            Animation::new(crate::ui::motion::PANE_DURATION)
+                .with_easing(crate::ui::motion::ease_out),
+            |el, progress| {
+                tracing::debug!(target: "synara_ui_layout", surface = "conversation", progress, "motion-frame");
+                el.opacity(progress)
+            },
+        )
+        .into_any_element()
     }
     pub(super) fn transcript_item(
         &self,
@@ -103,8 +100,8 @@ impl Shell {
                     .p_3()
                     .rounded_md()
                     .border_1()
-                    .border_color(rgb(crate::ui::DARK.border))
-                    .bg(rgb(crate::ui::DARK.canvas))
+                    .border_color(rgb(crate::ui::palette().border))
+                    .bg(rgb(crate::ui::palette().canvas))
                     .child(
                         div()
                             .font_weight(gpui::FontWeight::MEDIUM)
@@ -114,7 +111,7 @@ impl Shell {
                         match output {
                             ToolOutput::Text { text } => div()
                                 .mt_2()
-                                .font_family("DejaVu Sans Mono")
+                                .font_family(crate::ui::code_font())
                                 .text_xs()
                                 .child(truncate(text, 16 * 1024)),
                             ToolOutput::Diff {
@@ -123,7 +120,7 @@ impl Shell {
                                 after,
                             } => div()
                                 .mt_2()
-                                .font_family("DejaVu Sans Mono")
+                                .font_family(crate::ui::code_font())
                                 .text_xs()
                                 .child(format!(
                                     "{}\n{}\n{}",
@@ -139,7 +136,7 @@ impl Shell {
                                 )),
                             ToolOutput::Terminal { id } => div()
                                 .mt_2()
-                                .font_family("DejaVu Sans Mono")
+                                .font_family(crate::ui::code_font())
                                 .text_xs()
                                 .child(thread.terminals.get(id).map_or_else(
                                     || format!("Terminal {id}"),
@@ -243,9 +240,13 @@ impl Shell {
             }
             TranscriptItem::Input { id } => self.input_request((thread.id, id.clone()), cx),
             TranscriptItem::Notice { text, is_error } => div()
-                .p_3()
-                .rounded_md()
-                .bg(rgb(if *is_error { 0x3a242a } else { 0x1b2b38 }))
+                .flex()
+                .items_start()
+                .gap_2()
+                .text_size(px(15.))
+                .line_height(px(24.))
+                .text_color(rgb(crate::ui::palette().muted))
+                .children(is_error.then(|| crate::ui::icon(crate::ui::Glyph::Error).mt_1()))
                 .child(truncate(text, 16000))
                 .into_any_element(),
         }

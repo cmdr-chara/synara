@@ -78,33 +78,35 @@ def run(scenario):
     assert original and task_count(scenario) == 1
     ui.screenshot('navigation-initial')
 
-    ui.click(width - 45, 26)
-    ui.screenshot('tools-open')
+    scenario.click_control('workspace-tools')
+    ui.screenshot('mode-switcher-open')
     ui.key('Escape')
-    ui.key('Return')
-    ui.key('Down')
-    ui.key('Return')
+    ui.key('Return')  # Escape returns focus to the brand, reopening its mode menu.
+    ui.key('Return')  # Current Synara mode; this must not create a task.
+    assert task_count(scenario) == 1
+    ui.key('7', ('Control_L',))
     time.sleep(0.6)
     before = scenario.events()
-    ui.click(650, 197)
+    scenario.click_control('registry-query')
     ui.text('smoke')
-    ui.click(600, 335)
+    scenario.click_control('registry-review', slot=0)
     assert not list(scenario.agents.glob('agent-*/receipt.json'))
-    ui.click(400, 518)
+    scenario.click_control('registry-confirm')
     wait_until(lambda: list(scenario.agents.glob('agent-*/receipt.json')), 'menu-selected agent approval')
     assert scenario.events() == before, 'Browsing and approving an agent must not launch it'
-    scenario.checks.append('tools-keyboard-selection-escape-focus-restoration-and-real-agent-approval')
+    scenario.checks.append('mode-menu-keyboard-dismissal-and-agent-settings-approval')
 
     # Approval removes its focused control. The application must restore focus
     # so this shortcut reaches the shell without an extra recovery mouse click.
     ui.key('1', ('Control_L',))
     time.sleep(0.3)
-    ui.click(width // 2, height - 150)
+    scenario.click_control('composer-input')
     ui.text('saved draft')
     initial_draft = ui.copy_input()
     assert initial_draft == 'saved draft', f'Composer did not receive synthetic draft: {initial_draft!r}'
     scenario.checks.append('retired-approval-control-restores-shell-keyboard-navigation')
-    focus_without_activation(ui, 65, 110, 270)
+    x, y, w, h = scenario.control_bounds('new-thread')
+    focus_without_activation(ui, round(x + w / 2), round(y + h / 2), 290)
     assert task_count(scenario) == 1, 'Aborted pointer activation created a thread'
     key_edge(ui, 'Return', True)
     assert task_count(scenario) == 1, 'A held key dispatched before release'
@@ -124,15 +126,23 @@ def run(scenario):
     scenario.checks.append('native-key-release-creates-exactly-one-backend-thread')
     scenario.checks.append('sidebar-new-thread-uses-controller-and-durable-acp-streaming')
 
-    ui.click(70, 351)
+    scenario.click_control('thread-row', slot=1)
     wait_until(lambda: selection(scenario) == original, 'original thread selected')
     assert original != new_task
     time.sleep(0.3)
     restored = ui.copy_input()
     assert restored == 'saved draft', f'Synthetic draft not restored: {restored!r}'
+    scenario.click_control('history-back')
+    wait_until(lambda: selection(scenario) == new_task, 'back navigation')
+    scenario.click_control('history-forward')
+    wait_until(lambda: selection(scenario) == original, 'forward navigation')
+    scenario.click_control('composer-input')
+    assert ui.copy_input() == 'saved draft', 'History traversal lost the thread draft'
+    scenario.checks.append('history-traversal-restores-selection-and-thread-drafts')
     before = event_cursor(scenario, original)
     sibling_before = event_cursor(scenario, new_task)
     assert not prompt_finished(scenario, original, before), 'Sibling finish leaked into scoped oracle'
+    ui.focus()
     ui.key('Return')
     wait_until(lambda: prompt_finished(scenario, original, before), 'restored draft submitted')
     submitted = [event.get('text') for event in task_events(scenario, original, before)
@@ -143,9 +153,11 @@ def run(scenario):
     ui.screenshot('navigation-conversation')
 
     old_events = scenario.events()
-    ui.click(55, 26)
+    scenario.click_control('sidebar-toggle')
+    time.sleep(0.35)
     ui.screenshot('sidebar-collapsed')
-    ui.click(55, 26)
+    scenario.click_control('sidebar-toggle')
+    time.sleep(0.35)
     assert scenario.events() == old_events, 'Disclosure must not create agent events'
     scenario.checks.append('sidebar-collapse-is-presentation-only')
 

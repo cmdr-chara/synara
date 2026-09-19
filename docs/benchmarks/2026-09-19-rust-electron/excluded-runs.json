@@ -1,0 +1,30 @@
+[
+  {
+    "path": "/tmp/synara-comparison-20260919/probe-electron",
+    "reason": "Launch/configuration diagnostics; no benchmark result claimed."
+  },
+  {
+    "path": "/tmp/synara-comparison-20260919/pilot",
+    "reason": "Pilot failed window detection and /proc read setup; excluded."
+  },
+  {
+    "path": "/tmp/synara-comparison-20260919/pilot-2",
+    "reason": "Environment-only process accounting missed Chromium helpers; excluded."
+  },
+  {
+    "path": "/tmp/synara-comparison-20260919/pilot-3",
+    "reason": "Short preflight trial validated complete process family accounting; excluded from formal medians."
+  },
+  {
+    "path": "/tmp/synara-comparison-20260919/measured",
+    "reason": "Restart protocol using an identical Rust executable at a separate inode so its executable pages are not shared with the user desktop instance opened for testing. Interrupted before aggregate reporting; previous samples retained."
+  },
+  {
+    "path": "/tmp/synara-comparison-20260919/renderers",
+    "reason": "Diagnostic logging and short intervals for renderer identification; excluded."
+  },
+  {
+    "path": "/tmp/synara-comparison-20260919/electron-renderer",
+    "reason": "A debugger was attached solely to read GPU information; excluded."
+  }
+]

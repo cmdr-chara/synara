@@ -38,7 +38,7 @@ class Event(C.Union):
 
 
 class Desktop:
-    def __init__(self, output):
+    def __init__(self, output, scale=1):
         self.output = output
         self.log = (output / 'xvfb.log').open('w')
         self.xvfb = None
@@ -46,7 +46,8 @@ class Desktop:
         read, write = os.pipe()
         try:
             self.xvfb = subprocess.Popen(
-                ['Xvfb', '-displayfd', str(write), '-screen', '0', '1600x1000x24',
+                ['Xvfb', '-displayfd', str(write), '-screen', '0',
+                 f'{round(1600 * scale)}x{round(1000 * scale)}x24',
                  '-nolisten', 'tcp', '-noreset'], pass_fds=(write,),
                 stdout=self.log, stderr=subprocess.STDOUT)
             os.close(write)
@@ -144,7 +145,7 @@ class Desktop:
         self.x.XFlush(self.display)
         time.sleep(0.25)
 
-    def click_client(self, x, y):
+    def click_client(self, x, y, settle=0.25):
         _, _, width, height = self.geometry()
         if not 0 <= x < width or not 0 <= y < height:
             raise ValueError('Input must remain within the owned native window')
@@ -158,7 +159,7 @@ class Desktop:
         for down in (1, 0):
             self.xt.XTestFakeButtonEvent(self.display, 1, down, 0)
         self.x.XFlush(self.display)
-        time.sleep(0.25)
+        time.sleep(settle)
 
     def key(self, name, modifiers=()):
         def send(key, down):
@@ -195,12 +196,21 @@ class Desktop:
 
     def text(self, value):
         for char in value:
-            self.key({' ': 'space', '-': 'minus', '\n': 'Return', '.': 'period'}.get(char, char))
+            # XKeysymToKeycode identifies a physical key; it does not press Shift
+            # for uppercase symbols. Preserve the exact requested fixture text.
+            if char.isascii() and char.isupper():
+                self.key(char.lower(), ('Shift_L',))
+            else:
+                self.key({' ': 'space', '-': 'minus', '\n': 'Return', '.': 'period'}.get(char, char))
 
-    def screenshot(self, name):
+    def screenshot(self, name, window_only=False):
         from PIL import ImageGrab
         time.sleep(0.4)
-        ImageGrab.grab(xdisplay=self.name).save(self.output / (name + '.png'))
+        bbox = None
+        if window_only:
+            x, y, width, height = self.geometry()
+            bbox = (x, y, x + width, y + height)
+        ImageGrab.grab(xdisplay=self.name, bbox=bbox).save(self.output / (name + '.png'))
 
     def request_close(self):
         event = Event()
@@ -262,19 +272,23 @@ class Scenario:
              'args': ['--integration-fixture', label]}
             for label in ('alpha', 'beta')]), encoding='utf-8')
         self.binary = options.binary.resolve()
-        self.desktop = Desktop(self.output)
+        self.scale = getattr(options, 'scale', 1)
+        self.desktop = Desktop(self.output, self.scale)
         self.process = None
         self.log = None
         self.checks = []
         self.launch_count = 0
 
-    def launch(self):
-        self.log = (self.output / f'app-{len(self.checks)}.log').open('w')
+    def launch(self, *, preserve_selection=False):
+        self.log = (self.output / f'app-{self.launch_count}.log').open('w')
         env = {key: os.environ[key] for key in ('PATH', 'LD_LIBRARY_PATH') if key in os.environ}
         env.update(DISPLAY=self.desktop.name, XDG_RUNTIME_DIR=str(self.runtime),
                    HOME=str(self.output / 'home'), GPUI_PLATFORM='x11',
+                   GPUI_X11_SCALE_FACTOR=str(self.scale),
                    LIBGL_ALWAYS_SOFTWARE='1', RUST_LOG='synara=info,synara_ui_layout=debug,gpui=warn')
-        args = [str(self.binary), '--workspace', str(self.project), '--data-dir', str(self.data)]
+        args = [str(self.binary), '--data-dir', str(self.data)]
+        if not preserve_selection:
+            args.extend(['--workspace', str(self.project)])
         if self.launch_count == 0:
             args.extend(['--agents', str(self.profiles)])
         self.launch_count += 1
@@ -286,7 +300,9 @@ class Scenario:
             return self.desktop.find_window()
         wait_until(ready, 'native window', 30)
         self.desktop.focus()
-        assert self.desktop.geometry()[2:] == (1420, 930), 'Unexpected native layout size'
+        expected = (1420 * self.scale, 930 * self.scale)
+        actual = self.desktop.geometry()[2:]
+        assert all(abs(a - b) <= 0.5 for a, b in zip(actual, expected)), f'Unexpected native layout size: {actual}'
         time.sleep(0.6)
 
     def events(self):
@@ -304,27 +320,32 @@ class Scenario:
         return text in ''.join(e.get('text', '') for e in self.events()[after:]
                                if e['type'] == 'text_delta' and e.get('role') == 'assistant')
 
-    def control_bounds(self, control):
+    def control_bounds(self, control, slot=None, enabled=None):
         # Named, non-content layout metadata from the actual native rendering.
         # No screenshot OCR, guessed scaled pixels or synthetic backend mutation.
         text = re.sub(r'\x1b\[[0-9;]*[A-Za-z]', '', Path(self.log.name).read_text(errors='replace'))
         rows = [line for line in text.splitlines() if 'control-layout' in line
-                and ('control="' + control + '"') in line]
+                and ('control="' + control + '"') in line
+                and (slot is None or re.search(r"\bslot=" + str(slot) + r"\b", line))]
         if not rows:
+            return None
+        if enabled is not None and ('enabled=' + str(enabled).lower()) not in rows[-1]:
             return None
         values = dict(re.findall(r'\b(x|y|width|height)=(-?[0-9]+(?:\.[0-9]+)?)', rows[-1]))
         if len(values) != 4:
             return None
         return tuple(float(values[key]) for key in ('x', 'y', 'width', 'height'))
 
-    def click_control(self, control):
-        x, y, width, height = wait_until(lambda: self.control_bounds(control), control + ' native geometry')
-        self.desktop.click_client(round(x + width / 2), round(y + height / 2))
+    def click_control(self, control, slot=None, enabled=None, settle=0.25):
+        x, y, width, height = wait_until(
+            lambda: self.control_bounds(control, slot, enabled), control + ' native geometry/state')
+        self.desktop.click_client(round((x + width / 2) * self.scale),
+                                  round((y + height / 2) * self.scale), settle)
 
     def prompt(self, text):
         before = len(self.events())
         _, _, width, height = self.desktop.geometry()
-        self.desktop.click(width // 2, height - 150)
+        self.click_control('composer-input')
         self.desktop.text(text)
         self.desktop.key('Return')
         return before
@@ -372,7 +393,8 @@ class Scenario:
         # Switch profiles through the actual selector. No new backend or persisted SQL mutation.
         _, _, width, height = ui.geometry()
         self.click_control('agent-picker')
-        ui.key('End')
+        ui.key('Home')
+        ui.key('Down')
         ui.key('Return')
         wait_until(lambda: self.task()['agent_id'] == 'beta', 'second fixture selected')
         before = self.prompt('hello')
@@ -384,13 +406,13 @@ class Scenario:
         events_before_approval = self.events()
         ui.key('7', ('Control_L',))
         time.sleep(0.6)
-        ui.click(650, 197)
+        self.click_control('registry-query')
         ui.text('smoke')
         ui.screenshot('registry-search')
-        ui.click(600, 335)
+        self.click_control('registry-review', slot=0)
         ui.screenshot('registry-review')
         assert not list(self.agents.glob('agent-*/receipt.json')), 'Review is not approval'
-        ui.click(400, 518)
+        self.click_control('registry-confirm')
         wait_until(lambda: list(self.agents.glob('agent-*/receipt.json')), 'explicit launcher approval')
         assert self.events() == events_before_approval, 'Installation must not start a session'
         self.checks.append('offline-registry-review-and-approval-without-execution')
@@ -398,16 +420,16 @@ class Scenario:
 
         ui.key('2', ('Control_L',))
         time.sleep(0.6)
-        ui.click(310, 194)  # document.txt follows created.txt in the sorted explorer.
+        self.click_control('file-row', slot=1)  # document.txt follows created.txt in the sorted explorer.
         time.sleep(0.4)
-        ui.click(850, 190)
+        self.click_control('editor-input')
         loaded = ui.copy_input()
         assert loaded == 'original text\n', f'Editor was not loaded before edit: {loaded!r}'
         ui.text('edited text\n')
         edited = ui.copy_input()
         assert edited == 'edited text\n', f'Editor did not receive synthetic edit: {edited!r}'
         ui.screenshot('editor-before-close')
-        ui.request_close()
+        self.click_control('window-close')
         assert self.process.poll() is None, 'Dirty close must not terminate the app'
         ui.screenshot('dirty-close')
         assert self.document.read_text() == 'original text\n'
@@ -417,7 +439,7 @@ class Scenario:
         self.checks.append('dirty-close-cancel-preserves-document')
         ui.request_close()
         # Explicit Save and close in the centered native confirmation panel.
-        ui.click(850, 540)
+        self.click_control('save-and-close')
         wait_until(lambda: self.process.poll() is not None, 'save and close', 15)
         assert self.process.returncode == 0
         assert self.document.read_text() == 'edited text\n'
@@ -436,14 +458,14 @@ class Scenario:
         self.checks.append('durable-history-restored-without-autostart')
         ui.key('2', ('Control_L',))
         time.sleep(0.6)
-        ui.click(310, 194)
+        self.click_control('file-row', slot=1)
         time.sleep(0.4)
-        ui.click(850, 190)
+        self.click_control('editor-input')
         ui.key('a', ('Control_L',))
         ui.text('unsaved edit')
         self.document.write_text('external update\n', encoding='utf-8')
         ui.request_close()
-        ui.click(850, 540)
+        self.click_control('save-and-close')
         wait_until(lambda: 'File save failed. The document remains open.' in
                    Path(self.log.name).read_text(), 'visible rejected save')
         assert self.process.poll() is None
@@ -451,7 +473,7 @@ class Scenario:
         ui.screenshot('save-conflict')
         self.checks.append('save-conflict-preserves-external-change-and-open-editor')
         # The error message adds a line to the review and shifts its buttons down.
-        ui.click(700, 571)
+        self.click_control('discard-and-close')
         wait_until(lambda: self.process.poll() is not None, 'explicit discard and close', 10)
         assert self.process.returncode == 0
         assert self.document.read_text() == 'external update\n'

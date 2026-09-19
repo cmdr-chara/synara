@@ -32,6 +32,7 @@ pub struct TextEntry {
     buffer: TextBuffer,
     focus: FocusHandle,
     placeholder: String,
+    leading_icon: Option<crate::ui::Glyph>,
     mode: EntryMode,
     height: f32,
     lines: Vec<Line>,
@@ -59,6 +60,7 @@ impl TextEntry {
             buffer: TextBuffer::default(),
             focus: cx.focus_handle(),
             placeholder: placeholder.into(),
+            leading_icon: None,
             mode,
             height,
             lines: vec![],
@@ -75,6 +77,11 @@ impl TextEntry {
             error: None,
         }
     }
+    pub fn with_leading_icon(mut self, icon: crate::ui::Glyph) -> Self {
+        self.leading_icon = Some(icon);
+        self
+    }
+
     pub fn text(&self) -> &str {
         self.buffer.text()
     }
@@ -351,9 +358,9 @@ impl TextEntry {
             .map(|range| {
                 let mut run = window.text_style().to_run(range[1] - range[0]);
                 run.color = rgb(if empty {
-                    crate::ui::DARK.muted
+                    crate::ui::palette().muted
                 } else {
-                    crate::ui::DARK.text
+                    crate::ui::palette().text
                 })
                 .into();
                 if !empty
@@ -381,10 +388,17 @@ impl TextEntry {
         } else {
             Some(bounds.size.width.max(px(8.)))
         };
-        let shaped = match window
-            .text_system()
-            .shape_text(text, px(14.), &runs, wrap, None)
-        {
+        let shaped = match window.text_system().shape_text(
+            text,
+            px(if self.mode == EntryMode::Composer {
+                15.
+            } else {
+                14.
+            }),
+            &runs,
+            wrap,
+            None,
+        ) {
             Ok(lines) => lines,
             Err(_) => {
                 self.lines.clear();
@@ -440,23 +454,29 @@ impl Render for TextEntry {
         let paint_entity = entity.clone();
         div()
             .id("text-entry")
+            .relative()
             .key_context("SynaraTextEntry")
             .track_focus(&self.focus)
             .tab_index(0)
             .w_full()
             .h(px(self.height))
             .p_2()
-            .bg(rgb(0x171d27))
+            .bg(rgb(crate::ui::palette().canvas))
             .border_1()
             .border_color(rgb(if self.error.is_some() {
                 0xb85e65
             } else {
-                0x344054
+                crate::ui::palette().border
             }))
             .rounded_md()
+            .when(self.mode == EntryMode::SingleLine, |el| el.py_1().rounded_lg())
             .when(self.mode == EntryMode::Composer, |el| el
-                .bg(gpui::rgba(0)).border_0().rounded_none().font_family(crate::ui::UI_FONT))
+                .bg(gpui::rgba(0)).border_0().rounded_none().font_family(crate::ui::ui_font()))
+            .when_some(self.leading_icon, |el, icon| el.pl(px(32.)).child(div().absolute().left(px(10.)).top(px(7.)).child(crate::ui::icon(icon))))
+            .when(self.mode == EntryMode::Editor, |el| el.font_family(crate::ui::code_font()))
             .cursor_text()
+            .when(self.mode == EntryMode::Composer, |el| el.child(crate::ui::layout_probe("composer-input")))
+            .when(self.mode == EntryMode::Editor, |el| el.child(crate::ui::layout_probe("editor-input")))
             .on_key_down(cx.listener(Self::key))
             .on_mouse_down(
                 MouseButton::Left,

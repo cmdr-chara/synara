@@ -1,0 +1,12 @@
+2026-09-19T19:48:08.103860Z  WARN cosmic_text::font::system: failed to get system locale, falling back to en-US
+2026-09-19T19:48:08.127387Z ERROR gpui_linux::linux::x11::client: Found no xinput mouse pointers.
+2026-09-19T19:48:08.253844Z  INFO gpui_wgpu::wgpu_context: Found 2 GPU adapter(s):
+2026-09-19T19:48:08.253857Z  INFO gpui_wgpu::wgpu_context:   - Intel(R) Iris(R) Xe Graphics (RPL-U) (vendor=0x8086, device=0xa7a1, backend=Vulkan, type=IntegratedGpu)
+2026-09-19T19:48:08.253861Z  INFO gpui_wgpu::wgpu_context:   - llvmpipe (LLVM 22.1.8, 256 bits) (vendor=0x10005, device=0x0000, backend=Gl, type=Cpu)
+2026-09-19T19:48:08.253864Z  INFO gpui_wgpu::wgpu_context: Testing adapter: Intel(R) Iris(R) Xe Graphics (RPL-U) (Vulkan)...
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+2026-09-19T19:48:08.254508Z  INFO gpui_wgpu::wgpu_context:   Adapter Intel(R) Iris(R) Xe Graphics (RPL-U) (Vulkan) failed: no compatible surface formats, trying next...
+2026-09-19T19:48:08.254524Z  INFO gpui_wgpu::wgpu_context: Testing adapter: llvmpipe (LLVM 22.1.8, 256 bits) (Gl)...
+2026-09-19T19:48:08.259658Z  INFO gpui_wgpu::wgpu_context: Selected GPU (passed configuration test): llvmpipe (LLVM 22.1.8, 256 bits) (Gl)
+2026-09-19T19:48:08.259671Z  INFO gpui_wgpu::wgpu_context: Selected GPU adapter: "llvmpipe (LLVM 22.1.8, 256 bits)" (Gl)

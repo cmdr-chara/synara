@@ -1,12 +1,16 @@
 use gpui::Focusable;
+mod activity;
 mod chrome;
 mod composer;
 mod controls;
 mod conversation;
+mod dock;
 mod messages;
 mod navigation;
+mod overview;
 mod panels;
 mod registry;
+mod settings;
 mod terminal;
 mod transcript;
 use crate::close::CloseState;
@@ -27,6 +31,8 @@ use terminal::{TerminalSession, TerminalView};
 use tokio::{runtime::Handle, sync::mpsc};
 
 pub struct Bootstrap {
+    pub settings: AppSettings,
+    pub scratch_directory: PathBuf,
     pub agent_directory: PathBuf,
     pub catalog: Catalog,
     pub profiles: Vec<AgentProfile>,
@@ -35,6 +41,9 @@ pub struct Bootstrap {
 #[derive(Clone, Copy, PartialEq, Eq)]
 enum Panel {
     Conversation,
+    Dock,
+    Kanban,
+    Help,
     Files,
     Changes,
     Terminal,
@@ -66,8 +75,10 @@ enum Update {
     Registry(Box<registry::RegistryReply>),
     Catalog(Catalog),
     WorkspaceAdded(Project, Catalog),
-    TaskCreated(Task, Catalog),
+    TaskCreated(Task, Catalog, u64),
+    TaskCreationFailed(String),
     ThreadLoaded(Task, Box<Thread>),
+    ThreadLoadFailed(TaskId, String),
     Event(EventEnvelope),
     Hydrate,
     Interaction(UiInteraction),
@@ -86,7 +97,8 @@ enum Update {
         details: Option<SessionDetails>,
         trace: Vec<TraceEntry>,
     },
-    Profiles(Vec<AgentProfile>),
+    SettingsSaved(Box<AppSettings>, Option<String>),
+    ProfileActivity(settings::ProfileActivity),
     ControlFinished {
         task: TaskId,
         result: WorkspaceResult<Option<Task>>,
@@ -139,6 +151,7 @@ enum Update {
 pub struct Shell {
     controls: controls::ControlState,
     navigation: navigation::NavigationState,
+    settings: settings::SettingsState,
     close: CloseState,
     close_focus: gpui::FocusHandle,
     registry: registry::RegistryState,
@@ -147,6 +160,10 @@ pub struct Shell {
     sender: async_channel::Sender<Update>,
     catalog: Catalog,
     profiles: Vec<AgentProfile>,
+    scratch_directory: PathBuf,
+    creating_task: bool,
+    loading_task: Option<TaskId>,
+    selection_revision: u64,
     project: Option<ProjectId>,
     selected: Option<TaskId>,
     thread: Option<Thread>,
@@ -162,18 +179,21 @@ pub struct Shell {
     remote_identity: Entity<TextEntry>,
     remote_helper: Entity<TextEntry>,
     task_title: Entity<TextEntry>,
-    profile_editor: Entity<TextEntry>,
     editor: Entity<TextEntry>,
+    file_search: Entity<TextEntry>,
     commit_message: Entity<TextEntry>,
     terminal_view: Entity<TerminalView>,
     drafts: HashMap<TaskId, String>,
     busy: HashSet<TaskId>,
     connecting: HashSet<TaskId>,
     panel: Panel,
+    dock_panel: Panel,
+    dock_motion: crate::ui::motion::Drawer,
     error: Option<String>,
     notice: Option<String>,
     focus_composer: bool,
     transcript: transcript::TranscriptState,
+    expanded_activity: HashSet<(ThreadId, String)>,
     pending: HashMap<InteractionKey, UiInteraction>,
     forms: HashMap<InteractionKey, FormState>,
     files: Vec<FileEntry>,
@@ -299,21 +319,21 @@ impl Shell {
         });
         let task_title =
             cx.new(|cx| TextEntry::new("New task title", EntryMode::SingleLine, 36., cx));
-        let profile_editor = cx
-            .new(|cx| TextEntry::new("Agent launch profiles (JSON)", EntryMode::Editor, 390., cx));
         let editor =
             cx.new(|cx| TextEntry::new("Select a UTF-8 text file", EntryMode::Editor, 480., cx));
+        let file_search = cx.new(|cx| {
+            TextEntry::new("Search files...", EntryMode::SingleLine, 30., cx)
+                .with_leading_icon(crate::ui::Glyph::Search)
+        });
         let commit_message =
             cx.new(|cx| TextEntry::new("Commit message", EntryMode::SingleLine, 38., cx));
         let terminal_view = cx.new(TerminalView::new);
-        profile_editor.update(cx, |entry, cx| {
-            entry.set_text(
-                serde_json::to_string_pretty(&bootstrap.profiles).unwrap_or_default(),
-                cx,
-            )
-        });
         let registry = registry::RegistryState::new(bootstrap.agent_directory, cx);
         let subscriptions = vec![
+            cx.subscribe(&file_search, |this, _, _, cx| {
+                this.file_page = 0;
+                cx.notify();
+            }),
             cx.subscribe(&registry.query, |_, _, _, cx| cx.notify()),
             cx.subscribe(&composer, |this, _, event, cx| match event {
                 EntryEvent::Submit => this.send_prompt(cx),
@@ -326,7 +346,14 @@ impl Shell {
             }),
             cx.subscribe(&task_title, |this, _, event, cx| {
                 if matches!(event, EntryEvent::Submit) {
-                    this.create_task(cx)
+                    this.create_chat(
+                        if this.navigation.studio {
+                            TaskScope::Studio
+                        } else {
+                            TaskScope::Chat
+                        },
+                        cx,
+                    )
                 }
             }),
             cx.subscribe(&editor, |this, _, event, cx| match event {
@@ -354,6 +381,7 @@ impl Shell {
         let mut this = Self {
             controls: controls::ControlState::new(cx),
             navigation: navigation::NavigationState::new(cx),
+            settings: settings::SettingsState::new(bootstrap.settings, cx),
             close: CloseState::Open,
             close_focus: cx.focus_handle(),
             registry,
@@ -362,6 +390,10 @@ impl Shell {
             sender,
             catalog: bootstrap.catalog,
             profiles: bootstrap.profiles,
+            scratch_directory: bootstrap.scratch_directory,
+            creating_task: false,
+            loading_task: None,
+            selection_revision: 0,
             project,
             selected: None,
             thread: None,
@@ -377,18 +409,21 @@ impl Shell {
             remote_identity,
             remote_helper,
             task_title,
-            profile_editor,
             editor,
+            file_search,
             commit_message,
             terminal_view,
             drafts: HashMap::new(),
             busy: HashSet::new(),
             connecting: HashSet::new(),
             panel: Panel::Conversation,
+            dock_panel: Panel::Dock,
+            dock_motion: crate::ui::motion::Drawer::new(false),
             error: None,
             notice: None,
             focus_composer: false,
             transcript: transcript::TranscriptState::new(),
+            expanded_activity: HashSet::new(),
             pending: HashMap::new(),
             forms: HashMap::new(),
             files: vec![],
@@ -507,8 +542,10 @@ impl Shell {
                         cx.notify();
                     }))))
                     .children((!waiting && !terminal_closing).then(|| button("discard-and-close", "Discard and close", false)
+                        .relative().child(crate::ui::layout_probe("discard-and-close"))
                         .on_click(cx.listener(|this, _, _, cx| { if !this.saving { this.begin_quit(cx); } }))))
                     .children((!waiting && !terminal_closing).then(|| button("save-and-close", "Save and close", true)
+                        .relative().child(crate::ui::layout_probe("save-and-close"))
                         .on_click(cx.listener(|this, _, _, cx| {
                             this.close = CloseState::WaitingForSave;
                             this.save_file(cx);
@@ -530,6 +567,21 @@ impl Shell {
     fn task(&self) -> Option<&Task> {
         let id = self.selected?;
         self.catalog.tasks.iter().find(|t| t.id == id)
+    }
+    fn agent_glyph(&self, agent_id: &str) -> crate::ui::Glyph {
+        let executable = self
+            .profiles
+            .iter()
+            .find(|profile| profile.id == agent_id)
+            .and_then(|profile| profile.command.file_stem())
+            .and_then(|name| name.to_str());
+        crate::ui::provider_glyph(agent_id, executable)
+    }
+
+    fn selected_agent_glyph(&self) -> crate::ui::Glyph {
+        self.task().map_or(crate::ui::Glyph::Agent, |task| {
+            self.agent_glyph(&task.agent_id)
+        })
     }
     fn workspace_target(&self) -> Option<WorkspaceTarget> {
         let project = self
@@ -567,7 +619,7 @@ impl Shell {
             self.catalog.tasks.insert(0, task);
         }
     }
-    fn select_task(&mut self, id: TaskId, cx: &mut Context<Self>) {
+    fn select_task(&mut self, id: TaskId, cx: &mut Context<Self>) -> bool {
         let Some(task) = self
             .catalog
             .tasks
@@ -575,18 +627,26 @@ impl Shell {
             .find(|task| task.id == id)
             .cloned()
         else {
-            return;
+            return false;
         };
         if Some(task.project_id) != self.project && (self.dirty(cx) || self.saving) {
             self.error =
                 Some("Save or discard the open document before switching projects.".into());
             cx.notify();
-            return;
+            return false;
         }
         if let Some(previous) = self.selected {
             self.drafts
                 .insert(previous, self.composer.read(cx).text().to_owned());
         }
+        self.selection_revision = self.selection_revision.wrapping_add(1);
+        self.navigation.studio = task.scope == TaskScope::Studio;
+        if self.navigation.studio {
+            self.navigation.last_studio = Some(id);
+        } else {
+            self.navigation.last_synara = Some(id);
+        }
+        self.navigation.collapsed_projects.remove(&task.project_id);
         if Some(task.project_id) != self.project {
             self.document = None;
             self.files.clear();
@@ -595,7 +655,9 @@ impl Shell {
             self.diff.clear();
         }
         self.controls.retire();
+        self.navigation.record_task(id);
         self.selected = Some(id);
+        self.loading_task = Some(id);
         self.project = Some(task.project_id);
         self.details = None;
         self.trace.clear();
@@ -608,14 +670,20 @@ impl Shell {
         self.focus_composer = true;
         let workspace = self.controller.workspace.clone();
         self.job(async move {
-            workspace
-                .save_selection(Selection {
-                    project: Some(task.project_id),
-                    task: Some(id),
-                })
-                .await?;
-            let thread = workspace.thread(task.thread_id).await?;
-            Ok(Update::ThreadLoaded(task, Box::new(thread)))
+            let result = async {
+                workspace
+                    .save_selection(Selection {
+                        project: Some(task.project_id),
+                        task: Some(id),
+                    })
+                    .await?;
+                workspace.thread(task.thread_id).await
+            }
+            .await;
+            Ok(match result {
+                Ok(thread) => Update::ThreadLoaded(task, Box::new(thread)),
+                Err(error) => Update::ThreadLoadFailed(id, error.to_string()),
+            })
         });
         if self.panel == Panel::Files {
             self.refresh_files();
@@ -624,6 +692,7 @@ impl Shell {
             self.refresh_git();
         }
         cx.notify();
+        true
     }
     fn hydrate(&self) {
         if let Some(task) = self.task().cloned() {
@@ -747,25 +816,83 @@ impl Shell {
     }
 
     fn create_task(&mut self, cx: &mut Context<Self>) {
-        let Some(project) = self.project else {
-            self.error = Some("Open a workspace first.".into());
+        self.create_chat(TaskScope::Project, cx);
+    }
+
+    fn create_chat(&mut self, scope: TaskScope, cx: &mut Context<Self>) {
+        if self.creating_task || self.loading_task.is_some() {
+            return;
+        }
+        if self
+            .task()
+            .is_some_and(|task| task.scope == scope && task.state == TaskState::Ready)
+            && self
+                .thread
+                .as_ref()
+                .is_some_and(|thread| thread.turns.is_empty() && thread.messages.is_empty())
+            && self.composer.read(cx).text().is_empty()
+            && self.task_title.read(cx).text().trim().is_empty()
+        {
+            self.set_panel(Panel::Conversation, cx);
+            self.focus_composer = true;
             cx.notify();
             return;
-        };
-        let Some(agent) = self.profiles.first().map(|p| p.id.clone()) else {
+        }
+        if scope != TaskScope::Project && (self.dirty(cx) || self.saving) {
+            self.error =
+                Some("Save or discard the open document before starting a standalone chat.".into());
+            cx.notify();
+            return;
+        }
+        let Some(agent) = self
+            .task()
+            .map(|task| task.agent_id.clone())
+            .or_else(|| self.settings.value.general.default_provider.clone())
+            .or_else(|| self.profiles.first().map(|p| p.id.clone()))
+        else {
             return;
         };
+        let project = (scope == TaskScope::Project)
+            .then_some(self.project)
+            .flatten();
+        if scope == TaskScope::Project && project.is_none() {
+            self.browse_workspace(cx);
+            return;
+        }
         let title = self.task_title.read(cx).text().trim().to_owned();
         let title = if title.is_empty() {
-            "New task".into()
+            if scope == TaskScope::Studio {
+                "New studio chat".into()
+            } else {
+                "New thread".into()
+            }
         } else {
             title
         };
         let workspace = self.controller.workspace.clone();
+        let scratch = self.scratch_directory.join(ThreadId::new().to_string());
+        let revision = self.selection_revision;
+        self.creating_task = true;
         self.job(async move {
-            let task = workspace.create_task(project, title, agent).await?;
-            Ok(Update::TaskCreated(task, workspace.catalog().await?))
+            let result = async {
+                let project = if let Some(project) = project {
+                    project
+                } else {
+                    std::fs::create_dir_all(&scratch).map_err(synara_runtime::RuntimeError::Io)?;
+                    workspace.add_local_workspace(scratch).await?.id
+                };
+                let task = workspace
+                    .create_scoped_task(project, title, agent, scope)
+                    .await?;
+                Ok::<_, WorkspaceError>((task, workspace.catalog().await?))
+            }
+            .await;
+            Ok(match result {
+                Ok((task, catalog)) => Update::TaskCreated(task, catalog, revision),
+                Err(error) => Update::TaskCreationFailed(error.to_string()),
+            })
         });
+        cx.notify();
     }
     fn connect(&mut self, operation: &str, cx: &mut Context<Self>) {
         let Some(id) = self.selected else { return };
@@ -829,8 +956,27 @@ impl Shell {
         self.notice = None;
         self.transcript.follow();
         let controller = self.controller.clone();
+        let untitled = self.task().is_some_and(|task| {
+            matches!(
+                task.title.as_str(),
+                "New task" | "New thread" | "New studio chat"
+            )
+        });
         self.job(async move {
-            let result = controller.submit(id, text).await;
+            let result = async {
+                if untitled {
+                    let title: String = text
+                        .split_whitespace()
+                        .collect::<Vec<_>>()
+                        .join(" ")
+                        .chars()
+                        .take(64)
+                        .collect();
+                    controller.workspace.rename_task(id, title).await?;
+                }
+                controller.submit(id, text).await
+            }
+            .await;
             let details = controller.details(id).await.ok().flatten();
             Ok(Update::PromptDone {
                 task: id,
@@ -849,21 +995,6 @@ impl Shell {
             });
         }
         cx.notify();
-    }
-    fn save_profiles(&mut self, cx: &mut Context<Self>) {
-        let profiles = match parse_profiles(self.profile_editor.read(cx).text()) {
-            Ok(p) => p,
-            Err(e) => {
-                self.error = Some(e.to_string());
-                cx.notify();
-                return;
-            }
-        };
-        let workspace = self.controller.workspace.clone();
-        self.job(async move {
-            workspace.save_profiles(profiles.clone()).await?;
-            Ok(Update::Profiles(profiles))
-        });
     }
     fn refresh_files(&self) {
         let Some(target) = self.workspace_target() else {
@@ -1217,12 +1348,31 @@ impl Shell {
                 self.directory.clear();
                 self.create_task(cx);
             }
-            Update::TaskCreated(task, catalog) => {
+            Update::TaskCreated(task, catalog, revision) => {
+                self.creating_task = false;
                 self.catalog = catalog;
                 self.task_title.update(cx, |entry, cx| entry.clear(cx));
-                self.select_task(task.id, cx);
+                if revision == self.selection_revision {
+                    self.select_task(task.id, cx);
+                    self.set_panel(Panel::Conversation, cx);
+                }
+            }
+            Update::TaskCreationFailed(error) => {
+                self.creating_task = false;
+                self.error = Some(error);
+            }
+            Update::ThreadLoadFailed(task, error) => {
+                if self.loading_task == Some(task) {
+                    self.loading_task = None;
+                }
+                if self.selected == Some(task) {
+                    self.error = Some(error);
+                }
             }
             Update::ThreadLoaded(task, thread) => {
+                if self.loading_task == Some(task.id) {
+                    self.loading_task = None;
+                }
                 if self.selected == Some(task.id)
                     && self.thread.as_ref().is_none_or(|old| {
                         old.id != thread.id || old.last_sequence <= thread.last_sequence
@@ -1371,12 +1521,25 @@ impl Shell {
                     }
                 }
             }
-            Update::Profiles(profiles) => {
-                self.profiles = profiles;
-                self.notice = Some(
-                    "Agent profiles saved. Launch changes apply when a task reconnects.".into(),
-                );
-                self.error = None;
+            Update::SettingsSaved(settings, error) => {
+                self.settings.saving = false;
+                if let Some(error) = error {
+                    self.error = Some(error);
+                } else {
+                    self.settings.value = *settings;
+                    cx.set_reduce_motion(self.settings.value.appearance.reduced_motion);
+                    cx.refresh_windows();
+                    if !self.settings.value.general.show_studio && self.navigation.studio {
+                        let panel = self.panel;
+                        self.switch_mode(false, cx);
+                        self.panel = panel;
+                        self.focus_composer = false;
+                    }
+                }
+            }
+            Update::ProfileActivity(activity) => {
+                self.settings.activity_loading = false;
+                self.settings.activity = Some(activity);
             }
             Update::ControlFinished {
                 task,
@@ -1384,6 +1547,7 @@ impl Shell {
                 details,
             } => {
                 self.controls.completed(task);
+                tracing::debug!(target: "synara_ui_layout", "session-control-completed");
                 match result {
                     Ok(changed) => {
                         if let Some(changed) = changed {
@@ -1541,11 +1705,19 @@ impl Shell {
     }
     fn set_panel(&mut self, panel: Panel, cx: &mut Context<Self>) {
         self.controls.retire();
+        self.settings.popup = None;
+        if panel != Panel::Conversation {
+            self.selection_revision = self.selection_revision.wrapping_add(1);
+        }
         self.panel = panel;
         self.error = None;
         self.notice = None;
         match panel {
             Panel::Registry => self.load_registry_if_needed(cx),
+            Panel::Settings => {
+                self.focus_composer = false;
+                self.load_profile_activity();
+            }
             Panel::Files => self.refresh_files(),
             Panel::Changes => self.refresh_git(),
             Panel::Inspector | Panel::Terminal => self.poll(),

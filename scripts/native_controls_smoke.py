@@ -5,6 +5,7 @@ import ctypes as C
 import json
 from pathlib import Path
 import time
+import re
 
 from native_smoke import Scenario, wait_until
 from native_navigation_smoke import key_edge
@@ -27,6 +28,22 @@ def config_count(scenario):
     return sum(event['type'] == 'configuration_changed' for event in scenario.events())
 
 
+def settled_control_count(scenario):
+    text = re.sub(r'\x1b\[[0-9;]*[A-Za-z]', '', Path(scenario.log.name).read_text())
+    return text.count('session-control-completed')
+
+
+def wait_applied_render(scenario, before):
+    # Durable events precede the UI job acknowledgement. An older enabled frame
+    # cannot prove that the next control is ready for a click.
+    def rendered():
+        text = re.sub(r'\x1b\[[0-9;]*[A-Za-z]', '', Path(scenario.log.name).read_text())
+        if text.count('session-control-completed') <= before:
+            return False
+        return 'control="composer-extras" enabled=true' in text.rsplit('session-control-completed', 1)[1]
+    wait_until(rendered, 'enabled controls painted after UI acknowledgement')
+
+
 def run(scenario):
     scenario.launch()
     ui = scenario.desktop
@@ -37,7 +54,8 @@ def run(scenario):
     ui.key('Escape')
     # Escape returns to the original trigger. Native Return reopens the menu.
     ui.key('Return')
-    ui.key('End')
+    ui.key('Home')
+    ui.key('Down')
     key_edge(ui, 'Return', True)
     assert scenario.task()['agent_id'] == 'alpha', 'Provider changed before key release'
     key_edge(ui, 'Return', False)
@@ -67,21 +85,30 @@ def run(scenario):
     assert config_count(scenario) == count + 1, 'Selecting the applied value should be a no-op'
     scenario.checks.append('model-choices-are-explicit-acknowledged-once-and-noop-when-selected')
 
-    scenario.click_control('mode-picker')
-    ui.key('End')
+    scenario.click_control('composer-extras')
+    applied = settled_control_count(scenario)
+    ui.key('Home')  # Add: Files, Attach window, Goal, then Plan mode.
+    ui.key('Down')
+    ui.key('Down')
+    ui.key('Down')
     ui.key('Return')
     wait_until(lambda: configuration(scenario)['current_mode'] == 'plan', 'durable session mode')
+    wait_applied_render(scenario, applied)
     scenario.checks.append('mode-picker-uses-the-controller-and-durable-events')
 
-    scenario.click_control('options-picker')
+    # The durable event can precede completion of the UI's controller job.
+    # Wait for its actual enabled render before starting another operation.
+    ui.key('5', ('Control_L',))
+    scenario.click_control('options-picker', enabled=True)
     ui.screenshot('boolean-options')
     ui.key('End')
     ui.key('Return')
     wait_until(lambda: option(scenario, 'review') is False, 'explicit boolean false')
     scenario.checks.append('boolean-picker-sends-an-explicit-advertised-value')
+    ui.key('1', ('Control_L',))
 
     _, _, width, height = ui.geometry()
-    ui.click(width // 2, height - 150)
+    scenario.click_control('composer-input')
     ui.text('draft stays intact')
     assert ui.copy_input() == 'draft stays intact'
     before = scenario.events()
@@ -89,13 +116,19 @@ def run(scenario):
     ui.key('Escape')
     ui.key('Return')
     ui.click_client(width // 2, 150)
-    ui.click(width // 2, height - 150)
+    scenario.click_control('composer-input')
     assert ui.copy_input() == 'draft stays intact'
     assert scenario.events() == before, 'Dismissal must not submit or mutate session configuration'
     scenario.checks.append('escape-and-clickaway-preserve-draft-without-submission')
-    ui.key('BackSpace')
-
-    before = scenario.prompt('hold')
+    # The external clipboard reader can take X11 focus. Reassert focus and
+    # explicitly replace the draft, then verify the next prompt before sending.
+    ui.focus()
+    ui.key('a', ('Control_L',))
+    ui.text('hold')
+    assert ui.copy_input() == 'hold', 'The busy-state probe requires exactly hold'
+    before = len(scenario.events())
+    ui.focus()
+    ui.key('Return')
     wait_until(lambda: scenario.has_text('Started waiting', before), 'in-flight prompt')
     count = config_count(scenario)
     scenario.click_control('model-picker')

@@ -1,28 +1,31 @@
 //! Native presentation primitives. Product state and operations stay in the controller.
+mod icons;
+pub mod markdown;
+pub use icons::{Glyph, icon, provider_glyph};
 pub mod menu;
+pub mod motion;
 use gpui::{
-    Context, Div, ElementId, FontWeight, PathBuilder, SharedString, Stateful, Window, canvas, div,
-    point, prelude::*, px, rgb, rgba,
+    Context, Div, ElementId, SharedString, Stateful, Window, canvas, div, prelude::*, px, rgb, rgba,
 };
 
-pub const CHAT_WIDTH: f32 = 768.0;
-pub const COMPOSER_INPUT_HEIGHT: f32 = 82.0;
+pub const CHAT_WIDTH: f32 = 736.0;
+pub const COMPOSER_INPUT_HEIGHT: f32 = 51.0;
 pub const MENU_WIDTH: f32 = 304.0;
 pub const MENU_ROW_HEIGHT: f32 = 42.0;
 pub const MENU_MAX_HEIGHT: f32 = 294.0;
-pub const SIDEBAR_WIDTH: f32 = 238.0;
+pub const SIDEBAR_WIDTH: f32 = 256.0;
 pub const ROW_HEIGHT: f32 = 30.0;
-pub const CHROME_HEIGHT: f32 = 53.0;
-pub const STATUS_HEIGHT: f32 = 27.0;
+pub const CHROME_HEIGHT: f32 = 46.0;
 pub const UI_FONT: &str = if cfg!(target_os = "windows") {
     "Segoe UI"
 } else if cfg!(target_os = "macos") {
     "Helvetica Neue"
 } else {
-    "DejaVu Sans"
+    "Liberation Sans"
 };
 
 /// Semantic material roles, not per-screen RGB literals.
+#[derive(Clone, Copy)]
 pub struct Palette {
     pub canvas: u32,
     pub sidebar: u32,
@@ -41,16 +44,96 @@ pub const DARK: Palette = Palette {
     canvas: 0x272731,
     sidebar: 0x25252f,
     overlay: 0x30303a,
-    hover: 0x33333e,
-    selected: 0x3b3b47,
-    border: 0x3a3a44,
-    text: 0xe5e4e8,
+    hover: 0x2e2e38,
+    selected: 0x383843,
+    border: 0x34343f,
+    text: 0xe8e6e1,
     muted: 0xa19fa9,
     focus: 0x9bb6e8,
     error: 0xffb9c0,
     error_surface: 0x432c35,
     notice_surface: 0x303a4a,
 };
+
+pub const LIGHT: Palette = Palette {
+    canvas: 0xfafafa,
+    sidebar: 0xf3f3f3,
+    overlay: 0xf0f0f0,
+    hover: 0xececec,
+    selected: 0xe1e1e5,
+    border: 0xdddddf,
+    text: 0x26262a,
+    muted: 0x6d6d76,
+    focus: 0x825b9e,
+    error: 0x99283b,
+    error_surface: 0xffe4e8,
+    notice_surface: 0xe6edf7,
+};
+// Synara currently owns one application window. All native views, including
+// menus and text entries, paint on the UI thread and share its current palette.
+thread_local! {
+    static PALETTE: std::cell::Cell<Palette> = const { std::cell::Cell::new(DARK) };
+    static UI_FAMILY: std::cell::RefCell<SharedString> = std::cell::RefCell::new(UI_FONT.into());
+    static CODE_FAMILY: std::cell::RefCell<SharedString> = std::cell::RefCell::new("DejaVu Sans Mono".into());
+}
+pub fn palette() -> Palette {
+    PALETTE.with(std::cell::Cell::get)
+}
+pub fn ui_font() -> SharedString {
+    UI_FAMILY.with(|family| family.borrow().clone())
+}
+pub fn code_font() -> SharedString {
+    CODE_FAMILY.with(|family| family.borrow().clone())
+}
+pub fn configure(
+    appearance: &synara_workspace::AppearanceSettings,
+    system: gpui::WindowAppearance,
+) {
+    use synara_workspace::{DarkThemePreference, ThemePreference};
+    let dark = match appearance.theme {
+        ThemePreference::System => matches!(
+            system,
+            gpui::WindowAppearance::Dark | gpui::WindowAppearance::VibrantDark
+        ),
+        ThemePreference::Light => false,
+        ThemePreference::Dark => true,
+    };
+    let palette = if !dark {
+        LIGHT
+    } else if appearance.dark_theme == DarkThemePreference::Dracula {
+        Palette {
+            canvas: 0x282a36,
+            sidebar: 0x252731,
+            overlay: 0x30323f,
+            hover: 0x30323c,
+            selected: 0x393b49,
+            border: 0x393b46,
+            text: 0xf8f8f2,
+            muted: 0xa4a3ae,
+            focus: 0xff79c6,
+            ..DARK
+        }
+    } else {
+        DARK
+    };
+    PALETTE.set(palette);
+    UI_FAMILY.with(|family| {
+        *family.borrow_mut() = appearance
+            .fonts
+            .ui_family
+            .clone()
+            .map(SharedString::from)
+            .unwrap_or_else(|| UI_FONT.into())
+    });
+    CODE_FAMILY.with(|family| {
+        *family.borrow_mut() = appearance
+            .fonts
+            .code_family
+            .clone()
+            .map(SharedString::from)
+            .unwrap_or_else(|| "DejaVu Sans Mono".into())
+    });
+}
 
 /// GPUI maps unmodified Enter/Space press-release and accessibility clicks to
 /// on_click. Do not add a second keydown/accessibility callback: that bypasses
@@ -61,7 +144,15 @@ pub fn button(
     selected: bool,
 ) -> Stateful<Div> {
     let label = label.into();
-    let hint = label.clone();
+    button_shell(id, label.clone(), selected).child(label)
+}
+
+pub fn button_shell(
+    id: impl Into<ElementId>,
+    label: impl Into<SharedString>,
+    selected: bool,
+) -> Stateful<Div> {
+    let label = label.into();
     div()
         .id(id)
         .role(gpui::Role::Button)
@@ -73,18 +164,16 @@ pub fn button(
         .border_1()
         .border_color(rgba(0x00000000))
         .bg(rgb(if selected {
-            DARK.selected
+            palette().selected
         } else {
-            DARK.overlay
+            palette().overlay
         }))
-        .text_color(rgb(DARK.text))
+        .text_color(rgb(palette().text))
         .text_sm()
         .cursor_pointer()
-        .hover(|style| style.bg(rgb(DARK.hover)))
-        .active(|style| style.bg(rgb(DARK.selected)))
-        .focus(|style| style.border_color(rgb(DARK.focus)))
-        .tooltip(move |_, cx| cx.new(|_| Tooltip(hint.clone())).into())
-        .child(label)
+        .hover(|style| style.bg(rgb(palette().hover)))
+        .active(|style| style.bg(rgb(palette().selected)))
+        .focus_visible(|style| style.border_color(rgb(palette().focus)))
 }
 
 /// Mouse, native keyboard activation and assistive activation use one callback.
@@ -96,7 +185,6 @@ pub fn action(
     activate: impl Fn(&(), &mut Window, &mut gpui::App) + 'static,
 ) -> Stateful<Div> {
     let label = label.into();
-    let hint = label.clone();
     div()
         .id(id)
         .role(gpui::Role::Button)
@@ -107,31 +195,61 @@ pub fn action(
         .px_2()
         .flex()
         .items_center()
-        .gap_2()
+        .gap(px(6.))
         .rounded_md()
         .border_1()
         .border_color(rgba(0x00000000))
         .bg(rgba(if selected {
-            (DARK.selected << 8) | 0xff
+            (palette().selected << 8) | 0xff
         } else {
             0
         }))
-        .text_color(rgb(DARK.text))
-        .text_size(px(13.0))
+        .text_color(rgb(palette().text))
+        .text_size(px(15.0))
         .cursor_pointer()
-        .hover(|style| style.bg(rgb(DARK.hover)))
-        .active(|style| style.bg(rgb(DARK.selected)))
-        .focus(|style| style.border_color(rgb(DARK.focus)))
+        .hover(|style| style.bg(rgb(palette().hover)))
+        .active(|style| style.bg(rgb(palette().selected)))
+        .focus_visible(|style| style.border_color(rgb(palette().focus)))
         .on_click(move |_, window, cx| {
             activate(&(), window, cx);
             cx.stop_propagation();
         })
-        .tooltip(move |_, cx| cx.new(|_| Tooltip(hint.clone())).into())
         .children(glyph.map(icon))
         .child(div().flex_1().min_w_0().text_ellipsis().child(label))
 }
 
 struct Tooltip(SharedString);
+
+/// Preserve the navigation landmark while accurately exposing unavailable capabilities.
+pub fn unavailable_action(
+    id: &'static str,
+    label: &'static str,
+    glyph: Glyph,
+    reason: &'static str,
+) -> Stateful<Div> {
+    div()
+        .id(id)
+        .role(gpui::Role::Label)
+        .aria_label(format!("{label}, unavailable"))
+        .aria_description(reason)
+        .tab_index(0)
+        .h(px(ROW_HEIGHT))
+        .px_2()
+        .flex()
+        .items_center()
+        .gap(px(6.))
+        .text_size(px(15.))
+        .text_color(rgb(palette().text))
+        .opacity(0.78)
+        .rounded_md()
+        .border_1()
+        .border_color(rgba(0))
+        .focus_visible(|style| style.border_color(rgb(palette().focus)))
+        .cursor_default()
+        .tooltip(move |_, cx| cx.new(|_| Tooltip(reason.into())).into())
+        .child(icon(glyph))
+        .child(label)
+}
 impl Render for Tooltip {
     fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl IntoElement {
         div()
@@ -140,147 +258,13 @@ impl Render for Tooltip {
             .py_1()
             .rounded_md()
             .border_1()
-            .border_color(rgb(DARK.border))
-            .bg(rgb(DARK.overlay))
-            .font_family(UI_FONT)
+            .border_color(rgb(palette().border))
+            .bg(rgb(palette().overlay))
+            .font_family(ui_font())
             .text_size(px(12.0))
-            .text_color(rgb(DARK.text))
+            .text_color(rgb(palette().text))
             .child(self.0.clone())
     }
-}
-
-pub fn section_label(label: &'static str) -> Div {
-    div()
-        .px_2()
-        .py_1()
-        .text_size(px(12.0))
-        .font_weight(FontWeight::MEDIUM)
-        .text_color(rgb(DARK.muted))
-        .child(label)
-}
-
-/// Independently authored simple line geometry. No screenshot or legacy assets.
-#[derive(Clone, Copy)]
-pub enum Glyph {
-    Folder,
-    Compose,
-    Chevron,
-    ChevronRight,
-    Settings,
-    More,
-    Panel,
-    Terminal,
-    Files,
-    Changes,
-    Send,
-    Stop,
-    Copy,
-}
-impl Glyph {
-    fn paths(self) -> &'static [&'static [(f32, f32)]] {
-        match self {
-            Self::Copy => &[
-                &[(8., 8.), (21., 8.), (21., 21.), (8., 21.), (8., 8.)],
-                &[(4., 16.), (3., 16.), (3., 3.), (16., 3.), (16., 4.)],
-            ],
-            Self::Send => &[
-                &[(12., 20.), (12., 4.)],
-                &[(5., 11.), (12., 4.), (19., 11.)],
-            ],
-            Self::Stop => &[&[(5., 5.), (19., 5.), (19., 19.), (5., 19.), (5., 5.)]],
-            Self::Folder => &[&[
-                (2., 5.),
-                (8., 5.),
-                (10., 8.),
-                (22., 8.),
-                (22., 20.),
-                (2., 20.),
-                (2., 5.),
-            ]],
-            Self::Compose => &[
-                &[(9., 4.), (4., 4.), (4., 20.), (20., 20.), (20., 15.)],
-                &[
-                    (10., 15.),
-                    (11., 10.),
-                    (19., 2.),
-                    (22., 5.),
-                    (14., 13.),
-                    (10., 15.),
-                ],
-            ],
-            Self::Chevron => &[&[(6., 9.), (12., 15.), (18., 9.)]],
-            Self::ChevronRight => &[&[(9., 6.), (15., 12.), (9., 18.)]],
-            Self::Settings => &[
-                &[
-                    (8., 3.),
-                    (16., 3.),
-                    (21., 8.),
-                    (21., 16.),
-                    (16., 21.),
-                    (8., 21.),
-                    (3., 16.),
-                    (3., 8.),
-                    (8., 3.),
-                ],
-                &[(9., 9.), (15., 9.), (15., 15.), (9., 15.), (9., 9.)],
-            ],
-            Self::More => &[
-                &[(4., 11.), (4., 13.)],
-                &[(12., 11.), (12., 13.)],
-                &[(20., 11.), (20., 13.)],
-            ],
-            Self::Panel => &[
-                &[(3., 4.), (21., 4.), (21., 20.), (3., 20.), (3., 4.)],
-                &[(9., 4.), (9., 20.)],
-            ],
-            Self::Terminal => &[
-                &[(4., 6.), (10., 12.), (4., 18.)],
-                &[(13., 18.), (21., 18.)],
-            ],
-            Self::Files => &[
-                &[
-                    (6., 2.),
-                    (15., 2.),
-                    (21., 8.),
-                    (21., 20.),
-                    (6., 20.),
-                    (6., 2.),
-                ],
-                &[(15., 2.), (15., 8.), (21., 8.)],
-                &[(2., 6.), (2., 23.), (17., 23.)],
-            ],
-            Self::Changes => &[
-                &[(6., 3.), (6., 21.)],
-                &[(18., 3.), (18., 21.)],
-                &[(3., 6.), (9., 6.)],
-                &[(15., 16.), (21., 16.)],
-            ],
-        }
-    }
-}
-
-pub fn icon(glyph: Glyph) -> impl IntoElement {
-    canvas(
-        |_, _, _| (),
-        move |bounds, _, window, _| {
-            let mut path = PathBuilder::stroke(px(1.3));
-            for points in glyph.paths() {
-                for (index, &(x, y)) in points.iter().enumerate() {
-                    let position = bounds.origin + point(px(x * 14.0 / 24.0), px(y * 14.0 / 24.0));
-                    if index == 0 {
-                        path.move_to(position);
-                    } else {
-                        path.line_to(position);
-                    }
-                }
-            }
-            if let Ok(path) = path.build() {
-                window.paint_path(path, rgb(DARK.muted));
-            }
-        },
-    )
-    .size(px(14.0))
-    .flex_shrink_0()
 }
 
 /// A named compact action, with native press/release behavior and guarded disablement.
@@ -305,10 +289,10 @@ pub fn icon_button(
         .rounded_full()
         .border_1()
         .border_color(rgba(0))
-        .bg(rgb(DARK.selected))
+        .bg(rgb(palette().selected))
         .cursor_pointer()
-        .hover(|style| style.bg(rgb(DARK.hover)))
-        .focus(|style| style.border_color(rgb(DARK.focus)))
+        .hover(|style| style.bg(rgb(palette().hover)))
+        .focus_visible(|style| style.border_color(rgb(palette().focus)))
         .when(disabled, |el| el.opacity(0.4).cursor_default())
         .tooltip(move |_, cx| cx.new(|_| Tooltip(label.into())).into())
         .on_click(move |_, window, cx| {
@@ -327,4 +311,46 @@ pub fn layout_probe(id: &'static str) -> impl IntoElement {
             x = f32::from(bounds.origin.x), y = f32::from(bounds.origin.y),
             width = f32::from(bounds.size.width), height = f32::from(bounds.size.height), "control-layout");
     }, |_, _, _, _| {}).absolute().top_0().left_0().size_full()
+}
+
+pub fn layout_probe_slot(id: &'static str, slot: usize) -> impl IntoElement {
+    canvas(move |bounds, _, _| {
+        tracing::debug!(target: "synara_ui_layout", control = id, slot,
+            x = f32::from(bounds.origin.x), y = f32::from(bounds.origin.y),
+            width = f32::from(bounds.size.width), height = f32::from(bounds.size.height), "control-layout");
+    }, |_, _, _, _| {}).absolute().top_0().left_0().size_full()
+}
+
+/// Quiet chrome action; its accessible name remains available without a text label.
+pub fn chrome_button(
+    id: &'static str,
+    label: &'static str,
+    glyph: Glyph,
+    disabled: bool,
+    activate: impl Fn(&(), &mut Window, &mut gpui::App) + 'static,
+) -> Stateful<Div> {
+    icon_button(id, label, glyph, disabled, activate)
+        .rounded_md()
+        .bg(rgba(0))
+        .child(layout_probe(id))
+}
+
+pub struct Assets;
+impl gpui::AssetSource for Assets {
+    fn load(&self, path: &str) -> anyhow::Result<Option<std::borrow::Cow<'static, [u8]>>> {
+        Ok(match path {
+            "brand/synara.svg" => Some(std::borrow::Cow::Borrowed(include_bytes!(
+                "../assets/synara.svg"
+            ))),
+            _ => icons::load(path),
+        })
+    }
+
+    fn list(&self, path: &str) -> anyhow::Result<Vec<SharedString>> {
+        Ok(if "brand/synara.svg".starts_with(path) {
+            vec!["brand/synara.svg".into()]
+        } else {
+            vec![]
+        })
+    }
 }

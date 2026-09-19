@@ -1,5 +1,26 @@
 # Native UI continuation
 
+## September 19 local presentation work
+
+The working branch `cmdr-chara/native-ui-parity` starts at `3df6a174` and adds the
+source-referenced home and transcript geometry, native Markdown, turn summaries,
+split workspace/Explorer, composer Add menu, Synara's original icon assets,
+project picker, search, navigation history and native motion.
+See [`parity-port.md`](parity-port.md) for actual native captures and remaining
+differences, and [`parity-port-evidence.json`](parity-port-evidence.json) for
+measured checks and candidate hashes. This continuation targets
+`astra/gpui-clean-rewrite`; the verification was recorded before publication.
+The older published checkpoint below is historical evidence.
+
+The latest continuation fixes repeated empty drafts, introduces persisted
+Project/Chat/Studio scopes, restores the Synara/Studio switcher and separates
+intermediate commentary from final answers. Settings now has the original
+navigation and usable General, Appearance, Profile and native-service pages.
+Eight new native journeys cover creation, Studio, saved preferences, reset and
+restart. Full parity remains open; the exact unavailable pages and compatibility
+limits are listed in the presentation document. The older published checkpoint
+below does not describe this continuation.
+
 ## Published checkpoint
 
 Native navigation source is now published on `astra/gpui-clean-rewrite`:
@@ -119,3 +140,12 @@ refs were re-read after publication and remained:
 Unreferenced diagnostic objects are not delivery branches or accepted candidates.
 In particular, `d72151b09d4530a75f41f874ec7f8f65e4ecc8b6` only retained earlier
 failed-candidate screenshots for inspection and must not be promoted as source.
+
+## Recorded performance baseline
+
+The local release build was compared with installed Electron Synara 0.8.4 using
+isolated empty profiles, matched Xvfb windows and verified software renderers.
+The [2026-09-19 benchmark](../benchmarks/2026-09-19-rust-electron/README.md) records
+five warm launches per app, a separate fresh-profile run, whole-process memory
+and idle CPU, raw samples, candidate hashes and a reproduction harness. This
+measures the two current builds; it does not establish complete product parity.

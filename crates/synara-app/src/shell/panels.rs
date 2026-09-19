@@ -1,38 +1,50 @@
 use super::*;
 impl Shell {
     pub(super) fn files_panel(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
+        use crate::ui::{self, Glyph, palette};
         let dirty = self.dirty(cx);
-        div().flex().flex_1().min_h_0().p_4().gap_4()
-            .child(div().w(px(260.)).flex_shrink_0().flex().flex_col().gap_3()
-                .child(div().flex().gap_2().child(button("file-up","Up",false).on_click(cx.listener(|this,_,_,_|{this.directory.pop();this.refresh_files();})))
-                    .child(button("files-refresh","Refresh",false).on_click(cx.listener(|this,_,_,_|this.refresh_files()))))
-                .child(div().text_xs().text_color(rgb(0xa2aec0)).child(if self.directory.as_os_str().is_empty(){"Project root".into()}else{self.directory.display().to_string()}))
-                .child(div().id("file-list").flex_1().min_h_0().overflow_y_scroll().flex().flex_col().gap_1().children(self.files.iter().skip(self.file_page*400).take(400).enumerate().map(|(index,file)|{
-                    let path=file.relative_path.clone();let directory=file.directory;let symlink=file.symlink;
-                    div().id(("file",index)).p_2().rounded_sm().cursor_pointer().hover(|s|s.bg(rgb(0x2c394a)))
-                        .on_click(cx.listener(move |this,_,_,cx|{
-                            if symlink{this.error=Some("Symlink navigation is disabled at the workspace boundary.".into());cx.notify();}
-                            else if directory{this.directory=path.clone();this.refresh_files();}
-                            else{this.open_file(path.clone(),cx);}
-                        }))
-                        .child(format!("{} {}",if symlink{"[link]"}else if directory{"[dir]"}else{""},file.name))
-                })))
-                .child(div().flex().gap_2().children((self.file_page>0).then(||button("previous-files","Previous",false).on_click(cx.listener(|this,_,_,cx|{this.file_page=this.file_page.saturating_sub(1);cx.notify();}))))
-                    .children(((self.file_page+1)*400<self.files.len()).then(||button("next-files","Next",false).on_click(cx.listener(|this,_,_,cx|{this.file_page+=1;cx.notify();}))))))
-            .child(div().flex_1().min_w_0().flex().flex_col().gap_3()
-                .child(div().flex().items_center().justify_between().gap_3()
-                    .child(div().font_weight(gpui::FontWeight::SEMIBOLD).child(self.document.as_ref().map_or_else(||"Native editor".into(),|d|format!("{}{}",d.path.display(),if dirty{" *"}else{""}))))
-                    .child(div().flex().gap_2().child(button("save-document",if self.saving{"Saving..."}else{"Save"},dirty).on_click(cx.listener(|this,_,_,cx|this.save_file(cx))))
-                        .child(button("discard-document","Discard edits",false).on_click(cx.listener(|this,_,_,cx|{if !this.saving{if let Some(document)=&this.document{this.editor.update(cx,|entry,cx|entry.set_text(document.snapshot.text.clone(),cx));}cx.notify();}})))))
-                .child(div().text_xs().text_color(rgb(0x94a3b8)).child("UTF-8 · guarded saves · undo/redo · Ctrl+S to save · up to 1 MiB"))
-                .child(self.editor.clone())
-                .children(self.editor.read(cx).error.as_ref().map(|error|div().text_color(rgb(0xffb1b5)).child(error.clone())))
-                .children(self.document.is_none().then(||div().p_3().child("Select a file on the left. Binary, oversized and symlink targets produce explicit errors rather than being silently converted."))))
-            .into_any_element()
+        let query = self.file_search.read(cx).text().trim().to_lowercase();
+        div().flex().flex_1().min_h_0().min_w_0()
+            .child(div().w(px(240.)).relative().child(ui::layout_probe("file-tree")).flex_shrink_0().min_h_0().border_r_1().border_color(gpui::rgba(0xffffff09))
+                .flex().flex_col().gap_1()
+                .child(div().p_2().child(self.file_search.clone()))
+                .children((!self.directory.as_os_str().is_empty()).then(|| div().px_2().flex().items_center().gap_2()
+                    .child(ui::chrome_button("file-up", "Parent folder", Glyph::Back, false,
+                        cx.listener(|this, _: &(), _, _| { this.directory.pop(); this.refresh_files(); })))
+                    .child(div().min_w_0().text_ellipsis().text_size(px(12.)).text_color(rgb(palette().muted)).child(self.directory.display().to_string()))))
+                .child(div().id("file-list").flex_1().min_h_0().overflow_y_scroll().px_1().flex().flex_col()
+                    .children(self.files.iter().filter(|file| query.is_empty() || file.name.to_lowercase().contains(&query))
+                        .skip(self.file_page * 400).take(400).enumerate().map(|(index, file)| {
+                            let path = file.relative_path.clone(); let directory = file.directory; let symlink = file.symlink;
+                            ui::action(("file", index), file.name.clone(), Some(if directory { Glyph::ChevronRight } else { Glyph::Files }), false,
+                                cx.listener(move |this, _: &(), _, cx| {
+                                    if symlink { this.error = Some("Symlink navigation is disabled at the workspace boundary.".into()); cx.notify(); }
+                                    else if directory { this.directory = path.clone(); this.file_search.update(cx, |input, cx| input.clear(cx)); this.refresh_files(); }
+                                    else { this.open_file(path.clone(), cx); }
+                                })).h(px(28.)).text_size(px(12.)).relative().child(ui::layout_probe_slot("file-row", index))
+                        })))
+                .child(div().px_2().pb_2().flex().gap_2()
+                    .child(ui::button("files-refresh", "Refresh", false).text_size(px(11.)).bg(gpui::rgba(0)).on_click(cx.listener(|this, _, _, _| this.refresh_files())))
+                    .children((self.file_page > 0).then(|| ui::button("previous-files", "Previous", false).on_click(cx.listener(|this, _, _, cx| { this.file_page = this.file_page.saturating_sub(1); cx.notify(); }))))
+                    .children(((self.file_page + 1) * 400 < self.files.len()).then(|| ui::button("next-files", "Next", false).on_click(cx.listener(|this, _, _, cx| { this.file_page += 1; cx.notify(); }))))))
+            .child(if let Some(document) = &self.document {
+                div().flex_1().min_w_0().min_h_0().flex().flex_col().p_3().gap_3()
+                    .child(div().flex().items_center().gap_2()
+                        .child(div().flex_1().min_w_0().text_ellipsis().text_size(px(13.)).child(format!("{}{}", document.path.display(), if dirty { " *" } else { "" })))
+                        .child(ui::button("save-document", if self.saving { "Saving..." } else { "Save" }, dirty).on_click(cx.listener(|this, _, _, cx| this.save_file(cx))))
+                        .child(ui::button("discard-document", "Discard", false).on_click(cx.listener(|this, _, _, cx| {
+                            if !this.saving { if let Some(document) = &this.document { this.editor.update(cx, |entry, cx| entry.set_text(document.snapshot.text.clone(), cx)); } cx.notify(); }
+                        }))))
+                    .child(self.editor.clone())
+                    .children(self.editor.read(cx).error.as_ref().map(|error| div().text_color(rgb(palette().error)).child(error.clone())))
+            } else {
+                div().flex_1().min_w_0().flex().items_center().justify_center().p_4().text_size(px(12.)).text_color(rgb(palette().muted))
+                    .child(div().w_full().min_w_0().text_center().child("Select a file from the tree to view it."))
+            }).into_any_element()
     }
     pub(super) fn git_panel(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
         div().flex().flex_col().flex_1().min_h_0().p_4().gap_3()
-            .child(div().flex().justify_between().items_center().child(div().text_lg().child(format!("Changes · {}",self.git.branch)))
+            .child(div().flex().justify_between().items_center().child(div().flex().items_center().gap_2().child(crate::ui::icon(crate::ui::Glyph::Changes)).child(format!("Changes · {}",self.git.branch)))
                 .child(div().flex().gap_2().child(button("unstaged-diff","Unstaged",!self.staged).on_click(cx.listener(|this,_,_,cx|{this.staged=false;this.refresh_git();cx.notify();})))
                     .child(button("staged-diff","Staged",self.staged).on_click(cx.listener(|this,_,_,cx|{this.staged=true;this.refresh_git();cx.notify();})))
                     .child(button("refresh-git","Refresh",false).on_click(cx.listener(|this,_,_,_|this.refresh_git())))))
@@ -44,7 +56,7 @@ impl Shell {
                             this.git_index_path(path.clone(),unstage);
                         })))
                 })).children(self.git.entries.is_empty().then(||div().p_3().child("No changed files"))))
-                .child(div().id("diff-output").flex_1().min_w_0().overflow_y_scroll().p_3().rounded_md().bg(rgb(0x151e28)).font_family("DejaVu Sans Mono").text_xs().child(if self.diff.is_empty(){"No diff in this view. Untracked files must be staged before Git can show their diff.".into()}else{truncate(&self.diff,256*1024)})))
+                .child(div().id("diff-output").flex_1().min_w_0().overflow_y_scroll().p_3().rounded_md().bg(rgb(0x151e28)).font_family(crate::ui::code_font()).text_xs().child(if self.diff.is_empty(){"No diff in this view. Untracked files must be staged before Git can show their diff.".into()}else{truncate(&self.diff,256*1024)})))
             .child(self.commit_message.clone())
             .child(div().flex().justify_between().items_center().child(div().text_xs().text_color(rgb(0x96a5b9)).child("Commit writes only to the selected workspace. Hooks and signing are disabled for this action."))
                 .child(button("commit-staged","Commit staged changes",false).on_click(cx.listener(|this,_,_,cx|{
@@ -220,6 +232,7 @@ impl Shell {
         let trace = serde_json::to_string_pretty(&self.trace).unwrap_or_default();
         let mut panel=div().flex().flex_col().flex_1().min_h_0().p_4().gap_3()
             .child(div().text_lg().child("ACP inspector"))
+            .child(self.configuration_controls(cx))
             .child(div().text_xs().text_color(rgb(0x9aabc0)).child("Bounded protocol metadata. Payload values, credentials and stderr contents are redacted before retention."))
             .child(div().flex().flex_wrap().gap_2()
                 .child(button("copy-trace","Copy redacted trace",false).on_click(move |_,_,cx|cx.write_to_clipboard(gpui::ClipboardItem::new_string(trace.clone()))))
@@ -246,7 +259,7 @@ impl Shell {
                     .child(
                         div()
                             .mt_2()
-                            .font_family("DejaVu Sans Mono")
+                            .font_family(crate::ui::code_font())
                             .text_xs()
                             .child(
                                 serde_json::to_string_pretty(&details.connection.capabilities)
@@ -285,7 +298,7 @@ impl Shell {
                             .p_2()
                             .rounded_md()
                             .bg(rgb(0x17212c))
-                            .font_family("DejaVu Sans Mono")
+                            .font_family(crate::ui::code_font())
                             .text_xs()
                             .child(format!(
                                 "#{}  {}  {}  {}  {}",
@@ -303,20 +316,6 @@ impl Shell {
                             )
                     })),
             )
-            .into_any_element()
-    }
-    pub(super) fn settings_panel(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
-        div().id("settings-view").flex_1().min_h_0().overflow_y_scroll().p_5().flex().flex_col().gap_3()
-            .child(div().text_2xl().child("Agent settings"))
-            .child("Every profile runs through the same ACP backend. Configure an installed executable, its arguments, and any environment variable names it is allowed to inherit.")
-            .child("Models, modes and authentication are discovered from the connected agent. Synara does not maintain vendor model catalogs.")
-            .child(div().p_3().rounded_md().bg(rgb(0x263043)).font_family("DejaVu Sans Mono").text_xs().child("inherit_env contains names only, for example [\"MY_AGENT_TOKEN\"]. Values are read from the launch environment and never saved to the profile database. Do not place secrets in command arguments."))
-            .child(self.profile_editor.clone())
-            .child(div().flex().gap_2().child(button("apply-profiles","Save profiles",true).on_click(cx.listener(|this,_,_,cx|this.save_profiles(cx))))
-                .child(button("reset-profiles","Load launch presets",false).on_click(cx.listener(|this,_,_,cx|{this.profile_editor.update(cx,|entry,cx|entry.set_text(serde_json::to_string_pretty(&default_profiles()).unwrap_or_default(),cx));cx.notify();}))))
-            .child(div().mt_4().text_lg().child("Storage and safety"))
-            .child("Workspaces, tasks and normalized conversation events are saved locally in SQLite. Use --data-dir to select a separate data directory. Pending permissions are never restored as approvals after an interrupted session.")
-            .child("Filesystem callbacks are constrained to the selected workspace. Native file editing preserves UTF-8 BOMs and checks for external modifications before saving. Symlink navigation is disabled.")
             .into_any_element()
     }
 }

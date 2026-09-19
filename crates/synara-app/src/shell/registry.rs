@@ -116,12 +116,6 @@ impl Shell {
             RegistryReply::Changed(installed, profiles, message) => {
                 self.registry.installed = installed;
                 self.profiles = profiles;
-                self.profile_editor.update(cx, |entry, cx| {
-                    entry.set_text(
-                        serde_json::to_string_pretty(&self.profiles).unwrap_or_default(),
-                        cx,
-                    )
-                });
                 self.notice = Some(message);
                 self.registry.review = None;
                 self.registry.review_note = None;
@@ -280,7 +274,7 @@ impl Shell {
                     ),
             )
             .child(div().text_sm().text_color(rgb(0xa7b5c7)).child("Official ACP registry · external executables · explicit approval required. Package launchers require npm or uv and download their pinned package on first connection."))
-            .child(self.registry.query.clone());
+            .child(div().relative().child(self.registry.query.clone()).child(crate::ui::layout_probe("registry-query")));
         if let Some(notice) = &self.registry.cache_notice {
             body = body.child(div().p_3().text_color(rgb(0xc9b7a2)).child(notice.clone()));
         }
@@ -340,6 +334,8 @@ impl Shell {
                             },
                             true,
                         )
+                        .relative()
+                        .child(crate::ui::layout_probe("registry-confirm"))
                         .on_click(cx.listener(|this, _, _, cx| this.install_reviewed_agent(cx))),
                     )
                     .child(
@@ -508,17 +504,20 @@ impl Shell {
                         } else {
                             "Review download"
                         };
-                        row = row.child(button(("registry-review", index), label, false).on_click(
-                            cx.listener(move |this, _, _, cx| {
-                                if !this.registry.busy {
-                                    this.registry.review = Some(plan.clone());
-                                    this.registry.review_note = note.clone();
-                                    this.registry.remove = None;
-                                    this.registry.error = None;
-                                    cx.notify();
-                                }
-                            }),
-                        ));
+                        row = row.child(
+                            button(("registry-review", index), label, false)
+                                .relative()
+                                .child(crate::ui::layout_probe_slot("registry-review", index))
+                                .on_click(cx.listener(move |this, _, _, cx| {
+                                    if !this.registry.busy {
+                                        this.registry.review = Some(plan.clone());
+                                        this.registry.review_note = note.clone();
+                                        this.registry.remove = None;
+                                        this.registry.error = None;
+                                        cx.notify();
+                                    }
+                                })),
+                        );
                     }
                     Ok(_) => {
                         row = row.child(

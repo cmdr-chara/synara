@@ -1,0 +1,373 @@
+{
+  "synara_reference": "33333439c4b9c74d0097bc01196cccc921f67cf3",
+  "tabler_version": "3.44.0",
+  "react_icons_version": "5.6.0",
+  "icons": [
+    {
+      "glyph": "Send",
+      "path": "icons/synara/arrow-up.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/arrow-up.svg",
+      "sha256": "2af83eb720d8ae9c3a6efcab58cf4955dcab2a36d21a0651eff7a6712859dd2a"
+    },
+    {
+      "glyph": "Search",
+      "path": "icons/synara/magnifying-glass.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/magnifying-glass.svg",
+      "sha256": "dcc82bbbcd735c51f641f3ae16ae1f145ce25167651c1247ab8d1454fed47406"
+    },
+    {
+      "glyph": "Folder",
+      "path": "icons/synara/folder-2.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/folder-2.svg",
+      "sha256": "90b3b555414cf4918dda7aa87e5d41171ef0ae48e60ea9332dbe4a299bf68814"
+    },
+    {
+      "glyph": "Folders",
+      "path": "icons/synara/folders.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/folders.svg",
+      "sha256": "dd900fc109b667cc8f2817dfc3a01acd668ba134cf3c5f823ad89c54c41bd1e2"
+    },
+    {
+      "glyph": "Compose",
+      "path": "icons/synara/compose-pencil.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/compose-pencil.svg",
+      "sha256": "600d9ad82f75dc80a35a87cd641725853fe4545a02f534da0042bd470cc8b8fd"
+    },
+    {
+      "glyph": "Settings",
+      "path": "icons/synara/settings-gear-4.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/settings-gear-4.svg",
+      "sha256": "4b04b93a1d1733ed591cae195b70f12625e38fd9988f247b230bd51cacaecd88"
+    },
+    {
+      "glyph": "Panel",
+      "path": "icons/synara/sidebar-simple-left-wide.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/sidebar-simple-left-wide.svg",
+      "sha256": "bc356c70b9fea788d0c41eefb4970d1b694645366eb1a5a2e7b00e1667308848"
+    },
+    {
+      "glyph": "PanelRight",
+      "path": "icons/synara/sidebar-simple-right-wide.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/sidebar-simple-right-wide.svg",
+      "sha256": "29ffdeb3b4717eeb4b0de5bf6429a1468d2167b8c9a168836424aa72dfdec0fe"
+    },
+    {
+      "glyph": "Dock",
+      "path": "icons/synara/window.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/window.svg",
+      "sha256": "5decb9bff66c2e10c9d56bcb595b234b8111a01ddd9b3354070431244c8718e1"
+    },
+    {
+      "glyph": "Terminal",
+      "path": "icons/synara/console.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/console.svg",
+      "sha256": "afa10e4a6b8e6a66a7a626e7497eda9be7dd9d8d036c1b6296dd5dbb96ec173b"
+    },
+    {
+      "glyph": "Changes",
+      "path": "icons/synara/changes.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/changes.svg",
+      "sha256": "b162212713972035293a142a17d28dcbb5635ddaa67bf6c5fa2c2820f9563df8"
+    },
+    {
+      "glyph": "Handoff",
+      "path": "icons/synara/arrow-left-right.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/arrow-left-right.svg",
+      "sha256": "d064079c203897300529c6eef16484e89d1118a41cde25cb11314b5bc0af7b3c"
+    },
+    {
+      "glyph": "Copy",
+      "path": "icons/synara/square-behind-square-6.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/square-behind-square-6.svg",
+      "sha256": "37c6d9a8ce0a72832b8487085d58e47946bbb46ae02a3b172ec36b8ea65bdbfb"
+    },
+    {
+      "glyph": "Kanban",
+      "path": "icons/synara/columns-3-wide.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/columns-3-wide.svg",
+      "sha256": "8f7e09777a57fd1a4f808e7799394eab2a8d23f24f39e26866679c2f18fe607d"
+    },
+    {
+      "glyph": "PullRequest",
+      "path": "icons/synara/pull-request.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/pull-request.svg",
+      "sha256": "dfe9a671c81bd7d6d5f290b5259861802894c99948fd568e011f0513a5854199"
+    },
+    {
+      "glyph": "Clock",
+      "path": "icons/synara/clock.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/clock.svg",
+      "sha256": "5ed51fc117c3bc85fa9b0ae0fbebb5329c24d4feb1cc885046bfc44dbfdbc944"
+    },
+    {
+      "glyph": "Help",
+      "path": "icons/synara/circle-questionmark.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/circle-questionmark.svg",
+      "sha256": "803d940a14f3bb54488927f2bd33d5405eea92bf53c9ef102fb93f0bc4161e8a"
+    },
+    {
+      "glyph": "Notebook",
+      "path": "icons/synara/notes.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/notes.svg",
+      "sha256": "647d38c9f491d60f831f49063dd2342e6c6fd2ef12958ce0822a6c38beadb842"
+    },
+    {
+      "glyph": "Chat",
+      "path": "icons/synara/chat-bubble-7.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/chat-bubble-7.svg",
+      "sha256": "67195dd73c3011eab3a48517c8913a7636f164dcd193a6a2d20cd9ce48f27a9a"
+    },
+    {
+      "glyph": "Shield",
+      "path": "icons/synara/shield-code.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/shield-code.svg",
+      "sha256": "0fc23643350d07b6d154048d26ca4b4171a97f6118c9397f8a2c151e8996aef0"
+    },
+    {
+      "glyph": "Mic",
+      "path": "icons/synara/microphone.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/microphone.svg",
+      "sha256": "60498fbe44516e7f6b4f441ab458697db780bf50eff152aa8814a872bb32ff71"
+    },
+    {
+      "glyph": "Agent",
+      "path": "icons/synara/robot.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/robot.svg",
+      "sha256": "483388a0f3dcc9cf25ae6eb14e04c36fc5096f341592c1b0a101492360dda825"
+    },
+    {
+      "glyph": "Fork",
+      "path": "icons/synara/branch.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/branch.svg",
+      "sha256": "5417f5033fa21618a73309ddffe2d230afd4efced8cb9ce56d2489a359c06275"
+    },
+    {
+      "glyph": "Pin",
+      "path": "icons/synara/pin.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/pin.svg",
+      "sha256": "4e25b53b3653a3dadffd375f2c20fb89d3562e457b90d512aca7568e983c82fc"
+    },
+    {
+      "glyph": "Browser",
+      "path": "icons/synara/globe.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/globe.svg",
+      "sha256": "5ca6aa984bf3c38933b00f0b3da08088f6024db6d893c73c29092337abfc2536"
+    },
+    {
+      "glyph": "Goal",
+      "path": "icons/synara/target-arrow.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/target-arrow.svg",
+      "sha256": "01aeccd442a95aeefa637507cab93007b6c62a341c221b0eb3739ba91de6d798"
+    },
+    {
+      "glyph": "Window",
+      "path": "icons/synara/window.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/window.svg",
+      "sha256": "5decb9bff66c2e10c9d56bcb595b234b8111a01ddd9b3354070431244c8718e1"
+    },
+    {
+      "glyph": "OpenCode",
+      "path": "icons/synara/opencode.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/opencode.svg",
+      "sha256": "b28cca39ac75e91901736473b54b446813a20dc64819dd5bce85eb1e51769a09"
+    },
+    {
+      "glyph": "Stop",
+      "path": "icons/synara/stop-fill.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-fill/stop.svg",
+      "sha256": "56e91e655823a76cb636c12799eee447e2108a6f3becfe22792ca63c29899f5c"
+    },
+    {
+      "glyph": "Back",
+      "path": "icons/tabler/arrow-left.svg",
+      "source": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.44.0/icons/outline/arrow-left.svg",
+      "sha256": "058fc4190c178ecce118b6294b74235d4f88c4dfbd17c6159d67210a03222bc0"
+    },
+    {
+      "glyph": "Forward",
+      "path": "icons/tabler/arrow-right.svg",
+      "source": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.44.0/icons/outline/arrow-right.svg",
+      "sha256": "f3b14b2b1b68711e72864c3f231004c42a5317108dd480fe189bc98d5fad9f92"
+    },
+    {
+      "glyph": "Plus",
+      "path": "icons/tabler/plus.svg",
+      "source": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.44.0/icons/outline/plus.svg",
+      "sha256": "ea2630f3d4b4800ed9e1f2818b7064bb62b27943c482e739d76bd2320f82632d"
+    },
+    {
+      "glyph": "Chevron",
+      "path": "icons/tabler/chevron-down.svg",
+      "source": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.44.0/icons/outline/chevron-down.svg",
+      "sha256": "06bd20b8cbe565b97046c5d0ec917f11ed6b29c0e4885a82ae057325c972bf9a"
+    },
+    {
+      "glyph": "ChevronRight",
+      "path": "icons/tabler/chevron-right.svg",
+      "source": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.44.0/icons/outline/chevron-right.svg",
+      "sha256": "26b321e42c7c7ed5d5161d9af061033df1d49ef33b5d2fc2309e2f6ee3d4c81a"
+    },
+    {
+      "glyph": "More",
+      "path": "icons/tabler/dots.svg",
+      "source": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.44.0/icons/outline/dots.svg",
+      "sha256": "e0a3f950691ef2e3a4c5c35200eabded201eeb9980b61beab84dcb345c630d9a"
+    },
+    {
+      "glyph": "Files",
+      "path": "icons/tabler/file.svg",
+      "source": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.44.0/icons/outline/file.svg",
+      "sha256": "dafd413378bd36151892f59328e29b1e5fcd6b2a5de4f44a029a237161e2edb4"
+    },
+    {
+      "glyph": "Minimize",
+      "path": "icons/tabler/minus.svg",
+      "source": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.44.0/icons/outline/minus.svg",
+      "sha256": "41b4d0e2e81757c0d8b8611208621aa0190280d5cffb25436f558a362474d0da"
+    },
+    {
+      "glyph": "Close",
+      "path": "icons/tabler/x.svg",
+      "source": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.44.0/icons/outline/x.svg",
+      "sha256": "6b97b0d51512b84eee04c0644fd07059a9c21d537886cdb40ef48485d874abc3"
+    },
+    {
+      "glyph": "Attach",
+      "path": "icons/tabler/paperclip.svg",
+      "source": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.44.0/icons/outline/paperclip.svg",
+      "sha256": "bf23344f9a0058781908d075d6e3cbab452f079fb09e8519d21b98b85de8e56a"
+    },
+    {
+      "glyph": "Plan",
+      "path": "icons/tabler/list-details.svg",
+      "source": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.44.0/icons/outline/list-details.svg",
+      "sha256": "a0b73d173f0494c96fb9f23690ff366e1e06c952d4fed0a83d6e4f7904a86fd5"
+    },
+    {
+      "glyph": "Debug",
+      "path": "icons/tabler/bug.svg",
+      "source": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.44.0/icons/outline/bug.svg",
+      "sha256": "1824520204c6e92d75e1950853a9a300f578f169c8d2989890e0d8dd99fb5c6a"
+    },
+    {
+      "glyph": "Down",
+      "path": "icons/tabler/arrow-down.svg",
+      "source": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.44.0/icons/outline/arrow-down.svg",
+      "sha256": "0eb6108b39094aee3ea28e825248d55a87db010755c6df37b6ba8dcb6a6c7edc"
+    },
+    {
+      "glyph": "Error",
+      "path": "icons/tabler/alert-circle.svg",
+      "source": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.44.0/icons/outline/alert-circle.svg",
+      "sha256": "b6354407e0d1a6b2a37ec0239e1d5d915fc888c4ddd03c9993f64be3fd31df83"
+    },
+    {
+      "glyph": "OpenAI",
+      "path": "icons/providers/openai.svg",
+      "source": "https://unpkg.com/react-icons@5.6.0/si/index.mjs#SiOpenai",
+      "sha256": "97bd7b6a26ea42fa70d9728ac6dea7a8110555c72c9290b6b7c63dad0916608c"
+    },
+    {
+      "glyph": "Maximize",
+      "path": "icons/tabler/maximize.svg",
+      "source": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.44.0/icons/outline/maximize.svg",
+      "sha256": "a1ebf9d6d01dab7558c96007037daaeaddf6bf21bc89ccebcb6f0cb1b2d21fb3"
+    },
+    {
+      "glyph": "Restore",
+      "path": "icons/tabler/minimize.svg",
+      "source": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.44.0/icons/outline/minimize.svg",
+      "sha256": "7fe1489b6951e9f8dd6009b07eb7c58e58295287059267306734cca9c1915bef"
+    },
+    {
+      "glyph": "Check",
+      "path": "icons/tabler/check.svg",
+      "source": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.44.0/icons/outline/check.svg",
+      "sha256": "fe359b27c74ed0f4f72bfabbe5ca969a8bb13a5f39648bae63f9e798034ebed3"
+    },
+    {
+      "glyph": "User",
+      "path": "icons/synara/user.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/user.svg",
+      "sha256": "b5385e97f5de26b2fcaa919cb6fba51326264d2a70ad6939b5f98a5decade396"
+    },
+    {
+      "glyph": "Palette",
+      "path": "icons/synara/color-palette.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/color-palette.svg",
+      "sha256": "7fef64fefaaf943f6f13daddaa28a8ef162c33123ccadfcfcdc7b3782f9838c9"
+    },
+    {
+      "glyph": "Bell",
+      "path": "icons/synara/bell.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/bell.svg",
+      "sha256": "a266cb2797ad51b1a3a9568fe116e261f3bf7325f9cee1a5157a820218ddb380"
+    },
+    {
+      "glyph": "Sliders",
+      "path": "icons/synara/settings-slider-hor.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/settings-slider-hor.svg",
+      "sha256": "a8866551c0c14a4d6faa668140ae50f1aaa02e9db44a1612e893a2f855a4ea8f"
+    },
+    {
+      "glyph": "Shortcut",
+      "path": "icons/synara/shortcut.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/shortcut.svg",
+      "sha256": "1c96939692213c6fcc6e6297b7a3378b069252f12dcfaa9ff1e6a81c779b7504"
+    },
+    {
+      "glyph": "Gauge",
+      "path": "icons/synara/gauge.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/gauge.svg",
+      "sha256": "0825c00a7954bd6dde046d68a80f6df3438383f38e370728869c088bee9fa1ac"
+    },
+    {
+      "glyph": "Capture",
+      "path": "icons/synara/screen-capture.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/screen-capture.svg",
+      "sha256": "4a6cb0f272ec63f68fe86bc473e19f7341acee58caceb249ec8b413f3877ab3f"
+    },
+    {
+      "glyph": "Plugin",
+      "path": "icons/synara/plugin-1.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/plugin-1.svg",
+      "sha256": "0aeb69d71d2549c3ae2867bde4b1421d9532f05ad63e3ce44ea4df7eea9024ea"
+    },
+    {
+      "glyph": "Puzzle",
+      "path": "icons/synara/puzzle.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/puzzle.svg",
+      "sha256": "5e737ca7c5824d9f54569f360275876ed253d34cbb26020969da4492ed14a99c"
+    },
+    {
+      "glyph": "Brain",
+      "path": "icons/synara/brain.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/brain.svg",
+      "sha256": "5c198feb570102fd8b9324c2dd7d486193f1a51a8736ce7be6ab39b4075e1ba1"
+    },
+    {
+      "glyph": "Blocks",
+      "path": "icons/synara/building-blocks.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/building-blocks.svg",
+      "sha256": "429f0fc72acba96ed6b0862ef7ef9481a642fb5551c9189effbc41f0bb7b7404"
+    },
+    {
+      "glyph": "BranchSimple",
+      "path": "icons/synara/branch-simple.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/branch-simple.svg",
+      "sha256": "8197b1b996eb17b32df768a2fd010beece85e036355307499a8564cdc39fa10b"
+    },
+    {
+      "glyph": "Toolbox",
+      "path": "icons/synara/toolbox.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/toolbox.svg",
+      "sha256": "71985848d3a4ac41a89e562d5508b18282797712de1cdfa0f3bd698b149989fc"
+    },
+    {
+      "glyph": "Archive",
+      "path": "icons/synara/archive.svg",
+      "source": "https://github.com/Emanuele-web04/synara/blob/33333439c4b9c74d0097bc01196cccc921f67cf3/apps/web/public/central-icons-reversed/archive.svg",
+      "sha256": "1534ea3cc23c2b1da490683e66489bef6330177b0903b18110a2ea874965eaf7"
+    }
+  ]
+}

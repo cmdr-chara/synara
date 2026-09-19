@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Assemble reviewed native source without updating any ref.
+"""Assemble exact native source objects in an isolated candidate checkout.
 
-Temporary continuation tooling. Exact blob guards preserve concurrent work.
+No ref updates. Existing-file blob guards preserve concurrent user work.
 """
 import base64
 import hashlib
@@ -17,12 +17,21 @@ EXPECTED = {
     'crates/synara-app/src/input.rs': '6b85843db1cda6372048795400cfbcfd9cc7a77f',
     'crates/synara-app/src/shell/conversation.rs': 'db645ae0bd7a67326df576c1fc902fcafb809113',
     '.github/workflows/native.yml': '6b034788e1273ff60242af93ff2b446d5ea733a5',
+    'scripts/native_smoke.py': '49c3ebfb0a206b84e82dacf64bd76a0d57c72dd2',
+    'ROADMAP.md': '1d8bd9b6fd30b27099ff3986e0614bc76c4b1fa1',
+    '.github/workflows/ui-recovery-audit.yml': '185e9497cd0c923a2afee441b6d4af6d4db25840',
 }
 INPUTS = {
-    'crates/synara-app/src/ui.rs': 'f2ba4390813f68e2374daf0ba4d3cc6e34329ca7',
-    'crates/synara-app/src/shell/navigation.rs': 'b46d84e45f4916d332129c5fba90ff52b1a7de6a',
-    'crates/synara-app/src/shell/chrome.rs': '95dd558ad8230a651c4a037927407001be74cf8b',
-    'scripts/native_navigation_smoke.py': '1b1a60142b670778dfd99273211d6efe89cb059a',
+    'crates/synara-app/src/main.rs': '99f860d0b8d6cc3734cca2f9aaaa3fd4100e2dea',
+    'crates/synara-app/src/shell.rs': '0d2bce5172ba0b133661fe88f350c14e6db3ec9f',
+    'crates/synara-app/src/input.rs': '5e8a677123cddf3a72f3a122399a458f2c151a4e',
+    'crates/synara-app/src/shell/conversation.rs': '9138b9d86c81adca913c7817a9b399a37352ebf2',
+    'crates/synara-app/src/ui.rs': '7462cbaf2acc7edf08565ac96856d3ac8eb48b66',
+    'crates/synara-app/src/shell/navigation.rs': '9c4c17efd1d3ecc33ff8aef5a29d52a0217e8bf1',
+    'crates/synara-app/src/shell/chrome.rs': 'fe002623909c2d47a7b1f092f5c554085224688f',
+    'scripts/native_navigation_smoke.py': '6ea0af9987cec3aa10bb914e52e4100c87294669',
+    '.github/workflows/native.yml': '87ee65a4575f104d3feabcc9a0417cb924fe0600',
+    'ROADMAP.md': '6afa4a5886e74170e012c54a237631ea61b9a22a',
     'docs/ui/native-navigation.md': '3db2250b966aa004bcc3babcd7d5efd22f0e1a93',
 }
 
@@ -57,7 +66,7 @@ def main():
         assert blob_sha(Path(name).read_bytes()) == sha, 'source changed: ' + name
     for name, sha in INPUTS.items():
         path = Path(name)
-        assert not path.exists(), 'new path already exists: ' + name
+        assert name in EXPECTED or not path.exists(), 'new path already exists: ' + name
         request = urllib.request.Request(
             'https://api.github.com/repos/cmdr-chara/synara/git/blobs/' + sha,
             headers={'Accept': 'application/vnd.github+json', 'User-Agent': 'Synara-native-verification'})
@@ -72,72 +81,58 @@ def main():
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(data)
 
-    p = 'crates/synara-app/src/shell/navigation.rs'
-    text = Path(p).read_text()
-    text = replace(text, 'use super::*;\nuse crate::ui::{self, DARK, Glyph};',
-        'use super::*;\nuse crate::ui::{self, DARK, Glyph};\nuse gpui::FocusHandle;')
-    text = replace(text, 'Some(Glyph::Chevron), self.navigation.projects_open,',
-        'Some(if self.navigation.projects_open { Glyph::Chevron } else { Glyph::ChevronRight }), false,')
-    text = replace(text, 'Some(Glyph::Chevron), self.navigation.chats_open,',
-        'Some(if self.navigation.chats_open { Glyph::Chevron } else { Glyph::ChevronRight }), false,')
-    text = replace(text, '                            if this.project.is_some() {',
-        '                            this.navigation.task_page = 0;\n                            if this.project.is_some() {')
-    write(p, text)
-
-    p = 'crates/synara-app/src/main.rs'
-    write(p, replace(Path(p).read_text(), 'mod shell;\n', 'mod shell;\nmod ui;\n'))
+    # Non-content debug metadata distinguishes missed hit targets from state loss.
+    # No typed characters, key sequences, paths or credentials are logged.
     p = 'crates/synara-app/src/input.rs'
-    write(p, replace(Path(p).read_text(), '.track_focus(&self.focus)',
-        '.track_focus(&self.focus)\n            .tab_index(0)'))
-    p = 'crates/synara-app/src/shell.rs'
-    text = replace(Path(p).read_text(), 'mod conversation;\n',
-        'mod chrome;\nmod conversation;\nmod navigation;\n')
-    text = replace(text, 'pub struct Shell {\n',
-        'pub struct Shell {\n    navigation: navigation::NavigationState,\n')
-    text = replace(text, '        let mut this = Self {\n',
-        '        let mut this = Self {\n            navigation: navigation::NavigationState::new(cx),\n')
-    assert text.count('impl Render for Shell {') == 1
-    text = text[:text.index('impl Render for Shell {')].rstrip() + '\n'
-    start, end = text.index('\nfn button('), text.index('\nasync fn remote_filesystem(')
-    assert start < end
-    text = text[:start] + '\nfn button(\n    id: impl Into<gpui::ElementId>,\n    text: impl Into<SharedString>,\n    active: bool,\n) -> gpui::Stateful<gpui::Div> {\n    crate::ui::button(id, text, active)\n}\n' + text[end:]
-    write(p, text)
-    p = 'crates/synara-app/src/shell/conversation.rs'
     text = Path(p).read_text()
-    start, end = text.index('    pub(super) fn sidebar('), text.index('    pub(super) fn conversation(')
-    assert start < end
-    write(p, text[:start] + text[end:])
+    text = replace(text, '        self.bounds = bounds;',
+        '        if self.bounds != bounds {\n            tracing::debug!(target: "synara_ui_layout", composer = self.mode == EntryMode::Composer, editor = self.mode == EntryMode::Editor, ?bounds, "input-layout");\n        }\n        self.bounds = bounds;')
+    text = replace(text, '                    window.focus(&this.focus, cx);',
+        '                    tracing::debug!(target: "synara_ui_layout", composer = this.mode == EntryMode::Composer, editor = this.mode == EntryMode::Editor, position = ?event.position, "input-mouse-focus");\n                    window.focus(&this.focus, cx);')
+    text = replace(text, '        self.buffer = TextBuffer::new(text);',
+        '        tracing::debug!(target: "synara_ui_layout", composer = self.mode == EntryMode::Composer, editor = self.mode == EntryMode::Editor, empty = text.is_empty(), "input-replaced");\n        self.buffer = TextBuffer::new(text);')
+    write(p, text)
+    p = 'crates/synara-app/src/shell.rs'
+    text = Path(p).read_text()
+    text = replace(text, '        let dirty = self.dirty(cx);\n        if self.close.request(dirty, self.saving) {',
+        '        let dirty = self.dirty(cx);\n        tracing::debug!(target: "synara_ui_layout", dirty, saving = self.saving, document = self.document.is_some(), "close-request");\n        if self.close.request(dirty, self.saving) {')
+    write(p, text)
 
+    p = 'scripts/native_smoke.py'
+    text = Path(p).read_text()
+    method = '''    def copy_input(self):
+        self.key('a', ('Control_L',))
+        self.key('c', ('Control_L',))
+        env = {key: os.environ[key] for key in ('PATH', 'LD_LIBRARY_PATH') if key in os.environ}
+        env['DISPLAY'] = self.name
+        result = subprocess.run(['xclip', '-selection', 'clipboard', '-out'], env=env,
+                                stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=3)
+        if result.returncode:
+            raise AssertionError('Owned native input did not publish a clipboard selection')
+        assert len(result.stdout) <= 1024 * 1024
+        return result.stdout.decode('utf-8')
+
+'''
+    text = replace(text, '    def text(self, value):\n', method + '    def text(self, value):\n')
+    text = replace(text, "RUST_LOG='synara=info,gpui=warn'", "RUST_LOG='synara=info,synara_ui_layout=debug,gpui=warn'")
+    old = "        ui.click(850, 190)\n        ui.key('a', ('Control_L',))\n        ui.text('edited text\\n')"
+    new = "        ui.click(850, 190)\n        loaded = ui.copy_input()\n        assert loaded == 'original text\\n', f'Editor was not loaded before edit: {loaded!r}'\n        ui.text('edited text\\n')\n        edited = ui.copy_input()\n        assert edited == 'edited text\\n', f'Editor did not receive synthetic edit: {edited!r}'\n        ui.screenshot('editor-before-close')"
+    text = replace(text, old, new)
+    # Failure-only diagnostics are restricted to the non-content metadata target.
+    text = replace(text, "        result['error'] = str(error)\n", "        result['error'] = str(error)\n        if scenario.log:\n            print('\\n'.join(line for line in Path(scenario.log.name).read_text(errors='replace').splitlines() if 'synara_ui_layout' in line)[-12000:])\n")
+    write(p, text)
     p = 'scripts/native_navigation_smoke.py'
     text = Path(p).read_text()
-    # Check the exact persisted user prompt, not arbitrary text in serialized JSON.
-    # This fixture has no private user input. A mismatch prints only its synthetic prompt.
-    text = replace(text, "    assert 'saved draft' in json.dumps(scenario.events()[before:])",
-        "    submitted = [e.get('text') for e in scenario.events()[before:] if e.get('type') == 'text_delta' and e.get('role') == 'user']\n    assert submitted == ['saved draft'], f'Synthetic restored draft mismatch: {submitted!r}'")
+    text = replace(text, "    ui.text('saved draft')\n", "    ui.text('saved draft')\n    initial_draft = ui.copy_input()\n    assert initial_draft == 'saved draft', f'Composer did not receive the initial draft: {initial_draft!r}'\n")
+    text = replace(text, "    before = len(scenario.events())\n    ui.key('Return')", "    restored = ui.copy_input()\n    assert restored == 'saved draft', f'Synthetic draft not restored: {restored!r}'\n    before = len(scenario.events())\n    ui.key('Return')")
+    text = replace(text, "        result['error'] = str(error)\n", "        result['error'] = str(error)\n        if scenario.log:\n            print('\\n'.join(line for line in Path(scenario.log.name).read_text(errors='replace').splitlines() if 'synara_ui_layout' in line)[-12000:])\n")
     write(p, text)
     p = '.github/workflows/native.yml'
-    extra = '\n'.join([
-        '      - name: Native navigation and backend interaction smoke',
-        '        timeout-minutes: 4',
-        '        run: python3 scripts/native_navigation_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/synara-navigation-smoke',
-        '      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02',
-        '        if: always()',
-        '        with:',
-        '          name: native-navigation-smoke',
-        '          path: |',
-        '            /tmp/synara-navigation-smoke/*.png',
-        '            /tmp/synara-navigation-smoke/result.json',
-        '          retention-days: 7',
-        '          if-no-files-found: warn',
-    ]) + '\n'
-    write(p, replace(Path(p).read_text(), '      - name: Export reproducible verification inputs\n',
-        extra + '      - name: Export reproducible verification inputs\n'))
-    p = 'ROADMAP.md'
     text = Path(p).read_text()
-    note = '\n\nNative navigation continuation (September 19, 2026): the published-source shell has a modular navigation/design foundation, backend-owned project/chat actions and a native keyboard-menu regression in regular CI. This is a partial checkpoint, not recovery of the unpublished local UI or a visual-parity claim. See `docs/ui/native-navigation.md` and the exact-candidate evidence receipt. Existing unfinished roadmap items remain open.\n'
-    assert 'Native navigation continuation (September 19, 2026)' not in text
-    write(p, text.rstrip() + note)
+    text = replace(text, 'python3-pil', 'python3-pil xclip')
+    write(p, text)
     Path('.github/workflows/ui-checkpoint.yml').unlink()
+    Path('.github/workflows/ui-recovery-audit.yml').unlink()
     Path(__file__).unlink()
 
 

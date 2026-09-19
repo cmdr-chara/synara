@@ -24,19 +24,29 @@ jobs:
         with:
           fetch-depth: 1000
           persist-credentials: false
+      - name: Restore candidate compilation cache
+        id: cache
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: native-ui-ubuntu24-rust1981-${{ hashFiles('Cargo.lock') }}-${{ github.sha }}
+          restore-keys: native-ui-ubuntu24-rust1981-${{ hashFiles('Cargo.lock') }}-
       - name: Assemble checksum-checked native source
         run: python3 scripts/prepare_native_navigation.py
       - name: Install repository toolchain and native libraries
         run: |
           rustup toolchain install 1.98.1 --profile minimal --component rustfmt --component clippy
           sudo apt-get update -qq > "$RUNNER_TEMP/ui-evidence/libraries.log" 2>&1
-          sudo apt-get install -y -qq clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil python3-yaml fonts-dejavu-core >> "$RUNNER_TEMP/ui-evidence/libraries.log" 2>&1
+          sudo apt-get install -y -qq clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil python3-yaml fonts-dejavu-core xclip >> "$RUNNER_TEMP/ui-evidence/libraries.log" 2>&1
       - name: Format and validate the exact candidate
         id: verify
         run: |
           set -euo pipefail
           cargo +1.98.1 fmt -p synara-app
-          git add -- crates/synara-app/src scripts/native_navigation_smoke.py scripts/prepare_native_navigation.py docs/ui/native-navigation.md ROADMAP.md .github/workflows/ui-checkpoint.yml .github/workflows/native.yml
+          git add -- crates/synara-app/src scripts/native_smoke.py scripts/native_navigation_smoke.py scripts/prepare_native_navigation.py docs/ui/native-navigation.md ROADMAP.md .github/workflows/ui-checkpoint.yml .github/workflows/native.yml .github/workflows/ui-recovery-audit.yml
           git diff --cached --check
           git diff --cached --stat
           git write-tree > "$RUNNER_TEMP/ui-evidence/tested-tree.txt"
@@ -73,6 +83,15 @@ jobs:
                   print('\n'.join((root / 'checks.log').read_text().splitlines()[-100:]))
                   raise SystemExit(completed.returncode)
           PY
+      - name: Save compilation cache after successful Rust verification
+        if: always() && steps.verify.outcome == 'success' && steps.cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ steps.cache.outputs.cache-primary-key }}
       - name: Existing native desktop contract
         id: desktop
         if: success()
@@ -83,7 +102,7 @@ jobs:
         if: always() && steps.verify.outcome == 'success'
         timeout-minutes: 4
         run: python3 scripts/native_navigation_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output "$RUNNER_TEMP/ui-evidence/navigation"
-      - name: Export verified source blobs for connector-controlled publication
+      - name: Export exact source blobs for connector-controlled publication
         if: always() && steps.verify.outcome == 'success'
         env:
           GH_TOKEN: ${{ github.token }}
@@ -122,11 +141,11 @@ jobs:
           subprocess.run(['git', 'add', str(destination)], check=True)
           if receipt['screenshots']:
               subprocess.run(['git', 'add', 'docs/ui/captures'], check=True)
-          allowed = {'.github/workflows/ui-checkpoint.yml', '.github/workflows/native.yml', 'ROADMAP.md',
+          allowed = {'.github/workflows/ui-checkpoint.yml', '.github/workflows/ui-recovery-audit.yml', '.github/workflows/native.yml', 'ROADMAP.md',
               'crates/synara-app/src/main.rs', 'crates/synara-app/src/shell.rs', 'crates/synara-app/src/input.rs',
               'crates/synara-app/src/ui.rs', 'crates/synara-app/src/shell/conversation.rs',
               'crates/synara-app/src/shell/navigation.rs', 'crates/synara-app/src/shell/chrome.rs',
-              'scripts/prepare_native_navigation.py', 'scripts/native_navigation_smoke.py',
+              'scripts/prepare_native_navigation.py', 'scripts/native_navigation_smoke.py', 'scripts/native_smoke.py',
               'docs/ui/native-navigation.md', str(destination)}
           allowed.update(image['path'] for image in receipt['screenshots'])
           changed = subprocess.check_output(['git', 'diff', '--cached', '--name-only', '-z']).decode().strip('\0').split('\0')
@@ -151,9 +170,6 @@ jobs:
               manifest['entries'].append({'path': name, 'mode': '100644', 'type': 'blob', 'sha': sha})
               (root / 'tree-entries.json').write_text(json.dumps(manifest, indent=2) + '\n')
           print('CONNECTOR_TREE_MANIFEST\n' + json.dumps(manifest, indent=2))
-          # Deliberately no tree, commit or ref mutation with the workflow token.
-          # The authenticated connector reviews the manifest, constructs the exact
-          # tree and publishes only after the interaction gate has passed.
           PY
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()

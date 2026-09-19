@@ -93,24 +93,21 @@ jobs:
           assert start < end
           p.write_text(text[:start] + text[end:])
           p = pathlib.Path('.github/workflows/native.yml')
-          text = p.read_text()
-          extra = '''      - name: Native navigation and backend interaction smoke
-                  timeout-minutes: 4
-                  run: python3 scripts/native_navigation_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/synara-navigation-smoke
-                - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-                  if: always()
-                  with:
-                    name: native-navigation-smoke
-                    path: |
-                      /tmp/synara-navigation-smoke/*.png
-                      /tmp/synara-navigation-smoke/result.json
-                    retention-days: 7
-                    if-no-files-found: warn
-          '''
-          # Dedent the continuation lines while preserving the YAML step's six spaces.
-          extra = extra.splitlines()[0] + '\n' + '\n'.join(line[10:] for line in extra.splitlines()[1:]) + '\n'
-          text = replace(text, '      - name: Export reproducible verification inputs\n', extra + '      - name: Export reproducible verification inputs\n')
-          p.write_text(text)
+          extra = '\n'.join([
+              '      - name: Native navigation and backend interaction smoke',
+              '        timeout-minutes: 4',
+              '        run: python3 scripts/native_navigation_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/synara-navigation-smoke',
+              '      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02',
+              '        if: always()',
+              '        with:',
+              '          name: native-navigation-smoke',
+              '          path: |',
+              '            /tmp/synara-navigation-smoke/*.png',
+              '            /tmp/synara-navigation-smoke/result.json',
+              '          retention-days: 7',
+              '          if-no-files-found: warn',
+          ]) + '\n'
+          p.write_text(replace(p.read_text(), '      - name: Export reproducible verification inputs\n', extra + '      - name: Export reproducible verification inputs\n'))
           p = pathlib.Path('ROADMAP.md')
           text = p.read_text()
           note = '\n\nNative navigation continuation (September 19, 2026): the published-source shell now has a modular navigation/design foundation, backend-owned project/chat actions and a native keyboard-menu regression in regular native CI. This is a partial checkpoint, not recovery of the unpublished local UI or a visual-parity claim. See `docs/ui/native-navigation.md` and its candidate-specific evidence receipt. Existing unfinished roadmap items remain open.\n'

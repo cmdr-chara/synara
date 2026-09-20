@@ -18,6 +18,7 @@ def visible_count(scenario):
 
 
 def search(scenario, query, expected):
+    scenario.click_control('choice-search')
     scenario.desktop.key('a', ('Control_L',))
     scenario.desktop.text(query)
     wait_until(lambda: visible_count(scenario) == expected, f'{expected} filtered choices')
@@ -37,6 +38,7 @@ def run(scenario):
     wait_until(lambda: (visible_count(scenario) or 0) > 0, 'Escape clears query')
     scenario.checks.append('empty-results-enter-is-inert-and-escape-clears-search')
 
+    scenario.click_control('model-source', slot=2)
     search(scenario, 'BETA coding', 1)
     ui.screenshot('picker-filtered-provider')
     key_edge(ui, 'Return', True)

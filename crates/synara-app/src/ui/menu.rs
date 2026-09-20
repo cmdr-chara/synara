@@ -1,10 +1,12 @@
 //! Virtualized native choices with searchable platform text input and release activation.
 use super::*;
+mod models;
 use crate::input::{EntryEvent, EntryMode, TextEntry};
 use gpui::{
     Entity, EntityInputHandler, EventEmitter, FocusHandle, Focusable, KeyDownEvent, KeyUpEvent,
     ScrollStrategy, Subscription, UniformListScrollHandle, uniform_list,
 };
+pub use models::{ModelRow, ModelSource};
 
 #[derive(Default)]
 pub struct Choice {
@@ -82,6 +84,7 @@ fn active_after_filter(visible: &[usize], previous: Option<usize>, choices: &[Ch
 }
 
 pub struct ChoiceMenu {
+    models: Option<models::ModelState>,
     title: String,
     unavailable_reason: Option<String>,
     choices: Vec<Choice>,
@@ -126,6 +129,7 @@ impl ChoiceMenu {
             }
         });
         Self {
+            models: None,
             title,
             unavailable_reason: None,
             visible: (0..choices.len()).collect(),
@@ -156,6 +160,9 @@ impl ChoiceMenu {
     fn filter(&mut self, query: String, cx: &mut Context<Self>) {
         let previous = self.visible.get(self.navigation.active).copied();
         self.visible = matching_choices(&self.choices, &query);
+        if let Some(models) = &self.models {
+            self.visible.retain(|index| models.includes(*index));
+        }
         self.query = query;
         let active = active_after_filter(&self.visible, previous, &self.choices);
         self.navigation.move_to(active, self.visible.len());
@@ -189,6 +196,20 @@ impl ChoiceMenu {
                 entry.marked_text_range(window, cx).is_some()
             });
         if event.prefer_character_input || composing {
+            self.navigation.armed = None;
+            return;
+        }
+        if self.model_source_key(event, window, cx) {
+            return;
+        }
+        if self.models.is_some()
+            && !search_focused
+            && !self.focus.is_focused(window)
+            && event.keystroke.key != "escape"
+        {
+            return;
+        }
+        if self.models.is_some() && event.keystroke.key == "tab" {
             self.navigation.armed = None;
             return;
         }
@@ -239,6 +260,10 @@ impl ChoiceMenu {
             return;
         };
         let search_focused = self.search_focused(window, cx);
+        if self.models.is_some() && !search_focused && !self.focus.is_focused(window) {
+            self.navigation.armed = None;
+            return;
+        }
         if key == ActivationKey::Space && search_focused {
             return;
         }
@@ -288,7 +313,14 @@ impl Render for ChoiceMenu {
         let width = self.add_bounds.as_ref().map_or(MENU_WIDTH, |bounds| {
             (f32::from(bounds.get().size.width) - 8.).max(240.)
         });
-        let row_height = if compact { 28. } else { MENU_ROW_HEIGHT };
+        let model_menu = self.models.is_some();
+        let row_height = if compact {
+            28.
+        } else if model_menu {
+            32.
+        } else {
+            MENU_ROW_HEIGHT
+        };
         let height = (self.visible.len() as f32 * row_height).min(MENU_MAX_HEIGHT);
         div()
             .id("choice-menu")
@@ -313,13 +345,14 @@ impl Render for ChoiceMenu {
             .capture_key_down(cx.listener(Self::key_down))
             .capture_key_up(cx.listener(Self::key_up))
             .child(super::layout_probe("session-menu"))
+            .when(model_menu, |el| el.tab_group().child(self.model_tabs(cx)))
             .child(
                 div()
                     .px(scaled(8.))
                     .py(scaled(if compact { 4. } else { 8. }))
                     .text_size(scaled(12.))
                     .text_color(rgb(palette().muted))
-                    .child(self.title.clone()),
+                    .child(self.model_title()),
             )
             .when(self.searchable, |el| {
                 el.child(
@@ -349,6 +382,7 @@ impl Render for ChoiceMenu {
                             range
                                 .filter_map(|position| {
                                     let index = *this.visible.get(position)?;
+                                    let favorite = this.model_favorite_button(index, position, cx);
                                     let choice = &this.choices[index];
                                     Some(
                                         div()
@@ -369,6 +403,11 @@ impl Render for ChoiceMenu {
                                             .when(position == this.navigation.active, |el| {
                                                 el.aria_active_descendant()
                                             })
+                                            .relative()
+                                            .child(super::layout_probe_slot(
+                                                "model-choice",
+                                                position,
+                                            ))
                                             .tab_stop(false)
                                             .h(scaled(row_height))
                                             .w_full()
@@ -416,16 +455,21 @@ impl Render for ChoiceMenu {
                                                             .text_ellipsis()
                                                             .child(choice.label.clone()),
                                                     )
-                                                    .when(!choice.detail.is_empty(), |el| {
-                                                        el.child(
-                                                            div()
-                                                                .min_w_0()
-                                                                .text_size(scaled(11.))
-                                                                .text_color(rgb(palette().muted))
-                                                                .text_ellipsis()
-                                                                .child(choice.detail.clone()),
-                                                        )
-                                                    }),
+                                                    .when(
+                                                        !model_menu && !choice.detail.is_empty(),
+                                                        |el| {
+                                                            el.child(
+                                                                div()
+                                                                    .min_w_0()
+                                                                    .text_size(scaled(11.))
+                                                                    .text_color(
+                                                                        rgb(palette().muted),
+                                                                    )
+                                                                    .text_ellipsis()
+                                                                    .child(choice.detail.clone()),
+                                                            )
+                                                        },
+                                                    ),
                                             )
                                             .children(
                                                 (choice.selected && choice.icon.is_some()).then(
@@ -440,6 +484,7 @@ impl Render for ChoiceMenu {
                                                     .into()
                                                 })
                                             })
+                                            .children(favorite)
                                             .on_click(cx.listener(move |this, _, window, cx| {
                                                 this.navigation.armed = None;
                                                 let focus = this.focus_handle(cx);
@@ -457,6 +502,7 @@ impl Render for ChoiceMenu {
                     .track_scroll(&self.scroll),
                 )
             })
+            .child(self.model_status())
             .children(self.unavailable_reason.clone().map(|reason| {
                 div()
                     .p_2()

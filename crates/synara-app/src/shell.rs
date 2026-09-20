@@ -5,6 +5,7 @@ mod composer;
 mod controls;
 mod conversation;
 mod dock;
+mod drafts;
 mod messages;
 mod navigation;
 mod overview;
@@ -72,6 +73,8 @@ struct FormState {
     error: Option<String>,
 }
 enum Update {
+    DraftLoaded(TaskId, Result<String, String>),
+    DraftSaved(TaskId, Option<String>),
     Registry(Box<registry::RegistryReply>),
     Catalog(Catalog),
     WorkspaceAdded(Project, Catalog),
@@ -184,6 +187,7 @@ pub struct Shell {
     commit_message: Entity<TextEntry>,
     terminal_view: Entity<TerminalView>,
     drafts: HashMap<TaskId, String>,
+    draft_state: drafts::DraftState,
     busy: HashSet<TaskId>,
     connecting: HashSet<TaskId>,
     panel: Panel,
@@ -337,6 +341,7 @@ impl Shell {
             cx.subscribe(&registry.query, |_, _, _, cx| cx.notify()),
             cx.subscribe(&composer, |this, _, event, cx| match event {
                 EntryEvent::Submit => this.send_prompt(cx),
+                EntryEvent::Changed => this.remember_draft(cx),
                 _ => cx.notify(),
             }),
             cx.subscribe(&workspace_path, |this, _, event, cx| {
@@ -414,6 +419,7 @@ impl Shell {
             commit_message,
             terminal_view,
             drafts: HashMap::new(),
+            draft_state: drafts::DraftState::default(),
             busy: HashSet::new(),
             connecting: HashSet::new(),
             panel: Panel::Conversation,
@@ -443,13 +449,16 @@ impl Shell {
             _updates: updates,
             _subscriptions: subscriptions,
         };
+        this.composer.update(cx, |entry, _| {
+            entry.set_send_on_enter(this.settings.value.chat.send_on_enter)
+        });
         if let Some(selected) = selected {
             this.select_task(selected, cx);
         }
         this
     }
     pub fn request_close(&mut self, window: &mut Window, cx: &mut Context<Self>) -> bool {
-        if self.terminal_closing {
+        if self.terminal_closing || self.draft_state.quitting {
             return false;
         }
         let dirty = self.dirty(cx);
@@ -466,6 +475,9 @@ impl Shell {
 
     fn begin_quit(&mut self, cx: &mut Context<Self>) {
         if self.terminal_closing {
+            return;
+        }
+        if self.save_drafts_before_quit(cx) {
             return;
         }
         self.terminal_closing = true;
@@ -635,10 +647,7 @@ impl Shell {
             cx.notify();
             return false;
         }
-        if let Some(previous) = self.selected {
-            self.drafts
-                .insert(previous, self.composer.read(cx).text().to_owned());
-        }
+        self.snapshot_draft(cx);
         self.selection_revision = self.selection_revision.wrapping_add(1);
         self.navigation.studio = task.scope == TaskScope::Studio;
         if self.navigation.studio {
@@ -666,6 +675,7 @@ impl Shell {
         self.composer.update(cx, |entry, cx| {
             entry.set_text(self.drafts.get(&id).cloned().unwrap_or_default(), cx)
         });
+        self.load_draft(id);
         self.transcript = transcript::TranscriptState::new();
         self.focus_composer = true;
         let workspace = self.controller.workspace.clone();
@@ -820,16 +830,22 @@ impl Shell {
     }
 
     fn create_chat(&mut self, scope: TaskScope, cx: &mut Context<Self>) {
-        if self.creating_task || self.loading_task.is_some() {
+        if self.creating_task
+            || self.loading_task.is_some()
+            || self
+                .selected
+                .is_some_and(|id| self.draft_state.loading.contains(&id))
+        {
             return;
         }
-        if self
-            .task()
-            .is_some_and(|task| task.scope == scope && task.state == TaskState::Ready)
-            && self
-                .thread
-                .as_ref()
-                .is_some_and(|thread| thread.turns.is_empty() && thread.messages.is_empty())
+        if self.task().is_some_and(|task| {
+            task.scope == scope
+                && task.state == TaskState::Ready
+                && self.drafts.contains_key(&task.id)
+        }) && self
+            .thread
+            .as_ref()
+            .is_some_and(|thread| thread.turns.is_empty() && thread.messages.is_empty())
             && self.composer.read(cx).text().is_empty()
             && self.task_title.read(cx).text().trim().is_empty()
         {
@@ -951,6 +967,8 @@ impl Shell {
         if text.trim().is_empty() {
             return;
         }
+        self.snapshot_draft(cx);
+        self.draft_state.submitted(id, text.clone());
         self.busy.insert(id);
         self.error = None;
         self.notice = None;
@@ -1313,8 +1331,11 @@ impl Shell {
     }
     fn receive(&mut self, update: Update, cx: &mut Context<Self>) {
         match update {
+            Update::DraftLoaded(task, result) => self.restore_draft(task, result, cx),
+            Update::DraftSaved(task, error) => self.draft_saved(task, error, cx),
             Update::Registry(reply) => self.registry_reply(*reply, cx),
             Update::Tick => {
+                self.flush_drafts(false);
                 let previous = self.pending.len();
                 self.pending.retain(|key, interaction| {
                     if !interaction.is_active() {
@@ -1341,6 +1362,7 @@ impl Shell {
                     return;
                 }
                 self.project = Some(project.id);
+                self.snapshot_draft(cx);
                 self.selected = None;
                 self.thread = None;
                 self.document = None;
@@ -1384,6 +1406,7 @@ impl Shell {
                 }
             }
             Update::Event(envelope) => {
+                self.acknowledge_draft(&envelope, cx);
                 if let Some(task) = self
                     .catalog
                     .tasks
@@ -1400,18 +1423,6 @@ impl Shell {
                     .as_ref()
                     .is_some_and(|thread| thread.id == envelope.thread_id)
                 {
-                    if let ThreadEvent::TextDelta {
-                        role: Role::User,
-                        text,
-                        ..
-                    } = &envelope.event
-                        && self.composer.read(cx).text() == text
-                    {
-                        self.composer.update(cx, |entry, cx| entry.clear(cx));
-                        if let Some(id) = self.selected {
-                            self.drafts.remove(&id);
-                        }
-                    }
                     let result = self.thread.as_mut().unwrap().apply(&envelope);
                     if let Err(error) = result {
                         if matches!(error, ReplayError::Sequence { .. }) {
@@ -1527,6 +1538,9 @@ impl Shell {
                     self.error = Some(error);
                 } else {
                     self.settings.value = *settings;
+                    self.composer.update(cx, |entry, _| {
+                        entry.set_send_on_enter(self.settings.value.chat.send_on_enter)
+                    });
                     cx.set_reduce_motion(self.settings.value.appearance.reduced_motion);
                     cx.refresh_windows();
                     if !self.settings.value.general.show_studio && self.navigation.studio {

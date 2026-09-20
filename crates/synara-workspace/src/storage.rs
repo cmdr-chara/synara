@@ -1,3 +1,5 @@
+mod chat_preferences;
+pub use chat_preferences::ModelFavorite;
 mod recovery;
 pub use recovery::*;
 
@@ -259,6 +261,10 @@ PRAGMA user_version=2;")?;
         tx.execute(
             "DELETE FROM thread_activity WHERE thread_id=?1",
             [task.thread_id.to_string()],
+        )?;
+        tx.execute(
+            "DELETE FROM preferences WHERE key=?1",
+            [format!("task-draft:{id}")],
         )?;
         let changed = tx.execute("DELETE FROM tasks WHERE id=?1", [id.to_string()])?;
         tx.commit()?;
@@ -523,6 +529,13 @@ fn database_path(path: &Path) -> StorageResult<std::path::PathBuf> {
     Ok(parent.canonicalize()?.join(name))
 }
 fn valid_preference_key(key: &str) -> bool {
+    if key == "model-favorites" {
+        return true;
+    }
+    if let Some(id) = key.strip_prefix("task-draft:") {
+        return id.len() == 36
+            && serde_json::from_value::<TaskId>(serde_json::Value::String(id.into())).is_ok();
+    }
     matches!(
         key,
         "appearance" | "selection" | "window" | "agent_profiles" | "ssh_profiles" | "settings"

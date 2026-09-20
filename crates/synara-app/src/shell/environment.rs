@@ -692,6 +692,15 @@ impl Shell {
                     cx.stop_propagation();
                 }),
             )
+            .on_mouse_up(
+                MouseButton::Left,
+                cx.listener(|this, _, _, cx| {
+                    this.environment.resize = None;
+                    this.flush_environment(false);
+                    cx.notify();
+                    cx.stop_propagation();
+                }),
+            )
             .on_key_down(cx.listener(move |this, event: &gpui::KeyDownEvent, _, cx| {
                 let modifiers = event.keystroke.modifiers;
                 if modifiers.alt || modifiers.control || modifiers.platform {
@@ -706,6 +715,9 @@ impl Shell {
                     "home" => 0.5,
                     _ => return,
                 };
+                // A click may arm a drag without any move. A keyboard action
+                // takes ownership and must release that gesture before saving.
+                this.environment.resize = None;
                 this.environment.value.width_ratio = ratio.clamp(0.2, 0.8);
                 this.environment.save.changed();
                 cx.notify();

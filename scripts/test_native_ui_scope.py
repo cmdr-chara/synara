@@ -130,5 +130,20 @@ class NativeScopeTests(unittest.TestCase):
             self.assertEqual(git_scope('a' * 40, 'b' * 40), 'full')
 
 
+class ChatUtilityScopeTests(unittest.TestCase):
+    def test_batched_chat_tools_select_one_coherent_lane(self):
+        self.assertEqual(scope_for_paths([
+            'crates/synara-app/src/shell/chat_tools.rs',
+            'crates/synara-workspace/src/storage/conversation_tools.rs',
+            'crates/synara-app/src/shell/transcript/search.rs',
+            'crates/synara-app/src/shell/environment.rs',
+            '.github/workflows/ui-chat-tools.yml',
+        ]), 'chat-tools')
+
+    def test_unrelated_backend_or_dependency_changes_still_require_full_lane(self):
+        for path in ['Cargo.lock', 'crates/synara-agent/src/lib.rs', 'unknown.rs']:
+            self.assertEqual(scope_for_paths(['scripts/native_chat_tools_smoke.py', path]), 'full')
+
+
 if __name__ == '__main__':
     unittest.main()

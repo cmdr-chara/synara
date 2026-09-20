@@ -118,12 +118,35 @@ def documentation(path):
     return path in {'ROADMAP.md', 'README.md'} or path.startswith('docs/ui/')
 
 
+CHAT_TOOLS_ANCHORS = frozenset({
+    'crates/synara-app/src/shell/chat_tools.rs',
+    'crates/synara-workspace/src/storage/conversation_tools.rs',
+    'crates/synara-app/src/shell/transcript/search.rs',
+    'scripts/native_chat_tools_smoke.py',
+})
+CHAT_TOOLS_PATHS = UI_PATHS | ENVIRONMENT_PATHS | CHAT_TOOLS_ANCHORS | frozenset({
+    'crates/synara-app/src/shell/activity.rs',
+    'crates/synara-app/src/shell/conversation.rs',
+    'crates/synara-app/src/shell/transcript.rs',
+    '.github/workflows/ui-chat-tools.yml',
+})
+
+
+def chat_tools_only(paths):
+    paths = set(paths)
+    return bool(paths & CHAT_TOOLS_ANCHORS) and all(
+        path in CHAT_TOOLS_PATHS or documentation(path) for path in paths
+    )
+
+
 def scope_for_paths(paths):
     paths = set(paths)
     if not paths:
         return 'full'
     if all(documentation(path) for path in paths):
         return 'docs'
+    if chat_tools_only(paths):
+        return 'chat-tools'
     if environment_only(paths):
         return 'environment'
     allowed = UI_PATHS

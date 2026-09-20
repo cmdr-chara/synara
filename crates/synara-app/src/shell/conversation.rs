@@ -65,6 +65,10 @@ impl Shell {
                 );
             }
         }
+        root = root.child(self.chat_tools_bar(cx));
+        if self.chat_tools.find_open {
+            root = root.child(self.message_find_bar(cx));
+        }
         root = root.child(if empty {
             self.welcome()
         } else {

@@ -1,4 +1,5 @@
 //! Virtualized presentation rows, grouped without changing the durable transcript.
+mod search;
 use super::*;
 use gpui::{FollowMode, ListAlignment, ListOffset, ListState};
 use std::time::Instant;

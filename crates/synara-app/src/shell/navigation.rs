@@ -377,12 +377,7 @@ impl Shell {
                                     Glyph::Notebook,
                                     false,
                                     cx.listener(|this, _: &(), window, cx| {
-                                        this.navigation.search_open = true;
-                                        window.focus(
-                                            &this.navigation.search.read(cx).focus_handle(cx),
-                                            cx,
-                                        );
-                                        cx.notify();
+                                        this.open_thread_finder(window, cx)
                                     }),
                                 )
                                 .size(px(26.))

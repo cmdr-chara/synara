@@ -124,6 +124,10 @@ impl Shell {
                     .id(("activity-details", turn_index))
                     .max_h(px(320.))
                     .overflow_y_scroll()
+                    .when(self.chat_tools.focused.as_ref().is_some_and(|anchor| {
+                        thread.timeline[turn.first_timeline_index..turn.end_timeline_index].iter()
+                            .any(|item| matches!(item, TranscriptItem::Message { index } if anchor.matches(&thread.messages[*index])))
+                    }), |el| el.track_scroll(&self.chat_tools.work_scroll))
                     .flex()
                     .flex_col()
                     .gap_3()
@@ -142,7 +146,11 @@ impl Shell {
                                         && Some(turn.first_timeline_index + offset) != answer =>
                                 {
                                     Some(
-                                        div()
+                                        div().relative()
+                                            .when(self.chat_tools.focused.as_ref().is_some_and(|anchor| anchor.matches(&thread.messages[*index])), |el| {
+                                                el.border_l_2().border_color(rgb(palette().focus)).pl_2()
+                                                    .child(ui::layout_probe_slot("message-match", turn.first_timeline_index + offset))
+                                            })
                                             .text_size(px(14.))
                                             .text_color(rgb(palette().muted))
                                             .child(ui::markdown::render(

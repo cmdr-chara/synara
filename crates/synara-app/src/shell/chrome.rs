@@ -391,7 +391,10 @@ impl Render for Shell {
                         return;
                     }
                     tracing::debug!(target: "synara_ui_layout", "retired-focus-restored");
-                    if this.controls.is_open() || this.environment.menu_open() {
+                    if this.controls.is_open()
+                        || this.environment.menu_open()
+                        || this.chat_tools.menu_open()
+                    {
                         return;
                     } else if this.navigation.menu_open {
                         window.focus(&this.navigation.menu_focus[this.navigation.menu_index], cx);
@@ -412,12 +415,15 @@ impl Render for Shell {
             && !self.controls.is_open()
             && self.kanban.dialog.is_none()
             && !self.environment.menu_open()
+            && !self.chat_tools.menu_open()
+            && !self.chat_tools.find_open
             && !(self.dock_open() && self.environment.maximized)
         {
             let focus = self.composer.read(cx).focus_handle(cx);
             window.focus(&focus, cx);
             self.focus_composer = false;
         }
+        self.consume_chat_action(window, cx);
         self.restore_environment_focus(window, cx);
         let now = std::time::Instant::now();
         if !cx.reduce_motion() && self.transcript.advance_animations(now) {
@@ -468,6 +474,10 @@ impl Render for Shell {
                 let modifiers = event.keystroke.modifiers;
                 let key = event.keystroke.key.as_str();
                 if this.kanban.dialog.is_some() {
+                    return;
+                }
+                if this.chat_tools_shortcut(event, window, cx) {
+                    cx.stop_propagation();
                     return;
                 }
                 if this.panel == Panel::Kanban
@@ -627,6 +637,11 @@ impl Render for Shell {
                 self.environment
                     .resizing()
                     .then(|| self.environment_drag_overlay(cx)),
+            )
+            .children(
+                self.chat_tools
+                    .menu_open()
+                    .then(|| self.chat_tools_overlay(cx)),
             )
             .children(self.kanban.dialog.clone())
             .children(self.navigation.menu_open.then(|| self.tools_overlay(cx)))

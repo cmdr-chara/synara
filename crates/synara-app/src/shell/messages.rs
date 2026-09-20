@@ -53,8 +53,16 @@ impl Shell {
             )
             .size(px(24.))
         };
+        let highlighted = self
+            .chat_tools
+            .focused
+            .as_ref()
+            .is_some_and(|anchor| anchor.matches(message));
         let body = div()
             .min_w_0()
+            .when(highlighted, |el| {
+                el.border_l_2().border_color(rgb(palette().focus))
+            })
             .text_size(px(15. * scale))
             .line_height(px(24. * scale))
             .text_color(rgb(if reasoning {
@@ -80,17 +88,20 @@ impl Shell {
         div().id(("message", index)).group("message-actions").relative().w_full().flex().flex_col()
             .top(px(3. * (1. - progress))).opacity(progress)
             .when(user, |el| el.items_end()).child(body)
+            .when(highlighted, |el| el.child(ui::layout_probe_slot("message-match", index)))
             .when(!user && !reasoning && complete, |el| el.child(
                 div().ml(px(-6.)).flex().items_center().gap_2().text_size(px(12.)).text_color(rgb(palette().muted))
                     .child(copy(cx).opacity(0.75))
                     .child(ui::unavailable_action("fork-message", "", Glyph::Fork, "Branching from a message is not available in this native build yet.")
                         .aria_label("Branch from message, unavailable").size(px(24.)).p_0().gap_0().justify_center())
-                    .child(ui::unavailable_action("pin-message", "", Glyph::Pin, "Pinned messages are not available in this native build yet.")
-                        .aria_label("Pin message, unavailable").size(px(24.)).p_0().gap_0().justify_center())
+                    .child(self.message_pin_button(message, index, cx))
+                    .child(self.message_reuse_button(message, index, cx))
                     .children(timestamp.map(|text| div().relative().child(ui::layout_probe("message-timestamp")).child(text)))))
             .when(user, |el| el.child(div().absolute().right_0().bottom(px(-24.)).child(
-                copy(cx).opacity(0.).group_hover("message-actions", |style| style.opacity(1.))
-                    .focus_visible(|style| style.opacity(1.).border_color(rgb(palette().focus))))))
+                div().flex().items_center()
+                    .child(copy(cx))
+                    .child(self.message_pin_button(message, index, cx))
+                    .child(self.message_reuse_button(message, index, cx)))) )
             .into_any_element()
     }
 }

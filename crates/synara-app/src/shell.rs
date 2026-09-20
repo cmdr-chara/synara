@@ -1,5 +1,6 @@
 use gpui::Focusable;
 mod activity;
+mod chat_tools;
 mod chrome;
 mod composer;
 mod controls;
@@ -76,6 +77,7 @@ struct FormState {
     error: Option<String>,
 }
 enum Update {
+    ChatTools(Box<chat_tools::Reply>),
     EnvironmentSaved(Option<String>),
     Kanban(Box<kanban::KanbanReply>),
     DraftLoaded(TaskId, Result<String, String>),
@@ -157,6 +159,7 @@ enum Update {
     Error(String),
 }
 pub struct Shell {
+    chat_tools: chat_tools::ChatTools,
     environment: environment::EnvironmentState,
     kanban: kanban::KanbanState,
     controls: controls::ControlState,
@@ -391,6 +394,7 @@ impl Shell {
                     .map(|t| t.id)
             });
         let mut this = Self {
+            chat_tools: chat_tools::ChatTools::new(cx),
             environment: environment::EnvironmentState::new(bootstrap.environment, cx),
             kanban: kanban::KanbanState::default(),
             controls: controls::ControlState::new(cx),
@@ -471,6 +475,14 @@ impl Shell {
         this
     }
     pub fn request_close(&mut self, window: &mut Window, cx: &mut Context<Self>) -> bool {
+        if self.chat_tools.pending_write() {
+            self.notice = Some(
+                "Finish or cancel the conversation export and pending pin saves before closing."
+                    .into(),
+            );
+            cx.notify();
+            return false;
+        }
         if self.kanban.creating {
             self.notice =
                 Some("Finishing task creation before closing. Your prompt is being saved.".into());
@@ -699,6 +711,8 @@ impl Shell {
         self.navigation.record_task(id);
         self.selected = Some(id);
         self.loading_task = Some(id);
+        self.chat_tools.reset_selection();
+        self.load_message_pins(id);
         self.project = Some(task.project_id);
         self.details = None;
         self.trace.clear();
@@ -1363,12 +1377,14 @@ impl Shell {
     }
     fn receive(&mut self, update: Update, cx: &mut Context<Self>) {
         match update {
+            Update::ChatTools(reply) => self.chat_tools_reply(*reply, cx),
             Update::EnvironmentSaved(error) => self.environment_saved(error, cx),
             Update::Kanban(reply) => self.kanban_reply(*reply, cx),
             Update::DraftLoaded(task, result) => self.restore_draft(task, result, cx),
             Update::DraftSaved(task, error) => self.draft_saved(task, error, cx),
             Update::Registry(reply) => self.registry_reply(*reply, cx),
             Update::Tick => {
+                self.refresh_message_search(cx);
                 self.poll_kanban();
                 self.flush_drafts(false);
                 self.flush_environment(false);
@@ -1754,6 +1770,7 @@ impl Shell {
         }
     }
     fn set_panel(&mut self, panel: Panel, cx: &mut Context<Self>) {
+        self.chat_tools.retire();
         self.environment.retire_popup();
         let panel = self.track_environment_panel(panel);
         self.controls.retire();

@@ -1,4 +1,6 @@
 mod chat_preferences;
+mod review;
+pub use review::{MAX_COMMIT_DRAFT_BYTES, ReviewPreferences, ReviewScope};
 mod organization;
 mod task_context;
 pub use organization::{NativeSpace, OrganizationEdit, SpaceSymbol, WorkspaceOrganization};

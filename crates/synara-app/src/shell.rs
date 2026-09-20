@@ -16,6 +16,7 @@ mod organization;
 mod overview;
 mod panels;
 mod registry;
+mod review;
 mod saved_context;
 mod settings;
 mod studio;
@@ -81,6 +82,7 @@ struct FormState {
     error: Option<String>,
 }
 enum Update {
+    Review(Box<review::Reply>),
     Explorer(Box<explorer::ExplorerReply>),
     Studio(Box<studio::StudioReply>),
     SavedContext(Box<saved_context::ContextReply>),
@@ -138,12 +140,6 @@ enum Update {
         text: String,
         version: synara_runtime::FileVersion,
     },
-    Git {
-        root: PathBuf,
-        status: GitStatus,
-        diff: String,
-        staged: bool,
-    },
     TerminalStarted {
         root: PathBuf,
         generation: u64,
@@ -167,6 +163,7 @@ enum Update {
     Error(String),
 }
 pub struct Shell {
+    review: review::ReviewState,
     explorer: explorer::ExplorerState,
     studio: studio::StudioState,
     saved_context: saved_context::SavedContextState,
@@ -206,7 +203,6 @@ pub struct Shell {
     task_title: Entity<TextEntry>,
     editor: Entity<TextEntry>,
     file_search: Entity<TextEntry>,
-    commit_message: Entity<TextEntry>,
     terminal_view: Entity<TerminalView>,
     drafts: HashMap<TaskId, String>,
     draft_state: drafts::DraftState,
@@ -227,9 +223,6 @@ pub struct Shell {
     file_page: usize,
     document: Option<Document>,
     saving: bool,
-    git: GitStatus,
-    diff: String,
-    staged: bool,
     terminal: Option<TerminalSession>,
     terminal_root: Option<PathBuf>,
     terminal_generation: u64,
@@ -351,8 +344,6 @@ impl Shell {
             TextEntry::new("Search files...", EntryMode::SingleLine, 30., cx)
                 .with_leading_icon(crate::ui::Glyph::Search)
         });
-        let commit_message =
-            cx.new(|cx| TextEntry::new("Commit message", EntryMode::SingleLine, 38., cx));
         let terminal_view = cx.new(TerminalView::new);
         let registry = registry::RegistryState::new(bootstrap.agent_directory, cx);
         let subscriptions = vec![
@@ -406,6 +397,7 @@ impl Shell {
                     .map(|t| t.id)
             });
         let mut this = Self {
+            review: review::ReviewState::default(),
             explorer: explorer::ExplorerState::new(cx),
             studio: studio::StudioState::new(cx),
             saved_context: saved_context::SavedContextState::default(),
@@ -445,7 +437,6 @@ impl Shell {
             task_title,
             editor,
             file_search,
-            commit_message,
             terminal_view,
             drafts: HashMap::new(),
             draft_state: drafts::DraftState::default(),
@@ -466,9 +457,6 @@ impl Shell {
             file_page: 0,
             document: None,
             saving: false,
-            git: GitStatus::default(),
-            diff: String::new(),
-            staged: false,
             terminal: None,
             terminal_root: None,
             terminal_generation: 0,
@@ -542,6 +530,9 @@ impl Shell {
     }
 
     fn begin_quit(&mut self, cx: &mut Context<Self>) {
+        if self.review_before_quit(cx) {
+            return;
+        }
         self.kanban.cancel_pending_launches();
         if self.terminal_closing {
             return;
@@ -736,8 +727,6 @@ impl Shell {
             self.document = None;
             self.files.clear();
             self.directory.clear();
-            self.git = GitStatus::default();
-            self.diff.clear();
         }
         self.controls.retire();
         self.navigation.record_task(id);
@@ -779,7 +768,7 @@ impl Shell {
             self.refresh_files();
         }
         if self.panel == Panel::Changes {
-            self.refresh_git();
+            self.refresh_git(cx);
         }
         cx.notify();
         true
@@ -1117,63 +1106,6 @@ impl Shell {
         });
     }
 
-    fn refresh_git(&self) {
-        let Some(target) = self.workspace_target() else {
-            return;
-        };
-        let root = target.root().clone();
-        let staged = self.staged;
-        let workspace_service = self.controller.workspace.clone();
-        self.job(async move {
-            let git = git_service(workspace_service, target).await?;
-            let status = git.status().await?;
-            let diff = git.diff(staged, None).await?;
-            Ok(Update::Git {
-                root,
-                status,
-                diff,
-                staged,
-            })
-        });
-    }
-
-    fn git_index_path(&self, path: PathBuf, unstage: bool) {
-        let Some(target) = self.workspace_target() else {
-            return;
-        };
-        let workspace_service = self.controller.workspace.clone();
-        self.job(async move {
-            let git = git_service(workspace_service, target).await?;
-            if unstage {
-                git.unstage(path).await?;
-            } else {
-                git.stage(path).await?;
-            }
-            Ok(Update::Done("Index updated".into()))
-        });
-    }
-
-    fn commit_git(&mut self, message: String, cx: &mut Context<Self>) {
-        if message.trim().is_empty() {
-            self.error = Some("Enter a commit message first.".into());
-            cx.notify();
-            return;
-        }
-        let Some(target) = self.workspace_target() else {
-            return;
-        };
-        let workspace_service = self.controller.workspace.clone();
-        self.job(async move {
-            git_service(workspace_service, target)
-                .await?
-                .commit(message)
-                .await?;
-            Ok(Update::Done(
-                "Commit created in the selected workspace".into(),
-            ))
-        });
-    }
-
     fn open_file(&mut self, path: PathBuf, cx: &mut Context<Self>) {
         if self.explorer.modal_open() {
             return;
@@ -1417,6 +1349,7 @@ impl Shell {
     }
     fn receive(&mut self, update: Update, cx: &mut Context<Self>) {
         match update {
+            Update::Review(reply) => self.review_reply(*reply, cx),
             Update::Explorer(reply) => self.explorer_reply(*reply, cx),
             Update::Studio(reply) => self.studio_reply(*reply, cx),
             Update::SavedContext(reply) => self.saved_context_reply(*reply, cx),
@@ -1428,6 +1361,7 @@ impl Shell {
             Update::DraftSaved(task, error) => self.draft_saved(task, error, cx),
             Update::Registry(reply) => self.registry_reply(*reply, cx),
             Update::Tick => {
+                self.tick_review(cx);
                 self.refresh_message_search(cx);
                 self.poll_kanban();
                 self.flush_drafts(false);
@@ -1722,17 +1656,6 @@ impl Shell {
                     self.begin_quit(cx);
                 }
             }
-            Update::Git {
-                root,
-                status,
-                diff,
-                staged,
-            } => {
-                if self.root() == Some(root) && self.staged == staged {
-                    self.git = status;
-                    self.diff = diff;
-                }
-            }
             Update::TerminalStarted {
                 root,
                 generation,
@@ -1802,7 +1725,7 @@ impl Shell {
                 if !message.is_empty() {
                     self.notice = Some(message);
                 }
-                self.refresh_git_if_visible();
+                self.refresh_git_if_visible(cx);
             }
             Update::Error(error) => {
                 // Only a save completion can release the outstanding save guard.
@@ -1812,9 +1735,9 @@ impl Shell {
         }
         cx.notify();
     }
-    fn refresh_git_if_visible(&self) {
+    fn refresh_git_if_visible(&mut self, cx: &mut Context<Self>) {
         if self.panel == Panel::Changes {
-            self.refresh_git();
+            self.refresh_git(cx);
         }
     }
     fn set_panel(&mut self, panel: Panel, cx: &mut Context<Self>) {
@@ -1840,7 +1763,7 @@ impl Shell {
                 self.load_profile_activity();
             }
             Panel::Files => self.refresh_files(),
-            Panel::Changes => self.refresh_git(),
+            Panel::Changes => self.refresh_git(cx),
             Panel::Inspector | Panel::Terminal => self.poll(),
             _ => {}
         }

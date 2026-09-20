@@ -1,5 +1,22 @@
 # Electron Synara → native Rust/GPUI feature gap
 
+## September 21 continuation: terminal workspace
+
+The native Terminal surface now implements multiple project/root-scoped tabs,
+independent views and process ownership, guarded lifecycle controls, two-pane
+stacked/side-by-side composition and narrow-panel adaptation. Saved tab layouts
+restore stopped descriptors only, not commands or processes. Literal visible-row
+search, exact viewport/selection copy and explicit terminal context into an unsent
+chat draft are included. Existing Environment resizing and all editor/Repository
+surfaces remain in place. A8/G7/I10 are **source-implemented slices with native
+acceptance pending**, not completed broad parity gates.
+
+Upstream main was rechecked at `e7cd15281e6d16cf8fc55a91496dcff035475e54`, unchanged
+from the previous audit. No new upstream feature, setting or icon delta was found.
+Full-history terminal search, process resumption, Browser and Side chats remain
+open. [Implementation/verification record](native-terminal-workspaces.md).
+
+
 Audit date: 2026-09-19. Electron source: [`Emanuele-web04/synara` at `73cd181`](https://github.com/Emanuele-web04/synara/tree/73cd1811a81e4a62b6199a722fd6fac379abf9ba). Native source: `astra/gpui-clean-rewrite` at `c8e06e7` (the current local checkout). These are snapshots, not a claim about future branches. This is a source and screenshot audit, not an end-to-end run of every feature. “Missing” means no corresponding native user flow was found; “Partial” means a smaller or different native flow exists; “Backend only” means code/foundation exists but the Electron interaction is absent. Provider capabilities can also depend on installed agents and operating system.
 
 The comparison covers the Electron app's top-level routes, chat/composer/workspace surfaces, sidebar, Kanban, Studio, pull requests, automations, all 15 settings sections, desktop integrations, and distribution. It excludes test harnesses and internal-only APIs. The wallpaper in the supplied screenshots is external to Synara and is not a missing app asset.

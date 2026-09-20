@@ -6,6 +6,26 @@ It is a living engineering document, not a release announcement.
 
 ## Current checkpoint
 
+### September 21: native multi-terminal workspace
+
+The existing Environment Terminal tab now contains project/root-scoped terminal
+tabs, independent process and viewport ownership, named tabs, guarded Stop/Restart/
+Close actions and a two-pane workspace. Side-by-side and stacked presentation,
+narrow-panel adaptation and explicit split-size controls are implemented together
+with visible-row search, copy, live-output navigation and terminal-to-unsent-draft
+context. Tab metadata is revision-checked and persisted without storing or replaying
+processes, commands, output or credentials. App close accounts for all owned shells,
+including background and pending-start terminals. Local and pinned-SSH launches
+retain their existing backend boundaries.
+
+Source implementation is distinct from native acceptance. Broad/native testing is
+deferred under the user's feature-first instruction. A8/G7/I10 remain unchecked.
+See [terminal delivery and limits](docs/ui/native-terminal-workspaces.md).
+Upstream `e7cd15281e6d16cf8fc55a91496dcff035475e54` was rechecked with no new
+revision relative to the preceding batch. Its delegated-delivery and macOS icon
+fixes remain deferred rather than silently claimed adopted.
+
+
 ### September 20: native repository operations
 
 Changes now exposes a Repository panel with branch creation/switch/rename and

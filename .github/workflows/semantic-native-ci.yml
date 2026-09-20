@@ -1,0 +1,98 @@
+name: Semantic native CI routing
+
+on:
+  push:
+    branches: [astra/gpui-clean-rewrite]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: semantic-native-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  route:
+    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/gpui-clean-rewrite'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      presentation: ${{ steps.route.outputs.presentation }}
+      chat_tools: ${{ steps.route.outputs.chat_tools }}
+      environment: ${{ steps.route.outputs.environment }}
+      scope: ${{ steps.route.outputs.scope }}
+      semantic_used: ${{ steps.route.outputs.semantic_used }}
+      lane_confidence: ${{ steps.route.outputs.lane_confidence }}
+      risk_confidence: ${{ steps.route.outputs.risk_confidence }}
+      model: ${{ steps.route.outputs.model }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          fetch-depth: 1000
+          persist-credentials: false
+      - name: Fetch comparison base when needed
+        env:
+          BASE_REVISION: ${{ github.event.before }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$BASE_REVISION" =~ ^[0-9a-f]{40}$ ]] && [[ "$BASE_REVISION" != 0000000000000000000000000000000000000000 ]]; then
+            git cat-file -e "${BASE_REVISION}^{commit}" 2>/dev/null || \
+              git fetch --quiet --no-tags --depth=1 origin "$BASE_REVISION"
+          fi
+      - name: Validate semantic router
+        run: |
+          python3 -m py_compile scripts/ci_router.py scripts/test_ci_router.py
+          python3 scripts/test_ci_router.py
+      - name: Select focused native verification
+        id: route
+        env:
+          BASE_REVISION: ${{ github.event.before }}
+          CANDIDATE_REVISION: ${{ github.sha }}
+          CLASSIFIER_API_KEY: ${{ secrets.CLASSIFIER_API_KEY }}
+        run: |
+          python3 scripts/ci_router.py \
+            --base "$BASE_REVISION" \
+            --head "$CANDIDATE_REVISION" \
+            --github-output "$GITHUB_OUTPUT" | tee /tmp/semantic-ci-route.json
+      - name: Publish route summary
+        if: always()
+        env:
+          ROUTE_SCOPE: ${{ steps.route.outputs.scope }}
+          SEMANTIC_USED: ${{ steps.route.outputs.semantic_used }}
+          LANE_CONFIDENCE: ${{ steps.route.outputs.lane_confidence }}
+          RISK_CONFIDENCE: ${{ steps.route.outputs.risk_confidence }}
+          MODEL: ${{ steps.route.outputs.model }}
+        run: |
+          {
+            echo '## Semantic native CI route'
+            echo
+            echo "- Scope: \`${ROUTE_SCOPE:-unavailable}\`"
+            echo "- Jev used: \`${SEMANTIC_USED:-false}\`"
+            echo "- Model: \`${MODEL:-n/a}\`"
+            echo "- Lane confidence: \`${LANE_CONFIDENCE:-n/a}\`"
+            echo "- Risk confidence: \`${RISK_CONFIDENCE:-n/a}\`"
+            echo
+            echo 'The router only adds focused native verification. Existing branch CI remains authoritative.'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  presentation:
+    needs: route
+    if: needs.route.result == 'success' && needs.route.outputs.presentation == 'true'
+    uses: ./.github/workflows/ui-presentation.yml
+    with:
+      revision: ${{ github.sha }}
+
+  chat-tools:
+    needs: route
+    if: neds.route.result == 'success' && needs.route.outputs.chat_tools == 'true'
+    uses: ./.github/workflows/ui-chat-tools.yml
+    with:
+      revision: ${{ github.sha }}
+
+  environment:
+    needs: route
+    if: needs.route.result == 'success' && needs.route.outputs.environment == 'true'
+    uses: ./.github/workflows/ui-environment.yml
+    with:
+      revision: ${{ github.sha }}

@@ -426,6 +426,22 @@ impl WorkspaceService {
         agent_id: String,
         scope: TaskScope,
     ) -> WorkspaceResult<Task> {
+        self.create_scoped_task_with_draft(project, title, agent_id, scope, String::new())
+            .await
+    }
+
+    /// Save an unsent prompt with its task atomically. This never connects or runs an agent.
+    pub async fn create_scoped_task_with_draft(
+        &self,
+        project: ProjectId,
+        title: String,
+        agent_id: String,
+        scope: TaskScope,
+        draft: String,
+    ) -> WorkspaceResult<Task> {
+        if draft.len() > 1024 * 1024 {
+            return Err(WorkspaceError::Invalid("Task draft exceeds 1 MiB".into()));
+        }
         if title.trim().is_empty() || title.len() > 400 || title.contains('\0') {
             return Err(WorkspaceError::Invalid(
                 "a task needs a title of at most 400 bytes".into(),
@@ -461,7 +477,7 @@ impl WorkspaceService {
                 updated_at_ms: now_ms(),
                 scope,
             };
-            store.save_task(&task)?;
+            store.insert_task_with_draft(&task, draft)?;
             Ok(task)
         })
         .await

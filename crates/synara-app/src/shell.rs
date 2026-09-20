@@ -6,6 +6,7 @@ mod controls;
 mod conversation;
 mod dock;
 mod drafts;
+mod kanban;
 mod messages;
 mod navigation;
 mod overview;
@@ -73,6 +74,7 @@ struct FormState {
     error: Option<String>,
 }
 enum Update {
+    Kanban(Box<kanban::KanbanReply>),
     DraftLoaded(TaskId, Result<String, String>),
     DraftSaved(TaskId, Option<String>),
     Registry(Box<registry::RegistryReply>),
@@ -152,6 +154,7 @@ enum Update {
     Error(String),
 }
 pub struct Shell {
+    kanban: kanban::KanbanState,
     controls: controls::ControlState,
     navigation: navigation::NavigationState,
     settings: settings::SettingsState,
@@ -384,6 +387,7 @@ impl Shell {
                     .map(|t| t.id)
             });
         let mut this = Self {
+            kanban: kanban::KanbanState::default(),
             controls: controls::ControlState::new(cx),
             navigation: navigation::NavigationState::new(cx),
             settings: settings::SettingsState::new(bootstrap.settings, cx),
@@ -458,6 +462,20 @@ impl Shell {
         this
     }
     pub fn request_close(&mut self, window: &mut Window, cx: &mut Context<Self>) -> bool {
+        if self.kanban.creating {
+            self.notice =
+                Some("Finishing task creation before closing. Your prompt is being saved.".into());
+            cx.notify();
+            return false;
+        }
+        if let Some(dialog) = &self.kanban.dialog {
+            if dialog.read(cx).has_text(cx) {
+                dialog.update(cx, |dialog, cx| dialog.failed("Create the task or explicitly discard this unfinished prompt before closing.".into(), cx));
+                window.focus(&dialog.read(cx).focus_handle(cx), cx);
+                return false;
+            }
+            self.kanban.dialog = None;
+        }
         if self.terminal_closing || self.draft_state.quitting {
             return false;
         }
@@ -474,6 +492,7 @@ impl Shell {
     }
 
     fn begin_quit(&mut self, cx: &mut Context<Self>) {
+        self.kanban.cancel_pending_launches();
         if self.terminal_closing {
             return;
         }
@@ -1331,10 +1350,12 @@ impl Shell {
     }
     fn receive(&mut self, update: Update, cx: &mut Context<Self>) {
         match update {
+            Update::Kanban(reply) => self.kanban_reply(*reply, cx),
             Update::DraftLoaded(task, result) => self.restore_draft(task, result, cx),
             Update::DraftSaved(task, error) => self.draft_saved(task, error, cx),
             Update::Registry(reply) => self.registry_reply(*reply, cx),
             Update::Tick => {
+                self.poll_kanban();
                 self.flush_drafts(false);
                 let previous = self.pending.len();
                 self.pending.retain(|key, interaction| {

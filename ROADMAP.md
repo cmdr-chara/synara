@@ -6,6 +6,25 @@ It is a living engineering document, not a release announcement.
 
 ## Current checkpoint
 
+### September 20: original UI inspection and native Kanban
+
+The recovered 73-image Electron reference set is now indexed and reviewed, with
+full-resolution inspection of the new-task dialog and populated board. Earlier
+screenshot-access failures below are historical. See
+[original UI analysis and Kanban evidence](docs/ui/parity-kanban.md) and the
+[dated image register](docs/ui/reference-9488759-index.json).
+
+This candidate adds the original two-level project overview/board structure,
+shared toolbar, isolated task composer, project/provider selection, atomic
+creation with an unsent draft and explicit controller-backed Run/Stop actions.
+Pending launch cancellation and unfinished-form close/discard protection preserve
+user text. Final native acceptance is pending the integrated-source run and will
+be recorded in the linked receipt. F1/F2/F10/D4/I10 remain open for their complete
+scope, including drag/drop, preconnection model/effort, follow-up drafts and the
+full cross-platform visual matrix.
+
+### Earlier September 20 provider and draft checkpoint
+
 Provider favorites, durable drafts and editable Chat behavior (September 20, 2026):
 provider-icon/Starred tabs, explicitly acknowledged model selection, persisted model
 favorites, per-chat draft restoration, ordered close-time saving and Enter/timestamp

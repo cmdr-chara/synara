@@ -37,6 +37,26 @@ def close(s):
     s.log = None
 
 
+def assistant_has_text(events, expected):
+    # ACP streams messages in chunks. Do not require the entire answer in one
+    # delta or accidentally assemble text across different messages/roles.
+    messages = {}
+    for event in events:
+        if event.get('type') == 'text_delta' and event.get('role') == 'assistant':
+            key = event['message_id']
+            messages[key] = messages.get(key, '') + event.get('text', '')
+    return any(expected in value for value in messages.values())
+
+
+def open_project(s, project_id):
+    with sqlite3.connect((s.data / 'native-workspace.sqlite3').as_uri() + '?mode=ro', uri=True) as db:
+        # The native overview uses the catalog's workspace/project ordering.
+        projects = [row[0] for row in db.execute('SELECT id FROM projects ORDER BY workspace_id,id')
+                    if any(t['project_id'] == row[0] and t['state'] != 'archived' and t['scope'] != 'studio'
+                           for t in tasks(s).values())]
+    s.click_control('kanban-open-project', slot=projects.index(project_id))
+
+
 def run(s):
     s.launch()
     original = selection(s)
@@ -49,6 +69,8 @@ def run(s):
         p = json.loads(db.execute('SELECT data FROM projects WHERE id=?', (original_project,)).fetchone()[0])
         p.update(id=second, name='Second project', relative_directory='second-project')
         db.execute('INSERT INTO projects(id,workspace_id,data) VALUES(?,?,?)', (second, p['workspace_id'], json.dumps(p)))
+        db.execute('INSERT OR REPLACE INTO preferences(key,data) VALUES(?,?)',
+                   ('settings', json.dumps({'version': 1, 'appearance': {'theme': 'dark', 'dark_theme': 'dracula'}})))
     s.launch(preserve_selection=True)
     ui = s.desktop
     resize(ui, 1280, 803, s.scale)
@@ -82,6 +104,8 @@ def run(s):
     assert Path(new['working_directory']) == s.project / 'second-project'
     assert draft(s, task) == 'hello' and event_cursor(s, task) == 0
     assert selection(s) == original and draft(s, original) == 'keep the original conversation draft'
+    ui.screenshot('kanban-project-overview', window_only=True)
+    open_project(s, second)
     ui.screenshot('kanban-draft-task', window_only=True)
     s.checks.append('isolated-composer-project-agent-and-atomic-draft-without-autostart')
 
@@ -94,15 +118,16 @@ def run(s):
     s.launch(preserve_selection=True)
     assert selection(s) == task and draft(s, task) == 'hello' and event_cursor(s, task) == 0
     ui.key('9', ('Control_L',))
+    open_project(s, second)
     ui.screenshot('kanban-restored', window_only=True)
-    s.checks.append('created-task-and-prompt-survive-restart-without-agent-start')
+    s.checks.append('project-overview-drilldown-and-draft-restore-without-agent-start')
 
     cursor = event_cursor(s, task)
     s.click_control('kanban-run-draft', slot=0)
     wait_until(lambda: prompt_finished(s, task, cursor), 'run the saved draft')
     events = task_events(s, task, cursor)
     assert sum(e['type'] == 'prompt_started' for e in events) == 1
-    assert any(e.get('type') == 'text_delta' and 'Hello from beta' in e.get('text', '') for e in events)
+    assert assistant_has_text(events, 'Hello from beta'), 'Expected the selected provider answer across its streamed message chunks'
     wait_until(lambda: draft(s, task) == '', 'acknowledged draft clear')
     assert event_cursor(s, original) == 0 and draft(s, original) == 'keep the original conversation draft'
     ui.screenshot('kanban-task-done', window_only=True)
@@ -114,7 +139,7 @@ def run(s):
     ui.screenshot('new-task-run-ready', window_only=True)
     s.click_control('task-create')
     running = wait_until(lambda: next((t for key, t in tasks(s).items() if key not in before), None), 'create and run task')['id']
-    wait_until(lambda: any(e.get('type') == 'text_delta' and 'Started waiting' in e.get('text', '') for e in task_events(s, running, 0)), 'running backend')
+    wait_until(lambda: assistant_has_text(task_events(s, running, 0), 'Started waiting'), 'running backend')
     wait_until(lambda: s.control_bounds('kanban-stop-task', slot=0), 'running task control')
     ui.screenshot('kanban-running-task', window_only=True)
     s.click_control('kanban-stop-task', slot=0)
@@ -155,8 +180,9 @@ def main():
     try:
         run(s)
         result['status'] = 'passed'
-    except BaseException as error:
-        result['error'] = str(error)
+    except BaseException:
+        import traceback
+        result['error'] = traceback.format_exc()
         if s.process and s.process.poll() is None:
             s.desktop.screenshot('failure')
         raise

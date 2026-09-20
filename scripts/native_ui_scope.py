@@ -42,12 +42,44 @@ UI_PATHS = frozenset({
     'crates/synara-app/src/ui/task_dialog.rs',
     'crates/synara-workspace/src/storage/task_creation.rs',
     'scripts/native_kanban_smoke.py',
+    'scripts/test_native_kanban_smoke.py',
     'scripts/prepare_kanban_checkpoint.py',
 })
 KANBAN_CREATION = frozenset({
     'crates/synara-app/src/shell/kanban.rs',
     'crates/synara-workspace/src/storage/task_creation.rs',
 })
+
+
+# Narrow journeys only when the actual diff belongs entirely to task creation
+# and Kanban. A workflow-only or mixed-menu/settings change retains the broader
+# presentation suite. Unknown paths still select the full native lane above.
+KANBAN_PATHS = frozenset({
+    'crates/synara-app/src/shell.rs',
+    'crates/synara-app/src/shell/chrome.rs',
+    'crates/synara-app/src/shell/overview.rs',
+    'crates/synara-app/src/shell/kanban.rs',
+    'crates/synara-app/src/ui.rs',
+    'crates/synara-app/src/ui/task_dialog.rs',
+    'crates/synara-workspace/src/service.rs',
+    'crates/synara-workspace/src/storage.rs',
+    'crates/synara-workspace/src/storage/task_creation.rs',
+    'scripts/native_kanban_smoke.py',
+    'scripts/test_native_kanban_smoke.py',
+    'scripts/native_ui_scope.py',
+    'scripts/test_native_ui_scope.py',
+    'scripts/prepare_kanban_checkpoint.py',
+    '.github/workflows/ui-presentation.yml',
+    '.github/workflows/native.yml',
+})
+
+
+def kanban_only(paths):
+    paths = set(paths)
+    required = KANBAN_CREATION | {'crates/synara-app/src/ui/task_dialog.rs'}
+    return bool(paths & required) and all(
+        path in KANBAN_PATHS or documentation(path) for path in paths
+    )
 
 
 def documentation(path):

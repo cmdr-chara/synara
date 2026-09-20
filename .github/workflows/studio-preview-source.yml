@@ -1,0 +1,46 @@
+name: Compiled preview source transport
+on:
+  push:
+    branches: [astra/gpui-clean-rewrite]
+    paths: [.github/workflows/studio-preview-source.yml]
+permissions:
+  contents: write
+jobs:
+  source:
+    if: github.repository == 'cmdr-chara/synara'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          fetch-depth: 200
+          persist-credentials: false
+      - name: Retain exact locally checked blobs for plugin publication
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 -u - <<'PY'
+          import base64, hashlib, json, lzma, os, pathlib, subprocess, urllib.request
+          data = pathlib.Path('docs/ui/.transfer/preview.txt').read_bytes()
+          assert hashlib.sha1(b'blob '+str(len(data)).encode()+b'\0'+data).hexdigest() == '2591d7f31d6e049415d9573f0f36b4aadc4a1bc0'
+          decoder = lzma.LZMADecompressor(memlimit=128*1024*1024)
+          patch = decoder.decompress(base64.b64decode(data, validate=True), max_length=15000)
+          assert decoder.eof and not decoder.unused_data
+          assert len(patch) == 13237 and hashlib.sha256(patch).hexdigest() == '5eaa2ff0efa6be21a34aeec706617cf1d90eb8297030e11951d52ebd8040eaa3'
+          work = pathlib.Path('/tmp/preview-source')
+          subprocess.run(['git','worktree','add','--detach',str(work),'c81677b230ed1fbe2b8c87e6bd9148238da676a4'],check=True)
+          def git(*args): return subprocess.check_output(['git','-C',str(work),*args]).decode().strip()
+          stats = subprocess.check_output(['git','-C',str(work),'apply','--numstat','-z','-'],input=patch)
+          paths = [row.decode().split('\t',2)[2] for row in stats.split(b'\0') if row]
+          assert set(paths) == {'ROADMAP.md','crates/synara-app/src/shell/environment.rs','crates/synara-app/src/shell/studio.rs','docs/ui/parity-studio-files.md','scripts/native_studio_explorer_smoke.py'}
+          subprocess.run(['git','-C',str(work),'apply','--index','--check','--whitespace=error-all','-'],input=patch,check=True)
+          subprocess.run(['git','-C',str(work),'apply','--index','--whitespace=error-all','-'],input=patch,check=True)
+          for path in paths:
+              file = work/path
+              assert not file.is_symlink() and file.stat().st_size < 200000
+              sha = git('hash-object','--',path)
+              request = urllib.request.Request('https://api.github.com/repos/cmdr-chara/synara/git/blobs',data=json.dumps({'content':file.read_text(),'encoding':'utf-8'}).encode(),method='POST',headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json','Content-Type':'application/json'})
+              with urllib.request.urlopen(request,timeout=30) as response: assert json.load(response)['sha'] == sha
+              print('SOURCE_BLOB',path,sha)
+          print('No feature code or tests executed. No branch ref changed.')
+          PY

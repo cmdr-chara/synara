@@ -6,6 +6,20 @@ It is a living engineering document, not a release announcement.
 
 ## Current checkpoint
 
+### September 20: Environment workspace interaction
+
+The native Environment now has real Terminal/Explorer/Changes tabs, a shared Add
+menu, pointer/keyboard split resizing, maximize/restore, and versioned saved
+layout. General exposes Open by default and Reset layout. Explicit open/hide
+updates the preference, while restored tools do not launch shells or agents.
+Theme defaults are unchanged. Dracula remains optional.
+
+The [Environment receipt](docs/ui/parity-environment.md) records the exact check
+states, native captures and remaining limits. Storage/state regressions prove
+bounded preferences, ordered saving and preservation of malformed/future data.
+This is bounded progress in G7/I6/I10/F2, not completion of those gates. Per-thread
+layouts, multiple terminals, Browser and Side chats remain separate work.
+
 ### September 20: original UI inspection and native Kanban
 
 The recovered 73-image Electron reference set is now indexed and reviewed, with

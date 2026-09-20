@@ -530,7 +530,7 @@ fn database_path(path: &Path) -> StorageResult<std::path::PathBuf> {
     Ok(parent.canonicalize()?.join(name))
 }
 fn valid_preference_key(key: &str) -> bool {
-    if key == "model-favorites" {
+    if matches!(key, "model-favorites" | "environment-layout") {
         return true;
     }
     if let Some(id) = key.strip_prefix("task-draft:") {

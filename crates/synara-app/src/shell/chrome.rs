@@ -19,7 +19,8 @@ impl Shell {
     ) -> gpui::AnyElement {
         let docked = dock_width > 0.;
         let navigation_width = (ui::SIDEBAR_WIDTH * sidebar_fraction).max(112.);
-        let has_chat = (self.panel == Panel::Conversation || docked)
+        let has_chat = !self.environment.maximized
+            && (self.panel == Panel::Conversation || docked)
             && self
                 .thread
                 .as_ref()
@@ -79,6 +80,9 @@ impl Shell {
                     .pr_2()
                     .gap_2()
                     .when(!docked && !cfg!(target_os = "macos"), |el| el.pr(px(152.)))
+                    .when(docked && self.environment.maximized, |el| {
+                        el.px_0().overflow_hidden()
+                    })
                     .children(
                         (self.panel == Panel::Kanban && self.kanban.project.is_some()).then(|| {
                             ui::chrome_button(
@@ -157,14 +161,11 @@ impl Shell {
                                 Glyph::Dock,
                                 false,
                                 cx.listener(|this, _: &(), _, cx| {
-                                    this.set_panel(
-                                        if this.panel == Panel::Terminal {
-                                            Panel::Conversation
-                                        } else {
-                                            Panel::Terminal
-                                        },
-                                        cx,
-                                    )
+                                    if this.panel == Panel::Terminal {
+                                        this.hide_environment(cx);
+                                    } else {
+                                        this.set_panel(Panel::Terminal, cx);
+                                    }
                                 }),
                             )
                         }),
@@ -177,14 +178,11 @@ impl Shell {
                                 Glyph::PanelRight,
                                 false,
                                 cx.listener(|this, _: &(), _, cx| {
-                                    this.set_panel(
-                                        if this.dock_open() {
-                                            Panel::Conversation
-                                        } else {
-                                            Panel::Dock
-                                        },
-                                        cx,
-                                    )
+                                    if this.dock_open() {
+                                        this.hide_environment(cx);
+                                    } else {
+                                        this.set_panel(Panel::Dock, cx);
+                                    }
                                 }),
                             )
                             .when(docked, |el| el.bg(rgb(palette().overlay)))
@@ -195,29 +193,13 @@ impl Shell {
                 div()
                     .w(px(dock_width))
                     .flex_shrink_0()
-                    .overflow_hidden()
                     .min_w_0()
                     .h_full()
                     .border_l_1()
-                    .border_color(gpui::rgba(0xffffff09))
-                    .px_3()
-                    .pr(px(152.))
-                    .flex()
-                    .items_center()
-                    .gap_2()
-                    .children((self.dock_panel != Panel::Dock).then(|| {
-                        ui::icon(if self.dock_panel == Panel::Files {
-                            Glyph::Folders
-                        } else {
-                            Glyph::Terminal
-                        })
-                    }))
-                    .child(match self.dock_panel {
-                        Panel::Files => "Explorer",
-                        Panel::Terminal => "Terminal",
-                        Panel::Changes => "Changes",
-                        _ => "",
-                    })
+                    .border_color(rgb(palette().border))
+                    .pl_2()
+                    .pr(px(if cfg!(target_os = "macos") { 8. } else { 144. }))
+                    .child(self.environment_header(dock_width < 560., cx))
             }))
             .children((!cfg!(target_os = "macos")).then(|| {
                 div()
@@ -373,7 +355,7 @@ impl Shell {
 impl Render for Shell {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         ui::configure(&self.settings.value.appearance, window.appearance());
-        if self.draft_state.quitting {
+        if self.draft_state.quitting || self.environment.quitting {
             window.focus(&self.close_focus, cx);
             return self.draft_close_panel(cx);
         }
@@ -395,6 +377,7 @@ impl Render for Shell {
                     if this.close != CloseState::Open
                         || this.terminal_closing
                         || this.draft_state.quitting
+                        || this.environment.quitting
                     {
                         return;
                     }
@@ -408,7 +391,7 @@ impl Render for Shell {
                         return;
                     }
                     tracing::debug!(target: "synara_ui_layout", "retired-focus-restored");
-                    if this.controls.is_open() {
+                    if this.controls.is_open() || this.environment.menu_open() {
                         return;
                     } else if this.navigation.menu_open {
                         window.focus(&this.navigation.menu_focus[this.navigation.menu_index], cx);
@@ -428,11 +411,14 @@ impl Render for Shell {
             && !self.navigation.menu_open
             && !self.controls.is_open()
             && self.kanban.dialog.is_none()
+            && !self.environment.menu_open()
+            && !(self.dock_open() && self.environment.maximized)
         {
             let focus = self.composer.read(cx).focus_handle(cx);
             window.focus(&focus, cx);
             self.focus_composer = false;
         }
+        self.restore_environment_focus(window, cx);
         let now = std::time::Instant::now();
         if !cx.reduce_motion() && self.transcript.advance_animations(now) {
             window.request_animation_frame();
@@ -462,7 +448,12 @@ impl Render for Shell {
             cx.on_next_frame(window, |_, _, cx| cx.notify());
         }
         let viewport_width = f32::from(window.viewport_size().width);
-        let dock_target_width = (viewport_width - ui::SIDEBAR_WIDTH * sidebar_fraction) * 0.5;
+        let available_width = (viewport_width - ui::SIDEBAR_WIDTH * sidebar_fraction).max(0.);
+        let dock_target_width = environment::split_width(
+            available_width,
+            self.environment.value.width_ratio,
+            self.environment.maximized && dock_open,
+        );
         let dock_width = dock_target_width * dock_fraction;
         div()
             .id("synara-shell")
@@ -526,7 +517,11 @@ impl Render for Shell {
                         _ => None,
                     };
                     if let Some(panel) = panel {
-                        this.set_panel(panel, cx);
+                        if panel == Panel::Conversation && this.dock_open() {
+                            this.hide_environment(cx);
+                        } else {
+                            this.set_panel(panel, cx);
+                        }
                         if this.navigation.menu_open {
                             this.dismiss_tools(window, cx);
                         }
@@ -614,8 +609,24 @@ impl Render for Shell {
                                     .bg(rgb(palette().notice_surface))
                                     .child(notice.clone())
                             }))
-                            .child(self.main_surface(window, dock_width, dock_target_width, cx)),
+                            .child(self.main_surface(
+                                window,
+                                dock_width,
+                                dock_target_width,
+                                available_width,
+                                cx,
+                            )),
                     ),
+            )
+            .children(
+                self.environment
+                    .menu_open()
+                    .then(|| self.environment_overlay(cx)),
+            )
+            .children(
+                self.environment
+                    .resizing()
+                    .then(|| self.environment_drag_overlay(cx)),
             )
             .children(self.kanban.dialog.clone())
             .children(self.navigation.menu_open.then(|| self.tools_overlay(cx)))

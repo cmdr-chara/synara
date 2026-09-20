@@ -771,6 +771,9 @@ impl Shell {
                                                     .code_font
                                                     .update(cx, |entry, cx| entry.clear(cx));
                                             }
+                                            if section == Section::General {
+                                                this.reset_environment_default();
+                                            }
                                             this.save_setting(
                                                 |settings| match section {
                                                     Section::Appearance => {
@@ -821,6 +824,13 @@ impl Shell {
             .child(heading("Sidebar sections"))
             .child(card().child(row("Chats", "Show standalone chats in the sidebar.", self.toggle("show-chats", "Chats", general.show_chats, |s| s.general.show_chats = !s.general.show_chats, cx)))
                 .child(row("Studio", "Show Studio in the sidebar switcher.", self.toggle("show-studio", "Studio", general.show_studio, |s| s.general.show_studio = !s.general.show_studio, cx))))
+            .child(heading("Environment panel"))
+            .child(card()
+                .child(row("Open by default", "Open Environment automatically on normal chats. Your last explicit open or hide updates this preference. Restoring the panel never starts a shell or an agent.", self.environment_preference_toggle(cx)))
+                .child(row("Workspace layout", "Tabs and split width are remembered. Resetting the layout does not discard editor text or stop running tools.", ui::button("environment-reset", "Reset layout", false)
+                    .relative().child(ui::layout_probe("environment-reset"))
+                    .on_click(cx.listener(|this, _, _, cx| this.reset_environment_layout(cx))))))
+            .children(self.environment.recovery.as_ref().map(|error| div().mt_3().text_color(rgb(palette().error)).child(error.clone())))
             .into_any_element()
     }
     fn appearance_settings(&self, cx: &mut Context<Self>) -> gpui::AnyElement {

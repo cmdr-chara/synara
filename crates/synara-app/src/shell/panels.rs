@@ -98,16 +98,22 @@ impl Shell {
                                     },
                                     false,
                                 )
+                                .relative()
+                                .child(crate::ui::layout_probe("start-shell"))
                                 .on_click(cx.listener(|this, _, _, cx| this.start_terminal(cx))),
                             )
                             .child(
                                 button("interrupt-shell", "Interrupt", false)
+                                    .relative()
+                                    .child(crate::ui::layout_probe("interrupt-shell"))
                                     .on_click(cx.listener(|this, _, _, cx| {
                                         this.interrupt_terminal(cx)
                                     })),
                             )
                             .child(
                                 button("stop-shell", "Stop shell", false)
+                                    .relative()
+                                    .child(crate::ui::layout_probe("stop-shell"))
                                     .on_click(cx.listener(|this, _, _, cx| {
                                         this.stop_terminal(cx)
                                     })),
@@ -139,6 +145,8 @@ impl Shell {
             .child(
                 div()
                     .id("terminal-screen")
+                    .relative()
+                    .child(crate::ui::layout_probe("terminal-screen"))
                     .flex_1()
                     .min_h_0()
                     .rounded_md()

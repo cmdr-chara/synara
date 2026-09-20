@@ -15,13 +15,11 @@ jobs:
     permissions:
       contents: write
       actions: read
-    outputs:
-      revision: ${{ steps.publish.outputs.revision }}
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
           fetch-depth: 1000
-      - name: Import the exact verified artifact and restore the normal workflow
+      - name: Import the exact verified source artifact
         env:
           GH_ARTIFACT_TOKEN: ${{ github.token }}
         run: |
@@ -29,7 +27,12 @@ jobs:
           import hashlib,io,json,os,subprocess,urllib.error,urllib.parse,urllib.request,zipfile
           from pathlib import Path
           base='1828d1e9366e9ea71406b0e37027abb9ae24594a'
-          assert subprocess.check_output(['git','show','-s','--format=%P','HEAD'],text=True).strip()==base
+          parent='5dcf16808503f7e424c6da0036a3d05eb0739499'
+          assert subprocess.check_output(['git','show','-s','--format=%P','HEAD'],text=True).strip()==parent
+          # The intervening commit changes workflows only. All source paths still
+          # have exactly the artifact's base contents; no application rebase occurs.
+          delta=set(subprocess.check_output(['git','diff','--name-only',base,'HEAD'],text=True).splitlines())
+          assert delta=={'.github/workflows/native.yml','.github/workflows/ui-presentation.yml'},delta
           assert not subprocess.check_output(['git','status','--porcelain'],text=True).strip()
           assert not Path('.synara-source.json').exists()
           token=os.environ.pop('GH_ARTIFACT_TOKEN')
@@ -65,18 +68,11 @@ jobs:
               package=json.loads(archive.read(names[0]))
           assert package['base_commit']==base and package['mode']=='diff'
           assert package['sha256']=='c696d58c43fc17487186d0ffc3b72138f9c2f786488d5894d77816500cba2c7a'
-          normal=subprocess.check_output(['git','show',base+':.github/workflows/native.yml'])
-          blob=subprocess.check_output(['git','hash-object','--stdin'],input=normal).decode().strip()
-          assert blob=='1f217a0c2d8a78140f8339687c1ac30909a3f26d'
-          Path('.github/workflows/native.yml').write_bytes(normal)
+          # Advance only the envelope's parent guard after proving identical source.
+          # The compressed delta and checksum remain the exact checked artifact.
+          package['base_commit']=parent
           Path('.synara-source.json').write_text(json.dumps(package),encoding='utf-8')
-          print('Verified artifact digest, originating candidate and source delta. Normal workflow restored for publication.')
+          print('Verified artifact and identical source base. Workflow restoration remains a separate plugin write.')
           PY
       - name: Apply the integrity-checked source package
-        id: publish
         run: python3 scripts/apply_source.py
-  presentation:
-    needs: source
-    uses: ./.github/workflows/ui-presentation.yml
-    with:
-      revision: ${{ needs.source.outputs.revision }}

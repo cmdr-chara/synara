@@ -59,6 +59,7 @@ enum ControlAction {
     AddReferences,
     Unavailable,
     AccessInfo,
+    Connect,
     Agent(String),
     Mode(String),
     Model(String),
@@ -346,6 +347,36 @@ impl Shell {
                 })
                 .collect();
             choices.extend(models);
+            for kind in [ControlKind::Mode, ControlKind::Options] {
+                choices.extend(self.control_choices(kind).into_iter().map(
+                    |(mut choice, action)| {
+                        choice.label = format!(
+                            "{} · {}",
+                            if choice.detail.is_empty() {
+                                kind.title()
+                            } else {
+                                &choice.detail
+                            },
+                            choice.label
+                        );
+                        choice.icon = Some(ui::Glyph::Sliders);
+                        (choice, action)
+                    },
+                ));
+            }
+            if self.details.as_ref().is_none_or(|d| {
+                d.connection.state != ConnectionState::Connected || d.session_id.is_none()
+            }) {
+                choices.push((
+                    Choice {
+                        label: "Connect and load models".into(),
+                        detail: "Start the selected agent explicitly".into(),
+                        icon: Some(ui::Glyph::Agent),
+                        ..Default::default()
+                    },
+                    ControlAction::Connect,
+                ));
+            }
             return choices;
         }
         self.details
@@ -395,6 +426,62 @@ impl Shell {
             let view = ChoiceMenu::new(kind.title().into(), items, cx);
             if kind == ControlKind::Extras {
                 view.add_layout(self.controls.composer_bounds.clone())
+            } else if kind == ControlKind::Agent {
+                let current = self
+                    .profiles
+                    .iter()
+                    .position(|p| task.as_ref().is_some_and(|t| t.agent_id == p.id))
+                    .unwrap_or(0);
+                let sources = self
+                    .profiles
+                    .iter()
+                    .map(|p| ui::menu::ModelSource {
+                        name: p.name.clone(),
+                        icon: self.agent_glyph(&p.id),
+                    })
+                    .collect();
+                let models = self.control_choices(ControlKind::Model);
+                let rows = choices
+                    .iter()
+                    .map(|action| {
+                        let source = match action {
+                            ControlAction::Agent(id) => self
+                                .profiles
+                                .iter()
+                                .position(|p| &p.id == id)
+                                .unwrap_or(current),
+                            _ => current,
+                        };
+                        let favorite = if models.iter().any(|(_, a)| a == action) {
+                            task.as_ref().and_then(|task| match action {
+                                ControlAction::Model(value) => Some(ModelFavorite {
+                                    agent: task.agent_id.clone(),
+                                    option: None,
+                                    value: value.clone(),
+                                }),
+                                ControlAction::Option(key, ConfigValue::Select { value }) => {
+                                    Some(ModelFavorite {
+                                        agent: task.agent_id.clone(),
+                                        option: Some(key.clone()),
+                                        value: value.clone(),
+                                    })
+                                }
+                                _ => None,
+                            })
+                        } else {
+                            None
+                        };
+                        ui::menu::ModelRow { source, favorite }
+                    })
+                    .collect();
+                view.with_models(
+                    sources,
+                    rows,
+                    current,
+                    self.controller.workspace.clone(),
+                    self.runtime.clone(),
+                    cx,
+                )
             } else {
                 view
             }
@@ -468,6 +555,10 @@ impl Shell {
                 self.add_file_references(cx);
                 return;
             }
+            ControlAction::Connect => {
+                self.connect("connect", cx);
+                return;
+            }
             ControlAction::AccessInfo | ControlAction::Unavailable => return,
             _ => {}
         }
@@ -483,7 +574,8 @@ impl Shell {
                 | ControlAction::BrowseWorkspace
                 | ControlAction::AddReferences
                 | ControlAction::Unavailable
-                | ControlAction::AccessInfo => {
+                | ControlAction::AccessInfo
+                | ControlAction::Connect => {
                     unreachable!("project controls are handled before session dispatch")
                 }
                 ControlAction::Agent(agent) => controller.switch_agent(task, agent).await.map(Some),
@@ -605,6 +697,7 @@ impl Shell {
                     Ok(Ok(None)) => {},
                     _ => this.error = Some("The system file picker could not open. Type a workspace path in the message instead.".into()),
                 }
+                this.snapshot_draft(cx);
                 cx.notify();
             });
         }).detach();

@@ -135,6 +135,7 @@ impl Shell {
                     .insert(previous, self.composer.read(cx).text().to_owned());
             }
             self.project = Some(id);
+            self.snapshot_draft(cx);
             self.selected = None;
             self.thread = None;
             self.details = None;
@@ -846,6 +847,7 @@ impl Shell {
         }
         self.selection_revision = self.selection_revision.wrapping_add(1);
         self.project = Some(project);
+        self.snapshot_draft(cx);
         self.selected = None;
         self.thread = None;
         self.document = None;

@@ -66,10 +66,14 @@ pub enum Glyph {
     Bell,
     Palette,
     User,
+    Star,
+    StarFilled,
 }
 impl Glyph {
     fn path(self) -> &'static str {
         match self {
+            Self::Star => "icons/tabler/star.svg",
+            Self::StarFilled => "icons/tabler/star-filled.svg",
             Self::Back => "icons/tabler/arrow-left.svg",
             Self::Forward => "icons/tabler/arrow-right.svg",
             Self::Send => "icons/synara/arrow-up.svg",
@@ -164,6 +168,10 @@ pub fn provider_glyph(id: &str, executable: Option<&str>) -> Glyph {
 
 pub(super) fn load(path: &str) -> Option<Cow<'static, [u8]>> {
     let bytes: &'static [u8] = match path {
+        "icons/tabler/star.svg" => include_bytes!("../../assets/icons/tabler/star.svg"),
+        "icons/tabler/star-filled.svg" => {
+            include_bytes!("../../assets/icons/tabler/star-filled.svg")
+        }
         "icons/providers/openai.svg" => include_bytes!("../../assets/icons/providers/openai.svg"),
         "icons/synara/arrow-left-right.svg" => {
             include_bytes!("../../assets/icons/synara/arrow-left-right.svg")

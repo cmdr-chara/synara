@@ -9,6 +9,7 @@ permissions:
   contents: read
 env:
   CARGO_BUILD_JOBS: '2'
+  PYTHONDONTWRITEBYTECODE: '1'
 jobs:
   presentation:
     runs-on: ubuntu-24.04
@@ -19,46 +20,74 @@ jobs:
           ref: ${{ inputs.revision }}
           fetch-depth: 2
           persist-credentials: false
-      - name: Record candidate and check scope selection
+      - name: Record candidate and validate verification scope
         run: |
           git rev-parse HEAD
           python3 scripts/test_native_ui_scope.py
-          python3 -m py_compile scripts/native_picker_search_smoke.py scripts/native_rich_text_smoke.py
-      - name: Install pinned Rust toolchain
-        run: rustup toolchain install 1.98.1 --profile minimal --component rustfmt
+          python3 scripts/check_roadmap.py
+          python3 -m py_compile scripts/native_model_draft_smoke.py scripts/native_chat_behavior_smoke.py scripts/native_controls_smoke.py scripts/native_picker_search_smoke.py
+      - name: Install pinned toolchain
+        run: rustup toolchain install 1.98.1 --profile minimal --component rustfmt --component clippy
       - name: Native system libraries
         run: |
-          sudo apt-get update
-          sudo apt-get install -y clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil xclip fonts-dejavu-core fonts-liberation
-      - name: App formatting
-        run: cargo +1.98.1 fmt --check -p synara-app
-      - name: Presentation unit regressions
-        if: ${{ !cancelled() }}
+          sudo apt-get update > /tmp/native-install.log 2>&1
+          sudo apt-get install -y clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil xclip fonts-dejavu-core fonts-liberation >> /tmp/native-install.log 2>&1
+      - name: Changed-package formatting
+        run: cargo +1.98.1 fmt --check -p synara-app -p synara-workspace
+      - name: Chat preference and settings regressions
+        run: |
+          cargo +1.98.1 test --locked -p synara-workspace --lib storage::chat_preferences::tests
+          cargo +1.98.1 test --locked -p synara-workspace --lib settings::
+      - name: Native presentation and input regressions
         run: |
           cargo +1.98.1 test --locked -p synara-app --bin synara-app ui::
-      - name: Session choice contract regressions
-        if: ${{ !cancelled() }}
-        run: cargo +1.98.1 test --locked -p synara-app --bin synara-app shell::controls::tests
+          cargo +1.98.1 test --locked -p synara-app --bin synara-app shell::drafts::tests
+          cargo +1.98.1 test --locked -p synara-app --bin synara-app shell::controls::tests
+          cargo +1.98.1 test --locked -p synara-app --bin synara-app input::policy::tests
+          cargo +1.98.1 test --locked -p synara-app --bin synara-app close::tests
+      - name: Strict changed-package lints
+        run: cargo +1.98.1 clippy --locked --no-deps -p synara-app -p synara-workspace --all-targets -- -D warnings
       - name: Build native application and fixture
-        if: ${{ !cancelled() }}
         id: build
         run: cargo +1.98.1 build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture
-      - name: Existing native control journeys
+      - name: Native model and durable draft journeys
+        timeout-minutes: 4
+        run: python3 scripts/native_model_draft_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-model-drafts
+      - name: Native editable Chat behavior
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        timeout-minutes: 3
+        run: python3 scripts/native_chat_behavior_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-chat-behavior
+      - name: Native session controls
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        timeout-minutes: 3
+        run: python3 scripts/native_controls_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-controls
+      - name: Native filtered search
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        timeout-minutes: 3
+        run: python3 scripts/native_picker_search_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-search
+      - name: Native creation and Studio restoration
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         timeout-minutes: 4
-        run: python3 scripts/native_controls_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-controls
-      - name: Search and filtered activation journeys
+        run: python3 scripts/native_studio_settings_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-studio-drafts
+      - name: Native input and guarded close
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         timeout-minutes: 3
-        run: python3 scripts/native_picker_search_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-picker-search
-      - name: Existing transcript and split layout journeys
+        run: python3 scripts/native_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-close
+      - name: Native rich text and split-layout regression
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         timeout-minutes: 3
-        run: python3 scripts/native_chat_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-chat
-      - name: Native rich text and copy journeys
-        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
-        timeout-minutes: 3
-        run: python3 scripts/native_rich_text_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-rich-text
+        run: |
+          python3 scripts/native_rich_text_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-rich-text
+          python3 scripts/native_chat_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-chat
+      - name: Verify no candidate source mutation
+        run: git diff --exit-code
+      - name: Export source identity and reproduction bundle
+        if: ${{ !cancelled() }}
+        run: |
+          mkdir -p /tmp/ui-source
+          git rev-parse HEAD > /tmp/ui-source/revision.txt
+          git ls-files -s > /tmp/ui-source/blobs.txt
+          git bundle create /tmp/ui-source/source.bundle HEAD
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: ${{ !cancelled() }}
         with:
@@ -67,5 +96,6 @@ jobs:
             /tmp/ui-*/*.png
             /tmp/ui-*/*.log
             /tmp/ui-*/result.json
+            /tmp/ui-source/
           retention-days: 7
           if-no-files-found: warn

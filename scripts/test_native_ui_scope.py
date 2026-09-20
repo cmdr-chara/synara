@@ -22,14 +22,20 @@ class NativeScopeTests(unittest.TestCase):
     def test_backend_dependency_input_or_unknown_changes_use_full_lane(self):
         for path in [
             'crates/synara-agent/src/lib.rs', 'Cargo.lock', 'Cargo.toml',
-            'crates/synara-app/src/input.rs', 'crates/synara-app/src/shell.rs',
-            'rust-toolchain.toml', 'scripts/native_smoke.py',
+            'rust-toolchain.toml', 'crates/synara-runtime/src/lib.rs',
             '.github/workflows/security.yml', 'unrecognized.rs', '',
         ]:
             with self.subTest(path=path):
                 self.assertEqual(scope_for_paths([
                     'crates/synara-app/src/ui/menu.rs', path,
                 ]), 'full')
+
+    def test_chat_preferences_and_input_have_expanded_focused_coverage(self):
+        for path in ['crates/synara-app/src/input.rs', 'crates/synara-app/src/shell.rs',
+                     'crates/synara-workspace/src/storage.rs', 'crates/synara-workspace/src/settings/chat.rs',
+                     'scripts/native_smoke.py', 'scripts/native_chat_behavior_smoke.py']:
+            with self.subTest(path=path):
+                self.assertEqual(scope_for_paths([path]), 'presentation')
 
     def test_empty_diff_is_not_assumed_verified(self):
         self.assertEqual(scope_for_paths([]), 'full')

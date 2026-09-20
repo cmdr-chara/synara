@@ -6,6 +6,19 @@ It is a living engineering document, not a release announcement.
 
 ## Current checkpoint
 
+Provider favorites, durable drafts and editable Chat behavior (September 20, 2026):
+provider-icon/Starred tabs, explicitly acknowledged model selection, persisted model
+favorites, per-chat draft restoration, ordered close-time saving and Enter/timestamp
+preferences are implemented in the checked source delta. Targeted storage/input/UI
+tests, strict changed-package Clippy and native fixture journeys provide bounded
+acceptance. See [the exact candidate and evidence](docs/ui/parity-model-drafts.md).
+The first combined run had a legacy input-targeting failure, retained in the
+record; the focused follow-up validates the correction without weakening assertions.
+D4/D8/F2/I6/I10 remain open for their full scope. The 73-image reference archive
+still could not be opened after renewed transport/file-access attempts, so this is
+not a complete visual-parity or cross-platform acceptance claim.
+
+
 ### September 20: searchable choices and rich native chat
 
 Source checkpoint: `917f7a0a96ff41c6a026ff0ed9a749f2556cdda8`, continuing

@@ -7,6 +7,8 @@ use gpui::{
 use std::{ops::Range, rc::Rc};
 use synara_core::TextBuffer;
 
+mod policy;
+
 const LINE_HEIGHT: f32 = 22.0;
 const MAX_INPUT: usize = 1024 * 1024;
 const HISTORY_BYTES: usize = 16 * 1024 * 1024;
@@ -33,6 +35,8 @@ pub struct TextEntry {
     focus: FocusHandle,
     placeholder: String,
     leading_icon: Option<crate::ui::Glyph>,
+    picker_chrome: bool,
+    send_on_enter: bool,
     mode: EntryMode,
     height: f32,
     lines: Vec<Line>,
@@ -61,6 +65,8 @@ impl TextEntry {
             focus: cx.focus_handle(),
             placeholder: placeholder.into(),
             leading_icon: None,
+            picker_chrome: false,
+            send_on_enter: true,
             mode,
             height,
             lines: vec![],
@@ -80,6 +86,15 @@ impl TextEntry {
     pub fn with_leading_icon(mut self, icon: crate::ui::Glyph) -> Self {
         self.leading_icon = Some(icon);
         self
+    }
+
+    pub fn picker_chrome(mut self) -> Self {
+        self.picker_chrome = true;
+        self
+    }
+
+    pub fn set_send_on_enter(&mut self, enabled: bool) {
+        self.send_on_enter = enabled;
     }
 
     pub fn text(&self) -> &str {
@@ -258,11 +273,16 @@ impl TextEntry {
             }
             (true, "s") if self.mode == EntryMode::Editor => cx.emit(EntryEvent::Save),
             (_, "enter") => {
-                if self.mode == EntryMode::SingleLine
-                    || (self.mode == EntryMode::Composer && !shift)
-                    || command
-                {
-                    cx.emit(EntryEvent::Submit);
+                if policy::submits_enter(
+                    self.mode,
+                    self.send_on_enter,
+                    command,
+                    shift,
+                    modifiers.alt,
+                ) {
+                    if !event.is_held {
+                        cx.emit(EntryEvent::Submit);
+                    }
                 } else {
                     self.edit(self.buffer.selection(), "\n", cx);
                 }
@@ -474,6 +494,7 @@ impl Render for TextEntry {
                 .bg(gpui::rgba(0)).border_0().rounded_none().font_family(crate::ui::ui_font()))
             .when_some(self.leading_icon, |el, icon| el.pl(px(32.)).child(div().absolute().left(px(10.)).top(px(7.)).child(crate::ui::icon(icon))))
             .when(self.mode == EntryMode::Editor, |el| el.font_family(crate::ui::code_font()))
+            .when(self.picker_chrome, |el| el.bg(gpui::rgba(0)).border_0().rounded_none())
             .cursor_text()
             .when(self.mode == EntryMode::Composer, |el| el.child(crate::ui::layout_probe("composer-input")))
             .when(self.mode == EntryMode::Editor, |el| el.child(crate::ui::layout_probe("editor-input")))

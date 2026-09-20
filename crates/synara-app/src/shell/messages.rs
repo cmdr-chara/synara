@@ -24,6 +24,7 @@ impl Shell {
         let timestamp = self
             .thread
             .as_ref()
+            .filter(|_| self.settings.value.chat.show_timestamps)
             .and_then(|thread| thread.message_timestamps.get(&message.id))
             .and_then(|stamp| chrono::DateTime::from_timestamp_millis(*stamp))
             .map(|time| {
@@ -86,7 +87,7 @@ impl Shell {
                         .aria_label("Branch from message, unavailable").size(px(24.)).p_0().gap_0().justify_center())
                     .child(ui::unavailable_action("pin-message", "", Glyph::Pin, "Pinned messages are not available in this native build yet.")
                         .aria_label("Pin message, unavailable").size(px(24.)).p_0().gap_0().justify_center())
-                    .children(timestamp)))
+                    .children(timestamp.map(|text| div().relative().child(ui::layout_probe("message-timestamp")).child(text)))))
             .when(user, |el| el.child(div().absolute().right_0().bottom(px(-24.)).child(
                 copy(cx).opacity(0.).group_hover("message-actions", |style| style.opacity(1.))
                     .focus_visible(|style| style.opacity(1.).border_color(rgb(palette().focus))))))

@@ -393,8 +393,8 @@ class Scenario:
         # Switch profiles through the actual selector. No new backend or persisted SQL mutation.
         _, _, width, height = ui.geometry()
         self.click_control('agent-picker')
+        self.click_control('model-source', slot=2)
         ui.key('Home')
-        ui.key('Down')
         ui.key('Return')
         wait_until(lambda: self.task()['agent_id'] == 'beta', 'second fixture selected')
         before = self.prompt('hello')

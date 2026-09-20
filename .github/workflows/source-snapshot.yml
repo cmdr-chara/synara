@@ -1,0 +1,26 @@
+name: Local implementation source snapshot
+on:
+  push:
+    branches: [astra/gpui-clean-rewrite]
+    paths: ['.github/workflows/source-snapshot.yml']
+permissions:
+  contents: read
+jobs:
+  snapshot:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Capture exact authorized source
+        run: |
+          mkdir -p /tmp/synara-source-snapshot
+          git bundle create /tmp/synara-source-snapshot/source.bundle HEAD
+          git rev-parse HEAD > /tmp/synara-source-snapshot/revision.txt
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: local-implementation-source
+          path: /tmp/synara-source-snapshot/
+          retention-days: 1

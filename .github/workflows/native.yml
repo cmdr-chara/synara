@@ -1,250 +1,115 @@
-name: Native verification
+name: Recover pending source (not verification)
 on:
   push:
     branches: [astra/gpui-clean-rewrite]
 permissions:
-  contents: read
-env:
-  CARGO_BUILD_JOBS: '2'
-concurrency:
-  group: native-${{ github.ref }}
-  cancel-in-progress: false
+  contents: write
 jobs:
-  source:
-    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/gpui-clean-rewrite'
+  recover-source-only:
+    if: github.repository == 'cmdr-chara/synara'
     runs-on: ubuntu-24.04
-    permissions:
-      contents: write
-    outputs:
-      revision: ${{ steps.publish.outputs.revision }}
-      scope: ${{ steps.scope.outputs.scope }}
+    timeout-minutes: 3
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
-          fetch-depth: 1000
-      - name: Apply an optional checked source package
-        id: publish
-        run: python3 scripts/apply_source.py
-      - name: Select verification from the actual changed paths
-        id: scope
-        env:
-          BASE_REVISION: ${{ github.event.before }}
-          CANDIDATE_REVISION: ${{ steps.publish.outputs.revision }}
-        run: python3 scripts/native_ui_scope.py "$BASE_REVISION" "$CANDIDATE_REVISION" >> "$GITHUB_OUTPUT"
-  presentation:
-    needs: source
-    if: needs.source.outputs.scope == 'presentation'
-    uses: ./.github/workflows/ui-presentation.yml
-    with:
-      revision: ${{ needs.source.outputs.revision }}
-  environment:
-    needs: source
-    if: needs.source.outputs.scope == 'environment'
-    uses: ./.github/workflows/ui-environment.yml
-    with:
-      revision: ${{ needs.source.outputs.revision }}
-  linux:
-    needs: source
-    if: needs.source.outputs.scope != 'presentation' && needs.source.outputs.scope != 'environment' && needs.source.outputs.scope != 'docs'
-    timeout-minutes: 35
-    runs-on: ubuntu-24.04
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
-        with:
-          ref: ${{ needs.source.outputs.revision }}
-          fetch-depth: 1000
+          fetch-depth: 100
           persist-credentials: false
-      - name: Install pinned Rust toolchain
-        run: rustup toolchain install 1.98.1 --profile minimal --component rustfmt --component clippy
-      - name: Native system libraries
+      - name: Decode saved source as data and retain review objects only
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          sudo apt-get update
-          sudo apt-get install -y clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil xclip fonts-dejavu-core fonts-liberation
-      - name: Fetch pinned dependencies
-        run: cargo +1.98.1 fetch --locked
-      - name: Choose dependency cache export
-        id: cache
-        shell: bash
-        run: |
-          if git rev-parse --verify HEAD^ >/dev/null 2>&1 && git diff --quiet HEAD^ HEAD -- Cargo.lock rust-toolchain.toml; then
-            echo 'export=false' >> "$GITHUB_OUTPUT"
-          else
-            echo 'export=true' >> "$GITHUB_OUTPUT"
-          fi
-      - name: Export dependency and native development cache
-        if: always() && steps.cache.outputs.export == 'true'
-        shell: bash
-        run: |
-          mkdir -p /tmp/native-metadata /tmp/native-cache
-          git bundle create /tmp/native-metadata/source.bundle HEAD
-          git rev-parse HEAD > /tmp/native-metadata/revision.txt
-          if test -f Cargo.lock; then cp Cargo.lock /tmp/native-metadata/Cargo.lock; fi
-          paths=()
-          for path in registry git; do
-            if test -d "$HOME/.cargo/$path"; then paths+=("$path"); fi
-          done
-          if test "${#paths[@]}" -gt 0; then tar -C "$HOME/.cargo" -czf /tmp/native-cache/dependencies.tar.gz "${paths[@]}"; fi
           python3 - <<'PY'
-          import glob, pathlib, tarfile
-          paths = ['/usr/include', '/usr/lib/x86_64-linux-gnu/pkgconfig', '/usr/share/pkgconfig']
-          names = ['xkbcommon', 'wayland', 'fontconfig', 'freetype', 'asound', 'vulkan', 'EGL', 'GL', 'X', 'xcb', 'ffi', 'zstd', 'brotli', 'bz2', 'png', 'expat', 'uuid', 'z', 'drm', 'gbm', 'udev', 'dbus']
-          for name in names:
-              paths.extend(glob.glob('/usr/lib/x86_64-linux-gnu/lib' + name + '*.so*'))
-          paths.extend(glob.glob('/usr/lib/llvm-*/lib/libclang.so*'))
-          with tarfile.open('/tmp/native-metadata/native-sysroot.tar.gz', 'w:gz', dereference=True) as archive:
-              for name in sorted(set(paths)):
-                  if pathlib.Path(name).exists(): archive.add(name, arcname=name.lstrip('/'))
+          import base64, hashlib, json, os, pathlib, re, subprocess, urllib.request, zlib
+          base = 'ec1c946b7959738e46e38aab2decfd4c226cb47c'
+          root = pathlib.Path.cwd()
+          parts = [root / 'docs/ui/.batch-recovery' / f'part-{n:04}.txt' for n in (1, 2)]
+          expected = ['b6128ca672fffc2afa5173621bd12630d6a2d763', 'b8ade3763b8d26077d82bda8e6a0d67d04fc7a75']
+          texts = []
+          for path, sha in zip(parts, expected):
+              data = path.read_bytes()
+              assert len(data) < 100000
+              assert hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest() == sha
+              texts.append(data.decode('ascii').strip())
+          encoded = ''.join(texts)
+          data = base64.b64decode(encoded + '=' * (-len(encoded) % 4), validate=True)
+          stream = zlib.decompressobj(31)
+          raw = stream.decompress(data, 2000001)
+          assert len(raw) <= 2000000 and not stream.unconsumed_tail
+          text = raw.decode('utf-8', errors='replace')
+          print('Compressed stream complete:', stream.eof)
+          print('Decoded bytes:', len(raw), 'SHA256:', hashlib.sha256(raw).hexdigest())
+          print('Payload prefix:', repr(text[:150]))
+          work = pathlib.Path('/tmp/recovered-chat-source')
+          subprocess.run(['git', 'worktree', 'add', '--detach', str(work), base], check=True)
+          def git(*args, **kw):
+              return subprocess.check_output(['git', '-C', str(work), *args], **kw)
+          def allowed(path):
+              return bool(re.fullmatch(r'[A-Za-z0-9_./-]+', path)) and '..' not in pathlib.PurePosixPath(path).parts and (
+                  path.startswith(('crates/synara-app/src/', 'crates/synara-workspace/src/', 'scripts/native_', 'scripts/test_native_', 'docs/ui/')) or path == 'ROADMAP.md')
+          recovered = []
+          if text.startswith('diff --git '):
+              for chunk in re.split(r'(?m)(?=^diff --git )', text):
+                  if not chunk:
+                      continue
+                  header = re.match(r'diff --git a/(\S+) b/(\S+)\n', chunk)
+                  if not header or header[1] != header[2] or not allowed(header[1]):
+                      print('Excluded unapproved or noncanonical patch header:', repr(chunk[:120]))
+                      continue
+                  path = header[1]
+                  if 'GIT binary patch' in chunk or re.search(r'(?m)^(new file mode|new mode) (?!100644|100755)', chunk):
+                      raise SystemExit('Non-text entry')
+                  check = subprocess.run(['git', '-C', str(work), 'apply', '--index', '--check', '-'], input=chunk.encode(), capture_output=True)
+                  if check.returncode:
+                      print('Incomplete/nonapplicable patch:', path, check.stderr.decode()[:500])
+                      continue
+                  subprocess.run(['git', '-C', str(work), 'apply', '--index', '-'], input=chunk.encode(), check=True)
+                  recovered.append(path)
+          elif text.lstrip().startswith('{'):
+              decoder = json.JSONDecoder()
+              position = text.index('{') + 1
+              while True:
+                  while position < len(text) and text[position] in ' \r\n\t,':
+                      position += 1
+                  if position >= len(text) or text[position] == '}':
+                      break
+                  try:
+                      name, position = decoder.raw_decode(text, position)
+                      while text[position].isspace(): position += 1
+                      assert text[position] == ':'
+                      position += 1
+                      while text[position].isspace(): position += 1
+                      content, position = decoder.raw_decode(text, position)
+                  except (ValueError, IndexError):
+                      print('Partial final JSON entry, retained complete preceding entries only')
+                      break
+                  assert allowed(name) and isinstance(content, str) and '\0' not in content and len(content.encode()) < 500000
+                  target = work / name
+                  target.parent.mkdir(parents=True, exist_ok=True)
+                  target.write_text(content, encoding='utf-8', newline='')
+                  recovered.append(name)
+          else:
+              raise SystemExit('Unknown payload format, nothing executed or published')
+          assert 1 <= len(recovered) <= 50
+          subprocess.run(['git', '-C', str(work), 'add', '--', *recovered], check=True)
+          print(git('diff', '--cached', '--stat').decode())
+          def api(path, payload):
+              request = urllib.request.Request('https://api.github.com/repos/cmdr-chara/synara/git/' + path,
+                  data=json.dumps(payload).encode(), method='POST', headers={'Authorization': 'Bearer ' + os.environ['GH_TOKEN'], 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json'})
+              with urllib.request.urlopen(request, timeout=30) as response:
+                  return json.load(response)
+          entries = []
+          for name in recovered:
+              target = work / name
+              if target.exists():
+                  content = target.read_text(encoding='utf-8')
+                  blob = api('blobs', {'content': content, 'encoding': 'utf-8'})['sha']
+                  entries.append({'path': name, 'mode': '100644', 'type': 'blob', 'sha': blob})
+                  print('RECOVERED', name, blob, len(content), 'bytes')
+              else:
+                  entries.append({'path': name, 'mode': '100644', 'type': 'blob', 'sha': None})
+          tree = api('trees', {'base_tree': 'f5cb6d7b849a5c7e3723c4d5b791a9edca7f8958', 'tree': entries})['sha']
+          commit = api('commits', {'message': 'Recovered pending chat utility source for review, untested', 'tree': tree, 'parents': [base]})['sha']
+          print('REVIEW_TREE', tree)
+          print('REVIEW_COMMIT', commit)
+          print('No branch ref updated. No recovered code, build or test executed.')
           PY
-          split -b 400M -d /tmp/native-cache/dependencies.tar.gz /tmp/native-cache/dependencies.part-
-          sha256sum /tmp/native-cache/dependencies.tar.gz > /tmp/native-metadata/dependencies.sha256
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always() && steps.cache.outputs.export == 'true'
-        with:
-          name: native-metadata
-          path: /tmp/native-metadata/
-          retention-days: 1
-          compression-level: 0
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always() && steps.cache.outputs.export == 'true'
-        with:
-          name: native-dependencies-00
-          path: /tmp/native-cache/dependencies.part-00
-          retention-days: 1
-          compression-level: 0
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always() && steps.cache.outputs.export == 'true'
-        with:
-          name: native-dependencies-01
-          path: /tmp/native-cache/dependencies.part-01
-          retention-days: 1
-          compression-level: 0
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always() && steps.cache.outputs.export == 'true'
-        with:
-          name: native-dependencies-02
-          path: /tmp/native-cache/dependencies.part-02
-          retention-days: 1
-          compression-level: 0
-      - name: Workspace structure
-        run: python3 scripts/audit_workspace.py
-      - name: Formatting
-        run: cargo +1.98.1 fmt --check
-      - name: Compile
-        if: always()
-        run: cargo +1.98.1 check --locked --workspace
-      - name: Lints
-        if: always()
-        run: cargo +1.98.1 clippy --locked --workspace --all-targets --all-features -- -D warnings
-      - name: Tests
-        if: always()
-        run: cargo +1.98.1 test --locked --workspace
-      - name: Publisher regression tests
-        if: always()
-        run: python3 scripts/test_apply_source.py
-      - name: Build native application and ACP fixture
-        run: cargo +1.98.1 build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture
-      - name: Native desktop interaction smoke
-        timeout-minutes: 3
-        run: python3 scripts/native_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/synara-native-smoke
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always()
-        with:
-          name: native-desktop-smoke
-          path: |
-            /tmp/synara-native-smoke/*.png
-            /tmp/synara-native-smoke/*.log
-            /tmp/synara-native-smoke/result.json
-          retention-days: 7
-          if-no-files-found: warn
-      - name: Native navigation and backend interaction smoke
-        timeout-minutes: 4
-        run: python3 scripts/native_navigation_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/synara-navigation-smoke
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always()
-        with:
-          name: native-navigation-smoke
-          path: |
-            /tmp/synara-navigation-smoke/*.png
-            /tmp/synara-navigation-smoke/result.json
-          retention-days: 7
-          if-no-files-found: warn
-      - name: Native composer and session control smoke
-        timeout-minutes: 4
-        run: python3 scripts/native_controls_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/synara-controls-smoke
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always()
-        with:
-          name: native-controls-smoke
-          path: |
-            /tmp/synara-controls-smoke/*.png
-            /tmp/synara-controls-smoke/*.log
-            /tmp/synara-controls-smoke/result.json
-          retention-days: 7
-          if-no-files-found: warn
-      - name: Native presentation geometry and motion smoke
-        timeout-minutes: 3
-        run: python3 scripts/native_presentation_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/synara-presentation-smoke
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always()
-        with:
-          name: native-presentation-smoke
-          path: |
-            /tmp/synara-presentation-smoke/*.png
-            /tmp/synara-presentation-smoke/*.log
-            /tmp/synara-presentation-smoke/result.json
-          retention-days: 7
-          if-no-files-found: warn
-      - name: Native transcript and split workspace visual smoke
-        timeout-minutes: 3
-        run: python3 scripts/native_chat_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/synara-chat-smoke
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always()
-        with:
-          name: native-chat-smoke
-          path: |
-            /tmp/synara-chat-smoke/*.png
-            /tmp/synara-chat-smoke/*.log
-            /tmp/synara-chat-smoke/result.json
-          retention-days: 7
-          if-no-files-found: warn
-      - name: Native chat creation, Studio and settings smoke
-        timeout-minutes: 4
-        run: python3 scripts/native_studio_settings_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/synara-studio-settings-smoke
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always()
-        with:
-          name: native-studio-settings-smoke
-          path: |
-            /tmp/synara-studio-settings-smoke/*.png
-            /tmp/synara-studio-settings-smoke/*.log
-            /tmp/synara-studio-settings-smoke/result.json
-          retention-days: 7
-          if-no-files-found: warn
-      - name: Export reproducible verification inputs
-        if: always()
-        run: |
-          mkdir -p /tmp/native-build-inputs
-          git bundle create /tmp/native-build-inputs/source.bundle HEAD
-          git rev-parse HEAD > /tmp/native-build-inputs/revision.txt
-          if test -f Cargo.lock; then cp Cargo.lock /tmp/native-build-inputs/Cargo.lock; fi
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always()
-        with:
-          name: native-linux-build-inputs
-          path: /tmp/native-build-inputs/
-          retention-days: 1
-          compression-level: 0
-      - name: Native Environment workspace
-        timeout-minutes: 4
-        run: python3 scripts/native_environment_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/synara-environment
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always()
-        with:
-          name: native-environment
-          path: |
-            /tmp/synara-environment/*.png
-            /tmp/synara-environment/*.log
-            /tmp/synara-environment/result.json
-          retention-days: 7

@@ -1,4 +1,5 @@
 mod chat_preferences;
+mod task_creation;
 pub use chat_preferences::ModelFavorite;
 mod recovery;
 pub use recovery::*;

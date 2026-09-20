@@ -1,0 +1,446 @@
+{
+  "reference_commit": "948875954f432978eab7dd5fa44c3028b8d99a81",
+  "source": "User-provided Synara-Electron-source-9488759-screenshots(1).zip",
+  "inspection": "All images reviewed at contact-sheet resolution. Selected Kanban/task-dialog images inspected at full resolution. Not a full native visual acceptance matrix.",
+  "fixture_limit": "Isolated source-build reference. No authenticated vendor conversation or genuine pending permission request is established by these images.",
+  "screenshots": [
+    {
+      "file": "01-welcome-tour.png",
+      "width": 1108,
+      "height": 784,
+      "sha256": "fd34e4e8b645bc4b565066401b0b8a06a8e3b4993426fc8c97c082010f0ca94b"
+    },
+    {
+      "file": "02-home-empty.png",
+      "width": 1108,
+      "height": 784,
+      "sha256": "bc78a98cbfba76b9b7eccae36b478b2d00d2f0a05f9939402858ca8408d2efc9"
+    },
+    {
+      "file": "03-home-1920.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "de4605bb1804ed9a1c2732003df7a4be6ed0487519a702cdd4d04db5c8859759"
+    },
+    {
+      "file": "04-workspace-switcher.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "3514ab9cc43bbea35e1681dcc82c079adc75bafe941de728a1c7fc1e97f59520"
+    },
+    {
+      "file": "05-studio-empty.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "b2ed3506231ab29e36c847100c242ed0f55af3fc54027cddf452ce40113cd428"
+    },
+    {
+      "file": "06-studio-add-menu.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "fb78c65783b2582abc4106214337576d71378ff1299ab763a79b35e714734971"
+    },
+    {
+      "file": "07-studio-new-chat.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "1a60a9d2834daa8f2cdf0dbfb65b65ae39d1f197f94aaf7577e33056462dd014"
+    },
+    {
+      "file": "08-settings-general.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "879246ddf42e766bf9b5c0a55dc3da58c8062ff6263283f278f7b3573c8e11a2"
+    },
+    {
+      "file": "09-settings-profile.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "c2338b11338ca38af1f23102c593f03a09bfa94ed34bad000c5e5c94437b16b5"
+    },
+    {
+      "file": "10-settings-appearance.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "6c9d6ef7942496a29c6a321b60272cc2aa37f30311e24a9ebea9d69df504789e"
+    },
+    {
+      "file": "11-settings-notifications.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "d7e7c5c22431486bdefee606ff5fe00289b24db94081c9e03a37147efaf4cb76"
+    },
+    {
+      "file": "12-settings-chat-behavior.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "1cb79654477d69682b9909cfc3c7376c7eb754052e0b1fbfa7c03cd015a43171"
+    },
+    {
+      "file": "13-settings-keybindings.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "d56f189a20c093ca20568246f3d32328d6f34374e0309cea953c933307f0cc96"
+    },
+    {
+      "file": "14-settings-usage-limits.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "e3598763390a65b6ff79446f7902a3a9000160123de662a71a823ac3cf40ce18"
+    },
+    {
+      "file": "15-settings-appsnap.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "6b9f3df9fb2ce6f6f15b00a705d4bbad82374935dafaa2016bc1d5109bafe549"
+    },
+    {
+      "file": "16-settings-mcp.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "17cfe61ad21400f1622051bd4e3f2a4727d0b33b3c08bc52d50363835c15c6e0"
+    },
+    {
+      "file": "17-settings-agent-providers.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "97ceeeaee420052db88edfecfb388fe3c38bd60e2febb6a5ad9fe9d8c00c17a7"
+    },
+    {
+      "file": "18-settings-models-writing.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "82256019e43824386a990292eb928426c11dc880cbf10695d2e9f2d5a0a9cde7"
+    },
+    {
+      "file": "19-settings-agent-skills.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "2e937635cf0b3b58c35e09f48bb2b5f88df1ecba9fbcaf6f557fe42cdb752d17"
+    },
+    {
+      "file": "20-settings-managed-worktrees.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "9e9cc86f107dfc4845fe30041648c7c2e4658beeca34b3805ad7c2952db05636"
+    },
+    {
+      "file": "21-settings-system-tools.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "0f48567aa659a9e815fbf2995cc881baa71c421ee48b1001c57f9df9680d185a"
+    },
+    {
+      "file": "22-settings-archived-threads.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "ac2e46d028681bee17062bac2a3c88e8d3b008e6e2704af00044254de2c24015"
+    },
+    {
+      "file": "23-studio-switcher.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "0b2972eb8bc066a3f95749d7bb049ee7ad827b34bfaf47e70d324f7394103dd6"
+    },
+    {
+      "file": "24-kanban-empty.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "2a3cb164a7c4e4c4dc779a45b201ee41b3b3f49d6a020a83bd453416bee44b94"
+    },
+    {
+      "file": "25-kanban-new-task.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "a3574406c82785c31bb8bf297c42d3398ece6409f3fa3bb7ad67fba149bd4fd5"
+    },
+    {
+      "file": "27-automations.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "1c8675de630919b682268ff45b9dde84053dda2458f449cba2f0cc34f5074fe2"
+    },
+    {
+      "file": "28-automation-create.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "45f0f752a6c1a94a138080eaa1dc2b84de49f8978770fd5de1bac21f7f56d67a"
+    },
+    {
+      "file": "29-pull-requests-settled.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "360816571cbd7c6930b6f4363e8226925c463724da83497a7b62dd7745e7769a"
+    },
+    {
+      "file": "30-new-thread.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "a00522d375a64fcc75d8a211d8053200517a18980d08f8ddb2f62a5f8ed654b6"
+    },
+    {
+      "file": "31-create-project-github.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "c1784861c56874563569c8eeb7cf3ad07ce5ec89716000d1ab01a3add0ecc65e"
+    },
+    {
+      "file": "32-create-project-folder.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "8aaae6a21b73e6da317a192aae178f0a39d5fb78759ad7db82dea0914fb7049f"
+    },
+    {
+      "file": "33-create-project-path.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "d7247c7d6887ea5f39ca2ad84c7c65bcc76b3ed1eaf684872db38836a185bd3b"
+    },
+    {
+      "file": "34-project-created.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "5487e4d108d0dc3c1ccfbcaa5b372c54683568d05062a562faaf347401991622"
+    },
+    {
+      "file": "35-project-hover.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "171ba86ad98d23a67630e157afcb39e81e695935e5cc667c0a634129938c346f"
+    },
+    {
+      "file": "36-new-thread-with-project.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "8009b8e4bb83f7ceefbbc88a6a7fd5de7c4b9693cf3b858104787f4b7aaf6d9f"
+    },
+    {
+      "file": "37-access-menu.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "8c512e37efd4bede36476789e5a751a6af63b322bde005e49a5f974be6590f24"
+    },
+    {
+      "file": "38-theme-options.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "ea16ebc878a306870871854f6b9f3f64045b07247d5d1ea3cfbf439a6cc2a9c9"
+    },
+    {
+      "file": "39-appearance-dracula.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "6b0494878a6ddf18dc17fb766a55146f95b7bef13d4f07032ab573ad97cde65c"
+    },
+    {
+      "file": "40-home-dracula.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "acae1bab1faf71dc116dc69419e3a1a878db443e358816fcc17400a9c6c5cf75"
+    },
+    {
+      "file": "41-add-menu-dracula.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "bf0e64df261ad467e43ef298fc650f6e0f4284ffdb1b0a3fd7ad55d8a47bd06a"
+    },
+    {
+      "file": "42-kanban-dracula.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "918a923730d10011e97244b9bb7587987f1651a5cea4a5b32d733f6799437a1d"
+    },
+    {
+      "file": "43-pull-requests-dracula.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "ef14c8564842e5e545807cb8239422e21cfb3ed038cd6c891d171e18ce4d4ff1"
+    },
+    {
+      "file": "44-automations-dracula.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "b1609fda81b211b59a84c760efcbfaa3f465b11d600d72d43dc6f962767eb607"
+    },
+    {
+      "file": "45-studio-dracula.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "7e6817b59970cedabd63ac0596637b145d05dc6d0f24f7c0eb4ba8f1e6043fff"
+    },
+    {
+      "file": "46-studio-new-chat-dracula.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "8021145346c7df6aadf3938cb6bce12c9b7a9713240a89cd4cc6dc12010af459"
+    },
+    {
+      "file": "47-new-task-dracula.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "2ddb802eba0c84f52e091b5abbbf159388e900fda5d4c8bd9cbf46cab91d5520"
+    },
+    {
+      "file": "48-new-task-draft-ready.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "fc9ba349ace048c98e3bd92ce5d2c3c067dd8570cb4495871ebebd80c8a069b8"
+    },
+    {
+      "file": "49-kanban-draft-task.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "e6aeb74f65c48d512be3f8dba77f8598d1a6e11abc2346f69cc3e7c8aec5cd6a"
+    },
+    {
+      "file": "50-draft-thread-dracula.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "01857221c41783d7c57489fd05bc6dfa692e202d86cde457bc162e7b37bcfbb3"
+    },
+    {
+      "file": "52-composer-model-picker.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "fc9a09826af9eb81371ead35939f81bab1c9ff0b831acf320b89ec48f2ef2f5e"
+    },
+    {
+      "file": "53-model-picker-terra-medium.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "e854b21b7ca3ff095d2ae17cc178e9e9ad8826a77625017d355a3f49804a9de3"
+    },
+    {
+      "file": "54-model-picker-favorites-tab.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "833c0cdcbaaf4460cbd805311fffe322834255a58a5e1f86250ccfa7953cce25"
+    },
+    {
+      "file": "55-model-picker-opencode.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "ca429d349f52dcb01bf8a252a9b4c3d46500540739aa535ed372bb7e3ef5b779"
+    },
+    {
+      "file": "56-model-selected-big-pickle.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "59f5956a79754c7e6cf580e4075e026b3f8f9033430436c74bad40ea68a1c888"
+    },
+    {
+      "file": "57-model-picker-opencode-selected.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "1f390b9f0b584a1e2dfd5e41b326d3b3c23448f794cba1e2c987ad5083bc9b5b"
+    },
+    {
+      "file": "58-model-picker-pi-tab.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "d9f8b6561e7dafda4c23c84bf19697f2f0af07f06959cd34e18e2d009a8cd90c"
+    },
+    {
+      "file": "59-model-picker-add-model.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "5ab08ecd2f79e8350dc79cb221357d014c39719e8a6fb08406b994f2d593edd4"
+    },
+    {
+      "file": "60-new-task-dialog-reopened.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "2fb2fe27bdd7d5af53e514b931c9924115b4644fbd21b9ef4089c09b5d35ccbe"
+    },
+    {
+      "file": "61-new-task-model-picker.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "7936b3cc2077bb6ab359845810433ba3d44eb275d7523ff5c87f5390d140bbd5"
+    },
+    {
+      "file": "62-new-task-opencode-model-list.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "9d7e3d53c0800d889288355fd85d4f04d67f3ac57b6779551d8345b98beddd8f"
+    },
+    {
+      "file": "63-new-task-pi-model-list.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "d275aac41a0cb0ac33d3f5010080ec2aa331fd8aa0e3351ae86942dd1ea088d7"
+    },
+    {
+      "file": "64-new-task-project-picker.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "ef87172d9830d771e141cabfdbda05c2b54559cead95858af55a43965bcd2c81"
+    },
+    {
+      "file": "65-new-task-access-menu.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "51a39286a707ccda5b1179c2c202932e5640418bb453a9d9f7471c9b778c28ea"
+    },
+    {
+      "file": "66-new-task-mode-menu.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "9512a1da113af986b872f9faf5e808280c6c83f4f5d6fbca9fc941d6223d5cd2"
+    },
+    {
+      "file": "73-thread-side-panel.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "1e60b2cd913d2bbff151d462b7c7e584143282c6394bf72a03172038e5e66e56"
+    },
+    {
+      "file": "74-environment-terminal.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "df704f1936b3f83f15113008e10311076c7fea2d2b2470dbdb43a960a05d6b61"
+    },
+    {
+      "file": "78-environment-add-menu.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "e87ed239e1b9beb20c068f6693cd6fd45fc0c5228458cc6ec4a053784508a523"
+    },
+    {
+      "file": "79-environment-browser-tab.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "fdfa61d2786d6c89f7554a7b7082195609c53aacfb0a369d97431420b3ede08a"
+    },
+    {
+      "file": "86-composer-approval-menu.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "860c52eb790ba41ae66de9021a0241009e52460820dee88bfcf2078161d97a65"
+    },
+    {
+      "file": "87-composer-ask-for-approval-selected.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "80f7b6a0eb15a9c4257098b9a14ef2906b12dc30e7d8abf4788dc92950cc3d13"
+    },
+    {
+      "file": "88-environment-reopened.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "353534d3356c611e7e3db6a92610a2f861ff1c83b4d253c64d516eee571a11a7"
+    },
+    {
+      "file": "89-browser-local-page.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "99bd16144c85cc0d488708ca4e3eed78f22d484b7eb40326e0637aa6dcb0812c"
+    },
+    {
+      "file": "90-browser-options-menu.png",
+      "width": 1920,
+      "height": 1032,
+      "sha256": "588e705e728b3fd3e04e112fe5918a40d05fce008110fbeb53945d48fc95ae3d"
+    }
+  ]
+}

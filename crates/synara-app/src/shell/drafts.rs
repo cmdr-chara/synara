@@ -66,6 +66,7 @@ impl Shell {
     pub(super) fn draft_close_panel(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
         let cancel = cx.listener(|this: &mut Self, _: &(), _, cx| {
             this.draft_state.quitting = false;
+            this.environment.quitting = false;
             this.close.cancel();
             this.focus_composer = this.panel == Panel::Conversation;
             cx.notify();
@@ -73,7 +74,11 @@ impl Shell {
         div()
             .id("saving-chat-drafts")
             .role(gpui::Role::Dialog)
-            .aria_label("Saving chat drafts before closing")
+            .aria_label(if self.environment.quitting {
+                "Saving Environment layout before closing"
+            } else {
+                "Saving chat drafts before closing"
+            })
             .track_focus(&self.close_focus)
             .tab_group()
             .size_full()
@@ -84,7 +89,11 @@ impl Shell {
             .gap_4()
             .bg(rgb(crate::ui::palette().canvas))
             .text_color(rgb(crate::ui::palette().text))
-            .child("Saving chat drafts...")
+            .child(if self.environment.quitting {
+                "Saving Environment layout..."
+            } else {
+                "Saving chat drafts..."
+            })
             .child(crate::ui::action(
                 "cancel-draft-close",
                 "Keep Synara open",
@@ -95,6 +104,7 @@ impl Shell {
             .on_key_down(cx.listener(|this, event: &gpui::KeyDownEvent, _, cx| {
                 if event.keystroke.key == "escape" {
                     this.draft_state.quitting = false;
+                    this.environment.quitting = false;
                     this.close.cancel();
                     this.focus_composer = this.panel == Panel::Conversation;
                     cx.notify();

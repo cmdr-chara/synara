@@ -4,7 +4,7 @@ import subprocess
 import unittest
 from unittest.mock import patch
 
-from native_ui_scope import git_scope, scope_for_paths, kanban_only
+from native_ui_scope import git_scope, scope_for_paths, kanban_only, environment_only
 
 
 class NativeScopeTests(unittest.TestCase):
@@ -58,6 +58,29 @@ class NativeScopeTests(unittest.TestCase):
                       ['crates/synara-app/src/shell/kanban.rs', 'unknown.rs']]:
             self.assertFalse(kanban_only(paths))
         self.assertEqual(scope_for_paths(['crates/synara-workspace/src/service.rs']), 'full')
+
+    def test_environment_slice_has_its_own_bounded_lane(self):
+        paths = ['crates/synara-app/src/shell/environment.rs',
+                 'crates/synara-workspace/src/environment.rs',
+                 'crates/synara-app/src/main.rs',
+                 'crates/synara-workspace/src/lib.rs',
+                 'scripts/native_environment_smoke.py', 'ROADMAP.md']
+        self.assertTrue(environment_only(paths))
+        self.assertEqual(scope_for_paths(paths), 'environment')
+
+    def test_mixed_environment_changes_cannot_skip_other_ui_checks(self):
+        paths = ['crates/synara-app/src/shell/environment.rs', 'crates/synara-app/src/ui/menu.rs']
+        self.assertFalse(environment_only(paths))
+        self.assertEqual(scope_for_paths(paths), 'presentation')
+        for unknown in ['Cargo.lock', 'crates/synara-workspace/src/controller.rs', 'unknown.rs']:
+            self.assertFalse(environment_only(paths + [unknown]))
+            self.assertEqual(scope_for_paths(paths + [unknown]), 'full')
+
+    def test_bootstrap_or_export_changes_alone_are_not_environment_only(self):
+        for path in ['crates/synara-app/src/main.rs', 'crates/synara-workspace/src/lib.rs',
+                     '.github/workflows/ui-environment.yml']:
+            self.assertFalse(environment_only([path]))
+            self.assertEqual(scope_for_paths([path]), 'full')
 
     def test_empty_diff_is_not_assumed_verified(self):
         self.assertEqual(scope_for_paths([]), 'full')

@@ -127,6 +127,7 @@ fn run() -> Result<()> {
                 .await?;
         }
         Ok::<_, synara_workspace::WorkspaceError>(shell::Bootstrap {
+            environment: workspace.environment_layout().await?,
             scratch_directory: options
                 .data
                 .canonicalize()

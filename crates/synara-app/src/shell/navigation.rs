@@ -109,7 +109,7 @@ impl Shell {
         };
         self.navigation.history_index = next;
         if self.select_task(id, cx) {
-            self.set_panel(Panel::Conversation, cx);
+            self.show_conversation(cx);
         } else {
             self.navigation.history_index = old;
         }
@@ -148,7 +148,7 @@ impl Shell {
             self.create_task(cx);
         }
         self.navigation.task_page = 0;
-        self.set_panel(Panel::Conversation, cx);
+        self.show_conversation(cx);
     }
 
     pub(super) fn switch_mode(&mut self, studio: bool, cx: &mut Context<Self>) {
@@ -191,7 +191,7 @@ impl Shell {
         } else {
             self.start_new_chat(cx);
         }
-        self.set_panel(Panel::Conversation, cx);
+        self.show_conversation(cx);
     }
 
     pub(super) fn start_new_chat(&mut self, cx: &mut Context<Self>) {
@@ -222,7 +222,7 @@ impl Shell {
             self.selected == Some(id) && (self.panel == Panel::Conversation || self.dock_open()),
             cx.listener(move |this, _: &(), _, cx| {
                 if this.select_task(id, cx) {
-                    this.set_panel(Panel::Conversation, cx);
+                    this.show_conversation(cx);
                 }
             }),
         )

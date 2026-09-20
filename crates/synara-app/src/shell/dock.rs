@@ -14,6 +14,7 @@ impl Shell {
         window: &Window,
         dock_width: f32,
         target_width: f32,
+        available_width: f32,
         cx: &mut Context<Self>,
     ) -> gpui::AnyElement {
         if self.dock_open() || dock_width > 0. {
@@ -22,7 +23,7 @@ impl Shell {
                 .flex_1()
                 .min_h_0()
                 .min_w_0()
-                .child(
+                .children((!self.environment.maximized || !self.dock_open()).then(|| {
                     div()
                         .flex()
                         .flex_col()
@@ -31,31 +32,36 @@ impl Shell {
                         .min_h_0()
                         .relative()
                         .child(ui::layout_probe("chat-pane"))
-                        .child(self.conversation(window, cx)),
-                )
+                        .child(self.conversation(window, cx))
+                }))
                 .child(
                     div()
                         .w(px(dock_width))
                         .flex_shrink_0()
                         .h_full()
-                        .overflow_hidden()
                         .relative()
                         .child(ui::layout_probe("workspace-pane"))
                         .child(
-                            div()
-                                .w(px(target_width))
-                                .h_full()
-                                .min_h_0()
-                                .flex()
-                                .flex_col()
-                                .border_l_1()
-                                .border_color(gpui::rgba(0xffffff09))
-                                .child(match self.dock_panel {
-                                    Panel::Files => self.files_panel(cx),
-                                    Panel::Terminal => self.terminal_panel(cx),
-                                    Panel::Changes => self.git_panel(cx),
-                                    _ => self.dock_launcher(cx),
-                                }),
+                            div().w_full().h_full().overflow_hidden().child(
+                                div()
+                                    .w(px(target_width))
+                                    .h_full()
+                                    .min_h_0()
+                                    .flex()
+                                    .flex_col()
+                                    .border_l_1()
+                                    .border_color(rgb(palette().border))
+                                    .child(match self.dock_panel {
+                                        Panel::Files => self.files_panel(cx),
+                                        Panel::Terminal => self.terminal_panel(cx),
+                                        Panel::Changes => self.git_panel(cx),
+                                        _ => self.dock_launcher(cx),
+                                    }),
+                            ),
+                        )
+                        .children(
+                            (self.dock_open() && !self.environment.maximized)
+                                .then(|| self.environment_divider(available_width, cx)),
                         ),
                 )
                 .into_any_element();

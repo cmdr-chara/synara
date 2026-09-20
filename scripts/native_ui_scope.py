@@ -82,6 +82,38 @@ def kanban_only(paths):
     )
 
 
+ENVIRONMENT_ANCHORS = frozenset({
+    'crates/synara-app/src/shell/environment.rs',
+    'crates/synara-workspace/src/environment.rs',
+    'scripts/native_environment_smoke.py',
+})
+ENVIRONMENT_PATHS = ENVIRONMENT_ANCHORS | frozenset({
+    'crates/synara-app/src/main.rs',
+    'crates/synara-app/src/shell.rs',
+    'crates/synara-app/src/shell/chrome.rs',
+    'crates/synara-app/src/shell/dock.rs',
+    'crates/synara-app/src/shell/drafts.rs',
+    'crates/synara-app/src/shell/navigation.rs',
+    'crates/synara-app/src/shell/kanban.rs',
+    'crates/synara-app/src/shell/settings.rs',
+    'crates/synara-app/src/ui.rs',
+    'crates/synara-workspace/src/lib.rs',
+    'crates/synara-workspace/src/storage.rs',
+    'scripts/native_ui_scope.py',
+    'scripts/test_native_ui_scope.py',
+    '.github/workflows/native.yml',
+    '.github/workflows/ui-presentation.yml',
+    '.github/workflows/ui-environment.yml',
+})
+
+
+def environment_only(paths):
+    paths = set(paths)
+    return bool(paths & ENVIRONMENT_ANCHORS) and all(
+        path in ENVIRONMENT_PATHS or documentation(path) for path in paths
+    )
+
+
 def documentation(path):
     return path in {'ROADMAP.md', 'README.md'} or path.startswith('docs/ui/')
 
@@ -92,7 +124,11 @@ def scope_for_paths(paths):
         return 'full'
     if all(documentation(path) for path in paths):
         return 'docs'
+    if environment_only(paths):
+        return 'environment'
     allowed = UI_PATHS
+    if paths & ENVIRONMENT_ANCHORS:
+        allowed = allowed | ENVIRONMENT_PATHS
     # The task-creation caller is covered by this coherent slice. Unrelated
     # service-only work must still use the full lane, not UI smoke alone.
     if paths & KANBAN_CREATION:

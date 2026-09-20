@@ -6,7 +6,6 @@ Xvfb profile. No user workspace, external service or authenticated agent is used
 """
 import argparse
 import json
-import os
 import shlex
 from pathlib import Path
 import sqlite3
@@ -100,7 +99,13 @@ def run(s):
     shell = s.output / 'owned-shell'
     shell.write_text('#!/bin/sh\nprintf "%s\\n" "$$" >> ' + shlex.quote(str(shell_starts)) + '\nexec /bin/sh\n')
     shell.chmod(0o700)
-    os.environ['SHELL'] = str(shell)
+    # Scenario intentionally sanitizes inherited environment. Supply the owned
+    # shell at the exec boundary instead of relying on a discarded SHELL value.
+    launcher = s.output / 'owned-synara-launcher'
+    launcher.write_text('#!/bin/sh\nSHELL=' + shlex.quote(str(shell)) + ' exec '
+                        + shlex.quote(str(s.binary)) + ' "$@"\n')
+    launcher.chmod(0o700)
+    s.binary = launcher
     s.launch()
     ui = s.desktop
     original = selection(s)
@@ -146,6 +151,48 @@ def run(s):
     assert selection(s) == original and event_cursor(s, original) == 0
     ui.screenshot('environment-tabs-explorer', window_only=True)
     s.checks.append('native-tools-tab-selection-keyboard-navigation-and-no-implicit-agent-launch')
+
+    # Closing is per tool, not a second process/document lifetime manager.
+    s.click_control('environment-tab-close', slot=0)
+    assert Path(f'/proc/{pid}').exists(), 'Tab close silently killed the running shell'
+    assert preference(s)['tabs'] == ['explorer', 'terminal', 'changes']
+    s.click_control('environment-tab', slot=1)
+    s.click_control('file-row', slot=0)
+    s.click_control('editor-input')
+    assert ui.copy_input() == 'original text\n'
+    ui.text('Keep this file edit.')
+    assert ui.copy_input() == 'Keep this file edit.'
+    ui.focus()
+    s.click_control('environment-tab-close', slot=1)
+    assert preference(s)['tabs'] == ['explorer', 'terminal', 'changes']
+    s.click_control('editor-input')
+    assert ui.copy_input() == 'Keep this file edit.', 'Tab close discarded unsaved file text'
+    assert s.document.read_text() == 'original text\n'
+    ui.text('original text\n')  # Explicitly restore this owned fixture's clean content.
+    assert ui.copy_input() == 'original text\n'
+    ui.focus()
+    s.click_control('environment-tab-close', slot=1)
+    wait_until(lambda: layout_saved(s, tabs=['terminal', 'changes'], active='terminal'), 'clean Explorer tab close')
+    choose_tool(s, 'Explorer')
+    wait_until(lambda: layout_saved(s, tabs=['terminal', 'changes', 'explorer'], active='explorer'), 'reopen Explorer at end')
+    s.click_control('environment-tab', slot=1)
+    ui.key('Left', ('Alt_L',))
+    wait_until(lambda: layout_saved(s, tabs=['terminal', 'explorer', 'changes']), 'move Explorer left')
+    ui.key('Left', ('Alt_L',))
+    wait_until(lambda: layout_saved(s, tabs=['explorer', 'terminal', 'changes']), 'move Explorer first')
+    ui.key('Left', ('Alt_L',))  # At the boundary, never wrap or duplicate a tab.
+    assert preference(s)['tabs'] == ['explorer', 'terminal', 'changes']
+    assert preference(s)['active'] == 'explorer'
+    s.click_control('environment-tab-close', slot=2)
+    wait_until(lambda: layout_saved(s, tabs=['explorer', 'terminal'], active='explorer'), 'inactive Changes tab close')
+    choose_tool(s, 'Changes')
+    wait_until(lambda: layout_saved(s, tabs=['explorer', 'terminal', 'changes']), 'Changes tab reopened')
+    s.click_control('environment-tab', slot=1)
+    s.click_control('composer-input')
+    assert ui.copy_input() == 'Keep this unsent chat while arranging tools.'
+    ui.focus()
+    ui.screenshot('environment-tab-management', window_only=True)
+    s.checks.append('individual-tab-close-guards-running-shell-and-dirty-editor-with-keyboard-reordering')
 
     drag_divider(s, -100)
     value = wait_until(lambda: preference(s) if preference(s)['width_ratio'] > 0.56 else None, 'dragged split saved')
@@ -204,6 +251,30 @@ def run(s):
     ui.focus()
     ui.screenshot('environment-restored', window_only=True)
     s.checks.append('explicit-hide-general-preference-and-restart-preserve-tabs-ratio-and-chat-draft')
+
+    # The restored Terminal tab is stopped. Delete affects only the focused
+    # tab, chooses the next neighbor, and is persisted without starting a tool.
+    s.click_control('environment-tab', slot=0)
+    ui.key('Delete')
+    wait_until(lambda: layout_saved(s, tabs=['explorer', 'changes'], active='changes'), 'keyboard close stopped Terminal')
+    assert shell_starts.read_text().splitlines() == [str(pid)]
+    s.click_control('environment-tab-close', slot=2)
+    wait_until(lambda: layout_saved(s, tabs=['explorer'], active='explorer'), 'close Changes neighbor')
+    s.click_control('environment-tab', slot=1)
+    ui.key('Delete')
+    wait_until(lambda: layout_saved(s, tabs=[], active=None, open_by_default=True), 'close final tab keeps launcher')
+    ui.screenshot('environment-all-tabs-closed', window_only=True)
+    close(s)
+    s.launch(preserve_selection=True)
+    assert layout_saved(s, tabs=[], active=None, open_by_default=True)
+    assert shell_starts.read_text().splitlines() == [str(pid)]
+    choose_tool(s, 'Changes')
+    choose_tool(s, 'Explorer')
+    wait_until(lambda: layout_saved(s, tabs=['changes', 'explorer'], active='explorer'), 'new tool order')
+    close(s)
+    s.launch(preserve_selection=True)
+    assert layout_saved(s, tabs=['changes', 'explorer'], active='explorer')
+    s.checks.append('closed-final-tab-and-reordered-tools-survive-restart-without-implicit-shell-start')
 
     # A storage fault must retain the window and last good preference, not be
     # hidden by retrying endlessly or bypassed by synthetic success in the UI.

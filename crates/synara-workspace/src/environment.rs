@@ -57,6 +57,32 @@ impl EnvironmentLayout {
         }
         self.active = Some(tab);
     }
+    /// Remove chrome only. The caller must first resolve any running tool or
+    /// unsaved document. Closing the final tab leaves the launcher available.
+    pub fn close(&mut self, tab: EnvironmentTab) -> bool {
+        let Some(index) = self.tabs.iter().position(|candidate| *candidate == tab) else {
+            return false;
+        };
+        self.tabs.remove(index);
+        if self.active == Some(tab) {
+            self.active = self.tabs.get(index).or_else(|| self.tabs.last()).copied();
+        }
+        true
+    }
+    /// Move one position without wrapping or changing the selected tool.
+    pub fn move_tab(&mut self, tab: EnvironmentTab, backwards: bool) -> bool {
+        let Some(index) = self.tabs.iter().position(|candidate| *candidate == tab) else {
+            return false;
+        };
+        let next = if backwards {
+            index.checked_sub(1)
+        } else {
+            index.checked_add(1).filter(|next| *next < self.tabs.len())
+        };
+        let Some(next) = next else { return false };
+        self.tabs.swap(index, next);
+        true
+    }
 }
 
 pub struct LoadedEnvironmentLayout {
@@ -113,6 +139,80 @@ mod tests {
         );
         assert_eq!(layout.active, Some(EnvironmentTab::Explorer));
         assert!(layout.validate().is_ok());
+    }
+
+    #[test]
+    fn closing_active_inactive_and_final_tabs_preserves_valid_selection() {
+        use EnvironmentTab::{Changes, Explorer, Terminal};
+        let mut layout = EnvironmentLayout {
+            open_by_default: true,
+            width_ratio: 0.6,
+            ..Default::default()
+        };
+        for tab in [Explorer, Terminal, Changes] {
+            layout.select(tab);
+        }
+        layout.select(Terminal);
+        assert!(layout.close(Explorer));
+        assert_eq!(layout.active, Some(Terminal));
+        assert!(layout.close(Terminal));
+        assert_eq!(layout.active, Some(Changes));
+        assert!(layout.close(Changes));
+        assert_eq!(layout.active, None);
+        assert!(layout.tabs.is_empty());
+        assert!(layout.open_by_default);
+        assert_eq!(layout.width_ratio, 0.6);
+        assert!(!layout.close(Changes));
+        assert!(layout.validate().is_ok());
+        layout.select(Explorer);
+        layout.select(Terminal);
+        assert!(layout.close(Terminal));
+        assert_eq!(layout.active, Some(Explorer));
+        assert!(layout.validate().is_ok());
+    }
+
+    #[test]
+    fn reordering_is_bounded_and_preserves_tool_identity() {
+        use EnvironmentTab::{Changes, Explorer, Terminal};
+        let mut layout = EnvironmentLayout::default();
+        for tab in [Explorer, Terminal, Changes] {
+            layout.select(tab);
+        }
+        assert!(layout.move_tab(Changes, true));
+        assert_eq!(layout.tabs, [Explorer, Changes, Terminal]);
+        assert_eq!(layout.active, Some(Changes));
+        assert!(!layout.move_tab(Explorer, true));
+        assert!(!layout.move_tab(Terminal, false));
+        assert!(layout.move_tab(Changes, false));
+        assert_eq!(layout.tabs, [Explorer, Terminal, Changes]);
+        layout.close(Terminal);
+        let before = layout.clone();
+        assert!(!layout.move_tab(Terminal, true));
+        assert_eq!(layout, before);
+        assert!(layout.validate().is_ok());
+    }
+
+    #[tokio::test]
+    async fn reordered_and_closed_tabs_persist_without_changing_settings() {
+        let service = WorkspaceService::memory().unwrap();
+        let settings = service.settings().await.unwrap().settings;
+        let mut layout = EnvironmentLayout::default();
+        for tab in [
+            EnvironmentTab::Explorer,
+            EnvironmentTab::Terminal,
+            EnvironmentTab::Changes,
+        ] {
+            layout.select(tab);
+        }
+        layout.move_tab(EnvironmentTab::Changes, true);
+        layout.close(EnvironmentTab::Terminal);
+        service
+            .save_environment_layout(layout.clone())
+            .await
+            .unwrap();
+        assert_eq!(service.environment_layout().await.unwrap().layout, layout);
+        assert_eq!(service.settings().await.unwrap().settings, settings);
+        assert!(service.catalog().await.unwrap().tasks.is_empty());
     }
 
     #[test]

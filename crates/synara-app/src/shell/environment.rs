@@ -130,6 +130,29 @@ fn resized_ratio(start: f32, delta: f32, available: f32) -> f32 {
     }
     (start - delta / available).clamp(0.2, 0.8)
 }
+fn tab_close_blocked(
+    tab: EnvironmentTab,
+    dirty: bool,
+    saving: bool,
+    starting: bool,
+    running: bool,
+) -> Option<&'static str> {
+    match tab {
+        EnvironmentTab::Explorer if saving => {
+            Some("Wait for the file save to finish before closing Explorer.")
+        }
+        EnvironmentTab::Explorer if dirty => {
+            Some("Save or discard the edited file in Explorer before closing its tab.")
+        }
+        EnvironmentTab::Terminal if starting => {
+            Some("Wait for shell startup to finish before closing Terminal.")
+        }
+        EnvironmentTab::Terminal if running => Some(
+            "Stop the running shell before closing its tab. Closing never silently kills a process.",
+        ),
+        _ => None,
+    }
+}
 impl Shell {
     /// Called only for explicit panel navigation, not as a side effect of render.
     pub(super) fn track_environment_panel(&mut self, panel: Panel) -> Panel {
@@ -297,6 +320,55 @@ impl Shell {
         self.set_panel(tab_panel(tab), cx);
         window.focus(&self.environment.tabs_focus[tab_info(tab).2], cx);
     }
+    fn close_environment_tab(
+        &mut self,
+        tab: EnvironmentTab,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
+        if self.close != CloseState::Open
+            || self.terminal_closing
+            || !self.environment.value.tabs.contains(&tab)
+        {
+            return;
+        }
+        let running = self.terminal.is_some() && self.terminal_view.read(cx).exit_code().is_none();
+        if let Some(reason) = tab_close_blocked(
+            tab,
+            self.dirty(cx),
+            self.saving,
+            self.terminal_starting,
+            running,
+        ) {
+            self.select_environment_tab(tab, window, cx);
+            self.notice = Some(reason.into());
+            cx.notify();
+            return;
+        }
+        if self.environment.value.close(tab) {
+            self.environment.save.changed();
+            self.environment.retire_popup();
+            if let Some(active) = self.environment.value.active {
+                self.select_environment_tab(active, window, cx);
+            } else {
+                self.focus_composer = false;
+                self.set_panel(Panel::Dock, cx);
+                window.focus(&self.environment.add_focus, cx);
+            }
+            cx.notify();
+        }
+    }
+    fn move_environment_tab(
+        &mut self,
+        tab: EnvironmentTab,
+        backwards: bool,
+        cx: &mut Context<Self>,
+    ) {
+        if self.environment.value.move_tab(tab, backwards) {
+            self.environment.save.changed();
+            cx.notify();
+        }
+    }
     fn environment_tab_key(
         &mut self,
         tab: EnvironmentTab,
@@ -305,7 +377,21 @@ impl Shell {
         cx: &mut Context<Self>,
     ) {
         let modifiers = event.keystroke.modifiers;
-        if modifiers.alt || modifiers.control || modifiers.platform {
+        if modifiers.control || modifiers.platform || event.prefer_character_input {
+            return;
+        }
+        if modifiers.alt {
+            if !modifiers.shift && matches!(event.keystroke.key.as_str(), "left" | "right") {
+                self.move_environment_tab(tab, event.keystroke.key == "left", cx);
+                cx.stop_propagation();
+            }
+            return;
+        }
+        if event.keystroke.key == "delete" && !modifiers.shift {
+            if !event.is_held {
+                self.close_environment_tab(tab, window, cx);
+            }
+            cx.stop_propagation();
             return;
         }
         let tabs = &self.environment.value.tabs;
@@ -445,36 +531,29 @@ impl Shell {
                         let tab = *tab;
                         let (label, glyph, index) = tab_info(tab);
                         let active = panel_tab(self.dock_panel) == Some(tab);
-                        ui::button_shell(
-                            SharedString::from(format!("environment-tab-{index}")),
-                            label,
-                            active,
-                        )
-                        .role(gpui::Role::Tab)
-                        .aria_label(label)
-                        .aria_selected(active)
-                        .track_focus(&self.environment.tabs_focus[index])
-                        .tab_stop(active)
-                        .h(px(28.))
-                        .px_2()
-                        .py_0()
-                        .flex_shrink_0()
-                        .flex()
-                        .items_center()
-                        .gap_1()
-                        .text_size(px(12.))
-                        .relative()
-                        .child(ui::layout_probe_slot("environment-tab", index))
-                        .child(ui::icon(glyph).size(px(14.)))
-                        .children((!compact).then_some(label))
-                        .when(compact, |el| el.px(px(5.)))
-                        .tooltip(move |_, cx| cx.new(|_| ui::Tooltip(label.into())).into())
-                        .on_key_down(cx.listener(move |this, event, window, cx| {
-                            this.environment_tab_key(tab, event, window, cx)
-                        }))
-                        .on_click(cx.listener(
-                            move |this, _, window, cx| this.select_environment_tab(tab, window, cx),
-                        ))
+                        div().id(("environment-tab-group", index)).flex().items_center().flex_shrink_0()
+                            .rounded_md().bg(if active { rgb(palette().selected) } else { rgb(palette().canvas) })
+                            .child(ui::button_shell(
+                                SharedString::from(format!("environment-tab-{index}")), label, active,
+                            )
+                            .role(gpui::Role::Tab).aria_label(label).aria_selected(active)
+                            .aria_description("Left/Right select. Alt+Left/Right reorder. Delete closes a stopped, saved tool.")
+                            .track_focus(&self.environment.tabs_focus[index]).tab_stop(active)
+                            .h(px(28.)).px_2().py_0().flex_shrink_0().flex().items_center().gap_1()
+                            .text_size(px(12.)).relative()
+                            .child(ui::layout_probe_slot("environment-tab", index))
+                            .child(ui::icon(glyph).size(px(14.)))
+                            .children((!compact).then_some(label))
+                            .when(compact, |el| el.px(px(5.)))
+                            .tooltip(move |_, cx| cx.new(|_| ui::Tooltip(label.into())).into())
+                            .on_key_down(cx.listener(move |this, event, window, cx| this.environment_tab_key(tab, event, window, cx)))
+                            .on_click(cx.listener(move |this, _, window, cx| this.select_environment_tab(tab, window, cx))))
+                            .child(ui::chrome_button(
+                                ["environment-terminal-close", "environment-explorer-close", "environment-changes-close"][index],
+                                ["Close Terminal tab", "Close Explorer tab", "Close Changes tab"][index], Glyph::Close, false,
+                                cx.listener(move |this, _: &(), window, cx| this.close_environment_tab(tab, window, cx)),
+                            ).size(px(20.)).tab_stop(active).relative()
+                                .child(ui::layout_probe_slot("environment-tab-close", index)))
                     }))
                     .children(
                         self.environment
@@ -672,6 +751,17 @@ impl Shell {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn closing_tools_requires_explicit_save_and_stop_not_hidden_data_loss() {
+        use EnvironmentTab::{Changes, Explorer, Terminal};
+        assert!(tab_close_blocked(Explorer, true, false, false, false).is_some());
+        assert!(tab_close_blocked(Explorer, false, true, false, false).is_some());
+        assert!(tab_close_blocked(Terminal, false, false, true, false).is_some());
+        assert!(tab_close_blocked(Terminal, false, false, false, true).is_some());
+        assert!(tab_close_blocked(Changes, true, true, true, true).is_none());
+        assert!(tab_close_blocked(Explorer, false, false, true, true).is_none());
+        assert!(tab_close_blocked(Terminal, true, true, false, false).is_none());
+    }
     #[test]
     fn split_respects_both_panes_at_intermediate_widths() {
         for available in [0., 100., 640., 700., 1020., 1660.] {

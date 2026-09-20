@@ -1,0 +1,6 @@
+{
+  "candidate": "67f276bbc1164d192b2d35998303c669a34bc296",
+  "run": 35504073637,
+  "artifact": 10603152761,
+  "purpose": "Read the retained native dialog failure evidence only. No source transformation or test execution."
+}

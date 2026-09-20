@@ -48,29 +48,6 @@ impl Shell {
                     .child(div().w_full().min_w_0().text_center().child("Select a file from the tree to view it."))
             }).into_any_element()
     }
-    pub(super) fn git_panel(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
-        div().flex().flex_col().flex_1().min_h_0().p_4().gap_3()
-            .child(div().flex().justify_between().items_center().child(div().flex().items_center().gap_2().child(crate::ui::icon(crate::ui::Glyph::Changes)).child(format!("Changes · {}",self.git.branch)))
-                .child(div().flex().gap_2().child(button("unstaged-diff","Unstaged",!self.staged).on_click(cx.listener(|this,_,_,cx|{this.staged=false;this.refresh_git();cx.notify();})))
-                    .child(button("staged-diff","Staged",self.staged).on_click(cx.listener(|this,_,_,cx|{this.staged=true;this.refresh_git();cx.notify();})))
-                    .child(button("refresh-git","Refresh",false).on_click(cx.listener(|this,_,_,_|this.refresh_git())))))
-            .child(div().flex().flex_1().min_h_0().gap_4()
-                .child(div().id("git-file-list").w(px(300.)).flex_shrink_0().overflow_y_scroll().flex().flex_col().gap_2().children(self.git.entries.iter().enumerate().map(|(index,entry)|{
-                    let path=entry.path.clone();let unstage=entry.staged();
-                    div().p_2().rounded_md().bg(rgb(0x1b2532)).child(format!("{}{}  {}",entry.index_status,entry.worktree_status,entry.path.display()))
-                        .child(button(("git-action",index),if unstage{"Unstage"}else{"Stage"},false).mt_2().on_click(cx.listener(move |this,_,_,_|{
-                            this.git_index_path(path.clone(),unstage);
-                        })))
-                })).children(self.git.entries.is_empty().then(||div().p_3().child("No changed files"))))
-                .child(div().id("diff-output").flex_1().min_w_0().overflow_y_scroll().p_3().rounded_md().bg(rgb(0x151e28)).font_family(crate::ui::code_font()).text_xs().child(if self.diff.is_empty(){"No diff in this view. Untracked files must be staged before Git can show their diff.".into()}else{truncate(&self.diff,256*1024)})))
-            .child(self.commit_message.clone())
-            .child(div().flex().justify_between().items_center().child(div().text_xs().text_color(rgb(0x96a5b9)).child("Commit writes only to the selected workspace. Hooks and signing are disabled for this action."))
-                .child(button("commit-staged","Commit staged changes",false).on_click(cx.listener(|this,_,_,cx|{
-                    let message=this.commit_message.read(cx).text().to_owned();
-                    this.commit_git(message,cx);
-                }))))
-            .into_any_element()
-    }
     pub(super) fn terminal_panel(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
         let terminal_view = self.terminal_view.clone();
         let exit_code = terminal_view.read(cx).exit_code();

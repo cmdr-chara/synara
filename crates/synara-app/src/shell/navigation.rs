@@ -143,8 +143,6 @@ impl Shell {
             self.document = None;
             self.files.clear();
             self.directory.clear();
-            self.git = GitStatus::default();
-            self.diff.clear();
             self.create_task(cx);
         }
         self.navigation.task_page = 0;
@@ -854,8 +852,6 @@ impl Shell {
         self.document = None;
         self.files.clear();
         self.directory.clear();
-        self.git = GitStatus::default();
-        self.diff.clear();
         self.composer.update(cx, |entry, cx| entry.clear(cx));
         self.navigation.collapsed_projects.remove(&project);
         self.create_task(cx);

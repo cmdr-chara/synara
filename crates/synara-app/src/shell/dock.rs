@@ -54,7 +54,7 @@ impl Shell {
                                     .child(match self.dock_panel {
                                         Panel::Files => self.files_panel(cx),
                                         Panel::Terminal => self.terminal_panel(cx),
-                                        Panel::Changes => self.git_panel(cx),
+                                        Panel::Changes => self.git_panel(target_width, cx),
                                         _ => self.dock_launcher(cx),
                                     }),
                             ),

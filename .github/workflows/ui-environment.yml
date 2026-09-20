@@ -1,0 +1,80 @@
+name: Focused Environment workspace
+on:
+  workflow_call:
+    inputs:
+      revision:
+        required: true
+        type: string
+permissions:
+  contents: read
+env:
+  CARGO_BUILD_JOBS: '2'
+  PYTHONDONTWRITEBYTECODE: '1'
+jobs:
+  environment:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          ref: ${{ inputs.revision }}
+          fetch-depth: 1000
+          persist-credentials: false
+      - name: Record candidate and verify scope selection
+        run: |
+          mkdir -p /tmp/env-evidence
+          git rev-parse HEAD | tee /tmp/env-evidence/revision.txt
+          python3 scripts/test_native_ui_scope.py
+          python3 scripts/check_roadmap.py
+          python3 -m py_compile scripts/native_environment_smoke.py
+      - name: Install pinned toolchain
+        run: rustup toolchain install 1.98.1 --profile minimal --component rustfmt --component clippy
+      - name: Native system libraries
+        run: |
+          sudo apt-get update > /tmp/env-evidence/install.log 2>&1
+          sudo apt-get install -y clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil xclip fonts-dejavu-core fonts-liberation >> /tmp/env-evidence/install.log 2>&1
+      - name: Changed-package formatting and focused regressions
+        run: |
+          cargo +1.98.1 fmt --check -p synara-app -p synara-workspace
+          cargo +1.98.1 test --locked -p synara-workspace --lib environment::tests
+          cargo +1.98.1 test --locked -p synara-app --bin synara-app shell::environment::tests
+          cargo +1.98.1 test --locked -p synara-app --bin synara-app shell::drafts::tests
+          cargo +1.98.1 test --locked -p synara-app --bin synara-app close::tests
+          cargo +1.98.1 clippy --locked --no-deps -p synara-app -p synara-workspace --all-targets -- -D warnings
+      - name: Build native application and fixture
+        id: build
+        run: cargo +1.98.1 build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture
+      - name: Environment interaction and recovery
+        timeout-minutes: 4
+        run: python3 scripts/native_environment_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/env-workspace
+      - name: Existing chat and split behavior
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        timeout-minutes: 3
+        run: python3 scripts/native_chat_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/env-chat
+      - name: Existing chat and Studio restoration
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        timeout-minutes: 4
+        run: python3 scripts/native_studio_settings_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/env-studio
+      - name: Existing guarded close and permission boundaries
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        timeout-minutes: 3
+        run: python3 scripts/native_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/env-close
+      - name: Existing board to chat navigation
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        timeout-minutes: 4
+        run: python3 scripts/native_kanban_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/env-kanban
+      - name: Verify source identity
+        run: |
+          git diff --exit-code
+          git ls-files -s > /tmp/env-evidence/blobs.txt
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: ${{ !cancelled() }}
+        with:
+          name: native-environment-workspace
+          path: |
+            /tmp/env-*/*.png
+            /tmp/env-*/*.log
+            /tmp/env-*/result.json
+            /tmp/env-evidence/*.txt
+          retention-days: 7
+          if-no-files-found: warn

@@ -1,52 +1,76 @@
 use super::*;
 impl Shell {
-    pub(super) fn files_panel(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
-        if self.studio.open {
-            return self.studio_files_panel(cx);
-        }
+    pub(super) fn files_panel(&self, width: f32, cx: &mut Context<Self>) -> gpui::AnyElement {
+        if self.studio.open { return self.studio_files_panel(cx); }
         use crate::ui::{self, Glyph, palette};
-        let dirty = self.dirty(cx);
+        let dirty = self.active_document_dirty(cx);
         let query = self.file_search.read(cx).text().trim().to_lowercase();
-        div().flex().flex_1().min_h_0().min_w_0()
-            .child(div().w(px(240.)).relative().child(ui::layout_probe("file-tree")).flex_shrink_0().min_h_0().border_r_1().border_color(gpui::rgba(0xffffff09))
-                .flex().flex_col().gap_1()
-                .child(self.explorer_toolbar(cx))
-                .when(!self.explorer.search_open, |el| el.child(div().p_2().child(self.file_search.clone())))
-                .when(self.explorer.search_open, |el| el.child(self.explorer_search_panel(cx)))
-                .children((!self.directory.as_os_str().is_empty()).then(|| div().px_2().flex().items_center().gap_2()
-                    .child(ui::chrome_button("file-up", "Parent folder", Glyph::Back, false,
-                        cx.listener(|this, _: &(), _, _| { this.directory.pop(); this.explorer.reset_search(); this.refresh_files(); })))
-                    .child(div().min_w_0().text_ellipsis().text_size(px(12.)).text_color(rgb(palette().muted)).child(self.directory.display().to_string()))))
-                .when(!self.explorer.search_open, |el| el.child(div().id("file-list").flex_1().min_h_0().overflow_y_scroll().px_1().flex().flex_col()
-                    .children(self.files.iter().filter(|file| query.is_empty() || file.name.to_lowercase().contains(&query))
-                        .skip(self.file_page * 400).take(400).enumerate().map(|(index, file)| {
+        let mut files: Vec<_> = self.files.iter().filter(|file| {
+            (self.editors.show_hidden || !file.name.starts_with('.'))
+                && (query.is_empty() || file.name.to_lowercase().contains(&query))
+        }).collect();
+        files.sort_by_key(|file| (!file.directory, file.name.to_lowercase()));
+        let count = files.len();
+        let page = self.file_page.min(count.saturating_sub(1) / 400);
+        let narrow = width < 680.;
+        div().flex().flex_col().flex_1().min_h_0().min_w_0()
+            .child(self.editor_tabs(cx))
+            .child(div().flex().items_center().flex_wrap().px_2().py_1().gap_1()
+                .child(ui::chrome_button("editor-tree-toggle", "Show or hide file tree", Glyph::Folders, false,
+                    cx.listener(|this, _: &(), _, cx| { this.editors.tree_visible = !this.editors.tree_visible; cx.notify(); })))
+                .child(ui::action("files-root", "Workspace", None, false, cx.listener(|this, _: &(), _, cx| {
+                    this.directory.clear(); this.explorer.reset_search(); this.refresh_files(); cx.notify();
+                })).text_size(px(11.)))
+                .children(self.directory.components().enumerate().map(|(index, component)| {
+                    let path: PathBuf = self.directory.components().take(index + 1).collect();
+                    ui::action(("file-breadcrumb", index), component.as_os_str().to_string_lossy().into_owned(), Some(Glyph::ChevronRight), false,
+                        cx.listener(move |this, _: &(), _, cx| { this.directory = path.clone(); this.explorer.reset_search(); this.refresh_files(); cx.notify(); })).text_size(px(11.))
+                }))
+                .child(div().flex_1())
+                .child(ui::action("files-hidden", "Dotfiles", None, self.editors.show_hidden, cx.listener(|this, _: &(), _, cx| {
+                    this.editors.show_hidden = !this.editors.show_hidden; this.file_page = 0; cx.notify();
+                })).text_size(px(11.))))
+            .children(self.editors.loading.as_ref().map(|path| div().px_3().py_1().text_size(px(11.)).text_color(rgb(palette().muted)).child(format!("Opening {}...", path.display()))))
+            .child(div().flex().flex_1().min_h_0().min_w_0().when(narrow, |el| el.flex_col())
+                .children(self.editors.tree_visible.then(|| div().relative().child(ui::layout_probe("file-tree"))
+                    .when(narrow, |el| el.h(px(185.)).w_full().border_b_1())
+                    .when(!narrow, |el| el.w(px(220.)).border_r_1())
+                    .flex_shrink_0().min_h_0().border_color(rgb(palette().border)).flex().flex_col().gap_1()
+                    .child(self.explorer_toolbar(cx))
+                    .when(!self.explorer.search_open, |el| el.child(div().p_2().child(self.file_search.clone())))
+                    .when(self.explorer.search_open, |el| el.child(self.explorer_search_panel(cx)))
+                    .when(!self.explorer.search_open, |el| el.child(div().id("file-list").flex_1().min_h_0().overflow_y_scroll().px_1().flex().flex_col()
+                        .children(files.iter().skip(page * 400).take(400).enumerate().map(|(index, file)| {
                             let path = file.relative_path.clone(); let directory = file.directory; let symlink = file.symlink;
-                            ui::action(("file", index), file.name.clone(), Some(if directory { Glyph::ChevronRight } else { Glyph::Files }), false,
+                            let active = self.document.as_ref().is_some_and(|document| document.path == path);
+                            ui::action(("file", index), file.name.clone(), Some(if directory { Glyph::Folder } else { Glyph::Files }), active,
                                 cx.listener(move |this, _: &(), _, cx| {
                                     if symlink { this.error = Some("Symlink navigation is disabled at the workspace boundary.".into()); cx.notify(); }
                                     else if directory { this.directory = path.clone(); this.explorer.reset_search(); this.file_search.update(cx, |input, cx| input.clear(cx)); this.refresh_files(); }
                                     else { this.open_file(path.clone(), cx); }
                                 })).h(px(28.)).text_size(px(12.)).relative().child(ui::layout_probe_slot("file-row", index))
-                        }))))
-                .child(div().px_2().pb_2().flex().gap_2()
-                    .child(ui::button("files-refresh", "Refresh", false).text_size(px(11.)).bg(gpui::rgba(0)).on_click(cx.listener(|this, _, _, _| this.refresh_files())))
-                    .children((self.file_page > 0).then(|| ui::button("previous-files", "Previous", false).on_click(cx.listener(|this, _, _, cx| { this.file_page = this.file_page.saturating_sub(1); cx.notify(); }))))
-                    .children(((self.file_page + 1) * 400 < self.files.len()).then(|| ui::button("next-files", "Next", false).on_click(cx.listener(|this, _, _, cx| { this.file_page += 1; cx.notify(); }))))))
-            .child(if let Some(document) = &self.document {
-                div().flex_1().min_w_0().min_h_0().flex().flex_col().p_3().gap_3()
-                    .child(div().flex().items_center().gap_2()
-                        .child(div().flex_1().min_w_0().text_ellipsis().text_size(px(13.)).child(format!("{}{}", document.path.display(), if dirty { " *" } else { "" })))
-                        .child(ui::button("save-document", if self.saving { "Saving..." } else { "Save" }, dirty).relative().child(ui::layout_probe("save-document")).on_click(cx.listener(|this, _, _, cx| this.save_file(cx))))
-                        .child(ui::button("discard-document", "Discard", false).on_click(cx.listener(|this, _, _, cx| {
-                            if !this.saving { if let Some(document) = &this.document { this.editor.update(cx, |entry, cx| entry.set_text(document.snapshot.text.clone(), cx)); } cx.notify(); }
-                        }))))
-                    .child(self.editor_actions(cx))
-                    .child(self.editor.clone())
-                    .children(self.editor.read(cx).error.as_ref().map(|error| div().text_color(rgb(palette().error)).child(error.clone())))
-            } else {
-                div().flex_1().min_w_0().flex().items_center().justify_center().p_4().text_size(px(12.)).text_color(rgb(palette().muted))
-                    .child(div().w_full().min_w_0().text_center().child("Select a file from the tree to view it."))
-            }).into_any_element()
+                        }))
+                        .children((count == 0).then(|| div().p_3().text_size(px(12.)).text_color(rgb(palette().muted)).child("No matching files in this folder.")))))
+                    .child(div().px_2().pb_2().flex().items_center().gap_2()
+                        .child(ui::button("files-refresh", "Refresh", false).text_size(px(11.)).on_click(cx.listener(|this, _, _, _| this.refresh_files())))
+                        .child(div().text_size(px(11.)).text_color(rgb(palette().muted)).child(format!("{count} items")))
+                        .children((page > 0).then(|| ui::button("previous-files", "Previous", false).on_click(cx.listener(move |this, _, _, cx| { this.file_page = page.saturating_sub(1); cx.notify(); }))))
+                        .children(((page + 1) * 400 < count).then(|| ui::button("next-files", "Next", false).on_click(cx.listener(move |this, _, _, cx| { this.file_page = page + 1; cx.notify(); })))))))
+                .child(if let Some(document) = &self.document {
+                    div().flex_1().min_w_0().min_h_0().flex().flex_col().p_3().gap_2()
+                        .child(div().flex().items_center().gap_2()
+                            .child(div().flex_1().min_w_0().text_ellipsis().text_size(px(12.)).child(document.path.display().to_string()))
+                            .child(ui::button("save-document", if self.saving { "Saving..." } else { "Save" }, dirty).relative().child(ui::layout_probe("save-document")).on_click(cx.listener(|this, _, _, cx| this.save_file(cx))))
+                            .child(ui::button("discard-document", "Discard", false).on_click(cx.listener(|this, _, _, cx| this.discard_active_document(cx)))))
+                        .child(self.editor_tools(cx))
+                        .child(if self.editors.preview && self.editor_preview_available() { self.editor_preview(cx) } else { self.editor_content() })
+                        .child(self.editor_status(cx))
+                        .children(self.editor.read(cx).error.as_ref().map(|error| div().text_color(rgb(palette().error)).child(error.clone())))
+                } else {
+                    div().flex_1().min_w_0().flex().items_center().justify_center().p_4().text_size(px(12.)).text_color(rgb(palette().muted))
+                        .child(div().w_full().min_w_0().text_center().child("Open files from Explorer. Each tab keeps its text, selection and undo history."))
+                }))
+            .into_any_element()
     }
     pub(super) fn terminal_panel(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
         let terminal_view = self.terminal_view.clone();

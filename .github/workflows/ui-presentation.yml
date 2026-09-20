@@ -35,17 +35,20 @@ jobs:
           python3 - <<'PY_SCOPE'
           import os, re, subprocess, sys
           sys.path.insert(0, 'scripts')
-          from native_ui_scope import kanban_only
+          from native_ui_scope import kanban_only, markdown_only
           base, revision = os.environ['BASE_REVISION'], os.environ['CANDIDATE_REVISION']
           narrow = False
+          markdown = False
           if all(re.fullmatch(r'[a-f0-9]{40}', value) and value != '0' * 40 for value in [base, revision]):
               try:
                   paths = subprocess.check_output(['git', 'diff', '--name-only', '--no-renames', '-z', base, revision, '--'], timeout=30).decode().rstrip('\0').split('\0')
                   narrow = kanban_only(paths)
+                  markdown = markdown_only(paths)
               except (OSError, UnicodeError, subprocess.SubprocessError):
                   pass
           with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
               output.write(f'kanban={str(narrow).lower()}\n')
+              output.write(f'markdown={str(markdown).lower()}\n')
           print(f'Kanban-only journeys: {narrow}')
           PY_SCOPE
       - name: Install pinned toolchain
@@ -57,14 +60,16 @@ jobs:
       - name: Changed-package formatting
         run: cargo +1.98.1 fmt --check -p synara-app -p synara-workspace
       - name: Task creation and chat preference regressions
+        if: steps.scope.outputs.markdown != 'true'
         run: |
           cargo +1.98.1 test --locked -p synara-workspace --lib storage::task_creation::tests
           cargo +1.98.1 test --locked -p synara-workspace --lib storage::chat_preferences::tests
       - name: Settings regressions for broader presentation changes
-        if: steps.scope.outputs.kanban != 'true'
+        if: steps.scope.outputs.kanban != 'true' && steps.scope.outputs.markdown != 'true'
         run: |
           cargo +1.98.1 test --locked -p synara-workspace --lib settings::
       - name: Native task, draft and close regressions
+        if: steps.scope.outputs.markdown != 'true'
         run: |
           cargo +1.98.1 test --locked -p synara-app --bin synara-app shell::kanban::tests
           cargo +1.98.1 test --locked -p synara-app --bin synara-app ui::task_dialog::tests
@@ -73,8 +78,11 @@ jobs:
       - name: Presentation and input regressions
         env:
           KANBAN_ONLY: ${{ steps.scope.outputs.kanban }}
+          MARKDOWN_ONLY: ${{ steps.scope.outputs.markdown }}
         run: |
-          if test "$KANBAN_ONLY" = 'true'; then
+          if test "$MARKDOWN_ONLY" = 'true'; then
+            cargo +1.98.1 test --locked -p synara-app --bin synara-app ui::markdown::tests
+          elif test "$KANBAN_ONLY" = 'true'; then
             cargo +1.98.1 test --locked -p synara-app --bin synara-app ui::menu::tests
           else
             cargo +1.98.1 test --locked -p synara-app --bin synara-app ui::
@@ -82,7 +90,7 @@ jobs:
             cargo +1.98.1 test --locked -p synara-app --bin synara-app input::policy::tests
           fi
       - name: Environment state and storage regressions
-        if: steps.scope.outputs.kanban != 'true'
+        if: steps.scope.outputs.kanban != 'true' && steps.scope.outputs.markdown != 'true'
         run: |
           cargo +1.98.1 test --locked -p synara-workspace --lib environment::tests
           cargo +1.98.1 test --locked -p synara-app --bin synara-app shell::environment::tests
@@ -92,30 +100,31 @@ jobs:
         id: build
         run: cargo +1.98.1 build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture
       - name: Native Kanban creation and lifecycle
+        if: steps.scope.outputs.markdown != 'true'
         timeout-minutes: 4
         run: python3 scripts/native_kanban_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-kanban
       - name: Native model and durable draft journeys
-        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.scope.outputs.kanban != 'true' }}
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.scope.outputs.kanban != 'true' && steps.scope.outputs.markdown != 'true' }}
         timeout-minutes: 4
         run: python3 scripts/native_model_draft_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-model-drafts
       - name: Native editable Chat behavior
-        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.scope.outputs.kanban != 'true' }}
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.scope.outputs.kanban != 'true' && steps.scope.outputs.markdown != 'true' }}
         timeout-minutes: 3
         run: python3 scripts/native_chat_behavior_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-chat-behavior
       - name: Native session controls
-        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.scope.outputs.kanban != 'true' }}
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.scope.outputs.kanban != 'true' && steps.scope.outputs.markdown != 'true' }}
         timeout-minutes: 3
         run: python3 scripts/native_controls_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-controls
       - name: Native filtered search
-        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.scope.outputs.kanban != 'true' }}
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.scope.outputs.kanban != 'true' && steps.scope.outputs.markdown != 'true' }}
         timeout-minutes: 3
         run: python3 scripts/native_picker_search_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-search
       - name: Native creation and Studio restoration
-        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.scope.outputs.markdown != 'true' }}
         timeout-minutes: 4
         run: python3 scripts/native_studio_settings_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-studio-drafts
       - name: Native input and guarded close
-        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.scope.outputs.markdown != 'true' }}
         timeout-minutes: 3
         run: python3 scripts/native_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-close
       - name: Native rich text and split-layout regression
@@ -125,7 +134,7 @@ jobs:
           python3 scripts/native_rich_text_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-rich-text
           python3 scripts/native_chat_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-chat
       - name: Native Environment workspace
-        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.scope.outputs.kanban != 'true' }}
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.scope.outputs.kanban != 'true' && steps.scope.outputs.markdown != 'true' }}
         timeout-minutes: 4
         run: python3 scripts/native_environment_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-environment
       - name: Verify no candidate source mutation
@@ -148,3 +157,17 @@ jobs:
             /tmp/ui-source/
           retention-days: 7
           if-no-files-found: warn
+      - name: Formatting diagnostics in a disposable copy
+        if: ${{ failure() && !cancelled() }}
+        run: |
+          mkdir -p /tmp/presentation-formatting
+          git archive HEAD | tar -x -C /tmp/presentation-formatting
+          (cd /tmp/presentation-formatting && cargo +1.98.1 fmt -p synara-app -p synara-workspace)
+          git diff --exit-code
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: ${{ failure() && !cancelled() }}
+        with:
+          name: presentation-formatting-diagnostics
+          path: /tmp/presentation-formatting/
+          retention-days: 2
+          if-no-files-found: ignore

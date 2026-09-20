@@ -9,6 +9,8 @@ mod dock;
 mod drafts;
 mod environment;
 mod explorer;
+mod editors;
+mod command_palette;
 mod kanban;
 mod messages;
 mod navigation;
@@ -131,8 +133,10 @@ enum Update {
     },
     Document {
         root: PathBuf,
+        generation: u64,
         document: Document,
     },
+    DocumentFailed { generation: u64, error: String },
     SaveFailed(String),
     Saved {
         root: PathBuf,
@@ -163,6 +167,8 @@ enum Update {
     Error(String),
 }
 pub struct Shell {
+    editors: editors::EditorState,
+    command_palette: command_palette::PaletteState,
     review: review::ReviewState,
     explorer: explorer::ExplorerState,
     studio: studio::StudioState,
@@ -397,6 +403,8 @@ impl Shell {
                     .map(|t| t.id)
             });
         let mut this = Self {
+            editors: editors::EditorState::new(cx),
+            command_palette: command_palette::PaletteState::new(cx),
             review: review::ReviewState::default(),
             explorer: explorer::ExplorerState::new(cx),
             studio: studio::StudioState::new(cx),
@@ -480,6 +488,11 @@ impl Shell {
         this
     }
     pub fn request_close(&mut self, window: &mut Window, cx: &mut Context<Self>) -> bool {
+        if self.editor.read(cx).is_composing() {
+            self.notice = Some("Finish composing text in the editor before closing.".into());
+            cx.notify();
+            return false;
+        }
         if self.organization.saving
             || self.organization.dialog.is_some()
             || self.saved_context.dialog.is_some()
@@ -517,6 +530,7 @@ impl Shell {
         if self.terminal_closing || self.draft_state.quitting || self.environment.quitting {
             return false;
         }
+        self.reveal_dirty_editor(cx);
         let dirty = self.dirty(cx);
         tracing::debug!(target: "synara_ui_layout", dirty, saving = self.saving, document = self.document.is_some(), "close-request");
         if self.close.request(dirty, self.saving) {
@@ -530,6 +544,12 @@ impl Shell {
     }
 
     fn begin_quit(&mut self, cx: &mut Context<Self>) {
+        if self.dirty(cx) {
+            self.reveal_dirty_editor(cx);
+            self.close = CloseState::Review;
+            cx.notify();
+            return;
+        }
         if self.review_before_quit(cx) {
             return;
         }
@@ -619,7 +639,7 @@ impl Shell {
                     }))))
                     .children((!waiting && !terminal_closing).then(|| button("discard-and-close", "Discard and close", false)
                         .relative().child(crate::ui::layout_probe("discard-and-close"))
-                        .on_click(cx.listener(|this, _, _, cx| { if !this.saving { this.begin_quit(cx); } }))))
+                        .on_click(cx.listener(|this, _, _, cx| { if !this.saving { this.discard_active_document(cx); this.begin_quit(cx); } }))))
                     .children((!waiting && !terminal_closing).then(|| button("save-and-close", "Save and close", true)
                         .relative().child(crate::ui::layout_probe("save-and-close"))
                         .on_click(cx.listener(|this, _, _, cx| {
@@ -684,9 +704,7 @@ impl Shell {
         self.workspace_target().map(|target| target.root().clone())
     }
     fn dirty(&self, cx: &App) -> bool {
-        self.document
-            .as_ref()
-            .is_some_and(|d| self.editor.read(cx).text() != d.snapshot.text)
+        self.active_document_dirty(cx) || self.editors.dirty(cx)
     }
     fn replace_task(&mut self, task: Task) {
         if let Some(existing) = self.catalog.tasks.iter_mut().find(|t| t.id == task.id) {
@@ -724,6 +742,7 @@ impl Shell {
         }
         self.navigation.collapsed_projects.remove(&task.project_id);
         if Some(task.project_id) != self.project {
+            self.reset_editor_tabs();
             self.document = None;
             self.files.clear();
             self.directory.clear();
@@ -1107,30 +1126,38 @@ impl Shell {
     }
 
     fn open_file(&mut self, path: PathBuf, cx: &mut Context<Self>) {
-        if self.explorer.modal_open() {
+        if self.explorer.modal_open() || self.saving || self.close != CloseState::Open {
             return;
         }
-        if self.dirty(cx) || self.saving {
-            self.error =
-                Some("Save or discard the current document before opening another file.".into());
+        if let Some(index) = self.editors.index(&path) {
+            self.activate_editor(index, cx);
+            return;
+        }
+        if self.editors.tabs.len() >= editors::MAX_TABS {
+            self.error = Some("Close an editor tab before opening another file (24 tabs maximum).".into());
             cx.notify();
             return;
         }
-        let Some(target) = self.workspace_target() else {
-            return;
-        };
+        let Some(target) = self.workspace_target() else { return };
         let root = target.root().clone();
+        let generation = self.editors.request_open(path.clone());
         let workspace_service = self.controller.workspace.clone();
         self.job(async move {
-            let document = match target {
-                WorkspaceTarget::Local { root } => open_document(root, path).await?,
-                WorkspaceTarget::Ssh { workspace, root } => {
-                    let filesystem = remote_filesystem(workspace_service, workspace, root).await?;
-                    open_remote_document(filesystem, path).await?
+            let result = async {
+                match target {
+                    WorkspaceTarget::Local { root } => open_document(root, path).await,
+                    WorkspaceTarget::Ssh { workspace, root } => {
+                        let filesystem = remote_filesystem(workspace_service, workspace, root).await?;
+                        open_remote_document(filesystem, path).await
+                    }
                 }
-            };
-            Ok(Update::Document { root, document })
+            }.await;
+            Ok(match result {
+                Ok(document) => Update::Document { root, generation, document },
+                Err(error) => Update::DocumentFailed { generation, error: error.to_string() },
+            })
         });
+        cx.notify();
     }
 
     fn save_file(&mut self, cx: &mut Context<Self>) {
@@ -1395,6 +1422,7 @@ impl Shell {
                 self.snapshot_draft(cx);
                 self.selected = None;
                 self.thread = None;
+                self.reset_editor_tabs();
                 self.document = None;
                 self.files.clear();
                 self.directory.clear();
@@ -1619,18 +1647,18 @@ impl Shell {
                     self.file_page = 0;
                 }
             }
-            Update::Document { root, document } => {
-                if self.root() == Some(root)
-                    && !self.dirty(cx)
-                    && !self.saving
-                    && !self.explorer.modal_open()
+            Update::Document { root, generation, document } => {
+                if self.editors.finish_open(generation)
+                    && self.root() == Some(root)
+                    && !self.saving && !self.explorer.modal_open()
+                    && self.close == CloseState::Open
                 {
-                    self.editor.update(cx, |entry, cx| {
-                        entry.set_text(document.snapshot.text.clone(), cx)
-                    });
-                    self.document = Some(document);
+                    self.install_editor_document(document, cx);
                     self.error = None;
                 }
+            }
+            Update::DocumentFailed { generation, error } => {
+                if self.editors.finish_open(generation) { self.error = Some(error); }
             }
             Update::SaveFailed(error) => {
                 tracing::warn!("File save failed. The document remains open.");
@@ -1652,7 +1680,9 @@ impl Shell {
                     document.snapshot.version = version;
                     self.notice = Some("File saved".into());
                 }
-                if self.close.saved(!self.dirty(cx)) {
+                self.sync_editor_document();
+                self.finish_editor_close(cx);
+                if self.close.saved(!self.active_document_dirty(cx)) {
                     self.begin_quit(cx);
                 }
             }

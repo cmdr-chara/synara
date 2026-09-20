@@ -163,5 +163,16 @@ class ChatUtilityScopeTests(unittest.TestCase):
             self.assertEqual(scope_for_paths(['scripts/native_chat_tools_smoke.py', path]), 'full')
 
 
+class MarkdownScopeTests(unittest.TestCase):
+    def test_markdown_slice_has_an_explicit_anchor_and_fail_closed_boundary(self):
+        from native_ui_scope import MARKDOWN_PATHS, markdown_only
+        self.assertTrue(markdown_only(MARKDOWN_PATHS | {'docs/ui/parity-alerts.md'}))
+        self.assertEqual(scope_for_paths(MARKDOWN_PATHS), 'presentation')
+        self.assertFalse(markdown_only({'.github/workflows/ui-presentation.yml'}))
+        for extra in ['crates/synara-app/src/ui/menu.rs', 'crates/synara-app/src/shell/review.rs',
+                      'crates/synara-workspace/src/storage.rs', 'Cargo.lock', 'unknown.rs']:
+            self.assertFalse(markdown_only({'crates/synara-app/src/ui/markdown.rs', extra}))
+
+
 if __name__ == '__main__':
     unittest.main()

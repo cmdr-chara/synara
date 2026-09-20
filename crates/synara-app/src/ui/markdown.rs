@@ -1,7 +1,9 @@
 //! CommonMark and GFM text rendered by GPUI. No HTML or remote media execution.
 use super::*;
 use gpui::{FontStyle, FontWeight, HighlightStyle, InteractiveText, StyledText};
-use pulldown_cmark::{Alignment, BlockQuoteKind, CodeBlockKind, Event, Options, Parser, Tag, TagEnd};
+use pulldown_cmark::{
+    Alignment, BlockQuoteKind, CodeBlockKind, Event, Options, Parser, Tag, TagEnd,
+};
 use std::ops::Range;
 
 #[derive(Clone, Default, Debug)]
@@ -394,8 +396,15 @@ fn alert_label(kind: BlockQuoteKind) -> (&'static str, Glyph, usize) {
 
 fn render_alert(alert: Alert, id: &str) -> gpui::AnyElement {
     let (label, glyph, slot) = alert_label(alert.kind);
-    let warning = matches!(alert.kind, BlockQuoteKind::Warning | BlockQuoteKind::Caution);
-    let color = if warning { palette().error } else { palette().focus };
+    let warning = matches!(
+        alert.kind,
+        BlockQuoteKind::Warning | BlockQuoteKind::Caution
+    );
+    let color = if warning {
+        palette().error
+    } else {
+        palette().focus
+    };
     div()
         .id(SharedString::from(format!("{id}-callout")))
         .role(gpui::Role::Group)
@@ -549,7 +558,9 @@ mod tests {
     }
     #[test]
     fn alert_container_keeps_paragraphs_tasks_code_and_tables_together() {
-        let blocks = parse("> [!TIP]\n> First\n>\n> - [x] Done\n>\n> ```rust\n> let x = 1;\n> ```\n>\n> | A |\n> | --- |\n> | Value |\n\nAfter");
+        let blocks = parse(
+            "> [!TIP]\n> First\n>\n> - [x] Done\n>\n> ```rust\n> let x = 1;\n> ```\n>\n> | A |\n> | --- |\n> | Value |\n\nAfter",
+        );
         let alert = blocks[0].alert.as_ref().unwrap();
         assert_eq!(alert.blocks.len(), 4);
         assert_eq!(alert.blocks[0].text, "First");
@@ -561,7 +572,9 @@ mod tests {
     }
     #[test]
     fn nested_alerts_and_ordinary_quotes_keep_independent_boundaries() {
-        let blocks = parse("> [!NOTE]\n> Outer\n>\n> > [!WARNING]\n> > Inner\n>\n> > Ordinary quote\n>\n> Last\n\nOutside");
+        let blocks = parse(
+            "> [!NOTE]\n> Outer\n>\n> > [!WARNING]\n> > Inner\n>\n> > Ordinary quote\n>\n> Last\n\nOutside",
+        );
         let outer = blocks[0].alert.as_ref().unwrap();
         assert_eq!(outer.blocks[0].text, "Outer");
         let inner = outer.blocks[1].alert.as_ref().unwrap();
@@ -574,7 +587,12 @@ mod tests {
     }
     #[test]
     fn marker_like_code_unknown_and_inline_quotes_remain_literal() {
-        for source in ["> [!UNKNOWN]\n> Text", "> [!NOTE] inline", "> `[!NOTE]`\n> Text", "> [!NOT"] {
+        for source in [
+            "> [!UNKNOWN]\n> Text",
+            "> [!NOTE] inline",
+            "> `[!NOTE]`\n> Text",
+            "> [!NOT",
+        ] {
             assert!(parse(source).iter().all(|block| block.alert.is_none()));
         }
         let blocks = parse("```markdown\n> [!CAUTION]\n> Do not interpret\n``` ");
@@ -590,7 +608,10 @@ mod tests {
         assert_eq!(alert.blocks[0].indent, 0);
         assert!(alert.blocks[0].marker.is_none());
         assert_eq!(blocks[1].text, "Next");
-        assert_eq!(parse("> [!NOTE]")[0].alert.as_ref().unwrap().kind, BlockQuoteKind::Note);
+        assert_eq!(
+            parse("> [!NOTE]")[0].alert.as_ref().unwrap().kind,
+            BlockQuoteKind::Note
+        );
     }
     #[test]
     fn markdown_keeps_unicode_ranges_and_nested_styles_in_list_items() {

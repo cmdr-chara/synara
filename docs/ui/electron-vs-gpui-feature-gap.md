@@ -4,6 +4,29 @@ Audit date: 2026-09-19. Electron source: [`Emanuele-web04/synara` at `73cd181`](
 
 The comparison covers the Electron app's top-level routes, chat/composer/workspace surfaces, sidebar, Kanban, Studio, pull requests, automations, all 15 settings sections, desktop integrations, and distribution. It excludes test harnesses and internal-only APIs. The wallpaper in the supplied screenshots is external to Synara and is not a missing app asset.
 
+## September 20: repository continuation
+
+Current upstream review: `e7cd15281e6d16cf8fc55a91496dcff035475e54`,
+two commits after the previous `b58f27381e7ddd59678c9961500e8e43d3cc19ab`.
+This continuation preserves the concurrent editor/command-palette batch `48bf3f9`.
+The remaining dated tables retain their historical audit context.
+
+| Area | Current source implementation | Remaining work |
+| --- | --- | --- |
+| Branches | List/filter/current indicator, create, switch, rename, merged-only delete, copy name | Native and cross-platform verification, advanced branch workflows |
+| Remotes | Add/edit/remove names and URLs, explicit single-branch fetch, fast-forward pull, non-force push | Authenticated network/SSH acceptance, no credentials stored or implied |
+| Worktrees | Host-scoped listing, path copy, creation and guarded removal | Per-task worktree routing, platform and dirty/locked runtime scenarios |
+| Stashes | Save tracked changes with explicit untracked opt-in, apply by object ID while retaining stash | Native conflict/recovery and wider stash workflow acceptance |
+| Repository UI | Existing Changes tool hosts the new panel, searchable bounded lists, retained operation forms, scoped loading/errors, app-close guard | Native visual screenshots and integrated execution still pending |
+| Passive delegated results (4a886e9) | Newly identified F11/D12 gap, deferred | Creator inbox delivery, human-originated send reservation and replay fingerprints |
+| macOS app icon after quit (e7cd152) | Newly recorded packaging gap, deferred | Native bundle/Dock behavior on macOS |
+
+The latest user instruction places broad tests and full visual acceptance after
+feature development. This is source implementation, not a declaration of full
+Git/UI parity. Existing Browser, attachment intake, Side chats, Pull Requests,
+Automations, vendor context-budget provenance and Artifacts gaps remain open.
+[Delivery record](workspace-productivity.md).
+
 ## What the native app already has
 
 Rust is a real native application, not just a visual mockup. It has project and standalone chat persistence, distinct Studio chat scope, a welcome/composer screen, ACP agent connection and discovered model/mode/options, streamed transcript with expandable work details, permission/input requests, basic message copy, file tree/editor with guarded save, staged/unstaged Git status and commit, local PTY terminal, SSH workspace operations, an agent registry, a basic Kanban overview, settings navigation, a profile activity grid, archive restoration, and some Synara icons and motion. These are foundations for parity, not proof of equal feature depth. [Native shell](../../crates/synara-app/src/shell.rs), [dock](../../crates/synara-app/src/shell/dock.rs), [settings](../../crates/synara-app/src/shell/settings.rs), [native roadmap](../../ROADMAP.md).

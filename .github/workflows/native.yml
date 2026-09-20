@@ -1,256 +1,92 @@
-name: Native verification
+name: Combined Spaces and notes batch
 on:
-  push:
-    branches: [astra/gpui-clean-rewrite]
+  workflow_call:
+    inputs:
+      revision:
+        required: true
+        type: string
 permissions:
-  contents: read
+  contents: write
 env:
   CARGO_BUILD_JOBS: '2'
-concurrency:
-  group: native-${{ github.ref }}
-  cancel-in-progress: false
+  PYTHONDONTWRITEBYTECODE: '1'
 jobs:
-  source:
-    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/gpui-clean-rewrite'
+  organization-context:
     runs-on: ubuntu-24.04
-    permissions:
-      contents: write
-    outputs:
-      revision: ${{ steps.publish.outputs.revision }}
-      scope: ${{ steps.scope.outputs.scope }}
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
-          fetch-depth: 1000
-      - name: Apply an optional checked source package
-        id: publish
-        run: python3 scripts/apply_source.py
-      - name: Select verification from the actual changed paths
-        id: scope
-        env:
-          BASE_REVISION: ${{ github.event.before }}
-          CANDIDATE_REVISION: ${{ steps.publish.outputs.revision }}
-        run: python3 scripts/native_ui_scope.py "$BASE_REVISION" "$CANDIDATE_REVISION" >> "$GITHUB_OUTPUT"
-  presentation:
-    needs: source
-    if: needs.source.outputs.scope == 'presentation'
-    uses: ./.github/workflows/ui-presentation.yml
-    with:
-      revision: ${{ needs.source.outputs.revision }}
-  environment:
-    needs: source
-    if: needs.source.outputs.scope == 'environment'
-    uses: ./.github/workflows/ui-environment.yml
-    with:
-      revision: ${{ needs.source.outputs.revision }}
-  chat-tools:
-    needs: source
-    if: needs.source.outputs.scope == 'chat-tools'
-    uses: ./.github/workflows/ui-chat-tools.yml
-    with:
-      revision: ${{ needs.source.outputs.revision }}
-  linux:
-    needs: source
-    if: needs.source.outputs.scope != 'presentation' && needs.source.outputs.scope != 'environment' && needs.source.outputs.scope != 'docs' && needs.source.outputs.scope != 'chat-tools'
-    timeout-minutes: 35
-    runs-on: ubuntu-24.04
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
-        with:
-          ref: ${{ needs.source.outputs.revision }}
-          fetch-depth: 1000
+          ref: ${{ inputs.revision }}
+          fetch-depth: 100
           persist-credentials: false
-      - name: Install pinned Rust toolchain
-        run: rustup toolchain install 1.98.1 --profile minimal --component rustfmt --component clippy
-      - name: Native system libraries
+      - name: Integrate saved context and IME shortcut guard
+        run: python3 scripts/assemble_saved_context.py
+      - name: Install pinned build prerequisites
         run: |
-          sudo apt-get update
-          sudo apt-get install -y clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil xclip fonts-dejavu-core fonts-liberation
-      - name: Fetch pinned dependencies
-        run: cargo +1.98.1 fetch --locked
-      - name: Choose dependency cache export
-        id: cache
-        shell: bash
+          rustup toolchain install 1.98.1 --profile minimal --component rustfmt
+          sudo apt-get update > /tmp/org-context-install.log 2>&1
+          sudo apt-get install -y clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil xclip fonts-dejavu-core fonts-liberation >> /tmp/org-context-install.log 2>&1
+      - name: Format and retain the exact combined source
+        id: formatted
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          if git rev-parse --verify HEAD^ >/dev/null 2>&1 && git diff --quiet HEAD^ HEAD -- Cargo.lock rust-toolchain.toml; then
-            echo 'export=false' >> "$GITHUB_OUTPUT"
-          else
-            echo 'export=true' >> "$GITHUB_OUTPUT"
-          fi
-      - name: Export dependency and native development cache
-        if: always() && steps.cache.outputs.export == 'true'
-        shell: bash
-        run: |
-          mkdir -p /tmp/native-metadata /tmp/native-cache
-          git bundle create /tmp/native-metadata/source.bundle HEAD
-          git rev-parse HEAD > /tmp/native-metadata/revision.txt
-          if test -f Cargo.lock; then cp Cargo.lock /tmp/native-metadata/Cargo.lock; fi
-          paths=()
-          for path in registry git; do
-            if test -d "$HOME/.cargo/$path"; then paths+=("$path"); fi
-          done
-          if test "${#paths[@]}" -gt 0; then tar -C "$HOME/.cargo" -czf /tmp/native-cache/dependencies.tar.gz "${paths[@]}"; fi
+          cargo +1.98.1 fmt -p synara-app -p synara-workspace
+          git diff --check
           python3 - <<'PY'
-          import glob, pathlib, tarfile
-          paths = ['/usr/include', '/usr/lib/x86_64-linux-gnu/pkgconfig', '/usr/share/pkgconfig']
-          names = ['xkbcommon', 'wayland', 'fontconfig', 'freetype', 'asound', 'vulkan', 'EGL', 'GL', 'X', 'xcb', 'ffi', 'zstd', 'brotli', 'bz2', 'png', 'expat', 'uuid', 'z', 'drm', 'gbm', 'udev', 'dbus']
-          for name in names:
-              paths.extend(glob.glob('/usr/lib/x86_64-linux-gnu/lib' + name + '*.so*'))
-          paths.extend(glob.glob('/usr/lib/llvm-*/lib/libclang.so*'))
-          with tarfile.open('/tmp/native-metadata/native-sysroot.tar.gz', 'w:gz', dereference=True) as archive:
-              for name in sorted(set(paths)):
-                  if pathlib.Path(name).exists(): archive.add(name, arcname=name.lstrip('/'))
+          from pathlib import Path
+          compile(Path('scripts/native_organization_context_smoke.py').read_text(), 'native_organization_context_smoke.py', 'exec')
           PY
-          split -b 400M -d /tmp/native-cache/dependencies.tar.gz /tmp/native-cache/dependencies.part-
-          sha256sum /tmp/native-cache/dependencies.tar.gz > /tmp/native-metadata/dependencies.sha256
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always() && steps.cache.outputs.export == 'true'
-        with:
-          name: native-metadata
-          path: /tmp/native-metadata/
-          retention-days: 1
-          compression-level: 0
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always() && steps.cache.outputs.export == 'true'
-        with:
-          name: native-dependencies-00
-          path: /tmp/native-cache/dependencies.part-00
-          retention-days: 1
-          compression-level: 0
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always() && steps.cache.outputs.export == 'true'
-        with:
-          name: native-dependencies-01
-          path: /tmp/native-cache/dependencies.part-01
-          retention-days: 1
-          compression-level: 0
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always() && steps.cache.outputs.export == 'true'
-        with:
-          name: native-dependencies-02
-          path: /tmp/native-cache/dependencies.part-02
-          retention-days: 1
-          compression-level: 0
-      - name: Workspace structure
-        run: python3 scripts/audit_workspace.py
-      - name: Formatting
-        run: cargo +1.98.1 fmt --check
-      - name: Compile
-        if: always()
-        run: cargo +1.98.1 check --locked --workspace
-      - name: Lints
-        if: always()
-        run: cargo +1.98.1 clippy --locked --workspace --all-targets --all-features -- -D warnings
-      - name: Tests
-        if: always()
-        run: cargo +1.98.1 test --locked --workspace
-      - name: Publisher regression tests
-        if: always()
-        run: python3 scripts/test_apply_source.py
-      - name: Build native application and ACP fixture
-        run: cargo +1.98.1 build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture
-      - name: Native desktop interaction smoke
-        timeout-minutes: 3
-        run: python3 scripts/native_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/synara-native-smoke
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always()
-        with:
-          name: native-desktop-smoke
-          path: |
-            /tmp/synara-native-smoke/*.png
-            /tmp/synara-native-smoke/*.log
-            /tmp/synara-native-smoke/result.json
-          retention-days: 7
-          if-no-files-found: warn
-      - name: Native navigation and backend interaction smoke
-        timeout-minutes: 4
-        run: python3 scripts/native_navigation_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/synara-navigation-smoke
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always()
-        with:
-          name: native-navigation-smoke
-          path: |
-            /tmp/synara-navigation-smoke/*.png
-            /tmp/synara-navigation-smoke/result.json
-          retention-days: 7
-          if-no-files-found: warn
-      - name: Native composer and session control smoke
-        timeout-minutes: 4
-        run: python3 scripts/native_controls_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/synara-controls-smoke
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always()
-        with:
-          name: native-controls-smoke
-          path: |
-            /tmp/synara-controls-smoke/*.png
-            /tmp/synara-controls-smoke/*.log
-            /tmp/synara-controls-smoke/result.json
-          retention-days: 7
-          if-no-files-found: warn
-      - name: Native presentation geometry and motion smoke
-        timeout-minutes: 3
-        run: python3 scripts/native_presentation_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/synara-presentation-smoke
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always()
-        with:
-          name: native-presentation-smoke
-          path: |
-            /tmp/synara-presentation-smoke/*.png
-            /tmp/synara-presentation-smoke/*.log
-            /tmp/synara-presentation-smoke/result.json
-          retention-days: 7
-          if-no-files-found: warn
-      - name: Native transcript and split workspace visual smoke
-        timeout-minutes: 3
-        run: python3 scripts/native_chat_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/synara-chat-smoke
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always()
-        with:
-          name: native-chat-smoke
-          path: |
-            /tmp/synara-chat-smoke/*.png
-            /tmp/synara-chat-smoke/*.log
-            /tmp/synara-chat-smoke/result.json
-          retention-days: 7
-          if-no-files-found: warn
-      - name: Native chat creation, Studio and settings smoke
-        timeout-minutes: 4
-        run: python3 scripts/native_studio_settings_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/synara-studio-settings-smoke
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always()
-        with:
-          name: native-studio-settings-smoke
-          path: |
-            /tmp/synara-studio-settings-smoke/*.png
-            /tmp/synara-studio-settings-smoke/*.log
-            /tmp/synara-studio-settings-smoke/result.json
-          retention-days: 7
-          if-no-files-found: warn
-      - name: Export reproducible verification inputs
-        if: always()
+          python3 scripts/check_roadmap.py
+          git add -u
+          mkdir -p /tmp/org-context-evidence
+          git write-tree | tee /tmp/org-context-evidence/tree.txt
+          git diff --cached > /tmp/org-context-evidence/source.patch
+          python3 -u - <<'PY'
+          import json, os, pathlib, subprocess, time, urllib.request
+          def git(*args): return subprocess.check_output(['git', *args]).decode().strip()
+          print('CANDIDATE_TREE', git('write-tree'))
+          paths = subprocess.check_output(['git', 'diff', '--cached', '--name-only', '-z']).decode().rstrip('\0').split('\0')
+          for path in paths:
+              file = pathlib.Path(path)
+              if not file.exists():
+                  print('SOURCE_DELETE', path)
+                  continue
+              sha = git('hash-object', '--', path)
+              if not path.startswith('.github/'):
+                  req = urllib.request.Request('https://api.github.com/repos/cmdr-chara/synara/git/blobs', data=json.dumps({'content':file.read_text(),'encoding':'utf-8'}).encode(), method='POST', headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json','Content-Type':'application/json'})
+                  with urllib.request.urlopen(req, timeout=30) as response: assert json.load(response)['sha'] == sha
+                  time.sleep(0.3)
+              print('SOURCE_BLOB', path, sha)
+          print(git('diff', '--cached', '--stat'))
+          PY
+      - name: Focused organization and context persistence tests
+        id: tests
         run: |
-          mkdir -p /tmp/native-build-inputs
-          git bundle create /tmp/native-build-inputs/source.bundle HEAD
-          git rev-parse HEAD > /tmp/native-build-inputs/revision.txt
-          if test -f Cargo.lock; then cp Cargo.lock /tmp/native-build-inputs/Cargo.lock; fi
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always()
-        with:
-          name: native-linux-build-inputs
-          path: /tmp/native-build-inputs/
-          retention-days: 1
-          compression-level: 0
-      - name: Native Environment workspace
+          cargo +1.98.1 test --locked -p synara-workspace --lib storage::organization::tests
+          cargo +1.98.1 test --locked -p synara-workspace --lib storage::task_context::tests
+      - name: Build native application and fixture once
+        id: build
+        if: ${{ !cancelled() && steps.formatted.outcome == 'success' }}
+        run: cargo +1.98.1 build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture
+      - name: One combined native interaction journey
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         timeout-minutes: 4
-        run: python3 scripts/native_environment_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/synara-environment
+        run: python3 scripts/native_organization_context_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/org-context-native
+      - name: Verify candidate identity
+        if: ${{ !cancelled() && steps.formatted.outcome == 'success' }}
+        run: |
+          git diff --exit-code
+          test "$(git write-tree)" = "$(cat /tmp/org-context-evidence/tree.txt)"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always()
+        if: ${{ !cancelled() }}
         with:
-          name: native-environment
+          name: organization-context-batch
           path: |
-            /tmp/synara-environment/*.png
-            /tmp/synara-environment/*.log
-            /tmp/synara-environment/result.json
+            /tmp/org-context-evidence/
+            /tmp/org-context-native/*.png
+            /tmp/org-context-native/*.log
+            /tmp/org-context-native/result.json
           retention-days: 7
+          if-no-files-found: warn

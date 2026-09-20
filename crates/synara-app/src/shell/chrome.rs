@@ -414,6 +414,7 @@ impl Render for Shell {
             && !self.navigation.menu_open
             && !self.controls.is_open()
             && self.kanban.dialog.is_none()
+            && self.organization.dialog.is_none()
             && !self.environment.menu_open()
             && !self.chat_tools.menu_open()
             && !self.chat_tools.find_open
@@ -425,6 +426,7 @@ impl Render for Shell {
         }
         self.consume_chat_action(window, cx);
         self.restore_environment_focus(window, cx);
+        self.restore_organization_focus(window, cx);
         let now = std::time::Instant::now();
         if !cx.reduce_motion() && self.transcript.advance_animations(now) {
             window.request_animation_frame();
@@ -473,7 +475,11 @@ impl Render for Shell {
             .capture_key_down(cx.listener(|this, event: &gpui::KeyDownEvent, window, cx| {
                 let modifiers = event.keystroke.modifiers;
                 let key = event.keystroke.key.as_str();
-                if this.kanban.dialog.is_some() {
+                if this.kanban.dialog.is_some() || this.organization.dialog.is_some() {
+                    return;
+                }
+                if this.organization_shortcut(event, window, cx) {
+                    cx.stop_propagation();
                     return;
                 }
                 if this.chat_tools_shortcut(event, window, cx) {
@@ -644,6 +650,7 @@ impl Render for Shell {
                     .then(|| self.chat_tools_overlay(cx)),
             )
             .children(self.kanban.dialog.clone())
+            .children(self.organization.dialog.clone())
             .children(self.navigation.menu_open.then(|| self.tools_overlay(cx)))
             .children(self.controls.is_open().then(|| self.control_overlay(cx)))
             .children(

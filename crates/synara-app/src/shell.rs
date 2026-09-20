@@ -11,6 +11,7 @@ mod environment;
 mod kanban;
 mod messages;
 mod navigation;
+mod organization;
 mod overview;
 mod panels;
 mod registry;
@@ -77,6 +78,7 @@ struct FormState {
     error: Option<String>,
 }
 enum Update {
+    Organization(Box<organization::OrganizationReply>),
     ChatTools(Box<chat_tools::Reply>),
     EnvironmentSaved(Option<String>),
     Kanban(Box<kanban::KanbanReply>),
@@ -159,6 +161,7 @@ enum Update {
     Error(String),
 }
 pub struct Shell {
+    organization: organization::OrganizationState,
     chat_tools: chat_tools::ChatTools,
     environment: environment::EnvironmentState,
     kanban: kanban::KanbanState,
@@ -394,6 +397,7 @@ impl Shell {
                     .map(|t| t.id)
             });
         let mut this = Self {
+            organization: organization::OrganizationState::new(cx),
             chat_tools: chat_tools::ChatTools::new(cx),
             environment: environment::EnvironmentState::new(bootstrap.environment, cx),
             kanban: kanban::KanbanState::default(),
@@ -462,6 +466,7 @@ impl Shell {
             _updates: updates,
             _subscriptions: subscriptions,
         };
+        this.load_organization();
         this.composer.update(cx, |entry, _| {
             entry.set_send_on_enter(this.settings.value.chat.send_on_enter)
         });
@@ -475,6 +480,12 @@ impl Shell {
         this
     }
     pub fn request_close(&mut self, window: &mut Window, cx: &mut Context<Self>) -> bool {
+        if self.organization.saving || self.organization.dialog.is_some() {
+            self.notice =
+                Some("Finish the Space save and close its manager before closing Synara.".into());
+            cx.notify();
+            return false;
+        }
         if self.chat_tools.pending_write() {
             self.notice = Some(
                 "Finish or cancel the conversation export and pending pin saves before closing."
@@ -1377,6 +1388,7 @@ impl Shell {
     }
     fn receive(&mut self, update: Update, cx: &mut Context<Self>) {
         match update {
+            Update::Organization(reply) => self.organization_reply(*reply, cx),
             Update::ChatTools(reply) => self.chat_tools_reply(*reply, cx),
             Update::EnvironmentSaved(error) => self.environment_saved(error, cx),
             Update::Kanban(reply) => self.kanban_reply(*reply, cx),

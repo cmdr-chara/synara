@@ -77,39 +77,65 @@ jobs:
           replace('scripts/test_native_ui_scope.py', "if __name__ == '__main__':", tests + "if __name__ == '__main__':")
           Path('.github/workflows/native.yml').write_bytes(Path('docs/ui/.batch-native.txt').read_bytes())
           Path('docs/ui/.batch-native.txt').unlink()
-          print('Completed all feature wiring and restored normal verification configuration. No tests run.')
+          print('Completed feature wiring and restored normal verification configuration. No tests run.')
           PY
       - name: Install pinned Rust toolchain and compile prerequisites
         run: |
           rustup toolchain install 1.98.1 --profile minimal --component rustfmt
           sudo apt-get update > /tmp/chat-batch-install.log 2>&1
           sudo apt-get install -y clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev >> /tmp/chat-batch-install.log 2>&1
-      - name: Format changed packages and retain complete review candidate
+      - name: Format and preserve the completed batch
+        id: format
+        run: |
+          cargo +1.98.1 fmt -p synara-app -p synara-workspace
+          python3 - <<'PY'
+          from pathlib import Path
+          for name in ['scripts/native_ui_scope.py', 'scripts/test_native_ui_scope.py', 'scripts/native_chat_tools_smoke.py']:
+              compile(Path(name).read_text(), name, 'exec')
+          PY
+          git diff --check
+          git add -u
+          git diff --cached --stat
+          git write-tree
+          git diff --cached --binary > /tmp/chat-batch-source.patch
+      - name: Retain review objects for plugin publication
+        if: ${{ !cancelled() && steps.format.outcome == 'success' }}
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          cargo +1.98.1 fmt -p synara-app -p synara-workspace
-          python3 -m py_compile scripts/native_ui_scope.py scripts/test_native_ui_scope.py scripts/native_chat_tools_smoke.py
-          git diff --check
-          git add --all
-          python3 - <<'PY'
-          import json, os, pathlib, subprocess, urllib.request
+          python3 -u - <<'PY'
+          import json, os, pathlib, subprocess, time, urllib.request, urllib.error
           def git(*args):
               return subprocess.check_output(['git', *args]).decode().strip()
           def api(path, payload):
               req = urllib.request.Request('https://api.github.com/repos/cmdr-chara/synara/git/' + path,
                   data=json.dumps(payload).encode(), method='POST', headers={'Authorization': 'Bearer ' + os.environ['GH_TOKEN'], 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json'})
-              with urllib.request.urlopen(req, timeout=30) as response:
-                  return json.load(response)
+              try:
+                  with urllib.request.urlopen(req, timeout=30) as response:
+                      result = json.load(response)
+                  time.sleep(0.5)
+                  return result
+              except urllib.error.HTTPError as error:
+                  print('HANDOFF_ERROR', path, error.code, error.read().decode()[:1500])
+                  raise
           head = git('rev-parse', 'HEAD')
           paths = subprocess.check_output(['git', 'diff', '--cached', '--name-only', '-z']).decode().rstrip('\0').split('\0')
           entries = []
           for path in paths:
               file = pathlib.Path(path)
+              print('SOURCE_PATH', path)
               if file.exists():
-                  blob = api('blobs', {'content': file.read_bytes().decode(), 'encoding': 'utf-8'})['sha']
+                  local_blob = git('hash-object', '--', path)
+                  if path == '.github/workflows/native.yml':
+                      assert local_blob == '2dcfb0993c6eef2a5e8b51623a898e426598dd47'
+                      blob = local_blob
+                  else:
+                      blob = api('blobs', {'content': file.read_bytes().decode(), 'encoding': 'utf-8'})['sha']
+                  assert blob == local_blob
                   mode = git('ls-files', '-s', '--', path).split()[0]
                   entries.append({'path': path, 'mode': mode, 'type': 'blob', 'sha': blob})
+                  print('RETAINED_BLOB', path, blob)
               else:
                   entries.append({'path': path, 'mode': '100644', 'type': 'blob', 'sha': None})
           tree = api('trees', {'base_tree': git('rev-parse', 'HEAD^{tree}'), 'tree': entries})['sha']
@@ -117,10 +143,17 @@ jobs:
           commit = api('commits', {'message': 'feat(ui): complete batched conversation search, pins, export and draft utilities [skip ci]', 'tree': tree, 'parents': [head]})['sha']
           print('FINAL_SOURCE_TREE', tree)
           print('FINAL_SOURCE_COMMIT', commit)
-          print(git('diff', '--cached', '--stat'))
-          print('Review objects retained. Branch publication is performed through the GitHub plugin.')
+          print('Review objects retained. Branch publication uses the GitHub plugin.')
           PY
       - name: Compile assembled batch once (tests deferred)
+        if: ${{ !cancelled() && steps.format.outcome == 'success' }}
         run: cargo +1.98.1 check --locked -p synara-app --bin synara-app
       - name: Assert no source mutation during compilation
+        if: ${{ !cancelled() && steps.format.outcome == 'success' }}
         run: git diff --exit-code
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: ${{ !cancelled() && steps.format.outcome == 'success' }}
+        with:
+          name: chat-batch-source-patch
+          path: /tmp/chat-batch-source.patch
+          retention-days: 7

@@ -1,7 +1,9 @@
 //! CommonMark and GFM text rendered by GPUI. No HTML or remote media execution.
 use super::*;
 use gpui::{FontStyle, FontWeight, HighlightStyle, InteractiveText, StyledText};
-use pulldown_cmark::{Alignment, CodeBlockKind, Event, Options, Parser, Tag, TagEnd};
+use pulldown_cmark::{
+    Alignment, BlockQuoteKind, CodeBlockKind, Event, Options, Parser, Tag, TagEnd,
+};
 use std::ops::Range;
 
 #[derive(Clone, Default, Debug)]
@@ -17,6 +19,22 @@ struct Table {
     alignments: Vec<Alignment>,
     rows: Vec<Vec<Block>>,
 }
+#[derive(Debug)]
+struct Alert {
+    kind: BlockQuoteKind,
+    blocks: Vec<Block>,
+}
+
+// Container frames collect complete blocks without re-parsing or changing the
+// original message. Nested alerts own their own border, label and child layout.
+struct AlertFrame {
+    kind: BlockQuoteKind,
+    start: usize,
+    quote_depth: usize,
+    list_depth: usize,
+    wrapper: Block,
+}
+
 #[derive(Default, Debug)]
 struct Block {
     text: String,
@@ -30,6 +48,7 @@ struct Block {
     quote: bool,
     rule: bool,
     table: Option<Table>,
+    alert: Option<Alert>,
 }
 
 fn parse(source: &str) -> Vec<Block> {
@@ -41,12 +60,18 @@ fn parse(source: &str) -> Vec<Block> {
     let mut link = None;
     let mut table: Option<Table> = None;
     let mut row = Vec::new();
+    let mut alerts: Vec<AlertFrame> = Vec::new();
     let flush = |block: &mut Block, blocks: &mut Vec<Block>| {
-        if !block.text.is_empty() || block.rule || block.code || block.table.is_some() {
+        if !block.text.is_empty()
+            || block.rule
+            || block.code
+            || block.table.is_some()
+            || block.alert.is_some()
+        {
             blocks.push(std::mem::take(block));
         }
     };
-    let options = Options::ENABLE_TABLES | Options::ENABLE_TASKLISTS;
+    let options = Options::ENABLE_TABLES | Options::ENABLE_TASKLISTS | Options::ENABLE_GFM;
     for event in Parser::new_ext(source, options) {
         let mut content = None;
         let mut code = false;
@@ -64,8 +89,9 @@ fn parse(source: &str) -> Vec<Block> {
                 block.marker = marker.take();
                 block.indent = lists
                     .len()
+                    .saturating_sub(alerts.last().map_or(0, |frame| frame.list_depth))
                     .saturating_sub(usize::from(block.marker.is_some()));
-                block.quote = quotes > 0;
+                block.quote = quotes > alerts.last().map_or(0, |frame| frame.quote_depth);
                 if let CodeBlockKind::Fenced(info) = kind {
                     block.language = info.split_whitespace().next().map(str::to_owned);
                 }
@@ -90,17 +116,47 @@ fn parse(source: &str) -> Vec<Block> {
                 block.marker = marker.take();
                 block.indent = lists
                     .len()
+                    .saturating_sub(alerts.last().map_or(0, |frame| frame.list_depth))
                     .saturating_sub(usize::from(block.marker.is_some()));
-                block.quote = quotes > 0;
+                block.quote = quotes > alerts.last().map_or(0, |frame| frame.quote_depth);
                 flush(&mut block, &mut blocks);
             }
-            Event::Start(Tag::BlockQuote(_)) => {
+            Event::Start(Tag::BlockQuote(kind)) => {
                 flush(&mut block, &mut blocks);
+                if let Some(kind) = kind {
+                    let item = marker.take();
+                    let indent = lists
+                        .len()
+                        .saturating_sub(alerts.last().map_or(0, |frame| frame.list_depth))
+                        .saturating_sub(usize::from(item.is_some()));
+                    let quote = quotes > alerts.last().map_or(0, |frame| frame.quote_depth);
+                    alerts.push(AlertFrame {
+                        kind,
+                        start: blocks.len(),
+                        quote_depth: quotes + 1,
+                        list_depth: lists.len(),
+                        wrapper: Block {
+                            marker: item,
+                            indent,
+                            quote,
+                            ..Default::default()
+                        },
+                    });
+                }
                 quotes += 1;
             }
-            Event::End(TagEnd::BlockQuote(_)) => {
+            Event::End(TagEnd::BlockQuote(kind)) => {
                 flush(&mut block, &mut blocks);
                 quotes = quotes.saturating_sub(1);
+                if kind.is_some()
+                    && let Some(mut frame) = alerts.pop()
+                {
+                    frame.wrapper.alert = Some(Alert {
+                        kind: frame.kind,
+                        blocks: blocks.split_off(frame.start),
+                    });
+                    blocks.push(frame.wrapper);
+                }
             }
             Event::Start(Tag::List(start)) => {
                 flush(&mut block, &mut blocks);
@@ -153,8 +209,9 @@ fn parse(source: &str) -> Vec<Block> {
                 block.marker = marker.take();
                 block.indent = lists
                     .len()
+                    .saturating_sub(alerts.last().map_or(0, |frame| frame.list_depth))
                     .saturating_sub(usize::from(block.marker.is_some()));
-                block.quote = quotes > 0;
+                block.quote = quotes > alerts.last().map_or(0, |frame| frame.quote_depth);
             }
             let start = block.text.len();
             block.text.push_str(&content);
@@ -327,8 +384,62 @@ fn render_code(block: &Block, id: &str) -> gpui::AnyElement {
         .into_any_element()
 }
 
+fn alert_label(kind: BlockQuoteKind) -> (&'static str, Glyph, usize) {
+    match kind {
+        BlockQuoteKind::Note => ("Note", Glyph::Notebook, 0),
+        BlockQuoteKind::Tip => ("Tip", Glyph::Goal, 1),
+        BlockQuoteKind::Important => ("Important", Glyph::Pin, 2),
+        BlockQuoteKind::Warning => ("Warning", Glyph::Error, 3),
+        BlockQuoteKind::Caution => ("Caution", Glyph::Error, 4),
+    }
+}
+
+fn render_alert(alert: Alert, id: &str) -> gpui::AnyElement {
+    let (label, glyph, slot) = alert_label(alert.kind);
+    let warning = matches!(
+        alert.kind,
+        BlockQuoteKind::Warning | BlockQuoteKind::Caution
+    );
+    let color = if warning {
+        palette().error
+    } else {
+        palette().focus
+    };
+    div()
+        .id(SharedString::from(format!("{id}-callout")))
+        .role(gpui::Role::Group)
+        .aria_label(format!("{label} in message"))
+        .relative()
+        .child(layout_probe_slot("markdown-alert", slot))
+        .w_full()
+        .min_w_0()
+        .border_l_2()
+        .border_color(rgb(color))
+        .pl_3()
+        .pr_2()
+        .py_2()
+        .flex()
+        .flex_col()
+        .gap_2()
+        .child(
+            div()
+                .flex()
+                .items_center()
+                .gap_2()
+                .font_weight(FontWeight::SEMIBOLD)
+                .text_color(rgb(color))
+                .child(icon(glyph).text_color(rgb(color)))
+                .child(label),
+        )
+        .child(render_blocks(alert.blocks, id))
+        .into_any_element()
+}
+
 pub fn render(source: &str, message_id: &str) -> gpui::AnyElement {
-    let blocks = parse(source);
+    render_blocks(parse(source), message_id)
+}
+
+fn render_blocks(blocks: Vec<Block>, message_id: &str) -> gpui::AnyElement {
     let block_count = blocks.len();
     let list_ends: Vec<_> = blocks
         .iter()
@@ -344,7 +455,9 @@ pub fn render(source: &str, message_id: &str) -> gpui::AnyElement {
         .flex_col()
         .children(blocks.into_iter().enumerate().map(|(index, mut block)| {
             let id = SharedString::from(format!("markdown-{message_id}-{index}"));
-            let content = if let Some(table) = block.table.take() {
+            let content = if let Some(alert) = block.alert.take() {
+                render_alert(alert, &id)
+            } else if let Some(table) = block.table.take() {
                 render_table(table, &id)
             } else if block.code {
                 render_code(&block, &id)
@@ -417,6 +530,89 @@ pub fn render(source: &str, message_id: &str) -> gpui::AnyElement {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn all_alert_kinds_preserve_body_styles_and_source() {
+        for (marker, kind) in [
+            ("NOTE", BlockQuoteKind::Note),
+            ("TIP", BlockQuoteKind::Tip),
+            ("IMPORTANT", BlockQuoteKind::Important),
+            ("WARNING", BlockQuoteKind::Warning),
+            ("CAUTION", BlockQuoteKind::Caution),
+        ] {
+            let source = format!("> [!{marker}]\n> **Caffè** [Docs](https://example.com)\n\nAfter");
+            let unchanged = source.clone();
+            let blocks = parse(&source);
+            assert_eq!(source, unchanged);
+            assert_eq!(blocks.len(), 2);
+            let alert = blocks[0].alert.as_ref().unwrap();
+            assert_eq!(alert.kind, kind);
+            assert_eq!(alert.blocks[0].text, "Caffè Docs");
+            assert!(!alert.blocks[0].quote);
+            assert!(alert.blocks[0].spans[0].bold);
+            for span in &alert.blocks[0].spans {
+                assert!(alert.blocks[0].text.get(span.range.clone()).is_some());
+            }
+            assert_eq!(blocks[1].text, "After");
+            assert!(blocks[1].alert.is_none());
+        }
+    }
+    #[test]
+    fn alert_container_keeps_paragraphs_tasks_code_and_tables_together() {
+        let blocks = parse(
+            "> [!TIP]\n> First\n>\n> - [x] Done\n>\n> ```rust\n> let x = 1;\n> ```\n>\n> | A |\n> | --- |\n> | Value |\n\nAfter",
+        );
+        let alert = blocks[0].alert.as_ref().unwrap();
+        assert_eq!(alert.blocks.len(), 4);
+        assert_eq!(alert.blocks[0].text, "First");
+        assert_eq!(alert.blocks[1].task, Some(true));
+        assert_eq!(alert.blocks[2].text, "let x = 1;\n");
+        assert!(alert.blocks[2].code);
+        assert!(alert.blocks[3].table.is_some());
+        assert_eq!(blocks[1].text, "After");
+    }
+    #[test]
+    fn nested_alerts_and_ordinary_quotes_keep_independent_boundaries() {
+        let blocks = parse(
+            "> [!NOTE]\n> Outer\n>\n> > [!WARNING]\n> > Inner\n>\n> > Ordinary quote\n>\n> Last\n\nOutside",
+        );
+        let outer = blocks[0].alert.as_ref().unwrap();
+        assert_eq!(outer.blocks[0].text, "Outer");
+        let inner = outer.blocks[1].alert.as_ref().unwrap();
+        assert_eq!(inner.kind, BlockQuoteKind::Warning);
+        assert_eq!(inner.blocks[0].text, "Inner");
+        // A blank quoted line may keep the ordinary quote inside the inner
+        // blockquote. In either case it cannot escape the outer alert.
+        assert_eq!(outer.blocks.last().unwrap().text, "Last");
+        assert_eq!(blocks[1].text, "Outside");
+    }
+    #[test]
+    fn marker_like_code_unknown_and_inline_quotes_remain_literal() {
+        for source in [
+            "> [!UNKNOWN]\n> Text",
+            "> [!NOTE] inline",
+            "> `[!NOTE]`\n> Text",
+            "> [!NOT",
+        ] {
+            assert!(parse(source).iter().all(|block| block.alert.is_none()));
+        }
+        let blocks = parse("```markdown\n> [!CAUTION]\n> Do not interpret\n``` ");
+        assert!(blocks[0].code);
+        assert!(blocks[0].text.contains("[!CAUTION]"));
+        assert!(blocks[0].alert.is_none());
+    }
+    #[test]
+    fn marker_only_alerts_and_alerts_inside_lists_do_not_lose_markers() {
+        let blocks = parse("- > [!IMPORTANT]\n  > Keep this\n\n- Next");
+        assert_eq!(blocks[0].marker.as_deref(), Some("•"));
+        let alert = blocks[0].alert.as_ref().unwrap();
+        assert_eq!(alert.blocks[0].indent, 0);
+        assert!(alert.blocks[0].marker.is_none());
+        assert_eq!(blocks[1].text, "Next");
+        assert_eq!(
+            parse("> [!NOTE]")[0].alert.as_ref().unwrap().kind,
+            BlockQuoteKind::Note
+        );
+    }
     #[test]
     fn markdown_keeps_unicode_ranges_and_nested_styles_in_list_items() {
         let blocks = parse(

@@ -140,6 +140,7 @@ impl Shell {
             self.thread = None;
             self.details = None;
             self.trace.clear();
+            self.reset_editor_tabs();
             self.document = None;
             self.files.clear();
             self.directory.clear();
@@ -849,6 +850,7 @@ impl Shell {
         self.snapshot_draft(cx);
         self.selected = None;
         self.thread = None;
+        self.reset_editor_tabs();
         self.document = None;
         self.files.clear();
         self.directory.clear();
@@ -900,6 +902,7 @@ impl Render for ProjectTip {
                     .text_color(rgb(palette().muted))
                     .child(self.path.clone()),
             )
+            .into_any_element()
     }
 }
 

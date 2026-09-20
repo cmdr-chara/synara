@@ -314,15 +314,17 @@ impl Shell {
                     }
                     Ok(document) => {
                         let action = dialog.action;
-                        if self.project == Some(dialog.project) {
+                        let project = dialog.project;
+                        self.dismiss_file_action(cx);
+                        if self.project == Some(project) {
                             if let Some(document) = document {
-                                self.editor.update(cx, |entry, cx| {
-                                    entry.set_text(document.snapshot.text.clone(), cx)
-                                });
-                                self.document = Some(document);
+                                if action == FileAction::Rename {
+                                    self.replace_editor_document(document, cx);
+                                } else {
+                                    self.install_editor_document(document, cx);
+                                }
                             } else if action == FileAction::Delete {
-                                self.document = None;
-                                self.editor.update(cx, |entry, cx| entry.clear(cx));
+                                self.remove_active_editor(cx);
                             }
                             self.refresh_files();
                             self.explorer.reset_search();
@@ -331,7 +333,6 @@ impl Shell {
                             "{} completed in the selected workspace.",
                             action.title()
                         ));
-                        self.dismiss_file_action(cx);
                     }
                 }
             }
@@ -643,6 +644,7 @@ impl Shell {
                                 .child(result.preview.clone()),
                         )
                         .on_click(cx.listener(move |this, _, _, cx| {
+                            this.editors.jump_after_open = Some((path.clone(), line as usize));
                             this.open_file(path.clone(), cx);
                             this.notice =
                                 Some(format!("Match in {} at line {line}", path.display()));

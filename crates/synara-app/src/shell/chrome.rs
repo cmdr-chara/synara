@@ -54,6 +54,13 @@ impl Shell {
                         cx.listener(|this, _: &(), _, cx| this.toggle_sidebar(cx)),
                     ))
                     .child(ui::chrome_button(
+                        "command-palette",
+                        "Commands (Ctrl/Cmd+Shift+P)",
+                        Glyph::Shortcut,
+                        false,
+                        cx.listener(|this, _: &(), window, cx| this.open_command_palette(window, cx)),
+                    ))
+                    .child(ui::chrome_button(
                         "history-back",
                         "Go back",
                         Glyph::Back,
@@ -411,6 +418,7 @@ impl Render for Shell {
         // Backend completion may request composer focus. Keep that request pending
         // while a menu owns focus, rather than stealing focus from its keyboard user.
         if self.focus_composer
+            && !self.command_palette.open
             && !self.navigation.menu_open
             && !self.controls.is_open()
             && self.kanban.dialog.is_none()
@@ -431,6 +439,7 @@ impl Render for Shell {
         self.restore_organization_focus(window, cx);
         self.restore_saved_context_focus(window, cx);
         self.restore_explorer_focus(window, cx);
+        self.restore_editor_focus(window, cx);
         let now = std::time::Instant::now();
         if !cx.reduce_motion() && self.transcript.advance_animations(now) {
             window.request_animation_frame();
@@ -484,6 +493,15 @@ impl Render for Shell {
                     || this.saved_context.dialog.is_some()
                     || this.explorer.modal_open()
                 {
+                    return;
+                }
+                if this.command_palette_shortcut(event, window, cx) {
+                    cx.stop_propagation();
+                    return;
+                }
+                if this.command_palette.open { return; }
+                if this.editor_shortcut(event, window, cx) {
+                    cx.stop_propagation();
                     return;
                 }
                 if this.organization_shortcut(event, window, cx) {
@@ -657,6 +675,7 @@ impl Render for Shell {
                     .menu_open()
                     .then(|| self.chat_tools_overlay(cx)),
             )
+            .children(self.command_palette.open.then(|| self.command_palette_overlay(cx)))
             .children(self.kanban.dialog.clone())
             .children(self.organization.dialog.clone())
             .children(self.saved_context.dialog.clone())

@@ -74,6 +74,24 @@ KANBAN_PATHS = frozenset({
 })
 
 
+
+MARKDOWN_PATHS = frozenset({
+    'crates/synara-app/src/ui/markdown.rs',
+    'scripts/native_rich_text_smoke.py',
+    'scripts/native_ui_scope.py',
+    'scripts/test_native_ui_scope.py',
+    '.github/workflows/ui-presentation.yml',
+})
+
+
+def markdown_only(paths):
+    paths = set(paths)
+    anchors = {'crates/synara-app/src/ui/markdown.rs', 'scripts/native_rich_text_smoke.py'}
+    return bool(paths & anchors) and all(
+        path in MARKDOWN_PATHS or documentation(path) for path in paths
+    )
+
+
 def kanban_only(paths):
     paths = set(paths)
     required = KANBAN_CREATION | {'crates/synara-app/src/ui/task_dialog.rs'}

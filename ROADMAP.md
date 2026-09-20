@@ -6,6 +6,29 @@ It is a living engineering document, not a release announcement.
 
 ## Current checkpoint
 
+### September 20: native repository operations
+
+Changes now exposes a Repository panel with branch creation/switch/rename and
+merged-only deletion, named remote add/edit/remove and explicit fetch/fast-forward
+pull/push, worktree list/create/remove, and stash save/apply-with-retention. All
+commands use the existing bounded local/SSH GitOperations API. Forms remain tied
+to their originating project/root across navigation. Unfinished forms and active
+operations block app close. Repository execution, configured credentials and SSH
+network transport require explicit per-operation consent. No force operation,
+hard reset, stash pop/clear or credential storage is introduced.
+
+The batch preserves the concurrent multi-editor and command-palette work in
+`48bf3f9`. The existing Markdown renderer receives its pinned formatter correction.
+The UI uses the established Environment split, semantic palette and Synara icons,
+with wrapping actions, search and narrow-panel composition. H2/H3/H4/H5/G7/I10
+remain partial until native, remote and platform integration is verified.
+[Source delivery and remaining verification](docs/ui/workspace-productivity.md).
+
+Upstream main was reviewed at `e7cd15281e6d16cf8fc55a91496dcff035475e54`.
+Its new passive delegated-result delivery, human-send reservation and replay
+fingerprints add an F11/D12 gap. The macOS icon-after-quit fix is recorded for the
+native packaging audit. Neither is claimed adopted by this repository batch.
+
 ### September 20: native Explorer actions and cross-surface context
 
 The native Explorer now exposes new-file/new-folder creation, version-checked

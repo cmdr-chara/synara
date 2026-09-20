@@ -6,6 +6,18 @@ It is a living engineering document, not a release announcement.
 
 ## Current checkpoint
 
+### September 20: batched native chat utilities
+
+The coherent chat batch adds literal transcript search with work-log navigation,
+durable message pins, explicit text conversation copy/export, non-destructive
+prompt reuse/quotation, advertised slash-command insertion and cross-scope thread
+finding. All actions preserve existing drafts, event history and agent authority.
+The [chat utility receipt](docs/ui/parity-chat-tools.md) distinguishes text-only
+export and draft reuse from still-missing multimodal sharing, rollback and resend.
+Regression tests are prepared but deferred until the batch is assembled, as requested.
+Compilation is tracked separately from native interaction acceptance in the receipt.
+D8/D9/D12/F2/F8/I10 remain open for their full scope. Theme defaults are unchanged.
+
 ### September 20: Environment workspace interaction
 
 The native Environment now has real Terminal/Explorer/Changes tabs, a shared Add
@@ -13,6 +25,11 @@ menu, pointer/keyboard split resizing, maximize/restore, and versioned saved
 layout. General exposes Open by default and Reset layout. Explicit open/hide
 updates the preference, while restored tools do not launch shells or agents.
 Theme defaults are unchanged. Dracula remains optional.
+Individual tool-tab closing and keyboard reordering preserve tool identity and
+persist across restart. Dirty files and running shells require explicit resolution
+before their tab closes. Closing the final tab leaves the launcher available.
+The Environment receipt separates exact-candidate verification from the retained
+harness failures. No theme, dependency or approval-policy defaults were changed.
 
 The [Environment receipt](docs/ui/parity-environment.md) records the exact check
 states, native captures and remaining limits. Storage/state regressions prove

@@ -43,9 +43,15 @@ jobs:
     uses: ./.github/workflows/ui-environment.yml
     with:
       revision: ${{ needs.source.outputs.revision }}
+  chat-tools:
+    needs: source
+    if: needs.source.outputs.scope == 'chat-tools'
+    uses: ./.github/workflows/ui-chat-tools.yml
+    with:
+      revision: ${{ needs.source.outputs.revision }}
   linux:
     needs: source
-    if: needs.source.outputs.scope != 'presentation' && needs.source.outputs.scope != 'environment' && needs.source.outputs.scope != 'docs'
+    if: needs.source.outputs.scope != 'presentation' && needs.source.outputs.scope != 'environment' && needs.source.outputs.scope != 'docs' && needs.source.outputs.scope != 'chat-tools'
     timeout-minutes: 35
     runs-on: ubuntu-24.04
     permissions:

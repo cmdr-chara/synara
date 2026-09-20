@@ -1,0 +1,73 @@
+name: Focused chat utility batch
+on:
+  workflow_call:
+    inputs:
+      revision:
+        required: true
+        type: string
+permissions:
+  contents: read
+env:
+  CARGO_BUILD_JOBS: '2'
+  PYTHONDONTWRITEBYTECODE: '1'
+jobs:
+  chat-tools:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          ref: ${{ inputs.revision }}
+          fetch-depth: 1000
+          persist-credentials: false
+      - name: Record exact source and validate scope
+        run: |
+          mkdir -p /tmp/chat-batch-evidence
+          git rev-parse HEAD | tee /tmp/chat-batch-evidence/revision.txt
+          python3 scripts/test_native_ui_scope.py
+          python3 scripts/check_roadmap.py
+          python3 -m py_compile scripts/native_chat_tools_smoke.py
+      - name: Install pinned toolchain and native libraries
+        run: |
+          rustup toolchain install 1.98.1 --profile minimal --component rustfmt --component clippy
+          sudo apt-get update > /tmp/chat-batch-evidence/install.log 2>&1
+          sudo apt-get install -y clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil xclip fonts-dejavu-core fonts-liberation >> /tmp/chat-batch-evidence/install.log 2>&1
+      - name: Focused batch regressions and lints
+        run: |
+          cargo +1.98.1 fmt --check -p synara-app -p synara-workspace
+          cargo +1.98.1 test --locked -p synara-workspace --lib storage::conversation_tools::tests
+          cargo +1.98.1 test --locked -p synara-workspace --lib storage::chat_preferences::tests
+          cargo +1.98.1 test --locked -p synara-app --bin synara-app shell::chat_tools::tests
+          cargo +1.98.1 test --locked -p synara-app --bin synara-app shell::transcript::tests
+          cargo +1.98.1 test --locked -p synara-app --bin synara-app shell::environment::tests
+          cargo +1.98.1 clippy --locked --no-deps -p synara-app -p synara-workspace --all-targets -- -D warnings
+      - name: Build application and fixture once
+        id: build
+        run: cargo +1.98.1 build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture
+      - name: Batched native chat utility journey
+        timeout-minutes: 4
+        run: python3 scripts/native_chat_tools_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/chat-batch-tools
+      - name: Environment gestures and pending recovery acceptance
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        timeout-minutes: 4
+        run: python3 scripts/native_environment_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/chat-batch-environment
+      - name: Existing rich transcript and guarded close
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        timeout-minutes: 4
+        run: |
+          python3 scripts/native_rich_text_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/chat-batch-rich-text
+          python3 scripts/native_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/chat-batch-close
+      - name: Verify unchanged candidate source
+        if: ${{ !cancelled() }}
+        run: git diff --exit-code
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: ${{ !cancelled() }}
+        with:
+          name: native-chat-utility-batch
+          path: |
+            /tmp/chat-batch-*/*.png
+            /tmp/chat-batch-*/*.log
+            /tmp/chat-batch-*/result.json
+            /tmp/chat-batch-evidence/revision.txt
+          retention-days: 7
+          if-no-files-found: warn

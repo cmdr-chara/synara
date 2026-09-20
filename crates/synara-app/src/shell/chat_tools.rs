@@ -138,6 +138,13 @@ fn command_text(command: &SlashCommand) -> Option<String> {
             .all(|ch| ch.is_alphanumeric() || matches!(ch, '-' | '_' | ':' | '.')))
     .then(|| format!("/{name} "))
 }
+fn role_label(role: Role) -> &'static str {
+    match role {
+        Role::User => "User",
+        Role::Assistant => "Assistant",
+        Role::Reasoning => "Reasoning",
+    }
+}
 fn snippet(text: &str) -> String {
     text.split_whitespace()
         .take(24)

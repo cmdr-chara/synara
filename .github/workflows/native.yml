@@ -1,159 +1,256 @@
-name: Assemble feature batch (compile only)
+name: Native verification
 on:
   push:
     branches: [astra/gpui-clean-rewrite]
 permissions:
-  contents: write
+  contents: read
 env:
   CARGO_BUILD_JOBS: '2'
-  PYTHONDONTWRITEBYTECODE: '1'
+concurrency:
+  group: native-${{ github.ref }}
+  cancel-in-progress: false
 jobs:
-  finish-chat-batch:
-    if: github.repository == 'cmdr-chara/synara'
+  source:
+    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/gpui-clean-rewrite'
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    permissions:
+      contents: write
+    outputs:
+      revision: ${{ steps.publish.outputs.revision }}
+      scope: ${{ steps.scope.outputs.scope }}
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
-          fetch-depth: 100
-          persist-credentials: false
-      - name: Complete reviewed module and persistence wiring
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          def replace(path, old, new):
-              file = Path(path)
-              text = file.read_text()
-              assert text.count(old) == 1, (path, 'Unexpected source base')
-              file.write_text(text.replace(old, new), encoding='utf-8', newline='')
-          storage = 'crates/synara-workspace/src/storage.rs'
-          replace(storage, 'mod chat_preferences;\n', 'mod chat_preferences;\nmod conversation_tools;\npub use conversation_tools::{MessageAnchor, MessageSearch};\n')
-          replace(storage, 'if let Some(id) = key.strip_prefix("task-draft:") {', 'if let Some(id) = key.strip_prefix("task-draft:").or_else(|| key.strip_prefix("message-pins:")) {')
-          replace(storage, '"DELETE FROM preferences WHERE key=?1",\n            [format!("task-draft:{id}")],', '"DELETE FROM preferences WHERE key IN (?1,?2)",\n            params![format!("task-draft:{id}"), format!("message-pins:{id}")],')
-          replace('crates/synara-app/src/shell/transcript.rs', 'use super::*;\nuse gpui::', 'mod search;\nuse super::*;\nuse gpui::')
-          replace('crates/synara-app/src/shell/chat_tools.rs', 'fn snippet(text: &str) -> String {', 'fn role_label(role: Role) -> &\'static str {\n    match role { Role::User => "User", Role::Assistant => "Assistant", Role::Reasoning => "Reasoning" }\n}\nfn snippet(text: &str) -> String {')
-          replace('ROADMAP.md', 'Local targeted storage/state tests pass. Exact-source native acceptance is recorded\nin the receipt after the combined candidate run, not inferred from compilation.', 'Regression tests are prepared but deferred until the batch is assembled, as requested.\nCompilation is tracked separately from native interaction acceptance in the receipt.')
-          scope = 'scripts/native_ui_scope.py'
-          extra = '''CHAT_TOOLS_ANCHORS = frozenset({
-              'crates/synara-app/src/shell/chat_tools.rs',
-              'crates/synara-workspace/src/storage/conversation_tools.rs',
-              'crates/synara-app/src/shell/transcript/search.rs',
-              'scripts/native_chat_tools_smoke.py',
-          })
-          CHAT_TOOLS_PATHS = UI_PATHS | ENVIRONMENT_PATHS | CHAT_TOOLS_ANCHORS | frozenset({
-              'crates/synara-app/src/shell/activity.rs',
-              'crates/synara-app/src/shell/conversation.rs',
-              'crates/synara-app/src/shell/transcript.rs',
-              '.github/workflows/ui-chat-tools.yml',
-          })
-
-
-          def chat_tools_only(paths):
-              paths = set(paths)
-              return bool(paths & CHAT_TOOLS_ANCHORS) and all(
-                  path in CHAT_TOOLS_PATHS or documentation(path) for path in paths
-              )
-
-
-          '''
-          replace(scope, 'def scope_for_paths(paths):', extra + 'def scope_for_paths(paths):')
-          replace(scope, "    if environment_only(paths):\n        return 'environment'", "    if chat_tools_only(paths):\n        return 'chat-tools'\n    if environment_only(paths):\n        return 'environment'")
-          tests = '''class ChatUtilityScopeTests(unittest.TestCase):
-              def test_batched_chat_tools_select_one_coherent_lane(self):
-                  self.assertEqual(scope_for_paths([
-                      'crates/synara-app/src/shell/chat_tools.rs',
-                      'crates/synara-workspace/src/storage/conversation_tools.rs',
-                      'crates/synara-app/src/shell/transcript/search.rs',
-                      'crates/synara-app/src/shell/environment.rs',
-                      '.github/workflows/ui-chat-tools.yml',
-                  ]), 'chat-tools')
-
-              def test_unrelated_backend_or_dependency_changes_still_require_full_lane(self):
-                  for path in ['Cargo.lock', 'crates/synara-agent/src/lib.rs', 'unknown.rs']:
-                      self.assertEqual(scope_for_paths(['scripts/native_chat_tools_smoke.py', path]), 'full')
-
-
-          '''
-          replace('scripts/test_native_ui_scope.py', "if __name__ == '__main__':", tests + "if __name__ == '__main__':")
-          Path('.github/workflows/native.yml').write_bytes(Path('docs/ui/.batch-native.txt').read_bytes())
-          Path('docs/ui/.batch-native.txt').unlink()
-          print('Completed feature wiring and restored normal verification configuration. No tests run.')
-          PY
-      - name: Install pinned Rust toolchain and compile prerequisites
-        run: |
-          rustup toolchain install 1.98.1 --profile minimal --component rustfmt
-          sudo apt-get update > /tmp/chat-batch-install.log 2>&1
-          sudo apt-get install -y clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev >> /tmp/chat-batch-install.log 2>&1
-      - name: Format and preserve the completed batch
-        id: format
-        run: |
-          cargo +1.98.1 fmt -p synara-app -p synara-workspace
-          python3 - <<'PY'
-          from pathlib import Path
-          for name in ['scripts/native_ui_scope.py', 'scripts/test_native_ui_scope.py', 'scripts/native_chat_tools_smoke.py']:
-              compile(Path(name).read_text(), name, 'exec')
-          PY
-          git diff --check
-          git add -u
-          git diff --cached --stat
-          git write-tree
-          git diff --cached --binary > /tmp/chat-batch-source.patch
-      - name: Retain review objects for plugin publication
-        if: ${{ !cancelled() && steps.format.outcome == 'success' }}
-        continue-on-error: true
+          fetch-depth: 1000
+      - name: Apply an optional checked source package
+        id: publish
+        run: python3 scripts/apply_source.py
+      - name: Select verification from the actual changed paths
+        id: scope
         env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          python3 -u - <<'PY'
-          import json, os, pathlib, subprocess, time, urllib.request, urllib.error
-          def git(*args):
-              return subprocess.check_output(['git', *args]).decode().strip()
-          def api(path, payload):
-              req = urllib.request.Request('https://api.github.com/repos/cmdr-chara/synara/git/' + path,
-                  data=json.dumps(payload).encode(), method='POST', headers={'Authorization': 'Bearer ' + os.environ['GH_TOKEN'], 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json'})
-              try:
-                  with urllib.request.urlopen(req, timeout=30) as response:
-                      result = json.load(response)
-                  time.sleep(0.5)
-                  return result
-              except urllib.error.HTTPError as error:
-                  print('HANDOFF_ERROR', path, error.code, error.read().decode()[:1500])
-                  raise
-          head = git('rev-parse', 'HEAD')
-          paths = subprocess.check_output(['git', 'diff', '--cached', '--name-only', '-z']).decode().rstrip('\0').split('\0')
-          entries = []
-          for path in paths:
-              file = pathlib.Path(path)
-              print('SOURCE_PATH', path)
-              if file.exists():
-                  local_blob = git('hash-object', '--', path)
-                  if path == '.github/workflows/native.yml':
-                      assert local_blob == '2dcfb0993c6eef2a5e8b51623a898e426598dd47'
-                      blob = local_blob
-                  else:
-                      blob = api('blobs', {'content': file.read_bytes().decode(), 'encoding': 'utf-8'})['sha']
-                  assert blob == local_blob
-                  mode = git('ls-files', '-s', '--', path).split()[0]
-                  entries.append({'path': path, 'mode': mode, 'type': 'blob', 'sha': blob})
-                  print('RETAINED_BLOB', path, blob)
-              else:
-                  entries.append({'path': path, 'mode': '100644', 'type': 'blob', 'sha': None})
-          tree = api('trees', {'base_tree': git('rev-parse', 'HEAD^{tree}'), 'tree': entries})['sha']
-          assert tree == git('write-tree')
-          commit = api('commits', {'message': 'feat(ui): complete batched conversation search, pins, export and draft utilities [skip ci]', 'tree': tree, 'parents': [head]})['sha']
-          print('FINAL_SOURCE_TREE', tree)
-          print('FINAL_SOURCE_COMMIT', commit)
-          print('Review objects retained. Branch publication uses the GitHub plugin.')
-          PY
-      - name: Compile assembled batch once (tests deferred)
-        if: ${{ !cancelled() && steps.format.outcome == 'success' }}
-        run: cargo +1.98.1 check --locked -p synara-app --bin synara-app
-      - name: Assert no source mutation during compilation
-        if: ${{ !cancelled() && steps.format.outcome == 'success' }}
-        run: git diff --exit-code
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: ${{ !cancelled() && steps.format.outcome == 'success' }}
+          BASE_REVISION: ${{ github.event.before }}
+          CANDIDATE_REVISION: ${{ steps.publish.outputs.revision }}
+        run: python3 scripts/native_ui_scope.py "$BASE_REVISION" "$CANDIDATE_REVISION" >> "$GITHUB_OUTPUT"
+  presentation:
+    needs: source
+    if: needs.source.outputs.scope == 'presentation'
+    uses: ./.github/workflows/ui-presentation.yml
+    with:
+      revision: ${{ needs.source.outputs.revision }}
+  environment:
+    needs: source
+    if: needs.source.outputs.scope == 'environment'
+    uses: ./.github/workflows/ui-environment.yml
+    with:
+      revision: ${{ needs.source.outputs.revision }}
+  chat-tools:
+    needs: source
+    if: needs.source.outputs.scope == 'chat-tools'
+    uses: ./.github/workflows/ui-chat-tools.yml
+    with:
+      revision: ${{ needs.source.outputs.revision }}
+  linux:
+    needs: source
+    if: needs.source.outputs.scope != 'presentation' && needs.source.outputs.scope != 'environment' && needs.source.outputs.scope != 'docs' && needs.source.outputs.scope != 'chat-tools'
+    timeout-minutes: 35
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
-          name: chat-batch-source-patch
-          path: /tmp/chat-batch-source.patch
+          ref: ${{ needs.source.outputs.revision }}
+          fetch-depth: 1000
+          persist-credentials: false
+      - name: Install pinned Rust toolchain
+        run: rustup toolchain install 1.98.1 --profile minimal --component rustfmt --component clippy
+      - name: Native system libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil xclip fonts-dejavu-core fonts-liberation
+      - name: Fetch pinned dependencies
+        run: cargo +1.98.1 fetch --locked
+      - name: Choose dependency cache export
+        id: cache
+        shell: bash
+        run: |
+          if git rev-parse --verify HEAD^ >/dev/null 2>&1 && git diff --quiet HEAD^ HEAD -- Cargo.lock rust-toolchain.toml; then
+            echo 'export=false' >> "$GITHUB_OUTPUT"
+          else
+            echo 'export=true' >> "$GITHUB_OUTPUT"
+          fi
+      - name: Export dependency and native development cache
+        if: always() && steps.cache.outputs.export == 'true'
+        shell: bash
+        run: |
+          mkdir -p /tmp/native-metadata /tmp/native-cache
+          git bundle create /tmp/native-metadata/source.bundle HEAD
+          git rev-parse HEAD > /tmp/native-metadata/revision.txt
+          if test -f Cargo.lock; then cp Cargo.lock /tmp/native-metadata/Cargo.lock; fi
+          paths=()
+          for path in registry git; do
+            if test -d "$HOME/.cargo/$path"; then paths+=("$path"); fi
+          done
+          if test "${#paths[@]}" -gt 0; then tar -C "$HOME/.cargo" -czf /tmp/native-cache/dependencies.tar.gz "${paths[@]}"; fi
+          python3 - <<'PY'
+          import glob, pathlib, tarfile
+          paths = ['/usr/include', '/usr/lib/x86_64-linux-gnu/pkgconfig', '/usr/share/pkgconfig']
+          names = ['xkbcommon', 'wayland', 'fontconfig', 'freetype', 'asound', 'vulkan', 'EGL', 'GL', 'X', 'xcb', 'ffi', 'zstd', 'brotli', 'bz2', 'png', 'expat', 'uuid', 'z', 'drm', 'gbm', 'udev', 'dbus']
+          for name in names:
+              paths.extend(glob.glob('/usr/lib/x86_64-linux-gnu/lib' + name + '*.so*'))
+          paths.extend(glob.glob('/usr/lib/llvm-*/lib/libclang.so*'))
+          with tarfile.open('/tmp/native-metadata/native-sysroot.tar.gz', 'w:gz', dereference=True) as archive:
+              for name in sorted(set(paths)):
+                  if pathlib.Path(name).exists(): archive.add(name, arcname=name.lstrip('/'))
+          PY
+          split -b 400M -d /tmp/native-cache/dependencies.tar.gz /tmp/native-cache/dependencies.part-
+          sha256sum /tmp/native-cache/dependencies.tar.gz > /tmp/native-metadata/dependencies.sha256
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always() && steps.cache.outputs.export == 'true'
+        with:
+          name: native-metadata
+          path: /tmp/native-metadata/
+          retention-days: 1
+          compression-level: 0
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always() && steps.cache.outputs.export == 'true'
+        with:
+          name: native-dependencies-00
+          path: /tmp/native-cache/dependencies.part-00
+          retention-days: 1
+          compression-level: 0
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always() && steps.cache.outputs.export == 'true'
+        with:
+          name: native-dependencies-01
+          path: /tmp/native-cache/dependencies.part-01
+          retention-days: 1
+          compression-level: 0
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always() && steps.cache.outputs.export == 'true'
+        with:
+          name: native-dependencies-02
+          path: /tmp/native-cache/dependencies.part-02
+          retention-days: 1
+          compression-level: 0
+      - name: Workspace structure
+        run: python3 scripts/audit_workspace.py
+      - name: Formatting
+        run: cargo +1.98.1 fmt --check
+      - name: Compile
+        if: always()
+        run: cargo +1.98.1 check --locked --workspace
+      - name: Lints
+        if: always()
+        run: cargo +1.98.1 clippy --locked --workspace --all-targets --all-features -- -D warnings
+      - name: Tests
+        if: always()
+        run: cargo +1.98.1 test --locked --workspace
+      - name: Publisher regression tests
+        if: always()
+        run: python3 scripts/test_apply_source.py
+      - name: Build native application and ACP fixture
+        run: cargo +1.98.1 build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture
+      - name: Native desktop interaction smoke
+        timeout-minutes: 3
+        run: python3 scripts/native_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/synara-native-smoke
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-desktop-smoke
+          path: |
+            /tmp/synara-native-smoke/*.png
+            /tmp/synara-native-smoke/*.log
+            /tmp/synara-native-smoke/result.json
+          retention-days: 7
+          if-no-files-found: warn
+      - name: Native navigation and backend interaction smoke
+        timeout-minutes: 4
+        run: python3 scripts/native_navigation_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/synara-navigation-smoke
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-navigation-smoke
+          path: |
+            /tmp/synara-navigation-smoke/*.png
+            /tmp/synara-navigation-smoke/result.json
+          retention-days: 7
+          if-no-files-found: warn
+      - name: Native composer and session control smoke
+        timeout-minutes: 4
+        run: python3 scripts/native_controls_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/synara-controls-smoke
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-controls-smoke
+          path: |
+            /tmp/synara-controls-smoke/*.png
+            /tmp/synara-controls-smoke/*.log
+            /tmp/synara-controls-smoke/result.json
+          retention-days: 7
+          if-no-files-found: warn
+      - name: Native presentation geometry and motion smoke
+        timeout-minutes: 3
+        run: python3 scripts/native_presentation_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/synara-presentation-smoke
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-presentation-smoke
+          path: |
+            /tmp/synara-presentation-smoke/*.png
+            /tmp/synara-presentation-smoke/*.log
+            /tmp/synara-presentation-smoke/result.json
+          retention-days: 7
+          if-no-files-found: warn
+      - name: Native transcript and split workspace visual smoke
+        timeout-minutes: 3
+        run: python3 scripts/native_chat_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/synara-chat-smoke
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-chat-smoke
+          path: |
+            /tmp/synara-chat-smoke/*.png
+            /tmp/synara-chat-smoke/*.log
+            /tmp/synara-chat-smoke/result.json
+          retention-days: 7
+          if-no-files-found: warn
+      - name: Native chat creation, Studio and settings smoke
+        timeout-minutes: 4
+        run: python3 scripts/native_studio_settings_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/synara-studio-settings-smoke
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-studio-settings-smoke
+          path: |
+            /tmp/synara-studio-settings-smoke/*.png
+            /tmp/synara-studio-settings-smoke/*.log
+            /tmp/synara-studio-settings-smoke/result.json
+          retention-days: 7
+          if-no-files-found: warn
+      - name: Export reproducible verification inputs
+        if: always()
+        run: |
+          mkdir -p /tmp/native-build-inputs
+          git bundle create /tmp/native-build-inputs/source.bundle HEAD
+          git rev-parse HEAD > /tmp/native-build-inputs/revision.txt
+          if test -f Cargo.lock; then cp Cargo.lock /tmp/native-build-inputs/Cargo.lock; fi
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-linux-build-inputs
+          path: /tmp/native-build-inputs/
+          retention-days: 1
+          compression-level: 0
+      - name: Native Environment workspace
+        timeout-minutes: 4
+        run: python3 scripts/native_environment_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/synara-environment
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-environment
+          path: |
+            /tmp/synara-environment/*.png
+            /tmp/synara-environment/*.log
+            /tmp/synara-environment/result.json
           retention-days: 7

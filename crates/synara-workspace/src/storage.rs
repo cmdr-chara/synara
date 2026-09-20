@@ -1,4 +1,6 @@
 mod chat_preferences;
+mod conversation_tools;
+pub use conversation_tools::{MessageAnchor, MessageSearch};
 mod task_creation;
 pub use chat_preferences::ModelFavorite;
 mod recovery;
@@ -264,8 +266,8 @@ PRAGMA user_version=2;")?;
             [task.thread_id.to_string()],
         )?;
         tx.execute(
-            "DELETE FROM preferences WHERE key=?1",
-            [format!("task-draft:{id}")],
+            "DELETE FROM preferences WHERE key IN (?1,?2)",
+            params![format!("task-draft:{id}"), format!("message-pins:{id}")],
         )?;
         let changed = tx.execute("DELETE FROM tasks WHERE id=?1", [id.to_string()])?;
         tx.commit()?;
@@ -533,7 +535,10 @@ fn valid_preference_key(key: &str) -> bool {
     if matches!(key, "model-favorites" | "environment-layout") {
         return true;
     }
-    if let Some(id) = key.strip_prefix("task-draft:") {
+    if let Some(id) = key
+        .strip_prefix("task-draft:")
+        .or_else(|| key.strip_prefix("message-pins:"))
+    {
         return id.len() == 36
             && serde_json::from_value::<TaskId>(serde_json::Value::String(id.into())).is_ok();
     }

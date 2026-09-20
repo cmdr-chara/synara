@@ -14,8 +14,8 @@ prompt reuse/quotation, advertised slash-command insertion and cross-scope threa
 finding. All actions preserve existing drafts, event history and agent authority.
 The [chat utility receipt](docs/ui/parity-chat-tools.md) distinguishes text-only
 export and draft reuse from still-missing multimodal sharing, rollback and resend.
-Local targeted storage/state tests pass. Exact-source native acceptance is recorded
-in the receipt after the combined candidate run, not inferred from compilation.
+Regression tests are prepared but deferred until the batch is assembled, as requested.
+Compilation is tracked separately from native interaction acceptance in the receipt.
 D8/D9/D12/F2/F8/I10 remain open for their full scope. Theme defaults are unchanged.
 
 ### September 20: Environment workspace interaction

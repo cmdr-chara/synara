@@ -403,10 +403,13 @@ mod tests {
         let service = WorkspaceService::memory().unwrap();
         service
             .access(|store| {
-                store.connection.execute(
-                    "INSERT INTO preferences(key,data) VALUES(?1,?2)",
-                    params![KEY, "{\"version\":99}"],
-                )?;
+                store
+                    .connection
+                    .execute(
+                        "INSERT INTO preferences(key,data) VALUES(?1,?2)",
+                        params![KEY, "{\"version\":99}"],
+                    )
+                    .map_err(StorageError::from)?;
                 Ok(())
             })
             .await

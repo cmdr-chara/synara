@@ -6,6 +6,18 @@ It is a living engineering document, not a release announcement.
 
 ## Current checkpoint
 
+### September 20: Spaces and organization batch
+
+Space tabs, create/rename/icon editing, ordering, project assignment and guarded
+Space deletion are implemented as a new candidate. Deleting a Space returns its
+projects to Void without deleting files or chats. Project and thread pins are
+persisted and ordered ahead of unpinned entries. Switching Spaces filters the
+sidebar without stopping tools or changing the active conversation. Keyboard
+switching/reordering and activity indicators use the existing native controls.
+The [organization receipt](docs/ui/parity-organization-context.md) separates source
+implementation from targeted and native acceptance. No F7/F8/I10 gate is closed
+until its evidence exists. Original theme defaults remain unchanged.
+
 ### September 20: batched native chat utilities
 
 The coherent chat batch adds literal transcript search with work-log navigation,

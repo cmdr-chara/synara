@@ -231,6 +231,7 @@ impl Shell {
         .aria_label(format!("{} · {:?}", task.title, task.state))
         .relative()
         .child(ui::layout_probe_slot("thread-row", index))
+        .child(self.thread_pin_button(task, cx))
         .children(
             (self.busy.contains(&id) || self.connecting.contains(&id))
                 .then(|| div().size(px(5.)).rounded_full().bg(rgb(palette().focus))),
@@ -265,15 +266,19 @@ impl Shell {
         if self.settings.value.general.oldest_threads_first {
             tasks.reverse();
         }
+        tasks.sort_by_key(|task| !self.pinned_thread(task.id));
         let mut projects: Vec<_> = self
             .catalog
             .projects
             .iter()
-            .filter(|project| !self.is_chat_workspace(project))
+            .filter(|project| {
+                !self.is_chat_workspace(project) && self.project_in_active_space(project.id)
+            })
             .collect();
         if self.settings.value.general.alphabetical_projects {
             projects.sort_by_key(|project| project.name.to_lowercase());
         }
+        projects.sort_by_key(|project| !self.pinned_project(project.id));
         let project_start = page_start(self.navigation.project_page, projects.len());
         let shown = self
             .navigation
@@ -384,6 +389,7 @@ impl Shell {
                             })),
                     ),
             )
+            .children((!studio).then(|| self.space_strip(cx)))
             .children(
                 self.navigation
                     .search_open

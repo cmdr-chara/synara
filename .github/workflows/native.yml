@@ -1,4 +1,4 @@
-name: Organization feature batch
+name: Combined Spaces and notes batch
 on:
   push:
     branches: [astra/gpui-clean-rewrite]
@@ -8,28 +8,37 @@ env:
   CARGO_BUILD_JOBS: '2'
   PYTHONDONTWRITEBYTECODE: '1'
 jobs:
-  organization-batch:
+  organization-context:
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
           fetch-depth: 100
           persist-credentials: false
-      - name: Wire the exact-base feature batch
-        run: python3 scripts/assemble_organization.py
+      - name: Integrate saved context and IME shortcut guard
+        run: python3 scripts/assemble_saved_context.py
       - name: Install pinned build prerequisites
         run: |
           rustup toolchain install 1.98.1 --profile minimal --component rustfmt
-          sudo apt-get update > /tmp/organization-install.log 2>&1
-          sudo apt-get install -y clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev >> /tmp/organization-install.log 2>&1
-      - name: Format and retain exact source blobs
+          sudo apt-get update > /tmp/org-context-install.log 2>&1
+          sudo apt-get install -y clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil xclip fonts-dejavu-core fonts-liberation >> /tmp/org-context-install.log 2>&1
+      - name: Format and retain the exact combined source
+        id: formatted
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           cargo +1.98.1 fmt -p synara-app -p synara-workspace
           git diff --check
+          python3 - <<'PY'
+          from pathlib import Path
+          compile(Path('scripts/native_organization_context_smoke.py').read_text(), 'native_organization_context_smoke.py', 'exec')
+          PY
+          python3 scripts/check_roadmap.py
           git add -u
+          mkdir -p /tmp/org-context-evidence
+          git write-tree | tee /tmp/org-context-evidence/tree.txt
+          git diff --cached > /tmp/org-context-evidence/source.patch
           python3 -u - <<'PY'
           import json, os, pathlib, subprocess, time, urllib.request
           def git(*args): return subprocess.check_output(['git', *args]).decode().strip()
@@ -42,15 +51,38 @@ jobs:
                   continue
               sha = git('hash-object', '--', path)
               if not path.startswith('.github/'):
-                  req = urllib.request.Request('https://api.github.com/repos/cmdr-chara/synara/git/blobs', data=json.dumps({'content': file.read_text(), 'encoding':'utf-8'}).encode(), method='POST', headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'], 'Accept':'application/vnd.github+json','Content-Type':'application/json'})
+                  req = urllib.request.Request('https://api.github.com/repos/cmdr-chara/synara/git/blobs', data=json.dumps({'content':file.read_text(),'encoding':'utf-8'}).encode(), method='POST', headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json','Content-Type':'application/json'})
                   with urllib.request.urlopen(req, timeout=30) as response: assert json.load(response)['sha'] == sha
                   time.sleep(0.3)
               print('SOURCE_BLOB', path, sha)
-          print(git('diff','--cached','--stat'))
+          print(git('diff', '--cached', '--stat'))
           PY
-      - name: Compile application once
-        run: cargo +1.98.1 check --locked -p synara-app --bin synara-app
-      - name: Focused organization persistence regressions
-        run: cargo +1.98.1 test --locked -p synara-workspace --lib storage::organization::tests
-      - name: No source mutation
-        run: git diff --exit-code
+      - name: Focused organization and context persistence tests
+        id: tests
+        run: |
+          cargo +1.98.1 test --locked -p synara-workspace --lib storage::organization::tests
+          cargo +1.98.1 test --locked -p synara-workspace --lib storage::task_context::tests
+      - name: Build native application and fixture once
+        id: build
+        if: ${{ !cancelled() && steps.formatted.outcome == 'success' }}
+        run: cargo +1.98.1 build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture
+      - name: One combined native interaction journey
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        timeout-minutes: 4
+        run: python3 scripts/native_organization_context_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/org-context-native
+      - name: Verify candidate identity
+        if: ${{ !cancelled() && steps.formatted.outcome == 'success' }}
+        run: |
+          git diff --exit-code
+          test "$(git write-tree)" = "$(cat /tmp/org-context-evidence/tree.txt)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: ${{ !cancelled() }}
+        with:
+          name: organization-context-batch
+          path: |
+            /tmp/org-context-evidence/
+            /tmp/org-context-native/*.png
+            /tmp/org-context-native/*.log
+            /tmp/org-context-native/result.json
+          retention-days: 7
+          if-no-files-found: warn

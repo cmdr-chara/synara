@@ -1,4 +1,6 @@
 mod chat_preferences;
+mod organization;
+pub use organization::{NativeSpace, OrganizationEdit, SpaceSymbol, WorkspaceOrganization};
 mod conversation_tools;
 pub use conversation_tools::{MessageAnchor, MessageSearch};
 mod task_creation;
@@ -532,7 +534,10 @@ fn database_path(path: &Path) -> StorageResult<std::path::PathBuf> {
     Ok(parent.canonicalize()?.join(name))
 }
 fn valid_preference_key(key: &str) -> bool {
-    if matches!(key, "model-favorites" | "environment-layout") {
+    if matches!(
+        key,
+        "model-favorites" | "environment-layout" | "workspace-organization"
+    ) {
         return true;
     }
     if let Some(id) = key

@@ -1,7 +1,12 @@
 name: SSH transport verification
 on:
+  workflow_call:
+    inputs:
+      revision:
+        required: true
+        type: string
   push:
-    branches: [astra/gpui-clean-rewrite, astra/session-ajm]
+    branches: [astra/session-ajm]
 permissions:
   contents: read
 concurrency:
@@ -12,13 +17,13 @@ env:
   RUSTUP_TOOLCHAIN: '1.98.1'
 jobs:
   loopback:
-    if: github.repository == 'cmdr-chara/synara' && (github.ref == 'refs/heads/astra/gpui-clean-rewrite' || github.ref == 'refs/heads/astra/session-ajm')
+    if: github.repository == 'cmdr-chara/synara' && (github.event_name == 'workflow_call' || github.ref == 'refs/heads/astra/session-ajm')
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
-          ref: ${{ github.sha }}
+          ref: ${{ github.event_name == 'workflow_call' && inputs.revision || github.sha }}
           persist-credentials: false
       - name: Record exact SSH candidate
         run: |

@@ -99,9 +99,17 @@ impl TerminalSession {
     }
 }
 
+/// Only native workspace commands, never shell text or provider permissions.
+pub(super) enum WorkspaceEvent { Focused, New, Next(bool), Find, Close }
+impl gpui::EventEmitter<WorkspaceEvent> for TerminalView {}
+
 pub(super) struct TerminalView {
     focus: FocusHandle,
+    reported_focus: bool,
+    pending_focus: Option<FocusHandle>,
     session: Option<TerminalSession>,
+    history: Option<TerminalSession>,
+    find_cursor: Option<(String, u64, usize)>,
     snapshot: Option<TerminalRenderSnapshot>,
     bounds: Bounds<Pixels>,
     selection: Option<((u16, u16), (u16, u16))>,
@@ -123,7 +131,11 @@ impl TerminalView {
     pub(super) fn new(cx: &mut Context<Self>) -> Self {
         Self {
             focus: cx.focus_handle(),
+            reported_focus: false,
+            pending_focus: None,
             session: None,
+            history: None,
+            find_cursor: None,
             snapshot: None,
             bounds: Bounds::default(),
             selection: None,
@@ -138,6 +150,8 @@ impl TerminalView {
 
     pub(super) fn set_session(&mut self, session: TerminalSession, cx: &mut Context<Self>) {
         self.session = Some(session);
+        self.history = None;
+        self.find_cursor = None;
         self.snapshot = None;
         self.selection = None;
         self.pending_paste = None;
@@ -166,7 +180,7 @@ impl TerminalView {
     }
 
     pub(super) fn clear_session(&mut self, cx: &mut Context<Self>) {
-        self.session = None;
+        self.history = self.session.take();
         self.pending_paste = None;
         self.preedit.clear();
         cx.notify();
@@ -231,6 +245,75 @@ impl TerminalView {
             row.min(grid.rows.saturating_sub(1)),
             column.min(grid.columns.saturating_sub(1)),
         ))
+    }
+
+    pub(super) fn request_focus(&mut self, target: Option<FocusHandle>, cx: &mut Context<Self>) {
+        self.pending_focus = Some(target.unwrap_or_else(|| self.focus.clone()));
+        cx.notify();
+    }
+
+    pub(super) fn selection_or_viewport(&self) -> String {
+        self.selected_text().unwrap_or_else(|| self.snapshot.as_ref()
+            .map_or_else(String::new, |snapshot| snapshot.grid.plain_text()))
+    }
+
+    pub(super) fn follow_output(&mut self, cx: &mut Context<Self>) {
+        if let Some(session) = self.session.as_ref().or(self.history.as_ref()) {
+            match session.scrollback(0) {
+                Ok(()) => { self.scrollback = 0; self.selection = None; }
+                Err(error) => self.error = Some(error.to_string()),
+            }
+        }
+        cx.notify();
+    }
+
+    /// Exact, case-sensitive search in the current bounded terminal viewport.
+    /// Match offsets are converted back to cells, including wide Unicode glyphs.
+    pub(super) fn find_visible(&mut self, query: &str, backwards: Option<bool>, cx: &mut Context<Self>) -> (usize, usize) {
+        if query.is_empty() || query.len() > 512 {
+            self.find_cursor = None;
+            self.selection = None;
+            cx.notify();
+            return (0, 0);
+        }
+        let Some(snapshot) = &self.snapshot else { return (0, 0) };
+        let grid = &snapshot.grid;
+        let mut matches = Vec::new();
+        for row in 0..grid.rows {
+            let mut text = String::new();
+            let mut cells = Vec::new();
+            for column in 0..grid.columns {
+                let Some(cell) = grid.cell(row, column) else { continue };
+                if cell.continuation { continue; }
+                let start = text.len();
+                text.push_str(if cell.text.is_empty() { " " } else { &cell.text });
+                cells.push((start, text.len(), column));
+            }
+            for (offset, _) in text.match_indices(query) {
+                let start = cells.iter().find(|(a, b, _)| *a <= offset && offset < *b);
+                let end = cells.iter().find(|(a, b, _)| *a < offset + query.len() && offset + query.len() <= *b);
+                if let (Some((_, _, start)), Some((_, _, end))) = (start, end) {
+                    matches.push(((row, *start), (row, *end)));
+                }
+            }
+        }
+        if matches.is_empty() {
+            self.selection = None;
+            self.find_cursor = None;
+            cx.notify();
+            return (0, 0);
+        }
+        let previous = self.find_cursor.as_ref().filter(|(text, revision, _)| text == query && *revision == grid.revision).map(|(_, _, index)| *index);
+        let index = match (previous, backwards) {
+            (Some(index), Some(true)) => (index + matches.len() - 1) % matches.len(),
+            (Some(index), Some(false)) => (index + 1) % matches.len(),
+            (Some(index), None) => index % matches.len(),
+            _ => 0,
+        };
+        self.selection = Some(matches[index]);
+        self.find_cursor = Some((query.into(), grid.revision, index));
+        cx.notify();
+        (index + 1, matches.len())
     }
 
     fn selected_text(&self) -> Option<String> {
@@ -318,6 +401,20 @@ impl TerminalView {
 
     fn key(&mut self, event: &KeyDownEvent, _: &mut Window, cx: &mut Context<Self>) {
         let modifiers = event.keystroke.modifiers;
+        if (modifiers.control || modifiers.platform) && !modifiers.alt && !event.is_held {
+            let action = match event.keystroke.key.as_str() {
+                "t" if modifiers.shift => Some(WorkspaceEvent::New),
+                "f" if modifiers.shift => Some(WorkspaceEvent::Find),
+                "w" if modifiers.shift => Some(WorkspaceEvent::Close),
+                "tab" => Some(WorkspaceEvent::Next(modifiers.shift)),
+                _ => None,
+            };
+            if let Some(action) = action {
+                cx.emit(action);
+                cx.stop_propagation();
+                return;
+            }
+        }
         let copy = (modifiers.platform && !modifiers.control && !modifiers.alt)
             || (modifiers.control && modifiers.shift && !modifiers.alt && !modifiers.platform);
         if copy && event.keystroke.key.eq_ignore_ascii_case("c") && self.copy_selection(cx) {
@@ -390,7 +487,7 @@ impl TerminalView {
         } else {
             return;
         };
-        if let Some(session) = &self.session {
+        if let Some(session) = self.session.as_ref().or(self.history.as_ref()) {
             match session.scrollback(next) {
                 Ok(()) => {
                     self.scrollback = next;
@@ -420,7 +517,11 @@ impl TerminalView {
 }
 
 impl gpui::Render for TerminalView {
-    fn render(&mut self, _: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+    fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+        if let Some(focus) = self.pending_focus.take() { window.focus(&focus, cx); }
+        let focused = self.focus.is_focused(window);
+        if focused && !self.reported_focus { cx.emit(WorkspaceEvent::Focused); }
+        self.reported_focus = focused;
         let entity = cx.entity();
         let paint_entity = entity.clone();
         let pending = self.pending_paste.clone();
@@ -439,6 +540,7 @@ impl gpui::Render for TerminalView {
                 MouseButton::Left,
                 cx.listener(|this, event: &gpui::MouseDownEvent, window, cx| {
                     window.focus(&this.focus, cx);
+                    cx.emit(WorkspaceEvent::Focused);
                     if let Some(cell) = this.cell_at(event.position) {
                         if event.modifiers.shift {
                             let start = this.selection.map_or(cell, |selection| selection.0);

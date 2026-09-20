@@ -23,6 +23,7 @@ mod saved_context;
 mod settings;
 mod studio;
 mod terminal;
+mod terminals;
 mod transcript;
 use crate::close::CloseState;
 use crate::input::{EntryEvent, EntryMode, TextEntry};
@@ -84,6 +85,7 @@ struct FormState {
     error: Option<String>,
 }
 enum Update {
+    Terminals(Box<terminals::Reply>),
     Review(Box<review::Reply>),
     Explorer(Box<explorer::ExplorerReply>),
     Studio(Box<studio::StudioReply>),
@@ -144,29 +146,12 @@ enum Update {
         text: String,
         version: synara_runtime::FileVersion,
     },
-    TerminalStarted {
-        root: PathBuf,
-        generation: u64,
-        terminal: TerminalSession,
-    },
-    TerminalOutput {
-        root: PathBuf,
-        generation: u64,
-        snapshot: TerminalRenderSnapshot,
-    },
-    TerminalFailed {
-        generation: u64,
-        error: String,
-    },
-    TerminalShutdown {
-        generation: u64,
-        error: Option<String>,
-    },
     Tick,
     Done(String),
     Error(String),
 }
 pub struct Shell {
+    terminals: terminals::TerminalWorkspace,
     editors: editors::EditorState,
     command_palette: command_palette::PaletteState,
     review: review::ReviewState,
@@ -209,6 +194,7 @@ pub struct Shell {
     task_title: Entity<TextEntry>,
     editor: Entity<TextEntry>,
     file_search: Entity<TextEntry>,
+    // Focus-only alias for existing shell shortcut guards. Ownership is in terminals.
     terminal_view: Entity<TerminalView>,
     drafts: HashMap<TaskId, String>,
     draft_state: drafts::DraftState,
@@ -229,10 +215,6 @@ pub struct Shell {
     file_page: usize,
     document: Option<Document>,
     saving: bool,
-    terminal: Option<TerminalSession>,
-    terminal_root: Option<PathBuf>,
-    terminal_generation: u64,
-    terminal_starting: bool,
     terminal_closing: bool,
     polling: bool,
     _updates: gpui::Task<()>,
@@ -403,6 +385,7 @@ impl Shell {
                     .map(|t| t.id)
             });
         let mut this = Self {
+            terminals: terminals::TerminalWorkspace::default(),
             editors: editors::EditorState::new(cx),
             command_palette: command_palette::PaletteState::new(cx),
             review: review::ReviewState::default(),
@@ -465,10 +448,6 @@ impl Shell {
             file_page: 0,
             document: None,
             saving: false,
-            terminal: None,
-            terminal_root: None,
-            terminal_generation: 0,
-            terminal_starting: false,
             terminal_closing: false,
             polling: false,
             _updates: updates,
@@ -550,6 +529,9 @@ impl Shell {
             cx.notify();
             return;
         }
+        if self.terminal_layout_before_quit(cx) {
+            return;
+        }
         if self.review_before_quit(cx) {
             return;
         }
@@ -564,38 +546,7 @@ impl Shell {
         if self.save_drafts_before_quit(cx) {
             return;
         }
-        self.terminal_closing = true;
-        if self.terminal_starting {
-            self.notice = Some("Waiting for terminal startup before closing Synara...".into());
-            cx.notify();
-            return;
-        }
-        let Some(terminal) = self.terminal.clone() else {
-            self.terminal_closing = false;
-            cx.quit();
-            return;
-        };
-        let generation = self.terminal_generation;
-        self.notice = Some("Stopping the terminal before closing Synara...".into());
-        self.queue_terminal_shutdown(terminal, generation);
-        cx.notify();
-    }
-
-    fn queue_terminal_shutdown(&self, terminal: TerminalSession, generation: u64) {
-        self.job(async move {
-            let result = async {
-                terminal.kill()?;
-                tokio::time::timeout(std::time::Duration::from_secs(5), terminal.wait())
-                    .await
-                    .map_err(|_| synara_runtime::RuntimeError::Timeout)??;
-                Ok::<(), synara_runtime::RuntimeError>(())
-            }
-            .await;
-            Ok(Update::TerminalShutdown {
-                generation,
-                error: result.err().map(|error| error.to_string()),
-            })
-        });
+        self.begin_terminal_shutdown(cx);
     }
 
     fn retire_terminal(&self, terminal: TerminalSession) {
@@ -619,7 +570,7 @@ impl Shell {
                         cx.notify();
                     }
                 }))
-                .child(div().text_xl().child(if terminal_closing && self.terminal_starting {
+                .child(div().text_xl().child(if terminal_closing && self.terminals.starting() {
                     "Waiting for terminal startup before closing Synara"
                 } else if terminal_closing {
                     "Stopping terminal before closing Synara"
@@ -1199,155 +1150,7 @@ impl Shell {
         });
         cx.notify();
     }
-    fn start_terminal(&mut self, cx: &mut Context<Self>) {
-        let Some(target) = self.workspace_target() else {
-            return;
-        };
-        let root = target.root().clone();
-        if self.terminal_starting || self.terminal_closing {
-            return;
-        }
-        let previous = self.terminal.take();
-        self.terminal_generation = self.terminal_generation.wrapping_add(1);
-        let generation = self.terminal_generation;
-        self.terminal_starting = true;
-        self.terminal_root = None;
-        self.terminal_view
-            .update(cx, |terminal, cx| terminal.clear_session(cx));
-        let workspace_service = self.controller.workspace.clone();
-        self.job(async move {
-            if let Some(previous) = previous {
-                let cleanup = async {
-                    previous.kill()?;
-                    tokio::time::timeout(std::time::Duration::from_secs(5), previous.wait())
-                        .await
-                        .map_err(|_| synara_runtime::RuntimeError::Timeout)??;
-                    Ok::<(), synara_runtime::RuntimeError>(())
-                }
-                .await;
-                if let Err(error) = cleanup {
-                    return Ok(Update::TerminalFailed {
-                        generation,
-                        error: format!("previous terminal cleanup failed: {error}"),
-                    });
-                }
-            }
-            let result = match target {
-                WorkspaceTarget::Local { root: cwd } => {
-                    tokio::task::spawn_blocking(move || {
-                        #[cfg(windows)]
-                        let command =
-                            std::env::var("COMSPEC").unwrap_or_else(|_| "cmd.exe".into());
-                        #[cfg(not(windows))]
-                        let command =
-                            std::env::var("SHELL").unwrap_or_else(|_| "/bin/sh".into());
-                        NativeTerminal::spawn(
-                            &synara_runtime::LaunchSpec::new(command),
-                            &cwd,
-                            24,
-                            88,
-                        )
-                        .map(|terminal| TerminalSession::Local(Arc::new(terminal)))
-                    })
-                    .await
-                    .map_err(|_| WorkspaceError::Worker)?
-                    .map_err(WorkspaceError::from)
-                }
-                WorkspaceTarget::Ssh { workspace, root } => {
-                    #[cfg(unix)]
-                    {
-                        let profile = workspace_service
-                            .ssh_profile(workspace.id)
-                            .await?
-                            .ok_or_else(|| {
-                                WorkspaceError::Invalid(
-                                    "remote workspace is missing its pinned SSH profile".into(),
-                                )
-                            })?;
-                        let host = profile.host(&workspace)?;
-                        tokio::task::spawn_blocking(move || {
-                            synara_runtime::RemoteTerminal::spawn(
-                                &host,
-                                &synara_runtime::LaunchSpec::new("/bin/sh"),
-                                &root,
-                                24,
-                                88,
-                            )
-                            .map(|terminal| TerminalSession::Remote(Arc::new(terminal)))
-                        })
-                        .await
-                        .map_err(|_| WorkspaceError::Worker)?
-                        .map_err(WorkspaceError::from)
-                    }
-                    #[cfg(not(unix))]
-                    {
-                        let _ = (workspace_service, workspace, root);
-                        Err(WorkspaceError::Runtime(
-                            synara_runtime::RuntimeError::Unsupported(
-                                "remote interactive terminals currently require the validated Unix PTY backend".into(),
-                            ),
-                        ))
-                    }
-                }
-            };
-            match result {
-                Ok(terminal) => Ok(Update::TerminalStarted {
-                    root,
-                    generation,
-                    terminal,
-                }),
-                Err(error) => Ok(Update::TerminalFailed {
-                    generation,
-                    error: error.to_string(),
-                }),
-            }
-        });
-        self.notice = Some("Starting an interactive shell in the selected workspace".into());
-        cx.notify();
-    }
-
-    fn interrupt_terminal(&mut self, cx: &mut Context<Self>) {
-        if let Some(terminal) = &self.terminal {
-            let result = terminal.key(
-                TerminalKey::Character('c'),
-                TerminalModifiers {
-                    control: true,
-                    ..TerminalModifiers::default()
-                },
-            );
-            if let Err(error) = result {
-                self.error = Some(error.to_string());
-            }
-        }
-        cx.notify();
-    }
-
-    fn stop_terminal(&mut self, cx: &mut Context<Self>) {
-        if let Some(terminal) = &self.terminal {
-            match terminal.kill() {
-                Ok(()) => self.notice = Some("Shell stop requested".into()),
-                Err(error) => self.error = Some(error.to_string()),
-            }
-        }
-        cx.notify();
-    }
     fn poll(&mut self) {
-        if let Some(terminal) = self.terminal.clone()
-            && self.panel == Panel::Terminal
-            && let Some(root) = self.terminal_root.clone()
-        {
-            let generation = self.terminal_generation;
-            self.job(async move {
-                let snapshot = tokio::task::spawn_blocking(move || terminal.render_snapshot())
-                    .await
-                    .map_err(|_| WorkspaceError::Worker)??;
-                Ok(Update::TerminalOutput {
-                    root,
-                    generation,
-                    snapshot,
-                })
-            });
-        }
         if self.polling {
             return;
         }
@@ -1376,6 +1179,7 @@ impl Shell {
     }
     fn receive(&mut self, update: Update, cx: &mut Context<Self>) {
         match update {
+            Update::Terminals(reply) => self.terminal_reply(*reply, cx),
             Update::Review(reply) => self.review_reply(*reply, cx),
             Update::Explorer(reply) => self.explorer_reply(*reply, cx),
             Update::Studio(reply) => self.studio_reply(*reply, cx),
@@ -1388,6 +1192,7 @@ impl Shell {
             Update::DraftSaved(task, error) => self.draft_saved(task, error, cx),
             Update::Registry(reply) => self.registry_reply(*reply, cx),
             Update::Tick => {
+                self.tick_terminals(cx);
                 self.tick_review(cx);
                 self.refresh_message_search(cx);
                 self.poll_kanban();
@@ -1686,71 +1491,6 @@ impl Shell {
                     self.begin_quit(cx);
                 }
             }
-            Update::TerminalStarted {
-                root,
-                generation,
-                terminal,
-            } => {
-                if generation != self.terminal_generation || self.root() != Some(root.clone()) {
-                    self.retire_terminal(terminal);
-                    return;
-                }
-                self.terminal_starting = false;
-                self.terminal = Some(terminal.clone());
-                self.terminal_root = Some(root);
-                self.terminal_view
-                    .update(cx, |view, cx| view.set_session(terminal.clone(), cx));
-                if self.terminal_closing {
-                    self.notice = Some("Stopping the terminal before closing Synara...".into());
-                    self.queue_terminal_shutdown(terminal, generation);
-                } else {
-                    self.notice = None;
-                    self.poll();
-                }
-            }
-            Update::TerminalOutput {
-                root,
-                generation,
-                snapshot,
-            } => {
-                if generation == self.terminal_generation && self.terminal_root == Some(root) {
-                    self.terminal_view
-                        .update(cx, |view, cx| view.set_snapshot(snapshot, cx));
-                }
-            }
-            Update::TerminalFailed { generation, error } => {
-                if generation == self.terminal_generation {
-                    self.terminal_starting = false;
-                    self.terminal = None;
-                    self.terminal_root = None;
-                    if self.terminal_closing {
-                        self.terminal_closing = false;
-                        self.close.cancel();
-                        self.error = Some(format!(
-                            "Terminal startup or retirement failed while closing; Synara stayed open to preserve process ownership: {error}"
-                        ));
-                    } else {
-                        self.error = Some(error);
-                    }
-                }
-            }
-            Update::TerminalShutdown { generation, error } => {
-                if generation != self.terminal_generation {
-                    return;
-                }
-                self.terminal_closing = false;
-                if let Some(error) = error {
-                    self.close.cancel();
-                    self.error = Some(format!(
-                        "Terminal shutdown failed; Synara stayed open to preserve process ownership: {error}"
-                    ));
-                } else {
-                    self.terminal = None;
-                    self.terminal_root = None;
-                    cx.quit();
-                    return;
-                }
-            }
             Update::Done(message) => {
                 if !message.is_empty() {
                     self.notice = Some(message);
@@ -1794,7 +1534,8 @@ impl Shell {
             }
             Panel::Files => self.refresh_files(),
             Panel::Changes => self.refresh_git(cx),
-            Panel::Inspector | Panel::Terminal => self.poll(),
+            Panel::Terminal => self.ensure_terminals(cx),
+            Panel::Inspector => self.poll(),
             _ => {}
         }
         cx.notify();

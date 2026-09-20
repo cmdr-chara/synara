@@ -1,3 +1,5 @@
+mod terminal_layout;
+pub use terminal_layout::*;
 mod chat_preferences;
 mod review;
 pub use review::{MAX_COMMIT_DRAFT_BYTES, ReviewPreferences, ReviewScope};

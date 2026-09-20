@@ -8,6 +8,24 @@ from native_ui_scope import git_scope, scope_for_paths, kanban_only, environment
 
 
 class NativeScopeTests(unittest.TestCase):
+    def test_git_review_uses_environment_with_its_own_regressions(self):
+        paths = [
+            'crates/synara-app/src/shell/review.rs',
+            'crates/synara-app/src/shell/review/diff.rs',
+            'crates/synara-app/src/shell.rs',
+            'crates/synara-app/src/shell/panels.rs',
+            'crates/synara-workspace/src/storage/review.rs',
+            'crates/synara-workspace/src/storage.rs',
+            'scripts/native_git_review_smoke.py',
+            '.github/workflows/ui-environment.yml',
+            'ROADMAP.md',
+        ]
+        self.assertEqual(scope_for_paths(paths), 'environment')
+        for unrelated in ['crates/synara-workspace/src/tools.rs', 'Cargo.lock',
+                          'crates/synara-runtime/src/lib.rs']:
+            self.assertEqual(scope_for_paths(paths + [unrelated]), 'full')
+        self.assertEqual(scope_for_paths(['crates/synara-app/src/shell/panels.rs']), 'full')
+
     def test_known_presentation_delta_uses_focused_lane(self):
         self.assertEqual(scope_for_paths([
             'crates/synara-app/src/ui/menu.rs',

@@ -269,6 +269,9 @@ def run(s):
     assert layout_saved(s, tabs=[], active=None, open_by_default=True)
     assert shell_starts.read_text().splitlines() == [str(pid)]
     choose_tool(s, 'Changes')
+    # Await the first selection before sending another click. A 35 ms key
+    # release delay can still leave the previous popup owning the hitbox.
+    wait_until(lambda: layout_saved(s, tabs=['changes'], active='changes'), 'first new tool saved')
     choose_tool(s, 'Explorer')
     wait_until(lambda: layout_saved(s, tabs=['changes', 'explorer'], active='explorer'), 'new tool order')
     close(s)

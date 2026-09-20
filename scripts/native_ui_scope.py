@@ -139,12 +139,39 @@ def chat_tools_only(paths):
     )
 
 
+REVIEW_ANCHORS = frozenset({
+    'crates/synara-app/src/shell/review.rs',
+    'crates/synara-app/src/shell/review/diff.rs',
+    'crates/synara-workspace/src/storage/review.rs',
+    'scripts/native_git_review_smoke.py',
+})
+REVIEW_PATHS = REVIEW_ANCHORS | frozenset({
+    'crates/synara-app/src/shell.rs',
+    'crates/synara-app/src/shell/dock.rs',
+    'crates/synara-app/src/shell/navigation.rs',
+    'crates/synara-app/src/shell/panels.rs',
+    'crates/synara-workspace/src/storage.rs',
+    'scripts/native_ui_scope.py',
+    'scripts/test_native_ui_scope.py',
+    '.github/workflows/ui-environment.yml',
+})
+
+
+def review_only(paths):
+    paths = set(paths)
+    return bool(paths & REVIEW_ANCHORS) and all(
+        path in REVIEW_PATHS or documentation(path) for path in paths
+    )
+
+
 def scope_for_paths(paths):
     paths = set(paths)
     if not paths:
         return 'full'
     if all(documentation(path) for path in paths):
         return 'docs'
+    if review_only(paths):
+        return 'environment'
     if chat_tools_only(paths):
         return 'chat-tools'
     if environment_only(paths):

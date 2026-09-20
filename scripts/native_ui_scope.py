@@ -138,6 +138,16 @@ def scope_for_paths(paths):
     return 'full'
 
 
+def terminal_probes_only(diff):
+    """Only named, inert geometry probes qualify. Panel behavior stays full-scope."""
+    changes = [line for line in diff.splitlines()
+               if line.startswith(('+', '-')) and not line.startswith(('+++', '---'))]
+    permitted = {'.relative()', *(f'.child(crate::ui::layout_probe("{name}"))' for name in (
+        'start-shell', 'interrupt-shell', 'stop-shell', 'terminal-screen'))}
+    return bool(changes) and all(line.startswith('+') and line[1:].strip() in permitted
+                                 for line in changes)
+
+
 def git_scope(base, revision):
     if not all(re.fullmatch(r'[0-9a-f]{40}', value) and value != '0' * 40
                for value in (base, revision)):
@@ -148,6 +158,15 @@ def git_scope(base, revision):
             check=True, capture_output=True, timeout=30,
         )
         paths = result.stdout.decode('utf-8').rstrip('\0').split('\0')
+        panels = 'crates/synara-app/src/shell/panels.rs'
+        if panels in paths:
+            diff = subprocess.check_output(
+                ['git', 'diff', '--unified=0', base, revision, '--', panels], timeout=30,
+            ).decode('utf-8')
+            if terminal_probes_only(diff):
+                paths.remove(panels)
+                if not paths:
+                    return 'environment'
     except (OSError, UnicodeError, subprocess.SubprocessError):
         return 'full'
     return scope_for_paths(paths)

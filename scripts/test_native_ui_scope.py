@@ -4,7 +4,7 @@ import subprocess
 import unittest
 from unittest.mock import patch
 
-from native_ui_scope import git_scope, scope_for_paths, kanban_only, environment_only
+from native_ui_scope import git_scope, scope_for_paths, kanban_only, environment_only, terminal_probes_only
 
 
 class NativeScopeTests(unittest.TestCase):
@@ -98,6 +98,35 @@ class NativeScopeTests(unittest.TestCase):
     def test_nul_delimiters_do_not_split_newline_filenames(self):
         result = subprocess.CompletedProcess('git', 0, stdout=b'unknown\nROADMAP.md\0')
         with patch('native_ui_scope.subprocess.run', return_value=result):
+            self.assertEqual(git_scope('a' * 40, 'b' * 40), 'full')
+
+    def test_terminal_probe_additions_have_a_closed_instruction_set(self):
+        diff = '--- a/panels.rs\n+++ b/panels.rs\n@@ -1,0 +2,2 @@\n+ .relative()\n+ .child(crate::ui::layout_probe("start-shell"))\n'
+        self.assertTrue(terminal_probes_only(diff))
+        for extra in ['- .on_click(callback)', '+ .on_click(callback)', '+ this.start_terminal(cx)',
+                      '+ .child(crate::ui::layout_probe("unknown"))']:
+            self.assertFalse(terminal_probes_only(diff + extra))
+        self.assertFalse(terminal_probes_only(''))
+
+    def test_inert_terminal_probes_allow_the_existing_environment_journey(self):
+        result = subprocess.CompletedProcess('git', 0, stdout=(
+            b'crates/synara-app/src/shell/panels.rs\0scripts/native_environment_smoke.py\0'))
+        diff = b'+ .relative()\n+ .child(crate::ui::layout_probe("start-shell"))\n'
+        with patch('native_ui_scope.subprocess.run', return_value=result), \
+             patch('native_ui_scope.subprocess.check_output', return_value=diff):
+            self.assertEqual(git_scope('a' * 40, 'b' * 40), 'environment')
+
+    def test_panel_behavior_changes_cannot_hide_behind_an_environment_test(self):
+        result = subprocess.CompletedProcess('git', 0, stdout=(
+            b'crates/synara-app/src/shell/panels.rs\0scripts/native_environment_smoke.py\0'))
+        with patch('native_ui_scope.subprocess.run', return_value=result), \
+             patch('native_ui_scope.subprocess.check_output', return_value=b'+ this.start_terminal(cx)\n'):
+            self.assertEqual(git_scope('a' * 40, 'b' * 40), 'full')
+
+    def test_missing_panel_diff_cannot_reduce_coverage(self):
+        result = subprocess.CompletedProcess('git', 0, stdout=b'crates/synara-app/src/shell/panels.rs\0')
+        with patch('native_ui_scope.subprocess.run', return_value=result), \
+             patch('native_ui_scope.subprocess.check_output', side_effect=subprocess.CalledProcessError(1, 'git')):
             self.assertEqual(git_scope('a' * 40, 'b' * 40), 'full')
 
 

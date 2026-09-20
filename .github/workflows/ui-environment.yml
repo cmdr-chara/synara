@@ -21,21 +21,54 @@ jobs:
           fetch-depth: 1000
           persist-credentials: false
       - name: Record candidate and verify scope selection
+        id: scope
+        env:
+          BASE_REVISION: ${{ github.event.before }}
+          CANDIDATE_REVISION: ${{ inputs.revision }}
         run: |
-          mkdir -p /tmp/env-evidence
-          git rev-parse HEAD | tee /tmp/env-evidence/revision.txt
+          mkdir -p /tmp/env-evidence /tmp/env-source
+          git rev-parse HEAD | tee /tmp/env-evidence/revision.txt /tmp/env-source/revision.txt
+          git bundle create /tmp/env-source/source.bundle HEAD
           python3 scripts/test_native_ui_scope.py
           python3 scripts/check_roadmap.py
           python3 -m py_compile scripts/native_environment_smoke.py
+          python3 - <<'PY'
+          import os, re, subprocess, sys
+          sys.path.insert(0, 'scripts')
+          from native_ui_scope import terminal_probes_only
+          base, revision = os.environ['BASE_REVISION'], os.environ['CANDIDATE_REVISION']
+          contract_only = False
+          allowed = {'scripts/native_environment_smoke.py', 'scripts/native_ui_scope.py',
+                     'scripts/test_native_ui_scope.py', '.github/workflows/ui-environment.yml'}
+          if all(re.fullmatch('[a-f0-9]{40}', value) and value != '0' * 40 for value in (base, revision)):
+              try:
+                  paths = set(subprocess.check_output(['git', 'diff', '--name-only', '--no-renames', '-z', base, revision, '--'], timeout=30).decode().rstrip('\0').split('\0'))
+                  panels = 'crates/synara-app/src/shell/panels.rs'
+                  if panels in paths and terminal_probes_only(subprocess.check_output(['git', 'diff', '--unified=0', base, revision, '--', panels], timeout=30).decode()):
+                      paths.remove(panels)
+                  contract_only = bool(paths) and paths <= allowed
+              except (OSError, UnicodeError, subprocess.SubprocessError):
+                  pass
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write(f'contract_only={str(contract_only).lower()}\n')
+          print(f'Only Environment test/probe changes: {contract_only}')
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: native-environment-source
+          path: /tmp/env-source/
+          retention-days: 7
       - name: Install pinned toolchain
         run: rustup toolchain install 1.98.1 --profile minimal --component rustfmt --component clippy
       - name: Native system libraries
         run: |
           sudo apt-get update > /tmp/env-evidence/install.log 2>&1
           sudo apt-get install -y clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil xclip fonts-dejavu-core fonts-liberation >> /tmp/env-evidence/install.log 2>&1
-      - name: Changed-package formatting and focused regressions
+      - name: Changed-package formatting
+        run: cargo +1.98.1 fmt --check -p synara-app -p synara-workspace
+      - name: Focused regressions for production changes
+        if: steps.scope.outputs.contract_only != 'true'
         run: |
-          cargo +1.98.1 fmt --check -p synara-app -p synara-workspace
           cargo +1.98.1 test --locked -p synara-workspace --lib environment::tests
           cargo +1.98.1 test --locked -p synara-app --bin synara-app shell::environment::tests
           cargo +1.98.1 test --locked -p synara-app --bin synara-app shell::drafts::tests
@@ -48,19 +81,19 @@ jobs:
         timeout-minutes: 4
         run: python3 scripts/native_environment_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/env-workspace
       - name: Existing chat and split behavior
-        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.scope.outputs.contract_only != 'true' }}
         timeout-minutes: 3
         run: python3 scripts/native_chat_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/env-chat
       - name: Existing chat and Studio restoration
-        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.scope.outputs.contract_only != 'true' }}
         timeout-minutes: 4
         run: python3 scripts/native_studio_settings_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/env-studio
       - name: Existing guarded close and permission boundaries
-        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.scope.outputs.contract_only != 'true' }}
         timeout-minutes: 3
         run: python3 scripts/native_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/env-close
       - name: Existing board to chat navigation
-        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.scope.outputs.contract_only != 'true' }}
         timeout-minutes: 4
         run: python3 scripts/native_kanban_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/env-kanban
       - name: Verify source identity

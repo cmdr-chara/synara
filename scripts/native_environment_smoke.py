@@ -43,6 +43,17 @@ def choose_tool(s, label):
     assert s.process.poll() is None, 'Opening an Environment menu crashed the application'
 
 
+def shell_pid(s, path):
+    # Creation of the canary file precedes its write. Wait for a complete PID,
+    # not just the existence of an empty file, without masking an application exit.
+    if s.process.poll() is not None:
+        raise AssertionError('Application exited while starting the owned terminal')
+    if not path.exists():
+        return None
+    text = path.read_text().strip()
+    return int(text) if text.isdecimal() else None
+
+
 def reveal_setting(s, control):
     ui = s.desktop
     for _ in range(24):
@@ -119,8 +130,7 @@ def run(s):
     # The real terminal view exists, but opening/restoring it must not start a shell.
     assert not shell_starts.exists(), 'Selecting a Terminal tab started a shell'
     s.click_control('start-shell')
-    wait_until(shell_starts.exists, 'explicit shell start canary')
-    pid = int(shell_starts.read_text().strip())
+    pid = wait_until(lambda: shell_pid(s, shell_starts), 'explicit shell start canary')
     assert Path(f'/proc/{pid}').exists()
     choose_tool(s, 'Changes')
     wait_until(lambda: layout_saved(s, active='changes'), 'Changes selection')

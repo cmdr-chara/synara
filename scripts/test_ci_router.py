@@ -7,6 +7,7 @@ import sys
 import tempfile
 import unittest
 import urllib.error
+from unittest.mock import Mock
 
 sys.path.insert(0, os.path.dirname(__file__))
 
@@ -35,7 +36,7 @@ class RouterTests(unittest.TestCase):
         ]
         for paths, expected in cases:
             with self.subTest(paths=paths):
-                classifier = unittest.mock.Mock(side_effect=AssertionError("classifier should not run"))
+                classifier = Mock(side_effect=AssertionError("classifier should not run"))
                 route = ci_router.select_route(paths, context="unused", api_key=None, classifier=classifier)
                 self.assertEqual(
                     (route.presentation, route.chat_tools, route.environment, route.scope),
@@ -45,7 +46,7 @@ class RouterTests(unittest.TestCase):
 
     def test_semantic_route_can_focus_new_ui_surface(self):
         paths = ["crates/synara-app/src/ui/new_model_picker.rs"]
-        classifier = unittest.mock.Mock(return_value=response(ci_router.PRESENTATION))
+        classifier = Mock(return_value=response(ci_router.PRESENTATION))
         route = ci_router.select_route(paths, context="ctx", api_key="secret", classifier=classifier)
         self.assertTrue(route.presentation)
         self.assertEqual(route.scope, "presentation")

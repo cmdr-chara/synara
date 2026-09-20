@@ -444,23 +444,28 @@ impl gpui::Render for TaskDialog {
                 }),
             )
             .child(modal)
-            .children(self.popup.as_ref().zip(self.popup_field).map(|(popup, field)| {
-                let bounds = self.field_bounds[field.index()].get();
-                let right = matches!(field, Field::Agent);
-                gpui::anchored()
-                    .anchor(if right {
-                        gpui::Anchor::TopRight
-                    } else {
-                        gpui::Anchor::TopLeft
-                    })
-                    .position(gpui::point(
-                        bounds.origin.x + if right { bounds.size.width } else { px(0.) },
-                        bounds.origin.y + bounds.size.height,
-                    ))
-                    .offset(gpui::point(px(0.), px(4.)))
-                    .snap_to_window_with_margin(px(8.))
-                    .child(popup.clone())
-            }))
+            .children(
+                self.popup
+                    .as_ref()
+                    .zip(self.popup_field)
+                    .map(|(popup, field)| {
+                        let bounds = self.field_bounds[field.index()].get();
+                        let right = matches!(field, Field::Agent);
+                        gpui::anchored()
+                            .anchor(if right {
+                                gpui::Anchor::TopRight
+                            } else {
+                                gpui::Anchor::TopLeft
+                            })
+                            .position(gpui::point(
+                                bounds.origin.x + if right { bounds.size.width } else { px(0.) },
+                                bounds.origin.y + bounds.size.height,
+                            ))
+                            .offset(gpui::point(px(0.), px(4.)))
+                            .snap_to_window_with_margin(px(8.))
+                            .child(popup.clone())
+                    }),
+            )
     }
 }
 
@@ -470,7 +475,11 @@ mod tests {
 
     #[test]
     fn primary_action_has_one_hover_owner_in_every_state() {
-        for (label, enabled) in [("Create task", true), ("Create task", false), ("Creating...", false)] {
+        for (label, enabled) in [
+            ("Create task", true),
+            ("Create task", false),
+            ("Creating...", false),
+        ] {
             // This constructs the actual element, where duplicate hover styles
             // previously panicked. No window or agent is needed to catch it.
             let _ = create_button(label, enabled);

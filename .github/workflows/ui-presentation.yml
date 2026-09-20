@@ -11,25 +11,6 @@ env:
   CARGO_BUILD_JOBS: '2'
   PYTHONDONTWRITEBYTECODE: '1'
 jobs:
-  snapshot:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 3
-    steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
-        with:
-          ref: ${{ inputs.revision }}
-          fetch-depth: 1000
-          persist-credentials: false
-      - name: Preserve exact tracked source inputs
-        run: |
-          mkdir -p /tmp/kanban-source
-          git bundle create /tmp/kanban-source/source.bundle HEAD
-          git rev-parse HEAD > /tmp/kanban-source/revision.txt
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: kanban-source-inputs
-          path: /tmp/kanban-source/
-          retention-days: 3
   presentation:
     runs-on: ubuntu-24.04
     timeout-minutes: 25
@@ -37,105 +18,119 @@ jobs:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
           ref: ${{ inputs.revision }}
-          fetch-depth: 2
+          fetch-depth: 1000
           persist-credentials: false
-      - name: Record source and validate scope
+      - name: Record candidate and validate verification scope
+        id: scope
+        env:
+          BASE_REVISION: ${{ github.event.before }}
+          CANDIDATE_REVISION: ${{ inputs.revision }}
         run: |
           mkdir -p /tmp/ui-source
           git rev-parse HEAD | tee /tmp/ui-source/revision.txt
           python3 scripts/test_native_ui_scope.py
+          python3 scripts/test_native_kanban_smoke.py
           python3 scripts/check_roadmap.py
-          python3 -m py_compile scripts/native_kanban_smoke.py
+          python3 -m py_compile scripts/native_kanban_smoke.py scripts/native_model_draft_smoke.py scripts/native_chat_behavior_smoke.py scripts/native_controls_smoke.py scripts/native_picker_search_smoke.py
+          python3 - <<'PY_SCOPE'
+          import os, re, subprocess, sys
+          sys.path.insert(0, 'scripts')
+          from native_ui_scope import kanban_only
+          base, revision = os.environ['BASE_REVISION'], os.environ['CANDIDATE_REVISION']
+          narrow = False
+          if all(re.fullmatch(r'[a-f0-9]{40}', value) and value != '0' * 40 for value in [base, revision]):
+              try:
+                  paths = subprocess.check_output(['git', 'diff', '--name-only', '--no-renames', '-z', base, revision, '--'], timeout=30).decode().rstrip('\0').split('\0')
+                  narrow = kanban_only(paths)
+              except (OSError, UnicodeError, subprocess.SubprocessError):
+                  pass
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write(f'kanban={str(narrow).lower()}\n')
+          print(f'Kanban-only journeys: {narrow}')
+          PY_SCOPE
       - name: Install pinned toolchain
         run: rustup toolchain install 1.98.1 --profile minimal --component rustfmt --component clippy
       - name: Native system libraries
         run: |
           sudo apt-get update > /tmp/native-install.log 2>&1
           sudo apt-get install -y clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil xclip fonts-dejavu-core fonts-liberation >> /tmp/native-install.log 2>&1
-      - name: Prepare the exact-context source candidate when present
-        id: prepare
-        run: |
-          if test -f scripts/prepare_kanban_checkpoint.py; then
-            python3 - <<'PY'
-          from pathlib import Path
-          p = Path('scripts/prepare_kanban_checkpoint.py')
-          text = p.read_text()
-          old = "text = replace(text, 'KanbanReply::DraftReady(id, result)', 'KanbanReply::DraftReady(id, generation, result)', str(path))"
-          new = "text = replace(text, 'Ok(Update::Kanban(Box::new(KanbanReply::DraftReady(id, result))))', 'Ok(Update::Kanban(Box::new(KanbanReply::DraftReady(id, generation, result))))', str(path))"
-          assert text.count(old) == 1
-          p.write_text(text.replace(old, new))
-          PY
-            python3 scripts/prepare_kanban_checkpoint.py
-            cargo +1.98.1 fmt -p synara-app -p synara-workspace
-            rm scripts/prepare_kanban_checkpoint.py
-            echo 'prepared=true' >> "$GITHUB_OUTPUT"
-          fi
-          git diff --check
       - name: Changed-package formatting
         run: cargo +1.98.1 fmt --check -p synara-app -p synara-workspace
-      - name: Atomic task creation and existing draft regressions
+      - name: Task creation and chat preference regressions
         run: |
-          cargo +1.98.1 test --locked -p synara-workspace --lib storage::task_creation::tests > /tmp/ui-source/task-tests.log 2>&1 || { tail -100 /tmp/ui-source/task-tests.log; exit 1; }
-          cargo +1.98.1 test --locked -p synara-workspace --lib storage::chat_preferences::tests >> /tmp/ui-source/task-tests.log 2>&1 || { tail -100 /tmp/ui-source/task-tests.log; exit 1; }
-          tail -55 /tmp/ui-source/task-tests.log
-      - name: Native board, menu, drafts and close regressions
+          cargo +1.98.1 test --locked -p synara-workspace --lib storage::task_creation::tests
+          cargo +1.98.1 test --locked -p synara-workspace --lib storage::chat_preferences::tests
+      - name: Settings regressions for broader presentation changes
+        if: steps.scope.outputs.kanban != 'true'
         run: |
-          for filter in shell::kanban::tests ui::menu::tests shell::drafts::tests close::tests; do
-            cargo +1.98.1 test --locked -p synara-app --bin synara-app "$filter" >> /tmp/ui-source/app-tests.log 2>&1 || { tail -100 /tmp/ui-source/app-tests.log; exit 1; }
-          done
-          tail -60 /tmp/ui-source/app-tests.log
+          cargo +1.98.1 test --locked -p synara-workspace --lib settings::
+      - name: Native task, draft and close regressions
+        run: |
+          cargo +1.98.1 test --locked -p synara-app --bin synara-app shell::kanban::tests
+          cargo +1.98.1 test --locked -p synara-app --bin synara-app shell::drafts::tests
+          cargo +1.98.1 test --locked -p synara-app --bin synara-app close::tests
+      - name: Presentation and input regressions
+        env:
+          KANBAN_ONLY: ${{ steps.scope.outputs.kanban }}
+        run: |
+          if test "$KANBAN_ONLY" = 'true'; then
+            cargo +1.98.1 test --locked -p synara-app --bin synara-app ui::menu::tests
+          else
+            cargo +1.98.1 test --locked -p synara-app --bin synara-app ui::
+            cargo +1.98.1 test --locked -p synara-app --bin synara-app shell::controls::tests
+            cargo +1.98.1 test --locked -p synara-app --bin synara-app input::policy::tests
+          fi
       - name: Strict changed-package lints
-        run: |
-          cargo +1.98.1 clippy --locked --no-deps -p synara-app -p synara-workspace --all-targets -- -D warnings > /tmp/ui-source/clippy.log 2>&1 || { tail -100 /tmp/ui-source/clippy.log; exit 1; }
+        run: cargo +1.98.1 clippy --locked --no-deps -p synara-app -p synara-workspace --all-targets -- -D warnings
       - name: Build native application and fixture
         id: build
-        run: |
-          cargo +1.98.1 build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture > /tmp/ui-source/build.log 2>&1 || { tail -100 /tmp/ui-source/build.log; exit 1; }
-      - name: Native Kanban create, draft, run, stop and restart
+        run: cargo +1.98.1 build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture
+      - name: Native Kanban creation and lifecycle
         timeout-minutes: 4
         run: python3 scripts/native_kanban_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-kanban
-      - name: Existing chat creation and Studio restoration
+      - name: Native model and durable draft journeys
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.scope.outputs.kanban != 'true' }}
+        timeout-minutes: 4
+        run: python3 scripts/native_model_draft_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-model-drafts
+      - name: Native editable Chat behavior
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.scope.outputs.kanban != 'true' }}
+        timeout-minutes: 3
+        run: python3 scripts/native_chat_behavior_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-chat-behavior
+      - name: Native session controls
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.scope.outputs.kanban != 'true' }}
+        timeout-minutes: 3
+        run: python3 scripts/native_controls_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-controls
+      - name: Native filtered search
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.scope.outputs.kanban != 'true' }}
+        timeout-minutes: 3
+        run: python3 scripts/native_picker_search_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-search
+      - name: Native creation and Studio restoration
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         timeout-minutes: 4
-        run: python3 scripts/native_studio_settings_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-studio
-      - name: Existing native input and guarded close
+        run: python3 scripts/native_studio_settings_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-studio-drafts
+      - name: Native input and guarded close
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
-        timeout-minutes: 4
+        timeout-minutes: 3
         run: python3 scripts/native_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-close
-      - name: Export the tested source package without writing GitHub
-        if: ${{ success() && steps.prepare.outputs.prepared == 'true' }}
+      - name: Native rich text and split-layout regression
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.scope.outputs.kanban != 'true' }}
+        timeout-minutes: 3
         run: |
-          python3 - <<'PY'
-          import base64, gzip, hashlib, json, subprocess
-          from pathlib import Path
-          allowed = {
-            'crates/synara-app/src/shell.rs', 'crates/synara-app/src/shell/chrome.rs',
-            'crates/synara-app/src/shell/kanban.rs', 'crates/synara-app/src/shell/overview.rs',
-            'crates/synara-app/src/ui.rs', 'crates/synara-app/src/ui/task_dialog.rs',
-            'crates/synara-workspace/src/service.rs', 'crates/synara-workspace/src/storage.rs',
-            'crates/synara-workspace/src/storage/task_creation.rs', 'scripts/prepare_kanban_checkpoint.py',
-          }
-          changed = set(subprocess.check_output(['git', 'diff', '--name-only', '-z']).decode().rstrip('\0').split('\0'))
-          assert changed and changed <= allowed, changed - allowed
-          subprocess.run(['git', 'add', '-u', '--', *sorted(allowed)], check=True)
-          subprocess.run(['git', 'diff', '--cached', '--check'], check=True)
-          data = subprocess.check_output(['git', 'diff', '--cached', '--no-ext-diff'])
-          package = dict(base_commit=subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode().strip(),
-              mode='diff', gzip_base64=base64.b64encode(gzip.compress(data, mtime=0)).decode(),
-              sha256=hashlib.sha256(data).hexdigest(),
-              expected_tree=subprocess.check_output(['git', 'write-tree']).decode().strip(),
-              message='feat(ui): integrate verified native Kanban task creation and lifecycle')
-          Path('/tmp/ui-source/source-package.json').write_text(json.dumps(package))
-          Path('/tmp/ui-source/candidate.patch').write_bytes(data)
-          print('SOURCE_PACKAGE=' + json.dumps(package))
-          PY
-      - name: Check published candidates have no source mutations
-        if: ${{ success() && steps.prepare.outputs.prepared != 'true' }}
+          python3 scripts/native_rich_text_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-rich-text
+          python3 scripts/native_chat_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-chat
+      - name: Verify no candidate source mutation
         run: git diff --exit-code
+      - name: Export source identity and reproduction bundle
+        if: ${{ !cancelled() }}
+        run: |
+          mkdir -p /tmp/ui-source
+          git rev-parse HEAD > /tmp/ui-source/revision.txt
+          git ls-files -s > /tmp/ui-source/blobs.txt
+          git bundle create /tmp/ui-source/source.bundle HEAD
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: ${{ !cancelled() }}
         with:
-          name: focused-native-kanban
+          name: focused-native-presentation
           path: |
             /tmp/ui-*/*.png
             /tmp/ui-*/*.log

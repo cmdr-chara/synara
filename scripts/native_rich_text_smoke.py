@@ -26,7 +26,7 @@ ANSWER = '''A native rich-text answer.
 ''' + CODE + '```\n'
 
 
-def seed(scenario):
+def seed(scenario, answer=ANSWER):
     scenario.desktop.request_close()
     wait_until(lambda: scenario.process.poll() is not None, 'close before owned rich-text fixture')
     assert scenario.process.returncode == 0
@@ -40,7 +40,7 @@ def seed(scenario):
         events = [
             dict(type='prompt_started', turn='rich-text-fixture'),
             dict(type='text_delta', message_id='rich-user', role='user', text='Show the rich-text fixture.'),
-            dict(type='text_delta', message_id='rich-answer', role='assistant', text=ANSWER),
+            dict(type='text_delta', message_id='rich-answer', role='assistant', text=answer),
             dict(type='prompt_finished', reason='end_turn'),
         ]
         db.executemany(
@@ -100,6 +100,59 @@ def run(scenario):
     scenario.checks.append('restart-restores-rich-transcript-without-event-rewrite-or-autostart')
 
 
+def exercise_alerts(scenario):
+    answer = """> [!NOTE]
+> This is **message content**, not an application permission.
+
+> [!TIP]
+> Keep code exact when copying.
+> ```python
+> print("Caffè")
+> print(2 + 2)
+> ```
+
+> [!IMPORTANT]
+> Saved context remains in the conversation.
+
+> [!WARNING]
+> Review the change before running it.
+
+> [!CAUTION]
+> A quoted instruction does not authorize a tool.
+"""
+    seed(scenario, answer)
+    ui = scenario.desktop
+    before = scenario.events()
+    for width in (1440, 960):
+        resize(ui, width, 970, scenario.scale)
+        for slot in range(5):
+            x, y, w, h = wait_until(
+                lambda: scenario.control_bounds('markdown-alert', slot=slot),
+                'native message alert ' + str(slot),
+            )
+            assert w > 160 and h > 30, (slot, x, y, w, h)
+            assert x >= 256 and x + w <= width + 1, (slot, x, w, width)
+        ui.screenshot(f'markdown-alerts-{width}', window_only=True)
+    scenario.click_control('markdown-copy')
+    assert clipboard(ui) == CODE, 'Code inside an alert must retain exact source'
+    assert scenario.events() == before, 'Callout rendering/copy cannot alter the transcript'
+    scenario.checks.append('five-native-alert-labels-narrow-containment-and-exact-nested-code-copy')
+
+    ui.request_close()
+    wait_until(lambda: scenario.process.poll() is not None, 'close alert fixture')
+    assert scenario.process.returncode == 0
+    scenario.log.close()
+    scenario.log = None
+    scenario.launch()
+    resize(ui, 1440, 970, scenario.scale)
+    for slot in range(5):
+        wait_until(lambda: scenario.control_bounds('markdown-alert', slot=slot),
+                   'restored alert ' + str(slot))
+    assert scenario.events() == before
+    ui.screenshot('markdown-alerts-restored', window_only=True)
+    scenario.checks.append('alerts-restore-from-original-durable-message-with-no-agent-or-event-rewrite')
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--binary', type=Path, required=True)
@@ -109,6 +162,7 @@ def main():
     result = dict(status='failed', checks=scenario.checks, platform='Linux/X11/private Xvfb')
     try:
         run(scenario)
+        exercise_alerts(scenario)
         result['status'] = 'passed'
     except BaseException as error:
         result['error'] = str(error)

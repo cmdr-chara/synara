@@ -35,6 +35,8 @@ jobs:
           cargo +1.98.1 test --locked -p synara-workspace --lib storage::organization::tests
           cargo +1.98.1 test --locked -p synara-workspace --lib storage::task_context::tests
           cargo +1.98.1 test --locked -p synara-workspace --lib studio::tests
+      - name: Studio mode-switch regression
+        run: cargo +1.98.1 test --locked -p synara-app --bin synara-app shell::environment::tests::pending_studio_creation_does_not_restore_the_old_projects_environment -- --exact
       - name: Build application and fixture once
         id: build
         run: cargo +1.98.1 build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture

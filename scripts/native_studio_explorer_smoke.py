@@ -126,6 +126,11 @@ def run(s):
     wait_until(lambda: s.control_bounds('studio-files-panel'), 'Studio files surface')
     find_studio_file(s, 'notes.md')
     wait_until(lambda: s.control_bounds('studio-text-preview'), 'native Markdown preview')
+    s.click_control('studio-raw-toggle')
+    wait_until(lambda: s.control_bounds('studio-raw-preview'), 'raw Markdown source view')
+    ui.screenshot('studio-output-raw-text', window_only=True)
+    assert (root / 'notes.md').read_text() == '# Studio output\n\nA saved document.\n'
+    s.click_control('studio-raw-toggle')
     s.click_control('studio-reference')
     wait_until(lambda: 'Studio workspace file:' in draft(s, studio), 'Studio reference appended')
     assert draft(s, studio).startswith('Unsent Studio text')
@@ -133,6 +138,12 @@ def run(s):
     find_studio_file(s, 'picture.png')
     wait_until(lambda: s.control_bounds('studio-image-preview'), 'contained image preview')
     ui.screenshot('studio-output-image', window_only=True)
+    s.click_control('studio-image-in')
+    wait_until(lambda: s.control_bounds('studio-zoomed-image'), 'zoomed image geometry')
+    assert abs(s.control_bounds('studio-zoomed-image')[2] - 200) < 2
+    assert abs(s.control_bounds('studio-zoomed-image')[3] - 125) < 2
+    ui.screenshot('studio-output-zoomed', window_only=True)
+    s.click_control('studio-image-fit')
     for width in (1100, 960):
         resize(ui, width, 820, s.scale)
         x, _, w, _ = s.control_bounds('studio-image-preview')

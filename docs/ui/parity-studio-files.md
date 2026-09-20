@@ -76,3 +76,44 @@ selection quotation, search, canceled deletion, external-change refusal, explici
 file deletion, Studio Markdown/PNG preview, narrower windows and restart. It is
 prepared validation, not a passing result until the recorded CI run completes.
 The user's Jev orchestrator and semantic-routing configuration are unchanged.
+
+
+## Native checkpoint and preview follow-up
+
+Published batch: `c81677b230ed1fbe2b8c87e6bd9148238da676a4`.
+CI: [35525456009](https://github.com/cmdr-chara/synara/actions/runs/35525456009).
+The user's Jev orchestrator selected the jobs. No repeated manual test dispatch
+or modifications to its routing/secret configuration were made.
+
+- The backend verification jobs passed on Linux, macOS and Windows. The latter
+  two also compiled the native application. This is not native GUI acceptance.
+- The organization/context job passed formatting, all ten targeted persistence
+  tests, application/fixture build, and the complete Spaces/notes/checklist native
+  journey, including unsaved-note guards, draft insertion and restart.
+- The Explorer journey passed creation, save, rename, selection quotation,
+  literal search, canceled deletion, external-change refusal and file deletion.
+  It then failed waiting for Studio selection with the Environment pane open.
+  The run is retained as failed, not characterized as a full journey pass.
+- The presentation job passed its targeted unit regressions but stopped at strict
+  Clippy. Local reproduction found ambiguous `= !` spacing in the Images toggle.
+  The spacing is corrected and strict changed-package Clippy passes locally.
+
+The Studio navigation defect came from reading the previous task's scope during
+an asynchronous mode switch. Its Environment pane reopened and incremented the
+selection revision, invalidating selection of the newly created Studio task.
+The follow-up honors Studio mode before restoring the old task's Environment.
+The existing failing journey remains unchanged at that assertion and will check
+the correction rather than work around it by closing the pane.
+
+While that CI ran, Studio gained raw/rendered Markdown switching and image zoom
+(12.5%-400%), actual-size and Fit controls. Large text excerpts now display their
+128 KiB truncation explicitly while Copy text retains the full loaded text.
+Image zoom only changes rendering of the already loaded, bounded image and resets
+when a different file is selected. These controls are included in the same native
+journey. The follow-up passes local production compilation and strict app/workspace
+Clippy including test targets. Native acceptance of the follow-up is still pending.
+
+Retained first-run artifact: `10610175489`, SHA256
+`88450c8b4326381e22f5d85c87079e4ef5554addbea91597a69346ac9dc08eb6`.
+It contains the passing notes/Spaces screenshots and the Studio-switch failure,
+not verified Studio preview captures. No whole F9/G1/G2/I10 gate is closed.

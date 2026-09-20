@@ -26,7 +26,8 @@ not assembled by CI. The old source-rewriting step is removed while the Jev
 orchestrator and conservative routing remain unchanged. Studio adds a contained
 file browser, filename/image/output filters, UTF-8/Markdown and bounded PNG/JPEG
 previews, copy actions, explicit draft references and opening text in the existing
-editor. Completed structured tool diffs provide output attribution. Other files
+editor. Markdown can switch to raw source, and image previews have bounded zoom,
+100% and Fit controls. Completed structured tool diffs provide output attribution. Other files
 remain honestly labelled workspace files. No content is executed or sent merely
 by browsing. See [continuation evidence and limits](docs/ui/parity-studio-files.md).
 G1/G2/F9/D10 are partial until the corresponding native and platform evidence is

@@ -41,6 +41,8 @@ pub(super) struct StudioState {
     error: Option<String>,
     only_outputs: bool,
     only_images: bool,
+    raw_text: bool,
+    image_zoom: Option<f32>,
     _subscription: Subscription,
 }
 impl StudioState {
@@ -64,6 +66,8 @@ impl StudioState {
             error: None,
             only_outputs: false,
             only_images: false,
+            raw_text: false,
+            image_zoom: None,
             _subscription: subscription,
         }
     }
@@ -78,6 +82,8 @@ impl StudioState {
         self.loading = false;
         self.preview_loading = false;
         self.error = None;
+        self.raw_text = false;
+        self.image_zoom = None;
     }
 }
 fn image_path(path: &std::path::Path) -> bool {
@@ -130,6 +136,7 @@ impl Shell {
         self.studio.preview_generation = self.studio.preview_generation.wrapping_add(1);
         let generation = self.studio.preview_generation;
         self.studio.selected = Some(path.clone());
+        self.studio.image_zoom = None;
         self.studio.preview = None;
         self.studio.preview_loading = true;
         self.studio.error = None;
@@ -288,14 +295,35 @@ impl Shell {
             Some(Preview::Text { text, markdown }) => {
                 div().id("studio-text-preview").relative().child(ui::layout_probe("studio-text-preview"))
                     .flex_1().min_h_0().overflow_y_scroll().p_3().text_size(px(13.))
-                    .child(if *markdown { ui::markdown::render(&truncate(text, 128*1024), "studio-file-preview") }
-                        else { div().font_family(ui::code_font()).child(truncate(text,128*1024)).into_any_element() })
+                    .when(text.len() > 128*1024, |el| el.child(
+                        div().text_size(px(11.)).text_color(rgb(palette().muted)).pb_2()
+                            .child("Preview limited to 128 KiB. Copy text includes the full loaded file.")))
+                    .child(if *markdown && !self.studio.raw_text { ui::markdown::render(&truncate(text, 128*1024), "studio-file-preview") }
+                        else { div().relative().child(ui::layout_probe("studio-raw-preview"))
+                            .font_family(ui::code_font()).child(truncate(text,128*1024)).into_any_element() })
                     .into_any_element()
             }
             Some(Preview::Image { image, width, height }) => div().id("studio-image-preview").relative().child(ui::layout_probe("studio-image-preview"))
-                .flex_1().min_h_0().overflow_y_scroll().p_3().flex().flex_col().items_center().gap_2()
-                .child(gpui::img(image.clone()).w_full().h(px(240.)).object_fit(gpui::ObjectFit::Contain))
-                .child(div().text_size(px(11.)).text_color(rgb(palette().muted)).child(format!("{width} × {height}"))).into_any_element(),
+                .flex_1().min_h_0().min_w_0().flex().flex_col().gap_2()
+                .child(div().flex().items_center().flex_wrap().gap_1()
+                    .child(ui::button("studio-image-fit", "Fit", self.studio.image_zoom.is_none()).text_size(px(11.))
+                        .relative().child(ui::layout_probe("studio-image-fit"))
+                        .on_click(cx.listener(|this, _, _, cx| { this.studio.image_zoom = None; cx.notify(); })))
+                    .child(ui::button("studio-image-actual", "100%", self.studio.image_zoom == Some(1.)).text_size(px(11.))
+                        .on_click(cx.listener(|this, _, _, cx| { this.studio.image_zoom = Some(1.); cx.notify(); })))
+                    .child(ui::button("studio-image-out", "-", false).aria_label("Zoom image out").text_size(px(11.))
+                        .on_click(cx.listener(|this, _, _, cx| { this.studio.image_zoom = Some((this.studio.image_zoom.unwrap_or(1.) / 1.25).clamp(0.125, 4.)); cx.notify(); })))
+                    .child(ui::button("studio-image-in", "+", false).aria_label("Zoom image in").text_size(px(11.))
+                        .relative().child(ui::layout_probe("studio-image-in"))
+                        .on_click(cx.listener(|this, _, _, cx| { this.studio.image_zoom = Some((this.studio.image_zoom.unwrap_or(1.) * 1.25).clamp(0.125, 4.)); cx.notify(); })))
+                    .child(div().text_size(px(11.)).text_color(rgb(palette().muted)).child(format!("{width} × {height}{}", self.studio.image_zoom.map_or(String::new(), |zoom| format!(" · {:.0}%", zoom * 100.))))))
+                .child(div().id("studio-image-viewport").flex_1().min_h_0().min_w_0().overflow_scroll().p_2()
+                    .child(if let Some(zoom) = self.studio.image_zoom {
+                        div().relative().child(ui::layout_probe("studio-zoomed-image"))
+                            .w(px(*width as f32 * zoom)).h(px(*height as f32 * zoom)).flex_shrink_0()
+                            .child(gpui::img(image.clone()).size_full().object_fit(gpui::ObjectFit::Contain)).into_any_element()
+                    } else { gpui::img(image.clone()).w_full().h(px(240.)).object_fit(gpui::ObjectFit::Contain).into_any_element() }))
+                .into_any_element(),
             Some(Preview::Unsupported(bytes)) => div().flex_1().min_h_0().p_4().text_size(px(12.)).text_color(rgb(palette().muted))
                 .child(format!("Preview unavailable for this file ({bytes} bytes). PNG/JPEG and UTF-8 text are supported within the preview limits. The file has not been executed or opened externally.")).into_any_element(),
             None => div().flex_1().min_h_0().p_4().text_size(px(13.)).text_color(rgb(palette().muted))
@@ -312,7 +340,7 @@ impl Shell {
             .child(div().flex().items_center().gap_1().flex_wrap()
                 .child(ui::button("studio-all-files","All files",!self.studio.only_outputs).text_size(px(11.)).on_click(cx.listener(|this,_,_,cx| { this.studio.only_outputs=false;cx.notify(); })))
                 .child(ui::button("studio-reported","Reported outputs",self.studio.only_outputs).text_size(px(11.)).on_click(cx.listener(|this,_,_,cx| { this.studio.only_outputs=true;cx.notify(); })))
-                .child(ui::button("studio-images","Images",self.studio.only_images).text_size(px(11.)).on_click(cx.listener(|this,_,_,cx| { this.studio.only_images=!this.studio.only_images;cx.notify(); }))))
+                .child(ui::button("studio-images","Images",self.studio.only_images).text_size(px(11.)).on_click(cx.listener(|this,_,_,cx| { this.studio.only_images = !this.studio.only_images;cx.notify(); }))))
             .child(div().text_size(px(11.)).text_color(rgb(palette().muted)).child(format!("{} files · Output attribution comes only from completed tool changes.",matches.len())))
             .children(self.studio.error.clone().map(|error| div().text_size(px(12.)).text_color(rgb(palette().error)).child(error)))
             .when(self.studio.listing.limited || self.studio.listing.unreadable>0, |el| el.child(div().text_size(px(11.)).text_color(rgb(palette().muted))
@@ -327,6 +355,14 @@ impl Shell {
                 .when(matches.is_empty(), |el| el.child(div().p_3().text_size(px(12.)).text_color(rgb(palette().muted))
                     .child(if self.studio.loading { "Looking for files..." } else if self.studio.only_outputs { "No completed tool changes reference a visible file yet. All files shows other workspace content." } else { "No files match. Files appear here after they are created in this Studio workspace." }))))
             .child(div().text_size(px(12.)).text_ellipsis().child(selected.as_ref().map(|p|p.to_string_lossy().into_owned()).unwrap_or_default()))
+            .when(matches!(self.studio.preview, Some(Preview::Text { markdown: true, .. })), |el| el.child(
+                ui::button("studio-raw-toggle", if self.studio.raw_text { "Show rendered Markdown" } else { "Show raw text" }, self.studio.raw_text)
+                    .text_size(px(11.)).aria_label("Toggle raw Markdown source")
+                    .relative().child(ui::layout_probe("studio-raw-toggle"))
+                    .on_click(cx.listener(|this, _, _, cx| {
+                        this.studio.raw_text = !this.studio.raw_text;
+                        cx.notify();
+                    }))))
             .child(preview)
             .child(div().flex().items_center().gap_1().flex_wrap().border_t_1().border_color(rgb(palette().border)).pt_2()
                 .child(ui::button("studio-copy-path","Copy path",false).text_size(px(11.)).on_click(cx.listener(|this,_,_,cx| {

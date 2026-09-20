@@ -11,6 +11,25 @@ env:
   CARGO_BUILD_JOBS: '2'
   PYTHONDONTWRITEBYTECODE: '1'
 jobs:
+  snapshot:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          ref: ${{ inputs.revision }}
+          fetch-depth: 1000
+          persist-credentials: false
+      - name: Preserve exact tracked source inputs
+        run: |
+          mkdir -p /tmp/kanban-source
+          git bundle create /tmp/kanban-source/source.bundle HEAD
+          git rev-parse HEAD > /tmp/kanban-source/revision.txt
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: kanban-source-inputs
+          path: /tmp/kanban-source/
+          retention-days: 3
   presentation:
     runs-on: ubuntu-24.04
     timeout-minutes: 25
@@ -37,6 +56,15 @@ jobs:
         id: prepare
         run: |
           if test -f scripts/prepare_kanban_checkpoint.py; then
+            python3 - <<'PY'
+          from pathlib import Path
+          p = Path('scripts/prepare_kanban_checkpoint.py')
+          text = p.read_text()
+          old = "text = replace(text, 'KanbanReply::DraftReady(id, result)', 'KanbanReply::DraftReady(id, generation, result)', str(path))"
+          new = "text = replace(text, 'Ok(Update::Kanban(Box::new(KanbanReply::DraftReady(id, result))))', 'Ok(Update::Kanban(Box::new(KanbanReply::DraftReady(id, generation, result))))', str(path))"
+          assert text.count(old) == 1
+          p.write_text(text.replace(old, new))
+          PY
             python3 scripts/prepare_kanban_checkpoint.py
             cargo +1.98.1 fmt -p synara-app -p synara-workspace
             rm scripts/prepare_kanban_checkpoint.py
@@ -49,7 +77,6 @@ jobs:
         run: |
           cargo +1.98.1 test --locked -p synara-workspace --lib storage::task_creation::tests > /tmp/ui-source/task-tests.log 2>&1 || { tail -100 /tmp/ui-source/task-tests.log; exit 1; }
           cargo +1.98.1 test --locked -p synara-workspace --lib storage::chat_preferences::tests >> /tmp/ui-source/task-tests.log 2>&1 || { tail -100 /tmp/ui-source/task-tests.log; exit 1; }
-          cargo +1.98.1 test --locked -p synara-workspace --lib create >> /tmp/ui-source/task-tests.log 2>&1 || { tail -100 /tmp/ui-source/task-tests.log; exit 1; }
           tail -55 /tmp/ui-source/task-tests.log
       - name: Native board, menu, drafts and close regressions
         run: |

@@ -2,6 +2,9 @@ use crate::{StorageResult, Store, WorkspaceError, WorkspaceResult, WorkspaceServ
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 
+mod chat;
+pub use chat::ChatSettings;
+
 pub const SETTINGS_VERSION: u32 = 1;
 const MAX_FONT_FAMILY_BYTES: usize = 256;
 const MAX_KEYBINDINGS: usize = 256;
@@ -76,6 +79,8 @@ pub struct AppSettings {
     pub general: GeneralSettings,
     #[serde(default)]
     pub profile: ProfileSettings,
+    #[serde(default)]
+    pub chat: ChatSettings,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -114,6 +119,7 @@ impl Default for AppSettings {
             keybindings: Vec::new(),
             general: GeneralSettings::default(),
             profile: ProfileSettings::default(),
+            chat: ChatSettings::default(),
         }
     }
 }

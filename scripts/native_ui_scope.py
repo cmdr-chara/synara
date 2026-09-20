@@ -9,6 +9,31 @@ import subprocess
 import sys
 
 UI_PATHS = frozenset({
+    'crates/synara-app/src/input/policy.rs',
+    'crates/synara-app/src/shell/chrome.rs',
+    'crates/synara-app/src/shell/messages.rs',
+    'crates/synara-app/src/shell/settings.rs',
+    'crates/synara-app/src/shell/settings/chat.rs',
+    'crates/synara-workspace/src/settings.rs',
+    'crates/synara-workspace/src/settings/chat.rs',
+    'scripts/native_chat_behavior_smoke.py',
+    'scripts/native_smoke.py',
+
+    'crates/synara-app/assets/icons/model-picker-manifest.json',
+    'crates/synara-app/assets/icons/tabler/star-filled.svg',
+    'crates/synara-app/assets/icons/tabler/star.svg',
+    'crates/synara-app/src/input.rs',
+    'crates/synara-app/src/shell.rs',
+    'crates/synara-app/src/shell/controls.rs',
+    'crates/synara-app/src/shell/drafts.rs',
+    'crates/synara-app/src/shell/navigation.rs',
+    'crates/synara-app/src/ui/icons.rs',
+    'crates/synara-app/src/ui/menu/models.rs',
+    'crates/synara-workspace/src/storage.rs',
+    'crates/synara-workspace/src/storage/chat_preferences.rs',
+    'scripts/native_controls_smoke.py',
+    'scripts/native_model_draft_smoke.py',
+
     'crates/synara-app/src/ui/menu.rs',
     'crates/synara-app/src/ui/markdown.rs',
     'scripts/native_picker_search_smoke.py',

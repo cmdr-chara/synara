@@ -1,0 +1,19 @@
+{
+  "source": "tabler/tabler-icons",
+  "version": "v3.44.0",
+  "license": "MIT, see ../NOTICE.md and the existing Tabler license",
+  "usage": "Same outline/filled star paths as Synara icons.tsx at Electron 9488759",
+  "formatting": "SVG attributes normalized, geometry unchanged",
+  "assets": [
+    {
+      "path": "tabler/star.svg",
+      "sha256": "0c2ef5d488264d3dbdbb62c4415d333931febfa822864eb7efc807111f72326e",
+      "upstream": "icons/outline/star.svg"
+    },
+    {
+      "path": "tabler/star-filled.svg",
+      "sha256": "5bc6967f7f9c2c1832c8e89cc5a746708dc09b345a0ec0252c8b2b57c2caa2ba",
+      "upstream": "icons/filled/star.svg"
+    }
+  ]
+}

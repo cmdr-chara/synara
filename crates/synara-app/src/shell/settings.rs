@@ -1,6 +1,7 @@
 //! Native settings pages. Editable controls persist through WorkspaceService;
 //! sections without a native service say so instead of displaying invented data.
 use super::*;
+mod chat;
 use crate::ui::menu::{Choice, ChoiceEvent, ChoiceMenu};
 use crate::ui::{self, Glyph, palette};
 use gpui::{FocusHandle, Pixels, Point};
@@ -707,11 +708,7 @@ impl Shell {
             Section::Models => self.model_settings(cx),
             Section::System => self.system_settings(cx),
             Section::Archived => self.archived_settings(cx),
-            Section::Behavior => div().child(heading("Conversation"))
-                .child(card().child(row("Work summaries", "Agent commentary and commands are grouped under each turn. Expand “Worked for” to read the details.", ""))
-                    .child(row("Permissions", "The agent asks before actions that need approval. Answer requests inside the chat.", "Ask permission"))
-                    .child(row("Follow new responses", "Scroll up to read earlier messages. Use the down arrow to return to the live response.", "")))
-                .into_any_element(),
+            Section::Behavior => self.chat_settings(cx),
             Section::Notifications => empty("In-app activity", "Running chats show an activity indicator. Permission and input requests appear in the conversation. Desktop notification preferences have not been ported yet.").into_any_element(),
             Section::AppSnap => empty("AppSnap is not available yet", "Capturing another app’s window has not been ported to the native app. You can attach project files from the composer’s Add menu.").into_any_element(),
             Section::Mcp => empty("Managed MCP connections are not available yet", "Your agent can use its own configured tools. Managing shared MCP connections from Synara has not been ported yet.").into_any_element(),
@@ -751,7 +748,7 @@ impl Shell {
                             .children(
                                 matches!(
                                     self.settings.section,
-                                    Section::General | Section::Appearance
+                                    Section::General | Section::Appearance | Section::Behavior
                                 )
                                 .then(|| {
                                     let section = self.settings.section;
@@ -779,6 +776,9 @@ impl Shell {
                                                     Section::Appearance => {
                                                         settings.appearance =
                                                             AppearanceSettings::default()
+                                                    }
+                                                    Section::Behavior => {
+                                                        settings.chat = ChatSettings::default();
                                                     }
                                                     _ => {
                                                         settings.general =

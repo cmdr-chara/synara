@@ -54,8 +54,8 @@ def run(scenario):
     ui.key('Escape')
     # Escape returns to the original trigger. Native Return reopens the menu.
     ui.key('Return')
+    scenario.click_control('model-source', slot=2)
     ui.key('Home')
-    ui.key('Down')
     key_edge(ui, 'Return', True)
     assert scenario.task()['agent_id'] == 'alpha', 'Provider changed before key release'
     key_edge(ui, 'Return', False)
@@ -72,7 +72,8 @@ def run(scenario):
 
     scenario.click_control('model-picker')
     ui.screenshot('model-picker')
-    ui.key('End')
+    scenario.click_control('choice-search')
+    ui.text('alternate')
     count = config_count(scenario)
     key_edge(ui, 'Return', True)
     assert config_count(scenario) == count and option(scenario, 'model') == 'beta'
@@ -123,9 +124,11 @@ def run(scenario):
     # The external clipboard reader can take X11 focus. Reassert focus and
     # explicitly replace the draft, then verify the next prompt before sending.
     ui.focus()
+    scenario.click_control('composer-input')
     ui.key('a', ('Control_L',))
     ui.text('hold')
-    assert ui.copy_input() == 'hold', 'The busy-state probe requires exactly hold'
+    observed = ui.copy_input()
+    assert observed == 'hold', f'The busy-state probe requires exactly hold, got {observed!r}'
     before = len(scenario.events())
     ui.focus()
     ui.key('Return')

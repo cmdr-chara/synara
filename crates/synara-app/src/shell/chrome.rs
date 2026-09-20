@@ -333,6 +333,10 @@ impl Shell {
 impl Render for Shell {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         ui::configure(&self.settings.value.appearance, window.appearance());
+        if self.draft_state.quitting {
+            window.focus(&self.close_focus, cx);
+            return self.draft_close_panel(cx);
+        }
         if self.close != CloseState::Open || self.terminal_closing {
             return self.close_panel(cx);
         }
@@ -348,7 +352,10 @@ impl Render for Shell {
                 &root_focus,
                 window,
                 |this, event, window, cx| {
-                    if this.close != CloseState::Open || this.terminal_closing {
+                    if this.close != CloseState::Open
+                        || this.terminal_closing
+                        || this.draft_state.quitting
+                    {
                         return;
                     }
                     // A removed transient button can leave a live focus ID with

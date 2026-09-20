@@ -53,7 +53,9 @@ impl ReviewPreferences {
             || self.path.as_ref().is_some_and(|path| {
                 path.as_os_str().is_empty()
                     || path.as_os_str().len() > 8192
-                    || path.components().any(|part| !matches!(part, Component::Normal(_)))
+                    || path
+                        .components()
+                        .any(|part| !matches!(part, Component::Normal(_)))
             })
         {
             return Err(WorkspaceError::Invalid(
@@ -75,7 +77,11 @@ fn read(connection: &Connection, scope: &ReviewScope) -> WorkspaceResult<ReviewP
         return Err(WorkspaceError::NotFound);
     }
     let raw: Option<String> = connection
-        .query_row("SELECT data FROM preferences WHERE key=?1", [scope.key()?], |row| row.get(0))
+        .query_row(
+            "SELECT data FROM preferences WHERE key=?1",
+            [scope.key()?],
+            |row| row.get(0),
+        )
         .optional()
         .map_err(StorageError::from)?;
     let value = match raw {
@@ -87,8 +93,12 @@ fn read(connection: &Connection, scope: &ReviewScope) -> WorkspaceResult<ReviewP
     Ok(value)
 }
 impl WorkspaceService {
-    pub async fn review_preferences(&self, scope: ReviewScope) -> WorkspaceResult<ReviewPreferences> {
-        self.access(move |store| read(&store.connection, &scope)).await
+    pub async fn review_preferences(
+        &self,
+        scope: ReviewScope,
+    ) -> WorkspaceResult<ReviewPreferences> {
+        self.access(move |store| read(&store.connection, &scope))
+            .await
     }
 
     /// A serialized transaction and revision check protect a newer window's draft.
@@ -134,7 +144,10 @@ mod tests {
 
     async fn scope(service: &WorkspaceService, path: &Path) -> ReviewScope {
         let project = service.add_local_workspace(path.into()).await.unwrap();
-        ReviewScope { project: project.id, root: path.into() }
+        ReviewScope {
+            project: project.id,
+            root: path.into(),
+        }
     }
 
     #[tokio::test]
@@ -146,15 +159,30 @@ mod tests {
         let other_root = dir.path().join("other");
         std::fs::create_dir(&other_root).unwrap();
         let other = scope(&service, &other_root).await;
-        let worktree = ReviewScope { root: dir.path().join("worktree"), ..first.clone() };
-        let value = ReviewPreferences {
-            path: Some("src/caffè.rs".into()), staged: true, raw: true,
-            commit_message: "Review 日本語\n\nKeep exact spacing  ".into(), ..Default::default()
+        let worktree = ReviewScope {
+            root: dir.path().join("worktree"),
+            ..first.clone()
         };
-        let saved = service.save_review_preferences(first.clone(), 0, value).await.unwrap();
+        let value = ReviewPreferences {
+            path: Some("src/caffè.rs".into()),
+            staged: true,
+            raw: true,
+            commit_message: "Review 日本語\n\nKeep exact spacing  ".into(),
+            ..Default::default()
+        };
+        let saved = service
+            .save_review_preferences(first.clone(), 0, value)
+            .await
+            .unwrap();
         assert_eq!(saved.revision, 1);
-        assert_eq!(service.review_preferences(other).await.unwrap(), ReviewPreferences::default());
-        assert_eq!(service.review_preferences(worktree).await.unwrap(), ReviewPreferences::default());
+        assert_eq!(
+            service.review_preferences(other).await.unwrap(),
+            ReviewPreferences::default()
+        );
+        assert_eq!(
+            service.review_preferences(worktree).await.unwrap(),
+            ReviewPreferences::default()
+        );
         drop(service);
         let reopened = WorkspaceService::open(db).await.unwrap();
         assert_eq!(reopened.review_preferences(first).await.unwrap(), saved);
@@ -165,18 +193,51 @@ mod tests {
         let dir = tempfile::tempdir().unwrap();
         let service = WorkspaceService::memory().unwrap();
         let scope = scope(&service, dir.path()).await;
-        let saved = service.save_review_preferences(scope.clone(), 0, ReviewPreferences {
-            commit_message: "Keep me".into(), ..Default::default()
-        }).await.unwrap();
-        assert!(service.save_review_preferences(scope.clone(), 0, ReviewPreferences::default()).await.is_err());
+        let saved = service
+            .save_review_preferences(
+                scope.clone(),
+                0,
+                ReviewPreferences {
+                    commit_message: "Keep me".into(),
+                    ..Default::default()
+                },
+            )
+            .await
+            .unwrap();
+        assert!(
+            service
+                .save_review_preferences(scope.clone(), 0, ReviewPreferences::default())
+                .await
+                .is_err()
+        );
         for path in ["../outside", "/absolute", ""] {
-            assert!(service.save_review_preferences(scope.clone(), 1, ReviewPreferences {
-                path: Some(path.into()), ..saved.clone()
-            }).await.is_err());
+            assert!(
+                service
+                    .save_review_preferences(
+                        scope.clone(),
+                        1,
+                        ReviewPreferences {
+                            path: Some(path.into()),
+                            ..saved.clone()
+                        }
+                    )
+                    .await
+                    .is_err()
+            );
         }
-        assert!(service.save_review_preferences(scope.clone(), 1, ReviewPreferences {
-            commit_message: "x".repeat(MAX_COMMIT_DRAFT_BYTES + 1), ..saved.clone()
-        }).await.is_err());
+        assert!(
+            service
+                .save_review_preferences(
+                    scope.clone(),
+                    1,
+                    ReviewPreferences {
+                        commit_message: "x".repeat(MAX_COMMIT_DRAFT_BYTES + 1),
+                        ..saved.clone()
+                    }
+                )
+                .await
+                .is_err()
+        );
         assert_eq!(service.review_preferences(scope).await.unwrap(), saved);
     }
 
@@ -187,18 +248,34 @@ mod tests {
         let scope = scope(&service, dir.path()).await;
         for raw in ["{broken", "{\"version\":99}"] {
             let key = scope.key().unwrap();
-            service.access(move |store| {
-                store.connection.execute("INSERT OR REPLACE INTO preferences(key,data) VALUES(?1,?2)", params![key, raw])
-                    .map_err(StorageError::from)?;
-                Ok(())
-            }).await.unwrap();
+            service
+                .access(move |store| {
+                    store
+                        .connection
+                        .execute(
+                            "INSERT OR REPLACE INTO preferences(key,data) VALUES(?1,?2)",
+                            params![key, raw],
+                        )
+                        .map_err(StorageError::from)?;
+                    Ok(())
+                })
+                .await
+                .unwrap();
             assert!(service.review_preferences(scope.clone()).await.is_err());
-            assert!(service.save_review_preferences(scope.clone(), 0, ReviewPreferences::default()).await.is_err());
+            assert!(
+                service
+                    .save_review_preferences(scope.clone(), 0, ReviewPreferences::default())
+                    .await
+                    .is_err()
+            );
             let key = scope.key().unwrap();
-            service.access(move |store| {
-                assert_eq!(store.preference_raw(&key)?.unwrap(), raw);
-                Ok(())
-            }).await.unwrap();
+            service
+                .access(move |store| {
+                    assert_eq!(store.preference_raw(&key)?.unwrap(), raw);
+                    Ok(())
+                })
+                .await
+                .unwrap();
         }
     }
 }

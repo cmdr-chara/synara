@@ -4,7 +4,7 @@ import subprocess
 import unittest
 from unittest.mock import patch
 
-from native_ui_scope import git_scope, scope_for_paths
+from native_ui_scope import git_scope, scope_for_paths, kanban_only
 
 
 class NativeScopeTests(unittest.TestCase):
@@ -36,6 +36,28 @@ class NativeScopeTests(unittest.TestCase):
                      'scripts/native_smoke.py', 'scripts/native_chat_behavior_smoke.py']:
             with self.subTest(path=path):
                 self.assertEqual(scope_for_paths([path]), 'presentation')
+
+    def test_complete_kanban_slice_uses_creation_and_modal_journeys(self):
+        paths = ['crates/synara-app/src/shell/kanban.rs',
+                 'crates/synara-workspace/src/service.rs',
+                 'crates/synara-workspace/src/storage/task_creation.rs',
+                 'scripts/test_native_kanban_smoke.py', 'ROADMAP.md']
+        self.assertEqual(scope_for_paths(paths), 'presentation')
+        self.assertTrue(kanban_only(paths))
+
+    def test_mixed_kanban_changes_retain_broader_ui_acceptance(self):
+        for extra in ['crates/synara-app/src/ui/menu.rs',
+                      'crates/synara-app/src/ui/markdown.rs',
+                      'crates/synara-app/src/input.rs',
+                      'crates/synara-workspace/src/settings/chat.rs']:
+            self.assertFalse(kanban_only(['crates/synara-app/src/shell/kanban.rs', extra]))
+
+    def test_no_semantic_task_change_cannot_select_narrow_journeys(self):
+        for paths in [[], ['ROADMAP.md'], ['.github/workflows/ui-presentation.yml'],
+                      ['crates/synara-workspace/src/service.rs'], ['unknown.rs'],
+                      ['crates/synara-app/src/shell/kanban.rs', 'unknown.rs']]:
+            self.assertFalse(kanban_only(paths))
+        self.assertEqual(scope_for_paths(['crates/synara-workspace/src/service.rs']), 'full')
 
     def test_empty_diff_is_not_assumed_verified(self):
         self.assertEqual(scope_for_paths([]), 'full')

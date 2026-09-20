@@ -4,6 +4,7 @@ pub mod markdown;
 pub use icons::{Glyph, icon, provider_glyph};
 pub mod menu;
 pub mod motion;
+pub mod task_dialog;
 use gpui::{
     Context, Div, ElementId, SharedString, Stateful, Window, canvas, div, prelude::*, px, rgb, rgba,
 };

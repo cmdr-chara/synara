@@ -79,6 +79,17 @@ impl Shell {
                     .pr_2()
                     .gap_2()
                     .when(!docked && !cfg!(target_os = "macos"), |el| el.pr(px(152.)))
+                    .children(
+                        (self.panel == Panel::Kanban && self.kanban.project.is_some()).then(|| {
+                            ui::chrome_button(
+                                "kanban-all-projects",
+                                "All projects",
+                                Glyph::Back,
+                                false,
+                                cx.listener(|this, _: &(), _, cx| this.kanban_back(cx)),
+                            )
+                        }),
+                    )
                     .child(
                         div()
                             .id("window-drag-region")
@@ -95,6 +106,20 @@ impl Shell {
                                     window.start_window_move();
                                 }
                             })
+                            .children((self.panel == Panel::Kanban).then(|| {
+                                div()
+                                    .flex()
+                                    .items_center()
+                                    .gap_2()
+                                    .text_size(px(14.))
+                                    .child(self.kanban_heading())
+                                    .child(
+                                        div()
+                                            .text_size(px(12.))
+                                            .text_color(rgb(palette().muted))
+                                            .child(format!("{} tasks", self.kanban_count())),
+                                    )
+                            }))
                             .children(has_chat.then(|| ui::icon(self.selected_agent_glyph())))
                             .children(has_chat.then(|| {
                                 div()
@@ -104,6 +129,17 @@ impl Shell {
                                     .child(title)
                             })),
                     )
+                    .children((self.panel == Panel::Kanban).then(|| {
+                        ui::action(
+                            "kanban-new-task",
+                            "New task",
+                            Some(Glyph::Plus),
+                            false,
+                            cx.listener(|this, _: &(), _, cx| this.open_task_dialog(false, cx)),
+                        )
+                        .relative()
+                        .child(ui::layout_probe("kanban-new-task"))
+                    }))
                     .children(has_chat.then(|| {
                         ui::unavailable_action(
                             "handoff",
@@ -113,43 +149,47 @@ impl Shell {
                         )
                         .aria_label("Hand off, unavailable")
                     }))
-                    .children((self.panel != Panel::Settings).then(|| {
-                        ui::chrome_button(
-                            "Terminal",
-                            "Terminal",
-                            Glyph::Dock,
-                            false,
-                            cx.listener(|this, _: &(), _, cx| {
-                                this.set_panel(
-                                    if this.panel == Panel::Terminal {
-                                        Panel::Conversation
-                                    } else {
-                                        Panel::Terminal
-                                    },
-                                    cx,
-                                )
-                            }),
-                        )
-                    }))
-                    .children((self.panel != Panel::Settings).then(|| {
-                        ui::chrome_button(
-                            "Files",
-                            "Toggle workspace pane",
-                            Glyph::PanelRight,
-                            false,
-                            cx.listener(|this, _: &(), _, cx| {
-                                this.set_panel(
-                                    if this.dock_open() {
-                                        Panel::Conversation
-                                    } else {
-                                        Panel::Dock
-                                    },
-                                    cx,
-                                )
-                            }),
-                        )
-                        .when(docked, |el| el.bg(rgb(palette().overlay)))
-                    })),
+                    .children(
+                        (!matches!(self.panel, Panel::Settings | Panel::Kanban)).then(|| {
+                            ui::chrome_button(
+                                "Terminal",
+                                "Terminal",
+                                Glyph::Dock,
+                                false,
+                                cx.listener(|this, _: &(), _, cx| {
+                                    this.set_panel(
+                                        if this.panel == Panel::Terminal {
+                                            Panel::Conversation
+                                        } else {
+                                            Panel::Terminal
+                                        },
+                                        cx,
+                                    )
+                                }),
+                            )
+                        }),
+                    )
+                    .children(
+                        (!matches!(self.panel, Panel::Settings | Panel::Kanban)).then(|| {
+                            ui::chrome_button(
+                                "Files",
+                                "Toggle workspace pane",
+                                Glyph::PanelRight,
+                                false,
+                                cx.listener(|this, _: &(), _, cx| {
+                                    this.set_panel(
+                                        if this.dock_open() {
+                                            Panel::Conversation
+                                        } else {
+                                            Panel::Dock
+                                        },
+                                        cx,
+                                    )
+                                }),
+                            )
+                            .when(docked, |el| el.bg(rgb(palette().overlay)))
+                        }),
+                    ),
             )
             .children(docked.then(|| {
                 div()
@@ -384,7 +424,11 @@ impl Render for Shell {
         }
         // Backend completion may request composer focus. Keep that request pending
         // while a menu owns focus, rather than stealing focus from its keyboard user.
-        if self.focus_composer && !self.navigation.menu_open && !self.controls.is_open() {
+        if self.focus_composer
+            && !self.navigation.menu_open
+            && !self.controls.is_open()
+            && self.kanban.dialog.is_none()
+        {
             let focus = self.composer.read(cx).focus_handle(cx);
             window.focus(&focus, cx);
             self.focus_composer = false;
@@ -432,6 +476,20 @@ impl Render for Shell {
             .capture_key_down(cx.listener(|this, event: &gpui::KeyDownEvent, window, cx| {
                 let modifiers = event.keystroke.modifiers;
                 let key = event.keystroke.key.as_str();
+                if this.kanban.dialog.is_some() {
+                    return;
+                }
+                if this.panel == Panel::Kanban
+                    && key == "t"
+                    && modifiers.alt
+                    && (modifiers.control || modifiers.platform)
+                    && !modifiers.shift
+                    && !event.is_held
+                {
+                    this.open_task_dialog(false, cx);
+                    cx.stop_propagation();
+                    return;
+                }
                 if this.navigation.menu_open {
                     if key == "escape" {
                         this.dismiss_tools(window, cx);
@@ -559,6 +617,7 @@ impl Render for Shell {
                             .child(self.main_surface(window, dock_width, dock_target_width, cx)),
                     ),
             )
+            .children(self.kanban.dialog.clone())
             .children(self.navigation.menu_open.then(|| self.tools_overlay(cx)))
             .children(self.controls.is_open().then(|| self.control_overlay(cx)))
             .children(

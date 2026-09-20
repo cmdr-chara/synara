@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Native project/task drafting, release-safe creation, run/stop and restart.
+"""Native project/task drafting, modal focus, release-safe creation and run/stop.
 
 Uses only Scenario's owned Xvfb, SQLite, folders and ACP fixture processes.
 """
 import argparse
 import json
 from pathlib import Path
+import re
 import sqlite3
 import time
 import uuid
@@ -80,8 +81,18 @@ def run(s):
     ui.key('9', ('Control_L',))
     s.click_control('kanban-new-task')
     s.click_control('task-create')
+    assert s.process.poll() is None, 'New task rendering crashed'
     assert len(tasks(s)) == 1, 'Empty form created a task'
-    fill(s, 'hello')
+    ui.screenshot('new-task-empty', window_only=True)
+    # With an empty prompt Create is excluded from keyboard traversal. Five Tab
+    # presses must return to the prompt, without reaching the application sidebar.
+    s.click_control('task-prompt')
+    for _ in range(5):
+        ui.key('Tab')
+    ui.text('hello')
+    assert ui.copy_input() == 'hello', 'Modal focus escaped into the underlying app'
+    ui.focus()
+    s.click_control('task-prompt')
     ui.key('t', ('Control_L', 'Alt_L'))
     s.click_control('task-prompt')
     assert ui.copy_input() == 'hello', 'Repeated shortcut remounted the form'
@@ -91,9 +102,16 @@ def run(s):
     # Project ordering is catalog/UUID order, so use the native chooser search.
     ui.text('Second project')
     ui.key('Return')
+    ui.key('Tab')
+    assert ui.copy_input() == 'hello', 'Project selection did not return focus to its trigger'
+    ui.focus()
     s.click_control('task-agent')
     ui.text('beta')
     ui.key('Return')
+    # The selected provider's trigger regains focus and can reopen with Enter.
+    ui.key('Return')
+    ui.screenshot('new-task-agent-picker', window_only=True)
+    ui.key('Escape')
     s.click_control('task-as-draft')
     ui.screenshot('new-task-draft-ready', window_only=True)
     s.click_control('task-create')
@@ -108,6 +126,7 @@ def run(s):
     open_project(s, second)
     ui.screenshot('kanban-draft-task', window_only=True)
     s.checks.append('isolated-composer-project-agent-and-atomic-draft-without-autostart')
+    s.checks.append('modal-tab-containment-and-picker-trigger-focus-restoration')
 
     s.click_control('kanban-open-draft', slot=0)
     wait_until(lambda: selection(s) == task, 'open persisted draft')
@@ -155,18 +174,33 @@ def run(s):
     assert s.process.poll() is None, 'Unsubmitted form was lost on window close'
     s.click_control('task-close')
     ui.screenshot('new-task-discard-confirmation', window_only=True)
+    # Confirmation initially focuses the nondestructive action. A full focus
+    # cycle stays inside confirmation, and Enter keeps the unfinished text.
+    ui.key('Tab')
+    ui.key('Tab')
+    ui.key('Return')
+    s.click_control('task-prompt')
+    assert ui.copy_input() == 'do not discard silently'
+    ui.focus()
+    s.click_control('task-close')
     s.click_control('task-discard')
     assert set(tasks(s)) == before
     s.checks.append('closing-window-and-dismissing-form-protect-unsaved-task-text')
+    s.checks.append('discard-confirmation-traps-focus-and-defaults-to-keep-editing')
 
     for width, height in [(1100, 760), (960, 700)]:
         resize(ui, width, height, s.scale)
         s.click_control('kanban-add-draft')
         x, y, w, h = s.control_bounds('new-task-dialog')
         assert 0 <= x and x + w <= width + 1 and 0 <= y and y + h <= height + 1
+        s.click_control('task-agent')
+        mx, my, mw, mh = s.control_bounds('session-menu')
+        assert 0 <= mx and mx + mw <= width + 1 and 0 <= my and my + mh <= height + 1
+        ui.screenshot(f'new-task-agent-{width}', window_only=True)
+        ui.key('Escape')
         ui.screenshot(f'new-task-{width}', window_only=True)
         ui.key('Escape')
-    s.checks.append('native-task-modal-and-scrollable-board-at-intermediate-widths')
+    s.checks.append('native-task-modal-and-anchored-pickers-at-intermediate-widths')
     close(s)
 
 
@@ -183,6 +217,12 @@ def main():
     except BaseException:
         import traceback
         result['error'] = traceback.format_exc()
+        # Preserve the real native panic/error instead of reporting only a later
+        # missing-control timeout. Logs belong exclusively to the owned fixture.
+        if s.log:
+            lines = re.sub(r'\x1b\[[0-9;]*[A-Za-z]', '', Path(s.log.name).read_text(errors='replace')).splitlines()
+            print('Native failure diagnostics:')
+            print('\n'.join(line for line in lines if 'control-layout' not in line)[-8000:])
         if s.process and s.process.poll() is None:
             s.desktop.screenshot('failure')
         raise

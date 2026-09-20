@@ -67,6 +67,7 @@ jobs:
       - name: Native task, draft and close regressions
         run: |
           cargo +1.98.1 test --locked -p synara-app --bin synara-app shell::kanban::tests
+          cargo +1.98.1 test --locked -p synara-app --bin synara-app ui::task_dialog::tests
           cargo +1.98.1 test --locked -p synara-app --bin synara-app shell::drafts::tests
           cargo +1.98.1 test --locked -p synara-app --bin synara-app close::tests
       - name: Presentation and input regressions

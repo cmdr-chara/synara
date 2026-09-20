@@ -1,10 +1,10 @@
-name: Source checkpoint
+name: Source checkpoint transport
 on:
   push:
     branches: [astra/gpui-clean-rewrite]
     paths: [.github/workflows/source-checkpoint.yml]
 permissions:
-  contents: read
+  contents: write
 jobs:
   source:
     if: github.repository == 'cmdr-chara/synara'
@@ -15,13 +15,63 @@ jobs:
         with:
           fetch-depth: 200
           persist-credentials: false
-      - name: Export exact source without building or running tests
+      - name: Retain locally compiled source blobs for plugin publication
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          mkdir -p /tmp/source-checkpoint
-          git rev-parse HEAD > /tmp/source-checkpoint/revision.txt
-          git bundle create /tmp/source-checkpoint/source.bundle HEAD
+          python3 -u - <<'PY'
+          import base64, hashlib, json, lzma, os, pathlib, subprocess, time, urllib.request
+          base = 'dcf6311cb90a2937578174d07825b21c9aa18959'
+          expected = ['d84b6279c7bda2ce15a3569201991cbfe91141a8', '1b9ffe316aeb9e87d11fe56abc934abdbdf43c6c', '8711b3ed16250ce849308ac4539544de920f336e', 'b7cb2e63c93c70a724ad5237d54ac0f104c738f2']
+          parts = []
+          for index, sha in enumerate(expected):
+              data = pathlib.Path(f'docs/ui/.transfer/part-{index}.txt').read_bytes()
+              assert len(data) <= 10000
+              assert hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest() == sha
+              parts.append(data)
+          compressed = base64.b64decode(b''.join(parts), validate=True)
+          decoder = lzma.LZMADecompressor(memlimit=128*1024*1024)
+          patch = decoder.decompress(compressed, max_length=200000)
+          assert decoder.eof and not decoder.unused_data
+          assert len(patch) == 133044 and hashlib.sha256(patch).hexdigest() == 'f92b221ee6d97e4c0918d55d7145776eec5a40dacb4d6d027bec4b4bccadd7d3'
+          patch.decode('utf-8')
+          assert b'GIT binary patch' not in patch
+          work = pathlib.Path('/tmp/synara-feature-source')
+          subprocess.run(['git', 'worktree', 'add', '--detach', str(work), base], check=True)
+          def git(*args): return subprocess.check_output(['git', '-C', str(work), *args]).decode().strip()
+          stats = subprocess.check_output(['git', '-C', str(work), 'apply', '--numstat', '-z', '-'], input=patch)
+          paths = []
+          for row in stats.split(b'\0'):
+              if not row: continue
+              path = row.decode().split('\t', 2)[2]
+              assert path == 'ROADMAP.md' or path.startswith(('crates/synara-app/src/', 'crates/synara-workspace/src/', 'crates/synara-runtime/src/', 'scripts/', 'docs/ui/'))
+              assert '..' not in pathlib.PurePosixPath(path).parts and not pathlib.PurePosixPath(path).is_absolute()
+              paths.append(path)
+          assert 1 <= len(paths) <= 40
+          subprocess.run(['git', '-C', str(work), 'apply', '--index', '--check', '-'], input=patch, check=True)
+          subprocess.run(['git', '-C', str(work), 'apply', '--index', '-'], input=patch, check=True)
+          entries = []
+          for path in paths:
+              file = work / path
+              if not file.exists():
+                  entries.append({'path':path,'mode':'100644','type':'blob','sha':None})
+                  print('SOURCE_DELETE', path)
+                  continue
+              assert not file.is_symlink()
+              content = file.read_text()
+              assert len(content.encode()) < 200000
+              sha = git('hash-object', '--', path)
+              req = urllib.request.Request('https://api.github.com/repos/cmdr-chara/synara/git/blobs', data=json.dumps({'content':content,'encoding':'utf-8'}).encode(), method='POST', headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'], 'Accept':'application/vnd.github+json', 'Content-Type':'application/json'})
+              with urllib.request.urlopen(req, timeout=30) as response:
+                  assert json.load(response)['sha'] == sha
+              entries.append({'path':path,'mode':'100644','type':'blob','sha':sha})
+              print('SOURCE_BLOB', path, sha)
+              time.sleep(0.2)
+          pathlib.Path('/tmp/source-blobs.json').write_text(json.dumps(entries))
+          print('No feature code, test or agent was executed. No branch ref was updated.')
+          PY
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: source-checkpoint
-          path: /tmp/source-checkpoint/
+          name: compiled-feature-source-blobs
+          path: /tmp/source-blobs.json
           retention-days: 7

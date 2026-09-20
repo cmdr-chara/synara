@@ -2,6 +2,7 @@
 
 Date: September 20, 2026. Delivery: `astra/gpui-clean-rewrite` only.
 Base implementation: `ec1c946b7959738e46e38aab2decfd4c226cb47c`.
+Published implementation: `2808549852c23bf80d93e851d1b04c995d57ebb0`.
 Electron reference: `948875954f432978eab7dd5fa44c3028b8d99a81` and the supplied
 73-image UI/UX reference. Theme defaults are unchanged. Dracula remains optional.
 Roadmap ownership: D8, D9, D12, F2, F8 and I10, all partial.
@@ -21,7 +22,8 @@ Roadmap ownership: D8, D9, D12, F2, F8 and I10, all partial.
    None of these actions sends a prompt or performs turn rollback.
 4. Copy text conversation: copy saved user, assistant and reasoning text as
    Markdown. This is not a complete multimedia/session export. Unsent drafts,
-   credentials, configuration, tool payloads and attachments are not exported.
+   stored credentials, configuration, tool payloads and attachments are excluded.
+   Secrets written inside message text are not automatically redacted.
 5. Export text conversation: the native save dialog selects a local destination.
    A private staging file is completed first, then published without overwriting
    any existing destination or following a destination symlink. Unsupported
@@ -39,8 +41,8 @@ results are generation-scoped so late worker responses cannot replace a newer
 query or a different conversation. New menu actions retain selected-task identity.
 
 The batch also releases an armed Environment divider gesture before a keyboard
-resize/save. This addresses the observed equal-split save timeout without changing
-split ratios, themes or process ownership.
+resize/save. This targets the observed equal-split save timeout without changing
+split ratios, themes or process ownership. Native confirmation remains pending.
 
 ## Recovery and verification state
 
@@ -51,11 +53,37 @@ The missing storage module, transcript jump implementation, exports, preference
 cleanup and test wiring were completed afterward. Recovery-only tooling is removed
 from the final source tree and the normal native verification workflow restored.
 
-At this checkpoint the implementation is assembled first, as requested by the
-user. The new regression tests and the combined native chat utility journey are
-written for subsequent execution. Do not count them as passed merely because they
-exist. Compilation/formatting results, when obtained, are separate from runtime
-acceptance. No whole roadmap gate is closed by this batch.
+### Observed build evidence
+
+[Run 35515246665](https://github.com/cmdr-chara/synara/actions/runs/35515246665),
+job `106089970972`, Ubuntu 24.04 x64, pinned Rust 1.98.1:
+
+- PASS: Rust formatting for `synara-app` and `synara-workspace`, Python syntax
+  parsing of the new/changed scripts, and `git diff --check`.
+- PASS: `cargo +1.98.1 check --locked -p synara-app --bin synara-app`.
+- PASS: no unstaged source changes during compilation, including no lockfile change.
+- DEFERRED: unit tests, Clippy, native UI journeys, screenshot comparison and
+  native save-dialog acceptance. These were not run for this batch.
+
+The runner checked an assembled worktree rather than its trigger commit.
+Its recorded `git write-tree` was
+`efc7671284f22ad81629688a8dd50f2d08d4962b`. The GitHub plugin recreated that
+identical tree and published it as source commit
+`2808549852c23bf80d93e851d1b04c995d57ebb0`. The subsequent receipt edit is
+documentation only. Source patch artifact: `10606817048`, SHA256
+`a96573ade7a0a7faae0bb9f4422805f5a7c37d6b2a27df85ec16e62a21c3a483`.
+
+The first assembly run `35514971101` stopped before compilation on a GitHub
+Actions token HTTP 403. The follow-up retained all formatted source blobs and
+compiled successfully, but its optional review-tree export also received
+`Resource not accessible by integration`. That export step was allowed to fail,
+so the overall green workflow is not claimed as an all-steps pass. Final tree,
+commit and branch publication were completed using the authorized GitHub plugin.
+
+Implementation was batched first as requested. Regression tests and the combined
+native chat utility journey are written for subsequent execution. Their existence
+is not test evidence, and compilation is not runtime acceptance. No whole roadmap
+gate is closed by this batch.
 
 Prepared checks cover role identity, streamed-chunk search, literal wildcard
 handling, unknown IDs, pin persistence/concurrent openers, stale/corrupt pins,

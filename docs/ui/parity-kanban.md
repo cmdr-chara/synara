@@ -4,6 +4,23 @@ Date: September 20, 2026. Roadmap: F1/F2/F10, D4 and I10 (bounded progress).
 Delivery branch: `cmdr-chara/synara`, `astra/gpui-clean-rewrite`.
 Electron reference: `948875954f432978eab7dd5fa44c3028b8d99a81`.
 
+## Accepted source checkpoint
+
+The previously pending integrated-source run is now **PASS for the bounded Linux
+Kanban slice**, not full product or cross-platform acceptance.
+
+- Published implementation: `67f276bbc1164d192b2d35998303c669a34bc296`.
+- Dialog rendering and keyboard correction: `cb21a722d99ddd914091a98306a137feeac1b19f`.
+- Formatted and verified source: `770eae1c4e134b8dd285ecd46b9563fb79736199`.
+- Source tree: `0f0e4439ab9e69a0e7cf3d47185318dd67fcb60d`.
+- [Focused native run 35505674865](https://github.com/cmdr-chara/synara/actions/runs/35505674865),
+  presentation job `106064975562`: PASS, including the no-source-mutation check.
+- [Static run 35505674726](https://github.com/cmdr-chara/synara/actions/runs/35505674726): PASS.
+
+The rendering correction was already present when this verification receipt was
+refreshed. This documentation update does not claim a second implementation of
+that fix or change the tested Rust/Python source.
+
 ## Reference inspection is now available
 
 The previously inaccessible archive was recovered. All 73 PNGs were indexed,
@@ -85,6 +102,11 @@ They do not justify claiming those features are implemented by adding their labe
   conversation's text and selection preserved during creation.
 - Reference-aligned compact cards, modal dimensions, primary action treatment,
   bundled Synara glyphs and a reduced-motion-aware dialog entrance.
+- A primary Create button with one hover definition, avoiding the GPUI assertion
+  that previously prevented the dialog from rendering.
+- Explicit modal and confirmation focus cycles, nondestructive initial
+  confirmation focus and focus restoration to the project/provider picker trigger.
+- Trigger-relative picker placement constrained to the native window.
 
 Domain operations remain in Rust services. No dependency, database schema,
 approval policy, vendor authentication or browser execution boundary was changed.
@@ -103,22 +125,61 @@ answer inside a single delta. The harness now joins assistant chunks by message
 identity, with regressions rejecting accidental joins across messages or roles.
 That run is not described as green.
 
-Local compilation and targeted checks use the repository's pinned Rust 1.98.1,
+The published-source run `35504073637` exposed a separate application defect.
+The task dialog added a second `.hover()` handler to a button whose shared helper
+already owned one. GPUI panicked with `hover style already set` before the dialog
+could paint. The harness's `task-create` geometry timeout was a secondary symptom,
+not a reason to increase its timeout or remove the opening check. `cb21a722` gives
+the primary action one style owner and retains its contrasting treatment.
+`770eae1` applies the pinned formatting to that corrected source.
+
+Local compilation and targeted checks used the repository's pinned Rust 1.98.1,
 locked dependency sources and isolated build/sysroot directories. Local native
-window creation remains unavailable because the software Vulkan runtime is
-incomplete. Final native interaction acceptance therefore runs on the existing
+window creation was unavailable because the software Vulkan runtime was
+incomplete. The accepted native interaction evidence below comes from the
 Ubuntu/private-Xvfb runner, not the user's desktop.
 
-**Final integrated-source native verification: pending publication/run.**
-The receipt will be updated with the exact source commit and artifact after the
-unmodified published source passes the focused run. A temporary preparation
-script and transient CI source rewriting are removed from the delivered source.
+### Final integrated-source results
 
-The permanent presentation workflow retains the previous broader UI journeys.
-A tested, closed Kanban-only diff selects creation/storage, board/menu/draft/close
-checks and the three directly affected native suites. Mixed menu, settings or
-input changes retain broader presentation coverage. Unknown paths still fall
-back to full native verification. Documentation-only changes do not rebuild.
+Candidate: `770eae1c4e134b8dd285ecd46b9563fb79736199`.
+Platform: Ubuntu 24.04 x64, Rust 1.98.1, locked GPUI, private X11/Xvfb,
+owned SQLite/project data and ACP fixture agents.
+
+| Check in run 35505674865 | Result |
+| --- | --- |
+| Candidate identity, verification-scope regressions and roadmap validation | PASS |
+| Changed-package formatting | PASS |
+| Atomic task creation and chat-preference regressions | PASS |
+| Native task, draft and close unit regressions | PASS |
+| Selected presentation/input regression step | PASS |
+| Strict Clippy for `synara-app` and `synara-workspace` | PASS |
+| Native application and ACP fixture build | PASS |
+| Native Kanban creation and lifecycle journey | PASS |
+| Native creation and Studio restoration journey | PASS |
+| Native input and guarded-close journey | PASS |
+| Verify no candidate source mutation | PASS |
+| Export source identity and reproduction bundle | PASS |
+
+The full native `linux` lane and unrelated broader presentation journeys were
+skipped by the focused selector. They are not counted as passing or rerun merely
+to refresh this documentation. The successful Kanban journey replaces the earlier
+failed opening check as evidence for the corrected source only.
+
+The retained
+[focused-native-presentation artifact](https://github.com/cmdr-chara/synara/actions/runs/35505674865/artifacts/10603229842)
+contains captures, logs, results and the source reproduction bundle. Artifact ID:
+`10603229842`. ZIP SHA-256:
+`e6588f6ef3d423217b897a40e3ab1ee9e0aa12341119a084b06c22bb68202ba3`.
+GitHub reports expiry on September 27, 2026. These captures are interaction
+evidence, not a completed visual comparison against all 73 Electron states.
+
+A temporary preparation script and transient CI source rewriting were removed
+from the delivered source. The permanent presentation workflow retains the
+previous broader UI journeys. A tested, closed Kanban-only diff selects
+creation/storage, board/menu/draft/close checks and the three directly affected
+native suites. Mixed menu, settings or input changes retain broader presentation
+coverage. Unknown paths still fall back to full native verification.
+Documentation-only changes do not rebuild the application.
 
 ## Remaining differences and limits
 

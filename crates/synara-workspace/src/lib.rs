@@ -19,3 +19,6 @@ pub use tools::*;
 
 mod git_operations;
 pub use git_operations::*;
+
+mod studio;
+pub use studio::*;

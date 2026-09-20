@@ -116,7 +116,7 @@ jobs:
 
   chat-tools:
     needs: route
-    if: neds.route.result == 'success' && needs.route.outputs.chat_tools == 'true'
+    if: needs.route.result == 'success' && needs.route.outputs.chat_tools == 'true'
     uses: ./.github/workflows/ui-chat-tools.yml
     with:
       revision: ${{ github.sha }}
@@ -134,7 +134,7 @@ jobs:
     uses: ./.github/workflows/backend.yml
     with:
       revision: ${{ github.sha }}
-      mode: ${{ neds.route.result == 'success' && needs.route.outputs.backend_mode || 'full' }}
+      mode: ${{ needs.route.result == 'success' && needs.route.outputs.backend_mode || 'full' }}
 
   organization-context:
     needs: route

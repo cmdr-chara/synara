@@ -1,6 +1,10 @@
 mod chat_preferences;
 mod organization;
+mod task_context;
 pub use organization::{NativeSpace, OrganizationEdit, SpaceSymbol, WorkspaceOrganization};
+pub use task_context::{
+    ChecklistItem, MAX_CHECKLIST_ITEMS, MAX_CHECKLIST_TEXT, MAX_NOTE_BYTES, TaskContext,
+};
 mod conversation_tools;
 pub use conversation_tools::{MessageAnchor, MessageSearch};
 mod task_creation;
@@ -268,8 +272,12 @@ PRAGMA user_version=2;")?;
             [task.thread_id.to_string()],
         )?;
         tx.execute(
-            "DELETE FROM preferences WHERE key IN (?1,?2)",
-            params![format!("task-draft:{id}"), format!("message-pins:{id}")],
+            "DELETE FROM preferences WHERE key IN (?1,?2,?3)",
+            params![
+                format!("task-draft:{id}"),
+                format!("message-pins:{id}"),
+                format!("task-context:{id}")
+            ],
         )?;
         let changed = tx.execute("DELETE FROM tasks WHERE id=?1", [id.to_string()])?;
         tx.commit()?;
@@ -543,6 +551,7 @@ fn valid_preference_key(key: &str) -> bool {
     if let Some(id) = key
         .strip_prefix("task-draft:")
         .or_else(|| key.strip_prefix("message-pins:"))
+        .or_else(|| key.strip_prefix("task-context:"))
     {
         return id.len() == 36
             && serde_json::from_value::<TaskId>(serde_json::Value::String(id.into())).is_ok();

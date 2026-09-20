@@ -6,6 +6,43 @@ It is a living engineering document, not a release announcement.
 
 ## Current checkpoint
 
+### September 20: native Explorer actions and cross-surface context
+
+The native Explorer now exposes new-file/new-folder creation, version-checked
+rename and explicit permanent file deletion, literal content search, relative-path
+copying, file references and selected-text quotation into the unsent chat draft.
+All file mutation stays in the existing contained local/SSH workspace services.
+Dirty files, open mutation dialogs and external-version conflicts are guarded.
+The [Studio and Explorer receipt](docs/ui/parity-studio-files.md) records the
+combined source checks and remaining native acceptance. G1/G2/G7/G8/D8/I10 stay
+open for their full scope. Multiple editor tabs, recursive directory deletion,
+inline search highlighting and full Git review are not claimed by this batch.
+
+
+### September 20: recovered notes and native Studio file browser
+
+Saved notes/checklists are now wired directly into the checked-in application,
+not assembled by CI. The old source-rewriting step is removed while the Jev
+orchestrator and conservative routing remain unchanged. Studio adds a contained
+file browser, filename/image/output filters, UTF-8/Markdown and bounded PNG/JPEG
+previews, copy actions, explicit draft references and opening text in the existing
+editor. Markdown can switch to raw source, and image previews have bounded zoom,
+100% and Fit controls. Completed structured tool diffs provide output attribution. Other files
+remain honestly labelled workspace files. No content is executed or sent merely
+by browsing. See [continuation evidence and limits](docs/ui/parity-studio-files.md).
+G1/G2/F9/D10 are partial until the corresponding native and platform evidence is
+recorded. Browser, multimedia intake, side chats and full output attribution remain open.
+
+### September 20: saved chat notes and checklists
+
+Each conversation now has user-owned notes and an ordered checklist with add,
+edit, complete, hide-completed, reorder and remove controls. Explicit Save uses a
+revision check to reject stale edits. Copy and Add to draft preserve current chat
+text and never send automatically. Close/reload guards protect unfinished edits,
+and permanent task deletion removes its context in the same transaction.
+D10/F2/I10 remain partial. The [organization/context receipt](docs/ui/parity-organization-context.md)
+records the focused combined checks separately from remaining visual/platform work.
+
 ### September 20: Spaces and organization batch
 
 Space tabs, create/rename/icon editing, ordering, project assignment and guarded

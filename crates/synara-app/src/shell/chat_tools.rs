@@ -783,6 +783,12 @@ impl Shell {
             .items_center()
             .justify_end()
             .gap_1()
+            .child(self.saved_context_button(cx))
+            .when(
+                self.task()
+                    .is_some_and(|task| task.scope == TaskScope::Studio),
+                |el| el.child(self.studio_outputs_button(cx)),
+            )
             .child(
                 ui::chrome_button(
                     "chat-find",

@@ -97,6 +97,18 @@ impl TextEntry {
         self.send_on_enter = enabled;
     }
 
+    /// Whether a platform IME currently owns marked text. Presentation shortcuts
+    /// must leave Enter/Escape and candidate selection to that composition.
+    pub fn is_composing(&self) -> bool {
+        self.buffer.marked().is_some()
+    }
+
+    pub fn selected_text(&self) -> &str {
+        self.buffer
+            .text()
+            .get(self.buffer.selection())
+            .unwrap_or_default()
+    }
     pub fn text(&self) -> &str {
         self.buffer.text()
     }

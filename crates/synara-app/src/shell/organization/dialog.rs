@@ -17,7 +17,7 @@ struct Assignment {
     view: Entity<ChoiceMenu>,
     _subscription: Subscription,
 }
-pub(super) struct OrganizationDialog {
+pub(in crate::shell) struct OrganizationDialog {
     value: WorkspaceOrganization,
     projects: Vec<Project>,
     name: Entity<TextEntry>,

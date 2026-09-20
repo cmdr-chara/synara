@@ -133,6 +133,23 @@ impl WorkspaceFs {
         }
         Ok(bytes)
     }
+    /// Read a bounded binary snapshot through the same no-symlink handles as
+    /// text editing. Callers must separately bound decoded representations.
+    pub fn read_blob(&self, path: &Path) -> Result<Vec<u8>, RuntimeError> {
+        self.read_bytes(path)
+    }
+    /// Display metadata without reading an entire file. A later read still
+    /// validates its own handle and size to avoid trusting stale metadata.
+    pub fn file_length(&self, path: &Path) -> Result<u64, RuntimeError> {
+        let (directory, name) = self.parent(path)?;
+        let metadata = directory.symlink_metadata(name)?;
+        if metadata.file_type().is_symlink() || !metadata.is_file() {
+            return Err(RuntimeError::Denied(
+                "Only regular workspace files can be inspected.".into(),
+            ));
+        }
+        Ok(metadata.len())
+    }
     pub fn probe(&self, path: &Path) -> Result<FileProbe, RuntimeError> {
         let relative = self.relative(path)?;
         let (dir, name) = self.parent(&relative)?;

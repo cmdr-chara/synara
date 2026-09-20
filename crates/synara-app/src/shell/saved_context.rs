@@ -4,8 +4,16 @@ use crate::ui::{self, Glyph, palette};
 use gpui::{EventEmitter, FocusHandle};
 
 pub(super) enum ContextReply {
-    Loaded { task: TaskId, generation: u64, result: Result<TaskContext, String> },
-    Saved { task: TaskId, generation: u64, result: Result<TaskContext, String> },
+    Loaded {
+        task: TaskId,
+        generation: u64,
+        result: Result<TaskContext, String>,
+    },
+    Saved {
+        task: TaskId,
+        generation: u64,
+        result: Result<TaskContext, String>,
+    },
 }
 enum ContextEvent {
     Save(TaskContext),
@@ -24,12 +32,23 @@ pub(super) struct SavedContextState {
 }
 impl Shell {
     pub(super) fn open_saved_context(&mut self, window: &mut Window, cx: &mut Context<Self>) {
-        let Some(task) = self.task().cloned() else { return; };
-        if self.saved_context.dialog.is_some() || self.organization.dialog.is_some()
-            || self.kanban.dialog.is_some() || self.loading_task.is_some() || self.close != CloseState::Open
-        { return; }
-        self.controls.retire(); self.chat_tools.retire(); self.environment.retire_popup();
-        self.navigation.menu_open = false; self.settings.popup = None; self.focus_composer = false;
+        let Some(task) = self.task().cloned() else {
+            return;
+        };
+        if self.saved_context.dialog.is_some()
+            || self.organization.dialog.is_some()
+            || self.kanban.dialog.is_some()
+            || self.loading_task.is_some()
+            || self.close != CloseState::Open
+        {
+            return;
+        }
+        self.controls.retire();
+        self.chat_tools.retire();
+        self.environment.retire_popup();
+        self.navigation.menu_open = false;
+        self.settings.popup = None;
+        self.focus_composer = false;
         self.saved_context.generation = self.saved_context.generation.wrapping_add(1);
         self.saved_context.task = Some(task.id);
         let dialog = cx.new(|cx| ContextDialog::new(task.title, cx));
@@ -75,36 +94,68 @@ impl Shell {
         cx.notify();
     }
     fn load_saved_context(&mut self) {
-        let Some(task) = self.saved_context.task else { return; };
+        let Some(task) = self.saved_context.task else {
+            return;
+        };
         let generation = self.saved_context.generation;
         let workspace = self.controller.workspace.clone();
-        self.job(async move { Ok(Update::SavedContext(Box::new(ContextReply::Loaded {
-            task, generation, result: workspace.task_context(task).await.map_err(|error| error.to_string()),
-        }))) });
+        self.job(async move {
+            Ok(Update::SavedContext(Box::new(ContextReply::Loaded {
+                task,
+                generation,
+                result: workspace
+                    .task_context(task)
+                    .await
+                    .map_err(|error| error.to_string()),
+            })))
+        });
     }
     pub(super) fn saved_context_reply(&mut self, reply: ContextReply, cx: &mut Context<Self>) {
         let (task, generation, saved, result) = match reply {
-            ContextReply::Loaded { task, generation, result } => (task, generation, false, result),
-            ContextReply::Saved { task, generation, result } => (task, generation, true, result),
+            ContextReply::Loaded {
+                task,
+                generation,
+                result,
+            } => (task, generation, false, result),
+            ContextReply::Saved {
+                task,
+                generation,
+                result,
+            } => (task, generation, true, result),
         };
-        if self.saved_context.task != Some(task) || self.saved_context.generation != generation { return; }
+        if self.saved_context.task != Some(task) || self.saved_context.generation != generation {
+            return;
+        }
         if let Some(dialog) = &self.saved_context.dialog {
             dialog.update(cx, |dialog, cx| dialog.receive(saved, result, cx));
         }
     }
-    pub(super) fn restore_saved_context_focus(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+    pub(super) fn restore_saved_context_focus(
+        &mut self,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
         if self.saved_context.restore_focus {
             self.saved_context.restore_focus = false;
-            if let Some(focus) = self.saved_context.previous_focus.take() { window.focus(&focus, cx); }
+            if let Some(focus) = self.saved_context.previous_focus.take() {
+                window.focus(&focus, cx);
+            }
         }
     }
     pub(super) fn saved_context_button(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
-        ui::chrome_button("chat-notes", "Notes and checklist", Glyph::Notebook, self.selected.is_none(),
-            cx.listener(|this, _: &(), window, cx| this.open_saved_context(window, cx))).size(px(26.)).into_any_element()
+        ui::chrome_button(
+            "chat-notes",
+            "Notes and checklist",
+            Glyph::Notebook,
+            self.selected.is_none(),
+            cx.listener(|this, _: &(), window, cx| this.open_saved_context(window, cx)),
+        )
+        .size(px(26.))
+        .into_any_element()
     }
 }
 
-pub(super) struct ContextDialog {
+pub(in crate::shell) struct ContextDialog {
     title: String,
     notes: Entity<TextEntry>,
     item: Entity<TextEntry>,
@@ -125,29 +176,62 @@ pub(super) struct ContextDialog {
 impl EventEmitter<ContextEvent> for ContextDialog {}
 impl ContextDialog {
     fn new(title: String, cx: &mut Context<Self>) -> Self {
-        let notes = cx.new(|cx| TextEntry::new("Private notes for this chat...", EntryMode::Editor, 180., cx));
-        let item = cx.new(|cx| TextEntry::new("Add a checklist item...", EntryMode::SingleLine, 34., cx));
+        let notes = cx.new(|cx| {
+            TextEntry::new(
+                "Private notes for this chat...",
+                EntryMode::Editor,
+                180.,
+                cx,
+            )
+        });
+        let item =
+            cx.new(|cx| TextEntry::new("Add a checklist item...", EntryMode::SingleLine, 34., cx));
         let subscriptions = vec![
             cx.subscribe(&notes, |this, _, event, cx| {
-                if matches!(event, EntryEvent::Save) { this.save(cx); }
+                if matches!(event, EntryEvent::Save) {
+                    this.save(cx);
+                }
                 cx.notify();
             }),
             cx.subscribe(&item, |this, _, event, cx| {
-                if matches!(event, EntryEvent::Submit) { this.apply_item(cx); }
+                if matches!(event, EntryEvent::Submit) {
+                    this.apply_item(cx);
+                }
                 cx.notify();
             }),
         ];
-        Self { title, notes, item, base: None, checklist: Vec::new(), edit_item: None,
-            loading: true, saving: false, error: None, status: None,
-            confirm_discard: false, confirm_reload: false, hide_done: false,
-            focus: cx.focus_handle(), needs_focus: true, _subscriptions: subscriptions }
+        Self {
+            title,
+            notes,
+            item,
+            base: None,
+            checklist: Vec::new(),
+            edit_item: None,
+            loading: true,
+            saving: false,
+            error: None,
+            status: None,
+            confirm_discard: false,
+            confirm_reload: false,
+            hide_done: false,
+            focus: cx.focus_handle(),
+            needs_focus: true,
+            _subscriptions: subscriptions,
+        }
     }
-    fn receive(&mut self, saved: bool, result: Result<TaskContext, String>, cx: &mut Context<Self>) {
-        self.loading = false; self.saving = false;
+    fn receive(
+        &mut self,
+        saved: bool,
+        result: Result<TaskContext, String>,
+        cx: &mut Context<Self>,
+    ) {
+        self.loading = false;
+        self.saving = false;
         match result {
             Ok(value) => {
                 if !saved {
-                    self.notes.update(cx, |entry, cx| entry.set_text(value.notes.clone(), cx));
+                    self.notes
+                        .update(cx, |entry, cx| entry.set_text(value.notes.clone(), cx));
                     self.checklist = value.checklist.clone();
                     self.item.update(cx, |entry, cx| entry.clear(cx));
                     self.edit_item = None;
@@ -164,103 +248,277 @@ impl ContextDialog {
     }
     fn snapshot(&self, cx: &Context<Self>) -> Option<TaskContext> {
         self.base.as_ref().map(|base| TaskContext {
-            version: 1, revision: base.revision,
-            notes: self.notes.read(cx).text().to_owned(), checklist: self.checklist.clone(),
+            version: 1,
+            revision: base.revision,
+            notes: self.notes.read(cx).text().to_owned(),
+            checklist: self.checklist.clone(),
         })
     }
     fn dirty(&self, cx: &Context<Self>) -> bool {
-        !self.item.read(cx).text().is_empty() || self.base.as_ref().is_some_and(|base|
-            self.notes.read(cx).text() != base.notes || self.checklist != base.checklist)
+        !self.item.read(cx).text().is_empty()
+            || self.base.as_ref().is_some_and(|base| {
+                self.notes.read(cx).text() != base.notes || self.checklist != base.checklist
+            })
     }
     fn apply_item(&mut self, cx: &mut Context<Self>) -> bool {
-        if self.loading || self.base.is_none() { return false; }
+        if self.loading || self.base.is_none() {
+            return false;
+        }
         let text = self.item.read(cx).text().trim().to_owned();
         if text.is_empty() {
-            if self.edit_item.is_some() { self.error = Some("Checklist items cannot be empty.".into()); cx.notify(); return false; }
+            if self.edit_item.is_some() {
+                self.error = Some("Checklist items cannot be empty.".into());
+                cx.notify();
+                return false;
+            }
             return true;
         }
         if text.len() > MAX_CHECKLIST_TEXT || text.chars().any(char::is_control) {
-            self.error = Some("Keep a checklist item on one line, within 512 bytes.".into()); cx.notify(); return false;
+            self.error = Some("Keep a checklist item on one line, within 512 bytes.".into());
+            cx.notify();
+            return false;
         }
         if let Some(id) = &self.edit_item {
-            if let Some(item) = self.checklist.iter_mut().find(|item| &item.id == id) { item.text = text; }
-            else { self.error = Some("The edited item was removed. Cancel its edit before adding a new item.".into()); cx.notify(); return false; }
+            if let Some(item) = self.checklist.iter_mut().find(|item| &item.id == id) {
+                item.text = text;
+            } else {
+                self.error = Some(
+                    "The edited item was removed. Cancel its edit before adding a new item.".into(),
+                );
+                cx.notify();
+                return false;
+            }
         } else {
-            if self.checklist.len() >= MAX_CHECKLIST_ITEMS { self.error = Some("This checklist already has 128 items.".into()); cx.notify(); return false; }
+            if self.checklist.len() >= MAX_CHECKLIST_ITEMS {
+                self.error = Some("This checklist already has 128 items.".into());
+                cx.notify();
+                return false;
+            }
             self.checklist.push(ChecklistItem::new(text));
         }
         self.edit_item = None;
         self.item.update(cx, |entry, cx| entry.clear(cx));
         self.error = None;
         self.status = None;
-        cx.notify(); true
+        cx.notify();
+        true
     }
     fn save(&mut self, cx: &mut Context<Self>) {
-        if self.saving || self.loading || !self.apply_item(cx) { return; }
-        let Some(value) = self.snapshot(cx) else { return; };
-        if let Err(error) = value.validate() { self.error = Some(error.to_string()); cx.notify(); return; }
-        self.saving = true; self.error = None;
-        cx.emit(ContextEvent::Save(value)); cx.notify();
+        if self.saving || self.loading || !self.apply_item(cx) {
+            return;
+        }
+        let Some(value) = self.snapshot(cx) else {
+            return;
+        };
+        if let Err(error) = value.validate() {
+            self.error = Some(error.to_string());
+            cx.notify();
+            return;
+        }
+        self.saving = true;
+        self.error = None;
+        cx.emit(ContextEvent::Save(value));
+        cx.notify();
     }
     fn dismiss(&mut self, cx: &mut Context<Self>) {
-        if self.saving { self.status = Some("A note save is still in progress.".into()); cx.notify(); return; }
-        if self.dirty(cx) { self.confirm_discard = true; cx.notify(); }
-        else { cx.emit(ContextEvent::Dismiss); }
+        if self.saving {
+            self.status = Some("A note save is still in progress.".into());
+            cx.notify();
+            return;
+        }
+        if self.dirty(cx) {
+            self.confirm_discard = true;
+            cx.notify();
+        } else {
+            cx.emit(ContextEvent::Dismiss);
+        }
     }
     fn reload(&mut self, confirmed: bool, cx: &mut Context<Self>) {
-        if self.saving || self.loading { return; }
-        if self.dirty(cx) && !confirmed { self.confirm_reload = true; cx.notify(); return; }
-        self.confirm_reload = false; self.loading = true; self.error = None;
-        cx.emit(ContextEvent::Reload); cx.notify();
+        if self.saving || self.loading {
+            return;
+        }
+        if self.dirty(cx) && !confirmed {
+            self.confirm_reload = true;
+            cx.notify();
+            return;
+        }
+        self.confirm_reload = false;
+        self.loading = true;
+        self.error = None;
+        cx.emit(ContextEvent::Reload);
+        cx.notify();
     }
     fn move_item(&mut self, id: &str, earlier: bool, cx: &mut Context<Self>) {
-        let Some(index) = self.checklist.iter().position(|item| item.id == id) else { return; };
-        let next = if earlier { index.checked_sub(1) } else { index.checked_add(1).filter(|index| *index < self.checklist.len()) };
-        if let Some(next) = next { self.checklist.swap(index, next); self.status = None; cx.notify(); }
+        let Some(index) = self.checklist.iter().position(|item| item.id == id) else {
+            return;
+        };
+        let next = if earlier {
+            index.checked_sub(1)
+        } else {
+            index
+                .checked_add(1)
+                .filter(|index| *index < self.checklist.len())
+        };
+        if let Some(next) = next {
+            self.checklist.swap(index, next);
+            self.status = None;
+            cx.notify();
+        }
     }
     fn context_text(&mut self, cx: &mut Context<Self>) -> Option<String> {
-        if !self.apply_item(cx) { return None; }
+        if !self.apply_item(cx) {
+            return None;
+        }
         let value = self.snapshot(cx)?;
-        if let Err(error) = value.validate() { self.error = Some(error.to_string()); cx.notify(); return None; }
+        if let Err(error) = value.validate() {
+            self.error = Some(error.to_string());
+            cx.notify();
+            return None;
+        }
         let text = value.as_prompt_context();
-        if text.is_empty() { self.status = Some("Add notes or checklist items first.".into()); cx.notify(); None } else { Some(text) }
+        if text.is_empty() {
+            self.status = Some("Add notes or checklist items first.".into());
+            cx.notify();
+            None
+        } else {
+            Some(text)
+        }
     }
 }
 impl gpui::Render for ContextDialog {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
-        if self.needs_focus { window.focus(&self.focus, cx); self.needs_focus = false; }
+        if self.needs_focus {
+            window.focus(&self.focus, cx);
+            self.needs_focus = false;
+        }
         let dirty = self.dirty(cx);
         let available = self.base.is_some() && !self.loading;
         let complete = self.checklist.iter().filter(|item| item.done).count();
-        let rows = self.checklist.iter().enumerate().filter(|(_, item)| !self.hide_done || !item.done).map(|(index, item)| {
-            let toggle = item.id.clone(); let edit = item.id.clone(); let remove = item.id.clone();
-            let earlier = item.id.clone(); let later = item.id.clone();
-            div().id(("context-item", index)).flex().items_center().gap_1().min_w_0().py_1()
-                .child(ui::button_shell(SharedString::from(format!("context-check-{index}")), "Checklist item", item.done)
-                    .role(gpui::Role::CheckBox).aria_label(item.text.clone())
-                    .aria_toggled(if item.done { gpui::Toggled::True } else { gpui::Toggled::False })
-                    .size(px(24.)).p_0().flex().items_center().justify_center().relative()
-                    .child(ui::layout_probe_slot("context-check", index))
-                    .children(item.done.then(|| ui::icon(Glyph::Check).size(px(14.))))
-                    .on_click(cx.listener(move |this, _, _, cx| {
-                        if let Some(item) = this.checklist.iter_mut().find(|item| item.id == toggle) { item.done = !item.done; this.status = None; cx.notify(); }
-                    })))
-                .child(div().flex_1().min_w_0().text_size(px(13.)).when(item.done, |el| el.text_color(rgb(palette().muted))).child(item.text.clone()))
-                .child(ui::chrome_button("context-item-up", "Move item earlier", Glyph::Back, index == 0,
-                    cx.listener(move |this, _: &(), _, cx| this.move_item(&earlier, true, cx))).size(px(22.)))
-                .child(ui::chrome_button("context-item-down", "Move item later", Glyph::Forward, index + 1 == self.checklist.len(),
-                    cx.listener(move |this, _: &(), _, cx| this.move_item(&later, false, cx))).size(px(22.)))
-                .child(ui::chrome_button("context-item-edit", "Edit checklist item", Glyph::Compose, false,
-                    cx.listener(move |this, _: &(), window, cx| {
-                        if !this.item.read(cx).text().is_empty() { this.error = Some("Add, save or cancel the current item text first.".into()); cx.notify(); return; }
-                        if let Some(item) = this.checklist.iter().find(|item| item.id == edit) {
-                            this.item.update(cx, |entry, cx| entry.set_text(item.text.clone(), cx));
-                            this.edit_item = Some(edit.clone()); window.focus(&this.item.read(cx).focus_handle(cx), cx); cx.notify();
-                        }
-                    })).size(px(22.)))
-                .child(ui::chrome_button("context-item-remove", "Remove checklist item", Glyph::Close, false,
-                    cx.listener(move |this, _: &(), _, cx| { this.checklist.retain(|item| item.id != remove); this.status = None; cx.notify(); })).size(px(22.)))
-        }).collect::<Vec<_>>();
+        let rows = self
+            .checklist
+            .iter()
+            .enumerate()
+            .filter(|(_, item)| !self.hide_done || !item.done)
+            .map(|(index, item)| {
+                let toggle = item.id.clone();
+                let edit = item.id.clone();
+                let remove = item.id.clone();
+                let earlier = item.id.clone();
+                let later = item.id.clone();
+                div()
+                    .id(("context-item", index))
+                    .flex()
+                    .items_center()
+                    .gap_1()
+                    .min_w_0()
+                    .py_1()
+                    .child(
+                        ui::button_shell(
+                            SharedString::from(format!("context-check-{index}")),
+                            "Checklist item",
+                            item.done,
+                        )
+                        .role(gpui::Role::CheckBox)
+                        .aria_label(item.text.clone())
+                        .aria_toggled(if item.done {
+                            gpui::Toggled::True
+                        } else {
+                            gpui::Toggled::False
+                        })
+                        .size(px(24.))
+                        .p_0()
+                        .flex()
+                        .items_center()
+                        .justify_center()
+                        .relative()
+                        .child(ui::layout_probe_slot("context-check", index))
+                        .children(item.done.then(|| ui::icon(Glyph::Check).size(px(14.))))
+                        .on_click(cx.listener(move |this, _, _, cx| {
+                            if let Some(item) =
+                                this.checklist.iter_mut().find(|item| item.id == toggle)
+                            {
+                                item.done = !item.done;
+                                this.status = None;
+                                cx.notify();
+                            }
+                        })),
+                    )
+                    .child(
+                        div()
+                            .flex_1()
+                            .min_w_0()
+                            .text_size(px(13.))
+                            .when(item.done, |el| el.text_color(rgb(palette().muted)))
+                            .child(item.text.clone()),
+                    )
+                    .child(
+                        ui::chrome_button(
+                            "context-item-up",
+                            "Move item earlier",
+                            Glyph::Back,
+                            index == 0,
+                            cx.listener(move |this, _: &(), _, cx| {
+                                this.move_item(&earlier, true, cx)
+                            }),
+                        )
+                        .size(px(22.)),
+                    )
+                    .child(
+                        ui::chrome_button(
+                            "context-item-down",
+                            "Move item later",
+                            Glyph::Forward,
+                            index + 1 == self.checklist.len(),
+                            cx.listener(move |this, _: &(), _, cx| {
+                                this.move_item(&later, false, cx)
+                            }),
+                        )
+                        .size(px(22.)),
+                    )
+                    .child(
+                        ui::chrome_button(
+                            "context-item-edit",
+                            "Edit checklist item",
+                            Glyph::Compose,
+                            false,
+                            cx.listener(move |this, _: &(), window, cx| {
+                                if !this.item.read(cx).text().is_empty() {
+                                    this.error = Some(
+                                        "Add, save or cancel the current item text first.".into(),
+                                    );
+                                    cx.notify();
+                                    return;
+                                }
+                                if let Some(item) =
+                                    this.checklist.iter().find(|item| item.id == edit)
+                                {
+                                    this.item.update(cx, |entry, cx| {
+                                        entry.set_text(item.text.clone(), cx)
+                                    });
+                                    this.edit_item = Some(edit.clone());
+                                    window.focus(&this.item.read(cx).focus_handle(cx), cx);
+                                    cx.notify();
+                                }
+                            }),
+                        )
+                        .size(px(22.)),
+                    )
+                    .child(
+                        ui::chrome_button(
+                            "context-item-remove",
+                            "Remove checklist item",
+                            Glyph::Close,
+                            false,
+                            cx.listener(move |this, _: &(), _, cx| {
+                                this.checklist.retain(|item| item.id != remove);
+                                this.status = None;
+                                cx.notify();
+                            }),
+                        )
+                        .size(px(22.)),
+                    )
+            })
+            .collect::<Vec<_>>();
         let modal = div().id("saved-context-dialog").role(gpui::Role::Dialog).aria_label("Notes and checklist")
             .track_focus(&self.focus).tab_group().tab_stop(true).relative().occlude().w_full().max_w(px(760.))
             .max_h(window.viewport_size().height - px(40.)).min_h_0().flex().flex_col().rounded(px(16.))
@@ -305,7 +563,7 @@ impl gpui::Render for ContextDialog {
                             .on_click(cx.listener(|this, _, _, cx| { this.apply_item(cx); })))
                         .when(self.edit_item.is_some(), |el| el.child(ui::button("context-item-cancel", "Cancel", false).on_click(cx.listener(|this, _, _, cx| {
                             this.edit_item = None; this.item.update(cx, |entry, cx| entry.clear(cx)); cx.notify();
-                        }))))))
+                        })))))))
             .child(div().p_4().flex().items_center().gap_2().border_t_1().border_color(rgb(palette().border))
                 .child(ui::button("context-reload", "Reload saved", false).on_click(cx.listener(|this, _, _, cx| this.reload(false, cx))))
                 .child(div().flex_1())
@@ -320,11 +578,27 @@ impl gpui::Render for ContextDialog {
                     .when(!available || self.saving, |el| el.opacity(0.4)).on_click(cx.listener(|this, _, _, cx| this.save(cx)))))
             .when(self.confirm_discard || self.confirm_reload, |el| el.child(div().p_3().bg(rgb(palette().notice_surface)).flex().items_center().gap_2()
                 .child(div().flex_1().child("Discard the unsaved notes and checklist edits?"))
-                .child(ui::button("context-keep", "Keep editing", false).on_click(cx.listener(|this, _, _, cx| { this.confirm_discard = false; this.confirm_reload = false; cx.notify(); })))
-                .child(ui::button("context-discard", "Discard edits", false).on_click(cx.listener(|this, _, _, cx| {
+                .child(ui::button("context-keep", "Keep editing", false).relative().child(ui::layout_probe("context-keep")).on_click(cx.listener(|this, _, _, cx| { this.confirm_discard = false; this.confirm_reload = false; cx.notify(); })))
+                .child(ui::button("context-discard", "Discard edits", false).relative().child(ui::layout_probe("context-discard")).on_click(cx.listener(|this, _, _, cx| {
                     if this.confirm_reload { this.reload(true, cx); } else { cx.emit(ContextEvent::Dismiss); }
                 })))));
-        div().absolute().inset_0().size_full().p_4().flex().items_center().justify_center().bg(gpui::rgba(0x00000088)).occlude()
-            .on_mouse_down(gpui::MouseButton::Left, cx.listener(|this, _, _, cx| { this.dismiss(cx); cx.stop_propagation(); })).child(modal)
+        div()
+            .absolute()
+            .inset_0()
+            .size_full()
+            .p_4()
+            .flex()
+            .items_center()
+            .justify_center()
+            .bg(gpui::rgba(0x00000088))
+            .occlude()
+            .on_mouse_down(
+                gpui::MouseButton::Left,
+                cx.listener(|this, _, _, cx| {
+                    this.dismiss(cx);
+                    cx.stop_propagation();
+                }),
+            )
+            .child(modal)
     }
 }

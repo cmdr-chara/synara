@@ -153,6 +153,9 @@ fn tab_close_blocked(
         _ => None,
     }
 }
+fn restore_environment(default_open: bool, studio_mode: bool, scope: Option<TaskScope>) -> bool {
+    default_open && !studio_mode && scope.is_some_and(|scope| scope != TaskScope::Studio)
+}
 impl Shell {
     /// Called only for explicit panel navigation, not as a side effect of render.
     pub(super) fn track_environment_panel(&mut self, panel: Panel) -> Panel {
@@ -187,11 +190,14 @@ impl Shell {
     /// deliberate: its independent workspace does not auto-open this pane.
     pub(super) fn show_conversation(&mut self, cx: &mut Context<Self>) {
         self.environment.maximized = false;
-        let panel = if self.environment.value.open_by_default
-            && self
-                .task()
-                .is_some_and(|task| task.scope != TaskScope::Studio)
-        {
+        // The mode switch precedes asynchronous task creation. The selected
+        // task can still be the old project chat here. Reopening its Environment
+        // would invalidate the creation revision and strand the new Studio task.
+        let panel = if restore_environment(
+            self.environment.value.open_by_default,
+            self.navigation.studio,
+            self.task().map(|task| task.scope),
+        ) {
             self.environment
                 .value
                 .active
@@ -763,6 +769,16 @@ impl Shell {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn pending_studio_creation_does_not_restore_the_old_projects_environment() {
+        assert!(!restore_environment(true, true, Some(TaskScope::Project)));
+        assert!(!restore_environment(true, true, Some(TaskScope::Chat)));
+        assert!(!restore_environment(true, false, Some(TaskScope::Studio)));
+        assert!(!restore_environment(true, false, None));
+        assert!(!restore_environment(false, false, Some(TaskScope::Project)));
+        assert!(restore_environment(true, false, Some(TaskScope::Project)));
+        assert!(restore_environment(true, false, Some(TaskScope::Chat)));
+    }
     #[test]
     fn closing_tools_requires_explicit_save_and_stop_not_hidden_data_loss() {
         use EnvironmentTab::{Changes, Explorer, Terminal};

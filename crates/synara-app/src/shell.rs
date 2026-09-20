@@ -8,6 +8,7 @@ mod conversation;
 mod dock;
 mod drafts;
 mod environment;
+mod explorer;
 mod kanban;
 mod messages;
 mod navigation;
@@ -15,7 +16,9 @@ mod organization;
 mod overview;
 mod panels;
 mod registry;
+mod saved_context;
 mod settings;
+mod studio;
 mod terminal;
 mod transcript;
 use crate::close::CloseState;
@@ -78,6 +81,9 @@ struct FormState {
     error: Option<String>,
 }
 enum Update {
+    Explorer(Box<explorer::ExplorerReply>),
+    Studio(Box<studio::StudioReply>),
+    SavedContext(Box<saved_context::ContextReply>),
     Organization(Box<organization::OrganizationReply>),
     ChatTools(Box<chat_tools::Reply>),
     EnvironmentSaved(Option<String>),
@@ -161,6 +167,9 @@ enum Update {
     Error(String),
 }
 pub struct Shell {
+    explorer: explorer::ExplorerState,
+    studio: studio::StudioState,
+    saved_context: saved_context::SavedContextState,
     organization: organization::OrganizationState,
     chat_tools: chat_tools::ChatTools,
     environment: environment::EnvironmentState,
@@ -397,6 +406,9 @@ impl Shell {
                     .map(|t| t.id)
             });
         let mut this = Self {
+            explorer: explorer::ExplorerState::new(cx),
+            studio: studio::StudioState::new(cx),
+            saved_context: saved_context::SavedContextState::default(),
             organization: organization::OrganizationState::new(cx),
             chat_tools: chat_tools::ChatTools::new(cx),
             environment: environment::EnvironmentState::new(bootstrap.environment, cx),
@@ -480,9 +492,15 @@ impl Shell {
         this
     }
     pub fn request_close(&mut self, window: &mut Window, cx: &mut Context<Self>) -> bool {
-        if self.organization.saving || self.organization.dialog.is_some() {
-            self.notice =
-                Some("Finish the Space save and close its manager before closing Synara.".into());
+        if self.organization.saving
+            || self.organization.dialog.is_some()
+            || self.saved_context.dialog.is_some()
+            || self.explorer.modal_open()
+        {
+            self.notice = Some(
+                "Finish pending saves and close the open editor dialog before closing Synara."
+                    .into(),
+            );
             cx.notify();
             return false;
         }
@@ -687,6 +705,9 @@ impl Shell {
         }
     }
     fn select_task(&mut self, id: TaskId, cx: &mut Context<Self>) -> bool {
+        if self.explorer.modal_open() {
+            return false;
+        }
         let Some(task) = self
             .catalog
             .tasks
@@ -723,6 +744,8 @@ impl Shell {
         self.selected = Some(id);
         self.loading_task = Some(id);
         self.chat_tools.reset_selection();
+        self.studio.reset();
+        self.explorer.reset_search();
         self.load_message_pins(id);
         self.project = Some(task.project_id);
         self.details = None;
@@ -1152,6 +1175,9 @@ impl Shell {
     }
 
     fn open_file(&mut self, path: PathBuf, cx: &mut Context<Self>) {
+        if self.explorer.modal_open() {
+            return;
+        }
         if self.dirty(cx) || self.saving {
             self.error =
                 Some("Save or discard the current document before opening another file.".into());
@@ -1176,6 +1202,9 @@ impl Shell {
     }
 
     fn save_file(&mut self, cx: &mut Context<Self>) {
+        if self.explorer.modal_open() {
+            return;
+        }
         if self.saving {
             return;
         }
@@ -1388,6 +1417,9 @@ impl Shell {
     }
     fn receive(&mut self, update: Update, cx: &mut Context<Self>) {
         match update {
+            Update::Explorer(reply) => self.explorer_reply(*reply, cx),
+            Update::Studio(reply) => self.studio_reply(*reply, cx),
+            Update::SavedContext(reply) => self.saved_context_reply(*reply, cx),
             Update::Organization(reply) => self.organization_reply(*reply, cx),
             Update::ChatTools(reply) => self.chat_tools_reply(*reply, cx),
             Update::EnvironmentSaved(error) => self.environment_saved(error, cx),
@@ -1654,7 +1686,11 @@ impl Shell {
                 }
             }
             Update::Document { root, document } => {
-                if self.root() == Some(root) && !self.dirty(cx) && !self.saving {
+                if self.root() == Some(root)
+                    && !self.dirty(cx)
+                    && !self.saving
+                    && !self.explorer.modal_open()
+                {
                     self.editor.update(cx, |entry, cx| {
                         entry.set_text(document.snapshot.text.clone(), cx)
                     });
@@ -1782,6 +1818,10 @@ impl Shell {
         }
     }
     fn set_panel(&mut self, panel: Panel, cx: &mut Context<Self>) {
+        if self.explorer.modal_open() {
+            return;
+        }
+        self.studio.open = false;
         self.chat_tools.retire();
         self.environment.retire_popup();
         let panel = self.track_environment_panel(panel);

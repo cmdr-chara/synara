@@ -1,7 +1,10 @@
 name: Combined Spaces and notes batch
 on:
-  push:
-    branches: [astra/gpui-clean-rewrite]
+  workflow_call:
+    inputs:
+      revision:
+        required: true
+        type: string
 permissions:
   contents: write
 env:
@@ -14,6 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
+          ref: ${{ inputs.revision }}
           fetch-depth: 100
           persist-credentials: false
       - name: Integrate saved context and IME shortcut guard

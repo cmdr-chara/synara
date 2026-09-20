@@ -1,38 +1,28 @@
 name: Backend acceptance
+
 on:
-  push:
-    branches: [astra/gpui-clean-rewrite]
-    paths:
-      - 'crates/**'
-      - 'scripts/**'
-      - 'Cargo.toml'
-      - 'Cargo.lock'
-      - 'docs/verification/**'
-      - 'docs/database-recovery.md'
-      - 'rust-toolchain.toml'
-      - '.github/workflows/backend.yml'
+  workflow_call:
+    inputs:
+      revision:
+        required: true
+        type: string
+      mode:
+        required: true
+        type: string
+
 permissions:
   contents: read
-concurrency:
-  group: backend-${{ github.ref }}
-  cancel-in-progress: false
+
 env:
   CARGO_BUILD_JOBS: '2'
   PYTHONDONTWRITEBYTECODE: '1'
   GIT_TERMINAL_PROMPT: '0'
+
 jobs:
   portable:
-    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/gpui-clean-rewrite'
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - os: ubuntu-24.04
-            host: x86_64-unknown-linux-gnu
-          - os: macos-15
-            host: aarch64-apple-darwin
-          - os: windows-2025
-            host: x86_64-pc-windows-msvc
+      matrix: ${{ fromJSON(inputs.mode == 'full' && '{"include":[{"os":"ubuntu-24.04","host":"x86_64-unknown-linux-gnu"},{"os":"macos-15","host":"aarch64-apple-darwin"},{"os":"windows-2025","host":"x86_64-pc-windows-msvc"}]}' || '{"include":[{"os":"ubuntu-24.04","host":"x86_64-unknown-linux-gnu"}]}') }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
     defaults:
@@ -41,18 +31,20 @@ jobs:
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
+          ref: ${{ inputs.revision }}
           fetch-depth: 1
           persist-credentials: false
       - name: Fetch only native rewrite history
-        run: git fetch --quiet --no-tags --unshallow origin "$GITHUB_SHA"
+        run: git fetch --quiet --no-tags --unshallow origin "${{ inputs.revision }}"
       - name: Install pinned toolchain
         run: rustup toolchain install 1.98.1 --profile minimal --component rustfmt --component clippy
       - name: Identify exact candidate and native host
         env:
           EXPECTED_HOST: ${{ matrix.host }}
+          CANDIDATE_REVISION: ${{ inputs.revision }}
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD)" = "$CANDIDATE_REVISION"
           cargo +1.98.1 --version
           rustc +1.98.1 -vV
           test "$(rustc +1.98.1 -vV | sed -n 's/^host: //p' | tr -d '\r')" = "$EXPECTED_HOST"

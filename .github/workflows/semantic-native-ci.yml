@@ -20,10 +20,21 @@ jobs:
       presentation: ${{ steps.route.outputs.presentation }}
       chat_tools: ${{ steps.route.outputs.chat_tools }}
       environment: ${{ steps.route.outputs.environment }}
+      backend_mode: ${{ steps.route.outputs.backend_mode }}
+      native_batch: ${{ steps.route.outputs.native_batch }}
+      ssh: ${{ steps.route.outputs.ssh }}
       scope: ${{ steps.route.outputs.scope }}
       semantic_used: ${{ steps.route.outputs.semantic_used }}
+      lane_label: ${{ steps.route.outputs.lane_label }}
       lane_confidence: ${{ steps.route.outputs.lane_confidence }}
+      risk_label: ${{ steps.route.outputs.risk_label }}
       risk_confidence: ${{ steps.route.outputs.risk_confidence }}
+      backend_label: ${{ steps.route.outputs.backend_label }}
+      backend_confidence: ${{ steps.route.outputs.backend_confidence }}
+      native_label: ${{ steps.route.outputs.native_label }}
+      native_confidence: ${{ steps.route.outputs.native_confidence }}
+      ssh_label: ${{ steps.route.outputs.ssh_label }}
+      ssh_confidence: ${{ steps.route.outputs.ssh_confidence }}
       model: ${{ steps.route.outputs.model }}
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
@@ -44,7 +55,7 @@ jobs:
         run: |
           python3 -m py_compile scripts/ci_router.py scripts/test_ci_router.py
           python3 scripts/test_ci_router.py
-      - name: Select focused native verification
+      - name: Select CI verification
         id: route
         env:
           BASE_REVISION: ${{ github.event.before }}
@@ -60,32 +71,52 @@ jobs:
         env:
           ROUTE_SCOPE: ${{ steps.route.outputs.scope }}
           SEMANTIC_USED: ${{ steps.route.outputs.semantic_used }}
-          LANE_CONFIDENCE: ${{ steps.route.outputs.lane_confidence }}
-          RISK_CONFIDENCE: ${{ steps.route.outputs.risk_confidence }}
           MODEL: ${{ steps.route.outputs.model }}
+          LANE_LABEL: ${{ steps.route.outputs.lane_label }}
+          LANE_CONFIDENCE: ${{ steps.route.outputs.lane_confidence }}
+          RISK_LABEL: ${{ steps.route.outputs.risk_label }}
+          RISK_CONFIDENCE: ${{ steps.route.outputs.risk_confidence }}
+          BACKEND_MODE: ${{ steps.route.outputs.backend_mode }}
+          BACKEND_LABEL: ${{ steps.route.outputs.backend_label }}
+          BACKEND_CONFIDENCE: ${{ steps.route.outputs.backend_confidence }}
+          NATIVE_BATCH: ${{ steps.route.outputs.native_batch }}
+          NATIVE_LABEL: ${{ steps.route.outputs.native_label }}
+          NATIVE_CONFIDENCE: ${{ steps.route.outputs.native_confidence }}
+          SSH_RUN: ${{ steps.route.outputs.ssh }}
+          SSH_LABEL: ${{ steps.route.outputs.ssh_label }}
+          SSH_CONFIDENCE: ${{ steps.route.outputs.ssh_confidence }}
         run: |
           {
-            echo '## Semantic native CI route'
+            echo '## Jev CI route'
             echo
-            echo "- Scope: \`${ROUTE_SCOPE:-unavailable}\`"
+            echo "- Focused UI: \`${ROUTE_SCOPE:-unavailable}\`"
+            echo "- Backend: \`${BACKEND_MODE:-fail-closed full}\`"
+            echo "- Organization/context native batch: \`${NATIVE_BATCH:-fail-closed true}\`"
+            echo "- SSH verification: \`${SSH_RUN:-fail-closed true}\`"
             echo "- Jev used: \`${SEMANTIC_USED:-false}\`"
             echo "- Model: \`${MODEL:-n/a}\`"
-            echo "- Lane confidence: \`${LANE_CONFIDENCE:-n/a}\`"
-            echo "- Risk confidence: \`${RISK_CONFIDENCE:-n/a}\`"
             echo
-            echo 'The router only adds focused native verification. Existing branch CI remains authoritative.'
+            echo '### Jev decisions'
+            echo
+            echo "- UI lane: \`${LANE_LABEL:-n/a}\` (confidence \`${LANE_CONFIDENCE:-n/a}\`)"
+            echo "- Risk: \`${RISK_LABEL:-n/a}\` (confidence \`${RISK_CONFIDENCE:-n/a}\`)"
+            echo "- Backend: \`${BACKEND_LABEL:-n/a}\` (confidence \`${BACKEND_CONFIDENCE:-n/a}\`)"
+            echo "- Native batch: \`${NATIVE_LABEL:-n/a}\` (confidence \`${NATIVE_CONFIDENCE:-n/a}\`)"
+            echo "- SSH: \`${SSH_LABEL:-n/a}\` (confidence \`${SSH_CONFIDENCE:-n/a}\`)"
+            echo
+            echo 'Deterministic safety overrides can widen Jev decisions. If routing itself fails, expensive verification runs fail-closed.'
           } >> "$GITHUB_STEP_SUMMARY"
 
   presentation:
     needs: route
-    if: needs.route.result == 'success' && needs.route.outputs.presentation == 'true'
+    if: always() && (needs.route.result != 'success' || needs.route.outputs.presentation == 'true')
     uses: ./.github/workflows/ui-presentation.yml
     with:
       revision: ${{ github.sha }}
 
   chat-tools:
     needs: route
-    if: needs.route.result == 'success' && needs.route.outputs.chat_tools == 'true'
+    if: neds.route.result == 'success' && needs.route.outputs.chat_tools == 'true'
     uses: ./.github/workflows/ui-chat-tools.yml
     with:
       revision: ${{ github.sha }}
@@ -94,5 +125,29 @@ jobs:
     needs: route
     if: needs.route.result == 'success' && needs.route.outputs.environment == 'true'
     uses: ./.github/workflows/ui-environment.yml
+    with:
+      revision: ${{ github.sha }}
+
+  backend:
+    needs: route
+    if: always() && (needs.route.result != 'success' || needs.route.outputs.backend_mode != 'skip')
+    uses: ./.github/workflows/backend.yml
+    with:
+      revision: ${{ github.sha }}
+      mode: ${{ neds.route.result == 'success' && needs.route.outputs.backend_mode || 'full' }}
+
+  organization-context:
+    needs: route
+    if: always() && (needs.route.result != 'success' || needs.route.outputs.native_batch == 'true')
+    permissions:
+      contents: write
+    uses: ./.github/workflows/native.yml
+    with:
+      revision: ${{ github.sha }}
+
+  ssh:
+    needs: route
+    if: always() && (needs.route.result != 'success' || needs.route.outputs.ssh == 'true')
+    uses: ./.github/workflows/ssh.yml
     with:
       revision: ${{ github.sha }}

@@ -469,7 +469,7 @@ impl Shell {
                 )
                 .on_click(cx.listener(move |this, _, _, cx| {
                     if this.select_task(id, cx) {
-                        this.set_panel(Panel::Conversation, cx);
+                        this.show_conversation(cx);
                     }
                 })),
             )

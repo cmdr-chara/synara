@@ -81,6 +81,11 @@ jobs:
             cargo +1.98.1 test --locked -p synara-app --bin synara-app shell::controls::tests
             cargo +1.98.1 test --locked -p synara-app --bin synara-app input::policy::tests
           fi
+      - name: Environment state and storage regressions
+        if: steps.scope.outputs.kanban != 'true'
+        run: |
+          cargo +1.98.1 test --locked -p synara-workspace --lib environment::tests
+          cargo +1.98.1 test --locked -p synara-app --bin synara-app shell::environment::tests
       - name: Strict changed-package lints
         run: cargo +1.98.1 clippy --locked --no-deps -p synara-app -p synara-workspace --all-targets -- -D warnings
       - name: Build native application and fixture
@@ -119,6 +124,10 @@ jobs:
         run: |
           python3 scripts/native_rich_text_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-rich-text
           python3 scripts/native_chat_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-chat
+      - name: Native Environment workspace
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.scope.outputs.kanban != 'true' }}
+        timeout-minutes: 4
+        run: python3 scripts/native_environment_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/ui-environment
       - name: Verify no candidate source mutation
         run: git diff --exit-code
       - name: Export source identity and reproduction bundle

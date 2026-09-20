@@ -37,9 +37,15 @@ jobs:
     uses: ./.github/workflows/ui-presentation.yml
     with:
       revision: ${{ needs.source.outputs.revision }}
+  environment:
+    needs: source
+    if: needs.source.outputs.scope == 'environment'
+    uses: ./.github/workflows/ui-environment.yml
+    with:
+      revision: ${{ needs.source.outputs.revision }}
   linux:
     needs: source
-    if: needs.source.outputs.scope != 'presentation' && needs.source.outputs.scope != 'docs'
+    if: needs.source.outputs.scope != 'presentation' && needs.source.outputs.scope != 'environment' && needs.source.outputs.scope != 'docs'
     timeout-minutes: 35
     runs-on: ubuntu-24.04
     permissions:
@@ -230,3 +236,15 @@ jobs:
           path: /tmp/native-build-inputs/
           retention-days: 1
           compression-level: 0
+      - name: Native Environment workspace
+        timeout-minutes: 4
+        run: python3 scripts/native_environment_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/synara-environment
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-environment
+          path: |
+            /tmp/synara-environment/*.png
+            /tmp/synara-environment/*.log
+            /tmp/synara-environment/result.json
+          retention-days: 7

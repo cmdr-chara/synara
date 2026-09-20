@@ -219,7 +219,7 @@ pub fn action(
         .child(div().flex_1().min_w_0().text_ellipsis().child(label))
 }
 
-struct Tooltip(SharedString);
+pub(crate) struct Tooltip(pub(crate) SharedString);
 
 /// Preserve the navigation landmark while accurately exposing unavailable capabilities.
 pub fn unavailable_action(

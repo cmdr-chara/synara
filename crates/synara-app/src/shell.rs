@@ -6,6 +6,7 @@ mod controls;
 mod conversation;
 mod dock;
 mod drafts;
+mod environment;
 mod kanban;
 mod messages;
 mod navigation;
@@ -33,6 +34,7 @@ use terminal::{TerminalSession, TerminalView};
 use tokio::{runtime::Handle, sync::mpsc};
 
 pub struct Bootstrap {
+    pub environment: LoadedEnvironmentLayout,
     pub settings: AppSettings,
     pub scratch_directory: PathBuf,
     pub agent_directory: PathBuf,
@@ -74,6 +76,7 @@ struct FormState {
     error: Option<String>,
 }
 enum Update {
+    EnvironmentSaved(Option<String>),
     Kanban(Box<kanban::KanbanReply>),
     DraftLoaded(TaskId, Result<String, String>),
     DraftSaved(TaskId, Option<String>),
@@ -154,6 +157,7 @@ enum Update {
     Error(String),
 }
 pub struct Shell {
+    environment: environment::EnvironmentState,
     kanban: kanban::KanbanState,
     controls: controls::ControlState,
     navigation: navigation::NavigationState,
@@ -387,6 +391,7 @@ impl Shell {
                     .map(|t| t.id)
             });
         let mut this = Self {
+            environment: environment::EnvironmentState::new(bootstrap.environment, cx),
             kanban: kanban::KanbanState::default(),
             controls: controls::ControlState::new(cx),
             navigation: navigation::NavigationState::new(cx),
@@ -458,6 +463,10 @@ impl Shell {
         });
         if let Some(selected) = selected {
             this.select_task(selected, cx);
+            this.show_conversation(cx);
+        }
+        if let Some(error) = &this.environment.recovery {
+            this.notice = Some(error.clone());
         }
         this
     }
@@ -476,7 +485,7 @@ impl Shell {
             }
             self.kanban.dialog = None;
         }
-        if self.terminal_closing || self.draft_state.quitting {
+        if self.terminal_closing || self.draft_state.quitting || self.environment.quitting {
             return false;
         }
         let dirty = self.dirty(cx);
@@ -494,6 +503,10 @@ impl Shell {
     fn begin_quit(&mut self, cx: &mut Context<Self>) {
         self.kanban.cancel_pending_launches();
         if self.terminal_closing {
+            return;
+        }
+        if self.save_environment_before_quit() {
+            cx.notify();
             return;
         }
         if self.save_drafts_before_quit(cx) {
@@ -1350,6 +1363,7 @@ impl Shell {
     }
     fn receive(&mut self, update: Update, cx: &mut Context<Self>) {
         match update {
+            Update::EnvironmentSaved(error) => self.environment_saved(error, cx),
             Update::Kanban(reply) => self.kanban_reply(*reply, cx),
             Update::DraftLoaded(task, result) => self.restore_draft(task, result, cx),
             Update::DraftSaved(task, error) => self.draft_saved(task, error, cx),
@@ -1357,6 +1371,7 @@ impl Shell {
             Update::Tick => {
                 self.poll_kanban();
                 self.flush_drafts(false);
+                self.flush_environment(false);
                 let previous = self.pending.len();
                 self.pending.retain(|key, interaction| {
                     if !interaction.is_active() {
@@ -1739,6 +1754,8 @@ impl Shell {
         }
     }
     fn set_panel(&mut self, panel: Panel, cx: &mut Context<Self>) {
+        self.environment.retire_popup();
+        let panel = self.track_environment_panel(panel);
         self.controls.retire();
         self.settings.popup = None;
         if panel != Panel::Conversation {

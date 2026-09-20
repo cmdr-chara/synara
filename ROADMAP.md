@@ -18,10 +18,18 @@ This candidate adds the original two-level project overview/board structure,
 shared toolbar, isolated task composer, project/provider selection, atomic
 creation with an unsent draft and explicit controller-backed Run/Stop actions.
 Pending launch cancellation and unfinished-form close/discard protection preserve
-user text. Final native acceptance is pending the integrated-source run and will
-be recorded in the linked receipt. F1/F2/F10/D4/I10 remain open for their complete
-scope, including drag/drop, preconnection model/effort, follow-up drafts and the
-full cross-platform visual matrix.
+user text. The previously failing dialog now owns one primary-button hover style
+and retains explicit modal/confirmation focus cycles and trigger-relative pickers.
+The corrected source `770eae1c4e134b8dd285ecd46b9563fb79736199` passes
+[focused native run 35505674865](https://github.com/cmdr-chara/synara/actions/runs/35505674865)
+(presentation job `106064975562`): changed-package formatting, targeted
+Rust regressions, strict changed-package Clippy, application/fixture build,
+Kanban creation/lifecycle, Studio restoration, guarded-close journeys and the
+no-source-mutation check. Static run `35505674726` also passes.
+See the linked receipt for the retained failed runs and final artifact. No broad
+suite was rerun to refresh this record. F1/F2/F10/D4/I10 remain open for their
+complete scope, including drag/drop, preconnection model/effort, follow-up drafts
+and the full cross-platform visual matrix.
 
 ### Earlier September 20 provider and draft checkpoint
 
@@ -114,7 +122,7 @@ Important integrated progress since the earlier baseline:
 
 - the recovered native terminal surface, guarded paste, scrollback, selection/IME
   handling and Linux PTY/process cleanup are now published;
-- pinned SSH workspaces now include remote files, guarded saves, remote PTY, Git,
+- pinned SSH workspaces now include remote files/saves, remote PTY, Git,
   reconnect handling and native Remote-panel coverage;
 - ACP connection/session ownership, scoped permissions/questions, bounded input
   validation, custom command profiles and virtual transcript state are integrated;

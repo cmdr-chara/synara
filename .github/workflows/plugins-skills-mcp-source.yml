@@ -20,13 +20,63 @@ jobs:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
           fetch-depth: 0
-      - name: Apply reviewed integrity-checked session source
+      - name: Apply reviewed integrity-checked session source or pinned merge
         run: |
           python3 - <<'PY'
-          import scripts.apply_source as source
-          source.BRANCH = 'refs/heads/astra/plugins-skills-mcp'
-          source.PAYLOAD = source.ROOT / '.synara-plugins-source.json'
-          source.main()
+          import hashlib, json, os, re, subprocess
+          from pathlib import Path
+          branch = 'refs/heads/astra/plugins-skills-mcp'
+          payload = Path('.synara-plugins-source.json')
+          data = json.loads(payload.read_text())
+          def git(*args):
+              return subprocess.check_output(['git', *args], text=True).strip()
+          if data.get('mode') != 'merge-reviewed':
+              import scripts.apply_source as source
+              source.BRANCH = branch
+              source.PAYLOAD = source.ROOT / payload
+              source.main()
+          else:
+              assert os.environ['GITHUB_REF'] == branch
+              assert git('status', '--porcelain') == ''
+              head = git('rev-parse', 'HEAD')
+              assert git('rev-parse', 'HEAD^') == data['base_commit']
+              assert git('rev-parse', 'HEAD^^') == '8acf1e932a3e0dea55f1df6ce9c5f56c8204bbd8'
+              assert git('diff', '--name-only', 'HEAD^', 'HEAD') == str(payload)
+              assert git('diff', '--name-only', 'HEAD^^', 'HEAD^') == '.github/workflows/plugins-skills-mcp-source.yml'
+              assert git('ls-remote', 'origin', branch).split()[0] == head
+              target = data['merge_commit']
+              assert target == '0b2d1ec45a14f7d9ee5311d5c6498a1f7f301486'
+              subprocess.run(['git', 'merge-base', '--is-ancestor', '980d86b59a1f06636a55aa0b75b71eef41fd3841', target], check=True)
+              git('config', 'user.name', 'github-actions[bot]')
+              git('config', 'user.email', '41898282+github-actions[bot]@users.noreply.github.com')
+              git('config', 'merge.conflictStyle', 'merge')
+              result = subprocess.run(['git', 'merge', '--no-commit', '--no-ff', target])
+              assert result.returncode in (0, 1)
+              rules = data['resolutions']
+              assert set(git('diff', '--name-only', '--diff-filter=U').splitlines()) == set(rules)
+              pattern = re.compile(r'^<<<<<<< HEAD\n(.*?)^=======\n(.*?)^>>>>>>> [^\n]+\n', re.M | re.S)
+              for name, reviewed in rules.items():
+                  path = Path(name)
+                  assert not path.is_absolute() and '..' not in path.parts
+                  seen = []
+                  def resolve(match):
+                      a, b = match.group(1, 2)
+                      rule = reviewed[len(seen)]
+                      assert hashlib.sha256(a.encode()).hexdigest() == rule['ours'], name
+                      assert hashlib.sha256(b.encode()).hexdigest() == rule['theirs'], name
+                      assert rule['choice'] in ('both', 'theirs')
+                      seen.append(rule)
+                      return b if rule['choice'] == 'theirs' else a + ('\n' if name.endswith('.md') else '') + b
+                  text, count = pattern.subn(resolve, path.read_text())
+                  assert count == len(reviewed) and not re.search(r'^<<<<<<<|^=======|^>>>>>>>', text, re.M), name
+                  path.write_text(text)
+              subprocess.run(['git', 'add', *rules], check=True)
+              subprocess.run(['git', 'rm', str(payload)], check=True)
+              assert git('diff', '--name-only', '--diff-filter=U') == ''
+              subprocess.run(['git', 'diff', '--cached', '--check'], check=True)
+              subprocess.run(['python3', 'scripts/check_roadmap.py'], check=True)
+              subprocess.run(['git', 'commit', '-m', 'merge: reconcile validated Plugins Skills MCP with current Device Settings integration'], check=True)
+              subprocess.run(['git', 'push', 'origin', 'HEAD:' + branch], check=True)
           PY
       - name: Format only session-owned Rust modules
         run: |
@@ -77,6 +127,10 @@ jobs:
         run: |
           cargo +1.98.1 test --locked -p synara-acp --lib wire::tests::capabilities_use_protocol_advertisements_not_agent_names -- --exact
           cargo +1.98.1 test --locked -p synara-acp --lib wire::tests::negotiated_session_parameters_cover_directories_and_mcp_transports -- --exact
+      - name: Reconciled Settings and deletion boundaries
+        run: |
+          cargo +1.98.1 test --locked -p synara-workspace --lib settings::
+          cargo +1.98.1 test --locked -p synara-workspace --lib device_settings_tests
       - name: Build native application and fixture once
         run: cargo +1.98.1 build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture
       - name: Native integration management journey

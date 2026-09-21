@@ -77,6 +77,8 @@ impl Shell {
                 .into_any_element();
         }
         match self.panel {
+            Panel::PullRequests => self.pull_requests_panel(cx),
+            Panel::Browser => self.browser_panel(cx),
             Panel::Conversation => self.conversation(window, cx),
             Panel::Kanban => self.kanban_panel(cx),
             Panel::Hubs => self.hub_panel(cx),
@@ -140,12 +142,8 @@ impl Shell {
                         .bg(rgb(palette().overlay)),
                     )
                     .child(
-                        ui::unavailable_action(
-                            "dock-browser",
-                            "Browser",
-                            Glyph::Browser,
-                            "An embedded browser is not available in this native build yet.",
-                        )
+                        ui::action("dock-browser", "Browser", Some(Glyph::Browser), false,
+                            cx.listener(|this, _: &(), _, cx| this.set_panel(Panel::Browser, cx)))
                         .h(px(40.))
                         .px(px(20.))
                         .gap_3()

@@ -25,7 +25,7 @@ pub(super) struct ChildSurface {
     child: u32,
     connection: RustConnection,
     layout: Cell<Option<(i32, i32, u32, u32)>>,
-    pub container: gtk::Box,
+    pub container: gtk::Fixed,
 }
 impl ChildSurface {
     pub fn new(parent: u32) -> Result<Self, String> {
@@ -62,7 +62,7 @@ impl ChildSurface {
         window.connect_realize(move |window| window.set_window(foreign.clone().upcast()));
         window.set_has_window(true);
         window.realize();
-        let container = gtk::Box::new(gtk::Orientation::Vertical, 0);
+        let container = gtk::Fixed::new();
         window.add(&container);
         container.show();
         Ok(Self {

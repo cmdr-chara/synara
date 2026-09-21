@@ -15,15 +15,16 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-      - name: Export exact concurrent source only, without builds or tests
+          ref: 072a5451ccedc9d79162fbb1a2aca2a63911d1f3
+      - name: Export exact integration source only, without builds or tests
         run: |
           set -euo pipefail
           mkdir -p /tmp/pr-automations-browser-source
-          test "$(git rev-parse 0b2d1ec45a14f7d9ee5311d5c6498a1f7f301486^{commit})" = 0b2d1ec45a14f7d9ee5311d5c6498a1f7f301486
+          test "$(git rev-parse HEAD)" = 072a5451ccedc9d79162fbb1a2aca2a63911d1f3
           git rev-parse HEAD > /tmp/pr-automations-browser-source/revision.txt
-          git bundle create /tmp/pr-automations-browser-source/source.bundle HEAD 0b2d1ec45a14f7d9ee5311d5c6498a1f7f301486
+          git bundle create /tmp/pr-automations-browser-source/source.bundle HEAD
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: pr-automations-browser-source
+          name: pr-automations-browser-integration-source
           path: /tmp/pr-automations-browser-source/
           retention-days: 1

@@ -214,7 +214,7 @@ impl NativeHost {
             let visible = Some(*id) == tab && bounds.is_some();
             if visible {
                 if let Some(bounds) = bounds {
-                    let _ = view.webview.set_bounds(bounds);
+                    let _ = view.webview.set_bounds(content_bounds(bounds));
                 }
             }
             let _ = view.webview.set_visible(visible);
@@ -461,7 +461,7 @@ impl NativeHost {
         web.load_uri(&document.canonical_url);
         if self.selected == Some(tab) {
             if let Some(bounds) = self.viewport {
-                let _ = view.set_bounds(bounds);
+                let _ = view.set_bounds(content_bounds(bounds));
                 let _ = view.set_visible(true);
             }
         }
@@ -633,4 +633,13 @@ fn private_directory(path: &std::path::Path) -> std::result::Result<(), String> 
         return Err("Browser data directory changed while opening it.".into());
     }
     fs::set_permissions(path, fs::Permissions::from_mode(0o700)).map_err(|e| e.to_string())
+}
+
+/// The outer child is already positioned at the pane origin. The WebKit widget
+/// must occupy local coordinates inside its fixed container, not repeat that offset.
+fn content_bounds(bounds: Rect) -> Rect {
+    Rect {
+        position: wry::dpi::LogicalPosition::new(0., 0.).into(),
+        size: bounds.size,
+    }
 }

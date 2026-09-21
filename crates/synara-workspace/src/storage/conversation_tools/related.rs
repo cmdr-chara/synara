@@ -143,6 +143,7 @@ impl WorkspaceService {
             }
             let raw: Option<String> = tx.query_row("SELECT data FROM preferences WHERE key=?1", [selection_key(parent)], |row| row.get(0)).optional().map_err(sql)?;
             if let Some(raw) = raw {
+                if raw.len() > 8192 { return Err(StorageError::Limit.into()); }
                 let selection: SideSelection = decode(&raw)?;
                 if selection.version != 1 || selection.parent != parent { return Err(StorageError::Identity.into()); }
                 // A deleted/archived child is not revived or recreated on restore.

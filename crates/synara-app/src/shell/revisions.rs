@@ -149,7 +149,10 @@ impl Shell {
             "edit-resend-message",
             "Edit and resend without rewriting history",
             Glyph::Compose,
-            message.role != Role::User,
+            message.role != Role::User
+                || self.busy.contains(&task)
+                || self.loading_task.is_some()
+                || self.revisions.pending,
             cx.listener(move |this, _: &(), window, cx| {
                 let _ = index;
                 this.open_message_revision(

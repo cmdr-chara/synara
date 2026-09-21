@@ -221,7 +221,9 @@ impl Shell {
             "message-side-chat",
             "Start a side chat from this message",
             Glyph::Chat,
-            message.role == Role::Reasoning,
+            message.role == Role::Reasoning
+                || self.side_chats.creating
+                || self.loading_task.is_some(),
             cx.listener(move |this, _: &(), _, cx| {
                 let _ = index;
                 this.create_side_chat(Some(anchor.clone()), cx)

@@ -632,4 +632,52 @@ mod tests {
         }
         assert!(valid_preference_key(&pins_key(TaskId::new())));
     }
+    #[tokio::test]
+    async fn related_side_thread_and_revision_creation_are_additive_and_unsent() {
+        let dir = tempfile::tempdir().unwrap();
+        let service = WorkspaceService::memory().unwrap();
+        let task = seed(&service, dir.path()).await;
+        service
+            .save_task_draft(task.id, "MAIN-DRAFT-CANARY".into())
+            .await
+            .unwrap();
+
+        let side = service
+            .create_side_thread(
+                task.id,
+                task.agent_id.clone(),
+                Some(anchor(Role::Assistant)),
+            )
+            .await
+            .unwrap();
+        assert_eq!(side.working_directory, task.working_directory);
+        assert_eq!(side.project_id, task.project_id);
+        assert!(service.session(side.thread_id).await.unwrap().is_none());
+        assert!(service.thread(side.thread_id).await.unwrap().messages.is_empty());
+        assert!(
+            service
+                .task_draft(side.id)
+                .await
+                .unwrap()
+                .contains("Caffè 日本語")
+        );
+
+        let source = service
+            .revision_source(task.id, anchor(Role::User))
+            .await
+            .unwrap();
+        let revision = service
+            .branch_user_revision(source, "Edited question".into())
+            .await
+            .unwrap();
+        let revised_draft = service.task_draft(revision.id).await.unwrap();
+        assert!(revised_draft.ends_with("Edited question"));
+        assert!(!revised_draft.contains("Caffè 日本語"));
+        assert!(service.session(revision.thread_id).await.unwrap().is_none());
+        assert!(service.thread(revision.thread_id).await.unwrap().messages.is_empty());
+
+        assert_eq!(service.task_draft(task.id).await.unwrap(), "MAIN-DRAFT-CANARY");
+        assert_eq!(service.catalog().await.unwrap().tasks.len(), 3);
+    }
+
 }

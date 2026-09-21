@@ -8,6 +8,29 @@ All 120 original task bodies and checkbox states remain below without alteration
 
 ## Current checkpoint
 
+### September 21: native attachment intake and saved follow-ups
+
+Continuing `0bb20db`, the composer now implements local PNG/JPEG and UTF-8 file
+selection, image/file clipboard paste, drop, persistent per-task snapshots, bounded
+previews, removal, recent-snapshot reuse and capability-checked agent delivery.
+File paths are not stored or silently sent. Intake failures retain recoverable inputs,
+late results keep their original task identity, and cancelled preparation cannot
+turn into a delayed agent launch. The text-only submission path stays unchanged for
+other callers. Local transcript acknowledgement is not provider delivery proof.
+
+A separate manual follow-up list persists text drafts with edit, reorder, remove
+and append-to-composer actions. Queuing clears only unchanged text/edit revisions
+once saved. Nothing is auto-sent, steered or executed after restart. New preference
+records participate in task deletion and the current backup key validator, including
+the existing Hub metadata keys. The compact tray uses existing native controls and
+opens details progressively rather than adding another permanent panel.
+
+[Scope, privacy bounds and acceptance](docs/ui/composer-intake-followups.md) records
+source checks and five prepared, unrun regressions. Native compilation, clipboard/
+drop/IME behavior, real-agent delivery and restart remain unverified. No GitHub test
+workflow is dispatched. D4/D8/D11/D12/F2/F4/I10 remain open for their full scope.
+Upstream was reviewed at `e7cd15281e6d16cf8fc55a91496dcff035475e54`, unchanged.
+
 ### September 21: compact workspaces, Hub tasks and editor management
 
 The continuation from `e418fff` adds a Hub-scoped native task view with literal
@@ -525,8 +548,8 @@ Remaining limitations:
 1. Complete the Hub transition and integration without duplicating runtime owners:
    finish Settings labels, Hub task-board depth, Library intake/provenance and explicit
    project context. Preserve old Studio data until migration acceptance is recorded.
-2. Continue substantive chat features: real attachment paste/drop/preview, richer
-   mentions, supported queue/steer, edit/resend and Side chats. Never infer provider
+2. Continue chat depth: native attachment acceptance, richer mentions, supported
+   automatic queue/steer, edit/resend and Side chats. Never infer provider
    capabilities from their names or silently send imported/shared context.
 3. Deliver Pull Requests and Automations with actual backend authorization, scoped
    state, cancellation and durable history. Continue Plugins/Skills/MCP, then the

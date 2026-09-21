@@ -19,6 +19,8 @@ pub enum EntryMode {
     Editor,
 }
 pub enum EntryEvent {
+    AttachmentPaste(Vec<(String, Vec<u8>)>),
+    AttachmentFiles(Vec<std::path::PathBuf>),
     Changed,
     Submit,
     Save,
@@ -247,6 +249,47 @@ impl TextEntry {
         }
         self.buffer.text().len()
     }
+    fn paste_item(&mut self, item: ClipboardItem, cx: &mut Context<Self>) {
+        if self.mode == EntryMode::Composer && item.entries().iter().any(|entry| matches!(entry, gpui::ClipboardEntry::Image(_))) {
+            if self.is_composing() { self.error = Some("Finish text composition before pasting an image.".into()); cx.notify(); return; }
+            let mut images = Vec::new();
+            let mut total = 0usize;
+            for entry in item.entries() {
+                if let gpui::ClipboardEntry::Image(image) = entry {
+                    total = total.saturating_add(image.bytes.len());
+                    if images.len() >= 8 || total > 2 * 1024 * 1024 {
+                        self.error = Some("Clipboard images exceed eight files or 2 MiB combined. Nothing was attached.".into()); cx.notify(); return;
+                    }
+                    let extension = match image.format {
+                        gpui::ImageFormat::Png => "png", gpui::ImageFormat::Jpeg => "jpg",
+                        _ => { self.error = Some("Paste a still PNG/JPEG image, or use Attach files.".into()); cx.notify(); return; }
+                    };
+                    images.push((format!("Clipboard image {}.{extension}", images.len()+1), image.bytes.clone()));
+                }
+            }
+            self.error = None;
+            cx.emit(EntryEvent::AttachmentPaste(images));
+            cx.notify();
+            return;
+        }
+        if self.mode == EntryMode::Composer && item.entries().iter().any(|entry| matches!(entry, gpui::ClipboardEntry::ExternalPaths(_))) {
+            if self.is_composing() { self.error = Some("Finish text composition before pasting files.".into()); cx.notify(); return; }
+            let mut files = Vec::new();
+            for entry in item.entries() {
+                if let gpui::ClipboardEntry::ExternalPaths(paths) = entry {
+                    if files.len() + paths.paths().len() > 8 {
+                        self.error = Some("Paste at most eight files. Nothing was attached.".into()); cx.notify(); return;
+                    }
+                    files.extend_from_slice(paths.paths());
+                }
+            }
+            self.error = None;
+            cx.emit(EntryEvent::AttachmentFiles(files));
+            cx.notify();
+            return;
+        }
+        if let Some(text) = item.text() { self.edit(self.buffer.selection(), &text, cx); }
+    }
     fn key(&mut self, event: &KeyDownEvent, window: &mut Window, cx: &mut Context<Self>) {
         if event.prefer_character_input {
             return;
@@ -277,9 +320,7 @@ impl TextEntry {
                 }
             }
             (true, "v") => {
-                if let Some(text) = cx.read_from_clipboard().and_then(|item| item.text()) {
-                    self.edit(self.buffer.selection(), &text, cx);
-                }
+                if let Some(item) = cx.read_from_clipboard() { self.paste_item(item, cx); }
             }
             (true, "z") | (true, "y") => {
                 let redo = key == "y" || shift;
@@ -620,6 +661,9 @@ impl Render for TextEntry {
     }
 }
 impl EntityInputHandler for TextEntry {
+    fn paste(&mut self, item: ClipboardItem, _: &mut Window, cx: &mut Context<Self>) {
+        self.paste_item(item, cx);
+    }
     fn text_for_range(
         &mut self,
         range: Range<usize>,

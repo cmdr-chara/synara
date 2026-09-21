@@ -17,6 +17,17 @@ The known passive delegated-result delivery/human-send reservation and macOS ico
 persistence fixes remain deferred under D12/F11 and P respectively. No new upstream
 feature, workflow, setting or icon delta was found in this review.
 
+## September 21: composer intake and saved follow-ups
+
+Continuing `0bb20db`, native source now wires PNG/JPEG and UTF-8 file intake from
+picker, clipboard and drop into persisted task-owned snapshots, preview/removal,
+recent-snapshot reuse and explicit capability-checked prompt delivery. A compact
+manual follow-up queue adds save/edit/reorder/remove/append without automatic send
+or steering. The current backup validator accepts the new keys and Hub metadata.
+[Implementation, bounds and verification](composer-intake-followups.md) records
+prepared focused regressions separately from still-unverified native behavior.
+No whole D4/D8/D11/D12/F2/F4/I10 gate is closed by this batch.
+
 ## Current native delta
 
 | Surface | Source implemented | Remaining acceptance or functionality |
@@ -28,7 +39,8 @@ feature, workflow, setting or icon delta was found in this review.
 | Shared Hub context | Visible new-thread draft seeding, explicit current-draft insertion and source-message promotion into a reviewed editor | Retrieval, automatic memory and context policies are not implemented; D9/D10/F2 |
 | Hub Library | Existing file/preview service plus bounded same-directory peer-thread reporting and Open reporting thread | Binary intake, remote previews, deeper provenance and multi-source Library; F9/G1/D11 |
 | Message branching | Bounded quoted user/assistant context saved as a new unsent same-workspace draft | Not a provider-session clone, file rollback or automatic send; D9/D12 |
-| Composer | Measured bounded multiline growth on existing native input | Native resize/IME evidence, image paste/drop, queued/steered input and richer mentions; D4/D8/D11 |
+| Composer | Bounded multiline input plus PNG/JPEG/text file picker, image/file clipboard, drop, durable attachment tray, previews, recent reuse and negotiated Image/Context delivery | Native/real-agent acceptance, more formats, historical media replay and richer mentions; D8/D11/D12 |
+| Saved follow-ups | Task-local persisted text list with edit/reorder/remove, draft-preserving Queue and Append, stale-write guards | Manual only, not automatic queue/steer; native restart/keyboard acceptance remains; D4/D8/F2 |
 | Hub Kanban | Scoped task view, captured Hub creation target, literal search, status/attention filters, pinning and explicit Run/Stop using existing services; global Kanban remains separate | Native execution/restart acceptance, richer task movement and task-context controls; F10 |
 | Editor workspace | Guarded sequential Save all, stop-between-files, Close saved/other saved, eight retained closed buffers, tab reordering and compact chrome | Native conflict/IME/SSH journeys, disk refresh and restart/crash recovery; G2/G3/G8/I10 |
 | Terminal workspace | Flatter pane/tab controls and saved active-tab reordering without moving PTYs | Native focus, restart and platform checks; A8/G7/I10 |
@@ -41,7 +53,7 @@ screen composition. Normal Synara retains its own product concepts and services.
 
 | Area | Remaining work / ownership |
 | --- | --- |
-| Attachments and voice | Real binary/image intake, paste/drop/preview, supported provider delivery, capture permissions and transcription; D11/I8 |
+| Attachments and voice | Native attachment acceptance, broader binary formats, historical media/export, capture permissions and voice/transcription; D11/D12/I8 |
 | Rich conversation workflows | Edit/resend, supported queue/steer, safe rollback/handoff, structured result cards and Side chats; D4/D8-D12/G7 |
 | Pull Requests | Actual authenticated discovery/list/detail/review/actions, scoped errors and concurrency; H6 |
 | Automations | Durable definitions/scheduling/history, explicit execution consent and restart without duplicates; F11 |

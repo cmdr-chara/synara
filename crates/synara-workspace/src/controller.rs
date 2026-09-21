@@ -262,29 +262,41 @@ impl Controller {
         }))
     }
     pub async fn submit(&self, id: TaskId, text: String) -> WorkspaceResult<String> {
+        self.submit_prompt(id, text, None).await
+    }
+
+    /// Explicit composer send. Other callers retain text-only submission.
+    pub async fn submit_with_attachments(&self, id: TaskId, text: String, revision: u64) -> WorkspaceResult<String> {
+        self.submit_prompt(id, text, Some(revision)).await
+    }
+
+    async fn submit_prompt(&self, id: TaskId, text: String, attachments: Option<u64>) -> WorkspaceResult<String> {
         if text.trim().is_empty() || text.len() > 1024 * 1024 {
-            return Err(WorkspaceError::Invalid(
-                "prompt must contain text and fit within 1 MiB".into(),
-            ));
+            return Err(WorkspaceError::Invalid("prompt must contain text and fit within 1 MiB".into()));
         }
         let slot = self.slot(id).await?;
         if slot.active.swap(true, Ordering::AcqRel) {
             return Err(AgentError::Busy.into());
         }
         let cancellation = tokio_util::sync::CancellationToken::new();
-        *slot
-            .setup_cancel
-            .lock()
-            .map_err(|_| WorkspaceError::Worker)? = Some(cancellation.clone());
-        let _guard = PromptOwnership(slot);
+        let _guard = PromptOwnership(slot.clone());
+        *slot.setup_cancel.lock().map_err(|_| WorkspaceError::Worker)? = Some(cancellation.clone());
+        // Reserve cancellation BEFORE reading/decoding images. Stop during intake
+        // must not turn into a delayed agent launch when the worker completes.
+        let prompt = if let Some(revision) = attachments {
+            tokio::select! {
+                biased;
+                () = cancellation.cancelled() => return Err(AgentError::Cancelled.into()),
+                result = self.workspace.attached_prompt(id, text, revision) => result?,
+            }
+        } else { Prompt::text(text) };
         let session = tokio::select! {
-            result=self.session_for(id)=>result?,
-            ()=cancellation.cancelled()=>return Err(AgentError::Cancelled.into()),
+            biased;
+            () = cancellation.cancelled() => return Err(AgentError::Cancelled.into()),
+            result = self.session_for(id) => result?,
         };
-        if cancellation.is_cancelled() {
-            return Err(AgentError::Cancelled.into());
-        }
-        session.prompt(Prompt::text(text)).await.map_err(Into::into)
+        if cancellation.is_cancelled() { return Err(AgentError::Cancelled.into()); }
+        session.prompt(prompt).await.map_err(Into::into)
     }
 
     pub async fn cancel(&self, id: TaskId) -> WorkspaceResult<()> {

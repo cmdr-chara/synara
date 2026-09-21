@@ -828,6 +828,7 @@ impl Shell {
     }
 
     fn new_project_chat(&mut self, project: ProjectId, cx: &mut Context<Self>) {
+        if self.hub_navigation_blocked(cx) { return; }
         if self.creating_task || self.loading_task.is_some() {
             return;
         }

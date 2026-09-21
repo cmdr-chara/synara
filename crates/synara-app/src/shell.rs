@@ -1,5 +1,7 @@
 use gpui::Focusable;
 mod activity;
+mod attachments;
+mod followups;
 mod hubs;
 mod chat_tools;
 mod chrome;
@@ -88,6 +90,8 @@ struct FormState {
     error: Option<String>,
 }
 enum Update {
+    Followups(Box<followups::Reply>),
+    Attachments(Box<attachments::Reply>),
     Hubs(Box<hubs::Reply>),
     Terminals(Box<terminals::Reply>),
     Review(Box<review::Reply>),
@@ -155,6 +159,8 @@ enum Update {
     Error(String),
 }
 pub struct Shell {
+    followups: followups::FollowupState,
+    attachments: attachments::AttachmentState,
     hubs: hubs::HubState,
     terminals: terminals::TerminalWorkspace,
     editors: editors::EditorState,
@@ -347,6 +353,8 @@ impl Shell {
             cx.subscribe(&registry.query, |_, _, _, cx| cx.notify()),
             cx.subscribe(&composer, |this, _, event, cx| match event {
                 EntryEvent::Submit => this.send_prompt(cx),
+                EntryEvent::AttachmentPaste(images) => this.attachment_paste(images.clone(), cx),
+                EntryEvent::AttachmentFiles(paths) => this.attachment_paths(paths.clone(), cx),
                 EntryEvent::Changed => this.remember_draft(cx),
                 _ => cx.notify(),
             }),
@@ -390,6 +398,8 @@ impl Shell {
                     .map(|t| t.id)
             });
         let mut this = Self {
+            followups: followups::FollowupState::new(cx),
+            attachments: attachments::AttachmentState::default(),
             hubs: hubs::HubState::new(cx),
             terminals: terminals::TerminalWorkspace::default(),
             editors: editors::EditorState::new(cx),
@@ -477,6 +487,11 @@ impl Shell {
         this
     }
     pub fn request_close(&mut self, window: &mut Window, cx: &mut Context<Self>) -> bool {
+        if self.followup_navigation_blocked(cx) { return false; }
+        if self.attachments.close_pending() {
+            self.notice = Some("Finish attachment imports or discard a failed import in its conversation before closing.".into());
+            cx.notify(); return false;
+        }
         if self.hubs.pending(cx) {
             self.notice = Some("Finish Hub creation or save/discard the Hub context editor before closing.".into());
             cx.notify();
@@ -728,6 +743,8 @@ impl Shell {
         self.studio.reset();
         self.explorer.reset_search();
         self.load_message_pins(id);
+        self.load_attachments(id);
+        self.load_followups(id);
         self.project = Some(task.project_id);
         self.details = None;
         self.trace.clear();
@@ -1019,6 +1036,14 @@ impl Shell {
         cx.notify();
     }
     fn send_prompt(&mut self, cx: &mut Context<Self>) {
+        if self.close != CloseState::Open || self.terminal_closing || self.loading_task.is_some()
+            || !matches!(self.panel, Panel::Conversation | Panel::Dock | Panel::Files | Panel::Changes | Panel::Terminal)
+            || self.composer.read(cx).is_composing()
+            || self.selected.is_some_and(|id| self.draft_state.loading.contains(&id)) { return; }
+        if self.attachment_send_blocked() {
+            self.error = Some("Wait for saved attachments to load or finish saving before sending.".into());
+            cx.notify(); return;
+        }
         if self.hub_navigation_blocked(cx) { return; }
         let Some(id) = self.selected else {
             self.error = Some("Create or select a task first.".into());
@@ -1034,7 +1059,13 @@ impl Shell {
             return;
         }
         self.snapshot_draft(cx);
-        self.draft_state.submitted(id, text.clone());
+        if let Some(error) = self.attachment_capability_error() {
+            self.error = Some(error.into()); cx.notify(); return;
+        }
+        let attachment_submission = self.attachment_submission(&text);
+        if let Some((_, display)) = &attachment_submission {
+            self.draft_state.submitted_with_display(id, text.clone(), display.clone());
+        } else { self.draft_state.submitted(id, text.clone()); }
         self.busy.insert(id);
         self.error = None;
         self.notice = None;
@@ -1060,7 +1091,10 @@ impl Shell {
                         .collect();
                     controller.workspace.rename_task(id, title).await?;
                 }
-                controller.submit(id, text).await
+                match attachment_submission {
+                    Some((revision, _)) => controller.submit_with_attachments(id, text, revision).await,
+                    None => controller.submit(id, text).await,
+                }
             }
             .await;
             let details = controller.details(id).await.ok().flatten();
@@ -1208,6 +1242,8 @@ impl Shell {
     }
     fn receive(&mut self, update: Update, cx: &mut Context<Self>) {
         match update {
+            Update::Attachments(reply) => self.attachment_reply(*reply, cx),
+            Update::Followups(reply) => self.followup_reply(*reply, cx),
             Update::Hubs(reply) => self.hub_reply(*reply, cx),
             Update::Terminals(reply) => self.terminal_reply(*reply, cx),
             Update::Review(reply) => self.review_reply(*reply, cx),
@@ -1246,9 +1282,9 @@ impl Shell {
             Update::WorkspaceAdded(project, catalog) => {
                 self.catalog = catalog;
                 // The user may have edited while the workspace was opening.
-                if self.dirty(cx) || self.saving || self.close != CloseState::Open {
+                if self.dirty(cx) || self.saving || self.followups.pending(cx) || self.hubs.pending(cx) || self.close != CloseState::Open {
                     self.notice = Some(
-                        "Workspace added. Save or discard the document before selecting it.".into(),
+                        "Workspace added. Finish the open file or draft editor before selecting it.".into(),
                     );
                     cx.notify();
                     return;
@@ -1303,6 +1339,7 @@ impl Shell {
             }
             Update::Event(envelope) => {
                 self.acknowledge_draft(&envelope, cx);
+                self.acknowledge_attachment_event(&envelope);
                 if let Some(task) = self
                     .catalog
                     .tasks
@@ -1408,6 +1445,7 @@ impl Shell {
                 details,
                 error,
             } => {
+                self.finish_attachment_submission(task, error.is_none());
                 self.busy.remove(&task);
                 if self.selected == Some(task) {
                     self.details = details;
@@ -1544,7 +1582,8 @@ impl Shell {
         }
     }
     fn set_panel(&mut self, panel: Panel, cx: &mut Context<Self>) {
-        if panel != Panel::Hubs && self.hub_navigation_blocked(cx) { return; }
+        let blocked = if panel == Panel::Hubs { self.followup_navigation_blocked(cx) } else { self.hub_navigation_blocked(cx) };
+        if blocked { return; }
         if self.explorer.modal_open() {
             return;
         }

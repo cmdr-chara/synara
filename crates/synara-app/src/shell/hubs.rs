@@ -74,6 +74,7 @@ impl Shell {
         });
     }
     pub(super) fn hub_navigation_blocked(&mut self, cx: &mut Context<Self>) -> bool {
+        if self.followup_navigation_blocked(cx) { return true; }
         if !self.hubs.pending(cx) { return false; }
         self.error = Some("Save or explicitly discard the Hub editor before leaving it.".into());
         cx.notify(); true

@@ -25,6 +25,29 @@ or successful-install claims. [Feature behavior](docs/integrations.md) and the
 source, fixture and native evidence. E8/I9 and platform acceptance remain open.
 The one authorized session branch is integrated only after focused verification.
 
+### September 21: Device and functional Settings source
+
+`astra/device-settings` continues exact base `980d86b`. Real bounded ADB/simctl
+adapters now back native discovery, screenshot presentation, supported lifecycle
+commands and explicit probed Android input. The Device Environment tab fences
+late replies, retains stale targets, revokes transient authority, handles resized
+viewports and stops capture work when hidden without changing chat/session state.
+
+Settings adds restore-last-chat behavior, effective editable navigation bindings,
+recent-attachment visibility, higher contrast without flattening Glass, actual
+agent/configuration entry points, desktop notification preference/test and privacy
+controls. Archived deletion reserves the task, closes its session, and checks the
+archive state inside the SQLite writer transaction. No quotas or unsupported
+platform capabilities are invented. Existing appearance profiles, usage and SSH
+boundaries remain intact.
+
+[Device/Settings inventory and unsupported targets](docs/ui/device-settings.md) and
+[implementation receipt](docs/verification/device-settings-session.md) separate
+source checks from Rust validation and hardware/native acceptance. A session-scoped
+validation is prepared. Hardware, macOS, Windows, native capture/input, screen-reader
+and notification-delivery acceptance remain open. No historical task body or
+checkbox state is changed, and no whole L/I/P gate is closed by these source slices.
+
 ### September 21: native attachment intake and saved follow-ups
 
 Continuing `0bb20db`, the composer now implements local PNG/JPEG and UTF-8 file

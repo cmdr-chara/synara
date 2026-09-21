@@ -2,6 +2,7 @@
 //! sections without a native service say so instead of displaying invented data.
 use super::*;
 mod chat;
+pub(super) mod native;
 mod personalization;
 use crate::ui::menu::{Choice, ChoiceEvent, ChoiceMenu};
 use crate::ui::{self, Glyph, palette};
@@ -9,6 +10,8 @@ use gpui::{FocusHandle, Pixels, Point};
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub(super) enum Section {
+    Device,
+    Privacy,
     General,
     Profile,
     Appearance,
@@ -35,6 +38,8 @@ struct SectionInfo {
     description: &'static str,
 }
 const SECTIONS: &[SectionInfo] = &[
+    SectionInfo { section: Section::Device, id: "device", group: "Integrations", label: "Device / capture", icon: Glyph::Window, description: "Installed device helpers, captures, permissions and supported controls." },
+    SectionInfo { section: Section::Privacy, id: "privacy", group: "System", label: "Privacy & security", icon: Glyph::Settings, description: "Local data, protocol diagnostics, secret-store status and safe deletion." },
     SectionInfo {
         section: Section::General,
         id: "general",
@@ -178,6 +183,7 @@ pub(super) struct SettingsPopup {
     _subscription: Subscription,
 }
 pub(super) struct SettingsState {
+    native: native::NativeSettings,
     pub value: AppSettings,
     pub personalization: personalization::PersonalizationState,
     pub saving: bool,
@@ -241,6 +247,7 @@ impl SettingsState {
             cx.notify();
         })];
         Self {
+            native: native::NativeSettings::new(&value, cx),
             personalization: personalization::PersonalizationState::new(&value.appearance, cx),
             value,
             saving: false,
@@ -716,13 +723,15 @@ impl Shell {
             Section::Appearance => self.appearance_settings(cx),
             Section::Profile => self.profile_settings(cx),
             Section::Providers => self.provider_settings(cx),
-            Section::Keybindings => self.keybindings_settings(),
+            Section::Keybindings => self.editable_keybindings_settings(cx),
+            Section::Device => self.device_settings(cx),
+            Section::Privacy => self.privacy_settings(cx),
             Section::Usage => self.usage_settings(),
             Section::Models => self.model_settings(cx),
             Section::System => self.system_settings(cx),
             Section::Archived => self.archived_settings(cx),
             Section::Behavior => self.chat_settings(cx),
-            Section::Notifications => empty("In-app activity", "Running chats show an activity indicator. Permission and input requests appear in the conversation. Desktop notification preferences have not been ported yet.").into_any_element(),
+            Section::Notifications => self.notification_settings(cx),
             Section::AppSnap => empty("AppSnap is not available yet", "Capturing another app’s window has not been ported to the native app. You can attach project files from the composer’s Add menu.").into_any_element(),
             Section::Plugins | Section::Mcp | Section::Skills => self.integration_settings(self.settings.section,cx),
             Section::Worktrees => empty("Managed worktrees are not available yet", "Open an existing worktree as a project to use it. Creating and cleaning up managed worktrees from this page has not been ported yet.").into_any_element(),
@@ -833,6 +842,8 @@ impl Shell {
             .child(heading("Sidebar organization"))
             .child(card().child(row("Project order", "Controls how projects are arranged in the main sidebar.", self.choice_button("project-order", if general.alphabetical_projects { "Alphabetical" } else { "Manual order" }.into(), ChoiceKind::Projects, cx)))
                 .child(row("Thread order", "Controls how threads are arranged inside each project and the Chats list.", self.choice_button("thread-order", if general.oldest_threads_first { "Oldest first" } else { "Recently active" }.into(), ChoiceKind::Threads, cx))))
+            .child(heading("Startup"))
+            .child(row("Restore last chat", "Reopen the last selected chat and its saved draft on next launch. When off, start without selecting a chat. Never automatically starts a prompt, shell or device helper.", self.toggle("restore-last-chat", "Restore last chat", general.restore_last_chat, |settings| settings.general.restore_last_chat = !settings.general.restore_last_chat, cx)))
             .child(heading("Sidebar sections"))
             .child(card().child(row("Chats", "Show standalone chats in the sidebar.", self.toggle("show-chats", "Chats", general.show_chats, |s| s.general.show_chats = !s.general.show_chats, cx)))
                 .child(row("Studio", "Show Studio in the sidebar switcher.", self.toggle("show-studio", "Studio", general.show_studio, |s| s.general.show_studio = !s.general.show_studio, cx))))
@@ -911,6 +922,7 @@ impl Shell {
                                 cx,
                             ),
                         ))
+                        .child(row("Higher contrast", "Use stronger secondary text and separators. The selected glass material and opacity stay unchanged. This does not certify a contrast ratio against every wallpaper.", self.toggle("high-contrast", "Higher contrast", appearance.high_contrast, |settings| settings.appearance.high_contrast = !settings.appearance.high_contrast, cx)))
                         .child(row("Accent", "", color_swatch(palette().focus)))
                         .child(row("Background", "", color_swatch(palette().canvas)))
                         .child(row("Foreground", "", color_swatch(palette().text)))
@@ -1024,6 +1036,12 @@ impl Shell {
                     ui::icon(self.agent_glyph(&profile.id)),
                 )
             })))
+            .children(self.details.as_ref().map(|details| div().mt_3().child(format!("Selected connection: {:?}. Authentication options below are advertised by this agent, not inferred from an account profile.", details.connection.state))))
+            .children(self.details.as_ref().map(|details| div().flex().flex_wrap().gap_2().children(details.connection.authentication.iter().enumerate().map(|(index, method)| {
+                let method_id = method.id.clone();
+                ui::action(("provider-auth", index), method.name.clone(), None, false, cx.listener(move |this, _: &(), _, cx| this.authenticate(method_id.clone(), cx)))
+            }))))
+            .child(ui::action("provider-capabilities", "Inspect reported capabilities", Some(Glyph::Debug), false, cx.listener(|this, _: &(), _, cx| this.set_panel(Panel::Inspector, cx))))
             .child(
                 div().mt_4().child(
                     ui::button("manage-agents", "Manage agents", false)
@@ -1033,37 +1051,6 @@ impl Shell {
                             cx.listener(|this, _, _, cx| this.set_panel(Panel::Registry, cx)),
                         ),
                 ),
-            )
-            .into_any_element()
-    }
-    fn keybindings_settings(&self) -> gpui::AnyElement {
-        card()
-            .children(
-                [
-                    ("Send message", "Enter"),
-                    ("New line", "Shift + Enter"),
-                    ("Conversation", "Ctrl / ⌘ + 1"),
-                    ("Files", "Ctrl / ⌘ + 2"),
-                    ("Changes", "Ctrl / ⌘ + 3"),
-                    ("Terminal", "Ctrl / ⌘ + 4"),
-                    ("Session inspector", "Ctrl / ⌘ + 5"),
-                    ("Settings", "Ctrl / ⌘ + 6"),
-                    ("Agent providers", "Ctrl / ⌘ + 7"),
-                    ("Remote workspaces", "Ctrl / ⌘ + 8"),
-                    ("Kanban", "Ctrl / ⌘ + 9"),
-                    ("Close menu", "Escape"),
-                ]
-                .into_iter()
-                .map(|(label, key)| {
-                    row(
-                        label,
-                        "",
-                        div()
-                            .text_size(px(13.))
-                            .text_color(rgb(palette().muted))
-                            .child(key),
-                    )
-                }),
             )
             .into_any_element()
     }
@@ -1101,25 +1088,11 @@ impl Shell {
             .into_any_element()
     }
     fn model_settings(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
-        let models = self
-            .thread
-            .as_ref()
-            .map(|thread| &thread.configuration.models);
-        div()
-            .children(models.filter(|models| !models.is_empty()).map(|models| {
-                card().children(models.iter().map(|model| row(model.label.clone(), "", "")))
-            }))
-            .children(models.is_none_or(|models| models.is_empty()).then(|| {
-                empty(
-                    "No models loaded",
-                    "Connect to an agent from the composer to load its available models.",
-                )
-            }))
-            .child(div().mt_4().child(
-                ui::button("models-back", "Open chat", false).on_click(
-                    cx.listener(|this, _, _, cx| this.set_panel(Panel::Conversation, cx)),
-                ),
-            ))
+        div().flex().flex_col().gap_3()
+            .child("Configuration comes from the selected agent session. Only advertised models, modes and options are offered. No static model list or invented effort level is supplied.")
+            .child(self.configuration_controls(cx))
+            .children(self.details.is_none().then(|| empty("No agent session", "Connect from the composer first. Configuration is unavailable until the agent reports it.")))
+            .child(ui::action("models-session-inspector", "Open session inspector", Some(Glyph::Debug), false, cx.listener(|this, _: &(), _, cx| this.set_panel(Panel::Inspector, cx))))
             .into_any_element()
     }
     fn system_settings(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
@@ -1161,41 +1134,24 @@ impl Shell {
             .into_any_element()
     }
     fn archived_settings(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
-        let tasks: Vec<_> = self
-            .catalog
-            .tasks
-            .iter()
-            .filter(|task| task.state == TaskState::Archived)
-            .collect();
-        if tasks.is_empty() {
-            return empty(
-                "No archived threads",
-                "Threads you archive will appear here.",
-            )
-            .into_any_element();
-        }
-        card()
-            .children(tasks.into_iter().map(|task| {
+        let tasks: Vec<_> = self.catalog.tasks.iter().filter(|task| task.state == TaskState::Archived).collect();
+        div().flex().flex_col().gap_3()
+            .child("Archived threads are retained until explicitly deleted. Restore keeps their history. Permanent deletion requires confirmation and does not remove project files or external backups.")
+            .children(tasks.is_empty().then(|| empty("No archived threads", "Threads you archive will appear here.")))
+            .children(tasks.into_iter().enumerate().map(|(index, task)| {
                 let id = task.id;
-                row(
-                    task.title.clone(),
-                    "",
-                    ui::button(
-                        SharedString::from(format!("restore-{id}")),
-                        "Restore",
-                        false,
-                    )
-                    .on_click(cx.listener(move |this, _, _, _| {
+                row(task.title.clone(), "", div().flex().gap_2()
+                    .child(ui::action(("restore-archive", index), "Restore", None, false, cx.listener(move |this, _: &(), _, _| {
+                        if this.native_settings_pending() { return; }
                         let workspace = this.controller.workspace.clone();
-                        this.job(async move {
-                            workspace.unarchive_task(id).await?;
-                            Ok(Update::Catalog(workspace.catalog().await?))
-                        });
-                    })),
-                )
+                        this.job(async move { workspace.unarchive_task(id).await?; Ok(Update::Catalog(workspace.catalog().await?)) });
+                    })))
+                    .child(ui::action(("delete-archive", index), "Delete...", None, false, cx.listener(move |this, _: &(), _, cx| this.begin_archived_deletion(id, cx)))))
             }))
+            .child(self.archived_deletion_controls(cx))
             .into_any_element()
     }
+
 }
 fn color_swatch(color: u32) -> gpui::Div {
     div()

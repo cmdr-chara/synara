@@ -42,15 +42,15 @@ pub fn colorway(base: Palette, value: Colorway, dark: bool) -> Palette {
 }
 fn mix(a: u32, b: u32, amount: f32) -> u32 {
     let component = |shift| {
-        let a = ((a >> shift) & 255u32) as f32;
-        let b = ((b >> shift) & 255u32) as f32;
+        let a = ((a >> shift) & 255_u32) as f32;
+        let b = ((b >> shift) & 255_u32) as f32;
         (a + (b - a) * amount).round() as u32
     };
     (component(16) << 16) | (component(8) << 8) | component(0)
 }
 fn luminance(value: u32) -> f32 {
     let linear = |shift| {
-        let c = ((value >> shift) & 255u32) as f32 / 255.;
+        let c = ((value >> shift) & 255_u32) as f32 / 255.;
         if c <= 0.04045 { c / 12.92 } else { ((c + 0.055) / 1.055).powf(2.4) }
     };
     0.2126 * linear(16) + 0.7152 * linear(8) + 0.0722 * linear(0)

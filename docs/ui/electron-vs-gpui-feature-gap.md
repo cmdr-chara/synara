@@ -9,6 +9,31 @@ continuation notes remain in the [preserved pre-Hubs inventory](electron-vs-gpui
 The full acceptance backlog remains in [ROADMAP.md](../../ROADMAP.md). No historical
 gap is closed merely because this current view is shorter or a heading was renamed.
 
+## September 21: Device and Settings continuation
+
+On `astra/device-settings`, based on `980d86b`, real command-backed device discovery,
+bounded screenshots, lifecycle actions, probed explicit Android input and native
+viewer ownership replace the earlier protocol-only device slice. This does not
+complete physical Apple support, Android cold boot, AppSnap or hardware acceptance.
+
+Native Settings now wires startup restore, editable effective navigation shortcuts,
+recent-attachment visibility, stronger text/separators, actual agent/config controls,
+notification preference/test and privacy/deletion actions. The complete area-by-area
+inventory, retained functionality and unavailable states are in
+[Device/Settings](device-settings.md). The [receipt](../verification/device-settings-session.md)
+records 40 distinct passing targeted tests across the latest applicable focused
+runs and a passing Linux native `cargo check` at `744830e`. The first compile-blocked
+attempt and the corrective run are retained, not hidden. Runtime/device/capture
+sources were unchanged after their passing run and were not needlessly re-tested.
+Earlier "no workflow" and "no native compile" statements below describe their earlier
+checkpoints, not this session's scoped validation. A compilation check is not a
+running GPUI window or hardware, input, macOS or Windows acceptance.
+
+PR/Automations/Browser and Plugins/Skills/MCP had not landed at the last checked
+integration head `980d86b`. No integration placeholder is claimed complete or
+replaced with guessed settings. All original acceptance gates remain open where
+native, platform or hardware evidence is missing.
+
 ## Upstream review
 
 `Emanuele-web04/synara` main was reviewed at
@@ -69,10 +94,13 @@ screen composition. Normal Synara retains its own product concepts and services.
 | Automations | Durable definitions/scheduling/history, explicit execution consent and restart without duplicates; F11 |
 | Skills/plugins/MCP | Provider-owned lifecycle/catalog contracts, full skill bundles, OS credentials/OAuth, remaining transports and real-provider/native acceptance; E8/I9 |
 | Browser | Real embedded host, navigation and lifecycle, isolated cookies/auth/downloads, bounded approved automation; K1-K6 |
-| Device tooling | Real supported helper, capture/input/lifecycle and hardware acceptance; L1-L5 |
+| Device tooling | ADB/simctl discovery, capture, supported lifecycle and explicit Android input now have source adapters/viewer. Native helper protocol depth, physical Apple, Android cold boot and hardware acceptance remain; L1-L5 |
 | Settings and platform | Remaining functional sections, label migration, secrets, notifications, accessibility, packaging/updater and macOS/Windows interaction; I/P/O |
 
-## Evidence boundary and next work
+## Earlier workspace-checkpoint evidence and next work
+
+This section preserves the earlier workspace checkpoint. Device/Settings validation
+above and its linked receipt are newer and supersede its compile/workflow status.
 
 The preceding Hub checkpoint recorded the following evidence (not the later integration session):
 

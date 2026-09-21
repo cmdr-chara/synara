@@ -395,6 +395,7 @@ impl Render for Shell {
                         || this.terminal_closing
                         || this.draft_state.quitting
                         || this.environment.quitting
+                        || this.revisions.open()
                     {
                         return;
                     }
@@ -439,6 +440,7 @@ impl Render for Shell {
             && !self.environment.menu_open()
             && !self.chat_tools.menu_open()
             && !self.chat_tools.find_open
+            && !self.revisions.open()
             && !(self.dock_open() && self.environment.maximized && (!self.zen_active() || self.settings.personalization.tools_shown))
         {
             let focus = self.composer.read(cx).focus_handle(cx);
@@ -453,6 +455,7 @@ impl Render for Shell {
         self.restore_organization_focus(window, cx);
         self.restore_saved_context_focus(window, cx);
         self.restore_hub_focus(window, cx);
+        self.restore_revision_focus(window, cx);
         self.restore_explorer_focus(window, cx);
         if tools_visible && !self.settings.personalization.attention_open {
             self.restore_editor_focus(window, cx);
@@ -513,6 +516,7 @@ impl Render for Shell {
                 if this.kanban.dialog.is_some()
                     || this.organization.dialog.is_some()
                     || this.saved_context.dialog.is_some()
+                    || this.revisions.open()
                     || this.settings.personalization.attention_open
                     || this.explorer.modal_open()
                 {
@@ -694,6 +698,7 @@ impl Render for Shell {
             })
             .children(self.navigation.menu_open.then(|| self.tools_overlay(cx)))
             .children(self.controls.is_open().then(|| self.control_overlay(cx)))
+            .children(self.revisions.open().then(|| self.revision_overlay(cx)))
             .children(
                 self.settings
                     .popup

@@ -14,6 +14,7 @@ pub enum EnvironmentTab {
     Explorer,
     Changes,
     Device,
+    SideChats,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -43,7 +44,7 @@ impl EnvironmentLayout {
         if self.version != VERSION
             || !self.width_ratio.is_finite()
             || !(0.2..=0.8).contains(&self.width_ratio)
-            || self.tabs.len() > 4
+            || self.tabs.len() > 5
             || self.tabs.iter().collect::<HashSet<_>>().len() != self.tabs.len()
             || self.active.is_some_and(|tab| !self.tabs.contains(&tab))
             || (self.active.is_none() && !self.tabs.is_empty())
@@ -226,17 +227,18 @@ mod tests {
             EnvironmentTab::Explorer,
             EnvironmentTab::Changes,
             EnvironmentTab::Device,
+            EnvironmentTab::SideChats,
         ] {
             layout.select(tab);
         }
         assert!(layout.validate().is_ok());
         service.save_environment_layout(layout.clone()).await.unwrap();
         assert_eq!(service.environment_layout().await.unwrap().layout, layout);
-        assert_eq!(layout.tabs.len(), 4);
-        assert_eq!(layout.active, Some(EnvironmentTab::Device));
+        assert_eq!(layout.tabs.len(), 5);
+        assert_eq!(layout.active, Some(EnvironmentTab::SideChats));
         assert_eq!(service.settings().await.unwrap().settings, settings);
-        assert!(layout.close(EnvironmentTab::Device));
-        assert_eq!(layout.active, Some(EnvironmentTab::Changes));
+        assert!(layout.close(EnvironmentTab::SideChats));
+        assert_eq!(layout.active, Some(EnvironmentTab::Device));
         assert!(layout.validate().is_ok());
     }
 

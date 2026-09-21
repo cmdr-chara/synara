@@ -87,6 +87,7 @@ impl Shell {
             ("Changes", "Git review · Ctrl/Cmd+3", Glyph::Changes, Action::Panel(Panel::Changes)),
             ("Terminal", "Open panel without starting a shell · Ctrl/Cmd+4", Glyph::Terminal, Action::Panel(Panel::Terminal)),
             ("Device", "Real device discovery and capture", Glyph::Window, Action::Panel(Panel::Device)),
+            ("Side chats", "Independent related conversations", Glyph::Chat, Action::Panel(Panel::SideChats)),
             ("Kanban", "Projects and tasks · Ctrl/Cmd+9", Glyph::Kanban, Action::Panel(Panel::Kanban)),
             ("Settings", "Preferences · Ctrl/Cmd+6", Glyph::Settings, Action::Panel(Panel::Settings)),
             ("Agent registry", "Installed and available agents · Ctrl/Cmd+7", Glyph::Agent, Action::Panel(Panel::Registry)),

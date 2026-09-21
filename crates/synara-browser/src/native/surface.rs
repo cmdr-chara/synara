@@ -40,6 +40,9 @@ impl ChildSurface {
                 ..Default::default()
             },
         );
+        if !child.ensure_native() {
+            return Err("GTK could not create a native X11 child surface".into());
+        }
         let window = gtk::Window::new(gtk::WindowType::Toplevel);
         window.set_decorated(false);
         window.set_default_size(1, 1);

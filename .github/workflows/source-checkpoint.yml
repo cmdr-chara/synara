@@ -1,7 +1,7 @@
 name: Source checkpoint
 on:
   push:
-    branches: [astra/device-settings]
+    branches: [astra/gpui-clean-rewrite]
     paths: [.github/workflows/source-checkpoint.yml]
 permissions:
   contents: read
@@ -15,13 +15,13 @@ jobs:
         with:
           fetch-depth: 200
           persist-credentials: false
-      - name: Export exact session source without running tests
+      - name: Export exact source without running tests
         run: |
           mkdir -p /tmp/source-checkpoint
           git rev-parse HEAD > /tmp/source-checkpoint/revision.txt
           git bundle create /tmp/source-checkpoint/source.bundle HEAD
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: device-settings-source
+          name: source-checkpoint
           path: /tmp/source-checkpoint/
           retention-days: 7

@@ -45,3 +45,12 @@ Focused acceptance is provided by unit tests in `settings.rs`, `secrets.rs`
 and `platform.rs`, plus the ordinary workspace/backend/static verification
 lanes. No secret value is used as a repository fixture except synthetic
 `secret-canary` bytes inside an isolated unit test.
+
+## Scoped integration settings
+
+[Native integration management](../integrations.md) adds versioned revision-checked
+preferences for reviewed skill documents and scoped MCP records. MCP persistence
+contains credential references only. The desktop's unavailable secret-store
+adapter still fails explicitly for authenticated connections, while synthetic
+stores exercise the boundary in focused tests. This does not close OS keychain
+or cross-platform credential acceptance. See the [receipt](plugins-skills-mcp.md).

@@ -1,6 +1,7 @@
 use gpui::Focusable;
 mod activity;
 mod attachments;
+mod integrations;
 mod followups;
 mod hubs;
 mod chat_tools;
@@ -90,6 +91,7 @@ struct FormState {
     error: Option<String>,
 }
 enum Update {
+    Integrations(Box<integrations::Reply>),
     Followups(Box<followups::Reply>),
     Attachments(Box<attachments::Reply>),
     Hubs(Box<hubs::Reply>),
@@ -176,6 +178,7 @@ pub struct Shell {
     controls: controls::ControlState,
     navigation: navigation::NavigationState,
     settings: settings::SettingsState,
+    integrations: integrations::IntegrationState,
     close: CloseState,
     close_focus: gpui::FocusHandle,
     registry: registry::RegistryState,
@@ -415,6 +418,7 @@ impl Shell {
             controls: controls::ControlState::new(cx),
             navigation: navigation::NavigationState::new(cx),
             settings: settings::SettingsState::new(bootstrap.settings, cx),
+            integrations: integrations::IntegrationState::new(cx),
             close: CloseState::Open,
             close_focus: cx.focus_handle(),
             registry,
@@ -488,6 +492,10 @@ impl Shell {
     }
     pub fn request_close(&mut self, window: &mut Window, cx: &mut Context<Self>) -> bool {
         if self.followup_navigation_blocked(cx) { return false; }
+        if self.integrations.pending() {
+            self.notice=Some("Finish the integration operation or discard its open Settings form/review before closing.".into());
+            cx.notify(); return false;
+        }
         if self.attachments.close_pending() {
             self.notice = Some("Finish attachment imports or discard a failed import in its conversation before closing.".into());
             cx.notify(); return false;
@@ -1242,6 +1250,7 @@ impl Shell {
     }
     fn receive(&mut self, update: Update, cx: &mut Context<Self>) {
         match update {
+            Update::Integrations(reply) => self.integration_reply(*reply,cx),
             Update::Attachments(reply) => self.attachment_reply(*reply, cx),
             Update::Followups(reply) => self.followup_reply(*reply, cx),
             Update::Hubs(reply) => self.hub_reply(*reply, cx),
@@ -1608,6 +1617,7 @@ impl Shell {
             Panel::Settings => {
                 self.focus_composer = false;
                 self.load_profile_activity();
+                if !self.integrations.loaded() { self.load_integrations(cx); }
             }
             Panel::Files => self.refresh_files(),
             Panel::Changes => self.refresh_git(cx),

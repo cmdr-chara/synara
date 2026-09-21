@@ -8,6 +8,23 @@ All 120 original task bodies and checkbox states remain below without alteration
 
 ## Current checkpoint
 
+### September 21: native Plugins, Skills and scoped MCP management
+
+The session from `980d86b` adds compact native ownership-aware Plugins inventory,
+reviewed local Markdown skill import/update/remove with origin receipts and
+explicit unsent draft insertion, and task/agent-scoped HTTP MCP configuration.
+MCP tests perform bounded modern discovery or legacy negotiation and list only
+advertised tools. Saved credentials are references through the existing secret
+boundary. Agent sessions receive only explicitly enabled, capability-checked
+configuration and must retire before reconfiguration or local removal.
+
+Provider-owned extension lifecycle, remote skill catalogs, production OS credential
+stores, OAuth and unsupported transports remain visible limitations, not switches
+or successful-install claims. [Feature behavior](docs/integrations.md) and the
+[focused implementation receipt](docs/verification/plugins-skills-mcp.md) separate
+source, fixture and native evidence. E8/I9 and platform acceptance remain open.
+The one authorized session branch is integrated only after focused verification.
+
 ### September 21: native attachment intake and saved follow-ups
 
 Continuing `0bb20db`, the composer now implements local PNG/JPEG and UTF-8 file

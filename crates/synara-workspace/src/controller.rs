@@ -1,3 +1,4 @@
+mod integrations;
 use crate::{AgentProfile, WorkspaceError, WorkspaceResult, WorkspaceService};
 use std::{
     collections::HashMap,
@@ -55,6 +56,7 @@ pub struct Controller {
     interactions: Arc<dyn InteractionHandler>,
     secrets: Arc<dyn SecretStore>,
     manager: ConnectionManager,
+    integrations_gate: tokio::sync::RwLock<()>,
     tasks: Mutex<HashMap<TaskId, Arc<TaskSlot>>>,
     closing: AtomicBool,
     lifetime: tokio::sync::RwLock<()>,
@@ -85,6 +87,7 @@ impl Controller {
             interactions,
             secrets,
             manager: ConnectionManager::default(),
+            integrations_gate: tokio::sync::RwLock::new(()),
             tasks: Mutex::new(HashMap::new()),
             closing: AtomicBool::new(false),
             lifetime: tokio::sync::RwLock::new(()),
@@ -176,6 +179,7 @@ impl Controller {
         Ok(connection)
     }
     async fn session_for(&self, id: TaskId) -> WorkspaceResult<Arc<dyn AgentSession>> {
+        let _integrations = self.integrations_gate.read().await;
         let slot = self.slot(id).await?;
         let _gate = slot.creation.lock().await;
         let task = self.workspace.task(id).await?;
@@ -194,7 +198,8 @@ impl Controller {
             let _ = old.session.close().await;
         }
         let connection = self.connection_for(&task, &slot, &profile, false).await?;
-        let options = SessionOptions::new(task.thread_id, task.working_directory.clone());
+        let mut options = SessionOptions::new(task.thread_id, task.working_directory.clone());
+        options.context_servers = self.managed_mcp_context(&task, connection.as_ref()).await?;
         let previous = self.workspace.session(task.thread_id).await?;
         let session = if let Some(previous) = previous.filter(|r| {
             r.agent_id == task.agent_id && r.working_directory == task.working_directory

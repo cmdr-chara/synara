@@ -1,3 +1,4 @@
+mod integrations;
 mod followups;
 pub use followups::{FollowupDraft, FollowupEdit, FollowupQueue};
 mod attachments;
@@ -554,7 +555,7 @@ fn database_path(path: &Path) -> StorageResult<std::path::PathBuf> {
 fn valid_preference_key(key: &str) -> bool {
     if matches!(
         key,
-        "model-favorites" | "environment-layout" | "workspace-organization"
+        "integrations" | "model-favorites" | "environment-layout" | "workspace-organization"
     ) {
         return true;
     }

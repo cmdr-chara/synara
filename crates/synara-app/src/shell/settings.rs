@@ -17,6 +17,7 @@ pub(super) enum Section {
     Keybindings,
     Usage,
     AppSnap,
+    Plugins,
     Mcp,
     Providers,
     Models,
@@ -97,6 +98,14 @@ const SECTIONS: &[SectionInfo] = &[
         label: "AppSnap",
         icon: Glyph::Capture,
         description: "Capture an app window into a chat.",
+    },
+    SectionInfo {
+        section: Section::Plugins,
+        id: "plugins",
+        group: "Integrations",
+        label: "Plugins & integrations",
+        icon: Glyph::Plugin,
+        description: "Synara-managed integrations and reported agent capabilities, with explicit ownership.",
     },
     SectionInfo {
         section: Section::Mcp,
@@ -310,8 +319,9 @@ fn empty(title: &'static str, detail: &'static str) -> gpui::Div {
     )
 }
 impl Shell {
-    fn open_settings_section(&mut self, section: Section, cx: &mut Context<Self>) {
+    pub(super) fn open_settings_section(&mut self, section: Section, cx: &mut Context<Self>) {
         self.settings.section = section;
+        if matches!(section,Section::Plugins|Section::Mcp|Section::Skills) && !self.integrations.loaded() { self.load_integrations(cx); }
         self.settings.popup = None;
         self.settings.scroll.set_offset(gpui::point(px(0.), px(0.)));
         self.settings.search.update(cx, |entry, cx| entry.clear(cx));
@@ -714,8 +724,7 @@ impl Shell {
             Section::Behavior => self.chat_settings(cx),
             Section::Notifications => empty("In-app activity", "Running chats show an activity indicator. Permission and input requests appear in the conversation. Desktop notification preferences have not been ported yet.").into_any_element(),
             Section::AppSnap => empty("AppSnap is not available yet", "Capturing another app’s window has not been ported to the native app. You can attach project files from the composer’s Add menu.").into_any_element(),
-            Section::Mcp => empty("Managed MCP connections are not available yet", "Your agent can use its own configured tools. Managing shared MCP connections from Synara has not been ported yet.").into_any_element(),
-            Section::Skills => empty("Skill management is not available yet", "Your agent’s existing skills remain configured in the agent. A native skill browser has not been ported yet.").into_any_element(),
+            Section::Plugins | Section::Mcp | Section::Skills => self.integration_settings(self.settings.section,cx),
             Section::Worktrees => empty("Managed worktrees are not available yet", "Open an existing worktree as a project to use it. Creating and cleaning up managed worktrees from this page has not been ported yet.").into_any_element(),
         };
         div()

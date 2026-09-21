@@ -28,10 +28,20 @@ or steering. The current backup validator accepts the new keys and Hub metadata.
 prepared focused regressions separately from still-unverified native behavior.
 No whole D4/D8/D11/D12/F2/F4/I10 gate is closed by this batch.
 
+## September 21: Plugins, Skills and MCP
+
+The `astra/plugins-skills-mcp` session continues `980d86b` with the existing generic
+agent/Settings architecture. [Behavior and ownership](../integrations.md) and the
+[verification receipt](../verification/plugins-skills-mcp.md) distinguish safe
+local management from unsupported provider lifecycle and remaining acceptance.
+
 ## Current native delta
 
 | Surface | Source implemented | Remaining acceptance or functionality |
 | --- | --- | --- |
+| Plugins/integrations | Native searchable built-in and managed inventory, ownership and reported-capability separation | External catalog/installed-state/lifecycle requires an actual provider contract, not inferred support; E8/I9 |
+| Skills | Reviewed local Markdown documents, hashes/origin/version, explicit disabled install/update, enable, unsent draft insertion and removal | Remote catalogs, provider-native skill bundles, native/real-provider acceptance; E8/I9 |
+| MCP | Native scoped add/edit/enable/test/remove, secret references, modern/legacy HTTP discovery, generic negotiated session context and safe retirement | OS secret-store adapter, OAuth, SSH, process/legacy SSE, vendor and platform acceptance; E8/I9 |
 | Transparent Glass | Continuous window tint, compositor transparency/blur request, corrected panel alpha, non-opaque editor/terminal/Git roots, bounded local wallpaper decode/blur | Actual OS blur, full/narrow native screenshots, contrast/focus/restart matrix; I7/I10/P |
 | Zen | Shared presentation preference, native Environment reveal, narrow tool deck, existing draft/process ownership, exit and input guards | Native keyboard/IME/modal interactions, compositor behavior and feature-depth review; D8/G7/I10 |
 | Optional Hubs | Managed/chosen local folder, Main/child tasks, flat navigation/home, context editor, revision-checked saves, archive/restore | Native journeys, Settings compatibility labels, multiple roots/sources, richer organization; F1/F2/F8 |
@@ -57,12 +67,14 @@ screen composition. Normal Synara retains its own product concepts and services.
 | Rich conversation workflows | Edit/resend, supported queue/steer, safe rollback/handoff, structured result cards and Side chats; D4/D8-D12/G7 |
 | Pull Requests | Actual authenticated discovery/list/detail/review/actions, scoped errors and concurrency; H6 |
 | Automations | Durable definitions/scheduling/history, explicit execution consent and restart without duplicates; F11 |
-| Skills/plugins/MCP | Discovery, installed-state management, pairing/test/revoke and capability ownership; E8/I9 |
+| Skills/plugins/MCP | Provider-owned lifecycle/catalog contracts, full skill bundles, OS credentials/OAuth, remaining transports and real-provider/native acceptance; E8/I9 |
 | Browser | Real embedded host, navigation and lifecycle, isolated cookies/auth/downloads, bounded approved automation; K1-K6 |
 | Device tooling | Real supported helper, capture/input/lifecycle and hardware acceptance; L1-L5 |
 | Settings and platform | Remaining functional sections, label migration, secrets, notifications, accessibility, packaging/updater and macOS/Windows interaction; I/P/O |
 
 ## Evidence boundary and next work
+
+The preceding Hub checkpoint recorded the following evidence (not the later integration session):
 
 The roadmap's local structural check passes with 17 lanes and 120 unchanged task
 bodies/checkbox states. Three focused Hub Rust tests are prepared but not run.

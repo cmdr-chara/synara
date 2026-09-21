@@ -15,11 +15,13 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-      - name: Export source only without builds or tests
+      - name: Export exact concurrent source only, without builds or tests
         run: |
+          set -euo pipefail
           mkdir -p /tmp/pr-automations-browser-source
+          test "$(git rev-parse 0b2d1ec45a14f7d9ee5311d5c6498a1f7f301486^{commit})" = 0b2d1ec45a14f7d9ee5311d5c6498a1f7f301486
           git rev-parse HEAD > /tmp/pr-automations-browser-source/revision.txt
-          git bundle create /tmp/pr-automations-browser-source/source.bundle HEAD
+          git bundle create /tmp/pr-automations-browser-source/source.bundle HEAD 0b2d1ec45a14f7d9ee5311d5c6498a1f7f301486
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: pr-automations-browser-source

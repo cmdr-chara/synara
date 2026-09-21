@@ -572,30 +572,9 @@ impl Render for Shell {
                         return;
                     }
                 }
-                if (modifiers.control || modifiers.platform) && !modifiers.alt && !modifiers.shift {
-                    let panel = match key {
-                        "1" => Some(Panel::Conversation),
-                        "2" => Some(Panel::Files),
-                        "3" => Some(Panel::Changes),
-                        "4" => Some(Panel::Terminal),
-                        "5" => Some(Panel::Inspector),
-                        "6" => Some(Panel::Settings),
-                        "7" => Some(Panel::Registry),
-                        "8" => Some(Panel::Remote),
-                        "9" => Some(Panel::Kanban),
-                        _ => None,
-                    };
-                    if let Some(panel) = panel {
-                        if panel == Panel::Conversation && this.dock_open() {
-                            this.hide_environment(cx);
-                        } else {
-                            this.set_panel(panel, cx);
-                        }
-                        if this.navigation.menu_open {
-                            this.dismiss_tools(window, cx);
-                        }
-                        cx.stop_propagation();
-                    }
+                if this.native_navigation_shortcut(event, cx) {
+                    if this.navigation.menu_open { this.dismiss_tools(window, cx); }
+                    cx.stop_propagation();
                 }
             }))
             // Bubble, do not capture: editor/terminal Tab input keeps its existing owner.

@@ -5963,6 +5963,8 @@ dependencies = [
  "thiserror 2.0.20",
  "tokio",
  "tokio-util",
+ "ureq",
+ "url",
  "uuid",
 ]
 

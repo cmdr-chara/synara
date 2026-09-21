@@ -13,6 +13,14 @@ pub(super) struct DraftState {
     pub quitting: bool,
 }
 impl DraftState {
+    pub fn pending_for(&self, id: TaskId) -> bool {
+        self.dirty.contains_key(&id) || self.saving.contains(&id) || self.loading.contains(&id)
+    }
+    pub fn forget_task(&mut self, id: TaskId) {
+        self.dirty.remove(&id); self.saving.remove(&id); self.failed.remove(&id);
+        self.loading.remove(&id); self.versions.remove(&id); self.sent.remove(&id); self.display.remove(&id);
+    }
+
     pub fn version(&self, id: TaskId) -> u64 { self.versions.get(&id).copied().unwrap_or(0) }
     fn changed(&mut self, id: TaskId) {
         self.dirty.insert(id, Instant::now());

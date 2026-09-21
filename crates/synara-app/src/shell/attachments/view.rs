@@ -5,7 +5,7 @@ impl Shell {
         let task=self.selected;
         let value=state.value.as_ref();
         let pending=value.map_or(&[][..],|v|v.pending.as_slice());
-        let recent=value.map_or(&[][..],|v|v.recent.as_slice());
+        let recent=if self.settings.value.chat.show_recent_attachments { value.map_or(&[][..],|v|v.recent.as_slice()) } else { &[][..] };
         let changing=task.is_some_and(|t|state.changing(t));
         let error=task.and_then(|t|state.errors.get(&t));
         let mut root=div().id("composer-attachments").min_w_0().flex().flex_col().gap_1()
@@ -51,7 +51,7 @@ impl Shell {
                 .children((!writing).then(||ui::action(("discard-other-import",index),"Discard failed import",None,false,
                     cx.listener(move |this,_:&(),_,cx| { this.attachments.imports.remove(&other);this.attachments.errors.remove(&other);cx.notify(); })).text_size(px(12.)))));
         }
-        if state.recent_open {
+        if state.recent_open && self.settings.value.chat.show_recent_attachments {
             root=root.child(div().id("recent-attachment-list").max_h(px(150.)).overflow_y_scroll().flex().flex_col().gap_1()
                 .children(recent.iter().rev().enumerate().map(|(slot,info)|{
                     let preview=info.id.clone();let reuse=info.id.clone();

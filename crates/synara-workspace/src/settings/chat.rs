@@ -5,12 +5,14 @@ use serde::{Deserialize, Serialize};
 pub struct ChatSettings {
     pub send_on_enter: bool,
     pub show_timestamps: bool,
+    pub show_recent_attachments: bool,
 }
 impl Default for ChatSettings {
     fn default() -> Self {
         Self {
             send_on_enter: true,
             show_timestamps: true,
+            show_recent_attachments: true,
         }
     }
 }

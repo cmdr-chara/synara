@@ -1,3 +1,5 @@
+mod browser;
+pub use browser::{BrowserService, browser_domain};
 mod integrations;
 pub use integrations::*;
 mod device_capture;

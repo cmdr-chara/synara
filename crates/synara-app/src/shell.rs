@@ -11,6 +11,7 @@ mod controls;
 mod conversation;
 mod dock;
 mod device;
+mod browser;
 mod drafts;
 mod environment;
 mod explorer;
@@ -59,6 +60,7 @@ pub struct Bootstrap {
 }
 #[derive(Clone, Copy, PartialEq, Eq)]
 enum Panel {
+    Browser,
     Device,
     Conversation,
     Dock,
@@ -93,6 +95,7 @@ struct FormState {
     error: Option<String>,
 }
 enum Update {
+    BrowserConfigured(Result<(), String>),
     Integrations(Box<integrations::Reply>),
     NativeSettings(Box<settings::native::Reply>),
     Device(Box<device::Reply>),
@@ -165,6 +168,7 @@ enum Update {
     Error(String),
 }
 pub struct Shell {
+    browser: browser::BrowserView,
     device: device::DeviceView,
     followups: followups::FollowupState,
     attachments: attachments::AttachmentState,
@@ -395,6 +399,7 @@ impl Shell {
             .or_else(|| bootstrap.catalog.projects.first().map(|p| p.id));
         let selected = startup_task(&bootstrap.settings, &bootstrap.selection, &bootstrap.catalog);
         let mut this = Self {
+            browser: browser::BrowserView::new(cx),
             device: device::DeviceView::new(cx),
             followups: followups::FollowupState::new(cx),
             attachments: attachments::AttachmentState::default(),
@@ -1252,6 +1257,7 @@ impl Shell {
         match update {
             Update::Integrations(reply) => self.integration_reply(*reply,cx),
             Update::NativeSettings(reply) => self.native_settings_reply(*reply, cx),
+            Update::BrowserConfigured(result) => { self.browser.busy = false; self.browser.error = result.err(); },
             Update::Device(reply) => self.device_reply(*reply, cx),
             Update::Attachments(reply) => self.attachment_reply(*reply, cx),
             Update::Followups(reply) => self.followup_reply(*reply, cx),
@@ -1269,6 +1275,7 @@ impl Shell {
             Update::DraftSaved(task, error) => self.draft_saved(task, error, cx),
             Update::Registry(reply) => self.registry_reply(*reply, cx),
             Update::Tick => {
+                if self.panel == Panel::Browser { cx.notify(); }
                 self.tick_devices(cx);
                 self.tick_terminals(cx);
                 self.tick_review(cx);

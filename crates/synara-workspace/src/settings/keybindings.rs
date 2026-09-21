@@ -103,7 +103,7 @@ impl NavigationKeystroke {
             && key != "t";
         // Space navigation owns Primary+Alt+digits. Ordinary letters, Enter,
         // Escape and text-editing combinations retain their native owners.
-        if !primary || !(function || (digit && !alt) || alt_letter) {
+        if !primary || !((function || digit) && !alt || alt_letter) {
             return Err(invalid());
         }
         Ok(Self { key, alt, shift })
@@ -196,6 +196,9 @@ mod tests {
             "enter",
             "cmd+shift+p",
             "ctrl+f13",
+            "ctrl+f01",
+            "ctrl+alt+f1",
+            "ctrl+alt+shift+f12",
             "ctrl+ctrl+1",
             "ctrl+1\n",
         ] {

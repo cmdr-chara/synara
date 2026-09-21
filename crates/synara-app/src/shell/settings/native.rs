@@ -382,9 +382,14 @@ impl Shell {
         cx: &mut Context<Self>,
     ) -> bool {
         let modifiers = event.keystroke.modifiers;
+        let primary_only = if cfg!(target_os = "macos") {
+            modifiers.platform && !modifiers.control
+        } else {
+            modifiers.control && !modifiers.platform
+        };
         if event.is_held
             || event.prefer_character_input
-            || !(modifiers.control || modifiers.platform)
+            || !primary_only
             || self.close != CloseState::Open
             || self.composer.read(cx).is_composing()
             || self.editor.read(cx).is_composing()

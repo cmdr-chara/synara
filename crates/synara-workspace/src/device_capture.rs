@@ -29,6 +29,13 @@ impl DeviceCapture {
             )
         })?;
         let (width, height) = (image.width(), image.height());
+        // RGB/paletted images can fit the decoder budget but grow during RGBA
+        // conversion. Check the expanded pixel buffer before allocating it.
+        if !rgba_fits(width, height) {
+            return Err(WorkspaceError::Invalid(
+                "Decoded device frame exceeds the RGBA allocation limit".into(),
+            ));
+        }
         // Reuse the portable device frame invariant rather than trusting encoded
         // header dimensions or adding a second definition of a legal frame.
         DeviceFrame::new(
@@ -49,6 +56,10 @@ impl DeviceCapture {
             "Square"
         }
     }
+}
+
+fn rgba_fits(width: u32, height: u32) -> bool {
+    width > 0 && height > 0 && u64::from(width) * u64::from(height) <= (32 * 1024 * 1024) / 4
 }
 
 /// Pointer coordinates for a Contain viewport. Letterbox margins do not target
@@ -81,6 +92,13 @@ pub fn device_viewport_point(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn rejects_rgba_expansion_before_conversion() {
+        assert!(rgba_fits(4096, 2048));
+        assert!(!rgba_fits(4096, 2049));
+        assert!(!rgba_fits(u32::MAX, u32::MAX));
+        assert!(!rgba_fits(0, 100));
+    }
     #[test]
     fn rejects_letterbox_edges_nonfinite_and_zero_sized_viewports() {
         assert_eq!(

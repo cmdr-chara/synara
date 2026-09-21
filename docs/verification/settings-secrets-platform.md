@@ -45,3 +45,22 @@ Focused acceptance is provided by unit tests in `settings.rs`, `secrets.rs`
 and `platform.rs`, plus the ordinary workspace/backend/static verification
 lanes. No secret value is used as a repository fixture except synthetic
 `secret-canary` bytes inside an isolated unit test.
+
+## Scoped integration settings
+
+[Native integration management](../integrations.md) adds versioned revision-checked
+preferences for reviewed skill documents and scoped MCP records. MCP persistence
+contains credential references only. The desktop's unavailable secret-store
+adapter still fails explicitly for authenticated connections, while synthetic
+stores exercise the boundary in focused tests. This does not close OS keychain
+or cross-platform credential acceptance. See the [receipt](plugins-skills-mcp.md).
+
+
+## September 21 continuation: Native Settings continuation
+
+The portable contracts above remain historical evidence. The current session adds
+real command-backed device/notification adapters, a native screenshot viewer and
+functional Settings controls. See [source inventory](../ui/device-settings.md) and
+[validation receipt](device-settings-session.md) for exact scope and unsupported
+targets. The native Apple helper protocol, OS credential-store adapter and hardware/
+platform acceptance are not marked complete by these source additions.

@@ -225,3 +225,13 @@ validation is separate from fixture tests.
 
 Project licensing has not yet been selected. Package publication is disabled.
 Third-party dependencies retain their own licenses.
+
+## Native Plugins, Skills and MCP
+
+Settings includes ownership-aware Plugins inventory, a reviewed local Markdown
+skill library with explicit unsent draft insertion, and task/agent-scoped HTTP MCP
+configuration with explicit protocol discovery tests. External provider extensions
+remain outside Synara's control. Credentials use references, and the current
+desktop secret-store adapter reports unavailable rather than persisting plaintext.
+See [behavior and limitations](docs/integrations.md) and the
+[verification receipt](docs/verification/plugins-skills-mcp.md).

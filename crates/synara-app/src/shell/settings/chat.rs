@@ -8,6 +8,8 @@ impl Shell {
                     self.toggle("chat-send-enter", "Enter to send", self.settings.value.chat.send_on_enter, |s| s.chat.send_on_enter = !s.chat.send_on_enter, cx)))
                 .child(row("Message timestamps", "Show local timestamps alongside completed assistant responses.",
                     self.toggle("chat-timestamps", "Message timestamps", self.settings.value.chat.show_timestamps, |s| s.chat.show_timestamps = !s.chat.show_timestamps, cx))))
+            .child(row("Recent attachments", "Show the explicit recent-file reuse list. Hiding it never removes pending attachments or changes what will be sent.",
+                self.toggle("chat-recent-files", "Recent attachments", self.settings.value.chat.show_recent_attachments, |s| s.chat.show_recent_attachments = !s.chat.show_recent_attachments, cx)))
             .child(heading("Conversation"))
             .child(card()
                 .child(row("Drafts", "Unsent text is saved separately for each chat and restored without starting an agent.", "Saved automatically"))

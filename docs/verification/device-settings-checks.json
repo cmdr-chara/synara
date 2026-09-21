@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "date": "2026-09-21",
+  "repository": "cmdr-chara/synara",
+  "session_branch": "astra/device-settings",
+  "integration_branch": "astra/gpui-clean-rewrite",
+  "integration_base": "980d86b59a1f06636a55aa0b75b71eef41fd3841",
+  "final_source_revision": "744830ec608b806b6fad11e6dd10e84bebead172",
+  "final_source_tree": "61f75b4c00e9e87a5e99cd1ad303db69247297c6",
+  "host": "GitHub Actions ubuntu-24.04",
+  "rust_toolchain": "1.98.1",
+  "locked_dependencies": true,
+  "runs": [
+    {
+      "run_id": 35631803200,
+      "artifact_id": 10654826174,
+      "artifact_zip_sha256": "6c9b058296efcc8b7c81523b2026c0946b9ec6befe300a151391f7b60646229b",
+      "tested_revision": "9e941c56bd3b494a2445771b34199d3aea495596",
+      "note": "Own runtime module doc-comment ordering blocked Rust compilation. No Rust test ran.",
+      "checks": [
+        {"name": "runtime-devices", "command": ["cargo", "+1.98.1", "test", "--locked", "-p", "synara-runtime", "--lib", "device_tools"], "exit_code": 101, "log_sha256": "3cdf69b7aee6f8ff859368a52dca9a2533952a9dd13e6bdcd4c7c46a228bccbd", "passed_tests": []},
+        {"name": "device-protocol", "command": ["cargo", "+1.98.1", "test", "--locked", "-p", "synara-runtime", "--lib", "device::tests"], "exit_code": 101, "log_sha256": "134507a443c98358d18d1c0e611b292046fc4133ce9329addc370cf752f40ffc", "passed_tests": []},
+        {"name": "capture", "command": ["cargo", "+1.98.1", "test", "--locked", "-p", "synara-workspace", "--lib", "device_capture"], "exit_code": 101, "log_sha256": "3a81c5ad79f9d14008753fd6d09f459b59b33d1b418a8df69d929fdfa737714f", "passed_tests": []},
+        {"name": "settings", "command": ["cargo", "+1.98.1", "test", "--locked", "-p", "synara-workspace", "--lib", "settings::"], "exit_code": 101, "log_sha256": "e36519f429fe223ead9346dad1a360736f845cbefca209b78f00a654d26a1a20", "passed_tests": []},
+        {"name": "environment", "command": ["cargo", "+1.98.1", "test", "--locked", "-p", "synara-workspace", "--lib", "environment::tests"], "exit_code": 101, "log_sha256": "c829fe76d5f4243712da3c3723825f26476410f98e4dae7eb9da588e29c3359c", "passed_tests": []},
+        {"name": "archived-deletion", "command": ["cargo", "+1.98.1", "test", "--locked", "-p", "synara-workspace", "--lib", "device_settings_tests"], "exit_code": 101, "log_sha256": "9ccda2d0e76e380a5442537c208ff5d87b2f65cedf8ac2413127b01fbebca853", "passed_tests": []},
+        {"name": "native-check", "command": ["cargo", "+1.98.1", "check", "--locked", "-p", "synara-app", "--bin", "synara-app"], "exit_code": 101, "log_sha256": "d7fcf69215b9fe1e2c316e6db6ece5a84bb8d82f169c85a1ef6a960c1db3f7a4", "passed_tests": []},
+        {"name": "roadmap", "command": ["python3", "scripts/check_roadmap.py"], "exit_code": 0, "log_sha256": "e446bbdbba19a2edfa89b48caefa4eb14154c70f8e4778186b8961aa5c79b5eb", "passed_tests": []},
+        {"name": "clean-tree", "command": ["git", "diff", "--exit-code"], "exit_code": 0, "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "passed_tests": []}
+      ]
+    },
+    {
+      "run_id": 35632663192,
+      "artifact_id": 10654647664,
+      "artifact_zip_sha256": "d7835de1c717fdd21f956dda02aa19eb30e4188626e9def5b1535c69452bf438",
+      "tested_revision": "9dcb06a30c233ad29b7338dd361cca8a1867832d",
+      "note": "38 targeted tests passed. Native check hit five pre-existing i32/u32/ElementId type errors in unchanged appearance code.",
+      "checks": [
+        {"name": "runtime-devices", "command": ["cargo", "+1.98.1", "test", "--locked", "-p", "synara-runtime", "--lib", "device_tools"], "exit_code": 0, "log_sha256": "77bd3381d2a66520760a9e351bec0d3f0156c67bf2f9653f6408434796f2a6bf", "passed_tests": ["device_tools::tests::tests::apple_metadata_does_not_claim_other_platforms", "device_tools::tests::tests::cancelled_command_never_spawns", "device_tools::tests::tests::discovery_fails_closed_for_duplicate_missing_header_and_shell_serials", "device_tools::tests::tests::distinguishes_real_simulator_unknown_unauthorized_and_stale", "device_tools::tests::tests::input_is_numeric_allowlisted_and_inside_actual_frame", "device_tools::tests::tests::malformed_deserialized_identity_is_rejected", "device_tools::command::tests::native_command_output_is_bounded_and_failure_is_not_success", "device_tools::command::tests::cancelling_a_live_native_command_returns_without_waiting_for_its_sleep"]},
+        {"name": "device-protocol", "command": ["cargo", "+1.98.1", "test", "--locked", "-p", "synara-runtime", "--lib", "device::tests"], "exit_code": 0, "log_sha256": "0e1638ecd9994b1669e727a92476f6571ce891510fb38e5ba9f4520e0f16ac6e", "passed_tests": ["device::tests::device_input_requires_a_non_serializable_consent_boundary", "device::tests::frame_dimensions_and_byte_counts_are_consistent", "device::tests::frame_state_rejects_stale_sequences_and_disconnected_updates", "device::tests::packet_framing_is_exact_and_bounded", "device::tests::discovery_is_bounded_unique_and_validated"]},
+        {"name": "capture", "command": ["cargo", "+1.98.1", "test", "--locked", "-p", "synara-workspace", "--lib", "device_capture"], "exit_code": 0, "log_sha256": "0310002187505da1c466f413054bb4d651bf8034cac3ac245dc770f05134b9f6", "passed_tests": ["device_capture::tests::rejects_rgba_expansion_before_conversion", "device_capture::tests::rejects_letterbox_edges_nonfinite_and_zero_sized_viewports", "device_capture::tests::capture_decode_validates_pixels_and_orientation_not_just_header"]},
+        {"name": "settings", "command": ["cargo", "+1.98.1", "test", "--locked", "-p", "synara-workspace", "--lib", "settings::"], "exit_code": 0, "log_sha256": "051a10330aa5960b8f8db5f422d4a664adfcd16904c7cc3256c58a71a16d648f", "passed_tests": ["settings::chat::tests::malformed_chat_settings_are_not_coerced", "settings::chat::tests::old_settings_get_compatible_chat_defaults", "settings::device::tests::defaults_never_start_or_authorize_tools", "settings::keybindings::tests::legacy_unimplemented_bindings_are_preserved_not_executed", "settings::keybindings::tests::normalizes_aliases_order_case_and_separators", "settings::keybindings::tests::rejects_default_collisions_reserved_bindings_and_typographical_commands", "settings::device::persistence_tests::startup_restoration_respects_opt_out_archiving_and_missing_selection", "settings::tests::defaults_are_explicit_and_round_trip", "settings::tests::duplicate_or_hostile_keybindings_are_rejected", "settings::tests::existing_settings_keep_theme_and_fonts_when_new_sections_are_absent", "settings::tests::malformed_newer_and_invalid_current_data_recover_without_overwriting", "settings::tests::invalid_save_does_not_replace_last_good_settings", "settings::device::persistence_tests::device_settings_and_native_preferences_survive_reopen_without_authority", "settings::chat::tests::chat_behavior_survives_reopen_and_resets_without_changing_profile"]},
+        {"name": "environment", "command": ["cargo", "+1.98.1", "test", "--locked", "-p", "synara-workspace", "--lib", "environment::tests"], "exit_code": 0, "log_sha256": "8cea650d182f77906b0ff3c5ec98ca8adee434ef7655a3bf224bb3e2035606b2", "passed_tests": ["environment::tests::closing_active_inactive_and_final_tabs_preserves_valid_selection", "environment::tests::invalid_layouts_are_rejected_before_storage", "environment::tests::reordering_is_bounded_and_preserves_tool_identity", "environment::tests::tab_selection_is_stable_and_idempotent", "environment::tests::reordered_and_closed_tabs_persist_without_changing_settings", "environment::tests::malformed_future_and_oversized_values_are_preserved_on_read", "environment::tests::layout_survives_reopen_without_tasks_sessions_or_settings_mutations"]},
+        {"name": "archived-deletion", "command": ["cargo", "+1.98.1", "test", "--locked", "-p", "synara-workspace", "--lib", "device_settings_tests"], "exit_code": 0, "log_sha256": "b34bcbed709a93a101c193a472205331011170f17d63f8a147ba986bb2fd5ddc", "passed_tests": ["controller::device_settings_tests::permanent_deletion_rejects_unarchived_and_active_tasks_then_removes_archived_data"]},
+        {"name": "native-check", "command": ["cargo", "+1.98.1", "check", "--locked", "-p", "synara-app", "--bin", "synara-app"], "exit_code": 101, "log_sha256": "45697739ffcb99c1c896bc00e587fa8521c6b5ec7cc90cfb73abdcd85b9501ad", "passed_tests": []},
+        {"name": "roadmap", "command": ["python3", "scripts/check_roadmap.py"], "exit_code": 0, "log_sha256": "e446bbdbba19a2edfa89b48caefa4eb14154c70f8e4778186b8961aa5c79b5eb", "passed_tests": []},
+        {"name": "clean-tree", "command": ["git", "diff", "--exit-code"], "exit_code": 0, "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "passed_tests": []}
+      ]
+    },
+    {
+      "run_id": 35633699789,
+      "artifact_id": 10654979199,
+      "artifact_zip_sha256": "75147f406eb12b04980505fdf801d710173fb799859fe404ad68f0c48a5cf303",
+      "tested_revision": "744830ec608b806b6fad11e6dd10e84bebead172",
+      "note": "24 affected tests and native Linux cargo check passed. Earlier 16 passing runtime/device/capture tests were not repeated because those sources were unchanged.",
+      "checks": [
+        {"name": "settings", "command": ["cargo", "+1.98.1", "test", "--locked", "-p", "synara-workspace", "--lib", "settings::"], "exit_code": 0, "log_sha256": "041195f7344d7ec101febbc689d6ae0db7de59ccd9e81472874e3166434f4022", "passed_tests": ["settings::chat::tests::malformed_chat_settings_are_not_coerced", "settings::chat::tests::old_settings_get_compatible_chat_defaults", "settings::device::tests::defaults_never_start_or_authorize_tools", "settings::keybindings::tests::legacy_unimplemented_bindings_are_preserved_not_executed", "settings::keybindings::tests::normalizes_aliases_order_case_and_separators", "settings::keybindings::tests::rejects_default_collisions_reserved_bindings_and_typographical_commands", "settings::tests::defaults_are_explicit_and_round_trip", "settings::tests::duplicate_or_hostile_keybindings_are_rejected", "settings::tests::existing_settings_keep_theme_and_fonts_when_new_sections_are_absent", "settings::device::persistence_tests::startup_restoration_respects_opt_out_archiving_and_missing_selection", "settings::tests::malformed_newer_and_invalid_current_data_recover_without_overwriting", "settings::tests::invalid_save_does_not_replace_last_good_settings", "settings::device::persistence_tests::device_settings_and_native_preferences_survive_reopen_without_authority", "settings::chat::tests::chat_behavior_survives_reopen_and_resets_without_changing_profile"]},
+        {"name": "environment", "command": ["cargo", "+1.98.1", "test", "--locked", "-p", "synara-workspace", "--lib", "environment::tests"], "exit_code": 0, "log_sha256": "ac24ce05019e5cf1246b0c7c00e38eb8113c12fc198b58bef85ede4ff25a1d83", "passed_tests": ["environment::tests::closing_active_inactive_and_final_tabs_preserves_valid_selection", "environment::tests::invalid_layouts_are_rejected_before_storage", "environment::tests::reordered_and_closed_tabs_persist_without_changing_settings", "environment::tests::reordering_is_bounded_and_preserves_tool_identity", "environment::tests::tab_selection_is_stable_and_idempotent", "environment::tests::device_tab_round_trips_alongside_all_existing_environment_tabs", "environment::tests::malformed_future_and_oversized_values_are_preserved_on_read", "environment::tests::layout_survives_reopen_without_tasks_sessions_or_settings_mutations"]},
+        {"name": "archived-deletion", "command": ["cargo", "+1.98.1", "test", "--locked", "-p", "synara-workspace", "--lib", "device_settings_tests"], "exit_code": 0, "log_sha256": "4f1ad4bd6a846186c48462e1cad8bf6978b9ecd094d99a0eead7feb33552f99c", "passed_tests": ["controller::device_settings_tests::queued_archived_deletion_does_not_block_shutdown_or_delete_after_closing", "controller::device_settings_tests::permanent_deletion_rejects_unarchived_and_active_tasks_then_removes_archived_data"]},
+        {"name": "native-check", "command": ["cargo", "+1.98.1", "check", "--locked", "-p", "synara-app", "--bin", "synara-app"], "exit_code": 0, "log_sha256": "1050458c56ae8af80624409b86e145d45d875e8775b857c20c5f3a63ef927d61", "passed_tests": []},
+        {"name": "roadmap", "command": ["python3", "scripts/check_roadmap.py"], "exit_code": 0, "log_sha256": "e446bbdbba19a2edfa89b48caefa4eb14154c70f8e4778186b8961aa5c79b5eb", "passed_tests": []},
+        {"name": "clean-tree", "command": ["git", "diff", "--exit-code"], "exit_code": 0, "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "passed_tests": []}
+      ]
+    }
+  ],
+  "unique_targeted_tests_passing": 40,
+  "reused_unchanged_suites": ["runtime-devices", "device-protocol", "capture"],
+  "open_acceptance": ["hardware", "real Android input", "macOS", "Windows", "native device or desktop capture", "native GPUI interaction and screenshots", "visible OS notification delivery", "screen-reader and contrast acceptance"],
+  "local_invariants": {"roadmap_lanes": 17, "roadmap_tasks": 120, "roadmap_checked": 16, "historical_task_bodies_and_checkboxes_unchanged": true, "temporary_workflows_and_payloads_removed": true, "dependency_and_toolchain_files_unchanged": true}
+}

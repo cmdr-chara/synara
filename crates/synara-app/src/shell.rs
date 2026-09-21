@@ -1,6 +1,7 @@
 use gpui::Focusable;
 mod activity;
 mod attachments;
+mod integrations;
 mod followups;
 mod hubs;
 mod chat_tools;
@@ -9,6 +10,7 @@ mod composer;
 mod controls;
 mod conversation;
 mod dock;
+mod device;
 mod drafts;
 mod environment;
 mod explorer;
@@ -57,6 +59,7 @@ pub struct Bootstrap {
 }
 #[derive(Clone, Copy, PartialEq, Eq)]
 enum Panel {
+    Device,
     Conversation,
     Dock,
     Kanban,
@@ -90,6 +93,9 @@ struct FormState {
     error: Option<String>,
 }
 enum Update {
+    Integrations(Box<integrations::Reply>),
+    NativeSettings(Box<settings::native::Reply>),
+    Device(Box<device::Reply>),
     Followups(Box<followups::Reply>),
     Attachments(Box<attachments::Reply>),
     Hubs(Box<hubs::Reply>),
@@ -159,6 +165,7 @@ enum Update {
     Error(String),
 }
 pub struct Shell {
+    device: device::DeviceView,
     followups: followups::FollowupState,
     attachments: attachments::AttachmentState,
     hubs: hubs::HubState,
@@ -176,6 +183,7 @@ pub struct Shell {
     controls: controls::ControlState,
     navigation: navigation::NavigationState,
     settings: settings::SettingsState,
+    integrations: integrations::IntegrationState,
     close: CloseState,
     close_focus: gpui::FocusHandle,
     registry: registry::RegistryState,
@@ -385,19 +393,9 @@ impl Shell {
             .project
             .filter(|id| bootstrap.catalog.projects.iter().any(|p| p.id == *id))
             .or_else(|| bootstrap.catalog.projects.first().map(|p| p.id));
-        let selected = bootstrap
-            .selection
-            .task
-            .filter(|id| bootstrap.catalog.tasks.iter().any(|t| t.id == *id))
-            .or_else(|| {
-                bootstrap
-                    .catalog
-                    .tasks
-                    .iter()
-                    .find(|t| Some(t.project_id) == project)
-                    .map(|t| t.id)
-            });
+        let selected = startup_task(&bootstrap.settings, &bootstrap.selection, &bootstrap.catalog);
         let mut this = Self {
+            device: device::DeviceView::new(cx),
             followups: followups::FollowupState::new(cx),
             attachments: attachments::AttachmentState::default(),
             hubs: hubs::HubState::new(cx),
@@ -415,6 +413,7 @@ impl Shell {
             controls: controls::ControlState::new(cx),
             navigation: navigation::NavigationState::new(cx),
             settings: settings::SettingsState::new(bootstrap.settings, cx),
+            integrations: integrations::IntegrationState::new(cx),
             close: CloseState::Open,
             close_focus: cx.focus_handle(),
             registry,
@@ -487,7 +486,14 @@ impl Shell {
         this
     }
     pub fn request_close(&mut self, window: &mut Window, cx: &mut Context<Self>) -> bool {
+        if self.native_settings_pending() || self.settings.saving {
+            self.notice = Some("Finish the pending Settings operation before closing.".into()); cx.notify(); return false;
+        }
         if self.followup_navigation_blocked(cx) { return false; }
+        if self.integrations.pending() {
+            self.notice=Some("Finish the integration operation or discard its open Settings form/review before closing.".into());
+            cx.notify(); return false;
+        }
         if self.attachments.close_pending() {
             self.notice = Some("Finish attachment imports or discard a failed import in its conversation before closing.".into());
             cx.notify(); return false;
@@ -581,6 +587,7 @@ impl Shell {
         if self.save_drafts_before_quit(cx) {
             return;
         }
+        self.device.retire();
         self.begin_terminal_shutdown(cx);
     }
 
@@ -700,6 +707,7 @@ impl Shell {
         }
     }
     fn select_task(&mut self, id: TaskId, cx: &mut Context<Self>) -> bool {
+        if self.native_settings_pending() { return false; }
         if self.hub_navigation_blocked(cx) { return false; }
         if self.explorer.modal_open() {
             return false;
@@ -1218,7 +1226,7 @@ impl Shell {
             return;
         }
         if let Some(id) = self.selected
-            && (self.panel == Panel::Inspector
+            && (matches!(self.panel, Panel::Inspector | Panel::Settings)
                 || self.busy.contains(&id)
                 || self.connecting.contains(&id))
         {
@@ -1242,6 +1250,9 @@ impl Shell {
     }
     fn receive(&mut self, update: Update, cx: &mut Context<Self>) {
         match update {
+            Update::Integrations(reply) => self.integration_reply(*reply,cx),
+            Update::NativeSettings(reply) => self.native_settings_reply(*reply, cx),
+            Update::Device(reply) => self.device_reply(*reply, cx),
             Update::Attachments(reply) => self.attachment_reply(*reply, cx),
             Update::Followups(reply) => self.followup_reply(*reply, cx),
             Update::Hubs(reply) => self.hub_reply(*reply, cx),
@@ -1258,6 +1269,7 @@ impl Shell {
             Update::DraftSaved(task, error) => self.draft_saved(task, error, cx),
             Update::Registry(reply) => self.registry_reply(*reply, cx),
             Update::Tick => {
+                self.tick_devices(cx);
                 self.tick_terminals(cx);
                 self.tick_review(cx);
                 self.refresh_message_search(cx);
@@ -1445,6 +1457,7 @@ impl Shell {
                 details,
                 error,
             } => {
+                if self.busy.contains(&task) && self.selected != Some(task) { self.send_desktop_notification(false, cx); }
                 self.finish_attachment_submission(task, error.is_none());
                 self.busy.remove(&task);
                 if self.selected == Some(task) {
@@ -1471,7 +1484,10 @@ impl Shell {
                 if let Some(error) = error {
                     self.error = Some(error);
                 } else {
+                    if self.settings.value.device != settings.device { self.device.configuration_changed(); }
+                    let bindings_changed = self.settings.value.keybindings != settings.keybindings;
                     self.settings.value = *settings;
+                    if bindings_changed { self.sync_navigation_bindings(cx); }
                     self.composer.update(cx, |entry, _| {
                         entry.set_send_on_enter(self.settings.value.chat.send_on_enter)
                     });
@@ -1597,7 +1613,7 @@ impl Shell {
             self.selection_revision = self.selection_revision.wrapping_add(1);
         }
         if self.settings.value.appearance.personalization.zen_mode
-            && matches!(panel, Panel::Files | Panel::Changes | Panel::Terminal | Panel::Dock)
+            && matches!(panel, Panel::Files | Panel::Changes | Panel::Terminal | Panel::Device | Panel::Dock)
         { self.settings.personalization.tools_shown = true; }
         self.panel = panel;
         self.error = None;
@@ -1608,6 +1624,7 @@ impl Shell {
             Panel::Settings => {
                 self.focus_composer = false;
                 self.load_profile_activity();
+                if !self.integrations.loaded() { self.load_integrations(cx); }
             }
             Panel::Files => self.refresh_files(),
             Panel::Changes => self.refresh_git(cx),

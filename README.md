@@ -231,9 +231,10 @@ lists these tests as ignored because they require this server fixture. The SSH C
 job must run them explicitly. This tests real SSH transport with fixture agents on
 the same machine, not vendor credentials or a complete remote desktop workflow.
 
-Complete terminal emulation, remote workspace UI,
-browser/device hosting, updater, native credential integration and broader
-platform/performance hardening remain under development. Live vendor-agent
+Complete terminal emulation, remote workspace UI, cross-platform Browser/Device
+acceptance, updater, native credential integration and broader platform/performance
+hardening remain under development. Linux/X11 Browser hosting and the scoped
+ADB/simctl Device implementation are present on the development branch. Live vendor-agent
 validation is separate from fixture tests.
 
 Project licensing has not yet been selected. Package publication is disabled.

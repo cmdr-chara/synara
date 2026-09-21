@@ -8,6 +8,47 @@ All 120 original task bodies and checkbox states remain below without alteration
 
 ## Current checkpoint
 
+### September 22: Sessions 1-4 consolidated native feature implementation
+
+**Feature implementation session status: complete** for all four requested sessions.
+This is deliberately narrower than production, provider and cross-platform acceptance.
+
+- **Session 1, conversation depth:** Side chats are independent related tasks with
+  their own drafts, sessions and permission/input ownership. Edit/resend adds a new
+  turn without rewriting transcript history. Revision branches create explicit new
+  unsent conversations from bounded visible context and do not clone provider
+  sessions, approvals, attachments or filesystem state.
+- **Session 2, Pull Requests / Automations / Browser:** Pull Requests reuse the
+  existing Git/process owners for bounded GitHub discovery, review data and explicit
+  confirmed remote actions. Automations persist definitions and bounded run history
+  separately from transcripts, atomically claim scheduled slots and create owned
+  tasks, start disarmed after restart, and never retry implicitly. Browser reuses
+  the existing BrowserHost/Session architecture, with real Linux/X11 WebKitGTK
+  embedding plus revocable task-isolated, one-shot-approved agent operations.
+- **Session 3, Plugins / Skills / MCP:** Native ownership-aware integration
+  inventory, reviewed local Markdown skills and task/agent-scoped HTTP MCP
+  configuration remain integrated. Secret material stays behind reference-based
+  credential boundaries and negotiated capabilities, not provider-name guesses.
+- **Session 4, Device / Settings:** Bounded ADB/simctl discovery/capture/lifecycle
+  support, explicit device-input authority and the implemented Settings/privacy/
+  notification/navigation functionality remain integrated.
+
+The consolidation review found no unique feature commits left to replay from the
+temporary branches at its starting ref. The Session 2 final head matched the
+integration head, Sessions 3 and 4 were strict ancestors, and the Session 1 branch
+had already been retired after its conversation commits landed. Current cross-session
+ownership keeps manual saved follow-ups separate from automation scheduling, browser
+task credentials separate from manual cookies and general MCP credentials, related
+conversation state separate from automation records, and PR writes on the existing
+Git/provider boundary.
+
+Broad acceptance remains evidence-driven. In particular macOS/Windows acceptance,
+native Wayland browser support, production packaging/updater, accessibility/IME,
+live authenticated GitHub/provider journeys, production scheduler/restart behavior,
+real hardware/device acceptance and a production OS credential store remain open
+where the receipts below do not prove them. Historical task bodies and older
+checkpoint statements remain evidence for the revisions they describe.
+
 ### September 21: Pull Requests, durable Automations and native Browser
 
 The single `astra/pr-automations-browser` session adds GitHub provider discovery,

@@ -1,14 +1,37 @@
 # Electron Synara to native Rust/GPUI: current feature-gap audit
 
-Checkpoint: 2026-09-21, following Glass/branching recovery `ae64983` and the first
-optional-Hubs integration, extended with compact workspace controls and Hub tasks.
-This is a source inventory with the explicitly scoped Linux integration evidence
-below. It is not general native runtime or cross-platform acceptance.
+Checkpoint: 2026-09-22, after consolidation of the four completed feature
+implementation sessions for conversation depth, Pull Requests/Automations/Browser,
+Plugins/Skills/MCP and Device/Settings. This is a source inventory with explicitly
+scoped Linux evidence below. It is not general native runtime, provider, hardware
+or cross-platform acceptance.
 
 The complete preceding Electron comparison, source links, dated tables and earlier
 continuation notes remain in the [preserved pre-Hubs inventory](electron-vs-gpui-feature-gap-before-hubs-2026-09-21.md).
 The full acceptance backlog remains in [ROADMAP.md](../../ROADMAP.md). No historical
 gap is closed merely because this current view is shorter or a heading was renamed.
+
+## September 22: consolidated Sessions 1-4 status
+
+All four requested **feature implementation sessions are complete** in the current
+native tree. That statement does not close broader production/platform/provider
+acceptance gates.
+
+| Area | Consolidated implementation | Remaining acceptance / deliberately unsupported scope |
+| --- | --- | --- |
+| Conversation depth | Side chats are independent related tasks with independent drafts/sessions; edit/resend is additive; revision branches are explicit new unsent conversations from bounded visible context | Provider-specific rollback/steer/handoff, broader attachment parity in Side chats and cross-platform interaction acceptance remain open |
+| Pull Requests | Existing Git/process ownership discovers GitHub repositories; bounded list/detail/files/commits/checks/activity use the shared diff/editor surfaces; create/comment/review/draft-ready/close-reopen/merge are explicit confirmed provider actions pinned to loaded scope/head where required | Live authenticated account interoperability, enterprise/GitLab scope, broader inline-review parity and native interaction acceptance remain open |
+| Automations | SQLite definitions/run ledger, explicit agent/project ownership, fixed-offset scheduling, pause/resume/edit/delete/run-now/history/cancellation, atomic scheduled-slot claims and owned conversations; scheduler starts disarmed after restart | IANA/DST, cron/calendar schedules, automatic retry/pruning, production restart/shutdown behavior, live-provider completion/cancellation and direct Hub context selection remain open |
+| Browser | Existing BrowserHost/Session plus native Linux/X11 WebKitGTK child surface, tabs/navigation/history/stop/title/loading lifecycle and task-isolated one-shot-approved navigate/read/click/fill bridge | Native Wayland/Windows/macOS hosts, downloads/capture export, IME/accessibility/HiDPI, production authenticated websites and live-model browser-use acceptance remain open |
+| Plugins / Skills / MCP | Ownership-aware integrations inventory, reviewed local Markdown skills, scoped HTTP MCP management/discovery and reference-only credential persistence | Provider-owned catalogs/lifecycle, OAuth/other transports, production OS credential store and real-provider/cross-platform acceptance remain open |
+| Device / Settings | Bounded ADB/simctl discovery/capture/lifecycle, explicit probed Android input, Device viewer, archive/delete safeguards, notification/privacy/navigation/appearance and newer integration settings | Hardware/physical Apple acceptance, Android cold boot, screen-reader/notification-delivery acceptance, OS credential store and macOS/Windows acceptance remain open |
+
+The current Environment persistence accepts the five Environment-owned tools:
+Terminal, Explorer, Changes, Device and Side chats. Browser is implemented as its
+own native panel because its embedded child surface has separate lifecycle/overlay
+requirements; it is not represented as an unavailable Environment placeholder.
+Zen continues to expose implemented tools through the existing owners rather than
+creating alternate task/session state.
 
 ## September 21: Device and Settings continuation
 
@@ -104,16 +127,20 @@ screen composition. Normal Synara retains its own product concepts and services.
 
 ## Important still-open product surfaces
 
-| Area | Remaining work / ownership |
+The major Sessions 1-4 feature areas have landed. The table below now tracks
+acceptance and intentionally unimplemented extensions rather than describing those
+features as absent.
+
+| Area | Remaining acceptance or extension work |
 | --- | --- |
 | Attachments and voice | Native attachment acceptance, broader binary formats, historical media/export, capture permissions and voice/transcription; D11/D12/I8 |
-| Rich conversation workflows | Edit/resend, supported queue/steer, safe rollback/handoff, structured result cards and Side chats; D4/D8-D12/G7 |
-| Pull Requests | Actual authenticated discovery/list/detail/review/actions, scoped errors and concurrency; H6 |
-| Automations | Durable definitions/scheduling/history, explicit execution consent and restart without duplicates; F11 |
-| Skills/plugins/MCP | Provider-owned lifecycle/catalog contracts, full skill bundles, OS credentials/OAuth, remaining transports and real-provider/broader native acceptance; E8/I9 |
-| Browser | Real embedded host, navigation and lifecycle, isolated cookies/auth/downloads, bounded approved automation; K1-K6 |
-| Device tooling | ADB/simctl discovery, capture, supported lifecycle and explicit Android input now have source adapters/viewer. Native helper protocol depth, physical Apple, Android cold boot and hardware acceptance remain; L1-L5 |
-| Settings and platform | Remaining functional sections, label migration, secrets, notifications, accessibility, packaging/updater and macOS/Windows interaction; I/P/O |
+| Rich conversation workflows | Side chats and additive edit/resend/revision branching are implemented. Provider-supported queue/steer, file-affecting rollback/handoff, richer structured result cards, Side-chat attachment parity and broader native acceptance remain; D4/D8-D12/G7 |
+| Pull Requests | Feature implementation is present. Live authenticated GitHub interoperability, broader native interaction coverage, enterprise/non-GitHub providers, deeper inline-review parity and Hub/thread association remain; H6 |
+| Automations | Durable definitions, fixed-offset scheduling, owned run history, cancellation and explicit restart arming are implemented. IANA/DST, cron/calendar schedules, automatic retry/pruning, direct Hub context and production scheduler/provider restart acceptance remain; F11 |
+| Skills/plugins/MCP | Synara-owned management is implemented. Provider-owned lifecycle/catalog contracts, full skill bundles, production OS credentials/OAuth, remaining transports and real-provider/broader native acceptance remain; E8/I9 |
+| Browser | Real Linux/X11 embedded WebKit hosting, navigation/lifecycle and task-isolated approved automation are implemented. Native Wayland/Windows/macOS, downloads/capture, production auth, accessibility/IME/HiDPI and live-model acceptance remain; K1-K6 |
+| Device tooling | ADB/simctl discovery, bounded capture, supported lifecycle and explicit Android input have source/UI implementation. Physical Apple, Android cold boot, hardware/native interaction and broader platform acceptance remain; L1-L5 |
+| Settings and platform | Session 4 implemented the scoped remaining native Settings functionality. OS credential-store integration, broader notification/accessibility/platform behavior, packaging/updater and macOS/Windows acceptance remain; I/P/O |
 
 ## Earlier workspace-checkpoint evidence and next work
 
@@ -128,10 +155,12 @@ bodies/checkbox states. Three focused Hub Rust tests are prepared but not run.
 No current native compile, running GPUI capture or compositor acceptance is claimed.
 No GitHub test workflow was dispatched and no workflow configuration was changed.
 
-Continue Hub integration and real composer/attachment workflows next, then Side chats,
-PRs and Automations. Keep the existing service boundaries and compare actual native
-interactions when a build is available. Browser material studies are not substitutes
-for native screenshots. See [Hubs](hubs.md) and [Glass/Zen](zen-personalization.md).
+That earlier checkpoint's next-work ordering is historical. Side chats,
+Pull Requests, Automations and the Linux/X11 Browser have since landed, together
+with Plugins/Skills/MCP and Device/Settings. Continue with the still-open acceptance
+and extension lanes above while preserving the existing service boundaries. Native
+platform evidence remains distinct from source presence. See [Hubs](hubs.md) and
+[Glass/Zen](zen-personalization.md).
 
 The [workspace adaptation receipt](monocode-workspace-adaptation.md) records the
 exact source scope, reference archive, guards and remaining native acceptance.

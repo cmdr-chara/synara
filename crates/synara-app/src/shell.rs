@@ -409,7 +409,7 @@ impl Shell {
         let mut this = Self {
             automations: automations::AutomationsView::new(controller.clone(), cx),
             pull_requests: pull_requests::PrView::new(cx),
-            browser: browser::BrowserView::new(cx),
+            browser: browser::BrowserView::new(&controller, bootstrap.scratch_directory.parent().unwrap_or(&bootstrap.scratch_directory).join("browser"), cx),
             device: device::DeviceView::new(cx),
             followups: followups::FollowupState::new(cx),
             attachments: attachments::AttachmentState::default(),

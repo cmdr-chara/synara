@@ -370,6 +370,7 @@ impl Shell {
 
 impl Render for Shell {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+        self.prepare_native_browser(window, cx);
         ui::configure(&self.settings.value.appearance, window.appearance());
         self.prepare_personalization(window, cx);
         if self.draft_state.quitting || self.environment.quitting {

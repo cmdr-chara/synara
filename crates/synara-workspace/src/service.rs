@@ -29,6 +29,10 @@ pub enum WorkspaceError {
     #[error("workspace worker stopped")]
     Worker,
 }
+
+impl From<rusqlite::Error> for crate::WorkspaceError {
+    fn from(error: rusqlite::Error) -> Self { Self::Storage(StorageError::Database(error)) }
+}
 pub type WorkspaceResult<T> = Result<T, WorkspaceError>;
 #[derive(Clone, Debug, Default)]
 pub struct Catalog {
@@ -878,7 +882,7 @@ fn catalog_name(value: &str, kind: &str) -> WorkspaceResult<String> {
     Ok(value.to_owned())
 }
 
-fn project_directory(workspace: &Workspace, project: &Project) -> WorkspaceResult<PathBuf> {
+pub(crate) fn project_directory(workspace: &Workspace, project: &Project) -> WorkspaceResult<PathBuf> {
     if project.relative_directory.components().any(|c| {
         !matches!(
             c,

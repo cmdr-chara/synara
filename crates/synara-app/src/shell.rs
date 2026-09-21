@@ -1,5 +1,6 @@
 use gpui::Focusable;
 mod activity;
+mod automations;
 mod attachments;
 mod integrations;
 mod followups;
@@ -61,6 +62,7 @@ pub struct Bootstrap {
 }
 #[derive(Clone, Copy, PartialEq, Eq)]
 enum Panel {
+    Automations,
     PullRequests,
     Browser,
     Device,
@@ -97,6 +99,7 @@ struct FormState {
     error: Option<String>,
 }
 enum Update {
+    Automations(Box<automations::Reply>),
     PullRequests(Box<pull_requests::Reply>),
     BrowserConfigured(Result<(), String>),
     Integrations(Box<integrations::Reply>),
@@ -171,6 +174,7 @@ enum Update {
     Error(String),
 }
 pub struct Shell {
+    automations: automations::AutomationsView,
     pull_requests: pull_requests::PrView,
     browser: browser::BrowserView,
     device: device::DeviceView,
@@ -403,6 +407,7 @@ impl Shell {
             .or_else(|| bootstrap.catalog.projects.first().map(|p| p.id));
         let selected = startup_task(&bootstrap.settings, &bootstrap.selection, &bootstrap.catalog);
         let mut this = Self {
+            automations: automations::AutomationsView::new(controller.clone(), cx),
             pull_requests: pull_requests::PrView::new(cx),
             browser: browser::BrowserView::new(cx),
             device: device::DeviceView::new(cx),
@@ -574,6 +579,7 @@ impl Shell {
     }
 
     fn begin_quit(&mut self, cx: &mut Context<Self>) {
+        if self.automation_before_quit(cx) { return; }
         if self.dirty(cx) {
             self.reveal_dirty_editor(cx);
             self.close = CloseState::Review;
@@ -598,6 +604,7 @@ impl Shell {
             return;
         }
         self.device.retire();
+        self.automations.retire();
         self.begin_terminal_shutdown(cx);
     }
 
@@ -1280,7 +1287,9 @@ impl Shell {
             Update::DraftLoaded(task, result) => self.restore_draft(task, result, cx),
             Update::DraftSaved(task, error) => self.draft_saved(task, error, cx),
             Update::Registry(reply) => self.registry_reply(*reply, cx),
+            Update::Automations(reply) => self.automation_reply(*reply, cx),
             Update::Tick => {
+                self.tick_automations(cx);
                 if self.panel == Panel::Browser { cx.notify(); }
                 self.tick_devices(cx);
                 self.tick_terminals(cx);
@@ -1632,6 +1641,7 @@ impl Shell {
         self.error = None;
         self.notice = None;
         match panel {
+            Panel::Automations => self.refresh_automations(cx),
             Panel::Hubs => self.focus_composer = false,
             Panel::Registry => self.load_registry_if_needed(cx),
             Panel::Settings => {

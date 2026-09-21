@@ -369,6 +369,10 @@ fn validate_data(connection: &Connection, budget: &Budget<'_>) -> StorageResult<
                 }
                 "preferences" => {
                     let _ = decode::<serde_json::Value>(&data)?;
+                    if id == "automation-ledger-v1" {
+                        let ledger: crate::AutomationLedger = decode(&data)?;
+                        ledger.validate().map_err(|_| StorageError::InvalidBackup)?;
+                    }
                     valid_preference_key(&id)
                 }
                 _ => false,

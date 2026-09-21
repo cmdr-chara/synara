@@ -1,4 +1,6 @@
 pub mod pull_requests;
+mod automations;
+pub use automations::*;
 mod browser;
 pub use browser::{BrowserService, browser_domain};
 mod integrations;

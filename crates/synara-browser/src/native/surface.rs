@@ -62,6 +62,7 @@ impl ChildSurface {
     }
     pub fn viewport(&self, bounds: Option<Rect>) {
         let Some(bounds) = bounds else {
+            self.child.hide();
             self.window.hide();
             return;
         };
@@ -76,10 +77,14 @@ impl ChildSurface {
         self.child
             .move_resize(position.x, position.y, width, height);
         self.window.show();
+        // This is a child, not a window-manager-owned GTK toplevel.
+        // Map it explicitly as well as its widget hierarchy.
+        self.child.show();
     }
 }
 impl Drop for ChildSurface {
     fn drop(&mut self) {
+        self.child.hide();
         self.window.hide();
         self.window.close();
     }

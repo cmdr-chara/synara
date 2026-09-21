@@ -27,6 +27,9 @@ URL, including `http://localhost:port` for a server that is already running.
 The pane provides selection, close, back, forward, reload and stop. Titles,
 committed URLs, failures and crash state come from native callbacks tied to the
 current navigation identity. History is owned by the existing browser domain.
+Back, Forward and Reload wait for the native document commit, not merely a
+network request. Blank, stopped and closed tabs unmap the shared native surface
+instead of leaving the previous page's pixels visible.
 No local server is silently launched or guessed.
 
 Schemes other than HTTP(S), embedded URL credentials, malformed URLs, control
@@ -71,3 +74,8 @@ consent, document reads, DOM actions, cookie separation, redirect rejection and
 teardown. The GPUI smoke uses an isolated Xvfb display and actual rendered pixels
 and pointer events. Neither uses simulated page rendering or a mock browser
 transport as acceptance evidence.
+
+The focused acceptance workflow is `.github/workflows/native-webview.yml`,
+invoked manually or by an explicit workflow call. It has read-only repository
+permissions and never merges or publishes source. Temporary session export and
+publishing workflows are not part of the delivered application.

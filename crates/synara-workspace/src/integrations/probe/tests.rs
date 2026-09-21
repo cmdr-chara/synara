@@ -276,3 +276,15 @@ fn integrations_probe_rejects_bad_versions_duplicates_and_unbounded_pagination()
     assert!(probe(config, None).is_err());
     server.join().unwrap();
 }
+
+#[test]
+fn integrations_probe_rejects_json_requests_disguised_as_discovery_responses() {
+    let mut hybrid = discovery(false);
+    hybrid["method"] = json!("sampling/createMessage");
+    for body in [hybrid, json!({"jsonrpc":"2.0","id":1,"method":"roots/list"})] {
+        let (config, captured, server) = fixture(vec![json_response(body)]);
+        assert!(probe(config, None).is_err());
+        server.join().unwrap();
+        assert_eq!(captured.lock().unwrap().len(), 1);
+    }
+}

@@ -216,6 +216,7 @@ impl Probe {
         if rpc.get("jsonrpc").and_then(Value::as_str) != Some("2.0")
             || rpc.get("id") != Some(&json!(id))
             || rpc.get("error").is_some()
+            || rpc.get("method").is_some()
         {
             return Err(invalid(
                 "MCP returned an error or a mismatched JSON-RPC response. Remote error bodies are not displayed because they may contain credentials.",

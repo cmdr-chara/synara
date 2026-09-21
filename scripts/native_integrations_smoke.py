@@ -7,6 +7,7 @@ used. The catalog is mutated only through the native controls, never fixture SQL
 import argparse
 import hashlib
 import json
+import re
 import sqlite3
 import threading
 import time
@@ -14,8 +15,33 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 from native_smoke import Scenario, wait_until
-from native_studio_settings_smoke import fill, reveal
+from native_studio_settings_smoke import reveal
 from native_presentation_smoke import resize
+
+
+def fill(s, control, value):
+    # Actual X11 key events, including shifted URL punctuation. The shared
+    # helper intentionally supports only simple fixture labels, not URLs.
+    reveal(s, control)
+    s.click_control(control)
+    ui = s.desktop
+    ui.key('a', ('Control_L',))
+    ui.key('BackSpace')
+    for char in value:
+        if char == ':':
+            ui.key('semicolon', ('Shift_L',))
+        else:
+            ui.text(char)
+    if value:
+        wait_until(lambda: ui.copy_input() == value, f'exact native input for {control}')
+    else:
+        # Copying an empty selection leaves the previous clipboard unchanged.
+        # Verify an empty editor with a sentinel, then delete the selected value.
+        ui.text('empty-field-sentinel')
+        assert ui.copy_input() == 'empty-field-sentinel'
+        ui.focus()
+        ui.key('BackSpace')
+    ui.focus()
 
 
 def catalog(s):
@@ -40,7 +66,7 @@ def fresh_probe(s, control, operation):
     log = Path(s.log.name)
     before = log.stat().st_size
     operation()
-    wait_until(lambda: f'control="{control}"' in log.read_text(errors='replace')[before:], control)
+    wait_until(lambda: f'control="{control}"' in re.sub(r'\x1b\[[0-9;]*[A-Za-z]', '', log.read_bytes()[before:].decode(errors='replace')), control)
 
 
 def run(s):

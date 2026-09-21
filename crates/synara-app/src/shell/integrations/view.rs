@@ -2,10 +2,8 @@ use super::super::settings::Section;
 use super::*;
 
 fn note(text: impl Into<SharedString>) -> gpui::Div {
-    div()
-        .text_sm()
-        .text_color(rgb(palette().muted))
-        .child(text.into())
+    let text: SharedString = text.into();
+    div().text_sm().text_color(rgb(palette().muted)).child(text)
 }
 fn section(title: &str) -> gpui::Div {
     div()

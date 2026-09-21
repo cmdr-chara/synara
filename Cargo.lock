@@ -5950,6 +5950,7 @@ version = "0.1.0"
 dependencies = [
  "async-trait",
  "hex",
+ "image",
  "rusqlite",
  "serde",
  "serde_json",

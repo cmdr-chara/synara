@@ -8,7 +8,12 @@ impl Shell {
             && matches!(self.panel, Panel::Conversation | Panel::Dock | Panel::Files | Panel::Changes | Panel::Terminal)
     }
     pub(super) fn toggle_zen(&mut self, cx: &mut Context<Self>) {
-        if self.settings.saving || self.close != CloseState::Open || self.explorer.modal_open() { return; }
+        if self.settings.saving || self.settings.personalization.busy
+            || self.close != CloseState::Open || self.terminal_closing || self.explorer.modal_open()
+            || self.kanban.dialog.is_some() || self.organization.dialog.is_some()
+            || self.saved_context.dialog.is_some() || self.composer.read(cx).is_composing()
+            || self.editor.read(cx).is_composing() || self.terminal_view.read(cx).has_pending_input()
+        { return; }
         self.settings.personalization.navigation_shown = false;
         self.settings.personalization.tools_shown = false;
         self.settings.personalization.details_shown = false;
@@ -36,6 +41,7 @@ impl Shell {
         if self.settings.personalization.tools_shown && !self.dock_open() {
             self.set_panel(Panel::Dock, cx);
         }
+        self.focus_composer = !self.settings.personalization.tools_shown;
         cx.notify();
     }
     fn attention_tasks(&self) -> Vec<(TaskId, String, String, usize)> {
@@ -55,6 +61,10 @@ impl Shell {
         rows
     }
     pub(super) fn open_attention(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        if self.close != CloseState::Open || self.explorer.modal_open()
+            || self.kanban.dialog.is_some() || self.organization.dialog.is_some()
+            || self.saved_context.dialog.is_some() || self.composer.read(cx).is_composing()
+            || self.editor.read(cx).is_composing() { return; }
         self.controls.retire(); self.environment.retire_popup(); self.chat_tools.retire();
         self.navigation.menu_open = false;
         self.settings.popup = None;
@@ -69,6 +79,7 @@ impl Shell {
         let title = self.task().map_or("New thread", |task| task.title.as_str());
         div().id("zen-toolbar").relative().h(px(ui::CHROME_HEIGHT)).w_full().flex_shrink_0()
             .flex().items_center().px_2().gap_1()
+            .border_b_1().border_color(ui::glass_edge())
             .child(ui::chrome_button("zen-navigation", "Show or hide navigation", Glyph::Panel, false,
                 cx.listener(|this, _: &(), _, cx| {
                     this.settings.personalization.navigation_shown = !this.settings.personalization.navigation_shown;
@@ -87,19 +98,20 @@ impl Shell {
                 cx.listener(|this, _: &(), window, cx| this.open_command_palette(window, cx))))
             .child(ui::chrome_button("zen-new-chat", "New chat in the current Synara or Studio scope", Glyph::Compose, false,
                 cx.listener(|this, _: &(), _, cx| {
-                    this.create_chat(if this.navigation.studio { TaskScope::Studio } else { TaskScope::Chat }, cx);
+                    this.start_new_chat(cx);
                 })))
             .child(ui::chrome_button("zen-tools", "Show or hide Environment", Glyph::PanelRight, false,
                 cx.listener(|this, _: &(), _, cx| this.toggle_zen_tools(cx))))
-            .child(ui::chrome_button("zen-details", "Show or hide conversation actions", Glyph::More, false,
+            .children((!compact).then(|| ui::chrome_button("zen-details", "Show or hide conversation actions", Glyph::More, false,
                 cx.listener(|this, _: &(), _, cx| {
                     this.settings.personalization.details_shown = !this.settings.personalization.details_shown;
                     cx.notify();
-                })))
+                }))))
             .child(ui::chrome_button("zen-appearance", "Customize appearance", Glyph::Palette, false,
                 cx.listener(|this, _: &(), _, cx| this.open_appearance(cx))))
-            .child(ui::chrome_button("exit-zen", "Exit Zen mode · Ctrl/Cmd+Alt+Z", Glyph::Restore, self.settings.saving,
-                cx.listener(|this, _: &(), _, cx| this.toggle_zen(cx))))
+            .child(ui::action("exit-zen", "Exit Zen", None, false,
+                cx.listener(|this, _: &(), _, cx| this.toggle_zen(cx)))
+                .w(px(76.)).text_size(px(12.)).aria_label("Exit Zen mode, Ctrl/Cmd+Alt+Z"))
             .children((!cfg!(target_os = "macos")).then(|| div().flex().items_center().gap_1()
                 .child(ui::chrome_button("zen-window-minimize", "Minimize", Glyph::Minimize, false, |_, window, _| window.minimize_window()))
                 .child(ui::chrome_button("zen-window-maximize", "Maximize or restore", if maximized { Glyph::Restore } else { Glyph::Maximize }, false, |_, window, _| window.zoom_window()))

@@ -409,7 +409,7 @@ impl TextEntry {
                     && range[1] <= selection.end
                     && !selection.is_empty()
                 {
-                    run.background_color = Some(rgb(0x315580).into());
+                    run.background_color = Some(rgb(crate::ui::palette().selected).into());
                 }
                 if marked
                     .as_ref()
@@ -417,7 +417,7 @@ impl TextEntry {
                 {
                     run.underline = Some(UnderlineStyle {
                         thickness: px(1.),
-                        color: Some(rgb(0x8bb9f5).into()),
+                        color: Some(rgb(crate::ui::palette().focus).into()),
                         wavy: false,
                     });
                 }
@@ -502,7 +502,7 @@ impl Render for TextEntry {
             .w_full()
             .h(px(self.height.max(self.line_height() + 12.)))
             .p_2()
-            .bg(rgb(crate::ui::palette().canvas))
+            .bg(crate::ui::surface(crate::ui::palette().canvas))
             .border_1()
             .border_color(rgb(if self.error.is_some() {
                 0xb85e65
@@ -598,7 +598,7 @@ impl Render for TextEntry {
                             if focus.is_focused(window) {
                                 window.paint_quad(fill(
                                     Bounds::new(caret, size(px(1.5), px(line_height))),
-                                    rgb(0xb6d4ff),
+                                    rgb(crate::ui::palette().focus),
                                 ));
                             }
                         });

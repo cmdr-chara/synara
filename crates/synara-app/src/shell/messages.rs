@@ -1,4 +1,5 @@
 //! The transcript uses native text, compact user bubbles, and an assistant action strip.
+mod fork;
 use super::*;
 use crate::ui::{self, Glyph, palette};
 
@@ -92,8 +93,7 @@ impl Shell {
             .when(!user && !reasoning && complete, |el| el.child(
                 div().ml(px(-6.)).flex().items_center().gap_2().text_size(px(12.)).text_color(rgb(palette().muted))
                     .child(copy(cx).opacity(0.75))
-                    .child(ui::unavailable_action("fork-message", "", Glyph::Fork, "Branching from a message is not available in this native build yet.")
-                        .aria_label("Branch from message, unavailable").size(px(24.)).p_0().gap_0().justify_center())
+                    .child(self.message_branch_button(message, cx))
                     .child(self.message_pin_button(message, index, cx))
                     .child(self.message_reuse_button(message, index, cx))
                     .children(timestamp.map(|text| div().relative().child(ui::layout_probe("message-timestamp")).child(text)))))

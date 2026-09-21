@@ -154,7 +154,7 @@ impl Shell {
                 .into_any_element();
         }
         let mut root = div().id("terminal-workspace").relative().child(ui::layout_probe("terminal-workspace"))
-            .flex_1().min_w_0().min_h_0().flex().flex_col().bg(rgb(palette().canvas)).p_2().gap_2()
+            .flex_1().min_w_0().min_h_0().flex().flex_col().bg(gpui::rgba(0)).p_2().gap_2()
             .child(div().flex().flex_wrap().items_center().gap_1()
                 .child(ui::action("terminal-new-shell", "New shell", Some(Glyph::Plus), false,
                     cx.listener(|this, _: &(), _, cx| this.new_terminal(true, cx))))

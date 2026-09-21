@@ -1,6 +1,7 @@
 //! User-owned presentation preferences. These never configure an agent or launch a tool.
 use super::*;
 use std::path::PathBuf;
+mod wallpaper;
 
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -29,6 +30,7 @@ pub struct Personalization {
     pub panel_opacity: u8,
     pub wallpaper: Option<PathBuf>,
     pub wallpaper_dim: u8,
+    pub wallpaper_blur: u8,
     pub wallpaper_fit: WallpaperFit,
     pub motion: MotionPreference,
     pub density: DensityPreference,
@@ -41,7 +43,7 @@ impl Default for Personalization {
         Self {
             version: 1, zen_mode: false, colorway: Colorway::Original,
             material: SurfaceMaterial::Solid, canvas_opacity: 85, panel_opacity: 92,
-            wallpaper: None, wallpaper_dim: 65, wallpaper_fit: WallpaperFit::Cover,
+            wallpaper: None, wallpaper_dim: 55, wallpaper_blur: 24, wallpaper_fit: WallpaperFit::Cover,
             motion: MotionPreference::Standard, density: DensityPreference::Comfortable,
             chat_width: 736, accent: None, terminal_font_size: 14,
         }
@@ -50,7 +52,7 @@ impl Default for Personalization {
 impl Personalization {
     pub fn validate(&self) -> WorkspaceResult<()> {
         if self.version != 1 || !(35..=100).contains(&self.canvas_opacity)
-            || !(60..=100).contains(&self.panel_opacity) || self.wallpaper_dim > 95
+            || !(60..=100).contains(&self.panel_opacity) || self.wallpaper_dim > 95 || self.wallpaper_blur > 64
             || !(560..=1200).contains(&self.chat_width)
             || !(10..=24).contains(&self.terminal_font_size)
             || self.accent.is_some_and(|value| value > 0xffffff)
@@ -111,42 +113,12 @@ pub struct WallpaperAsset {
     pub height: u32,
 }
 impl WorkspaceService {
-    /// Called only for a locally chosen or previously saved wallpaper. No URL loader.
     pub async fn read_wallpaper(path: PathBuf) -> WorkspaceResult<WallpaperAsset> {
+        Self::render_wallpaper(path, 0).await
+    }
+    pub async fn render_wallpaper(path: PathBuf, blur: u8) -> WorkspaceResult<WallpaperAsset> {
         validate_wallpaper_path(&path)?;
-        tokio::task::spawn_blocking(move || {
-            let parent = path.parent().ok_or_else(|| WorkspaceError::Invalid("Missing image directory.".into()))?;
-            let leaf = path.file_name().ok_or_else(|| WorkspaceError::Invalid("Missing image filename.".into()))?;
-            let fs = synara_runtime::WorkspaceFs::open(parent)?;
-            let name = std::path::Path::new(leaf);
-            if fs.file_length(name)? > 8 * 1024 * 1024 {
-                return Err(WorkspaceError::Invalid("Choose a wallpaper smaller than 8 MiB.".into()));
-            }
-            let bytes = fs.read_blob(name)?;
-            if bytes.len() > 8 * 1024 * 1024 {
-                return Err(WorkspaceError::Invalid("Wallpaper exceeds 8 MiB.".into()));
-            }
-            let (format, width, height) = crate::studio::image_size(&bytes)
-                .ok_or_else(|| WorkspaceError::Invalid("Only PNG and JPEG wallpapers are supported.".into()))?;
-            if width == 0 || height == 0 || width > 8192 || height > 8192
-                || u64::from(width) * u64::from(height) > 16_000_000
-            {
-                return Err(WorkspaceError::Invalid("Wallpaper exceeds 8192 pixels per side or 16 megapixels.".into()));
-            }
-            // Reject animated PNGs. Decorations must not introduce unbounded motion.
-            if matches!(format, crate::PreviewImageFormat::Png) {
-                let mut at = 8usize;
-                while at.checked_add(12).is_some_and(|end| end <= bytes.len()) {
-                    let length = u32::from_be_bytes(bytes[at..at + 4].try_into().unwrap()) as usize;
-                    if &bytes[at + 4..at + 8] == b"acTL" {
-                        return Err(WorkspaceError::Invalid("Use a still PNG or JPEG, not an animated wallpaper.".into()));
-                    }
-                    let Some(next) = at.checked_add(12).and_then(|n| n.checked_add(length)) else { break };
-                    if next > bytes.len() { break; }
-                    at = next;
-                }
-            }
-            Ok(WallpaperAsset { bytes, format, width, height })
-        }).await.map_err(|_| WorkspaceError::Worker)?
+        if blur > 64 { return Err(WorkspaceError::Invalid("Wallpaper blur exceeds 64.".into())); }
+        wallpaper::read(path, blur).await
     }
 }

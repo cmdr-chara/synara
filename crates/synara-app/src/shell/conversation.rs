@@ -177,9 +177,9 @@ impl Shell {
                     div()
                         .p_4()
                         .rounded_md()
-                        .bg(rgb(0x3a3020))
+                        .bg(rgb(crate::ui::palette().notice_surface))
                         .border_1()
-                        .border_color(rgb(0x88703f))
+                        .border_color(rgb(crate::ui::palette().focus))
                         .child(
                             div()
                                 .font_weight(gpui::FontWeight::SEMIBOLD)
@@ -240,7 +240,7 @@ impl Shell {
                         .px_3()
                         .py_1()
                         .text_xs()
-                        .text_color(rgb(0x94a2b4))
+                        .text_color(rgb(crate::ui::palette().muted))
                         .child("Permission request resolved or expired")
                         .into_any_element()
                 }
@@ -286,7 +286,7 @@ impl Shell {
         else {
             return div()
                 .text_xs()
-                .text_color(rgb(0x94a2b4))
+                .text_color(rgb(crate::ui::palette().muted))
                 .child("User input request resolved or expired")
                 .into_any_element();
         };
@@ -294,8 +294,8 @@ impl Shell {
             .p_4()
             .rounded_md()
             .border_1()
-            .border_color(rgb(0x657fad))
-            .bg(rgb(0x1e2b40))
+            .border_color(rgb(crate::ui::palette().focus))
+            .bg(rgb(crate::ui::palette().overlay))
             .child(
                 div()
                     .font_weight(gpui::FontWeight::SEMIBOLD)
@@ -406,7 +406,7 @@ impl Shell {
             panel = panel.child(row);
         }
         if let Some(error) = &form.error {
-            panel = panel.child(div().mt_2().text_color(rgb(0xffb8bc)).child(error.clone()));
+            panel = panel.child(div().mt_2().text_color(rgb(crate::ui::palette().error)).child(error.clone()));
         }
         let decline = key.clone();
         let cancel = key.clone();

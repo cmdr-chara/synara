@@ -8,7 +8,11 @@ thread_local! {
     static FONT_SIZES: std::cell::Cell<(f32, f32)> = const { std::cell::Cell::new((14., 13.)) };
 }
 pub(super) fn configure(value: &synara_workspace::AppearanceSettings) {
-    STYLE.with(|style| *style.borrow_mut() = value.personalization.clone());
+    STYLE.with(|style| {
+        if *style.borrow() != value.personalization {
+            *style.borrow_mut() = value.personalization.clone();
+        }
+    });
     FONT_SIZES.set((value.fonts.ui_size, value.fonts.code_size));
 }
 pub fn colorway(base: Palette, value: Colorway, dark: bool) -> Palette {
@@ -67,23 +71,33 @@ pub(super) fn readable_accent(requested: u32, canvas: u32) -> u32 {
 fn alpha(color: u32, percent: u8) -> Rgba {
     rgba((color << 8) | ((u32::from(percent) * 255 + 50) / 100))
 }
+// Panel opacity is a target TOTAL coverage, not another opaque layer stacked
+// on the window. For a 70% canvas and 82% panel, paint only 40% extra tint.
+fn canvas_percent(style: &Personalization) -> u8 {
+    match (style.material, style.wallpaper.is_some()) {
+        (SurfaceMaterial::Solid, false) => 100,
+        (SurfaceMaterial::Solid, true) => style.wallpaper_dim,
+        (_, true) => style.canvas_opacity.max(style.wallpaper_dim),
+        (_, false) => style.canvas_opacity,
+    }
+}
 pub fn canvas_background() -> Rgba {
-    STYLE.with(|style| {
-        let style = style.borrow();
-        alpha(super::palette().canvas, if style.material == SurfaceMaterial::Solid { 100 } else { style.canvas_opacity })
-    })
+    STYLE.with(|style| alpha(super::palette().canvas, canvas_percent(&style.borrow())))
 }
 pub fn surface(color: u32) -> Rgba {
     STYLE.with(|style| {
         let style = style.borrow();
-        let translucent = style.material != SurfaceMaterial::Solid || style.wallpaper.is_some();
-        alpha(color, if translucent { style.panel_opacity } else { 100 })
+        let base = canvas_percent(&style);
+        if base == 100 { return alpha(color, 100); }
+        let target = style.panel_opacity.max(base);
+        let extra = u32::from(target - base) * 255 / u32::from(100 - base);
+        rgba((color << 8) | extra)
     })
 }
 pub fn glass_edge() -> Rgba {
     STYLE.with(|style| {
         if style.borrow().material == SurfaceMaterial::Glass {
-            alpha(super::palette().focus, 35)
+            alpha(super::palette().text, 14)
         } else { alpha(super::palette().border, 100) }
     })
 }

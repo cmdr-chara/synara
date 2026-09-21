@@ -12,10 +12,6 @@ use synara_runtime::{
 
 fn cell_width() -> f32 { 8.45 * crate::ui::terminal_font_size() / 14. }
 fn line_height() -> f32 { 18.0 * crate::ui::terminal_font_size() / 14. }
-const DEFAULT_FOREGROUND: u32 = 0xd7dae0;
-const DEFAULT_BACKGROUND: u32 = 0x0b1017;
-const SELECTION_BACKGROUND: u32 = 0x315580;
-const CURSOR_BACKGROUND: u32 = 0xd7dae0;
 const CURSOR_UNFOCUSED: u32 = 0x596779;
 
 #[derive(Clone)]
@@ -184,6 +180,10 @@ impl TerminalView {
         self.pending_paste = None;
         self.preedit.clear();
         cx.notify();
+    }
+
+    pub(super) fn has_pending_input(&self) -> bool {
+        self.pending_paste.is_some() || !self.preedit.is_empty()
     }
 
     pub(super) fn exit_code(&self) -> Option<u32> {
@@ -532,7 +532,8 @@ impl gpui::Render for TerminalView {
             .size_full()
             .flex()
             .flex_col()
-            .bg(rgb(DEFAULT_BACKGROUND))
+            .bg(crate::ui::surface(crate::ui::palette().canvas))
+            .text_color(rgb(crate::ui::palette().text))
             .font_family(crate::ui::code_font())
             .cursor_text()
             .on_key_down(cx.listener(Self::key))
@@ -842,8 +843,8 @@ fn paint_grid(
             text.push_str(contents);
             let mut run = window.text_style().to_run(contents.len());
             let (mut foreground, mut background) = (
-                terminal_color(cell.foreground, DEFAULT_FOREGROUND),
-                terminal_color(cell.background, DEFAULT_BACKGROUND),
+                terminal_color(cell.foreground, crate::ui::palette().text),
+                terminal_color(cell.background, crate::ui::palette().canvas),
             );
             if cell.inverse {
                 std::mem::swap(&mut foreground, &mut background);
@@ -852,18 +853,24 @@ fn paint_grid(
                 foreground = dim(foreground);
             }
             if selected(selection, row, column) {
-                background = SELECTION_BACKGROUND;
+                background = crate::ui::palette().selected;
+                foreground = crate::ui::palette().text;
             }
             if !grid.cursor_hidden && grid.cursor == (row, column) {
                 background = if focused {
-                    CURSOR_BACKGROUND
+                    crate::ui::palette().focus
                 } else {
                     CURSOR_UNFOCUSED
                 };
-                foreground = DEFAULT_BACKGROUND;
+                foreground = crate::ui::palette().canvas;
             }
             run.color = rgb(foreground).into();
-            run.background_color = Some(rgb(background).into());
+            // The pane already supplies its tint. Default cells must not paint
+            // a second solid rectangle over the desktop-visible material.
+            run.background_color = if cell.background == TerminalColor::Default
+                && !cell.inverse && !selected(selection, row, column)
+                && (grid.cursor_hidden || grid.cursor != (row, column))
+            { None } else { Some(rgb(background).into()) };
             if cell.bold {
                 run.font.weight = FontWeight::BOLD;
             }
@@ -916,7 +923,7 @@ fn paint_preedit(
     cx: &mut App,
 ) {
     let mut run = window.text_style().to_run(text.len());
-    run.color = rgb(DEFAULT_FOREGROUND).into();
+    run.color = rgb(crate::ui::palette().text).into();
     run.background_color = Some(rgb(0x263244).into());
     run.underline = Some(UnderlineStyle {
         thickness: px(1.),

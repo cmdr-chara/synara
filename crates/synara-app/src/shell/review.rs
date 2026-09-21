@@ -663,7 +663,7 @@ impl Shell {
             .flex_1()
             .min_w_0()
             .min_h_0()
-            .bg(rgb(palette().canvas));
+            .bg(gpui::rgba(0));
         let header = div()
             .flex()
             .flex_wrap()

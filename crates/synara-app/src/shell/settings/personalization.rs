@@ -12,6 +12,8 @@ pub(in crate::shell) struct PersonalizationState {
     accent_text: Entity<TextEntry>,
     pub busy: bool,
     image_path: Option<PathBuf>,
+    image_blur: u8,
+    metrics: Option<(u16, u32, Option<String>)>,
     image: Option<Arc<gpui::Image>>,
     image_size: Option<(u32, u32)>,
     generation: u64,
@@ -31,14 +33,14 @@ impl PersonalizationState {
         Self {
             navigation_shown: false, tools_shown: false, details_shown: false,
             attention_open: false, attention_focus: cx.focus_handle(), profile_open: false, profile_text, accent_text,
-            busy: false, image_path: None, image: None, image_size: None,
+            busy: false, image_path: None, image_blur: 0, metrics: None, image: None, image_size: None,
             generation: 0, loading: false, error: None, applied_material: None,
             _subscriptions: subscriptions,
         }
     }
 }
 #[derive(Clone, Copy)]
-enum Adjust { Canvas, Panels, Dim, Width, UiFont, CodeFont, TerminalFont }
+enum Adjust { Canvas, Panels, Dim, Blur, Width, UiFont, CodeFont, TerminalFont }
 impl Shell {
     pub(in crate::shell) fn appearance_pending(&self, cx: &App) -> bool {
         self.settings.saving || self.settings.personalization.busy
@@ -61,10 +63,21 @@ impl Shell {
             });
             self.settings.personalization.applied_material = Some(material);
         }
+        let metrics = (appearance.personalization.chat_width,
+            appearance.fonts.ui_size.to_bits(), appearance.fonts.ui_family.clone());
+        if self.settings.personalization.metrics.as_ref() != Some(&metrics) {
+            self.settings.personalization.metrics = Some(metrics);
+            self.transcript.list.remeasure_items(0..self.transcript.list.item_count());
+        }
         let path = appearance.personalization.wallpaper.clone();
-        if self.settings.personalization.image_path == path { return; }
+        let blur = if matches!(material, SurfaceMaterial::Frosted | SurfaceMaterial::Glass) {
+            appearance.personalization.wallpaper_blur
+        } else { 0 };
+        if self.settings.personalization.image_path == path
+            && self.settings.personalization.image_blur == blur { return; }
         let state = &mut self.settings.personalization;
         state.image_path = path.clone();
+        state.image_blur = blur;
         state.image = None;
         state.image_size = None;
         state.error = None;
@@ -74,7 +87,7 @@ impl Shell {
         let Some(path) = path else { return };
         let (sender, receiver) = async_channel::bounded(1);
         self.runtime.spawn(async move {
-            let result = WorkspaceService::read_wallpaper(path).await.map_err(|error| error.to_string());
+            let result = WorkspaceService::render_wallpaper(path, blur).await.map_err(|error| error.to_string());
             let _ = sender.send(result).await;
         });
         cx.spawn(async move |view, cx| {
@@ -105,22 +118,20 @@ impl Shell {
             WallpaperFit::Cover => gpui::ObjectFit::Cover,
             WallpaperFit::Contain => gpui::ObjectFit::Contain,
         };
-        div().absolute().inset_0().overflow_hidden().bg(ui::canvas_background())
-            .children(image.map(|image| {
-                div().absolute().inset_0()
-                    .child(gpui::img(image).size_full().object_fit(fit))
-                    .child(div().absolute().inset_0().bg(gpui::rgba(
-                        (palette().canvas << 8) | (u32::from(style.wallpaper_dim) * 255 / 100),
-                    )))
-            }))
+        // One continuous tint over the desktop OR local image. Never an opaque
+        // transcript-sized backing rectangle, and never fade child text.
+        div().absolute().inset_0().overflow_hidden()
+            .children(image.map(|image| gpui::img(image).absolute().inset_0().size_full().object_fit(fit)))
+            .child(div().absolute().inset_0().bg(ui::canvas_background()))
             .children((style.material == SurfaceMaterial::Glass).then(|| {
-                div().absolute().top_0().left_0().right_0().h(px(1.)).bg(ui::glass_edge())
+                div().absolute().inset_0().border_1().border_color(ui::glass_edge())
             }))
             .into_any_element()
     }
     fn choose_wallpaper(&mut self, cx: &mut Context<Self>) {
         if self.settings.saving || self.settings.personalization.busy { return; }
         self.settings.personalization.busy = true;
+        let before = self.settings.value.appearance.clone();
         let picker = cx.prompt_for_paths(gpui::PathPromptOptions {
             files: true, directories: false, multiple: false, prompt: Some("Choose a PNG or JPEG wallpaper".into()),
         });
@@ -128,6 +139,10 @@ impl Shell {
             let result = picker.await;
             let _ = view.update(cx, |this, cx| {
                 this.settings.personalization.busy = false;
+                if this.settings.value.appearance != before {
+                    this.settings.personalization.error = Some("Appearance changed while the picker was open. The late image choice was ignored.".into());
+                    cx.notify(); return;
+                }
                 match result {
                     Ok(Ok(Some(paths))) => {
                         if let Some(path) = paths.into_iter().next() { this.validate_wallpaper_choice(path, cx); }
@@ -142,6 +157,7 @@ impl Shell {
     }
     fn validate_wallpaper_choice(&mut self, path: PathBuf, cx: &mut Context<Self>) {
         self.settings.personalization.busy = true;
+        let before = self.settings.value.appearance.clone();
         let selected = path.clone();
         let (sender, receiver) = async_channel::bounded(1);
         self.runtime.spawn(async move {
@@ -152,6 +168,10 @@ impl Shell {
             let result = receiver.recv().await;
             let _ = view.update(cx, |this, cx| {
                 this.settings.personalization.busy = false;
+                if this.settings.value.appearance != before {
+                    this.settings.personalization.error = Some("Appearance changed while the image was checked. The late image choice was ignored.".into());
+                    cx.notify(); return;
+                }
                 match result {
                     Ok(Ok(())) if !this.settings.saving => {
                         this.save_setting(|settings| settings.appearance.personalization.wallpaper = Some(path), cx);
@@ -164,6 +184,22 @@ impl Shell {
             });
         }).detach();
     }
+    fn choose_material(&mut self, material: SurfaceMaterial, cx: &mut Context<Self>) {
+        self.save_setting(|s| {
+            let p = &mut s.appearance.personalization;
+            p.material = material;
+            // Explicit material choice applies readable starting values. Subsequent
+            // opacity changes are user-owned and are never rewritten by render.
+            let (canvas, panels) = match material {
+                SurfaceMaterial::Solid => (85, 92),
+                SurfaceMaterial::Transparent => (70, 82),
+                SurfaceMaterial::Frosted => (76, 86),
+                SurfaceMaterial::Glass => (70, 82),
+            };
+            p.canvas_opacity = canvas;
+            p.panel_opacity = panels;
+        }, cx);
+    }
     fn adjust_appearance(&mut self, setting: Adjust, amount: i16, cx: &mut Context<Self>) {
         self.save_setting(|settings| {
             let a = &mut settings.appearance;
@@ -173,6 +209,7 @@ impl Shell {
                 Adjust::Canvas => p.canvas_opacity = bounded(p.canvas_opacity, 35, 100),
                 Adjust::Panels => p.panel_opacity = bounded(p.panel_opacity, 60, 100),
                 Adjust::Dim => p.wallpaper_dim = bounded(p.wallpaper_dim, 0, 95),
+                Adjust::Blur => p.wallpaper_blur = bounded(p.wallpaper_blur, 0, 64),
                 Adjust::Width => p.chat_width = (i32::from(p.chat_width) + i32::from(amount)).clamp(560, 1200) as u16,
                 Adjust::UiFont => a.fonts.ui_size = (a.fonts.ui_size + f32::from(amount)).clamp(10., 24.),
                 Adjust::CodeFont => a.fonts.code_size = (a.fonts.code_size + f32::from(amount)).clamp(10., 24.),
@@ -239,11 +276,18 @@ impl Shell {
                 (SurfaceMaterial::Solid, "Solid"), (SurfaceMaterial::Transparent, "Transparent"),
                 (SurfaceMaterial::Frosted, "Frosted"), (SurfaceMaterial::Glass, "Glass"),
             ].into_iter().enumerate().map(|(index, (material, label))| ui::action(("material", index), label, None, p.material == material,
-                cx.listener(move |this, _: &(), _, cx| this.save_setting(|s| s.appearance.personalization.material = material, cx))))))
-            .child(div().text_size(px(12.)).text_color(rgb(palette().muted)).child("Frosted and Glass request native desktop blur. The OS/compositor decides availability. Glass adds translucent surfaces and edge highlights, not a refractive shader. Menus and approval text retain solid contrast."))
+                cx.listener(move |this, _: &(), _, cx| this.choose_material(material, cx))))))
+            .child(div().text_size(px(12.)).text_color(rgb(palette().muted)).child("Glass means desktop transparency plus native blur and a subtle rim across the whole window. Panel tint is total coverage, not stacked opacity. Desktop blur depends on your OS/compositor, not the wallpaper blur slider. Menus and decisions stay solid."))
             .child(self.appearance_stepper("canvas-opacity", "Window tint", format!("{}%", p.canvas_opacity), Adjust::Canvas, 5, cx))
             .child(self.appearance_stepper("panel-opacity", "Panel tint", format!("{}%", p.panel_opacity), Adjust::Panels, 5, cx))
             .child(heading("Wallpaper"))
+            .child(ui::action("desktop-glass", "Use desktop glass", Some(Glyph::Window), false, cx.listener(|this, _: &(), _, cx| {
+                this.save_setting(|s| {
+                    let p = &mut s.appearance.personalization;
+                    p.wallpaper = None; p.material = SurfaceMaterial::Glass;
+                    p.canvas_opacity = 70; p.panel_opacity = 82;
+                }, cx);
+            })))
             .child(div().flex().flex_wrap().gap_2()
                 .child(ui::action("choose-wallpaper", if state.busy { "Reading image..." } else { "Choose image..." }, Some(Glyph::Files), false, cx.listener(|this, _: &(), _, cx| this.choose_wallpaper(cx))))
                 .child(ui::action("remove-wallpaper", "Remove", None, false, cx.listener(|this, _: &(), _, cx| {
@@ -265,6 +309,9 @@ impl Shell {
                     cx.listener(move |this, _: &(), _, cx| this.save_setting(|s| s.appearance.personalization.wallpaper_fit = fit, cx)))
             })))
             .child(self.appearance_stepper("wallpaper-dim", "Wallpaper dimming", format!("{}%", p.wallpaper_dim), Adjust::Dim, 5, cx))
+            .child(self.appearance_stepper("wallpaper-blur", "Local image blur", format!("{}", p.wallpaper_blur), Adjust::Blur, 4, cx))
+            .child(div().text_size(px(11.)).text_color(rgb(palette().muted))
+                .child("Applied to a cached local wallpaper in Frosted/Glass. Choose Use desktop glass for your actual desktop background. Lower tint values can reduce readability."))
             .child(heading("Space and motion"))
             .child(div().flex().flex_wrap().gap_2().children([
                 (DensityPreference::Compact, "Compact"), (DensityPreference::Comfortable, "Comfortable"), (DensityPreference::Spacious, "Spacious"),

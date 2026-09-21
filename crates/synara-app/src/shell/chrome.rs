@@ -446,11 +446,16 @@ impl Render for Shell {
             self.focus_composer = false;
         }
         self.consume_chat_action(window, cx);
-        self.restore_environment_focus(window, cx);
+        let tools_visible = !self.zen_active() || self.settings.personalization.tools_shown;
+        if tools_visible && !self.settings.personalization.attention_open {
+            self.restore_environment_focus(window, cx);
+        }
         self.restore_organization_focus(window, cx);
         self.restore_saved_context_focus(window, cx);
         self.restore_explorer_focus(window, cx);
-        self.restore_editor_focus(window, cx);
+        if tools_visible && !self.settings.personalization.attention_open {
+            self.restore_editor_focus(window, cx);
+        }
         let now = std::time::Instant::now();
         if !cx.reduce_motion() && self.transcript.advance_animations(now) {
             window.request_animation_frame();
@@ -477,10 +482,12 @@ impl Render for Shell {
         let dock_fraction = if self.zen_active() && !self.settings.personalization.tools_shown
             || self.panel != Panel::Conversation && !dock_open {
             0.
+        } else if cx.reduce_motion() {
+            if dock_open { 1. } else { 0. }
         } else {
             self.dock_motion.value(now)
         };
-        if self.dock_motion.running(now) {
+        if !cx.reduce_motion() && self.dock_motion.running(now) {
             cx.on_next_frame(window, |_, _, cx| cx.notify());
         }
         let viewport_width = f32::from(window.viewport_size().width);
@@ -519,7 +526,8 @@ impl Render for Shell {
                     return;
                 }
                 if this.command_palette.open { return; }
-                if this.editor_shortcut(event, window, cx) {
+                if (!this.zen_active() || this.settings.personalization.tools_shown)
+                    && this.editor_shortcut(event, window, cx) {
                     cx.stop_propagation();
                     return;
                 }

@@ -1245,10 +1245,14 @@ impl Shell {
             Update::TaskCreated(task, catalog, revision) => {
                 self.creating_task = false;
                 self.catalog = catalog;
-                self.task_title.update(cx, |entry, cx| entry.clear(cx));
-                if revision == self.selection_revision {
-                    self.select_task(task.id, cx);
+                // Preserve a new title typed while an earlier creation was pending.
+                if self.task_title.read(cx).text().trim() == task.title.trim() {
+                    self.task_title.update(cx, |entry, cx| entry.clear(cx));
+                }
+                if revision == self.selection_revision && self.select_task(task.id, cx) {
                     self.set_panel(Panel::Conversation, cx);
+                } else {
+                    self.notice = Some("The new thread and its unsent draft were saved. Open it from thread search when ready.".into());
                 }
             }
             Update::TaskCreationFailed(error) => {

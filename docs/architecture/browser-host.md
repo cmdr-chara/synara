@@ -1,108 +1,106 @@
-# Browser host foundation
+# Browser host architecture
 
-Status: policy implementation and integration contract, NOT an embedded browser.
-The user's product requirement is a normal built-in browser with manual browsing
-and explicitly consented agent browser use. A preview-only replacement is not the
-accepted product. Implementation priority is macOS Apple Silicon, Windows, Linux.
+Status: real Linux/X11 embedding is implemented and has focused native evidence.
+Windows, macOS and native Wayland adapters remain open. See the
+[candidate-specific receipt](../verification/pr-automations-browser.md) and
+[operating guide](../ui/native-browser.md). A preview-only replacement is not the
+accepted product. The original macOS Apple Silicon, Windows and Linux target
+requirements still apply, even though Linux is the first exercised adapter.
 
-## Boundaries
+## Ownership
 
-The main application, state, and consent policy remain Rust/GPUI. Use a narrow
-platform host for web rendering. Investigate WKWebView first on macOS and WebView2
-on Windows. Linux needs a separate supported embedding investigation. These are
-adapter candidates, not a claim that GPUI embedding, input, composition, capture,
-or browser automation has already been proven.
+The application, browser state and consent policy remain Rust/GPUI.
+`foundations/browser/lib.rs` owns dependency-free consent policy.
+`crates/synara-browser` owns `BrowserHost`, `Session`, typed commands, bounded
+history and requests. `crates/synara-browser/src/native` implements the existing
+`NativePort` using Wry/WebKitGTK, an owned X11 child surface and the native UI
+thread. It does not create a second browser session service.
 
-A platform spike must demonstrate native view attachment, resize/scaling, focus,
-IME, window teardown, navigation callbacks and crash recovery before a platform
-backend is selected for production. Do not import the legacy Synara application or
-upstream implementation code to perform the spike.
+The GPUI shell pumps native work, places the child within the Browser pane, and
+hides it for other routes, blank/retired tabs or native overlays. A GTK/WebKit
+widget has its own native surface and frame-clock lifetime. Browser cookies are
+not stored in conversation transcripts. The workspace controller owns explicit
+task enrollment and the revocable authenticated loopback MCP endpoint.
 
-## Executable policy and host domain
+The Linux adapter is enabled by the desktop application's native-webview feature.
+Headless domain tests can omit that feature. Unsupported platforms and unsuitable
+window handles report unavailable. WKWebView and WebView2 remain candidates for
+the unimplemented Apple and Windows adapters, not accepted Synara integrations.
 
-`foundations/browser/lib.rs` remains the dependency-free consent policy and its
-independent test target. `crates/synara-browser` now reuses that policy inside
-the normal Rust workspace and owns the typed browser-host domain. It is still not
-a native web engine or a claim of application embedding.
+## Navigation and permissions
 
-The host domain provides bounded tabs and history, push/replace/reload/back/
-forward/redirect transitions, popup profile inheritance, crash/close cleanup,
-distinct manual/agent/authentication storage partitions, immutable one-operation
-agent approvals, task shutdown revocation and a length-delimited typed IPC command
-vocabulary. Commands cover only document read, screenshot, input, download,
-upload and clipboard actions. Upload/download identifiers are opaque tokens rather
-than filesystem paths, and there is no generic method string, shell command or
-page-to-host RPC surface.
+Raw HTTP(S) URLs are parsed with the pinned URL library before crossing the native
+boundary. Embedded credentials, privileged schemes, control characters and
+ambiguous backslashes are rejected. Authoritative native callbacks carry a
+navigation identity. Old commits, title updates, gestures and crash callbacks
+cannot replace a newer document. History controls wait for a native commit rather
+than treating a dispatched request or a received HTTP request as a loaded page.
 
-The consent policy provides document generations, one-operation grants, expiry,
-revocation on navigation/close/crash and stale-callback rejection. An agent cannot
-access manual or authentication tabs through this API. Sharing an existing manual
-or authenticated tab still requires a future explicit sharing flow, never a
-silent context change. Restart begins with no grants.
+Manual navigation is distinct from agent authority. Blank agent tabs can request
+explicit initial navigation, but cannot read or interact with a nonexistent
+document. Every agent navigate/read/click/fill request uses an immutable payload
+and a one-shot native consent decision. MCP and webpage scripts cannot approve a
+request. Navigation, cancellation, task revocation, close and crash revoke stale
+work. Restart restores no browser-use grants.
+
+Manual, agent-task and authentication partitions remain distinct. Manual browsing
+uses its own persistent directory. Task partitions use separately owned temporary
+directories and never receive the manual cookies or credentials. Sharing an
+existing authenticated/manual tab is not implemented and must never occur as an
+implicit context change.
+
+DOM inventories use opaque, document-scoped IDs held in a retained named WebKit
+script world. Only fixed application scripts execute there. Agent tools cannot
+supply arbitrary JavaScript, shell commands, paths or generic RPC method names.
+Changed or stale elements require a fresh inventory. Native operation responses,
+text, element inventories, queues, IPC messages and lifetimes are bounded.
 
 ## Native adapter obligations
 
-1. Parse raw URLs with the platform browser or a standards-compliant URL library.
-   `Origin::from_canonical_parts` is only an additional shape validator, not a URL
-   parser. Obtain the origin from authoritative native navigation/frame callbacks,
-   not page JavaScript, a display title or an agent-provided hostname.
-2. Bind a task/actor to the authenticated controller command source. A web message
-   cannot claim an arbitrary task ID or resolve its own permission prompt.
-3. Keep exact command payloads immutable in a native pending-command record keyed
-   by RequestId. The current policy binds action/category, task, tab, document and
-   origin, not arbitrary input bytes or download destinations. Never accept a new
-   payload alongside an already-approved grant. Validate and consume the grant
-   immediately before dispatching the frozen operation.
-4. Initial navigation of a blank tab currently needs a separately reviewed native
-   host operation. The policy's agent request path requires a committed document.
-   Extend and test blank-document navigation consent before exposing it to agents.
-5. Call begin_navigation for top-level provisional navigation/reload/history
-   replacement and redirects. Commit only the current generation's final origin.
-   Update browser permissions and remove privileged bridges on navigation.
-6. Use a monotonic clock for now_ms. Bound command bodies, response size, timeout,
-   concurrency and IPC frames independently of the policy's record-count bounds.
-7. Keep browser profiles/cookies for manual browsing, agent tasks and authentication
-   separate. Do not export cookies, passwords, OAuth codes or auth screenshots to
-   agents or diagnostic reports. An authenticated browsing session needs explicit
-   sharing and clear visibility before an agent can use it.
-8. Route manual URL-bar input, links, back/forward, reload, stop, tab creation,
-   downloads, popups and native browser permissions through reviewed host paths.
-   Support ordinary HTTP(S) browsing and local development explicitly. Privileged
-   schemes, file URLs and OS-handler launches need separate policy. Page content
-   must not receive general filesystem, process, credential or arbitrary RPC access.
-9. Media, clipboard, file upload, downloads and screenshots each require their own
-   scope. A page's browser permission is not an agent approval, or the reverse.
-10. On crash, disconnect or task shutdown, revoke grants, fail queued requests and
-    release native resources. Hiding a pane or switching Zen/Synaric must not
-    recreate a browser or grant previously denied access.
+Adapters must enforce navigation authority before allowing a disallowed target,
+not merely report the violation after loading it. The Linux integration test
+uses a second loopback origin and asserts that the rejected redirect target
+receives no request. This is navigation-boundary evidence, not a promise that all
+subresources or all website-generated network effects are same-origin.
 
-## Acceptance still open
+Popups, file choosers, fullscreen, clipboard and device permissions are denied
+unless a separately implemented policy grants them. Download/capture exports are
+unsupported in this slice. Their typed commands and opaque handles are not proof
+of an implemented transfer or screenshot feature. OAuth sharing, upload/download
+and capture must each have their own scope and bounded resource ownership.
 
-A real native browsing surface, platform URL/origin callbacks, DOM/capture/input
-adapter, permission cards, initial blank-tab agent navigation, authenticated-
-browser sharing, native profile persistence, download/upload implementation,
-OAuth integration and platform-level security checks remain open. The typed host
-domain closes backend ambiguity around state, consent and IPC, but it does not by
-itself close K1-K5 or prove browser sandboxing. The terminal or device helper must
-not become a generic privileged browser bridge.
+Use a monotonic clock for consent and operation deadlines. Authenticate task
+identity from the controller rather than a page-supplied task ID. Freeze request
+payloads before approval, consume grants immediately before dispatch and release
+queued/native resources during shutdown. Hiding or showing a pane must not create
+new grants or silently re-enroll a task.
 
-## Test command
+## Evidence and open acceptance
+
+The Linux/X11 evidence covers real embedded pixels, pointer input, delayed history,
+blank-tab surface retirement, cookie separation, consented document/fill/click,
+redirect rejection and teardown. It does not establish native Wayland, Windows,
+macOS, IME, accessibility, GPU/HiDPI, production authenticated websites, downloads,
+OAuth integration or live-model browser-use acceptance. K1-K6 remain broad open
+gates until their full multi-platform contracts have evidence.
+
+Run the dependency-free policy tests independently with:
 
 ```sh
 rustc --edition 2024 -D warnings --test foundations/browser/lib.rs -o /tmp/browser-policy-tests
 /tmp/browser-policy-tests
 ```
 
-The EKOP workflow runs this test natively on macOS arm64, Windows x64 and Linux x64.
-Read actual job results before claiming a platform passed.
+Run the focused native commands recorded in the verification receipt, or dispatch
+the read-only `native-webview.yml` workflow on the intended branch. The EKOP
+policy matrix is not evidence that a native engine is implemented on its targets.
 
-## Primary references inspected
+## Platform reference boundaries
 
-- Apple WKWebView API boundary:
-  https://developer.apple.com/documentation/webkit/wkwebview
-- Microsoft WebView2 security guidance, particularly origin validation, navigation
-  callbacks and narrowly scoped native messages:
+- Apple WKWebView API: https://developer.apple.com/documentation/webkit/wkwebview
+- Microsoft WebView2 security guidance:
   https://learn.microsoft.com/en-us/microsoft-edge/webview2/concepts/security
 
-The adapter obligations and policy above are Synara design decisions. They are
-not a claim that those platforms implement the complete Synara policy for us.
+These are platform references, not claims that those engines implement Synara's
+policy automatically. The ownership, consent and acceptance rules above remain
+application responsibilities.

@@ -1,0 +1,129 @@
+{
+  "tested_candidate": "10ff2e0d2d29800ac3894f03e2fbcc851af8efa6",
+  "tested_tree": "d62c2dbeb0a5279ff9fe750fcbc96211c6214b51",
+  "session_branch": "astra/pr-automations-browser",
+  "integration_parent": "a77409783d0d63f732761aba9ad26e507ccc678c",
+  "workflow_run": 35665877900,
+  "workflow_trigger_commit": "93cff9363d858e3294e5ff8f0e927992d92cb67b",
+  "workflow_url": "https://github.com/cmdr-chara/synara/actions/runs/35665877900",
+  "artifact_id": 10669062076,
+  "artifact_sha256": "03f1c3191648fdadf670f32d2e53e18425e804b1f373b2400948d9e59f07d60b",
+  "source_worktree_clean": true,
+  "environment": "Ubuntu 24.04, Rust 1.98.1, WebKitGTK 4.1, Wry 0.57.0, Linux/X11/private Xvfb",
+  "tests": [
+    {
+      "command": "cargo +1.98.1 test --locked -p synara-browser --features native-webview --lib",
+      "log": "browser-tests.log",
+      "result": "PASS",
+      "passed": 41,
+      "failed": 0,
+      "ignored": 1,
+      "measured": 0,
+      "filtered_out": 0
+    },
+    {
+      "command": "cargo +1.98.1 test --locked -p synara-browser --features native-webview --test history_readiness",
+      "log": "history-readiness.log",
+      "result": "PASS",
+      "passed": 2,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered_out": 0
+    },
+    {
+      "command": "xvfb-run -a -s '-screen 0 1280x800x24 -nolisten tcp' cargo +1.98.1 test --locked -p synara-browser --features native-webview --lib real_webkit_navigation_consent_input_redirect_and_isolation -- --ignored --test-threads=1 --nocapture",
+      "log": "real-webkit.log",
+      "result": "PASS",
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered_out": 41
+    },
+    {
+      "command": "cargo +1.98.1 test --locked -p synara-app --bin synara-app shell::browser::tests::",
+      "log": "history-controls.log",
+      "result": "PASS",
+      "passed": 2,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered_out": 77
+    },
+    {
+      "command": "cargo +1.98.1 test --locked -p synara-workspace --lib browser::",
+      "log": "browser-service-tests.log",
+      "result": "PASS",
+      "passed": 4,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered_out": 179
+    },
+    {
+      "command": "cargo +1.98.1 test --locked -p synara-workspace --lib pull_requests::",
+      "log": "pull-request-tests.log",
+      "result": "PASS",
+      "passed": 9,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered_out": 174
+    },
+    {
+      "command": "cargo +1.98.1 test --locked -p synara-workspace --lib automations",
+      "log": "automation-tests.log",
+      "result": "PASS",
+      "passed": 10,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered_out": 173
+    },
+    {
+      "command": "cargo +1.98.1 test --locked -p synara-workspace --lib storage::conversation_tools::related::tests",
+      "log": "related-thread-tests.log",
+      "result": "PASS",
+      "passed": 3,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered_out": 180
+    }
+  ],
+  "total_test_passes": 72,
+  "ignored_explanation": "The real WebKit test is ignored by the ordinary library run and was separately invoked and passed. Filtered tests were not run.",
+  "app_build": {
+    "result": "PASS",
+    "log": "app-build.log",
+    "command": "cargo +1.98.1 build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture"
+  },
+  "gpui_smoke": {
+    "command": "python3 scripts/native_browser_webview_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/native-webkit-evidence/gpui",
+    "status": "passed",
+    "checks": [
+      "real-child-webview-network-and-render-in-gpui",
+      "native-pointer-input-mutates-real-document",
+      "back-forward-reload-with-delayed-native-commit",
+      "tab-create-select-close-without-ghost-surfaces",
+      "clean-native-shutdown"
+    ],
+    "platform": "Linux/X11/private Xvfb"
+  },
+  "warnings": [
+    "RevisionState::pending is unused",
+    "ROW_HEIGHT is unused",
+    "Private Xvfb DRI3/AT-SPI environment warnings"
+  ],
+  "acceptance_open": [
+    "Windows/macOS/native Wayland adapters",
+    "GPU drivers/HiDPI/IME/accessibility",
+    "Production authenticated websites",
+    "Download/capture exports",
+    "Live agent-to-MCP browser journey",
+    "Live authenticated PR writes",
+    "Live Automation provider completion/cancellation",
+    "IANA/DST schedules, automatic retry, history pruning"
+  ]
+}

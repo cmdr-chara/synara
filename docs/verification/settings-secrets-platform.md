@@ -45,3 +45,13 @@ Focused acceptance is provided by unit tests in `settings.rs`, `secrets.rs`
 and `platform.rs`, plus the ordinary workspace/backend/static verification
 lanes. No secret value is used as a repository fixture except synthetic
 `secret-canary` bytes inside an isolated unit test.
+
+
+## September 21 continuation: Native Settings continuation
+
+The portable contracts above remain historical evidence. The current session adds
+real command-backed device/notification adapters, a native screenshot viewer and
+functional Settings controls. See [source inventory](../ui/device-settings.md) and
+[validation receipt](device-settings-session.md) for exact scope and unsupported
+targets. The native Apple helper protocol, OS credential-store adapter and hardware/
+platform acceptance are not marked complete by these source additions.

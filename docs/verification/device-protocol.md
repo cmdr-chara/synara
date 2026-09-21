@@ -57,3 +57,13 @@ environment and Apple SDK APIs to implement and exercise simulator/device
 discovery, capture and input. L4 therefore remains externally blocked. L2/L3
 remain open for that native helper interaction even though the portable protocol
 and lifecycle side is implemented.
+
+
+## September 21 continuation: Device adapters and viewer
+
+The portable contracts above remain historical evidence. The current session adds
+real command-backed device/notification adapters, a native screenshot viewer and
+functional Settings controls. See [source inventory](../ui/device-settings.md) and
+[validation receipt](device-settings-session.md) for exact scope and unsupported
+targets. The native Apple helper protocol, OS credential-store adapter and hardware/
+platform acceptance are not marked complete by these source additions.

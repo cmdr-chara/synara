@@ -6615,6 +6615,7 @@ dependencies = [
  "url",
  "webkit2gtk",
  "wry",
+ "x11rb",
 ]
 
 [[package]]

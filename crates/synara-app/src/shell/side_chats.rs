@@ -20,6 +20,10 @@ pub(super) enum Reply {
         generation: u64,
         result: Result<(Task, Thread, String, Catalog), String>,
     },
+    AgentChanged {
+        child: TaskId,
+        result: Result<Task, String>,
+    },
 }
 
 pub(super) struct SideChatState {
@@ -158,6 +162,42 @@ impl Shell {
         self.side_chats.generation = self.side_chats.generation.wrapping_add(1);
         let generation = self.side_chats.generation;
         self.load_side_thread(parent, child, generation, true, cx);
+    }
+
+    fn switch_side_agent(&mut self, child: TaskId, agent: String, cx: &mut Context<Self>) {
+        if self.side_chats.selected != Some(child)
+            || self.side_chats.loading
+            || self.side_chats.selecting
+            || self.busy.contains(&child)
+            || self.side_chats.thread.as_ref().is_none_or(|thread| {
+                thread.last_sequence != 0 || !thread.timeline.is_empty()
+            })
+        {
+            return;
+        }
+        if self
+            .side_chats
+            .threads
+            .iter()
+            .find(|task| task.id == child)
+            .is_some_and(|task| task.agent_id == agent)
+        {
+            return;
+        }
+        self.side_chats.selecting = true;
+        self.side_chats.error = None;
+        let controller = self.controller.clone();
+        self.job(async move {
+            let result = controller
+                .switch_agent(child, agent)
+                .await
+                .map_err(|error| error.to_string());
+            Ok(Update::SideChats(Box::new(Reply::AgentChanged {
+                child,
+                result,
+            })))
+        });
+        cx.notify();
     }
 
     pub(super) fn create_side_chat(
@@ -449,6 +489,27 @@ impl Shell {
                     Err(error) => self.side_chats.error = Some(error),
                 }
             }
+            Reply::AgentChanged { child, result } => {
+                self.side_chats.selecting = false;
+                match result {
+                    Ok(task) => {
+                        if let Some(row) = self
+                            .side_chats
+                            .threads
+                            .iter_mut()
+                            .find(|candidate| candidate.id == child)
+                        {
+                            *row = task.clone();
+                        }
+                        self.replace_task(task);
+                        self.side_chats.error = None;
+                        self.notice = Some(
+                            "Side-chat agent changed before its first turn. No session was started.".into(),
+                        );
+                    }
+                    Err(error) => self.side_chats.error = Some(error),
+                }
+            }
         }
         cx.notify();
     }
@@ -724,6 +785,53 @@ impl Shell {
                                 }
                             }),
                         )),
+                )
+
+                .children(
+                    (thread.last_sequence == 0 && thread.timeline.is_empty()).then(|| {
+                        let current = state
+                            .threads
+                            .iter()
+                            .find(|candidate| candidate.id == task)
+                            .map(|candidate| candidate.agent_id.as_str());
+                        div()
+                            .id("side-chat-agent-picker")
+                            .flex_shrink_0()
+                            .px_3()
+                            .py_2()
+                            .flex()
+                            .items_center()
+                            .gap_1()
+                            .overflow_x_scroll()
+                            .child(
+                                div()
+                                    .mr_1()
+                                    .text_size(px(11.))
+                                    .text_color(rgb(palette().muted))
+                                    .child("Agent before first turn"),
+                            )
+                            .children(self.profiles.iter().take(16).enumerate().map(|(index, profile)| {
+                                let child = task;
+                                let agent = profile.id.clone();
+                                ui::action(
+                                    ("side-agent", index),
+                                    profile.name.clone(),
+                                    Some(self.agent_glyph(&profile.id)),
+                                    current == Some(profile.id.as_str()),
+                                    cx.listener(move |this, _: &(), _, cx| {
+                                        this.switch_side_agent(child, agent.clone(), cx)
+                                    }),
+                                )
+                                .h(px(26.))
+                                .text_size(px(11.))
+                            }))
+                            .children((self.profiles.len() > 16).then(|| {
+                                div()
+                                    .text_size(px(11.))
+                                    .text_color(rgb(palette().muted))
+                                    .child("Open full conversation for more agents")
+                            }))
+                    }),
                 )
                 .children((start > 0).then(|| {
                     div()

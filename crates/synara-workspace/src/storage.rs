@@ -15,7 +15,9 @@ pub use task_context::{
     ChecklistItem, MAX_CHECKLIST_ITEMS, MAX_CHECKLIST_TEXT, MAX_NOTE_BYTES, TaskContext,
 };
 mod conversation_tools;
-pub use conversation_tools::{MessageAnchor, MessageSearch};
+pub use conversation_tools::{
+    MessageAnchor, MessageSearch, RelatedThreadKind, RevisionSource, SideThreadIndex, ThreadOrigin,
+};
 mod task_creation;
 pub use chat_preferences::ModelFavorite;
 mod recovery;
@@ -278,13 +280,15 @@ PRAGMA user_version=2;")?;
             [task.thread_id.to_string()],
         )?;
         tx.execute(
-            "DELETE FROM preferences WHERE key IN (?1,?2,?3,?4,?5)",
+            "DELETE FROM preferences WHERE key IN (?1,?2,?3,?4,?5,?6,?7)",
             params![
                 format!("task-draft:{id}"),
                 format!("message-pins:{id}"),
                 format!("task-context:{id}"),
                 format!("task-attachments:{id}"),
-                format!("task-followups:{id}")
+                format!("task-followups:{id}"),
+                format!("thread-origin:{id}"),
+                format!("side-selection:{id}")
             ],
         )?;
         let changed = tx.execute("DELETE FROM tasks WHERE id=?1", [id.to_string()])?;
@@ -562,6 +566,8 @@ fn valid_preference_key(key: &str) -> bool {
         .or_else(|| key.strip_prefix("task-context:"))
         .or_else(|| key.strip_prefix("task-attachments:"))
         .or_else(|| key.strip_prefix("task-followups:"))
+        .or_else(|| key.strip_prefix("thread-origin:"))
+        .or_else(|| key.strip_prefix("side-selection:"))
         .or_else(|| key.strip_prefix("hub:"))
     {
         return id.len() == 36

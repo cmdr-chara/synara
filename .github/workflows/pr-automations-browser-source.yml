@@ -1,0 +1,27 @@
+name: PR Automations Browser source snapshot
+on:
+  push:
+    branches: [astra/pr-automations-browser]
+    paths: [.github/workflows/pr-automations-browser-source.yml]
+permissions:
+  contents: read
+jobs:
+  source:
+    if: github.repository == 'cmdr-chara/synara'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Export source only without builds or tests
+        run: |
+          mkdir -p /tmp/pr-automations-browser-source
+          git rev-parse HEAD > /tmp/pr-automations-browser-source/revision.txt
+          git bundle create /tmp/pr-automations-browser-source/source.bundle HEAD
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: pr-automations-browser-source
+          path: /tmp/pr-automations-browser-source/
+          retention-days: 1

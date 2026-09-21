@@ -8,6 +8,33 @@ All 120 original task bodies and checkbox states remain below without alteration
 
 ## Current checkpoint
 
+### September 21: Pull Requests, durable Automations and native Browser
+
+The single `astra/pr-automations-browser` session adds GitHub provider discovery,
+bounded list/search/detail/activity/checks, the existing native diff presentation,
+and explicit confirmed create/comment/review/state-change/merge actions. Loaded
+project identity and reviewed head SHA constrain writes. It does not check out
+branches, stage files or create a second Git implementation.
+
+Automations has a SQLite definition/run ledger, atomic scheduled-slot claims and
+owned task creation, revisions, fixed-offset schedules, history, cancellation and
+explicit scheduler arming. Restart never replays saved instructions by implication.
+IANA/DST, automatic retries, history pruning, direct Hub association and live-provider
+acceptance remain open rather than being silently approximated.
+
+Browser uses the existing Session/BrowserHost with a real Linux/X11 WebKitGTK child
+surface and a task-isolated, revocable MCP endpoint. Agent navigate/read/click/fill
+operations require one-shot native approval. DOM references remain in an isolated
+script world. No arbitrary script execution, general page IPC, cookie export or
+unbounded transfer interface is exposed. Native Wayland, Windows, macOS, download/
+capture exports, accessibility, IME and production-account acceptance remain open.
+
+[Pull Requests](docs/ui/pull-requests.md), [Automations](docs/ui/automations.md) and
+[Browser](docs/ui/native-browser.md) document their operational limits. The
+[candidate-specific receipt](docs/verification/pr-automations-browser.md) records
+actual checks and remaining acceptance. This checkpoint does not close any broad
+historical lane gate or change the original task bodies and checkbox states.
+
 ### September 21: native Plugins, Skills and scoped MCP management
 
 The session from `980d86b` adds compact native ownership-aware Plugins inventory,

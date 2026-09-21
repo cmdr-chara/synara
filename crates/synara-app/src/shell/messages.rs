@@ -63,8 +63,8 @@ impl Shell {
             .when(highlighted, |el| {
                 el.border_l_2().border_color(rgb(palette().focus))
             })
-            .text_size(px(15. * scale))
-            .line_height(px(24. * scale))
+            .text_size(px((crate::ui::ui_font_size() + 1.) * scale))
+            .line_height(px((crate::ui::ui_font_size() + 1.) * 1.6 * scale))
             .text_color(rgb(if reasoning {
                 palette().muted
             } else {

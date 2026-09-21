@@ -17,8 +17,9 @@ impl Shell {
         maximized: bool,
         cx: &mut Context<Self>,
     ) -> gpui::AnyElement {
+        if self.zen_active() { return self.zen_toolbar(viewport_width, maximized, cx); }
         let docked = dock_width > 0.;
-        let navigation_width = (ui::SIDEBAR_WIDTH * sidebar_fraction).max(112.);
+        let navigation_width = (ui::SIDEBAR_WIDTH * sidebar_fraction).max(208.);
         let has_chat = !self.environment.maximized
             && (self.panel == Panel::Conversation || docked)
             && self
@@ -59,6 +60,14 @@ impl Shell {
                         Glyph::Shortcut,
                         false,
                         cx.listener(|this, _: &(), window, cx| this.open_command_palette(window, cx)),
+                    ))
+                    .child(ui::chrome_button(
+                        "zen-mode", "Zen mode · Ctrl/Cmd+Alt+Z", Glyph::Goal, self.settings.saving,
+                        cx.listener(|this, _: &(), _, cx| this.toggle_zen(cx)),
+                    ))
+                    .child(ui::chrome_button(
+                        "active-tasks", "Active tasks and pending decisions", Glyph::Bell, false,
+                        cx.listener(|this, _: &(), window, cx| this.open_attention(window, cx)),
                     ))
                     .child(ui::chrome_button(
                         "history-back",
@@ -362,6 +371,7 @@ impl Shell {
 impl Render for Shell {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         ui::configure(&self.settings.value.appearance, window.appearance());
+        self.prepare_personalization(window, cx);
         if self.draft_state.quitting || self.environment.quitting {
             window.focus(&self.close_focus, cx);
             return self.draft_close_panel(cx);
@@ -418,6 +428,7 @@ impl Render for Shell {
         // Backend completion may request composer focus. Keep that request pending
         // while a menu owns focus, rather than stealing focus from its keyboard user.
         if self.focus_composer
+            && !self.settings.personalization.attention_open
             && !self.command_palette.open
             && !self.navigation.menu_open
             && !self.controls.is_open()
@@ -428,7 +439,7 @@ impl Render for Shell {
             && !self.environment.menu_open()
             && !self.chat_tools.menu_open()
             && !self.chat_tools.find_open
-            && !(self.dock_open() && self.environment.maximized)
+            && !(self.dock_open() && self.environment.maximized && (!self.zen_active() || self.settings.personalization.tools_shown))
         {
             let focus = self.composer.read(cx).focus_handle(cx);
             window.focus(&focus, cx);
@@ -452,7 +463,10 @@ impl Render for Shell {
             }
             self.navigation.drawer.value(now)
         };
-        let dock_open = self.dock_open();
+        let sidebar_fraction = if self.zen_active() {
+            if self.settings.personalization.navigation_shown { 1.0 } else { 0.0 }
+        } else { sidebar_fraction };
+        let dock_open = self.dock_open() && (!self.zen_active() || self.settings.personalization.tools_shown);
         if dock_open {
             self.dock_panel = self.panel;
         }
@@ -460,7 +474,8 @@ impl Render for Shell {
             self.dock_motion
                 .set_open(dock_open, now, cx.reduce_motion());
         }
-        let dock_fraction = if self.panel != Panel::Conversation && !dock_open {
+        let dock_fraction = if self.zen_active() && !self.settings.personalization.tools_shown
+            || self.panel != Panel::Conversation && !dock_open {
             0.
         } else {
             self.dock_motion.value(now)
@@ -491,10 +506,14 @@ impl Render for Shell {
                 if this.kanban.dialog.is_some()
                     || this.organization.dialog.is_some()
                     || this.saved_context.dialog.is_some()
+                    || this.settings.personalization.attention_open
                     || this.explorer.modal_open()
                 {
                     return;
                 }
+                if !this.terminal_view.read(cx).focus_handle(cx).is_focused(window)
+                    && this.zen_shortcut(event, cx)
+                { cx.stop_propagation(); return; }
                 if this.command_palette_shortcut(event, window, cx) {
                     cx.stop_propagation();
                     return;
@@ -589,10 +608,10 @@ impl Render for Shell {
             })
             .flex()
             .flex_col()
-            .bg(rgb(palette().canvas))
+            .child(self.appearance_background())
             .text_color(rgb(palette().text))
             .font_family(ui::ui_font())
-            .text_sm()
+            .text_size(px(ui::ui_font_size()))
             .child(self.toolbar(
                 sidebar_fraction,
                 dock_width,
@@ -676,6 +695,7 @@ impl Render for Shell {
                     .then(|| self.chat_tools_overlay(cx)),
             )
             .children(self.command_palette.open.then(|| self.command_palette_overlay(cx)))
+            .children(self.settings.personalization.attention_open.then(|| self.attention_overlay(cx)))
             .children(self.kanban.dialog.clone())
             .children(self.organization.dialog.clone())
             .children(self.saved_context.dialog.clone())

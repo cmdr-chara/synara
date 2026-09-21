@@ -65,7 +65,9 @@ impl Shell {
                 );
             }
         }
-        root = root.child(self.chat_tools_bar(cx));
+        if !self.zen_active() || self.settings.personalization.details_shown {
+            root = root.child(self.chat_tools_bar(cx));
+        }
         if self.chat_tools.find_open {
             root = root.child(self.message_find_bar(cx));
         }
@@ -75,9 +77,10 @@ impl Shell {
             self.virtual_transcript(cx)
         });
         root = root.child(self.composer_panel(window, cx));
+        if cx.reduce_motion() { return root.into_any_element(); }
         root.with_animation(
             SharedString::from(format!("conversation-entry-{}", thread.id)),
-            Animation::new(crate::ui::motion::PANE_DURATION)
+            Animation::new(crate::ui::motion::pane_duration())
                 .with_easing(crate::ui::motion::ease_out),
             |el, progress| {
                 tracing::debug!(target: "synara_ui_layout", surface = "conversation", progress, "motion-frame");

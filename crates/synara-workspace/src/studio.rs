@@ -130,7 +130,7 @@ fn scan(root: &Path, reported: HashSet<PathBuf>) -> WorkspaceResult<StudioFiles>
     });
     Ok(result)
 }
-fn image_size(bytes: &[u8]) -> Option<(PreviewImageFormat, u32, u32)> {
+pub(crate) fn image_size(bytes: &[u8]) -> Option<(PreviewImageFormat, u32, u32)> {
     if bytes.starts_with(b"\x89PNG\r\n\x1a\n")
         && bytes.get(12..16) == Some(b"IHDR")
         && bytes.len() >= 24

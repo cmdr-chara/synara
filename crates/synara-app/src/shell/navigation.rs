@@ -304,7 +304,7 @@ impl Shell {
             .min_h_0()
             .flex()
             .flex_col()
-            .bg(rgb(palette().sidebar))
+            .bg(ui::surface(palette().sidebar))
             .child(
                 div()
                     .h(px(38.))

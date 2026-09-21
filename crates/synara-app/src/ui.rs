@@ -4,12 +4,13 @@ pub mod markdown;
 pub use icons::{Glyph, icon, provider_glyph};
 pub mod menu;
 pub mod motion;
+mod personalization;
+pub use personalization::{canvas_background, surface, glass_edge, chat_width, row_height, motion_multiplier, ui_font_size, code_font_size, terminal_font_size};
 pub mod task_dialog;
 use gpui::{
     Context, Div, ElementId, SharedString, Stateful, Window, canvas, div, prelude::*, px, rgb, rgba,
 };
 
-pub const CHAT_WIDTH: f32 = 736.0;
 pub const COMPOSER_INPUT_HEIGHT: f32 = 51.0;
 pub const MENU_WIDTH: f32 = 304.0;
 pub const MENU_ROW_HEIGHT: f32 = 42.0;
@@ -117,7 +118,12 @@ pub fn configure(
     } else {
         DARK
     };
+    let mut palette = personalization::colorway(palette, appearance.personalization.colorway, dark);
+    if let Some(accent) = appearance.personalization.accent {
+        palette.focus = personalization::readable_accent(accent, palette.canvas);
+    }
     PALETTE.set(palette);
+    personalization::configure(appearance);
     UI_FAMILY.with(|family| {
         *family.borrow_mut() = appearance
             .fonts
@@ -191,7 +197,7 @@ pub fn action(
         .role(gpui::Role::Button)
         .aria_label(label.clone())
         .tab_index(0)
-        .h(px(ROW_HEIGHT))
+        .h(px(row_height()))
         .min_w_0()
         .px_2()
         .flex()
@@ -206,7 +212,7 @@ pub fn action(
             0
         }))
         .text_color(rgb(palette().text))
-        .text_size(px(15.0))
+        .text_size(px(ui_font_size() + 1.))
         .cursor_pointer()
         .hover(|style| style.bg(rgb(palette().hover)))
         .active(|style| style.bg(rgb(palette().selected)))
@@ -234,7 +240,7 @@ pub fn unavailable_action(
         .aria_label(format!("{label}, unavailable"))
         .aria_description(reason)
         .tab_index(0)
-        .h(px(ROW_HEIGHT))
+        .h(px(row_height()))
         .px_2()
         .flex()
         .items_center()

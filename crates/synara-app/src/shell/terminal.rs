@@ -10,8 +10,8 @@ use synara_runtime::{
     TerminalKey, TerminalModifiers, TerminalRenderSnapshot,
 };
 
-const CELL_WIDTH: f32 = 8.45;
-const LINE_HEIGHT: f32 = 18.0;
+fn cell_width() -> f32 { 8.45 * crate::ui::terminal_font_size() / 14. }
+fn line_height() -> f32 { 18.0 * crate::ui::terminal_font_size() / 14. }
 const DEFAULT_FOREGROUND: u32 = 0xd7dae0;
 const DEFAULT_BACKGROUND: u32 = 0x0b1017;
 const SELECTION_BACKGROUND: u32 = 0x315580;
@@ -214,8 +214,8 @@ impl TerminalView {
 
     fn prepare(&mut self, bounds: Bounds<Pixels>) {
         self.bounds = bounds;
-        let columns = ((bounds.size.width / px(CELL_WIDTH)).floor() as u16).clamp(1, 500);
-        let rows = ((bounds.size.height / px(LINE_HEIGHT)).floor() as u16).clamp(1, 200);
+        let columns = ((bounds.size.width / px(cell_width())).floor() as u16).clamp(1, 500);
+        let rows = ((bounds.size.height / px(line_height())).floor() as u16).clamp(1, 200);
         if u32::from(rows) * u32::from(columns) > 40_000 {
             return;
         }
@@ -239,8 +239,8 @@ impl TerminalView {
         {
             return None;
         }
-        let column = ((point.x - self.bounds.left()) / px(CELL_WIDTH)).floor() as u16;
-        let row = ((point.y - self.bounds.top()) / px(LINE_HEIGHT)).floor() as u16;
+        let column = ((point.x - self.bounds.left()) / px(cell_width())).floor() as u16;
+        let row = ((point.y - self.bounds.top()) / px(line_height())).floor() as u16;
         Some((
             row.min(grid.rows.saturating_sub(1)),
             column.min(grid.columns.saturating_sub(1)),
@@ -479,7 +479,7 @@ impl TerminalView {
     }
 
     fn scroll(&mut self, event: &gpui::ScrollWheelEvent, cx: &mut Context<Self>) {
-        let delta = event.delta.pixel_delta(px(LINE_HEIGHT)).y;
+        let delta = event.delta.pixel_delta(px(line_height())).y;
         let next = if delta > px(0.) {
             self.scrollback.saturating_add(3)
         } else if delta < px(0.) {
@@ -508,10 +508,10 @@ impl TerminalView {
             .unwrap_or_default();
         Bounds::new(
             gpui::point(
-                self.bounds.left() + px(f32::from(cursor.1) * CELL_WIDTH),
-                self.bounds.top() + px(f32::from(cursor.0) * LINE_HEIGHT),
+                self.bounds.left() + px(f32::from(cursor.1) * cell_width()),
+                self.bounds.top() + px(f32::from(cursor.0) * line_height()),
             ),
-            gpui::size(px(CELL_WIDTH), px(LINE_HEIGHT)),
+            gpui::size(px(cell_width()), px(line_height())),
         )
     }
 }
@@ -884,14 +884,14 @@ fn paint_grid(
         }
         let line = window
             .text_system()
-            .shape_line(SharedString::from(text), px(14.), &runs, None);
+            .shape_line(SharedString::from(text), px(crate::ui::terminal_font_size()), &runs, None);
         let origin = gpui::point(
             bounds.left(),
-            bounds.top() + px(f32::from(row) * LINE_HEIGHT),
+            bounds.top() + px(f32::from(row) * line_height()),
         );
         let _ = line.paint_background(
             origin,
-            px(LINE_HEIGHT),
+            px(line_height()),
             TextAlign::Left,
             Some(bounds.size.width),
             window,
@@ -899,7 +899,7 @@ fn paint_grid(
         );
         let _ = line.paint(
             origin,
-            px(LINE_HEIGHT),
+            px(line_height()),
             TextAlign::Left,
             Some(bounds.size.width),
             window,
@@ -926,14 +926,14 @@ fn paint_preedit(
     let line =
         window
             .text_system()
-            .shape_line(SharedString::from(text.to_owned()), px(14.), &[run], None);
+            .shape_line(SharedString::from(text.to_owned()), px(crate::ui::terminal_font_size()), &[run], None);
     let origin = gpui::point(
-        bounds.left() + px(f32::from(cursor.1) * CELL_WIDTH),
-        bounds.top() + px(f32::from(cursor.0) * LINE_HEIGHT),
+        bounds.left() + px(f32::from(cursor.1) * cell_width()),
+        bounds.top() + px(f32::from(cursor.0) * line_height()),
     );
     let _ = line.paint_background(
         origin,
-        px(LINE_HEIGHT),
+        px(line_height()),
         TextAlign::Left,
         Some(bounds.size.width),
         window,
@@ -941,7 +941,7 @@ fn paint_preedit(
     );
     let _ = line.paint(
         origin,
-        px(LINE_HEIGHT),
+        px(line_height()),
         TextAlign::Left,
         Some(bounds.size.width),
         window,

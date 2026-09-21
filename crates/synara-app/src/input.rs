@@ -10,7 +10,6 @@ use synara_core::TextBuffer;
 mod policy;
 mod navigation;
 
-const LINE_HEIGHT: f32 = 22.0;
 const MAX_INPUT: usize = 1024 * 1024;
 const HISTORY_BYTES: usize = 16 * 1024 * 1024;
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -60,6 +59,15 @@ impl Focusable for TextEntry {
     }
 }
 impl TextEntry {
+    fn line_height(&self) -> f32 {
+        let font = match self.mode {
+            EntryMode::Editor => crate::ui::code_font_size(),
+            EntryMode::Composer => crate::ui::ui_font_size() + 1.,
+            EntryMode::SingleLine => crate::ui::ui_font_size(),
+        };
+        (font * 1.5).max(18.)
+    }
+
     pub fn new(placeholder: &str, mode: EntryMode, height: f32, cx: &mut Context<Self>) -> Self {
         Self {
             buffer: TextBuffer::default(),
@@ -209,7 +217,7 @@ impl TextEntry {
                 && index <= line.start + line.shaped.len()
                 && let Some(position) = line
                     .shaped
-                    .position_for_index(index - line.start, px(LINE_HEIGHT))
+                    .position_for_index(index - line.start, px(self.line_height()))
             {
                 return line.origin + position;
             }
@@ -220,14 +228,14 @@ impl TextEntry {
     }
     fn index_at(&self, position: Point<Pixels>) -> usize {
         for line in &self.lines {
-            if position.y < line.origin.y + line.shaped.size(px(LINE_HEIGHT)).height {
+            if position.y < line.origin.y + line.shaped.size(px(self.line_height())).height {
                 let local = point(
                     (position.x - line.origin.x).max(px(0.)),
                     (position.y - line.origin.y).max(px(0.)),
                 );
                 let index = line
                     .shaped
-                    .closest_index_for_position(local, px(LINE_HEIGHT))
+                    .closest_index_for_position(local, px(self.line_height()))
                     .unwrap_or_else(|index| index);
                 return (line.start + index).min(self.buffer.text().len());
             }
@@ -343,11 +351,11 @@ impl TextEntry {
             (_, "up") | (_, "down") => {
                 let mut position = self.position(self.caret());
                 position.y += px(if key == "up" {
-                    -LINE_HEIGHT
+                    -self.line_height()
                 } else {
-                    LINE_HEIGHT
+                    self.line_height()
                 });
-                position.y += px(LINE_HEIGHT / 2.);
+                position.y += px(self.line_height() / 2.);
                 let next = if position.y < self.bounds.origin.y - self.scroll_y {
                     0
                 } else {
@@ -423,10 +431,10 @@ impl TextEntry {
         };
         let shaped = match window.text_system().shape_text(
             text,
-            px(if self.mode == EntryMode::Composer {
-                15.
-            } else {
-                14.
+            px(match self.mode {
+                EntryMode::Composer => crate::ui::ui_font_size() + 1.,
+                EntryMode::Editor => crate::ui::code_font_size(),
+                EntryMode::SingleLine => crate::ui::ui_font_size(),
             }),
             &runs,
             wrap,
@@ -444,7 +452,7 @@ impl TextEntry {
             .into_iter()
             .map(|shaped| {
                 let origin = point(bounds.origin.x, y);
-                y += shaped.size(px(LINE_HEIGHT)).height;
+                y += shaped.size(px(self.line_height())).height;
                 let line = Line {
                     start,
                     shaped: Rc::new(shaped),
@@ -454,13 +462,13 @@ impl TextEntry {
                 line
             })
             .collect();
-        self.content_height = (y - bounds.origin.y).max(px(LINE_HEIGHT));
+        self.content_height = (y - bounds.origin.y).max(px(self.line_height()));
         if self.ensure_caret {
             let caret = self.position(self.caret()).y - bounds.origin.y;
             if caret < self.scroll_y {
                 self.scroll_y = caret;
-            } else if caret + px(LINE_HEIGHT) > self.scroll_y + bounds.size.height {
-                self.scroll_y = caret + px(LINE_HEIGHT) - bounds.size.height;
+            } else if caret + px(self.line_height()) > self.scroll_y + bounds.size.height {
+                self.scroll_y = caret + px(self.line_height()) - bounds.size.height;
             }
             self.ensure_caret = false;
         }
@@ -492,7 +500,7 @@ impl Render for TextEntry {
             .track_focus(&self.focus)
             .tab_index(0)
             .w_full()
-            .h(px(self.height))
+            .h(px(self.height.max(self.line_height() + 12.)))
             .p_2()
             .bg(rgb(crate::ui::palette().canvas))
             .border_1()
@@ -539,7 +547,7 @@ impl Render for TextEntry {
                 cx.listener(|this, _, _, _| this.dragging = false),
             )
             .on_scroll_wheel(cx.listener(|this, event: &gpui::ScrollWheelEvent, _, cx| {
-                this.scroll_y = (this.scroll_y - event.delta.pixel_delta(px(LINE_HEIGHT)).y).clamp(
+                this.scroll_y = (this.scroll_y - event.delta.pixel_delta(px(this.line_height())).y).clamp(
                     px(0.),
                     (this.content_height - this.bounds.size.height).max(px(0.)),
                 );
@@ -560,18 +568,18 @@ impl Render for TextEntry {
                             cx,
                         );
                         window.with_content_mask(Some(ContentMask { bounds }), |window| {
-                            let (lines, caret) = {
+                            let (lines, caret, line_height) = {
                                 let this = paint_entity.read(cx);
-                                (this.lines.clone(), this.position(this.caret()))
+                                (this.lines.clone(), this.position(this.caret()), this.line_height())
                             };
                             for line in &lines {
-                                if line.origin.y + line.shaped.size(px(LINE_HEIGHT)).height
+                                if line.origin.y + line.shaped.size(px(line_height)).height
                                     >= bounds.top()
                                     && line.origin.y < bounds.bottom()
                                 {
                                     let _ = line.shaped.paint_background(
                                         line.origin,
-                                        px(LINE_HEIGHT),
+                                        px(line_height),
                                         TextAlign::Left,
                                         Some(bounds),
                                         window,
@@ -579,7 +587,7 @@ impl Render for TextEntry {
                                     );
                                     let _ = line.shaped.paint(
                                         line.origin,
-                                        px(LINE_HEIGHT),
+                                        px(line_height),
                                         TextAlign::Left,
                                         Some(bounds),
                                         window,
@@ -589,7 +597,7 @@ impl Render for TextEntry {
                             }
                             if focus.is_focused(window) {
                                 window.paint_quad(fill(
-                                    Bounds::new(caret, size(px(1.5), px(LINE_HEIGHT))),
+                                    Bounds::new(caret, size(px(1.5), px(line_height))),
                                     rgb(0xb6d4ff),
                                 ));
                             }
@@ -721,7 +729,7 @@ impl EntityInputHandler for TextEntry {
                 } else {
                     px(1.)
                 },
-                px(LINE_HEIGHT),
+                px(self.line_height()),
             ),
         ))
     }

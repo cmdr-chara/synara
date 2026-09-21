@@ -25,6 +25,7 @@ mod studio;
 mod terminal;
 mod terminals;
 mod transcript;
+mod zen;
 use crate::close::CloseState;
 use crate::input::{EntryEvent, EntryMode, TextEntry};
 use gpui::{App, Context, Entity, SharedString, Subscription, Window, div, prelude::*, px, rgb};
@@ -461,12 +462,20 @@ impl Shell {
             this.select_task(selected, cx);
             this.show_conversation(cx);
         }
+        if this.settings.value.appearance.personalization.zen_mode {
+            this.settings.personalization.tools_shown = false;
+        }
         if let Some(error) = &this.environment.recovery {
             this.notice = Some(error.clone());
         }
         this
     }
     pub fn request_close(&mut self, window: &mut Window, cx: &mut Context<Self>) -> bool {
+        if self.appearance_pending(cx) {
+            self.notice = Some("Finish the appearance save or image picker, and clear any pasted profile before closing.".into());
+            cx.notify();
+            return false;
+        }
         if self.editor.read(cx).is_composing() {
             self.notice = Some("Finish composing text in the editor before closing.".into());
             cx.notify();
@@ -1523,6 +1532,9 @@ impl Shell {
         if panel != Panel::Conversation {
             self.selection_revision = self.selection_revision.wrapping_add(1);
         }
+        if self.settings.value.appearance.personalization.zen_mode
+            && matches!(panel, Panel::Files | Panel::Changes | Panel::Terminal | Panel::Dock)
+        { self.settings.personalization.tools_shown = true; }
         self.panel = panel;
         self.error = None;
         self.notice = None;

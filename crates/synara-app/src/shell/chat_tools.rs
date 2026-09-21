@@ -775,7 +775,7 @@ impl Shell {
             .map_or(0, Vec::len);
         div()
             .w_full()
-            .max_w(px(ui::CHAT_WIDTH + 48.))
+            .max_w(px(ui::chat_width() + 48.))
             .mx_auto()
             .px_5()
             .py_1()

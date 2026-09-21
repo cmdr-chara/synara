@@ -15,7 +15,7 @@ impl Shell {
         div()
             .relative()
             .w_full()
-            .max_w(px(ui::CHAT_WIDTH + 40.))
+            .max_w(px(ui::chat_width() + 40.))
             .mx_auto()
             .flex_shrink_0()
             .px_5()
@@ -66,14 +66,14 @@ impl Shell {
                     .gap_1()
                     .rounded(px(18.))
                     .border_1()
-                    .border_color(rgb(
-                        if self.composer.read(cx).focus_handle(cx).is_focused(window) {
-                            palette().muted
-                        } else {
-                            palette().border
-                        },
-                    ))
-                    .bg(rgb(palette().overlay))
+                    .border_color(if self.composer.read(cx).focus_handle(cx).is_focused(window) {
+                        rgb(palette().focus)
+                    } else { ui::glass_edge() })
+                    .bg(ui::surface(palette().overlay))
+                    .when(self.settings.value.appearance.personalization.material == SurfaceMaterial::Glass, |el| el.bg(gpui::linear_gradient(
+                        145., gpui::linear_color_stop(ui::surface(palette().selected), 0.),
+                        gpui::linear_color_stop(ui::surface(palette().overlay), 1.),
+                    )))
                     .relative()
                     .child(ui::layout_probe("composer-surface"))
                     .child(

@@ -17,6 +17,9 @@ impl Shell {
         available_width: f32,
         cx: &mut Context<Self>,
     ) -> gpui::AnyElement {
+        if self.zen_active() && !self.settings.personalization.tools_shown {
+            return self.conversation(window, cx);
+        }
         if self.dock_open() || dock_width > 0. {
             return div()
                 .flex()

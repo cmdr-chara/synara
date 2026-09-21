@@ -6,6 +6,22 @@ It is a living engineering document, not a release announcement.
 
 ## Current checkpoint
 
+### September 21: Zen, personal appearance and active tasks
+
+Zen is an optional presentation for Synara and Studio, not a third chat scope.
+It provides a compact header and reversible navigation/Environment disclosure
+while retaining the existing composer, draft, editor, process and approval owners.
+Appearance adds six light/dark colorways, custom accents, native transparency/blur
+requests, a glass-style composer, local wallpapers with fit/dimming/reload controls,
+density, text sizes, chat width, motion choices and appearance-profile import/export.
+A shared Active tasks dialog exposes running chats and live pending decisions.
+
+[Design, implementation and limitations](docs/ui/zen-personalization.md) records
+source work separately from native acceptance. Local structural/whitespace checks
+passed. Native compilation/screenshots are unavailable in this sandbox. No GitHub
+tests are dispatched. I7/I10 and D5/D6/D10 remain open for their complete acceptance.
+Upstream reviewed: `e7cd15281e6d16cf8fc55a91496dcff035475e54`, unchanged.
+
 ### September 21: native multi-terminal workspace
 
 The existing Environment Terminal tab now contains project/root-scoped terminal

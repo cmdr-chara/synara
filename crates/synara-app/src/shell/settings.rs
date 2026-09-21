@@ -2,6 +2,7 @@
 //! sections without a native service say so instead of displaying invented data.
 use super::*;
 mod chat;
+mod personalization;
 use crate::ui::menu::{Choice, ChoiceEvent, ChoiceMenu};
 use crate::ui::{self, Glyph, palette};
 use gpui::{FocusHandle, Pixels, Point};
@@ -169,6 +170,7 @@ pub(super) struct SettingsPopup {
 }
 pub(super) struct SettingsState {
     pub value: AppSettings,
+    pub personalization: personalization::PersonalizationState,
     pub saving: bool,
     pub popup: Option<SettingsPopup>,
     scroll: gpui::ScrollHandle,
@@ -230,6 +232,7 @@ impl SettingsState {
             cx.notify();
         })];
         Self {
+            personalization: personalization::PersonalizationState::new(&value.appearance, cx),
             value,
             saving: false,
             popup: None,
@@ -314,7 +317,7 @@ impl Shell {
         self.settings.search.update(cx, |entry, cx| entry.clear(cx));
         cx.notify();
     }
-    fn save_setting(&mut self, change: impl FnOnce(&mut AppSettings), cx: &mut Context<Self>) {
+    pub(super) fn save_setting(&mut self, change: impl FnOnce(&mut AppSettings), cx: &mut Context<Self>) {
         if self.settings.saving {
             return;
         }
@@ -955,6 +958,7 @@ impl Shell {
                         )),
                 ),
             )
+            .child(self.personalization_settings(cx))
             .into_any_element()
     }
     fn profile_settings(&self, cx: &mut Context<Self>) -> gpui::AnyElement {

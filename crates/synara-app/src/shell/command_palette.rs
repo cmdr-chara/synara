@@ -23,6 +23,7 @@ impl PaletteState {
 }
 #[derive(Clone)]
 enum Action {
+    ToggleZen, Appearance, Attention,
     Panel(Panel), NewChat, NewStudio, Outputs, Sidebar, Environment,
     ThreadSearch, MessageSearch, Notes, OpenProject, Find, Replace, GoToLine,
     ToggleTree, Task(TaskId), Project(ProjectId), File(PathBuf),
@@ -76,6 +77,9 @@ impl Shell {
             }
         };
         for (title, detail, glyph, action) in [
+            ("Toggle Zen mode", "Focus view · Ctrl/Cmd+Alt+Z", Glyph::Goal, Action::ToggleZen),
+            ("Customize appearance", "Themes, wallpaper, glass and motion", Glyph::Palette, Action::Appearance),
+            ("Active tasks and decisions", "Running chats and pending requests", Glyph::Bell, Action::Attention),
             ("New thread", "Create a standalone chat", Glyph::Compose, Action::NewChat),
             ("Chat", "Ctrl/Cmd+1", Glyph::Chat, Action::Panel(Panel::Conversation)),
             ("Explorer", "Files · Ctrl/Cmd+2", Glyph::Files, Action::Panel(Panel::Files)),
@@ -127,6 +131,9 @@ impl Shell {
     fn execute_palette_command(&mut self, action: Action, window: &mut Window, cx: &mut Context<Self>) {
         self.dismiss_command_palette(window, cx);
         match action {
+            Action::ToggleZen => self.toggle_zen(cx),
+            Action::Appearance => self.open_appearance(cx),
+            Action::Attention => self.open_attention(window, cx),
             Action::Panel(panel) => {
                 if panel == Panel::Conversation { self.show_conversation(cx); }
                 else { self.set_panel(panel, cx); }

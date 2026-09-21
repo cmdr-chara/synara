@@ -347,17 +347,75 @@ async fn integrations_old_profile_grants_never_block_independent_revocation() {
     let first = config(&task);
     let first_id = first.id.clone();
     service.edit_mcp(0, McpEdit::Save(first)).await.unwrap();
-    service.edit_mcp(1, McpEdit::SetEnabled { id: first_id.clone(), enabled: true }).await.unwrap();
+    service
+        .edit_mcp(
+            1,
+            McpEdit::SetEnabled {
+                id: first_id.clone(),
+                enabled: true,
+            },
+        )
+        .await
+        .unwrap();
     let mut second = config(&task);
     second.name = "Second independent grant".into();
     let second_id = second.id.clone();
     service.edit_mcp(2, McpEdit::Save(second)).await.unwrap();
-    service.edit_mcp(3, McpEdit::SetEnabled { id: second_id.clone(), enabled: true }).await.unwrap();
-    let next_agent = service.profiles().await.unwrap().into_iter().find(|p|p.id != task.agent_id).unwrap().id;
+    service
+        .edit_mcp(
+            3,
+            McpEdit::SetEnabled {
+                id: second_id.clone(),
+                enabled: true,
+            },
+        )
+        .await
+        .unwrap();
+    let next_agent = service
+        .profiles()
+        .await
+        .unwrap()
+        .into_iter()
+        .find(|p| p.id != task.agent_id)
+        .unwrap()
+        .id;
     service.set_task_agent(task.id, next_agent).await.unwrap();
-    let value = service.edit_mcp(4, McpEdit::SetEnabled { id: first_id.clone(), enabled: false }).await.unwrap();
-    assert!(value.mcp[1].enabled, "revoking one record does not rewrite a sibling grant");
-    assert!(service.edit_mcp(5, McpEdit::SetEnabled { id: first_id.clone(), enabled: true }).await.is_err());
-    service.edit_mcp(5, McpEdit::Remove(second_id)).await.unwrap();
-    assert!(service.edit_mcp(6, McpEdit::Remove(first_id)).await.unwrap().mcp.is_empty());
+    let value = service
+        .edit_mcp(
+            4,
+            McpEdit::SetEnabled {
+                id: first_id.clone(),
+                enabled: false,
+            },
+        )
+        .await
+        .unwrap();
+    assert!(
+        value.mcp[1].enabled,
+        "revoking one record does not rewrite a sibling grant"
+    );
+    assert!(
+        service
+            .edit_mcp(
+                5,
+                McpEdit::SetEnabled {
+                    id: first_id.clone(),
+                    enabled: true
+                }
+            )
+            .await
+            .is_err()
+    );
+    service
+        .edit_mcp(5, McpEdit::Remove(second_id))
+        .await
+        .unwrap();
+    assert!(
+        service
+            .edit_mcp(6, McpEdit::Remove(first_id))
+            .await
+            .unwrap()
+            .mcp
+            .is_empty()
+    );
 }

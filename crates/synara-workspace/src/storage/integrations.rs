@@ -156,13 +156,18 @@ impl WorkspaceService {
                 // prevent independent disable/remove actions for their siblings.
                 let enabling_owner = match &edit {
                     McpEdit::Save(item) => Some(item.agent_id.as_str()),
-                    McpEdit::SetEnabled { id, enabled: true } => value.mcp.iter()
-                        .find(|item| &item.id == id).map(|item| item.agent_id.as_str()),
+                    McpEdit::SetEnabled { id, enabled: true } => value
+                        .mcp
+                        .iter()
+                        .find(|item| &item.id == id)
+                        .map(|item| item.agent_id.as_str()),
                     _ => None,
                 };
                 if let (Some(task), Some(agent)) = (&task, enabling_owner) {
                     if agent != task.agent_id {
-                        return Err(invalid("Select this connection's agent before enabling it."));
+                        return Err(invalid(
+                            "Select this connection's agent before enabling it.",
+                        ));
                     }
                 }
                 edit.apply(value)?;

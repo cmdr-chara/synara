@@ -4,6 +4,11 @@ Source checkpoint: September 21, 2026, `astra/device-settings`, based on
 `980d86b59a1f06636a55aa0b75b71eef41fd3841`. Source implementation does not establish
 hardware, input, macOS, Windows or native capture acceptance.
 
+Focused Linux `cargo check` passes at `744830e`. The latest applicable focused suites
+contain 40 distinct passing tests, including shutdown/deletion and saved Device-tab
+regressions. The [executed validation ledger](../verification/device-settings-session.md)
+records exact revisions and earlier failures. These are not hardware or GUI acceptance.
+
 ## Device setup and supported targets
 
 Open **Settings > Device / capture**. Choose Android / ADB or Apple Simulator.

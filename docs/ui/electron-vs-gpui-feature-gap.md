@@ -21,8 +21,13 @@ recent-attachment visibility, stronger text/separators, actual agent/config cont
 notification preference/test and privacy/deletion actions. The complete area-by-area
 inventory, retained functionality and unavailable states are in
 [Device/Settings](device-settings.md). The [receipt](../verification/device-settings-session.md)
-records actual evidence separately. Earlier "no workflow" statements below describe
-their earlier checkpoints, not this session's scoped validation.
+records 40 distinct passing targeted tests across the latest applicable focused
+runs and a passing Linux native `cargo check` at `744830e`. The first compile-blocked
+attempt and the corrective run are retained, not hidden. Runtime/device/capture
+sources were unchanged after their passing run and were not needlessly re-tested.
+Earlier "no workflow" and "no native compile" statements below describe their earlier
+checkpoints, not this session's scoped validation. A compilation check is not a
+running GPUI window or hardware, input, macOS or Windows acceptance.
 
 PR/Automations/Browser and Plugins/Skills/MCP had not landed at the last checked
 integration head `980d86b`. No integration placeholder is claimed complete or
@@ -82,7 +87,10 @@ screen composition. Normal Synara retains its own product concepts and services.
 | Device tooling | ADB/simctl discovery, capture, supported lifecycle and explicit Android input now have source adapters/viewer. Native helper protocol depth, physical Apple, Android cold boot and hardware acceptance remain; L1-L5 |
 | Settings and platform | Remaining functional sections, label migration, secrets, notifications, accessibility, packaging/updater and macOS/Windows interaction; I/P/O |
 
-## Evidence boundary and next work
+## Earlier workspace-checkpoint evidence and next work
+
+This section preserves the earlier workspace checkpoint. Device/Settings validation
+above and its linked receipt are newer and supersede its compile/workflow status.
 
 The roadmap's local structural check passes with 17 lanes and 120 unchanged task
 bodies/checkbox states. Three focused Hub Rust tests are prepared but not run.

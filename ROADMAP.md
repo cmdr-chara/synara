@@ -8,6 +8,30 @@ All 120 original task bodies and checkbox states remain below without alteration
 
 ## Current checkpoint
 
+### September 21: compact workspaces, Hub tasks and editor management
+
+The continuation from `e418fff` adds a Hub-scoped native task view with literal
+search, activity/attention filters, counts, pinning and explicit Run/Stop. Creation
+uses the existing atomic Hub task service and captures scope when the composer
+opens. Normal Kanban remains separate. Task state is not simulated by dragging a
+card, and shared context is never silently added to a Create-and-run request.
+
+Editor workspace commands add guarded Save all, stop-between-files, Close saved,
+Close other saved, retained-buffer reopening and tab reordering. Save all preserves
+newer edits, uses existing local/pinned-SSH guarded writes and stops on the first
+failure. Closed buffers retain in-process undo/selection only, not restart recovery.
+Terminal tab ordering now persists through its existing layout owner without
+restarting or moving processes.
+
+MonoCode's workspace captures inform compact pane-local controls, flat tabs and
+row-based Hub navigation. No competitor implementation/assets/tokens are copied.
+The existing Synara shell, glass materials and Zen domain boundaries remain intact.
+See [workspace direction, features and acceptance](docs/ui/monocode-workspace-adaptation.md).
+Source checks do not establish native compilation or behavior. No GitHub test
+workflow is dispatched. F10, A8, G2/G8 and I10 remain open for their full acceptance.
+
+### Previous recovery checkpoint
+
 September 21 recovery continues published `bf67608` and Glass correction `ae64983`.
 Transparent Glass uses one continuous window tint, native compositor blur requests,
 non-opaque editor/terminal/Git roots and bounded local wallpaper preparation. Zen
@@ -24,10 +48,10 @@ draft, session and file identities are retained through a compatibility projecti
 The serialized `Studio` scope remains until a separately verified migration can
 remove it. Hubs are not a cloud runner, automatic memory system or new agent backend.
 
-Hub-specific Kanban, multi-repository/source membership, semantic retrieval,
-automations and parallel task orchestration remain open. The existing global Kanban
-is not claimed as a Hub-scoped board. Existing Settings compatibility labels also
-need completion. Library previews currently require a local workspace.
+At the previous recovery checkpoint, Hub-specific Kanban was still missing. The
+new task view above now implements a bounded source slice of it. Multi-repository/
+source membership, semantic retrieval, automations, parallel task orchestration and
+Settings compatibility labels remain open. Library previews require a local workspace.
 
 The initial source tree was reconstructed exactly before recovery. Local structural
 checks do not establish compilation. Cargo/rustc are unavailable and the pinned
@@ -499,7 +523,7 @@ Remaining limitations:
 ## Immediate execution queue
 
 1. Complete the Hub transition and integration without duplicating runtime owners:
-   finish Settings labels, Hub-scoped Kanban, Library intake/provenance and explicit
+   finish Settings labels, Hub task-board depth, Library intake/provenance and explicit
    project context. Preserve old Studio data until migration acceptance is recorded.
 2. Continue substantive chat features: real attachment paste/drop/preview, richer
    mentions, supported queue/steer, edit/resend and Side chats. Never infer provider

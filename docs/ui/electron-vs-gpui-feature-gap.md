@@ -1,8 +1,8 @@
 # Electron Synara to native Rust/GPUI: current feature-gap audit
 
 Checkpoint: 2026-09-21, following Glass/branching recovery `ae64983` and the first
-optional-Hubs integration. This is a source inventory, not a declaration of native
-runtime or cross-platform acceptance.
+optional-Hubs integration, extended with compact workspace controls and Hub tasks.
+This is a source inventory, not native runtime or cross-platform acceptance.
 
 The complete preceding Electron comparison, source links, dated tables and earlier
 continuation notes remain in the [preserved pre-Hubs inventory](electron-vs-gpui-feature-gap-before-hubs-2026-09-21.md).
@@ -29,10 +29,12 @@ feature, workflow, setting or icon delta was found in this review.
 | Hub Library | Existing file/preview service plus bounded same-directory peer-thread reporting and Open reporting thread | Binary intake, remote previews, deeper provenance and multi-source Library; F9/G1/D11 |
 | Message branching | Bounded quoted user/assistant context saved as a new unsent same-workspace draft | Not a provider-session clone, file rollback or automatic send; D9/D12 |
 | Composer | Measured bounded multiline growth on existing native input | Native resize/IME evidence, image paste/drop, queued/steered input and richer mentions; D4/D8/D11 |
-| Hub Kanban | No Hub-specific board claim; global Kanban remains intact | Scope-aware task creation/status/launch and native verification; F10 |
+| Hub Kanban | Scoped task view, captured Hub creation target, literal search, status/attention filters, pinning and explicit Run/Stop using existing services; global Kanban remains separate | Native execution/restart acceptance, richer task movement and task-context controls; F10 |
+| Editor workspace | Guarded sequential Save all, stop-between-files, Close saved/other saved, eight retained closed buffers, tab reordering and compact chrome | Native conflict/IME/SSH journeys, disk refresh and restart/crash recovery; G2/G3/G8/I10 |
+| Terminal workspace | Flatter pane/tab controls and saved active-tab reordering without moving PTYs | Native focus, restart and platform checks; A8/G7/I10 |
 
-Zeron informs Zen interaction and restraint only. MonoCode is a secondary workspace
-and material reference. Neither repository supplies code, assets, tokens or copied
+Zeron informs Zen interaction and restraint only. MonoCode's supplied workspace
+captures inform pane-local controls, compact tabs and restrained navigation. Neither repository supplies code, assets, tokens or copied
 screen composition. Normal Synara retains its own product concepts and services.
 
 ## Important still-open product surfaces
@@ -59,3 +61,6 @@ Continue Hub integration and real composer/attachment workflows next, then Side 
 PRs and Automations. Keep the existing service boundaries and compare actual native
 interactions when a build is available. Browser material studies are not substitutes
 for native screenshots. See [Hubs](hubs.md) and [Glass/Zen](zen-personalization.md).
+
+The [workspace adaptation receipt](monocode-workspace-adaptation.md) records the
+exact source scope, reference archive, guards and remaining native acceptance.

@@ -16,6 +16,8 @@ impl Shell {
                 .child(ui::chrome_button("hub-create", "New Hub", Glyph::Plus, self.hubs.saving,
                     cx.listener(|this, _: &(), _, cx| this.edit_hub(true,cx)))))
             .child(div().px_3().py_2().child(self.hubs.query.clone()))
+            .children(self.hubs.selected.map(|id| ui::action("hub-sidebar-tasks", "Tasks", Some(Glyph::Kanban), self.panel == Panel::Kanban,
+                cx.listener(move |this, _: &(), _, cx| this.open_hub_tasks(id, cx))).mx_2().rounded_none()))
             .child(div().id("hub-list").flex_1().min_h_0().overflow_y_scroll().px_2().py_2()
                 .children(rows.iter().take(200).enumerate().map(|(index,hub)| {
                     let id = hub.profile.project;
@@ -29,9 +31,9 @@ impl Shell {
                             .child(div().text_size(px(11.)).text_color(rgb(palette().muted)).child(hub.threads.to_string())))
                         .children(active.then(|| div().pl_3().flex().flex_col().children(tasks.iter().take(32).enumerate().map(|(slot,task)| {
                             let task_id = task.id;
-                            ui::action(("hub-thread",slot),task.title.clone(),Some(self.agent_glyph(&task.agent_id)),self.selected == Some(task_id) && self.panel != Panel::Hubs,
+                            ui::action(("hub-thread",slot),task.title.clone(),Some(self.agent_glyph(&task.agent_id)),self.selected == Some(task_id) && (self.panel == Panel::Conversation || self.dock_open()),
                                 cx.listener(move |this, _: &(), _, cx| { if this.select_task(task_id,cx) { this.show_conversation(cx); } }))
-                                .w_full().text_size(px(13.))
+                                .w_full().h(px(ui::row_height())).text_size(px(12.))
                                 .children((self.busy.contains(&task_id)||self.connecting.contains(&task_id)).then(||
                                     div().size(px(4.)).rounded_full().bg(rgb(palette().focus))))
                         }))))
@@ -98,6 +100,8 @@ impl Shell {
                 .children((!profile.description.is_empty()).then(||div().text_color(rgb(palette().muted)).child(profile.description.clone())))
                 .child(div().mt_4().pb_3().border_b_1().border_color(rgb(palette().border)).flex().flex_wrap().gap_2()
                     .child(ui::action("hub-new-thread","New thread",Some(Glyph::Compose),false,cx.listener(|this, _: &(), _, cx| this.new_hub_thread(cx))))
+                    .child(ui::action("hub-open-tasks", "Tasks", Some(Glyph::Kanban), false,
+                        cx.listener(move |this, _: &(), _, cx| this.open_hub_tasks(id, cx))))
                     .child(ui::action("hub-open-library","Library",Some(Glyph::Files),false,cx.listener(|this, _: &(), _, cx| this.open_studio_outputs(cx))))
                     .child(ui::action("hub-edit-context","Context",Some(Glyph::Notebook),false,cx.listener(|this, _: &(), _, cx| this.edit_hub(false,cx))))
                     .child(ui::action("hub-refresh","Refresh",Some(Glyph::Restore),false,cx.listener(|this, _: &(), _, cx| {this.load_hubs();cx.notify();}))))
@@ -106,7 +110,7 @@ impl Shell {
                     let id = task.id;
                     ui::action(("hub-home-thread",index),task.title.clone(),Some(self.agent_glyph(&task.agent_id)),false,
                         cx.listener(move |this, _: &(), _, cx| { if this.select_task(id,cx) {this.show_conversation(cx);} }))
-                        .w_full().h(px(42.)).border_b_1().border_color(rgb(palette().border))
+                        .w_full().h(px(ui::row_height() + 6.)).rounded_none().bg(gpui::rgba(0)).border_b_1().border_color(rgb(palette().border))
                         .child(div().text_size(px(12.)).text_color(rgb(palette().muted)).child(format!("{:?}",task.state)))
                 }))
                 .children((threads.len() > 200).then(|| ui::action("hub-find-more","Find more threads",Some(Glyph::Search),false,

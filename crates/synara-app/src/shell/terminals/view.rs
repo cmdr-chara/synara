@@ -4,6 +4,17 @@ use crate::ui::{self, Glyph, palette};
 #[derive(Clone, Copy)]
 enum Action { Start, Interrupt, Stop, Copy, Draft, Find, Rename, Close, Bottom }
 impl Shell {
+    fn move_terminal_tab(&mut self, scope: &TerminalScope, id: u64, backwards: bool, cx: &mut Context<Self>) {
+        if self.terminal_closing { return; }
+        let Some(group) = self.terminals.groups.get_mut(scope).filter(|group| group.loaded && !group.loading) else { return };
+        let Some(index) = group.layout.tabs.iter().position(|tab| tab.id == id) else { return };
+        let next = if backwards { index.checked_sub(1) } else { index.checked_add(1).filter(|n| *n < group.layout.tabs.len()) };
+        if let Some(next) = next {
+            group.layout.tabs.swap(index, next);
+            group.changed();
+            cx.notify();
+        }
+    }
     fn terminal_action(&mut self, key: &Key, action: Action, window: &mut Window, cx: &mut Context<Self>) {
         if self.terminal_entry(key).is_none() || self.terminal_closing
             || self.terminals.groups.get(&key.scope).is_some_and(|group| group.loading) { return; }
@@ -52,10 +63,11 @@ impl Shell {
         let mut pane = div().id(("terminal-pane", id as usize)).relative()
             .child(ui::layout_probe_slot("terminal-pane", id as usize))
             .flex().flex_col().size_full().min_w_0().min_h_0()
-            .border_1().border_color(rgb(palette().border)).rounded_md()
+            .border_l_1().border_color(rgb(palette().border))
             .child(div().px_2().py_1().flex().items_center().gap_2()
                 .child(ui::action(("terminal-focus", id as usize), tab.name.clone(), Some(Glyph::Terminal), group.layout.active == Some(id),
-                    cx.listener(move |this, _: &(), window, cx| this.select_terminal(&select_scope, id, window, cx))).flex_1().min_w_0())
+                    cx.listener(move |this, _: &(), window, cx| this.select_terminal(&select_scope, id, window, cx)))
+                    .flex_1().min_w_0().h(px(ui::row_height())).text_size(px(12.)).rounded_none().bg(gpui::rgba(0)))
                 .child(div().text_size(px(11.)).text_color(rgb(palette().muted)).child(status)))
             .child(div().px_2().pb_1().flex().flex_wrap().items_center().gap_1().children([
                 ("start-shell", if entry.process.is_some() { "Restart this shell" } else { "Start this shell" }, Glyph::Terminal, Action::Start, busy),
@@ -70,7 +82,7 @@ impl Shell {
             ].into_iter().map(|(control, label, glyph, action, disabled)| {
                 let key = key.clone();
                 ui::chrome_button(control, label, glyph, disabled,
-                    cx.listener(move |this, _: &(), window, cx| this.terminal_action(&key, action, window, cx)))
+                    cx.listener(move |this, _: &(), window, cx| this.terminal_action(&key, action, window, cx))).size(px(26.))
             })));
         if group.renaming == Some(id) {
             let save_scope = scope.clone(); let cancel_scope = scope.clone();
@@ -154,12 +166,20 @@ impl Shell {
                 .into_any_element();
         }
         let mut root = div().id("terminal-workspace").relative().child(ui::layout_probe("terminal-workspace"))
-            .flex_1().min_w_0().min_h_0().flex().flex_col().bg(gpui::rgba(0)).p_2().gap_2()
-            .child(div().flex().flex_wrap().items_center().gap_1()
+            .flex_1().min_w_0().min_h_0().flex().flex_col().bg(gpui::rgba(0)).gap_1()
+            .child(div().px_2().py_1().flex().flex_wrap().items_center().gap_1()
                 .child(ui::action("terminal-new-shell", "New shell", Some(Glyph::Plus), false,
                     cx.listener(|this, _: &(), _, cx| this.new_terminal(true, cx))))
                 .child(ui::action("terminal-new-tab", "New stopped tab", None, false,
                     cx.listener(|this, _: &(), _, cx| this.new_terminal(false, cx))))
+                .children(group.layout.active.map(|id| {
+                    let left = scope.clone(); let right = scope.clone();
+                    div().flex().items_center()
+                        .child(ui::chrome_button("terminal-move-left", "Move active tab left", Glyph::Back, false,
+                            cx.listener(move |this, _: &(), _, cx| this.move_terminal_tab(&left, id, true, cx))).size(px(24.)))
+                        .child(ui::chrome_button("terminal-move-right", "Move active tab right", Glyph::Forward, false,
+                            cx.listener(move |this, _: &(), _, cx| this.move_terminal_tab(&right, id, false, cx))).size(px(24.)))
+                }))
                 .child(ui::action("terminal-split", if group.layout.secondary.is_some() { "Single pane" } else { "Split" }, Some(Glyph::Window), false,
                     cx.listener(|this, _: &(), _, cx| this.split_terminals(cx))))
                 .children(group.layout.secondary.map(|_| ui::action("terminal-axis", if group.layout.stacked { "Side by side" } else { "Stack panes" }, None, false,
@@ -179,15 +199,18 @@ impl Shell {
                         }
                         cx.notify();
                     })))))))
-            .child(div().text_size(px(11.)).text_color(rgb(palette().muted)).text_ellipsis()
+            .child(div().px_3().text_size(px(11.)).text_color(rgb(palette().muted)).text_ellipsis()
                 .child(format!("{} · {}", if matches!(group.target, WorkspaceTarget::Ssh { .. }) { "SSH" } else { "Local" }, scope.root.display())))
-            .child(div().id("terminal-tabs").overflow_x_scroll().flex().gap_1().flex_shrink_0().children(group.layout.tabs.iter().map(|tab| {
+            .child(div().id("terminal-tabs").overflow_x_scroll().flex().flex_shrink_0().border_b_1().border_color(rgb(palette().border)).children(group.layout.tabs.iter().map(|tab| {
                 let select_scope = scope.clone(); let id = tab.id;
                 let entry = &group.entries[&id];
                 let running = entry.starting || entry.process.is_some() && !entry.exited;
                 ui::action(("terminal-tab", id as usize), format!("{}{}", tab.name, if running { " •" } else { "" }), Some(Glyph::Terminal), group.layout.active == Some(id),
                     cx.listener(move |this, _: &(), window, cx| this.select_terminal(&select_scope, id, window, cx)))
-                    .flex_shrink_0().max_w(px(180.)).relative().child(ui::layout_probe_slot("terminal-tab", id as usize))
+                    .flex_shrink_0().max_w(px(180.)).h(px(ui::row_height() + 2.)).text_size(px(12.)).rounded_none()
+                    .bg(gpui::rgba(0)).border_r_1().border_color(rgb(palette().border))
+                    .when(group.layout.active == Some(id), |el| el.bg(ui::surface(palette().overlay)).border_b_2().border_color(rgb(palette().focus)))
+                    .relative().child(ui::layout_probe_slot("terminal-tab", id as usize))
             })));
         if let Some(error) = group.save_error.as_ref().or(group.load_error.as_ref()) {
             let copy_scope = scope.clone(); let retry_scope = scope.clone(); let reload_scope = scope.clone();

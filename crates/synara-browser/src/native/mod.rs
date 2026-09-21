@@ -1,6 +1,7 @@
 //! Linux/X11 WebKitGTK child surfaces for the existing Session owner.
 //! Wry owns only the OS webview. There is no page IPC, WebDriver or second session store.
 mod bridge;
+mod surface;
 #[cfg(test)]
 mod tests;
 
@@ -10,7 +11,7 @@ use crate::{
 };
 use gtk::{gio, prelude::*};
 use javascriptcore::ValueExt;
-use raw_window_handle::{HasWindowHandle, RawWindowHandle};
+use raw_window_handle::HasWindowHandle;
 use std::{
     cell::{Cell, RefCell},
     collections::BTreeMap,
@@ -25,7 +26,7 @@ use std::{
 };
 use webkit2gtk::SettingsExt;
 use webkit2gtk::*;
-use wry::{Rect, WebContext, WebView, WebViewBuilder, WebViewExtUnix};
+use wry::{Rect, WebContext, WebView, WebViewBuilder, WebViewBuilderExtUnix, WebViewExtUnix};
 
 /// Logical bounds supplied by GPUI after layout.
 pub struct ViewportRect;
@@ -85,6 +86,7 @@ pub struct NativeHost {
     events: Events,
     receiver: mpsc::Receiver<Event>,
     root: PathBuf,
+    surface: Option<surface::ChildSurface>,
     initialized: bool,
     error: Option<String>,
     selected: Option<HostTabId>,
@@ -108,6 +110,7 @@ impl NativeHost {
                 },
                 receiver,
                 root,
+                surface: None,
                 initialized: false,
                 error: None,
                 selected: None,
@@ -129,16 +132,12 @@ impl NativeHost {
         self.initialized = true;
         let result = (|| -> std::result::Result<(), String> {
             let handle = parent.window_handle().map_err(|e| e.to_string())?;
-            if !matches!(
-                handle.as_raw(),
-                RawWindowHandle::Xlib(_) | RawWindowHandle::Xcb(_)
-            ) {
-                return Err("Embedded browsing currently requires Linux/X11. Start Synara with its X11 backend. Native Wayland, Windows and macOS host acceptance remains open.".into());
-            }
+            let parent_id = surface::parent_id(handle.as_raw())?;
             // GPUI does not use GDK. Select X11 before initializing this child-widget toolkit.
             gtk::gdk::set_allowed_backends("x11");
             gtk::init().map_err(|e| format!("WebKitGTK initialization failed: {e}"))?;
             private_directory(&self.root)?;
+            self.surface = Some(surface::ChildSurface::new(parent_id)?);
             Ok(())
         })();
         match result {
@@ -151,11 +150,17 @@ impl NativeHost {
         self.initialize(parent);
         if self.shared.ready.load(Ordering::Acquire) {
             self.reap();
+            let container = self
+                .surface
+                .as_ref()
+                .expect("initialized surface")
+                .container
+                .clone();
             for _ in 0..64 {
                 let Ok(delivery) = self.commands.try_recv() else {
                     break;
                 };
-                self.dispatch(delivery, |builder| builder.build_as_child(parent));
+                self.dispatch(delivery, |builder| builder.build_gtk(&container));
             }
             let until = Instant::now() + Duration::from_millis(4);
             for _ in 0..32 {
@@ -202,6 +207,9 @@ impl NativeHost {
     pub fn viewport(&mut self, tab: Option<HostTabId>, bounds: Option<Rect>) {
         self.selected = tab;
         self.viewport = bounds;
+        if let Some(surface) = &self.surface {
+            surface.viewport(tab.and(bounds));
+        }
         for (id, view) in &self.views {
             let visible = Some(*id) == tab && bounds.is_some();
             if visible {
@@ -562,6 +570,7 @@ impl Drop for NativeHost {
         }
         self.views.clear();
         self.profiles.clear();
+        self.surface.take();
     }
 }
 fn harden(web: &webkit2gtk::WebView, agent: bool) {

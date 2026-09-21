@@ -42,7 +42,6 @@ mod tests {
 
 #[cfg(test)]
 mod persistence_tests {
-    use super::*;
     use crate::{AppSettings, KeyBinding, WorkspaceService};
     #[tokio::test]
     async fn startup_restoration_respects_opt_out_archiving_and_missing_selection() {

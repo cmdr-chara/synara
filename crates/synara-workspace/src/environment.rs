@@ -216,6 +216,30 @@ mod tests {
         assert!(service.catalog().await.unwrap().tasks.is_empty());
     }
 
+    #[tokio::test]
+    async fn device_tab_round_trips_alongside_all_existing_environment_tabs() {
+        let service = WorkspaceService::memory().unwrap();
+        let settings = service.settings().await.unwrap().settings;
+        let mut layout = EnvironmentLayout::default();
+        for tab in [
+            EnvironmentTab::Terminal,
+            EnvironmentTab::Explorer,
+            EnvironmentTab::Changes,
+            EnvironmentTab::Device,
+        ] {
+            layout.select(tab);
+        }
+        assert!(layout.validate().is_ok());
+        service.save_environment_layout(layout.clone()).await.unwrap();
+        assert_eq!(service.environment_layout().await.unwrap().layout, layout);
+        assert_eq!(layout.tabs.len(), 4);
+        assert_eq!(layout.active, Some(EnvironmentTab::Device));
+        assert_eq!(service.settings().await.unwrap().settings, settings);
+        assert!(layout.close(EnvironmentTab::Device));
+        assert_eq!(layout.active, Some(EnvironmentTab::Changes));
+        assert!(layout.validate().is_ok());
+    }
+
     #[test]
     fn invalid_layouts_are_rejected_before_storage() {
         for ratio in [f32::NAN, f32::INFINITY, -1., 0., 0.19, 0.81, 1.] {

@@ -122,8 +122,7 @@ impl Shell {
         let tools = match self.device_tools() {
             Ok(tools) => tools,
             Err(error) => {
-                self.device.error = Some(error);
-                cx.notify();
+                self.fail_device(error, cx);
                 return;
             }
         };
@@ -161,8 +160,7 @@ impl Shell {
         let tools = match self.device_tools() {
             Ok(tools) => tools,
             Err(error) => {
-                self.device.error = Some(error);
-                cx.notify();
+                self.fail_device(error, cx);
                 return;
             }
         };
@@ -194,8 +192,7 @@ impl Shell {
         let tools = match self.device_tools() {
             Ok(tools) => tools,
             Err(error) => {
-                self.device.error = Some(error);
-                cx.notify();
+                self.fail_device(error, cx);
                 return;
             }
         };
@@ -231,8 +228,7 @@ impl Shell {
         let tools = match self.device_tools() {
             Ok(tools) => tools,
             Err(error) => {
-                self.device.error = Some(error);
-                cx.notify();
+                self.fail_device(error, cx);
                 return;
             }
         };
@@ -271,8 +267,7 @@ impl Shell {
         let tools = match self.device_tools() {
             Ok(tools) => tools,
             Err(error) => {
-                self.device.error = Some(error);
-                cx.notify();
+                self.fail_device(error, cx);
                 return;
             }
         };
@@ -337,16 +332,23 @@ impl Shell {
                 return;
             }
             Err(error) => {
-                self.device.retire();
-                // The old list remains inspectable but never remains actionable
-                // after an unsuccessful refresh or a helper/permission failure.
-                for device in &mut self.device.devices {
-                    device.stale();
-                }
-                self.device.error = Some(error);
-                self.device.message = "Operation failed. Refresh to reconnect and re-check device state. Input is off.".into();
+                self.fail_device(error, cx);
+                return;
             }
         }
+        cx.notify();
+    }
+    fn fail_device(&mut self, error: String, cx: &mut Context<Self>) {
+        self.device.retire();
+        // This also covers a helper disappearing before a command can start.
+        // Old metadata stays inspectable but never remains actionable.
+        for device in &mut self.device.devices {
+            device.stale();
+        }
+        self.device.error = Some(error);
+        self.device.message =
+            "Operation failed. Refresh to reconnect and re-check device state. Input is off."
+                .into();
         cx.notify();
     }
     pub(super) fn tick_devices(&mut self, cx: &mut Context<Self>) {

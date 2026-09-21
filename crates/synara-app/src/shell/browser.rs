@@ -1,20 +1,38 @@
 //! Pane-local native controls over the existing browser owner, never a web UI.
+mod native;
 use super::*;
 use crate::ui::{self, Glyph, palette};
 use browser_domain::{BrowserProfile, HostTabId, NavigationKind, session::RequestState};
 use gpui::AnyElement;
 pub(super) struct BrowserView {
+    #[cfg(target_os = "linux")]
+    native: native::Host,
+    #[cfg(target_os = "linux")]
+    native_task: Option<gpui::Task<()>>,
     address: Entity<TextEntry>, selected: Option<HostTabId>, pub(super) error: Option<String>,
     confirmation: Option<TaskId>, pub(super) busy: bool, _subscription: Subscription,
 }
 impl BrowserView {
-    pub fn new(cx: &mut Context<Shell>) -> Self {
+    pub fn new(controller: &Arc<Controller>, root: PathBuf, cx: &mut Context<Shell>) -> Self {
+        #[cfg(target_os = "linux")]
+        let (native, install_error) = {
+            let (host, port) = browser_domain::native::NativeHost::new(root);
+            let error = controller.browser.with(|s, _| s.install_port(port)).err().map(|e| e.to_string());
+            (std::rc::Rc::new(std::cell::RefCell::new(host)), error)
+        };
+        #[cfg(not(target_os = "linux"))]
+        let _ = (controller, root);
         let address = cx.new(|cx| TextEntry::new("https://... or http://localhost:port", EntryMode::SingleLine, 34., cx));
         let sub = cx.subscribe(&address, |this, _, event, cx| {
             if matches!(event, EntryEvent::Submit) { this.browser_navigate(NavigationKind::Push, cx); }
             cx.notify();
         });
-        Self { address, selected: None, error: None, confirmation: None, busy: false, _subscription: sub }
+        Self {
+            #[cfg(target_os = "linux")]
+            native,
+            #[cfg(target_os = "linux")]
+            native_task: None,
+            address, selected: None, error: { #[cfg(target_os = "linux")] { install_error } #[cfg(not(target_os = "linux"))] { None } }, confirmation: None, busy: false, _subscription: sub }
     }
 }
 impl Shell {
@@ -51,32 +69,32 @@ impl Shell {
     }
     pub(super) fn browser_panel(&self, cx: &mut Context<Self>) -> AnyElement {
         let snapshot = self.controller.browser.with(|s, _| Ok((s.tabs(), s.requests(), s.capabilities())));
-        let (tabs, requests, capabilities) = match snapshot {
+        let (tabs, requests, _capabilities) = match snapshot {
             Ok(v) => v, Err(e) => return div().p_4().child(e.to_string()).into_any_element(),
         };
         let active = tabs.iter().find(|t| Some(t.id) == self.browser.selected);
         let mut tabbar = div().flex().items_center().gap_1().flex_wrap().border_b_1().border_color(rgb(palette().border));
-        for tab in &tabs {
+        for (slot, tab) in tabs.iter().enumerate() {
             let id = tab.id;
             let label = format!("{}{}", if matches!(tab.profile, BrowserProfile::AgentTask { .. }) { "Agent: " } else { "" }, tab.title);
             tabbar = tabbar.child(ui::action(format!("browser-tab-{id:?}"), label, Some(Glyph::Browser), Some(id) == self.browser.selected,
-                cx.listener(move |this, _: &(), _, cx| this.browser_select(id, cx))))
+                cx.listener(move |this, _: &(), _, cx| this.browser_select(id, cx))).relative().child(ui::layout_probe_slot("browser-tab", slot)))
                 .child(ui::action(format!("browser-close-{id:?}"), "Close tab", Some(Glyph::Close), false,
                     cx.listener(move |this, _: &(), _, cx| {
                         this.browser.error = this.controller.browser.with(|s, _| s.close(id)).err().map(|e| e.to_string());
                         if this.browser.selected == Some(id) { this.browser.selected = None; } cx.notify();
-                    })));
+                    })).relative().child(ui::layout_probe_slot("browser-close", slot)));
         }
-        tabbar = tabbar.child(ui::action("browser-new", "New tab", Some(Glyph::Plus), false, cx.listener(|this, _: &(), _, cx| this.browser_open(cx))));
+        tabbar = tabbar.child(ui::action("browser-new", "New tab", Some(Glyph::Plus), false, cx.listener(|this, _: &(), _, cx| this.browser_open(cx))).relative().child(ui::layout_probe("browser-new")));
         let toolbar = div().flex().items_center().gap_1().py_2()
-            .child(ui::action("browser-back", "Back", Some(Glyph::Back), false, cx.listener(|this, _: &(), _, cx| this.browser_navigate(NavigationKind::Back, cx))))
-            .child(ui::action("browser-forward", "Forward", Some(Glyph::Forward), false, cx.listener(|this, _: &(), _, cx| this.browser_navigate(NavigationKind::Forward, cx))))
-            .child(ui::action("browser-reload", "Reload", None, false, cx.listener(|this, _: &(), _, cx| this.browser_navigate(NavigationKind::Reload, cx))))
+            .child(ui::action("browser-back", "Back", Some(Glyph::Back), false, cx.listener(|this, _: &(), _, cx| this.browser_navigate(NavigationKind::Back, cx))).relative().child(ui::layout_probe("browser-back")))
+            .child(ui::action("browser-forward", "Forward", Some(Glyph::Forward), false, cx.listener(|this, _: &(), _, cx| this.browser_navigate(NavigationKind::Forward, cx))).relative().child(ui::layout_probe("browser-forward")))
+            .child(ui::action("browser-reload", "Reload", None, false, cx.listener(|this, _: &(), _, cx| this.browser_navigate(NavigationKind::Reload, cx))).relative().child(ui::layout_probe("browser-reload")))
             .child(ui::action("browser-stop", "Stop", Some(Glyph::Stop), false, cx.listener(|this, _: &(), _, cx| {
                 if let Some(id) = this.browser.selected { this.browser.error = this.controller.browser.with(|s, _| s.stop(id)).err().map(|e| e.to_string()); } cx.notify();
-            })))
-            .child(div().flex_1().min_w_0().child(self.browser.address.clone()))
-            .child(ui::action("browser-go", "Go", None, false, cx.listener(|this, _: &(), _, cx| this.browser_navigate(NavigationKind::Push, cx))));
+            })).relative().child(ui::layout_probe("browser-stop")))
+            .child(div().relative().flex_1().min_w_0().child(self.browser.address.clone()).child(ui::layout_probe("browser-address")))
+            .child(ui::action("browser-go", "Go", None, false, cx.listener(|this, _: &(), _, cx| this.browser_navigate(NavigationKind::Push, cx))).relative().child(ui::layout_probe("browser-go")));
         let mut pane = div().id("browser-panel").flex().flex_col().size_full().min_h_0().p_3().gap_2()
             .child(tabbar).child(toolbar);
         if let Some(tab) = active {
@@ -84,9 +102,7 @@ impl Shell {
             if let Some(error) = &tab.error { pane = pane.child(div().text_color(rgb(palette().error)).child(error.clone())); }
         }
         if let Some(error) = &self.browser.error { pane = pane.child(div().text_color(rgb(palette().error)).child(error.clone())); }
-        pane = pane.child(div().min_h(px(90.)).border_y_1().border_color(rgb(palette().border)).p_3().child(
-            if capabilities.navigation { "Native host connected. Platform viewport attachment requires native-host acceptance." }
-            else { "Native webview host is not installed in this build. No rendered page is simulated. Tabs and permission state remain visible. HTTP(S) local-server addresses can be entered, but will not open without a host." }));
+        pane = pane.child(self.native_browser_surface());
         pane = pane.child(div().text_xs().text_color(rgb(palette().muted)).child("Agent browser use uses isolated task storage. Manual cookies, authentication, clipboard and uploads are not exposed. Captures/downloads require bounded native handles; export is not available in this build."));
         if let Some(task) = self.selected {
             let enabled = self.controller.browser_use_enabled(task);
@@ -102,7 +118,7 @@ impl Shell {
                     .child(ui::action("browser-confirm", "Confirm enable", None, false, cx.listener(|this, _: &(), _, cx| this.browser_enable(cx))))
                     .child(ui::action("browser-dismiss", "Cancel", None, false, cx.listener(|this, _: &(), _, cx| { this.browser.confirmation = None; cx.notify(); }))));
         }
-        let mut pending = div().id("browser-permissions").overflow_y_scroll().flex_1().min_h_0();
+        let mut pending = div().id("browser-permissions").overflow_y_scroll().max_h(px(190.)).flex_shrink_0().min_h_0();
         for request in requests {
             let id = request.id; let task = request.task;
             let mut row = div().border_b_1().border_color(rgb(palette().border)).py_2().gap_1().flex().flex_col()

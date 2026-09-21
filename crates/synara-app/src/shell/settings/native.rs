@@ -1,6 +1,9 @@
 //! Device, shortcut, notification and privacy settings with real service owners.
 use super::*;
-use synara_runtime::{DeviceBackend, NotificationRequest, desktop_notification_status, desktop_notifications_available, desktop_notify};
+use synara_runtime::{
+    DeviceBackend, NotificationRequest, desktop_notification_status,
+    desktop_notifications_available, desktop_notify,
+};
 
 pub(super) struct NativeSettings {
     bindings: Vec<Entity<TextEntry>>,
@@ -18,12 +21,25 @@ impl NativeSettings {
         let mut bindings = Vec::new();
         for command in NAVIGATION_COMMANDS {
             let entry = cx.new(|cx| TextEntry::new(command.label, EntryMode::SingleLine, 32., cx));
-            entry.update(cx, |input, cx| input.set_text(navigation_binding(&value.keybindings, command).into(), cx));
+            entry.update(cx, |input, cx| {
+                input.set_text(navigation_binding(&value.keybindings, command).into(), cx)
+            });
             bindings.push(entry);
         }
-        let confirmation = cx.new(|cx| TextEntry::new("Type DELETE to confirm", EntryMode::SingleLine, 32., cx));
+        let confirmation =
+            cx.new(|cx| TextEntry::new("Type DELETE to confirm", EntryMode::SingleLine, 32., cx));
         let subscription = cx.subscribe(&confirmation, |_, _, _, cx| cx.notify());
-        Self { bindings, confirmation, deleting: None, busy: false, picker: false, notification_busy: false, error: None, status: None, _subscriptions: vec![subscription] }
+        Self {
+            bindings,
+            confirmation,
+            deleting: None,
+            busy: false,
+            picker: false,
+            notification_busy: false,
+            error: None,
+            status: None,
+            _subscriptions: vec![subscription],
+        }
     }
 }
 pub(in crate::shell) enum Reply {
@@ -49,7 +65,10 @@ impl Shell {
                         self.drafts.remove(&task);
                         self.draft_state.forget_task(task);
                         self.settings.native.deleting = None;
-                        self.settings.native.confirmation.update(cx, |entry, cx| entry.clear(cx));
+                        self.settings
+                            .native
+                            .confirmation
+                            .update(cx, |entry, cx| entry.clear(cx));
                         self.settings.native.status = Some("Archived thread deleted from this database. Workspace files and external backups were not touched.".into());
                         self.settings.activity = None;
                         self.load_profile_activity();
@@ -62,7 +81,9 @@ impl Shell {
                 self.settings.native.busy = false;
                 match result {
                     Ok(_) => {
-                        if self.selected == Some(task) { self.trace.clear(); }
+                        if self.selected == Some(task) {
+                            self.trace.clear();
+                        }
                         self.settings.native.status = Some("The connection's in-memory protocol trace was cleared. Other chats sharing this connection share that trace. New activity can create new trace entries.".into());
                     }
                     Err(error) => self.settings.native.error = Some(error),
@@ -72,22 +93,56 @@ impl Shell {
         cx.notify();
     }
     pub(in crate::shell) fn sync_navigation_bindings(&mut self, cx: &mut Context<Self>) {
-        for (entry, command) in self.settings.native.bindings.iter().zip(NAVIGATION_COMMANDS) {
+        for (entry, command) in self
+            .settings
+            .native
+            .bindings
+            .iter()
+            .zip(NAVIGATION_COMMANDS)
+        {
             let text = navigation_binding(&self.settings.value.keybindings, command).to_owned();
             entry.update(cx, |input, cx| input.set_text(text, cx));
         }
     }
     fn save_navigation_bindings(&mut self, cx: &mut Context<Self>) {
-        let mut bindings: Vec<_> = self.settings.value.keybindings.iter().filter(|binding| !NAVIGATION_COMMANDS.iter().any(|command| command.id == binding.command)).cloned().collect();
-        for (entry, command) in self.settings.native.bindings.iter().zip(NAVIGATION_COMMANDS) {
+        let mut bindings: Vec<_> = self
+            .settings
+            .value
+            .keybindings
+            .iter()
+            .filter(|binding| {
+                !NAVIGATION_COMMANDS
+                    .iter()
+                    .any(|command| command.id == binding.command)
+            })
+            .cloned()
+            .collect();
+        for (entry, command) in self
+            .settings
+            .native
+            .bindings
+            .iter()
+            .zip(NAVIGATION_COMMANDS)
+        {
             let key = match NavigationKeystroke::parse(entry.read(cx).text().trim()) {
                 Ok(key) => key.display(),
-                Err(error) => { self.settings.native.error = Some(error.to_string()); cx.notify(); return; }
+                Err(error) => {
+                    self.settings.native.error = Some(error.to_string());
+                    cx.notify();
+                    return;
+                }
             };
-            if key != command.default { bindings.push(KeyBinding { command: command.id.into(), shortcut: key }); }
+            if key != command.default {
+                bindings.push(KeyBinding {
+                    command: command.id.into(),
+                    shortcut: key,
+                });
+            }
         }
         if let Err(error) = validate_navigation_bindings(&bindings) {
-            self.settings.native.error = Some(error.to_string()); cx.notify(); return;
+            self.settings.native.error = Some(error.to_string());
+            cx.notify();
+            return;
         }
         self.settings.native.error = None;
         self.save_setting(|settings| settings.keybindings = bindings, cx);
@@ -133,10 +188,17 @@ impl Shell {
             .into_any_element()
     }
     fn choose_adb(&mut self, cx: &mut Context<Self>) {
-        if self.settings.native.picker || self.settings.saving { return; }
+        if self.settings.native.picker || self.settings.saving {
+            return;
+        }
         self.settings.native.picker = true;
         let before = self.settings.value.device.clone();
-        let picker = cx.prompt_for_paths(gpui::PathPromptOptions { files: true, directories: false, multiple: false, prompt: Some("Choose the trusted Android SDK adb executable".into()) });
+        let picker = cx.prompt_for_paths(gpui::PathPromptOptions {
+            files: true,
+            directories: false,
+            multiple: false,
+            prompt: Some("Choose the trusted Android SDK adb executable".into()),
+        });
         cx.spawn(async move |view, cx| {
             let result = picker.await;
             let _ = view.update(cx, |this, cx| {
@@ -170,15 +232,37 @@ impl Shell {
             .children(self.settings.native.error.as_ref().map(|error| div().text_color(rgb(palette().error)).child(error.clone())))
             .into_any_element()
     }
-    pub(in crate::shell) fn send_desktop_notification(&mut self, test: bool, cx: &mut Context<Self>) {
-        if self.settings.native.notification_busy || (!test && !self.settings.value.notifications.background_completion) { return; }
+    pub(in crate::shell) fn send_desktop_notification(
+        &mut self,
+        test: bool,
+        cx: &mut Context<Self>,
+    ) {
+        if self.settings.native.notification_busy
+            || (!test && !self.settings.value.notifications.background_completion)
+        {
+            return;
+        }
         self.settings.native.notification_busy = true;
         self.settings.native.status = None;
         self.settings.native.error = None;
         let sender = self.sender.clone();
         self.runtime.spawn(async move {
-            let result = desktop_notify(NotificationRequest { title: "Synara".into(), body: if test { "Test notification. No conversation content is included." } else { "A background chat has finished. Open Synara to review the result." }.into() }).await.map_err(|e| e.to_string());
-            let _ = sender.send(Update::NativeSettings(Box::new(Reply::Notification(result)))).await;
+            let result = desktop_notify(NotificationRequest {
+                title: "Synara".into(),
+                body: if test {
+                    "Test notification. No conversation content is included."
+                } else {
+                    "A background chat has finished. Open Synara to review the result."
+                }
+                .into(),
+            })
+            .await
+            .map_err(|e| e.to_string());
+            let _ = sender
+                .send(Update::NativeSettings(Box::new(Reply::Notification(
+                    result,
+                ))))
+                .await;
         });
         cx.notify();
     }
@@ -206,8 +290,21 @@ impl Shell {
             .into_any_element()
     }
     pub(super) fn archived_deletion_controls(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
-        let Some(task) = self.settings.native.deleting.and_then(|id| self.catalog.tasks.iter().find(|task| task.id == id)) else {
-            return div().children(self.settings.native.status.as_ref().map(|status| div().child(status.clone()))).into_any_element();
+        let Some(task) = self
+            .settings
+            .native
+            .deleting
+            .and_then(|id| self.catalog.tasks.iter().find(|task| task.id == id))
+        else {
+            return div()
+                .children(
+                    self.settings
+                        .native
+                        .status
+                        .as_ref()
+                        .map(|status| div().child(status.clone())),
+                )
+                .into_any_element();
         };
         let id = task.id;
         div().id("archived-delete-confirmation").role(gpui::Role::Group).aria_label("Confirm permanent archived thread deletion")
@@ -225,25 +322,51 @@ impl Shell {
             .into_any_element()
     }
     pub(super) fn begin_archived_deletion(&mut self, id: TaskId, cx: &mut Context<Self>) {
-        if self.settings.native.busy { return; }
+        if self.settings.native.busy {
+            return;
+        }
         self.settings.native.deleting = Some(id);
         self.settings.native.error = None;
-        self.settings.native.confirmation.update(cx, |entry, cx| entry.clear(cx));
+        self.settings
+            .native
+            .confirmation
+            .update(cx, |entry, cx| entry.clear(cx));
         cx.notify();
     }
     fn delete_archived_thread(&mut self, id: TaskId, cx: &mut Context<Self>) {
-        if self.settings.native.busy || self.settings.native.deleting != Some(id) || self.settings.native.confirmation.read(cx).text() != "DELETE" { return; }
-        if self.selected == Some(id) || self.loading_task == Some(id) || self.busy.contains(&id) || self.connecting.contains(&id)
-            || self.controls.is_pending(id) || self.chat_tools.pending_write()
-            || self.draft_state.pending_for(id) || self.attachments.close_pending() || self.followups.pending(cx) || self.hubs.pending(cx) {
-            self.settings.native.error = Some("Select another chat and finish pending work, saves or imports before permanently deleting this archived thread.".into()); cx.notify(); return;
+        if self.settings.native.busy
+            || self.settings.native.deleting != Some(id)
+            || self.settings.native.confirmation.read(cx).text() != "DELETE"
+        {
+            return;
+        }
+        if self.selected == Some(id)
+            || self.loading_task == Some(id)
+            || self.busy.contains(&id)
+            || self.connecting.contains(&id)
+            || self.controls.is_pending(id)
+            || self.chat_tools.pending_write()
+            || self.draft_state.pending_for(id)
+            || self.attachments.close_pending()
+            || self.followups.pending(cx)
+            || self.hubs.pending(cx)
+        {
+            self.settings.native.error = Some("Select another chat and finish pending work, saves or imports before permanently deleting this archived thread.".into());
+            cx.notify();
+            return;
         }
         self.settings.native.busy = true;
         self.settings.native.error = None;
-        let controller = self.controller.clone(); let sender = self.sender.clone();
+        let controller = self.controller.clone();
+        let sender = self.sender.clone();
         self.runtime.spawn(async move {
-            let result = controller.delete_archived_task(id).await.map_err(|e| e.to_string());
-            let _ = sender.send(Update::NativeSettings(Box::new(Reply::Deleted(id, result)))).await;
+            let result = controller
+                .delete_archived_task(id)
+                .await
+                .map_err(|e| e.to_string());
+            let _ = sender
+                .send(Update::NativeSettings(Box::new(Reply::Deleted(id, result))))
+                .await;
         });
         cx.notify();
     }
@@ -253,36 +376,80 @@ impl Shell {
 }
 
 impl Shell {
-    pub(in crate::shell) fn native_navigation_shortcut(&mut self, event: &gpui::KeyDownEvent, cx: &mut Context<Self>) -> bool {
+    pub(in crate::shell) fn native_navigation_shortcut(
+        &mut self,
+        event: &gpui::KeyDownEvent,
+        cx: &mut Context<Self>,
+    ) -> bool {
         let modifiers = event.keystroke.modifiers;
-        if event.is_held || event.prefer_character_input || !(modifiers.control || modifiers.platform)
-            || self.close != CloseState::Open || self.composer.read(cx).is_composing() || self.editor.read(cx).is_composing()
-            || self.controls.is_open() || self.environment.menu_open() || self.chat_tools.menu_open() || self.settings.popup.is_some() {
+        if event.is_held
+            || event.prefer_character_input
+            || !(modifiers.control || modifiers.platform)
+            || self.close != CloseState::Open
+            || self.composer.read(cx).is_composing()
+            || self.editor.read(cx).is_composing()
+            || self.controls.is_open()
+            || self.environment.menu_open()
+            || self.chat_tools.menu_open()
+            || self.settings.popup.is_some()
+        {
             return false;
         }
-        let key = NavigationKeystroke { key: event.keystroke.key.to_lowercase(), alt: modifiers.alt, shift: modifiers.shift };
+        let key = NavigationKeystroke {
+            key: event.keystroke.key.to_lowercase(),
+            alt: modifiers.alt,
+            shift: modifiers.shift,
+        };
         for command in NAVIGATION_COMMANDS {
-            if NavigationKeystroke::parse(navigation_binding(&self.settings.value.keybindings, command)).ok().as_ref() != Some(&key) { continue; }
+            if NavigationKeystroke::parse(navigation_binding(
+                &self.settings.value.keybindings,
+                command,
+            ))
+            .ok()
+            .as_ref()
+                != Some(&key)
+            {
+                continue;
+            }
             let panel = match command.id {
-                "navigation.chat" => Panel::Conversation, "navigation.files" => Panel::Files,
-                "navigation.changes" => Panel::Changes, "navigation.terminal" => Panel::Terminal,
-                "navigation.inspector" => Panel::Inspector, "navigation.settings" => Panel::Settings,
-                "navigation.agents" => Panel::Registry, "navigation.remote" => Panel::Remote,
-                "navigation.kanban" => Panel::Kanban, "navigation.device" => Panel::Device,
+                "navigation.chat" => Panel::Conversation,
+                "navigation.files" => Panel::Files,
+                "navigation.changes" => Panel::Changes,
+                "navigation.terminal" => Panel::Terminal,
+                "navigation.inspector" => Panel::Inspector,
+                "navigation.settings" => Panel::Settings,
+                "navigation.agents" => Panel::Registry,
+                "navigation.remote" => Panel::Remote,
+                "navigation.kanban" => Panel::Kanban,
+                "navigation.device" => Panel::Device,
                 _ => return false,
             };
-            if panel == Panel::Conversation && self.dock_open() { self.hide_environment(cx); } else { self.set_panel(panel, cx); }
+            if panel == Panel::Conversation && self.dock_open() {
+                self.hide_environment(cx);
+            } else {
+                self.set_panel(panel, cx);
+            }
             return true;
         }
         false
     }
     pub(in crate::shell) fn panel_shortcut_label(&self, panel: Panel) -> Option<&str> {
         let id = match panel {
-            Panel::Conversation => "navigation.chat", Panel::Files => "navigation.files", Panel::Changes => "navigation.changes",
-            Panel::Terminal => "navigation.terminal", Panel::Inspector => "navigation.inspector", Panel::Settings => "navigation.settings",
-            Panel::Registry => "navigation.agents", Panel::Remote => "navigation.remote", Panel::Kanban => "navigation.kanban",
-            Panel::Device => "navigation.device", _ => return None,
+            Panel::Conversation => "navigation.chat",
+            Panel::Files => "navigation.files",
+            Panel::Changes => "navigation.changes",
+            Panel::Terminal => "navigation.terminal",
+            Panel::Inspector => "navigation.inspector",
+            Panel::Settings => "navigation.settings",
+            Panel::Registry => "navigation.agents",
+            Panel::Remote => "navigation.remote",
+            Panel::Kanban => "navigation.kanban",
+            Panel::Device => "navigation.device",
+            _ => return None,
         };
-        NAVIGATION_COMMANDS.iter().find(|command| command.id == id).map(|command| navigation_binding(&self.settings.value.keybindings, command))
+        NAVIGATION_COMMANDS
+            .iter()
+            .find(|command| command.id == id)
+            .map(|command| navigation_binding(&self.settings.value.keybindings, command))
     }
 }

@@ -14,12 +14,16 @@ pub(crate) async fn run(
         return Err(RuntimeError::Closed);
     }
     if !executable.is_absolute() || !executable.is_file() {
-        return Err(RuntimeError::Unsupported("Choose an installed, absolute helper executable in Device settings".into()));
+        return Err(RuntimeError::Unsupported(
+            "Choose an installed, absolute helper executable in Device settings".into(),
+        ));
     }
     let mut launch = LaunchSpec::new(executable);
     launch.args = args;
     // Native helpers must not inherit a project directory or its executable search path.
-    let cwd = executable.parent().ok_or_else(|| RuntimeError::Invalid("helper has no parent directory".into()))?;
+    let cwd = executable
+        .parent()
+        .ok_or_else(|| RuntimeError::Invalid("helper has no parent directory".into()))?;
     let process = LocalHost.spawn(&launch, cwd).await?;
     let handle = process.handle;
     drop(process.stdin);
@@ -61,17 +65,55 @@ mod tests {
     #[tokio::test]
     async fn native_command_output_is_bounded_and_failure_is_not_success() {
         let cancel = CancellationToken::new();
-        let bytes = run(Path::new("/bin/sh"), vec!["-c".into(), "printf ok".into()], 8, &cancel).await.unwrap();
+        let bytes = run(
+            Path::new("/bin/sh"),
+            vec!["-c".into(), "printf ok".into()],
+            8,
+            &cancel,
+        )
+        .await
+        .unwrap();
         assert_eq!(bytes, b"ok");
-        assert!(matches!(run(Path::new("/bin/sh"), vec!["-c".into(), "printf 123456789".into()], 4, &cancel).await, Err(RuntimeError::Limit)));
-        assert!(run(Path::new("/bin/sh"), vec!["-c".into(), "exit 17".into()], 8, &cancel).await.is_err());
+        assert!(matches!(
+            run(
+                Path::new("/bin/sh"),
+                vec!["-c".into(), "printf 123456789".into()],
+                4,
+                &cancel
+            )
+            .await,
+            Err(RuntimeError::Limit)
+        ));
+        assert!(
+            run(
+                Path::new("/bin/sh"),
+                vec!["-c".into(), "exit 17".into()],
+                8,
+                &cancel
+            )
+            .await
+            .is_err()
+        );
     }
     #[tokio::test]
     async fn cancelling_a_live_native_command_returns_without_waiting_for_its_sleep() {
         let cancel = CancellationToken::new();
         let signal = cancel.clone();
-        tokio::spawn(async move { tokio::time::sleep(Duration::from_millis(60)).await; signal.cancel(); });
-        let result = tokio::time::timeout(Duration::from_secs(10), run(Path::new("/bin/sh"), vec!["-c".into(), "sleep 60".into()], 32, &cancel)).await.unwrap();
+        tokio::spawn(async move {
+            tokio::time::sleep(Duration::from_millis(60)).await;
+            signal.cancel();
+        });
+        let result = tokio::time::timeout(
+            Duration::from_secs(10),
+            run(
+                Path::new("/bin/sh"),
+                vec!["-c".into(), "sleep 60".into()],
+                32,
+                &cancel,
+            ),
+        )
+        .await
+        .unwrap();
         assert!(matches!(result, Err(RuntimeError::Closed)));
     }
 }

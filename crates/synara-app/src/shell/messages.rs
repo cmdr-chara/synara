@@ -96,6 +96,11 @@ impl Shell {
                     .child(self.message_branch_button(message, cx))
                     .child(self.message_pin_button(message, index, cx))
                     .child(self.message_reuse_button(message, index, cx))
+                    .children(self.task().filter(|task| task.scope == TaskScope::Studio).map(|task| {
+                        let task = task.id; let anchor = MessageAnchor::from(message);
+                        ui::chrome_button("message-to-hub", "Review message as shared Hub knowledge", Glyph::Notebook, false,
+                            cx.listener(move |this, _: &(), _, cx| this.promote_hub_message(task,anchor.clone(),cx))).size(px(24.))
+                    }))
                     .children(timestamp.map(|text| div().relative().child(ui::layout_probe("message-timestamp")).child(text)))))
             .when(user, |el| el.child(div().absolute().right_0().bottom(px(-24.)).child(
                 div().flex().items_center()

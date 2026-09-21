@@ -1,5 +1,6 @@
 use gpui::Focusable;
 mod activity;
+mod hubs;
 mod chat_tools;
 mod chrome;
 mod composer;
@@ -57,6 +58,7 @@ enum Panel {
     Conversation,
     Dock,
     Kanban,
+    Hubs,
     Help,
     Files,
     Changes,
@@ -86,6 +88,7 @@ struct FormState {
     error: Option<String>,
 }
 enum Update {
+    Hubs(Box<hubs::Reply>),
     Terminals(Box<terminals::Reply>),
     Review(Box<review::Reply>),
     Explorer(Box<explorer::ExplorerReply>),
@@ -152,6 +155,7 @@ enum Update {
     Error(String),
 }
 pub struct Shell {
+    hubs: hubs::HubState,
     terminals: terminals::TerminalWorkspace,
     editors: editors::EditorState,
     command_palette: command_palette::PaletteState,
@@ -386,6 +390,7 @@ impl Shell {
                     .map(|t| t.id)
             });
         let mut this = Self {
+            hubs: hubs::HubState::new(cx),
             terminals: terminals::TerminalWorkspace::default(),
             editors: editors::EditorState::new(cx),
             command_palette: command_palette::PaletteState::new(cx),
@@ -455,6 +460,7 @@ impl Shell {
             _subscriptions: subscriptions,
         };
         this.load_organization();
+        this.load_hubs();
         this.composer.update(cx, |entry, _| {
             entry.set_send_on_enter(this.settings.value.chat.send_on_enter)
         });
@@ -471,6 +477,11 @@ impl Shell {
         this
     }
     pub fn request_close(&mut self, window: &mut Window, cx: &mut Context<Self>) -> bool {
+        if self.hubs.pending(cx) {
+            self.notice = Some("Finish Hub creation or save/discard the Hub context editor before closing.".into());
+            cx.notify();
+            return false;
+        }
         if self.appearance_pending(cx) {
             self.notice = Some("Finish the appearance save or image picker, and clear any pasted profile before closing.".into());
             cx.notify();
@@ -674,6 +685,7 @@ impl Shell {
         }
     }
     fn select_task(&mut self, id: TaskId, cx: &mut Context<Self>) -> bool {
+        if self.hub_navigation_blocked(cx) { return false; }
         if self.explorer.modal_open() {
             return false;
         }
@@ -696,6 +708,7 @@ impl Shell {
         self.selection_revision = self.selection_revision.wrapping_add(1);
         self.navigation.studio = task.scope == TaskScope::Studio;
         if self.navigation.studio {
+            self.hubs.selected = Some(task.project_id);
             self.navigation.last_studio = Some(id);
         } else {
             self.navigation.last_synara = Some(id);
@@ -762,6 +775,7 @@ impl Shell {
         }
     }
     fn open_workspace(&mut self, cx: &mut Context<Self>) {
+        if self.hub_navigation_blocked(cx) { return; }
         let text = self.workspace_path.read(cx).text().trim().to_owned();
         if text.is_empty() {
             self.error = Some("Enter an existing absolute directory or use Browse.".into());
@@ -818,6 +832,7 @@ impl Shell {
         .detach();
     }
     fn open_remote_workspace(&mut self, cx: &mut Context<Self>) {
+        if self.hub_navigation_blocked(cx) { return; }
         if self.dirty(cx) || self.saving {
             self.error =
                 Some("Save or discard the open document before switching workspaces.".into());
@@ -878,6 +893,8 @@ impl Shell {
     }
 
     fn create_chat(&mut self, scope: TaskScope, cx: &mut Context<Self>) {
+        if self.hub_navigation_blocked(cx) { return; }
+        if scope == TaskScope::Studio { self.new_hub_thread(cx); return; }
         if self.creating_task
             || self.loading_task.is_some()
             || self
@@ -1002,6 +1019,7 @@ impl Shell {
         cx.notify();
     }
     fn send_prompt(&mut self, cx: &mut Context<Self>) {
+        if self.hub_navigation_blocked(cx) { return; }
         let Some(id) = self.selected else {
             self.error = Some("Create or select a task first.".into());
             cx.notify();
@@ -1025,13 +1043,15 @@ impl Shell {
         let untitled = self.task().is_some_and(|task| {
             matches!(
                 task.title.as_str(),
-                "New task" | "New thread" | "New studio chat"
+                "New task" | "New thread" | "New studio chat" | "New Hub thread"
             )
         });
+        let hub_thread = self.task().is_some_and(|task| task.scope == TaskScope::Studio);
         self.job(async move {
             let result = async {
                 if untitled {
-                    let title: String = text
+                    let title_text = if hub_thread { text.rsplit_once("\nTask:\n").map_or(text.as_str(),|(_,prompt)|prompt) } else { text.as_str() };
+                    let title: String = title_text
                         .split_whitespace()
                         .collect::<Vec<_>>()
                         .join(" ")
@@ -1188,6 +1208,7 @@ impl Shell {
     }
     fn receive(&mut self, update: Update, cx: &mut Context<Self>) {
         match update {
+            Update::Hubs(reply) => self.hub_reply(*reply, cx),
             Update::Terminals(reply) => self.terminal_reply(*reply, cx),
             Update::Review(reply) => self.review_reply(*reply, cx),
             Update::Explorer(reply) => self.explorer_reply(*reply, cx),
@@ -1245,14 +1266,13 @@ impl Shell {
             Update::TaskCreated(task, catalog, revision) => {
                 self.creating_task = false;
                 self.catalog = catalog;
-                // Preserve a new title typed while an earlier creation was pending.
                 if self.task_title.read(cx).text().trim() == task.title.trim() {
                     self.task_title.update(cx, |entry, cx| entry.clear(cx));
                 }
                 if revision == self.selection_revision && self.select_task(task.id, cx) {
                     self.set_panel(Panel::Conversation, cx);
                 } else {
-                    self.notice = Some("The new thread and its unsent draft were saved. Open it from thread search when ready.".into());
+                    self.notice = Some("The new thread and its draft were saved. Open it from thread search when ready.".into());
                 }
             }
             Update::TaskCreationFailed(error) => {
@@ -1524,6 +1544,7 @@ impl Shell {
         }
     }
     fn set_panel(&mut self, panel: Panel, cx: &mut Context<Self>) {
+        if panel != Panel::Hubs && self.hub_navigation_blocked(cx) { return; }
         if self.explorer.modal_open() {
             return;
         }
@@ -1543,6 +1564,7 @@ impl Shell {
         self.error = None;
         self.notice = None;
         match panel {
+            Panel::Hubs => self.focus_composer = false,
             Panel::Registry => self.load_registry_if_needed(cx),
             Panel::Settings => {
                 self.focus_composer = false;

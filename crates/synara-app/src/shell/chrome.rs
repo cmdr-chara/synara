@@ -170,7 +170,7 @@ impl Shell {
                         .aria_label("Hand off, unavailable")
                     }))
                     .children(
-                        (!matches!(self.panel, Panel::Settings | Panel::Kanban)).then(|| {
+                        (!matches!(self.panel, Panel::Settings | Panel::Kanban | Panel::Hubs)).then(|| {
                             ui::chrome_button(
                                 "Terminal",
                                 "Terminal",
@@ -187,7 +187,7 @@ impl Shell {
                         }),
                     )
                     .children(
-                        (!matches!(self.panel, Panel::Settings | Panel::Kanban)).then(|| {
+                        (!matches!(self.panel, Panel::Settings | Panel::Kanban | Panel::Hubs)).then(|| {
                             ui::chrome_button(
                                 "Files",
                                 "Toggle workspace pane",
@@ -278,7 +278,7 @@ impl Shell {
                 div()
                     .id("mode-switcher")
                     .role(gpui::Role::Menu)
-                    .aria_label("Synara and Studio")
+                    .aria_label("Synara and Hubs")
                     .tab_group()
                     .absolute()
                     .top(px(ui::CHROME_HEIGHT + 36.))
@@ -294,7 +294,7 @@ impl Shell {
                     .children(
                         [
                             (false, "Synara", "Build, debug, and ship"),
-                            (true, "Studio", "Open-ended agent work"),
+                            (true, "Hubs", "Shared context and related threads"),
                         ]
                         .into_iter()
                         .enumerate()
@@ -452,6 +452,7 @@ impl Render for Shell {
         }
         self.restore_organization_focus(window, cx);
         self.restore_saved_context_focus(window, cx);
+        self.restore_hub_focus(window, cx);
         self.restore_explorer_focus(window, cx);
         if tools_visible && !self.settings.personalization.attention_open {
             self.restore_editor_focus(window, cx);
@@ -482,10 +483,9 @@ impl Render for Shell {
         let dock_fraction = if self.zen_active() && !self.settings.personalization.tools_shown
             || self.panel != Panel::Conversation && !dock_open {
             0.
-        } else if cx.reduce_motion() {
-            if dock_open { 1. } else { 0. }
         } else {
-            self.dock_motion.value(now)
+            if cx.reduce_motion() { if dock_open { 1. } else { 0. } }
+            else { self.dock_motion.value(now) }
         };
         if !cx.reduce_motion() && self.dock_motion.running(now) {
             cx.on_next_frame(window, |_, _, cx| cx.notify());
@@ -663,6 +663,9 @@ impl Render for Shell {
                             .flex_1()
                             .min_w_0()
                             .min_h_0()
+                            .children(self.hubs.error_message().map(|error| {
+                                div().px_4().py_2().bg(rgb(palette().error_surface)).text_color(rgb(palette().error)).child(error.to_owned())
+                            }))
                             .children(self.error.as_ref().map(|error| {
                                 div()
                                     .px_4()

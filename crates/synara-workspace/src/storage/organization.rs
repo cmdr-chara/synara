@@ -1,5 +1,8 @@
 //! User-owned project organization. Spaces never move directories or change
 //! task/agent ownership. Each explicit edit is applied to the latest transaction.
+mod hubs;
+#[cfg(test)]
+mod hubs_tests;
 use super::*;
 use crate::{WorkspaceError, WorkspaceResult, WorkspaceService};
 use serde::{Deserialize, Serialize};

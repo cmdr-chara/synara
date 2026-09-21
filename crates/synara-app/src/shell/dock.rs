@@ -78,6 +78,7 @@ impl Shell {
         match self.panel {
             Panel::Conversation => self.conversation(window, cx),
             Panel::Kanban => self.kanban_panel(cx),
+            Panel::Hubs => self.hub_panel(cx),
             Panel::Help => self.help_panel(),
             Panel::Inspector => self.inspector_panel(cx),
             Panel::Settings => self.settings_panel(cx),

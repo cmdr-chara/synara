@@ -59,6 +59,11 @@ impl Focusable for TextEntry {
     }
 }
 impl TextEntry {
+    fn visible_height(&self) -> f32 {
+        if self.mode == EntryMode::Composer {
+            (f32::from(self.content_height) + 16.).clamp(self.height.max(self.line_height() + 12.), 196.)
+        } else { self.height.max(self.line_height() + 12.) }
+    }
     fn line_height(&self) -> f32 {
         let font = match self.mode {
             EntryMode::Editor => crate::ui::code_font_size(),
@@ -500,7 +505,7 @@ impl Render for TextEntry {
             .track_focus(&self.focus)
             .tab_index(0)
             .w_full()
-            .h(px(self.height.max(self.line_height() + 12.)))
+            .h(px(self.visible_height()))
             .p_2()
             .bg(crate::ui::surface(crate::ui::palette().canvas))
             .border_1()
@@ -558,7 +563,13 @@ impl Render for TextEntry {
             .child(
                 canvas(
                     move |bounds, window, cx| {
-                        entity.update(cx, |this, _| this.prepare(bounds, window));
+                        entity.update(cx, |this, cx| {
+                            let previous = this.visible_height();
+                            this.prepare(bounds, window);
+                            if this.mode == EntryMode::Composer && (this.visible_height() - previous).abs() > 0.5 {
+                                cx.notify();
+                            }
+                        });
                     },
                     move |bounds, _, window, cx| {
                         let focus = paint_entity.read(cx).focus.clone();

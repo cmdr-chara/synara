@@ -63,18 +63,14 @@ impl Shell {
             });
             self.settings.personalization.applied_material = Some(material);
         }
-        let metrics = (appearance.personalization.chat_width,
-            appearance.fonts.ui_size.to_bits(), appearance.fonts.ui_family.clone());
+        let metrics = (appearance.personalization.chat_width, appearance.fonts.ui_size.to_bits(), appearance.fonts.ui_family.clone());
         if self.settings.personalization.metrics.as_ref() != Some(&metrics) {
             self.settings.personalization.metrics = Some(metrics);
             self.transcript.list.remeasure_items(0..self.transcript.list.item_count());
         }
         let path = appearance.personalization.wallpaper.clone();
-        let blur = if matches!(material, SurfaceMaterial::Frosted | SurfaceMaterial::Glass) {
-            appearance.personalization.wallpaper_blur
-        } else { 0 };
-        if self.settings.personalization.image_path == path
-            && self.settings.personalization.image_blur == blur { return; }
+        let blur = if matches!(material, SurfaceMaterial::Frosted | SurfaceMaterial::Glass) { appearance.personalization.wallpaper_blur } else { 0 };
+        if self.settings.personalization.image_path == path && self.settings.personalization.image_blur == blur { return; }
         let state = &mut self.settings.personalization;
         state.image_path = path.clone();
         state.image_blur = blur;
@@ -118,8 +114,7 @@ impl Shell {
             WallpaperFit::Cover => gpui::ObjectFit::Cover,
             WallpaperFit::Contain => gpui::ObjectFit::Contain,
         };
-        // One continuous tint over the desktop OR local image. Never an opaque
-        // transcript-sized backing rectangle, and never fade child text.
+        // A single tint over the desktop or local image. Child text stays crisp.
         div().absolute().inset_0().overflow_hidden()
             .children(image.map(|image| gpui::img(image).absolute().inset_0().size_full().object_fit(fit)))
             .child(div().absolute().inset_0().bg(ui::canvas_background()))
@@ -140,7 +135,7 @@ impl Shell {
             let _ = view.update(cx, |this, cx| {
                 this.settings.personalization.busy = false;
                 if this.settings.value.appearance != before {
-                    this.settings.personalization.error = Some("Appearance changed while the picker was open. The late image choice was ignored.".into());
+                    this.settings.personalization.error = Some("Appearance changed during image selection. The late choice was ignored.".into());
                     cx.notify(); return;
                 }
                 match result {
@@ -169,7 +164,7 @@ impl Shell {
             let _ = view.update(cx, |this, cx| {
                 this.settings.personalization.busy = false;
                 if this.settings.value.appearance != before {
-                    this.settings.personalization.error = Some("Appearance changed while the image was checked. The late image choice was ignored.".into());
+                    this.settings.personalization.error = Some("Appearance changed during image selection. The late choice was ignored.".into());
                     cx.notify(); return;
                 }
                 match result {
@@ -188,16 +183,12 @@ impl Shell {
         self.save_setting(|s| {
             let p = &mut s.appearance.personalization;
             p.material = material;
-            // Explicit material choice applies readable starting values. Subsequent
-            // opacity changes are user-owned and are never rewritten by render.
             let (canvas, panels) = match material {
                 SurfaceMaterial::Solid => (85, 92),
-                SurfaceMaterial::Transparent => (70, 82),
+                SurfaceMaterial::Transparent | SurfaceMaterial::Glass => (70, 82),
                 SurfaceMaterial::Frosted => (76, 86),
-                SurfaceMaterial::Glass => (70, 82),
             };
-            p.canvas_opacity = canvas;
-            p.panel_opacity = panels;
+            p.canvas_opacity = canvas; p.panel_opacity = panels;
         }, cx);
     }
     fn adjust_appearance(&mut self, setting: Adjust, amount: i16, cx: &mut Context<Self>) {
@@ -249,7 +240,7 @@ impl Shell {
         let state = &self.settings.personalization;
         let mut page = div().mt_4().flex().flex_col().gap_2()
             .child(heading("Focus and color"))
-            .child(row("Zen mode", "A quieter presentation of Synara and Studio, not a separate chat history. Ctrl/Cmd+Alt+Z toggles it.",
+            .child(row("Zen mode", "A quieter presentation of Synara and Hubs, not a separate chat history. Ctrl/Cmd+Alt+Z toggles it.",
                 ui::action("zen-preference", if p.zen_mode { "On" } else { "Off" }, None, p.zen_mode,
                     cx.listener(|this, _: &(), _, cx| this.toggle_zen(cx)))
                     .role(gpui::Role::Switch).aria_label("Zen mode")
@@ -277,7 +268,7 @@ impl Shell {
                 (SurfaceMaterial::Frosted, "Frosted"), (SurfaceMaterial::Glass, "Glass"),
             ].into_iter().enumerate().map(|(index, (material, label))| ui::action(("material", index), label, None, p.material == material,
                 cx.listener(move |this, _: &(), _, cx| this.choose_material(material, cx))))))
-            .child(div().text_size(px(12.)).text_color(rgb(palette().muted)).child("Glass means desktop transparency plus native blur and a subtle rim across the whole window. Panel tint is total coverage, not stacked opacity. Desktop blur depends on your OS/compositor, not the wallpaper blur slider. Menus and decisions stay solid."))
+            .child(div().text_size(px(12.)).text_color(rgb(palette().muted)).child("Frosted and Glass request native desktop blur. The OS/compositor decides availability. Glass adds translucent surfaces and edge highlights, not a refractive shader. Menus and approval text retain solid contrast."))
             .child(self.appearance_stepper("canvas-opacity", "Window tint", format!("{}%", p.canvas_opacity), Adjust::Canvas, 5, cx))
             .child(self.appearance_stepper("panel-opacity", "Panel tint", format!("{}%", p.panel_opacity), Adjust::Panels, 5, cx))
             .child(heading("Wallpaper"))
@@ -310,8 +301,7 @@ impl Shell {
             })))
             .child(self.appearance_stepper("wallpaper-dim", "Wallpaper dimming", format!("{}%", p.wallpaper_dim), Adjust::Dim, 5, cx))
             .child(self.appearance_stepper("wallpaper-blur", "Local image blur", format!("{}", p.wallpaper_blur), Adjust::Blur, 4, cx))
-            .child(div().text_size(px(11.)).text_color(rgb(palette().muted))
-                .child("Applied to a cached local wallpaper in Frosted/Glass. Choose Use desktop glass for your actual desktop background. Lower tint values can reduce readability."))
+            .child(div().text_size(px(11.)).text_color(rgb(palette().muted)).child("Local image blur applies only to wallpapers in Frosted/Glass. Desktop blur is controlled by your compositor."))
             .child(heading("Space and motion"))
             .child(div().flex().flex_wrap().gap_2().children([
                 (DensityPreference::Compact, "Compact"), (DensityPreference::Comfortable, "Comfortable"), (DensityPreference::Spacious, "Spacious"),

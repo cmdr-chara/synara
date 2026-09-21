@@ -13,6 +13,7 @@ impl Shell {
             || self.kanban.dialog.is_some() || self.organization.dialog.is_some()
             || self.saved_context.dialog.is_some() || self.composer.read(cx).is_composing()
             || self.editor.read(cx).is_composing() || self.terminal_view.read(cx).has_pending_input()
+            || self.hubs.pending(cx)
         { return; }
         self.settings.personalization.navigation_shown = false;
         self.settings.personalization.tools_shown = false;
@@ -61,10 +62,6 @@ impl Shell {
         rows
     }
     pub(super) fn open_attention(&mut self, window: &mut Window, cx: &mut Context<Self>) {
-        if self.close != CloseState::Open || self.explorer.modal_open()
-            || self.kanban.dialog.is_some() || self.organization.dialog.is_some()
-            || self.saved_context.dialog.is_some() || self.composer.read(cx).is_composing()
-            || self.editor.read(cx).is_composing() { return; }
         self.controls.retire(); self.environment.retire_popup(); self.chat_tools.retire();
         self.navigation.menu_open = false;
         self.settings.popup = None;
@@ -79,7 +76,6 @@ impl Shell {
         let title = self.task().map_or("New thread", |task| task.title.as_str());
         div().id("zen-toolbar").relative().h(px(ui::CHROME_HEIGHT)).w_full().flex_shrink_0()
             .flex().items_center().px_2().gap_1()
-            .border_b_1().border_color(ui::glass_edge())
             .child(ui::chrome_button("zen-navigation", "Show or hide navigation", Glyph::Panel, false,
                 cx.listener(|this, _: &(), _, cx| {
                     this.settings.personalization.navigation_shown = !this.settings.personalization.navigation_shown;
@@ -90,23 +86,23 @@ impl Shell {
                     if event.click_count == 2 { window.zoom_window(); } else { window.start_window_move(); }
                 })
                 .child(gpui::svg().path("brand/synara.svg").size(px(20.)).text_color(rgb(palette().text)))
-                .children((!compact).then(|| div().font_family("Cal Sans").text_size(px(16.)).child(if self.navigation.studio { "Studio" } else { "Synara" })))
+                .children((!compact).then(|| div().font_family("Cal Sans").text_size(px(16.)).child(if self.navigation.studio { "Hubs" } else { "Synara" })))
                 .child(div().min_w_0().text_ellipsis().text_size(px(12.)).text_color(rgb(palette().muted)).child(title.to_owned())))
             .child(ui::action("zen-attention", if waiting > 0 { format!("{waiting}") } else { String::new() }, Some(Glyph::Bell), waiting > 0,
                 cx.listener(|this, _: &(), window, cx| this.open_attention(window, cx))).aria_label("Active tasks and pending decisions"))
             .child(ui::chrome_button("zen-command-search", "Search commands and threads", Glyph::Search, false,
                 cx.listener(|this, _: &(), window, cx| this.open_command_palette(window, cx))))
-            .child(ui::chrome_button("zen-new-chat", "New chat in the current Synara or Studio scope", Glyph::Compose, false,
+            .child(ui::chrome_button("zen-new-chat", "New chat in Synara or the current Hub", Glyph::Compose, false,
                 cx.listener(|this, _: &(), _, cx| {
                     this.start_new_chat(cx);
                 })))
             .child(ui::chrome_button("zen-tools", "Show or hide Environment", Glyph::PanelRight, false,
                 cx.listener(|this, _: &(), _, cx| this.toggle_zen_tools(cx))))
-            .children((!compact).then(|| ui::chrome_button("zen-details", "Show or hide conversation actions", Glyph::More, false,
+            .child(ui::chrome_button("zen-details", "Show or hide conversation actions", Glyph::More, false,
                 cx.listener(|this, _: &(), _, cx| {
                     this.settings.personalization.details_shown = !this.settings.personalization.details_shown;
                     cx.notify();
-                }))))
+                })))
             .child(ui::chrome_button("zen-appearance", "Customize appearance", Glyph::Palette, false,
                 cx.listener(|this, _: &(), _, cx| this.open_appearance(cx))))
             .child(ui::action("exit-zen", "Exit Zen", None, false,

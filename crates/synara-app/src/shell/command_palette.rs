@@ -24,7 +24,7 @@ impl PaletteState {
 #[derive(Clone)]
 enum Action {
     ToggleZen, Appearance, Attention,
-    Panel(Panel), NewChat, NewStudio, Outputs, Sidebar, Environment,
+    Panel(Panel), NewChat, NewHub, Outputs, Sidebar, Environment,
     ThreadSearch, MessageSearch, Notes, OpenProject, Find, Replace, GoToLine,
     ToggleTree, Task(TaskId), Project(ProjectId), File(PathBuf),
 }
@@ -36,7 +36,7 @@ struct Command {
 }
 impl Shell {
     pub(super) fn open_command_palette(&mut self, window: &mut Window, cx: &mut Context<Self>) {
-        if self.close != CloseState::Open || self.explorer.modal_open()
+        if self.hubs.pending(cx) || self.close != CloseState::Open || self.explorer.modal_open()
             || self.kanban.dialog.is_some() || self.organization.dialog.is_some()
             || self.saved_context.dialog.is_some() || self.composer.read(cx).is_composing()
             || self.editor.read(cx).is_composing()
@@ -80,6 +80,7 @@ impl Shell {
             ("Toggle Zen mode", "Focus view · Ctrl/Cmd+Alt+Z", Glyph::Goal, Action::ToggleZen),
             ("Customize appearance", "Themes, wallpaper, glass and motion", Glyph::Palette, Action::Appearance),
             ("Active tasks and decisions", "Running chats and pending requests", Glyph::Bell, Action::Attention),
+            ("Hubs", "Shared instructions, knowledge and Library", Glyph::Folders, Action::Panel(Panel::Hubs)),
             ("New thread", "Create a standalone chat", Glyph::Compose, Action::NewChat),
             ("Chat", "Ctrl/Cmd+1", Glyph::Chat, Action::Panel(Panel::Conversation)),
             ("Explorer", "Files · Ctrl/Cmd+2", Glyph::Files, Action::Panel(Panel::Files)),
@@ -97,13 +98,13 @@ impl Shell {
             ("Help and shortcuts", "Keyboard reference and licenses", Glyph::Help, Action::Panel(Panel::Help)),
         ] { add(1, title.into(), detail.into(), glyph, action); }
         if self.settings.value.general.show_studio {
-            add(1, "New Studio chat".into(), "Start a separate Studio conversation".into(), Glyph::Blocks, Action::NewStudio);
+            add(1, "New Hub".into(), "Optional shared work context".into(), Glyph::Blocks, Action::NewHub);
         }
         if self.selected.is_some() {
             for (title, detail, glyph, action) in [
                 ("Search this conversation", "Find messages and work details", Glyph::Search, Action::MessageSearch),
                 ("Chat notes and checklist", "User-owned saved context", Glyph::Notebook, Action::Notes),
-                ("Browse Studio outputs", "Workspace files and generated output previews", Glyph::Blocks, Action::Outputs),
+                ("Hub Library", "Workspace files and attributed outputs", Glyph::Blocks, Action::Outputs),
             ] { add(1, title.into(), detail.into(), glyph, action); }
         }
         if self.document.is_some() {
@@ -136,13 +137,20 @@ impl Shell {
             Action::Attention => self.open_attention(window, cx),
             Action::Panel(panel) => {
                 if panel == Panel::Conversation { self.show_conversation(cx); }
+                else if panel == Panel::Hubs { self.show_hubs(cx); }
                 else { self.set_panel(panel, cx); }
             }
             Action::NewChat => { self.task_title.update(cx, |input, cx| input.clear(cx)); self.create_chat(TaskScope::Chat, cx); }
-            Action::NewStudio => { self.task_title.update(cx, |input, cx| input.clear(cx)); self.create_chat(TaskScope::Studio, cx); }
-            Action::Sidebar => self.toggle_sidebar(cx),
+            Action::NewHub => self.edit_hub(true, cx),
+            Action::Sidebar => {
+                if self.zen_active() {
+                    self.settings.personalization.navigation_shown = !self.settings.personalization.navigation_shown;
+                    self.focus_composer = !self.settings.personalization.navigation_shown;
+                } else { self.toggle_sidebar(cx); }
+            },
             Action::Environment => {
-                if self.dock_open() { self.hide_environment(cx); }
+                if self.zen_active() { self.toggle_zen_tools(cx); }
+                else if self.dock_open() { self.hide_environment(cx); }
                 else { self.set_panel(Panel::Dock, cx); }
             }
             Action::ThreadSearch => self.open_thread_finder(window, cx),

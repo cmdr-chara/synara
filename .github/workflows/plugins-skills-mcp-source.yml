@@ -1,26 +1,99 @@
-name: Plugins Skills MCP source snapshot
+name: Plugins Skills MCP focused validation
 on:
   push:
     branches: [astra/plugins-skills-mcp]
-    paths: ['.github/workflows/plugins-skills-mcp-source.yml']
+    paths: ['.synara-plugins-source.json']
 permissions:
   contents: read
+env:
+  CARGO_BUILD_JOBS: '2'
+  PYTHONDONTWRITEBYTECODE: '1'
 jobs:
-  snapshot:
+  source:
     runs-on: ubuntu-24.04
-    timeout-minutes: 3
+    timeout-minutes: 8
+    permissions:
+      contents: write
+    outputs:
+      revision: ${{ steps.revision.outputs.revision }}
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
           fetch-depth: 0
-          persist-credentials: false
-      - name: Capture exact session source
+      - name: Apply reviewed integrity-checked session source
         run: |
-          mkdir -p /tmp/synara-plugins-source
-          git bundle create /tmp/synara-plugins-source/source.bundle HEAD
-          git rev-parse HEAD > /tmp/synara-plugins-source/revision.txt
+          python3 - <<'PY'
+          import scripts.apply_source as source
+          source.BRANCH = 'refs/heads/astra/plugins-skills-mcp'
+          source.PAYLOAD = source.ROOT / '.synara-plugins-source.json'
+          source.main()
+          PY
+      - name: Format only session-owned Rust modules
+        run: |
+          rustup toolchain install 1.98.1 --profile minimal --component rustfmt
+          rustfmt +1.98.1 --edition 2024 crates/synara-workspace/src/integrations.rs crates/synara-workspace/src/storage/integrations.rs crates/synara-workspace/src/controller/integrations.rs crates/synara-app/src/shell/integrations.rs
+          git add crates/synara-workspace/src/integrations* crates/synara-workspace/src/storage/integrations* crates/synara-workspace/src/controller/integrations* crates/synara-app/src/shell/integrations*
+          if ! git diff --cached --quiet; then
+            git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'style: format native integration management modules'
+            git push origin HEAD:refs/heads/astra/plugins-skills-mcp
+          fi
+      - name: Record exact source revision
+        id: revision
+        run: echo "revision=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+      - name: Capture source for local review
+        if: ${{ !cancelled() }}
+        run: |
+          mkdir -p /tmp/plugins-source
+          git bundle create /tmp/plugins-source/source.bundle HEAD
+          git rev-parse HEAD > /tmp/plugins-source/revision.txt
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: ${{ !cancelled() }}
         with:
-          name: plugins-skills-mcp-source
-          path: /tmp/synara-plugins-source/
-          retention-days: 1
+          name: plugins-skills-mcp-candidate
+          path: /tmp/plugins-source/
+          retention-days: 2
+  focused:
+    needs: source
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          ref: ${{ needs.source.outputs.revision }}
+          persist-credentials: false
+      - name: Install pinned native prerequisites
+        run: |
+          rustup toolchain install 1.98.1 --profile minimal --component rustfmt
+          sudo apt-get update > /tmp/plugins-install.log 2>&1
+          sudo apt-get install -y clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil xclip fonts-dejavu-core fonts-liberation >> /tmp/plugins-install.log 2>&1
+      - name: Session formatting and source checks
+        run: |
+          rustfmt +1.98.1 --edition 2024 --check crates/synara-workspace/src/integrations.rs crates/synara-workspace/src/storage/integrations.rs crates/synara-workspace/src/controller/integrations.rs crates/synara-app/src/shell/integrations.rs
+          python3 scripts/check_roadmap.py
+          python3 -m py_compile scripts/native_integrations_smoke.py
+      - name: Focused integration storage controller and HTTP tests
+        run: cargo +1.98.1 test --locked -p synara-workspace --lib integrations
+      - name: Generic ACP negotiation and context regressions
+        run: |
+          cargo +1.98.1 test --locked -p synara-acp --lib wire::tests::capabilities_use_protocol_advertisements_not_agent_names -- --exact
+          cargo +1.98.1 test --locked -p synara-acp --lib wire::tests::negotiated_session_parameters_cover_directories_and_mcp_transports -- --exact
+      - name: Build native application and fixture once
+        run: cargo +1.98.1 build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture
+      - name: Native integration management journey
+        timeout-minutes: 5
+        run: python3 scripts/native_integrations_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/plugins-native
+      - name: Candidate stayed unchanged
+        if: ${{ !cancelled() }}
+        run: |
+          git rev-parse HEAD
+          git diff --exit-code
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: ${{ !cancelled() }}
+        with:
+          name: plugins-skills-mcp-native
+          path: |
+            /tmp/plugins-native/*.png
+            /tmp/plugins-native/*.log
+            /tmp/plugins-native/result.json
+          retention-days: 7
+          if-no-files-found: warn

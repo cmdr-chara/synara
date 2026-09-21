@@ -1,0 +1,52 @@
+name: Publish verified PR Automations Browser source
+on:
+  push:
+    branches: [astra/pr-automations-browser]
+    paths: [.session/pab-wiring.json]
+permissions:
+  contents: write
+concurrency:
+  group: pab-source-publish
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: github.repository == 'cmdr-chara/synara'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          fetch-depth: 1
+          ref: ${{ github.sha }}
+      - name: Apply reviewed exact replacements and publish the session branch only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, pathlib, subprocess
+          def git(*args):
+              return subprocess.check_output(['git', *args]).decode().strip()
+          batch = json.loads(pathlib.Path('.session/pab-wiring.json').read_text())
+          seen = set()
+          for entry in batch['files']:
+              name = entry['path']
+              path = pathlib.Path(name)
+              assert not path.is_absolute() and '..' not in path.parts and name not in seen
+              assert name.startswith(('crates/', 'foundations/', 'docs/')) or name in ('Cargo.lock', 'Cargo.toml', 'ROADMAP.md')
+              assert git('rev-parse', 'HEAD:' + name) == entry['before'], 'Stale source: ' + name
+              seen.add(name)
+              text = path.read_text()
+              for old, new, count in entry['replacements']:
+                  assert old and text.count(old) == count, 'Replacement mismatch: ' + name
+                  text = text.replace(old, new)
+              path.write_text(text)
+              git('add', '--', name)
+          git('rm', '.session/pab-wiring.json')
+          git('config', 'user.name', 'Commander Chara')
+          git('config', 'user.email', '249489759+cmdr-chara@users.noreply.github.com')
+          message = batch['message']
+          assert message.startswith(('feat(', 'fix(', 'docs:')) and len(message) < 240
+          git('commit', '-m', message)
+          git('push', 'origin', 'HEAD:refs/heads/astra/pr-automations-browser')
+          print('Published source commit:', git('rev-parse', 'HEAD'))
+          PY

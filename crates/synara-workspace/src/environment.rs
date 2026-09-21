@@ -13,6 +13,7 @@ pub enum EnvironmentTab {
     Terminal,
     Explorer,
     Changes,
+    Device,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -42,7 +43,7 @@ impl EnvironmentLayout {
         if self.version != VERSION
             || !self.width_ratio.is_finite()
             || !(0.2..=0.8).contains(&self.width_ratio)
-            || self.tabs.len() > 3
+            || self.tabs.len() > 4
             || self.tabs.iter().collect::<HashSet<_>>().len() != self.tabs.len()
             || self.active.is_some_and(|tab| !self.tabs.contains(&tab))
             || (self.active.is_none() && !self.tabs.is_empty())

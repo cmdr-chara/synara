@@ -254,15 +254,12 @@ PRAGMA user_version=2;")?;
         data.map(|data| decode(&data)).transpose()
     }
     pub fn delete_task(&mut self, id: TaskId) -> StorageResult<bool> {
-        let Some(task) = self.task(id)? else {
-            return Ok(false);
-        };
-        if task.state != TaskState::Archived {
-            return Err(StorageError::Identity);
-        }
-        let tx = self
-            .connection
-            .transaction_with_behavior(TransactionBehavior::Immediate)?;
+        // Take the writer lock before checking archive state. Another database
+        // connection must not restore a task between that check and deletion.
+        let tx = self.connection.transaction_with_behavior(TransactionBehavior::Immediate)?;
+        let raw: Option<String> = tx.query_row("SELECT data FROM tasks WHERE id=?1", [id.to_string()], |row| row.get(0)).optional()?;
+        let Some(task) = raw.map(|raw| decode::<Task>(&raw)).transpose()? else { return Ok(false); };
+        if task.state != TaskState::Archived { return Err(StorageError::Identity); }
         tx.execute(
             "DELETE FROM sessions WHERE thread_id=?1",
             [task.thread_id.to_string()],

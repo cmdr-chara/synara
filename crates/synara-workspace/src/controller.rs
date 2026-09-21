@@ -402,6 +402,41 @@ impl Controller {
         }
         Ok(connection.trace())
     }
+    /// User-confirmed permanent deletion. Reserve the task against new prompts,
+    /// serialize with session setup, close its session (not the shared process),
+    /// then use storage's archived-only atomic deletion invariant.
+    pub async fn delete_archived_task(&self, id: TaskId) -> WorkspaceResult<()> {
+        let _lifetime = self.lifetime.read().await;
+        let slot = self.slot(id).await?;
+        if slot.active.swap(true, Ordering::AcqRel) {
+            return Err(AgentError::Busy.into());
+        }
+        let _ownership = PromptOwnership(slot.clone());
+        let _gate = slot.creation.lock().await;
+        if self.workspace.task(id).await?.state != TaskState::Archived {
+            return Err(WorkspaceError::Invalid("Only an archived task may be permanently deleted".into()));
+        }
+        let old = slot.live.lock().map_err(|_| WorkspaceError::Worker)?.take();
+        if let Some(old) = old {
+            let result = tokio::time::timeout(std::time::Duration::from_secs(8), old.session.close()).await;
+            if !matches!(result, Ok(Ok(()))) {
+                *slot.live.lock().map_err(|_| WorkspaceError::Worker)? = Some(old);
+                return Err(match result {
+                    Ok(Err(error)) => error.into(),
+                    _ => WorkspaceError::Invalid("Session close timed out. Archived data was retained".into()),
+                });
+            }
+        }
+        self.workspace.delete_task(id).await?;
+        *slot.connection.lock().map_err(|_| WorkspaceError::Worker)? = None;
+        self.tasks.lock().await.remove(&id);
+        Ok(())
+    }
+
+    pub fn secret_store_state(&self) -> synara_runtime::SecretStoreState {
+        self.secrets.state()
+    }
+
     pub async fn shutdown(&self) -> WorkspaceResult<()> {
         self.closing.store(true, Ordering::Release);
         let _lifetime = self.lifetime.write().await;
@@ -417,5 +452,36 @@ impl Drop for PromptOwnership {
             token.take();
         }
         self.0.active.store(false, Ordering::Release);
+    }
+}
+
+#[cfg(test)]
+mod device_settings_tests {
+    use super::*;
+    struct NeverLaunch;
+    #[async_trait::async_trait]
+    impl AgentBackend for NeverLaunch {
+        async fn connect(&self, _: &AgentSpec, _: ConnectionContext) -> AgentResult<Arc<dyn AgentConnection>> {
+            panic!("archived deletion must never start an agent")
+        }
+    }
+    #[tokio::test]
+    async fn permanent_deletion_rejects_unarchived_and_active_tasks_then_removes_archived_data() {
+        let root = tempfile::tempdir().unwrap();
+        let workspace = WorkspaceService::memory().unwrap();
+        let project = workspace.add_local_workspace(root.path().to_path_buf()).await.unwrap();
+        let task = workspace.create_task(project.id, "Archived deletion".into(), crate::default_profiles()[0].id.clone()).await.unwrap();
+        let controller = Controller::new(workspace.clone(), Arc::new(NeverLaunch), Arc::new(DenyInteractions));
+        assert!(controller.delete_archived_task(task.id).await.is_err());
+        assert!(workspace.task(task.id).await.is_ok());
+        workspace.archive_task(task.id).await.unwrap();
+        let slot = controller.slot(task.id).await.unwrap();
+        slot.active.store(true, Ordering::Release);
+        assert!(matches!(controller.delete_archived_task(task.id).await, Err(WorkspaceError::Agent(AgentError::Busy))));
+        assert!(workspace.task(task.id).await.is_ok());
+        slot.active.store(false, Ordering::Release);
+        controller.delete_archived_task(task.id).await.unwrap();
+        assert!(matches!(workspace.task(task.id).await, Err(WorkspaceError::NotFound)));
+        assert!(root.path().is_dir());
     }
 }

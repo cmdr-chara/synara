@@ -5,7 +5,7 @@ use crate::ui::{self, Glyph, palette};
 impl Shell {
     pub(super) fn zen_active(&self) -> bool {
         self.settings.value.appearance.personalization.zen_mode
-            && matches!(self.panel, Panel::Conversation | Panel::Dock | Panel::Files | Panel::Changes | Panel::Terminal)
+            && matches!(self.panel, Panel::Conversation | Panel::Dock | Panel::Files | Panel::Changes | Panel::Terminal | Panel::Device)
     }
     pub(super) fn toggle_zen(&mut self, cx: &mut Context<Self>) {
         if self.settings.saving || self.settings.personalization.busy
@@ -21,7 +21,7 @@ impl Shell {
         self.controls.retire();
         self.environment.retire_popup();
         self.chat_tools.retire();
-        self.focus_composer = matches!(self.panel, Panel::Conversation | Panel::Dock | Panel::Files | Panel::Changes | Panel::Terminal);
+        self.focus_composer = matches!(self.panel, Panel::Conversation | Panel::Dock | Panel::Files | Panel::Changes | Panel::Terminal | Panel::Device);
         self.save_setting(|s| s.appearance.personalization.zen_mode = !s.appearance.personalization.zen_mode, cx);
     }
     pub(super) fn zen_shortcut(&mut self, event: &gpui::KeyDownEvent, cx: &mut Context<Self>) -> bool {

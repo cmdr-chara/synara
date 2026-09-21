@@ -435,12 +435,7 @@ impl Shell {
                             .child(ui::layout_probe("kanban-navigation")),
                         )
                         .child(ui::action("pull-requests-navigation", "Pull requests", Some(Glyph::PullRequest), self.panel == Panel::PullRequests, cx.listener(|this, _: &(), _, cx| this.set_panel(Panel::PullRequests, cx))))
-                        .child(ui::unavailable_action(
-                            "automations-navigation",
-                            "Automations",
-                            Glyph::Clock,
-                            "Automations are not available in this native build yet.",
-                        ))
+                        .child(ui::action("automations-navigation", "Automations", Some(Glyph::Clock), self.panel == Panel::Automations, cx.listener(|this, _: &(), _, cx| this.set_panel(Panel::Automations, cx))))
                     }),
             )
             .child(

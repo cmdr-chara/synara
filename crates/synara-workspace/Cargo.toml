@@ -5,6 +5,7 @@ edition.workspace = true
 publish.workspace = true
 
 [dependencies]
+image = { version = "=0.25.10", default-features = false, features = ["png", "jpeg"] }
 synara-registry = { path = "../synara-registry" }
 synara-core = { path = "../synara-core" }
 synara-runtime = { path = "../synara-runtime" }

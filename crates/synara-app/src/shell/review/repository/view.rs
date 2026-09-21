@@ -103,7 +103,7 @@ impl Render for RepositoryPanel {
         let total = match self.view { View::Branches => self.catalog.branches.len(), View::Remotes => self.catalog.remotes.len(), View::Worktrees => self.catalog.worktrees.len(), View::Stashes => self.catalog.stashes.len() };
         let add = match self.view { View::Branches => Action::CreateBranch, View::Remotes => Action::AddRemote, View::Worktrees => Action::AddWorktree, View::Stashes => Action::SaveStash };
         div().id("repository-panel").track_focus(&self.focus).relative().child(ui::layout_probe("repository-panel"))
-            .flex().flex_col().flex_1().min_h_0().min_w_0().bg(rgb(palette().canvas))
+            .flex().flex_col().flex_1().min_h_0().min_w_0().bg(gpui::rgba(0))
             .child(div().px_3().py_2().flex().flex_col().gap_1()
                 .child(div().text_size(px(15.)).child("Repository"))
                 .child(div().text_size(px(11.)).min_w_0().text_ellipsis().text_color(rgb(palette().muted)).child(format!("{} · {}", if matches!(self.target, WorkspaceTarget::Local { .. }) { "Local" } else { "SSH" }, self.target.root().display()))))

@@ -338,12 +338,12 @@ impl Shell {
         {
             return;
         }
-        let running = self.terminal.is_some() && self.terminal_view.read(cx).exit_code().is_none();
+        let running = self.terminals.running();
         if let Some(reason) = tab_close_blocked(
             tab,
             self.dirty(cx),
             self.saving,
-            self.terminal_starting,
+            self.terminals.starting(),
             running,
         ) {
             self.select_environment_tab(tab, window, cx);

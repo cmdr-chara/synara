@@ -2,6 +2,8 @@ use crate::{StorageResult, Store, WorkspaceError, WorkspaceResult, WorkspaceServ
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 
+mod personalization;
+pub use personalization::*;
 mod chat;
 pub use chat::ChatSettings;
 
@@ -50,6 +52,8 @@ pub enum DarkThemePreference {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct AppearanceSettings {
+    #[serde(default)]
+    pub personalization: Personalization,
     #[serde(default)]
     pub dark_theme: DarkThemePreference,
     #[serde(default)]
@@ -144,6 +148,7 @@ impl AppSettings {
                 "invalid general or profile settings".into(),
             ));
         }
+        self.appearance.personalization.validate()?;
         validate_font_family(self.appearance.fonts.ui_family.as_deref())?;
         validate_font_family(self.appearance.fonts.code_family.as_deref())?;
         for size in [

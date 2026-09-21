@@ -1,4 +1,5 @@
 //! The transcript uses native text, compact user bubbles, and an assistant action strip.
+mod fork;
 use super::*;
 use crate::ui::{self, Glyph, palette};
 
@@ -63,8 +64,8 @@ impl Shell {
             .when(highlighted, |el| {
                 el.border_l_2().border_color(rgb(palette().focus))
             })
-            .text_size(px(15. * scale))
-            .line_height(px(24. * scale))
+            .text_size(px((crate::ui::ui_font_size() + 1.) * scale))
+            .line_height(px((crate::ui::ui_font_size() + 1.) * 1.6 * scale))
             .text_color(rgb(if reasoning {
                 palette().muted
             } else {
@@ -92,10 +93,14 @@ impl Shell {
             .when(!user && !reasoning && complete, |el| el.child(
                 div().ml(px(-6.)).flex().items_center().gap_2().text_size(px(12.)).text_color(rgb(palette().muted))
                     .child(copy(cx).opacity(0.75))
-                    .child(ui::unavailable_action("fork-message", "", Glyph::Fork, "Branching from a message is not available in this native build yet.")
-                        .aria_label("Branch from message, unavailable").size(px(24.)).p_0().gap_0().justify_center())
+                    .child(self.message_branch_button(message, cx))
                     .child(self.message_pin_button(message, index, cx))
                     .child(self.message_reuse_button(message, index, cx))
+                    .children(self.task().filter(|task| task.scope == TaskScope::Studio).map(|task| {
+                        let task = task.id; let anchor = MessageAnchor::from(message);
+                        ui::chrome_button("message-to-hub", "Review message as shared Hub knowledge", Glyph::Notebook, false,
+                            cx.listener(move |this, _: &(), _, cx| this.promote_hub_message(task,anchor.clone(),cx))).size(px(24.))
+                    }))
                     .children(timestamp.map(|text| div().relative().child(ui::layout_probe("message-timestamp")).child(text)))))
             .when(user, |el| el.child(div().absolute().right_0().bottom(px(-24.)).child(
                 div().flex().items_center()

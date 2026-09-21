@@ -1,5 +1,8 @@
 use gpui::Focusable;
 mod activity;
+mod attachments;
+mod followups;
+mod hubs;
 mod chat_tools;
 mod chrome;
 mod composer;
@@ -23,7 +26,9 @@ mod saved_context;
 mod settings;
 mod studio;
 mod terminal;
+mod terminals;
 mod transcript;
+mod zen;
 use crate::close::CloseState;
 use crate::input::{EntryEvent, EntryMode, TextEntry};
 use gpui::{App, Context, Entity, SharedString, Subscription, Window, div, prelude::*, px, rgb};
@@ -55,6 +60,7 @@ enum Panel {
     Conversation,
     Dock,
     Kanban,
+    Hubs,
     Help,
     Files,
     Changes,
@@ -84,6 +90,10 @@ struct FormState {
     error: Option<String>,
 }
 enum Update {
+    Followups(Box<followups::Reply>),
+    Attachments(Box<attachments::Reply>),
+    Hubs(Box<hubs::Reply>),
+    Terminals(Box<terminals::Reply>),
     Review(Box<review::Reply>),
     Explorer(Box<explorer::ExplorerReply>),
     Studio(Box<studio::StudioReply>),
@@ -144,29 +154,15 @@ enum Update {
         text: String,
         version: synara_runtime::FileVersion,
     },
-    TerminalStarted {
-        root: PathBuf,
-        generation: u64,
-        terminal: TerminalSession,
-    },
-    TerminalOutput {
-        root: PathBuf,
-        generation: u64,
-        snapshot: TerminalRenderSnapshot,
-    },
-    TerminalFailed {
-        generation: u64,
-        error: String,
-    },
-    TerminalShutdown {
-        generation: u64,
-        error: Option<String>,
-    },
     Tick,
     Done(String),
     Error(String),
 }
 pub struct Shell {
+    followups: followups::FollowupState,
+    attachments: attachments::AttachmentState,
+    hubs: hubs::HubState,
+    terminals: terminals::TerminalWorkspace,
     editors: editors::EditorState,
     command_palette: command_palette::PaletteState,
     review: review::ReviewState,
@@ -209,6 +205,7 @@ pub struct Shell {
     task_title: Entity<TextEntry>,
     editor: Entity<TextEntry>,
     file_search: Entity<TextEntry>,
+    // Focus-only alias for existing shell shortcut guards. Ownership is in terminals.
     terminal_view: Entity<TerminalView>,
     drafts: HashMap<TaskId, String>,
     draft_state: drafts::DraftState,
@@ -229,10 +226,6 @@ pub struct Shell {
     file_page: usize,
     document: Option<Document>,
     saving: bool,
-    terminal: Option<TerminalSession>,
-    terminal_root: Option<PathBuf>,
-    terminal_generation: u64,
-    terminal_starting: bool,
     terminal_closing: bool,
     polling: bool,
     _updates: gpui::Task<()>,
@@ -360,6 +353,8 @@ impl Shell {
             cx.subscribe(&registry.query, |_, _, _, cx| cx.notify()),
             cx.subscribe(&composer, |this, _, event, cx| match event {
                 EntryEvent::Submit => this.send_prompt(cx),
+                EntryEvent::AttachmentPaste(images) => this.attachment_paste(images.clone(), cx),
+                EntryEvent::AttachmentFiles(paths) => this.attachment_paths(paths.clone(), cx),
                 EntryEvent::Changed => this.remember_draft(cx),
                 _ => cx.notify(),
             }),
@@ -403,6 +398,10 @@ impl Shell {
                     .map(|t| t.id)
             });
         let mut this = Self {
+            followups: followups::FollowupState::new(cx),
+            attachments: attachments::AttachmentState::default(),
+            hubs: hubs::HubState::new(cx),
+            terminals: terminals::TerminalWorkspace::default(),
             editors: editors::EditorState::new(cx),
             command_palette: command_palette::PaletteState::new(cx),
             review: review::ReviewState::default(),
@@ -465,16 +464,13 @@ impl Shell {
             file_page: 0,
             document: None,
             saving: false,
-            terminal: None,
-            terminal_root: None,
-            terminal_generation: 0,
-            terminal_starting: false,
             terminal_closing: false,
             polling: false,
             _updates: updates,
             _subscriptions: subscriptions,
         };
         this.load_organization();
+        this.load_hubs();
         this.composer.update(cx, |entry, _| {
             entry.set_send_on_enter(this.settings.value.chat.send_on_enter)
         });
@@ -482,12 +478,30 @@ impl Shell {
             this.select_task(selected, cx);
             this.show_conversation(cx);
         }
+        if this.settings.value.appearance.personalization.zen_mode {
+            this.settings.personalization.tools_shown = false;
+        }
         if let Some(error) = &this.environment.recovery {
             this.notice = Some(error.clone());
         }
         this
     }
     pub fn request_close(&mut self, window: &mut Window, cx: &mut Context<Self>) -> bool {
+        if self.followup_navigation_blocked(cx) { return false; }
+        if self.attachments.close_pending() {
+            self.notice = Some("Finish attachment imports or discard a failed import in its conversation before closing.".into());
+            cx.notify(); return false;
+        }
+        if self.hubs.pending(cx) {
+            self.notice = Some("Finish Hub creation or save/discard the Hub context editor before closing.".into());
+            cx.notify();
+            return false;
+        }
+        if self.appearance_pending(cx) {
+            self.notice = Some("Finish the appearance save or image picker, and clear any pasted profile before closing.".into());
+            cx.notify();
+            return false;
+        }
         if self.editor.read(cx).is_composing() {
             self.notice = Some("Finish composing text in the editor before closing.".into());
             cx.notify();
@@ -550,6 +564,9 @@ impl Shell {
             cx.notify();
             return;
         }
+        if self.terminal_layout_before_quit(cx) {
+            return;
+        }
         if self.review_before_quit(cx) {
             return;
         }
@@ -564,38 +581,7 @@ impl Shell {
         if self.save_drafts_before_quit(cx) {
             return;
         }
-        self.terminal_closing = true;
-        if self.terminal_starting {
-            self.notice = Some("Waiting for terminal startup before closing Synara...".into());
-            cx.notify();
-            return;
-        }
-        let Some(terminal) = self.terminal.clone() else {
-            self.terminal_closing = false;
-            cx.quit();
-            return;
-        };
-        let generation = self.terminal_generation;
-        self.notice = Some("Stopping the terminal before closing Synara...".into());
-        self.queue_terminal_shutdown(terminal, generation);
-        cx.notify();
-    }
-
-    fn queue_terminal_shutdown(&self, terminal: TerminalSession, generation: u64) {
-        self.job(async move {
-            let result = async {
-                terminal.kill()?;
-                tokio::time::timeout(std::time::Duration::from_secs(5), terminal.wait())
-                    .await
-                    .map_err(|_| synara_runtime::RuntimeError::Timeout)??;
-                Ok::<(), synara_runtime::RuntimeError>(())
-            }
-            .await;
-            Ok(Update::TerminalShutdown {
-                generation,
-                error: result.err().map(|error| error.to_string()),
-            })
-        });
+        self.begin_terminal_shutdown(cx);
     }
 
     fn retire_terminal(&self, terminal: TerminalSession) {
@@ -619,7 +605,7 @@ impl Shell {
                         cx.notify();
                     }
                 }))
-                .child(div().text_xl().child(if terminal_closing && self.terminal_starting {
+                .child(div().text_xl().child(if terminal_closing && self.terminals.starting() {
                     "Waiting for terminal startup before closing Synara"
                 } else if terminal_closing {
                     "Stopping terminal before closing Synara"
@@ -714,6 +700,7 @@ impl Shell {
         }
     }
     fn select_task(&mut self, id: TaskId, cx: &mut Context<Self>) -> bool {
+        if self.hub_navigation_blocked(cx) { return false; }
         if self.explorer.modal_open() {
             return false;
         }
@@ -736,6 +723,7 @@ impl Shell {
         self.selection_revision = self.selection_revision.wrapping_add(1);
         self.navigation.studio = task.scope == TaskScope::Studio;
         if self.navigation.studio {
+            self.hubs.selected = Some(task.project_id);
             self.navigation.last_studio = Some(id);
         } else {
             self.navigation.last_synara = Some(id);
@@ -755,6 +743,8 @@ impl Shell {
         self.studio.reset();
         self.explorer.reset_search();
         self.load_message_pins(id);
+        self.load_attachments(id);
+        self.load_followups(id);
         self.project = Some(task.project_id);
         self.details = None;
         self.trace.clear();
@@ -802,6 +792,7 @@ impl Shell {
         }
     }
     fn open_workspace(&mut self, cx: &mut Context<Self>) {
+        if self.hub_navigation_blocked(cx) { return; }
         let text = self.workspace_path.read(cx).text().trim().to_owned();
         if text.is_empty() {
             self.error = Some("Enter an existing absolute directory or use Browse.".into());
@@ -858,6 +849,7 @@ impl Shell {
         .detach();
     }
     fn open_remote_workspace(&mut self, cx: &mut Context<Self>) {
+        if self.hub_navigation_blocked(cx) { return; }
         if self.dirty(cx) || self.saving {
             self.error =
                 Some("Save or discard the open document before switching workspaces.".into());
@@ -918,6 +910,8 @@ impl Shell {
     }
 
     fn create_chat(&mut self, scope: TaskScope, cx: &mut Context<Self>) {
+        if self.hub_navigation_blocked(cx) { return; }
+        if scope == TaskScope::Studio { self.new_hub_thread(cx); return; }
         if self.creating_task
             || self.loading_task.is_some()
             || self
@@ -1042,6 +1036,15 @@ impl Shell {
         cx.notify();
     }
     fn send_prompt(&mut self, cx: &mut Context<Self>) {
+        if self.close != CloseState::Open || self.terminal_closing || self.loading_task.is_some()
+            || !matches!(self.panel, Panel::Conversation | Panel::Dock | Panel::Files | Panel::Changes | Panel::Terminal)
+            || self.composer.read(cx).is_composing()
+            || self.selected.is_some_and(|id| self.draft_state.loading.contains(&id)) { return; }
+        if self.attachment_send_blocked() {
+            self.error = Some("Wait for saved attachments to load or finish saving before sending.".into());
+            cx.notify(); return;
+        }
+        if self.hub_navigation_blocked(cx) { return; }
         let Some(id) = self.selected else {
             self.error = Some("Create or select a task first.".into());
             cx.notify();
@@ -1056,7 +1059,13 @@ impl Shell {
             return;
         }
         self.snapshot_draft(cx);
-        self.draft_state.submitted(id, text.clone());
+        if let Some(error) = self.attachment_capability_error() {
+            self.error = Some(error.into()); cx.notify(); return;
+        }
+        let attachment_submission = self.attachment_submission(&text);
+        if let Some((_, display)) = &attachment_submission {
+            self.draft_state.submitted_with_display(id, text.clone(), display.clone());
+        } else { self.draft_state.submitted(id, text.clone()); }
         self.busy.insert(id);
         self.error = None;
         self.notice = None;
@@ -1065,13 +1074,15 @@ impl Shell {
         let untitled = self.task().is_some_and(|task| {
             matches!(
                 task.title.as_str(),
-                "New task" | "New thread" | "New studio chat"
+                "New task" | "New thread" | "New studio chat" | "New Hub thread"
             )
         });
+        let hub_thread = self.task().is_some_and(|task| task.scope == TaskScope::Studio);
         self.job(async move {
             let result = async {
                 if untitled {
-                    let title: String = text
+                    let title_text = if hub_thread { text.rsplit_once("\nTask:\n").map_or(text.as_str(),|(_,prompt)|prompt) } else { text.as_str() };
+                    let title: String = title_text
                         .split_whitespace()
                         .collect::<Vec<_>>()
                         .join(" ")
@@ -1080,7 +1091,10 @@ impl Shell {
                         .collect();
                     controller.workspace.rename_task(id, title).await?;
                 }
-                controller.submit(id, text).await
+                match attachment_submission {
+                    Some((revision, _)) => controller.submit_with_attachments(id, text, revision).await,
+                    None => controller.submit(id, text).await,
+                }
             }
             .await;
             let details = controller.details(id).await.ok().flatten();
@@ -1199,155 +1213,7 @@ impl Shell {
         });
         cx.notify();
     }
-    fn start_terminal(&mut self, cx: &mut Context<Self>) {
-        let Some(target) = self.workspace_target() else {
-            return;
-        };
-        let root = target.root().clone();
-        if self.terminal_starting || self.terminal_closing {
-            return;
-        }
-        let previous = self.terminal.take();
-        self.terminal_generation = self.terminal_generation.wrapping_add(1);
-        let generation = self.terminal_generation;
-        self.terminal_starting = true;
-        self.terminal_root = None;
-        self.terminal_view
-            .update(cx, |terminal, cx| terminal.clear_session(cx));
-        let workspace_service = self.controller.workspace.clone();
-        self.job(async move {
-            if let Some(previous) = previous {
-                let cleanup = async {
-                    previous.kill()?;
-                    tokio::time::timeout(std::time::Duration::from_secs(5), previous.wait())
-                        .await
-                        .map_err(|_| synara_runtime::RuntimeError::Timeout)??;
-                    Ok::<(), synara_runtime::RuntimeError>(())
-                }
-                .await;
-                if let Err(error) = cleanup {
-                    return Ok(Update::TerminalFailed {
-                        generation,
-                        error: format!("previous terminal cleanup failed: {error}"),
-                    });
-                }
-            }
-            let result = match target {
-                WorkspaceTarget::Local { root: cwd } => {
-                    tokio::task::spawn_blocking(move || {
-                        #[cfg(windows)]
-                        let command =
-                            std::env::var("COMSPEC").unwrap_or_else(|_| "cmd.exe".into());
-                        #[cfg(not(windows))]
-                        let command =
-                            std::env::var("SHELL").unwrap_or_else(|_| "/bin/sh".into());
-                        NativeTerminal::spawn(
-                            &synara_runtime::LaunchSpec::new(command),
-                            &cwd,
-                            24,
-                            88,
-                        )
-                        .map(|terminal| TerminalSession::Local(Arc::new(terminal)))
-                    })
-                    .await
-                    .map_err(|_| WorkspaceError::Worker)?
-                    .map_err(WorkspaceError::from)
-                }
-                WorkspaceTarget::Ssh { workspace, root } => {
-                    #[cfg(unix)]
-                    {
-                        let profile = workspace_service
-                            .ssh_profile(workspace.id)
-                            .await?
-                            .ok_or_else(|| {
-                                WorkspaceError::Invalid(
-                                    "remote workspace is missing its pinned SSH profile".into(),
-                                )
-                            })?;
-                        let host = profile.host(&workspace)?;
-                        tokio::task::spawn_blocking(move || {
-                            synara_runtime::RemoteTerminal::spawn(
-                                &host,
-                                &synara_runtime::LaunchSpec::new("/bin/sh"),
-                                &root,
-                                24,
-                                88,
-                            )
-                            .map(|terminal| TerminalSession::Remote(Arc::new(terminal)))
-                        })
-                        .await
-                        .map_err(|_| WorkspaceError::Worker)?
-                        .map_err(WorkspaceError::from)
-                    }
-                    #[cfg(not(unix))]
-                    {
-                        let _ = (workspace_service, workspace, root);
-                        Err(WorkspaceError::Runtime(
-                            synara_runtime::RuntimeError::Unsupported(
-                                "remote interactive terminals currently require the validated Unix PTY backend".into(),
-                            ),
-                        ))
-                    }
-                }
-            };
-            match result {
-                Ok(terminal) => Ok(Update::TerminalStarted {
-                    root,
-                    generation,
-                    terminal,
-                }),
-                Err(error) => Ok(Update::TerminalFailed {
-                    generation,
-                    error: error.to_string(),
-                }),
-            }
-        });
-        self.notice = Some("Starting an interactive shell in the selected workspace".into());
-        cx.notify();
-    }
-
-    fn interrupt_terminal(&mut self, cx: &mut Context<Self>) {
-        if let Some(terminal) = &self.terminal {
-            let result = terminal.key(
-                TerminalKey::Character('c'),
-                TerminalModifiers {
-                    control: true,
-                    ..TerminalModifiers::default()
-                },
-            );
-            if let Err(error) = result {
-                self.error = Some(error.to_string());
-            }
-        }
-        cx.notify();
-    }
-
-    fn stop_terminal(&mut self, cx: &mut Context<Self>) {
-        if let Some(terminal) = &self.terminal {
-            match terminal.kill() {
-                Ok(()) => self.notice = Some("Shell stop requested".into()),
-                Err(error) => self.error = Some(error.to_string()),
-            }
-        }
-        cx.notify();
-    }
     fn poll(&mut self) {
-        if let Some(terminal) = self.terminal.clone()
-            && self.panel == Panel::Terminal
-            && let Some(root) = self.terminal_root.clone()
-        {
-            let generation = self.terminal_generation;
-            self.job(async move {
-                let snapshot = tokio::task::spawn_blocking(move || terminal.render_snapshot())
-                    .await
-                    .map_err(|_| WorkspaceError::Worker)??;
-                Ok(Update::TerminalOutput {
-                    root,
-                    generation,
-                    snapshot,
-                })
-            });
-        }
         if self.polling {
             return;
         }
@@ -1376,6 +1242,10 @@ impl Shell {
     }
     fn receive(&mut self, update: Update, cx: &mut Context<Self>) {
         match update {
+            Update::Attachments(reply) => self.attachment_reply(*reply, cx),
+            Update::Followups(reply) => self.followup_reply(*reply, cx),
+            Update::Hubs(reply) => self.hub_reply(*reply, cx),
+            Update::Terminals(reply) => self.terminal_reply(*reply, cx),
             Update::Review(reply) => self.review_reply(*reply, cx),
             Update::Explorer(reply) => self.explorer_reply(*reply, cx),
             Update::Studio(reply) => self.studio_reply(*reply, cx),
@@ -1388,6 +1258,7 @@ impl Shell {
             Update::DraftSaved(task, error) => self.draft_saved(task, error, cx),
             Update::Registry(reply) => self.registry_reply(*reply, cx),
             Update::Tick => {
+                self.tick_terminals(cx);
                 self.tick_review(cx);
                 self.refresh_message_search(cx);
                 self.poll_kanban();
@@ -1411,9 +1282,9 @@ impl Shell {
             Update::WorkspaceAdded(project, catalog) => {
                 self.catalog = catalog;
                 // The user may have edited while the workspace was opening.
-                if self.dirty(cx) || self.saving || self.close != CloseState::Open {
+                if self.dirty(cx) || self.saving || self.followups.pending(cx) || self.hubs.pending(cx) || self.close != CloseState::Open {
                     self.notice = Some(
-                        "Workspace added. Save or discard the document before selecting it.".into(),
+                        "Workspace added. Finish the open file or draft editor before selecting it.".into(),
                     );
                     cx.notify();
                     return;
@@ -1431,10 +1302,13 @@ impl Shell {
             Update::TaskCreated(task, catalog, revision) => {
                 self.creating_task = false;
                 self.catalog = catalog;
-                self.task_title.update(cx, |entry, cx| entry.clear(cx));
-                if revision == self.selection_revision {
-                    self.select_task(task.id, cx);
+                if self.task_title.read(cx).text().trim() == task.title.trim() {
+                    self.task_title.update(cx, |entry, cx| entry.clear(cx));
+                }
+                if revision == self.selection_revision && self.select_task(task.id, cx) {
                     self.set_panel(Panel::Conversation, cx);
+                } else {
+                    self.notice = Some("The new thread and its draft were saved. Open it from thread search when ready.".into());
                 }
             }
             Update::TaskCreationFailed(error) => {
@@ -1465,6 +1339,7 @@ impl Shell {
             }
             Update::Event(envelope) => {
                 self.acknowledge_draft(&envelope, cx);
+                self.acknowledge_attachment_event(&envelope);
                 if let Some(task) = self
                     .catalog
                     .tasks
@@ -1570,6 +1445,7 @@ impl Shell {
                 details,
                 error,
             } => {
+                self.finish_attachment_submission(task, error.is_none());
                 self.busy.remove(&task);
                 if self.selected == Some(task) {
                     self.details = details;
@@ -1686,71 +1562,6 @@ impl Shell {
                     self.begin_quit(cx);
                 }
             }
-            Update::TerminalStarted {
-                root,
-                generation,
-                terminal,
-            } => {
-                if generation != self.terminal_generation || self.root() != Some(root.clone()) {
-                    self.retire_terminal(terminal);
-                    return;
-                }
-                self.terminal_starting = false;
-                self.terminal = Some(terminal.clone());
-                self.terminal_root = Some(root);
-                self.terminal_view
-                    .update(cx, |view, cx| view.set_session(terminal.clone(), cx));
-                if self.terminal_closing {
-                    self.notice = Some("Stopping the terminal before closing Synara...".into());
-                    self.queue_terminal_shutdown(terminal, generation);
-                } else {
-                    self.notice = None;
-                    self.poll();
-                }
-            }
-            Update::TerminalOutput {
-                root,
-                generation,
-                snapshot,
-            } => {
-                if generation == self.terminal_generation && self.terminal_root == Some(root) {
-                    self.terminal_view
-                        .update(cx, |view, cx| view.set_snapshot(snapshot, cx));
-                }
-            }
-            Update::TerminalFailed { generation, error } => {
-                if generation == self.terminal_generation {
-                    self.terminal_starting = false;
-                    self.terminal = None;
-                    self.terminal_root = None;
-                    if self.terminal_closing {
-                        self.terminal_closing = false;
-                        self.close.cancel();
-                        self.error = Some(format!(
-                            "Terminal startup or retirement failed while closing; Synara stayed open to preserve process ownership: {error}"
-                        ));
-                    } else {
-                        self.error = Some(error);
-                    }
-                }
-            }
-            Update::TerminalShutdown { generation, error } => {
-                if generation != self.terminal_generation {
-                    return;
-                }
-                self.terminal_closing = false;
-                if let Some(error) = error {
-                    self.close.cancel();
-                    self.error = Some(format!(
-                        "Terminal shutdown failed; Synara stayed open to preserve process ownership: {error}"
-                    ));
-                } else {
-                    self.terminal = None;
-                    self.terminal_root = None;
-                    cx.quit();
-                    return;
-                }
-            }
             Update::Done(message) => {
                 if !message.is_empty() {
                     self.notice = Some(message);
@@ -1771,6 +1582,8 @@ impl Shell {
         }
     }
     fn set_panel(&mut self, panel: Panel, cx: &mut Context<Self>) {
+        let blocked = if panel == Panel::Hubs { self.followup_navigation_blocked(cx) } else { self.hub_navigation_blocked(cx) };
+        if blocked { return; }
         if self.explorer.modal_open() {
             return;
         }
@@ -1783,10 +1596,14 @@ impl Shell {
         if panel != Panel::Conversation {
             self.selection_revision = self.selection_revision.wrapping_add(1);
         }
+        if self.settings.value.appearance.personalization.zen_mode
+            && matches!(panel, Panel::Files | Panel::Changes | Panel::Terminal | Panel::Dock)
+        { self.settings.personalization.tools_shown = true; }
         self.panel = panel;
         self.error = None;
         self.notice = None;
         match panel {
+            Panel::Hubs => self.focus_composer = false,
             Panel::Registry => self.load_registry_if_needed(cx),
             Panel::Settings => {
                 self.focus_composer = false;
@@ -1794,7 +1611,8 @@ impl Shell {
             }
             Panel::Files => self.refresh_files(),
             Panel::Changes => self.refresh_git(cx),
-            Panel::Inspector | Panel::Terminal => self.poll(),
+            Panel::Terminal => self.ensure_terminals(cx),
+            Panel::Inspector => self.poll(),
             _ => {}
         }
         cx.notify();

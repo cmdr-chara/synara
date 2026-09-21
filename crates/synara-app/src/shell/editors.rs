@@ -1,6 +1,7 @@
 //! Multiple native file buffers. The active Shell fields mirror exactly one tab.
 //! Each retained input owns its undo history, selection, scrolling and IME state.
 use super::*;
+mod batch;
 use crate::ui::{self, Glyph, palette};
 
 pub(super) const MAX_TABS: usize = 24;
@@ -19,6 +20,10 @@ impl EditorTab {
 
 pub(super) struct EditorState {
     pub tabs: Vec<EditorTab>,
+    closed: Vec<EditorTab>,
+    save_all: Option<batch::SaveProgress>,
+    save_epoch: u64,
+    management_open: bool,
     active: Option<u64>,
     next_id: u64,
     generation: u64,
@@ -56,7 +61,8 @@ impl EditorState {
             }),
         ];
         Self {
-            tabs: Vec::new(), active: None, next_id: 0, generation: 0,
+            tabs: Vec::new(), closed: Vec::new(), save_all: None, save_epoch: 0,
+            management_open: false, active: None, next_id: 0, generation: 0,
             loading: None, close: None, tree_visible: true, show_hidden: true,
             preview: false, find_open: false, replace_open: false, goto_open: false,
             query, replacement, line, focus_editor: false, jump_after_open: None, _subscriptions: subscriptions,
@@ -102,6 +108,10 @@ impl Shell {
     }
     pub(super) fn reset_editor_tabs(&mut self) {
         self.editors.tabs.clear();
+        self.editors.closed.clear();
+        self.editors.save_epoch = self.editors.save_epoch.wrapping_add(1);
+        if self.editors.save_all.take().is_some() { self.saving = false; }
+        self.editors.management_open = false;
         self.editors.active = None;
         self.editors.close = None;
         self.editors.generation = self.editors.generation.wrapping_add(1);
@@ -124,6 +134,7 @@ impl Shell {
             self.notice = Some("The file is available in Explorer. Close a tab to open another buffer.".into());
             return;
         }
+        self.editors.closed.retain(|tab| tab.document.path != document.path);
         let input = cx.new(|cx| {
             let mut input = TextEntry::new("", EntryMode::Editor, 480., cx);
             input.set_text(document.snapshot.text.clone(), cx);
@@ -173,7 +184,9 @@ impl Shell {
             self.document = None;
             return;
         };
-        self.editors.tabs.remove(index);
+        self.sync_editor_document();
+        let tab = self.editors.tabs.remove(index);
+        self.retain_closed_editor(tab, cx);
         self.editors.active = None;
         self.document = None;
         self.editors.close = None;
@@ -273,6 +286,10 @@ impl Shell {
         let modifiers = event.keystroke.modifiers;
         let command = modifiers.control || modifiers.platform;
         match event.keystroke.key.as_str() {
+            "s" if command && modifiers.shift && !modifiers.alt => self.save_all_editors(cx),
+            "t" if command && modifiers.shift && !modifiers.alt => self.reopen_closed_editor(cx),
+            "pageup" if modifiers.alt && !command => self.move_editor_tab(true, cx),
+            "pagedown" if modifiers.alt && !command => self.move_editor_tab(false, cx),
             "f" if command && !modifiers.alt && !modifiers.shift => self.open_editor_find(false, window, cx),
             "h" if command && !modifiers.alt && !modifiers.shift => self.open_editor_find(true, window, cx),
             "g" if command && !modifiers.alt && !modifiers.shift => self.open_editor_goto(window, cx),
@@ -294,22 +311,42 @@ impl Shell {
         true
     }
     pub(super) fn editor_tabs(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
-        div().id("editor-tabs").flex().items_center().min_w_0().flex_shrink_0().overflow_x_scroll()
-            .border_b_1().border_color(rgb(palette().border))
-            .children(self.editors.tabs.iter().enumerate().map(|(index, tab)| {
-                let id = tab.id;
-                let active = self.editors.active == Some(id);
-                let dirty = tab.dirty(cx);
-                let name = tab.document.path.file_name().map_or_else(String::new, |name| name.to_string_lossy().into_owned());
-                div().id(("editor-tab", index)).flex().items_center().flex_shrink_0().max_w(px(230.))
-                    .when(active, |el| el.bg(rgb(palette().overlay)).border_b_2().border_color(rgb(palette().focus)))
-                    .child(ui::action(("editor-select", index), format!("{name}{}", if dirty { " *" } else { "" }), Some(Glyph::Files), active,
-                        cx.listener(move |this, _: &(), window, cx| { if let Some(index) = this.editors.tabs.iter().position(|tab| tab.id == id) { this.activate_editor(index, cx); } window.focus(&this.editor.read(cx).focus_handle(cx), cx); }))
-                        .h(px(33.)).min_w_0().text_size(px(12.)).aria_label(tab.document.path.display().to_string()))
-                    .child(ui::button_shell(("editor-close", index), "Close file", false)
-                        .size(px(22.)).p_0().flex().items_center().justify_center().child(ui::icon(Glyph::Close))
-                        .on_click(cx.listener(move |this, _, _, cx| this.request_editor_close(id, cx))))
-            })).into_any_element()
+        div().flex().flex_col().flex_shrink_0().min_w_0()
+            .child(div().flex().items_center().min_w_0().border_b_1().border_color(rgb(palette().border))
+                .child(div().id("editor-tabs").flex_1().min_w_0().flex().items_center().overflow_x_scroll()
+                    .children(self.editors.tabs.iter().enumerate().map(|(index, tab)| {
+                        let id = tab.id;
+                        let active = self.editors.active == Some(id);
+                        let dirty = tab.dirty(cx);
+                        let name = tab.document.path.file_name().map_or_else(String::new, |name| name.to_string_lossy().into_owned());
+                        div().id(("editor-tab", index)).group("editor-tab-actions").flex().items_center().flex_shrink_0().max_w(px(230.))
+                            .border_r_1().border_color(rgb(palette().border))
+                            .when(active, |el| el.bg(ui::surface(palette().overlay)).border_b_2().border_color(rgb(palette().focus)))
+                            .child(ui::action(("editor-select", index), format!("{name}{}", if dirty { " *" } else { "" }), Some(Glyph::Files), false,
+                                cx.listener(move |this, _: &(), window, cx| {
+                                    if let Some(index) = this.editors.tabs.iter().position(|tab| tab.id == id) { this.activate_editor(index, cx); }
+                                    window.focus(&this.editor.read(cx).focus_handle(cx), cx);
+                                }))
+                                .h(px(ui::row_height() + 2.)).min_w_0().text_size(px(12.)).rounded_none().bg(gpui::rgba(0))
+                                .aria_label(format!("{}{}", tab.document.path.display(), if dirty { ", unsaved" } else { "" })))
+                            .child(ui::button_shell(("editor-close", index), "Close file", false)
+                                .size(px(22.)).p_0().rounded_none().bg(gpui::rgba(0)).flex().items_center().justify_center()
+                                .when(!active, |el| el.opacity(0.35).group_hover("editor-tab-actions", |style| style.opacity(1.)))
+                                .focus_visible(|style| style.opacity(1.))
+                                .child(ui::icon(Glyph::Close))
+                                .on_click(cx.listener(move |this, _, _, cx| this.request_editor_close(id, cx))))
+                    })))
+                .child(ui::chrome_button("editor-save-all-icon", "Save all open files (Ctrl/Cmd+Shift+S)", Glyph::Check,
+                    self.saving, cx.listener(|this, _: &(), _, cx| this.save_all_editors(cx))))
+                .child(ui::chrome_button("editor-tab-actions", "Open buffer actions", Glyph::More, false,
+                    cx.listener(|this, _: &(), _, cx| { this.editors.management_open = !this.editors.management_open; cx.notify(); }))))
+            .children(self.editors.management_open.then(|| self.editor_management(cx)))
+            .children(self.editors.save_all.as_ref().map(|progress| div().px_3().py_1().flex().items_center().gap_2()
+                .child(div().flex_1().text_size(px(11.)).text_color(rgb(palette().muted))
+                    .child(format!("Saved {} / {} files", progress.completed, progress.total)))
+                .child(ui::action("editor-save-all-stop", "Stop after this file", None, false,
+                    cx.listener(|this, _: &(), _, cx| this.stop_editor_saves(cx))).text_size(px(11.)))))
+            .into_any_element()
     }
     pub(super) fn editor_tools(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
         let markdown = self.document.as_ref().and_then(|document| document.path.extension()).and_then(|value| value.to_str())
@@ -372,6 +409,7 @@ impl Shell {
         let selection = entry.selected_text().chars().count();
         let newlines = if entry.text().contains("\r\n") { "CRLF" } else { "LF" };
         div().flex().items_center().flex_wrap().gap_3().text_size(px(11.)).text_color(rgb(palette().muted)).flex_shrink_0()
+            .border_t_1().border_color(rgb(palette().border)).pt_1()
             .child(format!("Ln {line}, Col {column}"))
             .child(format!("{} bytes", entry.text().len()))
             .child(format!("UTF-8 · {newlines}"))

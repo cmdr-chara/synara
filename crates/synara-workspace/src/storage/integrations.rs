@@ -151,19 +151,24 @@ impl WorkspaceService {
                 {
                     return Err(WorkspaceError::NotFound);
                 }
+                // Validate only an addition/edit or newly enabled record. Earlier
+                // profile grants are dormant after an agent switch and must never
+                // prevent independent disable/remove actions for their siblings.
+                let enabling_owner = match &edit {
+                    McpEdit::Save(item) => Some(item.agent_id.as_str()),
+                    McpEdit::SetEnabled { id, enabled: true } => value.mcp.iter()
+                        .find(|item| &item.id == id).map(|item| item.agent_id.as_str()),
+                    _ => None,
+                };
+                if let (Some(task), Some(agent)) = (&task, enabling_owner) {
+                    if agent != task.agent_id {
+                        return Err(invalid("Select this connection's agent before enabling it."));
+                    }
+                }
                 edit.apply(value)?;
                 let Some(task) = task else {
                     return Ok(());
                 };
-                // Inactive entries may refer to an earlier selected agent. Enabling
-                // and additions must target the current exact profile.
-                if value.mcp.iter().any(|item| {
-                    item.task == task.id && item.enabled && item.agent_id != task.agent_id
-                }) {
-                    return Err(invalid(
-                        "Select this connection's agent before enabling it.",
-                    ));
-                }
                 // Never restore a remote session carrying a superseded configuration.
                 tx.execute(
                     "DELETE FROM sessions WHERE thread_id=?1",

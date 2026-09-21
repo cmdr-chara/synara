@@ -2,7 +2,7 @@ use super::super::settings::Section;
 use super::*;
 
 fn note(text: impl Into<SharedString>) -> gpui::Div {
-    div().text_sm().text_color(rgb(palette().muted)).child(text)
+    div().text_sm().text_color(rgb(palette().muted)).child(text.into())
 }
 fn section(title: &str) -> gpui::Div {
     div()
@@ -21,7 +21,7 @@ fn row() -> gpui::Div {
         .gap_2()
 }
 impl Shell {
-    pub(super) fn integration_settings(
+    pub(in crate::shell) fn integration_settings(
         &self,
         page: Section,
         cx: &mut Context<Self>,

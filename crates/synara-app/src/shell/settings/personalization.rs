@@ -211,9 +211,9 @@ impl Shell {
     fn appearance_stepper(&self, id: &'static str, label: &str, value: String, kind: Adjust, step: i16, cx: &mut Context<Self>) -> gpui::AnyElement {
         div().flex().flex_wrap().items_center().gap_2().py_2()
             .child(div().flex_1().min_w(px(120.)).text_size(px(13.)).child(label.to_owned()))
-            .child(ui::action((id, 0), "-", None, false, cx.listener(move |this, _: &(), _, cx| this.adjust_appearance(kind, -step, cx))).aria_label(format!("Decrease {label}")))
+            .child(ui::action((id, 0usize), "-", None, false, cx.listener(move |this, _: &(), _, cx| this.adjust_appearance(kind, -step, cx))).aria_label(format!("Decrease {label}")))
             .child(div().w(px(72.)).text_center().text_size(px(12.)).child(value))
-            .child(ui::action((id, 1), "+", None, false, cx.listener(move |this, _: &(), _, cx| this.adjust_appearance(kind, step, cx))).aria_label(format!("Increase {label}")))
+            .child(ui::action((id, 1usize), "+", None, false, cx.listener(move |this, _: &(), _, cx| this.adjust_appearance(kind, step, cx))).aria_label(format!("Increase {label}")))
             .into_any_element()
     }
     fn apply_accent(&mut self, cx: &mut Context<Self>) {

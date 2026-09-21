@@ -5957,6 +5957,7 @@ dependencies = [
  "serde_json",
  "sha2",
  "synara-agent",
+ "synara-browser",
  "synara-core",
  "synara-registry",
  "synara-runtime",

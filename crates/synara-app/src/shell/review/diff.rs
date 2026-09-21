@@ -3,7 +3,7 @@ const MAX_LINES: usize = 6000;
 const MAX_LINE_CHARS: usize = 2000;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub(super) enum Kind {
+pub(crate) enum Kind {
     Context,
     Added,
     Removed,
@@ -11,14 +11,14 @@ pub(super) enum Kind {
     Meta,
 }
 #[derive(Debug)]
-pub(super) struct Line {
+pub(crate) struct Line {
     pub old: Option<u64>,
     pub new: Option<u64>,
     pub text: String,
     pub kind: Kind,
 }
 #[derive(Default, Debug)]
-pub(super) struct Diff {
+pub(crate) struct Diff {
     pub lines: Vec<Line>,
     pub added: usize,
     pub removed: usize,
@@ -91,7 +91,7 @@ impl Diff {
     }
 }
 
-pub(super) fn draft_with_diff(
+pub(crate) fn draft_with_diff(
     existing: &str,
     title: &str,
     raw: &str,

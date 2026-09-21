@@ -1,4 +1,5 @@
 mod integrations;
+mod browser;
 use crate::{AgentProfile, WorkspaceError, WorkspaceResult, WorkspaceService};
 use std::{
     collections::HashMap,
@@ -52,6 +53,8 @@ impl TaskSlot {
 /// Each task owns its session. The connection manager shares processes by launch and workspace.
 pub struct Controller {
     pub workspace: WorkspaceService,
+    pub browser: crate::BrowserService,
+    browser_endpoints: StdMutex<HashMap<TaskId, crate::browser::mcp::Endpoint>>,
     backend: Arc<dyn AgentBackend>,
     interactions: Arc<dyn InteractionHandler>,
     secrets: Arc<dyn SecretStore>,
@@ -82,6 +85,8 @@ impl Controller {
         secrets: Arc<dyn SecretStore>,
     ) -> Self {
         Self {
+            browser: crate::BrowserService::default(),
+            browser_endpoints: StdMutex::new(HashMap::new()),
             workspace,
             backend,
             interactions,
@@ -200,6 +205,7 @@ impl Controller {
         let connection = self.connection_for(&task, &slot, &profile, false).await?;
         let mut options = SessionOptions::new(task.thread_id, task.working_directory.clone());
         options.context_servers = self.managed_mcp_context(&task, connection.as_ref()).await?;
+        if let Some(context) = self.browser_context(id, &profile, connection.as_ref())? { options.context_servers.push(context); }
         let previous = self.workspace.session(task.thread_id).await?;
         let session = if let Some(previous) = previous.filter(|r| {
             r.agent_id == task.agent_id && r.working_directory == task.working_directory
@@ -305,6 +311,7 @@ impl Controller {
     }
 
     pub async fn cancel(&self, id: TaskId) -> WorkspaceResult<()> {
+        self.revoke_browser_use(id);
         let slot = self.slot(id).await?;
         if let Some(token) = slot
             .setup_cancel
@@ -357,6 +364,7 @@ impl Controller {
         Ok(())
     }
     pub async fn switch_agent(&self, id: TaskId, agent: String) -> WorkspaceResult<Task> {
+        self.revoke_browser_use(id);
         let slot = self.slot(id).await?;
         if slot.active.load(Ordering::Acquire) {
             return Err(AgentError::Busy.into());
@@ -370,6 +378,7 @@ impl Controller {
         self.workspace.set_task_agent(id, agent).await
     }
     pub async fn restart(&self, id: TaskId) -> WorkspaceResult<SessionDetails> {
+        self.revoke_browser_use(id);
         let slot = self.slot(id).await?;
         {
             let _gate = slot.creation.lock().await;
@@ -411,6 +420,7 @@ impl Controller {
     /// serialize with session setup, close its session (not the shared process),
     /// then use storage's archived-only atomic deletion invariant.
     pub async fn delete_archived_task(&self, id: TaskId) -> WorkspaceResult<()> {
+        self.revoke_browser_use(id);
         let slot = self.slot(id).await?;
         if slot.active.swap(true, Ordering::AcqRel) {
             return Err(AgentError::Busy.into());
@@ -450,6 +460,8 @@ impl Controller {
 
     pub async fn shutdown(&self) -> WorkspaceResult<()> {
         self.closing.store(true, Ordering::Release);
+        self.browser.shutdown();
+        self.browser_endpoints.lock().map_err(|_| WorkspaceError::Worker)?.clear();
         let _lifetime = self.lifetime.write().await;
         self.manager.disconnect_all().await?;
         self.tasks.lock().await.clear();

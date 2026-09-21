@@ -86,6 +86,7 @@ impl Shell {
             ("Explorer", "Files · Ctrl/Cmd+2", Glyph::Files, Action::Panel(Panel::Files)),
             ("Changes", "Git review · Ctrl/Cmd+3", Glyph::Changes, Action::Panel(Panel::Changes)),
             ("Terminal", "Open panel without starting a shell · Ctrl/Cmd+4", Glyph::Terminal, Action::Panel(Panel::Terminal)),
+            ("Browser", "Tabs, navigation and isolated agent browser use", Glyph::Browser, Action::Panel(Panel::Browser)),
             ("Device", "Real device discovery and capture", Glyph::Window, Action::Panel(Panel::Device)),
             ("Kanban", "Projects and tasks · Ctrl/Cmd+9", Glyph::Kanban, Action::Panel(Panel::Kanban)),
             ("Settings", "Preferences · Ctrl/Cmd+6", Glyph::Settings, Action::Panel(Panel::Settings)),

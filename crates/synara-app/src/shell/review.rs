@@ -1,6 +1,6 @@
 //! Native Git review inside the existing Environment. Every asynchronous result
 //! belongs to a project/root and a request generation, never to the visible tab.
-mod diff;
+pub(super) mod diff;
 mod repository;
 use super::*;
 use crate::ui::{self, Glyph, palette};

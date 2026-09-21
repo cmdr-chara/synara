@@ -4,6 +4,10 @@ use std::collections::HashSet;
 
 mod personalization;
 pub use personalization::*;
+mod keybindings;
+pub use keybindings::*;
+mod device;
+pub use device::DeviceSettings;
 mod chat;
 pub use chat::ChatSettings;
 
@@ -62,6 +66,8 @@ pub struct AppearanceSettings {
     pub fonts: FontPreferences,
     #[serde(default)]
     pub reduced_motion: bool,
+    #[serde(default)]
+    pub high_contrast: bool,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -74,6 +80,10 @@ pub struct KeyBinding {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct AppSettings {
+    #[serde(default)]
+    pub notifications: NotificationSettings,
+    #[serde(default)]
+    pub device: DeviceSettings,
     pub version: u32,
     #[serde(default)]
     pub appearance: AppearanceSettings,
@@ -95,6 +105,7 @@ pub struct GeneralSettings {
     pub show_studio: bool,
     pub alphabetical_projects: bool,
     pub oldest_threads_first: bool,
+    pub restore_last_chat: bool,
 }
 impl Default for GeneralSettings {
     fn default() -> Self {
@@ -104,8 +115,16 @@ impl Default for GeneralSettings {
             show_studio: true,
             alphabetical_projects: false,
             oldest_threads_first: false,
+            restore_last_chat: true,
         }
     }
+}
+
+/// Off by default. Notifications never include prompts, paths or task titles.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(default, deny_unknown_fields)]
+pub struct NotificationSettings {
+    pub background_completion: bool,
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
@@ -118,6 +137,8 @@ pub struct ProfileSettings {
 impl Default for AppSettings {
     fn default() -> Self {
         Self {
+            notifications: NotificationSettings::default(),
+            device: DeviceSettings::default(),
             version: SETTINGS_VERSION,
             appearance: AppearanceSettings::default(),
             keybindings: Vec::new(),
@@ -148,6 +169,8 @@ impl AppSettings {
                 "invalid general or profile settings".into(),
             ));
         }
+        validate_navigation_bindings(&self.keybindings)?;
+        self.device.validate()?;
         self.appearance.personalization.validate()?;
         validate_font_family(self.appearance.fonts.ui_family.as_deref())?;
         validate_font_family(self.appearance.fonts.code_family.as_deref())?;
@@ -182,6 +205,14 @@ impl AppSettings {
         }
         Ok(())
     }
+}
+
+/// Restore only a valid saved selection, never an arbitrary archived/first task.
+/// The caller loads a transcript, not an agent process or device helper.
+pub fn startup_task(settings: &AppSettings, selection: &crate::Selection, catalog: &crate::Catalog) -> Option<synara_core::TaskId> {
+    if !settings.general.restore_last_chat { return None; }
+    selection.task.filter(|id| catalog.tasks.iter().any(|task| task.id == *id
+        && Some(task.project_id) == selection.project && task.state != synara_core::TaskState::Archived))
 }
 
 fn validate_font_family(value: Option<&str>) -> WorkspaceResult<()> {

@@ -13,6 +13,7 @@ pub enum EnvironmentTab {
     Terminal,
     Explorer,
     Changes,
+    Device,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -42,7 +43,7 @@ impl EnvironmentLayout {
         if self.version != VERSION
             || !self.width_ratio.is_finite()
             || !(0.2..=0.8).contains(&self.width_ratio)
-            || self.tabs.len() > 3
+            || self.tabs.len() > 4
             || self.tabs.iter().collect::<HashSet<_>>().len() != self.tabs.len()
             || self.active.is_some_and(|tab| !self.tabs.contains(&tab))
             || (self.active.is_none() && !self.tabs.is_empty())
@@ -213,6 +214,30 @@ mod tests {
         assert_eq!(service.environment_layout().await.unwrap().layout, layout);
         assert_eq!(service.settings().await.unwrap().settings, settings);
         assert!(service.catalog().await.unwrap().tasks.is_empty());
+    }
+
+    #[tokio::test]
+    async fn device_tab_round_trips_alongside_all_existing_environment_tabs() {
+        let service = WorkspaceService::memory().unwrap();
+        let settings = service.settings().await.unwrap().settings;
+        let mut layout = EnvironmentLayout::default();
+        for tab in [
+            EnvironmentTab::Terminal,
+            EnvironmentTab::Explorer,
+            EnvironmentTab::Changes,
+            EnvironmentTab::Device,
+        ] {
+            layout.select(tab);
+        }
+        assert!(layout.validate().is_ok());
+        service.save_environment_layout(layout.clone()).await.unwrap();
+        assert_eq!(service.environment_layout().await.unwrap().layout, layout);
+        assert_eq!(layout.tabs.len(), 4);
+        assert_eq!(layout.active, Some(EnvironmentTab::Device));
+        assert_eq!(service.settings().await.unwrap().settings, settings);
+        assert!(layout.close(EnvironmentTab::Device));
+        assert_eq!(layout.active, Some(EnvironmentTab::Changes));
+        assert!(layout.validate().is_ok());
     }
 
     #[test]

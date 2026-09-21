@@ -165,3 +165,11 @@ Full workspace checks and the native build were blocked locally by a missing
 `fontconfig.pc`, and package installation failed on DNS resolution. Therefore
 this result does not close the remaining C5/C6 native UX or complete-candidate
 verification gates, and does not extend the authenticated compatibility matrix.
+
+## Native integration management
+
+[Plugins, Skills and MCP](integrations.md) keeps provider-owned extensions outside
+Synara's authority. Only explicit task/profile-scoped HTTP MCP configuration is
+passed through the existing negotiated generic context contract. A successful
+Synara-side probe is not agent reachability evidence. Skill documents are inserted
+only into visible unsent drafts and do not imply native provider skill support.

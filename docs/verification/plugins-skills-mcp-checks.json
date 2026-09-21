@@ -1,0 +1,157 @@
+{
+  "schema": 1,
+  "date": "2026-09-21",
+  "repository": "cmdr-chara/synara",
+  "session_branch": "astra/plugins-skills-mcp",
+  "integration_branch": "astra/gpui-clean-rewrite",
+  "initial_base": "980d86b59a1f06636a55aa0b75b71eef41fd3841",
+  "reconciled_integration": "0b2d1ec45a14f7d9ee5311d5c6498a1f7f301486",
+  "tested_revision": "1ce1e419dc7d2081d04f8cacfbfcfb3a4d029693",
+  "observed_integrated_cleanup_revision": "12e93d86bceea7c7dc8a37ffe6da4ed95686badd",
+  "integration_evidence": "Non-force update succeeded, followed by a GitHub integration-ref read. This ledger is a documentation-only successor to that observed checkpoint.",
+  "workflow_run": 35635894653,
+  "workflow_trigger_revision": "88ebbcc45b73874d4b3511e7bc8e43884eae40b5",
+  "focused_job": 106453261181,
+  "host": "GitHub Actions Ubuntu 24.04.5 / private Xvfb / X11",
+  "rust_toolchain": "1.98.1",
+  "locked_dependencies": true,
+  "tests": [
+    {
+      "package": "synara-workspace",
+      "filter": "integrations",
+      "passed": 20,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 136
+    },
+    {
+      "package": "synara-acp",
+      "filter": "wire::tests::capabilities_use_protocol_advertisements_not_agent_names",
+      "exact": true,
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 61
+    },
+    {
+      "package": "synara-acp",
+      "filter": "wire::tests::negotiated_session_parameters_cover_directories_and_mcp_transports",
+      "exact": true,
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 61
+    },
+    {
+      "package": "synara-workspace",
+      "filter": "settings::",
+      "passed": 14,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 142
+    },
+    {
+      "package": "synara-workspace",
+      "filter": "device_settings_tests",
+      "passed": 2,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 154
+    }
+  ],
+  "distinct_rust_tests_passed": 38,
+  "build": "cargo +1.98.1 build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture",
+  "build_status": "passed",
+  "build_warnings": [
+    "Existing unused ROW_HEIGHT constant in crates/synara-app/src/ui.rs"
+  ],
+  "static_checks": [
+    "Session-owned recursive rustfmt passed",
+    "Roadmap structure passed",
+    "Native harness Python compilation passed",
+    "git diff --exit-code passed"
+  ],
+  "local_completion_checks": [
+    "Nine roadmap checker self-tests passed",
+    "All 120 full historical task bodies and checkbox states unchanged from initial_base",
+    "Source and native artifact ZIP hashes verified",
+    "Eight native screenshots inspected"
+  ],
+  "tested_objects": {
+    "crates": "e29742a2ad69eac3bed449d92d22c737274ee2ae",
+    "scripts": "6658c19a8e6751e7db3b07e60a38a33f17c64483",
+    "Cargo.lock": "7fee6bcb1503ca2d8c5be33a41375bee64f568c1",
+    "Cargo.toml": "a5da4b0ae15bf9640eb0298dcd31ccc3b4dbc5c7",
+    "rust-toolchain.toml": "c3f67b6771b777215340531caf051bc25cef066c"
+  },
+  "artifacts": [
+    {
+      "id": 10656641125,
+      "name": "plugins-skills-mcp-native",
+      "zip_sha256": "bdadc8e8559e576417e345490e80d82c5049a85e0b53b02599ac8f354343839c",
+      "expires": "2026-09-28T18:10:06Z"
+    },
+    {
+      "id": 10656032217,
+      "name": "plugins-skills-mcp-candidate",
+      "zip_sha256": "8c56b34e59250f295d90a7c87eea97ddafd340dc6bb1258aedd729e809c908a9",
+      "expires": "2026-09-23T18:03:34Z"
+    }
+  ],
+  "native_result": {
+    "status": "passed",
+    "checks": [
+      "native-plugins-ownership-no-agent-launch-or-network",
+      "explicit-native-probe-real-HTTP-negotiation-tools-no-execution-or-enable",
+      "native-edit-disables-and-unavailable-secret-store-fails-before-network",
+      "native-remove-explicit-confirmation-no-provider-revocation-claim",
+      "native-reviewed-file-hash-disabled-install-explicit-enable-search-and-unsent-insert",
+      "native-restart-library-draft-and-removal-preserve-original-file"
+    ],
+    "platform": "Linux/X11/private Xvfb"
+  },
+  "screenshots": {
+    "mcp-probe-evidence.png": "e75106ba9a5b910648e541ac9f2229c1d037f030312ba08a9e5a76d3b21118bd",
+    "mcp-secret-store-unavailable.png": "e0b6ce0e9d1a94c03b6b1fc2a3f248f6c59a9affc7ece7cb7dbb738361031d2d",
+    "plugins-ownership.png": "d0aa38d46d00cfd5a47d81bde6e2a9df2f06cb47a6ce7461fb5bab391bcdd87c",
+    "skill-review-origin.png": "a6b17ff97db199cbf5109eedd6fb5fadeffd5f9bc09b388697883f5b0cb17068",
+    "skill-unsent-draft.png": "da030482ce45136e763780f68c977306e75940592f1918d5e3bf71a455cf7fa1",
+    "skills-filter-empty.png": "c4efcf5179422f0154851821bed88a08f9f89f563c943ec67c1a0298b7773b7f",
+    "skills-installed.png": "3292ac3b51fb37cbbbe6db766fb9f63251d9b1c58b3811d1a7bb72f5f8049dd6",
+    "skills-restored-narrow.png": "46b30b401c9b13cd9157317ba25d7cd08ed493e689802c1f2311d2de0392aa33"
+  },
+  "earlier_runs": [
+    {
+      "run": 35631827192,
+      "source": "4f45529",
+      "outcome": "Tests passed, build failed, native skipped. UI type/visibility and baseline appearance type errors corrected."
+    },
+    {
+      "run": 35632926645,
+      "source": "88a33fc",
+      "outcome": "Tests and build passed. Exact native URL input failed in punctuation driver."
+    },
+    {
+      "run": 35633596858,
+      "source": "9612b4d",
+      "outcome": "Tests and build passed. Native slash input failed. Explicit slash keysym correction retained the exact-input assertion."
+    },
+    {
+      "run": 35634340215,
+      "source": "8acf1e932a3e0dea55f1df6ce9c5f56c8204bbd8",
+      "outcome": "22 selected Rust tests, build and six native journey groups passed before reconciliation."
+    }
+  ],
+  "not_proven": [
+    "Full workspace tests or clippy",
+    "Production OS secret store and authenticated MCP",
+    "Provider-owned plugin or native skill installation",
+    "Authoritative remote catalogs or skill bundles",
+    "OAuth, process/legacy SSE management or SSH",
+    "Native file-picker portal or skill update journey",
+    "Complete keyboard, IME, accessibility, macOS or Windows acceptance"
+  ],
+  "release_created": false,
+  "pull_request_created": false,
+  "main_modified": false
+}

@@ -37,6 +37,8 @@ impl DeviceId {
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum DeviceKind {
+    /// A transport without enough evidence to classify the hardware.
+    Unknown,
     Simulator,
     Physical,
 }
@@ -63,7 +65,8 @@ pub struct DeviceDescriptor {
 
 impl DeviceDescriptor {
     pub fn validate(&self) -> Result<(), RuntimeError> {
-        if !valid_text(&self.name, MAX_LABEL_BYTES) || !valid_text(&self.platform, MAX_LABEL_BYTES)
+        if !valid_text(self.id.as_str(), MAX_ID_BYTES)
+            || !valid_text(&self.name, MAX_LABEL_BYTES) || !valid_text(&self.platform, MAX_LABEL_BYTES)
         {
             return Err(RuntimeError::Invalid("invalid device metadata".into()));
         }

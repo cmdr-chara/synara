@@ -86,6 +86,7 @@ impl Shell {
             ("Explorer", "Files · Ctrl/Cmd+2", Glyph::Files, Action::Panel(Panel::Files)),
             ("Changes", "Git review · Ctrl/Cmd+3", Glyph::Changes, Action::Panel(Panel::Changes)),
             ("Terminal", "Open panel without starting a shell · Ctrl/Cmd+4", Glyph::Terminal, Action::Panel(Panel::Terminal)),
+            ("Device", "Real device discovery and capture", Glyph::Window, Action::Panel(Panel::Device)),
             ("Kanban", "Projects and tasks · Ctrl/Cmd+9", Glyph::Kanban, Action::Panel(Panel::Kanban)),
             ("Settings", "Preferences · Ctrl/Cmd+6", Glyph::Settings, Action::Panel(Panel::Settings)),
             ("Agent registry", "Installed and available agents · Ctrl/Cmd+7", Glyph::Agent, Action::Panel(Panel::Registry)),
@@ -96,7 +97,12 @@ impl Shell {
             ("Toggle sidebar", "Show or hide navigation", Glyph::Panel, Action::Sidebar),
             ("Toggle Environment", "Show or hide the workspace panel", Glyph::Window, Action::Environment),
             ("Help and shortcuts", "Keyboard reference and licenses", Glyph::Help, Action::Panel(Panel::Help)),
-        ] { add(1, title.into(), detail.into(), glyph, action); }
+        ] {
+            let detail = if let Action::Panel(panel) = &action {
+                self.panel_shortcut_label(*panel).map_or_else(|| detail.to_owned(), |key| format!("{key} | Native navigation"))
+            } else { detail.to_owned() };
+            add(1, title.into(), detail, glyph, action);
+        }
         if self.settings.value.general.show_studio {
             add(1, "New Hub".into(), "Optional shared work context".into(), Glyph::Blocks, Action::NewHub);
         }

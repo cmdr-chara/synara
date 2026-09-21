@@ -59,7 +59,7 @@ pub(super) struct EnvironmentState {
     add_bounds: std::rc::Rc<std::cell::Cell<gpui::Bounds<Pixels>>>,
     restore_focus: Option<Option<EnvironmentTab>>,
     divider_focus: FocusHandle,
-    tabs_focus: [FocusHandle; 3],
+    tabs_focus: [FocusHandle; 4],
 }
 impl EnvironmentState {
     pub(super) fn new(loaded: LoadedEnvironmentLayout, cx: &mut Context<Shell>) -> Self {
@@ -93,6 +93,7 @@ fn tab_panel(tab: EnvironmentTab) -> Panel {
         EnvironmentTab::Terminal => Panel::Terminal,
         EnvironmentTab::Explorer => Panel::Files,
         EnvironmentTab::Changes => Panel::Changes,
+        EnvironmentTab::Device => Panel::Device,
     }
 }
 fn panel_tab(panel: Panel) -> Option<EnvironmentTab> {
@@ -100,6 +101,7 @@ fn panel_tab(panel: Panel) -> Option<EnvironmentTab> {
         Panel::Terminal => Some(EnvironmentTab::Terminal),
         Panel::Files => Some(EnvironmentTab::Explorer),
         Panel::Changes => Some(EnvironmentTab::Changes),
+        Panel::Device => Some(EnvironmentTab::Device),
         _ => None,
     }
 }
@@ -108,6 +110,7 @@ fn tab_info(tab: EnvironmentTab) -> (&'static str, Glyph, usize) {
         EnvironmentTab::Terminal => ("Terminal", Glyph::Terminal, 0),
         EnvironmentTab::Explorer => ("Explorer", Glyph::Folders, 1),
         EnvironmentTab::Changes => ("Changes", Glyph::BranchSimple, 2),
+        EnvironmentTab::Device => ("Device", Glyph::Window, 3),
     }
 }
 /// Preserve usable panes at intermediate widths without overwriting the saved
@@ -161,7 +164,7 @@ impl Shell {
     pub(super) fn track_environment_panel(&mut self, panel: Panel) -> Panel {
         if !matches!(
             panel,
-            Panel::Dock | Panel::Terminal | Panel::Files | Panel::Changes
+            Panel::Dock | Panel::Terminal | Panel::Files | Panel::Changes | Panel::Device
         ) {
             self.environment.resize = None;
             return panel;
@@ -462,6 +465,11 @@ impl Shell {
                         detail: "Review local Git changes and staged files.".into(),
                         ..Default::default()
                     },
+                    Choice {
+                        label: "Device".into(), icon: Some(Glyph::Window),
+                        detail: "Real device and simulator discovery, capture and explicit input.".into(),
+                        ..Default::default()
+                    },
                 ],
                 cx,
             )
@@ -474,6 +482,7 @@ impl Shell {
                     0 => Some(EnvironmentTab::Terminal),
                     2 => Some(EnvironmentTab::Explorer),
                     4 => Some(EnvironmentTab::Changes),
+                    5 => Some(EnvironmentTab::Device),
                     _ => None,
                 };
                 if let Some(tab) = tab {

@@ -5,7 +5,7 @@ impl Shell {
     pub(super) fn dock_open(&self) -> bool {
         matches!(
             self.panel,
-            Panel::Dock | Panel::Files | Panel::Terminal | Panel::Changes
+            Panel::Dock | Panel::Files | Panel::Terminal | Panel::Changes | Panel::Device
         )
     }
 
@@ -64,6 +64,7 @@ impl Shell {
                                         Panel::Files => self.files_panel(target_width, cx),
                                         Panel::Terminal => self.terminal_panel(target_width, cx),
                                         Panel::Changes => self.git_panel(target_width, cx),
+                                        Panel::Device => self.device_panel(cx),
                                         _ => self.dock_launcher(cx),
                                     }),
                             ),
@@ -104,6 +105,7 @@ impl Shell {
             Panel::Files => self.files_panel(width, cx),
             Panel::Terminal => self.terminal_panel(width, cx),
             Panel::Changes => self.git_panel(width, cx),
+            Panel::Device => self.device_panel(cx),
             _ => self.dock_launcher(cx),
         }
     }

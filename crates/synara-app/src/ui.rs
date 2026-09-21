@@ -122,6 +122,10 @@ pub fn configure(
     if let Some(accent) = appearance.personalization.accent {
         palette.focus = personalization::readable_accent(accent, palette.canvas);
     }
+    if appearance.high_contrast {
+        palette.muted = palette.text;
+        palette.border = if dark { 0x9a9aa4 } else { 0x64646e };
+    }
     PALETTE.set(palette);
     personalization::configure(appearance);
     UI_FAMILY.with(|family| {

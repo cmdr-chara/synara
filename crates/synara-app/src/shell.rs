@@ -12,6 +12,7 @@ mod conversation;
 mod dock;
 mod device;
 mod browser;
+mod pull_requests;
 mod drafts;
 mod environment;
 mod explorer;
@@ -60,6 +61,7 @@ pub struct Bootstrap {
 }
 #[derive(Clone, Copy, PartialEq, Eq)]
 enum Panel {
+    PullRequests,
     Browser,
     Device,
     Conversation,
@@ -95,6 +97,7 @@ struct FormState {
     error: Option<String>,
 }
 enum Update {
+    PullRequests(Box<pull_requests::Reply>),
     BrowserConfigured(Result<(), String>),
     Integrations(Box<integrations::Reply>),
     NativeSettings(Box<settings::native::Reply>),
@@ -168,6 +171,7 @@ enum Update {
     Error(String),
 }
 pub struct Shell {
+    pull_requests: pull_requests::PrView,
     browser: browser::BrowserView,
     device: device::DeviceView,
     followups: followups::FollowupState,
@@ -399,6 +403,7 @@ impl Shell {
             .or_else(|| bootstrap.catalog.projects.first().map(|p| p.id));
         let selected = startup_task(&bootstrap.settings, &bootstrap.selection, &bootstrap.catalog);
         let mut this = Self {
+            pull_requests: pull_requests::PrView::new(cx),
             browser: browser::BrowserView::new(cx),
             device: device::DeviceView::new(cx),
             followups: followups::FollowupState::new(cx),
@@ -1257,6 +1262,7 @@ impl Shell {
         match update {
             Update::Integrations(reply) => self.integration_reply(*reply,cx),
             Update::NativeSettings(reply) => self.native_settings_reply(*reply, cx),
+            Update::PullRequests(reply) => self.pr_reply(*reply, cx),
             Update::BrowserConfigured(result) => { self.browser.busy = false; self.browser.error = result.err(); },
             Update::Device(reply) => self.device_reply(*reply, cx),
             Update::Attachments(reply) => self.attachment_reply(*reply, cx),

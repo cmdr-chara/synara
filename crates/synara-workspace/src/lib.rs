@@ -1,3 +1,4 @@
+pub mod pull_requests;
 mod browser;
 pub use browser::{BrowserService, browser_domain};
 mod integrations;

@@ -15,12 +15,13 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-      - name: Export native-host implementation baseline without builds or writes
+      - name: Export exact session and concurrent integration source without builds or writes
         run: |
           set -euo pipefail
           mkdir -p /tmp/pab-current
           git rev-parse HEAD > /tmp/pab-current/revision.txt
-          git bundle create /tmp/pab-current/source.bundle HEAD
+          test "$(git rev-parse a77409783d0d63f732761aba9ad26e507ccc678c^{commit})" = a77409783d0d63f732761aba9ad26e507ccc678c
+          git bundle create /tmp/pab-current/source.bundle HEAD a77409783d0d63f732761aba9ad26e507ccc678c
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: pab-current-source

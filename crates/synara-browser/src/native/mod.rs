@@ -8,7 +8,7 @@ use crate::{
     session::{Capabilities, Command, Event, NativePort, Output},
     *,
 };
-use gtk::{gio, glib, prelude::*};
+use gtk::{gio, prelude::*};
 use javascriptcore::ValueExt;
 use raw_window_handle::{HasWindowHandle, RawWindowHandle};
 use std::{
@@ -50,11 +50,9 @@ struct NativeTab {
     epoch: u64,
     partition: StoragePartition,
     document: Rc<RefCell<Option<CommittedDocument>>>,
-    loading: gio::Cancellable,
 }
 impl Drop for NativeTab {
     fn drop(&mut self) {
-        self.loading.cancel();
         self.webview.webview().stop_loading();
     }
 }
@@ -140,17 +138,7 @@ impl NativeHost {
             // GPUI does not use GDK. Select X11 before initializing this child-widget toolkit.
             gtk::gdk::set_allowed_backends("x11");
             gtk::init().map_err(|e| format!("WebKitGTK initialization failed: {e}"))?;
-            std::fs::create_dir_all(&self.root).map_err(|e| e.to_string())?;
-            if std::fs::symlink_metadata(&self.root)
-                .map_err(|e| e.to_string())?
-                .file_type()
-                .is_symlink()
-            {
-                return Err("Browser data directory must not be a symbolic link.".into());
-            }
-            use std::os::unix::fs::PermissionsExt;
-            std::fs::set_permissions(&self.root, std::fs::Permissions::from_mode(0o700))
-                .map_err(|e| e.to_string())?;
+            private_directory(&self.root)?;
             Ok(())
         })();
         match result {
@@ -231,7 +219,9 @@ impl NativeHost {
         let key = profile_key(partition);
         if !self.profiles.contains_key(&key) {
             let (path, directory) = if partition == StoragePartition::Manual {
-                (self.root.join("manual"), None)
+                let path = self.root.join("manual");
+                private_directory(&path)?;
+                (path, None)
             } else {
                 let dir = tempfile::Builder::new()
                     .prefix("isolated-")
@@ -377,6 +367,21 @@ impl NativeHost {
             build(builder).map_err(|e| format!("Could not create native WebKit view: {e}"))?;
         let web = view.webview();
         harden(&web, agent);
+        if agent {
+            // Retain the named world for the lifetime of this document, not only an
+            // individual evaluation. A page-world script cannot modify its inventory.
+            let manager = web
+                .user_content_manager()
+                .ok_or("Native script world is unavailable")?;
+            manager.add_script(&webkit2gtk::UserScript::for_world(
+                "globalThis.__synaraRefs = new Map();",
+                webkit2gtk::UserContentInjectedFrames::TopFrame,
+                webkit2gtk::UserScriptInjectionTime::Start,
+                WORLD,
+                &[],
+                &[],
+            ));
+        }
         let committed = Rc::new(RefCell::new(None));
         let current_document = committed.clone();
         let shared = self.shared.clone();
@@ -443,7 +448,6 @@ impl NativeHost {
                 });
             }
         });
-        let loading = gio::Cancellable::new();
         // The native navigation policy is installed before the first network request.
         // Acceptance tests assert that a cross-origin redirect never reaches its target.
         web.load_uri(&document.canonical_url);
@@ -460,7 +464,6 @@ impl NativeHost {
                 epoch,
                 partition,
                 document: committed,
-                loading,
             },
         );
         Ok(())
@@ -602,4 +605,23 @@ fn bounded_title(title: &str) -> String {
 }
 fn approved_origin_allows(allowed: Option<&CanonicalOrigin>, document: &CommittedDocument) -> bool {
     allowed.is_none_or(|origin| origin == &document.origin)
+}
+
+fn private_directory(path: &std::path::Path) -> std::result::Result<(), String> {
+    use std::{fs, io::ErrorKind, os::unix::fs::PermissionsExt};
+    match fs::symlink_metadata(path) {
+        Ok(meta) if !meta.is_dir() || meta.file_type().is_symlink() => {
+            return Err("Browser data path must be a directory, not a symbolic link.".into());
+        }
+        Ok(_) => (),
+        Err(e) if e.kind() == ErrorKind::NotFound => {
+            fs::create_dir_all(path).map_err(|e| e.to_string())?
+        }
+        Err(e) => return Err(e.to_string()),
+    }
+    let meta = fs::symlink_metadata(path).map_err(|e| e.to_string())?;
+    if !meta.is_dir() || meta.file_type().is_symlink() {
+        return Err("Browser data directory changed while opening it.".into());
+    }
+    fs::set_permissions(path, fs::Permissions::from_mode(0o700)).map_err(|e| e.to_string())
 }

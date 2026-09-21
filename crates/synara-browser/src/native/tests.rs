@@ -120,6 +120,7 @@ fn real_webkit_navigation_consent_input_redirect_and_isolation() {
         session.tick(now());
     };
     let wait = |host: &mut NativeHost, session: &mut Session, id: HostRequestId| {
+        println!("Awaiting native request {id:?}");
         let end = Instant::now() + Duration::from_secs(20);
         loop {
             pump(host, session);
@@ -156,6 +157,34 @@ fn real_webkit_navigation_consent_input_redirect_and_isolation() {
             .tabs()
             .iter()
             .any(|t| t.id == manual && t.state == "ready")
+    );
+    // Establish that the manual cookie was accepted before testing isolation.
+    session
+        .user_navigate(
+            manual,
+            &format!("{base}/manual-again"),
+            NavigationKind::Push,
+            now(),
+        )
+        .unwrap();
+    for _ in 0..1000 {
+        pump(&mut host, &mut session);
+        if session
+            .tabs()
+            .iter()
+            .any(|t| t.id == manual && t.state == "ready")
+        {
+            break;
+        }
+        std::thread::sleep(Duration::from_millis(10));
+    }
+    assert!(
+        requests
+            .lock()
+            .unwrap()
+            .iter()
+            .any(|r| r.starts_with("GET /manual-again ")
+                && r.to_lowercase().contains("cookie: fixture=manual"))
     );
     let tab = session.open(BrowserProfile::AgentTask { task: 7 }).unwrap();
     host.viewport(Some(tab), Some(ViewportRect::logical(0., 0., 800., 600.)));
@@ -210,6 +239,25 @@ fn real_webkit_navigation_consent_input_redirect_and_isolation() {
         .unwrap()
         .id
         .clone();
+    // Main-world code must not replace the inventory held in the private world.
+    let tampered = Rc::new(Cell::new(false));
+    let complete = tampered.clone();
+    host.views[&tab].webview.webview().evaluate_javascript(
+        "globalThis.__synaraRefs = 'page-forgery-after-read';",
+        None,
+        None,
+        None::<&gio::Cancellable>,
+        move |r| {
+            assert!(r.is_ok());
+            complete.set(true);
+        },
+    );
+    let end = Instant::now() + Duration::from_secs(5);
+    while !tampered.get() {
+        pump(&mut host, &mut session);
+        assert!(Instant::now() < end);
+        std::thread::sleep(Duration::from_millis(10));
+    }
     let fill = session
         .request(
             7,
@@ -286,4 +334,77 @@ fn real_webkit_navigation_consent_input_redirect_and_isolation() {
     println!(
         "REAL_WEBKIT_ACCEPTANCE: manual load, isolated cookies, consent, document, fill, click, redirect fence, teardown passed"
     );
+}
+
+#[test]
+fn cancelled_queued_requests_release_capacity() {
+    let root = tempfile::tempdir().unwrap();
+    let (mut host, mut port) = NativeHost::new(root.path().to_path_buf());
+    let tab = HostTabId(1);
+    port.send(Command::Open {
+        tab,
+        partition: StoragePartition::AgentTask(1),
+    })
+    .unwrap();
+    host.dispatch(host.commands.recv().unwrap(), |_| {
+        panic!("Open must not create a view")
+    });
+    for i in 1..300 {
+        let request = HostRequestId(i);
+        port.send(Command::Operation {
+            request,
+            command: NativeCommand {
+                tab,
+                partition: StoragePartition::AgentTask(1),
+                operation: BrowserOperation::ReadDocument,
+            },
+            max_output_bytes: 1024,
+        })
+        .unwrap();
+        port.send(Command::Cancel { request }).unwrap();
+        host.dispatch(host.commands.recv().unwrap(), |_| {
+            panic!("Cancelled operation must not create a view")
+        });
+    }
+}
+#[test]
+fn failed_open_does_not_leak_tab_capacity() {
+    let (mut port, receiver, shared) = bridge::channel();
+    let first = HostTabId(1);
+    port.send(Command::Open {
+        tab: first,
+        partition: StoragePartition::Manual,
+    })
+    .unwrap();
+    for _ in 1..128 {
+        port.send(Command::Stop { tab: first }).unwrap();
+    }
+    let refused = HostTabId(2);
+    assert_eq!(
+        port.send(Command::Open {
+            tab: refused,
+            partition: StoragePartition::Manual
+        }),
+        Err(BrowserError::Limit)
+    );
+    assert_eq!(shared.epoch(refused), None);
+    drop(receiver);
+}
+#[test]
+fn browser_storage_rejects_files_and_symlinks() {
+    use std::os::unix::{fs::PermissionsExt, fs::symlink};
+    let root = tempfile::tempdir().unwrap();
+    let real = root.path().join("real");
+    private_directory(&real).unwrap();
+    assert_eq!(
+        std::fs::metadata(&real).unwrap().permissions().mode() & 0o777,
+        0o700
+    );
+    let link = root.path().join("manual");
+    symlink(&real, &link).unwrap();
+    assert!(private_directory(&link).is_err());
+    let file = root.path().join("file");
+    std::fs::write(&file, "untouched").unwrap();
+    assert!(private_directory(&file).is_err());
+    assert_eq!(std::fs::read_to_string(file).unwrap(), "untouched");
 }

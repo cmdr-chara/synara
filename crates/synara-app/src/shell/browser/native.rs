@@ -14,16 +14,23 @@ impl Shell {
     ) {
         #[cfg(target_os = "linux")]
         {
+            if self.browser.native_task.is_none() && self.panel != Panel::Browser {
+                return;
+            }
             if self.browser.native_task.is_none() {
                 self.pump_native_browser(window, cx);
                 self.browser.native_task = Some(cx.spawn_in(window, async move |weak, cx| {
+                    let mut interval = Duration::from_millis(16);
                     loop {
-                        gpui::Timer::after(Duration::from_millis(16)).await;
-                        if weak
-                            .update_in(cx, |this, window, cx| this.pump_native_browser(window, cx))
-                            .is_err()
-                        {
-                            break;
+                        cx.background_executor().timer(interval).await;
+                        let result = weak.update_in(cx, |this, window, cx| {
+                            this.pump_native_browser(window, cx);
+                            this.browser.native.borrow().has_tabs()
+                        });
+                        match result {
+                            Ok(true) => interval = Duration::from_millis(16),
+                            Ok(false) => interval = Duration::from_millis(100),
+                            Err(_) => break,
                         }
                     }
                 }));

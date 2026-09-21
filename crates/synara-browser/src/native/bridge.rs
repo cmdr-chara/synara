@@ -76,6 +76,10 @@ impl NativePort for Port {
         }
         // Stop/close epoch changes are visible even if the queue is full.
         let stop = matches!(command, Command::Close { .. } | Command::Stop { .. });
+        let opened = match &command {
+            Command::Open { tab, .. } => Some(*tab),
+            _ => None,
+        };
         let request = match &command {
             Command::Operation { request, .. } => Some(*request),
             _ => None,
@@ -88,6 +92,9 @@ impl NativePort for Port {
             Ok(()) => Ok(()),
             Err(_) if stop => Ok(()),
             Err(_) => {
+                if let Some(tab) = opened {
+                    state.epochs.remove(&tab);
+                }
                 if let Some(id) = request {
                     state.requests.remove(&id);
                 }

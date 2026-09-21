@@ -4,7 +4,14 @@
   const clip = (value, count) => String(value || "").slice(0, count);
   const visible = node => node.isConnected && !node.disabled &&
     node.getClientRects().length > 0 && getComputedStyle(node).visibility !== "hidden";
-  const name = node => clip(node.getAttribute("aria-label") || node.innerText ||
+  const labelText = node => {
+    const walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT);
+    let value = "", visited = 0, text;
+    while (value.length < 200 && visited++ < 32 && (text = walker.nextNode()))
+      value += clip(text.data, 200 - value.length);
+    return value;
+  };
+  const name = node => clip(node.getAttribute("aria-label") || labelText(node) ||
     node.getAttribute("placeholder") || node.getAttribute("name") || node.tagName, 200);
   const signature = node => JSON.stringify([node.tagName, node.type || "", name(node),
     node.getAttribute("href"), node.getAttribute("formaction")]);
@@ -13,10 +20,11 @@
     if (request.operation.operation === "read_document") {
       const refs = new Map();
       const elements = [];
-      const nodes = document.querySelectorAll("a[href],button,input,textarea,select,[role=button]");
-      for (let i = 0; i < Math.min(nodes.length, 4096) && elements.length < 128; i++) {
-        const node = nodes[i];
-        if (!visible(node) || node.type === "file" || node.type === "hidden") continue;
+      const nodes = document.createTreeWalker(document.documentElement, NodeFilter.SHOW_ELEMENT);
+      let node;
+      for (let i = 0; i < 4096 && elements.length < 128 && (node = nodes.nextNode()); i++) {
+        if (!node.matches("a[href],button,input,textarea,select,[role=button]") ||
+            !visible(node) || node.type === "file" || node.type === "hidden") continue;
         const id = "e" + request.nonce + "_" + elements.length;
         refs.set(id, {node, signature: signature(node)});
         elements.push({id, role: clip(node.getAttribute("role") || node.tagName.toLowerCase(), 64), name: name(node)});
@@ -24,7 +32,7 @@
       globalThis.__synaraRefs = refs;
       // Bound traversal and UTF-8 worst-case output before it crosses the native callback.
       const walker = document.createTreeWalker(document.body || document.documentElement, NodeFilter.SHOW_TEXT);
-      let text = "", visited = 0, node;
+      let text = "", visited = 0;
       while (text.length < 14000 && visited++ < 4096 && (node = walker.nextNode())) {
         if (node.parentElement && !node.parentElement.closest("script,style,noscript"))
           text += clip(node.textContent, Math.min(1000, 14000 - text.length)) + "\n";
@@ -33,7 +41,8 @@
     }
     const op = request.operation;
     const ref = globalThis.__synaraRefs && globalThis.__synaraRefs.get(op.element);
-    if (!ref || !visible(ref.node) || signature(ref.node) !== ref.signature)
+    if (!ref) throw new Error("Element inventory is no longer available. Read the document again.");
+    if (!visible(ref.node) || signature(ref.node) !== ref.signature)
       throw new Error("Element changed. Read the document again before acting.");
     const node = ref.node;
     if (op.operation === "click") {

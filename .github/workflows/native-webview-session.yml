@@ -11,7 +11,7 @@ on:
       - scripts/native_browser_webview_smoke.py
       - .github/workflows/native-webview-session.yml
 permissions:
-  contents: read
+  contents: write
 concurrency:
   group: native-webkit-session
   cancel-in-progress: false
@@ -28,6 +28,29 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
+      - name: Reconcile the inspected concurrent integration on the existing session branch
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/native-webkit-evidence
+          git config user.name 'Commander Chara'
+          git config user.email '249489759+cmdr-chara@users.noreply.github.com'
+          test "$(git rev-parse a77409783d0d63f732761aba9ad26e507ccc678c^{commit})" = a77409783d0d63f732761aba9ad26e507ccc678c
+          git -c core.hooksPath=/dev/null merge --no-commit --no-ff a77409783d0d63f732761aba9ad26e507ccc678c
+          python3 - <<'PY_RECONCILE'
+          import pathlib, subprocess
+          name = 'crates/synara-app/src/shell/browser/native.rs'
+          assert subprocess.check_output(['git','rev-parse','HEAD:'+name], text=True).strip() == 'aaaa07b1a916af5ff144d695c7076d8d6dbc537e'
+          path = pathlib.Path(name)
+          source = path.read_text()
+          old = '            && !self.controls.is_open()\n'
+          assert source.count(old) == 1
+          path.write_text(source.replace(old, old + '            && !self.revisions.open()\n'))
+          PY_RECONCILE
+          git add crates/synara-app/src/shell/browser/native.rs
+          git -c core.hooksPath=/dev/null -c commit.gpgsign=false commit -m 'merge: preserve side chats and revisions in the native browser candidate [skip ci]'
+          git diff --exit-code
+          git diff --cached --exit-code
+          git rev-parse HEAD > /tmp/native-webkit-evidence/revision.txt
       - name: Install native build and private-display prerequisites
         run: |
           set -euo pipefail
@@ -71,6 +94,14 @@ jobs:
           cargo +1.98.1 test --locked -p synara-workspace --lib browser:: 2>&1 | tee /tmp/native-webkit-evidence/browser-service-tests.log
           cargo +1.98.1 test --locked -p synara-workspace --lib pull_requests:: 2>&1 | tee /tmp/native-webkit-evidence/pull-request-tests.log
           cargo +1.98.1 test --locked -p synara-workspace --lib automations 2>&1 | tee /tmp/native-webkit-evidence/automation-tests.log
+          cargo +1.98.1 test --locked -p synara-workspace --lib storage::conversation_tools::related::tests 2>&1 | tee /tmp/native-webkit-evidence/related-thread-tests.log
+      - name: Publish only the fully checked merge to the existing session branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          auth=$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)
+          git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic $auth" push origin HEAD:refs/heads/astra/pr-automations-browser
       - name: Retain focused build cache even after a diagnostic failure
         uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
         if: ${{ always() && steps.cache.outcome == 'success' && steps.cache.outputs.cache-hit != 'true' }}

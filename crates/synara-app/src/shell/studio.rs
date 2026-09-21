@@ -48,7 +48,7 @@ pub(super) struct StudioState {
 impl StudioState {
     pub fn new(cx: &mut Context<Shell>) -> Self {
         let query = cx.new(|cx| {
-            TextEntry::new("Find Studio files...", EntryMode::SingleLine, 32., cx)
+            TextEntry::new("Find Library files...", EntryMode::SingleLine, 32., cx)
                 .with_leading_icon(Glyph::Search)
         });
         let subscription = cx.subscribe(&query, |_, _, _, cx| cx.notify());
@@ -235,7 +235,7 @@ impl Shell {
     pub(super) fn studio_outputs_button(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
         ui::chrome_button(
             "studio-outputs",
-            "Studio outputs and workspace files",
+            "Hub Library and workspace files",
             Glyph::Files,
             false,
             cx.listener(|this, _: &(), _, cx| this.open_studio_outputs(cx)),
@@ -255,7 +255,7 @@ impl Shell {
             return;
         };
         let reference = format!(
-            "Studio workspace file: {}",
+            "Hub Library file: {}",
             serde_json::to_string(&path.to_string_lossy()).unwrap_or_default()
         );
         let text = self.composer.read(cx).text();
@@ -291,6 +291,8 @@ impl Shell {
             })
             .collect::<Vec<_>>();
         let selected = self.studio.selected.clone();
+        let source_task = selected.as_ref().and_then(|path|self.studio.listing.entries.iter()
+            .find(|entry| &entry.path == path)).and_then(|entry|entry.source_task);
         let preview = match &self.studio.preview {
             Some(Preview::Text { text, markdown }) => {
                 div().id("studio-text-preview").relative().child(ui::layout_probe("studio-text-preview"))
@@ -332,7 +334,7 @@ impl Shell {
         div().id("studio-files-panel").relative().child(ui::layout_probe("studio-files-panel"))
             .flex().flex_col().flex_1().min_h_0().min_w_0().gap_2().p_3()
             .child(div().flex().items_center().gap_2().child(ui::icon(Glyph::Files))
-                .child(div().flex_1().text_size(px(14.)).child("Studio files"))
+                .child(div().flex_1().text_size(px(14.)).child("Hub Library"))
                 .child(ui::button("studio-refresh", if self.studio.loading { "Refreshing..." } else { "Refresh" }, false)
                     .relative().child(ui::layout_probe("studio-refresh"))
                     .on_click(cx.listener(|this,_,_,cx| { if !this.studio.loading { this.refresh_studio_outputs(cx); } }))))
@@ -341,7 +343,9 @@ impl Shell {
                 .child(ui::button("studio-all-files","All files",!self.studio.only_outputs).text_size(px(11.)).on_click(cx.listener(|this,_,_,cx| { this.studio.only_outputs=false;cx.notify(); })))
                 .child(ui::button("studio-reported","Reported outputs",self.studio.only_outputs).text_size(px(11.)).on_click(cx.listener(|this,_,_,cx| { this.studio.only_outputs=true;cx.notify(); })))
                 .child(ui::button("studio-images","Images",self.studio.only_images).text_size(px(11.)).on_click(cx.listener(|this,_,_,cx| { this.studio.only_images = !this.studio.only_images;cx.notify(); }))))
-            .child(div().text_size(px(11.)).text_color(rgb(palette().muted)).child(format!("{} files · Output attribution comes only from completed tool changes.",matches.len())))
+            .child(div().text_size(px(11.)).text_color(rgb(palette().muted)).child(format!("{} files · Reported by completed tools in this Hub, not proof of authorship.",matches.len())))
+            .children(source_task.map(|source| ui::action("library-source-thread", "Open reporting thread", Some(Glyph::Chat), false,
+                cx.listener(move |this, _: &(), _, cx| { if this.select_task(source,cx) { this.show_conversation(cx); } }))))
             .children(self.studio.error.clone().map(|error| div().text_size(px(12.)).text_color(rgb(palette().error)).child(error)))
             .when(self.studio.listing.limited || self.studio.listing.unreadable>0, |el| el.child(div().text_size(px(11.)).text_color(rgb(palette().muted))
                 .child(format!("Bounded listing{} · {} unreadable directories/files",if self.studio.listing.limited { " reached its limit" } else { "" },self.studio.listing.unreadable))))
@@ -353,7 +357,7 @@ impl Shell {
                         .h(px(28.)).text_size(px(12.)).relative().child(ui::layout_probe_slot("studio-file",index))
                 }))
                 .when(matches.is_empty(), |el| el.child(div().p_3().text_size(px(12.)).text_color(rgb(palette().muted))
-                    .child(if self.studio.loading { "Looking for files..." } else if self.studio.only_outputs { "No completed tool changes reference a visible file yet. All files shows other workspace content." } else { "No files match. Files appear here after they are created in this Studio workspace." }))))
+                    .child(if self.studio.loading { "Looking for files..." } else if self.studio.only_outputs { "No completed tool changes reference a visible file yet. All files shows other workspace content." } else { "No files match. Files appear here after they are created in this Hub working folder." }))))
             .child(div().text_size(px(12.)).text_ellipsis().child(selected.as_ref().map(|p|p.to_string_lossy().into_owned()).unwrap_or_default()))
             .when(matches!(self.studio.preview, Some(Preview::Text { markdown: true, .. })), |el| el.child(
                 ui::button("studio-raw-toggle", if self.studio.raw_text { "Show rendered Markdown" } else { "Show raw text" }, self.studio.raw_text)

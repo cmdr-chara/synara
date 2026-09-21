@@ -254,7 +254,7 @@ impl TranscriptState {
         self.message_entries.get(id).map_or(1., |started| {
             crate::ui::motion::ease_out(
                 now.saturating_duration_since(*started).as_secs_f32()
-                    / crate::ui::motion::MESSAGE_DURATION.as_secs_f32(),
+                    / crate::ui::motion::message_duration().as_secs_f32(),
             )
         })
     }
@@ -263,7 +263,7 @@ impl TranscriptState {
             self.invalidate(&RowKey::Message(id.clone(), 0));
         }
         self.message_entries.retain(|_, started| {
-            now.saturating_duration_since(*started) < crate::ui::motion::MESSAGE_DURATION
+            now.saturating_duration_since(*started) < crate::ui::motion::message_duration()
         });
         !self.message_entries.is_empty()
     }
@@ -330,7 +330,7 @@ impl Shell {
         .flex_1()
         .min_h_0()
         .w_full()
-        .max_w(px(crate::ui::CHAT_WIDTH + 48.))
+        .max_w(px(crate::ui::chat_width() + 48.))
         .mx_auto()
         .py_6()
         .into_any_element()

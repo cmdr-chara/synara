@@ -1,3 +1,9 @@
+mod followups;
+pub use followups::{FollowupDraft, FollowupEdit, FollowupQueue};
+mod attachments;
+pub use attachments::{AttachmentDraft, AttachmentEdit, AttachmentInfo, AttachmentInput, AttachmentKind, AttachmentPreview, MAX_ATTACHMENT_BATCH_BYTES};
+mod terminal_layout;
+pub use terminal_layout::*;
 mod chat_preferences;
 mod review;
 pub use review::{MAX_COMMIT_DRAFT_BYTES, ReviewPreferences, ReviewScope};
@@ -274,11 +280,13 @@ PRAGMA user_version=2;")?;
             [task.thread_id.to_string()],
         )?;
         tx.execute(
-            "DELETE FROM preferences WHERE key IN (?1,?2,?3)",
+            "DELETE FROM preferences WHERE key IN (?1,?2,?3,?4,?5)",
             params![
                 format!("task-draft:{id}"),
                 format!("message-pins:{id}"),
-                format!("task-context:{id}")
+                format!("task-context:{id}"),
+                format!("task-attachments:{id}"),
+                format!("task-followups:{id}")
             ],
         )?;
         let changed = tx.execute("DELETE FROM tasks WHERE id=?1", [id.to_string()])?;
@@ -554,6 +562,9 @@ fn valid_preference_key(key: &str) -> bool {
         .strip_prefix("task-draft:")
         .or_else(|| key.strip_prefix("message-pins:"))
         .or_else(|| key.strip_prefix("task-context:"))
+        .or_else(|| key.strip_prefix("task-attachments:"))
+        .or_else(|| key.strip_prefix("task-followups:"))
+        .or_else(|| key.strip_prefix("hub:"))
     {
         return id.len() == 36
             && serde_json::from_value::<TaskId>(serde_json::Value::String(id.into())).is_ok();

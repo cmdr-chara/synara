@@ -9,9 +9,11 @@ pub(super) struct DraftState {
     pub loading: HashSet<TaskId>,
     versions: HashMap<TaskId, u64>,
     sent: HashMap<TaskId, (u64, String)>,
+    display: HashMap<TaskId, String>,
     pub quitting: bool,
 }
 impl DraftState {
+    pub fn version(&self, id: TaskId) -> u64 { self.versions.get(&id).copied().unwrap_or(0) }
     fn changed(&mut self, id: TaskId) {
         self.dirty.insert(id, Instant::now());
         self.failed.remove(&id);
@@ -19,18 +21,24 @@ impl DraftState {
         *version = version.wrapping_add(1);
     }
     pub fn submitted(&mut self, id: TaskId, text: String) {
+        self.display.remove(&id);
         self.sent
             .insert(id, (self.versions.get(&id).copied().unwrap_or(0), text));
+    }
+    pub fn submitted_with_display(&mut self, id: TaskId, text: String, display: String) {
+        self.submitted(id, text);
+        self.display.insert(id, display);
     }
     fn accepted(&mut self, id: TaskId, text: &str) -> bool {
         let Some((version, sent)) = self.sent.get(&id) else {
             return false;
         };
-        if sent != text {
+        if self.display.get(&id).unwrap_or(sent) != text {
             return false;
         }
         let unchanged = *version == self.versions.get(&id).copied().unwrap_or(0);
         self.sent.remove(&id);
+        self.display.remove(&id);
         unchanged
     }
     fn due(&mut self, force: bool) -> Vec<TaskId> {
@@ -188,8 +196,9 @@ impl Shell {
         else {
             return;
         };
+        let original = self.draft_state.sent.get(&id).map(|(_, text)| text.clone());
         if self.draft_state.accepted(id, text)
-            && self.drafts.get(&id).is_some_and(|draft| draft == text)
+            && self.drafts.get(&id).is_some_and(|draft| Some(draft) == original.as_ref())
         {
             self.store_draft(id, String::new());
             if self.selected == Some(id) {
@@ -259,6 +268,18 @@ impl Shell {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn rich_prompt_echo_clears_only_the_original_unedited_text_draft() {
+        let id = TaskId::new();
+        let mut state = DraftState::default();
+        state.changed(id);
+        state.submitted_with_display(id, "Review".into(), "Review\nAttached file: a.png\n[Image]".into());
+        assert!(!state.accepted(id, "Review"));
+        assert!(state.accepted(id, "Review\nAttached file: a.png\n[Image]"));
+        state.submitted_with_display(id, "Review".into(), "display".into());
+        state.changed(id);
+        assert!(!state.accepted(id, "display"));
+    }
     #[test]
     fn edits_during_save_are_coalesced_without_reordering() {
         let id = TaskId::new();

@@ -65,7 +65,9 @@ impl Shell {
                 );
             }
         }
-        root = root.child(self.chat_tools_bar(cx));
+        if !self.zen_active() || self.settings.personalization.details_shown {
+            root = root.child(self.chat_tools_bar(cx));
+        }
         if self.chat_tools.find_open {
             root = root.child(self.message_find_bar(cx));
         }
@@ -75,9 +77,10 @@ impl Shell {
             self.virtual_transcript(cx)
         });
         root = root.child(self.composer_panel(window, cx));
+        if cx.reduce_motion() { return root.into_any_element(); }
         root.with_animation(
             SharedString::from(format!("conversation-entry-{}", thread.id)),
-            Animation::new(crate::ui::motion::PANE_DURATION)
+            Animation::new(crate::ui::motion::pane_duration())
                 .with_easing(crate::ui::motion::ease_out),
             |el, progress| {
                 tracing::debug!(target: "synara_ui_layout", surface = "conversation", progress, "motion-frame");
@@ -174,9 +177,9 @@ impl Shell {
                     div()
                         .p_4()
                         .rounded_md()
-                        .bg(rgb(0x3a3020))
+                        .bg(rgb(crate::ui::palette().notice_surface))
                         .border_1()
-                        .border_color(rgb(0x88703f))
+                        .border_color(rgb(crate::ui::palette().focus))
                         .child(
                             div()
                                 .font_weight(gpui::FontWeight::SEMIBOLD)
@@ -237,7 +240,7 @@ impl Shell {
                         .px_3()
                         .py_1()
                         .text_xs()
-                        .text_color(rgb(0x94a2b4))
+                        .text_color(rgb(crate::ui::palette().muted))
                         .child("Permission request resolved or expired")
                         .into_any_element()
                 }
@@ -283,7 +286,7 @@ impl Shell {
         else {
             return div()
                 .text_xs()
-                .text_color(rgb(0x94a2b4))
+                .text_color(rgb(crate::ui::palette().muted))
                 .child("User input request resolved or expired")
                 .into_any_element();
         };
@@ -291,8 +294,8 @@ impl Shell {
             .p_4()
             .rounded_md()
             .border_1()
-            .border_color(rgb(0x657fad))
-            .bg(rgb(0x1e2b40))
+            .border_color(rgb(crate::ui::palette().focus))
+            .bg(rgb(crate::ui::palette().overlay))
             .child(
                 div()
                     .font_weight(gpui::FontWeight::SEMIBOLD)
@@ -403,7 +406,7 @@ impl Shell {
             panel = panel.child(row);
         }
         if let Some(error) = &form.error {
-            panel = panel.child(div().mt_2().text_color(rgb(0xffb8bc)).child(error.clone()));
+            panel = panel.child(div().mt_2().text_color(rgb(crate::ui::palette().error)).child(error.clone()));
         }
         let decline = key.clone();
         let cancel = key.clone();

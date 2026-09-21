@@ -10,12 +10,15 @@ impl Shell {
     ) -> gpui::AnyElement {
         let busy = self.selected.is_some_and(|task| self.busy.contains(&task));
         let disabled =
-            !busy && (self.controls_blocked() || self.composer.read(cx).text().trim().is_empty());
+            !busy && (self.controls_blocked() || self.attachment_send_blocked() || self.attachment_capability_error().is_some() || self.composer.read(cx).text().trim().is_empty());
         let composer_bounds = self.controls.composer_bounds.clone();
         div()
             .relative()
+            .on_drop(cx.listener(|this, paths: &gpui::ExternalPaths, _, cx| {
+                this.attachment_paths(paths.paths().to_vec(), cx);
+            }))
             .w_full()
-            .max_w(px(ui::CHAT_WIDTH + 40.))
+            .max_w(px(ui::chat_width() + 40.))
             .mx_auto()
             .flex_shrink_0()
             .px_5()
@@ -66,14 +69,14 @@ impl Shell {
                     .gap_1()
                     .rounded(px(18.))
                     .border_1()
-                    .border_color(rgb(
-                        if self.composer.read(cx).focus_handle(cx).is_focused(window) {
-                            palette().muted
-                        } else {
-                            palette().border
-                        },
-                    ))
-                    .bg(rgb(palette().overlay))
+                    .border_color(if self.composer.read(cx).focus_handle(cx).is_focused(window) {
+                        rgb(palette().focus)
+                    } else { ui::glass_edge() })
+                    .bg(ui::surface(palette().overlay))
+                    .when(self.settings.value.appearance.personalization.material == SurfaceMaterial::Glass, |el| el.bg(gpui::linear_gradient(
+                        145., gpui::linear_color_stop(ui::surface(palette().selected), 0.),
+                        gpui::linear_color_stop(ui::surface(palette().overlay), 1.),
+                    )))
                     .relative()
                     .child(ui::layout_probe("composer-surface"))
                     .child(
@@ -86,6 +89,8 @@ impl Shell {
                         .top_0()
                         .left_0(),
                     )
+                    .child(div().id("composer-context-tray").max_h(px(210.)).overflow_y_scroll()
+                        .child(self.attachments_view(cx)).child(self.followups_view(cx)))
                     .child(self.composer.clone())
                     .children(self.composer.read(cx).error.as_ref().map(|error| {
                         div()
@@ -101,6 +106,9 @@ impl Shell {
                             .justify_between()
                             .gap_1()
                             .child(div().flex_1().min_w_0().child(self.session_controls(cx)))
+                            .child(ui::chrome_button("attach-files", "Attach images or UTF-8 files", Glyph::Attach, self.attachment_send_blocked(),
+                                cx.listener(|this, _: &(), _, cx| this.choose_attachments(cx))).size(px(28.)))
+                            .child(self.followup_toggle(cx))
                             .child(
                                 ui::unavailable_action(
                                     "voice-input",

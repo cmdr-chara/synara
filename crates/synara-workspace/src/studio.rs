@@ -2,7 +2,7 @@
 //! handle-relative containment. Merely browsing never runs tools or writes files.
 use crate::{WorkspaceError, WorkspaceResult, WorkspaceService};
 use std::{
-    collections::HashSet,
+    collections::HashMap,
     path::{Component, Path, PathBuf},
     time::{Duration, Instant},
 };
@@ -22,6 +22,7 @@ pub struct StudioFile {
     /// A completed tool reported this path as a changed file. This is not a
     /// claim about files with no durable attribution.
     pub reported_output: bool,
+    pub source_task: Option<TaskId>,
 }
 #[derive(Clone, Debug, Default)]
 pub struct StudioFiles {
@@ -78,7 +79,7 @@ fn visible(path: &Path) -> bool {
         )
         && !(segments.len() == 1 && matches!(segments[0].as_str(), "agents.md" | "claude.md"))
 }
-fn scan(root: &Path, reported: HashSet<PathBuf>) -> WorkspaceResult<StudioFiles> {
+fn scan(root: &Path, reported: HashMap<PathBuf, TaskId>) -> WorkspaceResult<StudioFiles> {
     let fs = WorkspaceFs::open(root)?;
     let mut pending = vec![(PathBuf::new(), 0)];
     let mut result = StudioFiles::default();
@@ -114,7 +115,8 @@ fn scan(root: &Path, reported: HashSet<PathBuf>) -> WorkspaceResult<StudioFiles>
             } else {
                 match fs.file_length(&entry.relative_path) {
                     Ok(bytes) => result.entries.push(StudioFile {
-                        reported_output: reported.contains(&entry.relative_path),
+                        reported_output: reported.contains_key(&entry.relative_path),
+                        source_task: reported.get(&entry.relative_path).copied(),
                         path: entry.relative_path,
                         bytes,
                     }),
@@ -130,7 +132,7 @@ fn scan(root: &Path, reported: HashSet<PathBuf>) -> WorkspaceResult<StudioFiles>
     });
     Ok(result)
 }
-fn image_size(bytes: &[u8]) -> Option<(PreviewImageFormat, u32, u32)> {
+pub(crate) fn image_size(bytes: &[u8]) -> Option<(PreviewImageFormat, u32, u32)> {
     if bytes.starts_with(b"\x89PNG\r\n\x1a\n")
         && bytes.get(12..16) == Some(b"IHDR")
         && bytes.len() >= 24
@@ -233,13 +235,13 @@ impl WorkspaceService {
         let task = self.task(id).await?;
         if task.scope != TaskScope::Studio {
             return Err(WorkspaceError::Invalid(
-                "Select a Studio conversation first.".into(),
+                "Select a Hub thread first.".into(),
             ));
         }
         let workspace = self.workspace_for_task(&task).await?;
         if !matches!(workspace.location, WorkspaceLocation::Local { .. }) {
             return Err(WorkspaceError::Invalid(
-                "Studio previews currently require a local workspace.".into(),
+                "Library previews currently require a local workspace.".into(),
             ));
         }
         Ok(task.working_directory)
@@ -247,27 +249,41 @@ impl WorkspaceService {
     pub async fn studio_files(&self, id: TaskId) -> WorkspaceResult<StudioFiles> {
         let root = self.local_studio_root(id).await?;
         let task = self.task(id).await?;
-        let thread = self.thread(task.thread_id).await?;
-        // Only structured completed diff outputs provide attribution. A prose
-        // filename or arbitrary URI never becomes trusted filesystem authority.
-        let paths = thread
-            .tools
-            .values()
-            .filter(|t| t.status == ToolStatus::Completed)
-            .flat_map(|t| t.output.iter())
-            .filter_map(|output| match output {
-                ToolOutput::Diff { path, .. } => Some(PathBuf::from(path)),
-                _ => None,
-            })
-            .collect::<Vec<_>>();
+        // Inspect only Hub threads in the exact same working directory. A shared
+        // project ID is never permission to relabel paths from another worktree.
+        let mut peers: Vec<_> = self.catalog().await?.tasks.into_iter().filter(|peer|
+            peer.project_id == task.project_id && peer.scope == TaskScope::Studio
+                && peer.working_directory == root).collect();
+        peers.sort_by_key(|peer| (std::cmp::Reverse(peer.updated_at_ms), peer.id));
+        let attribution_limited = peers.len() > 64;
+        let mut paths = Vec::new();
+        let mut remaining = 4096usize;
+        let deadline = tokio::time::Instant::now() + Duration::from_secs(3);
+        let mut limited = attribution_limited;
+        for peer in peers.into_iter().take(64) {
+            if remaining == 0 { limited = true; break; }
+            let thread = match tokio::time::timeout_at(deadline, self.thread(peer.thread_id)).await {
+                Ok(Ok(thread)) => thread,
+                Ok(Err(_)) | Err(_) => { limited = true; break; }
+            };
+            for path in thread.tools.values().filter(|tool|tool.status == ToolStatus::Completed)
+                .flat_map(|tool|tool.output.iter()).filter_map(|output| match output {
+                    ToolOutput::Diff { path, .. } => Some(PathBuf::from(path)), _ => None,
+                }).take(remaining) {
+                paths.push((path,peer.id)); remaining -= 1;
+            }
+        }
         tokio::task::spawn_blocking(move || {
             let fs = WorkspaceFs::open(&root)?;
-            let reported = paths
-                .iter()
-                .filter_map(|path| fs.relative(path).ok())
-                .filter(|path| visible(path))
-                .collect();
-            scan(&root, reported)
+            let mut reported = HashMap::new();
+            for (path,task) in paths {
+                if let Ok(path) = fs.relative(&path) && visible(&path) {
+                    reported.entry(path).or_insert(task);
+                }
+            }
+            let mut listing = scan(&root, reported)?;
+            listing.limited |= limited;
+            Ok(listing)
         })
         .await
         .map_err(|_| WorkspaceError::Worker)?

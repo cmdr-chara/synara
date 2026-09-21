@@ -1,0 +1,89 @@
+name: Native WebKit session acceptance
+on:
+  push:
+    branches: [astra/pr-automations-browser]
+    paths:
+      - crates/synara-browser/src/native/**
+      - crates/synara-browser/src/session.rs
+      - crates/synara-browser/src/session/**
+      - crates/synara-app/src/shell/browser.rs
+      - crates/synara-app/src/shell/browser/**
+      - scripts/native_browser_webview_smoke.py
+      - .github/workflows/native-webview-session.yml
+permissions:
+  contents: read
+concurrency:
+  group: native-webkit-session
+  cancel-in-progress: false
+jobs:
+  native:
+    if: github.repository == 'cmdr-chara/synara'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      CARGO_BUILD_JOBS: '2'
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install native build and private-display prerequisites
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/native-webkit-evidence
+          rustup toolchain install 1.98.1 --profile minimal --component rustfmt
+          sudo apt-get update > /tmp/native-webkit-evidence/install.log 2>&1
+          sudo apt-get install -y clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libwebkit2gtk-4.1-dev libgtk-3-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil xclip fonts-dejavu-core fonts-liberation >> /tmp/native-webkit-evidence/install.log 2>&1
+      - uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
+        id: cache
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: native-webkit-1.98.1-${{ runner.os }}-${{ github.sha }}
+          restore-keys: native-webkit-1.98.1-${{ runner.os }}-
+      - name: Compile native host and run focused domain tests
+        id: domain
+        run: |
+          set -euo pipefail
+          cargo +1.98.1 test --locked -p synara-browser --features native-webview --lib 2>&1 | tee /tmp/native-webkit-evidence/browser-tests.log
+      - name: Real WebKit consent, DOM actions and pre-network redirect acceptance
+        if: steps.domain.outcome == 'success'
+        run: |
+          set -euo pipefail
+          xvfb-run -a -s '-screen 0 1280x800x24 -nolisten tcp' cargo +1.98.1 test --locked -p synara-browser --features native-webview --lib real_webkit_navigation_consent_input_redirect_and_isolation -- --ignored --test-threads=1 --nocapture 2>&1 | tee /tmp/native-webkit-evidence/real-webkit.log
+          grep -q REAL_WEBKIT_ACCEPTANCE /tmp/native-webkit-evidence/real-webkit.log
+      - name: Build actual GPUI application and owned fixture
+        id: app
+        if: ${{ !cancelled() && steps.domain.outcome == 'success' }}
+        run: |
+          set -euo pipefail
+          cargo +1.98.1 build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture 2>&1 | tee /tmp/native-webkit-evidence/app-build.log
+      - name: Prove GPUI child rendering, pointer input and native overlay visibility
+        if: ${{ !cancelled() && steps.app.outcome == 'success' }}
+        run: python3 scripts/native_browser_webview_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/native-webkit-evidence/gpui
+      - name: Retain focused build cache even after a diagnostic failure
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
+        if: ${{ always() && steps.cache.outcome == 'success' && steps.cache.outputs.cache-hit != 'true' }}
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ steps.cache.outputs.cache-primary-key }}
+      - name: Export exact candidate and source identity
+        if: always()
+        run: |
+          mkdir -p /tmp/native-webkit-evidence
+          git rev-parse HEAD > /tmp/native-webkit-evidence/revision.txt
+          git status --short > /tmp/native-webkit-evidence/status.txt
+          git bundle create /tmp/native-webkit-evidence/source.bundle HEAD
+          cp Cargo.lock /tmp/native-webkit-evidence/Cargo.lock
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-webkit-evidence
+          path: /tmp/native-webkit-evidence/
+          retention-days: 3

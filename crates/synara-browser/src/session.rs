@@ -92,11 +92,16 @@ struct TabState {
     view: TabView,
     navigation: Option<(HostNavigationId, u64, Option<CanonicalOrigin>, Option<HostRequestId>)>,
     elements: BTreeSet<String>,
+    committed_navigation: Option<HostNavigationId>,
 }
 pub enum Event {
     Committed { tab: HostTabId, navigation: HostNavigationId, url: String, title: String },
     Failed { tab: HostTabId, navigation: HostNavigationId, error: String },
     Crashed { tab: HostTabId },
+    /// A manual page gesture intercepted by the native host, not page IPC.
+    ManualNavigation { tab: HostTabId, navigation: HostNavigationId, url: String },
+    DocumentCrashed { tab: HostTabId, navigation: HostNavigationId },
+    Title { tab: HostTabId, navigation: HostNavigationId, title: String },
     Output { request: HostRequestId, output: Output },
     OperationFailed { request: HostRequestId, error: String },
 }
@@ -108,6 +113,11 @@ impl Default for Session { fn default() -> Self { Self::new(Box::new(Unavailable
 impl Session {
     pub fn new(port: Box<dyn NativePort>) -> Self {
         Self { host: BrowserHost::default(), port, tabs: BTreeMap::new(), requests: BTreeMap::new() }
+    }
+    /// Install the UI-thread transport before any tabs or grants exist.
+    pub fn install_port(&mut self, port: Box<dyn NativePort>) -> Result<()> {
+        if !self.tabs.is_empty() || !self.requests.is_empty() { return Err(BrowserError::Invalid); }
+        self.port = port; Ok(())
     }
     pub fn capabilities(&self) -> Capabilities { self.port.capabilities() }
     pub fn tabs(&self) -> Vec<TabView> { self.tabs.values().map(|t| t.view.clone()).collect() }
@@ -122,7 +132,7 @@ impl Session {
         self.tabs.insert(id, TabState { view: TabView { id, profile, url: None, title: "New tab".into(),
             state: if error.is_some() { "unavailable" } else { "blank" }.into(),
             error: error.map(|e| e.to_string()), back: false, forward: false }, navigation: None,
-            elements: BTreeSet::new() });
+            elements: BTreeSet::new(), committed_navigation: None });
         Ok(id)
     }
     pub fn close(&mut self, tab: HostTabId) -> Result<()> {
@@ -133,7 +143,7 @@ impl Session {
     pub fn stop(&mut self, tab: HostTabId) -> Result<()> {
         self.host.crash(tab)?; self.invalidate(tab, None);
         let state = self.tabs.get_mut(&tab).ok_or(BrowserError::MissingTab)?;
-        state.navigation = None; state.elements.clear(); state.view.state = "stopped".into();
+        state.navigation = None; state.committed_navigation = None; state.elements.clear(); state.view.state = "stopped".into();
         let _ = self.port.send(Command::Stop { tab }); Ok(())
     }
     pub fn shutdown_task(&mut self, task: u128) {
@@ -157,7 +167,7 @@ impl Session {
         self.invalidate(tab, request);
         let allowed = matches!(profile, BrowserProfile::AgentTask { .. }).then(|| document.origin.clone());
         let state = self.tabs.get_mut(&tab).ok_or(BrowserError::MissingTab)?;
-        state.elements.clear(); state.view.state = "loading".into(); state.view.error = None;
+        state.elements.clear(); state.committed_navigation = None; state.view.state = "loading".into(); state.view.error = None;
         state.navigation = Some((nav, now.saturating_add(30_000), allowed.clone(), request));
         if let Err(e) = self.port.send(Command::Navigate { tab, navigation: nav, document,
             partition: profile.storage_partition(), allowed_origin: allowed }) {
@@ -246,8 +256,32 @@ impl Session {
         if let Some(id) = request { if let Some(r) = self.requests.get_mut(&id) { r.state = RequestState::Failed(error.chars().take(1024).collect()); } }
     }
     /// Authenticated native host callbacks only, never page JavaScript or MCP.
-    pub fn event(&mut self, event: Event) -> Result<()> {
+    pub fn event(&mut self, event: Event) -> Result<()> { self.event_at(event, 0) }
+    pub fn event_at(&mut self, event: Event, now: u64) -> Result<()> {
         match event {
+            Event::ManualNavigation { tab, navigation, url } => {
+                if self.tabs.get(&tab).ok_or(BrowserError::MissingTab)?.committed_navigation != Some(navigation) {
+                    return Err(BrowserError::MissingNavigation);
+                }
+                if self.host.profile(tab)? != BrowserProfile::Manual { return Err(BrowserError::WrongContext); }
+                self.user_navigate(tab, &url, NavigationKind::Push, now)?;
+            }
+            Event::DocumentCrashed { tab, navigation } => {
+                let state = self.tabs.get(&tab).ok_or(BrowserError::MissingTab)?;
+                if state.committed_navigation != Some(navigation)
+                    && !state.navigation.as_ref().is_some_and(|n| n.0 == navigation) {
+                    return Err(BrowserError::MissingNavigation);
+                }
+                self.fail_tab(tab, "Browser process terminated");
+                self.tabs.get_mut(&tab).unwrap().view.state = "crashed".into();
+            },
+            Event::Title { tab, navigation, title } => {
+                let t = self.tabs.get_mut(&tab).ok_or(BrowserError::MissingTab)?;
+                if t.committed_navigation != Some(navigation) || title.len() > 4096 {
+                    return Err(BrowserError::MissingNavigation);
+                }
+                t.view.title = title;
+            },
             Event::Committed { tab, navigation, url, title } => {
                 let t = self.tabs.get(&tab).ok_or(BrowserError::MissingTab)?;
                 let (nav, _, allowed, request) = t.navigation.clone().ok_or(BrowserError::MissingNavigation)?;
@@ -257,7 +291,7 @@ impl Session {
                     self.fail_tab(tab, "Native navigation violated its approved origin"); return Err(BrowserError::WrongContext);
                 }
                 self.host.commit_navigation(navigation, doc.clone())?;
-                let h = self.host.history(tab)?; let t = self.tabs.get_mut(&tab).unwrap(); t.navigation = None;
+                let h = self.host.history(tab)?; let t = self.tabs.get_mut(&tab).unwrap(); t.navigation = None; t.committed_navigation = Some(navigation);
                 t.view.url = Some(doc.canonical_url); t.view.title = title; t.view.state = "ready".into(); t.view.error = None;
                 t.view.back = h.current.is_some_and(|i| i > 0); t.view.forward = h.current.is_some_and(|i| i + 1 < h.entries.len());
                 if let Some(id) = request { self.requests.get_mut(&id).ok_or(BrowserError::MissingRequest)?.state = RequestState::Complete(Output::Done); }

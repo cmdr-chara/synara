@@ -9,6 +9,8 @@
 #[path = "../../../foundations/browser/lib.rs"]
 pub mod policy;
 pub mod session;
+#[cfg(all(feature = "native-webview", target_os = "linux"))]
+pub mod native;
 
 use policy::{Action, BrowserPolicy, Context, Grant, NavigationId, Origin, Scheme, TabId};
 use serde::{Deserialize, Serialize};

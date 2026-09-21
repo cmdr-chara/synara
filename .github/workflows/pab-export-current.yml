@@ -15,7 +15,7 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-      - name: Export exact branch source without builds or writes
+      - name: Export native-host implementation baseline without builds or writes
         run: |
           set -euo pipefail
           mkdir -p /tmp/pab-current

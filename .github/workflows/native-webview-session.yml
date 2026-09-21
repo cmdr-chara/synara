@@ -3,10 +3,15 @@ on:
   push:
     branches: [astra/pr-automations-browser]
     paths:
-      - .session/native-host.part2
+      - crates/synara-browser/src/native/**
+      - crates/synara-browser/src/session.rs
+      - crates/synara-browser/src/session/**
+      - crates/synara-app/src/shell/browser.rs
+      - crates/synara-app/src/shell/browser/**
+      - scripts/native_browser_webview_smoke.py
       - .github/workflows/native-webview-session.yml
 permissions:
-  contents: write
+  contents: read
 concurrency:
   group: native-webkit-session
   cancel-in-progress: false
@@ -23,39 +28,15 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-      - name: Apply the reviewed native-host source batch when supplied
-        shell: bash
+      - name: Install native build and private-display prerequisites
         run: |
           set -euo pipefail
           mkdir -p /tmp/native-webkit-evidence
-          if test -f .session/native-host.part2; then
-            python3 - <<'PY'
-          import base64, gzip, hashlib, pathlib, subprocess
-          encoded = ''.join(''.join(pathlib.Path('.session/native-host.part'+str(i)).read_text().split()) for i in (1,2))
-          assert len(encoded) == 24836
-          patch = gzip.decompress(base64.b64decode(encoded, validate=True))
-          assert len(patch) == 72426
-          assert hashlib.sha256(patch).hexdigest() == 'abf0d3742ca2a516a92180f2d4584fb2d330400b678bfd0cb464803775df96b8'
-          path = pathlib.Path('/tmp/native-webkit-source.patch')
-          path.write_bytes(patch)
-          names = subprocess.check_output(['git','apply','--numstat',str(path)]).decode().splitlines()
-          allowed = {'crates/synara-app/Cargo.toml','crates/synara-app/src/shell.rs','crates/synara-app/src/shell/browser.rs','crates/synara-app/src/shell/browser/native.rs','crates/synara-app/src/shell/chrome.rs','crates/synara-browser/Cargo.toml','crates/synara-browser/src/lib.rs','crates/synara-browser/src/session.rs','scripts/native_browser_webview_smoke.py'}
-          assert len(names) == 13
-          for row in names:
-              name = row.split('\t')[2]
-              assert name in allowed or name in {'crates/synara-browser/src/native/'+n for n in ('mod.rs','bridge.rs','tests.rs','actions.js')}
-          subprocess.run(['git','apply','--3way','--index',str(path)],check=True)
-          subprocess.run(['git','rm','.session/native-host.part1','.session/native-host.part2'],check=True)
-          PY
-          fi
-      - name: Install native build and private-display prerequisites
-        if: hashFiles('crates/synara-browser/src/native/mod.rs') != ''
-        run: |
           rustup toolchain install 1.98.1 --profile minimal --component rustfmt
           sudo apt-get update > /tmp/native-webkit-evidence/install.log 2>&1
           sudo apt-get install -y clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libwebkit2gtk-4.1-dev libgtk-3-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil xclip fonts-dejavu-core fonts-liberation >> /tmp/native-webkit-evidence/install.log 2>&1
-      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
-        if: hashFiles('crates/synara-browser/src/native/mod.rs') != ''
+      - uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
+        id: cache
         with:
           path: |
             ~/.cargo/registry
@@ -63,46 +44,35 @@ jobs:
             target
           key: native-webkit-1.98.1-${{ runner.os }}-${{ github.sha }}
           restore-keys: native-webkit-1.98.1-${{ runner.os }}-
-      - name: Resolve only the added native dependencies and freeze candidate
-        if: hashFiles('crates/synara-browser/src/native/mod.rs') != ''
-        run: |
-          set -euo pipefail
-          cargo +1.98.1 metadata --format-version 1 > /tmp/native-webkit-evidence/metadata.json
-          git add Cargo.lock
-          git config user.name 'Commander Chara'
-          git config user.email '249489759+cmdr-chara@users.noreply.github.com'
-          if ! git diff --cached --quiet; then
-            git commit -m 'feat(browser): connect the existing host to native Linux X11 WebKit child views [skip ci]'
-          fi
-          git rev-parse HEAD > /tmp/native-webkit-evidence/revision.txt
-          git diff --exit-code
-      - name: Publish source candidate to the existing session branch only
-        if: hashFiles('crates/synara-browser/src/native/mod.rs') != ''
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          auth=$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)
-          git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic $auth" push origin HEAD:refs/heads/astra/pr-automations-browser
       - name: Compile native host and run focused domain tests
-        if: hashFiles('crates/synara-browser/src/native/mod.rs') != ''
+        id: domain
         run: |
           set -euo pipefail
           cargo +1.98.1 test --locked -p synara-browser --features native-webview --lib 2>&1 | tee /tmp/native-webkit-evidence/browser-tests.log
       - name: Real WebKit consent, DOM actions and pre-network redirect acceptance
-        if: hashFiles('crates/synara-browser/src/native/mod.rs') != ''
+        if: steps.domain.outcome == 'success'
         run: |
           set -euo pipefail
           xvfb-run -a -s '-screen 0 1280x800x24 -nolisten tcp' cargo +1.98.1 test --locked -p synara-browser --features native-webview --lib real_webkit_navigation_consent_input_redirect_and_isolation -- --ignored --test-threads=1 --nocapture 2>&1 | tee /tmp/native-webkit-evidence/real-webkit.log
           grep -q REAL_WEBKIT_ACCEPTANCE /tmp/native-webkit-evidence/real-webkit.log
       - name: Build actual GPUI application and owned fixture
-        if: hashFiles('crates/synara-browser/src/native/mod.rs') != ''
+        id: app
+        if: ${{ !cancelled() && steps.domain.outcome == 'success' }}
         run: |
           set -euo pipefail
           cargo +1.98.1 build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture 2>&1 | tee /tmp/native-webkit-evidence/app-build.log
       - name: Prove GPUI child rendering, pointer input and native overlay visibility
-        if: hashFiles('crates/synara-browser/src/native/mod.rs') != ''
+        if: ${{ !cancelled() && steps.app.outcome == 'success' }}
         run: python3 scripts/native_browser_webview_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/native-webkit-evidence/gpui
+      - name: Retain focused build cache even after a diagnostic failure
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
+        if: ${{ always() && steps.cache.outcome == 'success' && steps.cache.outputs.cache-hit != 'true' }}
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ steps.cache.outputs.cache-primary-key }}
       - name: Export exact candidate and source identity
         if: always()
         run: |

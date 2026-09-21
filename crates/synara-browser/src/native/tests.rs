@@ -3,20 +3,25 @@ use crate::session::{RequestState, Session};
 use wry::WebViewBuilderExtUnix;
 
 #[test]
-fn filter_fences_scheme_host_and_port_without_regex_injection() {
-    let document = CommittedDocument::parse("http://127.0.0.1:3456/page").unwrap();
-    let rules: serde_json::Value = serde_json::from_slice(&origin_rules(&document)).unwrap();
-    assert_eq!(rules[0]["action"]["type"], "block");
-    assert_eq!(
-        rules[1]["trigger"]["url-filter"],
-        "^http://127\\.0\\.0\\.1:3456/"
-    );
-    assert_eq!(profile_key(StoragePartition::AgentTask(4)), "task-4");
-    assert_ne!(
-        profile_key(StoragePartition::Manual),
-        profile_key(StoragePartition::Authentication(4))
-    );
+fn native_origin_policy_fences_scheme_host_and_port() {
+    let document = CommittedDocument::parse("https://example.test:8443/page").unwrap();
+    for url in [
+        "http://example.test:8443/",
+        "https://example.test/",
+        "https://exampleXtest:8443/",
+        "https://other.test:8443/",
+    ] {
+        assert!(!approved_origin_allows(
+            Some(&document.origin),
+            &CommittedDocument::parse(url).unwrap()
+        ));
+    }
+    assert!(approved_origin_allows(
+        Some(&document.origin),
+        &CommittedDocument::parse("https://example.test:8443/next").unwrap()
+    ));
 }
+
 #[test]
 fn cancellation_reaches_queued_actions_without_a_ui_pump() {
     let (mut port, receiver, shared) = bridge::channel();

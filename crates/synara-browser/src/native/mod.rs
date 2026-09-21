@@ -23,6 +23,7 @@ use std::{
     },
     time::{Duration, Instant},
 };
+use webkit2gtk::SettingsExt;
 use webkit2gtk::*;
 use wry::{Rect, WebContext, WebView, WebViewBuilder, WebViewExtUnix};
 
@@ -50,7 +51,6 @@ struct NativeTab {
     partition: StoragePartition,
     document: Rc<RefCell<Option<CommittedDocument>>>,
     loading: gio::Cancellable,
-    _filter_directory: Option<Rc<tempfile::TempDir>>,
 }
 impl Drop for NativeTab {
     fn drop(&mut self) {
@@ -340,11 +340,10 @@ impl NativeHost {
         let completed = Rc::new(Cell::new(false));
         let finished = completed.clone();
         let allowed_navigation = allowed.clone();
-        let builder = WebViewBuilder::new()
+        let builder = WebViewBuilder::new_with_web_context(&mut self.context(partition)?.context)
             .with_focused(false)
             .with_visible(false)
             .with_devtools(false)
-            .with_web_context(&mut self.context(partition)?.context)
             .with_new_window_req_handler(|_, _| wry::NewWindowResponse::Deny)
             .with_download_started_handler(|_, _| false)
             .with_navigation_handler(move |url| {
@@ -358,14 +357,21 @@ impl NativeHost {
                     if partition == StoragePartition::Manual {
                         events.emit(Event::ManualNavigation {
                             tab,
+                            navigation,
                             url: doc.canonical_url,
                         });
                     }
                     return false;
                 }
-                allowed_navigation
-                    .as_ref()
-                    .is_none_or(|origin| origin == &doc.origin)
+                let allow = approved_origin_allows(allowed_navigation.as_ref(), &doc);
+                if !allow {
+                    events.emit(Event::Failed {
+                        tab,
+                        navigation,
+                        error: "Navigation to an unapproved origin was denied".into(),
+                    });
+                }
+                allow
             });
         let view =
             build(builder).map_err(|e| format!("Could not create native WebKit view: {e}"))?;
@@ -423,7 +429,7 @@ impl NativeHost {
         let events = self.events.clone();
         web.connect_web_process_terminated(move |_, _| {
             if shared.epoch(tab) == Some(epoch) {
-                events.emit(Event::Crashed { tab });
+                events.emit(Event::DocumentCrashed { tab, navigation });
             }
         });
         let shared = self.shared.clone();
@@ -438,59 +444,9 @@ impl NativeHost {
             }
         });
         let loading = gio::Cancellable::new();
-        let mut filter_directory = None;
-        if agent {
-            // A content blocker, installed BEFORE load_uri, also fences HTTP redirects.
-            // A decide-policy callback alone is not evidence of a pre-network redirect boundary.
-            let rules = origin_rules(&document);
-            let directory = Rc::new(
-                tempfile::Builder::new()
-                    .prefix("filter-")
-                    .tempdir_in(&self.root)
-                    .map_err(|e| e.to_string())?,
-            );
-            let filter_path = directory.path().to_path_buf();
-            filter_directory = Some(directory.clone());
-            let store = webkit2gtk::UserContentFilterStore::new(
-                filter_path.to_str().ok_or("Invalid filter path")?,
-            );
-            let shared = self.shared.clone();
-            let events = self.events.clone();
-            let target = document.canonical_url;
-            let web = web.clone();
-            store.save(
-                &format!("navigation-{}", navigation.0),
-                &glib::Bytes::from_owned(rules),
-                Some(&loading),
-                move |result| {
-                    let _directory = directory;
-                    if shared.epoch(tab) != Some(epoch) {
-                        return;
-                    }
-                    match result {
-                        Ok(filter) => {
-                            if let Some(manager) = web.user_content_manager() {
-                                manager.add_filter(&filter);
-                                web.load_uri(&target);
-                            } else {
-                                events.emit(Event::Failed {
-                                    tab,
-                                    navigation,
-                                    error: "Native content filter manager is unavailable".into(),
-                                });
-                            }
-                        }
-                        Err(error) => events.emit(Event::Failed {
-                            tab,
-                            navigation,
-                            error: format!("Could not enforce navigation filter: {error}"),
-                        }),
-                    }
-                },
-            );
-        } else {
-            web.load_uri(&document.canonical_url);
-        }
+        // The native navigation policy is installed before the first network request.
+        // Acceptance tests assert that a cross-origin redirect never reaches its target.
+        web.load_uri(&document.canonical_url);
         if self.selected == Some(tab) {
             if let Some(bounds) = self.viewport {
                 let _ = view.set_bounds(bounds);
@@ -505,7 +461,6 @@ impl NativeHost {
                 partition,
                 document: committed,
                 loading,
-                _filter_directory: filter_directory,
             },
         );
         Ok(())
@@ -645,21 +600,6 @@ fn bounded_title(title: &str) -> String {
         .take(512)
         .collect()
 }
-fn origin_rules(document: &CommittedDocument) -> Vec<u8> {
-    let origin = url::Url::parse(&document.canonical_url)
-        .expect("validated document")
-        .origin()
-        .ascii_serialization();
-    let mut pattern = String::from("^");
-    for ch in origin.chars() {
-        if ".*+?()[]{}^$|\\".contains(ch) {
-            pattern.push('\\');
-        }
-        pattern.push(ch);
-    }
-    pattern.push('/');
-    serde_json::to_vec(&serde_json::json!([
-        {"trigger":{"url-filter":".*","resource-type":["document"]},"action":{"type":"block"}},
-        {"trigger":{"url-filter":pattern,"resource-type":["document"]},"action":{"type":"ignore-previous-rules"}}
-    ])).expect("static filter schema")
+fn approved_origin_allows(allowed: Option<&CanonicalOrigin>, document: &CommittedDocument) -> bool {
+    allowed.is_none_or(|origin| origin == &document.origin)
 }

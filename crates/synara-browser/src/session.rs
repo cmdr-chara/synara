@@ -99,7 +99,8 @@ pub enum Event {
     Failed { tab: HostTabId, navigation: HostNavigationId, error: String },
     Crashed { tab: HostTabId },
     /// A manual page gesture intercepted by the native host, not page IPC.
-    ManualNavigation { tab: HostTabId, url: String },
+    ManualNavigation { tab: HostTabId, navigation: HostNavigationId, url: String },
+    DocumentCrashed { tab: HostTabId, navigation: HostNavigationId },
     Title { tab: HostTabId, navigation: HostNavigationId, title: String },
     Output { request: HostRequestId, output: Output },
     OperationFailed { request: HostRequestId, error: String },
@@ -258,9 +259,21 @@ impl Session {
     pub fn event(&mut self, event: Event) -> Result<()> { self.event_at(event, 0) }
     pub fn event_at(&mut self, event: Event, now: u64) -> Result<()> {
         match event {
-            Event::ManualNavigation { tab, url } => {
+            Event::ManualNavigation { tab, navigation, url } => {
+                if self.tabs.get(&tab).ok_or(BrowserError::MissingTab)?.committed_navigation != Some(navigation) {
+                    return Err(BrowserError::MissingNavigation);
+                }
                 if self.host.profile(tab)? != BrowserProfile::Manual { return Err(BrowserError::WrongContext); }
                 self.user_navigate(tab, &url, NavigationKind::Push, now)?;
+            }
+            Event::DocumentCrashed { tab, navigation } => {
+                let state = self.tabs.get(&tab).ok_or(BrowserError::MissingTab)?;
+                if state.committed_navigation != Some(navigation)
+                    && !state.navigation.as_ref().is_some_and(|n| n.0 == navigation) {
+                    return Err(BrowserError::MissingNavigation);
+                }
+                self.fail_tab(tab, "Browser process terminated");
+                self.tabs.get_mut(&tab).unwrap().view.state = "crashed".into();
             },
             Event::Title { tab, navigation, title } => {
                 let t = self.tabs.get_mut(&tab).ok_or(BrowserError::MissingTab)?;

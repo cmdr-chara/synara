@@ -102,3 +102,36 @@ fn loaded(s: &mut Session) -> HostTabId {
     assert_eq!(s.user_navigate(tab, "https://example.test/", NavigationKind::Push, 0), Err(BrowserError::Unavailable));
     assert!(s.tabs[&tab].view.url.is_none());
 }
+
+#[test]
+fn stale_native_navigation_title_and_crash_cannot_replace_current_document() {
+    let (mut s, _) = fixture();
+    let tab = s.open(BrowserProfile::Manual).unwrap();
+    s.user_navigate(tab, "https://example.test/", NavigationKind::Push, 0).unwrap();
+    let first = s.tabs[&tab].navigation.as_ref().unwrap().0;
+    s.event_at(Event::Committed { tab, navigation: first, url: "https://example.test/".into(), title: "first".into() }, 1).unwrap();
+    s.user_navigate(tab, "https://example.test/next", NavigationKind::Push, 2).unwrap();
+    let second = s.tabs[&tab].navigation.as_ref().unwrap().0;
+    for event in [Event::ManualNavigation { tab, navigation: first, url: "https://stale.test/".into() },
+        Event::Title { tab, navigation: first, title: "stale".into() },
+        Event::DocumentCrashed { tab, navigation: first }] {
+        assert!(s.event_at(event, 3).is_err());
+        assert_eq!(s.tabs[&tab].navigation.as_ref().unwrap().0, second);
+        assert_eq!(s.tabs[&tab].view.state, "loading");
+    }
+    s.event_at(Event::DocumentCrashed { tab, navigation: second }, 4).unwrap();
+    assert_eq!(s.tabs[&tab].view.state, "crashed");
+}
+#[test]
+fn native_manual_navigation_uses_current_identity_and_never_agent_authority() {
+    let (mut s, _) = fixture();
+    let tab = s.open(BrowserProfile::Manual).unwrap();
+    s.user_navigate(tab, "https://example.test/", NavigationKind::Push, 1).unwrap();
+    let navigation = s.tabs[&tab].navigation.as_ref().unwrap().0;
+    s.event(Event::Committed { tab, navigation, url: "https://example.test/".into(), title: "page".into() }).unwrap();
+    s.event_at(Event::ManualNavigation { tab, navigation, url: "https://example.test/next".into() }, 9000).unwrap();
+    assert_eq!(s.tabs[&tab].navigation.as_ref().unwrap().1, 39000);
+    let tab = loaded(&mut s);
+    let navigation = s.tabs[&tab].committed_navigation.unwrap();
+    assert_eq!(s.event_at(Event::ManualNavigation { tab, navigation, url: "https://example.test/next".into() }, 9000), Err(BrowserError::WrongContext));
+}

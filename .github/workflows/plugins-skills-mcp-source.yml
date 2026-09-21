@@ -1,0 +1,26 @@
+name: Plugins Skills MCP source snapshot
+on:
+  push:
+    branches: [astra/plugins-skills-mcp]
+    paths: ['.github/workflows/plugins-skills-mcp-source.yml']
+permissions:
+  contents: read
+jobs:
+  snapshot:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Capture exact session source
+        run: |
+          mkdir -p /tmp/synara-plugins-source
+          git bundle create /tmp/synara-plugins-source/source.bundle HEAD
+          git rev-parse HEAD > /tmp/synara-plugins-source/revision.txt
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: plugins-skills-mcp-source
+          path: /tmp/synara-plugins-source/
+          retention-days: 1

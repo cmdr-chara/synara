@@ -6604,6 +6604,7 @@ dependencies = [
 name = "synara-browser"
 version = "0.1.0"
 dependencies = [
+ "gdkx11",
  "gtk",
  "javascriptcore-rs",
  "raw-window-handle",
@@ -6614,6 +6615,7 @@ dependencies = [
  "url",
  "webkit2gtk",
  "wry",
+ "x11rb",
 ]
 
 [[package]]

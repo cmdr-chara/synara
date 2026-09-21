@@ -5,6 +5,7 @@ Uses private Xvfb, disposable data and two loopback fixture pages. Pixel evidenc
 is read from the real display, not OCR or a mocked browser transport.
 """
 import argparse
+import ctypes as C
 import json
 import threading
 import time
@@ -93,6 +94,41 @@ button{position:absolute;left:40px;top:120px;width:240px;height:65px}</style>
         thread.join(timeout=3)
 
 
+def native_tree(s):
+    """Bounded failure diagnostics on this test's private X server only."""
+    class Attributes(C.Structure):
+        _fields_ = [(name, C.c_int) for name in ('x','y','width','height','border','depth')] + [
+            ('visual', C.c_void_p), ('root', C.c_ulong), ('klass', C.c_int),
+            ('bit_gravity', C.c_int), ('win_gravity', C.c_int), ('backing_store', C.c_int),
+            ('backing_planes', C.c_ulong), ('backing_pixel', C.c_ulong), ('save_under', C.c_int),
+            ('colormap', C.c_ulong), ('map_installed', C.c_int), ('map_state', C.c_int),
+            ('all_events', C.c_long), ('your_events', C.c_long), ('no_propagate', C.c_long),
+            ('override_redirect', C.c_int), ('screen', C.c_void_p)]
+    x = s.desktop.x
+    x.XGetWindowAttributes.argtypes = [C.c_void_p, C.c_ulong, C.POINTER(Attributes)]
+    x.XGetWindowAttributes.restype = C.c_int
+    queue = [(s.desktop.window, 0)]
+    result = []
+    while queue and len(result) < 64:
+        window, level = queue.pop(0)
+        attrs = Attributes()
+        if not x.XGetWindowAttributes(s.desktop.display, window, C.byref(attrs)):
+            continue
+        result.append(dict(id=window, level=level, x=attrs.x, y=attrs.y,
+            width=attrs.width, height=attrs.height, map_state=attrs.map_state))
+        if level >= 5:
+            continue
+        root, parent, count = C.c_ulong(), C.c_ulong(), C.c_uint()
+        children = C.POINTER(C.c_ulong)()
+        if x.XQueryTree(s.desktop.display, window, C.byref(root), C.byref(parent), C.byref(children), C.byref(count)):
+            try:
+                queue.extend((child, level+1) for child in children[:min(count.value, 64)])
+            finally:
+                if children:
+                    x.XFree(children)
+    (s.output/'native-window-tree.json').write_text(json.dumps(result, indent=2)+'\n')
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--binary', type=Path, required=True)
@@ -107,6 +143,7 @@ def main():
         result['error'] = str(error)
         if s.process and s.process.poll() is None:
             s.desktop.screenshot('failure', window_only=True)
+            native_tree(s)
         raise
     finally:
         s.close()

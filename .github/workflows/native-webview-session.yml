@@ -64,6 +64,13 @@ jobs:
       - name: Prove GPUI child rendering, pointer input and native overlay visibility
         if: ${{ !cancelled() && steps.app.outcome == 'success' }}
         run: python3 scripts/native_browser_webview_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/native-webkit-evidence/gpui
+      - name: Verify focused Browser Pull Requests and Automations services
+        if: ${{ !cancelled() && steps.app.outcome == 'success' }}
+        run: |
+          set -euo pipefail
+          cargo +1.98.1 test --locked -p synara-workspace --lib browser:: 2>&1 | tee /tmp/native-webkit-evidence/browser-service-tests.log
+          cargo +1.98.1 test --locked -p synara-workspace --lib pull_requests:: 2>&1 | tee /tmp/native-webkit-evidence/pull-request-tests.log
+          cargo +1.98.1 test --locked -p synara-workspace --lib automations 2>&1 | tee /tmp/native-webkit-evidence/automation-tests.log
       - name: Retain focused build cache even after a diagnostic failure
         uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
         if: ${{ always() && steps.cache.outcome == 'success' && steps.cache.outputs.cache-hit != 'true' }}

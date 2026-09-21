@@ -408,3 +408,16 @@ fn browser_storage_rejects_files_and_symlinks() {
     assert!(private_directory(&file).is_err());
     assert_eq!(std::fs::read_to_string(file).unwrap(), "untouched");
 }
+
+#[test]
+fn content_allocation_does_not_repeat_the_outer_pane_offset() {
+    let bounds = content_bounds(ViewportRect::logical(268., 186., 1140., 659.));
+    assert_eq!(
+        bounds.position.to_logical::<i32>(1.),
+        wry::dpi::LogicalPosition::new(0, 0)
+    );
+    assert_eq!(
+        bounds.size.to_logical::<i32>(1.),
+        wry::dpi::LogicalSize::new(1140, 659)
+    );
+}

@@ -107,7 +107,7 @@ pub struct ConsentPrompt {
     pub tab: TabId,
     pub task: u128,
     pub action: Action,
-    pub origin: Origin,
+    pub origin: Option<Origin>,
     pub expires_at_ms: u64,
     generation: u64,
 }
@@ -213,7 +213,11 @@ impl BrowserPolicy {
         if state.loading || state.crashed {
             return Err(Error::NotReady);
         }
-        let origin = state.document.clone().ok_or(Error::NotReady)?;
+        let origin = state.document.clone();
+        // Blank isolated tabs may ask to navigate, never to inspect or interact.
+        if origin.is_none() && !matches!(action, Action::Navigate(_)) {
+            return Err(Error::NotReady);
+        }
         self.next_request = self.next_request.checked_add(1).ok_or(Error::Limit)?;
         let prompt = ConsentPrompt {
             id: RequestId(self.next_request),
@@ -297,7 +301,7 @@ impl BrowserPolicy {
             || state.crashed
             || state.generation != prompt.generation
             || state.context != Context::AgentTask(prompt.task)
-            || state.document.as_ref() != Some(&prompt.origin)
+            || state.document != prompt.origin
         {
             return Err(Error::Stale);
         }

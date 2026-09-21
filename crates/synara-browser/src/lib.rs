@@ -8,6 +8,7 @@
 
 #[path = "../../../foundations/browser/lib.rs"]
 pub mod policy;
+pub mod session;
 
 use policy::{Action, BrowserPolicy, Context, Grant, NavigationId, Origin, Scheme, TabId};
 use serde::{Deserialize, Serialize};
@@ -37,6 +38,10 @@ pub enum BrowserError {
     WrongContext,
     #[error("browser IPC frame is malformed")]
     MalformedFrame,
+    #[error("native browser capability is unavailable")]
+    Unavailable,
+    #[error("browser operation timed out")]
+    Timeout,
 }
 impl From<policy::Error> for BrowserError {
     fn from(value: policy::Error) -> Self {
@@ -114,12 +119,37 @@ pub struct CommittedDocument {
     pub canonical_url: String,
 }
 impl CommittedDocument {
+    /// Parse independently of page-supplied origins. Credentials and non-web schemes
+    /// are rejected before the request crosses the native host boundary.
+    pub fn parse(value: &str) -> Result<Self> {
+        if value.is_empty() || value.len() > MAX_CANONICAL_URL_BYTES
+            || value.chars().any(char::is_control) || value.contains('\\')
+            || value.trim() != value {
+            return Err(BrowserError::Invalid);
+        }
+        let url = url::Url::parse(value).map_err(|_| BrowserError::Invalid)?;
+        let scheme = match url.scheme() {
+            "http" => NativeScheme::Http, "https" => NativeScheme::Https,
+            _ => return Err(BrowserError::Invalid),
+        };
+        if !url.username().is_empty() || url.password().is_some() {
+            return Err(BrowserError::Invalid);
+        }
+        let host = match url.host().ok_or(BrowserError::Invalid)? {
+            url::Host::Domain(v) => v.to_owned(),
+            url::Host::Ipv4(v) => v.to_string(),
+            url::Host::Ipv6(v) => v.to_string(),
+        };
+        let origin = CanonicalOrigin { scheme, host,
+            port: url.port_or_known_default().ok_or(BrowserError::Invalid)? };
+        origin.policy_origin()?;
+        let canonical_url = url.to_string();
+        if canonical_url.len() > MAX_CANONICAL_URL_BYTES { return Err(BrowserError::Limit); }
+        Ok(Self { origin, canonical_url })
+    }
     fn validate(&self) -> Result<()> {
-        self.origin.policy_origin()?;
-        if self.canonical_url.is_empty()
-            || self.canonical_url.len() > MAX_CANONICAL_URL_BYTES
-            || self.canonical_url.chars().any(char::is_control)
-        {
+        let parsed = Self::parse(&self.canonical_url)?;
+        if parsed.origin != self.origin || parsed.canonical_url != self.canonical_url {
             return Err(BrowserError::Invalid);
         }
         Ok(())
@@ -193,6 +223,9 @@ impl InputEvent {
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "operation", rename_all = "snake_case", deny_unknown_fields)]
 pub enum BrowserOperation {
+    Navigate { url: String },
+    Click { element: String },
+    Fill { element: String, text: String },
     ReadDocument,
     Screenshot {
         full_page: bool,
@@ -222,6 +255,10 @@ impl BrowserOperation {
                 && !value.contains('\\')
         };
         match self {
+            Self::Navigate { url } => CommittedDocument::parse(url).map(|_| ()),
+            Self::Click { element } if token(element) => Ok(()),
+            Self::Fill { element, text } if token(element) && text.len() <= MAX_INPUT_BYTES
+                && !text.contains('\0') => Ok(()),
             Self::Input { event } => event.validate(),
             Self::Download { download_id } if token(download_id) => Ok(()),
             Self::Upload {
@@ -237,8 +274,10 @@ impl BrowserOperation {
             _ => Err(BrowserError::Invalid),
         }
     }
-    fn action(&self) -> Action {
-        match self {
+    fn action(&self) -> Result<Action> {
+        Ok(match self {
+            Self::Navigate { url } => Action::Navigate(CommittedDocument::parse(url)?.origin.policy_origin()?),
+            Self::Click { .. } | Self::Fill { .. } => Action::Input,
             Self::ReadDocument => Action::ReadDocument,
             Self::Screenshot { .. } => Action::Screenshot,
             Self::Input { .. } => Action::Input,
@@ -246,7 +285,7 @@ impl BrowserOperation {
             Self::Upload { .. } => Action::Upload,
             Self::ClipboardRead => Action::ClipboardRead,
             Self::ClipboardWrite { .. } => Action::ClipboardWrite,
-        }
+        })
     }
 }
 
@@ -463,7 +502,7 @@ impl BrowserHost {
         }
         let prompt = self
             .policy
-            .request(state.policy, task, operation.action(), now_ms)?;
+            .request(state.policy, task, operation.action()?, now_ms)?;
         self.next_request = self
             .next_request
             .checked_add(1)
@@ -520,7 +559,7 @@ impl BrowserHost {
             approved.policy_grant,
             state.policy,
             approved.task,
-            &approved.operation.action(),
+            &approved.operation.action()?,
             now_ms,
         )?;
         Ok(NativeCommand {

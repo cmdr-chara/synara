@@ -184,6 +184,7 @@ impl NativeHost {
             events.clear();
             events.extend(self.tabs.keys().map(|tab| Event::Crashed { tab: *tab }));
             self.views.clear();
+            self.sync_surface();
         }
         events
     }
@@ -203,15 +204,35 @@ impl NativeHost {
         // Drop a task's data only after its last view is destroyed.
         self.profiles
             .retain(|key, _| self.tabs.values().any(|p| profile_key(*p) == *key));
+        self.sync_surface();
+    }
+    /// Selection alone does not imply rendered content. Blank, stopped and
+    /// cancelled tabs have no live WebKit view, even while their tab row exists.
+    fn visible_bounds(&self) -> Option<Rect> {
+        let tab = self.selected?;
+        let view = self.views.get(&tab)?;
+        if !self.shared.ready.load(Ordering::Acquire) || self.shared.epoch(tab) != Some(view.epoch)
+        {
+            return None;
+        }
+        self.viewport
+    }
+    fn sync_surface(&self) {
+        if let Some(surface) = &self.surface {
+            // Hiding only the widget leaves the shared X11 parent's backing
+            // pixels visible. Unmap that surface when there is no live view.
+            surface.viewport(self.visible_bounds());
+        }
     }
     pub fn viewport(&mut self, tab: Option<HostTabId>, bounds: Option<Rect>) {
         self.selected = tab;
         self.viewport = bounds;
-        if let Some(surface) = &self.surface {
-            surface.viewport(tab.and(bounds));
+        let visible_bounds = self.visible_bounds();
+        if visible_bounds.is_none() {
+            self.sync_surface();
         }
         for (id, view) in &self.views {
-            let visible = Some(*id) == tab && bounds.is_some();
+            let visible = Some(*id) == tab && visible_bounds.is_some();
             if visible {
                 if let Some(bounds) = bounds {
                     let _ = view.webview.set_bounds(content_bounds(bounds));
@@ -219,6 +240,7 @@ impl NativeHost {
             }
             let _ = view.webview.set_visible(visible);
         }
+        self.sync_surface();
     }
     fn context(
         &mut self,
@@ -333,6 +355,7 @@ impl NativeHost {
             return Err("Missing approved navigation origin".into());
         }
         self.views.remove(&tab);
+        self.sync_surface();
         let shared = self.shared.clone();
         let events = self.events.clone();
         let completed = Rc::new(Cell::new(false));
@@ -459,12 +482,6 @@ impl NativeHost {
         // The native navigation policy is installed before the first network request.
         // Acceptance tests assert that a cross-origin redirect never reaches its target.
         web.load_uri(&document.canonical_url);
-        if self.selected == Some(tab) {
-            if let Some(bounds) = self.viewport {
-                let _ = view.set_bounds(content_bounds(bounds));
-                let _ = view.set_visible(true);
-            }
-        }
         self.views.insert(
             tab,
             NativeTab {
@@ -474,6 +491,9 @@ impl NativeHost {
                 document: committed,
             },
         );
+        // Creation may occur after the canvas selected a blank tab. Reapply its
+        // requested geometry now that a view exists so first navigation maps it.
+        self.viewport(self.selected, self.viewport);
         Ok(())
     }
     fn operation(

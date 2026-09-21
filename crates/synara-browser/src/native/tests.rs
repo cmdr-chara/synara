@@ -208,6 +208,25 @@ fn real_webkit_navigation_consent_input_redirect_and_isolation() {
     );
     session.decide(nav, true, now()).unwrap();
     wait(&mut host, &mut session, nav);
+    assert!(host.visible_bounds().is_some());
+    let blank = session.open(BrowserProfile::Manual).unwrap();
+    let bounds = ViewportRect::logical(0., 0., 800., 600.);
+    host.viewport(Some(blank), Some(bounds));
+    assert!(
+        host.visible_bounds().is_none(),
+        "blank selection has no native surface"
+    );
+    assert!(!host.views[&tab].webview.webview().is_visible());
+    host.viewport(Some(tab), Some(bounds));
+    assert!(host.visible_bounds().is_some());
+    assert!(host.views[&tab].webview.webview().is_visible());
+    host.viewport(Some(tab), None);
+    assert!(
+        host.visible_bounds().is_none(),
+        "overlays hide existing content"
+    );
+    host.viewport(Some(tab), Some(bounds));
+    session.close(blank).unwrap();
     let request = requests
         .lock()
         .unwrap()
@@ -420,4 +439,27 @@ fn content_allocation_does_not_repeat_the_outer_pane_offset() {
         bounds.size.to_logical::<i32>(1.),
         wry::dpi::LogicalSize::new(1140, 659)
     );
+}
+
+#[test]
+fn a_selected_tab_row_without_a_view_never_maps_the_native_surface() {
+    let root = tempfile::tempdir().unwrap();
+    let (mut host, mut port) = NativeHost::new(root.path().to_path_buf());
+    host.shared.ready.store(true, Ordering::Release);
+    let tab = HostTabId(1);
+    port.send(Command::Open {
+        tab,
+        partition: StoragePartition::Manual,
+    })
+    .unwrap();
+    host.dispatch(host.commands.recv().unwrap(), |_| {
+        panic!("Open must not create a view")
+    });
+    host.viewport(Some(tab), Some(ViewportRect::logical(0., 0., 800., 600.)));
+    assert!(host.tabs.contains_key(&tab));
+    assert!(host.visible_bounds().is_none());
+    port.send(Command::Close { tab }).unwrap();
+    host.reap();
+    assert!(!host.tabs.contains_key(&tab));
+    assert!(host.visible_bounds().is_none());
 }

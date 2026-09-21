@@ -1,0 +1,399 @@
+//! Native automation controls. Loading never arms the process-session scheduler.
+mod view;
+use super::*;
+use crate::ui::{self, palette};
+use std::time::{Duration, Instant};
+
+pub(super) struct AutomationsView {
+    ledger: AutomationLedger,
+    scheduler: Arc<AutomationScheduler>,
+    loaded: bool,
+    loading: bool,
+    changing: bool,
+    save_snapshot: Option<(AutomationId, u64)>,
+    executing: bool,
+    generation: u64,
+    refreshed: Instant,
+    polled: Instant,
+    editor: Option<Editor>,
+    pending: Option<Pending>,
+    title: Entity<TextEntry>,
+    instructions: Entity<TextEntry>,
+    schedule: Entity<TextEntry>,
+    timezone: Entity<TextEntry>,
+    selected_run: Option<AutomationId>,
+    error: Option<String>,
+    _subscriptions: Vec<Subscription>,
+}
+#[derive(Clone)]
+struct Editor {
+    id: AutomationId,
+    revision: Option<u64>,
+    edit_revision: u64,
+    agent: Option<String>,
+    project: Option<ProjectId>,
+    missed: MissedRunPolicy,
+}
+#[derive(Clone)]
+enum Pending {
+    Arm,
+    Run(AutomationDefinition),
+    Enable(AutomationDefinition, bool),
+    Delete(AutomationDefinition),
+    Recover(AutomationRun),
+}
+impl AutomationsView {
+    pub fn new(controller: Arc<Controller>, cx: &mut Context<Shell>) -> Self {
+        let mut make = |label, mode, height| cx.new(|cx| TextEntry::new(label, mode, height, cx));
+        let title = make("Automation title", EntryMode::SingleLine, 34.);
+        let instructions = make(
+            "Exact instructions to send to the selected agent",
+            EntryMode::Editor,
+            150.,
+        );
+        let schedule = make("every 60m or daily 09:00", EntryMode::SingleLine, 34.);
+        let timezone = make(
+            "UTC or fixed offset, e.g. +02:00",
+            EntryMode::SingleLine,
+            34.,
+        );
+        let subscriptions = [&title, &instructions, &schedule, &timezone]
+            .into_iter()
+            .map(|input| {
+                cx.subscribe(input, |this, _, event, cx| {
+                    if matches!(event, EntryEvent::Changed)
+                        && let Some(editor) = &mut this.automations.editor
+                    {
+                        editor.edit_revision = editor.edit_revision.wrapping_add(1);
+                    }
+                    cx.notify();
+                })
+            })
+            .collect();
+        Self {
+            ledger: AutomationLedger::default(),
+            scheduler: Arc::new(AutomationScheduler::new(controller)),
+            loaded: false,
+            loading: false,
+            changing: false,
+            save_snapshot: None,
+            executing: false,
+            generation: 0,
+            refreshed: Instant::now(),
+            polled: Instant::now(),
+            editor: None,
+            pending: None,
+            title,
+            instructions,
+            schedule,
+            timezone,
+            selected_run: None,
+            error: None,
+            _subscriptions: subscriptions,
+        }
+    }
+    pub(super) fn retire(&self) {
+        self.scheduler.arm(false);
+        self.scheduler.stop();
+    }
+}
+impl Drop for AutomationsView {
+    fn drop(&mut self) {
+        self.retire();
+    }
+}
+pub(super) enum Reply {
+    Loaded {
+        generation: u64,
+        result: Result<(AutomationLedger, Catalog, Vec<AgentProfile>), String>,
+    },
+    Changed(Result<(), String>),
+    Finished(Result<(), String>),
+}
+impl Shell {
+    pub(super) fn automation_before_quit(&mut self, cx: &mut Context<Self>) -> bool {
+        if self.automations.editor.is_some() || self.automations.changing {
+            self.panel = Panel::Automations;
+            self.automations.error =
+                Some("Save or explicitly discard the automation form before quitting.".into());
+            cx.notify();
+            return true;
+        }
+        false
+    }
+    pub(super) fn refresh_automations(&mut self, cx: &mut Context<Self>) {
+        if self.automations.loading || self.automations.changing {
+            return;
+        }
+        self.automations.loading = true;
+        self.automations.generation = self.automations.generation.wrapping_add(1);
+        self.automations.refreshed = Instant::now();
+        let generation = self.automations.generation;
+        let workspace = self.controller.workspace.clone();
+        self.job(async move {
+            let result = async {
+                Ok::<_, WorkspaceError>((
+                    workspace.automations().await?,
+                    workspace.catalog().await?,
+                    workspace.profiles().await?,
+                ))
+            }
+            .await
+            .map_err(|e| e.to_string());
+            Ok(Update::Automations(Box::new(Reply::Loaded {
+                generation,
+                result,
+            })))
+        });
+        cx.notify();
+    }
+    pub(super) fn tick_automations(&mut self, cx: &mut Context<Self>) {
+        if self.close != CloseState::Open {
+            self.automations.retire();
+            return;
+        }
+        if (self.panel == Panel::Automations || self.automations.scheduler.busy())
+            && self.automations.refreshed.elapsed() >= Duration::from_secs(2)
+        {
+            self.refresh_automations(cx);
+        }
+        if self.automations.scheduler.armed()
+            && !self.automations.executing
+            && !self.automations.changing
+            && self.automations.polled.elapsed() >= Duration::from_secs(1)
+        {
+            self.automations.polled = Instant::now();
+            self.automations.executing = true;
+            // Capture the cancellation epoch before handing the future to Tokio.
+            let future = self.automations.scheduler.tick();
+            self.job(async move {
+                Ok(Update::Automations(Box::new(Reply::Finished(
+                    future.await.map_err(|e| e.to_string()),
+                ))))
+            });
+        }
+    }
+    pub(super) fn automation_reply(&mut self, reply: Reply, cx: &mut Context<Self>) {
+        match reply {
+            Reply::Loaded { generation, result } => {
+                self.automations.loading = false;
+                if generation != self.automations.generation {
+                    self.refresh_automations(cx);
+                    return;
+                }
+                match result {
+                    Ok((ledger, catalog, profiles)) => {
+                        self.automations.ledger = ledger;
+                        self.automations.loaded = true;
+                        self.catalog = catalog;
+                        self.profiles = profiles;
+                    }
+                    Err(error) => {
+                        self.automations.error = Some(error);
+                        self.automations.scheduler.arm(false);
+                    }
+                }
+            }
+            Reply::Changed(result) => {
+                self.automations.changing = false;
+                let snapshot = self.automations.save_snapshot.take();
+                match result {
+                    Ok(()) => {
+                        self.automations.error = None;
+                        if let Some((id, saved_revision)) = snapshot
+                            && let Some(editor) = &mut self.automations.editor
+                            && editor.id == id
+                        {
+                            editor.revision = Some(editor.revision.unwrap_or(0).saturating_add(1));
+                            if editor.edit_revision == saved_revision {
+                                self.automations.editor = None;
+                            } else {
+                                self.automations.error = Some(
+                                    "Saved paused. Newer form edits are still unsaved.".into(),
+                                );
+                            }
+                        }
+                    }
+                    Err(error) => self.automations.error = Some(error),
+                }
+                self.refresh_automations(cx);
+            }
+            Reply::Finished(result) => {
+                self.automations.executing = false;
+                if let Err(error) = result {
+                    self.automations.error = Some(error);
+                    self.automations.scheduler.arm(false);
+                }
+                self.refresh_automations(cx);
+            }
+        }
+        cx.notify();
+    }
+    fn edit_automation(
+        &mut self,
+        definition: Option<AutomationDefinition>,
+        cx: &mut Context<Self>,
+    ) {
+        if self.automations.changing || self.automations.editor.is_some() {
+            return;
+        }
+        let (editor, title, instructions, schedule, timezone) = match definition {
+            Some(d) => (
+                Editor {
+                    id: d.id,
+                    revision: Some(d.revision),
+                    edit_revision: 0,
+                    agent: Some(d.agent_id),
+                    project: Some(d.project_id),
+                    missed: d.missed,
+                },
+                d.title,
+                d.instructions,
+                d.schedule.label(),
+                d.timezone,
+            ),
+            None => (
+                Editor {
+                    id: AutomationId::new_v4(),
+                    revision: None,
+                    edit_revision: 0,
+                    agent: None,
+                    project: self.project,
+                    missed: MissedRunPolicy::Skip,
+                },
+                String::new(),
+                String::new(),
+                "every 60m".into(),
+                "UTC".into(),
+            ),
+        };
+        self.automations
+            .title
+            .update(cx, |entry, cx| entry.set_text(title, cx));
+        self.automations
+            .instructions
+            .update(cx, |entry, cx| entry.set_text(instructions, cx));
+        self.automations
+            .schedule
+            .update(cx, |entry, cx| entry.set_text(schedule, cx));
+        self.automations
+            .timezone
+            .update(cx, |entry, cx| entry.set_text(timezone, cx));
+        self.automations.editor = Some(editor);
+        self.automations.pending = None;
+        self.automations.error = None;
+        cx.notify();
+    }
+    fn save_automation_form(&mut self, cx: &mut Context<Self>) {
+        if self.automations.changing {
+            return;
+        }
+        let Some(editor) = self.automations.editor.clone() else {
+            return;
+        };
+        let result = (|| -> WorkspaceResult<_> {
+            let definition = AutomationDefinition {
+                id: editor.id,
+                revision: editor.revision.unwrap_or(0),
+                title: self.automations.title.read(cx).text().trim().into(),
+                instructions: self.automations.instructions.read(cx).text().into(),
+                agent_id: editor
+                    .agent
+                    .ok_or_else(|| WorkspaceError::Invalid("Choose an agent explicitly.".into()))?,
+                project_id: editor
+                    .project
+                    .ok_or_else(|| WorkspaceError::Invalid("Choose a project.".into()))?,
+                schedule: AutomationSchedule::parse(self.automations.schedule.read(cx).text())?,
+                timezone: self.automations.timezone.read(cx).text().trim().into(),
+                enabled: false,
+                next_run_ms: now_ms(),
+                missed: editor.missed,
+            };
+            definition.validate()?;
+            Ok(definition)
+        })();
+        match result {
+            Err(error) => self.automations.error = Some(error.to_string()),
+            Ok(definition) => {
+                self.automations.save_snapshot = Some((editor.id, editor.edit_revision));
+                self.automations.changing = true;
+                self.automations.generation = self.automations.generation.wrapping_add(1);
+                let workspace = self.controller.workspace.clone();
+                self.job(async move {
+                    Ok(Update::Automations(Box::new(Reply::Changed(
+                        workspace
+                            .save_automation(definition, editor.revision)
+                            .await
+                            .map_err(|e| e.to_string()),
+                    ))))
+                });
+            }
+        }
+        cx.notify();
+    }
+    fn confirm_automation(&mut self, cx: &mut Context<Self>) {
+        if self.automations.changing {
+            return;
+        }
+        let Some(pending) = self.automations.pending.take() else {
+            return;
+        };
+        self.automations.error = None;
+        match pending {
+            Pending::Arm => {
+                self.automations.scheduler.arm(true);
+            }
+            Pending::Run(definition) => {
+                if self.automations.executing {
+                    self.automations.error = Some("Another scheduler operation is active. Review and try again when it finishes.".into());
+                } else {
+                    self.automations.executing = true;
+                    let future = self
+                        .automations
+                        .scheduler
+                        .run_now(definition.id, definition.revision);
+                    self.job(async move {
+                        Ok(Update::Automations(Box::new(Reply::Finished(
+                            future.await.map_err(|e| e.to_string()),
+                        ))))
+                    });
+                }
+            }
+            pending => {
+                self.automations.changing = true;
+                self.automations.generation = self.automations.generation.wrapping_add(1);
+                let workspace = self.controller.workspace.clone();
+                let owner = self.automations.scheduler.owner();
+                self.job(async move {
+                    let result = match pending {
+                        Pending::Enable(d, enabled) => {
+                            workspace.enable_automation(d.id, d.revision, enabled).await
+                        }
+                        Pending::Delete(d) => {
+                            workspace.delete_automation(d.id, d.revision, true).await
+                        }
+                        Pending::Recover(run) => {
+                            workspace
+                                .resolve_interrupted_automation(run.id, owner, true)
+                                .await
+                        }
+                        _ => unreachable!("arm/run handled on the UI thread"),
+                    }
+                    .map_err(|e| e.to_string());
+                    Ok(Update::Automations(Box::new(Reply::Changed(result))))
+                });
+            }
+        }
+        cx.notify();
+    }
+    fn open_automation_task(&mut self, id: TaskId, cx: &mut Context<Self>) {
+        if self.select_task(id, cx) {
+            self.set_panel(Panel::Conversation, cx);
+        }
+    }
+}
+fn time_label(value: i64) -> String {
+    chrono::DateTime::from_timestamp_millis(value)
+        .map(|d| d.format("%Y-%m-%d %H:%M:%S UTC").to_string())
+        .unwrap_or_else(|| "Time unavailable".into())
+}

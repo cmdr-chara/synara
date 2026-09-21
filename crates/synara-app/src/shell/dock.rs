@@ -77,6 +77,7 @@ impl Shell {
                 .into_any_element();
         }
         match self.panel {
+            Panel::Automations => self.automations_panel(cx),
             Panel::PullRequests => self.pull_requests_panel(cx),
             Panel::Browser => self.browser_panel(cx),
             Panel::Conversation => self.conversation(window, cx),

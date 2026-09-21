@@ -1,0 +1,63 @@
+name: Publish verified PR Automations Browser source
+on:
+  push:
+    branches: [astra/pr-automations-browser]
+    paths: [.session/pab-checkpoint.json]
+permissions:
+  contents: write
+concurrency:
+  group: pab-source-publish
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: github.repository == 'cmdr-chara/synara'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          fetch-depth: 1
+          ref: ${{ github.sha }}
+      - name: Verify preimages and publish only the authorized session branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import base64, gzip, hashlib, io, json, pathlib, subprocess
+          def git(*args, **kwargs):
+              return subprocess.check_output(['git', *args], **kwargs)
+          envelope = json.loads(pathlib.Path('.session/pab-checkpoint.json').read_text())
+          raw = base64.b64decode(envelope['gzip_base64'], validate=True)
+          with gzip.GzipFile(fileobj=io.BytesIO(raw)) as stream:
+              patch = stream.read(4 * 1024 * 1024 + 1)
+          assert len(patch) <= 4 * 1024 * 1024
+          assert hashlib.sha256(patch).hexdigest() == envelope['sha256']
+          paths = set()
+          for entry in envelope['files']:
+              path = entry['path']
+              parts = pathlib.PurePosixPath(path).parts
+              assert parts and not pathlib.PurePosixPath(path).is_absolute() and '..' not in parts
+              assert path.startswith(('crates/', 'foundations/', 'docs/')) or path in ('Cargo.lock', 'Cargo.toml', 'ROADMAP.md')
+              assert path not in paths
+              paths.add(path)
+              try:
+                  current = git('rev-parse', 'HEAD:' + path, stderr=subprocess.DEVNULL).decode().strip()
+              except subprocess.CalledProcessError:
+                  current = None
+              assert current == entry['before'], 'Changed preimage: ' + path
+          subprocess.run(['git', 'apply', '--check', '--index', '--binary', '-'], input=patch, check=True)
+          subprocess.run(['git', 'apply', '--index', '--binary', '-'], input=patch, check=True)
+          changed = set(git('diff', '--cached', '--name-only').decode().splitlines())
+          assert changed == paths
+          for entry in envelope['files']:
+              result = git('rev-parse', ':' + entry['path']).decode().strip() if entry['after'] else None
+              assert result == entry['after'], 'Changed output: ' + entry['path']
+          git('rm', '.session/pab-checkpoint.json')
+          git('config', 'user.name', 'Commander Chara')
+          git('config', 'user.email', '249489759+cmdr-chara@users.noreply.github.com')
+          message = envelope['message']
+          assert message.startswith(('feat(', 'fix(', 'docs:')) and len(message) < 240
+          git('commit', '-m', message)
+          git('push', 'origin', 'HEAD:refs/heads/astra/pr-automations-browser')
+          print('Published source commit:', git('rev-parse', 'HEAD').decode().strip())
+          PY

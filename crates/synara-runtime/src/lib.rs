@@ -1,6 +1,9 @@
+mod native_notifications;
+pub use native_notifications::*;
 //! Execution resources and filesystem capabilities, independent of the desktop UI.
 mod bounded;
 mod device;
+mod device_tools;
 mod filesystem;
 mod host;
 mod platform;
@@ -19,6 +22,7 @@ mod update;
 
 pub use bounded::*;
 pub use device::*;
+pub use device_tools::*;
 pub use filesystem::*;
 pub use host::*;
 pub use platform::*;

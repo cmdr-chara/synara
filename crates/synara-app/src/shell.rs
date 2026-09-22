@@ -588,6 +588,11 @@ impl Shell {
             cx.notify();
             return false;
         }
+        if self.pull_requests.has_fix_review() {
+            self.notice = Some("Add the PR Fix review to its target draft or explicitly discard it in Pull Requests before closing.".into());
+            cx.notify();
+            return false;
+        }
         if self.organization.saving
             || self.organization.dialog.is_some()
             || self.saved_context.dialog.is_some()

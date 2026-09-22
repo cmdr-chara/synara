@@ -16,6 +16,7 @@ jobs:
     env:
       CARGO_BUILD_JOBS: 2
       PYTHONDONTWRITEBYTECODE: 1
+      RUST_BACKTRACE: 0
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
@@ -34,21 +35,17 @@ jobs:
           assert all(isinstance(p, str) and re.fullmatch(r'\.synara-transfer-[0-9]{4}', p) for p in parts)
           assert all(not Path(p).is_symlink() for p in parts)
           assert sum(Path(p).stat().st_size for p in parts) <= 8 * 1024 * 1024
-          repairs = {
-              '.synara-transfer-0001': ('169069918b03f974439d9c074a7c388b4016a7a1', '0f428372290427f12252f450ac5717813e5a36df', [(371, '6', '+'), (1144, '', '3P')]),
-              '.synara-transfer-0003': ('eb196dbfc70332032312e1649ded698fc69229d8', '5a34fe95793b3852bc4338a3eb9848607fea6245', [(6411, '', '/'), (9177, '', '/')]),
-          }
+          # Two duplicate transfer spans were identified against the local byte stream.
+          # Accept only these exact input/output Git blobs, then verify the full source digest.
           def blob_sha(data):
               return hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
-          for name, (old_sha, new_sha, edits) in repairs.items():
-              data = Path(name).read_bytes()
-              assert blob_sha(data) == old_sha
-              text = data.decode('ascii')
-              for offset, old, new in reversed(edits):
-                  assert text[offset:offset + len(old)] == old
-                  text = text[:offset] + new + text[offset + len(old):]
-              assert blob_sha(text.encode()) == new_sha
-              Path(name).write_text(text, encoding='ascii')
+          path = Path('.synara-transfer-0001')
+          data = path.read_bytes()
+          assert blob_sha(data) == '9fbd4ee4da503d8dd1eb0f0c625cdb38377b3da3'
+          data = data[:1395] + data[1915:]
+          data = data[:411] + data[670:]
+          assert blob_sha(data) == '56b7058d0400615ce67dcbec323fc62503fd641f'
+          path.write_bytes(data)
           encoded = ''.join(Path(p).read_text().strip() for p in parts)
           with gzip.GzipFile(fileobj=io.BytesIO(base64.b64decode(encoded, validate=True))) as stream:
               data = stream.read(20 * 1024 * 1024 + 1)
@@ -101,31 +98,3 @@ jobs:
             ~/.cargo/git
             target
           key: max-feature-1.98.1-${{ runner.os }}-${{ github.sha }}
-      - name: Export bounded offline Rust validation tools
-        if: always()
-        run: |
-          mkdir -p /tmp/max-feature-tools
-          tar -C "$HOME" -I 'xz -T2 -3' -cf /tmp/rust-offline.tar.xz .rustup/toolchains/1.98.1-x86_64-unknown-linux-gnu .cargo/bin .cargo/registry .cargo/git
-          split --bytes=240M --numeric-suffixes --suffix-length=2 /tmp/rust-offline.tar.xz /tmp/max-feature-tools/part-
-          sha256sum /tmp/rust-offline.tar.xz > /tmp/max-feature-tools/sha256.txt
-          test ! -e /tmp/max-feature-tools/part-03
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always()
-        with:
-          name: max-feature-tools-00
-          path: |
-            /tmp/max-feature-tools/part-00
-            /tmp/max-feature-tools/sha256.txt
-          retention-days: 3
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always()
-        with:
-          name: max-feature-tools-01
-          path: /tmp/max-feature-tools/part-01
-          retention-days: 3
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always()
-        with:
-          name: max-feature-tools-02
-          path: /tmp/max-feature-tools/part-02
-          retention-days: 3

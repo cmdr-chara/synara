@@ -196,101 +196,120 @@ impl ProtocolDecoder {
                     }
                 }
             }
-            ProtocolFamily::AnthropicMessages => match value["type"]
-                .as_str()
-                .ok_or(ModelError::Protocol)?
-            {
-                "message_start" => {
-                    if self.started {
-                        return Err(ModelError::Protocol);
-                    }
-                    self.started = true;
-                    self.usage.input_tokens = value["message"]["usage"]["input_tokens"].as_u64();
-                    self.usage.output_tokens = value["message"]["usage"]["output_tokens"].as_u64();
-                    self.usage.cached_input_tokens =
-                        value["message"]["usage"]["cache_read_input_tokens"].as_u64();
-                    events.push(ModelEvent::Usage(self.usage.clone()));
-                }
-                "content_block_start" => {
-                    if !self.started || self.reason.is_some() {
-                        return Err(ModelError::Protocol);
-                    }
-                    let block = &value["content_block"];
-                    if block["type"] == "tool_use" {
-                        let index = value["index"].as_u64().ok_or(ModelError::Protocol)?;
-                        if self.tools.contains_key(&index) {
+            ProtocolFamily::AnthropicMessages => {
+                match value["type"].as_str().ok_or(ModelError::Protocol)? {
+                    "message_start" => {
+                        if self.started {
                             return Err(ModelError::Protocol);
                         }
-                        let tool = self.tool(index)?;
-                        tool.id = block["id"].as_str().ok_or(ModelError::Protocol)?.into();
-                        tool.name = block["name"].as_str().ok_or(ModelError::Protocol)?.into();
-                        if let Some(input) = block
-                            .get("input")
-                            .filter(|v| v.as_object().is_some_and(|o| !o.is_empty()))
-                        {
-                            tool.arguments = input.to_string();
+                        self.started = true;
+                        let usage = &value["message"]["usage"];
+                        let uncached = token_count(usage, "input_tokens")?;
+                        let cache_read = token_count(usage, "cache_read_input_tokens")?;
+                        let cache_write = token_count(usage, "cache_creation_input_tokens")?;
+                        // Anthropic excludes cached reads/writes from input_tokens.
+                        // Normalize to total input context, not uncached billing units.
+                        self.usage.input_tokens = uncached
+                            .map(|tokens| {
+                                tokens
+                                    .checked_add(cache_read.unwrap_or(0))
+                                    .and_then(|tokens| tokens.checked_add(cache_write.unwrap_or(0)))
+                                    .ok_or(ModelError::Limit)
+                            })
+                            .transpose()?;
+                        self.usage.output_tokens = token_count(usage, "output_tokens")?;
+                        self.usage.cached_input_tokens = cache_read;
+                        events.push(ModelEvent::Usage(self.usage.clone()));
+                    }
+                    "content_block_start" => {
+                        if !self.started || self.reason.is_some() {
+                            return Err(ModelError::Protocol);
                         }
-                    } else if let Some(text) = block["text"].as_str() {
-                        self.text_event(text, false, &mut events)?;
-                    }
-                }
-                "content_block_delta" => {
-                    if !self.started || self.reason.is_some() {
-                        return Err(ModelError::Protocol);
-                    }
-                    let delta = &value["delta"];
-                    match delta["type"].as_str() {
-                        Some("text_delta") => self.text_event(
-                            delta["text"].as_str().ok_or(ModelError::Protocol)?,
-                            false,
-                            &mut events,
-                        )?,
-                        Some("thinking_delta") => self.text_event(
-                            delta["thinking"].as_str().ok_or(ModelError::Protocol)?,
-                            true,
-                            &mut events,
-                        )?,
-                        Some("input_json_delta") => {
-                            let tool = self
-                                .tools
-                                .get_mut(&value["index"].as_u64().ok_or(ModelError::Protocol)?)
-                                .ok_or(ModelError::Protocol)?;
-                            tool.arguments.push_str(
-                                delta["partial_json"].as_str().ok_or(ModelError::Protocol)?,
-                            );
-                            if tool.arguments.len() > MAX_FRAME_BYTES {
-                                return Err(ModelError::Limit);
+                        let block = &value["content_block"];
+                        if block["type"] == "tool_use" {
+                            let index = value["index"].as_u64().ok_or(ModelError::Protocol)?;
+                            if self.tools.contains_key(&index) {
+                                return Err(ModelError::Protocol);
                             }
+                            let tool = self.tool(index)?;
+                            tool.id = block["id"].as_str().ok_or(ModelError::Protocol)?.into();
+                            tool.name = block["name"].as_str().ok_or(ModelError::Protocol)?.into();
+                            if let Some(input) = block
+                                .get("input")
+                                .filter(|v| v.as_object().is_some_and(|o| !o.is_empty()))
+                            {
+                                tool.arguments = input.to_string();
+                            }
+                        } else if let Some(text) = block["text"].as_str() {
+                            self.text_event(text, false, &mut events)?;
                         }
-                        // Provider signatures and unknown extension blocks are not replayed
-                        // as user-visible text or execution instructions.
-                        _ => {}
                     }
+                    "content_block_delta" => {
+                        if !self.started || self.reason.is_some() {
+                            return Err(ModelError::Protocol);
+                        }
+                        let delta = &value["delta"];
+                        match delta["type"].as_str() {
+                            Some("text_delta") => self.text_event(
+                                delta["text"].as_str().ok_or(ModelError::Protocol)?,
+                                false,
+                                &mut events,
+                            )?,
+                            Some("thinking_delta") => self.text_event(
+                                delta["thinking"].as_str().ok_or(ModelError::Protocol)?,
+                                true,
+                                &mut events,
+                            )?,
+                            Some("input_json_delta") => {
+                                let tool = self
+                                    .tools
+                                    .get_mut(&value["index"].as_u64().ok_or(ModelError::Protocol)?)
+                                    .ok_or(ModelError::Protocol)?;
+                                tool.arguments.push_str(
+                                    delta["partial_json"].as_str().ok_or(ModelError::Protocol)?,
+                                );
+                                if tool.arguments.len() > MAX_FRAME_BYTES {
+                                    return Err(ModelError::Limit);
+                                }
+                            }
+                            // Provider signatures and unknown extension blocks are not replayed
+                            // as user-visible text or execution instructions.
+                            _ => {}
+                        }
+                    }
+                    "content_block_stop" => {
+                        if let Some(tool) =
+                            value["index"].as_u64().and_then(|i| self.tools.get_mut(&i))
+                            && tool.arguments.is_empty()
+                        {
+                            tool.arguments = "{}".into();
+                        }
+                    }
+                    "message_delta" => {
+                        if !self.started {
+                            return Err(ModelError::Protocol);
+                        }
+                        if let Some(reason) = value["delta"]["stop_reason"].as_str() {
+                            self.reason = Some(reason.into());
+                        }
+                        if let Some(tokens) = value["usage"]["output_tokens"].as_u64() {
+                            self.usage.output_tokens = Some(tokens);
+                        }
+                        events.push(ModelEvent::Usage(self.usage.clone()));
+                    }
+                    "message_stop" => return self.end(),
+                    "error" => return Err(ModelError::Protocol),
+                    _ => {}
                 }
-                "content_block_stop" => {
-                    if let Some(tool) = value["index"].as_u64().and_then(|i| self.tools.get_mut(&i))
-                        && tool.arguments.is_empty()
-                    {
-                        tool.arguments = "{}".into();
-                    }
-                }
-                "message_delta" => {
-                    if !self.started {
-                        return Err(ModelError::Protocol);
-                    }
-                    if let Some(reason) = value["delta"]["stop_reason"].as_str() {
-                        self.reason = Some(reason.into());
-                    }
-                    if let Some(tokens) = value["usage"]["output_tokens"].as_u64() {
-                        self.usage.output_tokens = Some(tokens);
-                    }
-                    events.push(ModelEvent::Usage(self.usage.clone()));
-                }
-                "message_stop" => return self.end(),
-                "error" => return Err(ModelError::Protocol),
-                _ => {}
-            },
+            }
         }
         Ok(events)
+    }
+}
+
+fn token_count(usage: &Value, key: &str) -> ModelResult<Option<u64>> {
+    match usage.get(key).filter(|value| !value.is_null()) {
+        None => Ok(None),
+        Some(value) => value.as_u64().map(Some).ok_or(ModelError::Protocol),
     }
 }

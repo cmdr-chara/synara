@@ -363,15 +363,33 @@ impl Controller {
         key: String,
         value: ConfigValue,
     ) -> WorkspaceResult<()> {
-        self.session_for(id).await?.set_option(&key, value).await?;
+        let slot = self.slot(id).await?;
+        if slot.active.swap(true, Ordering::AcqRel) { return Err(AgentError::Busy.into()); }
+        let _ownership = PromptOwnership(slot);
+        let session = self.session_for(id).await?;
+        let _lifetime = self.lifetime.read().await;
+        if self.closing.load(Ordering::Acquire) { return Err(AgentError::Busy.into()); }
+        session.set_option(&key, value).await?;
         Ok(())
     }
     pub async fn set_mode(&self, id: TaskId, mode: String) -> WorkspaceResult<()> {
-        self.session_for(id).await?.set_mode(&mode).await?;
+        let slot = self.slot(id).await?;
+        if slot.active.swap(true, Ordering::AcqRel) { return Err(AgentError::Busy.into()); }
+        let _ownership = PromptOwnership(slot);
+        let session = self.session_for(id).await?;
+        let _lifetime = self.lifetime.read().await;
+        if self.closing.load(Ordering::Acquire) { return Err(AgentError::Busy.into()); }
+        session.set_mode(&mode).await?;
         Ok(())
     }
     pub async fn set_model(&self, id: TaskId, model: String) -> WorkspaceResult<()> {
-        self.session_for(id).await?.set_model(&model).await?;
+        let slot = self.slot(id).await?;
+        if slot.active.swap(true, Ordering::AcqRel) { return Err(AgentError::Busy.into()); }
+        let _ownership = PromptOwnership(slot);
+        let session = self.session_for(id).await?;
+        let _lifetime = self.lifetime.read().await;
+        if self.closing.load(Ordering::Acquire) { return Err(AgentError::Busy.into()); }
+        session.set_model(&model).await?;
         Ok(())
     }
     pub async fn switch_agent(&self, id: TaskId, agent: String) -> WorkspaceResult<Task> {

@@ -120,6 +120,8 @@ def run(s):
                                             'capabilities': {'context_window': 8192, 'source': 'Owned fixture metadata'}}],
         }]}
         paste(s, 'direct-config-editor', json.dumps(value, indent=2))
+        assert s.control_bounds('direct-config-editor')[3] >= 320, 'Provider JSON must be visibly reviewable'
+        s.desktop.screenshot('direct-provider-editor', window_only=True)
         click(s, 'direct-save')
         wait_until(lambda: (preference(s, 'direct-model-providers-v1') or {}).get('revision') == 1, 'saved direct providers')
         assert requests == [] and s.events() == baseline
@@ -127,6 +129,8 @@ def run(s):
         click(s, 'direct-expand')
         click(s, 'direct-first-model')
         assert binding(s, task) is None and requests == []
+        reveal(s, 'direct-options-editor')
+        assert s.control_bounds('direct-options-editor')[3] >= 180, 'Model options must not collapse'
         s.desktop.screenshot('direct-model-review', window_only=True)
         click(s, 'direct-confirm')
         wait_until(lambda: binding(s, task), 'reviewed task model binding')

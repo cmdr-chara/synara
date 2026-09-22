@@ -490,3 +490,43 @@ async fn direct_pre_cancel_and_missing_key_do_not_make_a_request() {
         Err(ModelError::Credential)
     ));
 }
+
+#[test]
+fn direct_anthropic_usage_counts_cached_context_and_rejects_overflow() {
+    let usage = json!({"input_tokens":5,"cache_read_input_tokens":1000,"cache_creation_input_tokens":25,"output_tokens":1});
+    let mut decoder = ProtocolDecoder::new(ProtocolFamily::AnthropicMessages, &request());
+    let events = decoder
+        .push(&json!({"type":"message_start","message":{"usage":usage}}).to_string())
+        .unwrap();
+    assert!(matches!(
+        &events[0],
+        ModelEvent::Usage(ModelUsage {
+            input_tokens: Some(1030),
+            cached_input_tokens: Some(1000),
+            output_tokens: Some(1),
+            ..
+        })
+    ));
+    for usage in [
+        json!({"input_tokens":u64::MAX,"cache_read_input_tokens":1}),
+        json!({"input_tokens":3,"cache_creation_input_tokens":-1}),
+    ] {
+        let mut decoder = ProtocolDecoder::new(ProtocolFamily::AnthropicMessages, &request());
+        assert!(
+            decoder
+                .push(&json!({"type":"message_start","message":{"usage":usage}}).to_string())
+                .is_err()
+        );
+    }
+    let mut decoder = ProtocolDecoder::new(ProtocolFamily::AnthropicMessages, &request());
+    let events = decoder
+        .push(r#"{"type":"message_start","message":{"usage":{"cache_read_input_tokens":1000}}}"#)
+        .unwrap();
+    assert!(matches!(
+        &events[0],
+        ModelEvent::Usage(ModelUsage {
+            input_tokens: None,
+            ..
+        })
+    ));
+}

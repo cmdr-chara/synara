@@ -480,6 +480,30 @@ mod tests {
                 .await
                 .is_err()
         );
+        assert!(
+            controller
+                .set_mode(task.id, "unknown".into())
+                .await
+                .is_err()
+        );
+        assert!(
+            controller
+                .set_model(task.id, "unknown".into())
+                .await
+                .is_err()
+        );
+        assert!(
+            controller
+                .set_option(
+                    task.id,
+                    "unknown".into(),
+                    ConfigValue::Select {
+                        value: "value".into()
+                    }
+                )
+                .await
+                .is_err()
+        );
         let reopened = WorkspaceService::open(root.path().join("data.sqlite3"))
             .await
             .unwrap();
@@ -659,5 +683,38 @@ mod tests {
             .unwrap();
         assert!(preference.is_none());
         assert!(root.path().is_dir());
+    }
+    #[tokio::test]
+    async fn direct_models_agent_controls_respect_active_task_ownership() {
+        let (_root, workspace, controller, task) = setup().await;
+        let slot = controller.slot(task.id).await.unwrap();
+        slot.active.store(true, Ordering::Release);
+        assert!(
+            controller
+                .set_mode(task.id, "unknown".into())
+                .await
+                .is_err()
+        );
+        assert!(
+            controller
+                .set_model(task.id, "unknown".into())
+                .await
+                .is_err()
+        );
+        assert!(
+            controller
+                .set_option(
+                    task.id,
+                    "unknown".into(),
+                    ConfigValue::Select {
+                        value: "value".into()
+                    }
+                )
+                .await
+                .is_err()
+        );
+        assert!(slot.active.load(Ordering::Acquire));
+        assert!(workspace.session(task.thread_id).await.unwrap().is_none());
+        slot.active.store(false, Ordering::Release);
     }
 }

@@ -117,6 +117,7 @@ pub struct ModelRequest {
 }
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
 pub struct ModelUsage {
+    /// Total input tokens, including cache reads and writes when reported.
     pub input_tokens: Option<u64>,
     pub output_tokens: Option<u64>,
     pub cached_input_tokens: Option<u64>,

@@ -1,0 +1,1 @@
+{"mode":"diff","base_commit":"d1406f26f2f0790876cb5be0187ac5a46cd48ce7","parts":[".synara-transfer-0001",".synara-transfer-0002",".synara-transfer-0003",".synara-transfer-0004"],"sha256":"10b45dd60a9fcb5a11e04e6872a1965daaedaa67f190a2a678f486a9f28ad096","message":"fix(models): preserve active controls, cached usage, and readable model review"}

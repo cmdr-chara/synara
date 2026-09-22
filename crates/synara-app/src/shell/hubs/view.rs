@@ -77,7 +77,7 @@ impl Shell {
             }
             page = page.child(div().mt_3().pt_3().border_t_1().border_color(rgb(palette().border)).flex().flex_wrap().gap_3()
                 .child(ui::action("hub-save",if self.hubs.saving || self.hubs.creating {"Saving..."} else if creating {"Create Hub"} else {"Save context"},Some(Glyph::Check),false,
-                    cx.listener(|this, _: &(), _, cx| this.save_hub_editor(cx))))
+                    cx.listener(|this, _: &(), _, cx| this.save_hub_editor(cx))).relative().child(ui::layout_probe("hub-save")))
                 .child(ui::action("hub-discard","Discard edits",None,false,cx.listener(|this, _: &(), _, cx| {
                     if !this.hubs.saving && !this.hubs.creating && !this.hubs.picker {
                         this.hubs.editing = false; this.hubs.original = None; this.load_hubs(); cx.notify();
@@ -111,6 +111,7 @@ impl Shell {
                     ui::action(("hub-home-thread",index),task.title.clone(),Some(self.agent_glyph(&task.agent_id)),false,
                         cx.listener(move |this, _: &(), _, cx| { if this.select_task(id,cx) {this.show_conversation(cx);} }))
                         .w_full().h(px(ui::row_height() + 6.)).rounded_none().bg(gpui::rgba(0)).border_b_1().border_color(rgb(palette().border))
+                        .relative().child(ui::layout_probe_slot("hub-home-thread", index))
                         .child(div().text_size(px(12.)).text_color(rgb(palette().muted)).child(format!("{:?}",task.state)))
                 }))
                 .children((threads.len() > 200).then(|| ui::action("hub-find-more","Find more threads",Some(Glyph::Search),false,

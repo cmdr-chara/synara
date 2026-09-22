@@ -35,9 +35,9 @@ acceptance gate is closed.
 
 | Product status | Count | Meaning |
 | --- | ---: | --- |
-| Present | **11 / 48** | Substantial native user capability exists; remaining work is mainly acceptance or narrower depth |
+| Present | **12 / 48** | Substantial native user capability exists; remaining work is mainly acceptance or narrower depth |
 | Partial | **24 / 48** | Real native functionality exists, but Electron still has material user-facing depth not yet present |
-| Missing | **13 / 48** | No equivalent complete user workflow exists yet, or the current architecture does not satisfy the stated Synara product requirement |
+| Missing | **12 / 48** | No equivalent complete user workflow exists yet, or the current architecture does not satisfy the stated Synara product requirement |
 
 Current counts include native Debug and reviewed PR Fix workflows. They do not
 close provider or cross-platform acceptance.
@@ -46,6 +46,7 @@ close provider or cross-platform acceptance.
 
 | Capability | Native state |
 | --- | --- |
+| Inline file comments | Selected saved-file ranges with SHA-256/excerpt review, editable annotations, explicit freshness-checked draft attachment and normal unsent-draft recovery |
 | PR Fix workflow | Bounded unresolved-review collection, editable native review, refreshed comment/head checks and explicit append to the correct unsent task draft |
 | Debug mode | App-owned evidence-gated observation/reproduction/investigation/fix/verification, persisted task history, pause/reopen, explicit editable draft instructions and no implicit execution |
 | Side threads | Independent Side chats with separate drafts, tasks, provider sessions and permissions |
@@ -96,7 +97,6 @@ implementation but still trail the Electron workflow in depth:
 | Persistent thread goals | Durable objectives, pause/resume, bounded continuation, blocker handling and achievement history |
 | Checkpoints & revert | Explicit safe state rollback; edit/resend intentionally does not pretend to roll back files/provider state |
 | Stacked pull requests | Stack ordering/readiness and explicitly confirmed safe-prefix merge workflow |
-| Inline file comments | Line-specific review comments carried into the next prompt |
 | AppSnap | Permissioned desktop-window capture and composer attachment flow |
 | Rich media in transcript | Generated-image presentation/download and PDF/document viewing comparable to Electron |
 | Two-task split views | Keep two independent conversations/tasks visible side by side, including cross-project |
@@ -148,6 +148,15 @@ itself** when the corresponding feature is already present:
 - performance/resource budgets, security review and final release evidence.
 
 ## Historical implementation checkpoints
+
+### September 22: sprint 2, inline file comments
+
+Saved native editor selections now become reviewed, editable line comments with
+explicit file hash and excerpt provenance. Attaching rechecks the existing file
+and task owners and preserves the unsent draft. Stale/deleted files retain the
+comment rather than remapping lines. See [inline file comments](docs/ui/inline-file-comments.md).
+This is a frozen annotation, not a promise of live reanchoring or Send-time file
+rollback. Provider, remote and platform acceptance remain separate.
 
 ### September 22: sprint 2, reviewed PR Fix workflow
 

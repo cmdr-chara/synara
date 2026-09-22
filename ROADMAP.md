@@ -17,7 +17,7 @@ Current comparison snapshot, September 22, 2026:
 
 - Electron reference: `Emanuele-web04/synara@f04341a67bc4941d1b2e91e0b23bbe782dfbc727`
   (Synara 0.9.0-era main).
-- Native Rust reference: `cmdr-chara/synara@96ec3439449bac5631c8d8b59c7afd5fd0bc14df` (six feature implementations).
+- Native Rust reference: `cmdr-chara/synara@d186675a5f85bf6b06c38c70480e45a0f30a0bb2` (feature-closure sprint 2 candidate).
 - Electron moved **342 commits** beyond the `e7cd152` revision used by the previous
   audit. Computer Use and project-history import are therefore new parity inputs.
 - The current audit uses 48 top-level user-visible Electron capabilities: the 46
@@ -35,9 +35,9 @@ acceptance gate is closed.
 
 | Product status | Count | Meaning |
 | --- | ---: | --- |
-| Present | **14 / 48** | Substantial native user capability exists; remaining work is mainly acceptance or narrower depth |
-| Partial | **25 / 48** | Real native functionality exists, but Electron still has material user-facing depth not yet present |
-| Missing | **9 / 48** | No equivalent complete user workflow exists yet, or the current architecture does not satisfy the stated Synara product requirement |
+| Present | **17 / 48** | Substantial native user capability exists; remaining work is mainly acceptance or narrower depth |
+| Partial | **26 / 48** | Real native functionality exists, but Electron still has material user-facing depth not yet present |
+| Missing | **5 / 48** | No equivalent complete user workflow exists yet, or the current architecture does not satisfy the stated Synara product requirement |
 
 ### Substantially present
 
@@ -64,6 +64,11 @@ acceptance gate is closed.
 The following are **not missing from scratch**. They already have meaningful Rust
 implementation but still trail the Electron workflow in depth:
 
+- **Rich media in transcript:** uploaded and agent-returned images persist as exact
+  task-owned bytes with distinct provenance, bounded native decode, inline/expanded
+  presentation, original export and safe missing/corrupt handling across restart.
+  PDF/document viewing remains a material user-facing gap, so this capability is
+  Partial rather than Present.
 - **Releases in the app:** real compiled version, bundled native development notes,
   local version-observation history and durable read/dismiss state are implemented.
   Version transitions become unread. A verified remote release feed, signatures and
@@ -101,7 +106,6 @@ implementation but still trail the Electron workflow in depth:
 | Checkpoints & revert | Explicit safe state rollback; edit/resend intentionally does not pretend to roll back files/provider state |
 | Stacked pull requests | Stack ordering/readiness and explicitly confirmed safe-prefix merge workflow |
 | AppSnap | Permissioned desktop-window capture and composer attachment flow |
-| Rich media in transcript | Generated-image presentation/download and PDF/document viewing comparable to Electron |
 | Two-task split views | Keep two independent conversations/tasks visible side by side, including cross-project |
 | Computer Use | New Electron 0.9.0 capability: permissioned desktop/app control, preview, interruption/takeover and audit boundaries |
 
@@ -130,7 +134,7 @@ implementation but still trail the Electron workflow in depth:
 | P1 | Electron 0.9.0 delta | Implement Computer Use ownership, permissions, observation/action and interruption. Project Import now has its reviewed native path, with broader real-history/platform acceptance remaining. |
 | P2 | Agent orchestration | Provider handoff, native subagents, Agent Gateway and external-MCP-to-Synara contracts are explicit and scoped |
 | P3 | Conversation autonomy/recovery | Goals and evidence-first Debug are implemented. Checkpoints/revert remains missing and must provide genuine bounded rollback, not transcript rewriting |
-| P4 | Review/composer depth | PR Fix, inline comments and recap are implemented. Stacked PRs, AppSnap, rich media and task split views remain missing. Release UX is partial pending verified production release/update configuration |
+| P4 | Review/composer depth | PR Fix, inline comments, recap, stacked PRs, AppSnap and two-task split views are implemented. Transcript image media is partial pending PDF/document viewing. Release UX is partial pending verified production release/update configuration |
 | P5 | Partial-feature closure | Close the material Electron depth gaps in models/context, Automations, Studio/Hubs, browser sessions/dev servers, editor/search, device/iOS, navigation/export and personalization |
 
 ## Acceptance and release work
@@ -149,6 +153,26 @@ itself** when the corresponding feature is already present:
 - performance/resource budgets, security review and final release evidence.
 
 ## Historical implementation checkpoints
+
+### September 22: feature-closure sprint 2
+
+Four additional capabilities move out of Missing in the session candidate at
+`d186675a5f85bf6b06c38c70480e45a0f30a0bb2`. Stacked pull requests, AppSnap and two-task split views move
+Missing -> Present. Rich media in transcript moves Missing -> Partial because native
+image persistence/presentation/export is implemented but PDF/document viewing is not.
+The 48-capability inventory is therefore **17 present, 26 partial and 5 missing**,
+down from 9 missing at the start of this sprint.
+
+The verified feature commits are `d603b2c` (stacked PRs), `75760b3` plus
+`8f83af3` (transcript image persistence and layout), `37a38f9` (AppSnap), and
+`d186675` (two-task split views). Focused/native GitHub Actions runs
+35762961299, 35766712749, 35767806370 and 35770961136 all completed successfully.
+These checks prove the bounded native workflows exercised there, not macOS/Windows/
+Wayland parity, authenticated production services, or PDF/document viewing.
+
+The remaining genuinely missing feature-development capabilities are checkpoints/revert,
+native subagents/workflows, Agent Gateway, external MCP clients connecting to Synara,
+and Computer Use. The original 120 A-Q task bodies and checkbox states remain unchanged.
 
 ### September 22: breadth-first feature closure
 

@@ -1,14 +1,33 @@
 # Electron Synara to native Rust/GPUI: current feature-gap audit
 
-Checkpoint: 2026-09-22, after the six feature-closure implementations at
-`96ec3439449bac5631c8d8b59c7afd5fd0bc14df`. Sessions 1-4 and the maximum-feature
-sprint remain preserved. This inventory distinguishes user-visible implementation
+Checkpoint: 2026-09-22, after feature-closure sprint 2 at
+`d186675a5f85bf6b06c38c70480e45a0f30a0bb2`. Earlier feature-closure, Sessions 1-4 and maximum-feature
+checkpoints remain preserved. This inventory distinguishes user-visible implementation
 from Linux fixture evidence and still-open provider, hardware and platform acceptance.
 
 The complete preceding Electron comparison, source links, dated tables and earlier
 continuation notes remain in the [preserved pre-Hubs inventory](electron-vs-gpui-feature-gap-before-hubs-2026-09-21.md).
 The full acceptance backlog remains in [ROADMAP.md](../../ROADMAP.md). No historical
 gap is closed merely because this current view is shorter or a heading was renamed.
+
+## September 22: feature-closure sprint 2
+
+The current inventory has **17 substantially present, 26 partial and 5 missing**
+capabilities, not a release-readiness percentage. Stacked pull requests, AppSnap and
+two-task split views move Missing -> Present. Rich media in transcript moves Missing
+-> Partial because native image workflows are real, but PDF/document viewing remains
+materially absent. No earlier Partial capability is promoted to Present.
+
+| Capability | Native workflow | Remaining scope |
+| --- | --- | --- |
+| Stacked PRs | Deterministic stack detection/order, parent/base representation, current position/readiness, navigation and explicitly confirmed selected-prefix merge pinned to reviewed heads | Live authenticated GitHub breadth and wider platform interaction acceptance |
+| Transcript media (partial) | Exact uploaded/agent-returned image bytes, distinct provenance, bounded decode, inline/expanded rendering, original export, missing/corrupt refusal and restart persistence | PDF/document viewing and broader media types |
+| AppSnap | Explicit Linux/X11 visible-window discovery and one-window capture with target identity into durable pending attachments; no silent desktop capture | macOS/Windows/Wayland implementations and OS permission acceptance |
+| Two-task split | Existing task/session owners render same- or cross-project tasks together with independent drafts/streams, focused Send/Stop, replacement/close and narrow fallback | Broader platform/input/accessibility acceptance |
+
+Focused/native runs 35762961299, 35766712749, 35767806370 and 35770961136
+passed for these slices. The remaining Missing capabilities are checkpoints/revert,
+native subagents/workflows, Agent Gateway, external-MCP-to-Synara and Computer Use.
 
 ## September 22: breadth-first feature closure
 
@@ -111,8 +130,7 @@ Using Emanuele's current feature overview as the counting boundary, this audit t
 48 top-level user capabilities: 46 named overview entries plus Computer Use and
 Project Import. At the consolidated Sessions 1-4 checkpoint, **8 were substantially present,
 22 partial and 18 genuinely missing feature development**. The maximum-feature
-sprint superseded those counts with **9 present, 24 partial and 15 missing**. The later
-feature-closure checkpoint now records **14 present, 25 partial and 9 missing**. This is a
+sprint superseded those counts with **9 present, 24 partial and 15 missing**. The feature-closure-sprint-2 checkpoint now records **17 present, 26 partial and 5 missing**. This is a
 feature-parity inventory, not a release-readiness percentage.
 
 The Synara product requirement is intentionally broader than Electron's current
@@ -162,6 +180,10 @@ in the receipt rather than represented as successful acceptance.
 
 | Surface | Source implemented | Remaining acceptance or functionality |
 | --- | --- | --- |
+| Stacked PRs | Reviewed deterministic stack model and selected-prefix merge using existing PR provider/confirmation ownership | Authenticated live GitHub and cross-platform acceptance |
+| Transcript images | Durable task-owned image bytes, provenance, native preview/expand/export and bounded corrupt/missing behavior | Partial: PDF/document viewing and broader media types |
+| AppSnap | Explicit Linux/X11 single-window discovery/selection/capture into durable pending attachments | macOS/Windows/Wayland implementations and permission acceptance |
+| Two-task split | Existing independent task/session owners rendered together with focus-routed composer/session actions and narrow fallback | Broader input/accessibility/platform acceptance |
 | Debug | App-owned persistent five-phase evidence workflow and explicit unsent composer preparation | Live-provider and platform acceptance, see feature-closure docs |
 | Persistent goals | Explicitly armed bounded pursuit, pause/resume/clear, user priority, blocker/achievement history and inert restart | Live-provider and cross-platform acceptance, no unbounded retry |
 | Thread recap | Reviewed generation using an independent unsent related task and explicit source-owned bounded cache | Summary quality/provider/platform acceptance |

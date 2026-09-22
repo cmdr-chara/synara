@@ -59,7 +59,7 @@ pub(super) struct EnvironmentState {
     add_bounds: std::rc::Rc<std::cell::Cell<gpui::Bounds<Pixels>>>,
     restore_focus: Option<Option<EnvironmentTab>>,
     divider_focus: FocusHandle,
-    tabs_focus: [FocusHandle; 4],
+    tabs_focus: [FocusHandle; 5],
 }
 impl EnvironmentState {
     pub(super) fn new(loaded: LoadedEnvironmentLayout, cx: &mut Context<Shell>) -> Self {
@@ -94,6 +94,7 @@ fn tab_panel(tab: EnvironmentTab) -> Panel {
         EnvironmentTab::Explorer => Panel::Files,
         EnvironmentTab::Changes => Panel::Changes,
         EnvironmentTab::Device => Panel::Device,
+        EnvironmentTab::SideChats => Panel::SideChats,
     }
 }
 fn panel_tab(panel: Panel) -> Option<EnvironmentTab> {
@@ -102,6 +103,7 @@ fn panel_tab(panel: Panel) -> Option<EnvironmentTab> {
         Panel::Files => Some(EnvironmentTab::Explorer),
         Panel::Changes => Some(EnvironmentTab::Changes),
         Panel::Device => Some(EnvironmentTab::Device),
+        Panel::SideChats => Some(EnvironmentTab::SideChats),
         _ => None,
     }
 }
@@ -111,6 +113,16 @@ fn tab_info(tab: EnvironmentTab) -> (&'static str, Glyph, usize) {
         EnvironmentTab::Explorer => ("Explorer", Glyph::Folders, 1),
         EnvironmentTab::Changes => ("Changes", Glyph::BranchSimple, 2),
         EnvironmentTab::Device => ("Device", Glyph::Window, 3),
+        EnvironmentTab::SideChats => ("Side chats", Glyph::Chat, 4),
+    }
+}
+fn tab_close_info(tab: EnvironmentTab) -> (&'static str, &'static str) {
+    match tab {
+        EnvironmentTab::Terminal => ("environment-terminal-close", "Close Terminal tab"),
+        EnvironmentTab::Explorer => ("environment-explorer-close", "Close Explorer tab"),
+        EnvironmentTab::Changes => ("environment-changes-close", "Close Changes tab"),
+        EnvironmentTab::Device => ("environment-device-close", "Close Device tab"),
+        EnvironmentTab::SideChats => ("environment-side-chats-close", "Close Side chats tab"),
     }
 }
 /// Preserve usable panes at intermediate widths without overwriting the saved
@@ -164,7 +176,7 @@ impl Shell {
     pub(super) fn track_environment_panel(&mut self, panel: Panel) -> Panel {
         if !matches!(
             panel,
-            Panel::Dock | Panel::Terminal | Panel::Files | Panel::Changes | Panel::Device
+            Panel::Dock | Panel::Terminal | Panel::Files | Panel::Changes | Panel::Device | Panel::SideChats
         ) {
             self.environment.resize = None;
             return panel;
@@ -341,6 +353,14 @@ impl Shell {
         {
             return;
         }
+        if tab == EnvironmentTab::SideChats && self.side_chats.pending(cx) {
+            self.select_environment_tab(tab, window, cx);
+            self.notice = Some(
+                "Finish the side-chat operation or IME composition before closing this tab.".into(),
+            );
+            cx.notify();
+            return;
+        }
         let running = self.terminals.running();
         if let Some(reason) = tab_close_blocked(
             tab,
@@ -454,9 +474,7 @@ impl Shell {
                     Choice {
                         label: "Side chats".into(),
                         icon: Some(Glyph::Chat),
-                        unavailable: Some(
-                            "Side chats are not available in this native build yet.".into(),
-                        ),
+                        detail: "Open an independent related conversation without replacing the main chat.".into(),
                         ..Default::default()
                     },
                     Choice {
@@ -481,6 +499,7 @@ impl Shell {
                 let tab = match index {
                     0 => Some(EnvironmentTab::Terminal),
                     2 => Some(EnvironmentTab::Explorer),
+                    3 => Some(EnvironmentTab::SideChats),
                     4 => Some(EnvironmentTab::Changes),
                     5 => Some(EnvironmentTab::Device),
                     _ => None,
@@ -563,12 +582,17 @@ impl Shell {
                             .tooltip(move |_, cx| cx.new(|_| ui::Tooltip(label.into())).into())
                             .on_key_down(cx.listener(move |this, event, window, cx| this.environment_tab_key(tab, event, window, cx)))
                             .on_click(cx.listener(move |this, _, window, cx| this.select_environment_tab(tab, window, cx))))
-                            .child(ui::chrome_button(
-                                ["environment-terminal-close", "environment-explorer-close", "environment-changes-close"][index],
-                                ["Close Terminal tab", "Close Explorer tab", "Close Changes tab"][index], Glyph::Close, false,
-                                cx.listener(move |this, _: &(), window, cx| this.close_environment_tab(tab, window, cx)),
-                            ).size(px(20.)).tab_stop(active).relative()
-                                .child(ui::layout_probe_slot("environment-tab-close", index)))
+                            .child({
+                                let (close_id, close_label) = tab_close_info(tab);
+                                ui::chrome_button(
+                                    close_id,
+                                    close_label,
+                                    Glyph::Close,
+                                    false,
+                                    cx.listener(move |this, _: &(), window, cx| this.close_environment_tab(tab, window, cx)),
+                                ).size(px(20.)).tab_stop(active).relative()
+                                    .child(ui::layout_probe_slot("environment-tab-close", index))
+                            })
                     }))
                     .children(
                         self.environment

@@ -5,7 +5,7 @@ impl Shell {
     pub(super) fn dock_open(&self) -> bool {
         matches!(
             self.panel,
-            Panel::Dock | Panel::Files | Panel::Terminal | Panel::Changes | Panel::Device
+            Panel::Dock | Panel::Files | Panel::Terminal | Panel::Changes | Panel::Device | Panel::SideChats
         )
     }
 
@@ -65,6 +65,7 @@ impl Shell {
                                         Panel::Terminal => self.terminal_panel(target_width, cx),
                                         Panel::Changes => self.git_panel(target_width, cx),
                                         Panel::Device => self.device_panel(cx),
+                                        Panel::SideChats => self.side_chat_panel(target_width, cx),
                                         _ => self.dock_launcher(cx),
                                     }),
                             ),
@@ -109,6 +110,7 @@ impl Shell {
             Panel::Terminal => self.terminal_panel(width, cx),
             Panel::Changes => self.git_panel(width, cx),
             Panel::Device => self.device_panel(cx),
+            Panel::SideChats => self.side_chat_panel(width, cx),
             _ => self.dock_launcher(cx),
         }
     }
@@ -168,11 +170,12 @@ impl Shell {
                         .child(ui::layout_probe("dock-files")),
                     )
                     .child(
-                        ui::unavailable_action(
+                        ui::action(
                             "dock-side-chats",
                             "Side chats",
-                            Glyph::Chat,
-                            "Side chats are not available in this native build yet.",
+                            Some(Glyph::Chat),
+                            false,
+                            cx.listener(|this, _: &(), _, cx| this.set_panel(Panel::SideChats, cx)),
                         )
                         .h(px(40.))
                         .px(px(20.))

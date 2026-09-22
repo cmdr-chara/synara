@@ -23,12 +23,17 @@ def run(s):
             pass
         def do_GET(self):
             requests.append(self.path)
+            # Make request arrival observably earlier than document commit on every run.
+            time.sleep(0.6)
             body = b'''<!doctype html><title>Real embedded WebKit</title>
 <style>html,body{margin:0;background:rgb(20,150,160);height:100%;font:24px sans-serif}
 button{position:absolute;left:40px;top:120px;width:240px;height:65px}</style>
 <h1>Native WebKit in Synara</h1><p>This content is served by the owned HTTP fixture.</p>
 <button onclick="document.body.style.background='rgb(192,94,64)';document.title='Real click confirmed'">Click native page</button>'''
+            if self.path == '/second':
+                body = body.replace(b'rgb(20,150,160)', b'rgb(80,60,170)')
             self.send_response(200)
+            self.send_header('Cache-Control', 'no-store')
             self.send_header('Content-Type', 'text/html')
             self.send_header('Content-Length', str(len(body)))
             self.end_headers()
@@ -44,11 +49,15 @@ button{position:absolute;left:40px;top:120px;width:240px;height:65px}</style>
         s.desktop.text('Browser')
         s.desktop.key('Return')
         wait_until(lambda: s.control_bounds('browser-viewport'), 'browser viewport')
+    def ready(path):
+        color = (80,60,170) if path == 'second' else (20,150,160)
+        wait_until(lambda: s.control_bounds('browser-ready', enabled=True)
+                   and count(color) > 20000, 'committed and rendered ' + path, 20)
     def navigate(path):
         fill(s, 'browser-address', f'http://127.0.0.1:{server.server_port}/{path}')
         s.click_control('browser-go')
         wait_until(lambda: '/'+path in requests, 'real WebKit request')
-        wait_until(lambda: count((20,150,160)) > 20000, 'visible embedded web content', 20)
+        ready(path)
     try:
         s.launch()
         browser()
@@ -67,23 +76,28 @@ button{position:absolute;left:40px;top:120px;width:240px;height:65px}</style>
         s.desktop.key('Escape')
         wait_until(lambda: count((192,94,64)) > 20000, 'child restored after overlay')
         navigate('second')
-        s.click_control('browser-back')
+        s.click_control('browser-back', enabled=True, settle=0.01)
         wait_until(lambda: requests.count('/first') >= 2, 'domain back loads prior URL')
-        s.click_control('browser-forward')
+        wait_until(lambda: s.control_bounds('browser-forward', enabled=False),
+                   'forward unavailable while Back is pending')
+        ready('first')
+        s.click_control('browser-forward', enabled=True)
         wait_until(lambda: requests.count('/second') >= 2, 'domain forward')
-        s.click_control('browser-reload')
+        ready('second')
+        s.click_control('browser-reload', enabled=True)
         wait_until(lambda: requests.count('/second') >= 3, 'reload')
-        s.checks.append('back-forward-reload-through-existing-session-history')
+        ready('second')
+        s.checks.append('back-forward-reload-with-delayed-native-commit')
         s.click_control('browser-new')
-        wait_until(lambda: count((20,150,160)) == 0, 'new blank tab hides old page')
+        wait_until(lambda: count((80,60,170)) == 0, 'new blank tab hides old page')
         s.click_control('browser-tab', slot=0)
-        wait_until(lambda: count((20,150,160)) > 20000, 'select existing native tab')
+        wait_until(lambda: count((80,60,170)) > 20000, 'select existing native tab')
         s.click_control('browser-close', slot=0)
-        wait_until(lambda: count((20,150,160)) == 0, 'closed child destroyed')
+        wait_until(lambda: count((80,60,170)) == 0, 'closed child destroyed')
         s.checks.append('tab-create-select-close-without-ghost-surfaces')
         s.desktop.focus()
         s.desktop.key('1', ('Control_L',))
-        assert count((20,150,160)) == 0
+        assert count((80,60,170)) == 0
         s.desktop.request_close()
         wait_until(lambda: s.process.poll() is not None, 'native app shutdown')
         assert s.process.returncode == 0

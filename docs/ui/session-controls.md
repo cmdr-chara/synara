@@ -95,9 +95,11 @@ attachment and command workflows, complete appearance settings, wallpaper and
 transparency, exact reference fonts/brand assets, and mature window chrome remain
 open. The sidebar foundation and surrounding files/Git/terminal/registry/remote
 surfaces retain their previously documented limitations. Terminal services were
-not replaced. Browser/device and other absent backend capabilities are not faked.
-Native macOS, Windows, Wayland and full assistive-technology acceptance remain
-unverified. No overall fidelity percentage or completed vertical slice is claimed.
+not replaced. At this older controls checkpoint Browser and Device were outside the implemented
+surface. The consolidated tree now implements them under their dedicated owners,
+while unsupported platform/provider capabilities still remain explicit rather than
+faked. Native macOS, Windows, Wayland and full assistive-technology acceptance
+remain unverified. No overall fidelity percentage or completed vertical slice is claimed.
 
 The earlier `/mnt/data/ui-work/native-integrated` worktree is absent in this
 execution environment. This work started from the verified published source bundle,

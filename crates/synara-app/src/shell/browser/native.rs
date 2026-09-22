@@ -69,6 +69,7 @@ impl Shell {
             && !self.navigation.menu_open
             && !self.settings.personalization.attention_open
             && !self.controls.is_open()
+            && !self.revisions.open()
             && self.kanban.dialog.is_none()
             && self.organization.dialog.is_none()
             && self.saved_context.dialog.is_none()

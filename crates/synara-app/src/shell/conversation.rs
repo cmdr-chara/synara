@@ -258,7 +258,7 @@ impl Shell {
                 .into_any_element(),
         }
     }
-    fn answer_permission(
+    pub(super) fn answer_permission(
         &mut self,
         key: InteractionKey,
         selected: Option<String>,
@@ -278,7 +278,7 @@ impl Shell {
         }
         cx.notify();
     }
-    fn input_request(&self, key: InteractionKey, cx: &mut Context<Self>) -> gpui::AnyElement {
+    pub(super) fn input_request(&self, key: InteractionKey, cx: &mut Context<Self>) -> gpui::AnyElement {
         let Some(form) = self
             .forms
             .get(&key)

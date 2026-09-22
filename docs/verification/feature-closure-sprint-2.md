@@ -40,8 +40,10 @@ The original 120 A-Q task bodies and checkbox states are intentionally unchanged
 
 The prior four-feature accumulated campaign passed in GitHub Actions run
 `35771879974` and published `68e6635cfbf98e1a44aeb8ae4bfb245b928e434e`.
-Checkpoints/revert landed afterward, so a final five-feature accumulated campaign
-is required before integration.
+Checkpoints/revert landed afterward. The final five-feature accumulated campaign
+re-runs stacked PRs, transcript media, AppSnap, two-task split and checkpoints
+together with integrated backend/app, roadmap-structure and helper checks before
+integration. Its exact Actions run is recorded after it passes.
 
 The checkpoint boundary is intentionally narrow: it restores only app-owned unsent
 draft and saved notes/checklist. Workspace files, Git/index, transcript,

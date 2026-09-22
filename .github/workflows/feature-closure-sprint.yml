@@ -1,0 +1,147 @@
+name: Feature closure sprint 2
+on:
+  push:
+    branches: [astra/feature-closure-sprint-2]
+    paths: [.feature-closure-request.json]
+permissions:
+  contents: read
+concurrency:
+  group: feature-closure-sprint-2
+  cancel-in-progress: false
+jobs:
+  check:
+    if: github.repository == 'cmdr-chara/synara'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    outputs:
+      publication_sha256: ${{ steps.package.outputs.publication_sha256 }}
+    env:
+      CARGO_BUILD_JOBS: '2'
+      PYTHONDONTWRITEBYTECODE: '1'
+      GIT_TERMINAL_PROMPT: '0'
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Rust toolchain
+        run: rustup toolchain install 1.98.1 --profile minimal --component rustfmt
+      - name: Native Linux prerequisites
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libwebkit2gtk-4.1-dev libgtk-3-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil xclip fonts-dejavu-core fonts-liberation x11-utils imagemagick
+      - uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
+        id: cache
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: feature-closure-2-1.98.1-${{ runner.os }}-${{ github.sha }}
+          restore-keys: |
+            feature-closure-2-1.98.1-${{ runner.os }}-
+            feature-closure-1.98.1-${{ runner.os }}-
+      - name: Prepare exact hash-checked source
+        run: |
+          python3 - <<'PY'
+          import sys
+          sys.path.insert(0, 'scripts')
+          import feature_closure_transfer as t
+          t.BRANCH = 'astra/feature-closure-sprint-2'
+          t.JOURNEYS.add('checkpoints')
+          t.prepare()
+          PY
+      - name: Focused validation and requested native journeys
+        run: |
+          python3 - <<'PY'
+          import re, subprocess, sys
+          from pathlib import Path
+          sys.path.insert(0, 'scripts')
+          import feature_closure_transfer as t
+          t.BRANCH = 'astra/feature-closure-sprint-2'
+          t.JOURNEYS.add('checkpoints')
+          t.check()
+          if t.read_request()['integrated']:
+              t.logged('app-tests.log', ['cargo','+1.98.1','test','--locked','-p','synara-app'])
+              for name in ['test_audit_workspace','test_native_ui_scope','test_ci_router','test_apply_source']:
+                  t.logged(name+'.log', ['python3','scripts/'+name+'.py'])
+              t.logged('roadmap-self-test.log', ['python3','scripts/check_roadmap.py','--self-test'])
+              base = subprocess.check_output(['git','show','0d76c2e775c09147bec3cd3ba7b6bb42bfbfc174:ROADMAP.md']).decode()
+              pattern = r'^- \[[ x]\] [A-Q]\d+ [^\n]*(?:\n(?:  [^\n]*|\t[^\n]*))*'
+              old = re.findall(pattern,base,re.M)
+              assert len(old) == 120 and old == re.findall(pattern,Path('ROADMAP.md').read_text(),re.M)
+              (t.EVIDENCE/'historical-task-integrity.txt').write_text('PASS: 120 A-Q task bodies and checkbox states unchanged\n')
+          PY
+      - name: Package only the verified tree
+        id: package
+        run: |
+          python3 - <<'PY'
+          import sys
+          sys.path.insert(0, 'scripts')
+          import feature_closure_transfer as t
+          t.BRANCH = 'astra/feature-closure-sprint-2'
+          t.JOURNEYS.add('checkpoints')
+          t.package()
+          PY
+      - name: Preserve source and all results
+        if: always()
+        run: |
+          mkdir -p /tmp/feature-closure-evidence
+          git rev-parse HEAD > /tmp/feature-closure-evidence/worktree-revision.txt
+          git status --short > /tmp/feature-closure-evidence/status.txt
+          git diff HEAD > /tmp/feature-closure-evidence/candidate.patch
+          git bundle create /tmp/feature-closure-evidence/history.bundle HEAD
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: feature-closure-evidence
+          path: /tmp/feature-closure-evidence/
+          retention-days: 7
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: success()
+        with:
+          name: feature-closure-publication
+          path: /tmp/feature-closure-publication/
+          retention-days: 1
+      - uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
+        if: always() && steps.cache.outputs.cache-hit != 'true'
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: feature-closure-2-1.98.1-${{ runner.os }}-${{ github.sha }}
+  publish:
+    needs: check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: feature-closure-publication
+          path: /tmp/feature-closure-publication/
+      - name: Publish verified Git objects and non-force session ref only
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PUBLICATION_SHA256: ${{ needs.check.outputs.publication_sha256 }}
+        run: |
+          python3 - <<'PY'
+          import sys
+          sys.path.insert(0, 'scripts')
+          import feature_closure_transfer as t
+          t.BRANCH = 'astra/feature-closure-sprint-2'
+          t.JOURNEYS.add('checkpoints')
+          t.publish()
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: feature-closure-published-ref
+          path: /tmp/feature-closure-evidence/
+          retention-days: 7

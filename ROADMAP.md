@@ -35,14 +35,18 @@ acceptance gate is closed.
 
 | Product status | Count | Meaning |
 | --- | ---: | --- |
-| Present | **9 / 48** | Substantial native user capability exists; remaining work is mainly acceptance or narrower depth |
+| Present | **10 / 48** | Substantial native user capability exists; remaining work is mainly acceptance or narrower depth |
 | Partial | **24 / 48** | Real native functionality exists, but Electron still has material user-facing depth not yet present |
-| Missing | **15 / 48** | No equivalent complete user workflow exists yet, or the current architecture does not satisfy the stated Synara product requirement |
+| Missing | **14 / 48** | No equivalent complete user workflow exists yet, or the current architecture does not satisfy the stated Synara product requirement |
+
+Current counts include the native Debug workflow described below. They do not
+close provider or cross-platform acceptance.
 
 ### Substantially present
 
 | Capability | Native state |
 | --- | --- |
+| Debug mode | App-owned evidence-gated observation/reproduction/investigation/fix/verification, persisted task history, pause/reopen, explicit editable draft instructions and no implicit execution |
 | Side threads | Independent Side chats with separate drafts, tasks, provider sessions and permissions |
 | Project Spaces | Native Spaces organization, ordering, assignment and persistence |
 | Plan mode | Uses the generic agent's advertised session mode rather than provider-name assumptions |
@@ -88,7 +92,6 @@ implementation but still trail the Electron workflow in depth:
 | Native subagents & workflows | Child-agent delegation with visible ownership, phases, usage and pause/stop controls |
 | Agent Gateway | App-owned, scoped tool surface allowing capable agents to create/steer Synara work under Synara ownership rules |
 | External MCP client integration | Let external MCP clients connect *to Synara*. This is distinct from configuring MCP servers that Synara passes *to an agent*. |
-| Debug mode | App-owned evidence-first debug workflow rather than an unavailable menu item |
 | Persistent thread goals | Durable objectives, pause/resume, bounded continuation, blocker handling and achievement history |
 | Checkpoints & revert | Explicit safe state rollback; edit/resend intentionally does not pretend to roll back files/provider state |
 | Stacked pull requests | Stack ordering/readiness and explicitly confirmed safe-prefix merge workflow |
@@ -125,7 +128,7 @@ implementation but still trail the Electron workflow in depth:
 | P0 | Direct multi-provider runtime | Synara-owned provider/model registry and normalized direct model runtime supporting the broad provider ecosystem without provider-by-provider UI/backend duplication |
 | P1 | Electron 0.9.0 delta | Implement Computer Use ownership, permissions, observation/action and interruption. Project Import now has its reviewed native path, with broader real-history/platform acceptance remaining. |
 | P2 | Agent orchestration | Provider handoff, native subagents, Agent Gateway and external-MCP-to-Synara contracts are explicit and scoped |
-| P3 | Conversation autonomy/recovery | Goals, checkpoints/revert and Debug mode are real workflows with no hidden execution or fake rollback |
+| P3 | Conversation autonomy/recovery | Goals and checkpoints/revert are real workflows with no hidden execution or fake rollback; Debug now has its app-owned workflow |
 | P4 | Review/composer depth | Stacked PRs, Fix workflow, inline comments, AppSnap, rich media, task split views, recap and release UX |
 | P5 | Partial-feature closure | Close the material Electron depth gaps in models/context, Automations, Studio/Hubs, browser sessions/dev servers, editor/search, device/iOS, navigation/export and personalization |
 
@@ -145,6 +148,17 @@ itself** when the corresponding feature is already present:
 - performance/resource budgets, security review and final release evidence.
 
 ## Historical implementation checkpoints
+
+### September 22: sprint 2, evidence-first Debug workflow
+
+Debug now has task-owned durable state and evidence-gated phases rather than an
+unavailable composer item. Phase changes require fresh user-recorded evidence,
+including after reinvestigation. Explicit draft insertion preserves existing
+composer text and never starts an agent or changes provider permissions. Pause,
+restart, archived-task handling, revision conflicts, bounded history and backup
+validation use the existing task and workspace owners. See
+[Debug workflow](docs/ui/debug-workflow.md) for semantics and verification targets.
+The A-Q task bodies and historical acceptance evidence remain unchanged.
 
 ### September 22: maximum-feature sprint and recovery
 

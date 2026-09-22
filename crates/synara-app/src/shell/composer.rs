@@ -9,8 +9,12 @@ impl Shell {
         cx: &mut Context<Self>,
     ) -> gpui::AnyElement {
         let busy = self.selected.is_some_and(|task| self.busy.contains(&task));
-        let disabled =
-            !busy && (self.direct_route_loading() || self.controls_blocked() || self.attachment_send_blocked() || self.attachment_capability_error().is_some() || self.composer.read(cx).text().trim().is_empty());
+        let disabled = !busy
+            && (self.direct_route_loading()
+                || self.controls_blocked()
+                || self.attachment_send_blocked()
+                || self.attachment_capability_error().is_some()
+                || self.composer.read(cx).text().trim().is_empty());
         let composer_bounds = self.controls.composer_bounds.clone();
         div()
             .relative()
@@ -69,14 +73,25 @@ impl Shell {
                     .gap_1()
                     .rounded(px(18.))
                     .border_1()
-                    .border_color(if self.composer.read(cx).focus_handle(cx).is_focused(window) {
-                        rgb(palette().focus)
-                    } else { ui::glass_edge() })
+                    .border_color(
+                        if self.composer.read(cx).focus_handle(cx).is_focused(window) {
+                            rgb(palette().focus)
+                        } else {
+                            ui::glass_edge()
+                        },
+                    )
                     .bg(ui::surface(palette().overlay))
-                    .when(self.settings.value.appearance.personalization.material == SurfaceMaterial::Glass, |el| el.bg(gpui::linear_gradient(
-                        145., gpui::linear_color_stop(ui::surface(palette().selected), 0.),
-                        gpui::linear_color_stop(ui::surface(palette().overlay), 1.),
-                    )))
+                    .when(
+                        self.settings.value.appearance.personalization.material
+                            == SurfaceMaterial::Glass,
+                        |el| {
+                            el.bg(gpui::linear_gradient(
+                                145.,
+                                gpui::linear_color_stop(ui::surface(palette().selected), 0.),
+                                gpui::linear_color_stop(ui::surface(palette().overlay), 1.),
+                            ))
+                        },
+                    )
                     .relative()
                     .child(ui::layout_probe("composer-surface"))
                     .child(
@@ -89,8 +104,15 @@ impl Shell {
                         .top_0()
                         .left_0(),
                     )
-                    .child(div().id("composer-context-tray").max_h(px(210.)).overflow_y_scroll()
-                        .child(self.attachments_view(cx)).child(self.followups_view(cx)))
+                    .child(self.workflow_status(cx))
+                    .child(
+                        div()
+                            .id("composer-context-tray")
+                            .max_h(px(210.))
+                            .overflow_y_scroll()
+                            .child(self.attachments_view(cx))
+                            .child(self.followups_view(cx)),
+                    )
                     .child(self.composer.clone())
                     .children(self.composer.read(cx).error.as_ref().map(|error| {
                         div()
@@ -105,9 +127,23 @@ impl Shell {
                             .items_end()
                             .justify_between()
                             .gap_1()
-                            .child(div().flex_1().min_w_0().child(if self.uses_direct_model() || self.direct_route_loading() { self.direct_model_controls(cx) } else { self.session_controls(cx) }))
-                            .child(ui::chrome_button("attach-files", "Attach images or UTF-8 files", Glyph::Attach, self.attachment_send_blocked(),
-                                cx.listener(|this, _: &(), _, cx| this.choose_attachments(cx))).size(px(28.)))
+                            .child(div().flex_1().min_w_0().child(
+                                if self.uses_direct_model() || self.direct_route_loading() {
+                                    self.direct_model_controls(cx)
+                                } else {
+                                    self.session_controls(cx)
+                                },
+                            ))
+                            .child(
+                                ui::chrome_button(
+                                    "attach-files",
+                                    "Attach images or UTF-8 files",
+                                    Glyph::Attach,
+                                    self.attachment_send_blocked(),
+                                    cx.listener(|this, _: &(), _, cx| this.choose_attachments(cx)),
+                                )
+                                .size(px(28.)),
+                            )
                             .child(self.followup_toggle(cx))
                             .child(
                                 ui::unavailable_action(

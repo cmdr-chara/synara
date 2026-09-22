@@ -54,6 +54,7 @@ impl ControlKind {
 }
 #[derive(Clone, PartialEq)]
 enum ControlAction {
+    DebugWorkflow,
     Project(ProjectId),
     BrowseWorkspace,
     AddReferences,
@@ -287,14 +288,12 @@ impl Shell {
             rows.push((
                 Choice {
                     label: "Debug mode".into(),
-                    detail: "Turn debug mode on".into(),
+                    detail: "Evidence-first task workflow".into(),
                     icon: Some(ui::Glyph::Debug),
-                    unavailable: Some(
-                        "Debug mode is not available in this native build yet.".into(),
-                    ),
+                    unavailable: None,
                     ..Default::default()
                 },
-                ControlAction::Unavailable,
+                ControlAction::DebugWorkflow,
             ));
             return rows;
         }
@@ -543,6 +542,10 @@ impl Shell {
             return;
         }
         match action {
+            ControlAction::DebugWorkflow => {
+                self.open_debug_workflow(window, cx);
+                return;
+            }
             ControlAction::Project(id) => {
                 self.navigate_project(id, cx);
                 return;
@@ -570,7 +573,8 @@ impl Shell {
         let controller = self.controller.clone();
         self.job(async move {
             let result = match action {
-                ControlAction::Project(_)
+                ControlAction::DebugWorkflow
+                | ControlAction::Project(_)
                 | ControlAction::BrowseWorkspace
                 | ControlAction::AddReferences
                 | ControlAction::Unavailable

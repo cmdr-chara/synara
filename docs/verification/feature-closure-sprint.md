@@ -73,12 +73,111 @@ Stop, restart inertia and human-reviewed achievement/clear.
 
 ## Final accumulated validation
 
-Pending for the documentation/cleanup successor. No integrated pass is claimed
-until the exact accumulated candidate and results are recorded here. The final
-campaign must include the full backend workspace, native app tests/build, all six
-feature journeys and shared conversation/integration regressions. The scope also
-includes removing temporary transfer/publisher files and checking final branch
-containment and `main` preservation.
+The final campaign [35755789769](https://github.com/cmdr-chara/synara/actions/runs/35755789769)
+uses transport `10dd2027d1d3f3066b59e63e243543c6466b4376`. Its fully checked product
+source is published as `9637069b2e8cc7e210803b62daae8d017ccd04db`, tree
+`fbea34609ee1f452b238a0419a136e52ecf59cc7`. No part of a failed native journey is counted as a complete pass.
+
+| Check | Result |
+| --- | --- |
+| `cargo +1.98.1 test --locked --workspace --exclude synara-app` | 542 passed, 0 failed, 21 ignored, 0 filtered |
+| `cargo +1.98.1 test --locked -p synara-app` | 79 passed, 0 failed, 0 ignored, 0 filtered |
+| Native app and ACP fixture build | Passed on Ubuntu 24.04 / Rust 1.98.1 |
+| Python structure/router/source/native-scope and roadmap regression tests | 60 passed |
+| Original A-Q task bodies and checkbox states | 120 unchanged |
+| Thirteen native journeys | 67 assertion groups passed, no failed journeys |
+
+The 21 ignored backend tests are explicitly excluded from pass totals. They
+comprise opt-in SSH/vendor acceptance and child-entry fixtures. This campaign is
+not evidence that all ignored environments were exercised.
+
+| Native journey | Passing assertion groups |
+| --- | ---: |
+| debug | 5 |
+| goals | 5 |
+| recap | 4 |
+| pr_fix | 4 |
+| inline_comments | 4 |
+| releases | 3 |
+| chat_behavior | 5 |
+| model_draft | 7 |
+| handoff | 6 |
+| project_import | 6 |
+| direct_models | 7 |
+| integrations | 6 |
+| browser_webview | 5 |
+
+All journeys used real native controls in private Xvfb/X11 sessions, with owned
+ACP, HTTP, filesystem and GitHub fixtures. Assertions cover negative paths,
+independent draft/task identity, explicit sending, cancellation and restart
+inertia. Images are observations of those fixtures, not live-provider proof.
+
+### Accumulated failures and corrections
+
+The first accumulated run `35750279926` passed 542 backend tests and all six new
+feature journeys (25 groups), then exposed a pre-existing legacy chat test that
+expected two preference fields instead of the existing three-field schema. Both
+the schema and the stale expectation were already present at the starting ref.
+The repair retains exact full-schema equality, including `show_recent_attachments`.
+
+Run `35751883654` confirmed that repair, passed all 79 app tests and 60 Python
+regression tests, and completed the shared journeys rather than stopping after
+one failure. It found two distinct issues:
+
+- A real integration regression: after selecting a Hub/chat, read-only goal and
+  inline-comment restoration incorrectly blocked the following panel transition.
+  Restoration is now distinguished from pending writes. Writes, validation and
+  unsaved edits still block departure. Goal loads also carry a generation fence,
+  preventing a late load from a previous visit to the same task from applying.
+  Read-only loading no longer prevents orderly close. The final model/draft and
+  goal/inline journeys exercise the corrected shared navigation and safeguards.
+- A test-driver defect: the shared X11 fill helper omitted the underscore in the
+  `project_import` fixture directory. It now dispatches Shift+minus for `_`, and
+  the import test still requires exact input and source/receipt identity.
+
+Run `35753088953` confirmed the import driver correction and passed the backend,
+app and Python tests, but exposed the same read-only restoration issue in Recap.
+Recap now distinguishes reads from pending reviews/writes while generation and
+cache operations still wait for all loading to complete. The Debug journey also
+clicked stale startup geometry while the layout changed. Debug opening is now
+fenced until its thread/state are ready, and the journey waits for the enabled
+control instead of relying on an old position. The two failed journeys remain
+recorded, not relabeled as acceptance.
+
+Run `35754525925` passed twelve of thirteen native journeys and all Rust/Python
+checks. The remaining goal journey attempted Resume before post-turn readiness
+had settled. The UI now derives the Resume enabled state from the same predicate
+as the handler, preserving every safety check. The test waits for that state at
+each resume and still requires the exact task-scoped draft and bounded dispatch
+counts. No action is silently retried or accepted while its prerequisites fail.
+
+The final full campaign above reruns all affected and shared native journeys,
+backend tests and app tests after these corrections. Earlier partial successes
+are retained as diagnostic history, not substituted for the final candidate.
+
+### Cleanup identity and integration
+
+The cleanup successor removes the 19 session-only transport files: 16 numbered
+patch parts, the request, the transfer/publisher helper and its write-enabled
+workflow. It updates this receipt only. The complete retained product, build,
+fixture and test inputs are byte-identical to the checked tree above. No source
+code, dependency, native build notes or test is changed after final validation.
+Useful permanent tests and all historical commits remain. No new release or PR
+is created and the session branch is retained.
+
+The integration target is re-read before a non-force update. The completion
+report records the final remote SHAs and verified containment. `main` must remain
+`b58f27381e7ddd59678c9961500e8e43d3cc19ab`. This receipt alone is not a claim that a
+future ref update succeeded: the subsequent GitHub ref/compare reads establish it.
+
+### Upstream comparison boundary
+
+The sprint started against Electron `f04341a67bc4941d1b2e91e0b23bbe782dfbc727`.
+A later ref read found `03fd183c2430d1f6f4a95c9495467cfc2bb2425d`, three commits
+ahead. Its file delta includes existing runtime/provider/device and build/release
+work. That file-delta inspection is not a new exhaustive Electron audit. The
+48-capability inventory remains pinned to the stated comparison snapshot rather
+than silently claiming parity with every subsequent upstream change.
 
 ## Baseline and acceptance boundaries
 
@@ -89,7 +188,7 @@ not weakened to obtain a green result. The roadmap retains all original A-Q task
 bodies and checkbox states: 17 lanes, 120 tasks, 16 checked.
 
 Two pre-existing app warnings (`RevisionState::pending`, `ui::ROW_HEIGHT`) remain
-outside this scope. The final cleanup aligns PR Fix type visibility and clears
+outside this scope. The validated source aligns PR Fix type visibility and clears
 only the obsolete recap navigation warning, not unrelated errors.
 
 Real provider/GitHub interoperability, macOS/Windows/Wayland, accessibility/IME,

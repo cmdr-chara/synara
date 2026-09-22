@@ -10,7 +10,7 @@ impl Shell {
     ) -> gpui::AnyElement {
         let busy = self.selected.is_some_and(|task| self.busy.contains(&task));
         let disabled =
-            !busy && (self.controls_blocked() || self.attachment_send_blocked() || self.attachment_capability_error().is_some() || self.composer.read(cx).text().trim().is_empty());
+            !busy && (self.direct_route_loading() || self.controls_blocked() || self.attachment_send_blocked() || self.attachment_capability_error().is_some() || self.composer.read(cx).text().trim().is_empty());
         let composer_bounds = self.controls.composer_bounds.clone();
         div()
             .relative()
@@ -105,7 +105,7 @@ impl Shell {
                             .items_end()
                             .justify_between()
                             .gap_1()
-                            .child(div().flex_1().min_w_0().child(self.session_controls(cx)))
+                            .child(div().flex_1().min_w_0().child(if self.uses_direct_model() || self.direct_route_loading() { self.direct_model_controls(cx) } else { self.session_controls(cx) }))
                             .child(ui::chrome_button("attach-files", "Attach images or UTF-8 files", Glyph::Attach, self.attachment_send_blocked(),
                                 cx.listener(|this, _: &(), _, cx| this.choose_attachments(cx))).size(px(28.)))
                             .child(self.followup_toggle(cx))

@@ -373,6 +373,13 @@ fn validate_data(connection: &Connection, budget: &Budget<'_>) -> StorageResult<
                         let ledger: crate::AutomationLedger = decode(&data)?;
                         ledger.validate().map_err(|_| StorageError::InvalidBackup)?;
                     }
+                    if id == "direct-model-providers-v1" {
+                        let settings: synara_model::ProviderSettings = decode(&data)?;
+                        settings.validate().map_err(|_| StorageError::InvalidBackup)?;
+                    }
+                    if id.starts_with("task-direct-model:") {
+                        let _: Option<crate::DirectModelBinding> = decode(&data)?;
+                    }
                     valid_preference_key(&id)
                 }
                 _ => false,

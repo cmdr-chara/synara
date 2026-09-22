@@ -5,6 +5,7 @@ edition.workspace = true
 publish.workspace = true
 
 [dependencies]
+synara-model = { path = "../synara-model" }
 synara-browser = { path = "../synara-browser", features = ["native-webview"] }
 synara-registry = { path = "../synara-registry" }
 synara-core = { path = "../synara-core" }

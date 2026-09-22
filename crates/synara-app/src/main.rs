@@ -141,10 +141,13 @@ fn run() -> Result<()> {
         })
     })?;
     let (broker, interactions) = InteractionBroker::new();
-    let controller = Arc::new(Controller::new(
+    let secrets = Arc::new(synara_runtime::NativeSecretStore::new());
+    runtime.block_on(secrets.probe());
+    let controller = Arc::new(Controller::with_secret_store(
         workspace,
         Arc::new(synara_acp::AcpBackend::default()),
         Arc::new(broker),
+        secrets,
     ));
     let app_controller = controller.clone();
     let handle = runtime.handle().clone();

@@ -3,6 +3,7 @@ mod activity;
 mod automations;
 mod attachments;
 mod integrations;
+mod direct_models;
 mod followups;
 mod hubs;
 mod chat_tools;
@@ -102,6 +103,7 @@ struct FormState {
     error: Option<String>,
 }
 enum Update {
+    DirectModels(Box<direct_models::Reply>),
     Automations(Box<automations::Reply>),
     PullRequests(Box<pull_requests::Reply>),
     BrowserConfigured(Result<(), String>),
@@ -203,6 +205,7 @@ pub struct Shell {
     navigation: navigation::NavigationState,
     settings: settings::SettingsState,
     integrations: integrations::IntegrationState,
+    direct_models: direct_models::DirectModelState,
     close: CloseState,
     close_focus: gpui::FocusHandle,
     registry: registry::RegistryState,
@@ -438,6 +441,7 @@ impl Shell {
             navigation: navigation::NavigationState::new(cx),
             settings: settings::SettingsState::new(bootstrap.settings, cx),
             integrations: integrations::IntegrationState::new(cx),
+            direct_models: direct_models::DirectModelState::new(cx),
             close: CloseState::Open,
             close_focus: cx.focus_handle(),
             registry,
@@ -520,7 +524,7 @@ impl Shell {
             self.notice = Some("Finish the pending Settings operation before closing.".into()); cx.notify(); return false;
         }
         if self.followup_navigation_blocked(cx) { return false; }
-        if self.integrations.pending() {
+        if self.integrations.pending() || self.direct_models.pending() {
             self.notice=Some("Finish the integration operation or discard its open Settings form/review before closing.".into());
             cx.notify(); return false;
         }
@@ -783,6 +787,7 @@ impl Shell {
         self.chat_tools.reset_selection();
         self.studio.reset();
         self.explorer.reset_search();
+        self.load_direct_binding(id);
         self.load_message_pins(id);
         self.load_attachments(id);
         self.load_followups(id);
@@ -1078,6 +1083,7 @@ impl Shell {
         cx.notify();
     }
     fn send_prompt(&mut self, cx: &mut Context<Self>) {
+        if self.direct_route_loading() { return; }
         if self.close != CloseState::Open || self.terminal_closing || self.loading_task.is_some()
             || !matches!(self.panel, Panel::Conversation | Panel::SideChats | Panel::Dock | Panel::Files | Panel::Changes | Panel::Terminal)
             || self.composer.read(cx).is_composing()
@@ -1284,6 +1290,7 @@ impl Shell {
     }
     fn receive(&mut self, update: Update, cx: &mut Context<Self>) {
         match update {
+            Update::DirectModels(reply) => self.direct_model_reply(*reply, cx),
             Update::Integrations(reply) => self.integration_reply(*reply,cx),
             Update::Revision(reply) => self.revision_reply(*reply, cx),
             Update::SideChats(reply) => self.side_chat_reply(*reply, cx),

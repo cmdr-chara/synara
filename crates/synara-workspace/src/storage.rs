@@ -1,3 +1,4 @@
+mod direct_models;
 mod integrations;
 mod automations;
 mod followups;
@@ -281,7 +282,7 @@ PRAGMA user_version=2;")?;
             [task.thread_id.to_string()],
         )?;
         tx.execute(
-            "DELETE FROM preferences WHERE key IN (?1,?2,?3,?4,?5,?6,?7)",
+            "DELETE FROM preferences WHERE key IN (?1,?2,?3,?4,?5,?6,?7,?8)",
             params![
                 format!("task-draft:{id}"),
                 format!("message-pins:{id}"),
@@ -289,7 +290,8 @@ PRAGMA user_version=2;")?;
                 format!("task-attachments:{id}"),
                 format!("task-followups:{id}"),
                 format!("thread-origin:{id}"),
-                format!("side-selection:{id}")
+                format!("side-selection:{id}"),
+                format!("task-direct-model:{id}")
             ],
         )?;
         let changed = tx.execute("DELETE FROM tasks WHERE id=?1", [id.to_string()])?;
@@ -557,12 +559,13 @@ fn database_path(path: &Path) -> StorageResult<std::path::PathBuf> {
 fn valid_preference_key(key: &str) -> bool {
     if matches!(
         key,
-        "integrations" | "model-favorites" | "environment-layout" | "workspace-organization" | "automation-ledger-v1"
+        "direct-model-providers-v1" | "integrations" | "model-favorites" | "environment-layout" | "workspace-organization" | "automation-ledger-v1"
     ) {
         return true;
     }
     if let Some(id) = key
-        .strip_prefix("task-draft:")
+        .strip_prefix("task-direct-model:")
+        .or_else(|| key.strip_prefix("task-draft:"))
         .or_else(|| key.strip_prefix("message-pins:"))
         .or_else(|| key.strip_prefix("task-context:"))
         .or_else(|| key.strip_prefix("task-attachments:"))

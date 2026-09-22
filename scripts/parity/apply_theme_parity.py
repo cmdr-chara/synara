@@ -104,12 +104,12 @@ pub fn family(value: &str, default: &str) -> String {
     let mut start = 0;
     for (index, character) in value.char_indices() {
         if let Some(active) = quote { if character == active { quote = None; } }
-        else if character == '\\'' || character == '"' { quote = Some(character); }
+        else if character == '\'' || character == '"' { quote = Some(character); }
         else if character == ',' { parts.push(&value[start..index]); start = index + 1; }
     }
     parts.push(&value[start..]);
     for part in parts {
-        let family = part.trim().trim_matches(['\\'', '"']).trim();
+        let family = part.trim().trim_matches(['\'', '"']).trim();
         if family.is_empty() || family.contains('(') { continue; }
         if matches!(family, "inherit" | "initial" | "unset" | "revert" | "revert-layer" | "system-ui" | "sans-serif" | "serif" | "monospace" | "ui-monospace" | "ui-sans-serif") { return default.into(); }
         if FONT_NAMES.with(|fonts| fonts.borrow().is_empty() || fonts.borrow().contains(&family.to_lowercase())) { return family.into(); }
@@ -156,7 +156,7 @@ pub fn family(value: &str, default: &str) -> String {
         '            Update::SettingsSaved(settings, error) => {\n                let theme_write = std::mem::take(&mut self.settings.theme_inflight);\n                let theme_error = error.clone();\n                self.settings.saving = false;')
     text=replace(text,'            }\n            Update::ProfileActivity(activity) => {',
         '                self.finish_theme_write(theme_write, theme_error, cx);\n            }\n            Update::ProfileActivity(activity) => {')
-    text=region(text,'    fn set_panel(', '\n    fn ', lambda body: replace(body,'        self.settings.popup = None;',
+    text=region(text,'    fn set_panel(', '\n}\nfn button(', lambda body: replace(body,'        self.settings.popup = None;',
         '        self.settings.popup = None;\n        self.settings.theme_editor.update(cx, |editor, cx| editor.retire(cx));'))
     sources[name]=text
 

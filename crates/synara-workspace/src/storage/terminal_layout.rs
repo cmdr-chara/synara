@@ -17,7 +17,9 @@ pub struct TerminalScope {
 impl TerminalScope {
     fn key(&self) -> WorkspaceResult<String> {
         if !self.root.has_root() || self.root.as_os_str().len() > 8192 {
-            return Err(WorkspaceError::Invalid("Invalid terminal workspace root".into()));
+            return Err(WorkspaceError::Invalid(
+                "Invalid terminal workspace root".into(),
+            ));
         }
         Ok(format!("terminal-layout:{}", encode(self)?))
     }
@@ -46,7 +48,10 @@ impl Default for TerminalLayout {
         Self {
             version: 1,
             revision: 0,
-            tabs: vec![TerminalTabLayout { id: 1, name: "Terminal 1".into() }],
+            tabs: vec![TerminalTabLayout {
+                id: 1,
+                name: "Terminal 1".into(),
+            }],
             active: Some(1),
             secondary: None,
             stacked: false,
@@ -58,29 +63,49 @@ impl Default for TerminalLayout {
 impl TerminalLayout {
     pub fn validate(&self) -> WorkspaceResult<()> {
         let ids: HashSet<_> = self.tabs.iter().map(|tab| tab.id).collect();
-        if self.version != 1 || self.tabs.len() > MAX_TERMINAL_TABS
-            || ids.len() != self.tabs.len() || !(25..=75).contains(&self.primary_percent)
-            || self.tabs.iter().any(|tab| tab.id == 0 || tab.id >= self.next_id
-                || tab.name.trim().is_empty() || tab.name.len() > 160
-                || tab.name.chars().any(char::is_control))
+        if self.version != 1
+            || self.tabs.len() > MAX_TERMINAL_TABS
+            || ids.len() != self.tabs.len()
+            || !(25..=75).contains(&self.primary_percent)
+            || self.tabs.iter().any(|tab| {
+                tab.id == 0
+                    || tab.id >= self.next_id
+                    || tab.name.trim().is_empty()
+                    || tab.name.len() > 160
+                    || tab.name.chars().any(char::is_control)
+            })
             || self.active.is_none() != self.tabs.is_empty()
             || self.active.is_some_and(|id| !ids.contains(&id))
-            || self.secondary.is_some_and(|id| !ids.contains(&id) || Some(id) == self.active)
+            || self
+                .secondary
+                .is_some_and(|id| !ids.contains(&id) || Some(id) == self.active)
         {
-            return Err(WorkspaceError::Invalid("Unsupported or invalid terminal layout. The saved value was not replaced.".into()));
+            return Err(WorkspaceError::Invalid(
+                "Unsupported or invalid terminal layout. The saved value was not replaced.".into(),
+            ));
         }
         Ok(())
     }
 }
 fn read(connection: &Connection, scope: &TerminalScope) -> WorkspaceResult<TerminalLayout> {
-    let exists: bool = connection.query_row(
-        "SELECT EXISTS(SELECT 1 FROM projects WHERE id=?1)",
-        [scope.project.to_string()], |row| row.get(0),
-    ).map_err(StorageError::from)?;
-    if !exists { return Err(WorkspaceError::NotFound); }
-    let raw: Option<String> = connection.query_row(
-        "SELECT data FROM preferences WHERE key=?1", [scope.key()?], |row| row.get(0),
-    ).optional().map_err(StorageError::from)?;
+    let exists: bool = connection
+        .query_row(
+            "SELECT EXISTS(SELECT 1 FROM projects WHERE id=?1)",
+            [scope.project.to_string()],
+            |row| row.get(0),
+        )
+        .map_err(StorageError::from)?;
+    if !exists {
+        return Err(WorkspaceError::NotFound);
+    }
+    let raw: Option<String> = connection
+        .query_row(
+            "SELECT data FROM preferences WHERE key=?1",
+            [scope.key()?],
+            |row| row.get(0),
+        )
+        .optional()
+        .map_err(StorageError::from)?;
     let value = match raw {
         Some(raw) if raw.len() > MAX_LAYOUT_BYTES => return Err(StorageError::Limit.into()),
         Some(raw) => decode::<TerminalLayout>(&raw)?,
@@ -91,9 +116,14 @@ fn read(connection: &Connection, scope: &TerminalScope) -> WorkspaceResult<Termi
 }
 impl WorkspaceService {
     pub async fn terminal_layout(&self, scope: TerminalScope) -> WorkspaceResult<TerminalLayout> {
-        self.access(move |store| read(&store.connection, &scope)).await
+        self.access(move |store| read(&store.connection, &scope))
+            .await
     }
-    pub async fn save_terminal_layout(&self, scope: TerminalScope, mut value: TerminalLayout) -> WorkspaceResult<TerminalLayout> {
+    pub async fn save_terminal_layout(
+        &self,
+        scope: TerminalScope,
+        mut value: TerminalLayout,
+    ) -> WorkspaceResult<TerminalLayout> {
         value.validate()?;
         self.access(move |store| {
             let tx = store.connection.transaction_with_behavior(TransactionBehavior::Immediate)

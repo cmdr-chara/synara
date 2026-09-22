@@ -2,7 +2,14 @@
 use super::*;
 
 #[derive(Clone, Copy, Default, PartialEq, Eq)]
-enum Filter { #[default] All, Draft, Active, Attention, Finished }
+enum Filter {
+    #[default]
+    All,
+    Draft,
+    Active,
+    Attention,
+    Finished,
+}
 #[derive(Default)]
 pub(super) struct HubBoardState {
     filter: Filter,
@@ -21,58 +28,114 @@ fn accepts(filter: Filter, task: &Task, starting: bool) -> bool {
 }
 impl Shell {
     pub(in crate::shell) fn open_hub_tasks(&mut self, project: ProjectId, cx: &mut Context<Self>) {
-        if self.hub_navigation_blocked(cx) || !self.hubs.rows.iter().any(|h| h.profile.project == project) { return; }
+        if self.hub_navigation_blocked(cx)
+            || !self.hubs.rows.iter().any(|h| h.profile.project == project)
+        {
+            return;
+        }
         self.hubs.selected = Some(project);
         self.navigation.studio = true;
         self.kanban.project = Some(project);
         self.kanban.hub_view.filter = Filter::All;
         self.kanban.hub_view.limit = 60;
-        if let Some(query) = &self.kanban.hub_view.query { query.update(cx, |entry, cx| entry.clear(cx)); }
+        if let Some(query) = &self.kanban.hub_view.query {
+            query.update(cx, |entry, cx| entry.clear(cx));
+        }
         self.kanban.poll_failed = false;
         self.set_panel(Panel::Kanban, cx);
         self.focus_composer = false;
     }
     pub(super) fn in_hub_board(&self, task: &Task) -> bool {
-        task.scope == TaskScope::Studio && Some(task.project_id) == self.hubs.selected
+        task.scope == TaskScope::Studio
+            && Some(task.project_id) == self.hubs.selected
             && task.state != TaskState::Archived
     }
     pub(super) fn kanban_task_can_run(&self, task: &Task) -> bool {
-        task.scope != TaskScope::Studio || self.hubs.rows.iter().any(|hub|
-            hub.profile.project == task.project_id && !hub.profile.archived)
+        task.scope != TaskScope::Studio
+            || self
+                .hubs
+                .rows
+                .iter()
+                .any(|hub| hub.profile.project == task.project_id && !hub.profile.archived)
     }
     fn find_hub_tasks(&mut self, window: &mut Window, cx: &mut Context<Self>) {
         if self.kanban.hub_view.query.is_none() {
-            let input = cx.new(|cx| TextEntry::new("Search task title or agent", EntryMode::SingleLine, 32., cx));
+            let input = cx.new(|cx| {
+                TextEntry::new("Search task title or agent", EntryMode::SingleLine, 32., cx)
+            });
             self.kanban.hub_view.subscription = Some(cx.subscribe(&input, |this, _, _, cx| {
                 this.kanban.hub_view.limit = 60;
                 cx.notify();
             }));
             self.kanban.hub_view.query = Some(input);
         }
-        if let Some(query) = &self.kanban.hub_view.query { window.focus(&query.read(cx).focus_handle(cx), cx); }
+        if let Some(query) = &self.kanban.hub_view.query {
+            window.focus(&query.read(cx).focus_handle(cx), cx);
+        }
         cx.notify();
     }
     pub(super) fn hub_task_board(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
-        let Some(profile) = self.hubs.rows.iter().find(|hub| Some(hub.profile.project) == self.hubs.selected)
-            .map(|hub| &hub.profile) else {
-            return div().p_4().child("Select a Hub to see its tasks.").into_any_element();
+        let Some(profile) = self
+            .hubs
+            .rows
+            .iter()
+            .find(|hub| Some(hub.profile.project) == self.hubs.selected)
+            .map(|hub| &hub.profile)
+        else {
+            return div()
+                .p_4()
+                .child("Select a Hub to see its tasks.")
+                .into_any_element();
         };
         let state = &self.kanban.hub_view;
-        let query = state.query.as_ref().map_or("", |entry| entry.read(cx).text()).trim().to_lowercase();
-        let starting = |id: TaskId| self.busy.contains(&id) || self.connecting.contains(&id) || self.kanban.launching.contains_key(&id);
-        let mut tasks: Vec<_> = self.catalog.tasks.iter().filter(|task| self.in_hub_board(task)).collect();
+        let query = state
+            .query
+            .as_ref()
+            .map_or("", |entry| entry.read(cx).text())
+            .trim()
+            .to_lowercase();
+        let starting = |id: TaskId| {
+            self.busy.contains(&id)
+                || self.connecting.contains(&id)
+                || self.kanban.launching.contains_key(&id)
+        };
+        let mut tasks: Vec<_> = self
+            .catalog
+            .tasks
+            .iter()
+            .filter(|task| self.in_hub_board(task))
+            .collect();
         // Decisions before running work, then editable drafts and finished history.
-        tasks.sort_by_key(|task| (
-            if matches!(task.state, TaskState::Waiting | TaskState::Failed) { 0 }
-            else if execution_column(task, starting(task.id)) == Some(1) { 1 }
-            else if task.state == TaskState::Ready { 2 } else { 3 },
-            std::cmp::Reverse(task.updated_at_ms), task.id,
-        ));
-        let filtered: Vec<_> = tasks.iter().copied().filter(|task| {
-            let agent = self.profiles.iter().find(|p| p.id == task.agent_id).map_or(task.agent_id.as_str(), |p| p.name.as_str());
-            accepts(state.filter, task, starting(task.id))
-                && format!("{} {agent}", task.title).to_lowercase().contains(&query)
-        }).collect();
+        tasks.sort_by_key(|task| {
+            (
+                if matches!(task.state, TaskState::Waiting | TaskState::Failed) {
+                    0
+                } else if execution_column(task, starting(task.id)) == Some(1) {
+                    1
+                } else if task.state == TaskState::Ready {
+                    2
+                } else {
+                    3
+                },
+                std::cmp::Reverse(task.updated_at_ms),
+                task.id,
+            )
+        });
+        let filtered: Vec<_> = tasks
+            .iter()
+            .copied()
+            .filter(|task| {
+                let agent = self
+                    .profiles
+                    .iter()
+                    .find(|p| p.id == task.agent_id)
+                    .map_or(task.agent_id.as_str(), |p| p.name.as_str());
+                accepts(state.filter, task, starting(task.id))
+                    && format!("{} {agent}", task.title)
+                        .to_lowercase()
+                        .contains(&query)
+            })
+            .collect();
         let cap = state.limit.max(60);
         div().id("hub-task-board").flex_1().min_h_0().min_w_0().flex().flex_col()
             .child(div().px_3().py_2().flex().items_center().flex_wrap().gap_2()
@@ -148,8 +211,17 @@ impl Shell {
 mod tests {
     use super::*;
     fn task(scope: TaskScope, state: TaskState) -> Task {
-        Task { id: TaskId::new(), project_id: ProjectId::new(), title: "Task".into(), state,
-            thread_id: ThreadId::new(), agent_id: "fixture".into(), working_directory: PathBuf::from("/tmp"), updated_at_ms: 0, scope }
+        Task {
+            id: TaskId::new(),
+            project_id: ProjectId::new(),
+            title: "Task".into(),
+            state,
+            thread_id: ThreadId::new(),
+            agent_id: "fixture".into(),
+            working_directory: PathBuf::from("/tmp"),
+            updated_at_ms: 0,
+            scope,
+        }
     }
     #[test]
     fn hub_tasks_use_real_lifecycle_without_leaking_into_the_normal_board() {
@@ -158,9 +230,23 @@ mod tests {
         assert_eq!(execution_column(&draft, false), Some(0));
         assert!(accepts(Filter::Active, &draft, true));
         assert!(!accepts(Filter::Draft, &draft, true));
-        assert!(accepts(Filter::Attention, &task(TaskScope::Studio, TaskState::Waiting), false));
-        assert!(accepts(Filter::Attention, &task(TaskScope::Studio, TaskState::Failed), false));
-        assert_eq!(execution_column(&task(TaskScope::Studio, TaskState::Archived), true), None);
-        assert_eq!(column(&task(TaskScope::Chat, TaskState::Ready), false), Some(0));
+        assert!(accepts(
+            Filter::Attention,
+            &task(TaskScope::Studio, TaskState::Waiting),
+            false
+        ));
+        assert!(accepts(
+            Filter::Attention,
+            &task(TaskScope::Studio, TaskState::Failed),
+            false
+        ));
+        assert_eq!(
+            execution_column(&task(TaskScope::Studio, TaskState::Archived), true),
+            None
+        );
+        assert_eq!(
+            column(&task(TaskScope::Chat, TaskState::Ready), false),
+            Some(0)
+        );
     }
 }

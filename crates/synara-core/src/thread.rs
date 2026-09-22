@@ -128,9 +128,11 @@ impl Thread {
         let added_bytes = match &envelope.event {
             ThreadEvent::TextDelta { text, .. } => text.len(),
             ThreadEvent::ImageMessage { image, .. } => {
-                if !image.bounded() || self.images.len() >= 256 { return Err(ReplayError::Limit); }
+                if !image.bounded() || self.images.len() >= 256 {
+                    return Err(ReplayError::Limit);
+                }
                 image.base64.len()
-            },
+            }
             _ => 0,
         };
         if self.seen.len() >= self.max_events
@@ -193,9 +195,16 @@ impl Thread {
                     failed: false,
                 });
             }
-            ThreadEvent::TextDelta { message_id, role, .. }
-            | ThreadEvent::ImageMessage { message_id, role, .. } => {
-                let text = match &envelope.event { ThreadEvent::TextDelta { text, .. } => text.as_str(), _ => "" };
+            ThreadEvent::TextDelta {
+                message_id, role, ..
+            }
+            | ThreadEvent::ImageMessage {
+                message_id, role, ..
+            } => {
+                let text = match &envelope.event {
+                    ThreadEvent::TextDelta { text, .. } => text.as_str(),
+                    _ => "",
+                };
                 let existing = message_id.as_ref().and_then(|id| {
                     self.messages
                         .iter()
@@ -228,7 +237,12 @@ impl Thread {
                     index
                 };
                 if let ThreadEvent::ImageMessage { image, .. } = &envelope.event {
-                    self.images.push(MessageImage { id: envelope.id, message_id: self.messages[index].id.clone(), role: *role, image: image.clone() });
+                    self.images.push(MessageImage {
+                        id: envelope.id,
+                        message_id: self.messages[index].id.clone(),
+                        role: *role,
+                        image: image.clone(),
+                    });
                 }
             }
             ThreadEvent::ToolChanged { patch } => {
@@ -364,7 +378,11 @@ impl ScrollOwnership {
         *self = Self::Following;
     }
     pub fn should_follow(&self, event: &ThreadEvent) -> bool {
-        *self == Self::Following && matches!(event, ThreadEvent::TextDelta { .. } | ThreadEvent::ImageMessage { .. })
+        *self == Self::Following
+            && matches!(
+                event,
+                ThreadEvent::TextDelta { .. } | ThreadEvent::ImageMessage { .. }
+            )
     }
 }
 

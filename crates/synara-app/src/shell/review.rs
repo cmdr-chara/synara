@@ -143,11 +143,22 @@ fn clear_submitted(current_edits: u64, current_text: &str, submitted: &(u64, Str
 
 impl Shell {
     fn open_repository(&mut self, cx: &mut Context<Self>) {
-        let (Some(scope), Some(target)) = (self.review_scope(), self.workspace_target()) else { return };
-        if self.review.sessions.get(&scope).is_some_and(|session| session.mutating) { return; }
+        let (Some(scope), Some(target)) = (self.review_scope(), self.workspace_target()) else {
+            return;
+        };
+        if self
+            .review
+            .sessions
+            .get(&scope)
+            .is_some_and(|session| session.mutating)
+        {
+            return;
+        }
         let workspace = self.controller.workspace.clone();
         let runtime = self.runtime.clone();
-        self.review.repositories.entry(scope).or_insert_with(|| cx.new(|cx| repository::RepositoryPanel::new(target, workspace, runtime, cx)));
+        self.review.repositories.entry(scope).or_insert_with(|| {
+            cx.new(|cx| repository::RepositoryPanel::new(target, workspace, runtime, cx))
+        });
         self.review.repository_open = true;
         self.focus_composer = false;
         cx.notify();
@@ -313,11 +324,16 @@ impl Shell {
     }
     pub(super) fn review_before_quit(&mut self, cx: &mut Context<Self>) -> bool {
         self.flush_review(true);
-        let pending = self.review.repositories.values().any(|panel| panel.read(cx).pending()) || self
+        let pending = self
             .review
-            .sessions
+            .repositories
             .values()
-            .any(|session| session.dirty() || session.saving || session.mutating);
+            .any(|panel| panel.read(cx).pending())
+            || self
+                .review
+                .sessions
+                .values()
+                .any(|session| session.dirty() || session.saving || session.mutating);
         if pending {
             self.notice = Some("Git review still has unsaved drafts or an active operation. Finish recovery or wait for saving, then close again. No draft has been discarded.".into());
             self.close.cancel();
@@ -600,10 +616,30 @@ impl Shell {
         if self.review.repository_open {
             if let Some(panel) = self.review.repositories.get(&scope) {
                 let repository = panel.clone();
-                return div().flex().flex_col().flex_1().min_h_0().min_w_0()
-                    .child(ui::action("repository-back", "Back to changes", Some(Glyph::Back), false,
-                        cx.listener(move |this, _: &(), _, cx| { if !repository.read(cx).busy() { this.review.repository_open = false; this.refresh_git(cx); cx.notify(); } })).text_size(px(12.)))
-                    .child(panel.clone()).into_any_element();
+                return div()
+                    .flex()
+                    .flex_col()
+                    .flex_1()
+                    .min_h_0()
+                    .min_w_0()
+                    .child(
+                        ui::action(
+                            "repository-back",
+                            "Back to changes",
+                            Some(Glyph::Back),
+                            false,
+                            cx.listener(move |this, _: &(), _, cx| {
+                                if !repository.read(cx).busy() {
+                                    this.review.repository_open = false;
+                                    this.refresh_git(cx);
+                                    cx.notify();
+                                }
+                            }),
+                        )
+                        .text_size(px(12.)),
+                    )
+                    .child(panel.clone())
+                    .into_any_element();
             }
         }
         let Some(session) = self.review.sessions.get(&scope) else {
@@ -673,8 +709,18 @@ impl Shell {
             .py_2()
             .border_b_1()
             .border_color(rgb(palette().border))
-            .child(ui::action("review-repository", "Repository", Some(Glyph::BranchSimple), false,
-                cx.listener(|this, _: &(), _, cx| this.open_repository(cx))).text_size(px(12.)).relative().child(ui::layout_probe("review-repository")))
+            .child(
+                ui::action(
+                    "review-repository",
+                    "Repository",
+                    Some(Glyph::BranchSimple),
+                    false,
+                    cx.listener(|this, _: &(), _, cx| this.open_repository(cx)),
+                )
+                .text_size(px(12.))
+                .relative()
+                .child(ui::layout_probe("review-repository")),
+            )
             .child(
                 div()
                     .min_w_0()

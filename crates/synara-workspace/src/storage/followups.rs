@@ -1,42 +1,92 @@
 //! A durable text draft queue, not a scheduler. Reading/reordering never runs an agent.
 use super::*;
-use crate::{WorkspaceError,WorkspaceResult,WorkspaceService};
-use serde::{Deserialize,Serialize};
-#[derive(Clone,Debug,PartialEq,Eq,Serialize,Deserialize)]
+use crate::{WorkspaceError, WorkspaceResult, WorkspaceService};
+use serde::{Deserialize, Serialize};
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
-pub struct FollowupDraft { pub id:String, pub text:String }
-#[derive(Clone,Debug,PartialEq,Eq,Serialize,Deserialize)]
+pub struct FollowupDraft {
+    pub id: String,
+    pub text: String,
+}
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
-pub struct FollowupQueue { pub version:u32, pub revision:u64, pub items:Vec<FollowupDraft> }
+pub struct FollowupQueue {
+    pub version: u32,
+    pub revision: u64,
+    pub items: Vec<FollowupDraft>,
+}
 impl Default for FollowupQueue {
-    fn default()->Self {Self {version:1,revision:0,items:vec![]}}
+    fn default() -> Self {
+        Self {
+            version: 1,
+            revision: 0,
+            items: vec![],
+        }
+    }
 }
 impl FollowupQueue {
-    fn validate(&self)->WorkspaceResult<()> {
-        if self.version!=1 || self.items.len()>16 || self.items.iter().enumerate().any(|(i,item)|
-            item.id.len()!=36 || uuid::Uuid::parse_str(&item.id).is_err() || !valid_text(&item.text)
-                || self.items[..i].iter().any(|old|old.id==item.id)) {
+    fn validate(&self) -> WorkspaceResult<()> {
+        if self.version != 1
+            || self.items.len() > 16
+            || self.items.iter().enumerate().any(|(i, item)| {
+                item.id.len() != 36
+                    || uuid::Uuid::parse_str(&item.id).is_err()
+                    || !valid_text(&item.text)
+                    || self.items[..i].iter().any(|old| old.id == item.id)
+            })
+        {
             return Err(WorkspaceError::Invalid("Stored follow-up queue is invalid or from an unsupported version. It was not replaced.".into()));
         }
         Ok(())
     }
 }
-fn valid_text(text:&str)->bool {!text.trim().is_empty() && text.len()<=64*1024 && !text.contains('\0')}
+fn valid_text(text: &str) -> bool {
+    !text.trim().is_empty() && text.len() <= 64 * 1024 && !text.contains('\0')
+}
 #[derive(Clone)]
-pub enum FollowupEdit { Add(String), Edit {id:String,text:String}, Remove(String), Move {id:String,up:bool} }
-fn key(task:TaskId)->String {format!("task-followups:{task}")}
-fn read(connection:&Connection,task:TaskId)->WorkspaceResult<FollowupQueue> {
-    let exists:bool=connection.query_row("SELECT EXISTS(SELECT 1 FROM tasks WHERE id=?1)",[task.to_string()],|row|row.get(0)).map_err(StorageError::from)?;
-    if !exists {return Err(WorkspaceError::NotFound);}
-    let raw:Option<String>=connection.query_row("SELECT data FROM preferences WHERE key=?1",[key(task)],|r|r.get(0)).optional().map_err(StorageError::from)?;
-    let queue:FollowupQueue=raw.as_deref().map(decode).transpose()?.unwrap_or_default();
-    queue.validate()?;Ok(queue)
+pub enum FollowupEdit {
+    Add(String),
+    Edit { id: String, text: String },
+    Remove(String),
+    Move { id: String, up: bool },
+}
+fn key(task: TaskId) -> String {
+    format!("task-followups:{task}")
+}
+fn read(connection: &Connection, task: TaskId) -> WorkspaceResult<FollowupQueue> {
+    let exists: bool = connection
+        .query_row(
+            "SELECT EXISTS(SELECT 1 FROM tasks WHERE id=?1)",
+            [task.to_string()],
+            |row| row.get(0),
+        )
+        .map_err(StorageError::from)?;
+    if !exists {
+        return Err(WorkspaceError::NotFound);
+    }
+    let raw: Option<String> = connection
+        .query_row(
+            "SELECT data FROM preferences WHERE key=?1",
+            [key(task)],
+            |r| r.get(0),
+        )
+        .optional()
+        .map_err(StorageError::from)?;
+    let queue: FollowupQueue = raw.as_deref().map(decode).transpose()?.unwrap_or_default();
+    queue.validate()?;
+    Ok(queue)
 }
 impl WorkspaceService {
-    pub async fn followup_queue(&self,task:TaskId)->WorkspaceResult<FollowupQueue> {
-        self.access(move|store|read(&store.connection,task)).await
+    pub async fn followup_queue(&self, task: TaskId) -> WorkspaceResult<FollowupQueue> {
+        self.access(move |store| read(&store.connection, task))
+            .await
     }
-    pub async fn edit_followups(&self,task:TaskId,revision:u64,edit:FollowupEdit)->WorkspaceResult<FollowupQueue> {
+    pub async fn edit_followups(
+        &self,
+        task: TaskId,
+        revision: u64,
+        edit: FollowupEdit,
+    ) -> WorkspaceResult<FollowupQueue> {
         self.access(move|store|{
             let tx=store.connection.transaction_with_behavior(TransactionBehavior::Immediate).map_err(StorageError::from)?;
             let mut queue=read(&tx,task)?;
@@ -69,18 +119,64 @@ mod tests {
     use super::*;
     #[tokio::test]
     async fn followups_preserve_unicode_order_reject_stale_edits_and_do_not_start_work() {
-        let dir=tempfile::tempdir().unwrap();let service=WorkspaceService::memory().unwrap();
-        let project=service.add_local_workspace(dir.path().into()).await.unwrap();
-        let agent=service.profiles().await.unwrap()[0].id.clone();
-        let task=service.create_task(project.id,"Queue".into(),agent).await.unwrap();
-        let first=service.edit_followups(task.id,0,FollowupEdit::Add("日本語\nKeep formatting  ".into())).await.unwrap();
-        assert!(service.edit_followups(task.id,0,FollowupEdit::Add("Stale".into())).await.is_err());
-        let second=service.edit_followups(task.id,first.revision,FollowupEdit::Add("Next".into())).await.unwrap();
-        let id=second.items[1].id.clone();
-        let ordered=service.edit_followups(task.id,second.revision,FollowupEdit::Move {id,up:true}).await.unwrap();
-        assert_eq!(ordered.items[0].text,"Next");assert_eq!(ordered.items[1].text,"日本語\nKeep formatting  ");
+        let dir = tempfile::tempdir().unwrap();
+        let service = WorkspaceService::memory().unwrap();
+        let project = service
+            .add_local_workspace(dir.path().into())
+            .await
+            .unwrap();
+        let agent = service.profiles().await.unwrap()[0].id.clone();
+        let task = service
+            .create_task(project.id, "Queue".into(), agent)
+            .await
+            .unwrap();
+        let first = service
+            .edit_followups(
+                task.id,
+                0,
+                FollowupEdit::Add("日本語\nKeep formatting  ".into()),
+            )
+            .await
+            .unwrap();
+        assert!(
+            service
+                .edit_followups(task.id, 0, FollowupEdit::Add("Stale".into()))
+                .await
+                .is_err()
+        );
+        let second = service
+            .edit_followups(task.id, first.revision, FollowupEdit::Add("Next".into()))
+            .await
+            .unwrap();
+        let id = second.items[1].id.clone();
+        let ordered = service
+            .edit_followups(
+                task.id,
+                second.revision,
+                FollowupEdit::Move { id, up: true },
+            )
+            .await
+            .unwrap();
+        assert_eq!(ordered.items[0].text, "Next");
+        assert_eq!(ordered.items[1].text, "日本語\nKeep formatting  ");
         assert!(service.session(task.thread_id).await.unwrap().is_none());
-        assert!(service.thread(task.thread_id).await.unwrap().messages.is_empty());
-        assert!(service.edit_followups(task.id,ordered.revision,FollowupEdit::Add("x".repeat(65537))).await.is_err());
+        assert!(
+            service
+                .thread(task.thread_id)
+                .await
+                .unwrap()
+                .messages
+                .is_empty()
+        );
+        assert!(
+            service
+                .edit_followups(
+                    task.id,
+                    ordered.revision,
+                    FollowupEdit::Add("x".repeat(65537))
+                )
+                .await
+                .is_err()
+        );
     }
 }

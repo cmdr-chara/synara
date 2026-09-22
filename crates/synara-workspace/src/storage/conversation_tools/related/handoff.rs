@@ -232,7 +232,9 @@ impl WorkspaceService {
             None => HandoffTarget::Agent(source.agent_id),
         };
         let mut review = self.review_handoff(id, choice).await?;
-        if review.included == 0 { return Err(invalid("There are no visible messages to recap.")); }
+        if review.included == 0 {
+            return Err(invalid("There are no visible messages to recap."));
+        }
         review.recap = true;
         review.context.push_str("Create a concise thread recap from ONLY the quoted visible conversation above. Summarize the objective, decisions, work completed, unresolved questions and useful next steps. Attribute uncertain claims and note omitted context. Do not invent completion. Do not inspect or change files, execute tools, or request extra permissions. Return only the recap text, within 16,000 characters. This is a separate recap request, not a continuation of the original task.");
         Ok(review)

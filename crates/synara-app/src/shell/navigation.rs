@@ -116,7 +116,9 @@ impl Shell {
     }
 
     pub(super) fn navigate_project(&mut self, id: ProjectId, cx: &mut Context<Self>) {
-        if self.hub_navigation_blocked(cx) { return; }
+        if self.hub_navigation_blocked(cx) {
+            return;
+        }
         if self.dirty(cx) || self.saving {
             self.error =
                 Some("Save or discard the open document before switching projects.".into());
@@ -153,8 +155,13 @@ impl Shell {
 
     pub(super) fn switch_mode(&mut self, studio: bool, cx: &mut Context<Self>) {
         self.navigation.menu_open = false;
-        if self.hub_navigation_blocked(cx) { return; }
-        if studio { self.show_hubs(cx); return; }
+        if self.hub_navigation_blocked(cx) {
+            return;
+        }
+        if studio {
+            self.show_hubs(cx);
+            return;
+        }
         if self.navigation.studio == studio {
             cx.notify();
             return;
@@ -242,7 +249,9 @@ impl Shell {
     }
 
     pub(super) fn sidebar(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
-        if self.navigation.studio { return self.hub_sidebar(cx); }
+        if self.navigation.studio {
+            return self.hub_sidebar(cx);
+        }
         let studio = self.navigation.studio;
         let query = if self.navigation.search_open {
             self.navigation.search.read(cx).text().trim().to_lowercase()
@@ -434,8 +443,28 @@ impl Shell {
                             .relative()
                             .child(ui::layout_probe("kanban-navigation")),
                         )
-                        .child(ui::action("pull-requests-navigation", "Pull requests", Some(Glyph::PullRequest), self.panel == Panel::PullRequests, cx.listener(|this, _: &(), _, cx| this.set_panel(Panel::PullRequests, cx))).relative().child(ui::layout_probe("pull-requests-navigation")))
-                        .child(ui::action("automations-navigation", "Automations", Some(Glyph::Clock), self.panel == Panel::Automations, cx.listener(|this, _: &(), _, cx| this.set_panel(Panel::Automations, cx))))
+                        .child(
+                            ui::action(
+                                "pull-requests-navigation",
+                                "Pull requests",
+                                Some(Glyph::PullRequest),
+                                self.panel == Panel::PullRequests,
+                                cx.listener(|this, _: &(), _, cx| {
+                                    this.set_panel(Panel::PullRequests, cx)
+                                }),
+                            )
+                            .relative()
+                            .child(ui::layout_probe("pull-requests-navigation")),
+                        )
+                        .child(ui::action(
+                            "automations-navigation",
+                            "Automations",
+                            Some(Glyph::Clock),
+                            self.panel == Panel::Automations,
+                            cx.listener(|this, _: &(), _, cx| {
+                                this.set_panel(Panel::Automations, cx)
+                            }),
+                        ))
                     }),
             )
             .child(
@@ -818,7 +847,9 @@ impl Shell {
     }
 
     fn new_project_chat(&mut self, project: ProjectId, cx: &mut Context<Self>) {
-        if self.hub_navigation_blocked(cx) { return; }
+        if self.hub_navigation_blocked(cx) {
+            return;
+        }
         if self.creating_task || self.loading_task.is_some() {
             return;
         }

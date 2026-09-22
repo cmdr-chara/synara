@@ -176,7 +176,12 @@ impl Shell {
     pub(super) fn track_environment_panel(&mut self, panel: Panel) -> Panel {
         if !matches!(
             panel,
-            Panel::Dock | Panel::Terminal | Panel::Files | Panel::Changes | Panel::Device | Panel::SideChats
+            Panel::Dock
+                | Panel::Terminal
+                | Panel::Files
+                | Panel::Changes
+                | Panel::Device
+                | Panel::SideChats
         ) {
             self.environment.resize = None;
             return panel;

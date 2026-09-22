@@ -319,7 +319,8 @@ impl Shell {
                     capture.orientation()
                 );
                 self.device.dimensions = Some(dimensions);
-                self.device.image_bytes = (capture.png.len() <= MAX_ATTACHMENT_BATCH_BYTES).then(||capture.png.clone());
+                self.device.image_bytes =
+                    (capture.png.len() <= MAX_ATTACHMENT_BATCH_BYTES).then(|| capture.png.clone());
                 self.device.image = Some(Arc::new(gpui::Image::from_bytes(
                     gpui::ImageFormat::Png,
                     capture.png,

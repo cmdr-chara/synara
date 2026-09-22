@@ -199,7 +199,8 @@ impl Shell {
                 cx.listener(|this, _: &(), _, cx| this.open_debug(cx)),
             )
             .child(ui::layout_probe_enabled(
-                "debug-open", !view.busy && self.loading_task.is_none(),
+                "debug-open",
+                !view.busy && self.loading_task.is_none(),
             )),
         );
         if !view.open {
@@ -315,18 +316,21 @@ impl Shell {
                                 }
                             }),
                         ))
-                        .child(ui::action(
-                            "debug-close",
-                            "Close",
-                            None,
-                            false,
-                            cx.listener(|this, _: &(), _, cx| {
-                                if !this.debug_workflow.pending(cx) {
-                                    this.debug_workflow.open = false;
-                                    cx.notify();
-                                }
-                            }),
-                        ).child(ui::layout_probe("debug-close"))),
+                        .child(
+                            ui::action(
+                                "debug-close",
+                                "Close",
+                                None,
+                                false,
+                                cx.listener(|this, _: &(), _, cx| {
+                                    if !this.debug_workflow.pending(cx) {
+                                        this.debug_workflow.open = false;
+                                        cx.notify();
+                                    }
+                                }),
+                            )
+                            .child(ui::layout_probe("debug-close")),
+                        ),
                 );
         } else {
             root = root.child(div().text_xs().child(if view.busy {

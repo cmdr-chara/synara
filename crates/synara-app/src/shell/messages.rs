@@ -60,7 +60,10 @@ impl Shell {
             .as_ref()
             .is_some_and(|anchor| anchor.matches(message));
         let body = div()
-            .flex().flex_col().flex_shrink_0().gap_2()
+            .flex()
+            .flex_col()
+            .flex_shrink_0()
+            .gap_2()
             .min_w_0()
             .when(highlighted, |el| {
                 el.border_l_2().border_color(rgb(palette().focus))
@@ -86,31 +89,76 @@ impl Shell {
                     .into_any_element()
             } else {
                 ui::markdown::render(&truncate(&message.text, 64 * 1024), &message.id)
-            }).child(self.message_media(message,cx));
-        div().id(("message", index)).group("message-actions").relative().w_full().flex().flex_col()
-            .top(px(3. * (1. - progress))).opacity(progress)
-            .when(user, |el| el.items_end()).child(body)
-            .when(highlighted, |el| el.child(ui::layout_probe_slot("message-match", index)))
-            .when(!user && !reasoning && complete, |el| el.child(
-                div().ml(px(-6.)).flex().items_center().gap_2().text_size(px(12.)).text_color(rgb(palette().muted))
-                    .child(copy(cx).opacity(0.75))
-                    .child(self.message_branch_button(message, cx))
-                    .child(self.message_side_chat_button(message, index, cx))
-                    .child(self.message_pin_button(message, index, cx))
-                    .child(self.message_reuse_button(message, index, cx))
-                    .children(self.task().filter(|task| task.scope == TaskScope::Studio).map(|task| {
-                        let task = task.id; let anchor = MessageAnchor::from(message);
-                        ui::chrome_button("message-to-hub", "Review message as shared Hub knowledge", Glyph::Notebook, false,
-                            cx.listener(move |this, _: &(), _, cx| this.promote_hub_message(task,anchor.clone(),cx))).size(px(24.))
-                    }))
-                    .children(timestamp.map(|text| div().relative().child(ui::layout_probe("message-timestamp")).child(text)))))
-            .when(user, |el| el.child(div().absolute().right_0().bottom(px(-24.)).child(
-                div().flex().items_center()
-                    .child(copy(cx))
-                    .child(self.message_revision_button(message, index, cx))
-                    .child(self.message_side_chat_button(message, index, cx))
-                    .child(self.message_pin_button(message, index, cx))
-                    .child(self.message_reuse_button(message, index, cx)))) )
+            })
+            .child(self.message_media(message, cx));
+        div()
+            .id(("message", index))
+            .group("message-actions")
+            .relative()
+            .w_full()
+            .flex()
+            .flex_col()
+            .top(px(3. * (1. - progress)))
+            .opacity(progress)
+            .when(user, |el| el.items_end())
+            .child(body)
+            .when(highlighted, |el| {
+                el.child(ui::layout_probe_slot("message-match", index))
+            })
+            .when(!user && !reasoning && complete, |el| {
+                el.child(
+                    div()
+                        .ml(px(-6.))
+                        .flex()
+                        .items_center()
+                        .gap_2()
+                        .text_size(px(12.))
+                        .text_color(rgb(palette().muted))
+                        .child(copy(cx).opacity(0.75))
+                        .child(self.message_branch_button(message, cx))
+                        .child(self.message_side_chat_button(message, index, cx))
+                        .child(self.message_pin_button(message, index, cx))
+                        .child(self.message_reuse_button(message, index, cx))
+                        .children(
+                            self.task()
+                                .filter(|task| task.scope == TaskScope::Studio)
+                                .map(|task| {
+                                    let task = task.id;
+                                    let anchor = MessageAnchor::from(message);
+                                    ui::chrome_button(
+                                        "message-to-hub",
+                                        "Review message as shared Hub knowledge",
+                                        Glyph::Notebook,
+                                        false,
+                                        cx.listener(move |this, _: &(), _, cx| {
+                                            this.promote_hub_message(task, anchor.clone(), cx)
+                                        }),
+                                    )
+                                    .size(px(24.))
+                                }),
+                        )
+                        .children(timestamp.map(|text| {
+                            div()
+                                .relative()
+                                .child(ui::layout_probe("message-timestamp"))
+                                .child(text)
+                        })),
+                )
+            })
+            .when(user, |el| {
+                el.child(
+                    div().absolute().right_0().bottom(px(-24.)).child(
+                        div()
+                            .flex()
+                            .items_center()
+                            .child(copy(cx))
+                            .child(self.message_revision_button(message, index, cx))
+                            .child(self.message_side_chat_button(message, index, cx))
+                            .child(self.message_pin_button(message, index, cx))
+                            .child(self.message_reuse_button(message, index, cx)),
+                    ),
+                )
+            })
             .into_any_element()
     }
 }

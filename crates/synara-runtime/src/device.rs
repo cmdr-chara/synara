@@ -66,7 +66,8 @@ pub struct DeviceDescriptor {
 impl DeviceDescriptor {
     pub fn validate(&self) -> Result<(), RuntimeError> {
         if !valid_text(self.id.as_str(), MAX_ID_BYTES)
-            || !valid_text(&self.name, MAX_LABEL_BYTES) || !valid_text(&self.platform, MAX_LABEL_BYTES)
+            || !valid_text(&self.name, MAX_LABEL_BYTES)
+            || !valid_text(&self.platform, MAX_LABEL_BYTES)
         {
             return Err(RuntimeError::Invalid("invalid device metadata".into()));
         }

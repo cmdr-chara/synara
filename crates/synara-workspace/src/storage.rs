@@ -1,35 +1,42 @@
-mod imports;
-mod direct_models;
-mod integrations;
 mod automations;
 mod debug_workflow;
+mod direct_models;
+mod imports;
+mod integrations;
 pub use debug_workflow::{DebugEdit, DebugPhase, DebugWorkflow};
 mod goals;
-pub use goals::{ThreadGoal, GoalStatus, GoalAchievement, GoalEdit, GoalDecision, goal_decision, GOAL_MAX_FOLLOWUPS, GOAL_PURSUIT_LIMIT_MS};
+pub use goals::{
+    GOAL_MAX_FOLLOWUPS, GOAL_PURSUIT_LIMIT_MS, GoalAchievement, GoalDecision, GoalEdit, GoalStatus,
+    ThreadGoal, goal_decision,
+};
 mod releases;
-pub use releases::{NativeVersionHistory, NativeVersionVisit, NATIVE_VERSION_HISTORY_KEY};
+pub use releases::{NATIVE_VERSION_HISTORY_KEY, NativeVersionHistory, NativeVersionVisit};
 mod inline_comments;
 pub use inline_comments::{InlineComment, InlineCommentEdit, InlineComments};
 mod followups;
 pub use followups::{FollowupDraft, FollowupEdit, FollowupQueue};
 mod attachments;
-pub use attachments::{AttachmentDraft, AttachmentEdit, AttachmentInfo, AttachmentInput, AttachmentKind, AttachmentPreview, MAX_ATTACHMENT_BATCH_BYTES};
+pub use attachments::{
+    AttachmentDraft, AttachmentEdit, AttachmentInfo, AttachmentInput, AttachmentKind,
+    AttachmentPreview, MAX_ATTACHMENT_BATCH_BYTES,
+};
 mod terminal_layout;
 pub use terminal_layout::*;
 mod chat_preferences;
 mod review;
 pub use review::{MAX_COMMIT_DRAFT_BYTES, ReviewPreferences, ReviewScope};
+mod checkpoints;
 mod organization;
 mod task_context;
-mod checkpoints;
-pub use checkpoints::{TaskCheckpoint, TaskCheckpoints, CheckpointReview, CheckpointRestored};
+pub use checkpoints::{CheckpointRestored, CheckpointReview, TaskCheckpoint, TaskCheckpoints};
 pub use organization::{NativeSpace, OrganizationEdit, SpaceSymbol, WorkspaceOrganization};
 pub use task_context::{
     ChecklistItem, MAX_CHECKLIST_ITEMS, MAX_CHECKLIST_TEXT, MAX_NOTE_BYTES, TaskContext,
 };
 mod conversation_tools;
 pub use conversation_tools::{
-    ThreadRecap, HandoffReview, HandoffTarget, MessageAnchor, MessageSearch, RelatedThreadKind, RevisionSource, SideThreadIndex, ThreadOrigin,
+    HandoffReview, HandoffTarget, MessageAnchor, MessageSearch, RelatedThreadKind, RevisionSource,
+    SideThreadIndex, ThreadOrigin, ThreadRecap,
 };
 mod task_creation;
 pub use chat_preferences::ModelFavorite;
@@ -272,10 +279,22 @@ PRAGMA user_version=2;")?;
     pub fn delete_task(&mut self, id: TaskId) -> StorageResult<bool> {
         // Take the writer lock before checking archive state. Another database
         // connection must not restore a task between that check and deletion.
-        let tx = self.connection.transaction_with_behavior(TransactionBehavior::Immediate)?;
-        let raw: Option<String> = tx.query_row("SELECT data FROM tasks WHERE id=?1", [id.to_string()], |row| row.get(0)).optional()?;
-        let Some(task) = raw.map(|raw| decode::<Task>(&raw)).transpose()? else { return Ok(false); };
-        if task.state != TaskState::Archived { return Err(StorageError::Identity); }
+        let tx = self
+            .connection
+            .transaction_with_behavior(TransactionBehavior::Immediate)?;
+        let raw: Option<String> = tx
+            .query_row(
+                "SELECT data FROM tasks WHERE id=?1",
+                [id.to_string()],
+                |row| row.get(0),
+            )
+            .optional()?;
+        let Some(task) = raw.map(|raw| decode::<Task>(&raw)).transpose()? else {
+            return Ok(false);
+        };
+        if task.state != TaskState::Archived {
+            return Err(StorageError::Identity);
+        }
         tx.execute(
             "DELETE FROM sessions WHERE thread_id=?1",
             [task.thread_id.to_string()],
@@ -401,15 +420,20 @@ PRAGMA user_version=2;")?;
         let total_bytes = bytes
             .checked_add(encoded.len() as i64)
             .ok_or(StorageError::Limit)?;
-        if last >= 200_000 || total_bytes > 128 * 1024 * 1024
-            || matches!(envelope.event, ThreadEvent::ImageMessage { .. }) && total_bytes > 32 * 1024 * 1024 {
+        if last >= 200_000
+            || total_bytes > 128 * 1024 * 1024
+            || matches!(envelope.event, ThreadEvent::ImageMessage { .. })
+                && total_bytes > 32 * 1024 * 1024
+        {
             return Err(StorageError::Limit);
         }
         if matches!(envelope.event, ThreadEvent::ImageMessage { .. }) {
             let count: i64 = transaction.query_row(
                 "SELECT COUNT(*) FROM (SELECT 1 FROM events WHERE thread_id=?1 AND json_extract(data,'$.type')='image_message' LIMIT 256)",
                 [envelope.thread_id.to_string()], |row| row.get(0))?;
-            if count >= 256 { return Err(StorageError::Limit); }
+            if count >= 256 {
+                return Err(StorageError::Limit);
+            }
         }
         transaction.execute(
             "INSERT INTO events(thread_id,sequence,id,timestamp_ms,data) VALUES(?1,?2,?3,?4,?5)",
@@ -582,7 +606,13 @@ fn database_path(path: &Path) -> StorageResult<std::path::PathBuf> {
 fn valid_preference_key(key: &str) -> bool {
     if matches!(
         key,
-        "history-imports-v1" | "direct-model-providers-v1" | "integrations" | "model-favorites" | "environment-layout" | "workspace-organization" | "automation-ledger-v1"
+        "history-imports-v1"
+            | "direct-model-providers-v1"
+            | "integrations"
+            | "model-favorites"
+            | "environment-layout"
+            | "workspace-organization"
+            | "automation-ledger-v1"
     ) {
         return true;
     }
@@ -607,7 +637,13 @@ fn valid_preference_key(key: &str) -> bool {
     }
     matches!(
         key,
-        "native-version-history" | "appearance" | "selection" | "window" | "agent_profiles" | "ssh_profiles" | "settings"
+        "native-version-history"
+            | "appearance"
+            | "selection"
+            | "window"
+            | "agent_profiles"
+            | "ssh_profiles"
+            | "settings"
     )
 }
 

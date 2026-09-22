@@ -1,7 +1,7 @@
 name: Native conversation workflow regression
 on:
   push:
-    branches: [astra/max-feature-sprint-2, astra/gpui-clean-rewrite]
+    branches: [astra/max-feature-sprint-2, astra/feature-closure-sprint-2, astra/gpui-clean-rewrite]
     paths:
       - 'crates/**'
       - 'Cargo.toml'
@@ -35,7 +35,7 @@ jobs:
         run: |
           rustup toolchain install 1.98.1 --profile minimal --component rustfmt
           sudo apt-get update -qq
-          sudo apt-get install -y -qq clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libwebkit2gtk-4.1-dev libgtk-3-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil xclip fonts-dejavu-core fonts-liberation
+          sudo apt-get install -y -qq clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libwebkit2gtk-4.1-dev libgtk-3-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil xclip fonts-dejavu-core fonts-liberation x11-utils imagemagick
       - uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
         with:
           path: |
@@ -45,6 +45,7 @@ jobs:
           key: native-conversation-${{ runner.os }}-${{ github.sha }}
           restore-keys: |
             native-conversation-${{ runner.os }}-
+            feature-closure-2-1.98.1-${{ runner.os }}-
             feature-closure-1.98.1-${{ runner.os }}-
             sprint-2-v1-${{ runner.os }}-
       - name: Source, roadmap and baseline checks
@@ -68,7 +69,7 @@ jobs:
         run: |
           set -o pipefail
           failed=0
-          for journey in debug goals recap pr_fix inline_comments releases chat_behavior model_draft handoff project_import direct_models integrations browser_webview; do
+          for journey in debug goals recap pr_fix inline_comments releases chat_behavior model_draft handoff project_import direct_models integrations browser_webview stacked_prs rich_media appsnap task_split checkpoints; do
             if ! python3 "scripts/native_${journey}_smoke.py" --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output "/tmp/native-conversation-evidence/$journey" 2>&1 | tee "/tmp/native-conversation-evidence/native-$journey.log"; then
               failed=1
             fi

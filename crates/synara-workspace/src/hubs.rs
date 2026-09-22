@@ -21,16 +21,34 @@ pub struct HubProfile {
 }
 impl HubProfile {
     pub fn new(project: ProjectId, main_task: TaskId, name: String) -> Self {
-        Self { version: 1, revision: 0, project, main_task, name,
-            description: String::new(), instructions: String::new(), memory: String::new(),
-            include_in_new_threads: true, archived: false }
+        Self {
+            version: 1,
+            revision: 0,
+            project,
+            main_task,
+            name,
+            description: String::new(),
+            instructions: String::new(),
+            memory: String::new(),
+            include_in_new_threads: true,
+            archived: false,
+        }
     }
     pub fn validate(&self) -> WorkspaceResult<()> {
-        if self.version != 1 || self.name.trim().is_empty() || self.name.len() > 160
-            || self.name.chars().any(char::is_control) || self.description.len() > 2048
-            || self.instructions.len() > 32 * 1024 || self.memory.len() > 64 * 1024
-            || [&self.description, &self.instructions, &self.memory].iter().any(|text| text.contains('\0')) {
-            return Err(WorkspaceError::Invalid("Hub name or context is invalid or exceeds its limit.".into()));
+        if self.version != 1
+            || self.name.trim().is_empty()
+            || self.name.len() > 160
+            || self.name.chars().any(char::is_control)
+            || self.description.len() > 2048
+            || self.instructions.len() > 32 * 1024
+            || self.memory.len() > 64 * 1024
+            || [&self.description, &self.instructions, &self.memory]
+                .iter()
+                .any(|text| text.contains('\0'))
+        {
+            return Err(WorkspaceError::Invalid(
+                "Hub name or context is invalid or exceeds its limit.".into(),
+            ));
         }
         Ok(())
     }
@@ -38,10 +56,14 @@ impl HubProfile {
     pub fn context_draft(&self) -> String {
         let mut text = String::new();
         if !self.instructions.trim().is_empty() {
-            text.push_str("## Hub instructions\n\n"); text.push_str(&self.instructions); text.push_str("\n\n");
+            text.push_str("## Hub instructions\n\n");
+            text.push_str(&self.instructions);
+            text.push_str("\n\n");
         }
         if !self.memory.trim().is_empty() {
-            text.push_str("## Shared Hub knowledge\n\n"); text.push_str(&self.memory); text.push_str("\n\n");
+            text.push_str("## Shared Hub knowledge\n\n");
+            text.push_str(&self.memory);
+            text.push_str("\n\n");
         }
         if !text.is_empty() {
             text.push_str("---\n\nTask:\n");

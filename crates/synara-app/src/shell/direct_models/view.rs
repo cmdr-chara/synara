@@ -112,9 +112,17 @@ impl Shell {
                         .relative()
                         .child(ui::layout_probe("direct-custom")),
                     )
-                    .child(ui::action("direct-google", "Add Google API", None, false,
-                        cx.listener(|this, _, _, cx| this.edit_google_provider(cx)))
-                        .relative().child(ui::layout_probe("direct-google")))
+                    .child(
+                        ui::action(
+                            "direct-google",
+                            "Add Google API",
+                            None,
+                            false,
+                            cx.listener(|this, _, _, cx| this.edit_google_provider(cx)),
+                        )
+                        .relative()
+                        .child(ui::layout_probe("direct-google")),
+                    )
                     .child(ui::action(
                         "direct-catalog",
                         "Load models.dev catalog",

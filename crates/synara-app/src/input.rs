@@ -7,8 +7,8 @@ use gpui::{
 use std::{ops::Range, rc::Rc};
 use synara_core::TextBuffer;
 
-mod policy;
 mod navigation;
+mod policy;
 
 const MAX_INPUT: usize = 1024 * 1024;
 const HISTORY_BYTES: usize = 16 * 1024 * 1024;
@@ -63,8 +63,11 @@ impl Focusable for TextEntry {
 impl TextEntry {
     fn visible_height(&self) -> f32 {
         if self.mode == EntryMode::Composer {
-            (f32::from(self.content_height) + 16.).clamp(self.height.max(self.line_height() + 12.), 196.)
-        } else { self.height.max(self.line_height() + 12.) }
+            (f32::from(self.content_height) + 16.)
+                .clamp(self.height.max(self.line_height() + 12.), 196.)
+        } else {
+            self.height.max(self.line_height() + 12.)
+        }
     }
     fn line_height(&self) -> f32 {
         let font = match self.mode {
@@ -119,7 +122,9 @@ impl TextEntry {
         self.buffer.marked().is_some()
     }
 
-    pub fn selection_range(&self) -> Range<usize> { self.buffer.selection() }
+    pub fn selection_range(&self) -> Range<usize> {
+        self.buffer.selection()
+    }
 
     pub fn selected_text(&self) -> &str {
         self.buffer
@@ -252,21 +257,41 @@ impl TextEntry {
         self.buffer.text().len()
     }
     fn paste_item(&mut self, item: ClipboardItem, cx: &mut Context<Self>) {
-        if self.mode == EntryMode::Composer && item.entries().iter().any(|entry| matches!(entry, gpui::ClipboardEntry::Image(_))) {
-            if self.is_composing() { self.error = Some("Finish text composition before pasting an image.".into()); cx.notify(); return; }
+        if self.mode == EntryMode::Composer
+            && item
+                .entries()
+                .iter()
+                .any(|entry| matches!(entry, gpui::ClipboardEntry::Image(_)))
+        {
+            if self.is_composing() {
+                self.error = Some("Finish text composition before pasting an image.".into());
+                cx.notify();
+                return;
+            }
             let mut images = Vec::new();
             let mut total = 0usize;
             for entry in item.entries() {
                 if let gpui::ClipboardEntry::Image(image) = entry {
                     total = total.saturating_add(image.bytes.len());
                     if images.len() >= 8 || total > 2 * 1024 * 1024 {
-                        self.error = Some("Clipboard images exceed eight files or 2 MiB combined. Nothing was attached.".into()); cx.notify(); return;
+                        self.error = Some("Clipboard images exceed eight files or 2 MiB combined. Nothing was attached.".into());
+                        cx.notify();
+                        return;
                     }
                     let extension = match image.format {
-                        gpui::ImageFormat::Png => "png", gpui::ImageFormat::Jpeg => "jpg",
-                        _ => { self.error = Some("Paste a still PNG/JPEG image, or use Attach files.".into()); cx.notify(); return; }
+                        gpui::ImageFormat::Png => "png",
+                        gpui::ImageFormat::Jpeg => "jpg",
+                        _ => {
+                            self.error =
+                                Some("Paste a still PNG/JPEG image, or use Attach files.".into());
+                            cx.notify();
+                            return;
+                        }
                     };
-                    images.push((format!("Clipboard image {}.{extension}", images.len()+1), image.bytes.clone()));
+                    images.push((
+                        format!("Clipboard image {}.{extension}", images.len() + 1),
+                        image.bytes.clone(),
+                    ));
                 }
             }
             self.error = None;
@@ -274,13 +299,25 @@ impl TextEntry {
             cx.notify();
             return;
         }
-        if self.mode == EntryMode::Composer && item.entries().iter().any(|entry| matches!(entry, gpui::ClipboardEntry::ExternalPaths(_))) {
-            if self.is_composing() { self.error = Some("Finish text composition before pasting files.".into()); cx.notify(); return; }
+        if self.mode == EntryMode::Composer
+            && item
+                .entries()
+                .iter()
+                .any(|entry| matches!(entry, gpui::ClipboardEntry::ExternalPaths(_)))
+        {
+            if self.is_composing() {
+                self.error = Some("Finish text composition before pasting files.".into());
+                cx.notify();
+                return;
+            }
             let mut files = Vec::new();
             for entry in item.entries() {
                 if let gpui::ClipboardEntry::ExternalPaths(paths) = entry {
                     if files.len() + paths.paths().len() > 8 {
-                        self.error = Some("Paste at most eight files. Nothing was attached.".into()); cx.notify(); return;
+                        self.error =
+                            Some("Paste at most eight files. Nothing was attached.".into());
+                        cx.notify();
+                        return;
                     }
                     files.extend_from_slice(paths.paths());
                 }
@@ -290,7 +327,9 @@ impl TextEntry {
             cx.notify();
             return;
         }
-        if let Some(text) = item.text() { self.edit(self.buffer.selection(), &text, cx); }
+        if let Some(text) = item.text() {
+            self.edit(self.buffer.selection(), &text, cx);
+        }
     }
     fn key(&mut self, event: &KeyDownEvent, window: &mut Window, cx: &mut Context<Self>) {
         if event.prefer_character_input {
@@ -322,7 +361,9 @@ impl TextEntry {
                 }
             }
             (true, "v") => {
-                if let Some(item) = cx.read_from_clipboard() { self.paste_item(item, cx); }
+                if let Some(item) = cx.read_from_clipboard() {
+                    self.paste_item(item, cx);
+                }
             }
             (true, "z") | (true, "y") => {
                 let redo = key == "y" || shift;

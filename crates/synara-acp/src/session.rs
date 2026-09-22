@@ -74,14 +74,23 @@ impl AgentSession for AcpSession {
             let image = match part {
                 PromptPart::MediaImage(image) => Some(image.clone()),
                 PromptPart::Image { base64, mime_type } => Some(synara_core::TranscriptImage {
-                    source: synara_core::ImageSource::Uploaded, mime_type: mime_type.clone(), base64: base64.clone(),
+                    source: synara_core::ImageSource::Uploaded,
+                    mime_type: mime_type.clone(),
+                    base64: base64.clone(),
                 }),
                 _ => None,
             };
             if let Some(image) = image {
-                self.state.emit(&self.connection.context, ThreadEvent::ImageMessage {
-                    message_id: Some(format!("user-{turn}")), role: Role::User, image,
-                }).await?;
+                self.state
+                    .emit(
+                        &self.connection.context,
+                        ThreadEvent::ImageMessage {
+                            message_id: Some(format!("user-{turn}")),
+                            role: Role::User,
+                            image,
+                        },
+                    )
+                    .await?;
             }
         }
         let cancellation = self.state.turn.lock().unwrap().clone();

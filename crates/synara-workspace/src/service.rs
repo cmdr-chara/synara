@@ -31,7 +31,9 @@ pub enum WorkspaceError {
 }
 
 impl From<rusqlite::Error> for crate::WorkspaceError {
-    fn from(error: rusqlite::Error) -> Self { Self::Storage(StorageError::Database(error)) }
+    fn from(error: rusqlite::Error) -> Self {
+        Self::Storage(StorageError::Database(error))
+    }
 }
 pub type WorkspaceResult<T> = Result<T, WorkspaceError>;
 #[derive(Clone, Debug, Default)]
@@ -849,12 +851,16 @@ impl EventSink for WorkspaceService {
         let event = if let ThreadEvent::ImageMessage { image, .. } = &event {
             match Self::validate_transcript_image(image.clone()).await {
                 Ok(()) => event,
-                Err(error) => ThreadEvent::Notice { message: format!("Image unavailable: {error}") },
+                Err(error) => ThreadEvent::Notice {
+                    message: format!("Image unavailable: {error}"),
+                },
             }
-        } else { event };
-        let is_image=matches!(event,ThreadEvent::ImageMessage{..});
-        let result=self.record(thread_id, event).await;
-        if is_image && matches!(&result,Err(WorkspaceError::Storage(StorageError::Limit))) {
+        } else {
+            event
+        };
+        let is_image = matches!(event, ThreadEvent::ImageMessage { .. });
+        let result = self.record(thread_id, event).await;
+        if is_image && matches!(&result, Err(WorkspaceError::Storage(StorageError::Limit))) {
             return self.record(thread_id,ThreadEvent::Notice {message:"Image not retained: this thread reached the 256-image or 32 MiB media-history boundary. Existing history was preserved.".into()})
                 .await.map(|_|()).map_err(|_|AgentError::EventDelivery);
         }
@@ -891,7 +897,10 @@ fn catalog_name(value: &str, kind: &str) -> WorkspaceResult<String> {
     Ok(value.to_owned())
 }
 
-pub(crate) fn project_directory(workspace: &Workspace, project: &Project) -> WorkspaceResult<PathBuf> {
+pub(crate) fn project_directory(
+    workspace: &Workspace,
+    project: &Project,
+) -> WorkspaceResult<PathBuf> {
     if project.relative_directory.components().any(|c| {
         !matches!(
             c,

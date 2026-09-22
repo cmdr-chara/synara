@@ -5,7 +5,12 @@ impl Shell {
     pub(super) fn dock_open(&self) -> bool {
         matches!(
             self.panel,
-            Panel::Dock | Panel::Files | Panel::Terminal | Panel::Changes | Panel::Device | Panel::SideChats
+            Panel::Dock
+                | Panel::Files
+                | Panel::Terminal
+                | Panel::Changes
+                | Panel::Device
+                | Panel::SideChats
         )
     }
 
@@ -23,10 +28,17 @@ impl Shell {
         if self.zen_active() && !self.settings.personalization.tools_shown {
             return self.conversation(window, cx);
         }
-        if self.zen_active() && self.settings.personalization.tools_shown && available_width < 860. {
-            return div().flex().flex_col().flex_1().min_w_0().min_h_0()
+        if self.zen_active() && self.settings.personalization.tools_shown && available_width < 860.
+        {
+            return div()
+                .flex()
+                .flex_col()
+                .flex_1()
+                .min_w_0()
+                .min_h_0()
                 .child(self.zen_tool_header(available_width, cx))
-                .child(self.zen_tool_content(available_width, cx)).into_any_element();
+                .child(self.zen_tool_content(available_width, cx))
+                .into_any_element();
         }
         if self.dock_open() || dock_width > 0. {
             return div()
@@ -62,7 +74,10 @@ impl Shell {
                                     .flex_col()
                                     .border_l_1()
                                     .border_color(rgb(palette().border))
-                                    .children(self.zen_active().then(|| self.zen_tool_header(target_width, cx)))
+                                    .children(
+                                        self.zen_active()
+                                            .then(|| self.zen_tool_header(target_width, cx)),
+                                    )
                                     .child(match self.dock_panel {
                                         Panel::Files => self.files_panel(target_width, cx),
                                         Panel::Terminal => self.terminal_panel(target_width, cx),
@@ -97,14 +112,32 @@ impl Shell {
     }
 
     fn zen_tool_header(&self, width: f32, cx: &mut Context<Self>) -> gpui::AnyElement {
-        div().flex().items_center().flex_shrink_0().min_w_0().h(px(ui::CHROME_HEIGHT))
-            .px_2().border_b_1().border_color(ui::glass_edge())
-            .child(ui::chrome_button("zen-back-to-chat", "Back to conversation, keep tools running", Glyph::Back, false,
+        div()
+            .flex()
+            .items_center()
+            .flex_shrink_0()
+            .min_w_0()
+            .h(px(ui::CHROME_HEIGHT))
+            .px_2()
+            .border_b_1()
+            .border_color(ui::glass_edge())
+            .child(ui::chrome_button(
+                "zen-back-to-chat",
+                "Back to conversation, keep tools running",
+                Glyph::Back,
+                false,
                 cx.listener(|this, _: &(), _, cx| {
                     this.settings.personalization.tools_shown = false;
-                    this.focus_composer = true; cx.notify();
-                })))
-            .child(div().flex_1().min_w_0().child(self.environment_header(width < 560., cx)))
+                    this.focus_composer = true;
+                    cx.notify();
+                }),
+            ))
+            .child(
+                div()
+                    .flex_1()
+                    .min_w_0()
+                    .child(self.environment_header(width < 560., cx)),
+            )
             .into_any_element()
     }
     fn zen_tool_content(&self, width: f32, cx: &mut Context<Self>) -> gpui::AnyElement {
@@ -148,8 +181,13 @@ impl Shell {
                         .bg(rgb(palette().overlay)),
                     )
                     .child(
-                        ui::action("dock-browser", "Browser", Some(Glyph::Browser), false,
-                            cx.listener(|this, _: &(), _, cx| this.set_panel(Panel::Browser, cx)))
+                        ui::action(
+                            "dock-browser",
+                            "Browser",
+                            Some(Glyph::Browser),
+                            false,
+                            cx.listener(|this, _: &(), _, cx| this.set_panel(Panel::Browser, cx)),
+                        )
                         .h(px(40.))
                         .px(px(20.))
                         .gap_3()

@@ -5,7 +5,10 @@ pub use icons::{Glyph, icon, provider_glyph};
 pub mod menu;
 pub mod motion;
 mod personalization;
-pub use personalization::{canvas_background, surface, glass_edge, chat_width, row_height, motion_multiplier, ui_font_size, code_font_size, terminal_font_size};
+pub use personalization::{
+    canvas_background, chat_width, code_font_size, glass_edge, motion_multiplier, row_height,
+    surface, terminal_font_size, ui_font_size,
+};
 pub mod task_dialog;
 use gpui::{
     Context, Div, ElementId, SharedString, Stateful, Window, canvas, div, prelude::*, px, rgb, rgba,

@@ -17,11 +17,18 @@ impl DraftState {
         self.dirty.contains_key(&id) || self.saving.contains(&id) || self.loading.contains(&id)
     }
     pub fn forget_task(&mut self, id: TaskId) {
-        self.dirty.remove(&id); self.saving.remove(&id); self.failed.remove(&id);
-        self.loading.remove(&id); self.versions.remove(&id); self.sent.remove(&id); self.display.remove(&id);
+        self.dirty.remove(&id);
+        self.saving.remove(&id);
+        self.failed.remove(&id);
+        self.loading.remove(&id);
+        self.versions.remove(&id);
+        self.sent.remove(&id);
+        self.display.remove(&id);
     }
 
-    pub fn version(&self, id: TaskId) -> u64 { self.versions.get(&id).copied().unwrap_or(0) }
+    pub fn version(&self, id: TaskId) -> u64 {
+        self.versions.get(&id).copied().unwrap_or(0)
+    }
     fn changed(&mut self, id: TaskId) {
         self.dirty.insert(id, Instant::now());
         self.failed.remove(&id);
@@ -137,12 +144,7 @@ impl Shell {
         cx.notify();
     }
 
-    pub(super) fn remember_task_draft(
-        &mut self,
-        id: TaskId,
-        text: String,
-        cx: &mut Context<Self>,
-    ) {
+    pub(super) fn remember_task_draft(&mut self, id: TaskId, text: String, cx: &mut Context<Self>) {
         self.store_draft(id, text);
         cx.notify();
     }
@@ -217,7 +219,10 @@ impl Shell {
         };
         let original = self.draft_state.sent.get(&id).map(|(_, text)| text.clone());
         if self.draft_state.accepted(id, text)
-            && self.drafts.get(&id).is_some_and(|draft| Some(draft) == original.as_ref())
+            && self
+                .drafts
+                .get(&id)
+                .is_some_and(|draft| Some(draft) == original.as_ref())
         {
             self.store_draft(id, String::new());
             if self.selected == Some(id) {
@@ -297,7 +302,11 @@ mod tests {
         let id = TaskId::new();
         let mut state = DraftState::default();
         state.changed(id);
-        state.submitted_with_display(id, "Review".into(), "Review\nAttached file: a.png\n[Image]".into());
+        state.submitted_with_display(
+            id,
+            "Review".into(),
+            "Review\nAttached file: a.png\n[Image]".into(),
+        );
         assert!(!state.accepted(id, "Review"));
         assert!(state.accepted(id, "Review\nAttached file: a.png\n[Image]"));
         state.submitted_with_display(id, "Review".into(), "display".into());

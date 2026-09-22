@@ -1,7 +1,9 @@
 //! Independently authored Synara colorways and native material roles.
-use super::{Palette, DARK, LIGHT};
-use gpui::{rgba, Rgba};
-use synara_workspace::{Colorway, DensityPreference, MotionPreference, Personalization, SurfaceMaterial};
+use super::{DARK, LIGHT, Palette};
+use gpui::{Rgba, rgba};
+use synara_workspace::{
+    Colorway, DensityPreference, MotionPreference, Personalization, SurfaceMaterial,
+};
 
 thread_local! {
     static STYLE: std::cell::RefCell<Personalization> = std::cell::RefCell::new(Personalization::default());
@@ -33,7 +35,10 @@ pub fn colorway(base: Palette, value: Colorway, dark: bool) -> Palette {
     };
     let neutral = if dark { DARK } else { LIGHT };
     Palette {
-        canvas: colors.0, sidebar: colors.1, overlay: colors.2, focus: colors.3,
+        canvas: colors.0,
+        sidebar: colors.1,
+        overlay: colors.2,
+        focus: colors.3,
         hover: mix(colors.2, neutral.text, 0.05),
         selected: mix(colors.2, colors.3, if dark { 0.15 } else { 0.12 }),
         border: mix(colors.0, neutral.text, if dark { 0.14 } else { 0.18 }),
@@ -51,7 +56,11 @@ fn mix(a: u32, b: u32, amount: f32) -> u32 {
 fn luminance(value: u32) -> f32 {
     let linear = |shift| {
         let c = ((value >> shift) & 255_u32) as f32 / 255.;
-        if c <= 0.04045 { c / 12.92 } else { ((c + 0.055) / 1.055).powf(2.4) }
+        if c <= 0.04045 {
+            c / 12.92
+        } else {
+            ((c + 0.055) / 1.055).powf(2.4)
+        }
     };
     0.2126 * linear(16) + 0.7152 * linear(8) + 0.0722 * linear(0)
 }
@@ -88,7 +97,9 @@ pub fn surface(color: u32) -> Rgba {
     STYLE.with(|style| {
         let style = style.borrow();
         let base = canvas_percent(&style);
-        if base == 100 { return alpha(color, 100); }
+        if base == 100 {
+            return alpha(color, 100);
+        }
         let target = style.panel_opacity.max(base);
         let extra = u32::from(target - base) * 255 / u32::from(100 - base);
         rgba((color << 8) | extra)
@@ -98,21 +109,35 @@ pub fn glass_edge() -> Rgba {
     STYLE.with(|style| {
         if style.borrow().material == SurfaceMaterial::Glass {
             alpha(super::palette().text, 14)
-        } else { alpha(super::palette().border, 100) }
+        } else {
+            alpha(super::palette().border, 100)
+        }
     })
 }
-pub fn chat_width() -> f32 { STYLE.with(|style| f32::from(style.borrow().chat_width)) }
+pub fn chat_width() -> f32 {
+    STYLE.with(|style| f32::from(style.borrow().chat_width))
+}
 pub fn row_height() -> f32 {
     STYLE.with(|style| match style.borrow().density {
-        DensityPreference::Compact => 28., DensityPreference::Comfortable => 30., DensityPreference::Spacious => 36.,
+        DensityPreference::Compact => 28.,
+        DensityPreference::Comfortable => 30.,
+        DensityPreference::Spacious => 36.,
     })
 }
 pub fn motion_multiplier() -> f32 {
     STYLE.with(|style| match style.borrow().motion {
-        MotionPreference::Off => 0., MotionPreference::Subtle => 0.6,
-        MotionPreference::Standard => 1., MotionPreference::Expressive => 1.4,
+        MotionPreference::Off => 0.,
+        MotionPreference::Subtle => 0.6,
+        MotionPreference::Standard => 1.,
+        MotionPreference::Expressive => 1.4,
     })
 }
-pub fn ui_font_size() -> f32 { FONT_SIZES.get().0 }
-pub fn code_font_size() -> f32 { FONT_SIZES.get().1 }
-pub fn terminal_font_size() -> f32 { STYLE.with(|style| f32::from(style.borrow().terminal_font_size)) }
+pub fn ui_font_size() -> f32 {
+    FONT_SIZES.get().0
+}
+pub fn code_font_size() -> f32 {
+    FONT_SIZES.get().1
+}
+pub fn terminal_font_size() -> f32 {
+    STYLE.with(|style| f32::from(style.borrow().terminal_font_size))
+}

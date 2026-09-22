@@ -51,19 +51,28 @@ impl RevisionState {
 
 impl Shell {
     pub(super) fn revision_navigation_blocked(&mut self, cx: &mut Context<Self>) -> bool {
-        if self.goal_navigation_blocked(cx) { return true; }
+        if self.goal_navigation_blocked(cx) {
+            return true;
+        }
         self.revision_navigation_except_goal(cx)
     }
     pub(super) fn revision_navigation_except_goal(&mut self, cx: &mut Context<Self>) -> bool {
-        if self.checkpoint_navigation_blocked(cx) { return true; }
-        if self.inline_navigation_blocked(cx) { return true; }
+        if self.checkpoint_navigation_blocked(cx) {
+            return true;
+        }
+        if self.inline_navigation_blocked(cx) {
+            return true;
+        }
         if self.handoff.open() {
-            self.error = Some("Create the continuation or discard its review before leaving.".into());
+            self.error =
+                Some("Create the continuation or discard its review before leaving.".into());
             cx.notify();
             return true;
         }
         if self.revisions.pending {
-            self.error = Some("Wait for the revision action to finish before leaving this conversation.".into());
+            self.error = Some(
+                "Wait for the revision action to finish before leaving this conversation.".into(),
+            );
             cx.notify();
             return true;
         }
@@ -74,7 +83,8 @@ impl Shell {
             || dialog.editor.read(cx).text() != dialog.original;
         if dirty {
             self.error = Some(
-                "Send, branch, move to the composer, or discard the edited message before leaving.".into(),
+                "Send, branch, move to the composer, or discard the edited message before leaving."
+                    .into(),
             );
             cx.notify();
             true
@@ -117,14 +127,7 @@ impl Shell {
             cx.notify();
             return;
         }
-        let editor = cx.new(|cx| {
-            TextEntry::new(
-                "Edit the message",
-                EntryMode::Editor,
-                260.,
-                cx,
-            )
-        });
+        let editor = cx.new(|cx| TextEntry::new("Edit the message", EntryMode::Editor, 260., cx));
         editor.update(cx, |entry, cx| entry.set_text(original.clone(), cx));
         let source = RevisionSource {
             task: task_record,
@@ -166,13 +169,7 @@ impl Shell {
                 || self.revisions.pending,
             cx.listener(move |this, _: &(), window, cx| {
                 let _ = index;
-                this.open_message_revision(
-                    task,
-                    anchor.clone(),
-                    original.clone(),
-                    window,
-                    cx,
-                )
+                this.open_message_revision(task, anchor.clone(), original.clone(), window, cx)
             }),
         )
         .size(px(24.))
@@ -191,7 +188,9 @@ impl Shell {
     }
 
     fn revision_to_composer(&mut self, cx: &mut Context<Self>) {
-        let Some(dialog) = self.revisions.dialog.as_mut() else { return };
+        let Some(dialog) = self.revisions.dialog.as_mut() else {
+            return;
+        };
         if self.revisions.pending || dialog.editor.read(cx).is_composing() {
             return;
         }
@@ -202,13 +201,17 @@ impl Shell {
             return;
         }
         if self.selected != Some(dialog.source.task.id) {
-            dialog.error = Some("Return to the source conversation before moving this revision to its composer.".into());
+            dialog.error = Some(
+                "Return to the source conversation before moving this revision to its composer."
+                    .into(),
+            );
             cx.notify();
             return;
         }
         if !self.composer.read(cx).text().is_empty() {
             dialog.error = Some(
-                "The main composer already contains a draft. Clear or send it before replacing it.".into(),
+                "The main composer already contains a draft. Clear or send it before replacing it."
+                    .into(),
             );
             cx.notify();
             return;
@@ -226,7 +229,9 @@ impl Shell {
     }
 
     fn send_revision(&mut self, cx: &mut Context<Self>) {
-        let Some(dialog) = self.revisions.dialog.as_mut() else { return };
+        let Some(dialog) = self.revisions.dialog.as_mut() else {
+            return;
+        };
         let task = dialog.source.task.id;
         if self.revisions.pending
             || self.selected != Some(task)
@@ -238,7 +243,8 @@ impl Shell {
         }
         let edited = dialog.editor.read(cx).text().to_owned();
         if edited.trim().is_empty() || edited.len() > 1024 * 1024 {
-            dialog.error = Some("The revised message must contain text and fit within 1 MiB.".into());
+            dialog.error =
+                Some("The revised message must contain text and fit within 1 MiB.".into());
             cx.notify();
             return;
         }
@@ -268,7 +274,9 @@ impl Shell {
     }
 
     fn branch_revision(&mut self, cx: &mut Context<Self>) {
-        let Some(dialog) = self.revisions.dialog.as_mut() else { return };
+        let Some(dialog) = self.revisions.dialog.as_mut() else {
+            return;
+        };
         let source_task = dialog.source.task.id;
         if self.revisions.pending
             || self.creating_task
@@ -279,7 +287,8 @@ impl Shell {
         }
         let edited = dialog.editor.read(cx).text().to_owned();
         if edited.trim().is_empty() || edited.len() > 1024 * 1024 {
-            dialog.error = Some("The revised message must contain text and fit within 1 MiB.".into());
+            dialog.error =
+                Some("The revised message must contain text and fit within 1 MiB.".into());
             cx.notify();
             return;
         }
@@ -380,11 +389,7 @@ impl Shell {
         cx.notify();
     }
 
-    pub(super) fn restore_revision_focus(
-        &mut self,
-        window: &mut Window,
-        cx: &mut Context<Self>,
-    ) {
+    pub(super) fn restore_revision_focus(&mut self, window: &mut Window, cx: &mut Context<Self>) {
         if !self.revisions.visible || !self.revisions.focus_pending {
             return;
         }
@@ -395,7 +400,12 @@ impl Shell {
     }
 
     pub(super) fn revision_overlay(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
-        let Some(dialog) = self.revisions.dialog.as_ref().filter(|_| self.revisions.visible) else {
+        let Some(dialog) = self
+            .revisions
+            .dialog
+            .as_ref()
+            .filter(|_| self.revisions.visible)
+        else {
             return div().into_any_element();
         };
         let task = dialog.source.task.id;

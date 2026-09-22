@@ -83,7 +83,9 @@ impl Shell {
             self.virtual_transcript(cx)
         });
         root = root.child(self.composer_panel(window, cx));
-        if cx.reduce_motion() { return root.into_any_element(); }
+        if cx.reduce_motion() {
+            return root.into_any_element();
+        }
         root.with_animation(
             SharedString::from(format!("conversation-entry-{}", thread.id)),
             Animation::new(crate::ui::motion::pane_duration())
@@ -284,7 +286,11 @@ impl Shell {
         }
         cx.notify();
     }
-    pub(super) fn input_request(&self, key: InteractionKey, cx: &mut Context<Self>) -> gpui::AnyElement {
+    pub(super) fn input_request(
+        &self,
+        key: InteractionKey,
+        cx: &mut Context<Self>,
+    ) -> gpui::AnyElement {
         let Some(form) = self
             .forms
             .get(&key)
@@ -412,7 +418,12 @@ impl Shell {
             panel = panel.child(row);
         }
         if let Some(error) = &form.error {
-            panel = panel.child(div().mt_2().text_color(rgb(crate::ui::palette().error)).child(error.clone()));
+            panel = panel.child(
+                div()
+                    .mt_2()
+                    .text_color(rgb(crate::ui::palette().error))
+                    .child(error.clone()),
+            );
         }
         let decline = key.clone();
         let cancel = key.clone();

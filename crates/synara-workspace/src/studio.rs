@@ -234,9 +234,7 @@ impl WorkspaceService {
     async fn local_studio_root(&self, id: TaskId) -> WorkspaceResult<PathBuf> {
         let task = self.task(id).await?;
         if task.scope != TaskScope::Studio {
-            return Err(WorkspaceError::Invalid(
-                "Select a Hub thread first.".into(),
-            ));
+            return Err(WorkspaceError::Invalid("Select a Hub thread first.".into()));
         }
         let workspace = self.workspace_for_task(&task).await?;
         if !matches!(workspace.location, WorkspaceLocation::Local { .. }) {
@@ -251,9 +249,17 @@ impl WorkspaceService {
         let task = self.task(id).await?;
         // Inspect only Hub threads in the exact same working directory. A shared
         // project ID is never permission to relabel paths from another worktree.
-        let mut peers: Vec<_> = self.catalog().await?.tasks.into_iter().filter(|peer|
-            peer.project_id == task.project_id && peer.scope == TaskScope::Studio
-                && peer.working_directory == root).collect();
+        let mut peers: Vec<_> = self
+            .catalog()
+            .await?
+            .tasks
+            .into_iter()
+            .filter(|peer| {
+                peer.project_id == task.project_id
+                    && peer.scope == TaskScope::Studio
+                    && peer.working_directory == root
+            })
+            .collect();
         peers.sort_by_key(|peer| (std::cmp::Reverse(peer.updated_at_ms), peer.id));
         let attribution_limited = peers.len() > 64;
         let mut paths = Vec::new();
@@ -261,23 +267,40 @@ impl WorkspaceService {
         let deadline = tokio::time::Instant::now() + Duration::from_secs(3);
         let mut limited = attribution_limited;
         for peer in peers.into_iter().take(64) {
-            if remaining == 0 { limited = true; break; }
-            let thread = match tokio::time::timeout_at(deadline, self.thread(peer.thread_id)).await {
+            if remaining == 0 {
+                limited = true;
+                break;
+            }
+            let thread = match tokio::time::timeout_at(deadline, self.thread(peer.thread_id)).await
+            {
                 Ok(Ok(thread)) => thread,
-                Ok(Err(_)) | Err(_) => { limited = true; break; }
+                Ok(Err(_)) | Err(_) => {
+                    limited = true;
+                    break;
+                }
             };
-            for path in thread.tools.values().filter(|tool|tool.status == ToolStatus::Completed)
-                .flat_map(|tool|tool.output.iter()).filter_map(|output| match output {
-                    ToolOutput::Diff { path, .. } => Some(PathBuf::from(path)), _ => None,
-                }).take(remaining) {
-                paths.push((path,peer.id)); remaining -= 1;
+            for path in thread
+                .tools
+                .values()
+                .filter(|tool| tool.status == ToolStatus::Completed)
+                .flat_map(|tool| tool.output.iter())
+                .filter_map(|output| match output {
+                    ToolOutput::Diff { path, .. } => Some(PathBuf::from(path)),
+                    _ => None,
+                })
+                .take(remaining)
+            {
+                paths.push((path, peer.id));
+                remaining -= 1;
             }
         }
         tokio::task::spawn_blocking(move || {
             let fs = WorkspaceFs::open(&root)?;
             let mut reported = HashMap::new();
-            for (path,task) in paths {
-                if let Ok(path) = fs.relative(&path) && visible(&path) {
+            for (path, task) in paths {
+                if let Ok(path) = fs.relative(&path)
+                    && visible(&path)
+                {
                     reported.entry(path).or_insert(task);
                 }
             }

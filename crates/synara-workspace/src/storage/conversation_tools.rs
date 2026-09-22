@@ -1,9 +1,12 @@
 //! Durable, user-owned conversation utilities. None of these operations submits
 //! prompts, changes approval policy, or launches an agent or workspace process.
 mod related;
-pub use related::{ThreadRecap, HandoffReview, HandoffTarget, RelatedThreadKind, RevisionSource, SideThreadIndex, ThreadOrigin};
 use super::*;
 use crate::{WorkspaceError, WorkspaceResult, WorkspaceService};
+pub use related::{
+    HandoffReview, HandoffTarget, RelatedThreadKind, RevisionSource, SideThreadIndex, ThreadOrigin,
+    ThreadRecap,
+};
 use serde::{Deserialize, Serialize};
 use std::{fs, io::Write, path::PathBuf};
 
@@ -653,7 +656,14 @@ mod tests {
         assert_eq!(side.working_directory, task.working_directory);
         assert_eq!(side.project_id, task.project_id);
         assert!(service.session(side.thread_id).await.unwrap().is_none());
-        assert!(service.thread(side.thread_id).await.unwrap().messages.is_empty());
+        assert!(
+            service
+                .thread(side.thread_id)
+                .await
+                .unwrap()
+                .messages
+                .is_empty()
+        );
         assert!(
             service
                 .task_draft(side.id)
@@ -674,10 +684,19 @@ mod tests {
         assert!(revised_draft.ends_with("Edited question"));
         assert!(!revised_draft.contains("Caffè 日本語"));
         assert!(service.session(revision.thread_id).await.unwrap().is_none());
-        assert!(service.thread(revision.thread_id).await.unwrap().messages.is_empty());
+        assert!(
+            service
+                .thread(revision.thread_id)
+                .await
+                .unwrap()
+                .messages
+                .is_empty()
+        );
 
-        assert_eq!(service.task_draft(task.id).await.unwrap(), "MAIN-DRAFT-CANARY");
+        assert_eq!(
+            service.task_draft(task.id).await.unwrap(),
+            "MAIN-DRAFT-CANARY"
+        );
         assert_eq!(service.catalog().await.unwrap().tasks.len(), 3);
     }
-
 }

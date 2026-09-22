@@ -1,7 +1,7 @@
 use crate::RuntimeError;
+use cap_fs_ext::{DirExt, FollowSymlinks, OpenOptionsFollowExt};
 #[cfg(unix)]
 use cap_std::fs::OpenOptionsExt;
-use cap_fs_ext::{DirExt, FollowSymlinks, OpenOptionsFollowExt};
 use cap_std::{
     ambient_authority,
     fs::{Dir, OpenOptions},

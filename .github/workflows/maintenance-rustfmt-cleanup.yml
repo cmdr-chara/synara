@@ -1,0 +1,92 @@
+name: Repository rustfmt and merged-branch cleanup
+
+on:
+  push:
+    branches: [astra/gpui-clean-rewrite]
+    paths:
+      - '.github/workflows/maintenance-rustfmt-cleanup.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: maintenance-rustfmt-cleanup-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  maintenance:
+    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/gpui-clean-rewrite'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          fetch-depth: 0
+
+      - name: Install pinned formatter
+        run: rustup toolchain install 1.98.1 --profile minimal --component rustfmt
+
+      - name: Format workspace and publish only formatting
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REPOSITORY" = cmdr-chara/synara
+          test "$GITHUB_REF" = refs/heads/astra/gpui-clean-rewrite
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+
+          cargo +1.98.1 fmt --all
+
+          python3 - <<'PY'
+          import subprocess
+          changed = [p for p in subprocess.check_output(
+              ['git', 'diff', '--name-only', '-z']
+          ).decode().split('\0') if p]
+          bad = [p for p in changed if not p.endswith('.rs')]
+          if bad:
+              raise SystemExit(f'rustfmt touched non-Rust paths: {bad}')
+          if not changed:
+              raise SystemExit('no formatting changes found')
+          print(f'Formatting {len(changed)} Rust files')
+          PY
+
+          git diff --check
+          cargo +1.98.1 fmt --all --check
+          git add -- '*.rs' 'crates/**/*.rs'
+          git -c user.name='github-actions[bot]' \
+              -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+              -c core.hooksPath=/dev/null \
+              -c commit.gpgSign=false \
+              commit -m 'style: normalize repository Rust formatting'
+
+          remote_before="$(git ls-remote origin refs/heads/astra/gpui-clean-rewrite | cut -f1)"
+          test "$remote_before" = "$GITHUB_SHA"
+          git push origin HEAD:refs/heads/astra/gpui-clean-rewrite
+
+      - name: Delete only fully merged session branches
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin '+refs/heads/*:refs/remotes/origin/*' --prune
+
+          branches=(
+            astra/device-settings
+            astra/feature-closure-sprint
+            astra/feature-closure-sprint-2
+            astra/max-feature-sprint
+            astra/max-feature-sprint-2
+            astra/plugins-skills-mcp
+            astra/pr-automations-browser
+          )
+
+          for branch in "${branches[@]}"; do
+            ref="refs/remotes/origin/$branch"
+            git show-ref --verify --quiet "$ref" || {
+              echo "Branch already absent: $branch"
+              continue
+            }
+            git merge-base --is-ancestor "$ref" HEAD || {
+              echo "Refusing to delete unmerged branch: $branch" >&2
+              exit 1
+            }
+            git push origin --delete "$branch"
+          done

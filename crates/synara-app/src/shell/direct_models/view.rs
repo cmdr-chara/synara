@@ -62,7 +62,7 @@ impl Shell {
             };
             body=body.child(row().child(title).child(note(detail))
                 .children(matches!(review,Review::Route {selection:Some(_),..}).then(||div().flex().flex_col().gap_2()
-                    .child(note("Model options (JSON). The provider/model identity is fixed by this review."))
+                    .child(note("Model options (JSON). Identity is fixed by this review. JSON schema output is validated locally before completion. Supported: types, enum/const, object properties/required/additionalProperties, items, size limits and allOf/anyOf/oneOf/not. References, formats, regexes and numeric ranges are rejected before sending."))
                     .child(div().relative().h(px(220.)).flex().flex_col().child(state.options.clone()).child(ui::layout_probe("direct-options-editor")))))
                 .child(div().flex().gap_2()
                     .child(ui::action("direct-confirm","Confirm reviewed change",None,false,cx.listener(|this,_,_,cx|this.confirm_direct_review(cx))).relative().child(ui::layout_probe("direct-confirm")))
@@ -70,7 +70,7 @@ impl Shell {
             return body.into_any_element();
         }
         if state.editing {
-            return body.child(note("Review the endpoint, models and capability metadata. Supported/unsupported/unknown are explicit. Save never makes a provider request. Keep API keys out of JSON. Changing a profile invalidates old task bindings."))
+            return body.child(note("Review the endpoint, models and capability metadata. Supported/unsupported/unknown are explicit. Save never makes a provider request. Keep API keys out of JSON. Protocols: open_ai_chat, anthropic_messages, google_generate_content. Google uses its API key header, not URL credentials. Model capabilities must be reviewed, not guessed. Changing a profile invalidates old task bindings."))
                 .child(div().relative().h(px(360.)).flex().flex_col().child(state.editor.clone()).child(ui::layout_probe("direct-config-editor")))
                 .child(div().flex().gap_2()
                     .child(ui::action("direct-save","Save reviewed providers",None,false,cx.listener(|this,_,_,cx|this.save_direct_models(cx))).relative().child(ui::layout_probe("direct-save")))
@@ -112,6 +112,9 @@ impl Shell {
                         .relative()
                         .child(ui::layout_probe("direct-custom")),
                     )
+                    .child(ui::action("direct-google", "Add Google API", None, false,
+                        cx.listener(|this, _, _, cx| this.edit_google_provider(cx)))
+                        .relative().child(ui::layout_probe("direct-google")))
                     .child(ui::action(
                         "direct-catalog",
                         "Load models.dev catalog",

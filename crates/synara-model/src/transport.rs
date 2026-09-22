@@ -75,6 +75,10 @@ impl HttpModelProvider {
                 HeaderValue::from_str(&format!("Bearer {key}"))
                     .map_err(|_| ModelError::Credential)?,
             ),
+            ProtocolFamily::GoogleGenerateContent => (
+                "x-goog-api-key",
+                HeaderValue::from_str(key).map_err(|_| ModelError::Credential)?,
+            ),
             ProtocolFamily::AnthropicMessages => (
                 "x-api-key",
                 HeaderValue::from_str(key).map_err(|_| ModelError::Credential)?,
@@ -92,13 +96,20 @@ impl HttpModelProvider {
     ) -> ModelResult<()> {
         let body = encode(profile, &request)?;
         let path = match profile.protocol {
-            ProtocolFamily::OpenAiChat => "chat/completions",
-            ProtocolFamily::AnthropicMessages => "messages",
+            ProtocolFamily::OpenAiChat => "chat/completions".into(),
+            ProtocolFamily::AnthropicMessages => "messages".into(),
+            ProtocolFamily::GoogleGenerateContent => format!(
+                "models/{}:streamGenerateContent",
+                crate::google::model_id(&request.model)?
+            ),
         };
-        let url = profile
+        let mut url = profile
             .base_url()?
-            .join(path)
+            .join(&path)
             .map_err(|_| ModelError::Invalid("request URL"))?;
+        if profile.protocol == ProtocolFamily::GoogleGenerateContent {
+            url.query_pairs_mut().append_pair("alt", "sse");
+        }
         let mut builder = self
             .client
             .post(url)
@@ -150,11 +161,13 @@ impl HttpModelProvider {
                     if event_count > 50000 {
                         return Err(ModelError::Limit);
                     }
-                    if matches!(event, ModelEvent::Finished { .. })
-                        && !matches!(request.output, OutputFormat::Text)
-                        && serde_json::from_str::<Value>(&decoder.text).is_err()
+                    if let ModelEvent::Finished { reason } = &event
+                        && let OutputFormat::JsonSchema { schema, .. } = &request.output
                     {
-                        return Err(ModelError::Protocol);
+                        if !matches!(reason.as_str(), "stop" | "end_turn") {
+                            return Err(ModelError::Incomplete);
+                        }
+                        crate::schema::validate_output(schema, &decoder.text)?;
                     }
                     events
                         .send(event)
@@ -174,6 +187,9 @@ impl HttpModelProvider {
         secrets: &dyn SecretStore,
     ) -> ModelResult<Vec<ModelInfo>> {
         profile.validate()?;
+        if profile.protocol == ProtocolFamily::GoogleGenerateContent {
+            return self.google_models(profile, secrets).await;
+        }
         let url = profile
             .base_url()?
             .join("models")
@@ -219,6 +235,56 @@ impl HttpModelProvider {
         }
         Ok(result)
     }
+    async fn google_models(
+        &self,
+        profile: &ProviderProfile,
+        secrets: &dyn SecretStore,
+    ) -> ModelResult<Vec<ModelInfo>> {
+        let mut token: Option<String> = None;
+        let mut tokens = std::collections::HashSet::new();
+        let mut ids = std::collections::HashSet::new();
+        let mut result = Vec::new();
+        // Pagination follows data tokens, never arbitrary links from a response.
+        // All pages retain the same reviewed origin, credentials and cancellation.
+        for _ in 0..8 {
+            let mut url = profile
+                .base_url()?
+                .join("models")
+                .map_err(|_| ModelError::Invalid("models URL"))?;
+            url.query_pairs_mut().append_pair("pageSize", "1000");
+            if let Some(token) = &token {
+                url.query_pairs_mut().append_pair("pageToken", token);
+            }
+            let response = self
+                .authorize(
+                    self.client.get(url).header("accept", "application/json"),
+                    profile,
+                    secrets,
+                )
+                .await?
+                .send()
+                .await
+                .map_err(|_| ModelError::Transport)?;
+            let (models, next) =
+                crate::google::models(bounded_json(response, 2 * MAX_REQUEST_BYTES).await?)?;
+            for model in models {
+                if !ids.insert(model.id.clone()) {
+                    return Err(ModelError::Protocol);
+                }
+                result.push(model);
+                if result.len() > 4096 {
+                    return Err(ModelError::Limit);
+                }
+            }
+            match next {
+                None => return Ok(result),
+                Some(next) if tokens.insert(next.clone()) => token = Some(next),
+                _ => return Err(ModelError::Protocol),
+            }
+        }
+        // Do not present a truncated collection as complete discovery.
+        Err(ModelError::Limit)
+    }
     /// Explicit user-requested community catalog refresh. No account keys, cookies,
     /// workspace context or provider requests are sent to models.dev.
     pub async fn catalog(&self, cancellation: CancellationToken) -> ModelResult<ProviderCatalog> {
@@ -257,7 +323,7 @@ impl ModelProvider for HttpModelProvider {
         tokio::select! {
             biased;
             () = cancellation.cancelled() => Err(ModelError::Cancelled),
-            result = self.models(profile, secrets) => result,
+            result = tokio::time::timeout(Duration::from_secs(120), self.models(profile, secrets)) => result.map_err(|_| ModelError::Transport)?,
         }
     }
 }

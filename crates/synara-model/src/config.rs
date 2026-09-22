@@ -9,6 +9,7 @@ use url::{Host, Url};
 pub enum ProtocolFamily {
     OpenAiChat,
     AnthropicMessages,
+    GoogleGenerateContent,
 }
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -66,6 +67,8 @@ impl ProviderProfile {
         let mut seen = HashSet::new();
         for model in &self.models {
             if !bounded_identifier(&model.id)
+                || (self.protocol == ProtocolFamily::GoogleGenerateContent
+                    && crate::google::model_id(&model.id).is_err())
                 || !bounded_identifier(&model.name)
                 || !seen.insert(&model.id)
                 || model.capabilities.source.len() > 1024
@@ -216,7 +219,7 @@ pub fn validate_request(profile: &ProviderProfile, request: &ModelRequest) -> Mo
     }
     if !matches!(request.output, OutputFormat::Text) {
         if caps.structured_output != Support::Supported
-            || profile.protocol != ProtocolFamily::OpenAiChat
+            || profile.protocol == ProtocolFamily::AnthropicMessages
         {
             return Err(ModelError::Unsupported("JSON schema output"));
         }
@@ -224,6 +227,9 @@ pub fn validate_request(profile: &ProviderProfile, request: &ModelRequest) -> Mo
             && (!tool_name(name) || !schema.is_object())
         {
             return Err(ModelError::Invalid("output schema"));
+        }
+        if let OutputFormat::JsonSchema { schema, .. } = &request.output {
+            crate::schema::check_schema(schema)?;
         }
     }
     let mut tools = HashSet::new();
@@ -241,6 +247,11 @@ pub fn validate_request(profile: &ProviderProfile, request: &ModelRequest) -> Mo
             .messages
             .iter()
             .any(|m| m.role == MessageRole::Tool || !m.tool_calls.is_empty());
+    // Google tool history requires opaque thought signatures. Do not silently
+    // drop that protocol state or claim this text runtime can replay its tools.
+    if uses_tools && profile.protocol == ProtocolFamily::GoogleGenerateContent {
+        return Err(ModelError::Unsupported("Google tool/signature round trips"));
+    }
     if uses_tools && caps.tools != Support::Supported {
         return Err(ModelError::Unsupported("tools"));
     }

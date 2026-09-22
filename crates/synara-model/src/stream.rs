@@ -196,6 +196,20 @@ impl ProtocolDecoder {
                     }
                 }
             }
+            ProtocolFamily::GoogleGenerateContent => {
+                let (parts, usage, finished) = crate::google::decode(&value)?;
+                for (text, thought) in parts {
+                    self.text_event(text, thought, &mut events)?;
+                }
+                if let Some(usage) = usage {
+                    self.usage = usage;
+                    events.push(ModelEvent::Usage(self.usage.clone()));
+                }
+                if finished {
+                    self.reason = Some("stop".into());
+                    events.extend(self.end()?);
+                }
+            }
             ProtocolFamily::AnthropicMessages => {
                 match value["type"].as_str().ok_or(ModelError::Protocol)? {
                     "message_start" => {

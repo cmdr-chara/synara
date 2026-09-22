@@ -171,6 +171,18 @@ impl Shell {
         self.direct_models.editing = true;
         cx.notify();
     }
+    fn edit_google_provider(&mut self, cx: &mut Context<Self>) {
+        if self.direct_models.busy || self.direct_models.editing || self.direct_models.review.is_some() { return; }
+        let Some(mut value) = self.direct_models.value.clone() else { return; };
+        if !value.providers.iter().any(|p| p.id == "google-direct") {
+            value.providers.push(synara_model::google_profile_example());
+        }
+        self.direct_models.editor.update(cx, |entry, cx| {
+            entry.set_text(serde_json::to_string_pretty(&value).unwrap_or_default(), cx)
+        });
+        self.direct_models.editing = true;
+        cx.notify();
+    }
     fn save_direct_models(&mut self, cx: &mut Context<Self>) {
         if self.direct_models.busy || !self.direct_models.editing {
             return;

@@ -6,12 +6,12 @@ use crate::{
 use serde_json::json;
 use synara_runtime::UnavailableSecretStore;
 
-fn profile() -> ProviderProfile {
+pub(super) fn profile() -> ProviderProfile {
     let mut p = custom_profile_example();
     p.models[0].id = "test-model".into();
     p
 }
-fn request() -> ModelRequest {
+pub(super) fn request() -> ModelRequest {
     ModelRequest {
         model: "test-model".into(),
         messages: vec![Message::text(MessageRole::User, "Hello".into())],
@@ -348,7 +348,7 @@ fn direct_request_rejects_unmatched_tool_results_and_oversized_prompts() {
     assert!(validate_request(&p, &r).is_err());
 }
 
-async fn server(response: String) -> (String, tokio::task::JoinHandle<String>) {
+pub(super) async fn server(response: String) -> (String, tokio::task::JoinHandle<String>) {
     use tokio::io::{AsyncReadExt, AsyncWriteExt};
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
     let address = listener.local_addr().unwrap();
@@ -379,7 +379,7 @@ async fn server(response: String) -> (String, tokio::task::JoinHandle<String>) {
     });
     (format!("http://{address}/v1"), task)
 }
-fn http_sse(data: &str) -> String {
+pub(super) fn http_sse(data: &str) -> String {
     format!(
         "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{data}",
         data.len()

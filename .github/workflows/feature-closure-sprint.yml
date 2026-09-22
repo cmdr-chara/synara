@@ -46,10 +46,7 @@ jobs:
             direct-conversations-1.98.1-${{ runner.os }}-
             max-feature-1.98.1-${{ runner.os }}-
       - name: Verify exact source transport and apply the scoped feature
-        run: |
-          python3 scripts/feature_closure_transfer.py prepare
-          git apply --index --check --whitespace=error-all .feature-closure-part-0004
-          git apply --index --whitespace=error-all .feature-closure-part-0004
+        run: python3 scripts/feature_closure_transfer.py prepare
       - name: Focused checks and native journeys
         run: python3 scripts/feature_closure_transfer.py check
       - name: Package exactly the checked tree

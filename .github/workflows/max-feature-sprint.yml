@@ -1,4 +1,4 @@
-name: Max feature sprint
+name: Maximum sprint final metadata
 on:
   push:
     branches: [astra/max-feature-sprint]
@@ -9,81 +9,39 @@ concurrency:
   group: max-feature-sprint
   cancel-in-progress: false
 jobs:
-  validate-and-publish:
+  verify-and-retire:
     if: github.repository == 'cmdr-chara/synara'
     runs-on: ubuntu-24.04
-    timeout-minutes: 35
+    timeout-minutes: 5
     env:
-      CARGO_BUILD_JOBS: 2
-      PYTHONDONTWRITEBYTECODE: 1
-      RUST_BACKTRACE: 0
+      PYTHONDONTWRITEBYTECODE: '1'
+      GIT_TERMINAL_PROMPT: '0'
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
           fetch-depth: 0
-      - name: Verify bounded source transport
-        run: |
-          python3 - <<'PYCODE'
-          import base64, gzip, hashlib, io, json, re
-          from pathlib import Path
-          path = Path('.synara-max-feature.json')
-          assert not path.is_symlink() and path.stat().st_size <= 8 * 1024 * 1024
-          package = json.loads(path.read_text())
-          parts = package['parts']
-          assert isinstance(parts, list) and 1 <= len(parts) <= 16
-          assert len(set(parts)) == len(parts)
-          assert all(isinstance(p, str) and re.fullmatch(r'\.synara-transfer-[0-9]{4}', p) for p in parts)
-          assert all(not Path(p).is_symlink() for p in parts)
-          assert sum(Path(p).stat().st_size for p in parts) <= 8 * 1024 * 1024
-          encoded = ''.join(Path(p).read_text().strip() for p in parts)
-          with gzip.GzipFile(fileobj=io.BytesIO(base64.b64decode(encoded, validate=True))) as stream:
-              data = stream.read(20 * 1024 * 1024 + 1)
-          assert len(data) <= 20 * 1024 * 1024
-          assert hashlib.sha256(data).hexdigest() == package['sha256'], 'Source transport checksum mismatch'
-          PYCODE
-      - name: Rust toolchain
-        run: rustup toolchain install 1.98.1 --profile minimal --component rustfmt
-      - name: Native Linux prerequisites
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libwebkit2gtk-4.1-dev libgtk-3-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil xclip fonts-dejavu-core fonts-liberation
-      - uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
-        id: deps
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: max-feature-1.98.1-${{ runner.os }}-${{ github.sha }}
-          restore-keys: |
-            max-feature-1.98.1-${{ runner.os }}-
-            native-webkit-1.98.1-${{ runner.os }}-
-      - name: Validate and publish the session slice
+      - name: Verify accepted source identity, metadata and cleanup
         id: source
+        shell: bash
         run: |
+          set -euo pipefail
           mkdir -p /tmp/max-feature-evidence
-          set -o pipefail
           python3 scripts/apply_max_feature_source.py 2>&1 | tee /tmp/max-feature-evidence/validation.log
-      - name: Preserve exact candidate and evidence
+      - name: Preserve exact final state and full history
         if: always()
+        shell: bash
         run: |
+          set -euo pipefail
           mkdir -p /tmp/max-feature-evidence
           git rev-parse HEAD > /tmp/max-feature-evidence/revision.txt
+          git rev-parse HEAD^{tree} > /tmp/max-feature-evidence/tree.txt
           git status --short > /tmp/max-feature-evidence/status.txt
           git diff HEAD > /tmp/max-feature-evidence/candidate.patch
-          cp Cargo.lock /tmp/max-feature-evidence/Cargo.lock
-          git bundle create /tmp/max-feature-evidence/source.bundle HEAD ^e12fffbb868fb80f4a3e891d3d3a4afad3a3743b
+          git ls-remote origin refs/heads/main refs/heads/astra/gpui-clean-rewrite refs/heads/astra/max-feature-sprint > /tmp/max-feature-evidence/refs.txt
+          git bundle create /tmp/max-feature-evidence/source.bundle HEAD
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:
-          name: max-feature-evidence
+          name: max-feature-final-metadata
           path: /tmp/max-feature-evidence/
           retention-days: 7
-      - uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
-        if: always() && steps.deps.outputs.cache-hit != 'true'
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: max-feature-1.98.1-${{ runner.os }}-${{ github.sha }}

@@ -58,6 +58,7 @@ pub struct Thread {
     pub title: String,
     pub state: TaskState,
     pub messages: Vec<Message>,
+    pub images: Vec<MessageImage>,
     pub message_timestamps: BTreeMap<String, i64>,
     pub turns: Vec<TurnSummary>,
     pub tools: BTreeMap<String, Tool>,
@@ -85,6 +86,7 @@ impl Thread {
             title: "New task".into(),
             state: TaskState::Ready,
             messages: vec![],
+            images: vec![],
             message_timestamps: BTreeMap::new(),
             turns: vec![],
             tools: BTreeMap::new(),
@@ -125,6 +127,10 @@ impl Thread {
         }
         let added_bytes = match &envelope.event {
             ThreadEvent::TextDelta { text, .. } => text.len(),
+            ThreadEvent::ImageMessage { image, .. } => {
+                if !image.bounded() || self.images.len() >= 256 { return Err(ReplayError::Limit); }
+                image.base64.len()
+            },
             _ => 0,
         };
         if self.seen.len() >= self.max_events
@@ -138,6 +144,7 @@ impl Thread {
                     self.replay_backup = Some(Box::new(self.clone()));
                 }
                 self.messages.clear();
+                self.images.clear();
                 self.message_timestamps.clear();
                 self.turns.clear();
                 self.tools.clear();
@@ -170,7 +177,7 @@ impl Thread {
                 self.terminals.insert(
                     id.clone(),
                     TerminalRecord {
-                        text: text.clone(),
+                        text: text.to_owned(),
                         truncated: *truncated,
                         exit_code: *exit_code,
                     },
@@ -186,11 +193,9 @@ impl Thread {
                     failed: false,
                 });
             }
-            ThreadEvent::TextDelta {
-                message_id,
-                role,
-                text,
-            } => {
+            ThreadEvent::TextDelta { message_id, role, .. }
+            | ThreadEvent::ImageMessage { message_id, role, .. } => {
+                let text = match &envelope.event { ThreadEvent::TextDelta { text, .. } => text.as_str(), _ => "" };
                 let existing = message_id.as_ref().and_then(|id| {
                     self.messages
                         .iter()
@@ -205,8 +210,9 @@ impl Thread {
                     _ => None,
                 };
                 let index = existing.or_else(|| if message_id.is_none() { tail } else { None });
-                if let Some(index) = index {
+                let index = if let Some(index) = index {
                     self.messages[index].text.push_str(text);
+                    index
                 } else {
                     let index = self.messages.len();
                     self.messages.push(Message {
@@ -214,11 +220,15 @@ impl Thread {
                             .clone()
                             .unwrap_or_else(|| format!("event-{}", envelope.id)),
                         role: *role,
-                        text: text.clone(),
+                        text: text.to_owned(),
                     });
                     self.timeline.push(TranscriptItem::Message { index });
                     self.message_timestamps
                         .insert(self.messages[index].id.clone(), envelope.timestamp_ms);
+                    index
+                };
+                if let ThreadEvent::ImageMessage { image, .. } = &envelope.event {
+                    self.images.push(MessageImage { id: envelope.id, message_id: self.messages[index].id.clone(), role: *role, image: image.clone() });
                 }
             }
             ThreadEvent::ToolChanged { patch } => {
@@ -354,7 +364,7 @@ impl ScrollOwnership {
         *self = Self::Following;
     }
     pub fn should_follow(&self, event: &ThreadEvent) -> bool {
-        *self == Self::Following && matches!(event, ThreadEvent::TextDelta { .. })
+        *self == Self::Following && matches!(event, ThreadEvent::TextDelta { .. } | ThreadEvent::ImageMessage { .. })
     }
 }
 

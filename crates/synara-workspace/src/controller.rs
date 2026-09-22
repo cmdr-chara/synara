@@ -1,4 +1,5 @@
 mod handoff;
+mod checkpoints;
 mod direct_models;
 mod integrations;
 mod browser;

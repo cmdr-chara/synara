@@ -35,7 +35,7 @@ impl Shell {
         let Some(task) = self.task().cloned() else {
             return;
         };
-        if self.saved_context.dialog.is_some()
+        if self.checkpoints.writing() || self.saved_context.dialog.is_some()
             || self.organization.dialog.is_some()
             || self.kanban.dialog.is_some()
             || self.loading_task.is_some()

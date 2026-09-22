@@ -157,6 +157,7 @@ impl Shell {
                                                 &thread.messages[*index].text,
                                                 &thread.messages[*index].id,
                                             ))
+                                            .child(self.message_media(&thread.messages[*index],cx))
                                             .into_any_element(),
                                     )
                                 }

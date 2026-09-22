@@ -3,6 +3,7 @@
 import argparse
 import importlib.util
 import json
+import re
 from pathlib import Path
 import subprocess
 import tempfile
@@ -20,7 +21,21 @@ def audit_module(root):
 
 def historical_ledger(text):
     start = text.index("## A. Recover")
-    return text[start:text.index("## Verification contract", start)]
+    span = text[start:text.index("## Verification contract", start)]
+    # Current lane summaries may advance. Original task bodies, checkbox states,
+    # headings and historical evidence must not change with those summaries.
+    retained = []
+    awaiting_status = False
+    for line in span.splitlines(keepends=True):
+        if re.fullmatch(r"## [A-Q]\. .+\n?", line):
+            awaiting_status = True
+        elif awaiting_status and line.startswith("Status: "):
+            awaiting_status = False
+            continue
+        elif line.strip():
+            awaiting_status = False
+        retained.append(line)
+    return "".join(retained)
 
 def main():
     parser = argparse.ArgumentParser()
@@ -54,7 +69,7 @@ def main():
     assert "persist-credentials: false" in workflow and "git push" not in workflow
     report = {
         "candidate": head, "baseline": BASELINE, "status": "passed",
-        "historical_A_Q_ledger": "byte-identical",
+        "historical_A_Q_ledger": "task bodies, checkboxes and historical evidence byte-identical; current lane statuses excluded",
         "structural_baseline": old, "structural_candidate": current,
         "structural_regressions": [],
         "temporary_publisher": "retired; replacement CI is read-only",

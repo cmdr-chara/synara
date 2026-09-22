@@ -381,6 +381,10 @@ impl Render for Shell {
         if self.close != CloseState::Open || self.terminal_closing {
             return self.close_panel(cx);
         }
+        if self.checkpoints.writing() {
+            window.focus(&self.close_focus, cx);
+            return self.checkpoint_busy_panel(cx);
+        }
         if !self.navigation.initialized {
             self.navigation.initialized = true;
             let weak = cx.entity().downgrade();
@@ -536,6 +540,9 @@ impl Render for Shell {
                     return;
                 }
                 if this.command_palette.open { return; }
+                if this.side_chats.split && this.side_chats.composer.read(cx).focus_handle(cx).is_focused(window) {
+                    return;
+                }
                 if (!this.zen_active() || this.settings.personalization.tools_shown)
                     && this.editor_shortcut(event, window, cx) {
                     cx.stop_propagation();

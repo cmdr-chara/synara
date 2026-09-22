@@ -199,6 +199,12 @@ pub(crate) fn prompt_parts(
                 total = total.saturating_add(text.len());
                 json!({"type":"text","text":text})
             }
+            PromptPart::MediaImage(image) => {
+                if !capabilities.image_prompts { return Err(AgentError::Unsupported("image prompts".into())); }
+                if !image.bounded() || image.source == synara_core::ImageSource::AgentReturned { return Err(AgentError::Limit); }
+                total = total.saturating_add(image.base64.len());
+                json!({"type":"image","data":image.base64,"mimeType":image.mime_type})
+            }
             PromptPart::Image { base64, mime_type } => {
                 if !capabilities.image_prompts {
                     return Err(AgentError::Unsupported("image prompts".into()));
@@ -355,6 +361,13 @@ pub(crate) fn update(
                     role,
                     text: string(content, "text")?.into(),
                 });
+            } else if content.get("type").and_then(Value::as_str) == Some("image") {
+                let image = synara_core::TranscriptImage { source: synara_core::ImageSource::AgentReturned,
+                    mime_type: optional_string(content,"mimeType").unwrap_or_default(),
+                    base64: optional_string(content,"data").unwrap_or_default() };
+                if image.bounded() {
+                    events.push(ThreadEvent::ImageMessage { message_id: optional_string(value,"messageId"), role, image });
+                } else { events.push(ThreadEvent::Notice { message: "Image unavailable: expected a bounded inline PNG or JPEG. No URL was fetched.".into() }); }
             } else {
                 events.push(ThreadEvent::Notice { message: "The agent sent non-text message content. This message type is not yet rendered.".into() });
             }
@@ -700,5 +713,26 @@ mod tests {
             prompt_parts(&prompt, &AgentCapabilities::default()),
             Err(AgentError::Unsupported(_))
         ));
+    }
+}
+
+#[cfg(test)]
+mod transcript_media_tests {
+    use super::*;
+    #[test]
+    fn provider_images_are_never_labeled_as_uploads_or_verified_generation() {
+        let events=update(&json!({"sessionUpdate":"agent_message_chunk","messageId":"a","content":{"type":"image","mimeType":"image/png","data":"AAAA","source":"uploaded"}}),&SessionConfiguration::default()).unwrap();
+        assert!(matches!(&events[0],ThreadEvent::ImageMessage{message_id:Some(id),image,..} if id=="a" && image.source==synara_core::ImageSource::AgentReturned));
+        for content in [json!({"type":"image","uri":"https://example.test/image.png"}),json!({"type":"image","mimeType":"image/svg+xml","data":"AAAA"})] {
+            let events=update(&json!({"sessionUpdate":"agent_message_chunk","content":content}),&SessionConfiguration::default()).unwrap();
+            assert!(matches!(&events[0],ThreadEvent::Notice{..}));
+        }
+    }
+    #[test]
+    fn local_provenance_is_not_an_agent_permission_or_wire_extension() {
+        let prompt=Prompt{parts:vec![PromptPart::MediaImage(synara_core::TranscriptImage{source:synara_core::ImageSource::AppSnap,mime_type:"image/png".into(),base64:"AAAA".into()})]};
+        assert!(prompt_parts(&prompt,&AgentCapabilities::default()).is_err());
+        let caps=AgentCapabilities{image_prompts:true,..Default::default()};
+        assert_eq!(prompt_parts(&prompt,&caps).unwrap(),json!([{"type":"image","mimeType":"image/png","data":"AAAA"}]));
     }
 }

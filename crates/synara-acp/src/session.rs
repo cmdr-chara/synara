@@ -52,7 +52,7 @@ impl AgentSession for AcpSession {
             .iter()
             .map(|part| match part {
                 PromptPart::Text(text) => text.clone(),
-                PromptPart::Image { .. } => "[Image]".into(),
+                PromptPart::Image { .. } | PromptPart::MediaImage(_) => "[Image]".into(),
                 PromptPart::Audio { .. } => "[Audio]".into(),
                 PromptPart::Context { uri, .. } => format!("[Context: {uri}]"),
             })
@@ -68,6 +68,22 @@ impl AgentSession for AcpSession {
                 },
             )
             .await?;
+        // Persist the exact locally submitted bytes with their message before any
+        // external write. This survives Recent pruning and never claims delivery.
+        for part in &prompt.parts {
+            let image = match part {
+                PromptPart::MediaImage(image) => Some(image.clone()),
+                PromptPart::Image { base64, mime_type } => Some(synara_core::TranscriptImage {
+                    source: synara_core::ImageSource::Uploaded, mime_type: mime_type.clone(), base64: base64.clone(),
+                }),
+                _ => None,
+            };
+            if let Some(image) = image {
+                self.state.emit(&self.connection.context, ThreadEvent::ImageMessage {
+                    message_id: Some(format!("user-{turn}")), role: Role::User, image,
+                }).await?;
+            }
+        }
         let cancellation = self.state.turn.lock().unwrap().clone();
         // Cancellation may have completed while the durable prompt events were
         // being delivered. Serialize enqueue against cancel, not response wait:

@@ -9,8 +9,10 @@ pub(super) async fn prepare(inputs: Vec<AttachmentInput>) -> WorkspaceResult<Vec
     run(move || {
         let mut result = Vec::new(); let mut total = 0usize;
         for input in inputs {
+            let source = match &input { AttachmentInput::Capture { source, .. } if source.is_capture() => *source,
+                AttachmentInput::Capture { .. } => return Err(invalid("Invalid capture provenance.")), _ => synara_core::ImageSource::Uploaded };
             let (name, bytes) = match input {
-                AttachmentInput::Bytes { name, bytes } => (name,bytes),
+                AttachmentInput::Bytes { name, bytes } | AttachmentInput::Capture { name, bytes, .. } => (name,bytes),
                 AttachmentInput::File(path) => {
                     let raw = path.to_str().ok_or_else(||invalid("Choose a file with a UTF-8 path."))?;
                     if !path.is_absolute() || raw.len() > 8192 || raw.starts_with("//") || raw.starts_with("\\\\") || raw.chars().any(char::is_control) {
@@ -25,7 +27,9 @@ pub(super) async fn prepare(inputs: Vec<AttachmentInput>) -> WorkspaceResult<Vec
             };
             total = total.saturating_add(bytes.len());
             if total > MAX_ATTACHMENT_BATCH_BYTES { return Err(invalid("The selected files exceed 2 MiB combined. Nothing was attached.")); }
-            let info = inspect(name,&bytes)?;
+            let mut info = inspect(name,&bytes)?;
+            if source.is_capture() && !info.kind.is_image() { return Err(invalid("Capture output is not an image.")); }
+            info.source = source;
             result.push(StoredAttachment { info, hex: hex::encode(bytes) });
         }
         Ok(result)
@@ -61,7 +65,7 @@ pub(super) fn inspect(name: String, bytes: &[u8]) -> WorkspaceResult<AttachmentI
         }
         (AttachmentKind::Text,None)
     };
-    Ok(AttachmentInfo { id: uuid::Uuid::new_v4().to_string(),name,kind,bytes:bytes.len(),dimensions })
+    Ok(AttachmentInfo { id: uuid::Uuid::new_v4().to_string(),name,kind,bytes:bytes.len(),dimensions,source:synara_core::ImageSource::Uploaded })
 }
 fn still_png(bytes: &[u8]) -> WorkspaceResult<()> {
     let mut at=8usize;

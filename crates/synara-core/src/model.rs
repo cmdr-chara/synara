@@ -373,6 +373,11 @@ pub enum ThreadEvent {
         role: Role,
         text: String,
     },
+    ImageMessage {
+        message_id: Option<String>,
+        role: Role,
+        image: crate::TranscriptImage,
+    },
     ToolChanged {
         patch: ToolPatch,
     },

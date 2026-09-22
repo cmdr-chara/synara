@@ -40,11 +40,11 @@ jobs:
           key: feature-closure-1.98.1-${{ runner.os }}-${{ github.sha }}
           restore-keys: |
             feature-closure-1.98.1-${{ runner.os }}-
-      - name: Prepare exact accumulated candidate
+      - name: Prepare exact accumulated candidate and schema-correct native expectation
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          import hashlib, sys
+          import hashlib, json, subprocess, sys
           sys.path.insert(0, 'scripts')
           import feature_closure_transfer as transfer
           original = transfer.read_request
@@ -63,26 +63,50 @@ jobs:
               return value
           transfer.read_request = request
           transfer.prepare()
+          repair = Path('.feature-closure-part-0013')
+          assert not repair.is_symlink() and 0 < repair.stat().st_size < 4096
+          assert hashlib.sha256(repair.read_bytes()).hexdigest() == '14cea6982679670ee6c0cdef8fde1cca0de5b6c215e03302009bc7d02652236e'
+          subprocess.run(['git', 'apply', '--index', '--check', '--whitespace=error-all', str(repair)], check=True)
+          subprocess.run(['git', 'apply', '--index', '--whitespace=error-all', str(repair)], check=True)
+          (transfer.EVIDENCE / 'source-paths.json').write_text(json.dumps(transfer.changed_paths()))
           PY
-      - name: Accumulated backend and thirteen native journeys
-        run: python3 scripts/feature_closure_transfer.py check
-      - name: Native application unit tests and structural regressions
+      - name: Complete accumulated campaign on identical product inputs
         run: |
           python3 - <<'PY'
-          import sys, re, subprocess
+          import hashlib, json, re, subprocess, sys
           from pathlib import Path
           sys.path.insert(0, 'scripts')
           import feature_closure_transfer as transfer
-          transfer.logged('app-tests.log', ['cargo', '+1.98.1', 'test', '--locked', '-p', 'synara-app'])
+          rows = subprocess.check_output(['git', 'ls-files', '-s']).decode().splitlines()
+          rows = [r for r in rows if not (r.split('\t', 1)[1].startswith('.feature-closure-') or r.split('\t', 1)[1] in {'.github/workflows/feature-closure-sprint.yml', 'scripts/feature_closure_transfer.py', 'scripts/native_chat_behavior_smoke.py'})]
+          manifest = '\n'.join(rows) + '\n'
+          assert len(rows) == 522 and hashlib.sha256(manifest.encode()).hexdigest() == '24334ca658a92f5e43a454c340e9a9015121c0a676b0f5d624aff23535f60d58'
+          (transfer.EVIDENCE / 'unchanged-campaign-inputs.txt').write_text(manifest)
+          (transfer.EVIDENCE / 'prior-campaign.json').write_text(json.dumps({'run':35750279926,'backend_passed':542,'backend_ignored':21,'feature_native_groups_passed':25,'input_sha256':'24334ca658a92f5e43a454c340e9a9015121c0a676b0f5d624aff23535f60d58'}))
+          original = transfer.logged
+          failures = []
+          def logged(name, args, allowed_errors=None):
+              try:
+                  original(name, args, allowed_errors)
+              except subprocess.CalledProcessError:
+                  if name.startswith('native-') and name != 'native-build.log':
+                      failures.append(name)
+                  else:
+                      raise
+          transfer.logged = logged
+          transfer.check()
+          original('app-tests.log', ['cargo', '+1.98.1', 'test', '--locked', '-p', 'synara-app'])
           for name in ['test_audit_workspace', 'test_native_ui_scope', 'test_ci_router', 'test_apply_source']:
-              transfer.logged(name + '.log', ['python3', 'scripts/' + name + '.py'])
-          transfer.logged('roadmap-self-test.log', ['python3', 'scripts/check_roadmap.py', '--self-test'])
+              original(name + '.log', ['python3', 'scripts/' + name + '.py'])
+          original('roadmap-self-test.log', ['python3', 'scripts/check_roadmap.py', '--self-test'])
           base = subprocess.check_output(['git', 'show', 'fe515833c565d666204f24e5257d85025dede0e9:ROADMAP.md']).decode()
           current = Path('ROADMAP.md').read_text()
           pattern = r'^- \[[ x]\] [A-Q]\d+ [^\n]*(?:\n(?:  [^\n]*|\t[^\n]*))*'
           old = re.findall(pattern, base, re.M)
           assert len(old) == 120 and old == re.findall(pattern, current, re.M)
           (transfer.EVIDENCE / 'historical-task-integrity.txt').write_text('PASS: 120 original A-Q task bodies and checkbox states unchanged\n')
+          (transfer.EVIDENCE / 'native-failures.json').write_text(json.dumps(failures))
+          assert not failures, failures
           PY
       - name: Package exactly the checked tree
         id: package

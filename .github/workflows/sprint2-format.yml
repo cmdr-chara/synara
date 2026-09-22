@@ -1,0 +1,57 @@
+name: Sprint 2 touched-path formatting
+on:
+  push:
+    branches: [astra/gpui-clean-rewrite]
+    paths: ['.github/workflows/sprint2-format.yml']
+permissions:
+  contents: write
+jobs:
+  format:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          fetch-depth: 0
+      - name: Install pinned formatter
+        run: rustup toolchain install 1.98.1 --profile minimal --component rustfmt
+      - name: Format only sprint-2 touched paths and remove this helper
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = refs/heads/astra/gpui-clean-rewrite
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          files=(
+            crates/synara-acp/src/session.rs
+            crates/synara-acp/src/wire.rs
+            crates/synara-app/src/shell/device.rs
+            crates/synara-app/src/shell/rich_media.rs
+            crates/synara-app/src/shell/saved_context.rs
+            crates/synara-app/src/shell/transcript.rs
+            crates/synara-core/src/lib.rs
+            crates/synara-core/src/thread.rs
+          )
+          rustfmt +1.98.1 --edition 2024 "${files[@]}"
+          rm .github/workflows/sprint2-format.yml
+          python3 - <<'PY'
+          import subprocess
+          allowed={
+            'crates/synara-acp/src/session.rs',
+            'crates/synara-acp/src/wire.rs',
+            'crates/synara-app/src/shell/device.rs',
+            'crates/synara-app/src/shell/rich_media.rs',
+            'crates/synara-app/src/shell/saved_context.rs',
+            'crates/synara-app/src/shell/transcript.rs',
+            'crates/synara-core/src/lib.rs',
+            'crates/synara-core/src/thread.rs',
+            '.github/workflows/sprint2-format.yml',
+          }
+          changed=set(filter(None,subprocess.check_output(['git','diff','--name-only']).decode().splitlines()))
+          if not changed <= allowed:
+              raise SystemExit(f'unexpected formatter paths: {sorted(changed-allowed)}')
+          PY
+          git diff --check
+          git add -- "${files[@]}" .github/workflows/sprint2-format.yml
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' -c core.hooksPath=/dev/null -c commit.gpgSign=false commit -m 'style: format sprint-2 touched Rust paths'
+          test "$(git ls-remote origin refs/heads/astra/gpui-clean-rewrite | cut -f1)" = "$GITHUB_SHA"
+          git push origin HEAD:refs/heads/astra/gpui-clean-rewrite

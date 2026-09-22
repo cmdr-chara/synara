@@ -342,7 +342,11 @@ fn row(
                 .flex()
                 .flex_col()
                 .gap(px(2.))
-                .child(div().font_weight(gpui::FontWeight::MEDIUM).child(title.into()))
+                .child(
+                    div()
+                        .font_weight(gpui::FontWeight::MEDIUM)
+                        .child(title.into()),
+                )
                 .children((!description.is_empty()).then(|| {
                     div()
                         .text_color(rgb(palette().muted))

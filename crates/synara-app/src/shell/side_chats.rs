@@ -169,7 +169,9 @@ impl Shell {
     }
 
     fn select_side_chat(&mut self, child: TaskId, cx: &mut Context<Self>) {
-        let Some(parent) = self.side_chats.parent else { return };
+        let Some(parent) = self.side_chats.parent else {
+            return;
+        };
         if self.side_chats.selected == Some(child) || self.side_chats.selecting {
             return;
         }
@@ -188,9 +190,11 @@ impl Shell {
             || self.side_chats.loading
             || self.side_chats.selecting
             || self.busy.contains(&child)
-            || self.side_chats.thread.as_ref().is_none_or(|thread| {
-                thread.last_sequence != 0 || !thread.timeline.is_empty()
-            })
+            || self
+                .side_chats
+                .thread
+                .as_ref()
+                .is_none_or(|thread| thread.last_sequence != 0 || !thread.timeline.is_empty())
         {
             return;
         }
@@ -293,7 +297,9 @@ impl Shell {
     }
 
     pub(super) fn remember_side_draft(&mut self, cx: &mut Context<Self>) {
-        let Some(task) = self.side_chats.selected else { return };
+        let Some(task) = self.side_chats.selected else {
+            return;
+        };
         if self.side_chats.loading {
             return;
         }
@@ -302,7 +308,9 @@ impl Shell {
     }
 
     pub(super) fn send_side_prompt(&mut self, cx: &mut Context<Self>) {
-        let Some(task) = self.side_chats.selected else { return };
+        let Some(task) = self.side_chats.selected else {
+            return;
+        };
         if self.close != CloseState::Open
             || self.side_chats.loading
             || self.side_chats.selecting
@@ -312,8 +320,16 @@ impl Shell {
         {
             return;
         }
-        if self.catalog.tasks.iter().find(|t| t.id == task).is_none_or(|t| t.state == TaskState::Archived)
-            || self.side_chats.split && self.selected == Some(task) { return; }
+        if self
+            .catalog
+            .tasks
+            .iter()
+            .find(|t| t.id == task)
+            .is_none_or(|t| t.state == TaskState::Archived)
+            || self.side_chats.split && self.selected == Some(task)
+        {
+            return;
+        }
         let text = self.side_chats.composer.read(cx).text().to_owned();
         if text.trim().is_empty() {
             return;
@@ -325,11 +341,21 @@ impl Shell {
         let controller = self.controller.clone();
         self.job(async move {
             let result = async {
-                if !controller.workspace.attachment_draft(task).await?.pending.is_empty() {
-                    return Err(WorkspaceError::Invalid("Open the full conversation to review and send its pending attachments.".into()));
+                if !controller
+                    .workspace
+                    .attachment_draft(task)
+                    .await?
+                    .pending
+                    .is_empty()
+                {
+                    return Err(WorkspaceError::Invalid(
+                        "Open the full conversation to review and send its pending attachments."
+                            .into(),
+                    ));
                 }
                 controller.submit(task, text).await
-            }.await;
+            }
+            .await;
             let details = controller.details(task).await.ok().flatten();
             Ok(Update::PromptDone {
                 task,
@@ -341,7 +367,11 @@ impl Shell {
     }
 
     pub(super) fn cancel_side_prompt(&mut self, cx: &mut Context<Self>) {
-        let Some(task) = self.side_chats.selected.filter(|task| self.busy.contains(task)) else {
+        let Some(task) = self
+            .side_chats
+            .selected
+            .filter(|task| self.busy.contains(task))
+        else {
             return;
         };
         let controller = self.controller.clone();
@@ -356,13 +386,17 @@ impl Shell {
         if self.side_chats.selected != Some(task) {
             return;
         }
-        let Some(parent) = self.side_chats.parent else { return };
+        let Some(parent) = self.side_chats.parent else {
+            return;
+        };
         let generation = self.side_chats.generation;
         self.load_side_thread(parent, task, generation, false, cx);
     }
 
     pub(super) fn side_chat_event(&mut self, envelope: &EventEnvelope, cx: &mut Context<Self>) {
-        let Some(thread) = self.side_chats.thread.as_mut() else { return };
+        let Some(thread) = self.side_chats.thread.as_mut() else {
+            return;
+        };
         if thread.id != envelope.thread_id {
             return;
         }
@@ -422,7 +456,9 @@ impl Shell {
                             self.load_side_thread(parent, child, generation, false, cx);
                         } else {
                             self.side_chats.thread = None;
-                            self.side_chats.composer.update(cx, |entry, cx| entry.clear(cx));
+                            self.side_chats
+                                .composer
+                                .update(cx, |entry, cx| entry.clear(cx));
                         }
                     }
                     Err(error) => {
@@ -548,7 +584,9 @@ impl Shell {
         cx: &mut Context<Self>,
     ) -> gpui::AnyElement {
         match &thread.timeline[index] {
-            TranscriptItem::Message { index: message_index } => {
+            TranscriptItem::Message {
+                index: message_index,
+            } => {
                 let message = &thread.messages[*message_index];
                 let user = message.role == Role::User;
                 let reasoning = message.role == Role::Reasoning;
@@ -641,35 +679,35 @@ impl Shell {
                             .flex()
                             .flex_wrap()
                             .gap_2()
-                            .children(request.choices.iter().enumerate().map(|(choice_index, choice)| {
-                                let key = key.clone();
-                                let selected = choice.id.clone();
-                                button(
-                                    ("side-permission", choice_index),
-                                    choice.label.clone(),
-                                    false,
-                                )
-                                .on_click(cx.listener(move |this, _, _, cx| {
-                                    this.answer_permission(
-                                        key.clone(),
-                                        Some(selected.clone()),
-                                        cx,
+                            .children(request.choices.iter().enumerate().map(
+                                |(choice_index, choice)| {
+                                    let key = key.clone();
+                                    let selected = choice.id.clone();
+                                    button(
+                                        ("side-permission", choice_index),
+                                        choice.label.clone(),
+                                        false,
                                     )
-                                }))
-                            }))
-                            .child(
-                                button("side-permission-cancel", "Cancel", false).on_click(
-                                    cx.listener(move |this, _, _, cx| {
-                                        this.answer_permission(key.clone(), None, cx)
-                                    }),
-                                ),
-                            ),
+                                    .on_click(cx.listener(
+                                        move |this, _, _, cx| {
+                                            this.answer_permission(
+                                                key.clone(),
+                                                Some(selected.clone()),
+                                                cx,
+                                            )
+                                        },
+                                    ))
+                                },
+                            ))
+                            .child(button("side-permission-cancel", "Cancel", false).on_click(
+                                cx.listener(move |this, _, _, cx| {
+                                    this.answer_permission(key.clone(), None, cx)
+                                }),
+                            )),
                     )
                     .into_any_element()
             }
-            TranscriptItem::Input { id } => {
-                self.input_request((thread.id, id.clone()), cx)
-            }
+            TranscriptItem::Input { id } => self.input_request((thread.id, id.clone()), cx),
             TranscriptItem::Notice { text, is_error } => div()
                 .w_full()
                 .py_2()
@@ -684,11 +722,7 @@ impl Shell {
         }
     }
 
-    pub(super) fn side_chat_panel(
-        &self,
-        _width: f32,
-        cx: &mut Context<Self>,
-    ) -> gpui::AnyElement {
+    pub(super) fn side_chat_panel(&self, _width: f32, cx: &mut Context<Self>) -> gpui::AnyElement {
         let state = &self.side_chats;
         let busy = state.selected.is_some_and(|task| self.busy.contains(&task));
         let can_send = state.selected.is_some()
@@ -725,9 +759,7 @@ impl Shell {
                             "New side chat",
                             Glyph::Plus,
                             state.creating || state.parent.is_none(),
-                            cx.listener(|this, _: &(), _, cx| {
-                                this.create_side_chat(None, cx)
-                            }),
+                            cx.listener(|this, _: &(), _, cx| this.create_side_chat(None, cx)),
                         )
                         .size(px(26.)),
                     ),
@@ -759,25 +791,19 @@ impl Shell {
                         task.title.clone(),
                         Some(self.agent_glyph(&task.agent_id)),
                         state.selected == Some(id),
-                        cx.listener(move |this, _: &(), _, cx| {
-                            this.select_side_chat(id, cx)
-                        }),
+                        cx.listener(move |this, _: &(), _, cx| this.select_side_chat(id, cx)),
                     )
                     .h(px(30.))
                     .text_size(px(12.))
                 }))
-                .children(
-                    (state.threads.is_empty() && !state.loading).then(|| {
-                        div()
-                            .px_3()
-                            .py_4()
-                            .text_size(px(12.))
-                            .text_color(rgb(palette().muted))
-                            .child(
-                                "No side chats yet. Create one here or branch from a message.",
-                            )
-                    }),
-                ),
+                .children((state.threads.is_empty() && !state.loading).then(|| {
+                    div()
+                        .px_3()
+                        .py_4()
+                        .text_size(px(12.))
+                        .text_color(rgb(palette().muted))
+                        .child("No side chats yet. Create one here or branch from a message.")
+                })),
         );
 
         if let (Some(task), Some(thread)) = (state.selected, state.thread.as_ref()) {

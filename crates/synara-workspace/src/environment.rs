@@ -232,7 +232,10 @@ mod tests {
             layout.select(tab);
         }
         assert!(layout.validate().is_ok());
-        service.save_environment_layout(layout.clone()).await.unwrap();
+        service
+            .save_environment_layout(layout.clone())
+            .await
+            .unwrap();
         assert_eq!(service.environment_layout().await.unwrap().layout, layout);
         assert_eq!(layout.tabs.len(), 5);
         assert_eq!(layout.active, Some(EnvironmentTab::SideChats));

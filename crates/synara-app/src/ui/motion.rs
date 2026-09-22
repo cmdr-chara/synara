@@ -5,8 +5,14 @@ pub const DRAWER_DURATION: Duration = Duration::from_millis(300);
 pub const PANE_DURATION: Duration = Duration::from_millis(140);
 pub const MESSAGE_DURATION: Duration = Duration::from_millis(180);
 
-pub fn pane_duration() -> Duration { PANE_DURATION.mul_f32(super::motion_multiplier()) }
-pub fn message_duration() -> Duration { MESSAGE_DURATION.mul_f32(super::motion_multiplier()).max(Duration::from_millis(1)) }
+pub fn pane_duration() -> Duration {
+    PANE_DURATION.mul_f32(super::motion_multiplier())
+}
+pub fn message_duration() -> Duration {
+    MESSAGE_DURATION
+        .mul_f32(super::motion_multiplier())
+        .max(Duration::from_millis(1))
+}
 
 /// CSS cubic-bezier evaluates y at the parameter whose x is elapsed time.
 /// Treating elapsed time as the parameter produces a different animation.

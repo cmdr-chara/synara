@@ -62,7 +62,9 @@ impl Shell {
     fn clear_finished_recap_navigation_notice(&mut self) {
         if !self.recap.pending()
             && self.error.as_deref()
-                == Some("Create or cancel the reviewed recap request before leaving this conversation.")
+                == Some(
+                    "Create or cancel the reviewed recap request before leaving this conversation.",
+                )
         {
             self.error = None;
         }
@@ -105,7 +107,8 @@ impl Shell {
         let Some(task) = self.selected.filter(|id| Some(*id) == self.recap.task) else {
             return;
         };
-        if self.recap.busy || self.recap.pending()
+        if self.recap.busy
+            || self.recap.pending()
             || self.busy.contains(&task)
             || self.connecting.contains(&task)
             || self.loading_task.is_some()
@@ -167,7 +170,8 @@ impl Shell {
         let Some(task) = self.selected.filter(|id| Some(*id) == self.recap.task) else {
             return;
         };
-        if self.recap.busy || self.recap.pending()
+        if self.recap.busy
+            || self.recap.pending()
             || self.busy.contains(&task)
             || self.loading_task.is_some()
             || self.close != CloseState::Open

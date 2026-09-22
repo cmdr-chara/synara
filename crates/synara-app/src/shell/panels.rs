@@ -1,14 +1,20 @@
 use super::*;
 impl Shell {
     pub(super) fn files_panel(&self, width: f32, cx: &mut Context<Self>) -> gpui::AnyElement {
-        if self.studio.open { return self.studio_files_panel(cx); }
+        if self.studio.open {
+            return self.studio_files_panel(cx);
+        }
         use crate::ui::{self, Glyph, palette};
         let dirty = self.active_document_dirty(cx);
         let query = self.file_search.read(cx).text().trim().to_lowercase();
-        let mut files: Vec<_> = self.files.iter().filter(|file| {
-            (self.editors.show_hidden || !file.name.starts_with('.'))
-                && (query.is_empty() || file.name.to_lowercase().contains(&query))
-        }).collect();
+        let mut files: Vec<_> = self
+            .files
+            .iter()
+            .filter(|file| {
+                (self.editors.show_hidden || !file.name.starts_with('.'))
+                    && (query.is_empty() || file.name.to_lowercase().contains(&query))
+            })
+            .collect();
         files.sort_by_key(|file| (!file.directory, file.name.to_lowercase()));
         let count = files.len();
         let page = self.file_page.min(count.saturating_sub(1) / 400);

@@ -46,14 +46,24 @@ impl KanbanState {
     }
 }
 fn column(task: &Task, starting: bool) -> Option<usize> {
-    if task.scope == TaskScope::Studio { return None; }
+    if task.scope == TaskScope::Studio {
+        return None;
+    }
     execution_column(task, starting)
 }
 fn execution_column(task: &Task, starting: bool) -> Option<usize> {
-    if task.state == TaskState::Archived { return None; }
-    Some(if starting || matches!(task.state, TaskState::Running | TaskState::Waiting) {
-        1
-    } else if task.state == TaskState::Ready { 0 } else { 2 })
+    if task.state == TaskState::Archived {
+        return None;
+    }
+    Some(
+        if starting || matches!(task.state, TaskState::Running | TaskState::Waiting) {
+            1
+        } else if task.state == TaskState::Ready {
+            0
+        } else {
+            2
+        },
+    )
 }
 fn title(text: &str) -> String {
     text.split_whitespace()
@@ -65,7 +75,8 @@ fn title(text: &str) -> String {
 }
 impl Shell {
     pub(super) fn open_task_dialog(&mut self, draft: bool, cx: &mut Context<Self>) {
-        if self.hub_navigation_blocked(cx) || self.close != CloseState::Open
+        if self.hub_navigation_blocked(cx)
+            || self.close != CloseState::Open
             || self.kanban.dialog.is_some()
             || self.kanban.creating
             || self.creating_task
@@ -75,19 +86,32 @@ impl Shell {
         // Capture the origin when the dialog opens. Later navigation must not
         // change whether a request creates a normal task or a Hub task.
         let hub = if self.navigation.studio {
-            let Some(hub) = self.hubs.rows.iter().find(|hub|
-                Some(hub.profile.project) == self.hubs.selected && !hub.profile.archived)
-            else {
+            let Some(hub) = self.hubs.rows.iter().find(|hub| {
+                Some(hub.profile.project) == self.hubs.selected && !hub.profile.archived
+            }) else {
                 self.error = Some("Select an active Hub before creating a task.".into());
                 cx.notify();
                 return;
             };
             Some(hub.profile.project)
-        } else { None };
-        let projects: Vec<_> = self.catalog.projects.iter()
+        } else {
+            None
+        };
+        let projects: Vec<_> = self
+            .catalog
+            .projects
+            .iter()
             .filter(|p| hub.map_or_else(|| !self.is_chat_workspace(p), |id| p.id == id))
-            .map(|p| (p.id, self.hubs.rows.iter().find(|h| Some(h.profile.project) == hub)
-                .map_or_else(|| p.name.clone(), |h| h.profile.name.clone())))
+            .map(|p| {
+                (
+                    p.id,
+                    self.hubs
+                        .rows
+                        .iter()
+                        .find(|h| Some(h.profile.project) == hub)
+                        .map_or_else(|| p.name.clone(), |h| h.profile.name.clone()),
+                )
+            })
             .collect();
         if projects.is_empty() {
             self.notice = Some("Open a project before creating a Kanban task.".into());
@@ -143,7 +167,12 @@ impl Shell {
         let hub = self.kanban.dialog_hub;
         if hub.is_some_and(|id| id != request.project) {
             if let Some(dialog) = &self.kanban.dialog {
-                dialog.update(cx, |d, cx| d.failed("The task belongs to a different Hub. Reopen the task composer.".into(), cx));
+                dialog.update(cx, |d, cx| {
+                    d.failed(
+                        "The task belongs to a different Hub. Reopen the task composer.".into(),
+                        cx,
+                    )
+                });
             }
             return;
         }
@@ -159,12 +188,21 @@ impl Shell {
             let result = if hub.is_some() {
                 // The dialog contains the full reviewed prompt. Never insert
                 // hidden shared context into a Create-and-run request.
-                workspace.create_hub_task(project, title(&text), agent, text.clone()).await
+                workspace
+                    .create_hub_task(project, title(&text), agent, text.clone())
+                    .await
             } else {
-                workspace.create_scoped_task_with_draft(
-                    project, title(&text), agent, TaskScope::Project, text.clone(),
-                ).await
-            }.map_err(|e| e.to_string());
+                workspace
+                    .create_scoped_task_with_draft(
+                        project,
+                        title(&text),
+                        agent,
+                        TaskScope::Project,
+                        text.clone(),
+                    )
+                    .await
+            }
+            .map_err(|e| e.to_string());
             Ok(Update::Kanban(Box::new(KanbanReply::Created(
                 result, text, send,
             ))))
@@ -189,11 +227,9 @@ impl Shell {
             || self.connecting.contains(&id)
             || self.controls.is_pending(id)
             || self.kanban.launching.contains_key(&id)
-            || !self
-                .catalog
-                .tasks
-                .iter()
-                .any(|t| t.id == id && execution_column(t, false) == Some(0) && self.kanban_task_can_run(t))
+            || !self.catalog.tasks.iter().any(|t| {
+                t.id == id && execution_column(t, false) == Some(0) && self.kanban_task_can_run(t)
+            })
         {
             return;
         }
@@ -216,9 +252,16 @@ impl Shell {
     }
     fn submit_kanban_text(&mut self, id: TaskId, text: String, cx: &mut Context<Self>) {
         self.kanban.launching.remove(&id);
-        let context_only = self.catalog.tasks.iter().any(|task| task.id == id && task.scope == TaskScope::Studio)
-            && (text.starts_with("## Hub instructions\n") || text.starts_with("## Shared Hub knowledge\n"))
-            && text.rsplit_once("\nTask:\n").is_some_and(|(_, task)| task.trim().is_empty());
+        let context_only = self
+            .catalog
+            .tasks
+            .iter()
+            .any(|task| task.id == id && task.scope == TaskScope::Studio)
+            && (text.starts_with("## Hub instructions\n")
+                || text.starts_with("## Shared Hub knowledge\n"))
+            && text
+                .rsplit_once("\nTask:\n")
+                .is_some_and(|(_, task)| task.trim().is_empty());
         if text.trim().is_empty() || context_only {
             self.notice = Some("Open this task and write a prompt before running it.".into());
             return;
@@ -227,11 +270,9 @@ impl Shell {
             || self.busy.contains(&id)
             || self.connecting.contains(&id)
             || self.controls.is_pending(id)
-            || !self
-                .catalog
-                .tasks
-                .iter()
-                .any(|t| t.id == id && execution_column(t, false) == Some(0) && self.kanban_task_can_run(t))
+            || !self.catalog.tasks.iter().any(|t| {
+                t.id == id && execution_column(t, false) == Some(0) && self.kanban_task_can_run(t)
+            })
         {
             return;
         }
@@ -373,8 +414,15 @@ impl Shell {
     }
     pub(super) fn kanban_heading(&self) -> String {
         if self.navigation.studio {
-            return self.hubs.rows.iter().find(|hub| Some(hub.profile.project) == self.hubs.selected)
-                .map_or_else(|| "Hub tasks".into(), |hub| format!("{} · Tasks", hub.profile.name));
+            return self
+                .hubs
+                .rows
+                .iter()
+                .find(|hub| Some(hub.profile.project) == self.hubs.selected)
+                .map_or_else(
+                    || "Hub tasks".into(),
+                    |hub| format!("{} · Tasks", hub.profile.name),
+                );
         }
         self.kanban
             .project
@@ -383,7 +431,12 @@ impl Shell {
     }
     pub(super) fn kanban_count(&self) -> usize {
         if self.navigation.studio {
-            return self.catalog.tasks.iter().filter(|task| self.in_hub_board(task)).count();
+            return self
+                .catalog
+                .tasks
+                .iter()
+                .filter(|task| self.in_hub_board(task))
+                .count();
         }
         self.catalog
             .tasks
@@ -537,7 +590,9 @@ impl Shell {
             .into_any_element()
     }
     pub(super) fn kanban_panel(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
-        if self.navigation.studio { return self.hub_task_board(cx); }
+        if self.navigation.studio {
+            return self.hub_task_board(cx);
+        }
         let project = self
             .kanban
             .project

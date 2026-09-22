@@ -17,7 +17,9 @@ impl Shell {
         maximized: bool,
         cx: &mut Context<Self>,
     ) -> gpui::AnyElement {
-        if self.zen_active() { return self.zen_toolbar(viewport_width, maximized, cx); }
+        if self.zen_active() {
+            return self.zen_toolbar(viewport_width, maximized, cx);
+        }
         let docked = dock_width > 0.;
         let navigation_width = (ui::SIDEBAR_WIDTH * sidebar_fraction).max(208.);
         let has_chat = !self.environment.maximized
@@ -59,14 +61,22 @@ impl Shell {
                         "Commands (Ctrl/Cmd+Shift+P)",
                         Glyph::Shortcut,
                         false,
-                        cx.listener(|this, _: &(), window, cx| this.open_command_palette(window, cx)),
+                        cx.listener(|this, _: &(), window, cx| {
+                            this.open_command_palette(window, cx)
+                        }),
                     ))
                     .child(ui::chrome_button(
-                        "zen-mode", "Zen mode · Ctrl/Cmd+Alt+Z", Glyph::Goal, self.settings.saving,
+                        "zen-mode",
+                        "Zen mode · Ctrl/Cmd+Alt+Z",
+                        Glyph::Goal,
+                        self.settings.saving,
                         cx.listener(|this, _: &(), _, cx| this.toggle_zen(cx)),
                     ))
                     .child(ui::chrome_button(
-                        "active-tasks", "Active tasks and pending decisions", Glyph::Bell, false,
+                        "active-tasks",
+                        "Active tasks and pending decisions",
+                        Glyph::Bell,
+                        false,
                         cx.listener(|this, _: &(), window, cx| this.open_attention(window, cx)),
                     ))
                     .child(ui::chrome_button(
@@ -171,39 +181,41 @@ impl Shell {
                         .aria_label("Review a related provider continuation")
                     }))
                     .children(
-                        (!matches!(self.panel, Panel::Settings | Panel::Kanban | Panel::Hubs)).then(|| {
-                            ui::chrome_button(
-                                "Terminal",
-                                "Terminal",
-                                Glyph::Dock,
-                                false,
-                                cx.listener(|this, _: &(), _, cx| {
-                                    if this.panel == Panel::Terminal {
-                                        this.hide_environment(cx);
-                                    } else {
-                                        this.set_panel(Panel::Terminal, cx);
-                                    }
-                                }),
-                            )
-                        }),
+                        (!matches!(self.panel, Panel::Settings | Panel::Kanban | Panel::Hubs))
+                            .then(|| {
+                                ui::chrome_button(
+                                    "Terminal",
+                                    "Terminal",
+                                    Glyph::Dock,
+                                    false,
+                                    cx.listener(|this, _: &(), _, cx| {
+                                        if this.panel == Panel::Terminal {
+                                            this.hide_environment(cx);
+                                        } else {
+                                            this.set_panel(Panel::Terminal, cx);
+                                        }
+                                    }),
+                                )
+                            }),
                     )
                     .children(
-                        (!matches!(self.panel, Panel::Settings | Panel::Kanban | Panel::Hubs)).then(|| {
-                            ui::chrome_button(
-                                "Files",
-                                "Toggle workspace pane",
-                                Glyph::PanelRight,
-                                false,
-                                cx.listener(|this, _: &(), _, cx| {
-                                    if this.dock_open() {
-                                        this.hide_environment(cx);
-                                    } else {
-                                        this.set_panel(Panel::Dock, cx);
-                                    }
-                                }),
-                            )
-                            .when(docked, |el| el.bg(rgb(palette().overlay)))
-                        }),
+                        (!matches!(self.panel, Panel::Settings | Panel::Kanban | Panel::Hubs))
+                            .then(|| {
+                                ui::chrome_button(
+                                    "Files",
+                                    "Toggle workspace pane",
+                                    Glyph::PanelRight,
+                                    false,
+                                    cx.listener(|this, _: &(), _, cx| {
+                                        if this.dock_open() {
+                                            this.hide_environment(cx);
+                                        } else {
+                                            this.set_panel(Panel::Dock, cx);
+                                        }
+                                    }),
+                                )
+                                .when(docked, |el| el.bg(rgb(palette().overlay)))
+                            }),
                     ),
             )
             .children(docked.then(|| {
@@ -449,7 +461,9 @@ impl Render for Shell {
             && !self.chat_tools.find_open
             && !self.revisions.open()
             && !self.handoff.open()
-            && !(self.dock_open() && self.environment.maximized && (!self.zen_active() || self.settings.personalization.tools_shown))
+            && !(self.dock_open()
+                && self.environment.maximized
+                && (!self.zen_active() || self.settings.personalization.tools_shown))
         {
             let focus = self.composer.read(cx).focus_handle(cx);
             window.focus(&focus, cx);
@@ -482,9 +496,16 @@ impl Render for Shell {
             self.navigation.drawer.value(now)
         };
         let sidebar_fraction = if self.zen_active() {
-            if self.settings.personalization.navigation_shown { 1.0 } else { 0.0 }
-        } else { sidebar_fraction };
-        let dock_open = self.dock_open() && (!self.zen_active() || self.settings.personalization.tools_shown);
+            if self.settings.personalization.navigation_shown {
+                1.0
+            } else {
+                0.0
+            }
+        } else {
+            sidebar_fraction
+        };
+        let dock_open =
+            self.dock_open() && (!self.zen_active() || self.settings.personalization.tools_shown);
         if dock_open {
             self.dock_panel = self.panel;
         }
@@ -493,11 +514,15 @@ impl Render for Shell {
                 .set_open(dock_open, now, cx.reduce_motion());
         }
         let dock_fraction = if self.zen_active() && !self.settings.personalization.tools_shown
-            || self.panel != Panel::Conversation && !dock_open {
+            || self.panel != Panel::Conversation && !dock_open
+        {
             0.
         } else {
-            if cx.reduce_motion() { if dock_open { 1. } else { 0. } }
-            else { self.dock_motion.value(now) }
+            if cx.reduce_motion() {
+                if dock_open { 1. } else { 0. }
+            } else {
+                self.dock_motion.value(now)
+            }
         };
         if !cx.reduce_motion() && self.dock_motion.running(now) {
             cx.on_next_frame(window, |_, _, cx| cx.notify());
@@ -526,25 +551,42 @@ impl Render for Shell {
                     || this.organization.dialog.is_some()
                     || this.saved_context.dialog.is_some()
                     || this.revisions.open()
-                        || this.handoff.open()
+                    || this.handoff.open()
                     || this.settings.personalization.attention_open
                     || this.explorer.modal_open()
                 {
                     return;
                 }
-                if !this.terminal_view.read(cx).focus_handle(cx).is_focused(window)
+                if !this
+                    .terminal_view
+                    .read(cx)
+                    .focus_handle(cx)
+                    .is_focused(window)
                     && this.zen_shortcut(event, cx)
-                { cx.stop_propagation(); return; }
+                {
+                    cx.stop_propagation();
+                    return;
+                }
                 if this.command_palette_shortcut(event, window, cx) {
                     cx.stop_propagation();
                     return;
                 }
-                if this.command_palette.open { return; }
-                if this.side_chats.split && this.side_chats.composer.read(cx).focus_handle(cx).is_focused(window) {
+                if this.command_palette.open {
+                    return;
+                }
+                if this.side_chats.split
+                    && this
+                        .side_chats
+                        .composer
+                        .read(cx)
+                        .focus_handle(cx)
+                        .is_focused(window)
+                {
                     return;
                 }
                 if (!this.zen_active() || this.settings.personalization.tools_shown)
-                    && this.editor_shortcut(event, window, cx) {
+                    && this.editor_shortcut(event, window, cx)
+                {
                     cx.stop_propagation();
                     return;
                 }
@@ -590,7 +632,9 @@ impl Render for Shell {
                     }
                 }
                 if this.native_navigation_shortcut(event, cx) {
-                    if this.navigation.menu_open { this.dismiss_tools(window, cx); }
+                    if this.navigation.menu_open {
+                        this.dismiss_tools(window, cx);
+                    }
                     cx.stop_propagation();
                 }
             }))
@@ -660,7 +704,12 @@ impl Render for Shell {
                             .min_w_0()
                             .min_h_0()
                             .children(self.hubs.error_message().map(|error| {
-                                div().px_4().py_2().bg(rgb(palette().error_surface)).text_color(rgb(palette().error)).child(error.to_owned())
+                                div()
+                                    .px_4()
+                                    .py_2()
+                                    .bg(rgb(palette().error_surface))
+                                    .text_color(rgb(palette().error))
+                                    .child(error.to_owned())
                             }))
                             .children(self.error.as_ref().map(|error| {
                                 div()
@@ -701,8 +750,17 @@ impl Render for Shell {
                     .menu_open()
                     .then(|| self.chat_tools_overlay(cx)),
             )
-            .children(self.command_palette.open.then(|| self.command_palette_overlay(cx)))
-            .children(self.settings.personalization.attention_open.then(|| self.attention_overlay(cx)))
+            .children(
+                self.command_palette
+                    .open
+                    .then(|| self.command_palette_overlay(cx)),
+            )
+            .children(
+                self.settings
+                    .personalization
+                    .attention_open
+                    .then(|| self.attention_overlay(cx)),
+            )
             .children(self.kanban.dialog.clone())
             .children(self.organization.dialog.clone())
             .children(self.saved_context.dialog.clone())

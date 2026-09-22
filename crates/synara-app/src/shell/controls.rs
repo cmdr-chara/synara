@@ -288,7 +288,8 @@ impl Shell {
             rows.push((
                 Choice {
                     label: "Debug mode".into(),
-                    detail: "Observe, reproduce, investigate, fix and verify with saved evidence".into(),
+                    detail: "Observe, reproduce, investigate, fix and verify with saved evidence"
+                        .into(),
                     icon: Some(ui::Glyph::Debug),
                     ..Default::default()
                 },
@@ -541,7 +542,10 @@ impl Shell {
             return;
         }
         match action {
-            ControlAction::DebugWorkflow => { self.open_debug(cx); return; }
+            ControlAction::DebugWorkflow => {
+                self.open_debug(cx);
+                return;
+            }
             ControlAction::Project(id) => {
                 self.navigate_project(id, cx);
                 return;

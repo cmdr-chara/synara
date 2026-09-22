@@ -10,8 +10,12 @@ use synara_runtime::{
     TerminalKey, TerminalModifiers, TerminalRenderSnapshot,
 };
 
-fn cell_width() -> f32 { 8.45 * crate::ui::terminal_font_size() / 14. }
-fn line_height() -> f32 { 18.0 * crate::ui::terminal_font_size() / 14. }
+fn cell_width() -> f32 {
+    8.45 * crate::ui::terminal_font_size() / 14.
+}
+fn line_height() -> f32 {
+    18.0 * crate::ui::terminal_font_size() / 14.
+}
 const CURSOR_UNFOCUSED: u32 = 0x596779;
 
 #[derive(Clone)]
@@ -96,7 +100,13 @@ impl TerminalSession {
 }
 
 /// Only native workspace commands, never shell text or provider permissions.
-pub(super) enum WorkspaceEvent { Focused, New, Next(bool), Find, Close }
+pub(super) enum WorkspaceEvent {
+    Focused,
+    New,
+    Next(bool),
+    Find,
+    Close,
+}
 impl gpui::EventEmitter<WorkspaceEvent> for TerminalView {}
 
 pub(super) struct TerminalView {
@@ -253,14 +263,20 @@ impl TerminalView {
     }
 
     pub(super) fn selection_or_viewport(&self) -> String {
-        self.selected_text().unwrap_or_else(|| self.snapshot.as_ref()
-            .map_or_else(String::new, |snapshot| snapshot.grid.plain_text()))
+        self.selected_text().unwrap_or_else(|| {
+            self.snapshot
+                .as_ref()
+                .map_or_else(String::new, |snapshot| snapshot.grid.plain_text())
+        })
     }
 
     pub(super) fn follow_output(&mut self, cx: &mut Context<Self>) {
         if let Some(session) = self.session.as_ref().or(self.history.as_ref()) {
             match session.scrollback(0) {
-                Ok(()) => { self.scrollback = 0; self.selection = None; }
+                Ok(()) => {
+                    self.scrollback = 0;
+                    self.selection = None;
+                }
                 Err(error) => self.error = Some(error.to_string()),
             }
         }
@@ -269,29 +285,46 @@ impl TerminalView {
 
     /// Exact, case-sensitive search in the current bounded terminal viewport.
     /// Match offsets are converted back to cells, including wide Unicode glyphs.
-    pub(super) fn find_visible(&mut self, query: &str, backwards: Option<bool>, cx: &mut Context<Self>) -> (usize, usize) {
+    pub(super) fn find_visible(
+        &mut self,
+        query: &str,
+        backwards: Option<bool>,
+        cx: &mut Context<Self>,
+    ) -> (usize, usize) {
         if query.is_empty() || query.len() > 512 {
             self.find_cursor = None;
             self.selection = None;
             cx.notify();
             return (0, 0);
         }
-        let Some(snapshot) = &self.snapshot else { return (0, 0) };
+        let Some(snapshot) = &self.snapshot else {
+            return (0, 0);
+        };
         let grid = &snapshot.grid;
         let mut matches = Vec::new();
         for row in 0..grid.rows {
             let mut text = String::new();
             let mut cells = Vec::new();
             for column in 0..grid.columns {
-                let Some(cell) = grid.cell(row, column) else { continue };
-                if cell.continuation { continue; }
+                let Some(cell) = grid.cell(row, column) else {
+                    continue;
+                };
+                if cell.continuation {
+                    continue;
+                }
                 let start = text.len();
-                text.push_str(if cell.text.is_empty() { " " } else { &cell.text });
+                text.push_str(if cell.text.is_empty() {
+                    " "
+                } else {
+                    &cell.text
+                });
                 cells.push((start, text.len(), column));
             }
             for (offset, _) in text.match_indices(query) {
                 let start = cells.iter().find(|(a, b, _)| *a <= offset && offset < *b);
-                let end = cells.iter().find(|(a, b, _)| *a < offset + query.len() && offset + query.len() <= *b);
+                let end = cells
+                    .iter()
+                    .find(|(a, b, _)| *a < offset + query.len() && offset + query.len() <= *b);
                 if let (Some((_, _, start)), Some((_, _, end))) = (start, end) {
                     matches.push(((row, *start), (row, *end)));
                 }
@@ -303,7 +336,11 @@ impl TerminalView {
             cx.notify();
             return (0, 0);
         }
-        let previous = self.find_cursor.as_ref().filter(|(text, revision, _)| text == query && *revision == grid.revision).map(|(_, _, index)| *index);
+        let previous = self
+            .find_cursor
+            .as_ref()
+            .filter(|(text, revision, _)| text == query && *revision == grid.revision)
+            .map(|(_, _, index)| *index);
         let index = match (previous, backwards) {
             (Some(index), Some(true)) => (index + matches.len() - 1) % matches.len(),
             (Some(index), Some(false)) => (index + 1) % matches.len(),
@@ -518,9 +555,13 @@ impl TerminalView {
 
 impl gpui::Render for TerminalView {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
-        if let Some(focus) = self.pending_focus.take() { window.focus(&focus, cx); }
+        if let Some(focus) = self.pending_focus.take() {
+            window.focus(&focus, cx);
+        }
         let focused = self.focus.is_focused(window);
-        if focused && !self.reported_focus { cx.emit(WorkspaceEvent::Focused); }
+        if focused && !self.reported_focus {
+            cx.emit(WorkspaceEvent::Focused);
+        }
         self.reported_focus = focused;
         let entity = cx.entity();
         let paint_entity = entity.clone();
@@ -868,9 +909,14 @@ fn paint_grid(
             // The pane already supplies its tint. Default cells must not paint
             // a second solid rectangle over the desktop-visible material.
             run.background_color = if cell.background == TerminalColor::Default
-                && !cell.inverse && !selected(selection, row, column)
+                && !cell.inverse
+                && !selected(selection, row, column)
                 && (grid.cursor_hidden || grid.cursor != (row, column))
-            { None } else { Some(rgb(background).into()) };
+            {
+                None
+            } else {
+                Some(rgb(background).into())
+            };
             if cell.bold {
                 run.font.weight = FontWeight::BOLD;
             }
@@ -889,9 +935,12 @@ fn paint_grid(
         if text.is_empty() {
             continue;
         }
-        let line = window
-            .text_system()
-            .shape_line(SharedString::from(text), px(crate::ui::terminal_font_size()), &runs, None);
+        let line = window.text_system().shape_line(
+            SharedString::from(text),
+            px(crate::ui::terminal_font_size()),
+            &runs,
+            None,
+        );
         let origin = gpui::point(
             bounds.left(),
             bounds.top() + px(f32::from(row) * line_height()),
@@ -930,10 +979,12 @@ fn paint_preedit(
         color: Some(rgb(0x8bb9f5).into()),
         wavy: false,
     });
-    let line =
-        window
-            .text_system()
-            .shape_line(SharedString::from(text.to_owned()), px(crate::ui::terminal_font_size()), &[run], None);
+    let line = window.text_system().shape_line(
+        SharedString::from(text.to_owned()),
+        px(crate::ui::terminal_font_size()),
+        &[run],
+        None,
+    );
     let origin = gpui::point(
         bounds.left() + px(f32::from(cursor.1) * cell_width()),
         bounds.top() + px(f32::from(cursor.0) * line_height()),

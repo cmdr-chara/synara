@@ -1,1 +1,149 @@
-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
+diff --git a/crates/synara-app/src/shell/goals.rs b/crates/synara-app/src/shell/goals.rs
+--- a/crates/synara-app/src/shell/goals.rs
++++ b/crates/synara-app/src/shell/goals.rs
+@@ -245,7 +245,7 @@
+             false
+         }
+     }
+-    fn resume_goals(&mut self, cx: &mut Context<Self>) {
++    fn goal_resume_ready(&self, cx: &App) -> bool {
+         if self.goals.busy
+             || self.goals.lease.is_some()
+             || self.goals.dirty(cx)
+@@ -253,25 +253,27 @@
+             || self.close != CloseState::Open
+             || self.composer.read(cx).is_composing()
+         {
+-            return;
+-        }
+-        let (Some(task), Some(thread), Some(value)) =
++            return false;
++        }
++        let (Some(task), Some(thread), Some(_)) =
+             (self.task(), self.thread.as_ref(), self.goals.value.as_ref())
+         else {
+-            return;
++            return false;
+         };
+-        if Some(task.id) != self.goals.task
+-            || self.busy.contains(&task.id)
+-            || self.connecting.contains(&task.id)
+-            || self.controls.is_pending(task.id)
+-            || self.attachments_have_pending()
+-            || self.attachment_send_blocked()
+-            || self.pending.keys().any(|(t, _)| *t == thread.id)
+-            || matches!(
++        Some(task.id) == self.goals.task
++            && !self.busy.contains(&task.id)
++            && !self.connecting.contains(&task.id)
++            && !self.controls.is_pending(task.id)
++            && !self.attachments_have_pending()
++            && !self.attachment_send_blocked()
++            && !self.pending.keys().any(|(t, _)| *t == thread.id)
++            && !matches!(
+                 task.state,
+                 TaskState::Archived | TaskState::Running | TaskState::Waiting
+             )
+-        {
++    }
++    fn resume_goals(&mut self, cx: &mut Context<Self>) {
++        if !self.goal_resume_ready(cx) {
+             self.goals.error = Some(
+                 "Finish the current turn, approvals and attachment edits before resuming a goal."
+                     .into(),
+@@ -279,6 +281,11 @@
+             cx.notify();
+             return;
+         }
++        let (Some(task), Some(thread), Some(value)) =
++            (self.task(), self.thread.as_ref(), self.goals.value.as_ref())
++        else {
++            return;
++        };
+         match value.prepare(task.id, self.composer.read(cx).text()) {
+             Ok(text) => {
+                 let task = task.id;
+@@ -771,11 +778,11 @@
+                         "goal-resume",
+                         "Prepare and resume (2 follow-ups)",
+                         ui::Glyph::Send,
+-                        disabled,
++                        !self.goal_resume_ready(cx),
+                         cx.listener(|this, _: &(), _, cx| this.resume_goals(cx)),
+                     )
+                     .relative()
+-                    .child(ui::layout_probe("goal-resume")),
++                    .child(ui::layout_probe_enabled("goal-resume", self.goal_resume_ready(cx))),
+                 )
+                 .child(ui::action(
+                     "goal-discard",
+diff --git a/scripts/native_goals_smoke.py b/scripts/native_goals_smoke.py
+--- a/scripts/native_goals_smoke.py
++++ b/scripts/native_goals_smoke.py
+@@ -27,7 +27,7 @@
+     click(s,'goal-open')
+     save(s,task,'fixture-goal-budget')
+     initial=count(s)
+-    click(s,'goal-resume')
++    s.click_control('goal-resume',enabled=True)
+     s.click_control('composer-input')
+     request=s.desktop.copy_input()
+     assert task in request and 'at most two' in request and 'current task' in request
+@@ -39,7 +39,7 @@
+     assert count(s)==initial and preference(s,key)['status']=='paused'
+     click(s,'goal-open')
+     fill(s,'composer-input','')
+-    click(s,'goal-resume');click(s,'composer-submit')
++    s.click_control('goal-resume',enabled=True);click(s,'composer-submit')
+     wait_until(lambda: count(s)>initial,'explicit Send keeps the goal lease and starts the turn')
+     wait_until(lambda: preference(s,key)['status']=='blocked','bounded goal pursuit exhausted',30)
+     assert 'budget' in preference(s,key)['note'] and count(s)==initial+3
+@@ -48,7 +48,7 @@
+     s.checks.append('explicit-inert-resume-and-restart-with-exactly-two-automatic-followups')
+     save(s,task,'fixture-goal-budget')
+     initial=count(s)
+-    click(s,'goal-resume');click(s,'composer-submit')
++    s.click_control('goal-resume',enabled=True);click(s,'composer-submit')
+     wait_until(lambda: 'Follow-up preview' in preference(s,key)['note'],'visible countdown')
+     fill(s,'composer-input','My manual message has priority')
+     wait_until(lambda: 'User input' in preference(s,key)['note'],'new user input pauses continuation')
+@@ -58,11 +58,11 @@
+     s.checks.append('user-draft-priority-cancels-countdown-without-overwriting-or-sending-it')
+     fill(s,'composer-input','')
+     save(s,task,'fixture-goal-question');initial=count(s)
+-    click(s,'goal-resume');click(s,'composer-submit')
++    s.click_control('goal-resume',enabled=True);click(s,'composer-submit')
+     wait_until(lambda: preference(s,key)['status']=='blocked','question blocks pursuit')
+     assert 'question' in preference(s,key)['note'] and count(s)==initial+1
+     save(s,task,'fixture-goal-permission');initial=count(s)
+-    click(s,'goal-resume');click(s,'composer-submit')
++    s.click_control('goal-resume',enabled=True);click(s,'composer-submit')
+     wait_until(lambda:s.task()['state']=='waiting','explicit approval blocks goal')
+     wait_until(lambda:preference(s,key)['status']=='blocked','approval disarms continuation')
+     click(s,'permission-deny-once')
+@@ -71,14 +71,14 @@
+     assert count(s)==initial+1
+     s.checks.append('questions-and-real-ACP-approvals-block-without-auto-answer-or-retry')
+     save(s,task,'fixture-goal-hold');initial=count(s)
+-    click(s,'goal-resume');click(s,'composer-submit')
++    s.click_control('goal-resume',enabled=True);click(s,'composer-submit')
+     wait_until(lambda:s.task()['state']=='running','goal held in real ACP turn')
+     click(s,'composer-submit')
+     wait_until(lambda:s.task()['state']!='running','Stop cancels current turn')
+     wait_until(lambda:preference(s,key)['status']=='blocked','Stop disables continuation')
+     assert count(s)==initial+1
+     save(s,task,'fixture-goal-review')
+-    click(s,'goal-resume');click(s,'composer-submit')
++    s.click_control('goal-resume',enabled=True);click(s,'composer-submit')
+     wait_until(lambda:preference(s,key)['status']=='review','agent claim requires review')
+     assert preference(s,key)['achievements']==[]
+     fill(s,'goal-evidence','I independently reran the checks')
+@@ -92,7 +92,7 @@
+     click(s,'goal-open')
+     save(s,task,'fixture-goal-budget')
+     initial=count(s)
+-    click(s,'goal-resume')
++    s.click_control('goal-resume',enabled=True)
+     click(s,'new-thread')
+     wait_until(lambda:'Navigation paused' in preference(s,key)['note'],'navigation disarms the goal')
+     assert count(s)==initial and selection(s)==task

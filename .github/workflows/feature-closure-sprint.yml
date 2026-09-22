@@ -66,7 +66,8 @@ jobs:
           for name, digest in [
               ('.feature-closure-part-0013','14cea6982679670ee6c0cdef8fde1cca0de5b6c215e03302009bc7d02652236e'),
               ('.feature-closure-part-0014','12013150a3d90e2bb962c7c9c580051f3a4c224bdfe780ab988e5ce894e62587'),
-              ('.feature-closure-part-0015','302fa65a588a85d3b42c7d9b54f6ede16834dac174bbceee247d660731080de5')
+              ('.feature-closure-part-0015','302fa65a588a85d3b42c7d9b54f6ede16834dac174bbceee247d660731080de5'),
+              ('.feature-closure-part-0001','22eb349ef4a7cd079668f3a891bd8bdb1d5565a40495fabfb6aae9b41f426fc2')
           ]:
               repair = Path(name)
               assert not repair.is_symlink() and 0 < repair.stat().st_size < 16384

@@ -1,18 +1,39 @@
 # Electron Synara to native Rust/GPUI: current feature-gap audit
 
-Checkpoint: 2026-09-22, after recovery and continuation of the maximum-feature
-sprint at `16789f4b290268bd54f315855cccae479aab8b2f`. Sessions 1-4 remain preserved. This is a source inventory
-with explicitly scoped Linux evidence below. It is not general native runtime, provider, hardware
-or cross-platform acceptance.
+Checkpoint: 2026-09-22, after the six feature-closure implementations at
+`96ec3439449bac5631c8d8b59c7afd5fd0bc14df`. Sessions 1-4 and the maximum-feature
+sprint remain preserved. This inventory distinguishes user-visible implementation
+from Linux fixture evidence and still-open provider, hardware and platform acceptance.
 
 The complete preceding Electron comparison, source links, dated tables and earlier
 continuation notes remain in the [preserved pre-Hubs inventory](electron-vs-gpui-feature-gap-before-hubs-2026-09-21.md).
 The full acceptance backlog remains in [ROADMAP.md](../../ROADMAP.md). No historical
 gap is closed merely because this current view is shorter or a heading was renamed.
 
+## September 22: breadth-first feature closure
+
+The current inventory has **14 substantially present, 25 partial and 9 missing**
+capabilities, not a release-readiness percentage. Five capabilities move from
+Missing to Present: Debug, persistent goals, thread recap, PR Fix and inline file
+comments. In-app releases moves Missing to Partial. No Partial -> Present claim is
+made. The prior 9/24/15 checkpoint below remains historical evidence.
+
+| Capability | Native workflow | Remaining scope |
+| --- | --- | --- |
+| Debug | Persisted app-owned evidence phases, explicit unsent step preparation, required verification and native command/composer integration | Live-agent debugging efficacy and broader interaction/platform acceptance |
+| Goals | Durable objective/editor, explicit transient arm and first Send, two-follow-up/ten-minute budget, user priority, blockers, elapsed time and human-reviewed achievement | Live-provider/status-contract breadth and platform acceptance, no unbounded autonomy or restart autostart |
+| Recap | Review request, independent unsent generation task using existing runtime, explicit bounded source-owned cache and refresh | Live-model summary quality, binary/hidden context intentionally not copied |
+| PR Fix | Bounded unresolved-thread collection, exact identity/order, head and comment recheck, editable instruction and correct unsent destination | Authenticated live GitHub acceptance and non-GitHub providers |
+| Inline comments | Saved editor range/context, bounded task-owned persistence, multi-comment prompt and stale/deleted/renamed refusal | Broader editor/SSH/platform acceptance, not remote PR-comment publishing |
+| Releases (partial) | Compiled version, bundled development notes, local version history and read/dismiss/transition state | Verified remote release history/feed/signatures and production update/install lifecycle are unconfigured, not invented |
+
+See [workflow and ownership details](feature-closure.md) and the
+[exact verification receipt](../verification/feature-closure-sprint.md). Subsequent
+dated sections describe their own earlier checkpoints and do not supersede these counts.
+
 ## September 22: direct models, Project Import and provider continuation
 
-The 48-capability inventory now has **9 substantially present, 24 partial and
+At this earlier checkpoint the 48-capability inventory had **9 substantially present, 24 partial and
 15 missing** capabilities. This is not a release-readiness percentage. Compared
 with the consolidated Sessions 1-4 checkpoint, Project Import moves from missing
 to present, and direct multi-provider runtime and provider handoff move from missing
@@ -90,7 +111,8 @@ Using Emanuele's current feature overview as the counting boundary, this audit t
 48 top-level user capabilities: 46 named overview entries plus Computer Use and
 Project Import. At the consolidated Sessions 1-4 checkpoint, **8 were substantially present,
 22 partial and 18 genuinely missing feature development**. The maximum-feature
-sprint above supersedes those current counts with **9 present, 24 partial and 15 missing**. This is a
+sprint superseded those counts with **9 present, 24 partial and 15 missing**. The later
+feature-closure checkpoint now records **14 present, 25 partial and 9 missing**. This is a
 feature-parity inventory, not a release-readiness percentage.
 
 The Synara product requirement is intentionally broader than Electron's current
@@ -140,6 +162,12 @@ in the receipt rather than represented as successful acceptance.
 
 | Surface | Source implemented | Remaining acceptance or functionality |
 | --- | --- | --- |
+| Debug | App-owned persistent five-phase evidence workflow and explicit unsent composer preparation | Live-provider and platform acceptance, see feature-closure docs |
+| Persistent goals | Explicitly armed bounded pursuit, pause/resume/clear, user priority, blocker/achievement history and inert restart | Live-provider and cross-platform acceptance, no unbounded retry |
+| Thread recap | Reviewed generation using an independent unsent related task and explicit source-owned bounded cache | Summary quality/provider/platform acceptance |
+| PR Fix | Head-pinned unresolved review context into an explicitly reviewed unsent destination | Live authenticated account acceptance |
+| Inline file comments | Durable task-owned version-pinned range comments and reviewed unsent composer append | Broader editor/remote/platform interaction acceptance |
+| Releases | Current compiled version, native notes, local observation history and read/dismiss state | Partial: verified release feed and production installer remain unavailable |
 | Direct model providers | Separate `synara-model` runtime, three transport families, reviewed registry/custom endpoints, Settings/model selection, endpoint-bound OS references, streaming/Stop, usage and local structured-output checks | Partial toward 75+ interoperability, additional auth, native multimodal and approved tools; see direct-model docs |
 | Project Import | Reviewed local Codex/Claude text-history discovery/import, atomic receipt and recovery | Broader real-history/platform acceptance; no session/approval/secret transfer |
 | Provider continuation | Reviewed unsent related ACP/direct conversations with original link and unchanged source session/root | No in-place same-task session migration or filesystem rollback |

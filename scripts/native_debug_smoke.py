@@ -16,7 +16,7 @@ def run(s):
     task = selection(s)
     original = task_events(s, task)
     key = 'task-debug:' + task
-    click(s, 'debug-open')
+    s.click_control('debug-open', enabled=True)
     click(s, 'debug-enabled')
     wait_until(lambda: (preference(s, key) or {}).get('enabled'), 'Debug enabled without agent start')
     assert task_events(s, task) == original
@@ -56,7 +56,7 @@ def run(s):
     assert preference(s, key) == saved and task_events(s, task) == original
     s.click_control('composer-input')
     assert s.desktop.copy_input() == draft
-    click(s, 'debug-open')
+    s.click_control('debug-open', enabled=True)
     s.desktop.screenshot('debug-restart-paused', window_only=True)
     s.checks.append('mode-evidence-completion-and-draft-survive-restart-without-execution')
     click(s, 'debug-close')

@@ -1,7 +1,7 @@
 //! Reviewed context is added only to the exact task and unchanged unsent draft.
 use super::*;
 #[derive(Clone)]
-pub(super) struct FixDraft {
+pub(in crate::shell) struct FixDraft {
     task: TaskId,
     selection: u64,
     review: ReviewFix,

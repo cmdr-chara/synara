@@ -34,7 +34,7 @@ impl Lease {
     }
 }
 pub(super) enum Reply {
-    Loaded(TaskId, Result<ThreadGoal, String>),
+    Loaded(TaskId, u64, Result<ThreadGoal, String>),
     Saved(TaskId, String, Result<ThreadGoal, String>),
     Preflight {
         task: TaskId,
@@ -55,6 +55,7 @@ pub(super) struct GoalsState {
     evidence: Entity<TextEntry>,
     open: bool,
     busy: bool,
+    loading: bool,
     error: Option<String>,
     lease: Option<Lease>,
     epoch: u64,
@@ -91,6 +92,7 @@ impl GoalsState {
             evidence,
             open: false,
             busy: false,
+            loading: false,
             error: None,
             lease: None,
             epoch: 0,
@@ -99,6 +101,9 @@ impl GoalsState {
             deferred: None,
             _subscriptions: subscriptions,
         }
+    }
+    fn pending_write(&self) -> bool {
+        self.busy && !self.loading
     }
     fn dirty(&self, cx: &App) -> bool {
         self.open
@@ -116,6 +121,9 @@ impl Shell {
         self.goals.task = Some(task);
         self.goals.value = None;
         self.goals.busy = true;
+        self.goals.loading = true;
+        self.goals.epoch = self.goals.epoch.wrapping_add(1);
+        let epoch = self.goals.epoch;
         self.goals.open = false;
         self.goals.error = None;
         self.goals.input.update(cx, |e, cx| e.clear(cx));
@@ -124,6 +132,7 @@ impl Shell {
         self.job(async move {
             Ok(Update::Goals(Box::new(Reply::Loaded(
                 task,
+                epoch,
                 w.thread_goal(task).await.map_err(|e| e.to_string()),
             ))))
         });
@@ -203,7 +212,9 @@ impl Shell {
                 cx,
             );
         }
-        if self.goals.busy || self.goals.deferred.is_some() || self.goals.dirty(cx) {
+        // Read-only metadata restoration must not strand the panel transition
+        // that selected this task. Real writes and unsaved edits still fence it.
+        if self.goals.pending_write() || self.goals.deferred.is_some() || self.goals.dirty(cx) {
             self.notice=Some("The goal is paused. Save/discard goal edits and let its pending save finish before leaving.".into());
             cx.notify();
             true
@@ -226,7 +237,7 @@ impl Shell {
             false,
             cx,
         );
-        if self.goals.busy || self.goals.deferred.is_some() {
+        if self.goals.pending_write() || self.goals.deferred.is_some() {
             self.goals.quitting = true;
             cx.notify();
             true
@@ -234,7 +245,7 @@ impl Shell {
             false
         }
     }
-    fn resume_goals(&mut self, cx: &mut Context<Self>) {
+    fn goal_resume_ready(&self, cx: &App) -> bool {
         if self.goals.busy
             || self.goals.lease.is_some()
             || self.goals.dirty(cx)
@@ -242,25 +253,27 @@ impl Shell {
             || self.close != CloseState::Open
             || self.composer.read(cx).is_composing()
         {
-            return;
+            return false;
         }
-        let (Some(task), Some(thread), Some(value)) =
+        let (Some(task), Some(thread), Some(_)) =
             (self.task(), self.thread.as_ref(), self.goals.value.as_ref())
         else {
-            return;
+            return false;
         };
-        if Some(task.id) != self.goals.task
-            || self.busy.contains(&task.id)
-            || self.connecting.contains(&task.id)
-            || self.controls.is_pending(task.id)
-            || self.attachments_have_pending()
-            || self.attachment_send_blocked()
-            || self.pending.keys().any(|(t, _)| *t == thread.id)
-            || matches!(
+        Some(task.id) == self.goals.task
+            && !self.busy.contains(&task.id)
+            && !self.connecting.contains(&task.id)
+            && !self.controls.is_pending(task.id)
+            && !self.attachments_have_pending()
+            && !self.attachment_send_blocked()
+            && !self.pending.keys().any(|(t, _)| *t == thread.id)
+            && !matches!(
                 task.state,
                 TaskState::Archived | TaskState::Running | TaskState::Waiting
             )
-        {
+    }
+    fn resume_goals(&mut self, cx: &mut Context<Self>) {
+        if !self.goal_resume_ready(cx) {
             self.goals.error = Some(
                 "Finish the current turn, approvals and attachment edits before resuming a goal."
                     .into(),
@@ -268,6 +281,11 @@ impl Shell {
             cx.notify();
             return;
         }
+        let (Some(task), Some(thread), Some(value)) =
+            (self.task(), self.thread.as_ref(), self.goals.value.as_ref())
+        else {
+            return;
+        };
         match value.prepare(task.id, self.composer.read(cx).text()) {
             Ok(text) => {
                 let task = task.id;
@@ -517,11 +535,12 @@ impl Shell {
     }
     pub(super) fn goals_reply(&mut self, reply: Reply, cx: &mut Context<Self>) {
         match reply {
-            Reply::Loaded(task, result) => {
-                if self.goals.task != Some(task) {
+            Reply::Loaded(task, epoch, result) => {
+                if self.goals.task != Some(task) || self.goals.epoch != epoch {
                     return;
                 }
                 self.goals.busy = false;
+                self.goals.loading = false;
                 match result {
                     Ok(value) => {
                         self.goals
@@ -759,11 +778,11 @@ impl Shell {
                         "goal-resume",
                         "Prepare and resume (2 follow-ups)",
                         ui::Glyph::Send,
-                        disabled,
+                        !self.goal_resume_ready(cx),
                         cx.listener(|this, _: &(), _, cx| this.resume_goals(cx)),
                     )
                     .relative()
-                    .child(ui::layout_probe("goal-resume")),
+                    .child(ui::layout_probe_enabled("goal-resume", self.goal_resume_ready(cx))),
                 )
                 .child(ui::action(
                     "goal-discard",

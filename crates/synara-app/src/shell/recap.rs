@@ -7,6 +7,7 @@ pub(super) struct RecapState {
     epoch: u64,
     open: bool,
     busy: bool,
+    loading: bool,
     creating: bool,
     cached: Option<ThreadRecap>,
     origin: Option<ThreadOrigin>,
@@ -42,6 +43,7 @@ impl RecapState {
             epoch: 0,
             open: false,
             busy: false,
+            loading: false,
             creating: false,
             cached: None,
             origin: None,
@@ -52,15 +54,25 @@ impl RecapState {
         }
     }
     pub fn pending(&self) -> bool {
-        self.review.is_some() || self.busy
+        // Cache/origin reads carry a task/epoch fence and own no unsaved work.
+        self.review.is_some() || self.busy && !self.loading
     }
 }
 impl Shell {
+    fn clear_finished_recap_navigation_notice(&mut self) {
+        if !self.recap.pending()
+            && self.error.as_deref()
+                == Some("Create or cancel the reviewed recap request before leaving this conversation.")
+        {
+            self.error = None;
+        }
+    }
     pub(super) fn load_recap(&mut self, task: TaskId) {
         self.recap.task = Some(task);
         self.recap.epoch = self.recap.epoch.wrapping_add(1);
         self.recap.open = false;
         self.recap.busy = true;
+        self.recap.loading = true;
         self.recap.cached = None;
         self.recap.origin = None;
         self.recap.review = None;
@@ -93,7 +105,7 @@ impl Shell {
         let Some(task) = self.selected.filter(|id| Some(*id) == self.recap.task) else {
             return;
         };
-        if self.recap.pending()
+        if self.recap.busy || self.recap.pending()
             || self.busy.contains(&task)
             || self.connecting.contains(&task)
             || self.loading_task.is_some()
@@ -155,7 +167,7 @@ impl Shell {
         let Some(task) = self.selected.filter(|id| Some(*id) == self.recap.task) else {
             return;
         };
-        if self.recap.pending()
+        if self.recap.busy || self.recap.pending()
             || self.busy.contains(&task)
             || self.loading_task.is_some()
             || self.close != CloseState::Open
@@ -186,6 +198,7 @@ impl Shell {
             return;
         }
         self.recap.busy = false;
+        self.recap.loading = false;
         if self.recap.creating {
             self.creating_task = false;
             self.recap.creating = false;
@@ -226,6 +239,7 @@ impl Shell {
                 self.recap.error = Some(error);
             }
         }
+        self.clear_finished_recap_navigation_notice();
         cx.notify();
     }
     pub(super) fn recap_bar(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
@@ -325,6 +339,7 @@ impl Shell {
                         this.recap.review = None;
                         this.recap.open = false;
                         this.recap.error = None;
+                        this.clear_finished_recap_navigation_notice();
                         cx.notify();
                     }
                 }),

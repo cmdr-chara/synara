@@ -27,7 +27,7 @@ def run(s):
     click(s,'goal-open')
     save(s,task,'fixture-goal-budget')
     initial=count(s)
-    click(s,'goal-resume')
+    s.click_control('goal-resume',enabled=True)
     s.click_control('composer-input')
     request=s.desktop.copy_input()
     assert task in request and 'at most two' in request and 'current task' in request
@@ -39,7 +39,7 @@ def run(s):
     assert count(s)==initial and preference(s,key)['status']=='paused'
     click(s,'goal-open')
     fill(s,'composer-input','')
-    click(s,'goal-resume');click(s,'composer-submit')
+    s.click_control('goal-resume',enabled=True);click(s,'composer-submit')
     wait_until(lambda: count(s)>initial,'explicit Send keeps the goal lease and starts the turn')
     wait_until(lambda: preference(s,key)['status']=='blocked','bounded goal pursuit exhausted',30)
     assert 'budget' in preference(s,key)['note'] and count(s)==initial+3
@@ -48,7 +48,7 @@ def run(s):
     s.checks.append('explicit-inert-resume-and-restart-with-exactly-two-automatic-followups')
     save(s,task,'fixture-goal-budget')
     initial=count(s)
-    click(s,'goal-resume');click(s,'composer-submit')
+    s.click_control('goal-resume',enabled=True);click(s,'composer-submit')
     wait_until(lambda: 'Follow-up preview' in preference(s,key)['note'],'visible countdown')
     fill(s,'composer-input','My manual message has priority')
     wait_until(lambda: 'User input' in preference(s,key)['note'],'new user input pauses continuation')
@@ -58,11 +58,11 @@ def run(s):
     s.checks.append('user-draft-priority-cancels-countdown-without-overwriting-or-sending-it')
     fill(s,'composer-input','')
     save(s,task,'fixture-goal-question');initial=count(s)
-    click(s,'goal-resume');click(s,'composer-submit')
+    s.click_control('goal-resume',enabled=True);click(s,'composer-submit')
     wait_until(lambda: preference(s,key)['status']=='blocked','question blocks pursuit')
     assert 'question' in preference(s,key)['note'] and count(s)==initial+1
     save(s,task,'fixture-goal-permission');initial=count(s)
-    click(s,'goal-resume');click(s,'composer-submit')
+    s.click_control('goal-resume',enabled=True);click(s,'composer-submit')
     wait_until(lambda:s.task()['state']=='waiting','explicit approval blocks goal')
     wait_until(lambda:preference(s,key)['status']=='blocked','approval disarms continuation')
     click(s,'permission-deny-once')
@@ -71,14 +71,14 @@ def run(s):
     assert count(s)==initial+1
     s.checks.append('questions-and-real-ACP-approvals-block-without-auto-answer-or-retry')
     save(s,task,'fixture-goal-hold');initial=count(s)
-    click(s,'goal-resume');click(s,'composer-submit')
+    s.click_control('goal-resume',enabled=True);click(s,'composer-submit')
     wait_until(lambda:s.task()['state']=='running','goal held in real ACP turn')
     click(s,'composer-submit')
     wait_until(lambda:s.task()['state']!='running','Stop cancels current turn')
     wait_until(lambda:preference(s,key)['status']=='blocked','Stop disables continuation')
     assert count(s)==initial+1
     save(s,task,'fixture-goal-review')
-    click(s,'goal-resume');click(s,'composer-submit')
+    s.click_control('goal-resume',enabled=True);click(s,'composer-submit')
     wait_until(lambda:preference(s,key)['status']=='review','agent claim requires review')
     assert preference(s,key)['achievements']==[]
     fill(s,'goal-evidence','I independently reran the checks')
@@ -92,7 +92,7 @@ def run(s):
     click(s,'goal-open')
     save(s,task,'fixture-goal-budget')
     initial=count(s)
-    click(s,'goal-resume')
+    s.click_control('goal-resume',enabled=True)
     click(s,'new-thread')
     wait_until(lambda:'Navigation paused' in preference(s,key)['note'],'navigation disarms the goal')
     assert count(s)==initial and selection(s)==task

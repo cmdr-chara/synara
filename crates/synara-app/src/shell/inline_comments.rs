@@ -7,6 +7,7 @@ pub(super) struct InlineState {
     task: Option<TaskId>,
     epoch: u64,
     busy: bool,
+    loading: bool,
     open: bool,
     saved: InlineComments,
     capture: Option<(Document, Range<usize>)>,
@@ -46,6 +47,7 @@ impl InlineState {
             task: None,
             epoch: 0,
             busy: false,
+            loading: false,
             open: false,
             saved: InlineComments::default(),
             capture: None,
@@ -58,7 +60,9 @@ impl InlineState {
 impl Shell {
     pub(super) fn inline_navigation_blocked(&mut self, cx: &mut Context<Self>) -> bool {
         let state = &self.inline_comments;
-        if state.busy
+        // The task/epoch-fenced load does not own edits or a write. Allow the
+        // selecting navigation to finish while it runs. Validation still blocks.
+        if state.busy && !state.loading
             || state.capture.is_some()
                 && (!state.input.read(cx).text().is_empty() || state.input.read(cx).is_composing())
         {
@@ -73,6 +77,7 @@ impl Shell {
         state.task = Some(task);
         state.epoch = state.epoch.wrapping_add(1);
         state.busy = true;
+        state.loading = true;
         state.saved = InlineComments::default();
         state.capture = None;
         state.open = false;
@@ -245,6 +250,7 @@ impl Shell {
             return;
         }
         self.inline_comments.busy = false;
+        self.inline_comments.loading = false;
         match reply.result {
             Err(e) => self.inline_comments.error = Some(e),
             Ok(Outcome::Loaded(value)) => self.inline_comments.saved = value,

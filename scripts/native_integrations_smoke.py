@@ -30,6 +30,9 @@ def fill(s, control, value):
     for char in value:
         if char == ':':
             ui.key('semicolon', ('Shift_L',))
+        elif char == '_':
+            # Underscore uses the shifted minus key, not an unshifted keysym.
+            ui.key('minus', ('Shift_L',))
         elif char == '/':
             # XStringToKeysym('/') returns NoSymbol, not XK_slash.
             ui.key('slash')

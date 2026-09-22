@@ -72,7 +72,7 @@ impl Shell {
         });
     }
     pub(super) fn open_debug(&mut self, cx: &mut Context<Self>) {
-        if self.selected.is_none() {
+        if self.selected.is_none() || self.loading_task.is_some() || self.debug_workflow.busy {
             return;
         }
         self.show_conversation(cx);
@@ -198,7 +198,9 @@ impl Shell {
                 view.open,
                 cx.listener(|this, _: &(), _, cx| this.open_debug(cx)),
             )
-            .child(ui::layout_probe("debug-open")),
+            .child(ui::layout_probe_enabled(
+                "debug-open", !view.busy && self.loading_task.is_none(),
+            )),
         );
         if !view.open {
             return root.into_any_element();

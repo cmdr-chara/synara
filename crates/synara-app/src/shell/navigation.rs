@@ -434,7 +434,7 @@ impl Shell {
                             .relative()
                             .child(ui::layout_probe("kanban-navigation")),
                         )
-                        .child(ui::action("pull-requests-navigation", "Pull requests", Some(Glyph::PullRequest), self.panel == Panel::PullRequests, cx.listener(|this, _: &(), _, cx| this.set_panel(Panel::PullRequests, cx))))
+                        .child(ui::action("pull-requests-navigation", "Pull requests", Some(Glyph::PullRequest), self.panel == Panel::PullRequests, cx.listener(|this, _: &(), _, cx| this.set_panel(Panel::PullRequests, cx))).relative().child(ui::layout_probe("pull-requests-navigation")))
                         .child(ui::action("automations-navigation", "Automations", Some(Glyph::Clock), self.panel == Panel::Automations, cx.listener(|this, _: &(), _, cx| this.set_panel(Panel::Automations, cx))))
                     }),
             )

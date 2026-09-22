@@ -1,10 +1,14 @@
 //! Native PR review, scoped to the explicitly loaded project and provider.
 use super::*;
+mod fix;
 use crate::ui::{self, Glyph, palette};
 use gpui::AnyElement;
 use serde_json::Value;
 use synara_workspace::pull_requests::*;
 pub(super) struct PrView {
+    fix: Option<fix::FixDraft>,
+    fix_text: Entity<TextEntry>,
+    _fix_subscription: Subscription,
     search: Entity<TextEntry>,
     title: Entity<TextEntry>,
     body: Entity<TextEntry>,
@@ -38,13 +42,18 @@ pub(super) enum Outcome {
     List(Vec<PullRequest>),
     Detail(Box<PrDetail>),
     Written,
+    FixReviewed(fix::FixDraft),
+    FixValidated { review: fix::FixDraft, expected: String, draft: String },
 }
 impl PrView {
     pub fn new(cx: &mut Context<Shell>) -> Self {
         let field = |cx: &mut Context<Shell>, label: &'static str, mode| {
             cx.new(|cx| TextEntry::new(label, mode, 34., cx))
         };
+        let fix_text=cx.new(|cx| TextEntry::new("PR Fix instruction",EntryMode::Editor,110.,cx));
+        let subscription=cx.observe(&fix_text,|_,_,cx| cx.notify());
         Self {
+            fix: None, fix_text, _fix_subscription: subscription,
             search: field(cx, "Search title/body", EntryMode::SingleLine),
             title: field(cx, "PR title", EntryMode::SingleLine),
             body: field(
@@ -75,6 +84,7 @@ impl PrView {
         }
     }
     pub(super) fn retire(&mut self) {
+        self.fix = None;
         self.cancel.cancel();
         self.generation = self.generation.wrapping_add(1);
         self.busy = false;
@@ -154,6 +164,8 @@ impl Shell {
                 view.file = None;
                 view.tab = 0;
             }
+            Ok(Outcome::FixReviewed(draft)) => self.pr_fix_reviewed(draft,cx),
+            Ok(Outcome::FixValidated { review,expected,draft }) => self.pr_fix_validated(review,expected,draft,cx),
             Ok(Outcome::Written) => {
                 view.detail = None;
                 view.list.clear();
@@ -175,6 +187,7 @@ impl Shell {
             return;
         };
         let view = &mut self.pull_requests;
+        view.fix = None;
         view.project = self.project;
         view.target = Some(target.clone());
         view.repos.clear();
@@ -226,6 +239,7 @@ impl Shell {
             cx.notify();
             return;
         };
+        view.fix = None;
         let text = view.search.read(cx).text().to_owned();
         let filter = view.filter;
         let page = view.page;
@@ -280,7 +294,7 @@ impl Shell {
         let v = &self.pull_requests;
         let mut pane = div().id("pull-requests").size_full().flex().flex_col().p_3().gap_2().min_h_0()
             .child(div().flex().items_center().gap_2().child("Pull requests")
-                .child(ui::action("pr-discover", "Load selected project", Some(Glyph::Folder), false, cx.listener(|this, _: &(), _, cx| this.pr_discover(cx))))
+                .child(ui::action("pr-discover", "Load selected project", Some(Glyph::Folder), false, cx.listener(|this, _: &(), _, cx| this.pr_discover(cx))).relative().child(crate::ui::layout_probe("pr-discover")))
                 .child(ui::action("pr-cancel", "Cancel request", Some(Glyph::Stop), false, cx.listener(|this, _: &(), _, cx| { this.pull_requests.retire(); this.pull_requests.error = Some("Request cancelled. A submitted write may have reached GitHub. Refresh before retrying.".into()); cx.notify(); }))));
         if let Some(target) = &v.target {
             pane = pane.child(div().text_xs().child(format!(
@@ -289,11 +303,11 @@ impl Shell {
             )));
         }
         let mut repos = div().flex().gap_2().flex_wrap();
-        for (remote, repo) in &v.repos {
+        for (at, (remote, repo)) in v.repos.iter().enumerate() {
             let selected = v.repo.as_ref() == Some(repo);
             let repo = repo.clone();
             let label = format!("{remote}: {}", repo.slug());
-            repos = repos.child(ui::action(
+            repos = repos.child(div().relative().child(crate::ui::layout_probe_slot("pr-remote",at)).child(ui::action(
                 format!("pr-remote-{remote}"),
                 label,
                 None,
@@ -308,7 +322,7 @@ impl Shell {
                     this.pull_requests.list.clear();
                     this.pr_load(None, cx);
                 }),
-            ));
+            )));
         }
         pane = pane.child(repos);
         let mut filters = div()
@@ -475,7 +489,7 @@ impl Shell {
             .overflow_y_scroll()
             .border_r_1()
             .border_color(rgb(palette().border));
-        for pr in &v.list {
+        for (at, pr) in v.list.iter().enumerate() {
             let number = pr.number;
             let label = format!(
                 "#{} {}\n{} | {}{}",
@@ -489,13 +503,13 @@ impl Shell {
                     ""
                 }
             );
-            list = list.child(ui::action(
+            list = list.child(div().relative().child(crate::ui::layout_probe_slot("pr-list-row",at)).child(ui::action(
                 format!("pr-{number}"),
                 label,
                 Some(Glyph::PullRequest),
                 v.detail.as_ref().is_some_and(|d| d.pr.number == number),
                 cx.listener(move |this, _: &(), _, cx| this.pr_load(Some(number), cx)),
-            ));
+            )));
         }
         pane.child(
             div()
@@ -571,7 +585,7 @@ impl Shell {
                 }),
             ));
         }
-        pane = pane.child(tabs);
+        pane = pane.child(self.pr_fix_panel(cx)).child(tabs);
         match v.tab {
             0 => {
                 pane = pane.child(

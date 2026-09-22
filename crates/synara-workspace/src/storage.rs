@@ -19,7 +19,7 @@ pub use task_context::{
 };
 mod conversation_tools;
 pub use conversation_tools::{
-    MessageAnchor, MessageSearch, RelatedThreadKind, RevisionSource, SideThreadIndex, ThreadOrigin,
+    HandoffReview, HandoffTarget, MessageAnchor, MessageSearch, RelatedThreadKind, RevisionSource, SideThreadIndex, ThreadOrigin,
 };
 mod task_creation;
 pub use chat_preferences::ModelFavorite;

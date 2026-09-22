@@ -34,7 +34,16 @@ jobs:
           test "$GITHUB_REF" = refs/heads/astra/gpui-clean-rewrite
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
 
-          cargo +1.98.1 fmt --all
+          stable=0
+          for pass in 1 2 3 4; do
+            cargo +1.98.1 fmt --all
+            if cargo +1.98.1 fmt --all --check; then
+              stable=1
+              echo "rustfmt stabilized after pass $pass"
+              break
+            fi
+          done
+          test "$stable" = 1
 
           python3 - <<'PY'
           import subprocess
@@ -51,7 +60,16 @@ jobs:
 
           git diff --check
           cargo +1.98.1 fmt --all --check
-          git add -- '*.rs' 'crates/**/*.rs'
+          git add -u
+          python3 - <<'PY'
+          import subprocess
+          staged = [p for p in subprocess.check_output(
+              ['git', 'diff', '--cached', '--name-only', '-z']
+          ).decode().split('\0') if p]
+          bad = [p for p in staged if not p.endswith('.rs')]
+          if bad:
+              raise SystemExit(f'non-Rust paths staged by formatter: {bad}')
+          PY
           git -c user.name='github-actions[bot]' \
               -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
               -c core.hooksPath=/dev/null \

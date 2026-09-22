@@ -23,6 +23,7 @@ impl PaletteState {
 }
 #[derive(Clone)]
 enum Action {
+    DebugWorkflow,
     ToggleZen, Appearance, Attention,
     Panel(Panel), NewChat, NewHub, Outputs, Sidebar, Environment,
     ThreadSearch, MessageSearch, Notes, OpenProject, Find, Replace, GoToLine,
@@ -112,6 +113,7 @@ impl Shell {
         if self.selected.is_some() {
             for (title, detail, glyph, action) in [
                 ("Search this conversation", "Find messages and work details", Glyph::Search, Action::MessageSearch),
+                ("Debug workflow", "Evidence-first Observe, Reproduce, Investigate, Fix, Verify", Glyph::Debug, Action::DebugWorkflow),
                 ("Chat notes and checklist", "User-owned saved context", Glyph::Notebook, Action::Notes),
                 ("Hub Library", "Workspace files and attributed outputs", Glyph::Blocks, Action::Outputs),
             ] { add(1, title.into(), detail.into(), glyph, action); }
@@ -141,6 +143,7 @@ impl Shell {
     fn execute_palette_command(&mut self, action: Action, window: &mut Window, cx: &mut Context<Self>) {
         self.dismiss_command_palette(window, cx);
         match action {
+            Action::DebugWorkflow => self.open_debug(cx),
             Action::ToggleZen => self.toggle_zen(cx),
             Action::Appearance => self.open_appearance(cx),
             Action::Attention => self.open_attention(window, cx),

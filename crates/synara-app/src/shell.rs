@@ -5,6 +5,7 @@ mod attachments;
 mod integrations;
 mod direct_models;
 mod project_import;
+mod debug_workflow;
 mod followups;
 mod hubs;
 mod chat_tools;
@@ -105,6 +106,7 @@ struct FormState {
     error: Option<String>,
 }
 enum Update {
+    DebugWorkflow(Box<debug_workflow::Reply>),
     DirectModels(Box<direct_models::Reply>),
     ProjectImport(Box<project_import::Reply>),
     Automations(Box<automations::Reply>),
@@ -185,6 +187,7 @@ enum Update {
     Error(String),
 }
 pub struct Shell {
+    debug_workflow: debug_workflow::DebugState,
     automations: automations::AutomationsView,
     pull_requests: pull_requests::PrView,
     browser: browser::BrowserView,
@@ -430,6 +433,7 @@ impl Shell {
             revisions: revisions::RevisionState::new(),
             handoff: handoff::HandoffState::default(),
             side_chats: side_chats::SideChatState::new(cx),
+            debug_workflow: debug_workflow::DebugState::new(cx),
             followups: followups::FollowupState::new(cx),
             attachments: attachments::AttachmentState::default(),
             hubs: hubs::HubState::new(cx),
@@ -800,6 +804,7 @@ impl Shell {
         self.load_message_pins(id);
         self.load_attachments(id);
         self.load_followups(id);
+        self.load_debug(id, cx);
         self.load_side_chats(id, cx);
         self.project = Some(task.project_id);
         self.details = None;
@@ -1310,6 +1315,7 @@ impl Shell {
             Update::BrowserConfigured(result) => { self.browser.busy = false; self.browser.error = result.err(); },
             Update::Device(reply) => self.device_reply(*reply, cx),
             Update::Attachments(reply) => self.attachment_reply(*reply, cx),
+            Update::DebugWorkflow(reply) => self.debug_reply(*reply, cx),
             Update::Followups(reply) => self.followup_reply(*reply, cx),
             Update::Hubs(reply) => self.hub_reply(*reply, cx),
             Update::Terminals(reply) => self.terminal_reply(*reply, cx),

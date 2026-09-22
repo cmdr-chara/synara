@@ -2,6 +2,8 @@ mod imports;
 mod direct_models;
 mod integrations;
 mod automations;
+mod debug_workflow;
+pub use debug_workflow::{DebugEdit, DebugPhase, DebugWorkflow};
 mod followups;
 pub use followups::{FollowupDraft, FollowupEdit, FollowupQueue};
 mod attachments;
@@ -283,7 +285,7 @@ PRAGMA user_version=2;")?;
             [task.thread_id.to_string()],
         )?;
         tx.execute(
-            "DELETE FROM preferences WHERE key IN (?1,?2,?3,?4,?5,?6,?7,?8)",
+            "DELETE FROM preferences WHERE key IN (?1,?2,?3,?4,?5,?6,?7,?8,?9)",
             params![
                 format!("task-draft:{id}"),
                 format!("message-pins:{id}"),
@@ -292,7 +294,8 @@ PRAGMA user_version=2;")?;
                 format!("task-followups:{id}"),
                 format!("thread-origin:{id}"),
                 format!("side-selection:{id}"),
-                format!("task-direct-model:{id}")
+                format!("task-direct-model:{id}"),
+                format!("task-debug:{id}")
             ],
         )?;
         let changed = tx.execute("DELETE FROM tasks WHERE id=?1", [id.to_string()])?;
@@ -565,7 +568,8 @@ fn valid_preference_key(key: &str) -> bool {
         return true;
     }
     if let Some(id) = key
-        .strip_prefix("task-direct-model:")
+        .strip_prefix("task-debug:")
+        .or_else(|| key.strip_prefix("task-direct-model:"))
         .or_else(|| key.strip_prefix("task-draft:"))
         .or_else(|| key.strip_prefix("message-pins:"))
         .or_else(|| key.strip_prefix("task-context:"))

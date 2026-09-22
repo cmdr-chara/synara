@@ -59,16 +59,27 @@ jobs:
           run('git', 'merge-base', '--is-ancestor', package['base'], head)
           preceding = output('git', 'diff', '--name-only', package['base'], head).splitlines()
           assert all(p in ('.github/workflows/sprint-2.yml', '.synara-sprint-2.json') for p in preceding), preceding
-          if 'gzip_base64' in package:
-              with gzip.GzipFile(fileobj=io.BytesIO(base64.b64decode(package['gzip_base64'], validate=True))) as stream:
-                  patch = stream.read(3 * 1024 * 1024 + 1)
-          else:
-              patch = package['patch'].encode('utf-8')
-          assert len(patch) <= 3 * 1024 * 1024
-          assert hashlib.sha256(patch).hexdigest() == package['sha256']
-          Path('/tmp/sprint2-evidence/submitted.patch').write_bytes(patch)
-          run('git', 'apply', '--check', '-', input=patch)
-          run('git', 'apply', '-', input=patch)
+          def patches(item, depth=0):
+              assert depth < 8 and item['base'] == package['base']
+              if 'source' in item:
+                  source = item['source']
+                  assert re.fullmatch('[0-9a-f]{40}', source)
+                  run('git', 'merge-base', '--is-ancestor', source, head)
+                  raw = subprocess.check_output(['git', 'show', source + ':.synara-sprint-2.json'])
+                  assert len(raw) <= 4 * 1024 * 1024
+                  yield from patches(json.loads(raw), depth + 1)
+              if 'gzip_base64' in item:
+                  with gzip.GzipFile(fileobj=io.BytesIO(base64.b64decode(item['gzip_base64'], validate=True))) as stream:
+                      patch = stream.read(3 * 1024 * 1024 + 1)
+              else:
+                  patch = item['patch'].encode('utf-8')
+              assert len(patch) <= 3 * 1024 * 1024
+              assert hashlib.sha256(patch).hexdigest() == item['sha256']
+              yield patch
+          for index, patch in enumerate(patches(package)):
+              Path('/tmp/sprint2-evidence/submitted-' + str(index) + '.patch').write_bytes(patch)
+              run('git', 'apply', '--check', '-', input=patch)
+              run('git', 'apply', '-', input=patch)
           changed = output('git', 'ls-files', '--modified', '--others', '--exclude-standard').splitlines()
           assert changed and len(changed) <= 100 and all(allowed(p) for p in changed), changed
           assert all(not Path(p).is_symlink() for p in changed)

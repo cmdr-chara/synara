@@ -198,6 +198,16 @@ impl Fixture {
                     if text.contains("fixture-goal-permission") {self.request(session.clone(),id,"permission","session/request_permission",json!({"sessionId":session,"toolCall":{"toolCallId":"goal-tool","title":"Goal approval","status":"pending"},"options":[{"optionId":"allow","name":"Allow once","kind":"allow_once"},{"optionId":"deny","name":"Deny","kind":"reject_once"}]}),None);return;}
                 }
                 match text {
+                    "transcript-media" => {
+                        let content=params["prompt"].as_array().unwrap().iter().find(|p|p["type"]=="image").cloned().unwrap();
+                        self.update(&session,json!({"sessionUpdate":"agent_message_chunk","messageId":"media-result","content":content}));
+                        self.update(&session,json!({"sessionUpdate":"agent_message_chunk","messageId":"media-result","content":{"type":"text","text":"Returned fixture image; generation is not claimed."}}));
+                        self.ok(id,json!({"stopReason":"end_turn"}));
+                    }
+                    "corrupt-media" => {
+                        self.update(&session,json!({"sessionUpdate":"agent_message_chunk","content":{"type":"image","mimeType":"image/png","data":"AA=="}}));
+                        self.finish(&session,id,"A corrupt image did not stop this conversation.");
+                    }
                     "launch-proof" => {
                         let inherited = std::env::var("SYNARA_BCD_CANARY").ok();
                         self.finish(&session, id, &json!({

@@ -20,6 +20,8 @@ pub(crate) async fn run(
     }
     let mut launch = LaunchSpec::new(executable);
     launch.args = args;
+    // All native helper protocols have deterministic English field names.
+    launch.env.insert("LC_ALL".into(), "C".into());
     // Native helpers must not inherit a project directory or its executable search path.
     let cwd = executable
         .parent()

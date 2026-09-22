@@ -2,11 +2,13 @@ use gpui::Focusable;
 mod activity;
 mod automations;
 mod attachments;
+mod rich_media;
 mod integrations;
 mod direct_models;
 mod project_import;
 mod debug_workflow;
 mod recap;
+mod checkpoints;
 mod goals;
 mod releases;
 mod inline_comments;
@@ -19,6 +21,7 @@ mod controls;
 mod conversation;
 mod dock;
 mod device;
+mod appsnap;
 mod browser;
 mod pull_requests;
 mod drafts;
@@ -38,6 +41,7 @@ mod saved_context;
 mod revisions;
 mod handoff;
 mod side_chats;
+mod task_split;
 mod settings;
 mod studio;
 mod terminal;
@@ -114,6 +118,7 @@ enum Update {
     Goals(Box<goals::Reply>),
     DebugWorkflow(Box<debug_workflow::Reply>),
     Recap(Box<recap::Reply>),
+    Checkpoints(Box<checkpoints::Reply>),
     InlineComments(Box<inline_comments::Reply>),
     DirectModels(Box<direct_models::Reply>),
     ProjectImport(Box<project_import::Reply>),
@@ -126,8 +131,10 @@ enum Update {
     SideChats(Box<side_chats::Reply>),
     NativeSettings(Box<settings::native::Reply>),
     Device(Box<device::Reply>),
+    AppSnap(Box<appsnap::Reply>),
     Followups(Box<followups::Reply>),
     Attachments(Box<attachments::Reply>),
+    RichMedia(Box<rich_media::Reply>),
     Hubs(Box<hubs::Reply>),
     Terminals(Box<terminals::Reply>),
     Review(Box<review::Reply>),
@@ -199,16 +206,19 @@ pub struct Shell {
     goals: goals::GoalsState,
     debug_workflow: debug_workflow::DebugState,
     recap: recap::RecapState,
+    checkpoints: checkpoints::CheckpointState,
     inline_comments: inline_comments::InlineState,
     automations: automations::AutomationsView,
     pull_requests: pull_requests::PrView,
     browser: browser::BrowserView,
     device: device::DeviceView,
+    appsnap: appsnap::SnapView,
     revisions: revisions::RevisionState,
     handoff: handoff::HandoffState,
     side_chats: side_chats::SideChatState,
     followups: followups::FollowupState,
     attachments: attachments::AttachmentState,
+    media: rich_media::MediaState,
     hubs: hubs::HubState,
     terminals: terminals::TerminalWorkspace,
     editors: editors::EditorState,
@@ -444,14 +454,17 @@ impl Shell {
             pull_requests: pull_requests::PrView::new(cx),
             browser: browser::BrowserView::new(&controller, bootstrap.scratch_directory.parent().unwrap_or(&bootstrap.scratch_directory).join("browser"), cx),
             device: device::DeviceView::new(cx),
+            appsnap: appsnap::SnapView::default(),
             revisions: revisions::RevisionState::new(),
             handoff: handoff::HandoffState::default(),
             side_chats: side_chats::SideChatState::new(cx),
             debug_workflow: debug_workflow::DebugState::new(cx),
             recap: recap::RecapState::new(cx),
+            checkpoints: checkpoints::CheckpointState::default(),
             inline_comments: inline_comments::InlineState::new(cx),
             followups: followups::FollowupState::new(cx),
             attachments: attachments::AttachmentState::default(),
+            media: rich_media::MediaState::default(),
             hubs: hubs::HubState::new(cx),
             terminals: terminals::TerminalWorkspace::default(),
             editors: editors::EditorState::new(cx),
@@ -559,6 +572,7 @@ impl Shell {
             self.notice=Some("Finish the integration operation or discard its open Settings form/review before closing.".into());
             cx.notify(); return false;
         }
+        if self.media.saving { self.notice=Some("Finish or cancel the image export before closing.".into());cx.notify();return false; }
         if self.attachments.close_pending() {
             self.notice = Some("Finish attachment imports or discard a failed import in its conversation before closing.".into());
             cx.notify(); return false;
@@ -775,6 +789,7 @@ impl Shell {
         }
     }
     fn select_task(&mut self, id: TaskId, cx: &mut Context<Self>) -> bool {
+        if self.side_chats.split && self.side_chats.composer.read(cx).is_composing() { return false; }
         if self.native_settings_pending() { return false; }
         if self.revision_navigation_blocked(cx) { return false; }
         if self.hub_navigation_blocked(cx) { return false; }
@@ -798,6 +813,7 @@ impl Shell {
         }
         self.snapshot_draft(cx);
         self.selection_revision = self.selection_revision.wrapping_add(1);
+        self.appsnap.retire();
         self.navigation.studio = task.scope == TaskScope::Studio;
         if self.navigation.studio {
             self.hubs.selected = Some(task.project_id);
@@ -833,6 +849,7 @@ impl Shell {
         self.details = None;
         self.trace.clear();
         self.thread = Some(Thread::new(task.thread_id));
+        self.sync_transcript_media(cx);
         self.error = None;
         self.composer.update(cx, |entry, cx| {
             entry.set_text(self.drafts.get(&id).cloned().unwrap_or_default(), cx)
@@ -1120,6 +1137,7 @@ impl Shell {
         cx.notify();
     }
     fn send_prompt(&mut self, cx: &mut Context<Self>) {
+        if self.checkpoint_navigation_blocked(cx) { return; }
         tracing::debug!(target: "synara_ui_layout",
             task_selected = self.selected.is_some(), loading_thread = self.loading_task.is_some(),
             loading_route = self.direct_route_loading(),
@@ -1346,10 +1364,13 @@ impl Shell {
             Update::PullRequests(reply) => self.pr_reply(*reply, cx),
             Update::BrowserConfigured(result) => { self.browser.busy = false; self.browser.error = result.err(); },
             Update::Device(reply) => self.device_reply(*reply, cx),
+            Update::AppSnap(reply) => self.appsnap_reply(*reply, cx),
             Update::Attachments(reply) => self.attachment_reply(*reply, cx),
+            Update::RichMedia(reply) => self.media_reply(*reply,cx),
             Update::DebugWorkflow(reply) => self.debug_reply(*reply, cx),
             Update::Releases(result) => self.releases_reply(result,cx),
             Update::Recap(reply) => self.recap_reply(*reply, cx),
+            Update::Checkpoints(reply) => self.checkpoint_reply(*reply, cx),
             Update::InlineComments(reply) => self.inline_comments_reply(*reply, cx),
             Update::Followups(reply) => self.followup_reply(*reply, cx),
             Update::Hubs(reply) => self.hub_reply(*reply, cx),
@@ -1449,6 +1470,7 @@ impl Shell {
                     self.transcript.sync(&thread, None);
                     self.thread = Some(*thread);
                     self.replace_task(task);
+                    self.sync_transcript_media(cx);
                 }
             }
             Update::Event(envelope) => {
@@ -1492,6 +1514,7 @@ impl Shell {
                     {
                         task.state = thread.state;
                     }
+                    if matches!(envelope.event,ThreadEvent::ImageMessage{..} | ThreadEvent::HistoryStarted | ThreadEvent::HistoryCompleted) {self.sync_transcript_media(cx);}
                 }
             }
             Update::Hydrate => {
@@ -1568,7 +1591,7 @@ impl Shell {
                 details,
                 error,
             } => {
-                let visible_side = self.panel == Panel::SideChats
+                let visible_side = (self.panel == Panel::SideChats || self.side_chats.split && self.panel == Panel::Conversation)
                     && self.side_chats.selected == Some(task);
                 if self.busy.contains(&task) && self.selected != Some(task) && !visible_side {
                     self.send_desktop_notification(false, cx);
@@ -1608,6 +1631,9 @@ impl Shell {
                     self.settings.value = *settings;
                     if bindings_changed { self.sync_navigation_bindings(cx); }
                     self.composer.update(cx, |entry, _| {
+                        entry.set_send_on_enter(self.settings.value.chat.send_on_enter)
+                    });
+                    self.side_chats.composer.update(cx, |entry, _| {
                         entry.set_send_on_enter(self.settings.value.chat.send_on_enter)
                     });
                     cx.set_reduce_motion(self.settings.value.appearance.reduced_motion);
@@ -1723,6 +1749,11 @@ impl Shell {
         if self.explorer.modal_open() {
             return;
         }
+        if panel == Panel::SideChats && self.side_chats.split {
+            self.side_chats.split = false;
+            self.side_chats.parent = None;
+            if let Some(task) = self.selected { self.load_side_chats(task, cx); }
+        }
         self.studio.open = false;
         self.chat_tools.retire();
         self.environment.retire_popup();
@@ -1731,6 +1762,7 @@ impl Shell {
         self.settings.popup = None;
         if panel != Panel::Conversation {
             self.selection_revision = self.selection_revision.wrapping_add(1);
+        self.appsnap.retire();
         }
         if self.settings.value.appearance.personalization.zen_mode
             && matches!(panel, Panel::Files | Panel::Changes | Panel::Terminal | Panel::Device | Panel::SideChats | Panel::Dock)

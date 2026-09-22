@@ -92,7 +92,7 @@ impl TaskContext {
 fn context_key(task: TaskId) -> String {
     format!("task-context:{task}")
 }
-fn read_context(connection: &Connection, task: TaskId) -> WorkspaceResult<TaskContext> {
+pub(super) fn read_context(connection: &Connection, task: TaskId) -> WorkspaceResult<TaskContext> {
     let exists: bool = connection
         .query_row(
             "SELECT EXISTS(SELECT 1 FROM tasks WHERE id=?1)",

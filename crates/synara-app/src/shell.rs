@@ -7,6 +7,7 @@ mod direct_models;
 mod project_import;
 mod debug_workflow;
 mod recap;
+mod releases;
 mod inline_comments;
 mod followups;
 mod hubs;
@@ -108,6 +109,7 @@ struct FormState {
     error: Option<String>,
 }
 enum Update {
+    Releases(Result<NativeVersionHistory,String>),
     DebugWorkflow(Box<debug_workflow::Reply>),
     Recap(Box<recap::Reply>),
     InlineComments(Box<inline_comments::Reply>),
@@ -191,6 +193,7 @@ enum Update {
     Error(String),
 }
 pub struct Shell {
+    releases: releases::ReleasesState,
     debug_workflow: debug_workflow::DebugState,
     recap: recap::RecapState,
     inline_comments: inline_comments::InlineState,
@@ -432,6 +435,7 @@ impl Shell {
             .or_else(|| bootstrap.catalog.projects.first().map(|p| p.id));
         let selected = startup_task(&bootstrap.settings, &bootstrap.selection, &bootstrap.catalog);
         let mut this = Self {
+            releases: releases::ReleasesState::default(),
             automations: automations::AutomationsView::new(controller.clone(), cx),
             pull_requests: pull_requests::PrView::new(cx),
             browser: browser::BrowserView::new(&controller, bootstrap.scratch_directory.parent().unwrap_or(&bootstrap.scratch_directory).join("browser"), cx),
@@ -516,6 +520,7 @@ impl Shell {
             _updates: updates,
             _subscriptions: subscriptions,
         };
+        this.load_releases(cx);
         this.load_organization();
         this.load_hubs();
         this.composer.update(cx, |entry, _| {
@@ -534,6 +539,7 @@ impl Shell {
         this
     }
     pub fn request_close(&mut self, window: &mut Window, cx: &mut Context<Self>) -> bool {
+        if self.releases.busy { self.notice=Some("Saving native version state before closing.".into());cx.notify();return false; }
         if self.revision_navigation_blocked(cx) { return false; }
         if self.side_chats.pending(cx) {
             self.notice = Some("Finish the side-chat operation or IME composition before closing.".into());
@@ -1326,6 +1332,7 @@ impl Shell {
             Update::Device(reply) => self.device_reply(*reply, cx),
             Update::Attachments(reply) => self.attachment_reply(*reply, cx),
             Update::DebugWorkflow(reply) => self.debug_reply(*reply, cx),
+            Update::Releases(result) => self.releases_reply(result,cx),
             Update::Recap(reply) => self.recap_reply(*reply, cx),
             Update::InlineComments(reply) => self.inline_comments_reply(*reply, cx),
             Update::Followups(reply) => self.followup_reply(*reply, cx),

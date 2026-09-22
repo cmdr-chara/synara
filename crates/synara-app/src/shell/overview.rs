@@ -2,9 +2,10 @@ use super::*;
 use crate::ui;
 
 impl Shell {
-    pub(super) fn help_panel(&self) -> gpui::AnyElement {
+    pub(super) fn help_panel(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
         div().id("help-panel").relative().child(ui::layout_probe("help-panel")).flex_1().min_h_0().overflow_y_scroll().p_6().flex().flex_col().gap_4()
             .child(div().font_family("Cal Sans").text_size(px(28.)).child("Synara"))
+            .child(self.releases_panel(cx))
             .child("Native application · MIT license")
             .child(div().text_size(px(12.)).child(include_str!("../../../../LICENSE")))
             .child("Keyboard shortcuts")

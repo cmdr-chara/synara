@@ -100,6 +100,7 @@ impl Shell {
             ("Open project", "Choose a workspace directory", Glyph::Folder, Action::OpenProject),
             ("Toggle sidebar", "Show or hide navigation", Glyph::Panel, Action::Sidebar),
             ("Toggle Environment", "Show or hide the workspace panel", Glyph::Window, Action::Environment),
+            ("What's New and Releases", "Native build version, local history and update configuration", Glyph::Help, Action::Panel(Panel::Help)),
             ("Help and shortcuts", "Keyboard reference and licenses", Glyph::Help, Action::Panel(Panel::Help)),
         ] {
             let detail = if let Action::Panel(panel) = &action {

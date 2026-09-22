@@ -4,6 +4,8 @@ mod integrations;
 mod automations;
 mod debug_workflow;
 pub use debug_workflow::{DebugEdit, DebugPhase, DebugWorkflow};
+mod releases;
+pub use releases::{NativeVersionHistory, NativeVersionVisit, NATIVE_VERSION_HISTORY_KEY};
 mod inline_comments;
 pub use inline_comments::{InlineComment, InlineCommentEdit, InlineComments};
 mod followups;
@@ -590,7 +592,7 @@ fn valid_preference_key(key: &str) -> bool {
     }
     matches!(
         key,
-        "appearance" | "selection" | "window" | "agent_profiles" | "ssh_profiles" | "settings"
+        "native-version-history" | "appearance" | "selection" | "window" | "agent_profiles" | "ssh_profiles" | "settings"
     )
 }
 

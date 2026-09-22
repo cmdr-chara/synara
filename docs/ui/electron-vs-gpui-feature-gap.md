@@ -60,11 +60,24 @@ acceptance gates remain open where provider, platform or hardware evidence is mi
 
 ## Upstream review
 
-`Emanuele-web04/synara` main was reviewed at
-`e7cd15281e6d16cf8fc55a91496dcff035475e54`. It is unchanged from the previous review.
-The known passive delegated-result delivery/human-send reservation and macOS icon
-persistence fixes remain deferred under D12/F11 and P respectively. No new upstream
-feature, workflow, setting or icon delta was found in this review.
+Current Electron main was re-read at
+`f04341a67bc4941d1b2e91e0b23bbe782dfbc727`, **342 commits** after the previous
+`e7cd15281e6d16cf8fc55a91496dcff035475e54` audit point. The current 0.9.0-era
+feature documentation adds material parity inputs rather than an unchanged upstream:
+Computer Use beta, Codex/Claude Project Import, and additional depth in provider,
+browser, device, composer, editor and release workflows.
+
+Using Emanuele's current feature overview as the counting boundary, this audit tracks
+48 top-level user capabilities: 46 named overview entries plus Computer Use and
+Project Import. Against the current native tree, **8 are substantially present,
+22 are partial and 18 are genuinely missing feature development**. This is a
+feature-parity inventory, not a release-readiness percentage.
+
+The Synara product requirement is intentionally broader than Electron's current
+named-provider list for one area: **direct model providers**. Generic ACP remains
+the coding-agent architecture, but Synara itself must gain a separate provider-neutral
+direct model runtime designed to scale to roughly 75+ providers. ACP access to an
+agent such as OpenCode does not by itself satisfy that requirement.
 
 ## September 21: composer intake and saved follow-ups
 
@@ -105,6 +118,7 @@ in the receipt rather than represented as successful acceptance.
 
 | Surface | Source implemented | Remaining acceptance or functionality |
 | --- | --- | --- |
+| Direct model providers | Generic ACP coding-agent architecture is present, but there is no Synara-owned direct provider runtime | Major feature gap: provider-neutral registry/runtime, secret-backed auth, normalized streaming/tools/multimodal/reasoning/usage and roughly 75+ provider breadth |
 | Plugins/integrations | Native searchable built-in and managed inventory, ownership and reported-capability separation | External catalog/installed-state/lifecycle requires an actual provider contract, not inferred support; E8/I9 |
 | Skills | Reviewed local Markdown documents, hashes/origin/version, explicit disabled install/update, enable, unsent draft insertion and removal | Remote catalogs, provider-native bundles, native picker/update and broader input/platform acceptance; E8/I9 |
 | MCP | Native scoped add/edit/enable/test/remove, secret references, modern/legacy HTTP discovery, generic negotiated session context and safe retirement | OS secret-store adapter, OAuth, SSH, process/legacy SSE, vendor and platform acceptance; E8/I9 |
@@ -133,6 +147,9 @@ features as absent.
 
 | Area | Remaining acceptance or extension work |
 | --- | --- |
+| Direct multi-provider runtime | Major feature development, not merely acceptance. Generic ACP stays separate; Synara itself needs the provider-neutral direct model layer described above |
+| Computer Use | Missing Electron 0.9.0 product workflow: desktop/app control, permission setup, scoped approval, preview/interruption and safe lifecycle |
+| Project Import | Missing Electron 0.9.0 product workflow: local Codex/Claude history discovery, destination review, durable import, retry/recovery and duplicate protection |
 | Attachments and voice | Native attachment acceptance, broader binary formats, historical media/export, capture permissions and voice/transcription; D11/D12/I8 |
 | Rich conversation workflows | Side chats and additive edit/resend/revision branching are implemented. Provider-supported queue/steer, file-affecting rollback/handoff, richer structured result cards, Side-chat attachment parity and broader native acceptance remain; D4/D8-D12/G7 |
 | Pull Requests | Feature implementation is present. Live authenticated GitHub interoperability, broader native interaction coverage, enterprise/non-GitHub providers, deeper inline-review parity and Hub/thread association remain; H6 |

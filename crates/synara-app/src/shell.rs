@@ -30,6 +30,7 @@ mod panels;
 mod project_import;
 mod pull_requests;
 mod registry;
+mod releases;
 mod review;
 mod revisions;
 mod saved_context;
@@ -107,6 +108,7 @@ struct FormState {
     error: Option<String>,
 }
 enum Update {
+    Releases(Box<releases::Reply>),
     FileComment(Box<file_comments::Reply>),
     Workflows(Box<task_workflows::Reply>),
     DirectModels(Box<direct_models::Reply>),
@@ -192,6 +194,7 @@ enum Update {
     Error(String),
 }
 pub struct Shell {
+    releases: releases::ReleaseState,
     file_comments: file_comments::CommentState,
     workflows: task_workflows::WorkflowState,
     automations: automations::AutomationsView,
@@ -436,6 +439,7 @@ impl Shell {
             &bootstrap.catalog,
         );
         let mut this = Self {
+            releases: releases::ReleaseState::default(),
             file_comments: file_comments::CommentState::default(),
             workflows: task_workflows::WorkflowState::default(),
             automations: automations::AutomationsView::new(controller.clone(), cx),
@@ -527,6 +531,7 @@ impl Shell {
             _updates: updates,
             _subscriptions: subscriptions,
         };
+        this.load_release_notes(cx);
         this.load_organization();
         this.load_hubs();
         this.composer.update(cx, |entry, _| {
@@ -554,7 +559,7 @@ impl Shell {
             cx.notify();
             return false;
         }
-        if self.native_settings_pending() || self.settings.saving {
+        if self.native_settings_pending() || self.settings.saving || self.releases.busy() {
             self.notice = Some("Finish the pending Settings operation before closing.".into());
             cx.notify();
             return false;
@@ -1411,6 +1416,7 @@ impl Shell {
     }
     fn receive(&mut self, update: Update, cx: &mut Context<Self>) {
         match update {
+            Update::Releases(reply) => self.release_reply(*reply, cx),
             Update::FileComment(reply) => self.file_comment_reply(*reply, cx),
             Update::Workflows(reply) => self.workflow_reply(*reply, cx),
             Update::DirectModels(reply) => self.direct_model_reply(*reply, cx),

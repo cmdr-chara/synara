@@ -10,6 +10,7 @@ use gpui::{FocusHandle, Pixels, Point};
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub(super) enum Section {
+    Releases,
     Device,
     Privacy,
     General,
@@ -40,10 +41,46 @@ struct SectionInfo {
     description: &'static str,
 }
 const SECTIONS: &[SectionInfo] = &[
-    SectionInfo { section:Section::ProjectImport, id:"project-import", group:"Integrations", label:"Project import", icon:Glyph::Folder, description:"Discover and review local Codex or Claude histories. Import unsent standalone chats without changing source files." },
-    SectionInfo { section:Section::DirectModels, id:"direct-models", group:"Integrations", label:"Direct models", icon:Glyph::Brain, description:"Direct provider endpoints, secure API keys and reviewed model selection. Separate from ACP coding agents." },
-    SectionInfo { section: Section::Device, id: "device", group: "Integrations", label: "Device / capture", icon: Glyph::Window, description: "Installed device helpers, captures, permissions and supported controls." },
-    SectionInfo { section: Section::Privacy, id: "privacy", group: "System", label: "Privacy & security", icon: Glyph::Settings, description: "Local data, protocol diagnostics, secret-store status and safe deletion." },
+    SectionInfo {
+        section: Section::Releases,
+        id: "releases",
+        group: "System",
+        label: "What's New",
+        icon: Glyph::Bell,
+        description: "Current version, bundled build notes, local history and honest update availability.",
+    },
+    SectionInfo {
+        section: Section::ProjectImport,
+        id: "project-import",
+        group: "Integrations",
+        label: "Project import",
+        icon: Glyph::Folder,
+        description: "Discover and review local Codex or Claude histories. Import unsent standalone chats without changing source files.",
+    },
+    SectionInfo {
+        section: Section::DirectModels,
+        id: "direct-models",
+        group: "Integrations",
+        label: "Direct models",
+        icon: Glyph::Brain,
+        description: "Direct provider endpoints, secure API keys and reviewed model selection. Separate from ACP coding agents.",
+    },
+    SectionInfo {
+        section: Section::Device,
+        id: "device",
+        group: "Integrations",
+        label: "Device / capture",
+        icon: Glyph::Window,
+        description: "Installed device helpers, captures, permissions and supported controls.",
+    },
+    SectionInfo {
+        section: Section::Privacy,
+        id: "privacy",
+        group: "System",
+        label: "Privacy & security",
+        icon: Glyph::Settings,
+        description: "Local data, protocol diagnostics, secret-store status and safe deletion.",
+    },
     SectionInfo {
         section: Section::General,
         id: "general",
@@ -332,14 +369,27 @@ fn empty(title: &'static str, detail: &'static str) -> gpui::Div {
 impl Shell {
     pub(super) fn open_settings_section(&mut self, section: Section, cx: &mut Context<Self>) {
         self.settings.section = section;
-        if section == Section::DirectModels { self.load_direct_models(cx); }
-        if matches!(section,Section::Plugins|Section::Mcp|Section::Skills) && !self.integrations.loaded() { self.load_integrations(cx); }
+        if section == Section::Releases {
+            self.load_release_notes(cx);
+        }
+        if section == Section::DirectModels {
+            self.load_direct_models(cx);
+        }
+        if matches!(section, Section::Plugins | Section::Mcp | Section::Skills)
+            && !self.integrations.loaded()
+        {
+            self.load_integrations(cx);
+        }
         self.settings.popup = None;
         self.settings.scroll.set_offset(gpui::point(px(0.), px(0.)));
         self.settings.search.update(cx, |entry, cx| entry.clear(cx));
         cx.notify();
     }
-    pub(super) fn save_setting(&mut self, change: impl FnOnce(&mut AppSettings), cx: &mut Context<Self>) {
+    pub(super) fn save_setting(
+        &mut self,
+        change: impl FnOnce(&mut AppSettings),
+        cx: &mut Context<Self>,
+    ) {
         if self.settings.saving {
             return;
         }
@@ -724,6 +774,7 @@ impl Shell {
             .find(|info| info.section == self.settings.section)
             .unwrap();
         let page = match self.settings.section {
+            Section::Releases => self.release_settings(cx),
             Section::General => self.general_settings(cx),
             Section::Appearance => self.appearance_settings(cx),
             Section::Profile => self.profile_settings(cx),
@@ -1141,7 +1192,12 @@ impl Shell {
             .into_any_element()
     }
     fn archived_settings(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
-        let tasks: Vec<_> = self.catalog.tasks.iter().filter(|task| task.state == TaskState::Archived).collect();
+        let tasks: Vec<_> = self
+            .catalog
+            .tasks
+            .iter()
+            .filter(|task| task.state == TaskState::Archived)
+            .collect();
         div().flex().flex_col().gap_3()
             .child("Archived threads are retained until explicitly deleted. Restore keeps their history. Permanent deletion requires confirmation and does not remove project files or external backups.")
             .children(tasks.is_empty().then(|| empty("No archived threads", "Threads you archive will appear here.")))
@@ -1158,7 +1214,6 @@ impl Shell {
             .child(self.archived_deletion_controls(cx))
             .into_any_element()
     }
-
 }
 fn color_swatch(color: u32) -> gpui::Div {
     div()

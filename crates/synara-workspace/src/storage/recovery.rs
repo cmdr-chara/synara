@@ -377,6 +377,12 @@ fn validate_data(connection: &Connection, budget: &Budget<'_>) -> StorageResult<
                         let ledger: crate::imports::HistoryImportLedger = decode(&data)?;
                         ledger.validate().map_err(|_| StorageError::InvalidBackup)?;
                     }
+                    if id == "native-release-experience-v1" {
+                        let journal: crate::ReleaseJournal = decode(&data)?;
+                        journal
+                            .validate()
+                            .map_err(|_| StorageError::InvalidBackup)?;
+                    }
                     if id == "direct-model-providers-v1" {
                         let settings: synara_model::ProviderSettings = decode(&data)?;
                         settings

@@ -85,7 +85,7 @@ impl Shell {
                     .into_any_element()
             } else {
                 ui::markdown::render(&truncate(&message.text, 64 * 1024), &message.id)
-            });
+            }).child(self.message_media(message,cx));
         div().id(("message", index)).group("message-actions").relative().w_full().flex().flex_col()
             .top(px(3. * (1. - progress))).opacity(progress)
             .when(user, |el| el.items_end()).child(body)

@@ -2,6 +2,7 @@ use gpui::Focusable;
 mod activity;
 mod automations;
 mod attachments;
+mod rich_media;
 mod integrations;
 mod direct_models;
 mod project_import;
@@ -128,6 +129,7 @@ enum Update {
     Device(Box<device::Reply>),
     Followups(Box<followups::Reply>),
     Attachments(Box<attachments::Reply>),
+    RichMedia(Box<rich_media::Reply>),
     Hubs(Box<hubs::Reply>),
     Terminals(Box<terminals::Reply>),
     Review(Box<review::Reply>),
@@ -209,6 +211,7 @@ pub struct Shell {
     side_chats: side_chats::SideChatState,
     followups: followups::FollowupState,
     attachments: attachments::AttachmentState,
+    media: rich_media::MediaState,
     hubs: hubs::HubState,
     terminals: terminals::TerminalWorkspace,
     editors: editors::EditorState,
@@ -452,6 +455,7 @@ impl Shell {
             inline_comments: inline_comments::InlineState::new(cx),
             followups: followups::FollowupState::new(cx),
             attachments: attachments::AttachmentState::default(),
+            media: rich_media::MediaState::default(),
             hubs: hubs::HubState::new(cx),
             terminals: terminals::TerminalWorkspace::default(),
             editors: editors::EditorState::new(cx),
@@ -559,6 +563,7 @@ impl Shell {
             self.notice=Some("Finish the integration operation or discard its open Settings form/review before closing.".into());
             cx.notify(); return false;
         }
+        if self.media.saving { self.notice=Some("Finish or cancel the image export before closing.".into());cx.notify();return false; }
         if self.attachments.close_pending() {
             self.notice = Some("Finish attachment imports or discard a failed import in its conversation before closing.".into());
             cx.notify(); return false;
@@ -833,6 +838,7 @@ impl Shell {
         self.details = None;
         self.trace.clear();
         self.thread = Some(Thread::new(task.thread_id));
+        self.sync_transcript_media(cx);
         self.error = None;
         self.composer.update(cx, |entry, cx| {
             entry.set_text(self.drafts.get(&id).cloned().unwrap_or_default(), cx)
@@ -1347,6 +1353,7 @@ impl Shell {
             Update::BrowserConfigured(result) => { self.browser.busy = false; self.browser.error = result.err(); },
             Update::Device(reply) => self.device_reply(*reply, cx),
             Update::Attachments(reply) => self.attachment_reply(*reply, cx),
+            Update::RichMedia(reply) => self.media_reply(*reply,cx),
             Update::DebugWorkflow(reply) => self.debug_reply(*reply, cx),
             Update::Releases(result) => self.releases_reply(result,cx),
             Update::Recap(reply) => self.recap_reply(*reply, cx),
@@ -1449,6 +1456,7 @@ impl Shell {
                     self.transcript.sync(&thread, None);
                     self.thread = Some(*thread);
                     self.replace_task(task);
+                    self.sync_transcript_media(cx);
                 }
             }
             Update::Event(envelope) => {
@@ -1492,6 +1500,7 @@ impl Shell {
                     {
                         task.state = thread.state;
                     }
+                    if matches!(envelope.event,ThreadEvent::ImageMessage{..} | ThreadEvent::HistoryStarted | ThreadEvent::HistoryCompleted) {self.sync_transcript_media(cx);}
                 }
             }
             Update::Hydrate => {

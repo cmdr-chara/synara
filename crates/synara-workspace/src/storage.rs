@@ -398,8 +398,15 @@ PRAGMA user_version=2;")?;
         let total_bytes = bytes
             .checked_add(encoded.len() as i64)
             .ok_or(StorageError::Limit)?;
-        if last >= 200_000 || total_bytes > 128 * 1024 * 1024 {
+        if last >= 200_000 || total_bytes > 128 * 1024 * 1024
+            || matches!(envelope.event, ThreadEvent::ImageMessage { .. }) && total_bytes > 32 * 1024 * 1024 {
             return Err(StorageError::Limit);
+        }
+        if matches!(envelope.event, ThreadEvent::ImageMessage { .. }) {
+            let count: i64 = transaction.query_row(
+                "SELECT COUNT(*) FROM (SELECT 1 FROM events WHERE thread_id=?1 AND json_extract(data,'$.type')='image_message' LIMIT 256)",
+                [envelope.thread_id.to_string()], |row| row.get(0))?;
+            if count >= 256 { return Err(StorageError::Limit); }
         }
         transaction.execute(
             "INSERT INTO events(thread_id,sequence,id,timestamp_ms,data) VALUES(?1,?2,?3,?4,?5)",

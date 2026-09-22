@@ -209,7 +209,7 @@ fn text_export(task: &Task, thread: &Thread) -> StorageResult<String> {
 }
 /// Complete a private file before making the requested filename visible. The
 /// hard-link creation fails rather than replacing any existing file or symlink.
-fn write_new_export(destination: &Path, text: &str) -> StorageResult<()> {
+pub(super) fn write_new_export(destination: &Path, bytes: &[u8]) -> StorageResult<()> {
     if !destination.is_absolute() || destination.file_name().is_none() {
         return Err(StorageError::RecoveryDestination);
     }
@@ -232,7 +232,7 @@ fn write_new_export(destination: &Path, text: &str) -> StorageResult<()> {
     }
     let mut file = options.open(&staging)?;
     let result = (|| {
-        file.write_all(text.as_bytes())?;
+        file.write_all(bytes)?;
         file.sync_all()?;
         fs::hard_link(&staging, &destination)?;
         Ok::<_, std::io::Error>(())
@@ -330,7 +330,7 @@ impl WorkspaceService {
         destination: PathBuf,
     ) -> WorkspaceResult<()> {
         let text = self.text_conversation(task).await?;
-        tokio::task::spawn_blocking(move || write_new_export(&destination, &text))
+        tokio::task::spawn_blocking(move || write_new_export(&destination, text.as_bytes()))
             .await
             .map_err(|_| WorkspaceError::Worker)??;
         Ok(())

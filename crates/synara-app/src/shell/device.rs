@@ -20,6 +20,7 @@ pub(super) struct DeviceView {
     devices: Vec<ToolDevice>,
     selected: Option<DeviceId>,
     image: Option<Arc<gpui::Image>>,
+    image_bytes: Option<Vec<u8>>,
     dimensions: Option<(u32, u32)>,
     captured: Option<Instant>,
     grant: Option<Arc<DeviceInputGrant>>,
@@ -39,6 +40,7 @@ impl DeviceView {
             devices: Vec::new(),
             selected: None,
             image: None,
+            image_bytes: None,
             dimensions: None,
             captured: None,
             grant: None,
@@ -65,6 +67,7 @@ impl DeviceView {
         self.busy = false;
         self.active = false;
         self.image = None;
+        self.image_bytes = None;
         self.dimensions = None;
         self.captured = None;
         self.grant = None;
@@ -316,6 +319,7 @@ impl Shell {
                     capture.orientation()
                 );
                 self.device.dimensions = Some(dimensions);
+                self.device.image_bytes = (capture.png.len() <= MAX_ATTACHMENT_BATCH_BYTES).then(||capture.png.clone());
                 self.device.image = Some(Arc::new(gpui::Image::from_bytes(
                     gpui::ImageFormat::Png,
                     capture.png,
@@ -496,6 +500,14 @@ impl Shell {
             .children(self.device.busy.then(|| div().text_size(px(12.)).child("Working... Refresh or Disconnect cancels the current request.")))
             .child(div().flex().flex_wrap().gap_2()
                 .children((ready && !self.device.busy).then(|| ui::action("device-capture", "Capture", Some(Glyph::Capture), false, cx.listener(|this, _: &(), _, cx| this.capture_device(cx)))))
+                .children((self.device.image_bytes.is_some() && self.selected.is_some() && !self.device.busy).then(||
+                    ui::action("device-attach-frame","Attach frame to selected conversation",Some(Glyph::Attach),false,
+                        cx.listener(|this,_:&(),_,cx| {
+                            if let Some(bytes)=this.device.image_bytes.clone() {
+                                this.attach_capture("device-capture.png".into(),bytes,ImageSource::DeviceCapture,cx);
+                                this.set_panel(Panel::Conversation,cx);
+                            }
+                        })).relative().child(ui::layout_probe("device-attach-frame"))))
                 .children((can_boot && !self.device.busy).then(|| ui::action("device-boot", "Boot simulator", None, false, cx.listener(|this, _: &(), _, cx| this.device_running(true, cx)))))
                 .children((can_stop && !self.device.busy).then(|| ui::action("device-stop", if self.device.shutdown_confirmation { "Confirm shutdown" } else { "Shut down simulator" }, None, false, cx.listener(|this, _: &(), _, cx| this.device_running(false, cx)))))
                 .children((ready && self.device.image.is_some() && self.settings.value.device.backend == DeviceBackend::Android && !self.device.busy).then(|| ui::action("device-consent", if self.device.grant.is_some() { "Disable input" } else { "Enable input for this device" }, None, self.device.grant.is_some(), cx.listener(|this, _: &(), _, cx| this.enable_device_input(cx))))))
@@ -558,7 +570,7 @@ impl Shell {
                     ),
                 );
         }
-        root.child(div().text_size(px(11.)).text_color(rgb(palette().muted)).child("Input is never restored or exposed to agents. Captures stay in memory. Apple input, physical iOS devices, Android cold boot and AppSnap window capture are not implemented."))
+        root.child(div().text_size(px(11.)).text_color(rgb(palette().muted)).child("Input is never restored or exposed to agents. Captures stay in memory unless explicitly attached (2 MiB maximum). Attaching does not send or grant input authority. Apple input, physical iOS devices and Android cold boot are not implemented."))
             .into_any_element()
     }
 }

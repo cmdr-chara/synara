@@ -47,7 +47,7 @@ async fn snapshots_restore_atomic_imports_reject_stale_edits_and_never_start_age
     let image = service.add_attachments(image_task.id, 0, vec![AttachmentInput::Bytes {name:"sample.png".into(), bytes:bytes.clone()}]).await.unwrap();
     assert_eq!(image.pending[0].dimensions, Some((2,2)));
     let image_prompt = service.attached_prompt(image_task.id, "Look".into(), image.revision).await.unwrap();
-    assert!(matches!(&image_prompt.parts[2], PromptPart::Image {base64,mime_type} if *base64 == intake::base64(&bytes) && mime_type == "image/png"));
+    assert!(matches!(&image_prompt.parts[2], PromptPart::MediaImage(image) if image.base64 == intake::base64(&bytes) && image.mime_type == "image/png" && image.source == synara_core::ImageSource::Uploaded));
     drop(service);
     let reopened = WorkspaceService::open(database).await.unwrap();
     assert_eq!(reopened.attachment_draft(task.id).await.unwrap().pending, first.pending);

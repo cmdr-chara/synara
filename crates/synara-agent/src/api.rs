@@ -228,6 +228,8 @@ pub enum RestoreMode {
 #[derive(Clone, Debug)]
 pub enum PromptPart {
     Text(String),
+    /// Locally owned image metadata. Only the media bytes cross the ACP boundary.
+    MediaImage(synara_core::TranscriptImage),
     Image {
         base64: String,
         mime_type: String,

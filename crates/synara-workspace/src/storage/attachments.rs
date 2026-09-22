@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 use std::{collections::HashSet, path::PathBuf};
 use synara_agent::{Prompt, PromptPart};
 mod intake;
+mod media;
 #[cfg(test)]
 mod tests;
 
@@ -30,6 +31,8 @@ pub struct AttachmentInfo {
     pub kind: AttachmentKind,
     pub bytes: usize,
     pub dimensions: Option<(u32, u32)>,
+    #[serde(default)]
+    pub source: synara_core::ImageSource,
 }
 impl AttachmentInfo {
     fn uri(&self) -> String { format!("synara-attachment://{}", self.id) }
@@ -61,7 +64,10 @@ impl AttachmentDraft {
     }
 }
 #[derive(Clone)]
-pub enum AttachmentInput { File(PathBuf), Bytes { name: String, bytes: Vec<u8> } }
+pub enum AttachmentInput {
+    File(PathBuf), Bytes { name: String, bytes: Vec<u8> },
+    Capture { name: String, bytes: Vec<u8>, source: synara_core::ImageSource },
+}
 pub struct AttachmentPreview { pub info: AttachmentInfo, pub bytes: Vec<u8> }
 #[derive(Clone)]
 pub enum AttachmentEdit { Remove(String), Reuse(String), ClearPending, ForgetRecent }
@@ -231,7 +237,7 @@ impl WorkspaceService {
                 parts.push(match item.info.kind {
                     AttachmentKind::Text => PromptPart::Context { uri: item.info.uri(),
                         text: String::from_utf8(bytes).map_err(|_|StorageError::Identity)?, mime_type: "text/plain".into() },
-                    kind => PromptPart::Image { base64: intake::base64(&bytes), mime_type: kind.mime_type().into() },
+                    kind => PromptPart::MediaImage(synara_core::TranscriptImage { source: item.info.source, base64: intake::base64(&bytes), mime_type: kind.mime_type().into() }),
                 });
             }
             Ok(Prompt { parts })

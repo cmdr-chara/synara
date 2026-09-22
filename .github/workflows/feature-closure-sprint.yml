@@ -86,6 +86,20 @@ jobs:
               else:
                   assert digest == new_hash, 'Unexpected source; no repair applied: ' + name
           PY
+      - name: Separate reviewed goal Send from navigation without bypassing editor guards
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib, json, subprocess, sys
+          sys.path.insert(0, 'scripts')
+          import feature_closure_transfer as transfer
+          patch = Path('.feature-closure-part-0011')
+          assert not patch.is_symlink() and patch.stat().st_size < 16384
+          assert hashlib.sha256(patch.read_bytes()).hexdigest() == '52f1be640349c6cefb38e872f232bea8fbb179bf910139cdc5289a4f14c8f26f'
+          subprocess.run(['git', 'apply', '--index', '--check', '--whitespace=error-all', str(patch)], check=True)
+          subprocess.run(['git', 'apply', '--index', '--whitespace=error-all', str(patch)], check=True)
+          (transfer.EVIDENCE / 'source-paths.json').write_text(json.dumps(transfer.changed_paths()))
+          PY
       - name: Focused checks and native journeys
         run: python3 scripts/feature_closure_transfer.py check
       - name: Package exactly the checked tree

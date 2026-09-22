@@ -156,7 +156,7 @@ impl Shell {
         message: &Message,
         cx: &mut Context<Self>,
     ) -> gpui::AnyElement {
-        let mut root = div().flex().flex_col().gap_2().min_w_0();
+        let mut root = div().flex().flex_col().flex_shrink_0().gap_2().min_w_0();
         if let Some(thread) = &self.thread {
             for (slot, item) in thread
                 .images
@@ -173,6 +173,7 @@ impl Shell {
                     .flex_col()
                     .gap_1()
                     .min_w_0()
+                    .flex_shrink_0()
                     .child(ui::layout_probe_slot("transcript-media", slot))
                     .child(
                         div()
@@ -182,6 +183,7 @@ impl Shell {
                     );
                 row = row.child(match self.media.cache.get(&id) {
                     Some(Preview::Ready(image, large, (w, h))) => div()
+                        .flex().flex_col().flex_shrink_0().gap_1()
                         .relative()
                         .child(ui::layout_probe_slot("transcript-image-ready", slot))
                         .when(*large, |el| {
@@ -190,10 +192,10 @@ impl Shell {
                         .w_full()
                         .max_w(px(if *large { 900. } else { 480. }))
                         .child(
-                            gpui::img(image.clone())
-                                .w_full()
-                                .h(px(if *large { 420. } else { 160. }))
-                                .object_fit(gpui::ObjectFit::Contain),
+                            div().relative().w_full().h(px(if *large {420.} else {160.}))
+                                .flex_shrink_0().overflow_hidden()
+                                .child(ui::layout_probe_slot("transcript-image-frame",slot))
+                                .child(gpui::img(image.clone()).size_full().object_fit(gpui::ObjectFit::Contain)),
                         )
                         .child(
                             div()

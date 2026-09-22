@@ -13,6 +13,13 @@ from native_model_draft_smoke import close, preference
 from native_integrations_smoke import click, fresh_probe
 
 
+def media_layout(s):
+    image=wait_until(lambda:s.control_bounds('transcript-image-frame',1),'measured image frame')
+    actions=wait_until(lambda:s.control_bounds('transcript-image-expand',1),'measured media actions')
+    assert image[2]>0 and image[3]>0
+    assert actions[1]>=image[1]+image[3]-1,('media actions overlap frame',image,actions)
+
+
 def run(s):
     image_path=s.output/'owned-image.png'
     image=Image.new('RGB',(96,64))
@@ -38,9 +45,12 @@ def run(s):
     assert len(images)==2 and [e['image']['source'] for e in images]==['uploaded','agent_returned']
     assert all(base64.b64decode(e['image']['base64'],validate=True)==original for e in images)
     wait_until(lambda:s.control_bounds('transcript-image-ready',1),'agent image inline rendering')
+    media_layout(s)
     s.desktop.screenshot('inline-transcript-images',window_only=True)
     fresh_probe(s,'transcript-image-expanded',lambda:click(s,'transcript-image-expand',slot=1))
+    media_layout(s)
     s.desktop.screenshot('expanded-transcript-image',window_only=True)
+    s.checks.append('inline-and-expanded-images-reserve-layout-height-with-actions-below')
     s.checks.append('exact-upload-and-agent-returned-bytes-persist-with-distinct-provenance-and-expand')
     # Recent is deliberately evictable and must not own sent-image persistence.
     click(s,'recent-attachments');click(s,'forget-recent-attachments')

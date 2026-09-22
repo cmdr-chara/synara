@@ -60,6 +60,7 @@ impl Shell {
             .as_ref()
             .is_some_and(|anchor| anchor.matches(message));
         let body = div()
+            .flex().flex_col().flex_shrink_0().gap_2()
             .min_w_0()
             .when(highlighted, |el| {
                 el.border_l_2().border_color(rgb(palette().focus))

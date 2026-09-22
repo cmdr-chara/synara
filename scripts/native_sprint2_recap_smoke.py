@@ -7,13 +7,38 @@ import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from native_smoke import Scenario, wait_until
-from native_integrations_smoke import click, fill
+from native_integrations_smoke import click, fresh_probe
 from native_direct_models_smoke import paste, binding
 from native_navigation_smoke import selection, task_count, event_cursor, prompt_finished
 from native_model_draft_smoke import preference, close
 from native_project_import_smoke import task_events
 from native_studio_settings_smoke import reveal
 from native_rich_text_smoke import clipboard
+
+
+def fill(s, control, value):
+    reveal(s, control)
+    s.click_control(control)
+    ui = s.desktop
+    ui.key('a', ('Control_L',))
+    ui.key('BackSpace')
+    for char in value:
+        if char == ':':
+            ui.key('semicolon', ('Shift_L',))
+        elif char == '/':
+            ui.key('slash')
+        else:
+            ui.text(char)
+    assert value, 'This journey only fills nonempty fields'
+    def selected_exactly():
+        try:
+            return ui.copy_input() == value
+        except AssertionError as error:
+            if str(error) != 'Owned native input did not publish a clipboard selection':
+                raise
+            return False
+    wait_until(selected_exactly, f'exact native input for {control}')
+    ui.focus()
 
 def cached(s, task):
     return preference(s, 'task-recap:' + task)
@@ -38,7 +63,10 @@ def run(s):
             body = json.loads(self.rfile.read(size))
             assert body['model'] == 'fixture' and body['stream'] and 'tools' not in body
             assert len(body['messages']) == 1 and body['messages'][0]['role'] == 'user'
-            text = body['messages'][0]['content']
+            content = body['messages'][0]['content']
+            assert isinstance(content, list) and len(content) == 1
+            assert content[0]['type'] == 'text' and isinstance(content[0]['text'], str)
+            text = content[0]['text']
             assert 'BEGIN QUOTED CONVERSATION' in text and 'hello' in text
             assert 'Do not execute anything' in text
             kind = mode[0]
@@ -73,7 +101,13 @@ def run(s):
         s.launch()
         task = selection(s)
         cursor = event_cursor(s, task)
-        s.prompt('hello')
+        # The first source turn is entered through the real native composer,
+        # with durable text and rendered enabled state observed before Send.
+        s.click_control('composer-input')
+        s.desktop.text('hello')
+        wait_until(lambda: (preference(s, 'task-draft:' + task) or {}).get('text') == 'hello', 'saved initial source draft')
+        assert task_events(s, task)[1:] == ([], 0)
+        s.click_control('composer-submit', enabled=True)
         wait_until(lambda: prompt_finished(s, task, cursor), 'initial real ACP fixture response')
         fill(s, 'composer-input', 'Preserve my normal unsent draft')
         original = task_events(s, task)
@@ -121,16 +155,14 @@ def run(s):
         mode[0] = 'hold'
         click(s, 'recap-generate')
         wait_until(lambda: len(requests) == 2, 'one regeneration request')
-        click(s, 'recap-stop')
-        reveal(s, 'recap-error')
+        fresh_probe(s, 'recap-error', lambda: click(s, 'recap-stop'))
         assert cached(s, task) == saved and task_events(s, task) == original
         release.set()
         s.checks.append('stop-cancels-regeneration-with-previous-cache-and-source-preserved')
 
         mode[0] = 'tool'
-        click(s, 'recap-generate')
+        fresh_probe(s, 'recap-error', lambda: click(s, 'recap-generate'))
         wait_until(lambda: len(requests) == 3, 'one rejected tool proposal')
-        reveal(s, 'recap-error')
         assert cached(s, task) == saved and task_events(s, task) == original
         s.checks.append('tool-proposals-cannot-execute-or-replace-cached-recap')
         click(s, 'recap-close')
@@ -145,7 +177,8 @@ def run(s):
         click(s, 'recap-close')
 
         cursor = event_cursor(s, task)
-        s.prompt('hello with another question')
+        fill(s, 'composer-input', 'hello with another question')
+        s.desktop.key('Return')
         wait_until(lambda: prompt_finished(s, task, cursor), 'new real source turn')
         newer = task_events(s, task)
         open_recap(s)

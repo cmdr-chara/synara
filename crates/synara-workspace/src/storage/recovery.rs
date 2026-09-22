@@ -393,6 +393,13 @@ fn validate_data(connection: &Connection, budget: &Budget<'_>) -> StorageResult<
                         let value: crate::DebugWorkflow = decode(&data)?;
                         value.validate().map_err(|_| StorageError::InvalidBackup)?;
                     }
+                    if id.starts_with("task-recap:") {
+                        let recap: crate::ThreadRecap = decode(&data)?;
+                        recap.validate().map_err(|_| StorageError::InvalidBackup)?;
+                        if id != crate::recap::recap_key(recap.source.task) {
+                            return Err(StorageError::InvalidBackup);
+                        }
+                    }
                     if id.starts_with("task-direct-model:") {
                         let _: Option<crate::DirectModelBinding> = decode(&data)?;
                     }

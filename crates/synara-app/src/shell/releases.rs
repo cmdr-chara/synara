@@ -13,27 +13,47 @@ pub(super) struct ReleaseState {
     error: Option<String>,
 }
 impl ReleaseState {
-    pub fn busy(&self) -> bool { self.busy }
+    pub fn busy(&self) -> bool {
+        self.busy
+    }
 }
 impl Shell {
     pub(super) fn load_release_notes(&mut self, cx: &mut Context<Self>) {
-        if self.releases.busy || self.close != CloseState::Open { return; }
+        if self.releases.busy || self.close != CloseState::Open {
+            return;
+        }
         self.releases.busy = true;
         self.releases.error = None;
         let workspace = self.controller.workspace.clone();
-        self.job(async move { Ok(Update::Releases(Box::new(Reply::Loaded(
-            workspace.observe_current_build().await.map_err(|e| e.to_string()))))) });
+        self.job(async move {
+            Ok(Update::Releases(Box::new(Reply::Loaded(
+                workspace
+                    .observe_current_build()
+                    .await
+                    .map_err(|e| e.to_string()),
+            ))))
+        });
         cx.notify();
     }
     fn acknowledge_release_notes(&mut self, cx: &mut Context<Self>) {
-        if self.releases.busy || self.close != CloseState::Open { return; }
-        let Some(journal) = &self.releases.journal else { return; };
+        if self.releases.busy || self.close != CloseState::Open {
+            return;
+        }
+        let Some(journal) = &self.releases.journal else {
+            return;
+        };
         let revision = journal.revision;
         self.releases.busy = true;
         self.releases.error = None;
         let workspace = self.controller.workspace.clone();
-        self.job(async move { Ok(Update::Releases(Box::new(Reply::Loaded(
-            workspace.acknowledge_build_notes(revision).await.map_err(|e| e.to_string()))))) });
+        self.job(async move {
+            Ok(Update::Releases(Box::new(Reply::Loaded(
+                workspace
+                    .acknowledge_build_notes(revision)
+                    .await
+                    .map_err(|e| e.to_string()),
+            ))))
+        });
         cx.notify();
     }
     pub(super) fn release_reply(&mut self, reply: Reply, cx: &mut Context<Self>) {
@@ -43,7 +63,9 @@ impl Shell {
                 if journal.unread() && self.notice.is_none() {
                     self.notice = Some(NOTES_NOTICE.into());
                 }
-                if !journal.unread() && self.notice.as_deref() == Some(NOTES_NOTICE) { self.notice = None; }
+                if !journal.unread() && self.notice.as_deref() == Some(NOTES_NOTICE) {
+                    self.notice = None;
+                }
                 self.releases.journal = Some(journal);
             }
             Reply::Loaded(Err(error)) => self.releases.error = Some(error),
@@ -51,7 +73,11 @@ impl Shell {
         cx.notify();
     }
     pub(super) fn release_settings(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
-        let unread = self.releases.journal.as_ref().is_some_and(ReleaseJournal::unread);
+        let unread = self
+            .releases
+            .journal
+            .as_ref()
+            .is_some_and(ReleaseJournal::unread);
         let mut page = div().flex().flex_col().gap_3()
             .child(div().relative().child(format!("Synara {} · development build", env!("CARGO_PKG_VERSION")))
                 .child(ui::layout_probe("release-current-version")))
@@ -61,7 +87,7 @@ impl Shell {
                 .child("Published release history: no verified release catalog is bundled. The local observations below are not publication dates or proof of installed updates."))
             .child(div().relative().child(if unread { "Unread build notes" } else { "Build notes" })
                 .child(ui::layout_probe(if unread { "release-unread" } else { "release-read" })))
-            .child(div().relative().flex().flex_col().gap_1().children(BUNDLED_BUILD_NOTES.lines().map(|line| div().child(line.to_owned())))
+            .child(div().relative().flex().flex_col().gap_1().children(BUNDLED_BUILD_NOTES.lines().map(|line| div().child(line.strip_prefix("# ").unwrap_or(line).to_owned())))
                 .child(ui::layout_probe("release-bundled-notes")))
             .child(div().flex().gap_2()
                 .child(ui::action("release-ack", if self.releases.busy { "Saving..." } else { "Mark these notes read" }, Some(Glyph::Check), false,
@@ -74,8 +100,10 @@ impl Shell {
             .child(div().mt_3().border_t_1().border_color(rgb(palette().border)).pt_3().child("Builds observed in this installation (latest first, at most 24)"));
         if let Some(journal) = &self.releases.journal {
             for observed in journal.history.iter().rev() {
-                page = page.child(div().text_xs().child(format!("{} · first observed Unix ms {} · notes SHA-256 {}",
-                    observed.version, observed.observed_at_ms, observed.notes_sha256)));
+                page = page.child(div().text_xs().child(format!(
+                    "{} · first observed Unix ms {} · notes SHA-256 {}",
+                    observed.version, observed.observed_at_ms, observed.notes_sha256
+                )));
             }
         }
         page.into_any_element()

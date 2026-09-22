@@ -1,3 +1,5 @@
+mod releases;
+pub use releases::*;
 mod file_review;
 pub use file_review::*;
 mod imports;

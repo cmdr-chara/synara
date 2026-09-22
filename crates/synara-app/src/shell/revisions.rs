@@ -55,6 +55,7 @@ impl Shell {
         self.revision_navigation_except_goal(cx)
     }
     pub(super) fn revision_navigation_except_goal(&mut self, cx: &mut Context<Self>) -> bool {
+        if self.checkpoint_navigation_blocked(cx) { return true; }
         if self.inline_navigation_blocked(cx) { return true; }
         if self.handoff.open() {
             self.error = Some("Create the continuation or discard its review before leaving.".into());

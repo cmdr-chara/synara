@@ -8,6 +8,7 @@ mod direct_models;
 mod project_import;
 mod debug_workflow;
 mod recap;
+mod checkpoints;
 mod goals;
 mod releases;
 mod inline_comments;
@@ -117,6 +118,7 @@ enum Update {
     Goals(Box<goals::Reply>),
     DebugWorkflow(Box<debug_workflow::Reply>),
     Recap(Box<recap::Reply>),
+    Checkpoints(Box<checkpoints::Reply>),
     InlineComments(Box<inline_comments::Reply>),
     DirectModels(Box<direct_models::Reply>),
     ProjectImport(Box<project_import::Reply>),
@@ -204,6 +206,7 @@ pub struct Shell {
     goals: goals::GoalsState,
     debug_workflow: debug_workflow::DebugState,
     recap: recap::RecapState,
+    checkpoints: checkpoints::CheckpointState,
     inline_comments: inline_comments::InlineState,
     automations: automations::AutomationsView,
     pull_requests: pull_requests::PrView,
@@ -457,6 +460,7 @@ impl Shell {
             side_chats: side_chats::SideChatState::new(cx),
             debug_workflow: debug_workflow::DebugState::new(cx),
             recap: recap::RecapState::new(cx),
+            checkpoints: checkpoints::CheckpointState::default(),
             inline_comments: inline_comments::InlineState::new(cx),
             followups: followups::FollowupState::new(cx),
             attachments: attachments::AttachmentState::default(),
@@ -1133,6 +1137,7 @@ impl Shell {
         cx.notify();
     }
     fn send_prompt(&mut self, cx: &mut Context<Self>) {
+        if self.checkpoint_navigation_blocked(cx) { return; }
         tracing::debug!(target: "synara_ui_layout",
             task_selected = self.selected.is_some(), loading_thread = self.loading_task.is_some(),
             loading_route = self.direct_route_loading(),
@@ -1365,6 +1370,7 @@ impl Shell {
             Update::DebugWorkflow(reply) => self.debug_reply(*reply, cx),
             Update::Releases(result) => self.releases_reply(result,cx),
             Update::Recap(reply) => self.recap_reply(*reply, cx),
+            Update::Checkpoints(reply) => self.checkpoint_reply(*reply, cx),
             Update::InlineComments(reply) => self.inline_comments_reply(*reply, cx),
             Update::Followups(reply) => self.followup_reply(*reply, cx),
             Update::Hubs(reply) => self.hub_reply(*reply, cx),

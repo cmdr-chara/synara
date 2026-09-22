@@ -19,6 +19,7 @@ impl Shell {
         root = root.child(self.goal_bar(cx));
         root = root.child(self.debug_bar(cx));
         root = root.child(self.recap_bar(cx));
+        root = root.child(self.checkpoint_panel(cx));
         if let Some(details) = &self.details {
             match details.connection.state {
                 ConnectionState::Authenticating => {

@@ -15,6 +15,8 @@ impl Shell {
             .flex()
             .flex_shrink_0()
             .justify_end()
+            .gap_2()
+            .child(self.checkpoint_button(cx))
             .px_3()
             .py_1()
             .child(

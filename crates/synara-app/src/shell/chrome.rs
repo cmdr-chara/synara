@@ -381,6 +381,10 @@ impl Render for Shell {
         if self.close != CloseState::Open || self.terminal_closing {
             return self.close_panel(cx);
         }
+        if self.checkpoints.writing() {
+            window.focus(&self.close_focus, cx);
+            return self.checkpoint_busy_panel(cx);
+        }
         if !self.navigation.initialized {
             self.navigation.initialized = true;
             let weak = cx.entity().downgrade();

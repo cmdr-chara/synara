@@ -17,7 +17,7 @@ Current comparison snapshot, September 22, 2026:
 
 - Electron reference: `Emanuele-web04/synara@f04341a67bc4941d1b2e91e0b23bbe782dfbc727`
   (Synara 0.9.0-era main).
-- Native Rust reference: `cmdr-chara/synara@16789f4b290268bd54f315855cccae479aab8b2f`.
+- Native Rust reference: `cmdr-chara/synara@96ec3439449bac5631c8d8b59c7afd5fd0bc14df` (six feature implementations).
 - Electron moved **342 commits** beyond the `e7cd152` revision used by the previous
   audit. Computer Use and project-history import are therefore new parity inputs.
 - The current audit uses 48 top-level user-visible Electron capabilities: the 46
@@ -35,24 +35,14 @@ acceptance gate is closed.
 
 | Product status | Count | Meaning |
 | --- | ---: | --- |
-| Present | **13 / 48** | Substantial native user capability exists; remaining work is mainly acceptance or narrower depth |
+| Present | **14 / 48** | Substantial native user capability exists; remaining work is mainly acceptance or narrower depth |
 | Partial | **25 / 48** | Real native functionality exists, but Electron still has material user-facing depth not yet present |
-| Missing | **10 / 48** | No equivalent complete user workflow exists yet, or the current architecture does not satisfy the stated Synara product requirement |
-
-Current counts include native Debug, reviewed PR Fix, inline file comments and
-explicit generated/cached thread recap.
-Releases is partial: What's New and local build-history review are usable, but
-verified published history and production update installation remain unavailable.
-These counts do not close provider or cross-platform acceptance.
+| Missing | **9 / 48** | No equivalent complete user workflow exists yet, or the current architecture does not satisfy the stated Synara product requirement |
 
 ### Substantially present
 
 | Capability | Native state |
 | --- | --- |
-| Thread recap | Reviewed visible source and explicit direct-model destination, bounded separate generation, Stop, source/revision-fenced cache, stale display and inert restart without changing the ACP session or draft |
-| Inline file comments | Selected saved-file ranges with SHA-256/excerpt review, editable annotations, explicit freshness-checked draft attachment and normal unsent-draft recovery |
-| PR Fix workflow | Bounded unresolved-review collection, editable native review, refreshed comment/head checks and explicit append to the correct unsent task draft |
-| Debug mode | App-owned evidence-gated observation/reproduction/investigation/fix/verification, persisted task history, pause/reopen, explicit editable draft instructions and no implicit execution |
 | Side threads | Independent Side chats with separate drafts, tasks, provider sessions and permissions |
 | Project Spaces | Native Spaces organization, ordering, assignment and persistence |
 | Plan mode | Uses the generic agent's advertised session mode rather than provider-name assumptions |
@@ -63,14 +53,21 @@ These counts do not close provider or cross-platform acceptance.
 | Local-first data model | Tasks, transcripts, drafts, preferences and recovery live in the native local workspace store |
 | Project Import | Reviewed local Codex/Claude text-history discovery/import, destination review, atomic duplicate receipt, explicit retry/recovery and source preservation |
 
+| Debug mode | App-owned Observe/Reproduce/Investigate/Fix/Verify state, required saved evidence, visible unsent step preparation and inert restart |
+| Persistent thread goals | Durable objectives, edit/pause/resume/clear, elapsed pursuit, at most two automatic follow-ups per explicit arm, blocker and human-reviewed achievement history |
+| Thread recap | Reviewed generation through an independent unsent related task, explicit source-owned cache, stale-source refusal and restart restoration |
+| PR Fix workflow | Head-pinned unresolved review collection, bounded ordered context, editable instruction and explicit unsent destination-draft append |
+| Inline file comments | Task-owned saved-file range comments, surrounding context, bounded persistent queue and version-checked unsent composer append |
+
 ### Partial capabilities
 
 The following are **not missing from scratch**. They already have meaningful Rust
 implementation but still trail the Electron workflow in depth:
 
-- **Releases / What's New:** compiled version, bundled development notes, explicit
-  durable acknowledgement and bounded local build history. Verified published
-  history and production update checks/install remain unavailable, not simulated.
+- **Releases in the app:** real compiled version, bundled native development notes,
+  local version-observation history and durable read/dismiss state are implemented.
+  Version transitions become unread. A verified remote release feed, signatures and
+  production update/install lifecycle remain unconfigured and explicitly unavailable.
 - **Direct multi-provider runtime:** real Synara-owned inference, separate from ACP,
   with OpenAI-compatible, Anthropic Messages and Google Generative Language families,
   reviewed registry/custom endpoints, OS secret references, streaming/Stop, usage and
@@ -101,7 +98,6 @@ implementation but still trail the Electron workflow in depth:
 | Native subagents & workflows | Child-agent delegation with visible ownership, phases, usage and pause/stop controls |
 | Agent Gateway | App-owned, scoped tool surface allowing capable agents to create/steer Synara work under Synara ownership rules |
 | External MCP client integration | Let external MCP clients connect *to Synara*. This is distinct from configuring MCP servers that Synara passes *to an agent*. |
-| Persistent thread goals | Durable objectives, pause/resume, bounded continuation, blocker handling and achievement history |
 | Checkpoints & revert | Explicit safe state rollback; edit/resend intentionally does not pretend to roll back files/provider state |
 | Stacked pull requests | Stack ordering/readiness and explicitly confirmed safe-prefix merge workflow |
 | AppSnap | Permissioned desktop-window capture and composer attachment flow |
@@ -133,8 +129,8 @@ implementation but still trail the Electron workflow in depth:
 | P0 | Direct multi-provider runtime | Synara-owned provider/model registry and normalized direct model runtime supporting the broad provider ecosystem without provider-by-provider UI/backend duplication |
 | P1 | Electron 0.9.0 delta | Implement Computer Use ownership, permissions, observation/action and interruption. Project Import now has its reviewed native path, with broader real-history/platform acceptance remaining. |
 | P2 | Agent orchestration | Provider handoff, native subagents, Agent Gateway and external-MCP-to-Synara contracts are explicit and scoped |
-| P3 | Conversation autonomy/recovery | Goals and checkpoints/revert are real workflows with no hidden execution or fake rollback; Debug now has its app-owned workflow |
-| P4 | Review/composer depth | Stacked PRs, AppSnap, rich media, task split views and verified release depth; PR Fix, inline comments and recap now have native workflows |
+| P3 | Conversation autonomy/recovery | Goals and evidence-first Debug are implemented. Checkpoints/revert remains missing and must provide genuine bounded rollback, not transcript rewriting |
+| P4 | Review/composer depth | PR Fix, inline comments and recap are implemented. Stacked PRs, AppSnap, rich media and task split views remain missing. Release UX is partial pending verified production release/update configuration |
 | P5 | Partial-feature closure | Close the material Electron depth gaps in models/context, Automations, Studio/Hubs, browser sessions/dev servers, editor/search, device/iOS, navigation/export and personalization |
 
 ## Acceptance and release work
@@ -154,51 +150,27 @@ itself** when the corresponding feature is already present:
 
 ## Historical implementation checkpoints
 
-### September 22: sprint 2, recap and local build notes
+### September 22: breadth-first feature closure
 
-Thread recap now reviews bounded visible text and an explicit direct-model
-destination before a separate inference request. Completed summaries are cached
-with source/model provenance and revision checks. Stop, stale display, explicit
-refresh and inert restart do not mutate the ACP session, source transcript or
-normal draft. See [Thread recap](docs/ui/thread-recap.md).
+Six previously missing capabilities now have native user workflows at `96ec343`:
+Debug mode, persistent thread goals, thread recap, PR Fix, inline file comments and
+in-app development/release information. Five move Missing -> Present. Releases
+moves Missing -> Partial because the production release feed and verified updater
+remain unconfigured. The 48-capability inventory is **14 present, 25 partial,
+9 missing**, down from 15 missing. No earlier Partial capability is promoted.
 
-Settings > What's New shows compiled development notes and bounded local build
-history with durable explicit acknowledgement. No production endpoint, verified
-published catalog or platform installer is invented. Releases remains partial.
-See [What's New](docs/ui/whats-new.md) and the
-[integration receipt](docs/verification/sprint-2-continuation.md) for scope and
-verification evidence.
+Goals is explicitly armed in the native composer, requires the first Send, permits
+at most two automatic follow-ups and disarms on restart, navigation, user draft
+edits, questions, approvals, interruption or failure. Achievement requires explicit
+user verification. Debug requires evidence for every phase. Recap, PR Fix and inline
+comments prepare reviewed unsent context rather than executing by implication.
+Task/session ownership, ordinary permissions and original transcripts are preserved.
 
-### September 22: sprint 2, inline file comments
-
-Saved native editor selections now become reviewed, editable line comments with
-explicit file hash and excerpt provenance. Attaching rechecks the existing file
-and task owners and preserves the unsent draft. Stale/deleted files retain the
-comment rather than remapping lines. See [inline file comments](docs/ui/inline-file-comments.md).
-This is a frozen annotation, not a promise of live reanchoring or Send-time file
-rollback. Provider, remote and platform acceptance remain separate.
-
-### September 22: sprint 2, reviewed PR Fix workflow
-
-Unresolved GitHub review threads now have a native review-to-draft path through
-the existing Git/process, task and draft owners. The collected snapshot preserves
-comment and file/line/revision identity. Rechecking detects changed heads or
-comments, cancellation preserves user edits, and insertion requires the original
-non-archived task/project/root. No Send, agent execution, checkout, review
-submission, thread resolution or other remote write is implied. Saved chat drafts
-remain unsent after restart. See [PR Fix](docs/ui/pr-fix.md) for exact limits and
-verification entry points. Live-account and broader platform acceptance remain.
-
-### September 22: sprint 2, evidence-first Debug workflow
-
-Debug now has task-owned durable state and evidence-gated phases rather than an
-unavailable composer item. Phase changes require fresh user-recorded evidence,
-including after reinvestigation. Explicit draft insertion preserves existing
-composer text and never starts an agent or changes provider permissions. Pause,
-restart, archived-task handling, revision conflicts, bounded history and backup
-validation use the existing task and workspace owners. See
-[Debug workflow](docs/ui/debug-workflow.md) for semantics and verification targets.
-The A-Q task bodies and historical acceptance evidence remain unchanged.
+[Feature workflows and limits](docs/ui/feature-closure.md) and the
+[verification receipt](docs/verification/feature-closure-sprint.md) record the exact
+feature candidates, failed attempts, corrective checks and accumulated validation.
+Linux fixture interaction is not live-provider or cross-platform acceptance.
+Original A-Q task bodies, checkbox states and historical checkpoints remain intact.
 
 ### September 22: maximum-feature sprint and recovery
 
@@ -515,7 +487,7 @@ Status: **Partial**, with real-agent/custom-profile proof integrated; broader AC
 
 ## D. Conversation, permissions and structured questions
 
-Status: **Feature-rich partial**: Side chats, additive edit/resend, search, pins, export and reviewed related-provider continuation are integrated. In-place session handoff, goals/checkpoints/debug and richer interaction depth remain open.
+Status: **Feature-rich partial**: Side chats, additive edit/resend, search, pins, export and reviewed related-provider continuation are integrated. App-owned goals, Debug and reviewed recap now exist. In-place session handoff, checkpoints/revert and richer interaction depth remain open.
 
 - [ ] D1 Complete rendering and durable replay for user/assistant text, thinking,
   tool lifecycle/results/failures, plans, usage, compaction, status and errors.
@@ -625,7 +597,7 @@ Status: **Feature-rich partial**. Multi-file editing, search, preview, Explorer 
 
 ## H. Git workflows
 
-Status: **Feature-rich partial**: repository operations and the Pull Requests workspace are integrated; stacked PR/Fix/review-depth and broader network acceptance remain open.
+Status: **Feature-rich partial**: repository operations and the Pull Requests workspace are integrated; PR Fix and task-local inline comments now exist. Stacked PRs, deeper remote inline-review parity and broader network acceptance remain open.
 
 - [ ] H1 Harden status, staged/unstaged diff, literal-path stage/unstage and commit
   for unusual filenames, nested directories, detached HEAD and empty repositories.
@@ -887,13 +859,12 @@ Remaining limitations:
    and incremental/binary depth tracked separately.
 3. **Close orchestration and conversation gaps.** Reviewed related-provider
    continuation is present, but in-place handoff needs a safe protocol contract.
-   Native subagents, Agent Gateway, external-MCP-to-Synara, goals, checkpoints/revert
-   must reuse existing task owners without hidden authority. Debug is now a
-   durable evidence-gated native workflow.
-4. **Finish high-value depth gaps.** Stacked PRs, AppSnap/rich media, two-task
-   split views, verified release/update depth, browser sessions/dev servers,
-   complete iOS tooling and remaining editor/navigation depth. Reviewed PR Fix,
-   inline comments and generated/cached thread recap now have native workflows.
+   Native subagents, Agent Gateway, external-MCP-to-Synara and checkpoints/revert
+   remain missing. Goals and Debug now reuse existing task owners without hidden authority.
+4. **Finish high-value depth gaps.** Stacked PRs, AppSnap/rich media and two-task
+   split views remain missing. PR Fix, inline comments and recap are present.
+   Verified release/update configuration, browser sessions/dev servers, complete
+   iOS tooling and remaining editor/navigation depth remain separate partial work.
 5. **Run acceptance after coherent feature slices.** Use focused verification while
    developing, then close provider/platform/hardware/accessibility/security and final
    Q gates against exact integrated candidates. Do not turn missing acceptance into

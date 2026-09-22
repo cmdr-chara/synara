@@ -46,6 +46,9 @@ def main():
             # Only remove the clean temporary worktree created above.
             subprocess.run(["git", "worktree", "remove", str(baseline)], cwd=root, check=True)
     assert not (root / ".synara-sprint-2.json").exists(), "Temporary candidate transport remains"
+    assert not list(root.glob(".feature-closure-part-*")), "Competing publisher parts remain"
+    assert not (root / "scripts/feature_closure_transfer.py").exists(), "Competing publisher remains"
+    assert not (root / ".github/workflows/feature-closure-sprint.yml").exists(), "Write-enabled temporary workflow remains"
     workflow = (root / ".github/workflows/sprint-2.yml").read_text()
     assert "contents: read" in workflow and "contents: write" not in workflow
     assert "persist-credentials: false" in workflow and "git push" not in workflow

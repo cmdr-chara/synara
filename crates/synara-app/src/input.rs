@@ -119,6 +119,8 @@ impl TextEntry {
         self.buffer.marked().is_some()
     }
 
+    pub fn selection_range(&self) -> Range<usize> { self.buffer.selection() }
+
     pub fn selected_text(&self) -> &str {
         self.buffer
             .text()

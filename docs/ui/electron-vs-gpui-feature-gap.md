@@ -1,87 +1,39 @@
 # Electron Synara to native Rust/GPUI: current feature-gap audit
 
-Checkpoint: 2026-09-22, maximum-feature sprint 2. The earlier sprint at
-`16789f4b290268bd54f315855cccae479aab8b2f` and Sessions 1-4 remain preserved.
-This is a source inventory with explicitly scoped Linux evidence below, not
-general provider, hardware, cross-platform or production release acceptance.
+Checkpoint: 2026-09-22, after the six feature-closure implementations at
+`96ec3439449bac5631c8d8b59c7afd5fd0bc14df`. Sessions 1-4 and the maximum-feature
+sprint remain preserved. This inventory distinguishes user-visible implementation
+from Linux fixture evidence and still-open provider, hardware and platform acceptance.
 
 The complete preceding Electron comparison, source links, dated tables and earlier
 continuation notes remain in the [preserved pre-Hubs inventory](electron-vs-gpui-feature-gap-before-hubs-2026-09-21.md).
 The full acceptance backlog remains in [ROADMAP.md](../../ROADMAP.md). No historical
 gap is closed merely because this current view is shorter or a heading was renamed.
 
-## September 22: sprint 2, thread recap and accumulated verification
+## September 22: breadth-first feature closure
 
-The current inventory is **13 substantially present, 25 partial and 10 missing**.
-Relative to the starting 9/24/15 inventory, Debug, PR Fix, inline file comments
-and Thread recap move to present. Releases moves to partial, not fully complete.
+The current inventory has **14 substantially present, 25 partial and 9 missing**
+capabilities, not a release-readiness percentage. Five capabilities move from
+Missing to Present: Debug, persistent goals, thread recap, PR Fix and inline file
+comments. In-app releases moves Missing to Partial. No Partial -> Present claim is
+made. The prior 9/24/15 checkpoint below remains historical evidence.
 
-Thread recap reviews the exact bounded visible source and an explicitly selected
-direct-model endpoint before making a separate request. It caches the completed
-model-generated summary with source and model provenance, checks source/cache
-revisions, exposes Stop and stale status, and restores without network replay.
-It does not rebind the ACP task, mutate the transcript or normal draft, inherit
-approvals or run tools. [Thread recap](thread-recap.md) states bounds and limits.
-The [integration receipt](../verification/sprint-2-continuation.md) distinguishes
-focused/native evidence from live-provider and platform acceptance.
+| Capability | Native workflow | Remaining scope |
+| --- | --- | --- |
+| Debug | Persisted app-owned evidence phases, explicit unsent step preparation, required verification and native command/composer integration | Live-agent debugging efficacy and broader interaction/platform acceptance |
+| Goals | Durable objective/editor, explicit transient arm and first Send, two-follow-up/ten-minute budget, user priority, blockers, elapsed time and human-reviewed achievement | Live-provider/status-contract breadth and platform acceptance, no unbounded autonomy or restart autostart |
+| Recap | Review request, independent unsent generation task using existing runtime, explicit bounded source-owned cache and refresh | Live-model summary quality, binary/hidden context intentionally not copied |
+| PR Fix | Bounded unresolved-thread collection, exact identity/order, head and comment recheck, editable instruction and correct unsent destination | Authenticated live GitHub acceptance and non-GitHub providers |
+| Inline comments | Saved editor range/context, bounded task-owned persistence, multi-comment prompt and stale/deleted/renamed refusal | Broader editor/SSH/platform acceptance, not remote PR-comment publishing |
+| Releases (partial) | Compiled version, bundled development notes, local version history and read/dismiss/transition state | Verified remote release history/feed/signatures and production update/install lifecycle are unconfigured, not invented |
 
-The following dated counts are preserved historical checkpoints.
-
-## September 22: sprint 2, What's New
-
-At the preceding What's New checkpoint, the inventory was **12 substantially present, 25 partial and 11 missing**.
-Releases moves from missing to partial. The native Settings workflow shows the
-compiled version, bundled development notes, explicit durable acknowledgement
-and bounded local build observations. It reports unconfigured production updates
-and the absent verified release catalog without inventing an endpoint, release
-date or signed update. The full verified-update lifecycle remains open.
-
-[What's New](whats-new.md) documents the local provenance and remaining depth.
-The following earlier counts are historical checkpoints.
-
-## September 22: sprint 2, inline file comments
-
-At the preceding inline-comment checkpoint, the inventory was **12 substantially present, 24 partial and
-12 missing**. Native editor selections now have editable file review with a
-relative path, whole-file SHA-256, inclusive line range and exact excerpt.
-Explicit attachment re-reads the existing filesystem and task owners before
-preserving the original unsent draft. Stale/deleted files retain the comment
-instead of guessing a replacement range. The durable attached annotation is a
-frozen snapshot, not live reanchoring or hidden Send-time validation.
-
-[Inline file comments](inline-file-comments.md) records bounds, transient review,
-normal-draft restart semantics and focused/native checks. Real SSH and non-Linux
-acceptance remain separate. The earlier checkpoint counts below are historical.
-
-## September 22: sprint 2, reviewed PR Fix workflow
-
-At the preceding PR Fix checkpoint, the 48-capability inventory was **11 substantially present, 24 partial and
-13 missing**. PR Fix now has bounded, paginated unresolved-review collection and
-an editable native review. Explicit insertion rechecks review freshness and
-original task/project/root ownership before appending to the normal unsent draft.
-It does not create another task system, execute an agent, switch the checkout or
-write to GitHub. Empty/truncated/stale reviews and cancelled callbacks do not
-silently produce a prompt. [PR Fix](pr-fix.md) records the bounds, transient review
-semantics, normal-draft restart behavior and focused/native verification targets.
-Live authenticated GitHub and non-Linux acceptance remain open.
-
-## September 22: sprint 2, Debug workflow
-
-At the preceding Debug checkpoint, the 48-capability inventory was **10 substantially present, 24 partial and
-14 missing**. Debug moves from missing to present because its native workflow now
-has explicit durable phases, evidence gating, pause/reopen, history and reviewed
-draft insertion. This is an app-owned workflow, not a provider-name guess or an
-unavailable control. User-recorded verification is labeled as such. It is not
-independent certification of a fix, implicit execution or permission escalation.
-
-[Debug workflow](debug-workflow.md) records task ownership, restart, revision
-fencing, input limits, clear/history semantics and focused verification targets.
-The older counts below remain historical checkpoints. Upstream was re-read at
-`f04341a67bc4941d1b2e91e0b23bbe782dfbc727` and has no new parity delta.
+See [workflow and ownership details](feature-closure.md) and the
+[exact verification receipt](../verification/feature-closure-sprint.md). Subsequent
+dated sections describe their own earlier checkpoints and do not supersede these counts.
 
 ## September 22: direct models, Project Import and provider continuation
 
-At this preceding checkpoint, the 48-capability inventory had **9 substantially present, 24 partial and
+At this earlier checkpoint the 48-capability inventory had **9 substantially present, 24 partial and
 15 missing** capabilities. This is not a release-readiness percentage. Compared
 with the consolidated Sessions 1-4 checkpoint, Project Import moves from missing
 to present, and direct multi-provider runtime and provider handoff move from missing
@@ -159,8 +111,8 @@ Using Emanuele's current feature overview as the counting boundary, this audit t
 48 top-level user capabilities: 46 named overview entries plus Computer Use and
 Project Import. At the consolidated Sessions 1-4 checkpoint, **8 were substantially present,
 22 partial and 18 genuinely missing feature development**. The maximum-feature
-sprint then advanced those counts to **9 present, 24 partial and 15 missing**.
-The sprint-2 checkpoint at the top supersedes these historical totals. This is a
+sprint superseded those counts with **9 present, 24 partial and 15 missing**. The later
+feature-closure checkpoint now records **14 present, 25 partial and 9 missing**. This is a
 feature-parity inventory, not a release-readiness percentage.
 
 The Synara product requirement is intentionally broader than Electron's current
@@ -210,11 +162,12 @@ in the receipt rather than represented as successful acceptance.
 
 | Surface | Source implemented | Remaining acceptance or functionality |
 | --- | --- | --- |
-| Thread recap | Reviewed bounded visible source, explicit direct-model destination, separate inference, Stop, source/cache revisions, cached provenance, stale display, copy and inert restart | Live authenticated providers and non-Linux native acceptance; generated recaps are not authoritative history |
-| Releases / What's New | Bundled development notes, compiled version, durable acknowledgement and bounded local build observations | Partial: no verified published release catalog, production endpoint, signing or platform updater |
-| Inline file comments | Saved-file identity/hash/range/excerpt, editable native comment and freshness-checked unsent-draft attachment | Local native evidence only; no automatic reanchoring after file changes or hidden Send-time validation |
-| PR Fix workflow | Paginated unresolved-review snapshot, editable native instructions, fresh-head/comment checks and explicit append to the original unsent draft | Live-account/SSH/non-Linux acceptance; external comments can change again after insertion |
-| Debug mode | Native evidence-gated phases, persisted task state/history, explicit reviewed draft instructions, pause/reopen and no implicit execution | Broader platform/provider interaction acceptance; no independent fix certification |
+| Debug | App-owned persistent five-phase evidence workflow and explicit unsent composer preparation | Live-provider and platform acceptance, see feature-closure docs |
+| Persistent goals | Explicitly armed bounded pursuit, pause/resume/clear, user priority, blocker/achievement history and inert restart | Live-provider and cross-platform acceptance, no unbounded retry |
+| Thread recap | Reviewed generation using an independent unsent related task and explicit source-owned bounded cache | Summary quality/provider/platform acceptance |
+| PR Fix | Head-pinned unresolved review context into an explicitly reviewed unsent destination | Live authenticated account acceptance |
+| Inline file comments | Durable task-owned version-pinned range comments and reviewed unsent composer append | Broader editor/remote/platform interaction acceptance |
+| Releases | Current compiled version, native notes, local observation history and read/dismiss state | Partial: verified release feed and production installer remain unavailable |
 | Direct model providers | Separate `synara-model` runtime, three transport families, reviewed registry/custom endpoints, Settings/model selection, endpoint-bound OS references, streaming/Stop, usage and local structured-output checks | Partial toward 75+ interoperability, additional auth, native multimodal and approved tools; see direct-model docs |
 | Project Import | Reviewed local Codex/Claude text-history discovery/import, atomic receipt and recovery | Broader real-history/platform acceptance; no session/approval/secret transfer |
 | Provider continuation | Reviewed unsent related ACP/direct conversations with original link and unchanged source session/root | No in-place same-task session migration or filesystem rollback |

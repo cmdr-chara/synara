@@ -4,6 +4,8 @@ mod integrations;
 mod automations;
 mod debug_workflow;
 pub use debug_workflow::{DebugEdit, DebugPhase, DebugWorkflow};
+mod goals;
+pub use goals::{ThreadGoal, GoalStatus, GoalAchievement, GoalEdit, GoalDecision, goal_decision, GOAL_MAX_FOLLOWUPS, GOAL_PURSUIT_LIMIT_MS};
 mod releases;
 pub use releases::{NativeVersionHistory, NativeVersionVisit, NATIVE_VERSION_HISTORY_KEY};
 mod inline_comments;
@@ -289,7 +291,7 @@ PRAGMA user_version=2;")?;
             [task.thread_id.to_string()],
         )?;
         tx.execute(
-            "DELETE FROM preferences WHERE key IN (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11)",
+            "DELETE FROM preferences WHERE key IN (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12)",
             params![
                 format!("task-draft:{id}"),
                 format!("message-pins:{id}"),
@@ -301,7 +303,8 @@ PRAGMA user_version=2;")?;
                 format!("task-direct-model:{id}"),
                 format!("task-debug:{id}"),
                 format!("task-recap:{id}"),
-                format!("task-inline-comments:{id}")
+                format!("task-inline-comments:{id}"),
+                format!("task-goal:{id}")
             ],
         )?;
         let changed = tx.execute("DELETE FROM tasks WHERE id=?1", [id.to_string()])?;
@@ -574,7 +577,8 @@ fn valid_preference_key(key: &str) -> bool {
         return true;
     }
     if let Some(id) = key
-        .strip_prefix("task-inline-comments:")
+        .strip_prefix("task-goal:")
+        .or_else(|| key.strip_prefix("task-inline-comments:"))
         .or_else(|| key.strip_prefix("task-recap:"))
         .or_else(|| key.strip_prefix("task-debug:"))
         .or_else(|| key.strip_prefix("task-direct-model:"))

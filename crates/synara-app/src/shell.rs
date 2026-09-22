@@ -7,6 +7,7 @@ mod direct_models;
 mod project_import;
 mod debug_workflow;
 mod recap;
+mod goals;
 mod releases;
 mod inline_comments;
 mod followups;
@@ -110,6 +111,7 @@ struct FormState {
 }
 enum Update {
     Releases(Result<NativeVersionHistory,String>),
+    Goals(Box<goals::Reply>),
     DebugWorkflow(Box<debug_workflow::Reply>),
     Recap(Box<recap::Reply>),
     InlineComments(Box<inline_comments::Reply>),
@@ -194,6 +196,7 @@ enum Update {
 }
 pub struct Shell {
     releases: releases::ReleasesState,
+    goals: goals::GoalsState,
     debug_workflow: debug_workflow::DebugState,
     recap: recap::RecapState,
     inline_comments: inline_comments::InlineState,
@@ -435,6 +438,7 @@ impl Shell {
             .or_else(|| bootstrap.catalog.projects.first().map(|p| p.id));
         let selected = startup_task(&bootstrap.settings, &bootstrap.selection, &bootstrap.catalog);
         let mut this = Self {
+            goals: goals::GoalsState::new(cx),
             releases: releases::ReleasesState::default(),
             automations: automations::AutomationsView::new(controller.clone(), cx),
             pull_requests: pull_requests::PrView::new(cx),
@@ -539,8 +543,9 @@ impl Shell {
         this
     }
     pub fn request_close(&mut self, window: &mut Window, cx: &mut Context<Self>) -> bool {
+        if self.goal_close_edits_blocked(cx) {return false;}
         if self.releases.busy { self.notice=Some("Saving native version state before closing.".into());cx.notify();return false; }
-        if self.revision_navigation_blocked(cx) { return false; }
+        if self.revision_navigation_except_goal(cx) { return false; }
         if self.side_chats.pending(cx) {
             self.notice = Some("Finish the side-chat operation or IME composition before closing.".into());
             cx.notify();
@@ -624,6 +629,7 @@ impl Shell {
     }
 
     fn begin_quit(&mut self, cx: &mut Context<Self>) {
+        if self.goal_before_quit(cx) {return;}
         if self.automation_before_quit(cx) { return; }
         if self.dirty(cx) {
             self.reveal_dirty_editor(cx);
@@ -818,6 +824,7 @@ impl Shell {
         self.load_message_pins(id);
         self.load_attachments(id);
         self.load_followups(id);
+        self.load_goals(id, cx);
         self.load_debug(id, cx);
         self.load_recap(id);
         self.load_inline_comments(id, cx);
@@ -1113,6 +1120,13 @@ impl Shell {
         cx.notify();
     }
     fn send_prompt(&mut self, cx: &mut Context<Self>) {
+        tracing::debug!(target: "synara_ui_layout",
+            task_selected = self.selected.is_some(), loading_thread = self.loading_task.is_some(),
+            loading_route = self.direct_route_loading(),
+            loading_draft = self.selected.is_some_and(|t| self.draft_state.loading.contains(&t)),
+            attachment_pending = self.attachment_send_blocked(), goal_pending = self.goal_send_pending(cx),
+            composing = self.composer.read(cx).is_composing(), controls_blocked = self.controls_blocked(),
+            "composer-send-attempt");
         if self.direct_route_loading() { return; }
         if self.close != CloseState::Open || self.terminal_closing || self.loading_task.is_some()
             || !matches!(self.panel, Panel::Conversation | Panel::SideChats | Panel::Dock | Panel::Files | Panel::Changes | Panel::Terminal)
@@ -1122,7 +1136,7 @@ impl Shell {
             self.error = Some("Wait for saved attachments to load or finish saving before sending.".into());
             cx.notify(); return;
         }
-        if self.hub_navigation_blocked(cx) { return; }
+        if self.hub_send_blocked(cx) { return; }
         let Some(id) = self.selected else {
             self.error = Some("Create or select a task first.".into());
             cx.notify();
@@ -1144,6 +1158,7 @@ impl Shell {
         if let Some((_, display)) = &attachment_submission {
             self.draft_state.submitted_with_display(id, text.clone(), display.clone());
         } else { self.draft_state.submitted(id, text.clone()); }
+        self.goal_manual_send(id, &text, cx);
         self.busy.insert(id);
         self.error = None;
         self.notice = None;
@@ -1185,6 +1200,7 @@ impl Shell {
         cx.notify();
     }
     fn cancel(&mut self, cx: &mut Context<Self>) {
+        self.pause_goals("Stop requested. No further goal continuation is armed.",true,cx);
         if let Some(id) = self.selected {
             let controller = self.controller.clone();
             self.job(async move {
@@ -1350,7 +1366,9 @@ impl Shell {
             Update::DraftSaved(task, error) => self.draft_saved(task, error, cx),
             Update::Registry(reply) => self.registry_reply(*reply, cx),
             Update::Automations(reply) => self.automation_reply(*reply, cx),
+            Update::Goals(reply) => self.goals_reply(*reply,cx),
             Update::Tick => {
+                self.tick_goals(cx);
                 self.tick_automations(cx);
                 if self.panel == Panel::Browser { cx.notify(); }
                 self.tick_devices(cx);
@@ -1437,6 +1455,7 @@ impl Shell {
                 self.acknowledge_draft(&envelope, cx);
                 self.acknowledge_attachment_event(&envelope);
                 self.side_chat_event(&envelope, cx);
+                self.goal_event(&envelope,cx);
                 if let Some(task) = self
                     .catalog
                     .tasks
@@ -1476,6 +1495,7 @@ impl Shell {
                 }
             }
             Update::Hydrate => {
+                self.pause_goals("An event-stream resynchronization requires manual review.",true,cx);
                 self.hydrate();
                 if let Some(task) = self.side_chats.selected {
                     self.reload_visible_side_chat(task, cx);
@@ -1528,6 +1548,7 @@ impl Shell {
                         key
                     }
                 };
+                if self.task().is_some_and(|t|t.thread_id==key.0){self.pause_goals("A permission or question requires the user. Resume explicitly after resolving it.",true,cx);}
                 self.transcript.interaction_changed(&key);
                 self.pending.insert(key, interaction);
             }
@@ -1552,6 +1573,7 @@ impl Shell {
                 if self.busy.contains(&task) && self.selected != Some(task) && !visible_side {
                     self.send_desktop_notification(false, cx);
                 }
+                self.goal_prompt_done(task,error.as_deref(),cx);
                 self.finish_attachment_submission(task, error.is_none());
                 self.busy.remove(&task);
                 if self.selected == Some(task) {

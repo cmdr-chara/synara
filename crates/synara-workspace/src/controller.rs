@@ -285,6 +285,16 @@ impl Controller {
     }
 
     async fn submit_prompt(&self, id: TaskId, text: String, attachments: Option<u64>) -> WorkspaceResult<String> {
+        self.submit_prompt_owned(id, text, attachments, tokio_util::sync::CancellationToken::new()).await
+    }
+
+    /// A revocable foreground continuation still uses the one existing task owner.
+    pub async fn submit_interruptible(&self, id: TaskId, text: String, cancellation: tokio_util::sync::CancellationToken) -> WorkspaceResult<String> {
+        self.submit_prompt_owned(id, text, None, cancellation).await
+    }
+
+    async fn submit_prompt_owned(&self, id: TaskId, text: String, attachments: Option<u64>, cancellation: tokio_util::sync::CancellationToken) -> WorkspaceResult<String> {
+        if cancellation.is_cancelled() { return Err(AgentError::Cancelled.into()); }
         if text.trim().is_empty() || text.len() > 1024 * 1024 {
             return Err(WorkspaceError::Invalid("prompt must contain text and fit within 1 MiB".into()));
         }
@@ -292,7 +302,6 @@ impl Controller {
         if slot.active.swap(true, Ordering::AcqRel) {
             return Err(AgentError::Busy.into());
         }
-        let cancellation = tokio_util::sync::CancellationToken::new();
         let _guard = PromptOwnership(slot.clone());
         *slot.setup_cancel.lock().map_err(|_| WorkspaceError::Worker)? = Some(cancellation.clone());
         if let Some(binding) = self.workspace.direct_model_binding(id).await? {
@@ -529,6 +538,21 @@ mod device_settings_tests {
         async fn connect(&self, _: &AgentSpec, _: ConnectionContext) -> AgentResult<Arc<dyn AgentConnection>> {
             panic!("archived deletion must never start an agent")
         }
+    }
+    #[tokio::test]
+    async fn goals_cancelled_preparation_never_launches_or_retries() {
+        let root=tempfile::tempdir().unwrap(); let workspace=WorkspaceService::memory().unwrap();
+        let project=workspace.add_local_workspace(root.path().into()).await.unwrap();
+        let task=workspace.create_task(project.id,"Goal cancellation".into(),crate::default_profiles()[0].id.clone()).await.unwrap();
+        let controller=Arc::new(Controller::new(workspace.clone(),Arc::new(NeverLaunch),Arc::new(DenyInteractions)));
+        let token=tokio_util::sync::CancellationToken::new();token.cancel();
+        assert!(controller.submit_interruptible(task.id,"not sent".into(),token).await.is_err());
+        let slot=controller.slot(task.id).await.unwrap();let gate=slot.creation.lock().await;
+        let token=tokio_util::sync::CancellationToken::new();let cancel=token.clone();let c=controller.clone();
+        let submission=tokio::spawn(async move{c.submit_interruptible(task.id,"cancel before session creation".into(),token).await});
+        tokio::time::timeout(std::time::Duration::from_secs(2),async {while !slot.active.load(Ordering::Acquire){tokio::task::yield_now().await;}}).await.unwrap();
+        cancel.cancel();drop(gate);assert!(submission.await.unwrap().is_err());
+        assert!(!slot.active.load(Ordering::Acquire));assert!(workspace.session(task.thread_id).await.unwrap().is_none());assert!(workspace.thread(task.thread_id).await.unwrap().messages.is_empty());
     }
     #[tokio::test]
     async fn queued_archived_deletion_does_not_block_shutdown_or_delete_after_closing() {

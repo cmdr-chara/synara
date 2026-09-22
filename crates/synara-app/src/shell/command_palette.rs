@@ -23,7 +23,7 @@ impl PaletteState {
 }
 #[derive(Clone)]
 enum Action {
-    DebugWorkflow, Recap,
+    DebugWorkflow, Goals, Recap,
     ToggleZen, Appearance, Attention,
     Panel(Panel), NewChat, NewHub, Outputs, Sidebar, Environment,
     ThreadSearch, MessageSearch, Notes, OpenProject, Find, Replace, GoToLine,
@@ -115,6 +115,7 @@ impl Shell {
             for (title, detail, glyph, action) in [
                 ("Search this conversation", "Find messages and work details", Glyph::Search, Action::MessageSearch),
                 ("Thread recap", "Generate, review and cache a bounded thread recap", Glyph::Notebook, Action::Recap),
+                ("Persistent thread goal", "Explicit bounded pursuit, pause, blockers and achievements", Glyph::Goal, Action::Goals),
                 ("Debug workflow", "Evidence-first Observe, Reproduce, Investigate, Fix, Verify", Glyph::Debug, Action::DebugWorkflow),
                 ("Chat notes and checklist", "User-owned saved context", Glyph::Notebook, Action::Notes),
                 ("Hub Library", "Workspace files and attributed outputs", Glyph::Blocks, Action::Outputs),
@@ -146,6 +147,7 @@ impl Shell {
         self.dismiss_command_palette(window, cx);
         match action {
             Action::Recap => self.open_recap(cx),
+            Action::Goals => self.open_goals(cx),
             Action::DebugWorkflow => self.open_debug(cx),
             Action::ToggleZen => self.toggle_zen(cx),
             Action::Appearance => self.open_appearance(cx),

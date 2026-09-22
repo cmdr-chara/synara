@@ -1,0 +1,120 @@
+name: Native Electron parity verification
+on:
+  push:
+    branches: [astra/electron-1to1]
+    paths:
+      - 'scripts/electron_parity_batch.py'
+      - '.github/workflows/electron-parity-build.yml'
+permissions:
+  contents: read
+concurrency:
+  group: electron-parity-verification
+  cancel-in-progress: false
+jobs:
+  verify:
+    if: github.repository == 'cmdr-chara/synara'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      CARGO_BUILD_JOBS: 2
+      PYTHONDONTWRITEBYTECODE: 1
+      GIT_TERMINAL_PROMPT: 0
+      RUST_BACKTRACE: 0
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Pinned compiler and native prerequisites
+        run: |
+          rustup toolchain install 1.98.1 --profile minimal --component rustfmt
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libwebkit2gtk-4.1-dev libgtk-3-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil xclip fonts-dejavu-core fonts-liberation fonts-noto-core x11-utils imagemagick
+      - uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: electron-parity-${{ runner.os }}-${{ github.sha }}
+          restore-keys: |
+            electron-parity-${{ runner.os }}-
+            native-conversation-${{ runner.os }}-
+            feature-closure-2-1.98.1-${{ runner.os }}-
+      - name: Apply reviewed batch only to the isolated CI checkout
+        run: |
+          mkdir -p /tmp/electron-parity-evidence
+          set -o pipefail
+          python3 scripts/electron_parity_batch.py | tee /tmp/electron-parity-evidence/edits.json
+          python3 - <<'PY'
+          import subprocess
+          paths = subprocess.check_output(['git', 'ls-files', '--modified', '--others', '--exclude-standard', '-z']).decode().split('\0')
+          for path in sorted(set(filter(None, paths))):
+              if not path.startswith(('crates/synara-app/', 'crates/synara-workspace/', 'docs/ui/parity/')):
+                  raise SystemExit('Out-of-scope generated change: ' + path)
+              if path.endswith('.rs'):
+                  subprocess.run(['rustfmt', '+1.98.1', '--edition', '2024', '--config', 'skip_children=true', path], check=True)
+          PY
+          git diff --check
+          git diff --stat | tee /tmp/electron-parity-evidence/diff-stat.txt
+      - name: Native library and application regressions
+        run: |
+          set -o pipefail
+          cargo +1.98.1 test --locked --workspace --exclude synara-app 2>&1 | tee /tmp/electron-parity-evidence/libraries.log
+          cargo +1.98.1 test --locked -p synara-app 2>&1 | tee /tmp/electron-parity-evidence/application.log
+          cargo +1.98.1 build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture 2>&1 | tee /tmp/electron-parity-evidence/build.log
+      - name: Native navigation and settings runtime journeys
+        run: |
+          set -o pipefail
+          failed=0
+          for journey in navigation chat_behavior; do
+            if ! python3 "scripts/native_${journey}_smoke.py" --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output "/tmp/electron-parity-evidence/$journey" 2>&1 | tee "/tmp/electron-parity-evidence/native-$journey.log"; then
+              failed=1
+            fi
+          done
+          test "$failed" -eq 0
+      - name: Roadmap and whitespace checks
+        run: |
+          set -o pipefail
+          python3 scripts/check_roadmap.py | tee /tmp/electron-parity-evidence/roadmap.log
+          git diff --check
+      - name: Preserve reviewed source outputs and evidence
+        if: always()
+        run: |
+          mkdir -p /tmp/electron-parity-evidence
+          git rev-parse HEAD > /tmp/electron-parity-evidence/checkout-revision.txt
+          git status --short > /tmp/electron-parity-evidence/status.txt
+          git diff > /tmp/electron-parity-evidence/reviewed-source.patch
+          python3 - <<'PY'
+          import hashlib, json, pathlib, subprocess
+          root = pathlib.Path('/tmp/electron-parity-evidence')
+          paths = subprocess.check_output(['git', 'ls-files', '--modified', '--others', '--exclude-standard', '-z']).decode().split('\0')
+          manifest = []
+          for path in sorted(set(filter(None, paths))):
+              if not path.startswith(('crates/synara-app/', 'crates/synara-workspace/', 'docs/ui/parity/')):
+                  raise SystemExit('Out-of-scope source output: ' + path)
+              source = pathlib.Path(path)
+              if source.suffix not in {'.rs', '.md'}:
+                  raise SystemExit('Unexpected output type: ' + path)
+              data = source.read_bytes()
+              target = root / 'reviewed-source' / path
+              target.parent.mkdir(parents=True, exist_ok=True)
+              target.write_bytes(data)
+              manifest.append({'path': path, 'sha256': hashlib.sha256(data).hexdigest(), 'bytes': len(data)})
+          (root / 'source-manifest.json').write_text(json.dumps(manifest, indent=2))
+          print(json.dumps(manifest, indent=2))
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: electron-parity-foundation-evidence
+          path: /tmp/electron-parity-evidence/
+          retention-days: 7
+      - uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
+        if: always()
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: electron-parity-${{ runner.os }}-${{ github.sha }}

@@ -583,6 +583,7 @@ fn valid_preference_key(key: &str) -> bool {
     if matches!(
         key,
         "history-imports-v1"
+            | "native-release-experience-v1"
             | "direct-model-providers-v1"
             | "integrations"
             | "model-favorites"

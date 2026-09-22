@@ -36,11 +36,13 @@ acceptance gate is closed.
 | Product status | Count | Meaning |
 | --- | ---: | --- |
 | Present | **12 / 48** | Substantial native user capability exists; remaining work is mainly acceptance or narrower depth |
-| Partial | **24 / 48** | Real native functionality exists, but Electron still has material user-facing depth not yet present |
-| Missing | **12 / 48** | No equivalent complete user workflow exists yet, or the current architecture does not satisfy the stated Synara product requirement |
+| Partial | **25 / 48** | Real native functionality exists, but Electron still has material user-facing depth not yet present |
+| Missing | **11 / 48** | No equivalent complete user workflow exists yet, or the current architecture does not satisfy the stated Synara product requirement |
 
-Current counts include native Debug and reviewed PR Fix workflows. They do not
-close provider or cross-platform acceptance.
+Current counts include native Debug, reviewed PR Fix and inline file comments.
+Releases is partial: What's New and local build-history review are usable, but
+verified published history and production update installation remain unavailable.
+These counts do not close provider or cross-platform acceptance.
 
 ### Substantially present
 
@@ -64,6 +66,9 @@ close provider or cross-platform acceptance.
 The following are **not missing from scratch**. They already have meaningful Rust
 implementation but still trail the Electron workflow in depth:
 
+- **Releases / What's New:** compiled version, bundled development notes, explicit
+  durable acknowledgement and bounded local build history. Verified published
+  history and production update checks/install remain unavailable, not simulated.
 - **Direct multi-provider runtime:** real Synara-owned inference, separate from ACP,
   with OpenAI-compatible, Anthropic Messages and Google Generative Language families,
   reviewed registry/custom endpoints, OS secret references, streaming/Stop, usage and
@@ -101,7 +106,6 @@ implementation but still trail the Electron workflow in depth:
 | Rich media in transcript | Generated-image presentation/download and PDF/document viewing comparable to Electron |
 | Two-task split views | Keep two independent conversations/tasks visible side by side, including cross-project |
 | Thread recap | Generated and cached long-thread summary/re-entry workflow |
-| Releases in the app | What's New, release history and user-facing verified update lifecycle |
 | Computer Use | New Electron 0.9.0 capability: permissioned desktop/app control, preview, interruption/takeover and audit boundaries |
 
 ## Architectural invariants

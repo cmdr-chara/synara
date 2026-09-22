@@ -10,9 +10,21 @@ continuation notes remain in the [preserved pre-Hubs inventory](electron-vs-gpui
 The full acceptance backlog remains in [ROADMAP.md](../../ROADMAP.md). No historical
 gap is closed merely because this current view is shorter or a heading was renamed.
 
+## September 22: sprint 2, What's New
+
+The current inventory is **12 substantially present, 25 partial and 11 missing**.
+Releases moves from missing to partial. The native Settings workflow shows the
+compiled version, bundled development notes, explicit durable acknowledgement
+and bounded local build observations. It reports unconfigured production updates
+and the absent verified release catalog without inventing an endpoint, release
+date or signed update. The full verified-update lifecycle remains open.
+
+[What's New](whats-new.md) documents the local provenance and remaining depth.
+The following earlier counts are historical checkpoints.
+
 ## September 22: sprint 2, inline file comments
 
-The current 48-capability inventory is **12 substantially present, 24 partial and
+At the preceding inline-comment checkpoint, the inventory was **12 substantially present, 24 partial and
 12 missing**. Native editor selections now have editable file review with a
 relative path, whole-file SHA-256, inclusive line range and exact excerpt.
 Explicit attachment re-reads the existing filesystem and task owners before

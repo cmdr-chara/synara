@@ -1,7 +1,7 @@
 //! Protocol-independent workspace and conversation state.
 mod activity;
-mod model;
 mod media;
+mod model;
 pub use media::*;
 mod text;
 mod thread;

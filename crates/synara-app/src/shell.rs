@@ -29,6 +29,7 @@ mod overview;
 mod panels;
 mod project_import;
 mod pull_requests;
+mod recap;
 mod registry;
 mod releases;
 mod review;
@@ -108,6 +109,7 @@ struct FormState {
     error: Option<String>,
 }
 enum Update {
+    Recap(Box<recap::Reply>),
     Releases(Box<releases::Reply>),
     FileComment(Box<file_comments::Reply>),
     Workflows(Box<task_workflows::Reply>),
@@ -194,6 +196,7 @@ enum Update {
     Error(String),
 }
 pub struct Shell {
+    recaps: recap::RecapState,
     releases: releases::ReleaseState,
     file_comments: file_comments::CommentState,
     workflows: task_workflows::WorkflowState,
@@ -439,6 +442,7 @@ impl Shell {
             &bootstrap.catalog,
         );
         let mut this = Self {
+            recaps: recap::RecapState::default(),
             releases: releases::ReleaseState::default(),
             file_comments: file_comments::CommentState::default(),
             workflows: task_workflows::WorkflowState::default(),
@@ -605,7 +609,7 @@ impl Shell {
         if self.organization.saving
             || self.organization.dialog.is_some()
             || self.saved_context.dialog.is_some()
-            || self.workflows.open()
+            || (self.workflows.open() || self.recaps.open())
             || self.file_comments.open()
             || self.explorer.modal_open()
         {
@@ -802,7 +806,7 @@ impl Shell {
         }
     }
     fn select_task(&mut self, id: TaskId, cx: &mut Context<Self>) -> bool {
-        if self.workflows.open() || self.file_comments.open() {
+        if (self.workflows.open() || self.recaps.open()) || self.file_comments.open() {
             return false;
         }
         if self.native_settings_pending() {
@@ -1162,7 +1166,22 @@ impl Shell {
         cx.notify();
     }
     fn send_prompt(&mut self, cx: &mut Context<Self>) {
-        if self.direct_route_loading() || self.workflows.open() || self.file_comments.open() {
+        tracing::debug!(target: "synara_ui_layout",
+            route_loading = self.direct_route_loading(),
+            workflow_open = self.workflows.open(),
+            recap_open = self.recaps.open(),
+            file_review_open = self.file_comments.open(),
+            task_loading = self.loading_task.is_some(),
+            draft_loading = self.selected.is_some_and(|id| self.draft_state.loading.contains(&id)),
+            attachments_ready = !self.attachment_send_blocked(),
+            controls_ready = !self.controls_blocked(),
+            composing = self.composer.read(cx).is_composing(),
+            empty = self.composer.read(cx).text().trim().is_empty(),
+            "explicit-composer-send-readiness");
+        if self.direct_route_loading()
+            || (self.workflows.open() || self.recaps.open())
+            || self.file_comments.open()
+        {
             return;
         }
         if self.close != CloseState::Open
@@ -1416,6 +1435,7 @@ impl Shell {
     }
     fn receive(&mut self, update: Update, cx: &mut Context<Self>) {
         match update {
+            Update::Recap(reply) => self.recap_reply(*reply, cx),
             Update::Releases(reply) => self.release_reply(*reply, cx),
             Update::FileComment(reply) => self.file_comment_reply(*reply, cx),
             Update::Workflows(reply) => self.workflow_reply(*reply, cx),

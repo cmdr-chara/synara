@@ -1,3 +1,5 @@
+mod recap;
+pub use recap::*;
 mod releases;
 pub use releases::*;
 mod file_review;

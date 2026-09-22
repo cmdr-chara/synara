@@ -2,7 +2,7 @@ name: Sprint 2 focused native validation
 on:
   push:
     branches: [astra/max-feature-sprint-2]
-    paths: [.github/workflows/sprint-2.yml, .synara-sprint-2.json]
+    paths: [.synara-sprint-2.json]
 permissions:
   contents: write
 concurrency:
@@ -41,7 +41,7 @@ jobs:
           mkdir -p /tmp/sprint2-evidence
           set -o pipefail
           python3 - <<'PY' 2>&1 | tee /tmp/sprint2-evidence/validation.log
-          import hashlib, json, os, re, subprocess
+          import base64, gzip, hashlib, io, json, os, re, subprocess
           from pathlib import Path
           def run(*args, **kwargs):
               print('+', ' '.join(args), flush=True)
@@ -53,49 +53,50 @@ jobs:
           head = output('git', 'rev-parse', 'HEAD')
           main = output('git', 'ls-remote', 'origin', 'refs/heads/main')
           package_path = Path('.synara-sprint-2.json')
-          package = None
-          changed = []
-          if package_path.exists():
-              assert not package_path.is_symlink() and package_path.stat().st_size <= 4 * 1024 * 1024
-              package = json.loads(package_path.read_text(encoding='utf-8'))
-              assert re.fullmatch('[0-9a-f]{40}', package['base'])
-              run('git', 'merge-base', '--is-ancestor', package['base'], head)
-              preceding = output('git', 'diff', '--name-only', package['base'], head).splitlines()
-              assert all(p in ('.github/workflows/sprint-2.yml', '.synara-sprint-2.json') for p in preceding), preceding
+          assert not package_path.is_symlink() and package_path.stat().st_size <= 4 * 1024 * 1024
+          package = json.loads(package_path.read_text(encoding='utf-8'))
+          assert re.fullmatch('[0-9a-f]{40}', package['base'])
+          run('git', 'merge-base', '--is-ancestor', package['base'], head)
+          preceding = output('git', 'diff', '--name-only', package['base'], head).splitlines()
+          assert all(p in ('.github/workflows/sprint-2.yml', '.synara-sprint-2.json') for p in preceding), preceding
+          if 'gzip_base64' in package:
+              with gzip.GzipFile(fileobj=io.BytesIO(base64.b64decode(package['gzip_base64'], validate=True))) as stream:
+                  patch = stream.read(3 * 1024 * 1024 + 1)
+          else:
               patch = package['patch'].encode('utf-8')
-              assert len(patch) <= 3 * 1024 * 1024
-              assert hashlib.sha256(patch).hexdigest() == package['sha256']
-              run('git', 'apply', '--check', '-', input=patch)
-              run('git', 'apply', '-', input=patch)
-              changed = output('git', 'ls-files', '--modified', '--others', '--exclude-standard').splitlines()
-              assert changed and len(changed) <= 100 and all(allowed(p) for p in changed), changed
-              assert all(not Path(p).is_symlink() for p in changed)
-              rust = [p for p in changed if p.endswith('.rs') and Path(p).is_file()]
-              if rust:
-                  run('rustfmt', '+1.98.1', '--edition', '2024', '--config', 'skip_children=true', *rust)
-              for crate, test in package.get('tests', []):
-                  assert crate in ('synara-workspace', 'synara-app', 'synara-core', 'synara-runtime', 'synara-model')
-                  assert re.fullmatch('[A-Za-z0-9_:]+', test)
-                  target = ['--bin', 'synara-app'] if crate == 'synara-app' else ['--lib']
-                  run('cargo', '+1.98.1', 'test', '--locked', '-p', crate, *target, test)
+          assert len(patch) <= 3 * 1024 * 1024
+          assert hashlib.sha256(patch).hexdigest() == package['sha256']
+          Path('/tmp/sprint2-evidence/submitted.patch').write_bytes(patch)
+          run('git', 'apply', '--check', '-', input=patch)
+          run('git', 'apply', '-', input=patch)
+          changed = output('git', 'ls-files', '--modified', '--others', '--exclude-standard').splitlines()
+          assert changed and len(changed) <= 100 and all(allowed(p) for p in changed), changed
+          assert all(not Path(p).is_symlink() for p in changed)
+          rust = [p for p in changed if p.endswith('.rs') and Path(p).is_file()]
+          if rust:
+              run('rustfmt', '+1.98.1', '--edition', '2024', '--config', 'skip_children=true', *rust)
+          for crate, test in package.get('tests', []):
+              assert crate in ('synara-workspace', 'synara-app', 'synara-core', 'synara-runtime', 'synara-model')
+              assert re.fullmatch('[A-Za-z0-9_:]+', test)
+              target = ['--bin', 'synara-app'] if crate == 'synara-app' else ['--lib']
+              run('cargo', '+1.98.1', 'test', '--locked', '-p', crate, *target, test)
           run('cargo', '+1.98.1', 'build', '--locked', '-p', 'synara-app', '--bin', 'synara-app', '-p', 'synara-acp', '--bin', 'synara-acp-fixture')
-          if package:
-              for script in package.get('journeys', []):
-                  assert re.fullmatch('native_[a-z0-9_]+_smoke[.]py', script)
-                  assert Path('scripts', script).is_file()
-                  run('python3', 'scripts/' + script, '--binary', 'target/debug/synara-app', '--fixture', 'target/debug/synara-acp-fixture', '--output', '/tmp/sprint2-evidence/' + script[:-3])
-              run('python3', 'scripts/check_roadmap.py')
-              run('git', 'diff', '--check')
-              message = package['message']
-              assert isinstance(message, str) and 1 <= len(message) <= 180 and '\n' not in message
-              current = output('git', 'ls-remote', 'origin', 'refs/heads/astra/max-feature-sprint-2').split()[0]
-              assert current == head, 'Session advanced concurrently; candidate is preserved, not force-pushed'
-              assert output('git', 'ls-remote', 'origin', 'refs/heads/main') == main, 'Main changed concurrently; inspect before publishing'
-              run('git', 'add', '--', *changed)
-              run('git', 'config', 'user.name', 'Synara validation')
-              run('git', 'config', 'user.email', 'synara-validation@users.noreply.github.com')
-              run('git', 'commit', '-m', message)
-              run('git', 'push', 'origin', 'HEAD:refs/heads/astra/max-feature-sprint-2')
+          for script in package.get('journeys', []):
+              assert re.fullmatch('native_[a-z0-9_]+_smoke[.]py', script)
+              assert Path('scripts', script).is_file()
+              run('python3', 'scripts/' + script, '--binary', 'target/debug/synara-app', '--fixture', 'target/debug/synara-acp-fixture', '--output', '/tmp/sprint2-evidence/' + script[:-3])
+          run('python3', 'scripts/check_roadmap.py')
+          run('git', 'diff', '--check')
+          message = package['message']
+          assert isinstance(message, str) and 1 <= len(message) <= 180 and '\n' not in message
+          current = output('git', 'ls-remote', 'origin', 'refs/heads/astra/max-feature-sprint-2').split()[0]
+          assert current == head, 'Session advanced concurrently; candidate is preserved, not force-pushed'
+          assert output('git', 'ls-remote', 'origin', 'refs/heads/main') == main, 'Main changed concurrently; inspect before publishing'
+          run('git', 'add', '--', *changed)
+          run('git', 'config', 'user.name', 'Synara validation')
+          run('git', 'config', 'user.email', 'synara-validation@users.noreply.github.com')
+          run('git', 'commit', '-m', message)
+          run('git', 'push', 'origin', 'HEAD:refs/heads/astra/max-feature-sprint-2')
           PY
       - name: Preserve candidate identity and evidence
         if: always()

@@ -59,17 +59,35 @@ jobs:
           run('git', 'merge-base', '--is-ancestor', package['base'], head)
           preceding = output('git', 'diff', '--name-only', package['base'], head).splitlines()
           assert all(p in ('.github/workflows/sprint-2.yml', '.synara-sprint-2.json') for p in preceding), preceding
+          def ancestor_package(source):
+              assert re.fullmatch('[0-9a-f]{40}', source)
+              run('git', 'merge-base', '--is-ancestor', source, head)
+              raw = subprocess.check_output(['git', 'show', source + ':.synara-sprint-2.json'])
+              assert len(raw) <= 4 * 1024 * 1024
+              result = json.loads(raw)
+              assert result['base'] == package['base']
+              return result
           def patches(item, depth=0):
               assert depth < 8 and item['base'] == package['base']
               if 'source' in item:
-                  source = item['source']
-                  assert re.fullmatch('[0-9a-f]{40}', source)
-                  run('git', 'merge-base', '--is-ancestor', source, head)
-                  raw = subprocess.check_output(['git', 'show', source + ':.synara-sprint-2.json'])
-                  assert len(raw) <= 4 * 1024 * 1024
-                  yield from patches(json.loads(raw), depth + 1)
-              if 'gzip_base64' in item:
-                  with gzip.GzipFile(fileobj=io.BytesIO(base64.b64decode(item['gzip_base64'], validate=True))) as stream:
+                  yield from patches(ancestor_package(item['source']), depth + 1)
+              encoded = item.get('gzip_base64')
+              if 'encoded_source' in item:
+                  assert encoded is None and 'patch' not in item
+                  encoded = ancestor_package(item['encoded_source'])['gzip_base64']
+                  assert hashlib.sha256(encoded.encode('ascii')).hexdigest() == item['encoded_sha256']
+                  edits = item['encoded_edits']
+                  assert isinstance(edits, list) and 1 <= len(edits) <= 16
+                  assert len(set(e[0] for e in edits)) == len(edits)
+                  for offset, before, after in sorted(edits, reverse=True):
+                      assert type(offset) is int and 0 <= offset <= len(encoded)
+                      assert isinstance(before, str) and isinstance(after, str)
+                      assert len(before) <= 128 and len(after) <= 128
+                      assert re.fullmatch('[A-Za-z0-9+/=]*', before + after)
+                      assert encoded[offset:offset + len(before)] == before
+                      encoded = encoded[:offset] + after + encoded[offset + len(before):]
+              if encoded is not None:
+                  with gzip.GzipFile(fileobj=io.BytesIO(base64.b64decode(encoded, validate=True))) as stream:
                       patch = stream.read(3 * 1024 * 1024 + 1)
               else:
                   patch = item['patch'].encode('utf-8')

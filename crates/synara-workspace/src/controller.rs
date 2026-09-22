@@ -1,7 +1,8 @@
-mod handoff;
-mod direct_models;
-mod integrations;
 mod browser;
+mod direct_models;
+mod handoff;
+mod integrations;
+mod recap;
 use crate::{AgentProfile, WorkspaceError, WorkspaceResult, WorkspaceService};
 use std::{
     collections::HashMap,
@@ -208,7 +209,9 @@ impl Controller {
         let connection = self.connection_for(&task, &slot, &profile, false).await?;
         let mut options = SessionOptions::new(task.thread_id, task.working_directory.clone());
         options.context_servers = self.managed_mcp_context(&task, connection.as_ref()).await?;
-        if let Some(context) = self.browser_context(id, &profile, connection.as_ref())? { options.context_servers.push(context); }
+        if let Some(context) = self.browser_context(id, &profile, connection.as_ref())? {
+            options.context_servers.push(context);
+        }
         let previous = self.workspace.session(task.thread_id).await?;
         let session = if let Some(previous) = previous.filter(|r| {
             r.agent_id == task.agent_id && r.working_directory == task.working_directory
@@ -280,13 +283,25 @@ impl Controller {
     }
 
     /// Explicit composer send. Other callers retain text-only submission.
-    pub async fn submit_with_attachments(&self, id: TaskId, text: String, revision: u64) -> WorkspaceResult<String> {
+    pub async fn submit_with_attachments(
+        &self,
+        id: TaskId,
+        text: String,
+        revision: u64,
+    ) -> WorkspaceResult<String> {
         self.submit_prompt(id, text, Some(revision)).await
     }
 
-    async fn submit_prompt(&self, id: TaskId, text: String, attachments: Option<u64>) -> WorkspaceResult<String> {
+    async fn submit_prompt(
+        &self,
+        id: TaskId,
+        text: String,
+        attachments: Option<u64>,
+    ) -> WorkspaceResult<String> {
         if text.trim().is_empty() || text.len() > 1024 * 1024 {
-            return Err(WorkspaceError::Invalid("prompt must contain text and fit within 1 MiB".into()));
+            return Err(WorkspaceError::Invalid(
+                "prompt must contain text and fit within 1 MiB".into(),
+            ));
         }
         let slot = self.slot(id).await?;
         if slot.active.swap(true, Ordering::AcqRel) {
@@ -294,7 +309,10 @@ impl Controller {
         }
         let cancellation = tokio_util::sync::CancellationToken::new();
         let _guard = PromptOwnership(slot.clone());
-        *slot.setup_cancel.lock().map_err(|_| WorkspaceError::Worker)? = Some(cancellation.clone());
+        *slot
+            .setup_cancel
+            .lock()
+            .map_err(|_| WorkspaceError::Worker)? = Some(cancellation.clone());
         if let Some(binding) = self.workspace.direct_model_binding(id).await? {
             if attachments.is_some() {
                 return Err(WorkspaceError::Invalid("Direct chat attachment delivery is not available in this slice. Remove attachments or use an ACP agent.".into()));
@@ -309,13 +327,17 @@ impl Controller {
                 () = cancellation.cancelled() => return Err(AgentError::Cancelled.into()),
                 result = self.workspace.attached_prompt(id, text, revision) => result?,
             }
-        } else { Prompt::text(text) };
+        } else {
+            Prompt::text(text)
+        };
         let session = tokio::select! {
             biased;
             () = cancellation.cancelled() => return Err(AgentError::Cancelled.into()),
             result = self.session_for(id) => result?,
         };
-        if cancellation.is_cancelled() { return Err(AgentError::Cancelled.into()); }
+        if cancellation.is_cancelled() {
+            return Err(AgentError::Cancelled.into());
+        }
         session.prompt(prompt).await.map_err(Into::into)
     }
 
@@ -351,7 +373,12 @@ impl Controller {
             let task = self.workspace.task(id).await?;
             let profile = self.profile(&task.agent_id).await?;
             let connection = self.connection_for(&task, &slot, &profile, false).await?;
-            if !connection.info().authentication.iter().any(|auth| auth.id == method) {
+            if !connection
+                .info()
+                .authentication
+                .iter()
+                .any(|auth| auth.id == method)
+            {
                 return Err(AgentError::Invalid("unknown authentication method".into()).into());
             }
             connection.authenticate(&method).await?;
@@ -365,31 +392,43 @@ impl Controller {
         value: ConfigValue,
     ) -> WorkspaceResult<()> {
         let slot = self.slot(id).await?;
-        if slot.active.swap(true, Ordering::AcqRel) { return Err(AgentError::Busy.into()); }
+        if slot.active.swap(true, Ordering::AcqRel) {
+            return Err(AgentError::Busy.into());
+        }
         let _ownership = PromptOwnership(slot);
         let session = self.session_for(id).await?;
         let _lifetime = self.lifetime.read().await;
-        if self.closing.load(Ordering::Acquire) { return Err(AgentError::Busy.into()); }
+        if self.closing.load(Ordering::Acquire) {
+            return Err(AgentError::Busy.into());
+        }
         session.set_option(&key, value).await?;
         Ok(())
     }
     pub async fn set_mode(&self, id: TaskId, mode: String) -> WorkspaceResult<()> {
         let slot = self.slot(id).await?;
-        if slot.active.swap(true, Ordering::AcqRel) { return Err(AgentError::Busy.into()); }
+        if slot.active.swap(true, Ordering::AcqRel) {
+            return Err(AgentError::Busy.into());
+        }
         let _ownership = PromptOwnership(slot);
         let session = self.session_for(id).await?;
         let _lifetime = self.lifetime.read().await;
-        if self.closing.load(Ordering::Acquire) { return Err(AgentError::Busy.into()); }
+        if self.closing.load(Ordering::Acquire) {
+            return Err(AgentError::Busy.into());
+        }
         session.set_mode(&mode).await?;
         Ok(())
     }
     pub async fn set_model(&self, id: TaskId, model: String) -> WorkspaceResult<()> {
         let slot = self.slot(id).await?;
-        if slot.active.swap(true, Ordering::AcqRel) { return Err(AgentError::Busy.into()); }
+        if slot.active.swap(true, Ordering::AcqRel) {
+            return Err(AgentError::Busy.into());
+        }
         let _ownership = PromptOwnership(slot);
         let session = self.session_for(id).await?;
         let _lifetime = self.lifetime.read().await;
-        if self.closing.load(Ordering::Acquire) { return Err(AgentError::Busy.into()); }
+        if self.closing.load(Ordering::Acquire) {
+            return Err(AgentError::Busy.into());
+        }
         session.set_model(&model).await?;
         Ok(())
     }
@@ -471,19 +510,26 @@ impl Controller {
         // shutdown writer and an in-flight setup waiting for its read lock.
         let _lifetime = self.lifetime.read().await;
         if self.closing.load(Ordering::Acquire) {
-            return Err(WorkspaceError::Invalid("application is shutting down".into()));
+            return Err(WorkspaceError::Invalid(
+                "application is shutting down".into(),
+            ));
         }
         if self.workspace.task(id).await?.state != TaskState::Archived {
-            return Err(WorkspaceError::Invalid("Only an archived task may be permanently deleted".into()));
+            return Err(WorkspaceError::Invalid(
+                "Only an archived task may be permanently deleted".into(),
+            ));
         }
         let old = slot.live.lock().map_err(|_| WorkspaceError::Worker)?.take();
         if let Some(old) = old {
-            let result = tokio::time::timeout(std::time::Duration::from_secs(8), old.session.close()).await;
+            let result =
+                tokio::time::timeout(std::time::Duration::from_secs(8), old.session.close()).await;
             if !matches!(result, Ok(Ok(()))) {
                 *slot.live.lock().map_err(|_| WorkspaceError::Worker)? = Some(old);
                 return Err(match result {
                     Ok(Err(error)) => error.into(),
-                    _ => WorkspaceError::Invalid("Session close timed out. Archived data was retained".into()),
+                    _ => WorkspaceError::Invalid(
+                        "Session close timed out. Archived data was retained".into(),
+                    ),
                 });
             }
         }
@@ -500,9 +546,19 @@ impl Controller {
     pub async fn shutdown(&self) -> WorkspaceResult<()> {
         self.closing.store(true, Ordering::Release);
         self.browser.shutdown();
-        self.browser_endpoints.lock().map_err(|_| WorkspaceError::Worker)?.clear();
+        self.browser_endpoints
+            .lock()
+            .map_err(|_| WorkspaceError::Worker)?
+            .clear();
         for slot in self.tasks.lock().await.values() {
-            if let Some(token) = slot.setup_cancel.lock().map_err(|_| WorkspaceError::Worker)?.as_ref() { token.cancel(); }
+            if let Some(token) = slot
+                .setup_cancel
+                .lock()
+                .map_err(|_| WorkspaceError::Worker)?
+                .as_ref()
+            {
+                token.cancel();
+            }
         }
         let _lifetime = self.lifetime.write().await;
         self.manager.disconnect_all().await?;
@@ -526,7 +582,11 @@ mod device_settings_tests {
     struct NeverLaunch;
     #[async_trait::async_trait]
     impl AgentBackend for NeverLaunch {
-        async fn connect(&self, _: &AgentSpec, _: ConnectionContext) -> AgentResult<Arc<dyn AgentConnection>> {
+        async fn connect(
+            &self,
+            _: &AgentSpec,
+            _: ConnectionContext,
+        ) -> AgentResult<Arc<dyn AgentConnection>> {
             panic!("archived deletion must never start an agent")
         }
     }
@@ -534,10 +594,24 @@ mod device_settings_tests {
     async fn queued_archived_deletion_does_not_block_shutdown_or_delete_after_closing() {
         let root = tempfile::tempdir().unwrap();
         let workspace = WorkspaceService::memory().unwrap();
-        let project = workspace.add_local_workspace(root.path().to_path_buf()).await.unwrap();
-        let task = workspace.create_task(project.id, "Shutdown deletion".into(), crate::default_profiles()[0].id.clone()).await.unwrap();
+        let project = workspace
+            .add_local_workspace(root.path().to_path_buf())
+            .await
+            .unwrap();
+        let task = workspace
+            .create_task(
+                project.id,
+                "Shutdown deletion".into(),
+                crate::default_profiles()[0].id.clone(),
+            )
+            .await
+            .unwrap();
         workspace.archive_task(task.id).await.unwrap();
-        let controller = Arc::new(Controller::new(workspace.clone(), Arc::new(NeverLaunch), Arc::new(DenyInteractions)));
+        let controller = Arc::new(Controller::new(
+            workspace.clone(),
+            Arc::new(NeverLaunch),
+            Arc::new(DenyInteractions),
+        ));
         let slot = controller.slot(task.id).await.unwrap();
         let setup = slot.creation.lock().await;
         let deletion = {
@@ -548,12 +622,23 @@ mod device_settings_tests {
             while !slot.active.load(Ordering::Acquire) {
                 tokio::task::yield_now().await;
             }
-        }).await.unwrap();
+        })
+        .await
+        .unwrap();
         // A queued deletion must not retain a lifetime read lock while another
         // setup owns creation. Otherwise this shutdown writer cannot progress.
-        tokio::time::timeout(std::time::Duration::from_secs(2), controller.shutdown()).await.unwrap().unwrap();
+        tokio::time::timeout(std::time::Duration::from_secs(2), controller.shutdown())
+            .await
+            .unwrap()
+            .unwrap();
         drop(setup);
-        assert!(tokio::time::timeout(std::time::Duration::from_secs(2), deletion).await.unwrap().unwrap().is_err());
+        assert!(
+            tokio::time::timeout(std::time::Duration::from_secs(2), deletion)
+                .await
+                .unwrap()
+                .unwrap()
+                .is_err()
+        );
         assert!(workspace.task(task.id).await.is_ok());
         assert!(!slot.active.load(Ordering::Acquire));
     }
@@ -561,19 +646,39 @@ mod device_settings_tests {
     async fn permanent_deletion_rejects_unarchived_and_active_tasks_then_removes_archived_data() {
         let root = tempfile::tempdir().unwrap();
         let workspace = WorkspaceService::memory().unwrap();
-        let project = workspace.add_local_workspace(root.path().to_path_buf()).await.unwrap();
-        let task = workspace.create_task(project.id, "Archived deletion".into(), crate::default_profiles()[0].id.clone()).await.unwrap();
-        let controller = Controller::new(workspace.clone(), Arc::new(NeverLaunch), Arc::new(DenyInteractions));
+        let project = workspace
+            .add_local_workspace(root.path().to_path_buf())
+            .await
+            .unwrap();
+        let task = workspace
+            .create_task(
+                project.id,
+                "Archived deletion".into(),
+                crate::default_profiles()[0].id.clone(),
+            )
+            .await
+            .unwrap();
+        let controller = Controller::new(
+            workspace.clone(),
+            Arc::new(NeverLaunch),
+            Arc::new(DenyInteractions),
+        );
         assert!(controller.delete_archived_task(task.id).await.is_err());
         assert!(workspace.task(task.id).await.is_ok());
         workspace.archive_task(task.id).await.unwrap();
         let slot = controller.slot(task.id).await.unwrap();
         slot.active.store(true, Ordering::Release);
-        assert!(matches!(controller.delete_archived_task(task.id).await, Err(WorkspaceError::Agent(AgentError::Busy))));
+        assert!(matches!(
+            controller.delete_archived_task(task.id).await,
+            Err(WorkspaceError::Agent(AgentError::Busy))
+        ));
         assert!(workspace.task(task.id).await.is_ok());
         slot.active.store(false, Ordering::Release);
         controller.delete_archived_task(task.id).await.unwrap();
-        assert!(matches!(workspace.task(task.id).await, Err(WorkspaceError::NotFound)));
+        assert!(matches!(
+            workspace.task(task.id).await,
+            Err(WorkspaceError::NotFound)
+        ));
         assert!(root.path().is_dir());
     }
 }

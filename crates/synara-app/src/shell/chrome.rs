@@ -452,7 +452,7 @@ impl Render for Shell {
             && self.kanban.dialog.is_none()
             && self.organization.dialog.is_none()
             && self.saved_context.dialog.is_none()
-            && !self.workflows.open()
+            && !(self.workflows.open() || self.recaps.open())
             && !self.explorer.modal_open()
             && !self.environment.menu_open()
             && !self.chat_tools.menu_open()
@@ -482,6 +482,7 @@ impl Render for Shell {
         if tools_visible && !self.settings.personalization.attention_open {
             self.restore_editor_focus(window, cx);
         }
+        self.restore_recap_focus(window, cx);
         let now = std::time::Instant::now();
         if !cx.reduce_motion() && self.transcript.advance_animations(now) {
             window.request_animation_frame();
@@ -549,7 +550,7 @@ impl Render for Shell {
                 if this.kanban.dialog.is_some()
                     || this.organization.dialog.is_some()
                     || this.saved_context.dialog.is_some()
-                    || this.workflows.open()
+                    || (this.workflows.open() || this.recaps.open())
                     || this.revisions.open()
                     || this.handoff.open()
                     || this.settings.personalization.attention_open
@@ -755,6 +756,7 @@ impl Render for Shell {
             .children(self.organization.dialog.clone())
             .children(self.saved_context.dialog.clone())
             .children(self.workflows.open().then(|| self.workflow_overlay(cx)))
+            .children(self.recaps.open().then(|| self.recap_overlay(cx)))
             .when(self.explorer.modal_open(), |el| {
                 el.child(self.file_action_overlay(cx))
             })

@@ -595,6 +595,7 @@ fn valid_preference_key(key: &str) -> bool {
     }
     if let Some(id) = key
         .strip_prefix("task-direct-model:")
+        .or_else(|| key.strip_prefix("task-recap:"))
         .or_else(|| key.strip_prefix("task-draft:"))
         .or_else(|| key.strip_prefix("message-pins:"))
         .or_else(|| key.strip_prefix("task-context:"))

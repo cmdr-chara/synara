@@ -46,6 +46,7 @@ enum Action {
     Appearance,
     Attention,
     DebugWorkflow,
+    ThreadRecap,
     Panel(Panel),
     NewChat,
     NewHub,
@@ -311,6 +312,12 @@ impl Shell {
                     Action::Notes,
                 ),
                 (
+                    "Thread recap",
+                    "Review visible source, select a direct model and cache a separate summary",
+                    Glyph::Brain,
+                    Action::ThreadRecap,
+                ),
+                (
                     "Debug workflow",
                     "Evidence-first observation, reproduction, investigation, fix and verification",
                     Glyph::Debug,
@@ -448,6 +455,7 @@ impl Shell {
             }
             Action::Notes => self.open_saved_context(window, cx),
             Action::DebugWorkflow => self.open_debug_workflow(window, cx),
+            Action::ThreadRecap => self.open_thread_recap(window, cx),
             Action::Outputs => self.open_studio_outputs(cx),
             Action::OpenProject => self.browse_workspace(cx),
             Action::Task(id) => {

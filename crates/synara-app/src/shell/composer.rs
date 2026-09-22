@@ -177,7 +177,13 @@ impl Shell {
                                         }
                                     }),
                                 )
-                                .child(ui::layout_probe("composer-submit")),
+                                .child(gpui::canvas(move |bounds, _, _| {
+                                    tracing::debug!(target: "synara_ui_layout",
+                                        control = "composer-submit", enabled = !disabled,
+                                        x = f32::from(bounds.origin.x), y = f32::from(bounds.origin.y),
+                                        width = f32::from(bounds.size.width), height = f32::from(bounds.size.height),
+                                        "control-layout");
+                                }, |_, _, _, _| {}).absolute().size_full().top_0().left_0()),
                             ),
                     ),
             )

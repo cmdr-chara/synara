@@ -20,6 +20,7 @@ mod controls;
 mod conversation;
 mod dock;
 mod device;
+mod appsnap;
 mod browser;
 mod pull_requests;
 mod drafts;
@@ -127,6 +128,7 @@ enum Update {
     SideChats(Box<side_chats::Reply>),
     NativeSettings(Box<settings::native::Reply>),
     Device(Box<device::Reply>),
+    AppSnap(Box<appsnap::Reply>),
     Followups(Box<followups::Reply>),
     Attachments(Box<attachments::Reply>),
     RichMedia(Box<rich_media::Reply>),
@@ -206,6 +208,7 @@ pub struct Shell {
     pull_requests: pull_requests::PrView,
     browser: browser::BrowserView,
     device: device::DeviceView,
+    appsnap: appsnap::SnapView,
     revisions: revisions::RevisionState,
     handoff: handoff::HandoffState,
     side_chats: side_chats::SideChatState,
@@ -447,6 +450,7 @@ impl Shell {
             pull_requests: pull_requests::PrView::new(cx),
             browser: browser::BrowserView::new(&controller, bootstrap.scratch_directory.parent().unwrap_or(&bootstrap.scratch_directory).join("browser"), cx),
             device: device::DeviceView::new(cx),
+            appsnap: appsnap::SnapView::default(),
             revisions: revisions::RevisionState::new(),
             handoff: handoff::HandoffState::default(),
             side_chats: side_chats::SideChatState::new(cx),
@@ -803,6 +807,7 @@ impl Shell {
         }
         self.snapshot_draft(cx);
         self.selection_revision = self.selection_revision.wrapping_add(1);
+        self.appsnap.retire();
         self.navigation.studio = task.scope == TaskScope::Studio;
         if self.navigation.studio {
             self.hubs.selected = Some(task.project_id);
@@ -1352,6 +1357,7 @@ impl Shell {
             Update::PullRequests(reply) => self.pr_reply(*reply, cx),
             Update::BrowserConfigured(result) => { self.browser.busy = false; self.browser.error = result.err(); },
             Update::Device(reply) => self.device_reply(*reply, cx),
+            Update::AppSnap(reply) => self.appsnap_reply(*reply, cx),
             Update::Attachments(reply) => self.attachment_reply(*reply, cx),
             Update::RichMedia(reply) => self.media_reply(*reply,cx),
             Update::DebugWorkflow(reply) => self.debug_reply(*reply, cx),
@@ -1740,6 +1746,7 @@ impl Shell {
         self.settings.popup = None;
         if panel != Panel::Conversation {
             self.selection_revision = self.selection_revision.wrapping_add(1);
+        self.appsnap.retire();
         }
         if self.settings.value.appearance.personalization.zen_mode
             && matches!(panel, Panel::Files | Panel::Changes | Panel::Terminal | Panel::Device | Panel::SideChats | Panel::Dock)

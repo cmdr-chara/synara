@@ -92,7 +92,7 @@ impl Shell {
                         .left_0(),
                     )
                     .child(div().id("composer-context-tray").max_h(px(210.)).overflow_y_scroll()
-                        .child(self.attachments_view(cx)).child(self.followups_view(cx)))
+                        .child(self.attachments_view(cx)).child(self.appsnap_view(cx)).child(self.followups_view(cx)))
                     .child(self.composer.clone())
                     .children(self.composer.read(cx).error.as_ref().map(|error| {
                         div()
@@ -110,6 +110,8 @@ impl Shell {
                             .child(div().flex_1().min_w_0().child(if self.uses_direct_model() || self.direct_route_loading() { self.direct_model_controls(cx) } else { self.session_controls(cx) }))
                             .child(ui::chrome_button("attach-files", "Attach images or UTF-8 files", Glyph::Attach, self.attachment_send_blocked(),
                                 cx.listener(|this, _: &(), _, cx| this.choose_attachments(cx))).size(px(28.)))
+                            .child(ui::chrome_button("appsnap-toggle", "AppSnap: capture one application window", Glyph::Capture, self.selected.is_none(),
+                                cx.listener(|this, _: &(), _, cx| this.toggle_appsnap(cx))).size(px(28.)))
                             .child(self.followup_toggle(cx))
                             .child(
                                 ui::unavailable_action(

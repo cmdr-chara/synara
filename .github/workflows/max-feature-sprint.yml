@@ -34,7 +34,6 @@ jobs:
           assert all(isinstance(p, str) and re.fullmatch(r'\.synara-transfer-[0-9]{4}', p) for p in parts)
           assert all(not Path(p).is_symlink() for p in parts)
           assert sum(Path(p).stat().st_size for p in parts) <= 8 * 1024 * 1024
-          # Correct only four audited transfer characters. The full digest remains mandatory.
           repairs = {
               '.synara-transfer-0001': ('169069918b03f974439d9c074a7c388b4016a7a1', '0f428372290427f12252f450ac5717813e5a36df', [(371, '6', '+'), (1144, '', '3P')]),
               '.synara-transfer-0003': ('eb196dbfc70332032312e1649ded698fc69229d8', '5a34fe95793b3852bc4338a3eb9848607fea6245', [(6411, '', '/'), (9177, '', '/')]),
@@ -78,6 +77,17 @@ jobs:
           mkdir -p /tmp/max-feature-evidence
           set -o pipefail
           python3 scripts/apply_max_feature_source.py 2>&1 | tee /tmp/max-feature-evidence/validation.log
+      - name: Export offline Rust validation tools
+        if: always()
+        run: |
+          mkdir -p /tmp/max-feature-tools
+          tar -C "$HOME" -I 'xz -T2 -3' -cf /tmp/max-feature-tools/rust-offline.tar.xz .rustup/toolchains/1.98.1-x86_64-unknown-linux-gnu .cargo/bin .cargo/registry .cargo/git
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: max-feature-tools
+          path: /tmp/max-feature-tools/
+          retention-days: 3
       - name: Preserve exact candidate and evidence
         if: always()
         run: |

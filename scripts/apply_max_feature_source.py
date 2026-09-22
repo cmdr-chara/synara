@@ -63,6 +63,14 @@ def main():
 
     def validated_diff(data):
         apply_diff(data)
+        # Reviewed compiler repair, restricted to the two controller entry points.
+        module = Path('crates/synara-workspace/src/controller/direct_models.rs')
+        source = module.read_text()
+        for method in ('require_agent_route', 'submit_direct'):
+            old = f'    async fn {method}('
+            assert source.count(old) == 1
+            source = source.replace(old, f'    pub(super) async fn {method}(')
+        module.write_text(source)
         changed = subprocess.check_output(['git', 'diff', 'HEAD', '--name-only', '-z']).decode().split('\0')
         rust = []
         for name in filter(None, changed):

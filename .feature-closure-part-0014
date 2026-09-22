@@ -1,0 +1,153 @@
+diff --git a/crates/synara-app/src/shell/goals.rs b/crates/synara-app/src/shell/goals.rs
+index 8112dc2..6535613 100644
+--- a/crates/synara-app/src/shell/goals.rs
++++ b/crates/synara-app/src/shell/goals.rs
+@@ -34,7 +34,7 @@ impl Lease {
+     }
+ }
+ pub(super) enum Reply {
+-    Loaded(TaskId, Result<ThreadGoal, String>),
++    Loaded(TaskId, u64, Result<ThreadGoal, String>),
+     Saved(TaskId, String, Result<ThreadGoal, String>),
+     Preflight {
+         task: TaskId,
+@@ -55,6 +55,7 @@ pub(super) struct GoalsState {
+     evidence: Entity<TextEntry>,
+     open: bool,
+     busy: bool,
++    loading: bool,
+     error: Option<String>,
+     lease: Option<Lease>,
+     epoch: u64,
+@@ -91,6 +92,7 @@ impl GoalsState {
+             evidence,
+             open: false,
+             busy: false,
++            loading: false,
+             error: None,
+             lease: None,
+             epoch: 0,
+@@ -100,6 +102,9 @@ impl GoalsState {
+             _subscriptions: subscriptions,
+         }
+     }
++    fn pending_write(&self) -> bool {
++        self.busy && !self.loading
++    }
+     fn dirty(&self, cx: &App) -> bool {
+         self.open
+             && (self.input.read(cx).is_composing()
+@@ -116,6 +121,9 @@ impl Shell {
+         self.goals.task = Some(task);
+         self.goals.value = None;
+         self.goals.busy = true;
++        self.goals.loading = true;
++        self.goals.epoch = self.goals.epoch.wrapping_add(1);
++        let epoch = self.goals.epoch;
+         self.goals.open = false;
+         self.goals.error = None;
+         self.goals.input.update(cx, |e, cx| e.clear(cx));
+@@ -124,6 +132,7 @@ impl Shell {
+         self.job(async move {
+             Ok(Update::Goals(Box::new(Reply::Loaded(
+                 task,
++                epoch,
+                 w.thread_goal(task).await.map_err(|e| e.to_string()),
+             ))))
+         });
+@@ -203,7 +212,9 @@ impl Shell {
+                 cx,
+             );
+         }
+-        if self.goals.busy || self.goals.deferred.is_some() || self.goals.dirty(cx) {
++        // Read-only metadata restoration must not strand the panel transition
++        // that selected this task. Real writes and unsaved edits still fence it.
++        if self.goals.pending_write() || self.goals.deferred.is_some() || self.goals.dirty(cx) {
+             self.notice=Some("The goal is paused. Save/discard goal edits and let its pending save finish before leaving.".into());
+             cx.notify();
+             true
+@@ -226,7 +237,7 @@ impl Shell {
+             false,
+             cx,
+         );
+-        if self.goals.busy || self.goals.deferred.is_some() {
++        if self.goals.pending_write() || self.goals.deferred.is_some() {
+             self.goals.quitting = true;
+             cx.notify();
+             true
+@@ -517,11 +528,12 @@ impl Shell {
+     }
+     pub(super) fn goals_reply(&mut self, reply: Reply, cx: &mut Context<Self>) {
+         match reply {
+-            Reply::Loaded(task, result) => {
+-                if self.goals.task != Some(task) {
++            Reply::Loaded(task, epoch, result) => {
++                if self.goals.task != Some(task) || self.goals.epoch != epoch {
+                     return;
+                 }
+                 self.goals.busy = false;
++                self.goals.loading = false;
+                 match result {
+                     Ok(value) => {
+                         self.goals
+diff --git a/crates/synara-app/src/shell/inline_comments.rs b/crates/synara-app/src/shell/inline_comments.rs
+index 0c1e134..86932f8 100644
+--- a/crates/synara-app/src/shell/inline_comments.rs
++++ b/crates/synara-app/src/shell/inline_comments.rs
+@@ -7,6 +7,7 @@ pub(super) struct InlineState {
+     task: Option<TaskId>,
+     epoch: u64,
+     busy: bool,
++    loading: bool,
+     open: bool,
+     saved: InlineComments,
+     capture: Option<(Document, Range<usize>)>,
+@@ -46,6 +47,7 @@ impl InlineState {
+             task: None,
+             epoch: 0,
+             busy: false,
++            loading: false,
+             open: false,
+             saved: InlineComments::default(),
+             capture: None,
+@@ -58,7 +60,9 @@ impl InlineState {
+ impl Shell {
+     pub(super) fn inline_navigation_blocked(&mut self, cx: &mut Context<Self>) -> bool {
+         let state = &self.inline_comments;
+-        if state.busy
++        // The task/epoch-fenced load does not own edits or a write. Allow the
++        // selecting navigation to finish while it runs. Validation still blocks.
++        if state.busy && !state.loading
+             || state.capture.is_some()
+                 && (!state.input.read(cx).text().is_empty() || state.input.read(cx).is_composing())
+         {
+@@ -73,6 +77,7 @@ impl Shell {
+         state.task = Some(task);
+         state.epoch = state.epoch.wrapping_add(1);
+         state.busy = true;
++        state.loading = true;
+         state.saved = InlineComments::default();
+         state.capture = None;
+         state.open = false;
+@@ -245,6 +250,7 @@ impl Shell {
+             return;
+         }
+         self.inline_comments.busy = false;
++        self.inline_comments.loading = false;
+         match reply.result {
+             Err(e) => self.inline_comments.error = Some(e),
+             Ok(Outcome::Loaded(value)) => self.inline_comments.saved = value,
+diff --git a/scripts/native_integrations_smoke.py b/scripts/native_integrations_smoke.py
+index 039042d..63fa163 100644
+--- a/scripts/native_integrations_smoke.py
++++ b/scripts/native_integrations_smoke.py
+@@ -30,6 +30,9 @@ def fill(s, control, value):
+     for char in value:
+         if char == ':':
+             ui.key('semicolon', ('Shift_L',))
++        elif char == '_':
++            # Underscore uses the shifted minus key, not an unshifted keysym.
++            ui.key('minus', ('Shift_L',))
+         elif char == '/':
+             # XStringToKeysym('/') returns NoSymbol, not XK_slash.
+             ui.key('slash')

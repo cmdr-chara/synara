@@ -8,8 +8,8 @@ pub(super) const MAX_TABS: usize = 24;
 
 pub(super) struct EditorTab {
     id: u64,
-    document: Document,
-    input: Entity<TextEntry>,
+    pub(super) document: Document,
+    pub(super) input: Entity<TextEntry>,
     _subscriptions: Vec<Subscription>,
 }
 impl EditorTab {
@@ -362,6 +362,7 @@ impl Shell {
                 .children(markdown.then(|| ui::action("editor-preview", if self.editors.preview { "Edit Markdown" } else { "Preview Markdown" }, Some(Glyph::Notebook), self.editors.preview,
                     cx.listener(|this, _: &(), _, cx| { this.editors.preview = !this.editors.preview; cx.notify(); })).text_size(px(11.))))
                 .child(self.editor_actions(cx)))
+            .child(self.inline_comments_panel(cx))
             .children(self.editors.find_open.then(|| {
                 let query = self.editors.query.read(cx).text();
                 let count = if query.is_empty() { 0 } else { self.editor.read(cx).text().match_indices(query).count() };

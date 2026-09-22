@@ -197,7 +197,10 @@ impl std::fmt::Debug for ContextServer {
             Self::Http { name, .. } => ("Http", name),
             Self::ServerSentEvents { name, .. } => ("ServerSentEvents", name),
         };
-        f.debug_struct(kind).field("name", name).field("configuration", &"[REDACTED]").finish()
+        f.debug_struct(kind)
+            .field("name", name)
+            .field("configuration", &"[REDACTED]")
+            .finish()
     }
 }
 

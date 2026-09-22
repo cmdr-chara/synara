@@ -209,10 +209,21 @@ impl AppSettings {
 
 /// Restore only a valid saved selection, never an arbitrary archived/first task.
 /// The caller loads a transcript, not an agent process or device helper.
-pub fn startup_task(settings: &AppSettings, selection: &crate::Selection, catalog: &crate::Catalog) -> Option<synara_core::TaskId> {
-    if !settings.general.restore_last_chat { return None; }
-    selection.task.filter(|id| catalog.tasks.iter().any(|task| task.id == *id
-        && Some(task.project_id) == selection.project && task.state != synara_core::TaskState::Archived))
+pub fn startup_task(
+    settings: &AppSettings,
+    selection: &crate::Selection,
+    catalog: &crate::Catalog,
+) -> Option<synara_core::TaskId> {
+    if !settings.general.restore_last_chat {
+        return None;
+    }
+    selection.task.filter(|id| {
+        catalog.tasks.iter().any(|task| {
+            task.id == *id
+                && Some(task.project_id) == selection.project
+                && task.state != synara_core::TaskState::Archived
+        })
+    })
 }
 
 fn validate_font_family(value: Option<&str>) -> WorkspaceResult<()> {

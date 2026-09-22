@@ -10,9 +10,9 @@ pub use tokio_util::sync::CancellationToken as PullRequestCancellation;
 mod actions;
 mod fix;
 mod stack;
-pub use stack::{StackProgress, StackReview, StackRow};
-pub use fix::ReviewFix;
 pub use actions::{MergeMethod, PrAction, ReviewKind};
+pub use fix::ReviewFix;
+pub use stack::{StackProgress, StackReview, StackRow};
 pub type Result<T> = std::result::Result<T, String>;
 // Cancellation must not depend on being the last ProcessHandle owner. In
 // particular the detail deadline and an aborted caller drop the API future.

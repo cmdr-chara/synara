@@ -6,11 +6,11 @@
 //! navigation/history, consent binding and the narrow command vocabulary crossing
 //! the Rust/native boundary. It deliberately exposes no generic page-to-host RPC.
 
+#[cfg(all(feature = "native-webview", target_os = "linux"))]
+pub mod native;
 #[path = "../../../foundations/browser/lib.rs"]
 pub mod policy;
 pub mod session;
-#[cfg(all(feature = "native-webview", target_os = "linux"))]
-pub mod native;
 
 use policy::{Action, BrowserPolicy, Context, Grant, NavigationId, Origin, Scheme, TabId};
 use serde::{Deserialize, Serialize};
@@ -124,14 +124,18 @@ impl CommittedDocument {
     /// Parse independently of page-supplied origins. Credentials and non-web schemes
     /// are rejected before the request crosses the native host boundary.
     pub fn parse(value: &str) -> Result<Self> {
-        if value.is_empty() || value.len() > MAX_CANONICAL_URL_BYTES
-            || value.chars().any(char::is_control) || value.contains('\\')
-            || value.trim() != value {
+        if value.is_empty()
+            || value.len() > MAX_CANONICAL_URL_BYTES
+            || value.chars().any(char::is_control)
+            || value.contains('\\')
+            || value.trim() != value
+        {
             return Err(BrowserError::Invalid);
         }
         let url = url::Url::parse(value).map_err(|_| BrowserError::Invalid)?;
         let scheme = match url.scheme() {
-            "http" => NativeScheme::Http, "https" => NativeScheme::Https,
+            "http" => NativeScheme::Http,
+            "https" => NativeScheme::Https,
             _ => return Err(BrowserError::Invalid),
         };
         if !url.username().is_empty() || url.password().is_some() {
@@ -142,12 +146,20 @@ impl CommittedDocument {
             url::Host::Ipv4(v) => v.to_string(),
             url::Host::Ipv6(v) => v.to_string(),
         };
-        let origin = CanonicalOrigin { scheme, host,
-            port: url.port_or_known_default().ok_or(BrowserError::Invalid)? };
+        let origin = CanonicalOrigin {
+            scheme,
+            host,
+            port: url.port_or_known_default().ok_or(BrowserError::Invalid)?,
+        };
         origin.policy_origin()?;
         let canonical_url = url.to_string();
-        if canonical_url.len() > MAX_CANONICAL_URL_BYTES { return Err(BrowserError::Limit); }
-        Ok(Self { origin, canonical_url })
+        if canonical_url.len() > MAX_CANONICAL_URL_BYTES {
+            return Err(BrowserError::Limit);
+        }
+        Ok(Self {
+            origin,
+            canonical_url,
+        })
     }
     fn validate(&self) -> Result<()> {
         let parsed = Self::parse(&self.canonical_url)?;
@@ -225,9 +237,16 @@ impl InputEvent {
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "operation", rename_all = "snake_case", deny_unknown_fields)]
 pub enum BrowserOperation {
-    Navigate { url: String },
-    Click { element: String },
-    Fill { element: String, text: String },
+    Navigate {
+        url: String,
+    },
+    Click {
+        element: String,
+    },
+    Fill {
+        element: String,
+        text: String,
+    },
     ReadDocument,
     Screenshot {
         full_page: bool,
@@ -259,8 +278,11 @@ impl BrowserOperation {
         match self {
             Self::Navigate { url } => CommittedDocument::parse(url).map(|_| ()),
             Self::Click { element } if token(element) => Ok(()),
-            Self::Fill { element, text } if token(element) && text.len() <= MAX_INPUT_BYTES
-                && !text.contains('\0') => Ok(()),
+            Self::Fill { element, text }
+                if token(element) && text.len() <= MAX_INPUT_BYTES && !text.contains('\0') =>
+            {
+                Ok(())
+            }
             Self::Input { event } => event.validate(),
             Self::Download { download_id } if token(download_id) => Ok(()),
             Self::Upload {
@@ -278,7 +300,9 @@ impl BrowserOperation {
     }
     fn action(&self) -> Result<Action> {
         Ok(match self {
-            Self::Navigate { url } => Action::Navigate(CommittedDocument::parse(url)?.origin.policy_origin()?),
+            Self::Navigate { url } => {
+                Action::Navigate(CommittedDocument::parse(url)?.origin.policy_origin()?)
+            }
             Self::Click { .. } | Self::Fill { .. } => Action::Input,
             Self::ReadDocument => Action::ReadDocument,
             Self::Screenshot { .. } => Action::Screenshot,

@@ -1,13 +1,14 @@
 //! Execution resources and filesystem capabilities, independent of the desktop UI.
 mod native_notifications;
 pub use native_notifications::*;
-mod bounded;
 mod appsnap;
+mod bounded;
 pub use appsnap::*;
 mod device;
 mod device_tools;
 mod filesystem;
 mod host;
+mod native_secrets;
 mod platform;
 mod process;
 #[cfg(target_os = "linux")]
@@ -16,7 +17,6 @@ mod remote_fs;
 #[cfg(unix)]
 mod remote_terminal;
 mod secrets;
-mod native_secrets;
 pub use native_secrets::*;
 mod ssh;
 mod terminal;

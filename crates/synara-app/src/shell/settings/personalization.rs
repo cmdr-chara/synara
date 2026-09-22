@@ -24,53 +24,114 @@ pub(in crate::shell) struct PersonalizationState {
 }
 impl PersonalizationState {
     pub fn new(value: &AppearanceSettings, cx: &mut Context<Shell>) -> Self {
-        let profile_text = cx.new(|cx| TextEntry::new("Paste an exported appearance profile", EntryMode::Editor, 140., cx));
+        let profile_text = cx.new(|cx| {
+            TextEntry::new(
+                "Paste an exported appearance profile",
+                EntryMode::Editor,
+                140.,
+                cx,
+            )
+        });
         let accent_text = cx.new(|cx| TextEntry::new("#RRGGBB", EntryMode::SingleLine, 32., cx));
         if let Some(accent) = value.personalization.accent {
             accent_text.update(cx, |entry, cx| entry.set_text(format!("#{accent:06x}"), cx));
         }
         let subscriptions = vec![cx.subscribe(&profile_text, |_, _, _, cx| cx.notify())];
         Self {
-            navigation_shown: false, tools_shown: false, details_shown: false,
-            attention_open: false, attention_focus: cx.focus_handle(), profile_open: false, profile_text, accent_text,
-            busy: false, image_path: None, image_blur: 0, metrics: None, image: None, image_size: None,
-            generation: 0, loading: false, error: None, applied_material: None,
+            navigation_shown: false,
+            tools_shown: false,
+            details_shown: false,
+            attention_open: false,
+            attention_focus: cx.focus_handle(),
+            profile_open: false,
+            profile_text,
+            accent_text,
+            busy: false,
+            image_path: None,
+            image_blur: 0,
+            metrics: None,
+            image: None,
+            image_size: None,
+            generation: 0,
+            loading: false,
+            error: None,
+            applied_material: None,
             _subscriptions: subscriptions,
         }
     }
 }
 #[derive(Clone, Copy)]
-enum Adjust { Canvas, Panels, Dim, Blur, Width, UiFont, CodeFont, TerminalFont }
+enum Adjust {
+    Canvas,
+    Panels,
+    Dim,
+    Blur,
+    Width,
+    UiFont,
+    CodeFont,
+    TerminalFont,
+}
 impl Shell {
     pub(in crate::shell) fn appearance_pending(&self, cx: &App) -> bool {
-        self.settings.saving || self.settings.personalization.busy
-            || !self.settings.personalization.profile_text.read(cx).text().trim().is_empty()
+        self.settings.saving
+            || self.settings.personalization.busy
+            || !self
+                .settings
+                .personalization
+                .profile_text
+                .read(cx)
+                .text()
+                .trim()
+                .is_empty()
     }
     pub(in crate::shell) fn open_appearance(&mut self, cx: &mut Context<Self>) {
         self.set_panel(Panel::Settings, cx);
         self.open_settings_section(Section::Appearance, cx);
     }
-    pub(in crate::shell) fn prepare_personalization(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+    pub(in crate::shell) fn prepare_personalization(
+        &mut self,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
         let appearance = &self.settings.value.appearance;
-        let reduced = appearance.reduced_motion || appearance.personalization.motion == MotionPreference::Off;
-        if cx.reduce_motion() != reduced { cx.set_reduce_motion(reduced); }
+        let reduced =
+            appearance.reduced_motion || appearance.personalization.motion == MotionPreference::Off;
+        if cx.reduce_motion() != reduced {
+            cx.set_reduce_motion(reduced);
+        }
         let material = appearance.personalization.material;
         if self.settings.personalization.applied_material != Some(material) {
             window.set_background_appearance(match material {
                 SurfaceMaterial::Solid => gpui::WindowBackgroundAppearance::Opaque,
                 SurfaceMaterial::Transparent => gpui::WindowBackgroundAppearance::Transparent,
-                SurfaceMaterial::Frosted | SurfaceMaterial::Glass => gpui::WindowBackgroundAppearance::Blurred,
+                SurfaceMaterial::Frosted | SurfaceMaterial::Glass => {
+                    gpui::WindowBackgroundAppearance::Blurred
+                }
             });
             self.settings.personalization.applied_material = Some(material);
         }
-        let metrics = (appearance.personalization.chat_width, appearance.fonts.ui_size.to_bits(), appearance.fonts.ui_family.clone());
+        let metrics = (
+            appearance.personalization.chat_width,
+            appearance.fonts.ui_size.to_bits(),
+            appearance.fonts.ui_family.clone(),
+        );
         if self.settings.personalization.metrics.as_ref() != Some(&metrics) {
             self.settings.personalization.metrics = Some(metrics);
-            self.transcript.list.remeasure_items(0..self.transcript.list.item_count());
+            self.transcript
+                .list
+                .remeasure_items(0..self.transcript.list.item_count());
         }
         let path = appearance.personalization.wallpaper.clone();
-        let blur = if matches!(material, SurfaceMaterial::Frosted | SurfaceMaterial::Glass) { appearance.personalization.wallpaper_blur } else { 0 };
-        if self.settings.personalization.image_path == path && self.settings.personalization.image_blur == blur { return; }
+        let blur = if matches!(material, SurfaceMaterial::Frosted | SurfaceMaterial::Glass) {
+            appearance.personalization.wallpaper_blur
+        } else {
+            0
+        };
+        if self.settings.personalization.image_path == path
+            && self.settings.personalization.image_blur == blur
+        {
+            return;
+        }
         let state = &mut self.settings.personalization;
         state.image_path = path.clone();
         state.image_blur = blur;
@@ -83,14 +144,20 @@ impl Shell {
         let Some(path) = path else { return };
         let (sender, receiver) = async_channel::bounded(1);
         self.runtime.spawn(async move {
-            let result = WorkspaceService::render_wallpaper(path, blur).await.map_err(|error| error.to_string());
+            let result = WorkspaceService::render_wallpaper(path, blur)
+                .await
+                .map_err(|error| error.to_string());
             let _ = sender.send(result).await;
         });
         cx.spawn(async move |view, cx| {
-            let Ok(result) = receiver.recv().await else { return };
+            let Ok(result) = receiver.recv().await else {
+                return;
+            };
             let _ = view.update(cx, |this, cx| {
                 let state = &mut this.settings.personalization;
-                if state.generation != generation { return; }
+                if state.generation != generation {
+                    return;
+                }
                 state.loading = false;
                 match result {
                     Ok(asset) => {
@@ -105,7 +172,8 @@ impl Shell {
                 }
                 cx.notify();
             });
-        }).detach();
+        })
+        .detach();
     }
     pub(in crate::shell) fn appearance_background(&self) -> gpui::AnyElement {
         let style = &self.settings.value.appearance.personalization;
@@ -115,39 +183,68 @@ impl Shell {
             WallpaperFit::Contain => gpui::ObjectFit::Contain,
         };
         // A single tint over the desktop or local image. Child text stays crisp.
-        div().absolute().inset_0().overflow_hidden()
-            .children(image.map(|image| gpui::img(image).absolute().inset_0().size_full().object_fit(fit)))
+        div()
+            .absolute()
+            .inset_0()
+            .overflow_hidden()
+            .children(image.map(|image| {
+                gpui::img(image)
+                    .absolute()
+                    .inset_0()
+                    .size_full()
+                    .object_fit(fit)
+            }))
             .child(div().absolute().inset_0().bg(ui::canvas_background()))
             .children((style.material == SurfaceMaterial::Glass).then(|| {
-                div().absolute().inset_0().border_1().border_color(ui::glass_edge())
+                div()
+                    .absolute()
+                    .inset_0()
+                    .border_1()
+                    .border_color(ui::glass_edge())
             }))
             .into_any_element()
     }
     fn choose_wallpaper(&mut self, cx: &mut Context<Self>) {
-        if self.settings.saving || self.settings.personalization.busy { return; }
+        if self.settings.saving || self.settings.personalization.busy {
+            return;
+        }
         self.settings.personalization.busy = true;
         let before = self.settings.value.appearance.clone();
         let picker = cx.prompt_for_paths(gpui::PathPromptOptions {
-            files: true, directories: false, multiple: false, prompt: Some("Choose a PNG or JPEG wallpaper".into()),
+            files: true,
+            directories: false,
+            multiple: false,
+            prompt: Some("Choose a PNG or JPEG wallpaper".into()),
         });
         cx.spawn(async move |view, cx| {
             let result = picker.await;
-            let _ = view.update(cx, |this, cx| {
-                this.settings.personalization.busy = false;
-                if this.settings.value.appearance != before {
-                    this.settings.personalization.error = Some("Appearance changed during image selection. The late choice was ignored.".into());
-                    cx.notify(); return;
-                }
-                match result {
-                    Ok(Ok(Some(paths))) => {
-                        if let Some(path) = paths.into_iter().next() { this.validate_wallpaper_choice(path, cx); }
+            let _ =
+                view.update(cx, |this, cx| {
+                    this.settings.personalization.busy = false;
+                    if this.settings.value.appearance != before {
+                        this.settings.personalization.error = Some(
+                        "Appearance changed during image selection. The late choice was ignored."
+                            .into(),
+                    );
+                        cx.notify();
+                        return;
                     }
-                    Ok(Ok(None)) => {},
-                    _ => this.settings.personalization.error = Some("The image picker could not open. The previous wallpaper is unchanged.".into()),
-                }
-                cx.notify();
-            });
-        }).detach();
+                    match result {
+                        Ok(Ok(Some(paths))) => {
+                            if let Some(path) = paths.into_iter().next() {
+                                this.validate_wallpaper_choice(path, cx);
+                            }
+                        }
+                        Ok(Ok(None)) => {}
+                        _ => this.settings.personalization.error = Some(
+                            "The image picker could not open. The previous wallpaper is unchanged."
+                                .into(),
+                        ),
+                    }
+                    cx.notify();
+                });
+        })
+        .detach();
         cx.notify();
     }
     fn validate_wallpaper_choice(&mut self, path: PathBuf, cx: &mut Context<Self>) {
@@ -156,7 +253,10 @@ impl Shell {
         let selected = path.clone();
         let (sender, receiver) = async_channel::bounded(1);
         self.runtime.spawn(async move {
-            let result = WorkspaceService::read_wallpaper(selected).await.map(|_| ()).map_err(|error| error.to_string());
+            let result = WorkspaceService::read_wallpaper(selected)
+                .await
+                .map(|_| ())
+                .map_err(|error| error.to_string());
             let _ = sender.send(result).await;
         });
         cx.spawn(async move |view, cx| {
@@ -180,57 +280,141 @@ impl Shell {
         }).detach();
     }
     fn choose_material(&mut self, material: SurfaceMaterial, cx: &mut Context<Self>) {
-        self.save_setting(|s| {
-            let p = &mut s.appearance.personalization;
-            p.material = material;
-            let (canvas, panels) = match material {
-                SurfaceMaterial::Solid => (85, 92),
-                SurfaceMaterial::Transparent | SurfaceMaterial::Glass => (70, 82),
-                SurfaceMaterial::Frosted => (76, 86),
-            };
-            p.canvas_opacity = canvas; p.panel_opacity = panels;
-        }, cx);
+        self.save_setting(
+            |s| {
+                let p = &mut s.appearance.personalization;
+                p.material = material;
+                let (canvas, panels) = match material {
+                    SurfaceMaterial::Solid => (85, 92),
+                    SurfaceMaterial::Transparent | SurfaceMaterial::Glass => (70, 82),
+                    SurfaceMaterial::Frosted => (76, 86),
+                };
+                p.canvas_opacity = canvas;
+                p.panel_opacity = panels;
+            },
+            cx,
+        );
     }
     fn adjust_appearance(&mut self, setting: Adjust, amount: i16, cx: &mut Context<Self>) {
-        self.save_setting(|settings| {
-            let a = &mut settings.appearance;
-            let p = &mut a.personalization;
-            let bounded = |value: u8, min: i16, max: i16| (i16::from(value) + amount).clamp(min, max) as u8;
-            match setting {
-                Adjust::Canvas => p.canvas_opacity = bounded(p.canvas_opacity, 35, 100),
-                Adjust::Panels => p.panel_opacity = bounded(p.panel_opacity, 60, 100),
-                Adjust::Dim => p.wallpaper_dim = bounded(p.wallpaper_dim, 0, 95),
-                Adjust::Blur => p.wallpaper_blur = bounded(p.wallpaper_blur, 0, 64),
-                Adjust::Width => p.chat_width = (i32::from(p.chat_width) + i32::from(amount)).clamp(560, 1200) as u16,
-                Adjust::UiFont => a.fonts.ui_size = (a.fonts.ui_size + f32::from(amount)).clamp(10., 24.),
-                Adjust::CodeFont => a.fonts.code_size = (a.fonts.code_size + f32::from(amount)).clamp(10., 24.),
-                Adjust::TerminalFont => p.terminal_font_size = bounded(p.terminal_font_size, 10, 24),
-            }
-        }, cx);
+        self.save_setting(
+            |settings| {
+                let a = &mut settings.appearance;
+                let p = &mut a.personalization;
+                let bounded = |value: u8, min: i16, max: i16| {
+                    (i16::from(value) + amount).clamp(min, max) as u8
+                };
+                match setting {
+                    Adjust::Canvas => p.canvas_opacity = bounded(p.canvas_opacity, 35, 100),
+                    Adjust::Panels => p.panel_opacity = bounded(p.panel_opacity, 60, 100),
+                    Adjust::Dim => p.wallpaper_dim = bounded(p.wallpaper_dim, 0, 95),
+                    Adjust::Blur => p.wallpaper_blur = bounded(p.wallpaper_blur, 0, 64),
+                    Adjust::Width => {
+                        p.chat_width =
+                            (i32::from(p.chat_width) + i32::from(amount)).clamp(560, 1200) as u16
+                    }
+                    Adjust::UiFont => {
+                        a.fonts.ui_size = (a.fonts.ui_size + f32::from(amount)).clamp(10., 24.)
+                    }
+                    Adjust::CodeFont => {
+                        a.fonts.code_size = (a.fonts.code_size + f32::from(amount)).clamp(10., 24.)
+                    }
+                    Adjust::TerminalFont => {
+                        p.terminal_font_size = bounded(p.terminal_font_size, 10, 24)
+                    }
+                }
+            },
+            cx,
+        );
     }
-    fn appearance_stepper(&self, id: &'static str, label: &str, value: String, kind: Adjust, step: i16, cx: &mut Context<Self>) -> gpui::AnyElement {
-        div().flex().flex_wrap().items_center().gap_2().py_2()
-            .child(div().flex_1().min_w(px(120.)).text_size(px(13.)).child(label.to_owned()))
-            .child(ui::action((id, 0_usize), "-", None, false, cx.listener(move |this, _: &(), _, cx| this.adjust_appearance(kind, -step, cx))).aria_label(format!("Decrease {label}")))
-            .child(div().w(px(72.)).text_center().text_size(px(12.)).child(value))
-            .child(ui::action((id, 1_usize), "+", None, false, cx.listener(move |this, _: &(), _, cx| this.adjust_appearance(kind, step, cx))).aria_label(format!("Increase {label}")))
+    fn appearance_stepper(
+        &self,
+        id: &'static str,
+        label: &str,
+        value: String,
+        kind: Adjust,
+        step: i16,
+        cx: &mut Context<Self>,
+    ) -> gpui::AnyElement {
+        div()
+            .flex()
+            .flex_wrap()
+            .items_center()
+            .gap_2()
+            .py_2()
+            .child(
+                div()
+                    .flex_1()
+                    .min_w(px(120.))
+                    .text_size(px(13.))
+                    .child(label.to_owned()),
+            )
+            .child(
+                ui::action(
+                    (id, 0_usize),
+                    "-",
+                    None,
+                    false,
+                    cx.listener(move |this, _: &(), _, cx| this.adjust_appearance(kind, -step, cx)),
+                )
+                .aria_label(format!("Decrease {label}")),
+            )
+            .child(
+                div()
+                    .w(px(72.))
+                    .text_center()
+                    .text_size(px(12.))
+                    .child(value),
+            )
+            .child(
+                ui::action(
+                    (id, 1_usize),
+                    "+",
+                    None,
+                    false,
+                    cx.listener(move |this, _: &(), _, cx| this.adjust_appearance(kind, step, cx)),
+                )
+                .aria_label(format!("Increase {label}")),
+            )
             .into_any_element()
     }
     fn apply_accent(&mut self, cx: &mut Context<Self>) {
-        let value = self.settings.personalization.accent_text.read(cx).text().trim().trim_start_matches('#').to_owned();
-        let color = if value.is_empty() { None } else {
-            match u32::from_str_radix(&value, 16).ok().filter(|_| value.len() == 6) {
+        let value = self
+            .settings
+            .personalization
+            .accent_text
+            .read(cx)
+            .text()
+            .trim()
+            .trim_start_matches('#')
+            .to_owned();
+        let color = if value.is_empty() {
+            None
+        } else {
+            match u32::from_str_radix(&value, 16)
+                .ok()
+                .filter(|_| value.len() == 6)
+            {
                 Some(color) => Some(color),
-                None => { self.error = Some("Use exactly six hexadecimal digits, such as #91b9d8, or leave the field blank.".into()); cx.notify(); return; }
+                None => {
+                    self.error = Some("Use exactly six hexadecimal digits, such as #91b9d8, or leave the field blank.".into());
+                    cx.notify();
+                    return;
+                }
             }
         };
-        self.save_setting(|settings| settings.appearance.personalization.accent = color, cx);
+        self.save_setting(
+            |settings| settings.appearance.personalization.accent = color,
+            cx,
+        );
     }
     fn import_appearance_profile(&mut self, cx: &mut Context<Self>) {
         let text = self.settings.personalization.profile_text.read(cx).text();
         match AppearanceProfile::import(text, &self.settings.value.appearance) {
             Ok(appearance) => self.save_setting(|settings| settings.appearance = appearance, cx),
-            Err(error) => { self.error = Some(error.to_string()); cx.notify(); }
+            Err(error) => {
+                self.error = Some(error.to_string());
+                cx.notify();
+            }
         }
         // Keep the pasted profile until the user explicitly clears it, including on save failure.
     }

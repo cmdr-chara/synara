@@ -291,8 +291,16 @@ impl Shell {
             })
             .collect::<Vec<_>>();
         let selected = self.studio.selected.clone();
-        let source_task = selected.as_ref().and_then(|path|self.studio.listing.entries.iter()
-            .find(|entry| &entry.path == path)).and_then(|entry|entry.source_task);
+        let source_task = selected
+            .as_ref()
+            .and_then(|path| {
+                self.studio
+                    .listing
+                    .entries
+                    .iter()
+                    .find(|entry| &entry.path == path)
+            })
+            .and_then(|entry| entry.source_task);
         let preview = match &self.studio.preview {
             Some(Preview::Text { text, markdown }) => {
                 div().id("studio-text-preview").relative().child(ui::layout_probe("studio-text-preview"))

@@ -50,18 +50,28 @@ pub(super) enum Outcome {
     Stack(StackReview),
     StackWritten(StackProgress),
     FixReviewed(fix::FixDraft),
-    FixValidated { review: fix::FixDraft, expected: String, draft: String },
+    FixValidated {
+        review: fix::FixDraft,
+        expected: String,
+        draft: String,
+    },
 }
 impl PrView {
     pub fn new(cx: &mut Context<Shell>) -> Self {
         let field = |cx: &mut Context<Shell>, label: &'static str, mode| {
             cx.new(|cx| TextEntry::new(label, mode, 34., cx))
         };
-        let fix_text=cx.new(|cx| TextEntry::new("PR Fix instruction",EntryMode::Editor,110.,cx));
-        let subscription=cx.observe(&fix_text,|_,_,cx| cx.notify());
+        let fix_text =
+            cx.new(|cx| TextEntry::new("PR Fix instruction", EntryMode::Editor, 110., cx));
+        let subscription = cx.observe(&fix_text, |_, _, cx| cx.notify());
         Self {
-            stack: None, stack_confirmation: None, stack_progress: None, stack_writing: false,
-            fix: None, fix_text, _fix_subscription: subscription,
+            stack: None,
+            stack_confirmation: None,
+            stack_progress: None,
+            stack_writing: false,
+            fix: None,
+            fix_text,
+            _fix_subscription: subscription,
             search: field(cx, "Search title/body", EntryMode::SingleLine),
             title: field(cx, "PR title", EntryMode::SingleLine),
             body: field(
@@ -160,7 +170,10 @@ impl Shell {
         let view = &mut self.pull_requests;
         view.busy = false;
         let was_stack_write = std::mem::take(&mut view.stack_writing);
-        if was_stack_write { view.stack = None; view.stack_confirmation = None; }
+        if was_stack_write {
+            view.stack = None;
+            view.stack_confirmation = None;
+        }
         match reply.result {
             Err(e) => view.error = Some(e),
             Ok(Outcome::Repositories(client, repos)) => {
@@ -178,8 +191,12 @@ impl Shell {
                 view.file = None;
                 view.tab = 0;
             }
-            Ok(Outcome::FixReviewed(draft)) => self.pr_fix_reviewed(draft,cx),
-            Ok(Outcome::FixValidated { review,expected,draft }) => self.pr_fix_validated(review,expected,draft,cx),
+            Ok(Outcome::FixReviewed(draft)) => self.pr_fix_reviewed(draft, cx),
+            Ok(Outcome::FixValidated {
+                review,
+                expected,
+                draft,
+            }) => self.pr_fix_validated(review, expected, draft, cx),
             Ok(Outcome::Stack(review)) => view.stack = Some(review),
             Ok(Outcome::StackWritten(progress)) => {
                 view.stack_progress = Some(progress);
@@ -263,7 +280,11 @@ impl Shell {
             return;
         };
         view.fix = None;
-        if number.is_none_or(|n| view.stack.as_ref().is_none_or(|s| !s.rows().iter().any(|r| r.number() == n))) {
+        if number.is_none_or(|n| {
+            view.stack
+                .as_ref()
+                .is_none_or(|s| !s.rows().iter().any(|r| r.number() == n))
+        }) {
             view.stack = None;
             view.stack_progress = None;
         }
@@ -334,22 +355,27 @@ impl Shell {
             let selected = v.repo.as_ref() == Some(repo);
             let repo = repo.clone();
             let label = format!("{remote}: {}", repo.slug());
-            repos = repos.child(div().relative().child(crate::ui::layout_probe_slot("pr-remote",at)).child(ui::action(
-                format!("pr-remote-{remote}"),
-                label,
-                None,
-                selected,
-                cx.listener(move |this, _: &(), _, cx| {
-                    if this.pull_requests.busy {
-                        return;
-                    }
-                    this.pull_requests.repo = Some(repo.clone());
-                    this.pull_requests.page = 1;
-                    this.pull_requests.detail = None;
-                    this.pull_requests.list.clear();
-                    this.pr_load(None, cx);
-                }),
-            )));
+            repos = repos.child(
+                div()
+                    .relative()
+                    .child(crate::ui::layout_probe_slot("pr-remote", at))
+                    .child(ui::action(
+                        format!("pr-remote-{remote}"),
+                        label,
+                        None,
+                        selected,
+                        cx.listener(move |this, _: &(), _, cx| {
+                            if this.pull_requests.busy {
+                                return;
+                            }
+                            this.pull_requests.repo = Some(repo.clone());
+                            this.pull_requests.page = 1;
+                            this.pull_requests.detail = None;
+                            this.pull_requests.list.clear();
+                            this.pr_load(None, cx);
+                        }),
+                    )),
+            );
         }
         pane = pane.child(repos);
         let mut filters = div()
@@ -423,7 +449,13 @@ impl Shell {
             pane = pane.child("Loading / executing explicit action...");
         }
         if let Some(error) = &v.error {
-            pane = pane.child(div().relative().child(ui::layout_probe("pr-error")).text_color(rgb(palette().error)).child(error.clone()));
+            pane = pane.child(
+                div()
+                    .relative()
+                    .child(ui::layout_probe("pr-error"))
+                    .text_color(rgb(palette().error))
+                    .child(error.clone()),
+            );
         }
         if v.create {
             pane = pane
@@ -530,13 +562,18 @@ impl Shell {
                     ""
                 }
             );
-            list = list.child(div().relative().child(crate::ui::layout_probe_slot("pr-list-row",at)).child(ui::action(
-                format!("pr-{number}"),
-                label,
-                Some(Glyph::PullRequest),
-                v.detail.as_ref().is_some_and(|d| d.pr.number == number),
-                cx.listener(move |this, _: &(), _, cx| this.pr_load(Some(number), cx)),
-            )));
+            list = list.child(
+                div()
+                    .relative()
+                    .child(crate::ui::layout_probe_slot("pr-list-row", at))
+                    .child(ui::action(
+                        format!("pr-{number}"),
+                        label,
+                        Some(Glyph::PullRequest),
+                        v.detail.as_ref().is_some_and(|d| d.pr.number == number),
+                        cx.listener(move |this, _: &(), _, cx| this.pr_load(Some(number), cx)),
+                    )),
+            );
         }
         pane.child(
             div()

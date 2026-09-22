@@ -197,7 +197,9 @@ impl Shell {
     }
     pub(super) fn goal_send_blocked(&mut self, cx: &mut Context<Self>) -> bool {
         if self.goal_send_pending(cx) {
-            self.notice = Some("Save or discard goal edits and let the pending save finish before sending.".into());
+            self.notice = Some(
+                "Save or discard goal edits and let the pending save finish before sending.".into(),
+            );
             cx.notify();
             true
         } else {
@@ -782,7 +784,10 @@ impl Shell {
                         cx.listener(|this, _: &(), _, cx| this.resume_goals(cx)),
                     )
                     .relative()
-                    .child(ui::layout_probe_enabled("goal-resume", self.goal_resume_ready(cx))),
+                    .child(ui::layout_probe_enabled(
+                        "goal-resume",
+                        self.goal_resume_ready(cx),
+                    )),
                 )
                 .child(ui::action(
                     "goal-discard",

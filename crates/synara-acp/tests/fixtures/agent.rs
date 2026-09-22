@@ -191,11 +191,27 @@ impl Fixture {
                 let text = params["prompt"][0]["text"].as_str().unwrap_or("");
                 // Goal scenarios exercise real generic ACP events, not production special cases.
                 if text.starts_with("Synara goal pursuit\n") {
-                    if text.contains("fixture-goal-budget") {self.finish(&session,id,"A safe step completed.\nSYNARA_GOAL_STATUS {\"state\":\"continue\",\"reason\":\"Another bounded check remains\"}");return;}
-                    if text.contains("fixture-goal-review") {self.finish(&session,id,"Checks completed.\nSYNARA_GOAL_STATUS {\"state\":\"review\",\"reason\":\"Review the recorded test result\"}");return;}
-                    if text.contains("fixture-goal-question") {self.finish(&session,id,"Which file should I use?\nSYNARA_GOAL_STATUS {\"state\":\"continue\",\"reason\":\"Need user input\"}");return;}
-                    if text.contains("fixture-goal-hold") {self.text(&session,"Goal turn waiting");self.pending.insert(session,id);return;}
-                    if text.contains("fixture-goal-permission") {self.request(session.clone(),id,"permission","session/request_permission",json!({"sessionId":session,"toolCall":{"toolCallId":"goal-tool","title":"Goal approval","status":"pending"},"options":[{"optionId":"allow","name":"Allow once","kind":"allow_once"},{"optionId":"deny","name":"Deny","kind":"reject_once"}]}),None);return;}
+                    if text.contains("fixture-goal-budget") {
+                        self.finish(&session,id,"A safe step completed.\nSYNARA_GOAL_STATUS {\"state\":\"continue\",\"reason\":\"Another bounded check remains\"}");
+                        return;
+                    }
+                    if text.contains("fixture-goal-review") {
+                        self.finish(&session,id,"Checks completed.\nSYNARA_GOAL_STATUS {\"state\":\"review\",\"reason\":\"Review the recorded test result\"}");
+                        return;
+                    }
+                    if text.contains("fixture-goal-question") {
+                        self.finish(&session,id,"Which file should I use?\nSYNARA_GOAL_STATUS {\"state\":\"continue\",\"reason\":\"Need user input\"}");
+                        return;
+                    }
+                    if text.contains("fixture-goal-hold") {
+                        self.text(&session, "Goal turn waiting");
+                        self.pending.insert(session, id);
+                        return;
+                    }
+                    if text.contains("fixture-goal-permission") {
+                        self.request(session.clone(),id,"permission","session/request_permission",json!({"sessionId":session,"toolCall":{"toolCallId":"goal-tool","title":"Goal approval","status":"pending"},"options":[{"optionId":"allow","name":"Allow once","kind":"allow_once"},{"optionId":"deny","name":"Deny","kind":"reject_once"}]}),None);
+                        return;
+                    }
                 }
                 match text {
                     "transcript-media" => {

@@ -66,6 +66,8 @@ def main():
         changed = subprocess.check_output(['git', 'diff', 'HEAD', '--name-only', '-z']).decode().split('\0')
         rust = []
         for name in filter(None, changed):
+            if name in (parts or []):
+                continue
             checked_path(name)
             if name.endswith('.rs') and subprocess.run(['git', 'cat-file', '-e', f'{BASE}:{name}'], stderr=subprocess.DEVNULL).returncode:
                 rust.append(name)
@@ -78,6 +80,8 @@ def main():
         run('/usr/bin/python3', 'scripts/native_direct_models_smoke.py', '--output', '/tmp/max-feature-evidence/native')
         run('git', 'diff', '--check')
         for name in filter(None, subprocess.check_output(['git', 'diff', 'HEAD', '--name-only', '-z']).decode().split('\0')):
+            if name in (parts or []):
+                continue
             checked_path(name)
         run('git', 'add', '--all')
 

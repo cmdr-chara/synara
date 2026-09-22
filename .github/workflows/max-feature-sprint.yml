@@ -34,6 +34,22 @@ jobs:
           assert all(isinstance(p, str) and re.fullmatch(r'\.synara-transfer-[0-9]{4}', p) for p in parts)
           assert all(not Path(p).is_symlink() for p in parts)
           assert sum(Path(p).stat().st_size for p in parts) <= 8 * 1024 * 1024
+          # Correct only four audited transfer characters. The full digest remains mandatory.
+          repairs = {
+              '.synara-transfer-0001': ('169069918b03f974439d9c074a7c388b4016a7a1', '0f428372290427f12252f450ac5717813e5a36df', [(371, '6', '+'), (1144, '', '3P')]),
+              '.synara-transfer-0003': ('eb196dbfc70332032312e1649ded698fc69229d8', '5a34fe95793b3852bc4338a3eb9848607fea6245', [(6411, '', '/'), (9177, '', '/')]),
+          }
+          def blob_sha(data):
+              return hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
+          for name, (old_sha, new_sha, edits) in repairs.items():
+              data = Path(name).read_bytes()
+              assert blob_sha(data) == old_sha
+              text = data.decode('ascii')
+              for offset, old, new in reversed(edits):
+                  assert text[offset:offset + len(old)] == old
+                  text = text[:offset] + new + text[offset + len(old):]
+              assert blob_sha(text.encode()) == new_sha
+              Path(name).write_text(text, encoding='ascii')
           encoded = ''.join(Path(p).read_text().strip() for p in parts)
           with gzip.GzipFile(fileobj=io.BytesIO(base64.b64decode(encoded, validate=True))) as stream:
               data = stream.read(20 * 1024 * 1024 + 1)

@@ -232,6 +232,49 @@ pub fn action(
         .child(div().flex_1().min_w_0().text_ellipsis().child(label))
 }
 
+/// Chat-header control matching Electron's `ChatHeaderButton` (outline tone):
+/// fixed 28px height, 8px radius, visible outline border, full-strength glyph.
+pub fn header_action(
+    id: impl Into<ElementId>,
+    label: impl Into<SharedString>,
+    glyph: Option<Glyph>,
+    selected: bool,
+    activate: impl Fn(&(), &mut Window, &mut gpui::App) + 'static,
+) -> Stateful<Div> {
+    let label = label.into();
+    div()
+        .id(id)
+        .role(gpui::Role::Button)
+        .aria_label(label.clone())
+        .tab_index(0)
+        .h(px(28.))
+        .min_w_0()
+        .px_2()
+        .flex()
+        .items_center()
+        .gap(px(6.))
+        .rounded(px(8.))
+        .border_1()
+        .border_color(rgb(palette().border))
+        .bg(rgba(if selected {
+            (palette().selected << 8) | 0xff
+        } else {
+            0
+        }))
+        .text_color(rgb(palette().text))
+        .text_size(px(ui_font_size() + 1.))
+        .cursor_pointer()
+        .hover(|style| style.bg(rgb(palette().hover)))
+        .active(|style| style.bg(rgb(palette().selected)))
+        .focus_visible(|style| style.border_color(rgb(palette().focus)))
+        .on_click(move |_, window, cx| {
+            activate(&(), window, cx);
+            cx.stop_propagation();
+        })
+        .children(glyph.map(icon))
+        .child(div().flex_1().min_w_0().text_ellipsis().child(label))
+}
+
 pub(crate) struct Tooltip(pub(crate) SharedString);
 
 /// Preserve the navigation landmark while accurately exposing unavailable capabilities.

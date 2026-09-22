@@ -41,11 +41,11 @@ impl Shell {
         true
     }
     pub(super) fn checkpoint_button(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
-        ui::action(
+        ui::header_action(
             "checkpoint-open",
             "Checkpoints",
             None,
-            self.selected.is_none() || self.loading_task.is_some() || self.checkpoints.writing,
+            self.checkpoints.open,
             cx.listener(|this, _: &(), _, cx| this.open_checkpoints(cx)),
         )
         .relative()

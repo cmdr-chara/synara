@@ -6,7 +6,7 @@ pub(super) struct DebugState {
     value: Option<DebugWorkflow>,
     input: Entity<TextEntry>,
     busy: bool,
-    open: bool,
+    pub(super) open: bool,
     error: Option<String>,
     detached_edit: bool,
     _subscription: Subscription,
@@ -76,6 +76,9 @@ impl Shell {
             return;
         }
         self.show_conversation(cx);
+        // Accordion: one workflow expanded at a time (see open_goals).
+        self.goals.open = false;
+        self.recap.open = false;
         self.debug_workflow.open = true;
         cx.notify();
     }
@@ -174,9 +177,55 @@ impl Shell {
         }
         cx.notify();
     }
+    /// Collapsed idle debug switch for the shared one-row workflow strip.
+    pub(super) fn debug_compact(&self, cx: &mut Context<Self>) -> Option<gpui::AnyElement> {
+        let view = &self.debug_workflow;
+        if self.selected.is_none() || self.selected != view.task {
+            return None;
+        }
+        if self
+            .thread
+            .as_ref()
+            .is_some_and(|t| t.timeline.is_empty() && t.plan.is_empty())
+        {
+            return None;
+        }
+        if view.open {
+            return None;
+        }
+        let label = view.value.as_ref().map_or("Debug".to_owned(), |value| {
+            if value.enabled {
+                format!(
+                    "Debug: {}{}",
+                    value.phase.label(),
+                    if value.completed { " (verified)" } else { "" }
+                )
+            } else {
+                "Debug: off".into()
+            }
+        });
+        Some(
+            ui::header_action(
+                "debug-open",
+                label,
+                Some(Glyph::Debug),
+                false,
+                cx.listener(|this, _: &(), _, cx| this.open_debug(cx)),
+            )
+            .child(ui::layout_probe_enabled(
+                "debug-open",
+                !view.busy && self.loading_task.is_none(),
+            ))
+            .into_any_element(),
+        )
+    }
     pub(super) fn debug_bar(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
         let view = &self.debug_workflow;
         if self.selected.is_none() || self.selected != view.task {
+            return div().into_any_element();
+        }
+        // Collapsed idle state lives in the shared workflow strip.
+        if !view.open {
             return div().into_any_element();
         }
         let label = view.value.as_ref().map_or("Debug".to_owned(), |value| {
@@ -203,9 +252,6 @@ impl Shell {
                 !view.busy && self.loading_task.is_none(),
             )),
         );
-        if !view.open {
-            return root.into_any_element();
-        }
         if let Some(value) = &view.value {
             let enabled = value.enabled;
             let pending = view.pending(cx);

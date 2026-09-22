@@ -53,7 +53,7 @@ pub(super) struct GoalsState {
     value: Option<ThreadGoal>,
     input: Entity<TextEntry>,
     evidence: Entity<TextEntry>,
-    open: bool,
+    pub(super) open: bool,
     busy: bool,
     loading: bool,
     error: Option<String>,
@@ -141,6 +141,10 @@ impl Shell {
         if self.panel != Panel::Conversation {
             self.show_conversation(cx);
         }
+        // Accordion: one workflow expanded at a time. Inputs persist in
+        // their editors, so collapsing never discards edits.
+        self.debug_workflow.open = false;
+        self.recap.open = false;
         self.goals.open = true;
         cx.notify();
     }
@@ -677,9 +681,51 @@ impl Shell {
         }
         cx.notify();
     }
+    /// Collapsed idle goal for the shared one-row workflow strip.
+    /// Probe-compatible with the full bar header it replaces.
+    pub(super) fn goal_compact(&self, cx: &mut Context<Self>) -> Option<gpui::AnyElement> {
+        let g = &self.goals;
+        if self.selected.is_none() || self.selected != g.task {
+            return None;
+        }
+        if self
+            .thread
+            .as_ref()
+            .is_some_and(|t| t.timeline.is_empty() && t.plan.is_empty())
+        {
+            return None;
+        }
+        if g.open || g.lease.is_some() {
+            return None;
+        }
+        let state: String = g.value.as_ref().map_or("Loading".into(), |v| {
+            if v.objective.is_empty() {
+                "No goal".into()
+            } else {
+                v.status.label().into()
+            }
+        });
+        Some(
+            ui::header_action(
+                "goal-open",
+                format!("Goal: {state}"),
+                None,
+                false,
+                cx.listener(|this, _: &(), _, cx| this.open_goals(cx)),
+            )
+            .relative()
+            .child(ui::layout_probe("goal-open"))
+            .into_any_element(),
+        )
+    }
     pub(super) fn goal_bar(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
         let g = &self.goals;
         if self.selected.is_none() || self.selected != g.task {
+            return div().into_any_element();
+        }
+        // Collapsed idle goals live in the shared workflow strip
+        // (goal_compact); the palette offers them on empty threads.
+        if !g.open && g.lease.is_none() {
             return div().into_any_element();
         }
         let state = if let Some(l) = &g.lease {

@@ -23,6 +23,9 @@ struct Dialog {
     editor: Entity<TextEntry>,
     review: Option<HandoffReview>,
     error: Option<String>,
+    /// Electron-style quick menu: picking a target creates the unsent
+    /// continuation immediately instead of opening the review editor.
+    quick: bool,
 }
 #[derive(Default)]
 pub(super) struct HandoffState {
@@ -92,6 +95,7 @@ impl Shell {
             editor,
             review: None,
             error: None,
+            quick: false,
         });
         self.handoff.busy = true;
         self.focus_composer = false;
@@ -113,6 +117,130 @@ impl Shell {
             ))))
         });
         cx.notify();
+    }
+    /// Electron-style entry: header "Hand off" button opening a compact
+    /// target menu. Picking a target immediately creates an unsent related
+    /// conversation with the generated context; nothing is sent automatically.
+    pub(super) fn open_handoff_menu(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        let Some(source) = self.selected else {
+            return;
+        };
+        if self.handoff.open()
+            || self.loading_task.is_some()
+            || self.busy.contains(&source)
+            || self.connecting.contains(&source)
+            || self.creating_task
+            || self.revisions.open()
+            || self.explorer.modal_open()
+        {
+            return;
+        }
+        if self
+            .task()
+            .is_none_or(|task| task.state == TaskState::Archived)
+        {
+            return;
+        }
+        let query = cx.new(|cx| {
+            TextEntry::new(
+                "Find an agent or saved direct model...",
+                EntryMode::SingleLine,
+                32.,
+                cx,
+            )
+        });
+        let editor = cx.new(|cx| {
+            TextEntry::new(
+                "Review the continuation request",
+                EntryMode::Editor,
+                220.,
+                cx,
+            )
+        });
+        let query_subscription = cx.subscribe(&query, |_, _, event, cx| {
+            if matches!(event, EntryEvent::Changed) {
+                cx.notify();
+            }
+        });
+        self.handoff.generation = self.handoff.generation.wrapping_add(1);
+        let generation = self.handoff.generation;
+        self.handoff.dialog = Some(Dialog {
+            source,
+            selection_revision: self.selection_revision,
+            targets: vec![],
+            query: query.clone(),
+            _query_subscription: query_subscription,
+            editor,
+            review: None,
+            error: None,
+            quick: true,
+        });
+        self.handoff.busy = true;
+        self.focus_composer = false;
+        self.controls.retire();
+        self.chat_tools.retire();
+        window.focus(&query.read(cx).focus_handle(cx), cx);
+        let workspace = self.controller.workspace.clone();
+        self.job(async move {
+            let result = async {
+                Ok((
+                    workspace.profiles().await?,
+                    workspace.direct_model_settings().await?,
+                ))
+            }
+            .await;
+            Ok(Update::Handoff(Box::new(Reply::Targets(
+                generation,
+                result.map_err(|e: WorkspaceError| e.to_string()),
+            ))))
+        });
+        cx.notify();
+    }
+    pub(super) fn toggle_handoff_menu(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        if let Some(dialog) = &self.handoff.dialog {
+            if dialog.quick && !self.handoff.busy && !self.handoff.creating {
+                self.dismiss_handoff(cx);
+            }
+            return;
+        }
+        self.open_handoff_menu(window, cx);
+    }
+    fn switch_handoff_to_review(&mut self, cx: &mut Context<Self>) {
+        if self.handoff.busy || self.handoff.creating {
+            return;
+        }
+        if let Some(dialog) = self.handoff.dialog.as_mut() {
+            dialog.quick = false;
+        }
+        cx.notify();
+    }
+    fn handoff_short_label(label: &str) -> &str {
+        label
+            .strip_prefix("Agent: ")
+            .or_else(|| label.strip_prefix("Direct: "))
+            .unwrap_or(label)
+    }
+    /// Header "Hand off" button mirroring Electron's chat-header placement.
+    /// Hidden on empty conversations like the goal/debug/recap bars.
+    pub(super) fn handoff_menu_button(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
+        let empty = self
+            .thread
+            .as_ref()
+            .is_some_and(|t| t.timeline.is_empty() && t.plan.is_empty());
+        if empty {
+            return div().into_any_element();
+        }
+        let open = self.handoff.dialog.as_ref().is_some_and(|d| d.quick);
+        ui::header_action(
+            "handoff-menu",
+            "Hand off",
+            Some(Glyph::Handoff),
+            open,
+            cx.listener(|this, _: &(), window, cx| this.toggle_handoff_menu(window, cx)),
+        )
+        .relative()
+        .child(ui::layout_probe("handoff-menu"))
+        .into_any_element()
     }
     fn review_handoff_target(&mut self, choice: HandoffTarget, cx: &mut Context<Self>) {
         if self.handoff.busy {
@@ -271,6 +399,16 @@ impl Shell {
                     }
                     Err(error) => dialog.error = Some(error),
                 }
+                // Quick menu: create immediately with the generated context,
+                // like Electron's "Handoff to X". The child stays unsent.
+                let quick = self
+                    .handoff
+                    .dialog
+                    .as_ref()
+                    .is_some_and(|d| d.quick && d.review.is_some());
+                if quick {
+                    self.confirm_handoff(cx);
+                }
             }
             Reply::Created(_, result) => {
                 self.handoff.creating = false;
@@ -350,6 +488,9 @@ impl Shell {
         let Some(dialog) = &self.handoff.dialog else {
             return div().into_any_element();
         };
+        if dialog.quick {
+            return self.handoff_menu(cx);
+        }
         let mut page = div().id("handoff-dialog").role(gpui::Role::Dialog).aria_label("Continue with another provider")
             .tab_group().w_full().max_w(px(720.)).max_h(px(650.)).p_4().flex().flex_col().gap_3()
             .bg(ui::surface(palette().overlay)).border_1().border_color(rgb(palette().border))
@@ -455,6 +596,163 @@ impl Shell {
             .items_center()
             .justify_center()
             .child(page)
+            .into_any_element()
+    }
+    /// Compact Electron-style target menu: brand rows reading
+    /// "Handoff to X" that create the unsent continuation on click.
+    pub(super) fn handoff_menu(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
+        let Some(dialog) = &self.handoff.dialog else {
+            return div().into_any_element();
+        };
+        let idle = !self.handoff.busy && !self.handoff.creating;
+        let query = dialog.query.read(cx).text().trim().to_lowercase();
+        let total = dialog
+            .targets
+            .iter()
+            .filter(|target| target.label.to_lowercase().contains(&query))
+            .count();
+        let rows: Vec<(usize, String, Glyph, HandoffTarget)> = dialog
+            .targets
+            .iter()
+            .enumerate()
+            .filter(|(_, target)| target.label.to_lowercase().contains(&query))
+            .take(50)
+            .map(|(index, target)| {
+                let icon = match target.choice {
+                    HandoffTarget::Agent(_) => Glyph::Agent,
+                    HandoffTarget::Direct(_) => Glyph::Brain,
+                };
+                (
+                    index,
+                    format!("Handoff to {}", Self::handoff_short_label(&target.label)),
+                    icon,
+                    target.choice.clone(),
+                )
+            })
+            .collect();
+        let mut panel = div()
+            .id("handoff-menu")
+            .role(gpui::Role::Menu)
+            .aria_label("Hand off thread")
+            .w(px(248.))
+            .max_h(px(320.))
+            .flex()
+            .flex_col()
+            .overflow_hidden()
+            .rounded(px(14.))
+            .bg(rgb(palette().overlay))
+            .border_1()
+            .border_color(rgb(palette().border))
+            .on_mouse_down(gpui::MouseButton::Left, |_, _, cx| cx.stop_propagation())
+            .on_key_down(cx.listener(|this, event: &gpui::KeyDownEvent, _, cx| {
+                if event.keystroke.key == "escape" && !this.handoff.busy && !this.handoff.creating {
+                    this.dismiss_handoff(cx);
+                    cx.stop_propagation();
+                }
+            }))
+            .child(
+                div()
+                    .p_2()
+                    .pb_1()
+                    .relative()
+                    .child(dialog.query.clone())
+                    .child(ui::layout_probe("handoff-menu-query")),
+            )
+            .child(
+                div()
+                    .id("handoff-quick-targets")
+                    .flex_1()
+                    .min_h_0()
+                    .overflow_y_scroll()
+                    .px_2()
+                    .pb_1()
+                    .children(rows.into_iter().map(|(index, label, icon, choice)| {
+                        ui::action(
+                            ("handoff-quick-target", index),
+                            label,
+                            Some(icon),
+                            false,
+                            cx.listener(move |this, _: &(), _, cx| {
+                                this.review_handoff_target(choice.clone(), cx)
+                            }),
+                        )
+                        .w_full()
+                        .rounded(px(10.))
+                        .relative()
+                        .child(ui::layout_probe_slot("handoff-quick-target", index))
+                    }))
+                    .children((total == 0 && idle).then(|| {
+                        div()
+                            .px_2()
+                            .py_2()
+                            .text_size(px(12.))
+                            .text_color(rgb(palette().muted))
+                            .child("No matching agents or models.")
+                    })),
+            );
+        if self.handoff.creating {
+            panel = panel.child(
+                div()
+                    .px_3()
+                    .py_1()
+                    .text_size(px(12.))
+                    .child("Creating continuation..."),
+            );
+        } else if self.handoff.busy {
+            panel = panel.child(
+                div()
+                    .px_3()
+                    .py_1()
+                    .text_size(px(12.))
+                    .text_color(rgb(palette().muted))
+                    .child("Preparing..."),
+            );
+        }
+        if let Some(error) = &dialog.error {
+            panel = panel.child(
+                div()
+                    .px_3()
+                    .py_1()
+                    .text_size(px(12.))
+                    .text_color(rgb(palette().error))
+                    .child(error.clone()),
+            );
+        }
+        panel = panel.child(
+            div().px_2().pb_2().child(
+                ui::action(
+                    "handoff-to-review",
+                    "Review...",
+                    Some(Glyph::Notebook),
+                    false,
+                    cx.listener(|this, _: &(), _, cx| this.switch_handoff_to_review(cx)),
+                )
+                .w_full()
+                .rounded(px(10.))
+                .relative()
+                .child(ui::layout_probe("handoff-to-review")),
+            ),
+        );
+        div()
+            .id("handoff-menu-backdrop")
+            .absolute()
+            .inset_0()
+            .occlude()
+            .bg(gpui::rgba(0x00000000))
+            .flex()
+            .items_start()
+            .justify_end()
+            .pt(px(82.))
+            .pr(px(247.))
+            .on_mouse_down(
+                gpui::MouseButton::Left,
+                cx.listener(|this, _, _, cx| {
+                    if !this.handoff.busy && !this.handoff.creating {
+                        this.dismiss_handoff(cx);
+                    }
+                }),
+            )
+            .child(panel)
             .into_any_element()
     }
 }

@@ -49,3 +49,16 @@ roadmap-structure and helper checks.
 The checkpoint boundary is intentionally narrow: it restores only app-owned unsent
 draft and saved notes/checklist. Workspace files, Git/index, transcript,
 provider/session state, approvals and attachments are not presented as reverted.
+
+## Integration
+
+The final five-feature accumulated validation passed in GitHub Actions run
+`35773947442` and published the verified session candidate before cleanup.
+The cleaned sprint was integrated as two-parent merge
+`1cc4a672d83276d5dba1a6edc1c9e5ee243a709d`, preserving the concurrent
+integration-side changes because the two deltas had no overlapping file paths.
+
+Post-merge formatting comparison found eight sprint-touched Rust paths beyond the
+pre-existing formatting baseline. Those eight paths were formatted in
+`a9ea461d98e9cd69c78e3d40fc701039886e8bb7`. The scoped formatter removed its
+own temporary workflow in the same commit.

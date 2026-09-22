@@ -1,3 +1,5 @@
+mod direct_models;
+pub use direct_models::*;
 pub mod pull_requests;
 mod automations;
 pub use automations::*;

@@ -55,6 +55,9 @@ impl Shell {
             || self.attachments.value.is_none() || self.attachments.changing(task))
     }
     pub(super) fn attachment_capability_error(&self) -> Option<&'static str> {
+        if self.uses_direct_model() && self.attachments_have_pending() {
+            return Some("Direct chat attachment delivery is not supported yet. Remove pending attachments before sending.");
+        }
         self.details.as_ref().and_then(|details| self.attachments.value.as_ref().and_then(|value| value.unsupported(&details.connection.capabilities)))
     }
     pub(super) fn attachment_submission(&mut self,text:&str) -> Option<(u64,String)> {

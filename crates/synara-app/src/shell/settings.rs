@@ -24,6 +24,7 @@ pub(super) enum Section {
     Mcp,
     Providers,
     Models,
+    DirectModels,
     Skills,
     Worktrees,
     System,
@@ -38,6 +39,7 @@ struct SectionInfo {
     description: &'static str,
 }
 const SECTIONS: &[SectionInfo] = &[
+    SectionInfo { section:Section::DirectModels, id:"direct-models", group:"Integrations", label:"Direct models", icon:Glyph::Brain, description:"Direct provider endpoints, secure API keys and reviewed model selection. Separate from ACP coding agents." },
     SectionInfo { section: Section::Device, id: "device", group: "Integrations", label: "Device / capture", icon: Glyph::Window, description: "Installed device helpers, captures, permissions and supported controls." },
     SectionInfo { section: Section::Privacy, id: "privacy", group: "System", label: "Privacy & security", icon: Glyph::Settings, description: "Local data, protocol diagnostics, secret-store status and safe deletion." },
     SectionInfo {
@@ -328,6 +330,7 @@ fn empty(title: &'static str, detail: &'static str) -> gpui::Div {
 impl Shell {
     pub(super) fn open_settings_section(&mut self, section: Section, cx: &mut Context<Self>) {
         self.settings.section = section;
+        if section == Section::DirectModels { self.load_direct_models(cx); }
         if matches!(section,Section::Plugins|Section::Mcp|Section::Skills) && !self.integrations.loaded() { self.load_integrations(cx); }
         self.settings.popup = None;
         self.settings.scroll.set_offset(gpui::point(px(0.), px(0.)));
@@ -728,6 +731,7 @@ impl Shell {
             Section::Privacy => self.privacy_settings(cx),
             Section::Usage => self.usage_settings(),
             Section::Models => self.model_settings(cx),
+            Section::DirectModels => self.direct_model_settings(cx),
             Section::System => self.system_settings(cx),
             Section::Archived => self.archived_settings(cx),
             Section::Behavior => self.chat_settings(cx),

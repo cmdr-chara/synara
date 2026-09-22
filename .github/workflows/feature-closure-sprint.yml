@@ -1,0 +1,107 @@
+name: Feature closure sprint
+on:
+  push:
+    branches: [astra/feature-closure-sprint]
+    paths:
+      - .feature-closure-request.json
+      - .github/workflows/feature-closure-sprint.yml
+      - scripts/feature_closure_transfer.py
+permissions:
+  contents: read
+concurrency:
+  group: feature-closure-sprint
+  cancel-in-progress: false
+jobs:
+  check:
+    if: github.repository == 'cmdr-chara/synara'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    outputs:
+      publication_sha256: ${{ steps.package.outputs.publication_sha256 }}
+    env:
+      CARGO_BUILD_JOBS: '2'
+      PYTHONDONTWRITEBYTECODE: '1'
+      GIT_TERMINAL_PROMPT: '0'
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Rust toolchain
+        run: rustup toolchain install 1.98.1 --profile minimal --component rustfmt
+      - name: Native Linux prerequisites
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libwebkit2gtk-4.1-dev libgtk-3-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil xclip fonts-dejavu-core fonts-liberation
+      - uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
+        id: cache
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: feature-closure-1.98.1-${{ runner.os }}-${{ github.sha }}
+          restore-keys: |
+            feature-closure-1.98.1-${{ runner.os }}-
+            direct-conversations-1.98.1-${{ runner.os }}-
+            max-feature-1.98.1-${{ runner.os }}-
+      - name: Verify exact source transport and apply the scoped feature
+        run: python3 scripts/feature_closure_transfer.py prepare
+      - name: Focused checks and native journeys
+        run: python3 scripts/feature_closure_transfer.py check
+      - name: Package exactly the checked tree
+        id: package
+        run: python3 scripts/feature_closure_transfer.py package
+      - name: Preserve all results, including failed candidates
+        if: always()
+        run: |
+          mkdir -p /tmp/feature-closure-evidence
+          git rev-parse HEAD > /tmp/feature-closure-evidence/worktree-revision.txt
+          git status --short > /tmp/feature-closure-evidence/status.txt
+          git diff HEAD > /tmp/feature-closure-evidence/candidate.patch
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: feature-closure-evidence
+          path: /tmp/feature-closure-evidence/
+          retention-days: 7
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: success()
+        with:
+          name: feature-closure-publication
+          path: /tmp/feature-closure-publication/
+          retention-days: 1
+      - uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
+        if: always() && steps.cache.outputs.cache-hit != 'true'
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: feature-closure-1.98.1-${{ runner.os }}-${{ github.sha }}
+  publish:
+    needs: check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: feature-closure-publication
+          path: /tmp/feature-closure-publication/
+      - name: Publish verified Git objects and non-force session ref only
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PUBLICATION_SHA256: ${{ needs.check.outputs.publication_sha256 }}
+        run: python3 scripts/feature_closure_transfer.py publish
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: feature-closure-published-ref
+          path: /tmp/feature-closure-evidence/
+          retention-days: 7

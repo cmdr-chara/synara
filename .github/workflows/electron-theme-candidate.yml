@@ -1,0 +1,232 @@
+name: Electron theme parity candidate
+on:
+  push:
+    branches: [astra/electron-main-parity]
+    paths:
+      - .github/workflows/electron-theme-candidate.yml
+      - scripts/parity/apply_theme_parity.py
+      - scripts/parity/export_theme_catalog.py
+      - scripts/parity/vendor_electron_code_font.py
+      - scripts/native_electron_theme_smoke.py
+      - crates/synara-workspace/src/settings/theme.rs
+      - crates/synara-workspace/src/settings/theme/**
+      - crates/synara-app/src/ui/theme.rs
+      - crates/synara-app/src/ui/theme_editor.rs
+      - crates/synara-app/src/ui/theme_editor/**
+      - crates/synara-app/src/ui/theme_mode.rs
+      - crates/synara-app/src/ui/color_picker.rs
+      - crates/synara-app/src/ui/slider.rs
+      - crates/synara-app/src/shell/settings/theme_bridge.rs
+permissions:
+  contents: read
+concurrency:
+  group: electron-theme-parity-candidate
+  cancel-in-progress: false
+jobs:
+  verify:
+    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/electron-main-parity'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      CARGO_BUILD_JOBS: 2
+      PYTHONDONTWRITEBYTECODE: '1'
+      GIT_TERMINAL_PROMPT: '0'
+      RUST_BACKTRACE: '0'
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          persist-credentials: false
+      - name: Apply the reviewed exact-base integration
+        run: |
+          test -z "$(git status --porcelain)"
+          mkdir -p /tmp/electron-theme-evidence
+          python3 - <<'PY'
+          import importlib.util
+          from pathlib import Path
+          spec = importlib.util.spec_from_file_location('theme_delta', 'scripts/parity/apply_theme_parity.py')
+          module = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(module)
+          # Source hashes still guard every input. A function boundary ends at
+          # the first following declaration, not a globally unique generic marker.
+          def region(text, start, end, transform):
+              if text.count(start) != 1:
+                  raise ValueError('Ambiguous integration start')
+              a = text.index(start)
+              b = text.index(end, a + len(start))
+              return text[:a] + transform(text[a:b]) + text[b:]
+          module.region = region
+          changes = module.prepare(Path.cwd().resolve())
+          for name, content in changes.items():
+              Path(name).write_text(content, encoding='utf-8', newline='')
+          print('\n'.join(sorted(changes)))
+          PY
+      - name: Native and reference verification tools
+        run: |
+          rustup toolchain install 1.98.1 --profile minimal --component rustfmt
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libwebkit2gtk-4.1-dev libgtk-3-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil python3-fonttools python3-brotli xclip fonts-dejavu-core fonts-liberation x11-utils imagemagick
+          node --version
+      - name: Derive catalog and independent JavaScript color vectors
+        run: |
+          set -o pipefail
+          python3 scripts/parity/export_theme_catalog.py --vectors 2>&1 | tee /tmp/electron-theme-evidence/reference-vectors.log
+          python3 scripts/parity/export_theme_catalog.py --vectors --check
+      - name: Prepare licensed fonts and compare with the locked Electron font
+        run: |
+          set -o pipefail
+          python3 scripts/parity/vendor_electron_code_font.py --prepare --compare-reference 2>&1 | tee /tmp/electron-theme-evidence/font-reference.log
+          python3 scripts/parity/vendor_electron_code_font.py
+      - uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: electron-theme-parity-${{ runner.os }}-${{ github.sha }}
+          restore-keys: |
+            electron-theme-parity-${{ runner.os }}-
+            electron-parity-${{ runner.os }}-
+            native-conversation-${{ runner.os }}-
+      - name: Format owned Rust files and validate source contracts
+        run: |
+          mapfile -t changed < <(git diff --name-only -- '*.rs')
+          rustfmt +1.98.1 --edition 2024 --config skip_children=true "${changed[@]}" crates/synara-workspace/src/settings/theme.rs crates/synara-workspace/src/settings/theme/*.rs crates/synara-app/src/ui/theme.rs crates/synara-app/src/ui/theme_editor.rs crates/synara-app/src/ui/theme_editor/*.rs crates/synara-app/src/ui/theme_mode.rs crates/synara-app/src/ui/color_picker.rs crates/synara-app/src/ui/slider.rs crates/synara-app/src/shell/settings/theme_bridge.rs
+          git diff --check
+          python3 scripts/check_roadmap.py
+          python3 -m unittest discover -s scripts -p 'test_native_ui_scope.py'
+          python3 -m py_compile scripts/native_electron_theme_smoke.py scripts/parity/export_theme_catalog.py scripts/parity/vendor_electron_code_font.py
+      - name: Native domain and application tests
+        run: |
+          set -o pipefail
+          cargo +1.98.1 test --locked --workspace --exclude synara-app 2>&1 | tee /tmp/electron-theme-evidence/workspace-tests.log
+          cargo +1.98.1 test --locked -p synara-app 2>&1 | tee /tmp/electron-theme-evidence/app-tests.log
+          cargo +1.98.1 build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture 2>&1 | tee /tmp/electron-theme-evidence/build.log
+      - name: Exercise native theme editing and persisted state
+        run: |
+          set -o pipefail
+          python3 scripts/native_electron_theme_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/electron-theme-evidence/themes 2>&1 | tee /tmp/electron-theme-evidence/themes.log
+      - name: Settings and runtime ownership regression
+        run: |
+          set -o pipefail
+          for journey in electron_parity chat_behavior navigation model_draft appsnap handoff project_import direct_models integrations browser_webview stacked_prs rich_media task_split checkpoints goals recap pr_fix inline_comments releases; do
+            python3 "scripts/native_${journey}_smoke.py" --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output "/tmp/electron-theme-evidence/$journey" 2>&1 | tee "/tmp/electron-theme-evidence/$journey.log"
+          done
+      - name: Package only the tested source and verified assets
+        run: |
+          mkdir -p /tmp/electron-theme-candidate
+          git add -- crates/synara-workspace/src/settings.rs crates/synara-workspace/src/settings/theme.rs crates/synara-workspace/src/settings/theme crates/synara-app/src/ui.rs crates/synara-app/src/ui/theme.rs crates/synara-app/src/ui/theme_editor.rs crates/synara-app/src/ui/theme_editor crates/synara-app/src/ui/theme_mode.rs crates/synara-app/src/ui/color_picker.rs crates/synara-app/src/ui/slider.rs crates/synara-app/src/shell/settings.rs crates/synara-app/src/shell/settings/theme_bridge.rs crates/synara-app/src/shell.rs crates/synara-app/src/main.rs crates/synara-app/assets/fonts/JetBrainsMono-Variable.ttf crates/synara-app/assets/fonts/JetBrainsMono-Italic-Variable.ttf crates/synara-app/assets/licenses/JetBrainsMono-OFL.txt docs/ui/jetbrains-mono-reference-check.json
+          git diff --cached --check
+          git diff --cached --binary > /tmp/electron-theme-candidate/candidate.patch
+          git diff --cached --name-only > /tmp/electron-theme-candidate/paths.txt
+          git rev-parse HEAD > /tmp/electron-theme-candidate/base.txt
+          cd /tmp/electron-theme-candidate
+          sha256sum candidate.patch paths.txt base.txt > SHA256SUMS
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: electron-theme-tested-source
+          path: /tmp/electron-theme-candidate/
+          retention-days: 7
+      - name: Record the actual candidate and verification scope
+        if: always()
+        run: |
+          mkdir -p /tmp/electron-theme-evidence
+          git rev-parse HEAD > /tmp/electron-theme-evidence/base-revision.txt
+          git diff HEAD --stat > /tmp/electron-theme-evidence/source-stat.txt
+          git diff HEAD --binary > /tmp/electron-theme-evidence/source.patch
+          printf '%s\n' 'Native theme functionality, source-derived color math and runtime ownership checks. Pixel equivalence and full product parity are not established by this workflow.' > /tmp/electron-theme-evidence/SCOPE.txt
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: electron-theme-native-evidence
+          path: /tmp/electron-theme-evidence/
+          retention-days: 7
+      - uses: actions/cache/save@5a3ec84eff668545956fd18022155c47e93e2684
+        if: always()
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: electron-theme-parity-${{ runner.os }}-${{ github.sha }}
+  publish:
+    needs: verify
+    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/electron-main-parity'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          fetch-depth: 0
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: electron-theme-tested-source
+          path: /tmp/electron-theme-candidate
+      - name: Publish the verified narrow candidate without force
+        env:
+          EXPECTED_BASE: ${{ github.sha }}
+        run: |
+          cd /tmp/electron-theme-candidate
+          sha256sum -c SHA256SUMS
+          cd "$GITHUB_WORKSPACE"
+          test "$(cat /tmp/electron-theme-candidate/base.txt)" = "$EXPECTED_BASE"
+          test "$(git ls-remote origin refs/heads/astra/electron-main-parity | cut -f1)" = "$EXPECTED_BASE"
+          python3 - <<'PY'
+          import hashlib, subprocess
+          from pathlib import Path
+          allowed = {
+              'crates/synara-workspace/src/settings.rs',
+              'crates/synara-workspace/src/settings/theme.rs',
+              'crates/synara-workspace/src/settings/theme/tokens.rs',
+              'crates/synara-workspace/src/settings/theme/tests.rs',
+              'crates/synara-workspace/src/settings/theme/oracle.rs',
+              'crates/synara-workspace/src/settings/theme/catalog.json',
+              'crates/synara-workspace/src/settings/theme/reference-vectors.json',
+              'crates/synara-app/src/ui.rs',
+              'crates/synara-app/src/ui/theme.rs',
+              'crates/synara-app/src/ui/theme_editor.rs',
+              'crates/synara-app/src/ui/theme_editor/view.rs',
+              'crates/synara-app/src/ui/theme_mode.rs',
+              'crates/synara-app/src/ui/color_picker.rs',
+              'crates/synara-app/src/ui/slider.rs',
+              'crates/synara-app/src/shell/settings.rs',
+              'crates/synara-app/src/shell/settings/theme_bridge.rs',
+              'crates/synara-app/src/shell.rs',
+              'crates/synara-app/src/main.rs',
+              'crates/synara-app/assets/fonts/JetBrainsMono-Variable.ttf',
+              'crates/synara-app/assets/fonts/JetBrainsMono-Italic-Variable.ttf',
+              'crates/synara-app/assets/licenses/JetBrainsMono-OFL.txt',
+              'docs/ui/jetbrains-mono-reference-check.json',
+          }
+          binaries = {
+              'crates/synara-app/assets/fonts/JetBrainsMono-Variable.ttf': 'b60e77f5dbf5505436c1904cb7a9ac4111ee76d0',
+              'crates/synara-app/assets/fonts/JetBrainsMono-Italic-Variable.ttf': '5414835536ecf67b336e82642dbba2c5d2f32dfb',
+          }
+          patch = Path('/tmp/electron-theme-candidate/candidate.patch').read_bytes()
+          stats = subprocess.check_output(['git', 'apply', '--numstat', '-z', '-'], input=patch)
+          paths = set()
+          for record in filter(None, stats.split(b'\0')):
+              fields = record.split(b'\t', 2)
+              if len(fields) != 3:
+                  raise SystemExit('Unexpected source delta record')
+              path = fields[2].decode('utf-8')
+              if path not in allowed or Path(path).is_symlink():
+                  raise SystemExit('Candidate escaped its reviewed source scope')
+              if not (fields[0].isdigit() and fields[1].isdigit()) and path not in binaries:
+                  raise SystemExit('Unreviewed binary change')
+              paths.add(path)
+          if not paths or paths != set(Path('/tmp/electron-theme-candidate/paths.txt').read_text().splitlines()):
+              raise SystemExit('Candidate manifest and source disagree')
+          subprocess.run(['git', 'apply', '--index', '--check', '--whitespace=error-all', '-'], input=patch, check=True)
+          subprocess.run(['git', 'apply', '--index', '--whitespace=error-all', '-'], input=patch, check=True)
+          for path, expected in binaries.items():
+              data = Path(path).read_bytes()
+              actual = hashlib.sha1(f'blob {len(data)}\0'.encode() + data).hexdigest()
+              if actual != expected:
+                  raise SystemExit('Bundled font differs from the reviewed official release')
+          subprocess.run(['python3', 'scripts/parity/vendor_electron_code_font.py'], check=True)
+          PY
+          git -c core.hooksPath=/dev/null -c commit.gpgsign=false -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'feat(parity): integrate tested native Electron theme system and editor'
+          git -c core.hooksPath=/dev/null push origin HEAD:refs/heads/astra/electron-main-parity
+          echo "Published verified theme source: $(git rev-parse HEAD)" >> "$GITHUB_STEP_SUMMARY"

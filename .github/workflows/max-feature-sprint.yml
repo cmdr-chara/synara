@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
           fetch-depth: 0
-      - name: Verify source transport before installing dependencies
+      - name: Verify bounded source transport
         run: |
           python3 - <<'PYCODE'
           import base64, gzip, hashlib, io, json, re
@@ -35,17 +35,6 @@ jobs:
           assert all(isinstance(p, str) and re.fullmatch(r'\.synara-transfer-[0-9]{4}', p) for p in parts)
           assert all(not Path(p).is_symlink() for p in parts)
           assert sum(Path(p).stat().st_size for p in parts) <= 8 * 1024 * 1024
-          # Two duplicate transfer spans were identified against the local byte stream.
-          # Accept only these exact input/output Git blobs, then verify the full source digest.
-          def blob_sha(data):
-              return hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
-          path = Path('.synara-transfer-0001')
-          data = path.read_bytes()
-          assert blob_sha(data) == '9fbd4ee4da503d8dd1eb0f0c625cdb38377b3da3'
-          data = data[:1395] + data[1915:]
-          data = data[:411] + data[670:]
-          assert blob_sha(data) == '56b7058d0400615ce67dcbec323fc62503fd641f'
-          path.write_bytes(data)
           encoded = ''.join(Path(p).read_text().strip() for p in parts)
           with gzip.GzipFile(fileobj=io.BytesIO(base64.b64decode(encoded, validate=True))) as stream:
               data = stream.read(20 * 1024 * 1024 + 1)
@@ -69,7 +58,7 @@ jobs:
           restore-keys: |
             max-feature-1.98.1-${{ runner.os }}-
             native-webkit-1.98.1-${{ runner.os }}-
-      - name: Apply, validate, and publish only the session branch
+      - name: Validate and publish the session slice
         id: source
         run: |
           mkdir -p /tmp/max-feature-evidence

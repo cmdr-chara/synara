@@ -1,0 +1,1 @@
+{"mode":"diff","base_commit":"7928cff00f38a061f2f752e01042d574448021e9","parts":[".synara-transfer-0001",".synara-transfer-0002",".synara-transfer-0003"],"sha256":"81e5ab3e1f99587c7f3aa281a6d81d77d6b52b474beb15a82bba6ecd77383655","message":"feat(conversations): review provider continuation into independent unsent tasks"}

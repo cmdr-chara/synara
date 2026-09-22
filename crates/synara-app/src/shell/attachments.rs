@@ -95,6 +95,9 @@ impl Shell {
     pub(super) fn attachment_paste(&mut self,images:Vec<(String,Vec<u8>)>,cx:&mut Context<Self>) {
         self.import_selected(images.into_iter().map(|(name,bytes)|AttachmentInput::Bytes {name,bytes}).collect(),cx);
     }
+    pub(super) fn attach_capture(&mut self,name:String,bytes:Vec<u8>,source:ImageSource,cx:&mut Context<Self>) {
+        self.import_selected(vec![AttachmentInput::Capture{name,bytes,source}],cx);
+    }
     fn import_selected(&mut self,inputs:Vec<AttachmentInput>,cx:&mut Context<Self>) {
         let Some(task)=self.selected else {return};
         if self.close!=CloseState::Open || self.hubs.pending(cx) || self.attachment_send_blocked()
@@ -109,7 +112,7 @@ impl Shell {
         if self.attachments.imports.len() >= 8 && !self.attachments.imports.contains_key(&task) {
             self.error=Some("Resolve another pending attachment import before adding more. The clipboard and source files are unchanged.".into());cx.notify();return;
         }
-        if inputs.len()>8 || inputs.iter().filter_map(|i|match i {AttachmentInput::Bytes {bytes,..}=>Some(bytes.len()), _=>None}).sum::<usize>()>MAX_ATTACHMENT_BATCH_BYTES {
+        if inputs.len()>8 || inputs.iter().filter_map(|i|match i {AttachmentInput::Bytes {bytes,..} | AttachmentInput::Capture {bytes,..}=>Some(bytes.len()), _=>None}).sum::<usize>()>MAX_ATTACHMENT_BATCH_BYTES {
             self.error=Some("Choose up to eight files, at most 2 MiB combined. Nothing was attached.".into());cx.notify();return;
         }
         self.attachments.imports.insert(task,inputs.clone());

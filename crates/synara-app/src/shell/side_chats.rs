@@ -27,14 +27,17 @@ pub(super) enum Reply {
 }
 
 pub(super) struct SideChatState {
+    pub split: bool,
+    pub split_picker: bool,
+    pub split_secondary: bool,
     pub parent: Option<TaskId>,
     pub threads: Vec<Task>,
     pub selected: Option<TaskId>,
     pub thread: Option<Thread>,
     pub composer: Entity<TextEntry>,
     pub error: Option<String>,
-    generation: u64,
-    loading: bool,
+    pub generation: u64,
+    pub loading: bool,
     creating: bool,
     selecting: bool,
     _subscription: Subscription,
@@ -62,6 +65,9 @@ impl SideChatState {
             _ => {}
         });
         Self {
+            split: false,
+            split_picker: false,
+            split_secondary: false,
             parent: None,
             threads: Vec::new(),
             selected: None,
@@ -94,6 +100,19 @@ impl SideChatState {
 
 impl Shell {
     pub(super) fn load_side_chats(&mut self, parent: TaskId, cx: &mut Context<Self>) {
+        if self.side_chats.split {
+            if self.side_chats.selected == Some(parent) {
+                self.side_chats.split = false;
+                self.side_chats.parent = None;
+            } else {
+                self.side_chats.parent = Some(parent);
+                self.side_chats.generation = self.side_chats.generation.wrapping_add(1);
+                if let Some(child) = self.side_chats.selected {
+                    self.load_side_thread(parent, child, self.side_chats.generation, false, cx);
+                }
+                return;
+            }
+        }
         if self.side_chats.parent != Some(parent) {
             self.side_chats.reset_for(parent);
         } else {
@@ -116,7 +135,7 @@ impl Shell {
         cx.notify();
     }
 
-    fn load_side_thread(
+    pub(super) fn load_side_thread(
         &mut self,
         parent: TaskId,
         child: TaskId,
@@ -273,7 +292,7 @@ impl Shell {
         .into_any_element()
     }
 
-    fn remember_side_draft(&mut self, cx: &mut Context<Self>) {
+    pub(super) fn remember_side_draft(&mut self, cx: &mut Context<Self>) {
         let Some(task) = self.side_chats.selected else { return };
         if self.side_chats.loading {
             return;
@@ -282,7 +301,7 @@ impl Shell {
         self.remember_task_draft(task, text, cx);
     }
 
-    fn send_side_prompt(&mut self, cx: &mut Context<Self>) {
+    pub(super) fn send_side_prompt(&mut self, cx: &mut Context<Self>) {
         let Some(task) = self.side_chats.selected else { return };
         if self.close != CloseState::Open
             || self.side_chats.loading
@@ -293,6 +312,8 @@ impl Shell {
         {
             return;
         }
+        if self.catalog.tasks.iter().find(|t| t.id == task).is_none_or(|t| t.state == TaskState::Archived)
+            || self.side_chats.split && self.selected == Some(task) { return; }
         let text = self.side_chats.composer.read(cx).text().to_owned();
         if text.trim().is_empty() {
             return;
@@ -303,7 +324,12 @@ impl Shell {
         self.side_chats.error = None;
         let controller = self.controller.clone();
         self.job(async move {
-            let result = controller.submit(task, text).await;
+            let result = async {
+                if !controller.workspace.attachment_draft(task).await?.pending.is_empty() {
+                    return Err(WorkspaceError::Invalid("Open the full conversation to review and send its pending attachments.".into()));
+                }
+                controller.submit(task, text).await
+            }.await;
             let details = controller.details(task).await.ok().flatten();
             Ok(Update::PromptDone {
                 task,
@@ -314,7 +340,7 @@ impl Shell {
         cx.notify();
     }
 
-    fn cancel_side_prompt(&mut self, cx: &mut Context<Self>) {
+    pub(super) fn cancel_side_prompt(&mut self, cx: &mut Context<Self>) {
         let Some(task) = self.side_chats.selected.filter(|task| self.busy.contains(task)) else {
             return;
         };
@@ -434,6 +460,7 @@ impl Shell {
                         }
                         self.replace_task(task);
                         self.side_chats.selected = Some(child);
+                        self.side_chats.split_picker = false;
                         self.side_chats.thread = Some(thread);
                         let draft = self
                             .drafts
@@ -514,7 +541,7 @@ impl Shell {
         cx.notify();
     }
 
-    fn side_chat_item(
+    pub(super) fn side_chat_item(
         &self,
         thread: &Thread,
         index: usize,

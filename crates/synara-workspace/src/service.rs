@@ -846,10 +846,19 @@ impl WorkspaceService {
 #[async_trait]
 impl EventSink for WorkspaceService {
     async fn emit(&self, thread_id: ThreadId, event: ThreadEvent) -> AgentResult<()> {
-        self.record(thread_id, event)
-            .await
-            .map(|_| ())
-            .map_err(|_| AgentError::EventDelivery)
+        let event = if let ThreadEvent::ImageMessage { image, .. } = &event {
+            match Self::validate_transcript_image(image.clone()).await {
+                Ok(()) => event,
+                Err(error) => ThreadEvent::Notice { message: format!("Image unavailable: {error}") },
+            }
+        } else { event };
+        let is_image=matches!(event,ThreadEvent::ImageMessage{..});
+        let result=self.record(thread_id, event).await;
+        if is_image && matches!(&result,Err(WorkspaceError::Storage(StorageError::Limit))) {
+            return self.record(thread_id,ThreadEvent::Notice {message:"Image not retained: this thread reached the 256-image or 32 MiB media-history boundary. Existing history was preserved.".into()})
+                .await.map(|_|()).map_err(|_|AgentError::EventDelivery);
+        }
+        result.map(|_| ()).map_err(|_| AgentError::EventDelivery)
     }
 }
 fn catalog(store: &Store) -> WorkspaceResult<Catalog> {

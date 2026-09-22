@@ -19,7 +19,7 @@ impl Shell {
                             cx.listener(move |this,_:&(),_,cx|this.change_attachments(AttachmentEdit::Remove(remove.clone()),cx))).id(("remove-attachment",slot)).size(px(22.)))
                 }))
                 .children((!recent.is_empty()).then(||ui::action("recent-attachments",format!("Recent ({})",recent.len()),None,state.recent_open,
-                    cx.listener(|this,_:&(),_,cx|{this.attachments.recent_open=!this.attachments.recent_open;cx.notify();})).text_size(px(12.))))))
+                    cx.listener(|this,_:&(),_,cx|{this.attachments.recent_open=!this.attachments.recent_open;cx.notify();})).text_size(px(12.)).relative().child(ui::layout_probe("recent-attachments"))))))
             .children((state.loading || changing).then(||div().px_2().text_size(px(12.)).text_color(rgb(palette().muted)).child(if state.loading{"Loading saved attachments..."}else{"Saving attachments..."})))
             .children((!pending.is_empty()).then(||div().px_2().text_size(px(11.)).text_color(rgb(palette().muted)).child(format!("{} files · {} KiB · Snapshots will be sent to the selected agent",pending.len(),pending.iter().map(|a|a.bytes).sum::<usize>().div_ceil(1024)))))
             .children(self.details.as_ref().and_then(|details|value.and_then(|v|v.unsupported(&details.connection.capabilities))).map(|message|
@@ -62,7 +62,7 @@ impl Shell {
                             cx.listener(move |this,_:&(),_,cx|this.change_attachments(AttachmentEdit::Reuse(reuse.clone()),cx))).text_size(px(12.)))
                 }))
                 .child(ui::action("forget-recent-attachments","Clear recent snapshots",None,false,
-                    cx.listener(|this,_:&(),_,cx|this.change_attachments(AttachmentEdit::ForgetRecent,cx))).text_size(px(11.)))
+                    cx.listener(|this,_:&(),_,cx|this.change_attachments(AttachmentEdit::ForgetRecent,cx))).text_size(px(11.)).relative().child(ui::layout_probe("forget-recent-attachments")))
                 .child(div().px_2().text_size(px(11.)).text_color(rgb(palette().muted)).child("Recent is a bounded local cache, not delivery confirmation. Reattaching does not send.")));
         }
         if state.preview_loading || state.preview.is_some() {

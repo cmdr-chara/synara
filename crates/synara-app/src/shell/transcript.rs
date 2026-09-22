@@ -219,6 +219,7 @@ impl TranscriptState {
                     self.invalidate(&row_key(thread, index));
                 }
             }
+            Some(ThreadEvent::ImageMessage {..}) => self.invalidate_media(),
             Some(ThreadEvent::ToolChanged { patch }) => {
                 self.invalidate(&RowKey::Tool(patch.id.clone()))
             }
@@ -247,6 +248,7 @@ impl TranscriptState {
             self.invalidate(&RowKey::Input(key.1.clone()));
         }
     }
+    pub fn invalidate_media(&self) { self.list.remeasure_items(0..self.rows.len()); }
     pub fn invalidate_activity(&self, turn: &str) {
         self.invalidate(&RowKey::Activity(turn.into()));
     }

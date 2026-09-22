@@ -191,6 +191,8 @@ impl Shell {
                 .child(div().flex().gap_2()
                     .child(div().relative().child(ui::action("pr-fix-add","Recheck and add to unsent draft",None,false,cx.listener(|this,_:&(),_,cx| this.pr_fix_add(cx)))).child(crate::ui::layout_probe("pr-fix-add")))
                     .child(div().relative().child(ui::action("pr-fix-discard","Cancel PR Fix",None,false,cx.listener(|this,_:&(),_,cx| { this.pull_requests.retire(); cx.notify(); }))).child(crate::ui::layout_probe("pr-fix-discard"))));
+        } else {
+            pane = pane.child(crate::ui::layout_probe("pr-fix-idle"));
         }
         pane.into_any_element()
     }
@@ -227,6 +229,10 @@ mod tests {
     #[test]
     fn pr_fix_recheck_preserves_exact_multiline_unicode_instruction() {
         let instruction = "Review the file\nKeep caf\u{e9} unchanged";
-        assert!(instruction_is_current(Some(instruction), instruction, false));
+        assert!(instruction_is_current(
+            Some(instruction),
+            instruction,
+            false
+        ));
     }
 }

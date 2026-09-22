@@ -21,6 +21,8 @@ mod review;
 pub use review::{MAX_COMMIT_DRAFT_BYTES, ReviewPreferences, ReviewScope};
 mod organization;
 mod task_context;
+mod checkpoints;
+pub use checkpoints::{TaskCheckpoint, TaskCheckpoints, CheckpointReview, CheckpointRestored};
 pub use organization::{NativeSpace, OrganizationEdit, SpaceSymbol, WorkspaceOrganization};
 pub use task_context::{
     ChecklistItem, MAX_CHECKLIST_ITEMS, MAX_CHECKLIST_TEXT, MAX_NOTE_BYTES, TaskContext,
@@ -291,7 +293,7 @@ PRAGMA user_version=2;")?;
             [task.thread_id.to_string()],
         )?;
         tx.execute(
-            "DELETE FROM preferences WHERE key IN (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12)",
+            "DELETE FROM preferences WHERE key IN (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13)",
             params![
                 format!("task-draft:{id}"),
                 format!("message-pins:{id}"),
@@ -304,6 +306,7 @@ PRAGMA user_version=2;")?;
                 format!("task-debug:{id}"),
                 format!("task-recap:{id}"),
                 format!("task-inline-comments:{id}"),
+                format!("task-checkpoints:{id}"),
                 format!("task-goal:{id}")
             ],
         )?;
@@ -398,8 +401,15 @@ PRAGMA user_version=2;")?;
         let total_bytes = bytes
             .checked_add(encoded.len() as i64)
             .ok_or(StorageError::Limit)?;
-        if last >= 200_000 || total_bytes > 128 * 1024 * 1024 {
+        if last >= 200_000 || total_bytes > 128 * 1024 * 1024
+            || matches!(envelope.event, ThreadEvent::ImageMessage { .. }) && total_bytes > 32 * 1024 * 1024 {
             return Err(StorageError::Limit);
+        }
+        if matches!(envelope.event, ThreadEvent::ImageMessage { .. }) {
+            let count: i64 = transaction.query_row(
+                "SELECT COUNT(*) FROM (SELECT 1 FROM events WHERE thread_id=?1 AND json_extract(data,'$.type')='image_message' LIMIT 256)",
+                [envelope.thread_id.to_string()], |row| row.get(0))?;
+            if count >= 256 { return Err(StorageError::Limit); }
         }
         transaction.execute(
             "INSERT INTO events(thread_id,sequence,id,timestamp_ms,data) VALUES(?1,?2,?3,?4,?5)",
@@ -578,6 +588,7 @@ fn valid_preference_key(key: &str) -> bool {
     }
     if let Some(id) = key
         .strip_prefix("task-goal:")
+        .or_else(|| key.strip_prefix("task-checkpoints:"))
         .or_else(|| key.strip_prefix("task-inline-comments:"))
         .or_else(|| key.strip_prefix("task-recap:"))
         .or_else(|| key.strip_prefix("task-debug:"))

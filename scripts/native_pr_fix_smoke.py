@@ -9,7 +9,7 @@ import subprocess
 import time
 from pathlib import Path
 from native_smoke import Scenario, wait_until
-from native_integrations_smoke import fill, click
+from native_integrations_smoke import fill, click, fresh_probe
 from native_navigation_smoke import selection
 from native_project_import_smoke import task_events
 from native_model_draft_smoke import preference, close
@@ -91,8 +91,7 @@ def run(s):
     assert task_events(s,source)==before
     s.checks.append('stale-head-recheck-rejects-context-without-draft-or-provider-mutation')
     state.write_text(json.dumps({'head':'a'*40,'body':'Check this line','delay':0}))
-    click(s,'pr-fix-collect')
-    wait_until(lambda:s.control_bounds('pr-fix-instruction'),'fresh review')
+    fresh_probe(s, 'pr-fix-instruction', lambda: click(s, 'pr-fix-collect'))
     fill(s,'pr-fix-instruction','Fix only this reviewed issue')
     set_provider(state, body='Review changed after collection')
     click(s,'pr-fix-add')
@@ -120,15 +119,15 @@ def run(s):
     requests_before=query_count(log)
     click(s,'pr-fix-add')
     wait_until(lambda:query_count(log)==requests_before+1,'cancel test response held')
-    click(s,'pr-fix-discard')
+    # Geometry lookup retains historical rows; it cannot prove disappearance.
+    # Require a new actual render of the no-review state after Cancel instead.
+    fresh_probe(s, 'pr-fix-idle', lambda: click(s, 'pr-fix-discard'))
     set_provider(state)
-    wait_until(lambda:not s.control_bounds('pr-fix-instruction'),'cancel retires the review')
     assert preference(s,'task-draft:'+source)['text']=='Preserve this request'
     assert task_events(s,source)==before
     s.checks.append('cancelled-recheck-cannot-insert-context-from-a-retired-review')
 
-    click(s,'pr-fix-collect')
-    wait_until(lambda:s.control_bounds('pr-fix-instruction'),'fresh review after explicit cancellation')
+    fresh_probe(s, 'pr-fix-instruction', lambda: click(s, 'pr-fix-collect'))
     fill(s,'pr-fix-instruction','Fix only this reviewed issue')
     click(s,'pr-fix-add')
     wait_until(lambda:'PR Fix for owner/project #7' in (preference(s,'task-draft:'+source) or {}).get('text',''),'unsent PR Fix appended')

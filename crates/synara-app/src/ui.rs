@@ -5,9 +5,10 @@ pub use icons::{Glyph, icon, provider_glyph};
 pub mod menu;
 pub mod motion;
 mod personalization;
+mod reference;
 pub use personalization::{
     canvas_background, chat_width, code_font_size, glass_edge, motion_multiplier, row_height,
-    surface, terminal_font_size, ui_font_size,
+    settings_row_padding, surface, terminal_font_size, ui_font_size,
 };
 pub mod task_dialog;
 use gpui::{
@@ -19,7 +20,7 @@ pub const MENU_WIDTH: f32 = 304.0;
 pub const MENU_ROW_HEIGHT: f32 = 42.0;
 pub const MENU_MAX_HEIGHT: f32 = 294.0;
 pub const SIDEBAR_WIDTH: f32 = 256.0;
-pub const ROW_HEIGHT: f32 = 30.0;
+pub const ROW_HEIGHT: f32 = 28.0;
 pub const CHROME_HEIGHT: f32 = 46.0;
 pub const UI_FONT: &str = if cfg!(target_os = "windows") {
     "Segoe UI"
@@ -45,34 +46,37 @@ pub struct Palette {
     pub error_surface: u32,
     pub notice_surface: u32,
 }
+// Electron Codex chrome uses neutral surfaces, not the older violet shell.
+// Custom colorways, custom accents and the accessibility override are applied
+// after these defaults in configure(), preserving saved personalization.
 pub const DARK: Palette = Palette {
-    canvas: 0x272731,
-    sidebar: 0x25252f,
-    overlay: 0x30303a,
-    hover: 0x2e2e38,
-    selected: 0x383843,
-    border: 0x34343f,
-    text: 0xe8e6e1,
-    muted: 0xa19fa9,
-    focus: 0x9bb6e8,
-    error: 0xffb9c0,
-    error_surface: 0x432c35,
-    notice_surface: 0x303a4a,
+    canvas: 0x111111,
+    sidebar: 0x111111,
+    overlay: 0x181818,
+    hover: 0x1f1f1f,
+    selected: 0x2d2d2d,
+    border: 0x2d2d2d,
+    text: 0xfcfcfc,
+    muted: 0x9e9e9e,
+    focus: 0x0169cc,
+    error: 0xff8583,
+    error_surface: 0x351f1f,
+    notice_surface: 0x152334,
 };
 
 pub const LIGHT: Palette = Palette {
-    canvas: 0xfafafa,
-    sidebar: 0xf3f3f3,
-    overlay: 0xf0f0f0,
-    hover: 0xececec,
-    selected: 0xe1e1e5,
-    border: 0xdddddf,
-    text: 0x26262a,
-    muted: 0x6d6d76,
-    focus: 0x825b9e,
-    error: 0x99283b,
-    error_surface: 0xffe4e8,
-    notice_surface: 0xe6edf7,
+    canvas: 0xffffff,
+    sidebar: 0xffffff,
+    overlay: 0xf8f8f8,
+    hover: 0xf1f1f1,
+    selected: 0xe2e2e2,
+    border: 0xeeeeee,
+    text: 0x0d0d0d,
+    muted: 0x6e6e6e,
+    focus: 0x0169cc,
+    error: 0xe02e2a,
+    error_surface: 0xfdeeed,
+    notice_surface: 0xf0f5fb,
 };
 // Synara currently owns one application window. All native views, including
 // menus and text entries, paint on the UI thread and share its current palette.
@@ -183,7 +187,7 @@ pub fn button_shell(
             palette().overlay
         }))
         .text_color(rgb(palette().text))
-        .text_sm()
+        .text_size(px(ui_font_size()))
         .cursor_pointer()
         .hover(|style| style.bg(rgb(palette().hover)))
         .active(|style| style.bg(rgb(palette().selected)))
@@ -219,7 +223,7 @@ pub fn action(
             0
         }))
         .text_color(rgb(palette().text))
-        .text_size(px(ui_font_size() + 1.))
+        .text_size(px(ui_font_size()))
         .cursor_pointer()
         .hover(|style| style.bg(rgb(palette().hover)))
         .active(|style| style.bg(rgb(palette().selected)))
@@ -262,7 +266,7 @@ pub fn header_action(
             0
         }))
         .text_color(rgb(palette().text))
-        .text_size(px(ui_font_size() + 1.))
+        .text_size(px(ui_font_size()))
         .cursor_pointer()
         .hover(|style| style.bg(rgb(palette().hover)))
         .active(|style| style.bg(rgb(palette().selected)))
@@ -295,7 +299,7 @@ pub fn unavailable_action(
         .flex()
         .items_center()
         .gap(px(6.))
-        .text_size(px(15.))
+        .text_size(px(ui_font_size()))
         .text_color(rgb(palette().text))
         .opacity(0.78)
         .rounded_md()

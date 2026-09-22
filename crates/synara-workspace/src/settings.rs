@@ -38,7 +38,7 @@ impl Default for FontPreferences {
     fn default() -> Self {
         Self {
             ui_family: None,
-            ui_size: 14.0,
+            ui_size: 13.0,
             code_family: None,
             code_size: 13.0,
         }

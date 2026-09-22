@@ -303,7 +303,8 @@ fn settings_match(info: &SectionInfo, query: &str) -> bool {
 fn card() -> gpui::Div {
     div()
         .w_full()
-        .rounded_2xl()
+        .rounded_xl()
+        .bg(ui::surface(palette().overlay))
         .border_1()
         .border_color(rgb(palette().border))
         .overflow_hidden()
@@ -312,10 +313,11 @@ fn card() -> gpui::Div {
 }
 fn heading(label: &'static str) -> gpui::Div {
     div()
-        .mt_7()
-        .mb_3()
-        .px_2()
-        .text_color(rgb(palette().muted))
+        .mt_4()
+        .mb(px(6.))
+        .text_size(px(ui::ui_font_size()))
+        .font_weight(gpui::FontWeight::MEDIUM)
+        .text_color(rgb(palette().text))
         .child(label)
 }
 fn row(
@@ -326,7 +328,8 @@ fn row(
     let description = description.into();
     div()
         .px_3()
-        .py_3()
+        .py(px(ui::settings_row_padding()))
+        .text_size(px(ui::ui_font_size()))
         .border_b_1()
         .border_color(rgb(palette().border))
         .flex()
@@ -338,12 +341,12 @@ fn row(
                 .min_w_0()
                 .flex()
                 .flex_col()
-                .gap_1()
-                .child(title.into())
+                .gap(px(2.))
+                .child(div().font_weight(gpui::FontWeight::MEDIUM).child(title.into()))
                 .children((!description.is_empty()).then(|| {
                     div()
                         .text_color(rgb(palette().muted))
-                        .line_height(px(22.))
+                        .line_height(px(ui::ui_font_size() * 1.625))
                         .child(description)
                 })),
         )
@@ -519,7 +522,7 @@ impl Shell {
                                                     this.open_settings_section(section, cx);
                                                 }),
                                             )
-                                            .h(px(30.))
+                                            .h(px(ui::row_height()))
                                             .relative()
                                             .child(ui::layout_probe(info.id))
                                         })),
@@ -784,13 +787,13 @@ impl Shell {
         div()
             .id("settings-view")
             .track_scroll(&self.settings.scroll)
-            .mt(px(-30.))
-            .text_size(px(15.))
+            .text_size(px(ui::ui_font_size()))
             .flex_1()
             .min_h_0()
             .min_w_0()
             .overflow_y_scroll()
             .px_6()
+            .pt_8()
             .pb_10()
             .child(
                 div()
@@ -805,12 +808,17 @@ impl Shell {
                     .child(ui::layout_probe("settings-content"))
                     .children((self.settings.section != Section::Profile).then(|| {
                         div()
-                            .pt_3()
-                            .pb_3()
+                            .pb(px(6.))
                             .flex()
                             .items_center()
                             .gap_4()
-                            .child(div().text_size(px(20.)).flex_1().child(info.label))
+                            .child(
+                                div()
+                                    .text_size(px(20.))
+                                    .font_weight(gpui::FontWeight::MEDIUM)
+                                    .flex_1()
+                                    .child(info.label),
+                            )
                             .children(
                                 matches!(
                                     self.settings.section,
@@ -863,8 +871,8 @@ impl Shell {
                     .children((self.settings.section != Section::Profile).then(|| {
                         div()
                             .text_color(rgb(palette().muted))
-                            .line_height(px(22.))
-                            .mb_3()
+                            .line_height(px(ui::ui_font_size() * 1.625))
+                            .mb_4()
                             .child(info.description)
                     }))
                     .child(page),

@@ -58,6 +58,7 @@ impl Shell {
             return;
         };
         if self.workflows.open()
+            || self.file_comments.open()
             || self.loading_task.is_some()
             || self.close != CloseState::Open
             || self.revisions.open()

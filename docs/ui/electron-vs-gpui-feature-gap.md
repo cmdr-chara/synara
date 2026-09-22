@@ -10,9 +10,23 @@ continuation notes remain in the [preserved pre-Hubs inventory](electron-vs-gpui
 The full acceptance backlog remains in [ROADMAP.md](../../ROADMAP.md). No historical
 gap is closed merely because this current view is shorter or a heading was renamed.
 
+## September 22: sprint 2, inline file comments
+
+The current 48-capability inventory is **12 substantially present, 24 partial and
+12 missing**. Native editor selections now have editable file review with a
+relative path, whole-file SHA-256, inclusive line range and exact excerpt.
+Explicit attachment re-reads the existing filesystem and task owners before
+preserving the original unsent draft. Stale/deleted files retain the comment
+instead of guessing a replacement range. The durable attached annotation is a
+frozen snapshot, not live reanchoring or hidden Send-time validation.
+
+[Inline file comments](inline-file-comments.md) records bounds, transient review,
+normal-draft restart semantics and focused/native checks. Real SSH and non-Linux
+acceptance remain separate. The earlier checkpoint counts below are historical.
+
 ## September 22: sprint 2, reviewed PR Fix workflow
 
-The current 48-capability inventory is **11 substantially present, 24 partial and
+At the preceding PR Fix checkpoint, the 48-capability inventory was **11 substantially present, 24 partial and
 13 missing**. PR Fix now has bounded, paginated unresolved-review collection and
 an editable native review. Explicit insertion rechecks review freshness and
 original task/project/root ownership before appending to the normal unsent draft.

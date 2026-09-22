@@ -2,10 +2,7 @@ name: Feature closure sprint
 on:
   push:
     branches: [astra/feature-closure-sprint]
-    paths:
-      - .feature-closure-request.json
-      - .github/workflows/feature-closure-sprint.yml
-      - scripts/feature_closure_transfer.py
+    paths: [.feature-closure-request.json, .github/workflows/feature-closure-sprint.yml, scripts/feature_closure_transfer.py]
 permissions:
   contents: read
 concurrency:
@@ -43,61 +40,23 @@ jobs:
           key: feature-closure-1.98.1-${{ runner.os }}-${{ github.sha }}
           restore-keys: |
             feature-closure-1.98.1-${{ runner.os }}-
-            direct-conversations-1.98.1-${{ runner.os }}-
-            max-feature-1.98.1-${{ runner.os }}-
-      - name: Verify exact source transport and apply the scoped feature
+      - name: Prepare original exact goal candidate and reviewed corrections
         run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          import base64, gzip, sys
-          sys.path.insert(0, 'scripts')
-          import feature_closure_transfer as transfer
-          original = transfer.read_request
-          def request():
-              value = original()
-              if value['patch_gzip_base64'] == ['.feature-closure-part-0000']:
-                  path = Path('.feature-closure-part-0000')
-                  assert not path.is_symlink() and 0 < path.stat().st_size <= transfer.LIMIT
-                  data = path.read_bytes()
-                  if data.startswith(b'diff --git '):
-                      value['patch_gzip_base64'] = base64.b64encode(gzip.compress(data, mtime=0)).decode()
-              return value
-          transfer.read_request = request
-          transfer.prepare()
-          PY
-      - name: Apply exact diagnosed release corrections before verification
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          import hashlib, subprocess
-          repairs = [
-              ('crates/synara-workspace/src/storage/releases.rs', '7145770c1085f54fbbb317bffd7531e4e0abb175f18984a3f1daa2648cefb5b5', '9260cefc93d37234c7dc23aa3dcf0771a3e5a48cf7a5d5e01fa427ec9e528f25', b'synara_core::now_ms()', b'crate::now_ms()'),
-              ('scripts/native_releases_smoke.py', '93f70a69cefac833115122741c2aaa413a486b4e85b05cf1ff16f1047e8890c3', '4219d121151ffd5d7e0ae3eebcc4cabd03e07a21cab3505d64925b56a3a17777', b'resize(s, 800, 640)', b'resize(s.desktop, 800, 640)')
-          ]
-          for name, old_hash, new_hash, old, new in repairs:
-              p = Path(name)
-              before = p.read_bytes()
-              digest = hashlib.sha256(before).hexdigest()
-              if digest == old_hash:
-                  after = before.replace(old, new)
-                  assert hashlib.sha256(after).hexdigest() == new_hash
-                  p.write_bytes(after)
-                  subprocess.run(['git', 'add', '--', name], check=True)
-              else:
-                  assert digest == new_hash, 'Unexpected source; no repair applied: ' + name
-          PY
-      - name: Separate reviewed goal Send from navigation without bypassing editor guards
-        run: |
+          python3 scripts/feature_closure_transfer.py prepare
           python3 - <<'PY'
           from pathlib import Path
           import hashlib, json, subprocess, sys
           sys.path.insert(0, 'scripts')
           import feature_closure_transfer as transfer
-          patch = Path('.feature-closure-part-0011')
-          assert not patch.is_symlink() and patch.stat().st_size < 16384
-          assert hashlib.sha256(patch.read_bytes()).hexdigest() == '52f1be640349c6cefb38e872f232bea8fbb179bf910139cdc5289a4f14c8f26f'
-          subprocess.run(['git', 'apply', '--index', '--check', '--whitespace=error-all', str(patch)], check=True)
-          subprocess.run(['git', 'apply', '--index', '--whitespace=error-all', str(patch)], check=True)
+          for name, digest in [
+              ('.feature-closure-part-0011', '52f1be640349c6cefb38e872f232bea8fbb179bf910139cdc5289a4f14c8f26f'),
+              ('.feature-closure-part-0012', '8bc19cf1e78d6aadcbea74f0d30766219c23739fb06e9d18b31cd53e2b8041a3')
+          ]:
+              path = Path(name)
+              assert not path.is_symlink() and 0 < path.stat().st_size < 16384
+              assert hashlib.sha256(path.read_bytes()).hexdigest() == digest
+              subprocess.run(['git', 'apply', '--index', '--check', '--whitespace=error-all', name], check=True)
+              subprocess.run(['git', 'apply', '--index', '--whitespace=error-all', name], check=True)
           (transfer.EVIDENCE / 'source-paths.json').write_text(json.dumps(transfer.changed_paths()))
           PY
       - name: Focused checks and native journeys
@@ -105,13 +64,14 @@ jobs:
       - name: Package exactly the checked tree
         id: package
         run: python3 scripts/feature_closure_transfer.py package
-      - name: Preserve all results, including failed candidates
+      - name: Preserve exact history and all results, including failures
         if: always()
         run: |
           mkdir -p /tmp/feature-closure-evidence
           git rev-parse HEAD > /tmp/feature-closure-evidence/worktree-revision.txt
           git status --short > /tmp/feature-closure-evidence/status.txt
           git diff HEAD > /tmp/feature-closure-evidence/candidate.patch
+          git bundle create /tmp/feature-closure-evidence/history.bundle HEAD
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:

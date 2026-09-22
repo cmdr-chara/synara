@@ -40,27 +40,50 @@ jobs:
           key: feature-closure-1.98.1-${{ runner.os }}-${{ github.sha }}
           restore-keys: |
             feature-closure-1.98.1-${{ runner.os }}-
-      - name: Prepare original exact goal candidate and reviewed corrections
+      - name: Prepare exact accumulated candidate
         run: |
-          python3 scripts/feature_closure_transfer.py prepare
           python3 - <<'PY'
           from pathlib import Path
-          import hashlib, json, subprocess, sys
+          import hashlib, sys
           sys.path.insert(0, 'scripts')
           import feature_closure_transfer as transfer
-          for name, digest in [
-              ('.feature-closure-part-0011', '52f1be640349c6cefb38e872f232bea8fbb179bf910139cdc5289a4f14c8f26f'),
-              ('.feature-closure-part-0012', '8bc19cf1e78d6aadcbea74f0d30766219c23739fb06e9d18b31cd53e2b8041a3')
-          ]:
-              path = Path(name)
-              assert not path.is_symlink() and 0 < path.stat().st_size < 16384
-              assert hashlib.sha256(path.read_bytes()).hexdigest() == digest
-              subprocess.run(['git', 'apply', '--index', '--check', '--whitespace=error-all', name], check=True)
-              subprocess.run(['git', 'apply', '--index', '--whitespace=error-all', name], check=True)
-          (transfer.EVIDENCE / 'source-paths.json').write_text(json.dumps(transfer.changed_paths()))
+          original = transfer.read_request
+          def request():
+              value = original()
+              assert value['patch_gzip_base64'] == ['.feature-closure-part-0000']
+              path = Path('.feature-closure-part-0000')
+              assert not path.is_symlink() and 0 < path.stat().st_size < 65536
+              encoded = path.read_text()
+              blob = hashlib.sha1(('blob ' + str(len(encoded.encode())) + '\0').encode() + encoded.encode()).hexdigest()
+              if blob == '80054c3bae6506655bdbc9dc9c682a58e38bb82c':
+                  assert encoded.count('tLppYRRreRGf') == 1
+                  encoded = encoded.replace('tLppYRRreRGf', 'tLppYRreRGf')
+              assert hashlib.sha256(encoded.encode()).hexdigest() == '8593d827adbd67f8b4de3323563114f4389bd8c5625569b12d8d13c4d82242fc'
+              value['patch_gzip_base64'] = encoded
+              return value
+          transfer.read_request = request
+          transfer.prepare()
           PY
-      - name: Focused checks and native journeys
+      - name: Accumulated backend and thirteen native journeys
         run: python3 scripts/feature_closure_transfer.py check
+      - name: Native application unit tests and structural regressions
+        run: |
+          python3 - <<'PY'
+          import sys, re, subprocess
+          from pathlib import Path
+          sys.path.insert(0, 'scripts')
+          import feature_closure_transfer as transfer
+          transfer.logged('app-tests.log', ['cargo', '+1.98.1', 'test', '--locked', '-p', 'synara-app'])
+          for name in ['test_audit_workspace', 'test_native_ui_scope', 'test_ci_router', 'test_apply_source']:
+              transfer.logged(name + '.log', ['python3', 'scripts/' + name + '.py'])
+          transfer.logged('roadmap-self-test.log', ['python3', 'scripts/check_roadmap.py', '--self-test'])
+          base = subprocess.check_output(['git', 'show', 'fe515833c565d666204f24e5257d85025dede0e9:ROADMAP.md']).decode()
+          current = Path('ROADMAP.md').read_text()
+          pattern = r'^- \[[ x]\] [A-Q]\d+ [^\n]*(?:\n(?:  [^\n]*|\t[^\n]*))*'
+          old = re.findall(pattern, base, re.M)
+          assert len(old) == 120 and old == re.findall(pattern, current, re.M)
+          (transfer.EVIDENCE / 'historical-task-integrity.txt').write_text('PASS: 120 original A-Q task bodies and checkbox states unchanged\n')
+          PY
       - name: Package exactly the checked tree
         id: package
         run: python3 scripts/feature_closure_transfer.py package

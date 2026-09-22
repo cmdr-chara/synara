@@ -1,3 +1,4 @@
+mod imports;
 mod direct_models;
 mod integrations;
 mod automations;
@@ -559,7 +560,7 @@ fn database_path(path: &Path) -> StorageResult<std::path::PathBuf> {
 fn valid_preference_key(key: &str) -> bool {
     if matches!(
         key,
-        "direct-model-providers-v1" | "integrations" | "model-favorites" | "environment-layout" | "workspace-organization" | "automation-ledger-v1"
+        "history-imports-v1" | "direct-model-providers-v1" | "integrations" | "model-favorites" | "environment-layout" | "workspace-organization" | "automation-ledger-v1"
     ) {
         return true;
     }

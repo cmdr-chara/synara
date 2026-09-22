@@ -25,6 +25,7 @@ pub(super) enum Section {
     Providers,
     Models,
     DirectModels,
+    ProjectImport,
     Skills,
     Worktrees,
     System,
@@ -39,6 +40,7 @@ struct SectionInfo {
     description: &'static str,
 }
 const SECTIONS: &[SectionInfo] = &[
+    SectionInfo { section:Section::ProjectImport, id:"project-import", group:"Integrations", label:"Project import", icon:Glyph::Folder, description:"Discover and review local Codex or Claude histories. Import unsent standalone chats without changing source files." },
     SectionInfo { section:Section::DirectModels, id:"direct-models", group:"Integrations", label:"Direct models", icon:Glyph::Brain, description:"Direct provider endpoints, secure API keys and reviewed model selection. Separate from ACP coding agents." },
     SectionInfo { section: Section::Device, id: "device", group: "Integrations", label: "Device / capture", icon: Glyph::Window, description: "Installed device helpers, captures, permissions and supported controls." },
     SectionInfo { section: Section::Privacy, id: "privacy", group: "System", label: "Privacy & security", icon: Glyph::Settings, description: "Local data, protocol diagnostics, secret-store status and safe deletion." },
@@ -732,6 +734,7 @@ impl Shell {
             Section::Usage => self.usage_settings(),
             Section::Models => self.model_settings(cx),
             Section::DirectModels => self.direct_model_settings(cx),
+            Section::ProjectImport => self.project_import_settings(cx),
             Section::System => self.system_settings(cx),
             Section::Archived => self.archived_settings(cx),
             Section::Behavior => self.chat_settings(cx),

@@ -54,14 +54,19 @@ def run(s):
     s.checks.append('close-flushes-pending-draft-before-exit')
     s.click_control('new-thread'); wait_until(lambda:task_count(s)==2,'independent chat')
     chat=selection(s); s.click_control('composer-input'); ui.text('chat draft')
-    mode(s,True); wait_until(lambda:selection(s)!=chat,'Studio selection')
+    mode(s,True)
+    # Hubs are optional now. Opening their home must not create/select work.
+    assert selection(s)==chat and task_count(s)==2
+    s.click_control('hub-create'); ui.text('Draft isolation Hub')
+    s.click_control('hub-save'); wait_until(lambda:selection(s)!=chat,'explicit Hub creation')
+    s.click_control('hub-home-thread',slot=0)
     studio=selection(s); s.click_control('composer-input'); ui.text('studio draft')
     mode(s,False); wait_until(lambda:selection(s)==chat,'return to chat')
     s.click_control('composer-input'); observed=ui.copy_input(); assert observed=='chat draft', (observed, selection(s), chat, preference(s,'task-draft:'+chat))
     wait_until(lambda:(preference(s,'task-draft:'+studio) or {}).get('text')=='studio draft','Studio draft isolated')
     close(s); s.launch(preserve_selection=True); ui=s.desktop
     s.click_control('composer-input'); observed=ui.copy_input(); assert observed=='chat draft', (observed, selection(s), chat, preference(s,'task-draft:'+chat))
-    s.checks.append('project-chat-and-Studio-drafts-stay-separate-across-switching-and-restart')
+    s.checks.append('optional-Hub-and-standalone-drafts-stay-separate-across-switching-and-restart')
     before=event_cursor(s,chat); ui.focus(); ui.key('a',('Control_L',)); s.prompt('hello'); wait_until(lambda:prompt_finished(s,chat,before),'selected chat completion')
     wait_until(lambda:(preference(s,'task-draft:'+chat) or {}).get('text')=='','accepted-prompt-clears-only-sent-draft')
     assert (preference(s,'task-draft:'+studio) or {}).get('text')=='studio draft'

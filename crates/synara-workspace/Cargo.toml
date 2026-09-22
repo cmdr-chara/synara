@@ -5,6 +5,7 @@ edition.workspace = true
 publish.workspace = true
 
 [dependencies]
+chrono = { version = "=0.4.45", default-features = false, features = ["std"] }
 synara-model = { path = "../synara-model" }
 synara-browser = { path = "../synara-browser" }
 ureq = { version = "=3.4.0", default-features = false, features = ["rustls"] }

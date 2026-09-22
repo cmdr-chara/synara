@@ -1,0 +1,20 @@
+--- a/crates/synara-app/src/shell/debug_workflow.rs
++++ b/crates/synara-app/src/shell/debug_workflow.rs
+@@ -216,6 +216,8 @@
+                 .child(
+                     div()
+                         .id("debug-evidence-input")
++                        .h(px(80.))
++                        .flex_shrink_0()
+                         .relative()
+                         .child(ui::layout_probe("debug-evidence-input"))
+                         .child(view.input.clone()),
+@@ -322,7 +324,7 @@
+                                     cx.notify();
+                                 }
+                             }),
+-                        )),
++                        ).child(ui::layout_probe("debug-close"))),
+                 );
+         } else {
+             root = root.child(div().text_xs().child(if view.busy {

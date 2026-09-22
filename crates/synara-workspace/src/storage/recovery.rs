@@ -377,28 +377,9 @@ fn validate_data(connection: &Connection, budget: &Budget<'_>) -> StorageResult<
                         let ledger: crate::imports::HistoryImportLedger = decode(&data)?;
                         ledger.validate().map_err(|_| StorageError::InvalidBackup)?;
                     }
-                    if id == "native-release-experience-v1" {
-                        let journal: crate::ReleaseJournal = decode(&data)?;
-                        journal
-                            .validate()
-                            .map_err(|_| StorageError::InvalidBackup)?;
-                    }
                     if id == "direct-model-providers-v1" {
                         let settings: synara_model::ProviderSettings = decode(&data)?;
-                        settings
-                            .validate()
-                            .map_err(|_| StorageError::InvalidBackup)?;
-                    }
-                    if id.starts_with("task-debug:") {
-                        let value: crate::DebugWorkflow = decode(&data)?;
-                        value.validate().map_err(|_| StorageError::InvalidBackup)?;
-                    }
-                    if id.starts_with("task-recap:") {
-                        let recap: crate::ThreadRecap = decode(&data)?;
-                        recap.validate().map_err(|_| StorageError::InvalidBackup)?;
-                        if id != crate::recap::recap_key(recap.source.task) {
-                            return Err(StorageError::InvalidBackup);
-                        }
+                        settings.validate().map_err(|_| StorageError::InvalidBackup)?;
                     }
                     if id.starts_with("task-direct-model:") {
                         let _: Option<crate::DirectModelBinding> = decode(&data)?;

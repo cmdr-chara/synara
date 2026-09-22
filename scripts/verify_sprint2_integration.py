@@ -1,0 +1,67 @@
+#!/usr/bin/env python3
+"""Read-only source/ledger checks for native conversation workflow integration."""
+import argparse
+import importlib.util
+import json
+from pathlib import Path
+import subprocess
+import tempfile
+import sys
+
+sys.dont_write_bytecode = True
+
+BASELINE = "fe515833c565d666204f24e5257d85025dede0e9"
+
+def audit_module(root):
+    spec = importlib.util.spec_from_file_location("workspace_audit", root / "scripts/audit_workspace.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+def historical_ledger(text):
+    start = text.index("## A. Recover")
+    return text[start:text.index("## Verification contract", start)]
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    root = Path(__file__).resolve().parents[1]
+    args.output.mkdir(parents=True, exist_ok=True)
+    head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
+    state = subprocess.check_output(["git", "status", "--porcelain"], cwd=root, text=True).strip()
+    assert not state, f"Verification requires a clean committed candidate: {state}"
+    subprocess.run(["git", "merge-base", "--is-ancestor", BASELINE, head], cwd=root, check=True)
+    subprocess.run(["git", "diff", "--check", BASELINE, head], cwd=root, check=True)
+    with tempfile.TemporaryDirectory(prefix="synara-ledger-baseline-") as temp:
+        baseline = Path(temp) / "source"
+        subprocess.run(["git", "worktree", "add", "--detach", str(baseline), BASELINE], cwd=root, check=True)
+        try:
+            old = audit_module(baseline).audit(baseline)
+            current = audit_module(root).audit(root)
+            assert old["errors"] == ["crates/synara-browser/src/native/actions.js: non-Rust core source"], old
+            assert current == old, {"baseline": old, "current": current}
+            assert historical_ledger((baseline / "ROADMAP.md").read_text()) == historical_ledger((root / "ROADMAP.md").read_text())
+        finally:
+            # Only remove the clean temporary worktree created above.
+            subprocess.run(["git", "worktree", "remove", str(baseline)], cwd=root, check=True)
+    assert not (root / ".synara-sprint-2.json").exists(), "Temporary candidate transport remains"
+    assert not list(root.glob(".feature-closure-part-*")), "Competing publisher parts remain"
+    assert not (root / "scripts/feature_closure_transfer.py").exists(), "Competing publisher remains"
+    assert not (root / ".github/workflows/feature-closure-sprint.yml").exists(), "Write-enabled temporary workflow remains"
+    workflow = (root / ".github/workflows/sprint-2.yml").read_text()
+    assert "contents: read" in workflow and "contents: write" not in workflow
+    assert "persist-credentials: false" in workflow and "git push" not in workflow
+    report = {
+        "candidate": head, "baseline": BASELINE, "status": "passed",
+        "historical_A_Q_ledger": "byte-identical",
+        "structural_baseline": old, "structural_candidate": current,
+        "structural_regressions": [],
+        "temporary_publisher": "retired; replacement CI is read-only",
+        "note": "Known Browser structural failure is preserved, not reclassified as passing."
+    }
+    (args.output / "source-checks.json").write_text(json.dumps(report, indent=2) + "\n")
+    print(json.dumps(report, indent=2))
+
+if __name__ == "__main__":
+    main()

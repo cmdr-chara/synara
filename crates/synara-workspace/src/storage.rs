@@ -1,19 +1,19 @@
-mod debug_workflow;
-pub use debug_workflow::{
-    DebugEdit, DebugEvidence, DebugHistory, DebugPhase, DebugRun, DebugWorkflow,
-    MAX_DEBUG_EVIDENCE_BYTES, MAX_DEBUG_PROBLEM_BYTES,
-};
-mod automations;
-mod direct_models;
-mod followups;
 mod imports;
+mod direct_models;
 mod integrations;
+mod automations;
+mod debug_workflow;
+pub use debug_workflow::{DebugEdit, DebugPhase, DebugWorkflow};
+mod goals;
+pub use goals::{ThreadGoal, GoalStatus, GoalAchievement, GoalEdit, GoalDecision, goal_decision, GOAL_MAX_FOLLOWUPS, GOAL_PURSUIT_LIMIT_MS};
+mod releases;
+pub use releases::{NativeVersionHistory, NativeVersionVisit, NATIVE_VERSION_HISTORY_KEY};
+mod inline_comments;
+pub use inline_comments::{InlineComment, InlineCommentEdit, InlineComments};
+mod followups;
 pub use followups::{FollowupDraft, FollowupEdit, FollowupQueue};
 mod attachments;
-pub use attachments::{
-    AttachmentDraft, AttachmentEdit, AttachmentInfo, AttachmentInput, AttachmentKind,
-    AttachmentPreview, MAX_ATTACHMENT_BATCH_BYTES,
-};
+pub use attachments::{AttachmentDraft, AttachmentEdit, AttachmentInfo, AttachmentInput, AttachmentKind, AttachmentPreview, MAX_ATTACHMENT_BATCH_BYTES};
 mod terminal_layout;
 pub use terminal_layout::*;
 mod chat_preferences;
@@ -27,8 +27,7 @@ pub use task_context::{
 };
 mod conversation_tools;
 pub use conversation_tools::{
-    HandoffReview, HandoffTarget, MessageAnchor, MessageSearch, RelatedThreadKind, RevisionSource,
-    SideThreadIndex, ThreadOrigin,
+    ThreadRecap, HandoffReview, HandoffTarget, MessageAnchor, MessageSearch, RelatedThreadKind, RevisionSource, SideThreadIndex, ThreadOrigin,
 };
 mod task_creation;
 pub use chat_preferences::ModelFavorite;
@@ -271,22 +270,10 @@ PRAGMA user_version=2;")?;
     pub fn delete_task(&mut self, id: TaskId) -> StorageResult<bool> {
         // Take the writer lock before checking archive state. Another database
         // connection must not restore a task between that check and deletion.
-        let tx = self
-            .connection
-            .transaction_with_behavior(TransactionBehavior::Immediate)?;
-        let raw: Option<String> = tx
-            .query_row(
-                "SELECT data FROM tasks WHERE id=?1",
-                [id.to_string()],
-                |row| row.get(0),
-            )
-            .optional()?;
-        let Some(task) = raw.map(|raw| decode::<Task>(&raw)).transpose()? else {
-            return Ok(false);
-        };
-        if task.state != TaskState::Archived {
-            return Err(StorageError::Identity);
-        }
+        let tx = self.connection.transaction_with_behavior(TransactionBehavior::Immediate)?;
+        let raw: Option<String> = tx.query_row("SELECT data FROM tasks WHERE id=?1", [id.to_string()], |row| row.get(0)).optional()?;
+        let Some(task) = raw.map(|raw| decode::<Task>(&raw)).transpose()? else { return Ok(false); };
+        if task.state != TaskState::Archived { return Err(StorageError::Identity); }
         tx.execute(
             "DELETE FROM sessions WHERE thread_id=?1",
             [task.thread_id.to_string()],
@@ -304,7 +291,7 @@ PRAGMA user_version=2;")?;
             [task.thread_id.to_string()],
         )?;
         tx.execute(
-            "DELETE FROM preferences WHERE key IN (?1,?2,?3,?4,?5,?6,?7,?8,?9)",
+            "DELETE FROM preferences WHERE key IN (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12)",
             params![
                 format!("task-draft:{id}"),
                 format!("message-pins:{id}"),
@@ -314,7 +301,10 @@ PRAGMA user_version=2;")?;
                 format!("thread-origin:{id}"),
                 format!("side-selection:{id}"),
                 format!("task-direct-model:{id}"),
-                format!("task-debug:{id}")
+                format!("task-debug:{id}"),
+                format!("task-recap:{id}"),
+                format!("task-inline-comments:{id}"),
+                format!("task-goal:{id}")
             ],
         )?;
         let changed = tx.execute("DELETE FROM tasks WHERE id=?1", [id.to_string()])?;
@@ -582,24 +572,19 @@ fn database_path(path: &Path) -> StorageResult<std::path::PathBuf> {
 fn valid_preference_key(key: &str) -> bool {
     if matches!(
         key,
-        "history-imports-v1"
-            | "native-release-experience-v1"
-            | "direct-model-providers-v1"
-            | "integrations"
-            | "model-favorites"
-            | "environment-layout"
-            | "workspace-organization"
-            | "automation-ledger-v1"
+        "history-imports-v1" | "direct-model-providers-v1" | "integrations" | "model-favorites" | "environment-layout" | "workspace-organization" | "automation-ledger-v1"
     ) {
         return true;
     }
     if let Some(id) = key
-        .strip_prefix("task-direct-model:")
+        .strip_prefix("task-goal:")
+        .or_else(|| key.strip_prefix("task-inline-comments:"))
         .or_else(|| key.strip_prefix("task-recap:"))
+        .or_else(|| key.strip_prefix("task-debug:"))
+        .or_else(|| key.strip_prefix("task-direct-model:"))
         .or_else(|| key.strip_prefix("task-draft:"))
         .or_else(|| key.strip_prefix("message-pins:"))
         .or_else(|| key.strip_prefix("task-context:"))
-        .or_else(|| key.strip_prefix("task-debug:"))
         .or_else(|| key.strip_prefix("task-attachments:"))
         .or_else(|| key.strip_prefix("task-followups:"))
         .or_else(|| key.strip_prefix("thread-origin:"))
@@ -611,7 +596,7 @@ fn valid_preference_key(key: &str) -> bool {
     }
     matches!(
         key,
-        "appearance" | "selection" | "window" | "agent_profiles" | "ssh_profiles" | "settings"
+        "native-version-history" | "appearance" | "selection" | "window" | "agent_profiles" | "ssh_profiles" | "settings"
     )
 }
 

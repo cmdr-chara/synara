@@ -288,9 +288,8 @@ impl Shell {
             rows.push((
                 Choice {
                     label: "Debug mode".into(),
-                    detail: "Evidence-first task workflow".into(),
+                    detail: "Observe, reproduce, investigate, fix and verify with saved evidence".into(),
                     icon: Some(ui::Glyph::Debug),
-                    unavailable: None,
                     ..Default::default()
                 },
                 ControlAction::DebugWorkflow,
@@ -542,10 +541,7 @@ impl Shell {
             return;
         }
         match action {
-            ControlAction::DebugWorkflow => {
-                self.open_debug_workflow(window, cx);
-                return;
-            }
+            ControlAction::DebugWorkflow => { self.open_debug(cx); return; }
             ControlAction::Project(id) => {
                 self.navigate_project(id, cx);
                 return;
@@ -573,8 +569,8 @@ impl Shell {
         let controller = self.controller.clone();
         self.job(async move {
             let result = match action {
-                ControlAction::DebugWorkflow
-                | ControlAction::Project(_)
+                ControlAction::Project(_)
+                | ControlAction::DebugWorkflow
                 | ControlAction::BrowseWorkspace
                 | ControlAction::AddReferences
                 | ControlAction::Unavailable

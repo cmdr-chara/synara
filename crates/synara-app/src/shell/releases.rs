@@ -1,111 +1,135 @@
-//! Read-only local build notes plus an explicit durable acknowledgement.
+//! Native build observations and unavailable production-release state stay distinct.
 use super::*;
-use crate::ui::{self, Glyph, palette};
-const NOTES_NOTICE: &str = "New native build notes are available in Settings > What\'s New.";
-
-pub(super) enum Reply {
-    Loaded(Result<ReleaseJournal, String>),
-}
+use crate::ui::{self, palette};
 #[derive(Default)]
-pub(super) struct ReleaseState {
-    journal: Option<ReleaseJournal>,
-    busy: bool,
+pub(super) struct ReleasesState {
+    pub busy: bool,
+    history: Option<NativeVersionHistory>,
     error: Option<String>,
 }
-impl ReleaseState {
-    pub fn busy(&self) -> bool {
-        self.busy
-    }
-}
 impl Shell {
-    pub(super) fn load_release_notes(&mut self, cx: &mut Context<Self>) {
-        if self.releases.busy || self.close != CloseState::Open {
+    pub(super) fn load_releases(&mut self, cx: &mut Context<Self>) {
+        if self.releases.busy {
             return;
         }
         self.releases.busy = true;
         self.releases.error = None;
         let workspace = self.controller.workspace.clone();
         self.job(async move {
-            Ok(Update::Releases(Box::new(Reply::Loaded(
+            Ok(Update::Releases(
                 workspace
-                    .observe_current_build()
+                    .observe_native_version(env!("CARGO_PKG_VERSION").into())
                     .await
                     .map_err(|e| e.to_string()),
-            ))))
+            ))
         });
         cx.notify();
     }
-    fn acknowledge_release_notes(&mut self, cx: &mut Context<Self>) {
-        if self.releases.busy || self.close != CloseState::Open {
+    pub(super) fn releases_reply(
+        &mut self,
+        result: Result<NativeVersionHistory, String>,
+        cx: &mut Context<Self>,
+    ) {
+        self.releases.busy = false;
+        match result {
+            Ok(value) => self.releases.history = Some(value),
+            Err(error) => self.releases.error = Some(error),
+        }
+        cx.notify();
+    }
+    fn dismiss_build_notes(&mut self, cx: &mut Context<Self>) {
+        if self.releases.busy {
             return;
         }
-        let Some(journal) = &self.releases.journal else {
+        let Some(history) = &self.releases.history else {
             return;
         };
-        let revision = journal.revision;
+        let revision = history.revision;
         self.releases.busy = true;
-        self.releases.error = None;
         let workspace = self.controller.workspace.clone();
         self.job(async move {
-            Ok(Update::Releases(Box::new(Reply::Loaded(
+            Ok(Update::Releases(
                 workspace
-                    .acknowledge_build_notes(revision)
+                    .mark_native_version_read(env!("CARGO_PKG_VERSION").into(), revision)
                     .await
                     .map_err(|e| e.to_string()),
-            ))))
+            ))
         });
         cx.notify();
     }
-    pub(super) fn release_reply(&mut self, reply: Reply, cx: &mut Context<Self>) {
-        self.releases.busy = false;
-        match reply {
-            Reply::Loaded(Ok(journal)) => {
-                if journal.unread() && self.notice.is_none() {
-                    self.notice = Some(NOTES_NOTICE.into());
-                }
-                if !journal.unread() && self.notice.as_deref() == Some(NOTES_NOTICE) {
-                    self.notice = None;
-                }
-                self.releases.journal = Some(journal);
-            }
-            Reply::Loaded(Err(error)) => self.releases.error = Some(error),
-        }
-        cx.notify();
-    }
-    pub(super) fn release_settings(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
-        let unread = self
-            .releases
-            .journal
+    pub(super) fn releases_unread(&self) -> bool {
+        self.releases
+            .history
             .as_ref()
-            .is_some_and(ReleaseJournal::unread);
-        let mut page = div().flex().flex_col().gap_3()
-            .child(div().relative().child(format!("Synara {} · development build", env!("CARGO_PKG_VERSION")))
-                .child(ui::layout_probe("release-current-version")))
-            .child(div().relative().child("Update status: unavailable. No production endpoint, signing authority or installation helper is configured. No update check was made.")
-                .child(ui::layout_probe("release-update-unavailable")))
-            .child(div().border_b_1().border_color(rgb(palette().border)).pb_3()
-                .child("Published release history: no verified release catalog is bundled. The local observations below are not publication dates or proof of installed updates."))
-            .child(div().relative().child(if unread { "Unread build notes" } else { "Build notes" })
-                .child(ui::layout_probe(if unread { "release-unread" } else { "release-read" })))
-            .child(div().relative().flex().flex_col().gap_1().children(BUNDLED_BUILD_NOTES.lines().map(|line| div().child(line.strip_prefix("# ").unwrap_or(line).to_owned())))
-                .child(ui::layout_probe("release-bundled-notes")))
-            .child(div().flex().gap_2()
-                .child(ui::action("release-ack", if self.releases.busy { "Saving..." } else { "Mark these notes read" }, Some(Glyph::Check), false,
-                    cx.listener(|this, _: &(), _, cx| this.acknowledge_release_notes(cx))).relative()
-                    .child(ui::layout_probe("release-ack")))
-                .child(ui::action("release-reload", "Reload local history", None, false,
-                    cx.listener(|this, _: &(), _, cx| this.load_release_notes(cx))).relative()
-                    .child(ui::layout_probe("release-reload"))))
-            .children(self.releases.error.as_ref().map(|error| div().relative().child(error.clone()).child(ui::layout_probe("release-error"))))
-            .child(div().mt_3().border_t_1().border_color(rgb(palette().border)).pt_3().child("Builds observed in this installation (latest first, at most 24)"));
-        if let Some(journal) = &self.releases.journal {
-            for observed in journal.history.iter().rev() {
-                page = page.child(div().text_xs().child(format!(
-                    "{} · first observed Unix ms {} · notes SHA-256 {}",
-                    observed.version, observed.observed_at_ms, observed.notes_sha256
-                )));
-            }
+            .and_then(|h| h.current())
+            .is_some_and(|v| !v.read)
+    }
+    pub(super) fn releases_panel(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
+        let mut pane=div().id("releases-surface").flex().flex_col().gap_2().border_b_1().border_color(rgb(palette().border)).pb_4()
+            .child(div().relative().child(ui::layout_probe("native-build-version")).child(format!("Native build {} | {} / {}",env!("CARGO_PKG_VERSION"),std::env::consts::OS,std::env::consts::ARCH)))
+            .child(div().text_size(px(18.)).child("What's New / Releases"))
+            .child("This is a development build. Locally observed versions below are not published release announcements.")
+            .child(div().text_size(px(12.)).child(include_str!("../../../../docs/ui/native-build-notes.md")))
+            .child(div().relative().child(ui::layout_probe("native-update-unconfigured"))
+                .child("Automatic updates unavailable: no production endpoint, trusted signing identity or platform replacement helper is configured. No update check or download was performed."))
+            .child("Published native release history: not configured. Electron releases and fork tags are not presented as native releases.");
+        if self.releases_unread() {
+            pane = pane
+                .child(
+                    div()
+                        .relative()
+                        .child(ui::layout_probe("native-build-unread"))
+                        .child(
+                            "This native version has not been marked read on this installation.",
+                        ),
+                )
+                .child(
+                    ui::action(
+                        "native-build-read",
+                        if self.releases.busy {
+                            "Saving..."
+                        } else {
+                            "Mark this version read"
+                        },
+                        None,
+                        false,
+                        cx.listener(|this, _: &(), _, cx| this.dismiss_build_notes(cx)),
+                    )
+                    .relative()
+                    .child(ui::layout_probe("native-build-read")),
+                );
         }
-        page.into_any_element()
+        if let Some(history) = &self.releases.history {
+            pane = pane
+                .child("Versions observed on this installation (most recent first)")
+                .child(
+                    div()
+                        .id("native-version-visits")
+                        .max_h(px(160.))
+                        .overflow_y_scroll()
+                        .flex()
+                        .flex_col()
+                        .gap_1()
+                        .children(history.visits.iter().rev().map(|v| {
+                            div().text_size(px(12.)).child(format!(
+                                "{} | observed {} | {}",
+                                v.version,
+                                v.observed_label(),
+                                if v.read { "read" } else { "unread" }
+                            ))
+                        })),
+                );
+        }
+        if let Some(error) = &self.releases.error {
+            pane = pane.child(div().text_color(rgb(palette().error)).child(error.clone()));
+        }
+        pane.child(ui::action(
+            "native-build-reload",
+            "Reload local version state",
+            None,
+            false,
+            cx.listener(|this, _: &(), _, cx| this.load_releases(cx)),
+        ))
+        .into_any_element()
     }
 }

@@ -23,3 +23,15 @@ full inline review parity, unlimited remote pagination or durable Hub/thread
 association. Those remain open. Tests use controlled provider fixtures and real
 local Git repositories, including preservation of pre-existing staged and
 unstaged content. See the session verification receipt for exact results.
+
+## Reviewed PR Fix context
+
+Use PR Fix on the selected PR to collect unresolved review threads. The reviewed
+context preserves repository/PR/head/comment/file/line identity and deterministic
+ordering. Edit the instruction and append explicitly to the destination's unsent
+draft. Sending is a separate ordinary conversation action. Cancel does not launch
+anything. A stale head or changed review set requires fresh review before append.
+
+The existing provider/host performs only bounded reads for this workflow. Incomplete
+pagination fails closed. No checkout, staging, review submission or merge occurs.
+See [feature-closure workflows](feature-closure.md#pr-fix) for limits and ownership.

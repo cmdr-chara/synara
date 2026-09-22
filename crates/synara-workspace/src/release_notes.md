@@ -7,6 +7,7 @@ Conversation tools
 - Debug workflows record task-local phases and evidence, with explicit draft instructions.
 - PR Fix reviews unresolved comments before adding instructions to an unsent task draft.
 - Inline file comments preserve the selected range, file hash and exact excerpt.
+- Thread recap reviews visible source and the destination model before separate, bounded generation and caching.
 
 Ownership
 - Coding agents use generic ACP. Direct model inference is a separate runtime.

@@ -1,18 +1,35 @@
 # Electron Synara to native Rust/GPUI: current feature-gap audit
 
-Checkpoint: 2026-09-22, after recovery and continuation of the maximum-feature
-sprint at `16789f4b290268bd54f315855cccae479aab8b2f`. Sessions 1-4 remain preserved. This is a source inventory
-with explicitly scoped Linux evidence below. It is not general native runtime, provider, hardware
-or cross-platform acceptance.
+Checkpoint: 2026-09-22, maximum-feature sprint 2. The earlier sprint at
+`16789f4b290268bd54f315855cccae479aab8b2f` and Sessions 1-4 remain preserved.
+This is a source inventory with explicitly scoped Linux evidence below, not
+general provider, hardware, cross-platform or production release acceptance.
 
 The complete preceding Electron comparison, source links, dated tables and earlier
 continuation notes remain in the [preserved pre-Hubs inventory](electron-vs-gpui-feature-gap-before-hubs-2026-09-21.md).
 The full acceptance backlog remains in [ROADMAP.md](../../ROADMAP.md). No historical
 gap is closed merely because this current view is shorter or a heading was renamed.
 
+## September 22: sprint 2, thread recap and accumulated verification
+
+The current inventory is **13 substantially present, 25 partial and 10 missing**.
+Relative to the starting 9/24/15 inventory, Debug, PR Fix, inline file comments
+and Thread recap move to present. Releases moves to partial, not fully complete.
+
+Thread recap reviews the exact bounded visible source and an explicitly selected
+direct-model endpoint before making a separate request. It caches the completed
+model-generated summary with source and model provenance, checks source/cache
+revisions, exposes Stop and stale status, and restores without network replay.
+It does not rebind the ACP task, mutate the transcript or normal draft, inherit
+approvals or run tools. [Thread recap](thread-recap.md) states bounds and limits.
+The [integration receipt](../verification/sprint-2-continuation.md) distinguishes
+focused/native evidence from live-provider and platform acceptance.
+
+The following dated counts are preserved historical checkpoints.
+
 ## September 22: sprint 2, What's New
 
-The current inventory is **12 substantially present, 25 partial and 11 missing**.
+At the preceding What's New checkpoint, the inventory was **12 substantially present, 25 partial and 11 missing**.
 Releases moves from missing to partial. The native Settings workflow shows the
 compiled version, bundled development notes, explicit durable acknowledgement
 and bounded local build observations. It reports unconfigured production updates
@@ -142,7 +159,8 @@ Using Emanuele's current feature overview as the counting boundary, this audit t
 48 top-level user capabilities: 46 named overview entries plus Computer Use and
 Project Import. At the consolidated Sessions 1-4 checkpoint, **8 were substantially present,
 22 partial and 18 genuinely missing feature development**. The maximum-feature
-sprint above supersedes those current counts with **9 present, 24 partial and 15 missing**. This is a
+sprint then advanced those counts to **9 present, 24 partial and 15 missing**.
+The sprint-2 checkpoint at the top supersedes these historical totals. This is a
 feature-parity inventory, not a release-readiness percentage.
 
 The Synara product requirement is intentionally broader than Electron's current
@@ -192,6 +210,9 @@ in the receipt rather than represented as successful acceptance.
 
 | Surface | Source implemented | Remaining acceptance or functionality |
 | --- | --- | --- |
+| Thread recap | Reviewed bounded visible source, explicit direct-model destination, separate inference, Stop, source/cache revisions, cached provenance, stale display, copy and inert restart | Live authenticated providers and non-Linux native acceptance; generated recaps are not authoritative history |
+| Releases / What's New | Bundled development notes, compiled version, durable acknowledgement and bounded local build observations | Partial: no verified published release catalog, production endpoint, signing or platform updater |
+| Inline file comments | Saved-file identity/hash/range/excerpt, editable native comment and freshness-checked unsent-draft attachment | Local native evidence only; no automatic reanchoring after file changes or hidden Send-time validation |
 | PR Fix workflow | Paginated unresolved-review snapshot, editable native instructions, fresh-head/comment checks and explicit append to the original unsent draft | Live-account/SSH/non-Linux acceptance; external comments can change again after insertion |
 | Debug mode | Native evidence-gated phases, persisted task state/history, explicit reviewed draft instructions, pause/reopen and no implicit execution | Broader platform/provider interaction acceptance; no independent fix certification |
 | Direct model providers | Separate `synara-model` runtime, three transport families, reviewed registry/custom endpoints, Settings/model selection, endpoint-bound OS references, streaming/Stop, usage and local structured-output checks | Partial toward 75+ interoperability, additional auth, native multimodal and approved tools; see direct-model docs |

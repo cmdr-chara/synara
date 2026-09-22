@@ -35,11 +35,12 @@ acceptance gate is closed.
 
 | Product status | Count | Meaning |
 | --- | ---: | --- |
-| Present | **12 / 48** | Substantial native user capability exists; remaining work is mainly acceptance or narrower depth |
+| Present | **13 / 48** | Substantial native user capability exists; remaining work is mainly acceptance or narrower depth |
 | Partial | **25 / 48** | Real native functionality exists, but Electron still has material user-facing depth not yet present |
-| Missing | **11 / 48** | No equivalent complete user workflow exists yet, or the current architecture does not satisfy the stated Synara product requirement |
+| Missing | **10 / 48** | No equivalent complete user workflow exists yet, or the current architecture does not satisfy the stated Synara product requirement |
 
-Current counts include native Debug, reviewed PR Fix and inline file comments.
+Current counts include native Debug, reviewed PR Fix, inline file comments and
+explicit generated/cached thread recap.
 Releases is partial: What's New and local build-history review are usable, but
 verified published history and production update installation remain unavailable.
 These counts do not close provider or cross-platform acceptance.
@@ -48,6 +49,7 @@ These counts do not close provider or cross-platform acceptance.
 
 | Capability | Native state |
 | --- | --- |
+| Thread recap | Reviewed visible source and explicit direct-model destination, bounded separate generation, Stop, source/revision-fenced cache, stale display and inert restart without changing the ACP session or draft |
 | Inline file comments | Selected saved-file ranges with SHA-256/excerpt review, editable annotations, explicit freshness-checked draft attachment and normal unsent-draft recovery |
 | PR Fix workflow | Bounded unresolved-review collection, editable native review, refreshed comment/head checks and explicit append to the correct unsent task draft |
 | Debug mode | App-owned evidence-gated observation/reproduction/investigation/fix/verification, persisted task history, pause/reopen, explicit editable draft instructions and no implicit execution |
@@ -105,7 +107,6 @@ implementation but still trail the Electron workflow in depth:
 | AppSnap | Permissioned desktop-window capture and composer attachment flow |
 | Rich media in transcript | Generated-image presentation/download and PDF/document viewing comparable to Electron |
 | Two-task split views | Keep two independent conversations/tasks visible side by side, including cross-project |
-| Thread recap | Generated and cached long-thread summary/re-entry workflow |
 | Computer Use | New Electron 0.9.0 capability: permissioned desktop/app control, preview, interruption/takeover and audit boundaries |
 
 ## Architectural invariants
@@ -133,7 +134,7 @@ implementation but still trail the Electron workflow in depth:
 | P1 | Electron 0.9.0 delta | Implement Computer Use ownership, permissions, observation/action and interruption. Project Import now has its reviewed native path, with broader real-history/platform acceptance remaining. |
 | P2 | Agent orchestration | Provider handoff, native subagents, Agent Gateway and external-MCP-to-Synara contracts are explicit and scoped |
 | P3 | Conversation autonomy/recovery | Goals and checkpoints/revert are real workflows with no hidden execution or fake rollback; Debug now has its app-owned workflow |
-| P4 | Review/composer depth | Stacked PRs, inline comments, AppSnap, rich media, task split views, recap and release UX; PR Fix now has its reviewed native path |
+| P4 | Review/composer depth | Stacked PRs, AppSnap, rich media, task split views and verified release depth; PR Fix, inline comments and recap now have native workflows |
 | P5 | Partial-feature closure | Close the material Electron depth gaps in models/context, Automations, Studio/Hubs, browser sessions/dev servers, editor/search, device/iOS, navigation/export and personalization |
 
 ## Acceptance and release work
@@ -152,6 +153,21 @@ itself** when the corresponding feature is already present:
 - performance/resource budgets, security review and final release evidence.
 
 ## Historical implementation checkpoints
+
+### September 22: sprint 2, recap and local build notes
+
+Thread recap now reviews bounded visible text and an explicit direct-model
+destination before a separate inference request. Completed summaries are cached
+with source/model provenance and revision checks. Stop, stale display, explicit
+refresh and inert restart do not mutate the ACP session, source transcript or
+normal draft. See [Thread recap](docs/ui/thread-recap.md).
+
+Settings > What's New shows compiled development notes and bounded local build
+history with durable explicit acknowledgement. No production endpoint, verified
+published catalog or platform installer is invented. Releases remains partial.
+See [What's New](docs/ui/whats-new.md) and the
+[integration receipt](docs/verification/sprint-2-continuation.md) for scope and
+verification evidence.
 
 ### September 22: sprint 2, inline file comments
 
@@ -872,10 +888,12 @@ Remaining limitations:
 3. **Close orchestration and conversation gaps.** Reviewed related-provider
    continuation is present, but in-place handoff needs a safe protocol contract.
    Native subagents, Agent Gateway, external-MCP-to-Synara, goals, checkpoints/revert
-   and Debug mode must reuse existing task owners without hidden authority.
-4. **Finish high-value depth gaps.** Stacked PR/Fix workflows, inline comments,
-   AppSnap/rich media, two-task split views, thread recap, release UX, browser
-   sessions/dev servers, complete iOS tooling and remaining editor/navigation depth.
+   must reuse existing task owners without hidden authority. Debug is now a
+   durable evidence-gated native workflow.
+4. **Finish high-value depth gaps.** Stacked PRs, AppSnap/rich media, two-task
+   split views, verified release/update depth, browser sessions/dev servers,
+   complete iOS tooling and remaining editor/navigation depth. Reviewed PR Fix,
+   inline comments and generated/cached thread recap now have native workflows.
 5. **Run acceptance after coherent feature slices.** Use focused verification while
    developing, then close provider/platform/hardware/accessibility/security and final
    Q gates against exact integrated candidates. Do not turn missing acceptance into

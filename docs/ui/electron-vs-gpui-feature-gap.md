@@ -1,7 +1,7 @@
 # Electron Synara to native Rust/GPUI: current feature-gap audit
 
 Checkpoint: 2026-09-22, after feature-closure sprint 2 at
-`d186675a5f85bf6b06c38c70480e45a0f30a0bb2`. Earlier feature-closure, Sessions 1-4 and maximum-feature
+`20c78d7164e5e6e9be2b5bc1825be9babfeaa769`. Earlier feature-closure, Sessions 1-4 and maximum-feature
 checkpoints remain preserved. This inventory distinguishes user-visible implementation
 from Linux fixture evidence and still-open provider, hardware and platform acceptance.
 
@@ -12,9 +12,9 @@ gap is closed merely because this current view is shorter or a heading was renam
 
 ## September 22: feature-closure sprint 2
 
-The current inventory has **17 substantially present, 26 partial and 5 missing**
-capabilities, not a release-readiness percentage. Stacked pull requests, AppSnap and
-two-task split views move Missing -> Present. Rich media in transcript moves Missing
+The current inventory has **18 substantially present, 26 partial and 4 missing**
+capabilities, not a release-readiness percentage. Stacked pull requests, AppSnap,
+two-task split views and bounded checkpoints/revert move Missing -> Present. Rich media in transcript moves Missing
 -> Partial because native image workflows are real, but PDF/document viewing remains
 materially absent. No earlier Partial capability is promoted to Present.
 
@@ -24,10 +24,11 @@ materially absent. No earlier Partial capability is promoted to Present.
 | Transcript media (partial) | Exact uploaded/agent-returned image bytes, distinct provenance, bounded decode, inline/expanded rendering, original export, missing/corrupt refusal and restart persistence | PDF/document viewing and broader media types |
 | AppSnap | Explicit Linux/X11 visible-window discovery and one-window capture with target identity into durable pending attachments; no silent desktop capture | macOS/Windows/Wayland implementations and OS permission acceptance |
 | Two-task split | Existing task/session owners render same- or cross-project tasks together with independent drafts/streams, focused Send/Stop, replacement/close and narrow fallback | Broader platform/input/accessibility acceptance |
+| Checkpoints/revert | Explicit reviewed rollback of app-owned unsent draft plus notes/checklist with bounded retained history, recovery checkpoint, restart persistence, stale/owner/active-task fencing and atomic failure recovery | Deliberately excludes workspace files, Git/index, transcript, provider sessions, approvals, attachments and broader state |
 
-Focused/native runs 35762961299, 35766712749, 35767806370 and 35770961136
-passed for these slices. The remaining Missing capabilities are checkpoints/revert,
-native subagents/workflows, Agent Gateway, external-MCP-to-Synara and Computer Use.
+Focused/native runs 35762961299, 35766712749, 35767806370, 35770961136 and
+35772987553 passed for these slices. The remaining Missing capabilities are native
+subagents/workflows, Agent Gateway, external-MCP-to-Synara and Computer Use.
 
 ## September 22: breadth-first feature closure
 
@@ -130,7 +131,7 @@ Using Emanuele's current feature overview as the counting boundary, this audit t
 48 top-level user capabilities: 46 named overview entries plus Computer Use and
 Project Import. At the consolidated Sessions 1-4 checkpoint, **8 were substantially present,
 22 partial and 18 genuinely missing feature development**. The maximum-feature
-sprint superseded those counts with **9 present, 24 partial and 15 missing**. The feature-closure-sprint-2 checkpoint now records **17 present, 26 partial and 5 missing**. This is a
+sprint superseded those counts with **9 present, 24 partial and 15 missing**. The feature-closure-sprint-2 checkpoint now records **18 present, 26 partial and 4 missing**. This is a
 feature-parity inventory, not a release-readiness percentage.
 
 The Synara product requirement is intentionally broader than Electron's current
@@ -184,6 +185,7 @@ in the receipt rather than represented as successful acceptance.
 | Transcript images | Durable task-owned image bytes, provenance, native preview/expand/export and bounded corrupt/missing behavior | Partial: PDF/document viewing and broader media types |
 | AppSnap | Explicit Linux/X11 single-window discovery/selection/capture into durable pending attachments | macOS/Windows/Wayland implementations and permission acceptance |
 | Two-task split | Existing independent task/session owners rendered together with focus-routed composer/session actions and narrow fallback | Broader input/accessibility/platform acceptance |
+| Checkpoints/revert | Bounded reviewed rollback for durable draft plus notes/checklist with recovery and stale/active fencing | Files, Git/index, transcript, provider/session, approvals and attachments are intentionally outside the first checkpoint boundary |
 | Debug | App-owned persistent five-phase evidence workflow and explicit unsent composer preparation | Live-provider and platform acceptance, see feature-closure docs |
 | Persistent goals | Explicitly armed bounded pursuit, pause/resume/clear, user priority, blocker/achievement history and inert restart | Live-provider and cross-platform acceptance, no unbounded retry |
 | Thread recap | Reviewed generation using an independent unsent related task and explicit source-owned bounded cache | Summary quality/provider/platform acceptance |

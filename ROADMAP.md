@@ -17,7 +17,7 @@ Current comparison snapshot, September 22, 2026:
 
 - Electron reference: `Emanuele-web04/synara@f04341a67bc4941d1b2e91e0b23bbe782dfbc727`
   (Synara 0.9.0-era main).
-- Native Rust reference: `cmdr-chara/synara@d186675a5f85bf6b06c38c70480e45a0f30a0bb2` (feature-closure sprint 2 candidate).
+- Native Rust reference: `cmdr-chara/synara@20c78d7164e5e6e9be2b5bc1825be9babfeaa769` (feature-closure sprint 2 candidate).
 - Electron moved **342 commits** beyond the `e7cd152` revision used by the previous
   audit. Computer Use and project-history import are therefore new parity inputs.
 - The current audit uses 48 top-level user-visible Electron capabilities: the 46
@@ -35,9 +35,9 @@ acceptance gate is closed.
 
 | Product status | Count | Meaning |
 | --- | ---: | --- |
-| Present | **17 / 48** | Substantial native user capability exists; remaining work is mainly acceptance or narrower depth |
+| Present | **18 / 48** | Substantial native user capability exists; remaining work is mainly acceptance or narrower depth |
 | Partial | **26 / 48** | Real native functionality exists, but Electron still has material user-facing depth not yet present |
-| Missing | **5 / 48** | No equivalent complete user workflow exists yet, or the current architecture does not satisfy the stated Synara product requirement |
+| Missing | **4 / 48** | No equivalent complete user workflow exists yet, or the current architecture does not satisfy the stated Synara product requirement |
 
 ### Substantially present
 
@@ -58,6 +58,10 @@ acceptance gate is closed.
 | Thread recap | Reviewed generation through an independent unsent related task, explicit source-owned cache, stale-source refusal and restart restoration |
 | PR Fix workflow | Head-pinned unresolved review collection, bounded ordered context, editable instruction and explicit unsent destination-draft append |
 | Inline file comments | Task-owned saved-file range comments, surrounding context, bounded persistent queue and version-checked unsent composer append |
+| Stacked pull requests | Deterministic reviewed stack relationships, readiness/current-position display, navigation and explicit selected-prefix merge with head recheck and no force merge |
+| AppSnap | Explicit Linux/X11 one-window discovery/selection/capture into durable task attachment ownership, with target identity, bounds and restart-safe pending attachment behavior |
+| Two-task split views | Same- or cross-project tasks rendered side by side with existing task/session owners, independent drafts/streams, focus-routed Send/Stop, safe replacement/close and narrow-window switching |
+| Checkpoints & revert | Explicit bounded checkpoints atomically capture and restore app-owned unsent draft plus notes/checklist, with reviewed stale fencing, recovery snapshot, restart persistence and active-task refusal; files/Git/transcript/provider state are explicitly out of scope |
 
 ### Partial capabilities
 
@@ -103,10 +107,6 @@ implementation but still trail the Electron workflow in depth:
 | Native subagents & workflows | Child-agent delegation with visible ownership, phases, usage and pause/stop controls |
 | Agent Gateway | App-owned, scoped tool surface allowing capable agents to create/steer Synara work under Synara ownership rules |
 | External MCP client integration | Let external MCP clients connect *to Synara*. This is distinct from configuring MCP servers that Synara passes *to an agent*. |
-| Checkpoints & revert | Explicit safe state rollback; edit/resend intentionally does not pretend to roll back files/provider state |
-| Stacked pull requests | Stack ordering/readiness and explicitly confirmed safe-prefix merge workflow |
-| AppSnap | Permissioned desktop-window capture and composer attachment flow |
-| Two-task split views | Keep two independent conversations/tasks visible side by side, including cross-project |
 | Computer Use | New Electron 0.9.0 capability: permissioned desktop/app control, preview, interruption/takeover and audit boundaries |
 
 ## Architectural invariants
@@ -133,7 +133,7 @@ implementation but still trail the Electron workflow in depth:
 | P0 | Direct multi-provider runtime | Synara-owned provider/model registry and normalized direct model runtime supporting the broad provider ecosystem without provider-by-provider UI/backend duplication |
 | P1 | Electron 0.9.0 delta | Implement Computer Use ownership, permissions, observation/action and interruption. Project Import now has its reviewed native path, with broader real-history/platform acceptance remaining. |
 | P2 | Agent orchestration | Provider handoff, native subagents, Agent Gateway and external-MCP-to-Synara contracts are explicit and scoped |
-| P3 | Conversation autonomy/recovery | Goals and evidence-first Debug are implemented. Checkpoints/revert remains missing and must provide genuine bounded rollback, not transcript rewriting |
+| P3 | Conversation autonomy/recovery | Goals and evidence-first Debug are implemented. Checkpoints/revert now provides genuine bounded rollback for app-owned draft plus notes/checklist, with recovery/stale fencing and no false claim of file, Git, transcript or provider-session rollback |
 | P4 | Review/composer depth | PR Fix, inline comments, recap, stacked PRs, AppSnap and two-task split views are implemented. Transcript image media is partial pending PDF/document viewing. Release UX is partial pending verified production release/update configuration |
 | P5 | Partial-feature closure | Close the material Electron depth gaps in models/context, Automations, Studio/Hubs, browser sessions/dev servers, editor/search, device/iOS, navigation/export and personalization |
 
@@ -156,23 +156,27 @@ itself** when the corresponding feature is already present:
 
 ### September 22: feature-closure sprint 2
 
-Four additional capabilities move out of Missing in the session candidate at
-`d186675a5f85bf6b06c38c70480e45a0f30a0bb2`. Stacked pull requests, AppSnap and two-task split views move
-Missing -> Present. Rich media in transcript moves Missing -> Partial because native
-image persistence/presentation/export is implemented but PDF/document viewing is not.
-The 48-capability inventory is therefore **17 present, 26 partial and 5 missing**,
-down from 9 missing at the start of this sprint.
+Five additional capabilities move out of Missing in the session candidate at
+`20c78d7164e5e6e9be2b5bc1825be9babfeaa769`. Stacked pull requests, AppSnap,
+two-task split views and checkpoints/revert move Missing -> Present. Rich media in
+transcript moves Missing -> Partial because native image persistence/presentation/
+export is implemented but PDF/document viewing is not. The 48-capability inventory
+is therefore **18 present, 26 partial and 4 missing**, down from 9 missing at the
+start of this sprint.
 
 The verified feature commits are `d603b2c` (stacked PRs), `75760b3` plus
-`8f83af3` (transcript image persistence and layout), `37a38f9` (AppSnap), and
-`d186675` (two-task split views). Focused/native GitHub Actions runs
-35762961299, 35766712749, 35767806370 and 35770961136 all completed successfully.
-These checks prove the bounded native workflows exercised there, not macOS/Windows/
-Wayland parity, authenticated production services, or PDF/document viewing.
+`8f83af3` (transcript image persistence and layout), `37a38f9` (AppSnap),
+`d186675` (two-task split views), and `20c78d7` (bounded checkpoints/revert).
+Focused/native GitHub Actions runs 35762961299, 35766712749, 35767806370,
+35770961136 and 35772987553 all completed successfully. These checks prove the
+bounded native workflows exercised there, not macOS/Windows/Wayland parity,
+authenticated production services, PDF/document viewing, or rollback of files,
+Git/index, transcripts, provider sessions, approvals or attachments.
 
-The remaining genuinely missing feature-development capabilities are checkpoints/revert,
-native subagents/workflows, Agent Gateway, external MCP clients connecting to Synara,
-and Computer Use. The original 120 A-Q task bodies and checkbox states remain unchanged.
+The remaining genuinely missing feature-development capabilities are native
+subagents/workflows, Agent Gateway, external MCP clients connecting to Synara,
+and Computer Use. The original 120 A-Q task bodies and checkbox states remain
+unchanged.
 
 ### September 22: breadth-first feature closure
 

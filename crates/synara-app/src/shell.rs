@@ -16,6 +16,7 @@ mod drafts;
 mod editors;
 mod environment;
 mod explorer;
+mod file_comments;
 mod followups;
 mod handoff;
 mod hubs;
@@ -106,6 +107,7 @@ struct FormState {
     error: Option<String>,
 }
 enum Update {
+    FileComment(Box<file_comments::Reply>),
     Workflows(Box<task_workflows::Reply>),
     DirectModels(Box<direct_models::Reply>),
     ProjectImport(Box<project_import::Reply>),
@@ -190,6 +192,7 @@ enum Update {
     Error(String),
 }
 pub struct Shell {
+    file_comments: file_comments::CommentState,
     workflows: task_workflows::WorkflowState,
     automations: automations::AutomationsView,
     pull_requests: pull_requests::PrView,
@@ -433,6 +436,7 @@ impl Shell {
             &bootstrap.catalog,
         );
         let mut this = Self {
+            file_comments: file_comments::CommentState::default(),
             workflows: task_workflows::WorkflowState::default(),
             automations: automations::AutomationsView::new(controller.clone(), cx),
             pull_requests: pull_requests::PrView::new(cx),
@@ -597,6 +601,7 @@ impl Shell {
             || self.organization.dialog.is_some()
             || self.saved_context.dialog.is_some()
             || self.workflows.open()
+            || self.file_comments.open()
             || self.explorer.modal_open()
         {
             self.notice = Some(
@@ -792,7 +797,7 @@ impl Shell {
         }
     }
     fn select_task(&mut self, id: TaskId, cx: &mut Context<Self>) -> bool {
-        if self.workflows.open() {
+        if self.workflows.open() || self.file_comments.open() {
             return false;
         }
         if self.native_settings_pending() {
@@ -1152,7 +1157,7 @@ impl Shell {
         cx.notify();
     }
     fn send_prompt(&mut self, cx: &mut Context<Self>) {
-        if self.direct_route_loading() || self.workflows.open() {
+        if self.direct_route_loading() || self.workflows.open() || self.file_comments.open() {
             return;
         }
         if self.close != CloseState::Open
@@ -1406,6 +1411,7 @@ impl Shell {
     }
     fn receive(&mut self, update: Update, cx: &mut Context<Self>) {
         match update {
+            Update::FileComment(reply) => self.file_comment_reply(*reply, cx),
             Update::Workflows(reply) => self.workflow_reply(*reply, cx),
             Update::DirectModels(reply) => self.direct_model_reply(*reply, cx),
             Update::ProjectImport(reply) => self.import_reply(*reply, cx),

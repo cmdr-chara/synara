@@ -130,6 +130,7 @@ impl Shell {
             .into_any_element()
     }
     pub(super) fn remember_draft(&mut self, cx: &mut Context<Self>) {
+        self.goal_input_changed(cx);
         if let Some(id) = self.selected {
             self.store_draft(id, self.composer.read(cx).text().to_owned());
         }

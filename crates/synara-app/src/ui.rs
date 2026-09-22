@@ -324,6 +324,15 @@ pub fn layout_probe(id: &'static str) -> impl IntoElement {
     }, |_, _, _, _| {}).absolute().top_0().left_0().size_full()
 }
 
+/// The same opt-in geometry, with the actual interaction-ready state.
+pub fn layout_probe_enabled(id: &'static str, enabled: bool) -> impl IntoElement {
+    canvas(move |bounds, _, _| {
+        tracing::debug!(target: "synara_ui_layout", control = id, enabled,
+            x = f32::from(bounds.origin.x), y = f32::from(bounds.origin.y),
+            width = f32::from(bounds.size.width), height = f32::from(bounds.size.height), "control-layout");
+    }, |_, _, _, _| {}).absolute().top_0().left_0().size_full()
+}
+
 pub fn layout_probe_slot(id: &'static str, slot: usize) -> impl IntoElement {
     canvas(move |bounds, _, _| {
         tracing::debug!(target: "synara_ui_layout", control = id, slot,

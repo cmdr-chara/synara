@@ -1,44 +1,45 @@
 use gpui::Focusable;
 mod activity;
-mod attachments;
 mod automations;
-mod browser;
+mod attachments;
+mod integrations;
+mod direct_models;
+mod project_import;
+mod debug_workflow;
+mod recap;
+mod goals;
+mod releases;
+mod inline_comments;
+mod followups;
+mod hubs;
 mod chat_tools;
 mod chrome;
-mod command_palette;
 mod composer;
 mod controls;
 mod conversation;
-mod device;
-mod direct_models;
 mod dock;
+mod device;
+mod browser;
+mod pull_requests;
 mod drafts;
-mod editors;
 mod environment;
 mod explorer;
-mod file_comments;
-mod followups;
-mod handoff;
-mod hubs;
-mod integrations;
+mod editors;
+mod command_palette;
 mod kanban;
 mod messages;
 mod navigation;
 mod organization;
 mod overview;
 mod panels;
-mod project_import;
-mod pull_requests;
-mod recap;
 mod registry;
-mod releases;
 mod review;
-mod revisions;
 mod saved_context;
-mod settings;
+mod revisions;
+mod handoff;
 mod side_chats;
+mod settings;
 mod studio;
-mod task_workflows;
 mod terminal;
 mod terminals;
 mod transcript;
@@ -109,10 +110,11 @@ struct FormState {
     error: Option<String>,
 }
 enum Update {
+    Releases(Result<NativeVersionHistory,String>),
+    Goals(Box<goals::Reply>),
+    DebugWorkflow(Box<debug_workflow::Reply>),
     Recap(Box<recap::Reply>),
-    Releases(Box<releases::Reply>),
-    FileComment(Box<file_comments::Reply>),
-    Workflows(Box<task_workflows::Reply>),
+    InlineComments(Box<inline_comments::Reply>),
     DirectModels(Box<direct_models::Reply>),
     ProjectImport(Box<project_import::Reply>),
     Automations(Box<automations::Reply>),
@@ -180,10 +182,7 @@ enum Update {
         generation: u64,
         document: Document,
     },
-    DocumentFailed {
-        generation: u64,
-        error: String,
-    },
+    DocumentFailed { generation: u64, error: String },
     SaveFailed(String),
     Saved {
         root: PathBuf,
@@ -196,10 +195,11 @@ enum Update {
     Error(String),
 }
 pub struct Shell {
-    recaps: recap::RecapState,
-    releases: releases::ReleaseState,
-    file_comments: file_comments::CommentState,
-    workflows: task_workflows::WorkflowState,
+    releases: releases::ReleasesState,
+    goals: goals::GoalsState,
+    debug_workflow: debug_workflow::DebugState,
+    recap: recap::RecapState,
+    inline_comments: inline_comments::InlineState,
     automations: automations::AutomationsView,
     pull_requests: pull_requests::PrView,
     browser: browser::BrowserView,
@@ -436,31 +436,20 @@ impl Shell {
             .project
             .filter(|id| bootstrap.catalog.projects.iter().any(|p| p.id == *id))
             .or_else(|| bootstrap.catalog.projects.first().map(|p| p.id));
-        let selected = startup_task(
-            &bootstrap.settings,
-            &bootstrap.selection,
-            &bootstrap.catalog,
-        );
+        let selected = startup_task(&bootstrap.settings, &bootstrap.selection, &bootstrap.catalog);
         let mut this = Self {
-            recaps: recap::RecapState::default(),
-            releases: releases::ReleaseState::default(),
-            file_comments: file_comments::CommentState::default(),
-            workflows: task_workflows::WorkflowState::default(),
+            goals: goals::GoalsState::new(cx),
+            releases: releases::ReleasesState::default(),
             automations: automations::AutomationsView::new(controller.clone(), cx),
             pull_requests: pull_requests::PrView::new(cx),
-            browser: browser::BrowserView::new(
-                &controller,
-                bootstrap
-                    .scratch_directory
-                    .parent()
-                    .unwrap_or(&bootstrap.scratch_directory)
-                    .join("browser"),
-                cx,
-            ),
+            browser: browser::BrowserView::new(&controller, bootstrap.scratch_directory.parent().unwrap_or(&bootstrap.scratch_directory).join("browser"), cx),
             device: device::DeviceView::new(cx),
             revisions: revisions::RevisionState::new(),
             handoff: handoff::HandoffState::default(),
             side_chats: side_chats::SideChatState::new(cx),
+            debug_workflow: debug_workflow::DebugState::new(cx),
+            recap: recap::RecapState::new(cx),
+            inline_comments: inline_comments::InlineState::new(cx),
             followups: followups::FollowupState::new(cx),
             attachments: attachments::AttachmentState::default(),
             hubs: hubs::HubState::new(cx),
@@ -535,7 +524,7 @@ impl Shell {
             _updates: updates,
             _subscriptions: subscriptions,
         };
-        this.load_release_notes(cx);
+        this.load_releases(cx);
         this.load_organization();
         this.load_hubs();
         this.composer.update(cx, |entry, _| {
@@ -554,40 +543,28 @@ impl Shell {
         this
     }
     pub fn request_close(&mut self, window: &mut Window, cx: &mut Context<Self>) -> bool {
-        if self.revision_navigation_blocked(cx) {
-            return false;
-        }
+        if self.goal_close_edits_blocked(cx) {return false;}
+        if self.releases.busy { self.notice=Some("Saving native version state before closing.".into());cx.notify();return false; }
+        if self.revision_navigation_except_goal(cx) { return false; }
         if self.side_chats.pending(cx) {
-            self.notice =
-                Some("Finish the side-chat operation or IME composition before closing.".into());
+            self.notice = Some("Finish the side-chat operation or IME composition before closing.".into());
             cx.notify();
             return false;
         }
-        if self.native_settings_pending() || self.settings.saving || self.releases.busy() {
-            self.notice = Some("Finish the pending Settings operation before closing.".into());
-            cx.notify();
-            return false;
+        if self.native_settings_pending() || self.settings.saving {
+            self.notice = Some("Finish the pending Settings operation before closing.".into()); cx.notify(); return false;
         }
-        if self.followup_navigation_blocked(cx) {
-            return false;
-        }
-        if self.integrations.pending()
-            || self.direct_models.pending()
-            || self.project_import.pending()
-        {
+        if self.followup_navigation_blocked(cx) { return false; }
+        if self.integrations.pending() || self.direct_models.pending() || self.project_import.pending() {
             self.notice=Some("Finish the integration operation or discard its open Settings form/review before closing.".into());
-            cx.notify();
-            return false;
+            cx.notify(); return false;
         }
         if self.attachments.close_pending() {
             self.notice = Some("Finish attachment imports or discard a failed import in its conversation before closing.".into());
-            cx.notify();
-            return false;
+            cx.notify(); return false;
         }
         if self.hubs.pending(cx) {
-            self.notice = Some(
-                "Finish Hub creation or save/discard the Hub context editor before closing.".into(),
-            );
+            self.notice = Some("Finish Hub creation or save/discard the Hub context editor before closing.".into());
             cx.notify();
             return false;
         }
@@ -601,16 +578,9 @@ impl Shell {
             cx.notify();
             return false;
         }
-        if self.pull_requests.has_fix_review() {
-            self.notice = Some("Add the PR Fix review to its target draft or explicitly discard it in Pull Requests before closing.".into());
-            cx.notify();
-            return false;
-        }
         if self.organization.saving
             || self.organization.dialog.is_some()
             || self.saved_context.dialog.is_some()
-            || (self.workflows.open() || self.recaps.open())
-            || self.file_comments.open()
             || self.explorer.modal_open()
         {
             self.notice = Some(
@@ -659,9 +629,8 @@ impl Shell {
     }
 
     fn begin_quit(&mut self, cx: &mut Context<Self>) {
-        if self.automation_before_quit(cx) {
-            return;
-        }
+        if self.goal_before_quit(cx) {return;}
+        if self.automation_before_quit(cx) { return; }
         if self.dirty(cx) {
             self.reveal_dirty_editor(cx);
             self.close = CloseState::Review;
@@ -806,18 +775,9 @@ impl Shell {
         }
     }
     fn select_task(&mut self, id: TaskId, cx: &mut Context<Self>) -> bool {
-        if (self.workflows.open() || self.recaps.open()) || self.file_comments.open() {
-            return false;
-        }
-        if self.native_settings_pending() {
-            return false;
-        }
-        if self.revision_navigation_blocked(cx) {
-            return false;
-        }
-        if self.hub_navigation_blocked(cx) {
-            return false;
-        }
+        if self.native_settings_pending() { return false; }
+        if self.revision_navigation_blocked(cx) { return false; }
+        if self.hub_navigation_blocked(cx) { return false; }
         if self.explorer.modal_open() {
             return false;
         }
@@ -859,12 +819,15 @@ impl Shell {
         self.chat_tools.reset_selection();
         self.studio.reset();
         self.explorer.reset_search();
-        self.load_workflow_summary(id);
         self.load_direct_binding(id);
         self.load_handoff_origin(id);
         self.load_message_pins(id);
         self.load_attachments(id);
         self.load_followups(id);
+        self.load_goals(id, cx);
+        self.load_debug(id, cx);
+        self.load_recap(id);
+        self.load_inline_comments(id, cx);
         self.load_side_chats(id, cx);
         self.project = Some(task.project_id);
         self.details = None;
@@ -913,9 +876,7 @@ impl Shell {
         }
     }
     fn open_workspace(&mut self, cx: &mut Context<Self>) {
-        if self.hub_navigation_blocked(cx) {
-            return;
-        }
+        if self.hub_navigation_blocked(cx) { return; }
         let text = self.workspace_path.read(cx).text().trim().to_owned();
         if text.is_empty() {
             self.error = Some("Enter an existing absolute directory or use Browse.".into());
@@ -972,9 +933,7 @@ impl Shell {
         .detach();
     }
     fn open_remote_workspace(&mut self, cx: &mut Context<Self>) {
-        if self.hub_navigation_blocked(cx) {
-            return;
-        }
+        if self.hub_navigation_blocked(cx) { return; }
         if self.dirty(cx) || self.saving {
             self.error =
                 Some("Save or discard the open document before switching workspaces.".into());
@@ -1035,13 +994,8 @@ impl Shell {
     }
 
     fn create_chat(&mut self, scope: TaskScope, cx: &mut Context<Self>) {
-        if self.hub_navigation_blocked(cx) {
-            return;
-        }
-        if scope == TaskScope::Studio {
-            self.new_hub_thread(cx);
-            return;
-        }
+        if self.hub_navigation_blocked(cx) { return; }
+        if scope == TaskScope::Studio { self.new_hub_thread(cx); return; }
         if self.creating_task
             || self.loading_task.is_some()
             || self
@@ -1167,51 +1121,22 @@ impl Shell {
     }
     fn send_prompt(&mut self, cx: &mut Context<Self>) {
         tracing::debug!(target: "synara_ui_layout",
-            route_loading = self.direct_route_loading(),
-            workflow_open = self.workflows.open(),
-            recap_open = self.recaps.open(),
-            file_review_open = self.file_comments.open(),
-            task_loading = self.loading_task.is_some(),
-            draft_loading = self.selected.is_some_and(|id| self.draft_state.loading.contains(&id)),
-            attachments_ready = !self.attachment_send_blocked(),
-            controls_ready = !self.controls_blocked(),
-            composing = self.composer.read(cx).is_composing(),
-            empty = self.composer.read(cx).text().trim().is_empty(),
-            "explicit-composer-send-readiness");
-        if self.direct_route_loading()
-            || (self.workflows.open() || self.recaps.open())
-            || self.file_comments.open()
-        {
-            return;
-        }
-        if self.close != CloseState::Open
-            || self.terminal_closing
-            || self.loading_task.is_some()
-            || !matches!(
-                self.panel,
-                Panel::Conversation
-                    | Panel::SideChats
-                    | Panel::Dock
-                    | Panel::Files
-                    | Panel::Changes
-                    | Panel::Terminal
-            )
+            task_selected = self.selected.is_some(), loading_thread = self.loading_task.is_some(),
+            loading_route = self.direct_route_loading(),
+            loading_draft = self.selected.is_some_and(|t| self.draft_state.loading.contains(&t)),
+            attachment_pending = self.attachment_send_blocked(), goal_pending = self.goal_send_pending(cx),
+            composing = self.composer.read(cx).is_composing(), controls_blocked = self.controls_blocked(),
+            "composer-send-attempt");
+        if self.direct_route_loading() { return; }
+        if self.close != CloseState::Open || self.terminal_closing || self.loading_task.is_some()
+            || !matches!(self.panel, Panel::Conversation | Panel::SideChats | Panel::Dock | Panel::Files | Panel::Changes | Panel::Terminal)
             || self.composer.read(cx).is_composing()
-            || self
-                .selected
-                .is_some_and(|id| self.draft_state.loading.contains(&id))
-        {
-            return;
-        }
+            || self.selected.is_some_and(|id| self.draft_state.loading.contains(&id)) { return; }
         if self.attachment_send_blocked() {
-            self.error =
-                Some("Wait for saved attachments to load or finish saving before sending.".into());
-            cx.notify();
-            return;
+            self.error = Some("Wait for saved attachments to load or finish saving before sending.".into());
+            cx.notify(); return;
         }
-        if self.hub_navigation_blocked(cx) {
-            return;
-        }
+        if self.hub_send_blocked(cx) { return; }
         let Some(id) = self.selected else {
             self.error = Some("Create or select a task first.".into());
             cx.notify();
@@ -1227,17 +1152,13 @@ impl Shell {
         }
         self.snapshot_draft(cx);
         if let Some(error) = self.attachment_capability_error() {
-            self.error = Some(error.into());
-            cx.notify();
-            return;
+            self.error = Some(error.into()); cx.notify(); return;
         }
         let attachment_submission = self.attachment_submission(&text);
         if let Some((_, display)) = &attachment_submission {
-            self.draft_state
-                .submitted_with_display(id, text.clone(), display.clone());
-        } else {
-            self.draft_state.submitted(id, text.clone());
-        }
+            self.draft_state.submitted_with_display(id, text.clone(), display.clone());
+        } else { self.draft_state.submitted(id, text.clone()); }
+        self.goal_manual_send(id, &text, cx);
         self.busy.insert(id);
         self.error = None;
         self.notice = None;
@@ -1249,18 +1170,11 @@ impl Shell {
                 "New task" | "New thread" | "New studio chat" | "New Hub thread"
             )
         });
-        let hub_thread = self
-            .task()
-            .is_some_and(|task| task.scope == TaskScope::Studio);
+        let hub_thread = self.task().is_some_and(|task| task.scope == TaskScope::Studio);
         self.job(async move {
             let result = async {
                 if untitled {
-                    let title_text = if hub_thread {
-                        text.rsplit_once("\nTask:\n")
-                            .map_or(text.as_str(), |(_, prompt)| prompt)
-                    } else {
-                        text.as_str()
-                    };
+                    let title_text = if hub_thread { text.rsplit_once("\nTask:\n").map_or(text.as_str(),|(_,prompt)|prompt) } else { text.as_str() };
                     let title: String = title_text
                         .split_whitespace()
                         .collect::<Vec<_>>()
@@ -1271,9 +1185,7 @@ impl Shell {
                     controller.workspace.rename_task(id, title).await?;
                 }
                 match attachment_submission {
-                    Some((revision, _)) => {
-                        controller.submit_with_attachments(id, text, revision).await
-                    }
+                    Some((revision, _)) => controller.submit_with_attachments(id, text, revision).await,
                     None => controller.submit(id, text).await,
                 }
             }
@@ -1288,6 +1200,7 @@ impl Shell {
         cx.notify();
     }
     fn cancel(&mut self, cx: &mut Context<Self>) {
+        self.pause_goals("Stop requested. No further goal continuation is armed.",true,cx);
         if let Some(id) = self.selected {
             let controller = self.controller.clone();
             self.job(async move {
@@ -1329,14 +1242,11 @@ impl Shell {
             return;
         }
         if self.editors.tabs.len() >= editors::MAX_TABS {
-            self.error =
-                Some("Close an editor tab before opening another file (24 tabs maximum).".into());
+            self.error = Some("Close an editor tab before opening another file (24 tabs maximum).".into());
             cx.notify();
             return;
         }
-        let Some(target) = self.workspace_target() else {
-            return;
-        };
+        let Some(target) = self.workspace_target() else { return };
         let root = target.root().clone();
         let generation = self.editors.request_open(path.clone());
         let workspace_service = self.controller.workspace.clone();
@@ -1345,23 +1255,14 @@ impl Shell {
                 match target {
                     WorkspaceTarget::Local { root } => open_document(root, path).await,
                     WorkspaceTarget::Ssh { workspace, root } => {
-                        let filesystem =
-                            remote_filesystem(workspace_service, workspace, root).await?;
+                        let filesystem = remote_filesystem(workspace_service, workspace, root).await?;
                         open_remote_document(filesystem, path).await
                     }
                 }
-            }
-            .await;
+            }.await;
             Ok(match result {
-                Ok(document) => Update::Document {
-                    root,
-                    generation,
-                    document,
-                },
-                Err(error) => Update::DocumentFailed {
-                    generation,
-                    error: error.to_string(),
-                },
+                Ok(document) => Update::Document { root, generation, document },
+                Err(error) => Update::DocumentFailed { generation, error: error.to_string() },
             })
         });
         cx.notify();
@@ -1435,24 +1336,21 @@ impl Shell {
     }
     fn receive(&mut self, update: Update, cx: &mut Context<Self>) {
         match update {
-            Update::Recap(reply) => self.recap_reply(*reply, cx),
-            Update::Releases(reply) => self.release_reply(*reply, cx),
-            Update::FileComment(reply) => self.file_comment_reply(*reply, cx),
-            Update::Workflows(reply) => self.workflow_reply(*reply, cx),
             Update::DirectModels(reply) => self.direct_model_reply(*reply, cx),
             Update::ProjectImport(reply) => self.import_reply(*reply, cx),
-            Update::Integrations(reply) => self.integration_reply(*reply, cx),
+            Update::Integrations(reply) => self.integration_reply(*reply,cx),
             Update::Revision(reply) => self.revision_reply(*reply, cx),
             Update::Handoff(reply) => self.handoff_reply(*reply, cx),
             Update::SideChats(reply) => self.side_chat_reply(*reply, cx),
             Update::NativeSettings(reply) => self.native_settings_reply(*reply, cx),
             Update::PullRequests(reply) => self.pr_reply(*reply, cx),
-            Update::BrowserConfigured(result) => {
-                self.browser.busy = false;
-                self.browser.error = result.err();
-            }
+            Update::BrowserConfigured(result) => { self.browser.busy = false; self.browser.error = result.err(); },
             Update::Device(reply) => self.device_reply(*reply, cx),
             Update::Attachments(reply) => self.attachment_reply(*reply, cx),
+            Update::DebugWorkflow(reply) => self.debug_reply(*reply, cx),
+            Update::Releases(result) => self.releases_reply(result,cx),
+            Update::Recap(reply) => self.recap_reply(*reply, cx),
+            Update::InlineComments(reply) => self.inline_comments_reply(*reply, cx),
             Update::Followups(reply) => self.followup_reply(*reply, cx),
             Update::Hubs(reply) => self.hub_reply(*reply, cx),
             Update::Terminals(reply) => self.terminal_reply(*reply, cx),
@@ -1468,11 +1366,11 @@ impl Shell {
             Update::DraftSaved(task, error) => self.draft_saved(task, error, cx),
             Update::Registry(reply) => self.registry_reply(*reply, cx),
             Update::Automations(reply) => self.automation_reply(*reply, cx),
+            Update::Goals(reply) => self.goals_reply(*reply,cx),
             Update::Tick => {
+                self.tick_goals(cx);
                 self.tick_automations(cx);
-                if self.panel == Panel::Browser {
-                    cx.notify();
-                }
+                if self.panel == Panel::Browser { cx.notify(); }
                 self.tick_devices(cx);
                 self.tick_terminals(cx);
                 self.tick_review(cx);
@@ -1498,12 +1396,7 @@ impl Shell {
             Update::WorkspaceAdded(project, catalog) => {
                 self.catalog = catalog;
                 // The user may have edited while the workspace was opening.
-                if self.dirty(cx)
-                    || self.saving
-                    || self.followups.pending(cx)
-                    || self.hubs.pending(cx)
-                    || self.close != CloseState::Open
-                {
+                if self.dirty(cx) || self.saving || self.followups.pending(cx) || self.hubs.pending(cx) || self.close != CloseState::Open {
                     self.notice = Some(
                         "Workspace added. Finish the open file or draft editor before selecting it.".into(),
                     );
@@ -1562,6 +1455,7 @@ impl Shell {
                 self.acknowledge_draft(&envelope, cx);
                 self.acknowledge_attachment_event(&envelope);
                 self.side_chat_event(&envelope, cx);
+                self.goal_event(&envelope,cx);
                 if let Some(task) = self
                     .catalog
                     .tasks
@@ -1601,11 +1495,12 @@ impl Shell {
                 }
             }
             Update::Hydrate => {
+                self.pause_goals("An event-stream resynchronization requires manual review.",true,cx);
                 self.hydrate();
                 if let Some(task) = self.side_chats.selected {
                     self.reload_visible_side_chat(task, cx);
                 }
-            }
+            },
             Update::Interaction(interaction) => {
                 if !interaction.is_active() {
                     return;
@@ -1653,6 +1548,7 @@ impl Shell {
                         key
                     }
                 };
+                if self.task().is_some_and(|t|t.thread_id==key.0){self.pause_goals("A permission or question requires the user. Resume explicitly after resolving it.",true,cx);}
                 self.transcript.interaction_changed(&key);
                 self.pending.insert(key, interaction);
             }
@@ -1672,11 +1568,12 @@ impl Shell {
                 details,
                 error,
             } => {
-                let visible_side =
-                    self.panel == Panel::SideChats && self.side_chats.selected == Some(task);
+                let visible_side = self.panel == Panel::SideChats
+                    && self.side_chats.selected == Some(task);
                 if self.busy.contains(&task) && self.selected != Some(task) && !visible_side {
                     self.send_desktop_notification(false, cx);
                 }
+                self.goal_prompt_done(task,error.as_deref(),cx);
                 self.finish_attachment_submission(task, error.is_none());
                 self.busy.remove(&task);
                 if self.selected == Some(task) {
@@ -1706,14 +1603,10 @@ impl Shell {
                 if let Some(error) = error {
                     self.error = Some(error);
                 } else {
-                    if self.settings.value.device != settings.device {
-                        self.device.configuration_changed();
-                    }
+                    if self.settings.value.device != settings.device { self.device.configuration_changed(); }
                     let bindings_changed = self.settings.value.keybindings != settings.keybindings;
                     self.settings.value = *settings;
-                    if bindings_changed {
-                        self.sync_navigation_bindings(cx);
-                    }
+                    if bindings_changed { self.sync_navigation_bindings(cx); }
                     self.composer.update(cx, |entry, _| {
                         entry.set_send_on_enter(self.settings.value.chat.send_on_enter)
                     });
@@ -1765,15 +1658,10 @@ impl Shell {
                     self.file_page = 0;
                 }
             }
-            Update::Document {
-                root,
-                generation,
-                document,
-            } => {
+            Update::Document { root, generation, document } => {
                 if self.editors.finish_open(generation)
                     && self.root() == Some(root)
-                    && !self.saving
-                    && !self.explorer.modal_open()
+                    && !self.saving && !self.explorer.modal_open()
                     && self.close == CloseState::Open
                 {
                     self.install_editor_document(document, cx);
@@ -1781,9 +1669,7 @@ impl Shell {
                 }
             }
             Update::DocumentFailed { generation, error } => {
-                if self.editors.finish_open(generation) {
-                    self.error = Some(error);
-                }
+                if self.editors.finish_open(generation) { self.error = Some(error); }
             }
             Update::SaveFailed(error) => {
                 tracing::warn!("File save failed. The document remains open.");
@@ -1831,17 +1717,9 @@ impl Shell {
         }
     }
     fn set_panel(&mut self, panel: Panel, cx: &mut Context<Self>) {
-        if self.revision_navigation_blocked(cx) {
-            return;
-        }
-        let blocked = if panel == Panel::Hubs {
-            self.followup_navigation_blocked(cx)
-        } else {
-            self.hub_navigation_blocked(cx)
-        };
-        if blocked {
-            return;
-        }
+        if self.revision_navigation_blocked(cx) { return; }
+        let blocked = if panel == Panel::Hubs { self.followup_navigation_blocked(cx) } else { self.hub_navigation_blocked(cx) };
+        if blocked { return; }
         if self.explorer.modal_open() {
             return;
         }
@@ -1855,18 +1733,8 @@ impl Shell {
             self.selection_revision = self.selection_revision.wrapping_add(1);
         }
         if self.settings.value.appearance.personalization.zen_mode
-            && matches!(
-                panel,
-                Panel::Files
-                    | Panel::Changes
-                    | Panel::Terminal
-                    | Panel::Device
-                    | Panel::SideChats
-                    | Panel::Dock
-            )
-        {
-            self.settings.personalization.tools_shown = true;
-        }
+            && matches!(panel, Panel::Files | Panel::Changes | Panel::Terminal | Panel::Device | Panel::SideChats | Panel::Dock)
+        { self.settings.personalization.tools_shown = true; }
         self.panel = panel;
         self.error = None;
         self.notice = None;
@@ -1877,9 +1745,7 @@ impl Shell {
             Panel::Settings => {
                 self.focus_composer = false;
                 self.load_profile_activity();
-                if !self.integrations.loaded() {
-                    self.load_integrations(cx);
-                }
+                if !self.integrations.loaded() { self.load_integrations(cx); }
             }
             Panel::Files => self.refresh_files(),
             Panel::Changes => self.refresh_git(cx),

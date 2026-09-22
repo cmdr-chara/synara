@@ -1,7 +1,7 @@
 //! Durable, user-owned conversation utilities. None of these operations submits
 //! prompts, changes approval policy, or launches an agent or workspace process.
 mod related;
-pub use related::{HandoffReview, HandoffTarget, RelatedThreadKind, RevisionSource, SideThreadIndex, ThreadOrigin};
+pub use related::{ThreadRecap, HandoffReview, HandoffTarget, RelatedThreadKind, RevisionSource, SideThreadIndex, ThreadOrigin};
 use super::*;
 use crate::{WorkspaceError, WorkspaceResult, WorkspaceService};
 use serde::{Deserialize, Serialize};

@@ -9,11 +9,8 @@ use tokio::io::{AsyncReadExt, AsyncWriteExt};
 pub use tokio_util::sync::CancellationToken as PullRequestCancellation;
 mod actions;
 mod fix;
+pub use fix::ReviewFix;
 pub use actions::{MergeMethod, PrAction, ReviewKind};
-pub use fix::{
-    FixAuthor, FixComment, FixCommit, FixSnapshot, FixThread, MAX_FIX_COMMENTS,
-    MAX_FIX_PROMPT_BYTES, MAX_FIX_THREADS,
-};
 pub type Result<T> = std::result::Result<T, String>;
 // Cancellation must not depend on being the last ProcessHandle owner. In
 // particular the detail deadline and an aborted caller drop the API future.

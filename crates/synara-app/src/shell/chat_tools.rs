@@ -787,6 +787,8 @@ impl Shell {
                 self.selected.is_none() || self.selected.is_some_and(|id| self.busy.contains(&id) || self.connecting.contains(&id)),
                 cx.listener(|this, _: &(), window, cx| this.open_handoff(window, cx)))
                 .size(px(26.)).relative().child(ui::layout_probe("handoff-open")))
+            .children(self.releases_unread().then(||ui::action("native-build-open","What's New",None,false,
+                cx.listener(|this,_:&(),_,cx|this.set_panel(Panel::Help,cx))).relative().child(ui::layout_probe("native-build-open"))))
             .child(self.saved_context_button(cx))
             .when(
                 self.task()

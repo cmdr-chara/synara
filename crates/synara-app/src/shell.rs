@@ -28,6 +28,8 @@ mod panels;
 mod registry;
 mod review;
 mod saved_context;
+mod revisions;
+mod side_chats;
 mod settings;
 mod studio;
 mod terminal;
@@ -67,6 +69,7 @@ enum Panel {
     Browser,
     Device,
     Conversation,
+    SideChats,
     Dock,
     Kanban,
     Hubs,
@@ -103,6 +106,8 @@ enum Update {
     PullRequests(Box<pull_requests::Reply>),
     BrowserConfigured(Result<(), String>),
     Integrations(Box<integrations::Reply>),
+    Revision(Box<revisions::Reply>),
+    SideChats(Box<side_chats::Reply>),
     NativeSettings(Box<settings::native::Reply>),
     Device(Box<device::Reply>),
     Followups(Box<followups::Reply>),
@@ -178,6 +183,8 @@ pub struct Shell {
     pull_requests: pull_requests::PrView,
     browser: browser::BrowserView,
     device: device::DeviceView,
+    revisions: revisions::RevisionState,
+    side_chats: side_chats::SideChatState,
     followups: followups::FollowupState,
     attachments: attachments::AttachmentState,
     hubs: hubs::HubState,
@@ -411,6 +418,8 @@ impl Shell {
             pull_requests: pull_requests::PrView::new(cx),
             browser: browser::BrowserView::new(&controller, bootstrap.scratch_directory.parent().unwrap_or(&bootstrap.scratch_directory).join("browser"), cx),
             device: device::DeviceView::new(cx),
+            revisions: revisions::RevisionState::new(),
+            side_chats: side_chats::SideChatState::new(cx),
             followups: followups::FollowupState::new(cx),
             attachments: attachments::AttachmentState::default(),
             hubs: hubs::HubState::new(cx),
@@ -501,6 +510,12 @@ impl Shell {
         this
     }
     pub fn request_close(&mut self, window: &mut Window, cx: &mut Context<Self>) -> bool {
+        if self.revision_navigation_blocked(cx) { return false; }
+        if self.side_chats.pending(cx) {
+            self.notice = Some("Finish the side-chat operation or IME composition before closing.".into());
+            cx.notify();
+            return false;
+        }
         if self.native_settings_pending() || self.settings.saving {
             self.notice = Some("Finish the pending Settings operation before closing.".into()); cx.notify(); return false;
         }
@@ -725,6 +740,7 @@ impl Shell {
     }
     fn select_task(&mut self, id: TaskId, cx: &mut Context<Self>) -> bool {
         if self.native_settings_pending() { return false; }
+        if self.revision_navigation_blocked(cx) { return false; }
         if self.hub_navigation_blocked(cx) { return false; }
         if self.explorer.modal_open() {
             return false;
@@ -770,6 +786,7 @@ impl Shell {
         self.load_message_pins(id);
         self.load_attachments(id);
         self.load_followups(id);
+        self.load_side_chats(id, cx);
         self.project = Some(task.project_id);
         self.details = None;
         self.trace.clear();
@@ -1062,7 +1079,7 @@ impl Shell {
     }
     fn send_prompt(&mut self, cx: &mut Context<Self>) {
         if self.close != CloseState::Open || self.terminal_closing || self.loading_task.is_some()
-            || !matches!(self.panel, Panel::Conversation | Panel::Dock | Panel::Files | Panel::Changes | Panel::Terminal)
+            || !matches!(self.panel, Panel::Conversation | Panel::SideChats | Panel::Dock | Panel::Files | Panel::Changes | Panel::Terminal)
             || self.composer.read(cx).is_composing()
             || self.selected.is_some_and(|id| self.draft_state.loading.contains(&id)) { return; }
         if self.attachment_send_blocked() {
@@ -1268,6 +1285,8 @@ impl Shell {
     fn receive(&mut self, update: Update, cx: &mut Context<Self>) {
         match update {
             Update::Integrations(reply) => self.integration_reply(*reply,cx),
+            Update::Revision(reply) => self.revision_reply(*reply, cx),
+            Update::SideChats(reply) => self.side_chat_reply(*reply, cx),
             Update::NativeSettings(reply) => self.native_settings_reply(*reply, cx),
             Update::PullRequests(reply) => self.pr_reply(*reply, cx),
             Update::BrowserConfigured(result) => { self.browser.busy = false; self.browser.error = result.err(); },
@@ -1374,6 +1393,7 @@ impl Shell {
             Update::Event(envelope) => {
                 self.acknowledge_draft(&envelope, cx);
                 self.acknowledge_attachment_event(&envelope);
+                self.side_chat_event(&envelope, cx);
                 if let Some(task) = self
                     .catalog
                     .tasks
@@ -1412,7 +1432,12 @@ impl Shell {
                     }
                 }
             }
-            Update::Hydrate => self.hydrate(),
+            Update::Hydrate => {
+                self.hydrate();
+                if let Some(task) = self.side_chats.selected {
+                    self.reload_visible_side_chat(task, cx);
+                }
+            },
             Update::Interaction(interaction) => {
                 if !interaction.is_active() {
                     return;
@@ -1479,12 +1504,19 @@ impl Shell {
                 details,
                 error,
             } => {
-                if self.busy.contains(&task) && self.selected != Some(task) { self.send_desktop_notification(false, cx); }
+                let visible_side = self.panel == Panel::SideChats
+                    && self.side_chats.selected == Some(task);
+                if self.busy.contains(&task) && self.selected != Some(task) && !visible_side {
+                    self.send_desktop_notification(false, cx);
+                }
                 self.finish_attachment_submission(task, error.is_none());
                 self.busy.remove(&task);
                 if self.selected == Some(task) {
                     self.details = details;
-                    self.error = error;
+                    self.error = error.clone();
+                } else if self.side_chats.selected == Some(task) {
+                    self.side_chats.error = error.clone();
+                    self.reload_visible_side_chat(task, cx);
                 }
                 self.hydrate();
             }
@@ -1620,6 +1652,7 @@ impl Shell {
         }
     }
     fn set_panel(&mut self, panel: Panel, cx: &mut Context<Self>) {
+        if self.revision_navigation_blocked(cx) { return; }
         let blocked = if panel == Panel::Hubs { self.followup_navigation_blocked(cx) } else { self.hub_navigation_blocked(cx) };
         if blocked { return; }
         if self.explorer.modal_open() {
@@ -1635,7 +1668,7 @@ impl Shell {
             self.selection_revision = self.selection_revision.wrapping_add(1);
         }
         if self.settings.value.appearance.personalization.zen_mode
-            && matches!(panel, Panel::Files | Panel::Changes | Panel::Terminal | Panel::Device | Panel::Dock)
+            && matches!(panel, Panel::Files | Panel::Changes | Panel::Terminal | Panel::Device | Panel::SideChats | Panel::Dock)
         { self.settings.personalization.tools_shown = true; }
         self.panel = panel;
         self.error = None;

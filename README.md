@@ -26,7 +26,7 @@ sudo apt-get install clang cmake pkg-config libasound2-dev libxcb1-dev \
   libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev \
   libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev \
   libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev \
-  libxinerama-dev libxcursor-dev
+  libxinerama-dev libxcursor-dev libwebkit2gtk-4.1-dev libgtk-3-dev
 cargo run --locked -p synara-app -- --workspace /absolute/path/to/project
 ```
 
@@ -117,6 +117,19 @@ Inspector shows bounded, redacted ACP traffic metadata and connection
 capabilities. Restart affects tasks sharing the same agent process and directory.
 Starting a new agent session preserves the local transcript. Failed restoration
 is visible rather than silently discarding saved history.
+
+## Pull Requests, Automations and Browser
+
+The native command palette opens all three panes. [Pull Requests](docs/ui/pull-requests.md)
+uses explicitly selected GitHub repositories and confirms remote writes.
+[Automations](docs/ui/automations.md) stores definitions and run history in SQLite,
+and scheduling starts disarmed after every restart. Saving is never permission to run.
+[Browser](docs/ui/native-browser.md) uses the existing browser owner with Linux/X11
+WebKitGTK rendering and separately approved task-isolated agent operations.
+For the embedded browser, run `GPUI_PLATFORM=x11 cargo run --locked -p synara-app`
+in an X11/XWayland session. Native Wayland, Windows and macOS browser adapters
+remain unsupported. [Verification](docs/verification/pr-automations-browser.md)
+distinguishes source, fixture and native acceptance from remaining work.
 
 ## SSH transport boundary
 
@@ -218,9 +231,10 @@ lists these tests as ignored because they require this server fixture. The SSH C
 job must run them explicitly. This tests real SSH transport with fixture agents on
 the same machine, not vendor credentials or a complete remote desktop workflow.
 
-Complete terminal emulation, remote workspace UI,
-browser/device hosting, updater, native credential integration and broader
-platform/performance hardening remain under development. Live vendor-agent
+Complete terminal emulation, remote workspace UI, cross-platform Browser/Device
+acceptance, updater, native credential integration and broader platform/performance
+hardening remain under development. Linux/X11 Browser hosting and the scoped
+ADB/simctl Device implementation are present on the development branch. Live vendor-agent
 validation is separate from fixture tests.
 
 Project licensing has not yet been selected. Package publication is disabled.

@@ -89,6 +89,7 @@ impl Shell {
             ("Browser", "Tabs, navigation and isolated agent browser use", Glyph::Browser, Action::Panel(Panel::Browser)),
             ("Automations", "Durable schedules and owned run history", Glyph::Clock, Action::Panel(Panel::Automations)),
             ("Device", "Real device discovery and capture", Glyph::Window, Action::Panel(Panel::Device)),
+            ("Side chats", "Independent related conversations", Glyph::Chat, Action::Panel(Panel::SideChats)),
             ("Kanban", "Projects and tasks · Ctrl/Cmd+9", Glyph::Kanban, Action::Panel(Panel::Kanban)),
             ("Settings", "Preferences · Ctrl/Cmd+6", Glyph::Settings, Action::Panel(Panel::Settings)),
             ("Agent registry", "Installed and available agents · Ctrl/Cmd+7", Glyph::Agent, Action::Panel(Panel::Registry)),

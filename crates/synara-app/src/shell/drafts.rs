@@ -135,6 +135,16 @@ impl Shell {
         }
         cx.notify();
     }
+
+    pub(super) fn remember_task_draft(
+        &mut self,
+        id: TaskId,
+        text: String,
+        cx: &mut Context<Self>,
+    ) {
+        self.store_draft(id, text);
+        cx.notify();
+    }
     pub(super) fn snapshot_draft(&mut self, cx: &mut Context<Self>) {
         if let Some(id) = self.selected
             && (self.drafts.contains_key(&id) || !self.composer.read(cx).text().is_empty())
@@ -211,6 +221,11 @@ impl Shell {
             self.store_draft(id, String::new());
             if self.selected == Some(id) {
                 self.composer
+                    .update(cx, |e, cx| e.set_text(String::new(), cx));
+            }
+            if self.side_chats.selected == Some(id) {
+                self.side_chats
+                    .composer
                     .update(cx, |e, cx| e.set_text(String::new(), cx));
             }
             self.flush_drafts(true);

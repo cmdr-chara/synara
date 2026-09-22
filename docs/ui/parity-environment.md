@@ -6,14 +6,25 @@ Reference: Electron `948875954f432978eab7dd5fa44c3028b8d99a81` and supplied
 screenshots 08, 73, 74, 78, 79, 88-90. Dracula is an optional appearance choice,
 not the product specification or a new default. No palette or theme defaults change.
 
+## Consolidated status (September 22, 2026)
+
+This file preserves the September 20 Environment checkpoint below. In the current
+consolidated tree the Environment-owned tab set is **Terminal, Explorer, Changes,
+Device and Side chats**, with matching bounded persistence and five native focus
+slots. Browser has also landed, but remains a separate native Browser panel because
+its embedded child surface has distinct lifecycle/overlay ownership. It is therefore
+not an Environment placeholder or a sixth persisted Environment tab.
+
 ## Implemented slice
 
 Environment now has a shared native tab strip for Terminal, Explorer and Changes,
 a trigger-anchored Add menu, pointer and keyboard split resizing, equal-width
 reset, and maximize/restore. Tabs reuse the existing host-aware services and
 retained editor/terminal entities. This is not multiple terminal-session support.
-Browser and Side chats remain explicitly unavailable rather than fake working tabs.
-Changes is the existing native Git pane, an additional native tool in this menu.
+At this September 20 checkpoint, Browser and Side chats were explicitly unavailable
+rather than represented as fake working tabs. The consolidated status above records
+the later Side chats, Device and Browser implementations. Changes is the existing
+native Git pane, an additional native tool in this menu.
 
 A versioned, bounded Environment preference retains opened tabs, selected tool,
 desired split ratio and Open by default. Explicit open/hide updates that preference.
@@ -54,7 +65,8 @@ changes retain broader presentation coverage, including the Environment journey.
 The layout is application-wide, not independently saved for every thread. There
 is one tab per existing native tool, not multiple PTYs, editor tabs or side chats.
 Tool tabs remain open until Reset layout; Hide Environment is deliberately
-nondestructive. Embedded browser/device tooling, remote forwarding, Studio outputs,
-full per-platform accessibility/IME acceptance and all 73-state visual parity
-remain open. Screenshots alone do not establish browser, approval or animation
+nondestructive. At this September 20 checkpoint embedded browser/device tooling was still open.
+The consolidated tree now contains Browser and Device implementations, while
+remote forwarding, full per-platform accessibility/IME acceptance and all 73-state
+visual parity remain open. Screenshots alone do not establish browser, approval or animation
 runtime behavior. Existing project/file/agent authority remains unchanged.

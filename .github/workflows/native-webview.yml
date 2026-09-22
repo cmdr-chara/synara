@@ -1,19 +1,11 @@
-name: Native WebKit session acceptance
+name: Native WebKit acceptance
 on:
-  push:
-    branches: [astra/pr-automations-browser]
-    paths:
-      - crates/synara-browser/src/native/**
-      - crates/synara-browser/src/session.rs
-      - crates/synara-browser/src/session/**
-      - crates/synara-app/src/shell/browser.rs
-      - crates/synara-app/src/shell/browser/**
-      - scripts/native_browser_webview_smoke.py
-      - .github/workflows/native-webview-session.yml
+  workflow_dispatch:
+  workflow_call:
 permissions:
   contents: read
 concurrency:
-  group: native-webkit-session
+  group: native-webkit-${{ github.ref }}
   cancel-in-progress: false
 jobs:
   native:
@@ -49,6 +41,7 @@ jobs:
         run: |
           set -euo pipefail
           cargo +1.98.1 test --locked -p synara-browser --features native-webview --lib 2>&1 | tee /tmp/native-webkit-evidence/browser-tests.log
+          cargo +1.98.1 test --locked -p synara-browser --features native-webview --test history_readiness 2>&1 | tee /tmp/native-webkit-evidence/history-readiness.log
       - name: Real WebKit consent, DOM actions and pre-network redirect acceptance
         if: steps.domain.outcome == 'success'
         run: |
@@ -61,6 +54,7 @@ jobs:
         run: |
           set -euo pipefail
           cargo +1.98.1 build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture 2>&1 | tee /tmp/native-webkit-evidence/app-build.log
+          cargo +1.98.1 test --locked -p synara-app --bin synara-app shell::browser::tests:: 2>&1 | tee /tmp/native-webkit-evidence/history-controls.log
       - name: Prove GPUI child rendering, pointer input and native overlay visibility
         if: ${{ !cancelled() && steps.app.outcome == 'success' }}
         run: python3 scripts/native_browser_webview_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output /tmp/native-webkit-evidence/gpui
@@ -71,6 +65,7 @@ jobs:
           cargo +1.98.1 test --locked -p synara-workspace --lib browser:: 2>&1 | tee /tmp/native-webkit-evidence/browser-service-tests.log
           cargo +1.98.1 test --locked -p synara-workspace --lib pull_requests:: 2>&1 | tee /tmp/native-webkit-evidence/pull-request-tests.log
           cargo +1.98.1 test --locked -p synara-workspace --lib automations 2>&1 | tee /tmp/native-webkit-evidence/automation-tests.log
+          cargo +1.98.1 test --locked -p synara-workspace --lib storage::conversation_tools::related::tests 2>&1 | tee /tmp/native-webkit-evidence/related-thread-tests.log
       - name: Retain focused build cache even after a diagnostic failure
         uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
         if: ${{ always() && steps.cache.outcome == 'success' && steps.cache.outputs.cache-hit != 'true' }}
@@ -86,11 +81,15 @@ jobs:
           mkdir -p /tmp/native-webkit-evidence
           git rev-parse HEAD > /tmp/native-webkit-evidence/revision.txt
           git status --short > /tmp/native-webkit-evidence/status.txt
-          git bundle create /tmp/native-webkit-evidence/source.bundle HEAD
-          cp Cargo.lock /tmp/native-webkit-evidence/Cargo.lock
+          git diff --exit-code
+          git diff --cached --exit-code
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:
           name: native-webkit-evidence
-          path: /tmp/native-webkit-evidence/
+          path: |
+            /tmp/native-webkit-evidence/*.log
+            /tmp/native-webkit-evidence/*.txt
+            /tmp/native-webkit-evidence/gpui/*.png
+            /tmp/native-webkit-evidence/gpui/result.json
           retention-days: 3

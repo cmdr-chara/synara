@@ -10,9 +10,23 @@ continuation notes remain in the [preserved pre-Hubs inventory](electron-vs-gpui
 The full acceptance backlog remains in [ROADMAP.md](../../ROADMAP.md). No historical
 gap is closed merely because this current view is shorter or a heading was renamed.
 
+## September 22: sprint 2, Debug workflow
+
+The current 48-capability inventory is **10 substantially present, 24 partial and
+14 missing**. Debug moves from missing to present because its native workflow now
+has explicit durable phases, evidence gating, pause/reopen, history and reviewed
+draft insertion. This is an app-owned workflow, not a provider-name guess or an
+unavailable control. User-recorded verification is labeled as such. It is not
+independent certification of a fix, implicit execution or permission escalation.
+
+[Debug workflow](debug-workflow.md) records task ownership, restart, revision
+fencing, input limits, clear/history semantics and focused verification targets.
+The older counts below remain historical checkpoints. Upstream was re-read at
+`f04341a67bc4941d1b2e91e0b23bbe782dfbc727` and has no new parity delta.
+
 ## September 22: direct models, Project Import and provider continuation
 
-The 48-capability inventory now has **9 substantially present, 24 partial and
+At this preceding checkpoint, the 48-capability inventory had **9 substantially present, 24 partial and
 15 missing** capabilities. This is not a release-readiness percentage. Compared
 with the consolidated Sessions 1-4 checkpoint, Project Import moves from missing
 to present, and direct multi-provider runtime and provider handoff move from missing
@@ -140,6 +154,7 @@ in the receipt rather than represented as successful acceptance.
 
 | Surface | Source implemented | Remaining acceptance or functionality |
 | --- | --- | --- |
+| Debug mode | Native evidence-gated phases, persisted task state/history, explicit reviewed draft instructions, pause/reopen and no implicit execution | Broader platform/provider interaction acceptance; no independent fix certification |
 | Direct model providers | Separate `synara-model` runtime, three transport families, reviewed registry/custom endpoints, Settings/model selection, endpoint-bound OS references, streaming/Stop, usage and local structured-output checks | Partial toward 75+ interoperability, additional auth, native multimodal and approved tools; see direct-model docs |
 | Project Import | Reviewed local Codex/Claude text-history discovery/import, atomic receipt and recovery | Broader real-history/platform acceptance; no session/approval/secret transfer |
 | Provider continuation | Reviewed unsent related ACP/direct conversations with original link and unchanged source session/root | No in-place same-task session migration or filesystem rollback |

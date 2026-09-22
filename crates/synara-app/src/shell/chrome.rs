@@ -536,6 +536,9 @@ impl Render for Shell {
                     return;
                 }
                 if this.command_palette.open { return; }
+                if this.side_chats.split && this.side_chats.composer.read(cx).focus_handle(cx).is_focused(window) {
+                    return;
+                }
                 if (!this.zen_active() || this.settings.personalization.tools_shown)
                     && this.editor_shortcut(event, window, cx) {
                     cx.stop_propagation();

@@ -14,6 +14,7 @@ impl Shell {
         };
         let empty = thread.timeline.is_empty() && thread.plan.is_empty();
         let mut root = div().flex().flex_col().flex_1().min_h_0().min_w_0();
+        root = root.child(self.task_split_action(cx));
         root = root.child(self.handoff_source_row(cx));
         root = root.child(self.goal_bar(cx));
         root = root.child(self.debug_bar(cx));

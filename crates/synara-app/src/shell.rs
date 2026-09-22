@@ -40,6 +40,7 @@ mod saved_context;
 mod revisions;
 mod handoff;
 mod side_chats;
+mod task_split;
 mod settings;
 mod studio;
 mod terminal;
@@ -784,6 +785,7 @@ impl Shell {
         }
     }
     fn select_task(&mut self, id: TaskId, cx: &mut Context<Self>) -> bool {
+        if self.side_chats.split && self.side_chats.composer.read(cx).is_composing() { return false; }
         if self.native_settings_pending() { return false; }
         if self.revision_navigation_blocked(cx) { return false; }
         if self.hub_navigation_blocked(cx) { return false; }
@@ -1583,7 +1585,7 @@ impl Shell {
                 details,
                 error,
             } => {
-                let visible_side = self.panel == Panel::SideChats
+                let visible_side = (self.panel == Panel::SideChats || self.side_chats.split && self.panel == Panel::Conversation)
                     && self.side_chats.selected == Some(task);
                 if self.busy.contains(&task) && self.selected != Some(task) && !visible_side {
                     self.send_desktop_notification(false, cx);
@@ -1623,6 +1625,9 @@ impl Shell {
                     self.settings.value = *settings;
                     if bindings_changed { self.sync_navigation_bindings(cx); }
                     self.composer.update(cx, |entry, _| {
+                        entry.set_send_on_enter(self.settings.value.chat.send_on_enter)
+                    });
+                    self.side_chats.composer.update(cx, |entry, _| {
                         entry.set_send_on_enter(self.settings.value.chat.send_on_enter)
                     });
                     cx.set_reduce_motion(self.settings.value.appearance.reduced_motion);
@@ -1737,6 +1742,11 @@ impl Shell {
         if blocked { return; }
         if self.explorer.modal_open() {
             return;
+        }
+        if panel == Panel::SideChats && self.side_chats.split {
+            self.side_chats.split = false;
+            self.side_chats.parent = None;
+            if let Some(task) = self.selected { self.load_side_chats(task, cx); }
         }
         self.studio.open = false;
         self.chat_tools.retire();

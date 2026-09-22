@@ -93,7 +93,7 @@ impl Shell {
                     )
                     .child(div().id("composer-context-tray").max_h(px(210.)).overflow_y_scroll()
                         .child(self.attachments_view(cx)).child(self.appsnap_view(cx)).child(self.followups_view(cx)))
-                    .child(self.composer.clone())
+                    .child(div().relative().child(self.composer.clone()).child(ui::layout_probe("primary-composer-input")))
                     .children(self.composer.read(cx).error.as_ref().map(|error| {
                         div()
                             .px_2()

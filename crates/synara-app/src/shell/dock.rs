@@ -17,6 +17,9 @@ impl Shell {
         available_width: f32,
         cx: &mut Context<Self>,
     ) -> gpui::AnyElement {
+        if self.side_chats.split && self.panel == Panel::Conversation {
+            return self.task_split_surface(window, available_width, cx);
+        }
         if self.zen_active() && !self.settings.personalization.tools_shown {
             return self.conversation(window, cx);
         }

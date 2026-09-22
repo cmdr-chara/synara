@@ -61,7 +61,8 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libwebkit2gtk-4.1-dev libgtk-3-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil xclip fonts-dejavu-core fonts-liberation
-      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
+      - uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
+        id: deps
         with:
           path: |
             ~/.cargo/registry
@@ -77,17 +78,6 @@ jobs:
           mkdir -p /tmp/max-feature-evidence
           set -o pipefail
           python3 scripts/apply_max_feature_source.py 2>&1 | tee /tmp/max-feature-evidence/validation.log
-      - name: Export offline Rust validation tools
-        if: always()
-        run: |
-          mkdir -p /tmp/max-feature-tools
-          tar -C "$HOME" -I 'xz -T2 -3' -cf /tmp/max-feature-tools/rust-offline.tar.xz .rustup/toolchains/1.98.1-x86_64-unknown-linux-gnu .cargo/bin .cargo/registry .cargo/git
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always()
-        with:
-          name: max-feature-tools
-          path: /tmp/max-feature-tools/
-          retention-days: 3
       - name: Preserve exact candidate and evidence
         if: always()
         run: |
@@ -103,3 +93,39 @@ jobs:
           name: max-feature-evidence
           path: /tmp/max-feature-evidence/
           retention-days: 7
+      - uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
+        if: always() && steps.deps.outputs.cache-hit != 'true'
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: max-feature-1.98.1-${{ runner.os }}-${{ github.sha }}
+      - name: Export bounded offline Rust validation tools
+        if: always()
+        run: |
+          mkdir -p /tmp/max-feature-tools
+          tar -C "$HOME" -I 'xz -T2 -3' -cf /tmp/rust-offline.tar.xz .rustup/toolchains/1.98.1-x86_64-unknown-linux-gnu .cargo/bin .cargo/registry .cargo/git
+          split --bytes=240M --numeric-suffixes --suffix-length=2 /tmp/rust-offline.tar.xz /tmp/max-feature-tools/part-
+          sha256sum /tmp/rust-offline.tar.xz > /tmp/max-feature-tools/sha256.txt
+          test ! -e /tmp/max-feature-tools/part-03
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: max-feature-tools-00
+          path: |
+            /tmp/max-feature-tools/part-00
+            /tmp/max-feature-tools/sha256.txt
+          retention-days: 3
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: max-feature-tools-01
+          path: /tmp/max-feature-tools/part-01
+          retention-days: 3
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: max-feature-tools-02
+          path: /tmp/max-feature-tools/part-02
+          retention-days: 3

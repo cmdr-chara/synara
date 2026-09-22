@@ -63,7 +63,6 @@ def main():
 
     def validated_diff(data):
         apply_diff(data)
-        # Reviewed compiler repair, restricted to the two controller entry points.
         module = Path('crates/synara-workspace/src/controller/direct_models.rs')
         source = module.read_text()
         for method in ('require_agent_route', 'submit_direct'):
@@ -85,7 +84,7 @@ def main():
         run('cargo', '+1.98.1', 'test', '--locked', '-p', 'synara-runtime', 'native_secrets')
         run('cargo', '+1.98.1', 'test', '--locked', '-p', 'synara-workspace', 'direct_models')
         run('cargo', '+1.98.1', 'build', '--locked', '-p', 'synara-app', '--bin', 'synara-app', '-p', 'synara-acp', '--bin', 'synara-acp-fixture')
-        run('/usr/bin/python3', 'scripts/native_direct_models_smoke.py', '--output', '/tmp/max-feature-evidence/native')
+        run('/usr/bin/python3', 'scripts/native_direct_models_smoke.py', '--binary', 'target/debug/synara-app', '--fixture', 'target/debug/synara-acp-fixture', '--output', '/tmp/max-feature-evidence/native')
         run('git', 'diff', '--check')
         for name in filter(None, subprocess.check_output(['git', 'diff', 'HEAD', '--name-only', '-z']).decode().split('\0')):
             if name in (parts or []):

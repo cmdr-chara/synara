@@ -46,22 +46,45 @@ jobs:
             direct-conversations-1.98.1-${{ runner.os }}-
             max-feature-1.98.1-${{ runner.os }}-
       - name: Verify exact source transport and apply the scoped feature
-        run: python3 scripts/feature_closure_transfer.py prepare
-      - name: Apply the diagnosed release clock reference correction
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import base64, gzip, sys
+          sys.path.insert(0, 'scripts')
+          import feature_closure_transfer as transfer
+          original = transfer.read_request
+          def request():
+              value = original()
+              if value['patch_gzip_base64'] == ['.feature-closure-part-0000']:
+                  path = Path('.feature-closure-part-0000')
+                  assert not path.is_symlink() and 0 < path.stat().st_size <= transfer.LIMIT
+                  data = path.read_bytes()
+                  if data.startswith(b'diff --git '):
+                      value['patch_gzip_base64'] = base64.b64encode(gzip.compress(data, mtime=0)).decode()
+              return value
+          transfer.read_request = request
+          transfer.prepare()
+          PY
+      - name: Apply exact diagnosed release corrections before verification
         run: |
           python3 - <<'PY'
           from pathlib import Path
           import hashlib, subprocess
-          p = Path('crates/synara-workspace/src/storage/releases.rs')
-          before = p.read_bytes()
-          digest = hashlib.sha256(before).hexdigest()
-          if digest == '7145770c1085f54fbbb317bffd7531e4e0abb175f18984a3f1daa2648cefb5b5':
-              after = before.replace(b'synara_core::now_ms()', b'crate::now_ms()')
-              assert hashlib.sha256(after).hexdigest() == '9260cefc93d37234c7dc23aa3dcf0771a3e5a48cf7a5d5e01fa427ec9e528f25'
-              p.write_bytes(after)
-              subprocess.run(['git', 'add', '--', str(p)], check=True)
-          else:
-              assert digest == '9260cefc93d37234c7dc23aa3dcf0771a3e5a48cf7a5d5e01fa427ec9e528f25', 'Unexpected release source; no repair applied'
+          repairs = [
+              ('crates/synara-workspace/src/storage/releases.rs', '7145770c1085f54fbbb317bffd7531e4e0abb175f18984a3f1daa2648cefb5b5', '9260cefc93d37234c7dc23aa3dcf0771a3e5a48cf7a5d5e01fa427ec9e528f25', b'synara_core::now_ms()', b'crate::now_ms()'),
+              ('scripts/native_releases_smoke.py', '93f70a69cefac833115122741c2aaa413a486b4e85b05cf1ff16f1047e8890c3', '4219d121151ffd5d7e0ae3eebcc4cabd03e07a21cab3505d64925b56a3a17777', b'resize(s, 800, 640)', b'resize(s.desktop, 800, 640)')
+          ]
+          for name, old_hash, new_hash, old, new in repairs:
+              p = Path(name)
+              before = p.read_bytes()
+              digest = hashlib.sha256(before).hexdigest()
+              if digest == old_hash:
+                  after = before.replace(old, new)
+                  assert hashlib.sha256(after).hexdigest() == new_hash
+                  p.write_bytes(after)
+                  subprocess.run(['git', 'add', '--', name], check=True)
+              else:
+                  assert digest == new_hash, 'Unexpected source; no repair applied: ' + name
           PY
       - name: Focused checks and native journeys
         run: python3 scripts/feature_closure_transfer.py check

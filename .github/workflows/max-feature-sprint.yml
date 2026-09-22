@@ -20,6 +20,26 @@ jobs:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
           fetch-depth: 0
+      - name: Verify source transport before installing dependencies
+        run: |
+          python3 - <<'PYCODE'
+          import base64, gzip, hashlib, io, json, re
+          from pathlib import Path
+          path = Path('.synara-max-feature.json')
+          assert not path.is_symlink() and path.stat().st_size <= 8 * 1024 * 1024
+          package = json.loads(path.read_text())
+          parts = package['parts']
+          assert isinstance(parts, list) and 1 <= len(parts) <= 16
+          assert len(set(parts)) == len(parts)
+          assert all(isinstance(p, str) and re.fullmatch(r'\.synara-transfer-[0-9]{4}', p) for p in parts)
+          assert all(not Path(p).is_symlink() for p in parts)
+          assert sum(Path(p).stat().st_size for p in parts) <= 8 * 1024 * 1024
+          encoded = ''.join(Path(p).read_text().strip() for p in parts)
+          with gzip.GzipFile(fileobj=io.BytesIO(base64.b64decode(encoded, validate=True))) as stream:
+              data = stream.read(20 * 1024 * 1024 + 1)
+          assert len(data) <= 20 * 1024 * 1024
+          assert hashlib.sha256(data).hexdigest() == package['sha256'], 'Source transport checksum mismatch'
+          PYCODE
       - name: Rust toolchain
         run: rustup toolchain install 1.98.1 --profile minimal --component rustfmt
       - name: Native Linux prerequisites

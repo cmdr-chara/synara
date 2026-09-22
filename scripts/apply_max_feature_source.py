@@ -27,6 +27,46 @@ EXACT = {
 def run(*args):
     subprocess.run(args, check=True)
 
+def correct_native_input():
+    path = Path('crates/synara-app/src/shell/handoff.rs')
+    text = path.read_text()
+    old = '''                if event.keystroke.key == "escape" && !this.handoff.creating {
+                    let pristine = this.handoff.dialog.as_ref().is_none_or(|d| d.review.as_ref().is_none_or(|r| r.context() == d.editor.read(cx).text()));
+                    if pristine { this.dismiss_handoff(cx); }
+                }
+                cx.stop_propagation();'''
+    new = '''                if event.keystroke.key == "escape" && !this.handoff.creating {
+                    let pristine = this.handoff.dialog.as_ref().is_none_or(|d| !d.editor.read(cx).is_composing() && !d.query.read(cx).is_composing() && d.review.as_ref().is_none_or(|r| r.context() == d.editor.read(cx).text()));
+                    if pristine { this.dismiss_handoff(cx); }
+                    cx.stop_propagation();
+                }
+                // Ordinary key events must reach the platform character-input
+                // fallback. The shell capture guard already excludes this modal.'''
+    assert text.count(old) == 1
+    path.write_text(text.replace(old, new))
+    path = Path('crates/synara-app/src/shell/chrome.rs')
+    text = path.read_text()
+    old = '''                        ui::unavailable_action(
+                            "handoff",
+                            if docked { "" } else { "Hand off" },
+                            Glyph::Handoff,
+                            "Agent handoff is not available in this native build yet.",
+                        )
+                        .aria_label("Hand off, unavailable")'''
+    new = '''                        ui::action(
+                            "handoff-header",
+                            if docked { "" } else { "Continue with..." },
+                            Some(Glyph::Handoff),
+                            false,
+                            cx.listener(|this, _: &(), window, cx| this.open_handoff(window, cx)),
+                        )
+                        .aria_label("Review a related provider continuation")'''
+    assert text.count(old) == 1
+    path.write_text(text.replace(old, new))
+    for path, sha in [('crates/synara-app/src/shell/handoff.rs', '70a1400fa826d9edf764f31d9497eeeba73980b9'), ('crates/synara-app/src/shell/chrome.rs', '1f9180569dee45f338efb490e555d4431c1141be')]:
+        assert subprocess.check_output(['git', 'hash-object', path], text=True).strip() == sha
+        run('git', 'add', '--', path)
+
 def main():
     if os.environ.get('GITHUB_REPOSITORY') != 'cmdr-chara/synara' or os.environ.get('GITHUB_REF') != BRANCH:
         raise SystemExit('Wrong repository or session ref')
@@ -41,6 +81,7 @@ def main():
         return result
     def validated_diff(data):
         apply_diff(data)
+        correct_native_input()
         changed = set(subprocess.check_output(['git', 'diff', 'HEAD', '--name-only'], text=True).splitlines())
         if changed != EXACT:
             raise SystemExit('Incomplete or unexpected handoff slice')

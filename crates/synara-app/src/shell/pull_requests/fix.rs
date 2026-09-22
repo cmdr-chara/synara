@@ -227,6 +227,10 @@ mod tests {
     #[test]
     fn pr_fix_recheck_preserves_exact_multiline_unicode_instruction() {
         let instruction = "Review the file\nKeep caf\u{e9} unchanged";
-        assert!(instruction_is_current(Some(instruction), instruction, false));
+        assert!(instruction_is_current(
+            Some(instruction),
+            instruction,
+            false
+        ));
     }
 }

@@ -52,8 +52,9 @@ jobs:
           mkdir -p /tmp/native-conversation-evidence
           set -o pipefail
           python3 scripts/verify_sprint2_integration.py --output /tmp/native-conversation-evidence 2>&1 | tee /tmp/native-conversation-evidence/source-checks.log
+          rustfmt +1.98.1 --check --edition 2024 --config skip_children=true crates/synara-app/src/shell/pull_requests/fix.rs
           python3 scripts/check_roadmap.py 2>&1 | tee /tmp/native-conversation-evidence/roadmap.log
-          for test in test_audit_workspace test_ci_router test_apply_source test_native_ui_scope; do
+          for test in test_audit_workspace test_ci_router test_apply_source test_native_ui_scope test_verify_sprint2_integration; do
             python3 -m unittest discover -s scripts -p "$test.py" 2>&1 | tee "/tmp/native-conversation-evidence/$test.log"
           done
           python3 scripts/check_roadmap.py --self-test 2>&1 | tee /tmp/native-conversation-evidence/roadmap-tests.log

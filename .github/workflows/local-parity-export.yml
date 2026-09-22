@@ -1,0 +1,62 @@
+name: Local parity execution inputs
+on:
+  push:
+    branches: [astra/electron-main-parity]
+    paths: [.github/workflows/local-parity-export.yml]
+permissions:
+  contents: read
+jobs:
+  export:
+    if: github.repository == 'cmdr-chara/synara'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Export exact public source without executing repository code
+        run: |
+          mkdir -p /tmp/parity-source
+          git bundle create /tmp/parity-source/source.bundle HEAD
+          git rev-parse HEAD > /tmp/parity-source/revision.txt
+          cd /tmp/parity-source
+          sha256sum source.bundle revision.txt > SHA256SUMS
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: local-parity-current-source
+          path: /tmp/parity-source/
+          retention-days: 3
+      - name: Prepare immutable public font and theme inputs
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq python3-fonttools python3-brotli
+          python3 scripts/parity/export_theme_catalog.py --vectors
+          python3 scripts/parity/vendor_electron_code_font.py --prepare --compare-reference
+      - name: Package only explicit public generated inputs
+        if: always()
+        run: |
+          mkdir -p /tmp/parity-generated
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib, json, tarfile
+          names = [
+              'crates/synara-workspace/src/settings/theme/catalog.json',
+              'crates/synara-workspace/src/settings/theme/reference-vectors.json',
+              'crates/synara-app/assets/fonts/JetBrainsMono-Variable.ttf',
+              'crates/synara-app/assets/fonts/JetBrainsMono-Italic-Variable.ttf',
+              'crates/synara-app/assets/licenses/JetBrainsMono-OFL.txt',
+              'docs/ui/jetbrains-mono-reference-check.json',
+          ]
+          found = [name for name in names if Path(name).is_file()]
+          with tarfile.open('/tmp/parity-generated/generated.tar.gz', 'w:gz') as archive:
+              for name in found:
+                  archive.add(name, arcname=name)
+          Path('/tmp/parity-generated/manifest.json').write_text(json.dumps({name:hashlib.sha256(Path(name).read_bytes()).hexdigest() for name in found}, indent=2))
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: local-parity-generated-inputs
+          path: /tmp/parity-generated/
+          retention-days: 3

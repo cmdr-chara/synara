@@ -34,3 +34,9 @@ release readiness. Existing task/session, Git, filesystem and process ownership
 remain authoritative.
 
 The original 120 A-Q task bodies and checkbox states are intentionally unchanged.
+
+## Final accumulated validation
+
+The final campaign re-runs all four sprint-native journeys plus integrated backend,
+app, roadmap-structure and session helper checks against one exact candidate tree.
+The GitHub Actions run and published validation commit are recorded after it passes.

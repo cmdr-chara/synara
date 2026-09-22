@@ -4,6 +4,7 @@ mod automations;
 mod attachments;
 mod integrations;
 mod direct_models;
+mod project_import;
 mod followups;
 mod hubs;
 mod chat_tools;
@@ -104,6 +105,7 @@ struct FormState {
 }
 enum Update {
     DirectModels(Box<direct_models::Reply>),
+    ProjectImport(Box<project_import::Reply>),
     Automations(Box<automations::Reply>),
     PullRequests(Box<pull_requests::Reply>),
     BrowserConfigured(Result<(), String>),
@@ -206,6 +208,7 @@ pub struct Shell {
     settings: settings::SettingsState,
     integrations: integrations::IntegrationState,
     direct_models: direct_models::DirectModelState,
+    project_import: project_import::ImportState,
     close: CloseState,
     close_focus: gpui::FocusHandle,
     registry: registry::RegistryState,
@@ -442,6 +445,7 @@ impl Shell {
             settings: settings::SettingsState::new(bootstrap.settings, cx),
             integrations: integrations::IntegrationState::new(cx),
             direct_models: direct_models::DirectModelState::new(cx),
+            project_import: project_import::ImportState::new(cx),
             close: CloseState::Open,
             close_focus: cx.focus_handle(),
             registry,
@@ -524,7 +528,7 @@ impl Shell {
             self.notice = Some("Finish the pending Settings operation before closing.".into()); cx.notify(); return false;
         }
         if self.followup_navigation_blocked(cx) { return false; }
-        if self.integrations.pending() || self.direct_models.pending() {
+        if self.integrations.pending() || self.direct_models.pending() || self.project_import.pending() {
             self.notice=Some("Finish the integration operation or discard its open Settings form/review before closing.".into());
             cx.notify(); return false;
         }
@@ -1291,6 +1295,7 @@ impl Shell {
     fn receive(&mut self, update: Update, cx: &mut Context<Self>) {
         match update {
             Update::DirectModels(reply) => self.direct_model_reply(*reply, cx),
+            Update::ProjectImport(reply) => self.import_reply(*reply, cx),
             Update::Integrations(reply) => self.integration_reply(*reply,cx),
             Update::Revision(reply) => self.revision_reply(*reply, cx),
             Update::SideChats(reply) => self.side_chat_reply(*reply, cx),

@@ -1,4 +1,6 @@
 use crate::RuntimeError;
+#[cfg(unix)]
+use cap_std::fs::OpenOptionsExt;
 use cap_fs_ext::{DirExt, FollowSymlinks, OpenOptionsFollowExt};
 use cap_std::{
     ambient_authority,
@@ -109,13 +111,18 @@ impl WorkspaceFs {
     }
     fn read_bytes(&self, path: &Path) -> Result<Vec<u8>, RuntimeError> {
         let (dir, name) = self.parent(path)?;
-        if dir.symlink_metadata(&name)?.file_type().is_symlink() {
+        let metadata = dir.symlink_metadata(&name)?;
+        if metadata.file_type().is_symlink() || !metadata.is_file() {
             return Err(RuntimeError::Denied(
-                "symbolic links are not readable workspace files".into(),
+                "only regular, non-symlink workspace files are readable".into(),
             ));
         }
         let mut options = OpenOptions::new();
         options.read(true).follow(FollowSymlinks::No);
+        // A regular file can be replaced with a FIFO between metadata and open.
+        // Nonblocking open keeps that race from pinning a worker indefinitely.
+        #[cfg(unix)]
+        options.custom_flags(nix::libc::O_NONBLOCK);
         let file = dir.open_with(name, &options)?;
         if !file.metadata()?.is_file() {
             return Err(RuntimeError::Denied(

@@ -7030,6 +7030,7 @@ dependencies = [
  "synara-runtime",
  "synara-workspace",
  "tokio",
+ "tokio-util",
  "tracing",
  "tracing-subscriber",
 ]
@@ -7131,6 +7132,7 @@ name = "synara-workspace"
 version = "0.1.0"
 dependencies = [
  "async-trait",
+ "chrono",
  "hex",
  "image",
  "rusqlite",

@@ -10,9 +10,21 @@ continuation notes remain in the [preserved pre-Hubs inventory](electron-vs-gpui
 The full acceptance backlog remains in [ROADMAP.md](../../ROADMAP.md). No historical
 gap is closed merely because this current view is shorter or a heading was renamed.
 
+## September 22: sprint 2, reviewed PR Fix workflow
+
+The current 48-capability inventory is **11 substantially present, 24 partial and
+13 missing**. PR Fix now has bounded, paginated unresolved-review collection and
+an editable native review. Explicit insertion rechecks review freshness and
+original task/project/root ownership before appending to the normal unsent draft.
+It does not create another task system, execute an agent, switch the checkout or
+write to GitHub. Empty/truncated/stale reviews and cancelled callbacks do not
+silently produce a prompt. [PR Fix](pr-fix.md) records the bounds, transient review
+semantics, normal-draft restart behavior and focused/native verification targets.
+Live authenticated GitHub and non-Linux acceptance remain open.
+
 ## September 22: sprint 2, Debug workflow
 
-The current 48-capability inventory is **10 substantially present, 24 partial and
+At the preceding Debug checkpoint, the 48-capability inventory was **10 substantially present, 24 partial and
 14 missing**. Debug moves from missing to present because its native workflow now
 has explicit durable phases, evidence gating, pause/reopen, history and reviewed
 draft insertion. This is an app-owned workflow, not a provider-name guess or an
@@ -154,6 +166,7 @@ in the receipt rather than represented as successful acceptance.
 
 | Surface | Source implemented | Remaining acceptance or functionality |
 | --- | --- | --- |
+| PR Fix workflow | Paginated unresolved-review snapshot, editable native instructions, fresh-head/comment checks and explicit append to the original unsent draft | Live-account/SSH/non-Linux acceptance; external comments can change again after insertion |
 | Debug mode | Native evidence-gated phases, persisted task state/history, explicit reviewed draft instructions, pause/reopen and no implicit execution | Broader platform/provider interaction acceptance; no independent fix certification |
 | Direct model providers | Separate `synara-model` runtime, three transport families, reviewed registry/custom endpoints, Settings/model selection, endpoint-bound OS references, streaming/Stop, usage and local structured-output checks | Partial toward 75+ interoperability, additional auth, native multimodal and approved tools; see direct-model docs |
 | Project Import | Reviewed local Codex/Claude text-history discovery/import, atomic receipt and recovery | Broader real-history/platform acceptance; no session/approval/secret transfer |

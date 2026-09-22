@@ -444,6 +444,7 @@ impl Render for Shell {
         // Backend completion may request composer focus. Keep that request pending
         // while a menu owns focus, rather than stealing focus from its keyboard user.
         if self.focus_composer
+            && !self.pull_requests.has_fix_review()
             && !self.settings.personalization.attention_open
             && !self.command_palette.open
             && !self.navigation.menu_open

@@ -35,17 +35,18 @@ acceptance gate is closed.
 
 | Product status | Count | Meaning |
 | --- | ---: | --- |
-| Present | **10 / 48** | Substantial native user capability exists; remaining work is mainly acceptance or narrower depth |
+| Present | **11 / 48** | Substantial native user capability exists; remaining work is mainly acceptance or narrower depth |
 | Partial | **24 / 48** | Real native functionality exists, but Electron still has material user-facing depth not yet present |
-| Missing | **14 / 48** | No equivalent complete user workflow exists yet, or the current architecture does not satisfy the stated Synara product requirement |
+| Missing | **13 / 48** | No equivalent complete user workflow exists yet, or the current architecture does not satisfy the stated Synara product requirement |
 
-Current counts include the native Debug workflow described below. They do not
+Current counts include native Debug and reviewed PR Fix workflows. They do not
 close provider or cross-platform acceptance.
 
 ### Substantially present
 
 | Capability | Native state |
 | --- | --- |
+| PR Fix workflow | Bounded unresolved-review collection, editable native review, refreshed comment/head checks and explicit append to the correct unsent task draft |
 | Debug mode | App-owned evidence-gated observation/reproduction/investigation/fix/verification, persisted task history, pause/reopen, explicit editable draft instructions and no implicit execution |
 | Side threads | Independent Side chats with separate drafts, tasks, provider sessions and permissions |
 | Project Spaces | Native Spaces organization, ordering, assignment and persistence |
@@ -95,7 +96,6 @@ implementation but still trail the Electron workflow in depth:
 | Persistent thread goals | Durable objectives, pause/resume, bounded continuation, blocker handling and achievement history |
 | Checkpoints & revert | Explicit safe state rollback; edit/resend intentionally does not pretend to roll back files/provider state |
 | Stacked pull requests | Stack ordering/readiness and explicitly confirmed safe-prefix merge workflow |
-| PR Fix workflow | Gather unresolved review comments into one reviewed agent task/prompt |
 | Inline file comments | Line-specific review comments carried into the next prompt |
 | AppSnap | Permissioned desktop-window capture and composer attachment flow |
 | Rich media in transcript | Generated-image presentation/download and PDF/document viewing comparable to Electron |
@@ -129,7 +129,7 @@ implementation but still trail the Electron workflow in depth:
 | P1 | Electron 0.9.0 delta | Implement Computer Use ownership, permissions, observation/action and interruption. Project Import now has its reviewed native path, with broader real-history/platform acceptance remaining. |
 | P2 | Agent orchestration | Provider handoff, native subagents, Agent Gateway and external-MCP-to-Synara contracts are explicit and scoped |
 | P3 | Conversation autonomy/recovery | Goals and checkpoints/revert are real workflows with no hidden execution or fake rollback; Debug now has its app-owned workflow |
-| P4 | Review/composer depth | Stacked PRs, Fix workflow, inline comments, AppSnap, rich media, task split views, recap and release UX |
+| P4 | Review/composer depth | Stacked PRs, inline comments, AppSnap, rich media, task split views, recap and release UX; PR Fix now has its reviewed native path |
 | P5 | Partial-feature closure | Close the material Electron depth gaps in models/context, Automations, Studio/Hubs, browser sessions/dev servers, editor/search, device/iOS, navigation/export and personalization |
 
 ## Acceptance and release work
@@ -148,6 +148,17 @@ itself** when the corresponding feature is already present:
 - performance/resource budgets, security review and final release evidence.
 
 ## Historical implementation checkpoints
+
+### September 22: sprint 2, reviewed PR Fix workflow
+
+Unresolved GitHub review threads now have a native review-to-draft path through
+the existing Git/process, task and draft owners. The collected snapshot preserves
+comment and file/line/revision identity. Rechecking detects changed heads or
+comments, cancellation preserves user edits, and insertion requires the original
+non-archived task/project/root. No Send, agent execution, checkout, review
+submission, thread resolution or other remote write is implied. Saved chat drafts
+remain unsent after restart. See [PR Fix](docs/ui/pr-fix.md) for exact limits and
+verification entry points. Live-account and broader platform acceptance remain.
 
 ### September 22: sprint 2, evidence-first Debug workflow
 

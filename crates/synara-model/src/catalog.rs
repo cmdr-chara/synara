@@ -34,6 +34,7 @@ pub fn parse_catalog(value: Value) -> ModelResult<ProviderCatalog> {
                 Some(ProtocolFamily::OpenAiChat)
             }
             Some("@ai-sdk/anthropic") => Some(ProtocolFamily::AnthropicMessages),
+            Some("@ai-sdk/google") => Some(ProtocolFamily::GoogleGenerateContent),
             _ => None,
         };
         let mut entry = CatalogProvider {
@@ -110,4 +111,16 @@ pub fn custom_profile_example() -> ProviderProfile {
             capabilities: ModelCapabilities::default(),
         }],
     }
+}
+
+/// Inert native setup template. No installed model, account or capability is inferred.
+pub fn google_profile_example() -> ProviderProfile {
+    let mut profile = custom_profile_example();
+    profile.id = "google-direct".into();
+    profile.name = "Google Generative Language".into();
+    profile.protocol = ProtocolFamily::GoogleGenerateContent;
+    profile.endpoint = "https://generativelanguage.googleapis.com/v1beta".into();
+    profile.allow_loopback_http = false;
+    profile.requires_key = true;
+    profile
 }

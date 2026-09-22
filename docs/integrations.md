@@ -104,12 +104,16 @@ or malformed credentials fail before a network test or context delivery. Header
 values are marked sensitive and raw server/transport errors are not echoed into
 the UI. Generic `ContextServer` debug output redacts the entire configuration.
 
-The current desktop bootstrap still uses `UnavailableSecretStore`. A production
-OS credential-store adapter is a separate unfinished Settings/platform boundary.
-Consequently unauthenticated local/HTTPS probes are usable, while authenticated
-connections fail explicitly until the application is wired to a supported store.
-Tests inject isolated synthetic stores, not production credentials. There is no
-plaintext fallback, implicit environment lookup or simulated successful login.
+The desktop bootstrap now injects the shared `NativeSecretStore` adapter on
+supported platforms. It starts unverified and fails closed when the OS store is
+unavailable or locked. This replaces the earlier checkpoint's unavailable-store
+bootstrap, not its still-open production acceptance gate. Direct-model keys use
+the same owner with distinct endpoint/protocol-bound references. The MCP page
+continues to accept references only, not plaintext token fields. Tests use isolated
+synthetic stores or explicit unavailable-store refusal, not production credentials.
+There is no plaintext fallback, implicit environment lookup or simulated login.
+See [direct models](ui/direct-models.md) and the
+[accumulated receipt](verification/max-feature-sprint.md).
 
 ## Explicit test and discovery
 

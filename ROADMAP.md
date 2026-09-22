@@ -17,7 +17,7 @@ Current comparison snapshot, September 22, 2026:
 
 - Electron reference: `Emanuele-web04/synara@f04341a67bc4941d1b2e91e0b23bbe782dfbc727`
   (Synara 0.9.0-era main).
-- Native Rust reference: `cmdr-chara/synara@bd30c42b395f361b0384b744c22039485cca290f`.
+- Native Rust reference: `cmdr-chara/synara@16789f4b290268bd54f315855cccae479aab8b2f`.
 - Electron moved **342 commits** beyond the `e7cd152` revision used by the previous
   audit. Computer Use and project-history import are therefore new parity inputs.
 - The current audit uses 48 top-level user-visible Electron capabilities: the 46
@@ -35,9 +35,9 @@ acceptance gate is closed.
 
 | Product status | Count | Meaning |
 | --- | ---: | --- |
-| Present | **8 / 48** | Substantial native user capability exists; remaining work is mainly acceptance or narrower depth |
-| Partial | **22 / 48** | Real native functionality exists, but Electron still has material user-facing depth not yet present |
-| Missing | **18 / 48** | No equivalent complete user workflow exists yet, or the current architecture does not satisfy the stated Synara product requirement |
+| Present | **9 / 48** | Substantial native user capability exists; remaining work is mainly acceptance or narrower depth |
+| Partial | **24 / 48** | Real native functionality exists, but Electron still has material user-facing depth not yet present |
+| Missing | **15 / 48** | No equivalent complete user workflow exists yet, or the current architecture does not satisfy the stated Synara product requirement |
 
 ### Substantially present
 
@@ -51,12 +51,23 @@ acceptance gate is closed.
 | Integrated terminals | Multiple owned terminals, tabs, splits, search, copy and local/validated remote execution |
 | Pins & notes | Durable project/thread/message pins plus task-local notes/checklists |
 | Local-first data model | Tasks, transcripts, drafts, preferences and recovery live in the native local workspace store |
+| Project Import | Reviewed local Codex/Claude text-history discovery/import, destination review, atomic duplicate receipt, explicit retry/recovery and source preservation |
 
 ### Partial capabilities
 
 The following are **not missing from scratch**. They already have meaningful Rust
 implementation but still trail the Electron workflow in depth:
 
+- **Direct multi-provider runtime:** real Synara-owned inference, separate from ACP,
+  with OpenAI-compatible, Anthropic Messages and Google Generative Language families,
+  reviewed registry/custom endpoints, OS secret references, streaming/Stop, usage and
+  locally validated structured output. Roughly **75+ interoperable providers** remains
+  the target, not a supported-provider count. Authentication families, native
+  multimodal context, approved tool execution and live interoperability remain open.
+- **Provider handoff:** native reviewed, edited, unsent related conversations can
+  target an ACP agent or direct model without changing the original conversation,
+  copying approvals/secrets or claiming session transfer. In-place same-task
+  continuation remains unsupported without a safe protocol contract.
 - **Models/runtime:** model quick-switching, reasoning/effort controls, context
   management and usage/limit presentation.
 - **Parallel/task workflow:** per-task worktree isolation, thread forks,
@@ -74,8 +85,6 @@ implementation but still trail the Electron workflow in depth:
 
 | Capability | Current requirement |
 | --- | --- |
-| Direct multi-provider model runtime | **Major requirement.** Synara itself must support an OpenCode-class catalog of roughly **75+ providers**, independent of ACP. Generic ACP remains the coding-agent layer and does not satisfy direct-provider support. |
-| Provider handoff | Continue the same task through another provider/model while preserving reviewed conversation/environment/Git context |
 | Native subagents & workflows | Child-agent delegation with visible ownership, phases, usage and pause/stop controls |
 | Agent Gateway | App-owned, scoped tool surface allowing capable agents to create/steer Synara work under Synara ownership rules |
 | External MCP client integration | Let external MCP clients connect *to Synara*. This is distinct from configuring MCP servers that Synara passes *to an agent*. |
@@ -91,13 +100,12 @@ implementation but still trail the Electron workflow in depth:
 | Thread recap | Generated and cached long-thread summary/re-entry workflow |
 | Releases in the app | What's New, release history and user-facing verified update lifecycle |
 | Computer Use | New Electron 0.9.0 capability: permissioned desktop/app control, preview, interruption/takeover and audit boundaries |
-| Project Import | New Electron 0.9.0 capability: discover/import local Codex and Claude project/conversation history with recovery and duplicate protection |
 
 ## Architectural invariants
 
 - **ACP remains generic.** Synara must continue to support ACP-compatible coding
   agents without implementing provider-specific agent backends.
-- **Direct model providers are a separate product layer.** Add a provider-neutral
+- **Direct model providers are a separate product layer.** Preserve the implemented
   `ModelProvider`/model-runtime boundary rather than routing direct model use through
   ACP or coupling it to coding-agent process/session ownership.
 - **75+ provider breadth must scale through normalization**, not 75 unrelated Rust
@@ -115,7 +123,7 @@ implementation but still trail the Electron workflow in depth:
 | Priority | Workstream | Definition of done for feature development |
 | --- | --- | --- |
 | P0 | Direct multi-provider runtime | Synara-owned provider/model registry and normalized direct model runtime supporting the broad provider ecosystem without provider-by-provider UI/backend duplication |
-| P1 | Electron 0.9.0 delta | Computer Use and Project Import have real native ownership, permission, persistence and recovery paths |
+| P1 | Electron 0.9.0 delta | Implement Computer Use ownership, permissions, observation/action and interruption. Project Import now has its reviewed native path, with broader real-history/platform acceptance remaining. |
 | P2 | Agent orchestration | Provider handoff, native subagents, Agent Gateway and external-MCP-to-Synara contracts are explicit and scoped |
 | P3 | Conversation autonomy/recovery | Goals, checkpoints/revert and Debug mode are real workflows with no hidden execution or fake rollback |
 | P4 | Review/composer depth | Stacked PRs, Fix workflow, inline comments, AppSnap, rich media, task split views, recap and release UX |
@@ -127,7 +135,7 @@ The following remains important, but is **not unfinished feature development by
 itself** when the corresponding feature is already present:
 
 - real authenticated provider/agent interoperability;
-- production OS credential stores;
+- production OS credential-store acceptance, beyond the implemented adapter;
 - macOS, Windows and Wayland native acceptance;
 - real device/hardware and simulator acceptance;
 - accessibility, IME, scaling and reduced-motion evidence;
@@ -137,6 +145,30 @@ itself** when the corresponding feature is already present:
 - performance/resource budgets, security review and final release evidence.
 
 ## Historical implementation checkpoints
+
+### September 22: maximum-feature sprint and recovery
+
+Direct inference now has its own `synara-model` owner and native Settings/model
+review, explicit send/Stop and durable transcript path. Three reusable transport
+families and normalized community metadata advance P0 without routing it through
+ACP or claiming 75-provider interoperability. JSON-schema output is checked locally
+against an explicit bounded subset before successful completion is recorded.
+
+Project Import now provides native reviewed local Codex/Claude text-history import,
+atomic duplicate receipts, stale-source rejection, explicit retry/recovery and
+source preservation. Provider continuation has a native reviewed unsent related
+conversation path, preserving the original session and working-folder authority
+without copying approvals, secrets or hidden state. In-place session migration is
+not implied. Optional Hubs remain opt-in and independent drafts survive restart.
+
+[Direct models](docs/ui/direct-models.md), [Project Import](docs/ui/project-import.md),
+[provider continuation](docs/ui/provider-handoff.md) and the
+[verification receipt](docs/verification/max-feature-sprint.md) distinguish tested
+Linux fixture behavior from live-provider, credential-store and platform acceptance.
+Earlier failed native journeys and their diagnosed corrections remain recorded.
+The original A-Q task bodies and checkbox states, and historical checkpoint
+claims, remain unchanged. Current lane summaries and the execution queue reflect
+this implementation.
 
 ### September 22: Sessions 1-4 consolidated native feature implementation
 
@@ -429,7 +461,7 @@ Status: **Partial**, with real-agent/custom-profile proof integrated; broader AC
 
 ## D. Conversation, permissions and structured questions
 
-Status: **Feature-rich partial**: Side chats, additive edit/resend, search, pins and export are integrated; handoff/goals/checkpoints/debug and richer interaction depth remain open.
+Status: **Feature-rich partial**: Side chats, additive edit/resend, search, pins, export and reviewed related-provider continuation are integrated. In-place session handoff, goals/checkpoints/debug and richer interaction depth remain open.
 
 - [ ] D1 Complete rendering and durable replay for user/assistant text, thinking,
   tool lifecycle/results/failures, plans, usage, compaction, status and errors.
@@ -489,7 +521,7 @@ Status: **Partial**: secure agent registry/custom-profile foundations and Synara
 
 ## F. Workspaces, projects, tasks and persistence
 
-Status: **Feature-rich partial**: durable tasks/Hubs/Kanban/Automations and recovery foundations are integrated; Project Import and remaining Studio/organization depth remain open.
+Status: **Feature-rich partial**: durable tasks/Hubs/Kanban/Automations, recovery and reviewed local Project Import are integrated. Broader import/platform acceptance and remaining Studio/organization depth remain open.
 
 - [ ] F1 Complete multi-workspace/project/task create, select, rename, archive,
   recent-work and deletion workflows with clear data-retention behavior.
@@ -558,7 +590,7 @@ Status: **Feature-rich partial**: repository operations and the Pull Requests wo
 
 ## I. Settings, authentication, secrets and platform UX
 
-Status: **Feature-rich partial**. Native Settings is substantial; the direct 75+ provider runtime, production secret store and remaining platform UX remain major open work.
+Status: **Feature-rich partial**. Native Settings includes reviewed direct models, three protocol families and a shared OS secret-store adapter. Verified 75+ provider breadth, real-store/platform acceptance and remaining UX depth remain open.
 
 - [ ] I1 Complete validated, versioned settings and native settings UI, defaults,
   keybindings, theme/font preferences and invalid-config recovery.
@@ -791,16 +823,18 @@ Remaining limitations:
 
 ## Immediate execution queue
 
-1. **Build the direct multi-provider foundation first.** Define the provider-neutral
-   model/runtime contract, registry/catalog, secret-backed authentication and the
-   minimum transport families needed to scale toward roughly 75+ providers. Keep
-   this strictly separate from generic ACP coding-agent sessions.
-2. **Absorb the current Electron 0.9.0 delta.** Design and implement Computer Use
-   and Project Import with explicit ownership, permissions, recovery and platform
-   boundaries instead of visual-only parity.
-3. **Close orchestration and conversation gaps.** Provider handoff, native subagents,
-   Agent Gateway, external-MCP-to-Synara, goals, checkpoints/revert and Debug mode
-   should reuse existing task/session owners and must not inject hidden authority.
+1. **Expand the implemented direct multi-provider runtime.** Extend reviewed
+   registry metadata and shared transport/auth families toward roughly 75+
+   interoperable providers. Add native multimodal context and approved tool
+   execution, and validate representative real accounts. Keep ACP separate.
+2. **Implement Computer Use.** Establish narrow desktop/window ownership,
+   permissions, observation-before-action, interruption and evidence. Project
+   Import's reviewed text path is present, with broader history/platform acceptance
+   and incremental/binary depth tracked separately.
+3. **Close orchestration and conversation gaps.** Reviewed related-provider
+   continuation is present, but in-place handoff needs a safe protocol contract.
+   Native subagents, Agent Gateway, external-MCP-to-Synara, goals, checkpoints/revert
+   and Debug mode must reuse existing task owners without hidden authority.
 4. **Finish high-value depth gaps.** Stacked PR/Fix workflows, inline comments,
    AppSnap/rich media, two-task split views, thread recap, release UX, browser
    sessions/dev servers, complete iOS tooling and remaining editor/navigation depth.

@@ -51,6 +51,11 @@ impl RevisionState {
 
 impl Shell {
     pub(super) fn revision_navigation_blocked(&mut self, cx: &mut Context<Self>) -> bool {
+        if self.handoff.open() {
+            self.error = Some("Create the continuation or discard its review before leaving.".into());
+            cx.notify();
+            return true;
+        }
         if self.revisions.pending {
             self.error = Some("Wait for the revision action to finish before leaving this conversation.".into());
             cx.notify();

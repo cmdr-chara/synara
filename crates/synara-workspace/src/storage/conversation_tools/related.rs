@@ -1,4 +1,6 @@
 //! Additive thread relationships. Creation never runs an agent or rewrites history.
+mod handoff;
+pub use handoff::{HandoffReview, HandoffTarget};
 use super::*;
 use crate::{AgentProfile, default_profiles, now_ms};
 
@@ -8,7 +10,7 @@ const MAX_DRAFT: usize = 1024 * 1024;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
-pub enum RelatedThreadKind { SideChat, Revision }
+pub enum RelatedThreadKind { SideChat, Revision, Handoff }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]

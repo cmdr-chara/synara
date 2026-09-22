@@ -47,6 +47,19 @@ aliases likewise remain bound to the opened directory handle, not to a later
 replacement of the alias. This fixes macOS `/var` aliases without weakening leaf
 or contained-directory protections.
 
+## Direct models and imported history
+
+The known preference validators include direct-provider metadata, task-scoped
+model bindings, related-conversation origins and the bounded history-import ledger.
+Backups retain references, reviewed schemas and visible imported text, never
+resolved OS key bytes. Import receipts continue preventing duplicates after
+restore, including receipts whose imported conversation was deleted. An imported
+history snapshot or a reviewed continuation does not acquire a provider session,
+permission decision or automatic send through restoration.
+
+See [Project Import](ui/project-import.md), [provider continuation](ui/provider-handoff.md)
+and [direct models](ui/direct-models.md) for their narrower contracts.
+
 ## Limits and failure behavior
 
 Default maximum artifact size is 1 GiB and default operation deadline is 60 seconds.

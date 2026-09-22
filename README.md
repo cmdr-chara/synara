@@ -1,8 +1,10 @@
 # Synara
 
-A native Rust and GPUI workspace for external coding agents. One generic ACP
-adapter connects installed agents to durable tasks, conversations, permissions,
-filesystem services and terminals. Agent runtimes remain external processes.
+A native Rust and GPUI workspace for external coding agents and direct model
+conversations. One generic ACP adapter connects installed agents to durable tasks,
+permissions, filesystem services and terminals. Agent runtimes remain external
+processes. A separate direct-inference runtime supports reviewed HTTP providers
+without launching an ACP agent.
 
 This branch is a development build, not a production release. Linux compilation,
 fixture-agent integration, native X11 interaction and a controlled loopback SSH
@@ -57,6 +59,21 @@ Custom profiles use the same connection implementation, without source changes:
 launch environment and are not written to the profiles database. Do not place
 secrets in command arguments. Profiles are editable in Settings. Models, modes,
 authentication methods and configuration are discovered from the agent.
+
+## Direct models and conversation intake
+
+[Direct models](docs/ui/direct-models.md) provides reviewed provider/model Settings,
+endpoint-bound OS credentials, streaming, Stop and durable text conversations.
+OpenAI-compatible Chat Completions, Anthropic Messages and Google Generative
+Language are shared transport families, not a claim of 75 verified providers.
+Structured output is validated locally against the documented bounded subset.
+Native multimodal context, approved direct tool execution and broader auth remain open.
+
+[Project Import](docs/ui/project-import.md) reviews local Codex/Claude text history
+before importing it into an unsent standalone chat, without changing source files.
+[Continue with](docs/ui/provider-handoff.md) creates an explicitly reviewed unsent
+related ACP/direct conversation. It preserves the original session and working
+folder, and never claims that provider sessions, approvals or secrets transferred.
 
 ## Agent Registry
 
@@ -165,7 +182,8 @@ credential selection are tracked in the roadmap.
 - `synara-core`: protocol-independent domain, conversation reducer and text model.
 - `synara-agent`: backend contracts, shared connections and interaction broker.
 - `synara-acp`: ACP transport, negotiation and normalized protocol adapter.
-- `synara-runtime`: process ownership, contained filesystem, PTY and execution hosts.
+- `synara-model`: normalized direct inference, provider registry, shared HTTP/SSE families and capability/output validation, separate from ACP.
+- `synara-runtime`: process ownership, contained filesystem, PTY, execution hosts and OS secret references.
 - `synara-workspace`: SQLite, durable event delivery, controller, profiles and tools.
 - `synara-app`: native GPUI shell and input surfaces.
 - `synara-registry`: validated metadata, approved launchers and bounded installations.

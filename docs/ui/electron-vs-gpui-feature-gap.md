@@ -1,15 +1,34 @@
 # Electron Synara to native Rust/GPUI: current feature-gap audit
 
-Checkpoint: 2026-09-22, after consolidation of the four completed feature
-implementation sessions for conversation depth, Pull Requests/Automations/Browser,
-Plugins/Skills/MCP and Device/Settings. This is a source inventory with explicitly
-scoped Linux evidence below. It is not general native runtime, provider, hardware
+Checkpoint: 2026-09-22, after recovery and continuation of the maximum-feature
+sprint at `16789f4b290268bd54f315855cccae479aab8b2f`. Sessions 1-4 remain preserved. This is a source inventory
+with explicitly scoped Linux evidence below. It is not general native runtime, provider, hardware
 or cross-platform acceptance.
 
 The complete preceding Electron comparison, source links, dated tables and earlier
 continuation notes remain in the [preserved pre-Hubs inventory](electron-vs-gpui-feature-gap-before-hubs-2026-09-21.md).
 The full acceptance backlog remains in [ROADMAP.md](../../ROADMAP.md). No historical
 gap is closed merely because this current view is shorter or a heading was renamed.
+
+## September 22: direct models, Project Import and provider continuation
+
+The 48-capability inventory now has **9 substantially present, 24 partial and
+15 missing** capabilities. This is not a release-readiness percentage. Compared
+with the consolidated Sessions 1-4 checkpoint, Project Import moves from missing
+to present, and direct multi-provider runtime and provider handoff move from missing
+to partial. The 75+ provider target remains open.
+
+| Area | Current implementation | Remaining scope |
+| --- | --- | --- |
+| Direct models | Native Settings, catalog/profile/model review, endpoint-bound OS keys, explicit send/Stop, durable text conversations, OpenAI-compatible/Anthropic/Google transport families, usage and bounded local structured-output validation | Verified 75+ provider breadth, OAuth/cloud auth, native multimodal conversations, approved tool execution, same-session state transfer and authenticated/platform acceptance |
+| Project Import | Native read-only Codex/Claude discovery, preview/branch selection, local destination review, explicit atomic text import, duplicate receipt, retry/recovery and source preservation | Broader real-history/platform acceptance, binary history and incremental sync. Provider sessions, approvals and hidden state are intentionally not transferable. |
+| Provider continuation | Native target picker, reviewed editable context, fresh unsent related task in the same working folder, original link and inert restart | Product handoff is partial: no in-place provider-session transfer, file rollback or autonomous delegation. |
+
+See [direct models](direct-models.md), [Project Import](project-import.md),
+[provider continuation](provider-handoff.md) and the
+[exact verification receipt](../verification/max-feature-sprint.md). Native evidence
+uses owned HTTP/ACP fixtures. Registry metadata is not authentication or a count
+of proven provider integrations. The subsequent dated checkpoints remain historical.
 
 ## September 22: consolidated Sessions 1-4 status
 
@@ -69,14 +88,15 @@ browser, device, composer, editor and release workflows.
 
 Using Emanuele's current feature overview as the counting boundary, this audit tracks
 48 top-level user capabilities: 46 named overview entries plus Computer Use and
-Project Import. Against the current native tree, **8 are substantially present,
-22 are partial and 18 are genuinely missing feature development**. This is a
+Project Import. At the consolidated Sessions 1-4 checkpoint, **8 were substantially present,
+22 partial and 18 genuinely missing feature development**. The maximum-feature
+sprint above supersedes those current counts with **9 present, 24 partial and 15 missing**. This is a
 feature-parity inventory, not a release-readiness percentage.
 
 The Synara product requirement is intentionally broader than Electron's current
 named-provider list for one area: **direct model providers**. Generic ACP remains
-the coding-agent architecture, but Synara itself must gain a separate provider-neutral
-direct model runtime designed to scale to roughly 75+ providers. ACP access to an
+the coding-agent architecture, and Synara now has a separate provider-neutral direct runtime. Its target
+remains roughly 75+ interoperable providers, not yet demonstrated coverage. ACP access to an
 agent such as OpenCode does not by itself satisfy that requirement.
 
 ## September 21: composer intake and saved follow-ups
@@ -107,8 +127,10 @@ not provider-owned installation or authenticated service interoperability.
 The cleaned code was integrated and its remote ref verified at `12e93d86`.
 The documentation successor preserves the exact tested executable inputs.
 
-Production bootstrap still supplies `UnavailableSecretStore`. Authenticated MCP
-therefore remains blocked without plaintext fallback. External plugin catalogs,
+At that September 21 checkpoint, bootstrap supplied `UnavailableSecretStore` and
+authenticated MCP was blocked. The later maximum-feature sprint installs a shared
+OS credential-store adapter without fallback, but real-store/authenticated
+acceptance remains open. External plugin catalogs,
 provider-native skill lifecycle, OAuth, other transports and macOS/Windows
 acceptance remain open. Native tests used explicit-path skill review, not a desktop
 file-picker portal. Earlier failed builds and input-driver failures are retained
@@ -118,13 +140,15 @@ in the receipt rather than represented as successful acceptance.
 
 | Surface | Source implemented | Remaining acceptance or functionality |
 | --- | --- | --- |
-| Direct model providers | Generic ACP coding-agent architecture is present, but there is no Synara-owned direct provider runtime | Major feature gap: provider-neutral registry/runtime, secret-backed auth, normalized streaming/tools/multimodal/reasoning/usage and roughly 75+ provider breadth |
+| Direct model providers | Separate `synara-model` runtime, three transport families, reviewed registry/custom endpoints, Settings/model selection, endpoint-bound OS references, streaming/Stop, usage and local structured-output checks | Partial toward 75+ interoperability, additional auth, native multimodal and approved tools; see direct-model docs |
+| Project Import | Reviewed local Codex/Claude text-history discovery/import, atomic receipt and recovery | Broader real-history/platform acceptance; no session/approval/secret transfer |
+| Provider continuation | Reviewed unsent related ACP/direct conversations with original link and unchanged source session/root | No in-place same-task session migration or filesystem rollback |
 | Plugins/integrations | Native searchable built-in and managed inventory, ownership and reported-capability separation | External catalog/installed-state/lifecycle requires an actual provider contract, not inferred support; E8/I9 |
 | Skills | Reviewed local Markdown documents, hashes/origin/version, explicit disabled install/update, enable, unsent draft insertion and removal | Remote catalogs, provider-native bundles, native picker/update and broader input/platform acceptance; E8/I9 |
-| MCP | Native scoped add/edit/enable/test/remove, secret references, modern/legacy HTTP discovery, generic negotiated session context and safe retirement | OS secret-store adapter, OAuth, SSH, process/legacy SSE, vendor and platform acceptance; E8/I9 |
+| MCP | Native scoped add/edit/enable/test/remove, secret references, modern/legacy HTTP discovery, generic negotiated session context and safe retirement | OS secret-store acceptance, OAuth, SSH, process/legacy SSE, vendor and platform acceptance; E8/I9 |
 | Transparent Glass | Continuous window tint, compositor transparency/blur request, corrected panel alpha, non-opaque editor/terminal/Git roots, bounded local wallpaper decode/blur | Actual OS blur, full/narrow native screenshots, contrast/focus/restart matrix; I7/I10/P |
 | Zen | Shared presentation preference, native Environment reveal, narrow tool deck, existing draft/process ownership, exit and input guards | Native keyboard/IME/modal interactions, compositor behavior and feature-depth review; D8/G7/I10 |
-| Optional Hubs | Managed/chosen local folder, Main/child tasks, flat navigation/home, context editor, revision-checked saves, archive/restore | Native journeys, Settings compatibility labels, multiple roots/sources, richer organization; F1/F2/F8 |
+| Optional Hubs | Managed/chosen local folder, Main/child tasks, flat navigation/home, context editor, revision-checked saves, archive/restore | Explicit Hub creation and independent draft/restart regression now tested; broader context/platform journeys, multiple roots/sources and organization remain; F1/F2/F8 |
 | Studio compatibility | Existing Studio tasks projected as Hubs without rewriting identities, drafts, sessions or files; malformed metadata preserved | Full migration/backup acceptance before removing serialized Studio compatibility; F2/F4/F9 |
 | Shared Hub context | Visible new-thread draft seeding, explicit current-draft insertion and source-message promotion into a reviewed editor | Retrieval, automatic memory and context policies are not implemented; D9/D10/F2 |
 | Hub Library | Existing file/preview service plus bounded same-directory peer-thread reporting and Open reporting thread | Binary intake, remote previews, deeper provenance and multi-source Library; F9/G1/D11 |
@@ -147,17 +171,17 @@ features as absent.
 
 | Area | Remaining acceptance or extension work |
 | --- | --- |
-| Direct multi-provider runtime | Major feature development, not merely acceptance. Generic ACP stays separate; Synara itself needs the provider-neutral direct model layer described above |
+| Direct multi-provider runtime | Real partial implementation now exists. Remaining P0 development: 75+ provider breadth/interoperability, auth families, native multimodal context and approved tool execution. ACP stays separate. |
 | Computer Use | Missing Electron 0.9.0 product workflow: desktop/app control, permission setup, scoped approval, preview/interruption and safe lifecycle |
-| Project Import | Missing Electron 0.9.0 product workflow: local Codex/Claude history discovery, destination review, durable import, retry/recovery and duplicate protection |
+| Project Import | Reviewed native text import is implemented. Broader real-history/platform acceptance and optional incremental/binary depth remain. |
 | Attachments and voice | Native attachment acceptance, broader binary formats, historical media/export, capture permissions and voice/transcription; D11/D12/I8 |
-| Rich conversation workflows | Side chats and additive edit/resend/revision branching are implemented. Provider-supported queue/steer, file-affecting rollback/handoff, richer structured result cards, Side-chat attachment parity and broader native acceptance remain; D4/D8-D12/G7 |
+| Rich conversation workflows | Side chats and additive edit/resend/revision branching are implemented. Reviewed related provider continuation is now implemented. Provider-supported queue/steer, in-place handoff, file-affecting rollback, richer structured result cards, Side-chat attachment parity and broader native acceptance remain; D4/D8-D12/G7 |
 | Pull Requests | Feature implementation is present. Live authenticated GitHub interoperability, broader native interaction coverage, enterprise/non-GitHub providers, deeper inline-review parity and Hub/thread association remain; H6 |
 | Automations | Durable definitions, fixed-offset scheduling, owned run history, cancellation and explicit restart arming are implemented. IANA/DST, cron/calendar schedules, automatic retry/pruning, direct Hub context and production scheduler/provider restart acceptance remain; F11 |
 | Skills/plugins/MCP | Synara-owned management is implemented. Provider-owned lifecycle/catalog contracts, full skill bundles, production OS credentials/OAuth, remaining transports and real-provider/broader native acceptance remain; E8/I9 |
 | Browser | Real Linux/X11 embedded WebKit hosting, navigation/lifecycle and task-isolated approved automation are implemented. Native Wayland/Windows/macOS, downloads/capture, production auth, accessibility/IME/HiDPI and live-model acceptance remain; K1-K6 |
 | Device tooling | ADB/simctl discovery, bounded capture, supported lifecycle and explicit Android input have source/UI implementation. Physical Apple, Android cold boot, hardware/native interaction and broader platform acceptance remain; L1-L5 |
-| Settings and platform | Session 4 implemented the scoped remaining native Settings functionality. OS credential-store integration, broader notification/accessibility/platform behavior, packaging/updater and macOS/Windows acceptance remain; I/P/O |
+| Settings and platform | Session 4 implemented the scoped remaining native Settings functionality. OS credential-store acceptance, broader notification/accessibility/platform behavior, packaging/updater and macOS/Windows acceptance remain; I/P/O |
 
 ## Earlier workspace-checkpoint evidence and next work
 

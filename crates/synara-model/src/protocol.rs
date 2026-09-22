@@ -42,6 +42,7 @@ pub(crate) fn encode(profile: &ProviderProfile, request: &ModelRequest) -> Model
             }
             value
         }
+        ProtocolFamily::GoogleGenerateContent => crate::google::encode(request)?,
         ProtocolFamily::AnthropicMessages => {
             let mut system = Vec::new();
             let mut messages = Vec::new();

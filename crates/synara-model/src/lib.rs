@@ -2,7 +2,9 @@
 //! Catalog metadata describes capabilities, not authorization or verified account access.
 mod catalog;
 mod config;
+mod google;
 mod protocol;
+mod schema;
 mod stream;
 mod transport;
 pub use catalog::*;
@@ -23,6 +25,10 @@ pub enum ModelError {
     Unsupported(&'static str),
     #[error("The OS credential store is unavailable, locked, or has no key for this endpoint")]
     Credential,
+    #[error("Provider output does not match the reviewed JSON schema")]
+    SchemaMismatch,
+    #[error("Provider stopped generation without a complete answer")]
+    Incomplete,
     #[error("The provider returned HTTP {0}. No automatic retry was made")]
     Http(u16),
     #[error(
@@ -117,6 +123,7 @@ pub struct ModelRequest {
 }
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
 pub struct ModelUsage {
+    /// Total input tokens, including cache reads and writes when reported.
     pub input_tokens: Option<u64>,
     pub output_tokens: Option<u64>,
     pub cached_input_tokens: Option<u64>,

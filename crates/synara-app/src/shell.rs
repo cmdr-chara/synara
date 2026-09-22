@@ -6,6 +6,7 @@ mod integrations;
 mod direct_models;
 mod project_import;
 mod debug_workflow;
+mod recap;
 mod followups;
 mod hubs;
 mod chat_tools;
@@ -107,6 +108,7 @@ struct FormState {
 }
 enum Update {
     DebugWorkflow(Box<debug_workflow::Reply>),
+    Recap(Box<recap::Reply>),
     DirectModels(Box<direct_models::Reply>),
     ProjectImport(Box<project_import::Reply>),
     Automations(Box<automations::Reply>),
@@ -188,6 +190,7 @@ enum Update {
 }
 pub struct Shell {
     debug_workflow: debug_workflow::DebugState,
+    recap: recap::RecapState,
     automations: automations::AutomationsView,
     pull_requests: pull_requests::PrView,
     browser: browser::BrowserView,
@@ -434,6 +437,7 @@ impl Shell {
             handoff: handoff::HandoffState::default(),
             side_chats: side_chats::SideChatState::new(cx),
             debug_workflow: debug_workflow::DebugState::new(cx),
+            recap: recap::RecapState::new(cx),
             followups: followups::FollowupState::new(cx),
             attachments: attachments::AttachmentState::default(),
             hubs: hubs::HubState::new(cx),
@@ -805,6 +809,7 @@ impl Shell {
         self.load_attachments(id);
         self.load_followups(id);
         self.load_debug(id, cx);
+        self.load_recap(id);
         self.load_side_chats(id, cx);
         self.project = Some(task.project_id);
         self.details = None;
@@ -1316,6 +1321,7 @@ impl Shell {
             Update::Device(reply) => self.device_reply(*reply, cx),
             Update::Attachments(reply) => self.attachment_reply(*reply, cx),
             Update::DebugWorkflow(reply) => self.debug_reply(*reply, cx),
+            Update::Recap(reply) => self.recap_reply(*reply, cx),
             Update::Followups(reply) => self.followup_reply(*reply, cx),
             Update::Hubs(reply) => self.hub_reply(*reply, cx),
             Update::Terminals(reply) => self.terminal_reply(*reply, cx),

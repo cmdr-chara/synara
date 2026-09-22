@@ -21,7 +21,7 @@ pub use task_context::{
 };
 mod conversation_tools;
 pub use conversation_tools::{
-    HandoffReview, HandoffTarget, MessageAnchor, MessageSearch, RelatedThreadKind, RevisionSource, SideThreadIndex, ThreadOrigin,
+    ThreadRecap, HandoffReview, HandoffTarget, MessageAnchor, MessageSearch, RelatedThreadKind, RevisionSource, SideThreadIndex, ThreadOrigin,
 };
 mod task_creation;
 pub use chat_preferences::ModelFavorite;
@@ -285,7 +285,7 @@ PRAGMA user_version=2;")?;
             [task.thread_id.to_string()],
         )?;
         tx.execute(
-            "DELETE FROM preferences WHERE key IN (?1,?2,?3,?4,?5,?6,?7,?8,?9)",
+            "DELETE FROM preferences WHERE key IN (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10)",
             params![
                 format!("task-draft:{id}"),
                 format!("message-pins:{id}"),
@@ -295,7 +295,8 @@ PRAGMA user_version=2;")?;
                 format!("thread-origin:{id}"),
                 format!("side-selection:{id}"),
                 format!("task-direct-model:{id}"),
-                format!("task-debug:{id}")
+                format!("task-debug:{id}"),
+                format!("task-recap:{id}")
             ],
         )?;
         let changed = tx.execute("DELETE FROM tasks WHERE id=?1", [id.to_string()])?;
@@ -568,7 +569,8 @@ fn valid_preference_key(key: &str) -> bool {
         return true;
     }
     if let Some(id) = key
-        .strip_prefix("task-debug:")
+        .strip_prefix("task-recap:")
+        .or_else(|| key.strip_prefix("task-debug:"))
         .or_else(|| key.strip_prefix("task-direct-model:"))
         .or_else(|| key.strip_prefix("task-draft:"))
         .or_else(|| key.strip_prefix("message-pins:"))

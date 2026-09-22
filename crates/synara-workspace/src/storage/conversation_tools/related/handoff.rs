@@ -16,6 +16,7 @@ pub enum HandoffTarget {
 
 #[derive(Clone, Debug)]
 pub struct HandoffReview {
+    recap: bool,
     source: Task,
     source_identity: String,
     authority: String,
@@ -204,6 +205,7 @@ impl WorkspaceService {
             let (target_identity, target_label, _, _) = target(&tx, &source, &choice)?;
             let (context, included, omitted) = context(&source, &thread)?;
             let review = HandoffReview {
+                recap: false,
                 source_identity: digest(&source)?,
                 authority: authority(&tx, &source)?,
                 source,
@@ -221,6 +223,21 @@ impl WorkspaceService {
         })
         .await
     }
+    /// A bounded recap request uses the existing reviewed related-task path.
+    /// Creating it never submits a prompt or copies session/approval authority.
+    pub async fn review_recap(&self, id: TaskId) -> WorkspaceResult<HandoffReview> {
+        let source = self.task(id).await?;
+        let choice = match self.direct_model_binding(id).await? {
+            Some(binding) => HandoffTarget::Direct(binding.selection),
+            None => HandoffTarget::Agent(source.agent_id),
+        };
+        let mut review = self.review_handoff(id, choice).await?;
+        if review.included == 0 { return Err(invalid("There are no visible messages to recap.")); }
+        review.recap = true;
+        review.context.push_str("Create a concise thread recap from ONLY the quoted visible conversation above. Summarize the objective, decisions, work completed, unresolved questions and useful next steps. Attribute uncertain claims and note omitted context. Do not invent completion. Do not inspect or change files, execute tools, or request extra permissions. Return only the recap text, within 16,000 characters. This is a separate recap request, not a continuation of the original task.");
+        Ok(review)
+    }
+
     pub(crate) async fn create_handoff(
         &self,
         review: HandoffReview,
@@ -244,9 +261,9 @@ impl WorkspaceService {
             { return Err(invalid("The source conversation or workspace changed. Review the continuation again. Your draft is retained.")); }
             let (identity, _, agent, binding) = target(&tx, &source, &review.target)?;
             if identity != review.target_identity { return Err(invalid("The selected provider or agent changed. Review the continuation again. Your draft is retained.")); }
-            let title = format!("Continue: {}", source.title.chars().take(80).collect::<String>());
+            let title = format!("{}: {}", if review.recap { "Recap" } else { "Continue" }, source.title.chars().take(80).collect::<String>());
             let child = insert_related(&tx, &source, review.child, title, agent, draft, ThreadOrigin {
-                version: 1, parent: source.id, kind: RelatedThreadKind::Handoff, message: None, sequence: review.sequence,
+                version: 1, parent: source.id, kind: if review.recap { RelatedThreadKind::Recap } else { RelatedThreadKind::Handoff }, message: None, sequence: review.sequence,
             })?;
             if let Some(binding) = binding {
                 tx.execute("INSERT INTO preferences(key,data) VALUES(?1,?2)", params![format!("task-direct-model:{}",child.id), encode(&Some(binding))?])?;

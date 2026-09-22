@@ -1,16 +1,24 @@
-name: Sprint 2 focused native validation
+name: Native conversation workflow regression
 on:
   push:
-    branches: [astra/max-feature-sprint-2]
-    paths: [.synara-sprint-2.json]
+    branches: [astra/max-feature-sprint-2, astra/gpui-clean-rewrite]
+    paths:
+      - 'crates/**'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - 'scripts/**'
+      - '.github/workflows/sprint-2.yml'
+  pull_request:
+    branches: [astra/gpui-clean-rewrite]
+    paths: ['crates/**', 'Cargo.toml', 'Cargo.lock', 'scripts/**', '.github/workflows/sprint-2.yml']
 permissions:
-  contents: write
+  contents: read
 concurrency:
-  group: synara-max-feature-sprint-2
+  group: native-conversation-${{ github.ref }}
   cancel-in-progress: false
 jobs:
-  validate:
-    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/max-feature-sprint-2'
+  verify:
+    if: github.repository == 'cmdr-chara/synara'
     runs-on: ubuntu-24.04
     timeout-minutes: 40
     env:
@@ -22,6 +30,7 @@ jobs:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: Pinned compiler and native prerequisites
         run: |
           rustup toolchain install 1.98.1 --profile minimal --component rustfmt
@@ -33,119 +42,54 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             target
-          key: sprint-2-v1-${{ runner.os }}-${{ github.sha }}
+          key: native-conversation-${{ runner.os }}-${{ github.sha }}
           restore-keys: |
+            native-conversation-${{ runner.os }}-
             sprint-2-v1-${{ runner.os }}-
-      - name: Validate exact bounded candidate and publish only the session branch
+      - name: Source, roadmap and baseline checks
         run: |
-          mkdir -p /tmp/sprint2-evidence
+          mkdir -p /tmp/native-conversation-evidence
           set -o pipefail
-          python3 - <<'PY' 2>&1 | tee /tmp/sprint2-evidence/validation.log
-          import base64, gzip, hashlib, io, json, os, re, subprocess
-          from pathlib import Path
-          def run(*args, **kwargs):
-              print('+', ' '.join(args), flush=True)
-              return subprocess.run(args, check=True, **kwargs)
-          def output(*args):
-              return subprocess.check_output(args, text=True).strip()
-          def allowed(path):
-              return path in ('ROADMAP.md', 'README.md') or path.startswith(('crates/', 'docs/', 'scripts/native_sprint2', 'scripts/test_sprint2'))
-          head = output('git', 'rev-parse', 'HEAD')
-          main = output('git', 'ls-remote', 'origin', 'refs/heads/main')
-          package_path = Path('.synara-sprint-2.json')
-          assert not package_path.is_symlink() and package_path.stat().st_size <= 4 * 1024 * 1024
-          package = json.loads(package_path.read_text(encoding='utf-8'))
-          assert re.fullmatch('[0-9a-f]{40}', package['base'])
-          run('git', 'merge-base', '--is-ancestor', package['base'], head)
-          preceding = output('git', 'diff', '--name-only', package['base'], head).splitlines()
-          assert all(p in ('.github/workflows/sprint-2.yml', '.synara-sprint-2.json') for p in preceding), preceding
-          def ancestor_package(source):
-              assert re.fullmatch('[0-9a-f]{40}', source)
-              run('git', 'merge-base', '--is-ancestor', source, head)
-              raw = subprocess.check_output(['git', 'show', source + ':.synara-sprint-2.json'])
-              assert len(raw) <= 4 * 1024 * 1024
-              result = json.loads(raw)
-              assert result['base'] == package['base']
-              return result
-          def patches(item, depth=0):
-              assert depth < 8 and item['base'] == package['base']
-              if 'source' in item:
-                  yield from patches(ancestor_package(item['source']), depth + 1)
-              encoded = item.get('gzip_base64')
-              if 'encoded_source' in item:
-                  assert encoded is None and 'patch' not in item
-                  encoded = ancestor_package(item['encoded_source'])['gzip_base64']
-                  assert hashlib.sha256(encoded.encode('ascii')).hexdigest() == item['encoded_sha256']
-                  edits = item['encoded_edits']
-                  assert isinstance(edits, list) and 1 <= len(edits) <= 16
-                  assert len(set(e[0] for e in edits)) == len(edits)
-                  for offset, before, after in sorted(edits, reverse=True):
-                      assert type(offset) is int and 0 <= offset <= len(encoded)
-                      assert isinstance(before, str) and isinstance(after, str)
-                      assert len(before) <= 128 and len(after) <= 128
-                      assert re.fullmatch('[A-Za-z0-9+/=]*', before + after)
-                      assert encoded[offset:offset + len(before)] == before
-                      encoded = encoded[:offset] + after + encoded[offset + len(before):]
-              if encoded is not None:
-                  with gzip.GzipFile(fileobj=io.BytesIO(base64.b64decode(encoded, validate=True))) as stream:
-                      patch = stream.read(3 * 1024 * 1024 + 1)
-              else:
-                  patch = item['patch'].encode('utf-8')
-              assert len(patch) <= 3 * 1024 * 1024
-              assert hashlib.sha256(patch).hexdigest() == item['sha256']
-              yield patch
-          for index, patch in enumerate(patches(package)):
-              Path('/tmp/sprint2-evidence/submitted-' + str(index) + '.patch').write_bytes(patch)
-              run('git', 'apply', '--check', '-', input=patch)
-              run('git', 'apply', '-', input=patch)
-          changed = output('git', 'ls-files', '--modified', '--others', '--exclude-standard').splitlines()
-          assert changed and len(changed) <= 100 and all(allowed(p) for p in changed), changed
-          assert all(not Path(p).is_symlink() for p in changed)
-          rust = [p for p in changed if p.endswith('.rs') and Path(p).is_file()]
-          if rust:
-              run('rustfmt', '+1.98.1', '--edition', '2024', '--config', 'skip_children=true', *rust)
-          for crate, test in package.get('tests', []):
-              assert crate in ('synara-workspace', 'synara-app', 'synara-core', 'synara-runtime', 'synara-model')
-              assert re.fullmatch('[A-Za-z0-9_:]+', test)
-              target = ['--bin', 'synara-app'] if crate == 'synara-app' else ['--lib']
-              run('cargo', '+1.98.1', 'test', '--locked', '-p', crate, *target, test)
-          run('cargo', '+1.98.1', 'build', '--locked', '-p', 'synara-app', '--bin', 'synara-app', '-p', 'synara-acp', '--bin', 'synara-acp-fixture')
-          for script in package.get('journeys', []):
-              assert re.fullmatch('native_[a-z0-9_]+_smoke[.]py', script)
-              assert Path('scripts', script).is_file()
-              run('python3', 'scripts/' + script, '--binary', 'target/debug/synara-app', '--fixture', 'target/debug/synara-acp-fixture', '--output', '/tmp/sprint2-evidence/' + script[:-3])
-          run('python3', 'scripts/check_roadmap.py')
-          run('git', 'diff', '--check')
-          message = package['message']
-          assert isinstance(message, str) and 1 <= len(message) <= 180 and '\n' not in message
-          current = output('git', 'ls-remote', 'origin', 'refs/heads/astra/max-feature-sprint-2').split()[0]
-          assert current == head, 'Session advanced concurrently; candidate is preserved, not force-pushed'
-          assert output('git', 'ls-remote', 'origin', 'refs/heads/main') == main, 'Main changed concurrently; inspect before publishing'
-          run('git', 'add', '--', *changed)
-          run('git', 'config', 'user.name', 'Synara validation')
-          run('git', 'config', 'user.email', 'synara-validation@users.noreply.github.com')
-          run('git', 'commit', '-m', message)
-          run('git', 'push', 'origin', 'HEAD:refs/heads/astra/max-feature-sprint-2')
-          PY
-      - name: Preserve candidate identity and evidence
+          python3 scripts/verify_sprint2_integration.py --output /tmp/native-conversation-evidence 2>&1 | tee /tmp/native-conversation-evidence/source-checks.log
+          git diff --name-only --diff-filter=ACM fe515833c565d666204f24e5257d85025dede0e9 HEAD -- '*.rs' > /tmp/native-conversation-evidence/rustfmt-paths.txt
+          xargs -r rustfmt +1.98.1 --check --edition 2024 --config skip_children=true < /tmp/native-conversation-evidence/rustfmt-paths.txt
+          python3 scripts/check_roadmap.py 2>&1 | tee /tmp/native-conversation-evidence/roadmap.log
+          python3 -m unittest discover -s scripts -p 'test_audit_workspace.py' 2>&1 | tee /tmp/native-conversation-evidence/audit-tests.log
+          python3 scripts/check_roadmap.py --self-test 2>&1 | tee /tmp/native-conversation-evidence/roadmap-tests.log
+      - name: Accumulated Rust regression
+        run: |
+          set -o pipefail
+          cargo +1.98.1 test --locked -p synara-core -p synara-runtime -p synara-model -p synara-workspace --lib 2>&1 | tee /tmp/native-conversation-evidence/rust-libraries.log
+          cargo +1.98.1 test --locked -p synara-app --bin synara-app 2>&1 | tee /tmp/native-conversation-evidence/rust-app.log
+          cargo +1.98.1 build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture 2>&1 | tee /tmp/native-conversation-evidence/build.log
+      - name: Native user journeys and direct-model regression
+        run: |
+          set -o pipefail
+          for script in native_sprint2_debug_smoke native_sprint2_pr_fix_smoke native_sprint2_file_comments_smoke native_sprint2_releases_smoke native_sprint2_recap_smoke native_direct_models_smoke; do
+            python3 "scripts/$script.py" --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output "/tmp/native-conversation-evidence/$script" 2>&1 | tee "/tmp/native-conversation-evidence/$script.log"
+          done
+      - name: Confirm tests left source unchanged
+        run: |
+          test -z "$(git status --porcelain)"
+          git diff --exit-code
+      - name: Preserve exact source and evidence
         if: always()
         run: |
-          mkdir -p /tmp/sprint2-evidence
-          git rev-parse HEAD > /tmp/sprint2-evidence/revision.txt
-          git status --short > /tmp/sprint2-evidence/status.txt
-          git diff HEAD > /tmp/sprint2-evidence/candidate.patch
-          git bundle create /tmp/sprint2-evidence/source.bundle HEAD
+          mkdir -p /tmp/native-conversation-evidence
+          git rev-parse HEAD > /tmp/native-conversation-evidence/revision.txt
+          git status --short > /tmp/native-conversation-evidence/status.txt
+          git bundle create /tmp/native-conversation-evidence/source.bundle HEAD
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:
-          name: sprint2-evidence
-          path: /tmp/sprint2-evidence/
+          name: native-conversation-evidence
+          path: /tmp/native-conversation-evidence/
           retention-days: 7
       - uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
-        if: always()
+        if: always() && github.event_name == 'push'
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
             target
-          key: sprint-2-v1-${{ runner.os }}-${{ github.sha }}
+          key: native-conversation-${{ runner.os }}-${{ github.sha }}

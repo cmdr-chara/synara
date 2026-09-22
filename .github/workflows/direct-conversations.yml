@@ -1,0 +1,76 @@
+name: Direct conversations acceptance
+
+on:
+  workflow_dispatch:
+    inputs:
+      revision:
+        description: Exact reviewed native source commit
+        required: true
+        type: string
+  workflow_call:
+    inputs:
+      revision:
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  linux:
+    if: github.repository == 'cmdr-chara/synara'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      CANDIDATE_REVISION: ${{ inputs.revision }}
+      CARGO_BUILD_JOBS: '2'
+      PYTHONDONTWRITEBYTECODE: '1'
+      GIT_TERMINAL_PROMPT: '0'
+    steps:
+      - name: Require an exact reviewed commit
+        shell: bash
+        run: '[[ "$CANDIDATE_REVISION" =~ ^[0-9a-f]{40}$ ]]'
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          ref: ${{ inputs.revision }}
+          persist-credentials: false
+      - name: Verify checkout
+        run: test "$(git rev-parse HEAD)" = "$CANDIDATE_REVISION"
+      - name: Rust toolchain
+        run: rustup toolchain install 1.98.1 --profile minimal --component rustfmt
+      - name: Native Linux prerequisites
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libwebkit2gtk-4.1-dev libgtk-3-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil xclip fonts-dejavu-core fonts-liberation
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: direct-conversations-1.98.1-${{ runner.os }}-${{ inputs.revision }}
+          restore-keys: |
+            direct-conversations-1.98.1-${{ runner.os }}-
+            max-feature-1.98.1-${{ runner.os }}-
+      - name: Backend contracts and native build
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/direct-conversations-evidence
+          git rev-parse HEAD > /tmp/direct-conversations-evidence/revision.txt
+          cargo +1.98.1 test --locked --workspace --exclude synara-app 2>&1 | tee /tmp/direct-conversations-evidence/backend.log
+          cargo +1.98.1 build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture 2>&1 | tee /tmp/direct-conversations-evidence/native-build.log
+      - name: Owned native journeys, without provider credentials
+        run: |
+          set -euo pipefail
+          for journey in google_models direct_models project_import handoff model_draft browser_webview integrations; do
+            /usr/bin/python3 "scripts/native_${journey}_smoke.py" \
+              --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture \
+              --output "/tmp/direct-conversations-evidence/$journey"
+          done
+          git diff --exit-code
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: direct-conversations-evidence
+          path: /tmp/direct-conversations-evidence/
+          retention-days: 7

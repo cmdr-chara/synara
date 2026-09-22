@@ -161,13 +161,14 @@ impl Shell {
                         .child(ui::layout_probe("kanban-new-task"))
                     }))
                     .children(has_chat.then(|| {
-                        ui::unavailable_action(
-                            "handoff",
-                            if docked { "" } else { "Hand off" },
-                            Glyph::Handoff,
-                            "Agent handoff is not available in this native build yet.",
+                        ui::action(
+                            "handoff-header",
+                            if docked { "" } else { "Continue with..." },
+                            Some(Glyph::Handoff),
+                            false,
+                            cx.listener(|this, _: &(), window, cx| this.open_handoff(window, cx)),
                         )
-                        .aria_label("Hand off, unavailable")
+                        .aria_label("Review a related provider continuation")
                     }))
                     .children(
                         (!matches!(self.panel, Panel::Settings | Panel::Kanban | Panel::Hubs)).then(|| {
@@ -397,6 +398,7 @@ impl Render for Shell {
                         || this.draft_state.quitting
                         || this.environment.quitting
                         || this.revisions.open()
+                        || this.handoff.open()
                     {
                         return;
                     }
@@ -442,6 +444,7 @@ impl Render for Shell {
             && !self.chat_tools.menu_open()
             && !self.chat_tools.find_open
             && !self.revisions.open()
+            && !self.handoff.open()
             && !(self.dock_open() && self.environment.maximized && (!self.zen_active() || self.settings.personalization.tools_shown))
         {
             let focus = self.composer.read(cx).focus_handle(cx);
@@ -457,6 +460,7 @@ impl Render for Shell {
         self.restore_saved_context_focus(window, cx);
         self.restore_hub_focus(window, cx);
         self.restore_revision_focus(window, cx);
+        self.restore_handoff_focus(window, cx);
         self.restore_explorer_focus(window, cx);
         if tools_visible && !self.settings.personalization.attention_open {
             self.restore_editor_focus(window, cx);
@@ -518,6 +522,7 @@ impl Render for Shell {
                     || this.organization.dialog.is_some()
                     || this.saved_context.dialog.is_some()
                     || this.revisions.open()
+                        || this.handoff.open()
                     || this.settings.personalization.attention_open
                     || this.explorer.modal_open()
                 {
@@ -700,6 +705,7 @@ impl Render for Shell {
             .children(self.navigation.menu_open.then(|| self.tools_overlay(cx)))
             .children(self.controls.is_open().then(|| self.control_overlay(cx)))
             .children(self.revisions.open().then(|| self.revision_overlay(cx)))
+            .children(self.handoff.open().then(|| self.handoff_overlay(cx)))
             .children(
                 self.settings
                     .popup

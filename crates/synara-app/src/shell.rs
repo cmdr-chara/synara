@@ -31,6 +31,7 @@ mod registry;
 mod review;
 mod saved_context;
 mod revisions;
+mod handoff;
 mod side_chats;
 mod settings;
 mod studio;
@@ -111,6 +112,7 @@ enum Update {
     BrowserConfigured(Result<(), String>),
     Integrations(Box<integrations::Reply>),
     Revision(Box<revisions::Reply>),
+    Handoff(Box<handoff::Reply>),
     SideChats(Box<side_chats::Reply>),
     NativeSettings(Box<settings::native::Reply>),
     Device(Box<device::Reply>),
@@ -188,6 +190,7 @@ pub struct Shell {
     browser: browser::BrowserView,
     device: device::DeviceView,
     revisions: revisions::RevisionState,
+    handoff: handoff::HandoffState,
     side_chats: side_chats::SideChatState,
     followups: followups::FollowupState,
     attachments: attachments::AttachmentState,
@@ -425,6 +428,7 @@ impl Shell {
             browser: browser::BrowserView::new(&controller, bootstrap.scratch_directory.parent().unwrap_or(&bootstrap.scratch_directory).join("browser"), cx),
             device: device::DeviceView::new(cx),
             revisions: revisions::RevisionState::new(),
+            handoff: handoff::HandoffState::default(),
             side_chats: side_chats::SideChatState::new(cx),
             followups: followups::FollowupState::new(cx),
             attachments: attachments::AttachmentState::default(),
@@ -792,6 +796,7 @@ impl Shell {
         self.studio.reset();
         self.explorer.reset_search();
         self.load_direct_binding(id);
+        self.load_handoff_origin(id);
         self.load_message_pins(id);
         self.load_attachments(id);
         self.load_followups(id);
@@ -1298,6 +1303,7 @@ impl Shell {
             Update::ProjectImport(reply) => self.import_reply(*reply, cx),
             Update::Integrations(reply) => self.integration_reply(*reply,cx),
             Update::Revision(reply) => self.revision_reply(*reply, cx),
+            Update::Handoff(reply) => self.handoff_reply(*reply, cx),
             Update::SideChats(reply) => self.side_chat_reply(*reply, cx),
             Update::NativeSettings(reply) => self.native_settings_reply(*reply, cx),
             Update::PullRequests(reply) => self.pr_reply(*reply, cx),

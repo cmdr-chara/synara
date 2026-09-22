@@ -79,9 +79,7 @@ impl Typography {
         // The reference caps derived sizes at MAX_CHAT_FONT_SIZE_PX + 2.
         // Preserve explicit larger native accessibility preferences as well.
         let maximum = 20.0_f32.max((base * 1.08).ceil());
-        let scaled = |factor: f32, minimum: f32| {
-            (base * factor).round().clamp(minimum, maximum)
-        };
+        let scaled = |factor: f32, minimum: f32| (base * factor).round().clamp(minimum, maximum);
         Self {
             ui: base,
             large: scaled(1.08, base),
@@ -136,13 +134,29 @@ mod tests {
     fn default_typography_matches_electron_and_persisted_defaults() {
         assert_eq!(FontPreferences::default().ui_size, DEFAULT_UI_FONT_SIZE);
         assert_eq!(FontPreferences::default().code_size, DEFAULT_CODE_FONT_SIZE);
-        assert_eq!(Personalization::default().terminal_font_size, DEFAULT_TERMINAL_FONT_SIZE);
-        assert_eq!(f32::from(Personalization::default().chat_width), STANDARD_CHAT_WIDTH);
+        assert_eq!(
+            Personalization::default().terminal_font_size,
+            DEFAULT_TERMINAL_FONT_SIZE
+        );
+        assert_eq!(
+            f32::from(Personalization::default().chat_width),
+            STANDARD_CHAT_WIDTH
+        );
         assert!(WIDE_CHAT_WIDTH > STANDARD_CHAT_WIDTH);
-        assert_eq!(Typography::from_base(13.0), Typography {
-            ui: 13.0, large: 14.0, small: 12.0, extra_small: 11.0,
-            tiny: 10.0, timestamp: 9.0, code: 12.0, chat_meta: 9.0, chat_tiny: 9.0,
-        });
+        assert_eq!(
+            Typography::from_base(13.0),
+            Typography {
+                ui: 13.0,
+                large: 14.0,
+                small: 12.0,
+                extra_small: 11.0,
+                tiny: 10.0,
+                timestamp: 9.0,
+                code: 12.0,
+                chat_meta: 9.0,
+                chat_tiny: 9.0,
+            }
+        );
     }
 
     #[test]
@@ -168,7 +182,8 @@ mod tests {
                 "ui_family": "Liberation Sans", "ui_size": 14.0,
                 "code_family": null, "code_size": 13.0
             }}
-        })).unwrap();
+        }))
+        .unwrap();
         settings.validate().unwrap();
         assert_eq!(settings.appearance.fonts.ui_size, 14.0);
         assert_eq!(settings.appearance.fonts.code_size, 13.0);

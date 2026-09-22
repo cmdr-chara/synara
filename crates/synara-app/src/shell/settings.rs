@@ -2,6 +2,9 @@
 //! sections without a native service say so instead of displaying invented data.
 use super::*;
 mod chat;
+mod desktop;
+mod navigation;
+use navigation::{SECTIONS, primary_section};
 pub(super) mod native;
 mod personalization;
 use crate::ui::menu::{Choice, ChoiceEvent, ChoiceMenu};
@@ -20,6 +23,7 @@ pub(super) enum Section {
     Keybindings,
     Usage,
     AppSnap,
+    Computer,
     Plugins,
     Mcp,
     Providers,
@@ -39,168 +43,7 @@ struct SectionInfo {
     icon: Glyph,
     description: &'static str,
 }
-const SECTIONS: &[SectionInfo] = &[
-    SectionInfo {
-        section: Section::ProjectImport,
-        id: "project-import",
-        group: "Integrations",
-        label: "Project import",
-        icon: Glyph::Folder,
-        description: "Discover and review local Codex or Claude histories. Import unsent standalone chats without changing source files.",
-    },
-    SectionInfo {
-        section: Section::DirectModels,
-        id: "direct-models",
-        group: "Integrations",
-        label: "Direct models",
-        icon: Glyph::Brain,
-        description: "Direct provider endpoints, secure API keys and reviewed model selection. Separate from ACP coding agents.",
-    },
-    SectionInfo {
-        section: Section::Device,
-        id: "device",
-        group: "Integrations",
-        label: "Device / capture",
-        icon: Glyph::Window,
-        description: "Installed device helpers, captures, permissions and supported controls.",
-    },
-    SectionInfo {
-        section: Section::Privacy,
-        id: "privacy",
-        group: "System",
-        label: "Privacy & security",
-        icon: Glyph::Settings,
-        description: "Local data, protocol diagnostics, secret-store status and safe deletion.",
-    },
-    SectionInfo {
-        section: Section::General,
-        id: "general",
-        group: "Personal",
-        label: "General",
-        icon: Glyph::Settings,
-        description: "Choose defaults for new chats, navigation, and the Environment panel.",
-    },
-    SectionInfo {
-        section: Section::Profile,
-        id: "profile",
-        group: "Personal",
-        label: "Profile",
-        icon: Glyph::User,
-        description: "Your profile and activity in this installation of Synara.",
-    },
-    SectionInfo {
-        section: Section::Appearance,
-        id: "appearance",
-        group: "Personal",
-        label: "Appearance",
-        icon: Glyph::Palette,
-        description: "Customize the theme, typography, and motion.",
-    },
-    SectionInfo {
-        section: Section::Notifications,
-        id: "notifications",
-        group: "Personal",
-        label: "Notifications",
-        icon: Glyph::Bell,
-        description: "Updates when work finishes or needs attention.",
-    },
-    SectionInfo {
-        section: Section::Behavior,
-        id: "behavior",
-        group: "Personal",
-        label: "Chat behavior",
-        icon: Glyph::Sliders,
-        description: "Live responses, follow-ups, and permission requests.",
-    },
-    SectionInfo {
-        section: Section::Keybindings,
-        id: "keybindings",
-        group: "Personal",
-        label: "Keybindings",
-        icon: Glyph::Shortcut,
-        description: "Keyboard shortcuts for Synara.",
-    },
-    SectionInfo {
-        section: Section::Usage,
-        id: "usage",
-        group: "Personal",
-        label: "Usage & limits",
-        icon: Glyph::Gauge,
-        description: "Usage reported by the agent for your current chat.",
-    },
-    SectionInfo {
-        section: Section::AppSnap,
-        id: "appsnap",
-        group: "Integrations",
-        label: "AppSnap",
-        icon: Glyph::Capture,
-        description: "Capture an app window into a chat.",
-    },
-    SectionInfo {
-        section: Section::Plugins,
-        id: "plugins",
-        group: "Integrations",
-        label: "Plugins & integrations",
-        icon: Glyph::Plugin,
-        description: "Synara-managed integrations and reported agent capabilities, with explicit ownership.",
-    },
-    SectionInfo {
-        section: Section::Mcp,
-        id: "mcp",
-        group: "Integrations",
-        label: "MCP connections",
-        icon: Glyph::Plugin,
-        description: "Connections to external tools and services.",
-    },
-    SectionInfo {
-        section: Section::Providers,
-        id: "providers",
-        group: "Coding",
-        label: "Agent providers",
-        icon: Glyph::Puzzle,
-        description: "Choose coding agents and manage their installed tools.",
-    },
-    SectionInfo {
-        section: Section::Models,
-        id: "models",
-        group: "Coding",
-        label: "Models & writing",
-        icon: Glyph::Brain,
-        description: "Models available to your current chat.",
-    },
-    SectionInfo {
-        section: Section::Skills,
-        id: "skills",
-        group: "Coding",
-        label: "Agent skills",
-        icon: Glyph::Blocks,
-        description: "Reusable workflows from your agents.",
-    },
-    SectionInfo {
-        section: Section::Worktrees,
-        id: "worktrees",
-        group: "Coding",
-        label: "Managed worktrees",
-        icon: Glyph::BranchSimple,
-        description: "Isolated workspaces created by Synara.",
-    },
-    SectionInfo {
-        section: Section::System,
-        id: "system",
-        group: "System",
-        label: "System tools",
-        icon: Glyph::Toolbox,
-        description: "Sessions, remote connections, and recovery tools.",
-    },
-    SectionInfo {
-        section: Section::Archived,
-        id: "archived",
-        group: "Archived",
-        label: "Archived threads",
-        icon: Glyph::Archive,
-        description: "Find and restore threads you previously archived.",
-    },
-];
+
 #[derive(Clone, Copy)]
 enum ChoiceKind {
     Provider,
@@ -303,7 +146,7 @@ fn settings_match(info: &SectionInfo, query: &str) -> bool {
 fn card() -> gpui::Div {
     div()
         .w_full()
-        .rounded_2xl()
+        .rounded_xl()
         .border_1()
         .border_color(rgb(palette().border))
         .overflow_hidden()
@@ -312,9 +155,12 @@ fn card() -> gpui::Div {
 }
 fn heading(label: &'static str) -> gpui::Div {
     div()
-        .mt_7()
-        .mb_3()
+        .mt_4()
+        .mb(px(6.))
         .px_2()
+        .text_size(px(
+            ui::metrics::Typography::from_base(ui::ui_font_size()).small
+        ))
         .text_color(rgb(palette().muted))
         .child(label)
 }
@@ -326,24 +172,28 @@ fn row(
     let description = description.into();
     div()
         .px_3()
-        .py_3()
+        .py(px(ui::settings_row_padding()))
         .border_b_1()
         .border_color(rgb(palette().border))
         .flex()
         .items_center()
-        .gap_5()
+        .gap(px(10.))
         .child(
             div()
                 .flex_1()
                 .min_w_0()
                 .flex()
                 .flex_col()
-                .gap_1()
-                .child(title.into())
+                .gap(px(2.))
+                .child(
+                    div()
+                        .font_weight(gpui::FontWeight::MEDIUM)
+                        .child(title.into()),
+                )
                 .children((!description.is_empty()).then(|| {
                     div()
                         .text_color(rgb(palette().muted))
-                        .line_height(px(22.))
+                        .line_height(px(ui::ui_font_size() * 1.5))
                         .child(description)
                 })),
         )
@@ -360,6 +210,9 @@ fn empty(title: &'static str, detail: &'static str) -> gpui::Div {
 impl Shell {
     pub(super) fn open_settings_section(&mut self, section: Section, cx: &mut Context<Self>) {
         self.settings.section = section;
+        if section == Section::Worktrees {
+            self.prepare_worktree_settings(cx);
+        }
         if section == Section::DirectModels {
             self.load_direct_models(cx);
         }
@@ -490,7 +343,11 @@ impl Shell {
                                 let entries: Vec<_> = SECTIONS
                                     .iter()
                                     .filter(|info| {
-                                        info.group == group && settings_match(info, &query)
+                                        info.group == group
+                                            && settings_match(info, &query)
+                                            && (primary_section(info.section)
+                                                || !query.is_empty()
+                                                || self.settings.section == info.section)
                                     })
                                     .collect();
                                 if entries.is_empty() {
@@ -519,9 +376,21 @@ impl Shell {
                                                     this.open_settings_section(section, cx);
                                                 }),
                                             )
-                                            .h(px(30.))
+                                            .h(px(ui::row_height()))
                                             .relative()
                                             .child(ui::layout_probe(info.id))
+                                            .children(
+                                                (section == Section::Computer).then(|| {
+                                                    div()
+                                                        .px(px(6.))
+                                                        .rounded_full()
+                                                        .border_1()
+                                                        .border_color(rgb(palette().border))
+                                                        .text_size(px(10.))
+                                                        .text_color(rgb(palette().muted))
+                                                        .child("Beta")
+                                                }),
+                                            )
                                         })),
                                 )
                             }),
@@ -773,19 +642,30 @@ impl Shell {
             Section::Models => self.model_settings(cx),
             Section::DirectModels => self.direct_model_settings(cx),
             Section::ProjectImport => self.project_import_settings(cx),
-            Section::System => self.system_settings(cx),
+            Section::System => div()
+                .child(self.system_settings(cx))
+                .child(self.native_extensions_settings(cx))
+                .into_any_element(),
             Section::Archived => self.archived_settings(cx),
             Section::Behavior => self.chat_settings(cx),
             Section::Notifications => self.notification_settings(cx),
-            Section::AppSnap => empty("AppSnap is not available yet", "Capturing another app’s window has not been ported to the native app. You can attach project files from the composer’s Add menu.").into_any_element(),
-            Section::Plugins | Section::Mcp | Section::Skills => self.integration_settings(self.settings.section,cx),
-            Section::Worktrees => empty("Managed worktrees are not available yet", "Open an existing worktree as a project to use it. Creating and cleaning up managed worktrees from this page has not been ported yet.").into_any_element(),
+            Section::AppSnap => self.appsnap_settings(cx),
+            Section::Computer => self.computer_settings(cx),
+            Section::Plugins | Section::Mcp | Section::Skills => {
+                self.integration_settings(self.settings.section, cx)
+            }
+            Section::Worktrees => self.worktree_settings_view(cx),
         };
         div()
             .id("settings-view")
+            .relative()
+            .child(ui::layout_probe_slot(
+                "settings-page",
+                self.settings.section as usize,
+            ))
             .track_scroll(&self.settings.scroll)
             .mt(px(-30.))
-            .text_size(px(15.))
+            .text_size(px(ui::ui_font_size()))
             .flex_1()
             .min_h_0()
             .min_w_0()

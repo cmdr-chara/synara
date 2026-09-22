@@ -3,11 +3,12 @@ mod icons;
 pub mod markdown;
 pub use icons::{Glyph, icon, provider_glyph};
 pub mod menu;
+pub mod metrics;
 pub mod motion;
 mod personalization;
 pub use personalization::{
-    canvas_background, chat_width, code_font_size, glass_edge, motion_multiplier, row_height,
-    surface, terminal_font_size, ui_font_size,
+    canvas_background, chat_width, code_font_size, density_metrics, glass_edge, motion_multiplier,
+    row_height, settings_row_padding, surface, terminal_font_size, ui_font_size,
 };
 pub mod task_dialog;
 use gpui::{
@@ -19,7 +20,7 @@ pub const MENU_WIDTH: f32 = 304.0;
 pub const MENU_ROW_HEIGHT: f32 = 42.0;
 pub const MENU_MAX_HEIGHT: f32 = 294.0;
 pub const SIDEBAR_WIDTH: f32 = 256.0;
-pub const ROW_HEIGHT: f32 = 30.0;
+pub const ROW_HEIGHT: f32 = 28.0;
 pub const CHROME_HEIGHT: f32 = 46.0;
 pub const UI_FONT: &str = if cfg!(target_os = "windows") {
     "Segoe UI"
@@ -183,7 +184,7 @@ pub fn button_shell(
             palette().overlay
         }))
         .text_color(rgb(palette().text))
-        .text_sm()
+        .text_size(px(ui_font_size()))
         .cursor_pointer()
         .hover(|style| style.bg(rgb(palette().hover)))
         .active(|style| style.bg(rgb(palette().selected)))
@@ -219,7 +220,7 @@ pub fn action(
             0
         }))
         .text_color(rgb(palette().text))
-        .text_size(px(ui_font_size() + 1.))
+        .text_size(px(ui_font_size()))
         .cursor_pointer()
         .hover(|style| style.bg(rgb(palette().hover)))
         .active(|style| style.bg(rgb(palette().selected)))
@@ -262,7 +263,7 @@ pub fn header_action(
             0
         }))
         .text_color(rgb(palette().text))
-        .text_size(px(ui_font_size() + 1.))
+        .text_size(px(ui_font_size()))
         .cursor_pointer()
         .hover(|style| style.bg(rgb(palette().hover)))
         .active(|style| style.bg(rgb(palette().selected)))

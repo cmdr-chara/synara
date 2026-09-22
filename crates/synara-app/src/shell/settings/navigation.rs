@@ -11,59 +11,198 @@ const fn item(
     icon: Glyph,
     description: &'static str,
 ) -> SectionInfo {
-    SectionInfo { section, id, group, label, icon, description }
+    SectionInfo {
+        section,
+        id,
+        group,
+        label,
+        icon,
+        description,
+    }
 }
 
 pub(super) const SECTIONS: &[SectionInfo] = &[
-    item(Section::General, "general", "Personal", "General", Glyph::Settings,
-        "Choose defaults for new chats, navigation, and the Environment panel."),
-    item(Section::Profile, "profile", "Personal", "Profile", Glyph::User,
-        "Your local activity, streaks, and a shareable stats card."),
-    item(Section::Appearance, "appearance", "Personal", "Appearance", Glyph::Palette,
-        "Customize the theme, typography, density, and time format."),
-    item(Section::Notifications, "notifications", "Personal", "Notifications", Glyph::Bell,
-        "Choose how Synara tells you when work finishes or needs attention."),
-    item(Section::Behavior, "behavior", "Personal", "Chat behavior", Glyph::Sliders,
-        "Control live responses, follow-ups, review defaults, and safety confirmations."),
-    item(Section::Keybindings, "keybindings", "Personal", "Keybindings", Glyph::Shortcut,
-        "Capture, customize, and add shortcuts for every Synara command."),
-    item(Section::Usage, "usage", "Personal", "Usage & limits", Glyph::Gauge,
-        "See remaining quota and credits for every signed-in provider."),
-    item(Section::AppSnap, "appsnap", "Integrations", "AppSnap", Glyph::Capture,
-        "Capture another app's frontmost window directly into a task."),
-    item(Section::Computer, "computer", "Integrations", "Computer use", Glyph::Window,
-        "Let agents see and control this computer's desktop, and check backend status."),
-    item(Section::Mcp, "mcp", "Integrations", "MCP connections", Glyph::Plugin,
-        "Give Codex, Claude, and other local agents scoped access to Synara tasks."),
-    item(Section::Providers, "providers", "Coding", "Agent providers", Glyph::Puzzle,
-        "Choose visible coding agents and manage their installed CLI tools."),
-    item(Section::Models, "models", "Coding", "Models & writing", Glyph::Brain,
-        "Choose the model used for Git writing and add custom model slugs."),
-    item(Section::Skills, "skills", "Coding", "Agent skills", Glyph::Blocks,
-        "Review reusable workflows discovered across all configured providers."),
-    item(Section::Worktrees, "worktrees", "Coding", "Managed worktrees", Glyph::BranchSimple,
-        "Review and clean up isolated workspaces created by Synara."),
-    item(Section::System, "system", "System", "System tools", Glyph::Toolbox,
-        "Manage sessions, recovery tools, low-level keybindings, and version details."),
-    item(Section::Archived, "archived", "Archived", "Archived threads", Glyph::Archive,
-        "Find and restore threads you previously archived."),
+    item(
+        Section::General,
+        "general",
+        "Personal",
+        "General",
+        Glyph::Settings,
+        "Choose defaults for new chats, navigation, and the Environment panel.",
+    ),
+    item(
+        Section::Profile,
+        "profile",
+        "Personal",
+        "Profile",
+        Glyph::User,
+        "Your local activity, streaks, and a shareable stats card.",
+    ),
+    item(
+        Section::Appearance,
+        "appearance",
+        "Personal",
+        "Appearance",
+        Glyph::Palette,
+        "Customize the theme, typography, density, and time format.",
+    ),
+    item(
+        Section::Notifications,
+        "notifications",
+        "Personal",
+        "Notifications",
+        Glyph::Bell,
+        "Choose how Synara tells you when work finishes or needs attention.",
+    ),
+    item(
+        Section::Behavior,
+        "behavior",
+        "Personal",
+        "Chat behavior",
+        Glyph::Sliders,
+        "Control live responses, follow-ups, review defaults, and safety confirmations.",
+    ),
+    item(
+        Section::Keybindings,
+        "keybindings",
+        "Personal",
+        "Keybindings",
+        Glyph::Shortcut,
+        "Capture, customize, and add shortcuts for every Synara command.",
+    ),
+    item(
+        Section::Usage,
+        "usage",
+        "Personal",
+        "Usage & limits",
+        Glyph::Gauge,
+        "See remaining quota and credits for every signed-in provider.",
+    ),
+    item(
+        Section::AppSnap,
+        "appsnap",
+        "Integrations",
+        "AppSnap",
+        Glyph::Capture,
+        "Capture another app's frontmost window directly into a task.",
+    ),
+    item(
+        Section::Computer,
+        "computer",
+        "Integrations",
+        "Computer use",
+        Glyph::Window,
+        "Let agents see and control this computer's desktop, and check backend status.",
+    ),
+    item(
+        Section::Mcp,
+        "mcp",
+        "Integrations",
+        "MCP connections",
+        Glyph::Plugin,
+        "Give Codex, Claude, and other local agents scoped access to Synara tasks.",
+    ),
+    item(
+        Section::Providers,
+        "providers",
+        "Coding",
+        "Agent providers",
+        Glyph::Puzzle,
+        "Choose visible coding agents and manage their installed CLI tools.",
+    ),
+    item(
+        Section::Models,
+        "models",
+        "Coding",
+        "Models & writing",
+        Glyph::Brain,
+        "Choose the model used for Git writing and add custom model slugs.",
+    ),
+    item(
+        Section::Skills,
+        "skills",
+        "Coding",
+        "Agent skills",
+        Glyph::Blocks,
+        "Review reusable workflows discovered across all configured providers.",
+    ),
+    item(
+        Section::Worktrees,
+        "worktrees",
+        "Coding",
+        "Managed worktrees",
+        Glyph::BranchSimple,
+        "Review and clean up isolated workspaces created by Synara.",
+    ),
+    item(
+        Section::System,
+        "system",
+        "System",
+        "System tools",
+        Glyph::Toolbox,
+        "Manage sessions, recovery tools, low-level keybindings, and version details.",
+    ),
+    item(
+        Section::Archived,
+        "archived",
+        "Archived",
+        "Archived threads",
+        Glyph::Archive,
+        "Find and restore threads you previously archived.",
+    ),
     // Native-specific capabilities remain reachable from System tools and search.
     // They do not displace the reference's primary navigation or lose saved state.
-    item(Section::ProjectImport, "project-import", "Integrations", "Project import", Glyph::Folder,
-        "Discover and review local Codex or Claude histories. Import unsent standalone chats without changing source files."),
-    item(Section::DirectModels, "direct-models", "Integrations", "Direct models", Glyph::Brain,
-        "Direct provider endpoints, secure API keys and reviewed model selection. Separate from ACP coding agents."),
-    item(Section::Device, "device", "Integrations", "Device / capture", Glyph::Window,
-        "Installed device helpers, captures, permissions and supported controls."),
-    item(Section::Plugins, "plugins", "Integrations", "Plugins & integrations", Glyph::Plugin,
-        "Synara-managed integrations and reported agent capabilities, with explicit ownership."),
-    item(Section::Privacy, "privacy", "System", "Privacy & security", Glyph::Settings,
-        "Local data, protocol diagnostics, secret-store status and safe deletion."),
+    item(
+        Section::ProjectImport,
+        "project-import",
+        "Integrations",
+        "Project import",
+        Glyph::Folder,
+        "Discover and review local Codex or Claude histories. Import unsent standalone chats without changing source files.",
+    ),
+    item(
+        Section::DirectModels,
+        "direct-models",
+        "Integrations",
+        "Direct models",
+        Glyph::Brain,
+        "Direct provider endpoints, secure API keys and reviewed model selection. Separate from ACP coding agents.",
+    ),
+    item(
+        Section::Device,
+        "device",
+        "Integrations",
+        "Device / capture",
+        Glyph::Window,
+        "Installed device helpers, captures, permissions and supported controls.",
+    ),
+    item(
+        Section::Plugins,
+        "plugins",
+        "Integrations",
+        "Plugins & integrations",
+        Glyph::Plugin,
+        "Synara-managed integrations and reported agent capabilities, with explicit ownership.",
+    ),
+    item(
+        Section::Privacy,
+        "privacy",
+        "System",
+        "Privacy & security",
+        Glyph::Settings,
+        "Local data, protocol diagnostics, secret-store status and safe deletion.",
+    ),
 ];
 
 pub(super) fn primary_section(section: Section) -> bool {
-    !matches!(section, Section::ProjectImport | Section::DirectModels | Section::Device
-        | Section::Plugins | Section::Privacy)
+    !matches!(
+        section,
+        Section::ProjectImport
+            | Section::DirectModels
+            | Section::Device
+            | Section::Plugins
+            | Section::Privacy
+    )
 }
 
 /// Preserve native accessibility/test identities while exposing the reference taxonomy.
@@ -72,7 +211,10 @@ pub(super) fn reference_section_id(section: Section) -> &'static str {
         Section::Keybindings => "shortcuts",
         Section::Mcp => "integrations",
         Section::System => "advanced",
-        _ => SECTIONS.iter().find(|item| item.section == section).map_or("general", |item| item.id),
+        _ => SECTIONS
+            .iter()
+            .find(|item| item.section == section)
+            .map_or("general", |item| item.id),
     }
 }
 
@@ -83,26 +225,32 @@ mod tests {
 
     #[test]
     fn primary_navigation_matches_all_sixteen_electron_sections_in_order() {
-        let actual: Vec<_> = SECTIONS.iter().filter(|item| primary_section(item.section))
-            .map(|item| (reference_section_id(item.section), item.group, item.label)).collect();
-        assert_eq!(actual, vec![
-            ("general", "Personal", "General"),
-            ("profile", "Personal", "Profile"),
-            ("appearance", "Personal", "Appearance"),
-            ("notifications", "Personal", "Notifications"),
-            ("behavior", "Personal", "Chat behavior"),
-            ("shortcuts", "Personal", "Keybindings"),
-            ("usage", "Personal", "Usage & limits"),
-            ("appsnap", "Integrations", "AppSnap"),
-            ("computer", "Integrations", "Computer use"),
-            ("integrations", "Integrations", "MCP connections"),
-            ("providers", "Coding", "Agent providers"),
-            ("models", "Coding", "Models & writing"),
-            ("skills", "Coding", "Agent skills"),
-            ("worktrees", "Coding", "Managed worktrees"),
-            ("advanced", "System", "System tools"),
-            ("archived", "Archived", "Archived threads"),
-        ]);
+        let actual: Vec<_> = SECTIONS
+            .iter()
+            .filter(|item| primary_section(item.section))
+            .map(|item| (reference_section_id(item.section), item.group, item.label))
+            .collect();
+        assert_eq!(
+            actual,
+            vec![
+                ("general", "Personal", "General"),
+                ("profile", "Personal", "Profile"),
+                ("appearance", "Personal", "Appearance"),
+                ("notifications", "Personal", "Notifications"),
+                ("behavior", "Personal", "Chat behavior"),
+                ("shortcuts", "Personal", "Keybindings"),
+                ("usage", "Personal", "Usage & limits"),
+                ("appsnap", "Integrations", "AppSnap"),
+                ("computer", "Integrations", "Computer use"),
+                ("integrations", "Integrations", "MCP connections"),
+                ("providers", "Coding", "Agent providers"),
+                ("models", "Coding", "Models & writing"),
+                ("skills", "Coding", "Agent skills"),
+                ("worktrees", "Coding", "Managed worktrees"),
+                ("advanced", "System", "System tools"),
+                ("archived", "Archived", "Archived threads"),
+            ]
+        );
     }
 
     #[test]
@@ -110,7 +258,13 @@ mod tests {
         let ids: HashSet<_> = SECTIONS.iter().map(|item| item.id).collect();
         assert_eq!(ids.len(), SECTIONS.len());
         assert_eq!(SECTIONS.len(), 21);
-        for id in ["project-import", "direct-models", "device", "privacy", "plugins"] {
+        for id in [
+            "project-import",
+            "direct-models",
+            "device",
+            "privacy",
+            "plugins",
+        ] {
             let item = SECTIONS.iter().find(|item| item.id == id).unwrap();
             assert!(!primary_section(item.section));
             assert!(!item.description.is_empty());

@@ -142,6 +142,29 @@ fn clear_submitted(current_edits: u64, current_text: &str, submitted: &(u64, Str
 }
 
 impl Shell {
+    pub(super) fn prepare_worktree_settings(&mut self, cx: &mut Context<Self>) {
+        self.open_repository(cx);
+        if let Some(scope) = self.review_scope()
+            && let Some(panel) = self.review.repositories.get(&scope).cloned()
+        {
+            panel.update(cx, |panel, cx| panel.show_worktrees(cx));
+        }
+    }
+    pub(super) fn worktree_settings_view(&self, _: &mut Context<Self>) -> gpui::AnyElement {
+        let scope = self.review_scope();
+        let panel = scope
+            .as_ref()
+            .and_then(|scope| self.review.repositories.get(scope));
+        match panel {
+            Some(panel) => div().w_full().flex().flex_col().gap_3()
+                .child("Worktrees in the selected repository. Existing execution and removal confirmations still apply.")
+                .child(div().h(px(520.)).min_h(px(300.)).w_full().border_1().border_color(rgb(palette().border)).rounded_xl().overflow_hidden().child(panel.clone()))
+                .into_any_element(),
+            None => div().p_6().text_color(rgb(palette().muted))
+                .child("Select a project before managing its worktrees. This page does not create a workspace or start a tool implicitly.")
+                .into_any_element(),
+        }
+    }
     fn open_repository(&mut self, cx: &mut Context<Self>) {
         let (Some(scope), Some(target)) = (self.review_scope(), self.workspace_target()) else {
             return;
@@ -156,9 +179,15 @@ impl Shell {
         }
         let workspace = self.controller.workspace.clone();
         let runtime = self.runtime.clone();
-        self.review.repositories.entry(scope).or_insert_with(|| {
-            cx.new(|cx| repository::RepositoryPanel::new(target, workspace, runtime, cx))
-        });
+        self.review
+            .repositories
+            .entry(scope.clone())
+            .or_insert_with(|| {
+                cx.new(|cx| repository::RepositoryPanel::new(target, workspace, runtime, cx))
+            });
+        if let Some(panel) = self.review.repositories.get(&scope).cloned() {
+            panel.update(cx, |panel, cx| panel.show_repository_tabs(cx));
+        }
         self.review.repository_open = true;
         self.focus_composer = false;
         cx.notify();

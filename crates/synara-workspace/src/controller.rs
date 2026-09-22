@@ -1,3 +1,4 @@
+mod direct_models;
 mod integrations;
 mod browser;
 use crate::{AgentProfile, WorkspaceError, WorkspaceResult, WorkspaceService};
@@ -187,6 +188,7 @@ impl Controller {
         let _integrations = self.integrations_gate.read().await;
         let slot = self.slot(id).await?;
         let _gate = slot.creation.lock().await;
+        self.require_agent_route(id).await?;
         let task = self.workspace.task(id).await?;
         let profile = self.profile(&task.agent_id).await?;
         {
@@ -292,6 +294,12 @@ impl Controller {
         let cancellation = tokio_util::sync::CancellationToken::new();
         let _guard = PromptOwnership(slot.clone());
         *slot.setup_cancel.lock().map_err(|_| WorkspaceError::Worker)? = Some(cancellation.clone());
+        if let Some(binding) = self.workspace.direct_model_binding(id).await? {
+            if attachments.is_some() {
+                return Err(WorkspaceError::Invalid("Direct chat attachment delivery is not available in this slice. Remove attachments or use an ACP agent.".into()));
+            }
+            return self.submit_direct(id, binding, text, cancellation).await;
+        }
         // Reserve cancellation BEFORE reading/decoding images. Stop during intake
         // must not turn into a delayed agent launch when the worker completes.
         let prompt = if let Some(revision) = attachments {
@@ -332,18 +340,21 @@ impl Controller {
         method: String,
     ) -> WorkspaceResult<SessionDetails> {
         let slot = self.slot(id).await?;
-        let task = self.workspace.task(id).await?;
-        let profile = self.profile(&task.agent_id).await?;
-        let connection = self.connection_for(&task, &slot, &profile, false).await?;
-        if !connection
-            .info()
-            .authentication
-            .iter()
-            .any(|auth| auth.id == method)
-        {
-            return Err(AgentError::Invalid("unknown authentication method".into()).into());
+        if slot.active.swap(true, Ordering::AcqRel) {
+            return Err(AgentError::Busy.into());
         }
-        connection.authenticate(&method).await?;
+        let _ownership = PromptOwnership(slot.clone());
+        {
+            let _creation = slot.creation.lock().await;
+            self.require_agent_route(id).await?;
+            let task = self.workspace.task(id).await?;
+            let profile = self.profile(&task.agent_id).await?;
+            let connection = self.connection_for(&task, &slot, &profile, false).await?;
+            if !connection.info().authentication.iter().any(|auth| auth.id == method) {
+                return Err(AgentError::Invalid("unknown authentication method".into()).into());
+            }
+            connection.authenticate(&method).await?;
+        }
         self.connect(id).await
     }
     pub async fn set_option(
@@ -366,10 +377,12 @@ impl Controller {
     pub async fn switch_agent(&self, id: TaskId, agent: String) -> WorkspaceResult<Task> {
         self.revoke_browser_use(id);
         let slot = self.slot(id).await?;
-        if slot.active.load(Ordering::Acquire) {
+        if slot.active.swap(true, Ordering::AcqRel) {
             return Err(AgentError::Busy.into());
         }
+        let _ownership = PromptOwnership(slot.clone());
         let _gate = slot.creation.lock().await;
+        self.require_agent_route(id).await?;
         let old = slot.live.lock().map_err(|_| WorkspaceError::Worker)?.take();
         if let Some(old) = old {
             old.session.close().await?;
@@ -380,8 +393,13 @@ impl Controller {
     pub async fn restart(&self, id: TaskId) -> WorkspaceResult<SessionDetails> {
         self.revoke_browser_use(id);
         let slot = self.slot(id).await?;
+        if slot.active.swap(true, Ordering::AcqRel) {
+            return Err(AgentError::Busy.into());
+        }
+        let _ownership = PromptOwnership(slot.clone());
         {
             let _gate = slot.creation.lock().await;
+            self.require_agent_route(id).await?;
             let task = self.workspace.task(id).await?;
             let profile = self.profile(&task.agent_id).await?;
             slot.live.lock().map_err(|_| WorkspaceError::Worker)?.take();
@@ -392,11 +410,13 @@ impl Controller {
     /// Explicitly start fresh without deleting the durable transcript.
     pub async fn fresh_session(&self, id: TaskId) -> WorkspaceResult<SessionDetails> {
         let slot = self.slot(id).await?;
-        if slot.active.load(Ordering::Acquire) {
+        if slot.active.swap(true, Ordering::AcqRel) {
             return Err(AgentError::Busy.into());
         }
+        let _ownership = PromptOwnership(slot.clone());
         {
             let _gate = slot.creation.lock().await;
+            self.require_agent_route(id).await?;
             let old = slot.live.lock().map_err(|_| WorkspaceError::Worker)?.take();
             if let Some(old) = old {
                 old.session.close().await?;
@@ -462,6 +482,9 @@ impl Controller {
         self.closing.store(true, Ordering::Release);
         self.browser.shutdown();
         self.browser_endpoints.lock().map_err(|_| WorkspaceError::Worker)?.clear();
+        for slot in self.tasks.lock().await.values() {
+            if let Some(token) = slot.setup_cancel.lock().map_err(|_| WorkspaceError::Worker)?.as_ref() { token.cancel(); }
+        }
         let _lifetime = self.lifetime.write().await;
         self.manager.disconnect_all().await?;
         self.tasks.lock().await.clear();

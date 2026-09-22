@@ -1,1 +1,0 @@
-{"mode":"diff","base_commit":"91ef6f0c52a1bc55fb0e66550ac4a35798208475","parts":[".synara-transfer-0001",".synara-transfer-0002",".synara-transfer-0003"],"sha256":"20c2a8586596ad0193d45c7a995110e0cfe2fba3b8b799590f8188a70689677e","message":"feat(models): add native direct-provider settings and streaming conversations"}

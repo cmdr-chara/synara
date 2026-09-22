@@ -14,6 +14,8 @@ mod remote_fs;
 #[cfg(unix)]
 mod remote_terminal;
 mod secrets;
+mod native_secrets;
+pub use native_secrets::*;
 mod ssh;
 mod terminal;
 mod terminal_input;

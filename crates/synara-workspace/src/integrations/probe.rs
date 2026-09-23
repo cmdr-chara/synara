@@ -145,19 +145,19 @@ impl Probe {
                 "MCP redirects are not followed. Review and configure the final endpoint explicitly.",
             ));
         }
-        if method == "initialize" {
-            if let Some(header) = response.headers().get("MCP-Session-Id") {
-                let value = header
-                    .to_str()
-                    .map_err(|_| invalid("Invalid MCP session header."))?;
-                if value.is_empty()
-                    || value.len() > 256
-                    || !value.bytes().all(|c| (0x21..=0x7e).contains(&c))
-                {
-                    return Err(invalid("Invalid MCP session header."));
-                }
-                self.session = Some(value.into());
+        if method == "initialize"
+            && let Some(header) = response.headers().get("MCP-Session-Id")
+        {
+            let value = header
+                .to_str()
+                .map_err(|_| invalid("Invalid MCP session header."))?;
+            if value.is_empty()
+                || value.len() > 256
+                || !value.bytes().all(|c| (0x21..=0x7e).contains(&c))
+            {
+                return Err(invalid("Invalid MCP session header."));
             }
+            self.session = Some(value.into());
         }
         if id.is_none() {
             return if status == 202 {
@@ -246,7 +246,7 @@ impl Probe {
         // A modern protocol error is evidence of the modern era, not permission
         // to downgrade. Legacy HTTP rejects unknown/pre-initialize requests.
         let fallback = matches!(reply.status, 400 | 404 | 405)
-            && !matches!(code, Some(-32020 | -32021 | -32022))
+            && !matches!(code, Some(-32022..=-32020))
             && !(reply.status == 404 && code == Some(-32601));
         let result = if fallback {
             self.protocol = LEGACY[0].into();

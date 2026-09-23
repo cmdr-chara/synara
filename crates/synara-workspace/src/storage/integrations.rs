@@ -163,12 +163,12 @@ impl WorkspaceService {
                         .map(|item| item.agent_id.as_str()),
                     _ => None,
                 };
-                if let (Some(task), Some(agent)) = (&task, enabling_owner) {
-                    if agent != task.agent_id {
-                        return Err(invalid(
-                            "Select this connection's agent before enabling it.",
-                        ));
-                    }
+                if let (Some(task), Some(agent)) = (&task, enabling_owner)
+                    && agent != task.agent_id
+                {
+                    return Err(invalid(
+                        "Select this connection's agent before enabling it.",
+                    ));
                 }
                 edit.apply(value)?;
                 let Some(task) = task else {

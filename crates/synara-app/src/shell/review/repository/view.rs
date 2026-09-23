@@ -352,6 +352,7 @@ impl Render for RepositoryPanel {
                     ]
                     .into_iter()
                     .enumerate()
+                    .filter(|(_, view)| !self.worktrees_only || *view == View::Worktrees)
                     .map(|(index, view)| {
                         ui::action(
                             ("repository-view", index),

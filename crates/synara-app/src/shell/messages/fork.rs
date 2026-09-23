@@ -81,7 +81,12 @@ impl Shell {
         .size(px(24.))
         .into_any_element()
     }
-    fn branch_message(&mut self, source: TaskId, anchor: MessageAnchor, cx: &mut Context<Self>) {
+    pub(in crate::shell) fn branch_message(
+        &mut self,
+        source: TaskId,
+        anchor: MessageAnchor,
+        cx: &mut Context<Self>,
+    ) {
         if self.selected != Some(source)
             || self.creating_task
             || self.loading_task.is_some()

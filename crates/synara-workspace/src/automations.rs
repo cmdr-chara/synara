@@ -13,6 +13,8 @@ pub use uuid::Uuid as AutomationId;
 pub enum AutomationSchedule {
     Interval { minutes: u32 },
     Daily { hour: u8, minute: u8 },
+    Weekdays { hour: u8, minute: u8 },
+    Weekly { day: u8, hour: u8, minute: u8 },
 }
 impl AutomationSchedule {
     pub fn parse(value: &str) -> WorkspaceResult<Self> {
@@ -23,17 +25,27 @@ impl AutomationSchedule {
             .and_then(|s| s.parse().ok())
         {
             Self::Interval { minutes }
-        } else if let Some((hour, minute)) =
-            value.strip_prefix("daily ").and_then(|s| s.split_once(':'))
-        {
-            Self::Daily {
-                hour: hour.parse().map_err(|_| invalid("Invalid daily hour."))?,
-                minute: minute
-                    .parse()
-                    .map_err(|_| invalid("Invalid daily minute."))?,
-            }
+        } else if let Some(time) = value.strip_prefix("daily ") {
+            let (hour, minute) = parse_time(time)?;
+            Self::Daily { hour, minute }
+        } else if let Some(time) = value.strip_prefix("weekdays ") {
+            let (hour, minute) = parse_time(time)?;
+            Self::Weekdays { hour, minute }
+        } else if let Some(rest) = value.strip_prefix("weekly ") {
+            let (day, time) = rest
+                .split_once(' ')
+                .ok_or_else(|| invalid("Use 'weekly mon 09:00'."))?;
+            let day = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"]
+                .iter()
+                .position(|name| *name == day)
+                .ok_or_else(|| invalid("Use a weekday such as mon or fri."))?
+                as u8;
+            let (hour, minute) = parse_time(time)?;
+            Self::Weekly { day, hour, minute }
         } else {
-            return Err(invalid("Use 'every 60m' or 'daily 09:00'."));
+            return Err(invalid(
+                "Use 'every 60m', 'daily 09:00', 'weekdays 09:00', or 'weekly mon 09:00'.",
+            ));
         };
         result.validate()?;
         Ok(result)
@@ -42,12 +54,26 @@ impl AutomationSchedule {
         match self {
             Self::Interval { minutes } => format!("every {minutes}m"),
             Self::Daily { hour, minute } => format!("daily {hour:02}:{minute:02}"),
+            Self::Weekdays { hour, minute } => format!("weekdays {hour:02}:{minute:02}"),
+            Self::Weekly { day, hour, minute } => format!(
+                "weekly {} {hour:02}:{minute:02}",
+                ["sun", "mon", "tue", "wed", "thu", "fri", "sat"][usize::from(*day)]
+            ),
         }
     }
     pub fn validate(&self) -> WorkspaceResult<()> {
         match self {
             Self::Interval { minutes: 1..=10080 }
             | Self::Daily {
+                hour: 0..=23,
+                minute: 0..=59,
+            }
+            | Self::Weekdays {
+                hour: 0..=23,
+                minute: 0..=59,
+            }
+            | Self::Weekly {
+                day: 0..=6,
                 hour: 0..=23,
                 minute: 0..=59,
             } => Ok(()),
@@ -64,16 +90,31 @@ impl AutomationSchedule {
             Self::Interval { minutes } => now
                 .checked_add(i64::from(*minutes) * 60_000)
                 .ok_or_else(|| invalid("Schedule overflow.")),
-            Self::Daily { hour, minute } => {
+            Self::Daily { hour, minute }
+            | Self::Weekdays { hour, minute }
+            | Self::Weekly { hour, minute, .. } => {
                 let local = now + offset;
-                let candidate = local.div_euclid(86_400_000) * 86_400_000
-                    + (i64::from(*hour) * 60 + i64::from(*minute)) * 60_000
-                    - offset;
-                Ok(if candidate <= now {
-                    candidate + 86_400_000
-                } else {
-                    candidate
-                })
+                let local_day = local.div_euclid(86_400_000);
+                for days_ahead in 0..=7 {
+                    let day = local_day + days_ahead;
+                    // 1970-01-01 was Thursday; Sunday is 0.
+                    let weekday = (day + 4).rem_euclid(7) as u8;
+                    if matches!(self, Self::Weekdays { .. }) && (weekday == 0 || weekday == 6) {
+                        continue;
+                    }
+                    if let Self::Weekly { day: target, .. } = self
+                        && weekday != *target
+                    {
+                        continue;
+                    }
+                    let candidate = day * 86_400_000
+                        + (i64::from(*hour) * 60 + i64::from(*minute)) * 60_000
+                        - offset;
+                    if candidate > now {
+                        return Ok(candidate);
+                    }
+                }
+                Err(invalid("No future schedule slot found."))
             }
         }
     }
@@ -88,6 +129,20 @@ impl AutomationSchedule {
             _ => self.next_after(now, timezone),
         }
     }
+}
+fn parse_time(value: &str) -> WorkspaceResult<(u8, u8)> {
+    let (hour, minute) = value.split_once(':').ok_or_else(|| invalid("Use HH:MM."))?;
+    if hour.len() != 2
+        || minute.len() != 2
+        || !hour.bytes().all(|c| c.is_ascii_digit())
+        || !minute.bytes().all(|c| c.is_ascii_digit())
+    {
+        return Err(invalid("Use HH:MM."));
+    }
+    Ok((
+        hour.parse().map_err(|_| invalid("Invalid hour."))?,
+        minute.parse().map_err(|_| invalid("Invalid minute."))?,
+    ))
 }
 /// Fixed offsets are explicit. IANA/DST zones are rejected, never approximated.
 pub fn timezone_offset(value: &str) -> WorkspaceResult<i32> {
@@ -135,6 +190,12 @@ pub struct AutomationDefinition {
     pub enabled: bool,
     pub next_run_ms: i64,
     pub missed: MissedRunPolicy,
+    #[serde(default)]
+    pub max_runs: Option<u32>,
+    #[serde(default)]
+    pub stop_after_consecutive_failures: Option<u32>,
+    #[serde(default)]
+    pub failure_streak: u32,
 }
 impl AutomationDefinition {
     pub fn validate(&self) -> WorkspaceResult<()> {
@@ -148,6 +209,8 @@ impl AutomationDefinition {
             || self.agent_id.len() > 256
             || self.agent_id.chars().any(char::is_control)
             || !(0..=253_402_300_799_000_i64).contains(&self.next_run_ms)
+            || self.max_runs == Some(0)
+            || self.stop_after_consecutive_failures == Some(0)
         {
             return Err(invalid(
                 "Automation needs a title, instructions (up to 16 KiB), explicit agent and project.",
@@ -286,13 +349,28 @@ impl WorkspaceService {
     ) -> WorkspaceResult<()> {
         self.access(move |store| {
             store.edit_automations(move |ledger| {
+                let completed_runs = ledger
+                    .runs
+                    .iter()
+                    .filter(|run| run.definition.id == id && run.task_id.is_some())
+                    .count();
                 let definition = ledger
                     .definitions
                     .iter_mut()
                     .find(|d| d.id == id && d.revision == revision)
                     .ok_or_else(|| invalid("Automation changed. Reload first."))?;
+                if enabled
+                    && definition
+                        .max_runs
+                        .is_some_and(|max| completed_runs >= max as usize)
+                {
+                    return Err(invalid(
+                        "Run limit reached. Increase the limit before resuming.",
+                    ));
+                }
                 definition.enabled = enabled;
                 if enabled {
+                    definition.failure_streak = 0;
                     definition.next_run_ms = definition
                         .schedule
                         .next_after(now_ms(), &definition.timezone)?;
@@ -383,6 +461,28 @@ impl WorkspaceService {
                 run.status = status;
                 run.finished_ms = Some(now_ms());
                 run.output = output.chars().take(4096).collect();
+                let definition_id = run.definition.id;
+                if let Some(definition) = ledger
+                    .definitions
+                    .iter_mut()
+                    .find(|d| d.id == definition_id)
+                {
+                    if status == AutomationRunStatus::Failed {
+                        definition.failure_streak = definition.failure_streak.saturating_add(1);
+                        if definition
+                            .stop_after_consecutive_failures
+                            .is_some_and(|limit| definition.failure_streak >= limit)
+                        {
+                            definition.enabled = false;
+                            definition.revision = definition
+                                .revision
+                                .checked_add(1)
+                                .ok_or_else(|| invalid("Revision overflow."))?;
+                        }
+                    } else {
+                        definition.failure_streak = 0;
+                    }
+                }
                 Ok(())
             })
         })

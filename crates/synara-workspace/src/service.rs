@@ -228,19 +228,8 @@ impl WorkspaceService {
     }
 
     pub async fn archive_task(&self, id: TaskId) -> WorkspaceResult<Task> {
-        self.access(move |store| {
-            let mut task = store.task(id)?.ok_or(WorkspaceError::NotFound)?;
-            if matches!(task.state, TaskState::Running | TaskState::Waiting) {
-                return Err(AgentError::Busy.into());
-            }
-            if task.state != TaskState::Archived {
-                task.state = TaskState::Archived;
-                task.updated_at_ms = now_ms();
-                store.save_task(&task)?;
-            }
-            Ok(task)
-        })
-        .await
+        self.access(move |store| store.archive_task_with_workflow_guard(id, now_ms()))
+            .await
     }
 
     /// Restore the last durable conversation state without replaying any actions.

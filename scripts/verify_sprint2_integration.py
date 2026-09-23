@@ -55,7 +55,10 @@ def main():
             old = audit_module(baseline).audit(baseline)
             current = audit_module(root).audit(root)
             assert old["errors"] == ["crates/synara-browser/src/native/actions.js: non-Rust core source"], old
-            assert current == old, {"baseline": old, "current": current}
+            # actions.js now belongs to assets/native-browser, outside the Rust
+            # core. Require that repair, while retaining every other baseline
+            # invariant. New errors, including recurrence of this one, fail.
+            assert current == {**old, "errors": []}, {"baseline": old, "current": current}
             assert historical_ledger((baseline / "ROADMAP.md").read_text()) == historical_ledger((root / "ROADMAP.md").read_text())
         finally:
             # Only remove the clean temporary worktree created above.
@@ -73,7 +76,7 @@ def main():
         "structural_baseline": old, "structural_candidate": current,
         "structural_regressions": [],
         "temporary_publisher": "retired; replacement CI is read-only",
-        "note": "Known Browser structural failure is preserved, not reclassified as passing."
+        "note": "Historical Browser script-placement error is fixed; the current candidate must have no structural errors."
     }
     (args.output / "source-checks.json").write_text(json.dumps(report, indent=2) + "\n")
     print(json.dumps(report, indent=2))

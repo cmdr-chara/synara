@@ -1,6 +1,8 @@
 //! Linux/X11 WebKitGTK child surfaces for the existing Session owner.
 //! Wry owns only the OS webview. There is no page IPC, WebDriver or second session store.
 mod bridge;
+mod manual_capture;
+mod manual_downloads;
 mod surface;
 #[cfg(test)]
 mod tests;
@@ -41,9 +43,10 @@ impl ViewportRect {
 }
 const MAX_TABS: usize = 64;
 const WORLD: &str = "synara-browser-actions-v1";
-const SCRIPT: &str = include_str!("actions.js");
+const SCRIPT: &str = include_str!("../../../../assets/native-browser/actions.js");
 struct Profile {
     context: WebContext,
+    downloads: Rc<manual_downloads::Gate>,
     _directory: Option<tempfile::TempDir>,
 }
 struct NativeTab {
@@ -51,10 +54,20 @@ struct NativeTab {
     epoch: u64,
     partition: StoragePartition,
     document: Rc<RefCell<Option<CommittedDocument>>>,
+    capture: Option<manual_capture::Owner>,
+    downloads: Option<manual_downloads::Owner>,
 }
 impl Drop for NativeTab {
     fn drop(&mut self) {
-        self.webview.webview().stop_loading();
+        drop(self.capture.take());
+        drop(self.downloads.take());
+        let web = self.webview.webview();
+        if self.partition == StoragePartition::Manual
+            && let Some(inspector) = web.inspector()
+        {
+            inspector.close();
+        }
+        web.stop_loading();
     }
 }
 struct Running {
@@ -233,10 +246,8 @@ impl NativeHost {
         }
         for (id, view) in &self.views {
             let visible = Some(*id) == tab && visible_bounds.is_some();
-            if visible {
-                if let Some(bounds) = bounds {
-                    let _ = view.webview.set_bounds(content_bounds(bounds));
-                }
+            if visible && let Some(bounds) = bounds {
+                let _ = view.webview.set_bounds(content_bounds(bounds));
             }
             let _ = view.webview.set_visible(visible);
         }
@@ -265,6 +276,7 @@ impl NativeHost {
                 key.clone(),
                 Profile {
                     context,
+                    downloads: Rc::new(manual_downloads::Gate::default()),
                     _directory: directory,
                 },
             );
@@ -351,6 +363,7 @@ impl NativeHost {
     ) -> std::result::Result<(), String> {
         document.validate().map_err(|e| e.to_string())?;
         let agent = matches!(partition, StoragePartition::AgentTask(_));
+        let manual = partition == StoragePartition::Manual;
         if agent && allowed.as_ref() != Some(&document.origin) {
             return Err("Missing approved navigation origin".into());
         }
@@ -360,13 +373,32 @@ impl NativeHost {
         let events = self.events.clone();
         let completed = Rc::new(Cell::new(false));
         let finished = completed.clone();
+        let popup_ready = completed.clone();
+        let popup_shared = shared.clone();
+        let popup_events = events.clone();
         let allowed_navigation = allowed.clone();
+        let downloads = self.context(partition)?.downloads.clone();
+        let download_route = downloads.clone();
         let builder = WebViewBuilder::new_with_web_context(&mut self.context(partition)?.context)
             .with_focused(false)
             .with_visible(false)
-            .with_devtools(false)
-            .with_new_window_req_handler(|_, _| wry::NewWindowResponse::Deny)
-            .with_download_started_handler(|_, _| false)
+            .with_devtools(manual)
+            .with_new_window_req_handler(move |url, _| {
+                if partition == StoragePartition::Manual
+                    && popup_ready.get()
+                    && popup_shared.epoch(tab) == Some(epoch)
+                {
+                    popup_events.emit(Event::PopupRequested {
+                        tab,
+                        navigation,
+                        url,
+                    });
+                }
+                wry::NewWindowResponse::Deny
+            })
+            .with_download_started_handler(move |url, path| {
+                manual && download_route.destination(&url, path)
+            })
             .with_navigation_handler(move |url| {
                 if shared.epoch(tab) != Some(epoch) {
                     return false;
@@ -397,7 +429,49 @@ impl NativeHost {
         let view =
             build(builder).map_err(|e| format!("Could not create native WebKit view: {e}"))?;
         let web = view.webview();
-        harden(&web, agent);
+        harden(&web, partition);
+        if partition == StoragePartition::Manual {
+            let shared = self.shared.clone();
+            let events = self.events.clone();
+            web.connect_resource_load_started(move |_, resource, _| {
+                let done = Rc::new(Cell::new(false));
+                let finished = done.clone();
+                let shared_finished = shared.clone();
+                let events_finished = events.clone();
+                resource.connect_finished(move |resource| {
+                    if finished.replace(true) || shared_finished.epoch(tab) != Some(epoch) {
+                        return;
+                    }
+                    if let Some(uri) = resource.uri() {
+                        events_finished.emit(Event::NetworkDiagnostic {
+                            tab,
+                            navigation,
+                            url: uri.to_string(),
+                            status: resource
+                                .response()
+                                .and_then(|response| u16::try_from(response.status_code()).ok()),
+                            error: None,
+                        });
+                    }
+                });
+                let shared_failed = shared.clone();
+                let events_failed = events.clone();
+                resource.connect_failed(move |resource, _| {
+                    if done.replace(true) || shared_failed.epoch(tab) != Some(epoch) {
+                        return;
+                    }
+                    if let Some(uri) = resource.uri() {
+                        events_failed.emit(Event::NetworkDiagnostic {
+                            tab,
+                            navigation,
+                            url: uri.to_string(),
+                            status: None,
+                            error: Some("Request failed".into()),
+                        });
+                    }
+                });
+            });
+        }
         if agent {
             // Retain the named world for the lifetime of this document, not only an
             // individual evaluation. A page-world script cannot modify its inventory.
@@ -479,6 +553,11 @@ impl NativeHost {
                 });
             }
         });
+        let capture =
+            manual.then(|| manual_capture::Owner::new(&web, self.shared.clone(), tab, epoch));
+        let downloads = manual.then(|| {
+            manual_downloads::Owner::new(&web, self.shared.clone(), tab, epoch, downloads)
+        });
         // The native navigation policy is installed before the first network request.
         // Acceptance tests assert that a cross-origin redirect never reaches its target.
         web.load_uri(&document.canonical_url);
@@ -489,6 +568,8 @@ impl NativeHost {
                 epoch,
                 partition,
                 document: committed,
+                capture,
+                downloads,
             },
         );
         // Creation may occur after the canvas selected a blank tab. Reapply its
@@ -524,6 +605,9 @@ impl NativeHost {
             BrowserOperation::ReadDocument
                 | BrowserOperation::Click { .. }
                 | BrowserOperation::Fill { .. }
+                | BrowserOperation::Input {
+                    event: InputEvent::Scroll { .. }
+                }
         ) {
             return Err("Native operation is not supported".into());
         }
@@ -593,9 +677,12 @@ impl Drop for NativeHost {
         self.surface.take();
     }
 }
-fn harden(web: &webkit2gtk::WebView, agent: bool) {
+fn harden(web: &webkit2gtk::WebView, partition: StoragePartition) {
+    // Only human-operated tabs receive interactive native dialogs and inspection.
+    // Authentication is a separate partition, not an implicit grant of manual authority.
+    let manual = partition == StoragePartition::Manual;
     if let Some(settings) = webkit2gtk::WebViewExt::settings(web) {
-        settings.set_enable_developer_extras(false);
+        settings.set_enable_developer_extras(manual);
         settings.set_javascript_can_access_clipboard(false);
         settings.set_javascript_can_open_windows_automatically(false);
         settings.set_allow_file_access_from_file_urls(false);
@@ -605,16 +692,26 @@ fn harden(web: &webkit2gtk::WebView, agent: bool) {
         permission.deny();
         true
     });
-    web.connect_run_file_chooser(|_, request| {
-        request.cancel();
-        true
+    web.connect_run_file_chooser(move |_, request| {
+        if manual {
+            // Let WebKit present its native picker. No path is selected on the user's behalf.
+            false
+        } else {
+            request.cancel();
+            true
+        }
     });
     web.connect_enter_fullscreen(|_| true);
-    web.connect_script_dialog(|_, dialog| {
-        dialog.close();
-        true
+    web.connect_script_dialog(move |_, dialog| {
+        if manual {
+            // Preserve the engine's confirm/prompt UI instead of silently dismissing forms.
+            false
+        } else {
+            dialog.close();
+            true
+        }
     });
-    if agent {
+    if matches!(partition, StoragePartition::AgentTask(_)) {
         web.set_sensitive(false);
     }
 }

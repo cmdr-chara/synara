@@ -195,6 +195,8 @@ class Desktop:
         return result.stdout.decode('utf-8')
 
     def text(self, value):
+        # Clipboard requesters can temporarily take X11 focus.
+        self.focus()
         for char in value:
             # XKeysymToKeycode identifies a physical key; it does not press Shift
             # for uppercase symbols. Preserve the exact requested fixture text.
@@ -347,6 +349,9 @@ class Scenario:
         _, _, width, height = self.desktop.geometry()
         self.click_control('composer-input')
         self.desktop.text(text)
+        # Window visibility does not imply that task/draft restoration finished.
+        wait_until(lambda: self.control_bounds('composer-submit', enabled=True),
+                   'ready native Send control')
         self.desktop.key('Return')
         return before
 

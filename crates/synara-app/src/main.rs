@@ -126,6 +126,23 @@ fn run() -> Result<()> {
                 })
                 .await?;
         }
+        let loaded_settings = workspace.settings().await?;
+        let catalog = workspace.catalog().await?;
+        let mut settings = loaded_settings.settings;
+        if loaded_settings.recovery.is_none() {
+            if !loaded_settings.existed && catalog.projects.is_empty() && catalog.tasks.is_empty() {
+                settings.onboarding.started = true;
+                workspace.save_settings(settings.clone()).await?;
+            } else if settings.onboarding.started
+                && !settings.onboarding.completed
+                && (!catalog.projects.is_empty() || !catalog.tasks.is_empty())
+            {
+                // A project or chat added from setup can navigate straight to
+                // work. Remember that choice even if the tour was not finished.
+                settings.onboarding.completed = true;
+                workspace.save_settings(settings.clone()).await?;
+            }
+        }
         Ok::<_, synara_workspace::WorkspaceError>(shell::Bootstrap {
             environment: workspace.environment_layout().await?,
             scratch_directory: options
@@ -133,9 +150,9 @@ fn run() -> Result<()> {
                 .canonicalize()
                 .map_err(synara_runtime::RuntimeError::Io)?
                 .join("chats"),
-            settings: workspace.settings().await?.settings,
+            settings,
             agent_directory: options.data.join("agents"),
-            catalog: workspace.catalog().await?,
+            catalog,
             profiles: workspace.profiles().await?,
             selection: workspace.selection().await?,
         })

@@ -38,9 +38,9 @@ impl Default for FontPreferences {
     fn default() -> Self {
         Self {
             ui_family: None,
-            ui_size: 14.0,
+            ui_size: 13.0,
             code_family: None,
-            code_size: 13.0,
+            code_size: 12.0,
         }
     }
 }
@@ -95,6 +95,17 @@ pub struct AppSettings {
     pub profile: ProfileSettings,
     #[serde(default)]
     pub chat: ChatSettings,
+    #[serde(default)]
+    pub onboarding: OnboardingSettings,
+}
+
+/// A started tour is persisted before the first window opens. Older settings
+/// deserialize with `started = false`, so an existing installation is exempt.
+#[derive(Clone, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(default, deny_unknown_fields)]
+pub struct OnboardingSettings {
+    pub started: bool,
+    pub completed: bool,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -145,6 +156,7 @@ impl Default for AppSettings {
             general: GeneralSettings::default(),
             profile: ProfileSettings::default(),
             chat: ChatSettings::default(),
+            onboarding: OnboardingSettings::default(),
         }
     }
 }
@@ -252,6 +264,8 @@ pub enum SettingsRecovery {
 pub struct LoadedSettings {
     pub settings: AppSettings,
     pub recovery: Option<SettingsRecovery>,
+    /// Whether a settings value was already present in the workspace store.
+    pub existed: bool,
 }
 
 impl LoadedSettings {
@@ -259,6 +273,7 @@ impl LoadedSettings {
         Self {
             settings: AppSettings::default(),
             recovery: Some(reason),
+            existed: true,
         }
     }
 }
@@ -268,6 +283,7 @@ fn load(store: &Store) -> StorageResult<LoadedSettings> {
         return Ok(LoadedSettings {
             settings: AppSettings::default(),
             recovery: None,
+            existed: false,
         });
     };
     let value: serde_json::Value = match serde_json::from_str(&raw) {
@@ -298,6 +314,7 @@ fn load(store: &Store) -> StorageResult<LoadedSettings> {
     Ok(LoadedSettings {
         settings,
         recovery: None,
+        existed: true,
     })
 }
 
@@ -331,6 +348,7 @@ mod tests {
         assert!(settings.appearance.reduced_motion);
         assert!(settings.general.show_chats && settings.general.show_studio);
         assert_eq!(settings.profile, ProfileSettings::default());
+        assert_eq!(settings.onboarding, OnboardingSettings::default());
     }
 
     #[tokio::test]
@@ -339,6 +357,7 @@ mod tests {
         let loaded = service.settings().await.unwrap();
         assert_eq!(loaded.settings.version, SETTINGS_VERSION);
         assert!(loaded.recovery.is_none());
+        assert!(!loaded.existed);
 
         let mut changed = loaded.settings;
         changed.appearance.theme = ThemePreference::Dark;
@@ -356,6 +375,7 @@ mod tests {
         });
         service.save_settings(changed.clone()).await.unwrap();
         assert_eq!(service.settings().await.unwrap().settings, changed);
+        assert!(service.settings().await.unwrap().existed);
     }
 
     #[tokio::test]

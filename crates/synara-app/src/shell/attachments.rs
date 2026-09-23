@@ -6,7 +6,7 @@ mod view;
 
 pub(super) enum Reply {
     Loaded(TaskId, Result<AttachmentDraft, String>),
-    Imported(TaskId, Result<AttachmentDraft, String>),
+    Imported(TaskId, bool, Result<AttachmentDraft, String>),
     Changed(TaskId, Result<AttachmentDraft, String>),
     Preview(TaskId, String, Result<AttachmentPreview, String>),
 }
@@ -88,9 +88,12 @@ impl Shell {
         })
     }
     pub(super) fn attachment_capability_error(&self) -> Option<&'static str> {
-        if self.uses_direct_model() && self.attachments_have_pending() {
-            return Some(
-                "Direct chat attachment delivery is not supported yet. Remove pending attachments before sending.",
+        if self.uses_direct_model() {
+            return self.direct_attachment_error(
+                self.attachments
+                    .value
+                    .as_ref()
+                    .is_some_and(|v| v.pending.iter().any(|a| a.kind.is_image())),
             );
         }
         self.details.as_ref().and_then(|details| {
@@ -184,7 +187,19 @@ impl Shell {
         });
     }
     pub(super) fn attachment_paths(&mut self, paths: Vec<PathBuf>, cx: &mut Context<Self>) {
-        self.import_selected(paths.into_iter().map(AttachmentInput::File).collect(), cx);
+        self.import_selected(
+            paths
+                .into_iter()
+                .map(|path| {
+                    if path.is_dir() {
+                        AttachmentInput::Folder(path)
+                    } else {
+                        AttachmentInput::File(path)
+                    }
+                })
+                .collect(),
+            cx,
+        );
     }
     pub(super) fn attachment_paste(
         &mut self,
@@ -270,10 +285,14 @@ impl Shell {
         self.attachments.imports.insert(task, inputs.clone());
         self.attachments.errors.remove(&task);
         self.attachments.begin(task);
+        let preview_folder = inputs
+            .iter()
+            .any(|input| matches!(input, AttachmentInput::Folder(_)));
         let workspace = self.controller.workspace.clone();
         self.job(async move {
             Ok(Update::Attachments(Box::new(Reply::Imported(
                 task,
+                preview_folder,
                 workspace
                     .add_attachments(task, revision, inputs)
                     .await
@@ -297,16 +316,18 @@ impl Shell {
         self.attachments.picking = true;
         let picker = cx.prompt_for_paths(gpui::PathPromptOptions {
             files: true,
-            directories: false,
+            directories: true,
             multiple: true,
-            prompt: Some("Attach images or UTF-8 files".into()),
+            prompt: Some(
+                "Attach images or UTF-8 files, or choose folders for names-only snapshots".into(),
+            ),
         });
         cx.spawn(async move |view,cx| {
             let result=picker.await;
             let _=view.update(cx,|this,cx| {
                 this.attachments.picking=false;
                 match result {
-                    Ok(Ok(Some(paths)))=>this.import_attachments(task,revision,paths.into_iter().map(AttachmentInput::File).collect(),cx),
+                    Ok(Ok(Some(paths)))=>this.import_attachments(task,revision,paths.into_iter().map(|path|if path.is_dir(){AttachmentInput::Folder(path)}else{AttachmentInput::File(path)}).collect(),cx),
                     Ok(Ok(None))=>{},
                     _=>{this.attachments.errors.insert(task,"The native file picker could not open. Drop files on the composer instead.".into());},
                 }
@@ -343,9 +364,6 @@ impl Shell {
         cx.notify();
     }
     fn preview_attachment(&mut self, id: String, cx: &mut Context<Self>) {
-        if self.attachments.preview_loading {
-            return;
-        }
         let Some(task) = self.selected else { return };
         self.attachments.preview_id = Some(id.clone());
         self.attachments.preview = None;
@@ -396,6 +414,7 @@ impl Shell {
                 }
             }
             reply => {
+                let mut preview_folder = false;
                 let (task, result) = match reply {
                     Reply::Loaded(task, result) => {
                         if self.attachments.task == Some(task) {
@@ -403,7 +422,8 @@ impl Shell {
                         }
                         (task, result)
                     }
-                    Reply::Imported(task, result) => {
+                    Reply::Imported(task, contains_folder, result) => {
+                        preview_folder = contains_folder && self.attachments.task == Some(task);
                         self.attachments.end(task);
                         if result.is_ok() {
                             self.attachments.imports.remove(&task);
@@ -416,6 +436,7 @@ impl Shell {
                     }
                     Reply::Preview(..) => unreachable!(),
                 };
+                let mut auto_preview = None;
                 match result {
                     Ok(value) => {
                         if !self.attachments.imports.contains_key(&task) {
@@ -438,12 +459,26 @@ impl Shell {
                                 self.attachments.preview_id = None;
                                 self.attachments.preview = None;
                             }
+                            if preview_folder {
+                                // Newly added snapshots are appended after existing
+                                // ones. Open the newest so its exact names-only
+                                // payload is visible before the user sends it.
+                                auto_preview = value
+                                    .pending
+                                    .iter()
+                                    .rev()
+                                    .find(|item| item.is_folder_snapshot())
+                                    .map(|item| item.id.clone());
+                            }
                             self.attachments.value = Some(value);
                         }
                     }
                     Err(error) => {
                         self.attachments.errors.insert(task, error);
                     }
+                }
+                if let Some(id) = auto_preview {
+                    self.preview_attachment(id, cx);
                 }
             }
         }

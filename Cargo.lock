@@ -7039,6 +7039,7 @@ dependencies = [
 name = "synara-browser"
 version = "0.1.0"
 dependencies = [
+ "gdk-pixbuf",
  "gdkx11",
  "gtk",
  "javascriptcore-rs",
@@ -7152,6 +7153,7 @@ dependencies = [
  "ureq",
  "url",
  "uuid",
+ "zip",
 ]
 
 [[package]]

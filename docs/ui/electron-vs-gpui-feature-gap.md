@@ -1,6 +1,6 @@
 # Electron Synara to native Rust/GPUI: current feature-gap audit
 
-Checkpoint: 2026-09-22, after feature-closure sprint 2 at
+Previous checkpoint: 2026-09-22, after feature-closure sprint 2 at
 `20c78d7164e5e6e9be2b5bc1825be9babfeaa769`. Earlier feature-closure, Sessions 1-4 and maximum-feature
 checkpoints remain preserved. This inventory distinguishes user-visible implementation
 from Linux fixture evidence and still-open provider, hardware and platform acceptance.
@@ -10,9 +10,128 @@ continuation notes remain in the [preserved pre-Hubs inventory](electron-vs-gpui
 The full acceptance backlog remains in [ROADMAP.md](../../ROADMAP.md). No historical
 gap is closed merely because this current view is shorter or a heading was renamed.
 
+## September 23 current-main re-audit
+
+Current upstream was re-read at
+`Emanuele-web04/synara@eaa61eded31b6755d4f30ba8eabc5d905cf817cb`
+against native GPUI starting reference
+`cmdr-chara/synara@fc0024b9c0dd1ecdbcf41caa844c8269befc9fdf`. The current
+classification includes the September 23 continuation documented below.
+
+The old **21 present / 27 partial / 0 missing** result is now historical only.
+It used the older 48-capability boundary and treated very different situations as
+the same "Partial" status. Current upstream also exposes product surfaces that the
+old census did not count cleanly.
+
+### Genuinely missing current-head surfaces (2)
+
+| Surface | Upstream evidence | GPUI evidence |
+| --- | --- | --- |
+| Voice recording/transcription | Composer voice controller/recorder plus desktop/server transcription pipeline | No voice/transcription source surface; composer explicitly renders voice input unavailable |
+| Headless/web workspace | Documented headless server release, readiness, remote binding/auth/TLS and update workflow | No equivalent native headless/server product surface |
+
+### Largest material depth gaps
+
+| Area | GPUI has | Still missing versus current upstream |
+| --- | --- | --- |
+| First-run onboarding/setup replay | Persistent six-step first-run guide, local agent command summary, appearance/project entry and Settings replay | Integrated provider enable/sign-in terminal, project creation and deeper upstream setup interactions |
+| Browser sessions/WebMCP | Embedded native browser, manual uploads/inspection/viewport capture/link downloads, reviewed popup handoff, bounded network diagnostics and approved task browser-use bridge | Saved logins, cookie/session import, complete popup auth, agent upload/download, console diagnostics, restored sessions and page-declared WebMCP |
+| iOS Simulator/device | Discovery, boot/shutdown and screenshots | Live input, swipe/type/buttons, recording, app install/launch, URL open, accessibility tree and element targeting |
+| Editor/diff | Native tabs, find/replace, Markdown preview, changed-file/diff-row navigation, Explorer and Git review | Autosave/conflict parity, syntax-highlighted depth, compare scopes, blame and richer diff editing |
+| Managed worktrees | Git worktree operations | First-class per-task managed isolation and environment-aware fork/orchestration ownership |
+| Provider/model/context | Generic ACP controls plus direct-model runtime | Starred model+effort presets, provider ordering, quick cycling, richer compaction/context UX and provider/account usage telemetry |
+| Computer Use | Reviewed X11 selected-window observation/input | Broader action/input/preview/target semantics plus macOS/other-platform parity |
+| Automations | Durable fixed-offset daily/weekly schedules, run/failure stop limits, history and cancellation | IANA/DST schedules, broader recurrence, retry policy and deeper orchestration |
+| Slash commands/keybindings | Qualified native workflow commands plus provider commands, palette and constrained remaps | Richer command arguments, upstream semantics and broad context-aware custom keybindings |
+| Releases/updater | Local version history/read state | Verified release feed, signed install/update/rollback lifecycle |
+| Profile/activity | Local activity, UTC active-hour distribution and real task token/context values | Provider/model mix, heatmap and richer account/usage statistics |
+| Handoff/forks | Reviewed related continuation and context-derived branch drafts | Same-task continuation, provider-native forks and explicit local/new-worktree selection |
+| Attachments/media | PNG/JPEG/text intake, bounded one-level folder snapshots and transcript images | Persistent folder references, broader formats and PDF/document viewer |
+| Studio | Native Studio/Hubs and file/output preview | Current upstream long-running/output-oriented Studio depth |
+
+### Near-parity lanes (5)
+
+Theme/density is now substantial enough that it should not be grouped with the
+largest feature gaps. File/source search, thread export, reply/context reuse and the
+generic multi-provider workspace also have bounded deltas rather than requiring a
+new subsystem. Their remaining exact interaction/format/provider breadth should be
+tracked separately from the large gaps above.
+
+Empty-install onboarding now has a persistent six-step guide, local agent-command
+discovery, appearance and project setup, and Settings replay. Existing installs are
+not forced through it. Authentication is described as guidance; the guide does not
+claim sign-in or provider health. Browser popup requests use reviewed manual-tab
+handoff, while network diagnostics are bounded and redact URL credentials, queries
+and fragments. Editor and search navigation, folder snapshots, fixed-offset weekly
+automations with run/failure limits, and UTC profile active hours also advanced.
+The classification is **2 missing, 14 material-depth and 5 near-parity lanes**.
+
+Native subagents/workflows, Agent Gateway and incoming external MCP remain
+substantially implemented. Computer Use is retained as a depth gap because current
+upstream behavior is materially broader than the present X11 slice.
+
+## September 23: manual download and ZIP continuation
+
+The native manual browser now saves explicit HTTP(S) links through a reviewed
+local destination, private staging and no-overwrite publication. Per-tab epochs,
+shared-profile transfer admission, cancellation and byte/time limits retain
+ownership. Agent and authentication partitions still deny downloads. Source landed
+at `e4a740f11450e03f26b0435f0d3e442dc1325e7b`. Browser/WebMCP remains a material-depth gap.
+
+Native conversation ZIP export now packages `thread.json` and `transcript.md`
+from one completed SQLite snapshot. It preserves exact text/roles, known metadata
+and recorded image references without bundling credentials, unsent drafts, tool
+payloads or file bytes. The native action and `/synara/export-zip` reuse the existing
+save-dialog and no-overwrite export owners. Packaging is implemented. Broader
+structured metadata and native save-picker/platform acceptance remain bounded
+near-parity work. The three missing surfaces and historical A-Q states do not change.
+
+See [download evidence](../verification/manual-browser-downloads.md) and
+[ZIP evidence](../verification/conversation-zip-export.md). These source comparisons
+use upstream `eaa61eded31b6755d4f30ba8eabc5d905cf817cb` and are not a new full-product census.
+
+## September 23: scoped native continuation
+
+Upstream reference remains `eaa61eded31b6755d4f30ba8eabc5d905cf817cb`.
+The browser now has an explicit manual viewport-image clipboard action and
+one-shot-approved, bounded task scrolling. Scrolling retires element references
+until a new document read. Manual upload selection and inspector/dialog support
+were already integrated before these changes. This does not implement saved-login
+vaults, protected cookie import, popup auth, downloads, full-page or agent capture,
+session restoration, page-declared WebMCP or additional native platforms.
+
+The new `/synara/` command layer reuses native Debug, Goal, Recap, workflow,
+automation, Computer Use, usage, Markdown export and reconstructed-fork owners.
+Plan mode uses negotiated ACP choices and the existing session-control dispatcher.
+Only exact bare commands are accepted. Provider commands are not shadowed,
+unsent commands do not execute on restart, and command execution grants no implicit
+provider prompt, scheduler or computer-input authority. Upstream's unqualified
+names, richer command arguments, ZIP export, same-task/native-provider forks and
+broader keybindings remain open.
+
+Both areas stay in **material depth gap**, not Present or near parity.
+All three missing product surfaces and the other current parity lanes remain open.
+See [workflow details](native-commands.md) and the
+[verification record](../verification/parity-continuation-2026-09-23.md).
+
+
+### September 23: manual PNG viewport export
+
+Manual browser tabs now offer **Save visible page image as PNG...** beside
+clipboard capture. The native chooser selects a new local filename. The existing
+capture owner bounds dimensions and device scale, encodes asynchronously into
+private staging and publishes without overwriting only while the document epoch
+and visible page remain current. Cancellation, timeout and teardown publish no
+file. Agent capture and download capabilities remain disabled.
+
+This advances browser capture/export within the material-depth lane. Full-page
+capture, automatic composer attachment, restored sessions, authenticated-session
+import and WebMCP are not implied. See
+[PNG export evidence](../verification/browser-png-export.md).
+
 ## September 22: feature-closure sprint 2
 
-The current inventory has **18 substantially present, 26 partial and 4 missing**
+At this checkpoint the inventory had **18 substantially present, 26 partial and 4 missing**
 capabilities, not a release-readiness percentage. Stacked pull requests, AppSnap,
 two-task split views and bounded checkpoints/revert move Missing -> Present. Rich media in transcript moves Missing
 -> Partial because native image workflows are real, but PDF/document viewing remains
@@ -27,12 +146,12 @@ materially absent. No earlier Partial capability is promoted to Present.
 | Checkpoints/revert | Explicit reviewed rollback of app-owned unsent draft plus notes/checklist with bounded retained history, recovery checkpoint, restart persistence, stale/owner/active-task fencing and atomic failure recovery | Deliberately excludes workspace files, Git/index, transcript, provider sessions, approvals, attachments and broader state |
 
 Focused/native runs 35762961299, 35766712749, 35767806370, 35770961136 and
-35772987553 passed for these slices. The remaining Missing capabilities are native
+35772987553 passed for these slices. At that checkpoint the remaining Missing capabilities were native
 subagents/workflows, Agent Gateway, external-MCP-to-Synara and Computer Use.
 
 ## September 22: breadth-first feature closure
 
-The current inventory has **14 substantially present, 25 partial and 9 missing**
+At this checkpoint the inventory had **14 substantially present, 25 partial and 9 missing**
 capabilities, not a release-readiness percentage. Five capabilities move from
 Missing to Present: Debug, persistent goals, thread recap, PR Fix and inline file
 comments. In-app releases moves Missing to Partial. No Partial -> Present claim is
@@ -120,25 +239,22 @@ acceptance gates remain open where provider, platform or hardware evidence is mi
 
 ## Upstream review
 
-Current Electron main was re-read at
-`f04341a67bc4941d1b2e91e0b23bbe782dfbc727`, **342 commits** after the previous
-`e7cd15281e6d16cf8fc55a91496dcff035475e54` audit point. The current 0.9.0-era
-feature documentation adds material parity inputs rather than an unchanged upstream:
-Computer Use beta, Codex/Claude Project Import, and additional depth in provider,
-browser, device, composer, editor and release workflows.
+Current upstream comparison head is
+`Emanuele-web04/synara@eaa61eded31b6755d4f30ba8eabc5d905cf817cb`,
+10 commits beyond the previous `f04341a67bc4941d1b2e91e0b23bbe782dfbc727`
+snapshot used by the September 22/23 audit. The latest delta includes additional
+Computer, model/provider, simulator, automation, release and runtime work.
 
-Using Emanuele's current feature overview as the counting boundary, this audit tracks
-48 top-level user capabilities: 46 named overview entries plus Computer Use and
-Project Import. At the consolidated Sessions 1-4 checkpoint, **8 were substantially present,
-22 partial and 18 genuinely missing feature development**. The maximum-feature
-sprint superseded those counts with **9 present, 24 partial and 15 missing**. The feature-closure-sprint-2 checkpoint now records **18 present, 26 partial and 4 missing**. This is a
-feature-parity inventory, not a release-readiness percentage.
+The previous 48-capability count remains useful only for historical trend lines.
+It is **not** the current completion denominator because current upstream includes
+or documents user surfaces that the old boundary did not represent cleanly,
+including voice recording/transcription, onboarding/setup replay and the
+headless/web workspace. Current planning uses parity lanes instead of forcing those
+surfaces into a stale denominator.
 
-The Synara product requirement is intentionally broader than Electron's current
-named-provider list for one area: **direct model providers**. Generic ACP remains
-the coding-agent architecture, and Synara now has a separate provider-neutral direct runtime. Its target
-remains roughly 75+ interoperable providers, not yet demonstrated coverage. ACP access to an
-agent such as OpenCode does not by itself satisfy that requirement.
+The Synara product requirement remains intentionally broader than upstream's named
+provider list for direct models. Generic ACP stays the coding-agent architecture,
+while `synara-model` remains a separate provider-neutral direct runtime.
 
 ## September 21: composer intake and saved follow-ups
 
@@ -181,6 +297,10 @@ in the receipt rather than represented as successful acceptance.
 
 | Surface | Source implemented | Remaining acceptance or functionality |
 | --- | --- | --- |
+| Native subagents/workflows | Reviewed atomic child DAGs and dependency reports, real task/session owners, bounded Run/Pause/Stop, live usage, retry/recovery and archival guards | Real-provider/platform acceptance, richer authoring and optional worktree isolation |
+| Agent Gateway | Negotiated ACP HTTP-MCP enrollment and scoped native-approved operations returning bounded child reports | Representative production agents and transport/platform acceptance |
+| Incoming external MCP | Local clients connect to Synara with bearer leases, scoped tools, nonce receipts, native approvals and revocation | Representative client applications, remote/OAuth and transport breadth |
+| Computer Use | Actual X11 window selection, observation/preview, one-shot input and takeover with fresh-frame/target checks | Partial: full desktop, richer input, Wayland/macOS/Windows and production application acceptance |
 | Stacked PRs | Reviewed deterministic stack model and selected-prefix merge using existing PR provider/confirmation ownership | Authenticated live GitHub and cross-platform acceptance |
 | Transcript images | Durable task-owned image bytes, provenance, native preview/expand/export and bounded corrupt/missing behavior | Partial: PDF/document viewing and broader media types |
 | AppSnap | Explicit Linux/X11 single-window discovery/selection/capture into durable pending attachments | macOS/Windows/Wayland implementations and permission acceptance |
@@ -192,7 +312,7 @@ in the receipt rather than represented as successful acceptance.
 | PR Fix | Head-pinned unresolved review context into an explicitly reviewed unsent destination | Live authenticated account acceptance |
 | Inline file comments | Durable task-owned version-pinned range comments and reviewed unsent composer append | Broader editor/remote/platform interaction acceptance |
 | Releases | Current compiled version, native notes, local observation history and read/dismiss state | Partial: verified release feed and production installer remain unavailable |
-| Direct model providers | Separate `synara-model` runtime, three transport families, reviewed registry/custom endpoints, Settings/model selection, endpoint-bound OS references, streaming/Stop, usage and local structured-output checks | Partial toward 75+ interoperability, additional auth, native multimodal and approved tools; see direct-model docs |
+| Direct model providers | Separate `synara-model` runtime, three transport families, reviewed registry/custom endpoints, Settings/model selection, endpoint-bound OS references, streaming/Stop, usage and local structured-output checks | Partial toward 75+ interoperability, additional auth and approved tools. Reviewed multimodal context is implemented; see direct-model docs |
 | Project Import | Reviewed local Codex/Claude text-history discovery/import, atomic receipt and recovery | Broader real-history/platform acceptance; no session/approval/secret transfer |
 | Provider continuation | Reviewed unsent related ACP/direct conversations with original link and unchanged source session/root | No in-place same-task session migration or filesystem rollback |
 | Plugins/integrations | Native searchable built-in and managed inventory, ownership and reported-capability separation | External catalog/installed-state/lifecycle requires an actual provider contract, not inferred support; E8/I9 |
@@ -223,8 +343,8 @@ features as absent.
 
 | Area | Remaining acceptance or extension work |
 | --- | --- |
-| Direct multi-provider runtime | Real partial implementation now exists. Remaining P0 development: 75+ provider breadth/interoperability, auth families, native multimodal context and approved tool execution. ACP stays separate. |
-| Computer Use | Missing Electron 0.9.0 product workflow: desktop/app control, permission setup, scoped approval, preview/interruption and safe lifecycle |
+| Direct multi-provider runtime | Real partial implementation now exists. Remaining P0 development: 75+ provider breadth/interoperability, additional auth families, approved tool execution and real-provider acceptance. Reviewed image/text context and multimodal replay are implemented. ACP stays separate. |
+| Computer Use | A reviewed X11 app-window workflow is implemented. Full desktop, richer Unicode/IME and modifier/drag input, other platforms and production acceptance remain. |
 | Project Import | Reviewed native text import is implemented. Broader real-history/platform acceptance and optional incremental/binary depth remain. |
 | Attachments and voice | Native attachment acceptance, broader binary formats, historical media/export, capture permissions and voice/transcription; D11/D12/I8 |
 | Rich conversation workflows | Side chats and additive edit/resend/revision branching are implemented. Reviewed related provider continuation is now implemented. Provider-supported queue/steer, in-place handoff, file-affecting rollback, richer structured result cards, Side-chat attachment parity and broader native acceptance remain; D4/D8-D12/G7 |

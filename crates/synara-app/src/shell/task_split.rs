@@ -16,11 +16,12 @@ impl Shell {
             .flex_shrink_0()
             .justify_end()
             .gap_2()
+            .child(self.handoff_menu_button(cx))
             .child(self.checkpoint_button(cx))
             .px_3()
             .py_1()
             .child(
-                ui::action(
+                ui::header_action(
                     "task-split-open",
                     if self.side_chats.split {
                         "Choose second task"
@@ -28,7 +29,7 @@ impl Shell {
                         "View two tasks"
                     },
                     None,
-                    self.selected.is_none() || self.loading_task.is_some(),
+                    self.side_chats.split,
                     cx.listener(|this, _: &(), _, cx| this.open_task_split(cx)),
                 )
                 .relative()

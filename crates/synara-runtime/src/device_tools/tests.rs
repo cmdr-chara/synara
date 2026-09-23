@@ -1,5 +1,5 @@
 #[cfg(test)]
-mod tests {
+mod cases {
     use super::super::*;
     #[test]
     fn distinguishes_real_simulator_unknown_unauthorized_and_stale() {

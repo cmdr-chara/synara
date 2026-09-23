@@ -13,6 +13,7 @@ mod tests;
 pub const MAX_ATTACHMENT_BATCH_BYTES: usize = 2 * 1024 * 1024;
 const MAX_STORED_BYTES: usize = 3 * 1024 * 1024;
 const MAX_ATTACHMENTS: usize = 8;
+const FOLDER_SNAPSHOT_PREFIX: &str = "Folder snapshot (names and types only) - ";
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -49,7 +50,14 @@ impl AttachmentInfo {
         format!("synara-attachment://{}", self.id)
     }
     fn label(&self) -> String {
-        format!("Attached file: {}", self.name)
+        if self.is_folder_snapshot() {
+            format!("Attached folder snapshot: {}", self.name)
+        } else {
+            format!("Attached file: {}", self.name)
+        }
+    }
+    pub fn is_folder_snapshot(&self) -> bool {
+        self.kind == AttachmentKind::Text && self.name.starts_with(FOLDER_SNAPSHOT_PREFIX)
     }
 }
 #[derive(Clone, Debug, Default)]
@@ -91,6 +99,9 @@ impl AttachmentDraft {
 #[derive(Clone)]
 pub enum AttachmentInput {
     File(PathBuf),
+    /// Explicitly selected directory. Only a bounded, one-level listing is read;
+    /// its source path and file contents are never persisted or sent.
+    Folder(PathBuf),
     Bytes {
         name: String,
         bytes: Vec<u8>,

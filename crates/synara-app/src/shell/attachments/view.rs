@@ -36,7 +36,9 @@ impl Shell {
                                 ui::action(
                                     ("attachment", slot),
                                     info.name.clone(),
-                                    Some(if info.kind.is_image() {
+                                    Some(if info.is_folder_snapshot() {
+                                        Glyph::Folder
+                                    } else if info.kind.is_image() {
                                         Glyph::Capture
                                     } else {
                                         Glyph::Files
@@ -100,13 +102,18 @@ impl Shell {
                     .text_size(px(11.))
                     .text_color(rgb(palette().muted))
                     .child(format!(
-                        "{} files · {} KiB · Snapshots will be sent to the selected agent",
+                        "{} files · {} KiB · Snapshots will be sent to the selected agent{}",
                         pending.len(),
                         pending
                             .iter()
                             .map(|a| a.bytes)
                             .sum::<usize>()
-                            .div_ceil(1024)
+                            .div_ceil(1024),
+                        if pending.iter().any(|a| a.is_folder_snapshot()) {
+                            " · Folder snapshots show names and item types only"
+                        } else {
+                            ""
+                        }
                     ))
             }))
             .children(
@@ -244,7 +251,7 @@ impl Shell {
                 .children(recent.iter().rev().enumerate().map(|(slot,info)|{
                     let preview=info.id.clone();let reuse=info.id.clone();
                     div().flex().items_center().gap_2()
-                        .child(ui::action(("recent-file",slot),info.name.clone(),Some(Glyph::Files),false,
+                        .child(ui::action(("recent-file",slot),info.name.clone(),Some(if info.is_folder_snapshot(){Glyph::Folder}else{Glyph::Files}),false,
                             cx.listener(move |this,_:&(),_,cx|this.preview_attachment(preview.clone(),cx))).flex_1().min_w_0().text_size(px(12.)))
                         .child(ui::action(("reuse-attachment",slot),"Attach again",None,false,
                             cx.listener(move |this,_:&(),_,cx|this.change_attachments(AttachmentEdit::Reuse(reuse.clone()),cx))).text_size(px(12.)))
@@ -253,6 +260,19 @@ impl Shell {
                     cx.listener(|this,_:&(),_,cx|this.change_attachments(AttachmentEdit::ForgetRecent,cx))).text_size(px(11.)).relative().child(ui::layout_probe("forget-recent-attachments")))
                 .child(div().px_2().text_size(px(11.)).text_color(rgb(palette().muted)).child("Recent is a bounded local cache, not delivery confirmation. Reattaching does not send.")));
         }
+        let folder_preview = state
+            .preview_id
+            .as_ref()
+            .and_then(|id| {
+                value.and_then(|draft| {
+                    draft
+                        .pending
+                        .iter()
+                        .chain(&draft.recent)
+                        .find(|info| info.id == *id)
+                })
+            })
+            .is_some_and(|info| info.is_folder_snapshot());
         if state.preview_loading || state.preview.is_some() {
             root = root
                 .child(
@@ -260,12 +280,11 @@ impl Shell {
                         .flex()
                         .items_center()
                         .gap_2()
-                        .child(
-                            div()
-                                .flex_1()
-                                .text_size(px(12.))
-                                .child("Attachment preview"),
-                        )
+                        .child(div().flex_1().text_size(px(12.)).child(if folder_preview {
+                            "Folder snapshot preview · names and types only"
+                        } else {
+                            "Attachment preview"
+                        }))
                         .child(
                             ui::chrome_button(
                                 "close-attachment-preview",

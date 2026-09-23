@@ -173,6 +173,7 @@ async fn handoff_does_not_copy_source_route_and_explicit_direct_target_is_bound(
         .unwrap();
     let profile = &settings.providers[0];
     let selection = ModelSelection {
+        history_turns: None,
         provider_id: profile.id.clone(),
         model_id: profile.models[0].id.clone(),
         max_output_tokens: 32,

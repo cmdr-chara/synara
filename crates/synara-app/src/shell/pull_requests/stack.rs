@@ -163,55 +163,52 @@ impl Shell {
                         cx.listener(|this, _: &(), _, cx| this.pr_stack_prepare(cx)),
                     )),
             );
-            if let Some(confirmation) = &v.stack_confirmation {
-                if let Ok(prefix) = confirmation.prefix() {
-                    let base = prefix[0].base();
-                    let mut notice = div().relative().child(ui::layout_probe("pr-stack-confirmation")).text_sm()
+            if let Some(confirmation) = &v.stack_confirmation
+                && let Ok(prefix) = confirmation.prefix()
+            {
+                let base = prefix[0].base();
+                let mut notice = div().relative().child(ui::layout_probe("pr-stack-confirmation")).text_sm()
                         .child(format!("Confirm {}: merge this prefix in order into {base}, using merge commits only. Retarget each child to {base}. No force, branch deletion, checkout or local Git mutation. This is not atomic: Stop keeps confirmed earlier writes. New checks after retargeting may stop the prefix.",confirmation.repository.slug()));
-                    for row in prefix {
-                        notice =
-                            notice.child(div().font_family("monospace").text_xs().child(format!(
-                                "#{} {} | {} -> {base}",
-                                row.number(),
-                                row.head(),
-                                row.base()
-                            )));
-                    }
-                    pane = pane.child(notice).child(
-                        div()
-                            .flex()
-                            .gap_2()
-                            .child(
-                                div()
-                                    .relative()
-                                    .child(ui::layout_probe("pr-stack-confirm"))
-                                    .child(ui::action(
-                                        "pr-stack-confirm",
-                                        "Confirm reviewed prefix",
-                                        Some(Glyph::Shield),
-                                        false,
-                                        cx.listener(|this, _: &(), _, cx| {
-                                            this.pr_stack_confirm(cx)
-                                        }),
-                                    )),
-                            )
-                            .child(
-                                div()
-                                    .relative()
-                                    .child(ui::layout_probe("pr-stack-dismiss"))
-                                    .child(ui::action(
-                                        "pr-stack-dismiss",
-                                        "Cancel review",
-                                        None,
-                                        false,
-                                        cx.listener(|this, _: &(), _, cx| {
-                                            this.pull_requests.stack_confirmation = None;
-                                            cx.notify();
-                                        }),
-                                    )),
-                            ),
-                    );
+                for row in prefix {
+                    notice = notice.child(div().font_family("monospace").text_xs().child(format!(
+                        "#{} {} | {} -> {base}",
+                        row.number(),
+                        row.head(),
+                        row.base()
+                    )));
                 }
+                pane = pane.child(notice).child(
+                    div()
+                        .flex()
+                        .gap_2()
+                        .child(
+                            div()
+                                .relative()
+                                .child(ui::layout_probe("pr-stack-confirm"))
+                                .child(ui::action(
+                                    "pr-stack-confirm",
+                                    "Confirm reviewed prefix",
+                                    Some(Glyph::Shield),
+                                    false,
+                                    cx.listener(|this, _: &(), _, cx| this.pr_stack_confirm(cx)),
+                                )),
+                        )
+                        .child(
+                            div()
+                                .relative()
+                                .child(ui::layout_probe("pr-stack-dismiss"))
+                                .child(ui::action(
+                                    "pr-stack-dismiss",
+                                    "Cancel review",
+                                    None,
+                                    false,
+                                    cx.listener(|this, _: &(), _, cx| {
+                                        this.pull_requests.stack_confirmation = None;
+                                        cx.notify();
+                                    }),
+                                )),
+                        ),
+                );
             }
         }
         pane.into_any_element()

@@ -1,8 +1,10 @@
 mod browser;
 mod checkpoints;
 mod direct_models;
+mod gateway;
 mod handoff;
 mod integrations;
+mod workflows;
 use crate::{AgentProfile, WorkspaceError, WorkspaceResult, WorkspaceService};
 use std::{
     collections::HashMap,
@@ -57,6 +59,7 @@ impl TaskSlot {
 pub struct Controller {
     pub workspace: WorkspaceService,
     pub browser: crate::BrowserService,
+    pub autonomy: crate::Autonomy,
     browser_endpoints: StdMutex<HashMap<TaskId, crate::browser::mcp::Endpoint>>,
     backend: Arc<dyn AgentBackend>,
     interactions: Arc<dyn InteractionHandler>,
@@ -89,6 +92,7 @@ impl Controller {
     ) -> Self {
         Self {
             browser: crate::BrowserService::default(),
+            autonomy: crate::Autonomy::default(),
             browser_endpoints: StdMutex::new(HashMap::new()),
             workspace,
             backend,
@@ -210,6 +214,9 @@ impl Controller {
         let mut options = SessionOptions::new(task.thread_id, task.working_directory.clone());
         options.context_servers = self.managed_mcp_context(&task, connection.as_ref()).await?;
         if let Some(context) = self.browser_context(id, &profile, connection.as_ref())? {
+            options.context_servers.push(context);
+        }
+        if let Some(context) = self.gateway_context(id, &profile, connection.as_ref())? {
             options.context_servers.push(context);
         }
         let previous = self.workspace.session(task.thread_id).await?;
@@ -341,12 +348,6 @@ impl Controller {
             .setup_cancel
             .lock()
             .map_err(|_| WorkspaceError::Worker)? = Some(cancellation.clone());
-        if let Some(binding) = self.workspace.direct_model_binding(id).await? {
-            if attachments.is_some() {
-                return Err(WorkspaceError::Invalid("Direct chat attachment delivery is not available in this slice. Remove attachments or use an ACP agent.".into()));
-            }
-            return self.submit_direct(id, binding, text, cancellation).await;
-        }
         // Reserve cancellation BEFORE reading/decoding images. Stop during intake
         // must not turn into a delayed agent launch when the worker completes.
         let prompt = if let Some(revision) = attachments {
@@ -358,6 +359,9 @@ impl Controller {
         } else {
             Prompt::text(text)
         };
+        if let Some(binding) = self.workspace.direct_model_binding(id).await? {
+            return self.submit_direct(id, binding, prompt, cancellation).await;
+        }
         let session = tokio::select! {
             biased;
             () = cancellation.cancelled() => return Err(AgentError::Cancelled.into()),
@@ -370,6 +374,7 @@ impl Controller {
     }
 
     pub async fn cancel(&self, id: TaskId) -> WorkspaceResult<()> {
+        self.autonomy.revoke(id);
         self.revoke_browser_use(id);
         let slot = self.slot(id).await?;
         if let Some(token) = slot
@@ -461,6 +466,7 @@ impl Controller {
         Ok(())
     }
     pub async fn switch_agent(&self, id: TaskId, agent: String) -> WorkspaceResult<Task> {
+        self.autonomy.revoke(id);
         self.revoke_browser_use(id);
         let slot = self.slot(id).await?;
         if slot.active.swap(true, Ordering::AcqRel) {
@@ -477,6 +483,7 @@ impl Controller {
         self.workspace.set_task_agent(id, agent).await
     }
     pub async fn restart(&self, id: TaskId) -> WorkspaceResult<SessionDetails> {
+        self.autonomy.revoke(id);
         self.revoke_browser_use(id);
         let slot = self.slot(id).await?;
         if slot.active.swap(true, Ordering::AcqRel) {
@@ -526,6 +533,7 @@ impl Controller {
     /// serialize with session setup, close its session (not the shared process),
     /// then use storage's archived-only atomic deletion invariant.
     pub async fn delete_archived_task(&self, id: TaskId) -> WorkspaceResult<()> {
+        self.autonomy.revoke(id);
         self.revoke_browser_use(id);
         let slot = self.slot(id).await?;
         if slot.active.swap(true, Ordering::AcqRel) {
@@ -573,6 +581,7 @@ impl Controller {
 
     pub async fn shutdown(&self) -> WorkspaceResult<()> {
         self.closing.store(true, Ordering::Release);
+        self.autonomy.shutdown();
         self.browser.shutdown();
         self.browser_endpoints
             .lock()

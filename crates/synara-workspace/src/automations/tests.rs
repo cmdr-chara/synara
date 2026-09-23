@@ -24,6 +24,9 @@ async fn setup(
         enabled: true,
         next_run_ms: now_ms(),
         missed: MissedRunPolicy::CatchUpOnce,
+        max_runs: None,
+        stop_after_consecutive_failures: None,
+        failure_streak: 0,
     };
     service
         .save_automation(definition.clone(), None)
@@ -33,14 +36,36 @@ async fn setup(
     (service, definition, root)
 }
 #[test]
-fn schedules_handle_fixed_offsets_and_reject_unimplemented_dst_zones() {
+fn schedules_handle_fixed_offsets_and_weekdays_and_reject_unimplemented_dst_zones() {
     let daily = AutomationSchedule::parse("daily 09:00").unwrap();
     assert_eq!(daily.next_after(0, "+02:00").unwrap(), 7 * 60 * 60 * 1000);
     assert_eq!(
         daily.next_after(7 * 60 * 60 * 1000, "+02:00").unwrap(),
         (24 + 7) * 60 * 60 * 1000
     );
-    for value in ["every 0m", "daily 24:00", "* * * * *", "every 999999m"] {
+    let friday = 24 * 60 * 60 * 1000;
+    let monday = 4 * 24 * 60 * 60 * 1000;
+    assert_eq!(
+        AutomationSchedule::parse("weekdays 09:00")
+            .unwrap()
+            .next_after(friday + 10 * 60 * 60 * 1000, "UTC")
+            .unwrap(),
+        monday + 9 * 60 * 60 * 1000
+    );
+    assert_eq!(
+        AutomationSchedule::parse("weekly mon 09:00")
+            .unwrap()
+            .next_after(0, "+02:00")
+            .unwrap(),
+        monday + 7 * 60 * 60 * 1000
+    );
+    for value in [
+        "every 0m",
+        "daily 24:00",
+        "weekly fuu 09:00",
+        "* * * * *",
+        "every 999999m",
+    ] {
         assert!(AutomationSchedule::parse(value).is_err());
     }
     for zone in ["Europe/Rome", "+14:30", "-99:00", "+02:99", "UTCfoo"] {
@@ -50,6 +75,15 @@ fn schedules_handle_fixed_offsets_and_reject_unimplemented_dst_zones() {
 #[tokio::test]
 async fn saving_pauses_and_conflicting_edits_are_rejected() {
     let (service, mut definition, _root) = setup(None).await;
+    let mut legacy = serde_json::to_value(&definition).unwrap();
+    let old_fields = legacy.as_object_mut().unwrap();
+    old_fields.remove("max_runs");
+    old_fields.remove("stop_after_consecutive_failures");
+    old_fields.remove("failure_streak");
+    let decoded: AutomationDefinition = serde_json::from_value(legacy).unwrap();
+    assert_eq!(decoded.max_runs, None);
+    assert_eq!(decoded.stop_after_consecutive_failures, None);
+    assert_eq!(decoded.failure_streak, 0);
     assert!(!definition.enabled);
     assert_eq!(definition.revision, 1);
     assert!(service.automations().await.unwrap().runs.is_empty());
@@ -172,6 +206,65 @@ async fn skip_and_catch_up_once_have_explicit_bounded_semantics() {
             assert_eq!(ledger.runs[0].status, AutomationRunStatus::Skipped);
         }
     }
+}
+#[tokio::test]
+async fn run_limit_and_failure_limit_pause_durably_without_replaying() {
+    let db = tempfile::tempdir().unwrap();
+    let path = db.path().join("workspace.sqlite");
+    let (service, mut definition, _root) = setup(Some(path.clone())).await;
+    definition.max_runs = Some(2);
+    definition.stop_after_consecutive_failures = Some(2);
+    service
+        .save_automation(definition.clone(), Some(1))
+        .await
+        .unwrap();
+    service
+        .enable_automation(definition.id, 2, true)
+        .await
+        .unwrap();
+    let owner = AutomationId::new_v4();
+    let first = service
+        .claim_automation(definition.id, owner, false, now_ms())
+        .await
+        .unwrap()
+        .unwrap();
+    service
+        .finish_automation(first.id, owner, AutomationRunStatus::Failed, "first".into())
+        .await
+        .unwrap();
+    assert!(service.automations().await.unwrap().definitions[0].enabled);
+    let second = service
+        .claim_automation(definition.id, owner, false, now_ms())
+        .await
+        .unwrap()
+        .unwrap();
+    service
+        .finish_automation(
+            second.id,
+            owner,
+            AutomationRunStatus::Failed,
+            "second".into(),
+        )
+        .await
+        .unwrap();
+    drop(service);
+    let reopened = WorkspaceService::open(path).await.unwrap();
+    let ledger = reopened.automations().await.unwrap();
+    assert!(!ledger.definitions[0].enabled);
+    assert_eq!(ledger.runs.len(), 2);
+    assert!(
+        reopened
+            .enable_automation(definition.id, ledger.definitions[0].revision, true)
+            .await
+            .is_err()
+    );
+    assert!(
+        reopened
+            .claim_automation(definition.id, owner, false, now_ms())
+            .await
+            .is_err()
+    );
+    assert_eq!(reopened.automations().await.unwrap().runs.len(), 2);
 }
 #[tokio::test]
 async fn deletion_needs_confirmation_and_retains_history_and_conversation() {

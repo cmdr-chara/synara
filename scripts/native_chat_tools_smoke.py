@@ -10,6 +10,7 @@ from native_smoke import Scenario, wait_until
 from native_navigation_smoke import selection
 from native_presentation_smoke import resize
 from native_rich_text_smoke import clipboard
+from native_integrations_smoke import fill
 
 
 def preference(s, key):
@@ -26,10 +27,28 @@ def close(s):
     s.log = None
 
 
-def action(s, label):
+def log_offset(s):
+    return len(Path(s.log.name).read_text(errors='replace'))
+
+
+def wait_menu_transition(s, cursor, state):
+    wait_until(lambda: f'chat-menu-{state}' in
+               Path(s.log.name).read_text(errors='replace')[cursor:],
+               f'native chat menu {state}')
+
+
+def open_actions(s):
+    cursor = log_offset(s)
     s.click_control('chat-actions')
+    wait_menu_transition(s, cursor, 'opened')
+
+
+def action(s, label):
+    open_actions(s)
     s.desktop.text(label)
+    cursor = log_offset(s)
     s.desktop.key('Return')
+    wait_menu_transition(s, cursor, 'closed')
 
 
 def latest_search_count(s):
@@ -74,15 +93,34 @@ def run(s):
     assert len(pins['entries']) == 1
     s.click_control('chat-pins')
     ui.screenshot('chat-pinned-messages', window_only=True)
+    cursor = log_offset(s)
     ui.key('Return')
+    wait_menu_transition(s, cursor, 'closed')
+    wait_until(lambda: 'message-jump' in Path(s.log.name).read_text(errors='replace')[cursor:],
+               'selected pinned message jump')
     assert s.events() == baseline
     s.checks.append('pin-message-and-jump-without-changing-history-or-submitting-a-prompt')
 
+    before_copy_y = s.control_bounds('chat-actions')[1]
     action(s, 'Copy text conversation')
     copied = wait_until(lambda: clipboard(ui) if 'Synara text conversation' in clipboard(ui) else None, 'Markdown conversation clipboard')
     assert 'Hello from' in copied and '## User' in copied and '## Assistant' in copied
     assert 'Do not send this draft.' not in copied
+    # Clipboard ownership arrives before the copy-notice banner is painted.
+    # Its inserted row moves the toolbar, so wait for the new native geometry.
+    wait_until(lambda: s.control_bounds('chat-actions')[1] > before_copy_y,
+               'toolbar laid out below the copy-status banner')
     assert s.events() == baseline
+    open_actions(s)
+    ui.text('Export ZIP conversation')
+    wait_until(lambda: s.control_bounds('model-choice', slot=0), 'native ZIP export menu choice')
+    ui.screenshot('zip-export-menu', window_only=True)
+    cursor = log_offset(s)
+    ui.key('Escape')  # Clear the menu query, matching ChoiceMenu.key_down.
+    ui.key('Escape')  # Dismiss the now-unfiltered menu before the next action.
+    wait_menu_transition(s, cursor, 'closed')
+    assert s.events() == baseline
+    s.checks.append('zip-export-menu-is-discoverable-without-sending-or-changing-transcript')
     action(s, 'Reuse last prompt')
     s.click_control('composer-input')
     assert ui.copy_input() == 'Do not send this draft.\n\nhello'
@@ -125,6 +163,35 @@ def run(s):
     ui.focus()
     ui.screenshot('chat-utility-restoration', window_only=True)
     s.checks.append('pins-and-combined-draft-survive-restart-without-new-agent-events')
+    resize(ui, 1280, 1000, s.scale)
+    # Native commands use the normal Send entry point, not an injected RPC.
+    fill(s, 'composer-input', '/synara/debug')
+    s.click_control('composer-submit', enabled=True)
+    wait_until(lambda: s.control_bounds('debug-close'), 'native debug command')
+    s.click_control('debug-close')
+    assert s.events() == baseline
+    fill(s, 'composer-input', '/synara/goal')
+    s.click_control('composer-submit', enabled=True)
+    wait_until(lambda: s.control_bounds('goal-close'), 'native goal command')
+    ui.screenshot('native-goal-command', window_only=True)
+    s.click_control('goal-close')
+    assert s.events() == baseline
+    fill(s, 'composer-input', '/synara/not-a-command')
+    s.click_control('composer-submit', enabled=True)
+    s.click_control('composer-input')
+    assert ui.copy_input() == '/synara/not-a-command'
+    ui.focus()
+    assert s.events() == baseline
+    # A saved command is inert on restart, just like any other unsent draft.
+    fill(s, 'composer-input', '/synara/debug')
+    wait_until(lambda: preference(s, 'task-draft:' + task), 'saved native command draft')
+    close(s)
+    s.launch(preserve_selection=True)
+    assert s.events() == baseline
+    s.click_control('composer-input')
+    assert s.desktop.copy_input() == '/synara/debug'
+    s.desktop.focus()
+    s.checks.append('native-debug-goal-invalid-command-and-restart-never-submit-provider-prompts')
     close(s)
 
 

@@ -69,10 +69,10 @@ impl SkillReview {
                     }
                 }
             }
-        } else if let Some(heading) = markdown.lines().find_map(|line| line.strip_prefix("# ")) {
-            if text(heading, 160) {
-                title = heading.to_owned();
-            }
+        } else if let Some(heading) = markdown.lines().find_map(|line| line.strip_prefix("# "))
+            && text(heading, 160)
+        {
+            title = heading.to_owned();
         }
         let skill = InstalledSkill {
             id: uuid::Uuid::new_v4().to_string(),

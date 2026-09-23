@@ -85,7 +85,7 @@ impl Default for Personalization {
             density: DensityPreference::Comfortable,
             chat_width: 736,
             accent: None,
-            terminal_font_size: 14,
+            terminal_font_size: 12,
         }
     }
 }

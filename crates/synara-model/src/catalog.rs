@@ -91,9 +91,7 @@ pub fn parse_catalog(value: Value) -> ModelResult<ProviderCatalog> {
         }
         catalog.providers.push(entry);
     }
-    catalog
-        .providers
-        .sort_by(|a, b| a.name.to_lowercase().cmp(&b.name.to_lowercase()));
+    catalog.providers.sort_by_key(|a| a.name.to_lowercase());
     Ok(catalog)
 }
 

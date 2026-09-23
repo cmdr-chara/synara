@@ -1,0 +1,196 @@
+name: Native Electron parity verification
+on:
+  push:
+    branches: [astra/electron-1to1]
+    paths:
+      - 'crates/**'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - 'scripts/native_*'
+      - 'docs/ui/parity/**'
+      - '.github/workflows/electron-parity-build.yml'
+  pull_request:
+    branches: [astra/gpui-clean-rewrite]
+    paths:
+      - 'crates/**'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - 'scripts/native_*'
+      - 'docs/ui/parity/**'
+      - '.github/workflows/electron-parity-build.yml'
+permissions:
+  contents: read
+concurrency:
+  group: electron-parity-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  verify:
+    if: github.repository == 'cmdr-chara/synara'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      CARGO_BUILD_JOBS: 2
+      PYTHONDONTWRITEBYTECODE: 1
+      GIT_TERMINAL_PROMPT: 0
+      RUST_BACKTRACE: 0
+      EVIDENCE: /tmp/electron-parity-evidence
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Pinned compiler and native prerequisites
+        run: |
+          mkdir -p "$EVIDENCE"
+          rustup toolchain install 1.98.1 --profile minimal --component rustfmt
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libwebkit2gtk-4.1-dev libgtk-3-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil xclip fonts-dejavu-core fonts-liberation fonts-noto-core x11-utils imagemagick
+      - uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: electron-parity-${{ runner.os }}-${{ github.sha }}
+          restore-keys: |
+            electron-parity-${{ runner.os }}-
+            native-conversation-${{ runner.os }}-
+            feature-closure-2-1.98.1-${{ runner.os }}-
+      - name: Check committed formatting and the complete reference inventory
+        id: format
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          cargo +1.98.1 fmt --check -p synara-app -p synara-workspace 2>&1 | tee "$EVIDENCE/format.log"
+          python3 - <<'PY'
+          import csv, pathlib
+          path = pathlib.Path('docs/ui/parity/reference-cases.tsv')
+          with path.open(encoding='utf-8', newline='') as source:
+              reader = csv.DictReader(source, delimiter='\t')
+              assert reader.fieldnames == ['case_id', 'reference', 'visual_status', 'behavior_status']
+              cases = list(reader)
+          assert [int(case['case_id']) for case in cases] == list(range(157))
+          assert len({case['reference'] for case in cases}) == 157
+          for case in cases:
+              image = pathlib.PurePosixPath(case['reference'])
+              assert not image.is_absolute() and '..' not in image.parts and image.suffix == '.png'
+              assert case['visual_status'] in {'OPEN', 'BLOCKED', 'FAIL', 'PASS'}
+              assert case['behavior_status'] in {'OPEN', 'BLOCKED', 'FAIL', 'PASS'}
+          print('Reference inventory: 157 individual states retained. Inventory validation is not visual acceptance.')
+          PY
+          python3 scripts/check_roadmap.py | tee "$EVIDENCE/roadmap.log"
+          git diff --check
+      - name: Native library regressions on the committed source
+        id: libraries
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          cargo +1.98.1 test --locked --workspace --exclude synara-app 2>&1 | tee "$EVIDENCE/libraries.log"
+      - name: Native application regressions on the committed source
+        id: application
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          cargo +1.98.1 test --locked -p synara-app 2>&1 | tee "$EVIDENCE/application.log"
+      - name: Build the committed application and fixture once
+        id: build
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          cargo +1.98.1 build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture 2>&1 | tee "$EVIDENCE/build.log"
+      - name: Actual native navigation and Chat Behavior journeys
+        id: native
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          failed=0
+          for journey in navigation chat_behavior; do
+            if ! python3 "scripts/native_${journey}_smoke.py" --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output "$EVIDENCE/$journey" 2>&1 | tee "$EVIDENCE/native-$journey.log"; then
+              failed=1
+            fi
+          done
+          test "$failed" -eq 0
+      - name: Record exact source identity and test evidence
+        id: receipt
+        if: ${{ !cancelled() }}
+        env:
+          FORMAT_OUTCOME: ${{ steps.format.outcome }}
+          LIBRARIES_OUTCOME: ${{ steps.libraries.outcome }}
+          APPLICATION_OUTCOME: ${{ steps.application.outcome }}
+          BUILD_OUTCOME: ${{ steps.build.outcome }}
+          NATIVE_OUTCOME: ${{ steps.native.outcome }}
+        run: |
+          python3 - <<'PY'
+          import csv, hashlib, json, os, pathlib, re, subprocess
+          root = pathlib.Path(os.environ['EVIDENCE'])
+          root.mkdir(exist_ok=True)
+          totals = {'passed': 0, 'failed': 0, 'ignored': 0}
+          for name in ('libraries.log', 'application.log'):
+              path = root / name
+              if not path.exists():
+                  continue
+              text = path.read_text(errors='replace')
+              for passed, failed, ignored in re.findall(r'test result: (?:ok|FAILED)\. (\d+) passed; (\d+) failed; (\d+) ignored;', text):
+                  for key, value in zip(totals, (passed, failed, ignored)):
+                      totals[key] += int(value)
+          with pathlib.Path('docs/ui/parity/reference-cases.tsv').open() as source:
+              cases = list(csv.DictReader(source, delimiter='\t'))
+          state = subprocess.check_output(['git', 'status', '--porcelain'], text=True)
+          (root / 'status.txt').write_text(state)
+          receipt = {
+              'native_revision': subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(),
+              'electron_reference': 'eaa61eded31b6755d4f30ba8eabc5d905cf817cb',
+              'compiler': subprocess.check_output(['rustc', '+1.98.1', '--version'], text=True).strip(),
+              'tests': totals,
+              'checks': {key.lower(): os.environ[key + '_OUTCOME'] for key in ['FORMAT', 'LIBRARIES', 'APPLICATION', 'BUILD', 'NATIVE']},
+              'reference_cases': len(cases),
+              'visually_accepted_cases': sum(case['visual_status'] == 'PASS' for case in cases),
+              'native_screenshots': len(list(root.rglob('*.png'))),
+              'source_unchanged_during_checks': not state.strip(),
+              'scope': 'Native foundation regression, not full Electron parity or a production release.'
+          }
+          binary = pathlib.Path('target/debug/synara-app')
+          if binary.exists():
+              with binary.open('rb') as stream:
+                  receipt['binary_sha256'] = hashlib.file_digest(stream, 'sha256').hexdigest()
+          (root / 'verification.json').write_text(json.dumps(receipt, indent=2) + '\n')
+          print(json.dumps(receipt, indent=2))
+          summary = f"{totals['passed']} tests passed, {totals['failed']} failed, {totals['ignored']} ignored; {receipt['native_screenshots']} native captures; {receipt['visually_accepted_cases']}/157 visual cases accepted"
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as output:
+              output.write('summary=' + summary + '\n')
+          PY
+      - name: ${{ steps.receipt.outputs.summary }}
+        if: ${{ !cancelled() }}
+        run: cat "$EVIDENCE/verification.json"
+      - name: Enforce every required check and an unchanged working tree
+        if: ${{ !cancelled() }}
+        env:
+          FORMAT_OUTCOME: ${{ steps.format.outcome }}
+          LIBRARIES_OUTCOME: ${{ steps.libraries.outcome }}
+          APPLICATION_OUTCOME: ${{ steps.application.outcome }}
+          BUILD_OUTCOME: ${{ steps.build.outcome }}
+          NATIVE_OUTCOME: ${{ steps.native.outcome }}
+        run: |
+          test "$FORMAT_OUTCOME" = success
+          test "$LIBRARIES_OUTCOME" = success
+          test "$APPLICATION_OUTCOME" = success
+          test "$BUILD_OUTCOME" = success
+          test "$NATIVE_OUTCOME" = success
+          git diff --exit-code
+          test -z "$(git ls-files --others --exclude-standard)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: ${{ !cancelled() }}
+        with:
+          name: electron-parity-foundation-evidence
+          path: /tmp/electron-parity-evidence/
+          retention-days: 7
+          if-no-files-found: error
+      - uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: electron-parity-${{ runner.os }}-${{ github.sha }}

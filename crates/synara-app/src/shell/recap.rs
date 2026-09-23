@@ -5,7 +5,7 @@ use crate::ui::{self, Glyph, palette};
 pub(super) struct RecapState {
     task: Option<TaskId>,
     epoch: u64,
-    open: bool,
+    pub(super) open: bool,
     busy: bool,
     loading: bool,
     creating: bool,
@@ -18,7 +18,7 @@ pub(super) struct RecapState {
 }
 pub(super) enum Outcome {
     Loaded(Option<ThreadRecap>, Option<ThreadOrigin>),
-    Reviewed(HandoffReview),
+    Reviewed(Box<HandoffReview>),
     Created(Task),
     Saved(ThreadRecap),
 }
@@ -99,6 +99,9 @@ impl Shell {
     pub(super) fn open_recap(&mut self, cx: &mut Context<Self>) {
         if self.selected.is_some() {
             self.show_conversation(cx);
+            // Accordion: one workflow expanded at a time (see open_goals).
+            self.goals.open = false;
+            self.debug_workflow.open = false;
             self.recap.open = true;
             cx.notify();
         }
@@ -127,6 +130,7 @@ impl Shell {
                 result: workspace
                     .review_recap(task)
                     .await
+                    .map(Box::new)
                     .map(Outcome::Reviewed)
                     .map_err(|e| e.to_string()),
             })))
@@ -216,7 +220,7 @@ impl Shell {
                 self.recap
                     .editor
                     .update(cx, |entry, cx| entry.set_text(review.context().into(), cx));
-                self.recap.review = Some(review);
+                self.recap.review = Some(*review);
             }
             Ok(Outcome::Created(task)) => {
                 self.creating_task = false;
@@ -246,9 +250,41 @@ impl Shell {
         self.clear_finished_recap_navigation_notice();
         cx.notify();
     }
+    /// Collapsed idle recap entry for the shared one-row workflow strip.
+    pub(super) fn recap_compact(&self, cx: &mut Context<Self>) -> Option<gpui::AnyElement> {
+        let view = &self.recap;
+        if self.selected.is_none() || self.selected != view.task {
+            return None;
+        }
+        if self
+            .thread
+            .as_ref()
+            .is_some_and(|t| t.timeline.is_empty() && t.plan.is_empty())
+        {
+            return None;
+        }
+        if view.open {
+            return None;
+        }
+        Some(
+            ui::header_action(
+                "recap-open",
+                "Recap",
+                Some(Glyph::Notebook),
+                false,
+                cx.listener(|this, _: &(), _, cx| this.open_recap(cx)),
+            )
+            .child(ui::layout_probe("recap-open"))
+            .into_any_element(),
+        )
+    }
     pub(super) fn recap_bar(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
         let view = &self.recap;
         if self.selected.is_none() || self.selected != view.task {
+            return div().into_any_element();
+        }
+        // Collapsed idle state lives in the shared workflow strip.
+        if !view.open {
             return div().into_any_element();
         }
         let mut root = div()
@@ -268,9 +304,6 @@ impl Shell {
                 )
                 .child(ui::layout_probe("recap-open")),
             );
-        if !view.open {
-            return root.into_any_element();
-        }
         if let Some(origin) = &view.origin {
             let source = origin.parent;
             root=root.child(div().text_xs().child(format!("Recap request for {source}. Send through the normal composer. Only a successful completed reply can be cached.")))

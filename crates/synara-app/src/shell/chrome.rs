@@ -170,16 +170,6 @@ impl Shell {
                         .relative()
                         .child(ui::layout_probe("kanban-new-task"))
                     }))
-                    .children(has_chat.then(|| {
-                        ui::action(
-                            "handoff-header",
-                            if docked { "" } else { "Continue with..." },
-                            Some(Glyph::Handoff),
-                            false,
-                            cx.listener(|this, _: &(), window, cx| this.open_handoff(window, cx)),
-                        )
-                        .aria_label("Review a related provider continuation")
-                    }))
                     .children(
                         (!matches!(self.panel, Panel::Settings | Panel::Kanban | Panel::Hubs))
                             .then(|| {

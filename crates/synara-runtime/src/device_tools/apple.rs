@@ -35,6 +35,24 @@ pub(super) fn lifecycle_args(id: String, running: bool) -> Vec<String> {
         id,
     ]
 }
+pub(super) fn open_url_args(id: String, url: String) -> Vec<String> {
+    vec!["simctl".into(), "openurl".into(), id, url]
+}
+pub(super) fn launch_args(id: String, bundle_id: String) -> Vec<String> {
+    vec!["simctl".into(), "launch".into(), id, bundle_id]
+}
+pub(super) fn valid_bundle_id(value: &str) -> bool {
+    value.len() <= 255
+        && value.split('.').count() >= 2
+        && value.split('.').all(|part| {
+            !part.is_empty()
+                && !part.starts_with('-')
+                && !part.ends_with('-')
+                && part
+                    .bytes()
+                    .all(|byte| byte.is_ascii_alphanumeric() || byte == b'-')
+        })
+}
 pub(super) fn valid_id(id: &str) -> bool {
     id.len() == 36
         && id.bytes().enumerate().all(|(i, b)| {

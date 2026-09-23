@@ -33,6 +33,7 @@ pub(super) struct Worktree {
     pub path: PathBuf,
     pub branch: String,
     pub locked: bool,
+    pub assigned_task: Option<(TaskId, String)>,
 }
 pub(super) struct Stash {
     pub object: String,
@@ -88,6 +89,7 @@ impl Catalog {
                     path,
                     branch,
                     locked,
+                    assigned_task: None,
                 });
             }
         }
@@ -102,6 +104,20 @@ impl Catalog {
             });
         }
         Ok(result)
+    }
+
+    pub fn assign_project_tasks(&mut self, project_worktrees: &[ProjectWorktree]) {
+        for worktree in &mut self.worktrees {
+            worktree.assigned_task = project_worktrees
+                .iter()
+                .find(|candidate| candidate.repository_path == worktree.path)
+                .and_then(|candidate| {
+                    Some((
+                        candidate.assigned_task?,
+                        candidate.assigned_task_title.clone()?,
+                    ))
+                });
+        }
     }
 }
 
@@ -294,6 +310,47 @@ mod tests {
         );
         assert!(catalog.worktrees[1].locked);
         assert_eq!(catalog.stashes[0].subject, "On main: keep this");
+    }
+    #[test]
+    fn assigned_tasks_are_attached_to_the_git_root_and_not_removable() {
+        let mut catalog = Catalog::parse(&[
+            format!("refs/heads/main\0{}\0*\0\n", "a".repeat(40)),
+            String::new(),
+            "worktree /tmp/repo\0HEAD abc\0branch refs/heads/main\0\0worktree /tmp/linked\0HEAD def\0detached\0\0".into(),
+            String::new(),
+        ])
+        .unwrap();
+        let task = TaskId::new();
+        catalog.assign_project_tasks(&[
+            ProjectWorktree {
+                repository_path: "/tmp/repo".into(),
+                path: "/tmp/repo/nested".into(),
+                branch: Some("main".into()),
+                detached: false,
+                locked: false,
+                bare: false,
+                prunable: false,
+                project_root: true,
+                assigned_task: None,
+                assigned_task_title: None,
+            },
+            ProjectWorktree {
+                repository_path: "/tmp/linked".into(),
+                path: "/tmp/linked/nested".into(),
+                branch: None,
+                detached: true,
+                locked: false,
+                bare: false,
+                prunable: false,
+                project_root: false,
+                assigned_task: Some(task),
+                assigned_task_title: Some("Nested task".into()),
+            },
+        ]);
+        assert_eq!(
+            catalog.worktrees[1].assigned_task,
+            Some((task, "Nested task".into()))
+        );
     }
     #[test]
     fn destructive_actions_require_exact_confirmations() {

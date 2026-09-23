@@ -20,7 +20,7 @@ impl Shell {
         if let Some(pending) = &state.pending {
             let message = match pending {
                 Pending::Arm => "Start currently enabled schedules in this app session? Their saved instructions will be sent at the scheduled time. Overdue slots use each definition's visible missed-run policy. Existing permission prompts still apply.".into(),
-                Pending::Run(d) => format!("Run '{}' now using {} in project {}? A new owned conversation will be created. Exact instructions:\n{}", d.title, d.agent_id, d.project_id, d.instructions),
+                Pending::Run(d) => format!("Run '{}' now using {} in project {}? A new owned conversation will be created. Maximum runtime: {} seconds. Exact instructions:\n{}", d.title, d.agent_id, d.project_id, d.max_runtime_seconds, d.instructions),
                 Pending::Enable(d, enabled) => format!("{} '{}'? {}", if *enabled { "Resume" } else { "Pause" }, d.title, if *enabled { "The next run is recalculated from now. It will run only when scheduling is armed." } else { "This stops future scheduled runs, not an active run." }),
                 Pending::Delete(d) => format!("Delete '{}'? Run history and generated conversations will be retained. This cannot be undone here.", d.title),
                 Pending::Recover(r) => format!("Resolve the previous process's run of '{}'? Confirm only after verifying that the other process has stopped. External effects are unknown. This marks Interrupted, pauses the definition, and does not retry.", r.definition.title),
@@ -112,13 +112,13 @@ impl Shell {
                 .child(div().text_sm().child("Project / workspace"))
                 .child(div().flex().flex_wrap().gap_1().children(projects))
                 .child(state.schedule.clone()).child(state.timezone.clone())
-                .child(div().text_sm().text_color(rgb(palette().muted)).child("Intervals: every 1m through every 10080m. Also daily HH:MM, weekdays HH:MM, or weekly mon HH:MM (sun through sat). UTC or fixed offset only; DST/IANA zones remain unsupported."))
-                .child(state.max_runs.clone()).child(state.failure_limit.clone())
-                .child(div().text_sm().text_color(rgb(palette().muted)).child("Run and consecutive-failure limits pause the automation automatically. Existing automations keep their saved limits; new automations default to 3 consecutive failures."))
+                .child(div().text_sm().text_color(rgb(palette().muted)).child("Schedules: every 1m through every 10080m, daily HH:MM, weekdays HH:MM, weekly mon HH:MM, or cron followed by five fields: minute hour day-of-month month day-of-week. Cron supports lists, ranges, steps, and sun through sat names, with an eight-year search horizon. If both day-of-month and weekday are constrained, either match runs. Time uses UTC, a fixed offset, or an IANA zone. A spring-forward gap skips that wall-clock slot; a fall-back fold runs at the earlier occurrence once. Saved schedule, timezone, and next run appear in the automation row."))
+                .child(state.max_runs.clone()).child(state.failure_limit.clone()).child(state.max_runtime.clone())
+                .child(div().text_sm().text_color(rgb(palette().muted)).child("Run and consecutive-failure limits pause the automation automatically. Existing automations keep their saved limits; new automations default to 3 consecutive failures. Runtime is bounded from 1 to 3600 seconds; new definitions default to 900 seconds."))
                 .child(ui::button("auto-missed", format!("Missed runs: {:?} (change)", editor.missed), false).on_click(cx.listener(|this, _, _, cx| {
                     if let Some(editor) = &mut this.automations.editor { editor.missed = match editor.missed { MissedRunPolicy::Skip => MissedRunPolicy::CatchUpOnce, MissedRunPolicy::CatchUpOnce => MissedRunPolicy::Skip }; editor.edit_revision = editor.edit_revision.wrapping_add(1); } cx.notify();
                 })))
-                .child(div().text_sm().text_color(rgb(palette().muted)).child("Skip: skip when over 30 seconds late. CatchUpOnce: one run, never replay every missed interval. Failures have no automatic retry. Execution limit: 15 minutes."))
+                .child(div().text_sm().text_color(rgb(palette().muted)).child("Skip: skip when over 30 seconds late. CatchUpOnce: one run, never replay every missed interval. Failures have no automatic retry. A runtime timeout cancels the owned task and records a failure."))
                 .child(div().flex().gap_2()
                     .child(ui::button("auto-save", if state.changing { "Saving..." } else { "Save paused" }, true).on_click(cx.listener(|this, _, _, cx| this.save_automation_form(cx))))
                     .child(ui::button("auto-discard", "Discard form edits", false).on_click(cx.listener(|this, _, _, cx| { if !this.automations.changing { this.automations.editor = None; } cx.notify(); })))));
@@ -131,8 +131,10 @@ impl Shell {
                 let project = self.catalog.projects.iter().find(|p| p.id == d.project_id).map(|p| p.name.as_str()).unwrap_or("Unavailable project");
                 div().border_b_1().border_color(rgb(palette().border)).py_3().flex().flex_col().gap_1()
                     .child(div().text_base().child(d.title.clone()))
+                    .child(div().text_xs().text_color(rgb(palette().muted)).child(format!("ID: {}", d.id)))
                     .child(div().text_sm().child(format!("{} / {} / {} / {} / {:?}", if d.enabled { "Enabled" } else { "Paused" }, project, d.agent_id, d.schedule.label(), d.missed)))
                     .child(div().text_sm().text_color(rgb(palette().muted)).child(format!("Total run limit: {} / Consecutive failures: {} / Failure limit: {}", d.max_runs.map(|n| n.to_string()).unwrap_or_else(|| "none".into()), d.failure_streak, d.stop_after_consecutive_failures.map(|n| n.to_string()).unwrap_or_else(|| "none".into()))))
+                    .child(div().text_sm().text_color(rgb(palette().muted)).child(format!("Maximum runtime: {} seconds", d.max_runtime_seconds)))
                     .child(div().text_sm().text_color(rgb(palette().muted)).child(format!("Timezone: {} / Next: {}{}", d.timezone, time_label(d.next_run_ms), if !d.enabled { " (paused)" } else { "" })))
                     .child(div().text_sm().child(d.instructions.chars().take(280).collect::<String>()))
                     .child(div().flex().flex_wrap().gap_1()
@@ -149,7 +151,7 @@ impl Shell {
                 let mut row = div().py_2().border_b_1().border_color(rgb(palette().border)).flex().flex_col().gap_1()
                     .child(ui::button(("auto-history", i), format!("{} / {:?} / {}", run.definition.title, run.status, time_label(run.started_ms)), expanded).on_click(cx.listener(move |this, _, _, cx| { this.automations.selected_run = if this.automations.selected_run == Some(id) { None } else { Some(id) }; cx.notify(); })));
                 if expanded {
-                    row = row.child(div().text_sm().child(format!("Agent: {} / Project: {} / Scheduled: {}\nInstructions:\n{}\nOutput / error:\n{}", run.definition.agent_id, run.definition.project_id, run.scheduled_ms.map(time_label).unwrap_or_else(|| "Manual run".into()), run.definition.instructions, run.output)))
+                    row = row.child(div().text_sm().child(format!("Agent: {} / Project: {} / Scheduled: {} / Maximum runtime: {} seconds\nInstructions:\n{}\nOutput / error:\n{}", run.definition.agent_id, run.definition.project_id, run.scheduled_ms.map(time_label).unwrap_or_else(|| "Manual run".into()), run.definition.max_runtime_seconds, run.definition.instructions, run.output)))
                         .children(run.task_id.map(|task| ui::button(("auto-open-task", i), "Open owned conversation", false).on_click(cx.listener(move |this, _, _, cx| this.open_automation_task(task, cx)))));
                     if run.owner != state.scheduler.owner() && run.status == AutomationRunStatus::Running {
                         row = row.child(div().text_sm().child("Previous process: outcome unknown. No automatic restart."))

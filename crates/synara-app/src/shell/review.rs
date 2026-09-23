@@ -183,7 +183,9 @@ impl Shell {
             .repositories
             .entry(scope.clone())
             .or_insert_with(|| {
-                cx.new(|cx| repository::RepositoryPanel::new(target, workspace, runtime, cx))
+                cx.new(|cx| {
+                    repository::RepositoryPanel::new(target, scope.project, workspace, runtime, cx)
+                })
             });
         if let Some(panel) = self.review.repositories.get(&scope).cloned() {
             panel.update(cx, |panel, cx| panel.show_repository_tabs(cx));

@@ -6,6 +6,40 @@ use crate::ui::{self, Glyph, palette};
 
 pub(super) const MAX_TABS: usize = 24;
 
+// Save errors still arrive as formatted strings; limit matching to native editor
+// save prefixes and the exact active-file prefix for Save All failures.
+pub(super) fn is_save_conflict(error: Option<&str>, active_path: Option<&std::path::Path>) -> bool {
+    let (Some(message), Some(active_path)) = (error, active_path) else {
+        return false;
+    };
+    let is_active_save = if let Some(failed_path) = message.strip_prefix("Save all stopped at ") {
+        let active_prefix = format!("{}: ", active_path.display());
+        failed_path.starts_with(&active_prefix)
+    } else {
+        message.starts_with("Save failed: ") || message.starts_with("Overwrite failed: ")
+    };
+    is_active_save && message.contains("file changed outside this editor")
+}
+
+struct ReloadConfirmation {
+    tab_id: u64,
+    disk_version: synara_runtime::FileVersion,
+    buffer: String,
+}
+
+fn reload_confirmation_matches(
+    confirmation: &ReloadConfirmation,
+    active_tab: u64,
+    disk_version: &synara_runtime::FileVersion,
+    buffer: &str,
+    composing: bool,
+) -> bool {
+    confirmation.tab_id == active_tab
+        && &confirmation.disk_version == disk_version
+        && confirmation.buffer == buffer
+        && !composing
+}
+
 pub(super) struct EditorTab {
     id: u64,
     pub(super) document: Document,
@@ -29,6 +63,7 @@ pub(super) struct EditorState {
     generation: u64,
     pub loading: Option<PathBuf>,
     close: Option<(u64, bool)>,
+    reload_confirmation: Option<ReloadConfirmation>,
     pub tree_visible: bool,
     pub show_hidden: bool,
     pub preview: bool,
@@ -78,6 +113,7 @@ impl EditorState {
             generation: 0,
             loading: None,
             close: None,
+            reload_confirmation: None,
             tree_visible: true,
             show_hidden: true,
             preview: false,
@@ -161,6 +197,25 @@ impl Shell {
             .as_ref()
             .is_some_and(|document| self.editor.read(cx).text() != document.snapshot.text)
     }
+    pub(super) fn conflict_reload_confirmed(&self, cx: &App) -> bool {
+        let (Some(confirmation), Some(active), Some(document)) = (
+            self.editors.reload_confirmation.as_ref(),
+            self.editors.active,
+            self.document.as_ref(),
+        ) else {
+            return false;
+        };
+        reload_confirmation_matches(
+            confirmation,
+            active,
+            &document.snapshot.version,
+            self.editor.read(cx).text(),
+            self.editor.read(cx).is_composing(),
+        )
+    }
+    pub(super) fn clear_conflict_reload_confirmation(&mut self) {
+        self.editors.reload_confirmation = None;
+    }
     pub(super) fn reset_editor_tabs(&mut self) {
         self.editors.tabs.clear();
         self.editors.closed.clear();
@@ -171,6 +226,7 @@ impl Shell {
         self.editors.management_open = false;
         self.editors.active = None;
         self.editors.close = None;
+        self.editors.reload_confirmation = None;
         self.editors.generation = self.editors.generation.wrapping_add(1);
         self.editors.loading = None;
         self.editors.jump_after_open = None;
@@ -240,6 +296,7 @@ impl Shell {
         self.editors.generation = self.editors.generation.wrapping_add(1);
         self.editors.loading = None;
         self.editors.close = None;
+        self.editors.reload_confirmation = None;
         self.focus_composer = false;
         self.editors.focus_editor = true;
         if let Some((path, line)) = self.editors.jump_after_open.as_ref()
@@ -257,6 +314,7 @@ impl Shell {
         cx.notify();
     }
     pub(super) fn replace_editor_document(&mut self, document: Document, cx: &mut Context<Self>) {
+        self.editors.reload_confirmation = None;
         if let Some(tab) = self
             .editors
             .tabs
@@ -671,6 +729,7 @@ impl Shell {
             .into_any_element()
     }
     pub(super) fn editor_tools(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
+        let reload_confirmed = self.conflict_reload_confirmed(cx);
         let markdown = self
             .document
             .as_ref()
@@ -694,6 +753,71 @@ impl Shell {
                     cx.listener(|this, _: &(), _, cx| { this.editors.preview = !this.editors.preview; cx.notify(); })).text_size(px(11.))))
                 .child(self.editor_actions(cx)))
             .child(self.inline_comments_panel(cx))
+            .children((
+                self.active_document_dirty(cx)
+                    && is_save_conflict(
+                        self.error.as_deref(),
+                        self.document.as_ref().map(|document| document.path.as_path()),
+                    )
+            )
+            .then(|| {
+                div()
+                    .px_3()
+                    .py_2()
+                    .flex()
+                    .items_center()
+                    .flex_wrap()
+                    .gap_2()
+                    .border_1()
+                    .border_color(rgb(palette().border))
+                    .rounded_md()
+                    .bg(rgb(palette().notice_surface))
+                    .child(
+                        div()
+                            .flex_1()
+                            .min_w_0()
+                            .text_size(px(11.))
+                            .child(if reload_confirmed {
+                                "The file changed on disk. Reloading discards this buffer; confirm only if that is intended."
+                            } else {
+                                "Save conflict: the file changed on disk. Your edits are intact."
+                            }),
+                    )
+                    .child(ui::action(
+                        "editor-conflict-reload",
+                        if reload_confirmed {
+                            "Confirm reload and discard"
+                        } else {
+                            "Reload from disk"
+                        },
+                        None,
+                        false,
+                        cx.listener(|this, _: &(), _, cx| {
+                            this.resolve_conflict_reload(cx)
+                        }),
+                    ))
+                    .when(reload_confirmed, |el| {
+                        el.child(ui::action(
+                            "editor-conflict-reload-cancel",
+                            "Cancel",
+                            None,
+                            false,
+                            cx.listener(|this, _: &(), _, cx| {
+                                this.editors.reload_confirmation = None;
+                                cx.notify();
+                            }),
+                        ))
+                    })
+                    .child(ui::action(
+                        "editor-conflict-overwrite",
+                        "Overwrite disk with this buffer",
+                        None,
+                        false,
+                        cx.listener(|this, _: &(), _, cx| {
+                            this.overwrite_conflicted_editor(cx)
+                        }),
+                    ))
+            }))
             .children(self.editors.find_open.then(|| {
                 let query = self.editors.query.read(cx).text();
                 let count = if query.is_empty() { 0 } else { self.editor.read(cx).text().match_indices(query).count() };
@@ -775,5 +899,56 @@ impl Shell {
             .child(format!("UTF-8 · {newlines}"))
             .children((selection > 0).then(|| div().child(format!("{selection} selected"))))
             .into_any_element()
+    }
+}
+
+#[cfg(test)]
+mod conflict_confirmation_tests {
+    use super::{ReloadConfirmation, reload_confirmation_matches};
+
+    #[test]
+    fn reload_confirmation_is_bound_to_tab_version_and_exact_buffer() {
+        let version = synara_runtime::FileVersion("disk-v1".into());
+        let confirmation = ReloadConfirmation {
+            tab_id: 7,
+            disk_version: version.clone(),
+            buffer: "unsaved edit".into(),
+        };
+
+        assert!(reload_confirmation_matches(
+            &confirmation,
+            7,
+            &version,
+            "unsaved edit",
+            false,
+        ));
+        assert!(!reload_confirmation_matches(
+            &confirmation,
+            8,
+            &version,
+            "unsaved edit",
+            false,
+        ));
+        assert!(!reload_confirmation_matches(
+            &confirmation,
+            7,
+            &synara_runtime::FileVersion("disk-v2".into()),
+            "unsaved edit",
+            false,
+        ));
+        assert!(!reload_confirmation_matches(
+            &confirmation,
+            7,
+            &version,
+            "newer unsaved edit",
+            false,
+        ));
+        assert!(!reload_confirmation_matches(
+            &confirmation,
+            7,
+            &version,
+            "unsaved edit",
+            true,
+        ));
     }
 }

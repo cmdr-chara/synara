@@ -5,6 +5,7 @@ use crate::ui::{self, Glyph, palette};
 use browser_domain::{
     BrowserProfile, HostTabId, NavigationKind,
     session::{RequestState, TabView},
+    session_restore::ManualTabRestoreStore,
 };
 use gpui::AnyElement;
 pub(super) struct BrowserView {
@@ -16,12 +17,17 @@ pub(super) struct BrowserView {
     selected: Option<HostTabId>,
     pub(super) error: Option<String>,
     confirmation: Option<TaskId>,
+    restore: Option<ManualTabRestoreStore>,
     pub(super) busy: bool,
     diagnostics_open: bool,
     _subscription: Subscription,
 }
 impl BrowserView {
     pub fn new(controller: &Arc<Controller>, root: PathBuf, cx: &mut Context<Shell>) -> Self {
+        let (restore, restore_error) = match ManualTabRestoreStore::open(root.clone()) {
+            Ok(store) => (Some(store), None),
+            Err(error) => (None, Some(error.to_string())),
+        };
         #[cfg(target_os = "linux")]
         let (native, install_error) = {
             let (host, port) = browser_domain::native::NativeHost::new(root);
@@ -34,13 +40,58 @@ impl BrowserView {
         };
         #[cfg(not(target_os = "linux"))]
         let _ = (controller, root);
+        #[cfg(target_os = "linux")]
+        let (restored_selected, restore_start_error) = {
+            let urls = restore
+                .as_ref()
+                .filter(|store| store.enabled())
+                .map(|store| store.urls().to_vec())
+                .unwrap_or_default();
+            let mut last = None;
+            let mut failure = None;
+            if !urls.is_empty() {
+                let result = controller.browser.with(|session, now| {
+                    for url in &urls {
+                        let tab = session.open(BrowserProfile::Manual)?;
+                        if let Err(error) =
+                            session.user_navigate(tab, url, NavigationKind::Push, now)
+                        {
+                            let _ = session.close(tab);
+                            failure = Some(error.to_string());
+                            break;
+                        }
+                        last = Some(tab);
+                    }
+                    Ok(())
+                });
+                if let Err(error) = result {
+                    failure = Some(error.to_string());
+                }
+            }
+            (last, failure)
+        };
+        #[cfg(not(target_os = "linux"))]
+        let (restored_selected, restore_start_error): (Option<HostTabId>, Option<String>) =
+            (None, None);
+        let restored_address = if restored_selected.is_some() {
+            restore
+                .as_ref()
+                .and_then(|store| store.urls().last().cloned())
+                .unwrap_or_default()
+        } else {
+            String::new()
+        };
         let address = cx.new(|cx| {
-            TextEntry::new(
+            let mut entry = TextEntry::new(
                 "https://... or http://localhost:port",
                 EntryMode::SingleLine,
                 34.,
                 cx,
-            )
+            );
+            if !restored_address.is_empty() {
+                entry.set_text(restored_address, cx);
+            }
+            entry
         });
         let sub = cx.subscribe(&address, |this, _, event, cx| {
             if matches!(event, EntryEvent::Submit) {
@@ -54,18 +105,20 @@ impl BrowserView {
             #[cfg(target_os = "linux")]
             native_task: None,
             address,
-            selected: None,
+            selected: restored_selected,
             error: {
+                let restore_error = restore_start_error.or(restore_error);
                 #[cfg(target_os = "linux")]
                 {
-                    install_error
+                    restore_error.or(install_error)
                 }
                 #[cfg(not(target_os = "linux"))]
                 {
-                    None
+                    restore_error
                 }
             },
             confirmation: None,
+            restore,
             busy: false,
             diagnostics_open: false,
             _subscription: sub,
@@ -73,6 +126,90 @@ impl BrowserView {
     }
 }
 impl Shell {
+    fn browser_manual_restore_urls(&self) -> Result<Vec<String>, String> {
+        self.controller
+            .browser
+            .with(|session, _| {
+                let mut urls = session
+                    .tabs()
+                    .into_iter()
+                    .filter(|tab| tab.profile == BrowserProfile::Manual)
+                    .filter_map(|tab| tab.url)
+                    .collect::<Vec<_>>();
+                if urls.len() > 16 {
+                    urls.drain(0..urls.len() - 16);
+                }
+                Ok(urls)
+            })
+            .map_err(|error| error.to_string())
+    }
+
+    pub(super) fn browser_save_manual_restore(&mut self) {
+        let Some(enabled) = self
+            .browser
+            .restore
+            .as_ref()
+            .map(ManualTabRestoreStore::enabled)
+        else {
+            return;
+        };
+        if !enabled {
+            return;
+        }
+        let urls = match self.browser_manual_restore_urls() {
+            Ok(urls) => urls,
+            Err(error) => {
+                self.browser.error = Some(error);
+                return;
+            }
+        };
+        if let Some(store) = self.browser.restore.as_mut()
+            && let Err(error) = store.save_current(&urls)
+        {
+            self.browser.error = Some(error.to_string());
+        }
+    }
+
+    fn browser_toggle_manual_restore(&mut self, cx: &mut Context<Self>) {
+        let Some(enabled) = self
+            .browser
+            .restore
+            .as_ref()
+            .map(ManualTabRestoreStore::enabled)
+        else {
+            self.browser.error =
+                Some("Manual tab restore storage is unavailable; no URLs were saved.".into());
+            cx.notify();
+            return;
+        };
+        let enable = !enabled;
+        let urls = if enable {
+            match self.browser_manual_restore_urls() {
+                Ok(urls) => urls,
+                Err(error) => {
+                    self.browser.error = Some(error);
+                    cx.notify();
+                    return;
+                }
+            }
+        } else {
+            Vec::new()
+        };
+        match self
+            .browser
+            .restore
+            .as_mut()
+            .expect("store was present above")
+            .set_enabled(enable, &urls)
+        {
+            Ok(()) => {
+                self.browser.error = None;
+            }
+            Err(error) => self.browser.error = Some(error.to_string()),
+        }
+        cx.notify();
+    }
+
     fn browser_open_popup(&mut self, source: HostTabId, cx: &mut Context<Self>) {
         if self.browser.selected != Some(source) {
             return;
@@ -87,6 +224,7 @@ impl Shell {
                 self.browser
                     .address
                     .update(cx, |entry, cx| entry.set_text(url, cx));
+                self.browser_save_manual_restore();
             }
             Err(error) => {
                 self.browser.error = Some(error.to_string());
@@ -100,7 +238,10 @@ impl Shell {
             .browser
             .with(|s, _| s.open(BrowserProfile::Manual))
         {
-            Ok(tab) => self.browser_select(tab, cx),
+            Ok(tab) => {
+                self.browser_select(tab, cx);
+                self.browser_save_manual_restore();
+            }
             Err(e) => self.browser.error = Some(e.to_string()),
         }
         cx.notify();
@@ -261,6 +402,7 @@ impl Shell {
                             if this.browser.selected == Some(id) {
                                 this.browser.selected = None;
                             }
+                            this.browser_save_manual_restore();
                             cx.notify();
                         }),
                     )
@@ -268,17 +410,37 @@ impl Shell {
                     .child(ui::layout_probe_slot("browser-close", slot)),
                 );
         }
-        tabbar = tabbar.child(
-            ui::action(
-                "browser-new",
-                "New tab",
-                Some(Glyph::Plus),
-                false,
-                cx.listener(|this, _: &(), _, cx| this.browser_open(cx)),
+        tabbar = tabbar
+            .child(
+                ui::action(
+                    "browser-new",
+                    "New tab",
+                    Some(Glyph::Plus),
+                    false,
+                    cx.listener(|this, _: &(), _, cx| this.browser_open(cx)),
+                )
+                .relative()
+                .child(ui::layout_probe("browser-new")),
             )
-            .relative()
-            .child(ui::layout_probe("browser-new")),
-        );
+            .child(ui::action(
+                "browser-manual-restore-toggle",
+                if self
+                    .browser
+                    .restore
+                    .as_ref()
+                    .is_some_and(ManualTabRestoreStore::enabled)
+                {
+                    "Restore Manual tabs: On"
+                } else {
+                    "Restore Manual tabs: Off"
+                },
+                None,
+                self.browser
+                    .restore
+                    .as_ref()
+                    .is_some_and(ManualTabRestoreStore::enabled),
+                cx.listener(|this, _: &(), _, cx| this.browser_toggle_manual_restore(cx)),
+            ));
         let toolbar = div()
             .flex()
             .items_center()
@@ -358,6 +520,11 @@ impl Shell {
             .min_h_0()
             .p_3()
             .gap_2()
+            .child(
+                div().text_xs().text_color(rgb(palette().muted)).child(
+                    "Manual tab restore saves up to 16 committed HTTP(S) URLs in Synara's private local browser data. Query strings and fragments are removed; paths remain and may contain secrets. Cookies stay in WebKit's existing local profile; cookie values are never read or exported. AgentTask and Authentication tabs are never restored. Restored pages load when you open the Browser panel.",
+                ),
+            )
             .child(tabbar)
             .child(toolbar);
         if let Some(tab) = active {

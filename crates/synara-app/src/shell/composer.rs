@@ -134,6 +134,24 @@ impl Shell {
                             .text_color(rgb(palette().error))
                             .child(error.clone())
                     }))
+                    .children(self.voice.message.as_ref().map(|message| {
+                        div()
+                            .px_2()
+                            .text_xs()
+                            .text_color(rgb(if self.voice.failed {
+                                palette().error
+                            } else {
+                                palette().muted
+                            }))
+                            .child(message.clone())
+                    }))
+                    .child(
+                        div()
+                            .px_2()
+                            .text_xs()
+                            .text_color(rgb(palette().muted))
+                            .child("Voice clips upload to ChatGPT for transcription. The transcript stays an unsent draft until you choose Send."),
+                    )
                     .child(self.native_commands_view(cx))
                     .child(self.context_usage_view(cx))
                     .child(
@@ -170,17 +188,47 @@ impl Shell {
                                 .size(px(28.)),
                             )
                             .child(self.followup_toggle(cx))
-                            .child(
+                            .child(if cfg!(any(
+                                target_os = "linux",
+                                target_os = "macos",
+                                target_os = "windows"
+                            )) {
+                                ui::chrome_button(
+                                    "voice-input",
+                                    if self.voice.recording() {
+                                        "Stop recording and transcribe"
+                                    } else if self.voice.transcribing() {
+                                        "Transcribing voice"
+                                    } else {
+                                        "Record voice draft; upload to ChatGPT for transcription"
+                                    },
+                                    if self.voice.recording() { Glyph::Stop } else { Glyph::Mic },
+                                    self.voice.transcribing()
+                                        || (!self.voice.recording()
+                                            && (self.selected.is_none()
+                                                || self.loading_task.is_some()
+                                                || self.close != CloseState::Open)),
+                                    cx.listener(|this, _: &(), _, cx| this.voice_primary(cx)),
+                                )
+                            } else {
                                 ui::unavailable_action(
                                     "voice-input",
-                                    "",
+                                    "Voice input",
                                     Glyph::Mic,
-                                    "Voice input is not available in this native build yet.",
+                                    "This native build does not support microphone recording.",
                                 )
-                                .aria_label("Voice input, unavailable")
                                 .w(px(30.))
-                                .px_2(),
-                            )
+                                .px_2()
+                            })
+                            .children(self.voice.active().then(|| {
+                                ui::chrome_button(
+                                    "voice-cancel",
+                                    "Cancel voice recording or transcription",
+                                    Glyph::Close,
+                                    false,
+                                    cx.listener(|this, _: &(), _, cx| this.voice_cancel(cx)),
+                                )
+                            }))
                             .child(
                                 ui::icon_button(
                                     "composer-submit",

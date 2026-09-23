@@ -8,6 +8,7 @@ use model::{Action, Catalog as RepositoryCatalog, View};
 
 pub(super) struct RepositoryPanel {
     target: WorkspaceTarget,
+    project_id: ProjectId,
     workspace: WorkspaceService,
     runtime: Handle,
     catalog: RepositoryCatalog,
@@ -45,6 +46,7 @@ impl RepositoryPanel {
     }
     pub(super) fn new(
         target: WorkspaceTarget,
+        project_id: ProjectId,
         workspace: WorkspaceService,
         runtime: Handle,
         cx: &mut Context<Self>,
@@ -54,6 +56,7 @@ impl RepositoryPanel {
         let subscription = cx.subscribe(&query, |_, _, _, cx| cx.notify());
         let mut panel = Self {
             target,
+            project_id,
             workspace,
             runtime,
             catalog: RepositoryCatalog::default(),
@@ -85,9 +88,10 @@ impl RepositoryPanel {
         self.error = None;
         let target = self.target.clone();
         let workspace = self.workspace.clone();
+        let project_id = self.project_id;
         let (send, receive) = tokio::sync::oneshot::channel();
         self.runtime.spawn(async move {
-            let _ = send.send(load(workspace, target).await);
+            let _ = send.send(load(workspace, target, project_id).await);
         });
         cx.spawn(async move |panel, cx| {
             let result = receive
@@ -181,9 +185,30 @@ impl RepositoryPanel {
         self.error = None;
         let workspace = self.workspace.clone();
         let target = self.target.clone();
+        let project_id = self.project_id;
         let (send, receive) = tokio::sync::oneshot::channel();
         self.runtime.spawn(async move {
             let result = async {
+                let _worktree_guard = if matches!(&operation, GitOperation::RemoveWorktree { .. }) {
+                    Some(workspace.lock_worktree_lifecycle().await)
+                } else {
+                    None
+                };
+                if let GitOperation::RemoveWorktree { path } = &operation {
+                    let worktrees = workspace
+                        .project_worktrees(project_id)
+                        .await
+                        .map_err(|error| error.to_string())?;
+                    if let Some(task_title) = worktrees
+                        .iter()
+                        .find(|worktree| worktree.repository_path == *path)
+                        .and_then(|worktree| worktree.assigned_task_title.as_deref())
+                    {
+                        return Err(format!(
+                            "This Git worktree is assigned to task '{task_title}'. Removal is disabled to preserve its working directory."
+                        ));
+                    }
+                }
                 let git = backend(workspace, target).await?;
                 git.execute(
                     operation,
@@ -239,8 +264,9 @@ async fn backend(
 async fn load(
     workspace: WorkspaceService,
     target: WorkspaceTarget,
+    project_id: ProjectId,
 ) -> Result<RepositoryCatalog, String> {
-    let git = backend(workspace, target).await?;
+    let git = backend(workspace.clone(), target).await?;
     let mut output = Vec::new();
     for operation in [
         GitOperation::Branches,
@@ -261,5 +287,11 @@ async fn load(
             "Git returned a non-UTF-8 name. Use Git directly for this repository.".to_owned()
         })?);
     }
-    RepositoryCatalog::parse(&output)
+    let mut catalog = RepositoryCatalog::parse(&output)?;
+    let project_worktrees = workspace
+        .project_worktrees(project_id)
+        .await
+        .map_err(|error| error.to_string())?;
+    catalog.assign_project_tasks(&project_worktrees);
+    Ok(catalog)
 }

@@ -102,7 +102,7 @@ impl Shell {
                     .text_size(px(11.))
                     .text_color(rgb(palette().muted))
                     .child(format!(
-                        "{} files · {} KiB · Snapshots will be sent to the selected agent{}",
+                        "{} files · {} KiB · Snapshots will be sent to the selected agent{}{}",
                         pending.len(),
                         pending
                             .iter()
@@ -113,7 +113,12 @@ impl Shell {
                             " · Folder snapshots show names and item types only"
                         } else {
                             ""
-                        }
+                        },
+                        if pending.iter().any(|a| a.kind == AttachmentKind::Webp) {
+                            " · Still WebP images convert to PNG for prompts; animation is unsupported"
+                        } else {
+                            ""
+                        },
                     ))
             }))
             .children(

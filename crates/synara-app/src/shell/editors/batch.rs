@@ -74,6 +74,7 @@ impl Shell {
         let project = self.project;
         let root = target.root().clone();
         self.saving = true;
+        self.clear_conflict_reload_confirmation();
         self.error = None;
         self.notice = Some(format!("Saving {total} open files..."));
         let workspace = self.controller.workspace.clone();

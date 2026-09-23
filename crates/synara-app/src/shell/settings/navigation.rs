@@ -242,7 +242,7 @@ mod tests {
     use std::collections::HashSet;
 
     #[test]
-    fn primary_navigation_matches_all_sixteen_electron_sections_in_order() {
+    fn primary_navigation_includes_onboarding_before_sixteen_reference_sections() {
         let actual: Vec<_> = SECTIONS
             .iter()
             .filter(|item| primary_section(item.section))
@@ -251,6 +251,7 @@ mod tests {
         assert_eq!(
             actual,
             vec![
+                ("onboarding", "Personal", "Getting started"),
                 ("general", "Personal", "General"),
                 ("profile", "Personal", "Profile"),
                 ("appearance", "Personal", "Appearance"),
@@ -275,7 +276,7 @@ mod tests {
     fn native_extensions_and_stable_control_ids_are_preserved() {
         let ids: HashSet<_> = SECTIONS.iter().map(|item| item.id).collect();
         assert_eq!(ids.len(), SECTIONS.len());
-        assert_eq!(SECTIONS.len(), 22);
+        assert_eq!(SECTIONS.len(), 23);
         for id in [
             "workflows",
             "project-import",

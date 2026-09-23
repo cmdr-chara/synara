@@ -5,13 +5,14 @@ edition.workspace = true
 publish.workspace = true
 
 [dependencies]
+jiff = "=0.2.37"
 zip = { version = "=8.6.0", default-features = false, features = ["deflate"] }
 chrono = { version = "=0.4.45", default-features = false, features = ["std", "clock"] }
 synara-model = { path = "../synara-model" }
 synara-browser = { path = "../synara-browser" }
 ureq = { version = "=3.4.0", default-features = false, features = ["rustls"] }
 url = "2.5"
-image = { version = "=0.25.10", default-features = false, features = ["png", "jpeg"] }
+image = { version = "=0.25.10", default-features = false, features = ["png", "jpeg", "webp"] }
 synara-registry = { path = "../synara-registry" }
 synara-core = { path = "../synara-core" }
 synara-runtime = { path = "../synara-runtime" }

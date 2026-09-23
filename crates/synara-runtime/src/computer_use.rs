@@ -157,7 +157,7 @@ impl ComputerAction {
         match self {
             Self::Click { x, y, .. } | Self::Scroll { x, y, .. } if *x >= width || *y >= height => Err(RuntimeError::Invalid("Input coordinates are outside the observed window".into())),
             Self::Scroll { steps, .. } if !(1..=8).contains(steps) => Err(RuntimeError::Limit),
-            Self::Type { text } if text.is_empty() || text.len() > 512 || !text.bytes().all(|c| (32..=126).contains(&c)) => Err(RuntimeError::Invalid("Window typing accepts 1-512 printable ASCII bytes. Use separate reviewed keys for Enter or Tab. Unicode input is not implemented".into())),
+            Self::Type { text } if !valid_typed_text(text) => Err(RuntimeError::Invalid("Window typing accepts 1-512 UTF-8 bytes of text without controls, line separators, or bidirectional formatting characters. Use separate reviewed keys for Enter or Tab".into())),
             _ if width == 0 || height == 0 => Err(RuntimeError::Invalid("Window dimensions must be positive".into())),
             _ => Ok(()),
         }
@@ -218,6 +218,24 @@ impl ComputerAction {
             ]],
         }
     }
+}
+
+fn valid_typed_text(text: &str) -> bool {
+    !text.is_empty()
+        && text.len() <= 512
+        && !text.chars().any(|character| {
+            character.is_control()
+                || matches!(
+                    character,
+                    '\u{061c}'
+                        | '\u{200e}'
+                        | '\u{200f}'
+                        | '\u{2028}'
+                        | '\u{2029}'
+                        | '\u{202a}'..='\u{202e}'
+                        | '\u{2066}'..='\u{206f}'
+                )
+        })
 }
 #[derive(Clone)]
 pub struct ComputerTools {
@@ -361,13 +379,36 @@ mod tests {
             assert_eq!(action, ComputerAction::Key { key });
             action.validate(10, 10).unwrap();
         }
-        for text in ["", "line\ncommand", "\u{1b}", "é"] {
+        for text in [
+            "",
+            "line\ncommand",
+            "\u{1b}",
+            "\u{2028}",
+            "review\u{202e}txt",
+        ] {
             assert!(
                 ComputerAction::Type { text: text.into() }
                     .validate(10, 10)
                     .is_err()
             );
         }
+        for text in ["café", "日本語", "مرحبا", "👋"] {
+            ComputerAction::Type { text: text.into() }
+                .validate(10, 10)
+                .unwrap();
+        }
+        ComputerAction::Type {
+            text: "é".repeat(256),
+        }
+        .validate(10, 10)
+        .unwrap();
+        assert!(
+            ComputerAction::Type {
+                text: "é".repeat(257),
+            }
+            .validate(10, 10)
+            .is_err()
+        );
         assert!(
             ComputerAction::Type {
                 text: "a".repeat(513)
@@ -393,6 +434,26 @@ mod tests {
             }
             .validate(10, 10)
             .is_err()
+        );
+    }
+
+    #[test]
+    fn unicode_text_remains_one_literal_argument_to_the_selected_window() {
+        let action = ComputerAction::Type {
+            text: "こんにちは --window 0; $HOME".into(),
+        };
+        action.validate(100, 100).unwrap();
+        assert_eq!(
+            action.commands(42),
+            vec![vec![
+                "type",
+                "--window",
+                "42",
+                "--delay",
+                "2",
+                "--",
+                "こんにちは --window 0; $HOME",
+            ]]
         );
     }
 }

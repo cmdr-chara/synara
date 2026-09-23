@@ -29,6 +29,8 @@ pub(super) struct DeviceView {
     focus: FocusHandle,
     bounds: Rc<Cell<Bounds<Pixels>>>,
     shutdown_confirmation: bool,
+    url: Entity<TextEntry>,
+    bundle_id: Entity<TextEntry>,
 }
 impl DeviceView {
     pub fn new(cx: &mut Context<Shell>) -> Self {
@@ -51,6 +53,9 @@ impl DeviceView {
             focus: cx.focus_handle(),
             bounds: Rc::new(Cell::new(Bounds::default())),
             shutdown_confirmation: false,
+            url: cx.new(|cx| TextEntry::new("https://...", EntryMode::SingleLine, 34., cx)),
+            bundle_id: cx
+                .new(|cx| TextEntry::new("com.example.App", EntryMode::SingleLine, 34., cx)),
         }
     }
     fn target(&self) -> Option<&ToolDevice> {
@@ -96,6 +101,8 @@ enum Outcome {
     InputApproved(DeviceInputGrant),
     InputSent,
     Lifecycle,
+    UrlOpened,
+    AppLaunched,
 }
 impl Shell {
     fn device_tools(&self) -> Result<DeviceTools, String> {
@@ -212,6 +219,76 @@ impl Shell {
                 .await
                 .map(|_| Outcome::Lifecycle)
                 .map_err(|e| e.to_string())
+        });
+        cx.notify();
+    }
+    fn open_device_url(&mut self, cx: &mut Context<Self>) {
+        if self.device.busy || self.panel != Panel::Device {
+            return;
+        }
+        let Some(device) = self
+            .device
+            .target()
+            .cloned()
+            .filter(|device| device.availability == DeviceAvailability::Ready)
+        else {
+            return;
+        };
+        let tools = match self.device_tools() {
+            Ok(tools) => tools,
+            Err(error) => {
+                self.fail_device(error, cx);
+                return;
+            }
+        };
+        let url = self.device.url.read(cx).text().trim().to_owned();
+        if let Err(error) = tools.validate_open_url(&device, &url) {
+            self.device.error = Some(error.to_string());
+            cx.notify();
+            return;
+        }
+        let cancel = self.device.cancel.clone();
+        self.device_job(async move {
+            tools
+                .open_url(&device, &url, &cancel)
+                .await
+                .map(|_| Outcome::UrlOpened)
+                .map_err(|error| error.to_string())
+        });
+        cx.notify();
+    }
+    fn launch_device_app(&mut self, cx: &mut Context<Self>) {
+        if self.device.busy || self.panel != Panel::Device {
+            return;
+        }
+        let Some(device) = self
+            .device
+            .target()
+            .cloned()
+            .filter(|device| device.availability == DeviceAvailability::Ready)
+        else {
+            return;
+        };
+        let tools = match self.device_tools() {
+            Ok(tools) => tools,
+            Err(error) => {
+                self.fail_device(error, cx);
+                return;
+            }
+        };
+        let bundle_id = self.device.bundle_id.read(cx).text().trim().to_owned();
+        if let Err(error) = tools.validate_launch_app(&device, &bundle_id) {
+            self.device.error = Some(error.to_string());
+            cx.notify();
+            return;
+        }
+        let cancel = self.device.cancel.clone();
+        self.device_job(async move {
+            tools
+                .launch_app(&device, &bundle_id, &cancel)
+                .await
+                .map(|_| Outcome::AppLaunched)
+                .map_err(|error| error.to_string())
         });
         cx.notify();
     }
@@ -335,6 +412,16 @@ impl Shell {
             Ok(Outcome::Lifecycle) => {
                 self.refresh_devices(cx);
                 return;
+            }
+            Ok(Outcome::UrlOpened) => {
+                self.device.retire();
+                self.device.message =
+                    "URL opened in the selected simulator. Capture to inspect its screen.".into();
+            }
+            Ok(Outcome::AppLaunched) => {
+                self.device.retire();
+                self.device.message =
+                    "App launched in the selected simulator. Capture to inspect its screen.".into();
             }
             Err(error) => {
                 self.fail_device(error, cx);
@@ -512,6 +599,18 @@ impl Shell {
                 .children((can_boot && !self.device.busy).then(|| ui::action("device-boot", "Boot simulator", None, false, cx.listener(|this, _: &(), _, cx| this.device_running(true, cx)))))
                 .children((can_stop && !self.device.busy).then(|| ui::action("device-stop", if self.device.shutdown_confirmation { "Confirm shutdown" } else { "Shut down simulator" }, None, false, cx.listener(|this, _: &(), _, cx| this.device_running(false, cx)))))
                 .children((ready && self.device.image.is_some() && self.settings.value.device.backend == DeviceBackend::Android && !self.device.busy).then(|| ui::action("device-consent", if self.device.grant.is_some() { "Disable input" } else { "Enable input for this device" }, None, self.device.grant.is_some(), cx.listener(|this, _: &(), _, cx| this.enable_device_input(cx))))))
+            .children((ready && self.settings.value.device.backend == DeviceBackend::AppleSimulator).then(||
+                div().flex().items_center().gap_2()
+                    .child(div().text_size(px(12.)).child("Web URL"))
+                    .child(self.device.url.clone())
+                    .child(ui::action("device-open-url", "Open URL", None, false,
+                        cx.listener(|this, _: &(), _, cx| this.open_device_url(cx))))))
+            .children((ready && self.settings.value.device.backend == DeviceBackend::AppleSimulator).then(||
+                div().flex().items_center().gap_2()
+                    .child(div().text_size(px(12.)).child("Bundle ID"))
+                    .child(self.device.bundle_id.clone())
+                    .child(ui::action("device-launch-app", "Launch installed app", None, false,
+                        cx.listener(|this, _: &(), _, cx| this.launch_device_app(cx))))))
             .children(self.device.shutdown_confirmation.then(|| div().text_size(px(12.)).child("Shutdown stops the simulator, including work started outside Synara. Select another device or Disconnect to cancel.")))
             .child(viewer);
         if self.device.grant.is_some() {

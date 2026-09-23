@@ -564,6 +564,10 @@ impl Render for Shell {
                 if this.command_palette.open {
                     return;
                 }
+                if this.explorer_shortcut(event, window, cx) {
+                    cx.stop_propagation();
+                    return;
+                }
                 if this.side_chats.split
                     && this
                         .side_chats

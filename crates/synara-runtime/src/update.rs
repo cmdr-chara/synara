@@ -1,8 +1,9 @@
-//! Authenticated update planning and artifact staging.
+//! Caller-verified update manifest validation and artifact staging.
 //!
 //! This module deliberately does not choose a signing identity, signature
 //! algorithm, update endpoint, or release policy. The product owner supplies a
-//! verifier for exact manifest bytes.
+//! verifier for exact manifest bytes. This module contains no trusted key,
+//! production feed, or platform installer.
 
 use crate::RuntimeError;
 use serde::{Deserialize, Serialize};
@@ -46,12 +47,14 @@ pub struct UpdateManifest {
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct VerifiedUpdate {
-    pub release_version: String,
-    pub artifact_byte_length: u64,
-    pub artifact_sha256: [u8; 32],
-    pub platform: String,
-    pub architecture: String,
-    pub current_data_schema: u32,
+    // Private fields preserve the invariant that this value was produced only
+    // after the caller-supplied verifier accepted the exact manifest bytes.
+    release_version: String,
+    artifact_byte_length: u64,
+    artifact_sha256: [u8; 32],
+    platform: String,
+    architecture: String,
+    current_data_schema: u32,
 }
 
 impl UpdateManifest {
@@ -123,6 +126,30 @@ impl UpdateManifest {
 }
 
 impl VerifiedUpdate {
+    pub fn release_version(&self) -> &str {
+        &self.release_version
+    }
+
+    pub fn artifact_byte_length(&self) -> u64 {
+        self.artifact_byte_length
+    }
+
+    pub fn artifact_sha256(&self) -> [u8; 32] {
+        self.artifact_sha256
+    }
+
+    pub fn platform(&self) -> &str {
+        &self.platform
+    }
+
+    pub fn architecture(&self) -> &str {
+        &self.architecture
+    }
+
+    pub fn current_data_schema(&self) -> u32 {
+        self.current_data_schema
+    }
+
     /// Stage a verified download into a caller-chosen new path. The destination
     /// is never overwritten. Any incomplete or mismatched file is removed.
     pub fn stage<R: Read>(
@@ -217,11 +244,17 @@ impl VerifiedUpdate {
                 "update handoff paths must be distinct".into(),
             ));
         }
+        verify_artifact_file(
+            &staged_artifact,
+            self.artifact_byte_length,
+            &self.artifact_sha256,
+        )?;
         Ok(UpdateHandoff {
             release_version: self.release_version.clone(),
             staged_artifact,
             current_executable,
             rollback_copy,
+            expected_byte_length: self.artifact_byte_length,
             expected_sha256: hex::encode(self.artifact_sha256),
             current_data_schema: self.current_data_schema,
         })
@@ -237,8 +270,104 @@ pub struct UpdateHandoff {
     pub staged_artifact: PathBuf,
     pub current_executable: PathBuf,
     pub rollback_copy: PathBuf,
+    pub expected_byte_length: u64,
     pub expected_sha256: String,
     pub current_data_schema: u32,
+}
+
+/// Re-reads staged bytes immediately before producing a handoff. The eventual
+/// platform helper must still independently verify the signed manifest and
+/// this byte identity immediately before any executable replacement.
+fn verify_artifact_file(
+    path: &Path,
+    expected_length: u64,
+    expected_sha256: &[u8; 32],
+) -> Result<(), RuntimeError> {
+    let path_before = fs::symlink_metadata(path)?;
+    if !path_before.is_file()
+        || path_before.file_type().is_symlink()
+        || path_before.len() != expected_length
+    {
+        return Err(RuntimeError::Denied(
+            "staged update artifact is not the verified regular file".into(),
+        ));
+    }
+
+    let mut file = OpenOptions::new().read(true).open(path)?;
+    let opened_before = file.metadata()?;
+    if !opened_before.is_file()
+        || !same_file_entry(&path_before, &opened_before)
+        || opened_before.len() != expected_length
+        || opened_before.modified().ok() != path_before.modified().ok()
+    {
+        return Err(RuntimeError::Denied(
+            "staged update artifact changed while it was opened".into(),
+        ));
+    }
+
+    let mut digest = Sha256::new();
+    let mut total = 0_u64;
+    let mut buffer = [0_u8; 64 * 1024];
+    loop {
+        let count = file.read(&mut buffer)?;
+        if count == 0 {
+            break;
+        }
+        total = total.checked_add(count as u64).ok_or(RuntimeError::Limit)?;
+        if total > expected_length || total > MAX_ARTIFACT_BYTES {
+            return Err(RuntimeError::Limit);
+        }
+        digest.update(&buffer[..count]);
+    }
+
+    let opened_after = file.metadata()?;
+    let path_after = fs::symlink_metadata(path)?;
+    if total != expected_length
+        || opened_after.len() != opened_before.len()
+        || opened_after.modified().ok() != opened_before.modified().ok()
+        || !path_after.is_file()
+        || path_after.file_type().is_symlink()
+        || !same_file_entry(&path_after, &opened_after)
+        || path_after.len() != opened_after.len()
+        || path_after.modified().ok() != opened_after.modified().ok()
+    {
+        return Err(RuntimeError::Denied(
+            "staged update artifact changed while it was verified".into(),
+        ));
+    }
+    let actual: [u8; 32] = digest.finalize().into();
+    if &actual != expected_sha256 {
+        return Err(RuntimeError::Denied(
+            "staged update artifact digest does not match the signed manifest".into(),
+        ));
+    }
+    Ok(())
+}
+
+#[cfg(unix)]
+fn same_file_entry(left: &std::fs::Metadata, right: &std::fs::Metadata) -> bool {
+    use std::os::unix::fs::MetadataExt;
+    left.dev() == right.dev() && left.ino() == right.ino()
+}
+
+#[cfg(windows)]
+fn same_file_entry(left: &std::fs::Metadata, right: &std::fs::Metadata) -> bool {
+    use std::os::windows::fs::MetadataExt;
+    matches!(
+        (
+            left.volume_serial_number(),
+            left.file_index(),
+            right.volume_serial_number(),
+            right.file_index()
+        ),
+        (Some(left_volume), Some(left_index), Some(right_volume), Some(right_index))
+            if left_volume == right_volume && left_index == right_index
+    )
+}
+
+#[cfg(not(any(unix, windows)))]
+fn same_file_entry(_left: &std::fs::Metadata, _right: &std::fs::Metadata) -> bool {
+    true
 }
 
 fn valid_label(value: &str) -> bool {
@@ -361,8 +490,9 @@ mod tests {
     #[test]
     fn handoff_requires_distinct_absolute_paths_and_contains_no_trust_material() {
         let root = tempfile::tempdir().unwrap();
-        let (_, update) = signed(b"artifact", 3);
         let staged = root.path().join("staged");
+        let (_, update) = signed(b"artifact", 3);
+        update.stage(Cursor::new(b"artifact"), &staged).unwrap();
         let current = root.path().join("current");
         let rollback = root.path().join("rollback");
         let handoff = update
@@ -372,6 +502,52 @@ mod tests {
         assert!(encoded.contains("0.2.0-dev"));
         assert!(!encoded.contains("signature"));
         assert!(!encoded.contains("endpoint"));
+        assert_eq!(handoff.expected_byte_length, b"artifact".len() as u64);
         assert!(update.handoff(staged.clone(), staged, rollback).is_err());
+    }
+
+    #[test]
+    fn handoff_rechecks_staged_artifact_bytes_and_rejects_replacement() {
+        let root = tempfile::tempdir().unwrap();
+        let payload = b"verified artifact bytes";
+        let (_, update) = signed(payload, 3);
+        let staged = root.path().join("staged.bin");
+        update.stage(Cursor::new(payload), &staged).unwrap();
+        // Same-length replacement must reach and fail the digest check.
+        fs::write(&staged, b"tampered artifact bytes").unwrap();
+
+        assert!(
+            update
+                .handoff(
+                    staged,
+                    root.path().join("current"),
+                    root.path().join("rollback"),
+                )
+                .is_err()
+        );
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn handoff_rejects_a_symlinked_staging_path() {
+        use std::os::unix::fs::symlink;
+
+        let root = tempfile::tempdir().unwrap();
+        let payload = b"verified artifact bytes";
+        let (_, update) = signed(payload, 3);
+        let staged = root.path().join("staged.bin");
+        let target = root.path().join("target.bin");
+        update.stage(Cursor::new(payload), &target).unwrap();
+        symlink(&target, &staged).unwrap();
+
+        assert!(
+            update
+                .handoff(
+                    staged,
+                    root.path().join("current"),
+                    root.path().join("rollback"),
+                )
+                .is_err()
+        );
     }
 }

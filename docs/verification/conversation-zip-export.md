@@ -17,11 +17,16 @@ busy/control state after the dialog. No agent is started by export.
 
 Structured data is an explicit native `synara-thread-export-v1` projection:
 IDs, title, actual model/mode IDs, state, snapshot sequence, timeline-ordered
-message roles and exact UTF-8 text, known timestamps and recorded image metadata.
-Ambiguous role-reused message IDs have null timestamps, not invented values.
-Unsent drafts, credentials/session configuration, tool payloads, workspace files
-and embedded image bytes are excluded. This is a portable native snapshot, not
-an upstream import format or hidden provider-session transfer.
+message roles and exact UTF-8 text, known creation timestamps, durable
+`updatedAtMs` values and recorded image metadata. Message update times are
+replayed from the event timestamps in the same SQLite snapshot, using message ID
+and role plus the reducer's event-derived fallback IDs for anonymous deltas.
+Role-reused message IDs still have null `createdAtMs` in the legacy ID-only
+timestamp index; their `updatedAtMs` is independently resolved from ID and role.
+History replacement and rollback follow the transcript reducer. Unsent drafts,
+credentials/session configuration, tool payloads, workspace files and embedded
+image bytes are excluded. This is a portable native snapshot, not an upstream
+import format or hidden provider-session transfer.
 
 Markdown is limited to 8 MiB, structured JSON to 24 MiB before compression and the
 archive to 36 MiB. ZIP entries use deflate and fixed safe names. The existing
@@ -104,11 +109,14 @@ injected state, extra timeout or retry. Existing assertions remain unchanged.
 
 ## Remaining parity
 
-Upstream-specific skill/mention/attachment projections are not fabricated where
-native history does not retain equivalent data. Binary attachment bundling,
-archive import, historical model changes, rich tool-payload export and broader
-platform acceptance are outside this slice. The export lane advances within
-near parity. No missing product surface or broad release gate is closed.
+Compared with upstream `exportThreadArchive.ts`, native history has no durable
+message `source`, skills, mentions or attachment manifest equivalent. Image
+events retain only the safe metadata already exported; file bytes and original
+attachment names are not reconstructed. Those fields are not fabricated.
+Binary attachment bundling, archive import, historical model changes, rich
+tool-payload export and broader platform acceptance are outside this slice. The
+export lane advances within near parity. No missing product surface or broad
+release gate is closed.
 
 ## Preserved failed attempt and correction
 

@@ -23,7 +23,7 @@ The ADB executable can execute code on the host: do not select an untrusted file
 | Android USB device | ADB discovery, authorization/offline status, PNG capture, probed tap/swipe/key input | USB debugging and RSA authorization must be configured by the user. No physical-device shutdown, boot, text injection or automatic pairing |
 | Running Android emulator | ADB discovery, PNG capture, probed input, confirmed emulator shutdown | Cold boot and AVD enumeration are not implemented. Start the emulator externally |
 | Android network target | Listed when ADB reports it | Physical/emulated kind stays unknown without USB or emulator evidence. No automatic network pairing or reconnect to guessed addresses |
-| iOS Simulator on macOS | Installed-runtime discovery, boot, confirmed shutdown, simctl PNG capture | Requires Xcode and an available iOS runtime. No Apple input API, physical iOS device support or private framework linkage |
+| iOS Simulator on macOS | Installed-runtime discovery, boot, confirmed shutdown, simctl PNG capture, user-triggered HTTP(S) URL opening and installed-app launch | Requires Xcode and an available iOS runtime. No Apple input API, app installation, physical iOS device support or private framework linkage |
 | Other Apple runtimes | Explicit unsupported rows when simctl reports them | tvOS/watchOS/visionOS and unavailable runtimes are not exposed as working iOS targets |
 | Apple target on non-macOS | Explicit unsupported setup state | No helper invocation |
 | Desktop AppSnap/window capture | Not implemented | No claimed screen-recording permission, window enumeration or shortcut support |
@@ -41,6 +41,13 @@ fabricated video feed. The workspace image decoder applies dimension and allocat
 limits and reuses `DeviceFrame` validation. Portrait/landscape/square metadata comes
 from decoded pixels. The aspect-fit viewport follows pane resizing without changing
 the device resolution. Letterbox clicks never become device coordinates.
+
+For a selected, booted iOS Simulator, enter an HTTP(S) URL and choose **Open URL**,
+or enter the bundle ID of an already installed app and choose **Launch installed
+app**. Both actions use `simctl` with bounded output, deadline and cancellation.
+Input is validated before a helper starts. The previous screenshot is cleared on
+success; choose Capture to inspect the new screen. These actions grant no input
+authority and have not been exercised against a live macOS simulator in this sprint.
 
 Input is off until the user explicitly enables it on the selected ready Android
 target. A real `/system/bin/input` executable probe must succeed first. The grant

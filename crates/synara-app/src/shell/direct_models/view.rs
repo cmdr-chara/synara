@@ -1,4 +1,5 @@
 use super::*;
+use crate::ui::Glyph;
 fn note(text: impl Into<SharedString>) -> gpui::Div {
     let text: SharedString = text.into();
     div().text_sm().text_color(rgb(palette().muted)).child(text)
@@ -160,6 +161,133 @@ impl Shell {
         }
         let query = state.query.read(cx).text().trim().to_lowercase();
         if let Some(value) = &state.value {
+            body = body.child(
+                row()
+                    .child(div().font_weight(gpui::FontWeight::SEMIBOLD).child("Favorites"))
+                    .child(note(
+                        "Review a favorite to switch this conversation. The route still needs explicit confirmation before it changes.",
+                    )),
+            );
+            if let Some(error) = &state.favorites_error {
+                body = body.child(note(error.clone()));
+            } else if !state.favorites_ready {
+                body = body.child(note("Loading model favorites..."));
+            } else {
+                let favorites = state
+                    .favorites
+                    .iter()
+                    .enumerate()
+                    .filter(|(_, favorite)| {
+                        direct_favorite_provider_id(favorite).is_some_and(|provider_id| {
+                            let profile = value
+                                .providers
+                                .iter()
+                                .find(|profile| profile.id == provider_id);
+                            let model = profile.and_then(|profile| {
+                                profile
+                                    .models
+                                    .iter()
+                                    .find(|model| model.id == favorite.value)
+                            });
+                            query.is_empty()
+                                || provider_id.to_lowercase().contains(&query)
+                                || favorite.value.to_lowercase().contains(&query)
+                                || profile.is_some_and(|profile| {
+                                    profile.name.to_lowercase().contains(&query)
+                                })
+                                || model
+                                    .is_some_and(|model| model.name.to_lowercase().contains(&query))
+                        })
+                    })
+                    .collect::<Vec<_>>();
+                if favorites.is_empty() {
+                    body = body.child(note(if query.is_empty() {
+                        "No direct model favorites yet. Star a model below to keep it here."
+                    } else {
+                        "No matching favorites."
+                    }));
+                }
+                for (favorite_position, (favorite_index, favorite)) in
+                    favorites.into_iter().enumerate()
+                {
+                    let Some(provider_id) = direct_favorite_provider_id(favorite) else {
+                        continue;
+                    };
+                    let profile = value
+                        .providers
+                        .iter()
+                        .find(|profile| profile.id == provider_id);
+                    let model = profile.and_then(|profile| {
+                        profile
+                            .models
+                            .iter()
+                            .find(|model| model.id == favorite.value)
+                    });
+                    let model_label =
+                        model.map_or(favorite.value.as_str(), |model| model.name.as_str());
+                    let provider_label =
+                        profile.map_or(provider_id, |profile| profile.name.as_str());
+                    let mut favorite_row = row()
+                        .child(
+                            div()
+                                .font_weight(gpui::FontWeight::MEDIUM)
+                                .child(model_label.to_owned()),
+                        )
+                        .child(note(format!("{provider_label} · {}", favorite.value)));
+                    if let (Some(profile), Some(model)) = (profile, model) {
+                        let selection = ModelSelection {
+                            history_turns: None,
+                            provider_id: profile.id.clone(),
+                            model_id: model.id.clone(),
+                            max_output_tokens: model
+                                .capabilities
+                                .max_output_tokens
+                                .unwrap_or(4096)
+                                .min(4096) as u32,
+                            reasoning_effort: None,
+                            output: OutputFormat::Text,
+                        };
+                        favorite_row = favorite_row.child(
+                            ui::action(
+                                SharedString::from(format!(
+                                    "direct-favorite-review-{favorite_index}"
+                                )),
+                                "Review to switch",
+                                None,
+                                false,
+                                cx.listener(move |this, _, _, cx| {
+                                    this.review_direct_route(Some(selection.clone()), cx)
+                                }),
+                            )
+                            .relative()
+                            .children(
+                                (favorite_position == 0)
+                                    .then(|| ui::layout_probe("direct-first-favorite")),
+                            ),
+                        );
+                    } else {
+                        favorite_row = favorite_row.child(note(
+                            "This model is no longer configured. Remove the favorite or restore its provider profile.",
+                        ));
+                    }
+                    let provider_id = provider_id.to_owned();
+                    let model_id = favorite.value.clone();
+                    favorite_row = favorite_row.child(ui::action(
+                        SharedString::from(format!("direct-favorite-remove-{favorite_index}")),
+                        "Remove favorite",
+                        None,
+                        true,
+                        cx.listener(move |this, _, _, cx| {
+                            this.toggle_direct_model_favorite(
+                                provider_id.clone(),
+                                model_id.clone(),
+                                cx,
+                            )
+                        }),
+                    ));
+                    body = body.child(favorite_row);
+                }
+            }
             if value.providers.is_empty() {
                 body=body.child(note("No direct providers are configured. Review a catalog candidate or configure your own compatible endpoint. No local server is assumed to be installed."));
             }
@@ -276,9 +404,26 @@ impl Shell {
                         };
                         let element_id =
                             SharedString::from(format!("direct-model-{index}-{model_index}"));
+                        let model_favorite = direct_model_favorite(&profile.id, &model.id);
+                        let is_favorite = state.favorites.contains(&model_favorite);
+                        let favorite_provider = profile.id.clone();
+                        let favorite_model = model.id.clone();
                         body=body.child(row().child(div().flex().gap_2().items_center()
                             .child(div().flex_1().min_w_0().child(model.name.clone()))
                             .child(ui::action(element_id,"Review for this chat",None,false,cx.listener(move|this,_,_,cx|this.review_direct_route(Some(selection.clone()),cx))).relative().children((model_index==0).then(||ui::layout_probe("direct-first-model")))))
+                            .child(ui::action(
+                                SharedString::from(format!("direct-model-favorite-{index}-{model_index}")),
+                                if is_favorite { "Remove favorite" } else { "Add favorite" },
+                                Some(if is_favorite { Glyph::StarFilled } else { Glyph::Star }),
+                                is_favorite,
+                                cx.listener(move |this, _, _, cx| {
+                                    this.toggle_direct_model_favorite(
+                                        favorite_provider.clone(),
+                                        favorite_model.clone(),
+                                        cx,
+                                    )
+                                }),
+                            ))
                             .child(note(format!("{} · tools {:?} · images {:?} · structured output {:?} · context {:?}",model.id,model.capabilities.tools,model.capabilities.images,model.capabilities.structured_output,model.capabilities.context_window)))
                             .child(note(model.capabilities.source.clone())));
                     }

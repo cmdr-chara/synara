@@ -23,6 +23,11 @@ Copy path/text and Add path to draft are explicit. They do not submit a prompt.
 Open in editor reuses the existing dirty-file protection. Stale task/preview
 replies are ignored. Refresh rescans actual disk content, so reopening after
 restart needs no fabricated or cached output rows.
+For a tool-reported output, **Open reporting chat with output** now switches to
+the reporting Studio task and reopens that file in its Library. The action
+checks the current task/project/workdir and attribution before navigation,
+then rechecks the path and reporting task against the fresh listing. A stale
+or changed attribution shows an error instead of opening a different file.
 
 ## Acceptance
 

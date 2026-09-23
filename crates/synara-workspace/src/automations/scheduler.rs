@@ -134,7 +134,7 @@ impl AutomationScheduler {
         let result = tokio::select! {
             biased;
             _ = cancel.cancelled() => Err(invalid("Automation cancelled before or during execution.")),
-            result = tokio::time::timeout(Duration::from_secs(15 * 60), self.controller.submit(task_id, run.definition.instructions.clone())) => result.unwrap_or_else(|_| Err(invalid("Automation exceeded its 15-minute execution limit."))),
+            result = tokio::time::timeout(Duration::from_secs(u64::from(run.definition.max_runtime_seconds)), self.controller.submit(task_id, run.definition.instructions.clone())) => result.unwrap_or_else(|_| Err(invalid(format!("Automation exceeded its {}-second execution limit.", run.definition.max_runtime_seconds)))),
         };
         let (status, output) = match result {
             Ok(_) => {

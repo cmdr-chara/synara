@@ -11,7 +11,9 @@ pub use goals::{
     ThreadGoal, goal_decision,
 };
 mod releases;
-pub use releases::{NATIVE_VERSION_HISTORY_KEY, NativeVersionHistory, NativeVersionVisit};
+pub use releases::{
+    NATIVE_VERSION_HISTORY_KEY, NativeBuildIntegrity, NativeVersionHistory, NativeVersionVisit,
+};
 mod inline_comments;
 pub use inline_comments::{InlineComment, InlineCommentEdit, InlineComments};
 mod followups;
@@ -40,7 +42,7 @@ pub use conversation_tools::{
     SideThreadIndex, ThreadOrigin, ThreadRecap,
 };
 mod task_creation;
-pub use chat_preferences::ModelFavorite;
+pub use chat_preferences::{ModelFavorite, SessionModelPreset};
 mod recovery;
 pub use recovery::*;
 

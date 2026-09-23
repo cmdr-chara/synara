@@ -10,6 +10,7 @@ impl Shell {
             .child(div().text_size(px(12.)).child(include_str!("../../../../LICENSE")))
             .child("Keyboard shortcuts")
             .children(NAVIGATION_COMMANDS.iter().map(|command| div().child(format!("{}: {}", command.label, navigation_binding(&self.settings.value.keybindings, command)))))
+            .child("Find a project file: Ctrl/Cmd+P · Search file contents: Ctrl/Cmd+Shift+F")
             .child("Agent approval requests are shown for your confirmation. Selecting a model or agent does not send a prompt.")
             .child(div().mt_4().text_size(px(20.)).child("Fonts and icons"))
             .child("Cal Sans · SIL Open Font License 1.1")

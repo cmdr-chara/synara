@@ -1,9 +1,110 @@
 //! Records actual locally observed native versions. This is not a release feed.
 use super::*;
-use crate::{WorkspaceError, WorkspaceResult, WorkspaceService};
+use crate::{StorageError, WorkspaceError, WorkspaceResult, WorkspaceService};
 use serde::{Deserialize, Serialize};
+use sha2::{Digest, Sha256};
+use std::{
+    fs::{self, File},
+    io::Read,
+    path::{Path, PathBuf},
+};
 
 pub const NATIVE_VERSION_HISTORY_KEY: &str = "native-version-history";
+
+/// Fingerprint of the executable file currently on disk. This identifies local bytes only;
+/// it does not establish a trusted publisher or match those bytes against a release.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct NativeBuildIntegrity {
+    pub path: PathBuf,
+    pub size_bytes: u64,
+    pub sha256: String,
+}
+
+fn fingerprint_current_executable() -> WorkspaceResult<NativeBuildIntegrity> {
+    let executable = std::env::current_exe().map_err(StorageError::from)?;
+    let path = fs::canonicalize(executable).map_err(StorageError::from)?;
+    fingerprint_regular_file(&path)
+}
+
+fn fingerprint_regular_file(path: &Path) -> WorkspaceResult<NativeBuildIntegrity> {
+    let path = path.to_path_buf();
+    let path_before = fs::symlink_metadata(&path).map_err(StorageError::from)?;
+    if !path_before.is_file() || path_before.file_type().is_symlink() {
+        return Err(WorkspaceError::Invalid(
+            "The current executable is not a regular file.".into(),
+        ));
+    }
+
+    let mut file = File::open(&path).map_err(StorageError::from)?;
+    let opened_before = file.metadata().map_err(StorageError::from)?;
+    if !opened_before.is_file()
+        || !same_file_entry(&path_before, &opened_before)
+        || opened_before.len() != path_before.len()
+        || opened_before.modified().ok() != path_before.modified().ok()
+    {
+        return Err(WorkspaceError::Invalid(
+            "The current executable changed while it was opened.".into(),
+        ));
+    }
+
+    let mut digest = Sha256::new();
+    let mut buffer = [0_u8; 64 * 1024];
+    loop {
+        let read = file.read(&mut buffer).map_err(StorageError::from)?;
+        if read == 0 {
+            break;
+        }
+        digest.update(&buffer[..read]);
+    }
+
+    let opened_after = file.metadata().map_err(StorageError::from)?;
+    let path_after = fs::symlink_metadata(&path).map_err(StorageError::from)?;
+    if opened_after.len() != opened_before.len()
+        || opened_after.modified().ok() != opened_before.modified().ok()
+        || !path_after.is_file()
+        || path_after.file_type().is_symlink()
+        || !same_file_entry(&path_after, &opened_after)
+        || path_after.len() != opened_after.len()
+        || path_after.modified().ok() != opened_after.modified().ok()
+    {
+        return Err(WorkspaceError::Invalid(
+            "The current executable changed while it was fingerprinted.".into(),
+        ));
+    }
+
+    Ok(NativeBuildIntegrity {
+        path,
+        size_bytes: opened_after.len(),
+        sha256: hex::encode(digest.finalize()),
+    })
+}
+
+#[cfg(unix)]
+fn same_file_entry(left: &std::fs::Metadata, right: &std::fs::Metadata) -> bool {
+    use std::os::unix::fs::MetadataExt;
+    left.dev() == right.dev() && left.ino() == right.ino()
+}
+
+#[cfg(windows)]
+fn same_file_entry(left: &std::fs::Metadata, right: &std::fs::Metadata) -> bool {
+    use std::os::windows::fs::MetadataExt;
+    matches!(
+        (
+            left.volume_serial_number(),
+            left.file_index(),
+            right.volume_serial_number(),
+            right.file_index()
+        ),
+        (Some(left_volume), Some(left_index), Some(right_volume), Some(right_index))
+            if left_volume == right_volume && left_index == right_index
+    )
+}
+
+#[cfg(not(any(unix, windows)))]
+fn same_file_entry(_left: &std::fs::Metadata, _right: &std::fs::Metadata) -> bool {
+    true
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(deny_unknown_fields)]
 pub struct NativeVersionVisit {
@@ -102,6 +203,14 @@ fn write(connection: &Connection, value: &NativeVersionHistory) -> WorkspaceResu
     Ok(())
 }
 impl WorkspaceService {
+    /// Fingerprint the running application's executable file without blocking the workspace
+    /// storage worker. This is local integrity metadata, not a release signature check.
+    pub async fn native_build_integrity(&self) -> WorkspaceResult<NativeBuildIntegrity> {
+        tokio::task::spawn_blocking(fingerprint_current_executable)
+            .await
+            .map_err(|_| WorkspaceError::Worker)?
+    }
+
     /// Called with the compiled native application version, never a feed or environment override.
     pub async fn observe_native_version(
         &self,
@@ -149,6 +258,53 @@ impl WorkspaceService {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::io::Write;
+
+    #[test]
+    fn executable_fingerprint_reports_size_and_sha256() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("native-build");
+        let bytes = b"Synara native build fingerprint fixture";
+        File::create(&path).unwrap().write_all(bytes).unwrap();
+
+        let fingerprint = fingerprint_regular_file(&path).unwrap();
+        assert_eq!(fingerprint.size_bytes, bytes.len() as u64);
+        assert_eq!(
+            fingerprint.sha256,
+            "0fafb575d74ac7b55a610e7c602f16b870b4b28683d68e6b40f62631eab4182e"
+        );
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn executable_fingerprint_rejects_symlink_paths() {
+        use std::os::unix::fs::symlink;
+
+        let dir = tempfile::tempdir().unwrap();
+        let target = dir.path().join("target");
+        let link = dir.path().join("link");
+        File::create(&target)
+            .unwrap()
+            .write_all(b"payload")
+            .unwrap();
+        symlink(&target, &link).unwrap();
+
+        assert!(fingerprint_regular_file(&link).is_err());
+    }
+
+    #[tokio::test]
+    async fn workspace_fingerprint_identifies_current_executable_file() {
+        let expected_path = fs::canonicalize(std::env::current_exe().unwrap()).unwrap();
+        let expected_size = fs::metadata(&expected_path).unwrap().len();
+        let workspace = WorkspaceService::memory().unwrap();
+
+        let fingerprint = workspace.native_build_integrity().await.unwrap();
+        assert_eq!(fingerprint.path, expected_path);
+        assert_eq!(fingerprint.size_bytes, expected_size);
+        assert_eq!(fingerprint.sha256.len(), 64);
+        assert!(fingerprint.sha256.bytes().all(|b| b.is_ascii_hexdigit()));
+    }
+
     #[test]
     fn releases_transitions_are_bounded_and_do_not_claim_upgrade_order() {
         let mut h = NativeVersionHistory::default();

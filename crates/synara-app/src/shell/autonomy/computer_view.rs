@@ -161,7 +161,7 @@ impl Shell {
                 .child(gpui::img(image.clone()).w_full().h(px(240.)).object_fit(gpui::ObjectFit::Contain)))
                 .child(div().text_sm().child(format!("Frame {id}. Input lease: 60 seconds, one action. Preview is untrusted application content.")));
         }
-        body = body.child(div().text_sm().child("Input examples: {\"action\":\"type\",\"text\":\"hello\"}, {\"action\":\"key\",\"key\":\"enter\"}, {\"action\":\"click\",\"x\":20,\"y\":40,\"button\":\"left\"}. Scroll uses x, y, down and steps 1-8. Typing is limited to printable ASCII. Keys include insert, f1-f12, back_tab, shift_enter and named editing combinations. No arbitrary key sequences, clipboard operations or Alt/Meta shortcuts."));
+        body = body.child(div().text_sm().child("Input examples: {\"action\":\"type\",\"text\":\"hello\"}, {\"action\":\"key\",\"key\":\"enter\"}, {\"action\":\"click\",\"x\":20,\"y\":40,\"button\":\"left\"}. Scroll uses x, y, down and steps 1-8. Typing accepts up to 512 UTF-8 bytes, including Unicode, but rejects control characters, line separators and bidirectional formatting characters. Use separate reviewed keys for Enter and Tab. X11 keymap or application support can vary; delivery does not prove the text was accepted. Keys include insert, f1-f12, back_tab, shift_enter and named editing combinations. No arbitrary key sequences, clipboard operations or Alt/Meta shortcuts."));
         let mut presets = div().flex().flex_wrap().gap_2();
         for (index, (label, key)) in [
             ("Enter", ComputerKey::Enter),

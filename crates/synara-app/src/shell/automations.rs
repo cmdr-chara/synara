@@ -23,6 +23,7 @@ pub(super) struct AutomationsView {
     timezone: Entity<TextEntry>,
     max_runs: Entity<TextEntry>,
     failure_limit: Entity<TextEntry>,
+    max_runtime: Entity<TextEntry>,
     selected_run: Option<AutomationId>,
     error: Option<String>,
     _subscriptions: Vec<Subscription>,
@@ -54,12 +55,12 @@ impl AutomationsView {
             150.,
         );
         let schedule = make(
-            "every 60m, daily 09:00, weekdays 09:00, weekly mon 09:00",
+            "every 60m, daily 09:00, weekly mon 09:00, cron 0 9 * * *",
             EntryMode::SingleLine,
             34.,
         );
         let timezone = make(
-            "UTC or fixed offset, e.g. +02:00",
+            "UTC, fixed offset, or IANA zone, e.g. Europe/Rome",
             EntryMode::SingleLine,
             34.,
         );
@@ -73,6 +74,11 @@ impl AutomationsView {
             EntryMode::SingleLine,
             34.,
         );
+        let max_runtime = make(
+            "Maximum runtime in seconds (1–3600; default 900)",
+            EntryMode::SingleLine,
+            34.,
+        );
         let subscriptions = [
             &title,
             &instructions,
@@ -80,6 +86,7 @@ impl AutomationsView {
             &timezone,
             &max_runs,
             &failure_limit,
+            &max_runtime,
         ]
         .into_iter()
         .map(|input| {
@@ -112,6 +119,7 @@ impl AutomationsView {
             timezone,
             max_runs,
             failure_limit,
+            max_runtime,
             selected_run: None,
             error: None,
             _subscriptions: subscriptions,
@@ -262,7 +270,7 @@ impl Shell {
         if self.automations.changing || self.automations.editor.is_some() {
             return;
         }
-        let (editor, title, instructions, schedule, timezone, max_runs, failure_limit) =
+        let (editor, title, instructions, schedule, timezone, max_runs, failure_limit, max_runtime) =
             match definition {
                 Some(d) => (
                     Editor {
@@ -281,6 +289,7 @@ impl Shell {
                     d.stop_after_consecutive_failures
                         .map(|n| n.to_string())
                         .unwrap_or_default(),
+                    d.max_runtime_seconds.to_string(),
                 ),
                 None => (
                     Editor {
@@ -297,6 +306,7 @@ impl Shell {
                     "UTC".into(),
                     String::new(),
                     "3".into(),
+                    DEFAULT_AUTOMATION_MAX_RUNTIME_SECONDS.to_string(),
                 ),
             };
         self.automations
@@ -317,10 +327,71 @@ impl Shell {
         self.automations
             .failure_limit
             .update(cx, |entry, cx| entry.set_text(failure_limit, cx));
+        self.automations
+            .max_runtime
+            .update(cx, |entry, cx| entry.set_text(max_runtime, cx));
         self.automations.editor = Some(editor);
         self.automations.pending = None;
         self.automations.error = None;
         cx.notify();
+    }
+    pub(super) fn open_new_automation(&mut self, cx: &mut Context<Self>) -> bool {
+        if self.automations.changing || self.automations.editor.is_some() {
+            return false;
+        }
+        self.set_panel(Panel::Automations, cx);
+        self.edit_automation(None, cx);
+        self.automations.editor.is_some()
+    }
+    pub(super) fn open_automation_for_review(
+        &mut self,
+        id: AutomationId,
+        cx: &mut Context<Self>,
+    ) -> bool {
+        if self.automations.changing {
+            self.error = Some("An automation update is in progress. The command was kept.".into());
+            return false;
+        }
+        if self.automations.editor.is_some() {
+            self.error = Some(
+                "Save or discard the open automation form before opening another. The command was kept."
+                    .into(),
+            );
+            return false;
+        }
+        if !self.automations.loaded || self.automations.loading {
+            self.set_panel(Panel::Automations, cx);
+            if self.panel == Panel::Automations {
+                self.error = Some(
+                    "Automation list is loading. The command was kept; retry after it finishes."
+                        .into(),
+                );
+            }
+            return false;
+        }
+        let Some(definition) = self
+            .automations
+            .ledger
+            .definitions
+            .iter()
+            .find(|definition| definition.id == id)
+            .cloned()
+        else {
+            self.error = Some(
+                "No saved automation with that ID was found. Refresh the list and retry; the command was kept."
+                    .into(),
+            );
+            return false;
+        };
+        self.set_panel(Panel::Automations, cx);
+        if self.panel != Panel::Automations {
+            return false;
+        }
+        self.edit_automation(Some(definition), cx);
+        self.automations
+            .editor
+            .as_ref()
+            .is_some_and(|editor| editor.id == id)
     }
     fn save_automation_form(&mut self, cx: &mut Context<Self>) {
         if self.automations.changing {
@@ -351,6 +422,9 @@ impl Shell {
                     self.automations.failure_limit.read(cx).text(),
                 )?,
                 failure_streak: 0,
+                max_runtime_seconds: parse_runtime_seconds(
+                    self.automations.max_runtime.read(cx).text(),
+                )?,
             };
             definition.validate()?;
             Ok(definition)
@@ -447,6 +521,15 @@ fn parse_positive_limit(text: &str) -> WorkspaceResult<Option<u32>> {
         return Err(WorkspaceError::Invalid("Limits must be positive.".into()));
     }
     Ok(Some(value))
+}
+fn parse_runtime_seconds(text: &str) -> WorkspaceResult<u32> {
+    let seconds = parse_positive_limit(text)?.unwrap_or(DEFAULT_AUTOMATION_MAX_RUNTIME_SECONDS);
+    if seconds > MAX_AUTOMATION_MAX_RUNTIME_SECONDS {
+        return Err(WorkspaceError::Invalid(format!(
+            "Maximum runtime is {MAX_AUTOMATION_MAX_RUNTIME_SECONDS} seconds."
+        )));
+    }
+    Ok(seconds)
 }
 fn time_label(value: i64) -> String {
     chrono::DateTime::from_timestamp_millis(value)

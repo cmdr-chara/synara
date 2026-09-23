@@ -10,20 +10,42 @@ continuation notes remain in the [preserved pre-Hubs inventory](electron-vs-gpui
 The full acceptance backlog remains in [ROADMAP.md](../../ROADMAP.md). No historical
 gap is closed merely because this current view is shorter or a heading was renamed.
 
-## September 23 current-main re-audit
+## September 23 in-progress native continuation
+
+The latest native working tree adds bounded microphone recording and ChatGPT
+transcription into an unsent draft, plus a loopback-only headless server with
+readiness, authenticated catalog and paged task-message APIs, local folder
+registration, and unsent task creation/draft editing in its task browser. These
+are now **material depth gaps**, not wholly absent surfaces. The server does not
+provide the upstream web workspace or remote deployment/TLS/update lifecycle;
+voice still needs live device/provider and platform acceptance. Five-field cron
+and a persisted execution limit advance Automations. File-search ranking,
+generated-directory filtering and typed file/directory results that navigate
+into Explorer advance its near-parity lane. The Profile page now renders a
+bounded UTC heatmap from persisted local turn starts; provider and account
+statistics remain a material gap. ZIP exports now include durable message
+update times from the same database snapshot. The separate
+[current parity gates](../verification/current-parity-gates.md) remain open until
+their full journeys and acceptance evidence are complete.
+
+Current lane count after these slices: **0 wholly missing, 16 material depth,
+5 near parity**. The 21 gates remain open; code slices and focused tests do not
+close an entire gate.
+
+## September 23 current-main starting baseline
 
 Current upstream was re-read at
 `Emanuele-web04/synara@eaa61eded31b6755d4f30ba8eabc5d905cf817cb`
 against native GPUI starting reference
-`cmdr-chara/synara@fc0024b9c0dd1ecdbcf41caa844c8269befc9fdf`. The current
-classification includes the September 23 continuation documented below.
+`cmdr-chara/synara@fc0024b9c0dd1ecdbcf41caa844c8269befc9fdf`. The classification
+in this baseline precedes the in-progress native continuation above.
 
 The old **21 present / 27 partial / 0 missing** result is now historical only.
 It used the older 48-capability boundary and treated very different situations as
 the same "Partial" status. Current upstream also exposes product surfaces that the
 old census did not count cleanly.
 
-### Genuinely missing current-head surfaces (2)
+### Genuinely missing surfaces at the starting baseline (2)
 
 | Surface | Upstream evidence | GPUI evidence |
 | --- | --- | --- |
@@ -34,25 +56,26 @@ old census did not count cleanly.
 
 | Area | GPUI has | Still missing versus current upstream |
 | --- | --- | --- |
-| First-run onboarding/setup replay | Persistent six-step first-run guide, local agent command summary, appearance/project entry and Settings replay | Integrated provider enable/sign-in terminal, project creation and deeper upstream setup interactions |
-| Browser sessions/WebMCP | Embedded native browser, manual uploads/inspection/viewport capture/link downloads, reviewed popup handoff, bounded network diagnostics and approved task browser-use bridge | Saved logins, cookie/session import, complete popup auth, agent upload/download, console diagnostics, restored sessions and page-declared WebMCP |
-| iOS Simulator/device | Discovery, boot/shutdown and screenshots | Live input, swipe/type/buttons, recording, app install/launch, URL open, accessibility tree and element targeting |
-| Editor/diff | Native tabs, find/replace, Markdown preview, changed-file/diff-row navigation, Explorer and Git review | Autosave/conflict parity, syntax-highlighted depth, compare scopes, blame and richer diff editing |
-| Managed worktrees | Git worktree operations | First-class per-task managed isolation and environment-aware fork/orchestration ownership |
-| Provider/model/context | Generic ACP controls plus direct-model runtime | Starred model+effort presets, provider ordering, quick cycling, richer compaction/context UX and provider/account usage telemetry |
-| Computer Use | Reviewed X11 selected-window observation/input | Broader action/input/preview/target semantics plus macOS/other-platform parity |
-| Automations | Durable fixed-offset daily/weekly schedules, run/failure stop limits, history and cancellation | IANA/DST schedules, broader recurrence, retry policy and deeper orchestration |
-| Slash commands/keybindings | Qualified native workflow commands plus provider commands, palette and constrained remaps | Richer command arguments, upstream semantics and broad context-aware custom keybindings |
-| Releases/updater | Local version history/read state | Verified release feed, signed install/update/rollback lifecycle |
-| Profile/activity | Local activity, UTC active-hour distribution and real task token/context values | Provider/model mix, heatmap and richer account/usage statistics |
-| Handoff/forks | Reviewed related continuation and context-derived branch drafts | Same-task continuation, provider-native forks and explicit local/new-worktree selection |
-| Attachments/media | PNG/JPEG/text intake, bounded one-level folder snapshots and transcript images | Persistent folder references, broader formats and PDF/document viewer |
-| Studio | Native Studio/Hubs and file/output preview | Current upstream long-running/output-oriented Studio depth |
+| First-run onboarding/setup replay | Persistent six-step guide with local agent command summary, appearance setup, existing-folder registration, one-level folder creation and Settings replay | Provider enable/sign-in, inline history import and full fresh-install acceptance |
+| Browser sessions/WebMCP | Embedded native browser, manual uploads/inspection/viewport capture/link downloads, reviewed popup handoff, bounded network diagnostics, approved task browser-use bridge and opt-in Manual tab URL restoration | Protected cookie/session import, complete popup auth, agent upload/download, console diagnostics, task/auth tab restoration and page-declared WebMCP |
+| iOS Simulator/device | Discovery, boot/shutdown, screenshots, user-triggered HTTP(S) URL opening and installed-app launch in a selected booted simulator | Live input, swipe/type/buttons, recording, app install, accessibility tree and element targeting |
+| Editor/diff | Native tabs, find/replace, Markdown preview, changed-file/diff-row navigation, Explorer and Git review, plus explicit reload/overwrite controls after a save conflict | Autosave and broader conflict parity, syntax-highlighted depth, compare scopes, blame and richer diff editing |
+| Managed worktrees | Git worktree operations; assistant-turn forks can choose an existing linked worktree with persisted task cwd and task-aware removal guard | Automatic per-task managed creation/cleanup and broader environment-aware fork/orchestration ownership |
+| Provider/model/context | Generic ACP controls with advertised-order model cycling, persisted live-advertised model+effort presets and ACP provider ordering; direct-model runtime and favorites | Fast/thinking preset variants, keyboard cycling, richer compaction/context UX and provider/account usage telemetry |
+| Computer Use | Reviewed X11 selected-window observation/input with bounded Unicode typing | Broader action/input/preview/target semantics plus macOS/other-platform parity |
+| Automations | Durable fixed-offset and IANA/DST daily/weekly schedules, run/failure stop limits, history and cancellation | Broader recurrence, retry policy and deeper orchestration |
+| Slash commands/keybindings | Qualified native workflow commands including paused goal set/pause and saved automation review by exact ID, provider commands, palette and constrained remaps | Goal resume/clear/edit and other argument forms, upstream semantics and broad context-aware custom keybindings |
+| Releases/updater | Local version history, executable SHA-256 fingerprint and staged artifact integrity recheck before a prospective handoff | Trusted native feed, publisher signing identity and signed install/update/rollback lifecycle |
+| Profile/activity | Local activity, UTC turn-start heatmap and active-hour distribution, real task token/context values and latest saved session-model snapshots by agent | Per-turn provider/model mix, token heatmap and real account/usage statistics |
+| Handoff/forks | Reviewed related continuation and context-derived branch drafts, including existing linked-worktree selection for assistant-turn forks | Same-task continuation, provider-native forks and managed new-worktree creation |
+| Attachments/media | Still PNG/JPEG/WebP and text intake, bounded one-level folder snapshots and transcript images; WebP converts to bounded PNG for prompts | Persistent folder references, broader formats and PDF/document viewer |
+| Studio | Native Studio/Hubs, file/output preview and attributed output reopening in its reporting chat's Library | Current upstream per-turn output capture and long-running/output-oriented Studio depth |
 
 ### Near-parity lanes (5)
 
 Theme/density is now substantial enough that it should not be grouped with the
-largest feature gaps. File/source search, thread export, reply/context reuse and the
+largest feature gaps. File/source search now has project-wide name/content results,
+keyboard navigation, direct opening and upstream shortcuts. Thread export, reply/context reuse and the
 generic multi-provider workspace also have bounded deltas rather than requiring a
 new subsystem. Their remaining exact interaction/format/provider breadth should be
 tracked separately from the large gaps above.
@@ -65,6 +88,15 @@ handoff, while network diagnostics are bounded and redact URL credentials, queri
 and fragments. Editor and search navigation, folder snapshots, fixed-offset weekly
 automations with run/failure limits, and UTC profile active hours also advanced.
 The classification is **2 missing, 14 material-depth and 5 near-parity lanes**.
+
+This continuation also adds recursive file-name search across contained local and
+SSH workspaces, direct result opening and search keyboard navigation. Direct-model
+favorites are durable and still require route review before switching. Automation
+schedules now resolve IANA local time with explicit gap/fold behavior, and Releases
+can fingerprint the current local executable. The fingerprint is not a trusted
+release or signature check.
+The qualified `/synara/goal set <objective>` command saves a paused task goal;
+explicit Resume and Send remain required.
 
 Native subagents/workflows, Agent Gateway and incoming external MCP remain
 substantially implemented. Computer Use is retained as a depth gap because current

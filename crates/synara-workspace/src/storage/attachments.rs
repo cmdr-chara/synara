@@ -20,6 +20,7 @@ const FOLDER_SNAPSHOT_PREFIX: &str = "Folder snapshot (names and types only) - "
 pub enum AttachmentKind {
     Png,
     Jpeg,
+    Webp,
     Text,
 }
 impl AttachmentKind {
@@ -27,6 +28,7 @@ impl AttachmentKind {
         match self {
             Self::Png => "image/png",
             Self::Jpeg => "image/jpeg",
+            Self::Webp => "image/webp",
             Self::Text => "text/plain",
         }
     }
@@ -181,7 +183,10 @@ impl Stored {
                 || info.bytes > MAX_ATTACHMENT_BATCH_BYTES
                 || match (info.kind, info.dimensions) {
                     (AttachmentKind::Text, None) => false,
-                    (AttachmentKind::Png | AttachmentKind::Jpeg, Some((w, h))) => {
+                    (
+                        AttachmentKind::Png | AttachmentKind::Jpeg | AttachmentKind::Webp,
+                        Some((w, h)),
+                    ) => {
                         w == 0
                             || h == 0
                             || w > 8192
@@ -419,10 +424,11 @@ impl WorkspaceService {
         // before recording a prompt or invoking an agent method.
         intake::run(move || {
             let mut parts = vec![PromptPart::Text(text)];
+            let mut projected_media_bytes = 0usize;
             for item in state.pending {
                 let bytes = item.bytes()?;
                 let checked = intake::inspect(item.info.name.clone(), &bytes)?;
-                if checked.kind != item.info.kind {
+                if checked.kind != item.info.kind || checked.dimensions != item.info.dimensions {
                     return Err(StorageError::Identity.into());
                 }
                 parts.push(PromptPart::Text(item.info.label()));
@@ -432,15 +438,38 @@ impl WorkspaceService {
                         text: String::from_utf8(bytes).map_err(|_| StorageError::Identity)?,
                         mime_type: "text/plain".into(),
                     },
-                    kind => PromptPart::MediaImage(synara_core::TranscriptImage {
-                        source: item.info.source,
-                        base64: intake::base64(&bytes),
-                        mime_type: kind.mime_type().into(),
-                    }),
+                    AttachmentKind::Webp => {
+                        let png = intake::webp_to_png(&bytes)?;
+                        projected_media_bytes =
+                            bounded_projected_media(projected_media_bytes, png.len())?;
+                        PromptPart::MediaImage(synara_core::TranscriptImage {
+                            source: item.info.source,
+                            base64: intake::base64(&png),
+                            mime_type: "image/png".into(),
+                        })
+                    }
+                    kind @ (AttachmentKind::Png | AttachmentKind::Jpeg) => {
+                        projected_media_bytes =
+                            bounded_projected_media(projected_media_bytes, bytes.len())?;
+                        PromptPart::MediaImage(synara_core::TranscriptImage {
+                            source: item.info.source,
+                            base64: intake::base64(&bytes),
+                            mime_type: kind.mime_type().into(),
+                        })
+                    }
                 });
             }
             Ok(Prompt { parts })
         })
         .await
     }
+}
+
+fn bounded_projected_media(current: usize, additional: usize) -> WorkspaceResult<usize> {
+    current
+        .checked_add(additional)
+        .filter(|total| *total <= MAX_ATTACHMENT_BATCH_BYTES)
+        .ok_or_else(|| {
+            invalid("Images exceed the 2 MiB combined prompt limit after WebP conversion.")
+        })
 }

@@ -32,6 +32,15 @@ network request. Blank, stopped and closed tabs unmap the shared native surface
 instead of leaving the previous page's pixels visible.
 No local server is silently launched or guessed.
 
+The Browser panel has an explicit **Restore Manual tabs** toggle, off by
+default. When enabled on Linux/X11, Synara saves up to 16 committed Manual-tab
+HTTP(S) URLs in an owner-only file beneath its private browser directory and
+reopens them at the next app start. Query strings and fragments are removed;
+URL paths remain, so leave the toggle off for pages whose paths contain secrets.
+Disabling removes the saved URL list. WebKit's existing Manual profile keeps its
+own cookies; Synara does not read or export them. AgentTask and Authentication
+tabs are excluded from the snapshot and restoration.
+
 Schemes other than HTTP(S), embedded URL credentials, malformed URLs, control
 characters and ambiguous backslashes are rejected before navigation. Page
 popups, fullscreen requests, page-script clipboard access and unapproved device

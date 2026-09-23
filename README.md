@@ -36,6 +36,11 @@ Use `--data-dir /absolute/path` for an isolated data directory and
 `--agents /path/to/profiles.json` to import agent launch profiles. Opening a
 workspace does not launch an agent or execute a prompt automatically.
 
+The composer supports [voice drafts](docs/ui/voice-input.md) when a microphone
+and ChatGPT-authenticated Codex session are available. The separate
+[headless workspace preview](docs/ui/headless-server.md) can run without GPUI;
+its browser view reads recent task messages and is local to the machine.
+
 ## Agents
 
 Install and authenticate an ACP-compatible agent using its vendor's instructions.

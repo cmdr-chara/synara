@@ -63,6 +63,63 @@ mod cases {
         assert!(!apple::valid_id("booted"));
         assert!(!apple::valid_id("--help"));
     }
+    #[tokio::test]
+    async fn simulator_open_url_rejects_non_web_and_credential_urls_before_spawning() {
+        let tools = DeviceTools {
+            backend: DeviceBackend::AppleSimulator,
+            executable: PathBuf::from("/not-installed"),
+        };
+        let device = ToolDevice {
+            descriptor: DeviceDescriptor {
+                id: DeviceId::new("00000000-0000-0000-0000-000000000001").unwrap(),
+                name: "iPhone".into(),
+                platform: "iOS Simulator".into(),
+                kind: DeviceKind::Simulator,
+                state: DeviceState::Discovered,
+            },
+            availability: DeviceAvailability::Ready,
+            runtime: None,
+        };
+        for url in [
+            "javascript:alert(1)",
+            "file:///etc/passwd",
+            "https://user:secret@example.com/",
+        ] {
+            assert!(matches!(
+                tools
+                    .open_url(&device, url, &CancellationToken::new())
+                    .await,
+                Err(RuntimeError::Invalid(_))
+            ));
+        }
+        assert_eq!(
+            apple::open_url_args(
+                device.descriptor.id.as_str().into(),
+                "https://example.com/".into()
+            ),
+            [
+                "simctl",
+                "openurl",
+                "00000000-0000-0000-0000-000000000001",
+                "https://example.com/"
+            ]
+        );
+        assert!(apple::valid_bundle_id("com.example.App"));
+        assert!(!apple::valid_bundle_id("com.example;rm -rf /"));
+        assert!(!apple::valid_bundle_id("com..example"));
+        assert_eq!(
+            apple::launch_args(
+                device.descriptor.id.as_str().into(),
+                "com.example.App".into()
+            ),
+            [
+                "simctl",
+                "launch",
+                "00000000-0000-0000-0000-000000000001",
+                "com.example.App"
+            ]
+        );
+    }
     #[test]
     fn malformed_deserialized_identity_is_rejected() {
         let device: DeviceDescriptor = serde_json::from_value(serde_json::json!({"id":"\n", "name":"Phone", "platform":"Android", "kind":"physical", "state":"discovered"})).unwrap();

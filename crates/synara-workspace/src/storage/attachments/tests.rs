@@ -6,6 +6,41 @@ fn text(name: &str, body: &str) -> AttachmentInput {
         bytes: body.as_bytes().to_vec(),
     }
 }
+fn webp_2x2() -> Vec<u8> {
+    let pixels = [
+        255, 0, 0, 255, 0, 255, 0, 255, 0, 0, 255, 255, 255, 255, 255, 255,
+    ];
+    let mut bytes = Vec::new();
+    image::codecs::webp::WebPEncoder::new_lossless(&mut bytes)
+        .encode(&pixels, 2, 2, image::ExtendedColorType::Rgba8)
+        .unwrap();
+    bytes
+}
+fn animated_webp_from_still(still: &[u8]) -> Vec<u8> {
+    fn chunk(out: &mut Vec<u8>, name: &[u8; 4], payload: &[u8]) {
+        out.extend_from_slice(name);
+        out.extend_from_slice(&(payload.len() as u32).to_le_bytes());
+        out.extend_from_slice(payload);
+        if payload.len() % 2 == 1 {
+            out.push(0);
+        }
+    }
+
+    let mut webp = b"WEBP".to_vec();
+    // VP8X marks an animation canvas of 2 x 2 pixels.
+    chunk(&mut webp, b"VP8X", &[0x02, 0, 0, 0, 1, 0, 0, 1, 0, 0]);
+    chunk(&mut webp, b"ANIM", &[0; 6]);
+    let mut frame = vec![0; 16];
+    frame[6..9].copy_from_slice(&[1, 0, 0]);
+    frame[9..12].copy_from_slice(&[1, 0, 0]);
+    frame.extend_from_slice(&still[12..]);
+    chunk(&mut webp, b"ANMF", &frame);
+
+    let mut riff = b"RIFF".to_vec();
+    riff.extend_from_slice(&(webp.len() as u32).to_le_bytes());
+    riff.extend_from_slice(&webp);
+    riff
+}
 async fn task(service: &WorkspaceService, root: PathBuf) -> Task {
     let project = service.add_local_workspace(root).await.unwrap();
     let agent = service.profiles().await.unwrap()[0].id.clone();
@@ -148,6 +183,81 @@ async fn snapshots_restore_atomic_imports_reject_stale_edits_and_never_start_age
         .backup_to(backup, crate::RecoveryOptions::default())
         .await
         .unwrap();
+}
+
+#[tokio::test]
+async fn webp_is_previewable_and_prompt_conversion_is_bounded_png() {
+    let dir = tempfile::tempdir().unwrap();
+    let database = dir.path().join("attachments.db");
+    let service = WorkspaceService::open(database.clone()).await.unwrap();
+    let task = task(&service, dir.path().into()).await;
+    let webp = webp_2x2();
+    let draft = service
+        .add_attachments(
+            task.id,
+            0,
+            vec![AttachmentInput::Bytes {
+                name: "sample.webp".into(),
+                bytes: webp.clone(),
+            }],
+        )
+        .await
+        .unwrap();
+    assert_eq!(draft.pending[0].kind, AttachmentKind::Webp);
+    assert_eq!(draft.pending[0].kind.mime_type(), "image/webp");
+    assert_eq!(draft.pending[0].dimensions, Some((2, 2)));
+
+    drop(service);
+    let service = WorkspaceService::open(database).await.unwrap();
+    assert_eq!(
+        service.attachment_draft(task.id).await.unwrap().pending,
+        draft.pending
+    );
+
+    let preview = service
+        .attachment_preview(task.id, draft.pending[0].id.clone())
+        .await
+        .unwrap();
+    assert_eq!(preview.bytes, webp);
+    assert_eq!(preview.info.kind, AttachmentKind::Webp);
+
+    let png = intake::webp_to_png(&preview.bytes).unwrap();
+    assert!(png.starts_with(b"\x89PNG\r\n\x1a\n"));
+    assert!(png.len() <= MAX_ATTACHMENT_BATCH_BYTES);
+    let decoded = image::load_from_memory_with_format(&png, image::ImageFormat::Png).unwrap();
+    assert_eq!((decoded.width(), decoded.height()), (2, 2));
+
+    let prompt = service
+        .attached_prompt(task.id, "Inspect this image".into(), draft.revision)
+        .await
+        .unwrap();
+    assert!(matches!(
+        &prompt.parts[2],
+        PromptPart::MediaImage(image)
+            if image.mime_type == "image/png"
+                && image.base64 == intake::base64(&png)
+                && image.bounded()
+                && image.source == synara_core::ImageSource::Uploaded
+    ));
+    assert!(intake::bounded_png(vec![0; MAX_ATTACHMENT_BATCH_BYTES + 1]).is_err());
+}
+
+#[test]
+fn animated_webp_is_rejected_before_preview_or_prompt_projection() {
+    let still = webp_2x2();
+    let animated = animated_webp_from_still(&still);
+    let error = intake::inspect("moving.webp".into(), &animated).unwrap_err();
+    assert!(error.to_string().contains("Animated WebP is unsupported"));
+}
+
+#[test]
+fn projected_image_bytes_keep_the_combined_prompt_media_bound() {
+    assert_eq!(
+        bounded_projected_media(0, MAX_ATTACHMENT_BATCH_BYTES).unwrap(),
+        MAX_ATTACHMENT_BATCH_BYTES
+    );
+    assert!(bounded_projected_media(MAX_ATTACHMENT_BATCH_BYTES, 1).is_err());
+    assert!(bounded_projected_media(usize::MAX, 1).is_err());
 }
 
 #[tokio::test]

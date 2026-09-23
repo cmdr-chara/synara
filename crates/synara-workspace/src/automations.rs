@@ -3,10 +3,25 @@
 //! each process session. Claims and owned conversation creation are atomic.
 mod scheduler;
 use crate::{WorkspaceError, WorkspaceResult, WorkspaceService, now_ms};
+use jiff::{
+    Timestamp,
+    tz::{Offset, TimeZone},
+};
 pub use scheduler::AutomationScheduler;
 use serde::{Deserialize, Serialize};
 use synara_core::{ProjectId, TaskId};
 pub use uuid::Uuid as AutomationId;
+
+/// Preserve the native runner's former hard-coded 15-minute deadline for
+/// existing ledgers and newly created definitions.
+pub const DEFAULT_AUTOMATION_MAX_RUNTIME_SECONDS: u32 = 15 * 60;
+/// Keep execution bounded even though upstream contracts permit an unlimited
+/// (`null`) max runtime.
+pub const MAX_AUTOMATION_MAX_RUNTIME_SECONDS: u32 = 60 * 60;
+
+fn default_automation_max_runtime_seconds() -> u32 {
+    DEFAULT_AUTOMATION_MAX_RUNTIME_SECONDS
+}
 
 #[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 #[serde(tag = "kind", rename_all = "snake_case")]
@@ -15,6 +30,7 @@ pub enum AutomationSchedule {
     Daily { hour: u8, minute: u8 },
     Weekdays { hour: u8, minute: u8 },
     Weekly { day: u8, hour: u8, minute: u8 },
+    Cron { expression: String },
 }
 impl AutomationSchedule {
     pub fn parse(value: &str) -> WorkspaceResult<Self> {
@@ -42,9 +58,13 @@ impl AutomationSchedule {
                 as u8;
             let (hour, minute) = parse_time(time)?;
             Self::Weekly { day, hour, minute }
+        } else if let Some(expression) = value.strip_prefix("cron ") {
+            Self::Cron {
+                expression: expression.trim().to_owned(),
+            }
         } else {
             return Err(invalid(
-                "Use 'every 60m', 'daily 09:00', 'weekdays 09:00', or 'weekly mon 09:00'.",
+                "Use 'every 60m', 'daily 09:00', 'weekdays 09:00', 'weekly mon 09:00', or 'cron 0 9 * * *'.",
             ));
         };
         result.validate()?;
@@ -59,6 +79,7 @@ impl AutomationSchedule {
                 "weekly {} {hour:02}:{minute:02}",
                 ["sun", "mon", "tue", "wed", "thu", "fri", "sat"][usize::from(*day)]
             ),
+            Self::Cron { expression } => format!("cron {expression}"),
         }
     }
     pub fn validate(&self) -> WorkspaceResult<()> {
@@ -76,7 +97,13 @@ impl AutomationSchedule {
                 day: 0..=6,
                 hour: 0..=23,
                 minute: 0..=59,
-            } => Ok(()),
+            }
+            | Self::Cron { .. } => {
+                if let Self::Cron { expression } = self {
+                    parse_cron_expression(expression)?;
+                }
+                Ok(())
+            }
             _ => Err(invalid("Schedule is outside supported limits.")),
         }
     }
@@ -85,7 +112,7 @@ impl AutomationSchedule {
         if !(0..=253_402_214_400_000_i64).contains(&now) {
             return Err(invalid("Clock is outside supported range."));
         }
-        let offset = timezone_offset(timezone)? as i64 * 60_000;
+        let timezone = parse_timezone(timezone)?;
         match self {
             Self::Interval { minutes } => now
                 .checked_add(i64::from(*minutes) * 60_000)
@@ -93,28 +120,87 @@ impl AutomationSchedule {
             Self::Daily { hour, minute }
             | Self::Weekdays { hour, minute }
             | Self::Weekly { hour, minute, .. } => {
-                let local = now + offset;
-                let local_day = local.div_euclid(86_400_000);
-                for days_ahead in 0..=7 {
-                    let day = local_day + days_ahead;
-                    // 1970-01-01 was Thursday; Sunday is 0.
-                    let weekday = (day + 4).rem_euclid(7) as u8;
+                let hour = i8::try_from(*hour).map_err(|_| invalid("Invalid schedule hour."))?;
+                let minute =
+                    i8::try_from(*minute).map_err(|_| invalid("Invalid schedule minute."))?;
+                let now = Timestamp::from_millisecond(now)
+                    .map_err(|_| invalid("Clock is outside supported range."))?;
+                let mut date = timezone.to_datetime(now).date();
+                for _ in 0..=370 {
+                    let weekday = date.weekday().to_sunday_zero_offset() as u8;
                     if matches!(self, Self::Weekdays { .. }) && (weekday == 0 || weekday == 6) {
+                        date = date
+                            .tomorrow()
+                            .map_err(|_| invalid("No future schedule slot found."))?;
                         continue;
                     }
                     if let Self::Weekly { day: target, .. } = self
                         && weekday != *target
                     {
+                        date = date
+                            .tomorrow()
+                            .map_err(|_| invalid("No future schedule slot found."))?;
                         continue;
                     }
-                    let candidate = day * 86_400_000
-                        + (i64::from(*hour) * 60 + i64::from(*minute)) * 60_000
-                        - offset;
-                    if candidate > now {
-                        return Ok(candidate);
+                    let wall_time = date.at(hour, minute, 0, 0);
+                    // Compatible chooses the first occurrence during a fall-back fold.
+                    // In a spring-forward gap it maps to a different wall time; skipping
+                    // that date avoids silently shifting the requested local schedule.
+                    let candidate = timezone
+                        .to_ambiguous_timestamp(wall_time)
+                        .compatible()
+                        .map_err(|_| invalid("No future schedule slot found."))?;
+                    if timezone.to_datetime(candidate) == wall_time
+                        && candidate.as_millisecond() > now.as_millisecond()
+                    {
+                        return Ok(candidate.as_millisecond());
                     }
+                    date = date
+                        .tomorrow()
+                        .map_err(|_| invalid("No future schedule slot found."))?;
                 }
                 Err(invalid("No future schedule slot found."))
+            }
+            Self::Cron { expression } => {
+                let cron = parse_cron_expression(expression)?;
+                let now = Timestamp::from_millisecond(now)
+                    .map_err(|_| invalid("Clock is outside supported range."))?;
+                let mut date = timezone.to_datetime(now).date();
+                for day_offset in 0..=MAX_CRON_SEARCH_DAYS {
+                    if cron.date_matches(date) {
+                        for hour in cron.hour.selected_values() {
+                            for minute in cron.minute.selected_values() {
+                                let wall_time = date.at(
+                                    i8::try_from(hour)
+                                        .map_err(|_| invalid("Invalid cron hour."))?,
+                                    i8::try_from(minute)
+                                        .map_err(|_| invalid("Invalid cron minute."))?,
+                                    0,
+                                    0,
+                                );
+                                // Compatible selects the earlier timestamp in a fold. A
+                                // gap maps to a different wall time, so that occurrence is
+                                // skipped. Comparing against UTC `now` also prevents the
+                                // later half of a folded minute from being claimed twice.
+                                let candidate = timezone
+                                    .to_ambiguous_timestamp(wall_time)
+                                    .compatible()
+                                    .map_err(|_| invalid("No future schedule slot found."))?;
+                                if timezone.to_datetime(candidate) == wall_time
+                                    && candidate.as_millisecond() > now.as_millisecond()
+                                {
+                                    return Ok(candidate.as_millisecond());
+                                }
+                            }
+                        }
+                    }
+                    if day_offset < MAX_CRON_SEARCH_DAYS {
+                        date = date
+                            .tomorrow()
+                            .map_err(|_| invalid("No future schedule slot found."))?;
+                    }
+                }
+                Err(invalid("No future cron slot found within eight years."))
             }
         }
     }
@@ -144,7 +230,166 @@ fn parse_time(value: &str) -> WorkspaceResult<(u8, u8)> {
         minute.parse().map_err(|_| invalid("Invalid minute."))?,
     ))
 }
-/// Fixed offsets are explicit. IANA/DST zones are rejected, never approximated.
+
+const MAX_CRON_EXPRESSION_LENGTH: usize = 120;
+const MAX_CRON_SEARCH_DAYS: u32 = 366 * 8;
+
+#[derive(Clone, Debug)]
+struct CronField {
+    min: usize,
+    values: Vec<bool>,
+    is_wildcard: bool,
+}
+impl CronField {
+    fn contains(&self, value: usize) -> bool {
+        value
+            .checked_sub(self.min)
+            .and_then(|index| self.values.get(index))
+            .copied()
+            .unwrap_or(false)
+    }
+    fn selected_values(&self) -> impl Iterator<Item = usize> + '_ {
+        self.values
+            .iter()
+            .enumerate()
+            .filter_map(|(index, selected)| selected.then_some(index + self.min))
+    }
+}
+
+#[derive(Clone, Debug)]
+struct CronExpression {
+    minute: CronField,
+    hour: CronField,
+    day_of_month: CronField,
+    month: CronField,
+    day_of_week: CronField,
+}
+impl CronExpression {
+    fn date_matches(&self, date: jiff::civil::Date) -> bool {
+        let day_of_month_matches = self.day_of_month.contains(date.day() as usize);
+        let weekday = date.weekday().to_sunday_zero_offset() as usize;
+        let day_of_week_matches = self.day_of_week.contains(weekday);
+        let day_matches = if self.day_of_month.is_wildcard || self.day_of_week.is_wildcard {
+            day_of_month_matches && day_of_week_matches
+        } else {
+            day_of_month_matches || day_of_week_matches
+        };
+        self.month.contains(date.month() as usize) && day_matches
+    }
+}
+
+fn parse_cron_expression(expression: &str) -> WorkspaceResult<CronExpression> {
+    if expression.is_empty() || expression.len() > MAX_CRON_EXPRESSION_LENGTH {
+        return Err(invalid("Cron expression must be at most 120 bytes."));
+    }
+    let fields: Vec<_> = expression.split_whitespace().collect();
+    if fields.len() != 5 {
+        return Err(invalid(
+            "Cron schedules must use five fields: minute hour day-of-month month day-of-week.",
+        ));
+    }
+    Ok(CronExpression {
+        minute: parse_cron_field(fields[0], 0, 59, "minute", false)?,
+        hour: parse_cron_field(fields[1], 0, 23, "hour", false)?,
+        day_of_month: parse_cron_field(fields[2], 1, 31, "day-of-month", false)?,
+        month: parse_cron_field(fields[3], 1, 12, "month", false)?,
+        day_of_week: parse_cron_field(fields[4], 0, 7, "day-of-week", true)?,
+    })
+}
+
+fn parse_cron_field(
+    raw: &str,
+    min: usize,
+    max: usize,
+    name: &str,
+    day_of_week: bool,
+) -> WorkspaceResult<CronField> {
+    let mut values = vec![false; max - min + 1];
+    let mut is_wildcard = false;
+    for token in raw.split(',') {
+        let token = token.trim();
+        if token.is_empty() {
+            return Err(invalid(format!("Invalid cron {name}: empty token.")));
+        }
+        let mut step_parts = token.split('/');
+        let range_part = step_parts.next().unwrap_or_default();
+        let step = match step_parts.next() {
+            Some(raw_step) => {
+                let parsed = parse_cron_number(raw_step)
+                    .filter(|step| *step > 0)
+                    .ok_or_else(|| invalid(format!("Invalid cron {name}: bad step.")))?;
+                if step_parts.next().is_some() {
+                    return Err(invalid(format!("Invalid cron {name}: bad step.")));
+                }
+                parsed
+            }
+            None => 1,
+        };
+        if range_part == "*" && !token.contains('/') {
+            is_wildcard = true;
+        }
+        let mut range_parts = range_part.split('-');
+        let start_raw = range_parts.next().unwrap_or_default();
+        let end_raw = range_parts.next().unwrap_or(start_raw);
+        if range_parts.next().is_some() {
+            return Err(invalid(format!("Invalid cron {name}: out of range.")));
+        }
+        let (start, end) = if range_part == "*" {
+            (min, max)
+        } else {
+            (
+                parse_cron_value(start_raw, day_of_week)
+                    .ok_or_else(|| invalid(format!("Invalid cron {name}: out of range.")))?,
+                parse_cron_value(end_raw, day_of_week)
+                    .ok_or_else(|| invalid(format!("Invalid cron {name}: out of range.")))?,
+            )
+        };
+        if start < min || start > max || end < min || end > max || start > end {
+            return Err(invalid(format!("Invalid cron {name}: out of range.")));
+        }
+        let mut value = start;
+        loop {
+            let normalized = if day_of_week && value == 7 { 0 } else { value };
+            values[normalized - min] = true;
+            let Some(next) = value.checked_add(step) else {
+                break;
+            };
+            if next > end {
+                break;
+            }
+            value = next;
+        }
+    }
+    Ok(CronField {
+        min,
+        values,
+        is_wildcard,
+    })
+}
+
+fn parse_cron_value(raw: &str, day_of_week: bool) -> Option<usize> {
+    if day_of_week {
+        match raw.to_ascii_lowercase().as_str() {
+            "sun" => return Some(0),
+            "mon" => return Some(1),
+            "tue" => return Some(2),
+            "wed" => return Some(3),
+            "thu" => return Some(4),
+            "fri" => return Some(5),
+            "sat" => return Some(6),
+            _ => {}
+        }
+    }
+    parse_cron_number(raw)
+}
+
+fn parse_cron_number(raw: &str) -> Option<usize> {
+    (!raw.is_empty() && raw.bytes().all(|byte| byte.is_ascii_digit()))
+        .then(|| raw.parse().ok())
+        .flatten()
+}
+/// Parse a fixed offset. Named zones are handled by `parse_timezone` so DST
+/// rules are applied to each local calendar date instead of approximated.
 pub fn timezone_offset(value: &str) -> WorkspaceResult<i32> {
     if value == "UTC" {
         return Ok(0);
@@ -154,7 +399,7 @@ pub fn timezone_offset(value: &str) -> WorkspaceResult<i32> {
         || value.as_bytes()[3] != b':'
     {
         return Err(invalid(
-            "Timezone must be UTC or a fixed offset such as +02:00. IANA/DST zones are not supported yet.",
+            "Timezone is not a fixed offset. Use UTC, an offset such as +02:00, or an IANA zone such as Europe/Rome.",
         ));
     }
     let hours: i32 = value
@@ -169,6 +414,38 @@ pub fn timezone_offset(value: &str) -> WorkspaceResult<i32> {
         return Err(invalid("Invalid timezone offset."));
     }
     Ok((hours * 60 + minutes) * if value.starts_with('-') { -1 } else { 1 })
+}
+
+fn parse_timezone(value: &str) -> WorkspaceResult<TimeZone> {
+    if value == "UTC" {
+        return Ok(TimeZone::UTC);
+    }
+    if let Ok(minutes) = timezone_offset(value) {
+        let offset =
+            Offset::from_seconds(minutes * 60).map_err(|_| invalid("Invalid timezone offset."))?;
+        return Ok(TimeZone::fixed(offset));
+    }
+
+    // Only accept a bounded IANA identifier, never a path or POSIX TZ rule.
+    // Segment checks also reject traversal and empty path components before
+    // handing the identifier to the timezone database.
+    let safe_identifier = !value.is_empty()
+        && value.len() <= 128
+        && value.is_ascii()
+        && !value.starts_with('/')
+        && !value.ends_with('/')
+        && value.split('/').all(|segment| {
+            !segment.is_empty()
+                && segment
+                    .bytes()
+                    .all(|byte| byte.is_ascii_alphanumeric() || matches!(byte, b'_' | b'+' | b'-'))
+        });
+    if !safe_identifier {
+        return Err(invalid(
+            "Use UTC, a fixed offset, or a valid IANA timezone name.",
+        ));
+    }
+    TimeZone::get(value).map_err(|_| invalid("Unknown IANA timezone name."))
 }
 #[derive(Clone, Copy, Debug, Serialize, Deserialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -196,6 +473,8 @@ pub struct AutomationDefinition {
     pub stop_after_consecutive_failures: Option<u32>,
     #[serde(default)]
     pub failure_streak: u32,
+    #[serde(default = "default_automation_max_runtime_seconds")]
+    pub max_runtime_seconds: u32,
 }
 impl AutomationDefinition {
     pub fn validate(&self) -> WorkspaceResult<()> {
@@ -211,13 +490,14 @@ impl AutomationDefinition {
             || !(0..=253_402_300_799_000_i64).contains(&self.next_run_ms)
             || self.max_runs == Some(0)
             || self.stop_after_consecutive_failures == Some(0)
+            || !(1..=MAX_AUTOMATION_MAX_RUNTIME_SECONDS).contains(&self.max_runtime_seconds)
         {
             return Err(invalid(
                 "Automation needs a title, instructions (up to 16 KiB), explicit agent and project.",
             ));
         }
         self.schedule.validate()?;
-        timezone_offset(&self.timezone)?;
+        parse_timezone(&self.timezone)?;
         Ok(())
     }
 }
@@ -284,7 +564,7 @@ impl AutomationLedger {
         Ok(())
     }
 }
-pub(crate) fn invalid(message: &str) -> WorkspaceError {
+pub(crate) fn invalid(message: impl Into<String>) -> WorkspaceError {
     WorkspaceError::Invalid(message.into())
 }
 impl WorkspaceService {

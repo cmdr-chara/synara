@@ -450,7 +450,10 @@ impl WorkspaceFs {
                     continue;
                 }
                 if entry.directory {
-                    pending.push(entry.relative_path);
+                    if skip_search_directory(&entry.name) {
+                        continue;
+                    }
+                    pending.push(entry.relative_path.clone());
                     continue;
                 }
                 let snapshot = match self.read(&entry.relative_path) {
@@ -480,6 +483,85 @@ impl WorkspaceFs {
                 .then(a.column.cmp(&b.column))
         });
         Ok(matches)
+    }
+
+    /// Search file names under the contained workspace root without opening
+    /// file contents or following symlinks. Generated directories are skipped
+    /// and matches on a file's own name outrank matches in its parent path.
+    /// The traversal budget is independent of the result limit.
+    pub fn search_paths(
+        &self,
+        query: &str,
+        max_matches: usize,
+    ) -> Result<Vec<PathBuf>, RuntimeError> {
+        Ok(self
+            .search_name_entries(query, max_matches, false)?
+            .into_iter()
+            .map(|entry| entry.relative_path)
+            .collect())
+    }
+
+    /// Search file and directory names beneath the contained workspace root.
+    /// Generated directories and symlinks are excluded from results and traversal.
+    /// File names retain the same fuzzy ranking as `search_paths`.
+    pub fn search_entries(
+        &self,
+        query: &str,
+        max_matches: usize,
+    ) -> Result<Vec<FileEntry>, RuntimeError> {
+        self.search_name_entries(query, max_matches, true)
+    }
+
+    fn search_name_entries(
+        &self,
+        query: &str,
+        max_matches: usize,
+        include_directories: bool,
+    ) -> Result<Vec<FileEntry>, RuntimeError> {
+        if query.trim().is_empty()
+            || query.len() > 1024
+            || query.chars().any(char::is_control)
+            || max_matches == 0
+            || max_matches > 1000
+        {
+            return Err(RuntimeError::Invalid("invalid file name search".into()));
+        }
+        let query = query.trim().to_lowercase();
+        let mut pending = vec![PathBuf::new()];
+        let mut scanned = 0_usize;
+        let mut matches = Vec::<(u32, PathBuf, FileEntry)>::new();
+        while let Some(directory) = pending.pop() {
+            for entry in self.entries(&directory)? {
+                scanned = scanned.checked_add(1).ok_or(RuntimeError::Limit)?;
+                if scanned > 10_000 {
+                    return Err(RuntimeError::Limit);
+                }
+                if entry.symlink {
+                    continue;
+                }
+                if entry.directory {
+                    if skip_search_directory(&entry.name) {
+                        continue;
+                    }
+                    pending.push(entry.relative_path.clone());
+                    if !include_directories {
+                        continue;
+                    }
+                }
+                let name = entry.name.to_lowercase();
+                let path = entry.relative_path.to_string_lossy().to_lowercase();
+                if let Some(score) = file_search_score(&name, &path, &query) {
+                    matches.push((score, entry.relative_path.clone(), entry));
+                }
+            }
+        }
+        matches.sort_by(|a, b| {
+            a.0.cmp(&b.0)
+                .then(a.1.components().count().cmp(&b.1.components().count()))
+                .then(a.1.cmp(&b.1))
+        });
+        matches.truncate(max_matches);
+        Ok(matches.into_iter().map(|(_, _, entry)| entry).collect())
     }
 
     pub fn entries(&self, path: &Path) -> Result<Vec<FileEntry>, RuntimeError> {
@@ -516,6 +598,81 @@ impl WorkspaceFs {
         });
         Ok(entries)
     }
+}
+
+fn skip_search_directory(name: &str) -> bool {
+    matches!(
+        name,
+        ".git"
+            | ".convex"
+            | "node_modules"
+            | ".next"
+            | ".turbo"
+            | "dist"
+            | "build"
+            | "out"
+            | ".cache"
+    )
+}
+
+fn subsequence_penalty(value: &str, query: &str) -> Option<u32> {
+    let mut positions = value.char_indices();
+    let mut first = None;
+    let mut previous = None;
+    let mut gaps = 0_u32;
+    for needle in query.chars() {
+        let (index, _) = positions.find(|(_, candidate)| *candidate == needle)?;
+        let index = u32::try_from(index).ok()?;
+        first.get_or_insert(index);
+        if let Some(previous) = previous {
+            gaps = gaps.saturating_add(index.saturating_sub(previous + 1));
+        }
+        previous = Some(index);
+    }
+    let first = first?;
+    let last = previous?;
+    Some(
+        first
+            .saturating_mul(2)
+            .saturating_add(gaps.saturating_mul(3))
+            .saturating_add(last.saturating_sub(first))
+            .saturating_add(
+                u32::try_from(value.len().saturating_sub(query.len()))
+                    .unwrap_or(u32::MAX)
+                    .min(64),
+            ),
+    )
+}
+
+fn file_search_score(name: &str, path: &str, query: &str) -> Option<u32> {
+    if name == query {
+        return Some(0);
+    }
+    if path == query {
+        return Some(1);
+    }
+    if name.starts_with(query) {
+        return Some(2);
+    }
+    if name.contains(query) {
+        return Some(3);
+    }
+    if let Some(penalty) = subsequence_penalty(name, query) {
+        return Some(100_u32.saturating_add(penalty).min(999));
+    }
+    if path.starts_with(query) {
+        return Some(1000);
+    }
+    if path
+        .match_indices(query)
+        .any(|(index, _)| index > 0 && path.as_bytes()[index - 1] == b'/')
+    {
+        return Some(1001);
+    }
+    if path.contains(query) {
+        return Some(1002);
+    }
+    subsequence_penalty(path, query).map(|penalty| 1100_u32.saturating_add(penalty))
 }
 
 pub fn validate_relative(path: &Path) -> Result<(), RuntimeError> {
@@ -646,6 +803,98 @@ mod tests {
         assert_eq!(matches[1].relative_path, Path::new("nested/b.txt"));
         assert_eq!(matches[1].column, 3);
         assert_eq!(fs.search_text(Path::new(""), "needle", 1).unwrap().len(), 1);
+    }
+
+    #[test]
+    fn name_search_is_recursive_ranked_and_keeps_workspace_boundaries() {
+        let root = tempfile::tempdir().unwrap();
+        std::fs::create_dir(root.path().join("nested")).unwrap();
+        std::fs::create_dir(root.path().join(".git")).unwrap();
+        std::fs::write(root.path().join("report.txt"), "one").unwrap();
+        std::fs::write(root.path().join("nested/old-report.txt"), "two").unwrap();
+        std::fs::write(root.path().join(".git/report.txt"), "hidden").unwrap();
+        #[cfg(unix)]
+        std::os::unix::fs::symlink("report.txt", root.path().join("report-link.txt")).unwrap();
+        let fs = WorkspaceFs::open(root.path()).unwrap();
+        assert_eq!(
+            fs.search_paths("report", 10).unwrap(),
+            vec![
+                PathBuf::from("report.txt"),
+                PathBuf::from("nested/old-report.txt")
+            ]
+        );
+        assert_eq!(fs.search_paths("report", 1).unwrap().len(), 1);
+        assert!(fs.search_paths("", 10).is_err());
+    }
+
+    #[test]
+    fn search_ranks_own_name_above_ancestor_and_skips_generated_directories() {
+        let root = tempfile::tempdir().unwrap();
+        std::fs::create_dir_all(root.path().join("src/node_modules")).unwrap();
+        std::fs::create_dir_all(root.path().join("fbr")).unwrap();
+        std::fs::write(root.path().join("src/foobar.rs"), "needle").unwrap();
+        std::fs::write(root.path().join("fbr/archive.rs"), "needle").unwrap();
+        std::fs::write(root.path().join("src/node_modules/fbr.rs"), "needle").unwrap();
+        let fs = WorkspaceFs::open(root.path()).unwrap();
+
+        assert_eq!(
+            fs.search_paths("fbr", 10).unwrap(),
+            vec![
+                PathBuf::from("src/foobar.rs"),
+                PathBuf::from("fbr/archive.rs")
+            ]
+        );
+        assert_eq!(
+            fs.search_text(Path::new(""), "needle", 10)
+                .unwrap()
+                .into_iter()
+                .map(|matched| matched.relative_path)
+                .collect::<Vec<_>>(),
+            vec![
+                PathBuf::from("fbr/archive.rs"),
+                PathBuf::from("src/foobar.rs")
+            ]
+        );
+    }
+
+    #[test]
+    fn typed_name_search_returns_directories_and_files_but_not_generated_or_symlink_entries() {
+        let root = tempfile::tempdir().unwrap();
+        std::fs::create_dir(root.path().join("target")).unwrap();
+        std::fs::write(root.path().join("target.rs"), "compatibility").unwrap();
+        std::fs::create_dir_all(root.path().join("src/nested")).unwrap();
+        std::fs::create_dir_all(root.path().join("src/node_modules/nested")).unwrap();
+        std::fs::create_dir_all(root.path().join("nested-folder")).unwrap();
+        std::fs::write(root.path().join("src/nested/report.txt"), "visible").unwrap();
+        std::fs::write(
+            root.path().join("src/node_modules/nested/hidden.txt"),
+            "generated",
+        )
+        .unwrap();
+        #[cfg(unix)]
+        std::os::unix::fs::symlink("src/nested", root.path().join("nested-link")).unwrap();
+
+        let fs = WorkspaceFs::open(root.path()).unwrap();
+        let matches = fs.search_entries("nested", 20).unwrap();
+        let kinds: Vec<_> = matches
+            .iter()
+            .map(|entry| (entry.relative_path.clone(), entry.directory, entry.symlink))
+            .collect();
+        assert!(kinds.contains(&(PathBuf::from("src/nested"), true, false)));
+        assert!(kinds.contains(&(PathBuf::from("nested-folder"), true, false)));
+        assert!(kinds.contains(&(PathBuf::from("src/nested/report.txt"), false, false)));
+        assert!(
+            !kinds
+                .iter()
+                .any(|(path, _, _)| path.starts_with("src/node_modules"))
+        );
+        assert!(!kinds.iter().any(|(_, _, symlink)| *symlink));
+        // The legacy path-only API keeps its file result budget even when a
+        // higher-ranked directory with the same name is now also searchable.
+        assert_eq!(
+            fs.search_paths("target", 1).unwrap(),
+            vec![PathBuf::from("target.rs")]
+        );
     }
 
     #[test]

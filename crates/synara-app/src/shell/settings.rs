@@ -83,6 +83,8 @@ pub(super) struct ProfileActivity {
     prompts: usize,
     threads: usize,
     tokens: Option<u64>,
+    /// One latest persisted model selection per local task, not per-turn usage.
+    model_selections: BTreeMap<(String, Option<profile_activity::SessionModel>), usize>,
     days: BTreeMap<i64, usize>,
     hours: [usize; 24],
     error: Option<String>,
@@ -219,6 +221,22 @@ fn empty(title: &'static str, detail: &'static str) -> gpui::Div {
             .child(detail),
     )
 }
+fn ordered_profiles<'a>(
+    profiles: &'a [AgentProfile],
+    preferred: &[String],
+) -> Vec<&'a AgentProfile> {
+    let mut ordered: Vec<_> = profiles.iter().enumerate().collect();
+    ordered.sort_by_key(|(registry_index, profile)| {
+        (
+            preferred
+                .iter()
+                .position(|id| id == &profile.id)
+                .unwrap_or(usize::MAX),
+            *registry_index,
+        )
+    });
+    ordered.into_iter().map(|(_, profile)| profile).collect()
+}
 impl Shell {
     pub(super) fn open_settings_section(&mut self, section: Section, cx: &mut Context<Self>) {
         self.settings.section = section;
@@ -283,6 +301,11 @@ impl Shell {
             let result = async {
                 for task in workspace.catalog().await?.tasks {
                     let thread = workspace.thread(task.thread_id).await?;
+                    profile_activity::record_model_selection(
+                        &mut activity,
+                        &task.agent_id,
+                        &thread.configuration,
+                    );
                     if !thread.turns.is_empty() {
                         activity.threads += 1;
                     }
@@ -945,49 +968,216 @@ impl Shell {
             .collect();
         let activity = self.settings.activity.as_ref();
         let today = chrono::Utc::now().timestamp_millis().div_euclid(86_400_000);
-        div().child(div().pt(px(72.)).pb_5().flex().flex_col().items_center().gap_3()
-            .child(div().size(px(64.)).rounded_full().bg(rgb(palette().focus)).text_color(rgb(palette().canvas)).text_size(px(20.)).flex().items_center().justify_center().child(if initials.is_empty() { "SY".into() } else { initials }))
-            .child(div().text_size(px(24.)).font_weight(gpui::FontWeight::SEMIBOLD).child(if profile.name.is_empty() { "Your profile".into() } else { profile.name.clone() }))
-            .child(div().text_color(rgb(palette().muted)).child(if profile.username.is_empty() { "Synara".into() } else { format!("@{} · Synara", profile.username) })))
-            .child(card().flex_row().children([
-                ("Reported tokens", activity.and_then(|a| a.tokens).map_or("—".into(), |n| n.to_string())),
-                ("Peak day · prompts", activity.map_or("—".into(), |a| a.days.values().max().copied().unwrap_or(0).to_string())),
-                ("Total prompts", activity.map_or("—".into(), |a| a.prompts.to_string())),
-                ("Active days", activity.map_or("—".into(), |a| a.days.len().to_string())),
-                ("Threads", activity.map_or("—".into(), |a| a.threads.to_string())),
-            ].into_iter().map(|(label, value)| div().flex_1().p_3().border_r_1().border_color(rgb(palette().border)).flex().flex_col().items_center().gap_2()
-                .child(value).child(div().text_size(px(12.)).text_color(rgb(palette().muted)).child(label)))))
+        div()
+            .child(
+                div()
+                    .pt(px(72.))
+                    .pb_5()
+                    .flex()
+                    .flex_col()
+                    .items_center()
+                    .gap_3()
+                    .child(
+                        div()
+                            .size(px(64.))
+                            .rounded_full()
+                            .bg(rgb(palette().focus))
+                            .text_color(rgb(palette().canvas))
+                            .text_size(px(20.))
+                            .flex()
+                            .items_center()
+                            .justify_center()
+                            .child(if initials.is_empty() {
+                                "SY".into()
+                            } else {
+                                initials
+                            }),
+                    )
+                    .child(
+                        div()
+                            .text_size(px(24.))
+                            .font_weight(gpui::FontWeight::SEMIBOLD)
+                            .child(if profile.name.is_empty() {
+                                "Your profile".into()
+                            } else {
+                                profile.name.clone()
+                            }),
+                    )
+                    .child(div().text_color(rgb(palette().muted)).child(
+                        if profile.username.is_empty() {
+                            "Synara".into()
+                        } else {
+                            format!("@{} · Synara", profile.username)
+                        },
+                    )),
+            )
+            .child(
+                card().flex_row().children(
+                    [
+                        (
+                            "Reported tokens",
+                            activity
+                                .and_then(|a| a.tokens)
+                                .map_or("—".into(), |n| n.to_string()),
+                        ),
+                        (
+                            "Peak day · prompts",
+                            activity.map_or("—".into(), |a| {
+                                a.days.values().max().copied().unwrap_or(0).to_string()
+                            }),
+                        ),
+                        (
+                            "Total prompts",
+                            activity.map_or("—".into(), |a| a.prompts.to_string()),
+                        ),
+                        (
+                            "Active days",
+                            activity.map_or("—".into(), |a| a.days.len().to_string()),
+                        ),
+                        (
+                            "Threads",
+                            activity.map_or("—".into(), |a| a.threads.to_string()),
+                        ),
+                    ]
+                    .into_iter()
+                    .map(|(label, value)| {
+                        div()
+                            .flex_1()
+                            .p_3()
+                            .border_r_1()
+                            .border_color(rgb(palette().border))
+                            .flex()
+                            .flex_col()
+                            .items_center()
+                            .gap_2()
+                            .child(value)
+                            .child(
+                                div()
+                                    .text_size(px(12.))
+                                    .text_color(rgb(palette().muted))
+                                    .child(label),
+                            )
+                    }),
+                ),
+            )
             .child(heading("Activity"))
-            .children(activity.map(|activity| div().w_full().flex().gap(px(3.)).children((0..52).map(|week| {
-                div().flex_1().flex().flex_col().gap(px(3.)).children((0..7).map(|day| {
-                    let timestamp = today - 363 + week * 7 + day;
-                    let count = activity.days.get(&timestamp).copied().unwrap_or(0);
-                    div().w_full().h(px(12.)).rounded(px(4.)).bg(rgb(if count > 0 { palette().focus } else { palette().border }))
-                }))
-            }))))
-            .child(div().mt_2().text_size(px(11.)).text_color(rgb(palette().muted)).child("Local activity · last 52 weeks, UTC. Reported tokens sum the latest available totals from each chat."))
-            .children(activity.and_then(|activity| activity.error.as_ref()).map(|error| div().mt_2().text_color(rgb(palette().error)).child(format!("Activity could not be fully loaded: {error}"))))
+            .children(activity.map(|activity| profile_activity::turn_heatmap(activity, today)))
+            .children(
+                (activity.is_none() && self.settings.activity_loading).then(|| {
+                    div()
+                        .mt_2()
+                        .text_size(px(11.))
+                        .text_color(rgb(palette().muted))
+                        .child("Loading local workspace turn activity…")
+                }),
+            )
+            .children(
+                activity
+                    .and_then(|activity| activity.error.as_ref())
+                    .map(|error| {
+                        div()
+                            .mt_2()
+                            .text_color(rgb(palette().error))
+                            .child(format!("Activity could not be fully loaded: {error}"))
+                    }),
+            )
             .child(heading("Active hours"))
-            .child(profile_activity::active_hours(activity, self.settings.activity_loading))
+            .child(profile_activity::active_hours(
+                activity,
+                self.settings.activity_loading,
+            ))
+            .child(heading("Saved model selections"))
+            .child(profile_activity::saved_model_selections(
+                activity,
+                &self.profiles,
+                self.settings.activity_loading,
+            ))
             .child(heading("Edit profile"))
-            .child(card().child(row("Display name", "", div().w(px(224.)).relative().child(ui::layout_probe("profile-name")).child(self.settings.name.clone())))
-                .child(row("Username", "", div().w(px(224.)).relative().child(ui::layout_probe("profile-username")).child(self.settings.username.clone())))
-                .child(row("", "Your profile is saved on this device.", ui::button("save-profile", "Save profile", false).relative().child(ui::layout_probe("save-profile"))
-                    .on_click(cx.listener(|this, _, _, cx| {
-                        let name = this.settings.name.read(cx).text().trim().to_owned();
-                        let username = this.settings.username.read(cx).text().trim().trim_start_matches('@').to_owned();
-                        this.save_setting(|s| s.profile = ProfileSettings { name, username }, cx);
-                    })))))
+            .child(
+                card()
+                    .child(row(
+                        "Display name",
+                        "",
+                        div()
+                            .w(px(224.))
+                            .relative()
+                            .child(ui::layout_probe("profile-name"))
+                            .child(self.settings.name.clone()),
+                    ))
+                    .child(row(
+                        "Username",
+                        "",
+                        div()
+                            .w(px(224.))
+                            .relative()
+                            .child(ui::layout_probe("profile-username"))
+                            .child(self.settings.username.clone()),
+                    ))
+                    .child(row(
+                        "",
+                        "Your profile is saved on this device.",
+                        ui::button("save-profile", "Save profile", false)
+                            .relative()
+                            .child(ui::layout_probe("save-profile"))
+                            .on_click(cx.listener(|this, _, _, cx| {
+                                let name = this.settings.name.read(cx).text().trim().to_owned();
+                                let username = this
+                                    .settings
+                                    .username
+                                    .read(cx)
+                                    .text()
+                                    .trim()
+                                    .trim_start_matches('@')
+                                    .to_owned();
+                                this.save_setting(
+                                    |s| s.profile = ProfileSettings { name, username },
+                                    cx,
+                                );
+                            })),
+                    )),
+            )
             .into_any_element()
     }
     fn provider_settings(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
+        let profiles =
+            ordered_profiles(&self.profiles, &self.settings.value.general.provider_order);
+        let visible_order: Vec<_> = profiles.iter().map(|profile| profile.id.clone()).collect();
+        let saved_order = self.settings.value.general.provider_order.clone();
         div()
-            .child(heading("Available agents"))
-            .child(card().children(self.profiles.iter().map(|profile| {
+            .child(heading("Provider order"))
+            .child(div().px_2().mb_2().text_size(px(12.)).text_color(rgb(palette().muted)).child("This order is used by the composer agent picker. Providers without a saved position follow the registry order."))
+            .child(card().children(profiles.iter().enumerate().map(|(index, profile)| {
+                let up_order = visible_order.clone();
+                let down_order = visible_order.clone();
+                let disabled = self.settings.saving;
+                let up_saved = saved_order.clone();
+                let down_saved = saved_order.clone();
                 row(
                     profile.name.clone(),
                     profile.command.display().to_string(),
-                    ui::icon(self.agent_glyph(&profile.id)),
+                    div().flex().items_center().gap_1()
+                        .child(ui::button(("provider-order-up", index), "↑", index == 0 || disabled)
+                            .aria_label(format!("Move {} up", profile.name))
+                            .on_click(cx.listener(move |this, _, _, cx| {
+                                if index == 0 || this.settings.saving { return; }
+                                let mut order = up_order.clone();
+                                order.swap(index - 1, index);
+                                let live: std::collections::HashSet<_> = order.iter().cloned().collect();
+                                let unknown: Vec<_> = up_saved.iter().filter(|id| !live.contains(*id)).cloned().collect();
+                                order.extend(unknown);
+                                this.save_setting(move |settings| settings.general.provider_order = order, cx);
+                            })))
+                        .child(ui::button(("provider-order-down", index), "↓", index + 1 == visible_order.len() || disabled)
+                            .aria_label(format!("Move {} down", profile.name))
+                            .on_click(cx.listener(move |this, _, _, cx| {
+                                if index + 1 == down_order.len() || this.settings.saving { return; }
+                                let mut order = down_order.clone();
+                                order.swap(index, index + 1);
+                                let live: std::collections::HashSet<_> = order.iter().cloned().collect();
+                                let unknown: Vec<_> = down_saved.iter().filter(|id| !live.contains(*id)).cloned().collect();
+                                order.extend(unknown);
+                                this.save_setting(move |settings| settings.general.provider_order = order, cx);
+                            })))
                 )
             })))
             .children(self.details.as_ref().map(|details| div().mt_3().child(format!("Selected connection: {:?}. Authentication options below are advertised by this agent, not inferred from an account profile.", details.connection.state))))

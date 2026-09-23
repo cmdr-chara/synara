@@ -1,5 +1,6 @@
 use super::*;
 use crate::WorkspaceService;
+use std::sync::Arc;
 async fn setup(
     path: Option<std::path::PathBuf>,
 ) -> (WorkspaceService, AutomationDefinition, tempfile::TempDir) {
@@ -27,6 +28,7 @@ async fn setup(
         max_runs: None,
         stop_after_consecutive_failures: None,
         failure_streak: 0,
+        max_runtime_seconds: DEFAULT_AUTOMATION_MAX_RUNTIME_SECONDS,
     };
     service
         .save_automation(definition.clone(), None)
@@ -36,7 +38,7 @@ async fn setup(
     (service, definition, root)
 }
 #[test]
-fn schedules_handle_fixed_offsets_and_weekdays_and_reject_unimplemented_dst_zones() {
+fn schedules_validate_fixed_offsets_and_iana_zones() {
     let daily = AutomationSchedule::parse("daily 09:00").unwrap();
     assert_eq!(daily.next_after(0, "+02:00").unwrap(), 7 * 60 * 60 * 1000);
     assert_eq!(
@@ -71,6 +73,146 @@ fn schedules_handle_fixed_offsets_and_weekdays_and_reject_unimplemented_dst_zone
     for zone in ["Europe/Rome", "+14:30", "-99:00", "+02:99", "UTCfoo"] {
         assert!(timezone_offset(zone).is_err());
     }
+    assert!(parse_timezone("Europe/Rome").is_ok());
+    for zone in [
+        "Mars/Olympus",
+        "../UTC",
+        "America//New_York",
+        "/etc/localtime",
+    ] {
+        assert!(parse_timezone(zone).is_err());
+    }
+}
+
+fn timestamp_ms(value: &str) -> i64 {
+    chrono::DateTime::parse_from_rfc3339(value)
+        .unwrap()
+        .timestamp_millis()
+}
+
+#[test]
+fn daily_iana_schedule_skips_gaps_and_uses_first_fold_occurrence() {
+    let zone = "America/New_York";
+    let gap = AutomationSchedule::parse("daily 02:30").unwrap();
+    assert_eq!(
+        gap.next_after(timestamp_ms("2026-03-08T05:00:00Z"), zone)
+            .unwrap(),
+        timestamp_ms("2026-03-09T06:30:00Z")
+    );
+
+    let fold = AutomationSchedule::parse("daily 01:30").unwrap();
+    let first = timestamp_ms("2026-11-01T05:30:00Z");
+    assert_eq!(
+        fold.next_after(timestamp_ms("2026-11-01T04:00:00Z"), zone)
+            .unwrap(),
+        first
+    );
+    assert_eq!(
+        fold.next_after(first, zone).unwrap(),
+        timestamp_ms("2026-11-02T06:30:00Z")
+    );
+}
+
+#[test]
+fn cron_uses_upstream_five_field_grammar_and_dom_dow_semantics() {
+    let schedule = AutomationSchedule::parse("cron 5,35 9-17/2 1,15 */2 mon-fri").unwrap();
+    assert_eq!(schedule.label(), "cron 5,35 9-17/2 1,15 */2 mon-fri");
+    assert_eq!(
+        AutomationSchedule::parse("cron 0 9 * * *")
+            .unwrap()
+            .next_after(0, "+02:00")
+            .unwrap(),
+        7 * 60 * 60 * 1000
+    );
+
+    // With both calendar day fields constrained, upstream semantics match either one.
+    // May 4 is Monday, so it matches the weekday even though the DOM is not 1.
+    assert_eq!(
+        AutomationSchedule::parse("cron 0 9 1 * mon")
+            .unwrap()
+            .next_after(timestamp_ms("2026-05-01T10:00:00Z"), "UTC")
+            .unwrap(),
+        timestamp_ms("2026-05-04T09:00:00Z")
+    );
+    assert_eq!(
+        AutomationSchedule::parse("cron 0 9 * * MON-FRI")
+            .unwrap()
+            .next_after(timestamp_ms("2026-05-01T10:00:00Z"), "UTC")
+            .unwrap(),
+        timestamp_ms("2026-05-04T09:00:00Z")
+    );
+    // Numeric weekday 7 aliases Sunday.
+    assert_eq!(
+        AutomationSchedule::parse("cron 0 9 * * 7")
+            .unwrap()
+            .next_after(timestamp_ms("2026-05-04T10:00:00Z"), "UTC")
+            .unwrap(),
+        timestamp_ms("2026-05-10T09:00:00Z")
+    );
+    // Sparse leap-day schedules remain valid across a non-leap year and a
+    // century exception instead of being rejected after a one-year search.
+    assert_eq!(
+        AutomationSchedule::parse("cron 0 9 29 2 *")
+            .unwrap()
+            .next_after(timestamp_ms("2097-03-01T00:00:00Z"), "UTC")
+            .unwrap(),
+        timestamp_ms("2104-02-29T09:00:00Z")
+    );
+
+    for value in [
+        "cron",
+        "cron * * * *",
+        "cron 60 * * * *",
+        "cron * 24 * * *",
+        "cron * * 0 * *",
+        "cron * * * 13 *",
+        "cron * * * * 8",
+        "cron */0 * * * *",
+        "cron 1,,2 * * * *",
+        "cron 5-2 * * * *",
+        "cron 1-2-3 * * * *",
+        "cron * * * * monday",
+    ] {
+        assert!(
+            AutomationSchedule::parse(value).is_err(),
+            "accepted {value}"
+        );
+    }
+    assert!(AutomationSchedule::parse(&format!("cron {} * * * *", "1".repeat(121))).is_err());
+    // Impossible dates are rejected after a bounded calendar search.
+    assert!(
+        AutomationSchedule::parse("cron 0 0 31 2 *")
+            .unwrap()
+            .next_after(timestamp_ms("2026-01-01T00:00:00Z"), "UTC")
+            .is_err()
+    );
+}
+
+#[test]
+fn cron_iana_schedule_skips_gaps_and_does_not_repeat_folded_wall_time() {
+    let zone = "America/New_York";
+    let gap = AutomationSchedule::parse("cron 30 2 * * *").unwrap();
+    assert_eq!(
+        gap.next_after(timestamp_ms("2026-03-08T05:00:00Z"), zone)
+            .unwrap(),
+        timestamp_ms("2026-03-09T06:30:00Z")
+    );
+
+    let fold = AutomationSchedule::parse("cron 30 1 * * *").unwrap();
+    let first = timestamp_ms("2026-11-01T05:30:00Z");
+    let next_day = timestamp_ms("2026-11-02T06:30:00Z");
+    assert_eq!(
+        fold.next_after(timestamp_ms("2026-11-01T04:00:00Z"), zone)
+            .unwrap(),
+        first
+    );
+    // The second 01:30 on Nov 1 is a DST fold duplicate of the claimed slot.
+    assert_eq!(fold.next_after(first, zone).unwrap(), next_day);
+    assert_eq!(
+        fold.next_after(timestamp_ms("2026-11-01T05:45:00Z"), zone)
+            .unwrap(),
+        next_day
+    );
 }
 #[tokio::test]
 async fn saving_pauses_and_conflicting_edits_are_rejected() {
@@ -80,10 +222,15 @@ async fn saving_pauses_and_conflicting_edits_are_rejected() {
     old_fields.remove("max_runs");
     old_fields.remove("stop_after_consecutive_failures");
     old_fields.remove("failure_streak");
+    old_fields.remove("max_runtime_seconds");
     let decoded: AutomationDefinition = serde_json::from_value(legacy).unwrap();
     assert_eq!(decoded.max_runs, None);
     assert_eq!(decoded.stop_after_consecutive_failures, None);
     assert_eq!(decoded.failure_streak, 0);
+    assert_eq!(
+        decoded.max_runtime_seconds,
+        DEFAULT_AUTOMATION_MAX_RUNTIME_SECONDS
+    );
     assert!(!definition.enabled);
     assert_eq!(definition.revision, 1);
     assert!(service.automations().await.unwrap().runs.is_empty());
@@ -96,6 +243,34 @@ async fn saving_pauses_and_conflicting_edits_are_rejected() {
     assert_eq!(
         service.automations().await.unwrap().definitions[0].revision,
         2
+    );
+}
+
+#[tokio::test]
+async fn max_runtime_is_bounded_and_persists_across_reopen() {
+    let db = tempfile::tempdir().unwrap();
+    let path = db.path().join("workspace.sqlite");
+    let (service, mut definition, _root) = setup(Some(path.clone())).await;
+    assert_eq!(
+        definition.max_runtime_seconds,
+        DEFAULT_AUTOMATION_MAX_RUNTIME_SECONDS
+    );
+
+    definition.max_runtime_seconds = 0;
+    assert!(definition.validate().is_err());
+    definition.max_runtime_seconds = MAX_AUTOMATION_MAX_RUNTIME_SECONDS + 1;
+    assert!(definition.validate().is_err());
+    definition.max_runtime_seconds = 37;
+    service
+        .save_automation(definition.clone(), Some(1))
+        .await
+        .unwrap();
+    drop(service);
+
+    let reopened = WorkspaceService::open(path).await.unwrap();
+    assert_eq!(
+        reopened.automations().await.unwrap().definitions[0].max_runtime_seconds,
+        37
     );
 }
 #[tokio::test]
@@ -158,6 +333,65 @@ async fn claims_are_durable_atomic_and_never_replay_after_restart() {
             .finish_automation(run.id, owner, AutomationRunStatus::Succeeded, "late".into())
             .await
             .is_err()
+    );
+}
+
+#[tokio::test]
+async fn a_cron_fold_claim_advances_atomically_and_does_not_replay_after_restart() {
+    let db = tempfile::tempdir().unwrap();
+    let path = db.path().join("workspace.sqlite");
+    let (service, mut definition, _root) = setup(Some(path.clone())).await;
+    definition.schedule = AutomationSchedule::parse("cron 30 1 * * *").unwrap();
+    definition.timezone = "America/New_York".into();
+    service
+        .save_automation(definition.clone(), Some(1))
+        .await
+        .unwrap();
+
+    let id = definition.id;
+    let due = timestamp_ms("2026-11-01T05:30:00Z");
+    service
+        .access(move |store| {
+            store.edit_automations(move |ledger| {
+                let definition = ledger
+                    .definitions
+                    .iter_mut()
+                    .find(|definition| definition.id == id)
+                    .ok_or_else(|| invalid("Test automation missing."))?;
+                definition.enabled = true;
+                definition.next_run_ms = due;
+                Ok(())
+            })
+        })
+        .await
+        .unwrap();
+
+    let owner = AutomationId::new_v4();
+    let run = service
+        .claim_automation(id, owner, true, due)
+        .await
+        .unwrap()
+        .unwrap();
+    assert_eq!(run.scheduled_ms, Some(due));
+    drop(service);
+
+    let reopened = WorkspaceService::open(path).await.unwrap();
+    let ledger = reopened.automations().await.unwrap();
+    assert_eq!(
+        ledger.definitions[0].next_run_ms,
+        timestamp_ms("2026-11-02T06:30:00Z")
+    );
+    assert!(
+        reopened
+            .claim_automation(
+                id,
+                AutomationId::new_v4(),
+                true,
+                timestamp_ms("2026-11-01T06:30:00Z")
+            )
+            .await
+            .unwrap()
+            .is_none()
     );
 }
 #[tokio::test]
@@ -330,6 +564,130 @@ impl synara_agent::AgentBackend for NeverLaunch {
         panic!("No agent may be launched by disarmed, stale or cancelled work")
     }
 }
+
+#[derive(Default)]
+struct BlockingRunEvidence {
+    started: tokio::sync::Notify,
+    cancelled: std::sync::atomic::AtomicBool,
+}
+struct BlockingRunBackend(Arc<BlockingRunEvidence>);
+struct BlockingRunConnection {
+    info: tokio::sync::watch::Sender<synara_agent::ConnectionInfo>,
+    evidence: Arc<BlockingRunEvidence>,
+}
+struct BlockingRunSession {
+    id: String,
+    thread: synara_core::ThreadId,
+    evidence: Arc<BlockingRunEvidence>,
+}
+#[async_trait::async_trait]
+impl synara_agent::AgentBackend for BlockingRunBackend {
+    async fn connect(
+        &self,
+        _: &synara_agent::AgentSpec,
+        _: synara_agent::ConnectionContext,
+    ) -> synara_agent::AgentResult<Arc<dyn synara_agent::AgentConnection>> {
+        let (info, _) = tokio::sync::watch::channel(synara_agent::ConnectionInfo {
+            id: synara_core::ConnectionId::new(),
+            state: synara_core::ConnectionState::Connected,
+            identity: None,
+            capabilities: synara_core::AgentCapabilities::default(),
+            authentication: vec![],
+            host: "Local".into(),
+            error: None,
+        });
+        Ok(Arc::new(BlockingRunConnection {
+            info,
+            evidence: self.0.clone(),
+        }))
+    }
+}
+#[async_trait::async_trait]
+impl synara_agent::AgentConnection for BlockingRunConnection {
+    fn info(&self) -> synara_agent::ConnectionInfo {
+        self.info.borrow().clone()
+    }
+    fn observe(&self) -> tokio::sync::watch::Receiver<synara_agent::ConnectionInfo> {
+        self.info.subscribe()
+    }
+    async fn new_session(
+        &self,
+        options: synara_agent::SessionOptions,
+    ) -> synara_agent::AgentResult<Arc<dyn synara_agent::AgentSession>> {
+        Ok(Arc::new(BlockingRunSession {
+            id: "automation-timeout".into(),
+            thread: options.thread_id,
+            evidence: self.evidence.clone(),
+        }))
+    }
+    async fn disconnect(&self) -> synara_agent::AgentResult<()> {
+        Ok(())
+    }
+}
+#[async_trait::async_trait]
+impl synara_agent::AgentSession for BlockingRunSession {
+    fn id(&self) -> &str {
+        &self.id
+    }
+    fn thread_id(&self) -> synara_core::ThreadId {
+        self.thread
+    }
+    fn configuration(&self) -> synara_core::SessionConfiguration {
+        synara_core::SessionConfiguration::default()
+    }
+    async fn prompt(&self, _: synara_agent::Prompt) -> synara_agent::AgentResult<String> {
+        self.evidence.started.notify_one();
+        std::future::pending().await
+    }
+    async fn cancel(&self) -> synara_agent::AgentResult<()> {
+        self.evidence
+            .cancelled
+            .store(true, std::sync::atomic::Ordering::Release);
+        Ok(())
+    }
+    async fn close(&self) -> synara_agent::AgentResult<()> {
+        Ok(())
+    }
+}
+
+#[tokio::test]
+async fn configured_runtime_timeout_cancels_and_records_a_failure() {
+    let (workspace, mut definition, _root) = setup(None).await;
+    definition.max_runtime_seconds = 1;
+    workspace
+        .save_automation(definition.clone(), Some(1))
+        .await
+        .unwrap();
+    let current = workspace.automations().await.unwrap().definitions.remove(0);
+    let evidence = Arc::new(BlockingRunEvidence::default());
+    let controller = Arc::new(crate::Controller::new(
+        workspace.clone(),
+        Arc::new(BlockingRunBackend(evidence.clone())),
+        Arc::new(synara_agent::DenyInteractions),
+    ));
+    let scheduler = Arc::new(AutomationScheduler::new(controller));
+
+    let future = scheduler.run_now(current.id, current.revision);
+    let executing = tokio::spawn(future);
+    tokio::time::timeout(
+        std::time::Duration::from_secs(5),
+        evidence.started.notified(),
+    )
+    .await
+    .expect("agent prompt should start before the runtime limit");
+    executing.await.unwrap().unwrap();
+
+    assert!(
+        evidence
+            .cancelled
+            .load(std::sync::atomic::Ordering::Acquire)
+    );
+    let ledger = workspace.automations().await.unwrap();
+    assert_eq!(ledger.runs.len(), 1);
+    assert_eq!(ledger.runs[0].status, AutomationRunStatus::Failed);
+    assert!(ledger.runs[0].output.contains("1-second execution limit"));
+}
+
 #[tokio::test]
 async fn stopped_scheduler_and_cancelled_queued_future_never_claim_or_launch() {
     let (workspace, definition, _root) = setup(None).await;

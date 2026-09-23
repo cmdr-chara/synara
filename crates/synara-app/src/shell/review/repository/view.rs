@@ -161,8 +161,12 @@ impl RepositoryPanel {
                         )
                         .text_size(px(12.)),
                     );
-                    // Git does not permit removing its primary or locked worktree.
-                    if i > 0 && !item.locked && item.path != *self.target.root() {
+                    // Preserve the primary, locked and task-assigned worktrees.
+                    if i > 0
+                        && !item.locked
+                        && item.assigned_task.is_none()
+                        && item.path != *self.target.root()
+                    {
                         actions = actions.child(self.action(
                             ("repo-remove-worktree", i),
                             "Remove",
@@ -174,9 +178,14 @@ impl RepositoryPanel {
                         self.row(
                             path,
                             format!(
-                                "{}{}",
+                                "{}{}{}",
                                 item.branch,
-                                if item.locked { " · locked/bare" } else { "" }
+                                if item.locked { " · locked/bare" } else { "" },
+                                item.assigned_task
+                                    .as_ref()
+                                    .map_or(String::new(), |(_, title)| {
+                                        format!(" · assigned to task: {title}")
+                                    })
                             ),
                         )
                         .child(actions)

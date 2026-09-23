@@ -6,6 +6,7 @@ use crate::ui::{
 };
 use gpui::{Bounds, FocusHandle, Pixels, canvas, point};
 use std::{cell::Cell, rc::Rc};
+use synara_workspace::SessionModelPreset;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub(super) enum ControlKind {
@@ -52,7 +53,7 @@ impl ControlKind {
         }
     }
 }
-#[derive(Clone, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 enum ControlAction {
     DebugWorkflow,
     Project(ProjectId),
@@ -118,6 +119,119 @@ fn option_kind(option: &SessionOption) -> ControlKind {
         Some("mode") => ControlKind::Mode,
         _ => ControlKind::Options,
     }
+}
+fn ordered_profiles<'a>(
+    profiles: &'a [AgentProfile],
+    preferred: &[String],
+) -> Vec<&'a AgentProfile> {
+    let mut ordered: Vec<_> = profiles.iter().enumerate().collect();
+    ordered.sort_by_key(|(registry_index, profile)| {
+        (
+            preferred
+                .iter()
+                .position(|id| id == &profile.id)
+                .unwrap_or(usize::MAX),
+            *registry_index,
+        )
+    });
+    ordered.into_iter().map(|(_, profile)| profile).collect()
+}
+fn is_effort_option(option: &SessionOption) -> bool {
+    if !matches!(option.current, ConfigValue::Select { .. }) {
+        return false;
+    }
+    let contains_effort = |text: &str| {
+        text.split(|ch: char| !ch.is_ascii_alphanumeric())
+            .any(|part| part.eq_ignore_ascii_case("effort"))
+    };
+    option.category.as_deref().is_some_and(contains_effort)
+        || contains_effort(&option.id)
+        || contains_effort(&option.name)
+}
+fn current_model_preset(
+    agent: &str,
+    configuration: &SessionConfiguration,
+) -> Option<SessionModelPreset> {
+    let (model_option, model) = session_choices(configuration, ControlKind::Model)
+        .into_iter()
+        .find(|(choice, _)| choice.selected)
+        .and_then(|(_, action)| match action {
+            ControlAction::Model(model) => Some((None, model)),
+            ControlAction::Option(option, ConfigValue::Select { value }) => {
+                Some((Some(option), value))
+            }
+            _ => None,
+        })?;
+    let effort = configuration.options.iter().find_map(|option| {
+        if !is_effort_option(option) {
+            return None;
+        }
+        let ConfigValue::Select { value } = &option.current else {
+            return None;
+        };
+        option
+            .choices
+            .iter()
+            .any(|choice| choice.value == *value)
+            .then(|| (option.id.clone(), value.clone()))
+    });
+    Some(SessionModelPreset {
+        agent: agent.into(),
+        model_option,
+        model,
+        effort_option: effort.as_ref().map(|(option, _)| option.clone()),
+        effort: effort.map(|(_, value)| value),
+    })
+}
+fn model_action_for_preset(preset: &SessionModelPreset) -> ControlAction {
+    match &preset.model_option {
+        Some(option) => ControlAction::Option(
+            option.clone(),
+            ConfigValue::Select {
+                value: preset.model.clone(),
+            },
+        ),
+        None => ControlAction::Model(preset.model.clone()),
+    }
+}
+fn preset_model_action(
+    preset: &SessionModelPreset,
+    agent: &str,
+    configuration: &SessionConfiguration,
+) -> Option<Option<ControlAction>> {
+    if preset.agent != agent || preset.effort_option.is_some() != preset.effort.is_some() {
+        return None;
+    }
+    let model = model_action_for_preset(preset);
+    let model_choice = session_choices(configuration, ControlKind::Model)
+        .into_iter()
+        .find(|(_, candidate)| *candidate == model)?;
+    Some((!model_choice.0.selected).then_some(model))
+}
+fn advertised_effort_action(
+    preset: &SessionModelPreset,
+    configuration: &SessionConfiguration,
+) -> Option<(ControlAction, bool)> {
+    if let (Some(option), Some(effort)) = (&preset.effort_option, &preset.effort) {
+        if !configuration
+            .options
+            .iter()
+            .any(|candidate| candidate.id == *option && is_effort_option(candidate))
+        {
+            return None;
+        }
+        let action = ControlAction::Option(
+            option.clone(),
+            ConfigValue::Select {
+                value: effort.clone(),
+            },
+        );
+        let choice = session_choices(configuration, ControlKind::Options)
+            .into_iter()
+            .find(|(_, candidate)| *candidate == action)?;
+        return Some((action, !choice.0.selected));
+    }
+    None
 }
 fn session_choices(
     configuration: &SessionConfiguration,
@@ -208,7 +322,58 @@ fn session_choices(
     result
 }
 
+fn cycle_model_action(choices: &[(Choice, ControlAction)], forward: bool) -> Option<ControlAction> {
+    let available: Vec<_> = choices
+        .iter()
+        .filter(|(choice, action)| {
+            choice.unavailable.is_none()
+                && matches!(
+                    action,
+                    ControlAction::Model(_) | ControlAction::Option(_, ConfigValue::Select { .. })
+                )
+        })
+        .collect();
+    if available.len() < 2 {
+        return None;
+    }
+    let option = match &available.first()?.1 {
+        ControlAction::Model(_) => None,
+        ControlAction::Option(option, ConfigValue::Select { .. }) => Some(option.as_str()),
+        _ => return None,
+    };
+    if available.iter().any(|(_, action)| match (option, action) {
+        (None, ControlAction::Model(_)) => false,
+        (Some(expected), ControlAction::Option(candidate, ConfigValue::Select { .. })) => {
+            candidate != expected
+        }
+        _ => true,
+    }) {
+        return None;
+    }
+    let current = available.iter().position(|(choice, _)| choice.selected);
+    let next = match (current, forward) {
+        (Some(index), true) => (index + 1) % available.len(),
+        (Some(index), false) => (index + available.len() - 1) % available.len(),
+        (None, true) => 0,
+        (None, false) => available.len() - 1,
+    };
+    Some(available[next].1.clone())
+}
+
 impl Shell {
+    fn cycle_session_model(&mut self, forward: bool, cx: &mut Context<Self>) {
+        if self.controls_blocked() || self.uses_direct_model() {
+            return;
+        }
+        let models = self.control_choices(ControlKind::Model);
+        let Some(action) = cycle_model_action(&models, forward) else {
+            return;
+        };
+        if let Some(task) = self.selected {
+            self.apply_session_control(task, action, cx);
+        }
+    }
+
     fn control_choices(&self, kind: ControlKind) -> Vec<(Choice, ControlAction)> {
         if kind == ControlKind::Access {
             return vec![(
@@ -328,8 +493,9 @@ impl Shell {
         }
         if kind == ControlKind::Agent {
             let models = self.control_choices(ControlKind::Model);
-            let mut choices: Vec<_> = self
-                .profiles
+            let profiles =
+                ordered_profiles(&self.profiles, &self.settings.value.general.provider_order);
+            let mut choices: Vec<_> = profiles
                 .iter()
                 .map(|profile| {
                     (
@@ -426,13 +592,13 @@ impl Shell {
             if kind == ControlKind::Extras {
                 view.add_layout(self.controls.composer_bounds.clone())
             } else if kind == ControlKind::Agent {
-                let current = self
-                    .profiles
+                let profiles =
+                    ordered_profiles(&self.profiles, &self.settings.value.general.provider_order);
+                let current = profiles
                     .iter()
                     .position(|p| task.as_ref().is_some_and(|t| t.agent_id == p.id))
                     .unwrap_or(0);
-                let sources = self
-                    .profiles
+                let sources = profiles
                     .iter()
                     .map(|p| ui::menu::ModelSource {
                         name: p.name.clone(),
@@ -444,10 +610,9 @@ impl Shell {
                     .iter()
                     .map(|action| {
                         let source = match action {
-                            ControlAction::Agent(id) => self
-                                .profiles
+                            ControlAction::Agent(id) => profiles
                                 .iter()
-                                .position(|p| &p.id == id)
+                                .position(|profile| &profile.id == id)
                                 .unwrap_or(current),
                             _ => current,
                         };
@@ -470,13 +635,34 @@ impl Shell {
                         } else {
                             None
                         };
-                        ui::menu::ModelRow { source, favorite }
+                        let preset = task.as_ref().and_then(|task| {
+                            let preset = self
+                                .thread
+                                .as_ref()
+                                .filter(|_| {
+                                    self.details.as_ref().is_some_and(|details| {
+                                        details.connection.state == ConnectionState::Connected
+                                            && details.session_id.is_some()
+                                    })
+                                })
+                                .and_then(|thread| {
+                                    current_model_preset(&task.agent_id, &thread.configuration)
+                                })?;
+                            (action == &model_action_for_preset(&preset)).then_some(preset)
+                        });
+                        ui::menu::ModelRow {
+                            source,
+                            favorite,
+                            preset,
+                        }
                     })
                     .collect();
                 view.with_models(
                     sources,
                     rows,
                     current,
+                    task.as_ref()
+                        .map_or_else(String::new, |task| task.agent_id.clone()),
                     self.controller.workspace.clone(),
                     self.runtime.clone(),
                     cx,
@@ -486,7 +672,7 @@ impl Shell {
             }
         });
         let subscription = cx.subscribe_in(&view, window, |this, _, event, window, cx| {
-            this.control_event(*event, window, cx);
+            this.control_event(event.clone(), window, cx);
         });
         window.focus(&view.read(cx).focus_handle(cx), cx);
         self.controls.open = Some(OpenControl {
@@ -505,14 +691,18 @@ impl Shell {
         cx.notify();
     }
     fn control_event(&mut self, event: ChoiceEvent, window: &mut Window, cx: &mut Context<Self>) {
-        let ChoiceEvent::Selected(index) = event else {
-            self.dismiss_control(window, cx);
-            return;
+        let (selected_index, selected_preset) = match event {
+            ChoiceEvent::Selected(index) => (Some(index), None),
+            ChoiceEvent::PresetSelected(preset) => (None, Some(preset)),
+            ChoiceEvent::Dismissed => {
+                self.dismiss_control(window, cx);
+                return;
+            }
         };
         let Some(open) = self.controls.open.as_ref() else {
             return;
         };
-        let action = open.choices.get(index).cloned();
+        let action = selected_index.and_then(|index| open.choices.get(index).cloned());
         let valid_context = self.selected == open.task
             && self.task().map(|task| &task.agent_id) == open.agent.as_ref()
             && self
@@ -529,7 +719,31 @@ impl Shell {
         let task = open.task;
         let blocked = open.kind != ControlKind::Project && self.controls_blocked();
         self.dismiss_control(window, cx);
-        if !valid_context || blocked || current.is_none() {
+        if !valid_context || blocked {
+            self.error = Some("Session choices changed. Open the selector again.".into());
+            cx.notify();
+            return;
+        }
+        if let Some(preset) = selected_preset {
+            let Some(task) = task else {
+                return;
+            };
+            let model_action = self.thread.as_ref().and_then(|thread| {
+                let agent = self.task()?.agent_id.as_str();
+                preset_model_action(&preset, agent, &thread.configuration)
+            });
+            let Some(model_action) = model_action else {
+                self.error = Some(
+                    "This preset is no longer advertised by the selected agent. No setting was changed."
+                        .into(),
+                );
+                cx.notify();
+                return;
+            };
+            self.apply_model_preset(task, preset, model_action, cx);
+            return;
+        }
+        if current.is_none() {
             self.error = Some("Session choices changed. Open the selector again.".into());
             cx.notify();
             return;
@@ -629,6 +843,60 @@ impl Shell {
                     controller.set_option(task, key, value).await.map(|_| None)
                 }
             };
+            let details = controller.details(task).await.ok().flatten();
+            Ok(Update::ControlFinished {
+                task,
+                result,
+                details,
+            })
+        });
+        cx.notify();
+    }
+    fn apply_model_preset(
+        &mut self,
+        task: TaskId,
+        preset: SessionModelPreset,
+        model_action: Option<ControlAction>,
+        cx: &mut Context<Self>,
+    ) {
+        self.controls.pending.insert(task);
+        self.error = None;
+        let controller = self.controller.clone();
+        self.job(async move {
+            let result = async {
+                if let Some(action) = model_action {
+                    match action {
+                        ControlAction::Model(model) => controller.set_model(task, model).await?,
+                        ControlAction::Option(option, value) => {
+                            controller.set_option(task, option, value).await?
+                        }
+                        _ => unreachable!("validated model preset contains only model and effort"),
+                    }
+                }
+                if preset.effort.is_some() {
+                    let details = controller
+                        .details(task)
+                        .await?
+                        .ok_or_else(|| WorkspaceError::Invalid("the agent session is no longer connected".into()))?;
+                    let Some((action, should_apply)) =
+                        advertised_effort_action(&preset, &details.configuration)
+                    else {
+                        return Err(WorkspaceError::Invalid(
+                            "the selected model does not advertise this effort value; the model was selected, but the effort was left unchanged".into(),
+                        ));
+                    };
+                    if should_apply {
+                        match action {
+                            ControlAction::Option(option, value) => {
+                                controller.set_option(task, option, value).await?
+                            }
+                            _ => unreachable!("validated effort is a select option"),
+                        }
+                    }
+                }
+                Ok(None)
+            }
+            .await;
             let details = controller.details(task).await.ok().flatten();
             Ok(Update::ControlFinished {
                 task,
@@ -747,6 +1015,9 @@ impl Shell {
 
     pub(super) fn session_controls(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
         let models = self.control_choices(ControlKind::Model);
+        let can_cycle_models =
+            !self.uses_direct_model() && cycle_model_action(&models, true).is_some();
+        let cycle_disabled = self.controls_blocked();
         let label = models
             .iter()
             .find(|(choice, _)| choice.selected)
@@ -768,6 +1039,34 @@ impl Shell {
             .child(self.control_trigger(ControlKind::Access, "Ask permission".into(), true, cx))
             .child(div().flex_1())
             .child(self.control_trigger(ControlKind::Agent, label, !self.profiles.is_empty(), cx))
+            .children(can_cycle_models.then(|| {
+                div()
+                    .flex()
+                    .items_center()
+                    .gap_1()
+                    .child(
+                        ui::button_shell("previous-session-model", "Previous model", false)
+                            .size(px(28.))
+                            .p_0()
+                            .relative()
+                            .when(cycle_disabled, |el| el.opacity(0.5).cursor_default())
+                            .child(ui::icon(ui::Glyph::Back).size(px(13.)))
+                            .on_click(
+                                cx.listener(|this, _, _, cx| this.cycle_session_model(false, cx)),
+                            ),
+                    )
+                    .child(
+                        ui::button_shell("next-session-model", "Next model", false)
+                            .size(px(28.))
+                            .p_0()
+                            .relative()
+                            .when(cycle_disabled, |el| el.opacity(0.5).cursor_default())
+                            .child(ui::icon(ui::Glyph::Forward).size(px(13.)))
+                            .on_click(
+                                cx.listener(|this, _, _, cx| this.cycle_session_model(true, cx)),
+                            ),
+                    )
+            }))
             .into_any_element()
     }
 
@@ -884,6 +1183,121 @@ mod tests {
         assert!(session_choices(&config, ControlKind::Model).is_empty());
     }
     #[test]
+    fn saved_preset_captures_only_live_selected_model_and_explicit_effort() {
+        let mut config = configuration();
+        config.options.push(SessionOption {
+            id: "reasoning_effort".into(),
+            name: "Reasoning effort".into(),
+            description: None,
+            category: Some("reasoning_effort".into()),
+            current: ConfigValue::Select {
+                value: "high".into(),
+            },
+            choices: ["low", "high"]
+                .into_iter()
+                .map(|value| SelectChoice {
+                    value: value.into(),
+                    label: value.into(),
+                    group: None,
+                })
+                .collect(),
+        });
+        let preset = current_model_preset("codex", &config).unwrap();
+        assert_eq!(preset.agent, "codex");
+        assert_eq!(preset.model_option.as_deref(), Some("model-choice"));
+        assert_eq!(preset.model, "second");
+        assert_eq!(preset.effort_option.as_deref(), Some("reasoning_effort"));
+        assert_eq!(preset.effort.as_deref(), Some("high"));
+        assert!(preset_model_action(&preset, "other-agent", &config).is_none());
+        assert_eq!(preset_model_action(&preset, "codex", &config), Some(None));
+        assert_eq!(
+            advertised_effort_action(&preset, &config),
+            Some((
+                ControlAction::Option(
+                    "reasoning_effort".into(),
+                    ConfigValue::Select {
+                        value: "high".into(),
+                    },
+                ),
+                false,
+            ))
+        );
+
+        config.options[1].current = ConfigValue::Select {
+            value: "low".into(),
+        };
+        config.options[0].current = ConfigValue::Select {
+            value: "first".into(),
+        };
+        assert_eq!(
+            preset_model_action(&preset, "codex", &config),
+            Some(Some(ControlAction::Option(
+                "model-choice".into(),
+                ConfigValue::Select {
+                    value: "second".into(),
+                },
+            )))
+        );
+        assert_eq!(
+            advertised_effort_action(&preset, &config),
+            Some((
+                ControlAction::Option(
+                    "reasoning_effort".into(),
+                    ConfigValue::Select {
+                        value: "high".into(),
+                    },
+                ),
+                true,
+            ))
+        );
+        config.options[1]
+            .choices
+            .retain(|choice| choice.value != "high");
+        assert!(advertised_effort_action(&preset, &config).is_none());
+    }
+    #[test]
+    fn preset_does_not_infer_effort_from_unrelated_options() {
+        let mut config = configuration();
+        config.options.push(SessionOption {
+            id: "thinking".into(),
+            name: "Thought level".into(),
+            description: None,
+            category: Some("mode".into()),
+            current: ConfigValue::Select {
+                value: "deep".into(),
+            },
+            choices: vec![SelectChoice {
+                value: "deep".into(),
+                label: "Deep".into(),
+                group: None,
+            }],
+        });
+        let preset = current_model_preset("codex", &config).unwrap();
+        assert!(preset.effort_option.is_none());
+        assert!(preset.effort.is_none());
+    }
+    #[test]
+    fn provider_order_uses_preferences_then_registry_order_for_new_entries() {
+        let profile = |id: &str| AgentProfile {
+            registry: None,
+            id: id.into(),
+            name: id.into(),
+            command: id.into(),
+            args: vec![],
+            inherit_env: vec![],
+            secret_env: Default::default(),
+        };
+        let profiles = vec![profile("codex"), profile("claude"), profile("custom")];
+        let order = ordered_profiles(&profiles, &["claude".into(), "codex".into()]);
+        assert_eq!(
+            order
+                .iter()
+                .map(|profile| profile.id.as_str())
+                .collect::<Vec<_>>(),
+            vec!["claude", "codex", "custom"]
+        );
+    }
+    #[test]
     fn boolean_options_offer_explicit_values_not_a_cycle() {
         let mut config = SessionConfiguration::default();
         config.options.push(SessionOption {
@@ -901,5 +1315,117 @@ mod tests {
         assert!(
             matches!(&choices[1].1, ControlAction::Option(id, ConfigValue::Boolean { value: false }) if id == "review")
         );
+    }
+
+    #[test]
+    fn model_cycle_uses_advertised_order_and_wraps() {
+        let config = SessionConfiguration {
+            current_model: Some("second".into()),
+            models: ["first", "second", "third"]
+                .into_iter()
+                .map(|value| SelectChoice {
+                    value: value.into(),
+                    label: value.into(),
+                    group: None,
+                })
+                .collect(),
+            ..Default::default()
+        };
+        let choices = session_choices(&config, ControlKind::Model);
+        assert_eq!(
+            cycle_model_action(&choices, true),
+            Some(ControlAction::Model("third".into()))
+        );
+        assert_eq!(
+            cycle_model_action(&choices, false),
+            Some(ControlAction::Model("first".into()))
+        );
+
+        let mut last_selected = config;
+        last_selected.current_model = Some("third".into());
+        let choices = session_choices(&last_selected, ControlKind::Model);
+        assert_eq!(
+            cycle_model_action(&choices, true),
+            Some(ControlAction::Model("first".into()))
+        );
+    }
+
+    #[test]
+    fn model_cycle_applies_only_provider_advertised_select_options() {
+        let config = SessionConfiguration {
+            options: vec![SessionOption {
+                id: "model-choice".into(),
+                name: "Model".into(),
+                description: None,
+                category: Some("model".into()),
+                current: ConfigValue::Select {
+                    value: "provider-b".into(),
+                },
+                choices: ["provider-a", "provider-b", "provider-c"]
+                    .into_iter()
+                    .map(|value| SelectChoice {
+                        value: value.into(),
+                        label: value.into(),
+                        group: None,
+                    })
+                    .collect(),
+            }],
+            ..Default::default()
+        };
+        let choices = session_choices(&config, ControlKind::Model);
+        assert_eq!(
+            cycle_model_action(&choices, true),
+            Some(ControlAction::Option(
+                "model-choice".into(),
+                ConfigValue::Select {
+                    value: "provider-c".into()
+                }
+            ))
+        );
+        assert_eq!(
+            cycle_model_action(&choices, false),
+            Some(ControlAction::Option(
+                "model-choice".into(),
+                ConfigValue::Select {
+                    value: "provider-a".into()
+                }
+            ))
+        );
+    }
+
+    #[test]
+    fn model_cycle_is_absent_without_two_advertised_models() {
+        assert!(cycle_model_action(&[], true).is_none());
+        let mut config = configuration();
+        config.options[0].choices.truncate(1);
+        let choices = session_choices(&config, ControlKind::Model);
+        assert!(cycle_model_action(&choices, true).is_none());
+    }
+
+    #[test]
+    fn model_cycle_does_not_merge_distinct_provider_selectors() {
+        let mut config = SessionConfiguration::default();
+        for (id, prefix) in [("model-a", "a"), ("model-b", "b")] {
+            let values = [format!("{prefix}1"), format!("{prefix}2")];
+            config.options.push(SessionOption {
+                id: id.into(),
+                name: id.into(),
+                description: None,
+                category: Some("model".into()),
+                current: ConfigValue::Select {
+                    value: values[0].clone(),
+                },
+                choices: values
+                    .into_iter()
+                    .map(|value| SelectChoice {
+                        label: value.clone(),
+                        value,
+                        group: None,
+                    })
+                    .collect(),
+            });
+        }
+        let choices = session_choices(&config, ControlKind::Model);
+        assert!(cycle_model_action(&choices, true).is_none());
     }
 }

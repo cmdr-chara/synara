@@ -11,6 +11,7 @@ pub mod native;
 #[path = "../../../foundations/browser/lib.rs"]
 pub mod policy;
 pub mod session;
+pub mod session_restore;
 
 use policy::{Action, BrowserPolicy, Context, Grant, NavigationId, Origin, Scheme, TabId};
 use serde::{Deserialize, Serialize};

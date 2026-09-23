@@ -18,6 +18,10 @@ editor. Model discovery opens an editable review, not an automatic configuration
 replacement. Select **Use in conversation**, review the target and output/effort
 options, and confirm. Only explicit **Send** starts a request. **Stop** cancels the
 owned request and retains partial output. Restart restores data, not execution.
+Model rows can be starred into a persistent, searchable **Favorites** section.
+Choosing a favorite opens the same route review and confirmation flow; it does
+not send a prompt or silently carry route options. A favorite for a removed
+provider or model remains visible for explicit removal.
 Switching an existing task between ACP and direct inference explicitly retires the
 old live agent session before changing the route. A failed retirement keeps the
 route unchanged. For a separate reviewed continuation, use [Continue with](provider-handoff.md).

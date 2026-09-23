@@ -2,7 +2,7 @@
 //! serializing runtime/session configuration or pending task state.
 use super::*;
 use std::{
-    collections::BTreeMap,
+    collections::{BTreeMap, HashSet},
     io::{self, Cursor},
 };
 use zip::{CompressionMethod, ZipWriter, write::SimpleFileOptions};
@@ -41,6 +41,7 @@ struct ArchiveMessage<'a> {
     role: Role,
     text: &'a str,
     created_at_ms: Option<i64>,
+    updated_at_ms: Option<i64>,
     images: Vec<ImageMetadata<'a>>,
 }
 #[derive(Serialize)]
@@ -78,7 +79,157 @@ fn zip_error(error: zip::result::ZipError) -> WorkspaceError {
         "Could not create the conversation archive: {error}"
     ))
 }
-fn archive_bytes(task: &Task, thread: &Thread) -> WorkspaceResult<Vec<u8>> {
+
+type MessageKey = (String, u8);
+
+#[derive(Clone, Default)]
+struct MessageTimestampProjection {
+    updated_at_ms: BTreeMap<MessageKey, i64>,
+    tools: HashSet<String>,
+    permissions: HashSet<String>,
+    inputs: HashSet<String>,
+    timeline_tail: Option<MessageKey>,
+}
+
+impl MessageTimestampProjection {
+    fn apply(&mut self, event: ThreadEvent, event_id: &str, timestamp_ms: i64) {
+        match event {
+            ThreadEvent::TextDelta {
+                message_id, role, ..
+            }
+            | ThreadEvent::ImageMessage {
+                message_id, role, ..
+            } => {
+                let role = role_key(role);
+                let key = match message_id {
+                    Some(id) => {
+                        let key = (id, role);
+                        // The reducer only moves the timeline tail when it creates
+                        // a message. Existing IDs can receive later deltas after
+                        // another timeline item was added.
+                        if !self.updated_at_ms.contains_key(&key) {
+                            self.timeline_tail = Some(key.clone());
+                        }
+                        key
+                    }
+                    None => match self.timeline_tail.as_ref() {
+                        Some((id, tail_role)) if *tail_role == role => (id.clone(), role),
+                        _ => {
+                            let key = (format!("event-{event_id}"), role);
+                            self.timeline_tail = Some(key.clone());
+                            key
+                        }
+                    },
+                };
+                self.updated_at_ms.insert(key, timestamp_ms);
+            }
+            ThreadEvent::ToolChanged { patch } => {
+                if self.tools.insert(patch.id) {
+                    self.timeline_tail = None;
+                }
+            }
+            ThreadEvent::PermissionRequested { request } => {
+                if self.permissions.insert(request.id) {
+                    self.timeline_tail = None;
+                }
+            }
+            ThreadEvent::PermissionResolved { id, .. } => {
+                self.permissions.remove(&id);
+            }
+            ThreadEvent::UserInputRequested { request } => {
+                if self.inputs.insert(request.id) {
+                    self.timeline_tail = None;
+                }
+            }
+            ThreadEvent::UserInputResolved { id } => {
+                self.inputs.remove(&id);
+            }
+            ThreadEvent::Notice { .. }
+            | ThreadEvent::SessionStatus { .. }
+            | ThreadEvent::ContextCompaction { .. }
+            | ThreadEvent::Error { .. } => self.timeline_tail = None,
+            _ => {}
+        }
+    }
+}
+
+fn role_key(role: Role) -> u8 {
+    match role {
+        Role::User => 0,
+        Role::Assistant => 1,
+        Role::Reasoning => 2,
+    }
+}
+
+/// Derive message update times from the same durable event snapshot as the
+/// transcript. IDs and roles are replayed with the reducer's message/timeline
+/// rules so event timestamps are never guessed from neighboring messages.
+fn read_message_updated_at_ms(
+    connection: &Connection,
+    thread_id: ThreadId,
+) -> WorkspaceResult<BTreeMap<MessageKey, i64>> {
+    message_updated_at_ms_with_limits(connection, thread_id, 200_000, MAX_REPLAY_BYTES)
+}
+
+fn message_updated_at_ms_with_limits(
+    connection: &Connection,
+    thread_id: ThreadId,
+    max_events: usize,
+    max_bytes: usize,
+) -> WorkspaceResult<BTreeMap<MessageKey, i64>> {
+    let mut projection = MessageTimestampProjection::default();
+    let mut history_backup = None;
+    let mut total_bytes = 0usize;
+    let mut event_count = 0usize;
+    let mut query = connection
+        .prepare("SELECT id,timestamp_ms,data FROM events WHERE thread_id=?1 ORDER BY sequence")
+        .map_err(StorageError::from)?;
+    let mut rows = query
+        .query([thread_id.to_string()])
+        .map_err(StorageError::from)?;
+    while let Some(row) = rows.next().map_err(StorageError::from)? {
+        event_count += 1;
+        if event_count > max_events {
+            return Err(StorageError::Limit.into());
+        }
+        let event_id: String = row.get(0).map_err(StorageError::from)?;
+        let timestamp_ms: i64 = row.get(1).map_err(StorageError::from)?;
+        let data: String = row.get(2).map_err(StorageError::from)?;
+        total_bytes = total_bytes
+            .checked_add(data.len())
+            .ok_or(StorageError::Limit)?;
+        if total_bytes > max_bytes {
+            return Err(StorageError::Limit.into());
+        }
+        let event: ThreadEvent = decode(&data)?;
+        match event {
+            ThreadEvent::HistoryStarted => {
+                if history_backup.is_none() {
+                    history_backup = Some(projection.clone());
+                }
+                projection = MessageTimestampProjection::default();
+            }
+            ThreadEvent::HistoryCompleted => history_backup = None,
+            ThreadEvent::Error {
+                recoverable: false, ..
+            } => {
+                if let Some(previous) = history_backup.take() {
+                    projection = previous;
+                }
+                // A fatal replay error appends a notice after restoring history.
+                projection.timeline_tail = None;
+            }
+            event => projection.apply(event, &event_id, timestamp_ms),
+        }
+    }
+    Ok(projection.updated_at_ms)
+}
+
+fn archive_bytes(
+    task: &Task,
+    thread: &Thread,
+    message_updated_at_ms: &BTreeMap<MessageKey, i64>,
+) -> WorkspaceResult<Vec<u8>> {
     if matches!(task.state, TaskState::Running | TaskState::Waiting)
         || matches!(thread.state, TaskState::Running | TaskState::Waiting)
         || thread.history_in_progress()
@@ -110,6 +261,9 @@ fn archive_bytes(task: &Task, thread: &Thread) -> WorkspaceResult<Vec<u8>> {
                 created_at_ms: (id_counts.get(message.id.as_str()) == Some(&1))
                     .then(|| thread.message_timestamps.get(&message.id).copied())
                     .flatten(),
+                updated_at_ms: message_updated_at_ms
+                    .get(&(message.id.clone(), role_key(message.role)))
+                    .copied(),
                 images: thread
                     .images
                     .iter()
@@ -177,16 +331,46 @@ impl WorkspaceService {
                     .transaction_with_behavior(TransactionBehavior::Deferred)
                     .map_err(StorageError::from)?;
                 let snapshot = read_conversation(&tx, task)?;
+                let message_updated_at_ms = read_message_updated_at_ms(&tx, snapshot.1.id)?;
                 tx.commit().map_err(StorageError::from)?;
-                Ok(snapshot)
+                Ok((snapshot, message_updated_at_ms))
             })
             .await?;
         tokio::task::spawn_blocking(move || {
-            let bytes = archive_bytes(&snapshot.0, &snapshot.1)?;
+            let bytes = archive_bytes(&snapshot.0.0, &snapshot.0.1, &snapshot.1)?;
             write_new_export(&destination, &bytes)?;
             Ok(())
         })
         .await
         .map_err(|_| WorkspaceError::Worker)?
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn message_timestamp_scan_enforces_event_and_byte_bounds() {
+        let connection = Connection::open_in_memory().unwrap();
+        connection
+            .execute_batch(
+                "CREATE TABLE events(thread_id TEXT,sequence INTEGER,id TEXT,timestamp_ms INTEGER,data TEXT);",
+            )
+            .unwrap();
+        let thread_id = ThreadId::new();
+        let event = serde_json::to_string(&ThreadEvent::Notice {
+            message: "bounded".into(),
+        })
+        .unwrap();
+        connection
+            .execute(
+                "INSERT INTO events(thread_id,sequence,id,timestamp_ms,data) VALUES(?1,1,'event',1,?2)",
+                rusqlite::params![thread_id.to_string(), event],
+            )
+            .unwrap();
+
+        assert!(message_updated_at_ms_with_limits(&connection, thread_id, 0, usize::MAX).is_err());
+        assert!(message_updated_at_ms_with_limits(&connection, thread_id, 1, 0).is_err());
     }
 }

@@ -26,6 +26,8 @@ Historical comparison snapshot, September 22, 2026:
 See the current [Electron-to-native feature-gap audit](docs/ui/electron-vs-gpui-feature-gap.md)
 for source evidence and the preserved
 [pre-Hubs roadmap](docs/history/roadmap-before-hubs-2026-09-21.md) for older checkpoints.
+The [current parity gates](docs/verification/current-parity-gates.md) track the
+observable work and acceptance evidence still needed for every open lane.
 
 ## Current product status
 
@@ -49,14 +51,31 @@ The current roadmap therefore uses **parity lanes**, not one blended percentage:
 | Material depth gap | Native functionality exists, but upstream still has important user-facing behavior that is absent |
 | Missing surface | No equivalent native product surface exists yet |
 
+### Delivered feature slices in the September 23 sprint
+
+**25 implemented slices were committed and pushed** across the three commits
+below. A slice is a usable, bounded addition; the count groups related actions
+into one slice and is not a percentage of upstream parity. The 21 broader parity
+gates in the [verification ledger](docs/verification/current-parity-gates.md)
+remain open because each also includes further behavior or acceptance work.
+
+| Commit | Implemented slices | Count |
+| --- | --- | ---: |
+| `4713731be` | Voice recording/transcription into a draft; local headless server; five-field cron with DST-aware scheduling and a run limit; file-search ranking and navigation; local activity heatmap; durable ZIP message update times; automation list/new commands | 7 |
+| `d0b0e5ff8` | Paged web transcript and task browser; onboarding folder creation/registration; advertised-order model cycling; still WebP attachment support; saved session-model snapshot; editor conflict reload/overwrite; goal pause command | 7 |
+| `04ff088f4` | Local web workspace registration and unsent task drafts; opt-in Manual browser-tab URL restoration; Simulator URL opening; Simulator installed-app launch; fork into an existing linked worktree; ACP model/effort presets; provider ordering; bounded Unicode Computer Use typing; automation edit by ID; staged update artifact recheck; Studio output reopening in its reporting chat | 11 |
+| **Total** | **Implemented and pushed slices under this grouping** | **25** |
+
+The third commit's worktree fork contributes to both the managed-worktree and
+handoff/fork parity gates; one delivered slice can therefore advance more than
+one gate. Features still missing from each broader lane are listed below.
+
 ### Missing surfaces
 
-Two current-head product surfaces remain absent:
-
-| Surface | Upstream behavior | GPUI state |
-| --- | --- | --- |
-| Voice recording / transcription | Composer recording, encoding and transcription pipeline | **Missing.** Native composer explicitly reports voice input unavailable |
-| Headless / web workspace | Release tarball, web workspace, readiness, explicit remote binding/auth/TLS policy and update workflow | **Missing.** No equivalent headless/server product surface exists |
+No current-head surface is wholly absent after the September 23 native voice and
+headless-server slices. Both still have material gaps and open acceptance gates;
+their presence does not imply full upstream parity. The earlier two-missing-surface
+audit is preserved in the [feature-gap history](docs/ui/electron-vs-gpui-feature-gap.md).
 
 ### Material depth gaps
 
@@ -65,20 +84,22 @@ substantial product behavior that GPUI does not yet match:
 
 | Area | Native GPUI today | Current upstream delta to close |
 | --- | --- | --- |
-| First-run onboarding / setup replay | Persistent six-step first-run guide, local agent command summary, appearance/project entry and Settings replay | Integrated provider enable/sign-in terminal, project creation and deeper upstream setup interactions |
-| Browser sessions / WebMCP | Native embedded browser, manual upload/inspection/viewport capture/link downloads, reviewed popup handoff, bounded network diagnostics and approved task actions | Saved logins, protected session/cookie import, complete popup authentication lifecycle, agent upload/download, console diagnostics, restored sessions and page-declared WebMCP |
-| iOS Simulator / device | Simulator discovery, boot/shutdown and screenshot capture | Live stream/input, swipe/type/buttons, recording, app install/launch, URL open, accessibility tree and element targeting |
-| Editor and diff review | Native multi-tab editor, literal find/replace, Markdown preview, changed-file/diff-row navigation, Explorer and Git review | Syntax-highlighted/autosave parity, richer conflict recovery, compare scopes, blame and deeper diff editing |
-| Managed worktree isolation | Git worktree list/add/remove and worktree-aware review | Automatic per-task managed-worktree ownership and fork/orchestration environment choices |
-| Provider/model/context controls | Generic ACP configuration plus separate direct-model runtime | Starred model+effort presets, provider ordering, quick cycling, richer context/compaction UX, provider usage/pace/account telemetry and provider-specific recovery flows |
-| Computer Use | Reviewed Linux/X11 selected-window observation and input | Upstream action breadth, richer keyboard/text semantics, broader targeting/preview behavior and macOS/other-platform parity |
-| Automations | Durable definitions, fixed-offset daily/weekly schedules, run/failure stop limits, history, cancellation and explicit restart arming | IANA/DST schedules, broader recurrence, retry policy and deeper orchestration integration |
-| Slash commands / keyboard control | Qualified `/synara/` workflow commands, provider-advertised commands, command palette and constrained navigation remaps | Broader argument forms, upstream interaction semantics and context-aware custom keybindings |
-| Releases / updater | Local build/version history and read state | Verified release feed, signed update/install lifecycle and production replacement/rollback path |
-| Profile / activity analytics | Local activity, UTC active-hour distribution and actual task token/context values | Provider/model mix, token heatmap and richer usage/profile statistics |
-| Provider handoff / forks | Reviewed related unsent continuation and context-derived branches | Same-task handoff semantics, provider-native fork paths and explicit environment/worktree selection |
-| Attachments / transcript media | Durable PNG/JPEG/text intake, bounded one-level folder snapshots and transcript images | Persistent folder references, broader formats and in-app PDF/document viewing |
-| Studio / long-running output work | Native Studio/Hubs and file/output preview | Upstream Studio lifecycle depth, output organization and long-running workflow polish |
+| Voice recording / transcription | Bounded native microphone recording, ChatGPT transcription and insertion into an unsent, persisted draft with cancellation and stale-draft checks | Live microphone/provider acceptance, platform packaging and microphone permissions, and upstream voice interaction breadth |
+| Headless / web workspace | Loopback-only headless server with recovery, process ownership and readiness; authenticated project registration, unsent task creation/draft editing and bounded catalog/thread APIs in a local task browser | Agent execution in the web workspace, remote bind/TLS/deployment/update policy and release packaging |
+| First-run onboarding / setup replay | Persistent six-step guide, local agent command summary, appearance setup, existing-folder registration, one-level project-folder creation and Settings replay | Integrated provider enable/sign-in terminal, inline history import and full fresh-install acceptance |
+| Browser sessions / WebMCP | Native embedded browser, manual upload/inspection/viewport capture/link downloads, reviewed popup handoff, bounded network diagnostics, approved task actions and opt-in restoration of Manual tab URLs | Protected session/cookie import, complete popup authentication lifecycle, agent upload/download, console diagnostics, task/auth tab restoration and page-declared WebMCP |
+| iOS Simulator / device | Simulator discovery, boot/shutdown, screenshot capture, user-triggered HTTP(S) URL opening and installed-app launch in a selected booted simulator | Live stream/input, swipe/type/buttons, recording, app install, accessibility tree and element targeting |
+| Editor and diff review | Native multi-tab editor, literal find/replace, Markdown preview, changed-file/diff-row navigation, Explorer and Git review, plus explicit reload/overwrite actions after a save conflict | Syntax-highlighted/autosave parity, richer conflict recovery, compare scopes, blame and deeper diff editing |
+| Managed worktree isolation | Git worktree list/add/remove and review; assistant-turn forks can choose an existing linked worktree with persisted task cwd and task-aware removal guard | Automatic per-task worktree creation/cleanup and broader fork/orchestration environment choices |
+| Provider/model/context controls | Generic ACP configuration, advertised-order model cycling, persisted live-advertised model+effort presets and provider ordering for ACP agents, plus direct-model favorites with reviewed switching | Fast/thinking preset variants, keyboard cycling, richer context/compaction UX and provider/account telemetry |
+| Computer Use | Reviewed Linux/X11 selected-window observation and input, including bounded Unicode typing as one literal window-scoped argument | Upstream action breadth, richer keyboard semantics, broader targeting/preview behavior and macOS/other-platform parity |
+| Automations | Durable definitions, fixed-offset and IANA/DST daily/weekly/five-field cron schedules, run/failure/runtime limits, history, cancellation and explicit restart arming | Deeper orchestration and live provider acceptance; upstream currently rejects non-`none` retry policies too |
+| Slash commands / keyboard control | Qualified `/synara/` workflow commands including paused goal set/pause and saved automation review by exact ID, provider-advertised commands, command palette and constrained navigation remaps | Goal resume/clear/edit and other argument forms, upstream interaction semantics and context-aware custom keybindings |
+| Releases / updater | Local build/version history, executable SHA-256 fingerprint and staged artifact integrity recheck before a prospective handoff | Trusted native release feed, publisher signing identity, signed update/install lifecycle and replacement/rollback path |
+| Profile / activity analytics | Local activity, accessible 274-day UTC turn-start heatmap, UTC active-hour distribution, actual task token/context values and a labeled latest saved session-model snapshot by agent | Per-turn provider/model mix, token heatmap and real account/usage statistics |
+| Provider handoff / forks | Reviewed related unsent continuation and context-derived branches, with existing linked-worktree selection for assistant-turn forks | Same-task handoff semantics, provider-native fork paths and managed environment creation |
+| Attachments / transcript media | Durable still PNG/JPEG/WebP and text intake, bounded one-level folder snapshots and transcript images; WebP converts to bounded PNG for prompts | Persistent folder references, more formats and in-app PDF/document viewing |
+| Studio / long-running output work | Native Studio/Hubs, file/output preview, and attributed output reopening in its reporting chat's Library | Upstream per-turn output capture, lifecycle depth, organization and long-running workflow polish |
 
 ### Near-parity or acceptance-heavy lanes
 
@@ -87,12 +108,16 @@ These should not be lumped together with the large gaps above:
 - **Theme editor and density controls:** native theme editing, density, typography and
   appearance-profile import/export are substantial. Treat remaining visual/platform
   proof as acceptance work, not a generic feature-depth gap.
-- **Workspace file/source search:** native Explorer project-wide content search, editor navigation
-  and command-palette file switching exist; remaining delta is mainly global filename/
-  source-search polish and upstream shortcut semantics.
+- **Workspace file/source search:** native Explorer project-wide file-name and content search,
+  keyboard result navigation, Ctrl/Cmd+P and Ctrl/Cmd+Shift+F shortcuts, direct file
+  opening and directory-result navigation exist. Fuzzy ranking and generated-directory
+  filtering are implemented locally and through the current SSH helper; older helpers
+  fall back to file-only results. Debounce, exact upstream ranking and platform
+  acceptance remain bounded deltas.
 - **Thread export:** native Markdown and compressed ZIP (`thread.json` plus `transcript.md`)
   exist. ZIP uses one completed durable snapshot and excludes unsent drafts, secrets
-  and file contents. Broader structured metadata and native save-picker/platform
+  and file contents. ZIP messages include known creation and durable update times.
+  Broader structured metadata and native save-picker/platform
   acceptance remain bounded deltas, not a missing export subsystem.
 - **Replies/context reuse:** branching and reuse paths exist; remaining work is the
   exact upstream selection-to-current/side/new-task interaction model.
@@ -120,6 +145,16 @@ local UTC activity by hour, without inferring model-specific history.
 The current classification is **2 missing surfaces, 14 material depth gaps and 5
 near-parity lanes**. The historical sections below retain their earlier
 checkpoint statements.
+
+The follow-on implementation adds project-wide file-name search on local and SSH
+workspaces, with direct opening and keyboard selection alongside content search.
+Direct-model favorites now persist across restarts and reopen the existing route
+review before switching. Daily and weekly automations accept IANA timezones: a
+spring-forward gap skips that date, while a fall-back fold uses its first occurrence
+once. Releases shows the current on-disk executable's SHA-256 fingerprint. This
+local fingerprint does not verify a publisher or provide an update feed.
+`/synara/goal set <objective>` now saves a paused task goal through the existing
+goal owner and leaves explicit Resume and Send steps in place.
 
 ### Implemented autonomy batch
 

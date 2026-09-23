@@ -54,6 +54,14 @@ enum RemoteFsOperation {
         query: String,
         max_matches: usize,
     },
+    SearchPaths {
+        query: String,
+        max_matches: usize,
+    },
+    SearchEntries {
+        query: String,
+        max_matches: usize,
+    },
     Write {
         path: PathBuf,
         text: String,
@@ -83,6 +91,8 @@ enum RemoteFsValue {
     Snapshot(FileSnapshot),
     Probe(FileProbe),
     Search(Vec<SearchMatch>),
+    Paths(Vec<PathBuf>),
+    SearchEntries(Vec<FileEntry>),
     Version(FileVersion),
     Unit,
 }
@@ -343,6 +353,60 @@ impl RemoteWorkspaceFs {
         }
     }
 
+    pub async fn search_paths(
+        &self,
+        query: &str,
+        max_matches: usize,
+    ) -> Result<Vec<PathBuf>, RuntimeError> {
+        match self
+            .operation(
+                RemoteFsOperation::SearchPaths {
+                    query: query.to_owned(),
+                    max_matches,
+                },
+                false,
+            )
+            .await?
+        {
+            RemoteFsValue::Paths(paths) => Ok(paths),
+            _ => Err(RuntimeError::Invalid(
+                "remote helper returned the wrong response type".into(),
+            )),
+        }
+    }
+
+    pub async fn search_entries(
+        &self,
+        query: &str,
+        max_matches: usize,
+    ) -> Result<Vec<FileEntry>, RuntimeError> {
+        match self
+            .operation(
+                RemoteFsOperation::SearchEntries {
+                    query: query.to_owned(),
+                    max_matches,
+                },
+                false,
+            )
+            .await
+        {
+            Ok(RemoteFsValue::SearchEntries(entries)) => Ok(entries),
+            Ok(_) => Err(RuntimeError::Invalid(
+                "remote helper returned the wrong response type".into(),
+            )),
+            // Older pinned helpers do not recognize SearchEntries. Continue to
+            // return their file-only results, explicitly typed as files.
+            Err(RuntimeError::Invalid(message))
+                if message.contains("malformed remote filesystem helper request") =>
+            {
+                self.search_paths(query, max_matches)
+                    .await
+                    .map(legacy_file_entries)
+            }
+            Err(error) => Err(error),
+        }
+    }
+
     pub async fn write(
         &self,
         path: &Path,
@@ -477,6 +541,21 @@ fn check_remote_root(root: &Path) -> Result<(), RuntimeError> {
     Ok(())
 }
 
+fn legacy_file_entries(paths: Vec<PathBuf>) -> Vec<FileEntry> {
+    paths
+        .into_iter()
+        .filter_map(|relative_path| {
+            let name = relative_path.file_name()?.to_str()?.to_owned();
+            Some(FileEntry {
+                name,
+                relative_path,
+                directory: false,
+                symlink: false,
+            })
+        })
+        .collect()
+}
+
 fn validate_remote_relative(path: &Path) -> Result<(), RuntimeError> {
     if path.is_absolute() {
         return Err(RuntimeError::Denied(
@@ -586,6 +665,12 @@ fn execute_helper_operation(
             &query,
             max_matches,
         )?)),
+        RemoteFsOperation::SearchPaths { query, max_matches } => {
+            Ok(RemoteFsValue::Paths(fs.search_paths(&query, max_matches)?))
+        }
+        RemoteFsOperation::SearchEntries { query, max_matches } => Ok(
+            RemoteFsValue::SearchEntries(fs.search_entries(&query, max_matches)?),
+        ),
         RemoteFsOperation::Write {
             path,
             text,
@@ -631,5 +716,60 @@ mod tests {
                     | RuntimeError::Unsupported(_)
             ));
         }
+    }
+
+    #[test]
+    fn helper_name_search_returns_contained_paths() {
+        let root = tempfile::tempdir().unwrap();
+        std::fs::create_dir(root.path().join("src")).unwrap();
+        std::fs::write(root.path().join("src/target.rs"), "content").unwrap();
+        let fs = WorkspaceFs::open(root.path()).unwrap();
+        let value = execute_helper_operation(
+            &fs,
+            RemoteFsOperation::SearchPaths {
+                query: "target".into(),
+                max_matches: 10,
+            },
+        )
+        .unwrap();
+        assert!(
+            matches!(value, RemoteFsValue::Paths(paths) if paths == vec![PathBuf::from("src/target.rs")])
+        );
+    }
+
+    #[test]
+    fn helper_typed_name_search_returns_directory_and_file_kinds() {
+        let root = tempfile::tempdir().unwrap();
+        std::fs::create_dir(root.path().join("target")).unwrap();
+        std::fs::write(root.path().join("target/target.rs"), "content").unwrap();
+        let fs = WorkspaceFs::open(root.path()).unwrap();
+        let value = execute_helper_operation(
+            &fs,
+            RemoteFsOperation::SearchEntries {
+                query: "target".into(),
+                max_matches: 10,
+            },
+        )
+        .unwrap();
+        let RemoteFsValue::SearchEntries(entries) = value else {
+            panic!("expected typed name-search results");
+        };
+        assert!(entries.iter().any(|entry| {
+            entry.relative_path == Path::new("target") && entry.directory && !entry.symlink
+        }));
+        assert!(entries.iter().any(|entry| {
+            entry.relative_path == Path::new("target/target.rs")
+                && !entry.directory
+                && !entry.symlink
+        }));
+    }
+
+    #[test]
+    fn legacy_remote_name_results_are_explicitly_files() {
+        let entries = legacy_file_entries(vec![PathBuf::from("src/target.rs")]);
+        assert_eq!(entries.len(), 1);
+        assert_eq!(entries[0].name, "target.rs");
+        assert!(!entries[0].directory);
+        assert!(!entries[0].symlink);
     }
 }

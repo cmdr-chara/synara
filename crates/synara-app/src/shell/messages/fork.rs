@@ -1,5 +1,6 @@
 //! A branch is a NEW unsent draft with explicit provenance, not a cloned agent
 //! session, filesystem snapshot or replay of permission decisions.
+use super::super::chat_tools::Reply;
 use super::*;
 
 const CONTEXT_LIMIT: usize = 1024 * 1024;
@@ -81,10 +82,99 @@ impl Shell {
         .size(px(24.))
         .into_any_element()
     }
+    pub(super) fn message_branch_worktree_button(
+        &self,
+        message: &Message,
+        cx: &mut Context<Self>,
+    ) -> gpui::AnyElement {
+        let source = self.selected;
+        let anchor = MessageAnchor::from(message);
+        let loading = source.is_some_and(|task| self.chat_tools.loading_worktrees.contains(&task));
+        ui::chrome_button(
+            "branch-message-worktree",
+            "Fork into an existing linked Git worktree",
+            Glyph::BranchSimple,
+            source.is_none() || loading || self.creating_task || self.loading_task.is_some(),
+            cx.listener(move |this, _: &(), _, cx| {
+                if let Some(source) = source {
+                    this.load_branch_worktree_choices(source, anchor.clone(), cx);
+                }
+            }),
+        )
+        .size(px(24.))
+        .into_any_element()
+    }
+
+    pub(super) fn load_branch_worktree_choices(
+        &mut self,
+        source: TaskId,
+        anchor: MessageAnchor,
+        cx: &mut Context<Self>,
+    ) {
+        if self.selected != Some(source)
+            || self.creating_task
+            || self.loading_task.is_some()
+            || self.close != CloseState::Open
+            || self.terminal_closing
+            || self.explorer.modal_open()
+            || self.kanban.dialog.is_some()
+            || self.organization.dialog.is_some()
+            || self.saved_context.dialog.is_some()
+            || self.composer.read(cx).is_composing()
+            || self.editor.read(cx).is_composing()
+            || self.draft_state.loading.contains(&source)
+            || !self.chat_tools.loading_worktrees.insert(source)
+        {
+            return;
+        }
+        let revision = self.selection_revision;
+        let workspace = self.controller.workspace.clone();
+        self.job(async move {
+            let result = async {
+                let source_task = workspace.task(source).await?;
+                if source_task.state == TaskState::Archived {
+                    return Err(WorkspaceError::Invalid(
+                        "Restore the source conversation before branching.".into(),
+                    ));
+                }
+                workspace.project_worktrees(source_task.project_id).await
+            }
+            .await
+            .map_err(|error| error.to_string());
+            Ok(Update::ChatTools(Box::new(Reply::Worktrees {
+                task: source,
+                revision,
+                anchor,
+                result,
+            })))
+        });
+        cx.notify();
+    }
+
     pub(in crate::shell) fn branch_message(
         &mut self,
         source: TaskId,
         anchor: MessageAnchor,
+        cx: &mut Context<Self>,
+    ) {
+        self.branch_message_at(source, anchor, None, cx);
+    }
+
+    pub(in crate::shell) fn branch_message_in_worktree(
+        &mut self,
+        source: TaskId,
+        anchor: MessageAnchor,
+        worktree_directory: PathBuf,
+        cx: &mut Context<Self>,
+    ) {
+        self.branch_message_at(source, anchor, Some(worktree_directory), cx);
+    }
+
+    fn branch_message_at(
+        &mut self,
+        source: TaskId,
+        anchor: MessageAnchor,
+        worktree_directory: Option<PathBuf>,
         cx: &mut Context<Self>,
     ) {
         if self.selected != Some(source)
@@ -125,15 +215,31 @@ impl Shell {
                     "Branch: {}",
                     source.title.chars().take(90).collect::<String>()
                 );
-                let task = workspace
-                    .create_scoped_task_with_draft(
-                        source.project_id,
-                        title,
-                        source.agent_id,
-                        source.scope,
-                        draft,
-                    )
-                    .await?;
+                let task = match worktree_directory {
+                    Some(directory) => {
+                        workspace
+                            .create_scoped_task_in_worktree(
+                                source.project_id,
+                                title,
+                                source.agent_id,
+                                source.scope,
+                                draft,
+                                directory,
+                            )
+                            .await?
+                    }
+                    None => {
+                        workspace
+                            .create_scoped_task_with_draft(
+                                source.project_id,
+                                title,
+                                source.agent_id,
+                                source.scope,
+                                draft,
+                            )
+                            .await?
+                    }
+                };
                 catalog.tasks.insert(0, task.clone());
                 Ok::<_, WorkspaceError>((task, catalog))
             }

@@ -116,6 +116,7 @@ impl Shell {
                         .text_color(rgb(palette().muted))
                         .child(copy(cx).opacity(0.75))
                         .child(self.message_branch_button(message, cx))
+                        .child(self.message_branch_worktree_button(message, cx))
                         .child(self.message_side_chat_button(message, index, cx))
                         .child(self.message_pin_button(message, index, cx))
                         .child(self.message_reuse_button(message, index, cx))

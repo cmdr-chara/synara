@@ -178,6 +178,103 @@ impl DeviceTools {
         command::run(&self.executable, args, DISCOVERY_LIMIT, cancel).await?;
         Ok(())
     }
+
+    /// Validate a user-entered web URL without touching the simulator helper.
+    pub fn validate_open_url(
+        &self,
+        device: &ToolDevice,
+        raw_url: &str,
+    ) -> Result<String, RuntimeError> {
+        if self.backend != DeviceBackend::AppleSimulator {
+            return Err(RuntimeError::Unsupported(
+                "Opening a URL is available for iOS Simulator only".into(),
+            ));
+        }
+        self.address(device)?;
+        if device.availability != DeviceAvailability::Ready {
+            return Err(RuntimeError::Closed);
+        }
+        if raw_url.len() > 2_048
+            || raw_url.trim() != raw_url
+            || raw_url.chars().any(char::is_control)
+        {
+            return Err(RuntimeError::Invalid("Invalid simulator URL".into()));
+        }
+        let url = url::Url::parse(raw_url)
+            .map_err(|_| RuntimeError::Invalid("Invalid simulator URL".into()))?;
+        if !matches!(url.scheme(), "http" | "https")
+            || url.host().is_none()
+            || !url.username().is_empty()
+            || url.password().is_some()
+        {
+            return Err(RuntimeError::Invalid(
+                "Use an HTTP(S) URL without credentials".into(),
+            ));
+        }
+        Ok(url.to_string())
+    }
+
+    /// Open an explicit web URL in a booted iOS Simulator. This is a local,
+    /// user-initiated helper action and does not grant screenshot/input authority.
+    pub async fn open_url(
+        &self,
+        device: &ToolDevice,
+        raw_url: &str,
+        cancel: &CancellationToken,
+    ) -> Result<(), RuntimeError> {
+        let url = self.validate_open_url(device, raw_url)?;
+        let id = self.address(device)?;
+        command::run(
+            &self.executable,
+            apple::open_url_args(id, url),
+            DISCOVERY_LIMIT,
+            cancel,
+        )
+        .await?;
+        Ok(())
+    }
+
+    /// Validate an installed-app bundle ID without touching the simulator helper.
+    pub fn validate_launch_app(
+        &self,
+        device: &ToolDevice,
+        bundle_id: &str,
+    ) -> Result<(), RuntimeError> {
+        if self.backend != DeviceBackend::AppleSimulator {
+            return Err(RuntimeError::Unsupported(
+                "Launching an app is available for iOS Simulator only".into(),
+            ));
+        }
+        self.address(device)?;
+        if device.availability != DeviceAvailability::Ready {
+            return Err(RuntimeError::Closed);
+        }
+        if !apple::valid_bundle_id(bundle_id) {
+            return Err(RuntimeError::Invalid(
+                "Invalid installed app bundle ID".into(),
+            ));
+        }
+        Ok(())
+    }
+
+    /// Launch an already installed app in a selected booted iOS Simulator.
+    pub async fn launch_app(
+        &self,
+        device: &ToolDevice,
+        bundle_id: &str,
+        cancel: &CancellationToken,
+    ) -> Result<(), RuntimeError> {
+        self.validate_launch_app(device, bundle_id)?;
+        let id = self.address(device)?;
+        command::run(
+            &self.executable,
+            apple::launch_args(id, bundle_id.to_owned()),
+            DISCOVERY_LIMIT,
+            cancel,
+        )
+        .await?;
+        Ok(())
+    }
     /// Probe the real Android executable, then scope authority to this target.
     /// This value is intentionally non-serializable and is never restored.
     pub async fn approve_input(

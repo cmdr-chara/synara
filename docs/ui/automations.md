@@ -38,18 +38,40 @@ rejected. This is at-most-once dispatch reservation, not a promise of exactly-on
 external effects. Provider failure/cancellation does not undo external effects.
 
 Stop active / queued run invalidates queued futures as well as the active token
-and uses the existing controller cancellation path. Each execution has a
-15-minute deadline. Stop scheduling stops future scheduling without pretending
-that existing provider work has been undone. No automatic retry is performed.
-A new Run now action is the explicit retry mechanism and creates a new task.
+and uses the existing controller cancellation path. Each execution has a saved
+maximum runtime from 1 to 3600 seconds (new definitions default to 900 seconds).
+A timeout cancels the owned task and records a failure. Stop scheduling stops
+future scheduling without pretending that existing provider work has been
+undone. No automatic retry is performed. A new Run now action is the explicit
+retry mechanism and creates a new task.
 
 ## Schedule and resource limits
 
-Supported schedules are `every Nm` (1 through 10080 minutes) and `daily HH:MM`.
-Timezone accepts UTC or a fixed offset such as +02:00. IANA zones and DST are
-explicitly rejected, not silently approximated. The UI labels next-run times in
-UTC and also displays the configured timezone. Resume recalculates the next
-future slot from the current time.
+Supported schedules are `every Nm` (1 through 10080 minutes), `daily HH:MM`,
+`weekdays HH:MM`, `weekly mon HH:MM` (any day from sun through sat), and
+`cron <minute> <hour> <day-of-month> <month> <day-of-week>`. Cron expressions
+are limited to 120 bytes and support numeric values, comma-separated lists,
+inclusive ranges, positive steps, and weekday names `sun` through `sat` (or
+weekday numbers 0 through 7, with 7 meaning Sunday). Cron search is bounded to
+eight years of local calendar days, which covers sparse leap-day schedules.
+Impossible calendar combinations return a no-future-slot error. When both
+day-of-month and weekday are constrained, either match is sufficient; when
+either field is the literal `*`, both field matches are required. This follows
+the upstream scheduler's constrained five-field cron vocabulary.
+
+Timezone accepts UTC, a fixed offset such as +02:00, or an IANA zone such as
+Europe/Rome. Calendar schedules use local wall time: a nonexistent
+spring-forward time skips that occurrence, and a repeated fall-back time runs
+at its first occurrence only. The later half of a folded minute cannot claim
+the same scheduled slot again. The UI labels next-run times in UTC and also
+displays the configured timezone. Resume recalculates the next future slot from
+the current time.
+
+Optional total-run and consecutive-failure limits pause a definition durably.
+New definitions default to a three-failure limit; existing definitions retain
+their saved limits. Raising a reached run limit is required before resuming.
+The bounded runtime is persisted in the definition and the immutable run
+snapshot. Older definitions that lack it use the existing 15-minute default.
 
 Skip records one missed occurrence when more than 30 seconds overdue, without
 launching an agent. CatchUpOnce dispatches at most one run and advances directly
@@ -65,14 +87,15 @@ validates this versioned ledger. Restoring it never arms a scheduler.
 
 ## Validation and remaining work
 
-Ten focused automation tests pass, covering fixed-offset scheduling, paused
-saves, stale edits, durable claims, restart recovery, concurrent SQLite claims,
-skip/catch-up semantics, confirmed deletion, explicit profile failure, queued
-cancellation, confirmation revision fencing and backup/restore. They are included
-in the passing workspace test run. Native app and test targets compile.
+Focused automation tests cover cron parsing and day matching, fixed-offset and
+IANA/DST scheduling, sparse leap-day recurrence, persisted and bounded runtime,
+paused saves, stale edits, durable claims, restart recovery, concurrent SQLite
+claims, skip/catch-up semantics, confirmed deletion, explicit profile failure,
+queued cancellation, confirmation revision fencing, run/failure limits and
+backup/restore. The automation test run passes, and the native app target compiles.
 
 Live provider completion/cancellation, native click/keyboard/IME/accessibility
-journeys, OS shutdown timing and multi-platform acceptance remain OPEN. IANA/DST
-zones, cron/calendar schedules, configurable retry policy, history export/pruning,
+journeys, OS shutdown timing and multi-platform acceptance remain OPEN.
+Retry delay/backoff policies (upstream currently accepts only no retry), history export/pruning,
 Hub-specific context selection and out-of-process scheduling are not implemented.
 This source slice does not close the broad Automations acceptance gate.

@@ -25,6 +25,7 @@ mod terminal;
 mod terminal_input;
 mod terminal_screen;
 mod update;
+mod workspace_owner_lock;
 
 pub use bounded::*;
 pub use device::*;
@@ -42,6 +43,7 @@ pub use terminal::*;
 pub use terminal_input::*;
 pub use terminal_screen::*;
 pub use update::*;
+pub use workspace_owner_lock::*;
 
 #[derive(Debug, thiserror::Error)]
 pub enum RuntimeError {

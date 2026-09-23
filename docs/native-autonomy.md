@@ -98,8 +98,10 @@ rather than acting on stale coordinates. Take over / revoke, task switching and
 shutdown cancel pending input and observation. No target or frame lease restores
 after restart. Audit notices contain operation identities, not typed text or keys.
 
-Input is explicitly addressed to the selected X11 window. Printable ASCII typing
-is bounded to 512 bytes. Supported keys are Enter, Tab, Escape, Backspace, Delete,
+Input is explicitly addressed to the selected X11 window. Unicode typing is
+bounded to 512 UTF-8 bytes and rejects controls, line separators and bidirectional
+formatting characters. It is sent as one literal argument; X11 keymap and target
+application support can vary. Supported keys are Enter, Tab, Escape, Backspace, Delete,
 arrow keys, Home, End, Page Up/Down and Space. Click and bounded scroll use reviewed
 window-relative coordinates and move the shared pointer. There is no global
 shortcut, arbitrary command, ambient-focus fallback, held-key macro or automatic
@@ -107,7 +109,7 @@ retry. Applications may reject XSendEvent input. A delivery attempt is not proof
 of application-level success: explicitly observe the target again.
 
 This is bounded application-window control, not complete Electron Computer Use
-parity. Full desktop control, Wayland, macOS, Windows, richer Unicode/IME input,
+parity. Full desktop control, Wayland, macOS, Windows, IME input,
 modifier chords, drag operations and production application acceptance remain
 open. X11 is not an OS security sandbox against other malicious X11 clients.
 

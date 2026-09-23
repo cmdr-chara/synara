@@ -19,6 +19,12 @@ pub(super) enum Reply {
     },
     Copied(Result<String, String>),
     Exported(Result<(), String>),
+    Worktrees {
+        task: TaskId,
+        revision: u64,
+        anchor: MessageAnchor,
+        result: Result<Vec<ProjectWorktree>, String>,
+    },
     Ignored,
 }
 #[derive(Clone)]
@@ -34,6 +40,11 @@ enum Action {
     RemovePin(MessageAnchor),
     Insert(String),
     SelectTask(TaskId),
+    BranchWorktree {
+        source: TaskId,
+        anchor: MessageAnchor,
+        path: PathBuf,
+    },
 }
 struct Popup {
     view: Entity<ChoiceMenu>,
@@ -58,6 +69,8 @@ pub(super) struct ChatTools {
     copying: bool,
     popup: Option<Popup>,
     pending_action: Option<(Option<TaskId>, Option<Action>)>,
+    pending_menu: Option<(TaskId, String, Vec<(Choice, Action)>)>,
+    pub(super) loading_worktrees: HashSet<TaskId>,
     _query_subscription: Subscription,
 }
 impl ChatTools {
@@ -93,6 +106,8 @@ impl ChatTools {
             copying: false,
             popup: None,
             pending_action: None,
+            pending_menu: None,
+            loading_worktrees: HashSet::new(),
             _query_subscription: subscription,
         }
     }
@@ -105,6 +120,8 @@ impl ChatTools {
         self.focused = None;
         self.popup = None;
         self.pending_action = None;
+        self.pending_menu = None;
+        self.loading_worktrees.clear();
     }
     pub fn pending_write(&self) -> bool {
         !self.pin_writes.is_empty() || self.exporting
@@ -115,6 +132,7 @@ impl ChatTools {
     pub fn retire(&mut self) {
         self.popup = None;
         self.pending_action = None;
+        self.pending_menu = None;
     }
 }
 
@@ -308,6 +326,82 @@ impl Shell {
                         self.error = Some(format!(
                             "Conversation export failed: {error}. Existing files are never overwritten. Choose a new filename."
                         ))
+                    }
+                }
+            }
+            Reply::Worktrees {
+                task,
+                revision,
+                anchor,
+                result,
+            } => {
+                self.chat_tools.loading_worktrees.remove(&task);
+                if self.selected != Some(task)
+                    || self.selection_revision != revision
+                    || self.close != CloseState::Open
+                {
+                    return;
+                }
+                match result {
+                    Err(error) => {
+                        self.error = Some(format!("Linked worktrees could not be loaded: {error}"));
+                    }
+                    Ok(worktrees) => {
+                        let mut rows = Vec::with_capacity(worktrees.len().max(1));
+                        for worktree in worktrees {
+                            let assigned_title = worktree.assigned_task_title.clone();
+                            let unavailable = if worktree.project_root {
+                                Some("This is the project's current directory".into())
+                            } else if worktree.bare {
+                                Some("Bare worktrees cannot run project tasks".into())
+                            } else if worktree.prunable {
+                                Some("Git marks this worktree as prunable".into())
+                            } else if worktree.locked {
+                                Some("Unlock this worktree in Git before selecting it".into())
+                            } else if let Some(title) = assigned_title {
+                                Some(format!("Already assigned to task: {title}"))
+                            } else {
+                                None
+                            };
+                            let label = worktree
+                                .branch
+                                .clone()
+                                .unwrap_or_else(|| "Detached HEAD".into());
+                            let path = worktree.path;
+                            let detail = path.display().to_string().chars().take(512).collect();
+                            let action = Action::BranchWorktree {
+                                source: task,
+                                anchor: anchor.clone(),
+                                path,
+                            };
+                            rows.push((
+                                Choice {
+                                    label,
+                                    detail,
+                                    icon: Some(Glyph::Fork),
+                                    unavailable,
+                                    ..Default::default()
+                                },
+                                action,
+                            ));
+                        }
+                        if rows.is_empty() {
+                            rows.push((
+                                Choice {
+                                    label: "No linked worktrees found".into(),
+                                    detail: "Create a Git worktree in the repository, then reopen this menu. Synara will not create or remove it here.".into(),
+                                    unavailable: Some("This project has no additional linked worktrees".into()),
+                                    ..Default::default()
+                                },
+                                Action::BranchWorktree {
+                                    source: task,
+                                    anchor,
+                                    path: PathBuf::new(),
+                                },
+                            ));
+                        }
+                        self.chat_tools.pending_menu =
+                            Some((task, "Fork into an existing Git worktree".into(), rows));
                     }
                 }
             }
@@ -557,6 +651,12 @@ impl Shell {
         cx.notify();
     }
     pub(super) fn consume_chat_action(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        if let Some((task, title, rows)) = self.chat_tools.pending_menu.take()
+            && self.selected == Some(task)
+        {
+            self.open_chat_menu(&title, rows, window, cx);
+            return;
+        }
         let Some((task, action)) = self.chat_tools.pending_action.take() else {
             return;
         };
@@ -605,6 +705,11 @@ impl Shell {
                     self.show_conversation(cx);
                 }
             }
+            Action::BranchWorktree {
+                source,
+                anchor,
+                path,
+            } => self.branch_message_in_worktree(source, anchor, path, cx),
         }
     }
     fn open_pinned_messages(&mut self, window: &mut Window, cx: &mut Context<Self>) {

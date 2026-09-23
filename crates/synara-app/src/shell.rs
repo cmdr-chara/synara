@@ -49,6 +49,7 @@ mod task_split;
 mod terminal;
 mod terminals;
 mod transcript;
+mod voice;
 mod zen;
 use crate::close::CloseState;
 use crate::input::{EntryEvent, EntryMode, TextEntry};
@@ -117,6 +118,7 @@ struct FormState {
 }
 enum Update {
     Releases(Result<NativeVersionHistory, String>),
+    NativeBuildIntegrity(Result<NativeBuildIntegrity, String>),
     Goals(Box<goals::Reply>),
     DebugWorkflow(Box<debug_workflow::Reply>),
     Recap(Box<recap::Reply>),
@@ -150,6 +152,7 @@ enum Update {
     Kanban(Box<kanban::KanbanReply>),
     DraftLoaded(TaskId, Result<String, String>),
     DraftSaved(TaskId, Option<String>),
+    Voice(Box<voice::Reply>),
     Registry(Box<registry::RegistryReply>),
     Catalog(Catalog),
     WorkspaceAdded(Project, Catalog),
@@ -262,6 +265,7 @@ pub struct Shell {
     details: Option<SessionDetails>,
     trace: Vec<TraceEntry>,
     composer: Entity<TextEntry>,
+    voice: voice::VoiceState,
     workspace_path: Entity<TextEntry>,
     remote_host: Entity<TextEntry>,
     remote_port: Entity<TextEntry>,
@@ -523,6 +527,7 @@ impl Shell {
             details: None,
             trace: vec![],
             composer,
+            voice: voice::VoiceState::default(),
             workspace_path,
             remote_host,
             remote_port,
@@ -699,6 +704,7 @@ impl Shell {
         if self.goal_before_quit(cx) {
             return;
         }
+        self.cancel_voice_operation(false);
         if self.automation_before_quit(cx) {
             return;
         }
@@ -879,6 +885,7 @@ impl Shell {
             cx.notify();
             return false;
         }
+        self.cancel_voice_operation(false);
         self.snapshot_draft(cx);
         self.retire_autonomy_selection();
         self.selection_revision = self.selection_revision.wrapping_add(1);
@@ -1088,6 +1095,7 @@ impl Shell {
             return;
         }
         if scope == TaskScope::Studio {
+            self.cancel_voice_operation(false);
             self.new_hub_thread(cx);
             return;
         }
@@ -1146,6 +1154,7 @@ impl Shell {
         } else {
             title
         };
+        self.cancel_voice_operation(false);
         let workspace = self.controller.workspace.clone();
         let scratch = self.scratch_directory.join(ThreadId::new().to_string());
         let revision = self.selection_revision;
@@ -1434,6 +1443,7 @@ impl Shell {
         let root = target.root().clone();
         let text = self.editor.read(cx).text().to_owned();
         let workspace_service = self.controller.workspace.clone();
+        self.clear_conflict_reload_confirmation();
         self.saving = true;
         self.error = None;
         self.job(async move {
@@ -1507,6 +1517,7 @@ impl Shell {
             Update::RichMedia(reply) => self.media_reply(*reply, cx),
             Update::DebugWorkflow(reply) => self.debug_reply(*reply, cx),
             Update::Releases(result) => self.releases_reply(result, cx),
+            Update::NativeBuildIntegrity(result) => self.native_build_integrity_reply(result, cx),
             Update::Recap(reply) => self.recap_reply(*reply, cx),
             Update::Checkpoints(reply) => self.checkpoint_reply(*reply, cx),
             Update::InlineComments(reply) => self.inline_comments_reply(*reply, cx),
@@ -1523,10 +1534,12 @@ impl Shell {
             Update::Kanban(reply) => self.kanban_reply(*reply, cx),
             Update::DraftLoaded(task, result) => self.restore_draft(task, result, cx),
             Update::DraftSaved(task, error) => self.draft_saved(task, error, cx),
+            Update::Voice(reply) => self.apply_voice_reply(*reply, cx),
             Update::Registry(reply) => self.registry_reply(*reply, cx),
             Update::Automations(reply) => self.automation_reply(*reply, cx),
             Update::Goals(reply) => self.goals_reply(*reply, cx),
             Update::Tick => {
+                self.tick_voice(cx);
                 self.tick_autonomy(cx);
                 self.tick_goals(cx);
                 self.tick_automations(cx);
@@ -1577,6 +1590,7 @@ impl Shell {
                 }
                 self.project = Some(project.id);
                 self.snapshot_draft(cx);
+                self.cancel_voice_operation(false);
                 self.selected = None;
                 self.thread = None;
                 self.reset_editor_tabs();
@@ -1951,6 +1965,9 @@ impl Shell {
         let panel = self.track_environment_panel(panel);
         self.controls.retire();
         self.settings.popup = None;
+        if panel != Panel::Conversation {
+            self.cancel_voice_operation(false);
+        }
         if panel != Panel::Conversation {
             self.retire_autonomy_selection();
             self.selection_revision = self.selection_revision.wrapping_add(1);

@@ -53,6 +53,9 @@ impl Shell {
                 .browser
                 .with(|session, now| session.event_at(event, now));
         }
+        if changed {
+            self.browser_save_manual_restore();
+        }
         let _ = self.controller.browser.with(|_, _| Ok(()));
         if changed {
             cx.notify();

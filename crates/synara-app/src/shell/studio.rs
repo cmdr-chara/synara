@@ -1,6 +1,7 @@
 //! Studio output browser. All file data comes from the bounded workspace service.
 use super::*;
 use crate::ui::{self, Glyph, palette};
+use std::path::Path;
 
 pub(super) enum StudioReply {
     Listed {
@@ -37,6 +38,7 @@ pub(super) struct StudioState {
     loading: bool,
     preview_loading: bool,
     selected: Option<PathBuf>,
+    reopen_after_navigation: Option<(TaskId, PathBuf)>,
     preview: Option<Preview>,
     error: Option<String>,
     only_outputs: bool,
@@ -62,6 +64,7 @@ impl StudioState {
             loading: false,
             preview_loading: false,
             selected: None,
+            reopen_after_navigation: None,
             preview: None,
             error: None,
             only_outputs: false,
@@ -78,6 +81,7 @@ impl StudioState {
         self.preview_generation = self.preview_generation.wrapping_add(1);
         self.preview = None;
         self.selected = None;
+        self.reopen_after_navigation = None;
         self.listing = StudioFiles::default();
         self.loading = false;
         self.preview_loading = false;
@@ -90,6 +94,14 @@ fn image_path(path: &std::path::Path) -> bool {
     path.extension()
         .and_then(|x| x.to_str())
         .is_some_and(|x| matches!(x.to_ascii_lowercase().as_str(), "png" | "jpg" | "jpeg"))
+}
+fn take_reopen_path(task: TaskId, pending: Option<(TaskId, PathBuf)>) -> Option<PathBuf> {
+    pending.and_then(|(expected_task, path)| (expected_task == task).then_some(path))
+}
+fn restored_output_is_attributed(task: TaskId, path: &Path, listing: &[StudioFile]) -> bool {
+    listing
+        .iter()
+        .any(|entry| entry.path == path && entry.source_task == Some(task))
 }
 impl Shell {
     pub(super) fn open_studio_outputs(&mut self, cx: &mut Context<Self>) {
@@ -154,6 +166,48 @@ impl Shell {
         });
         cx.notify();
     }
+    fn open_studio_output_with_source(
+        &mut self,
+        source: TaskId,
+        path: PathBuf,
+        cx: &mut Context<Self>,
+    ) {
+        let Some(current) = self.task() else { return };
+        let Some(source_task) = self.catalog.tasks.iter().find(|task| task.id == source) else {
+            self.studio.error = Some("This output's source chat is no longer available.".into());
+            cx.notify();
+            return;
+        };
+        let output_is_current = self.studio.open
+            && self.studio.task == Some(current.id)
+            && current.scope == TaskScope::Studio
+            && source_task.scope == TaskScope::Studio
+            && current.project_id == source_task.project_id
+            && current.working_directory == source_task.working_directory
+            && self
+                .studio
+                .listing
+                .entries
+                .iter()
+                .any(|entry| entry.path == path && entry.source_task == Some(source));
+        if !output_is_current {
+            self.studio.error = Some(
+                "This output's source link is stale. Refresh the Library and choose the output again."
+                    .into(),
+            );
+            cx.notify();
+            return;
+        }
+        if self.selected != Some(source) {
+            if !self.select_task(source, cx) {
+                return;
+            }
+            self.studio.reopen_after_navigation = Some((source, path));
+            self.open_studio_outputs(cx);
+        }
+        // When already in the reporting thread, the selected output is already
+        // open in the Library alongside this conversation.
+    }
     pub(super) fn studio_reply(&mut self, reply: StudioReply, cx: &mut Context<Self>) {
         match reply {
             StudioReply::Listed {
@@ -171,18 +225,35 @@ impl Shell {
                 match result {
                     Ok(listing) => {
                         self.studio.listing = listing;
-                        if let Some(path) = self.studio.selected.clone() {
-                            if self
-                                .studio
-                                .listing
-                                .entries
-                                .iter()
-                                .any(|entry| entry.path == path)
-                            {
+                        let restored =
+                            take_reopen_path(task, self.studio.reopen_after_navigation.take());
+                        if let Some(path) =
+                            restored.clone().or_else(|| self.studio.selected.clone())
+                        {
+                            let output_exists = if restored.is_some() {
+                                restored_output_is_attributed(
+                                    task,
+                                    &path,
+                                    &self.studio.listing.entries,
+                                )
+                            } else {
+                                self.studio
+                                    .listing
+                                    .entries
+                                    .iter()
+                                    .any(|entry| entry.path == path)
+                            };
+                            if output_exists {
                                 self.preview_studio_file(path, cx);
                             } else {
                                 self.studio.preview = None;
                                 self.studio.selected = None;
+                                if restored.is_some() {
+                                    self.studio.error = Some(
+                                        "This output is no longer attributed to its reporting Hub."
+                                            .into(),
+                                    );
+                                }
                             }
                         }
                     }
@@ -352,8 +423,17 @@ impl Shell {
                 .child(ui::button("studio-reported","Reported outputs",self.studio.only_outputs).text_size(px(11.)).on_click(cx.listener(|this,_,_,cx| { this.studio.only_outputs=true;cx.notify(); })))
                 .child(ui::button("studio-images","Images",self.studio.only_images).text_size(px(11.)).on_click(cx.listener(|this,_,_,cx| { this.studio.only_images = !this.studio.only_images;cx.notify(); }))))
             .child(div().text_size(px(11.)).text_color(rgb(palette().muted)).child(format!("{} files · Reported by completed tools in this Hub, not proof of authorship.",matches.len())))
-            .children(source_task.map(|source| ui::action("library-source-thread", "Open reporting thread", Some(Glyph::Chat), false,
-                cx.listener(move |this, _: &(), _, cx| { if this.select_task(source,cx) { this.show_conversation(cx); } }))))
+        .children(source_task.zip(selected.clone()).map(|(source, path)| {
+            ui::action(
+                "library-source-thread",
+                "Open reporting chat with output",
+                Some(Glyph::Chat),
+                false,
+                cx.listener(move |this, _: &(), _, cx| {
+                    this.open_studio_output_with_source(source, path.clone(), cx)
+                }),
+            )
+        }))
             .children(self.studio.error.clone().map(|error| div().text_size(px(12.)).text_color(rgb(palette().error)).child(error)))
             .when(self.studio.listing.limited || self.studio.listing.unreadable>0, |el| el.child(div().text_size(px(11.)).text_color(rgb(palette().muted))
                 .child(format!("Bounded listing{} · {} unreadable directories/files",if self.studio.listing.limited { " reached its limit" } else { "" },self.studio.listing.unreadable))))
@@ -391,5 +471,54 @@ impl Shell {
                             if let Some(path)=this.studio.selected.clone() { this.set_panel(Panel::Files,cx); this.open_file(path,cx); }
                         })))))
             .into_any_element()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{restored_output_is_attributed, take_reopen_path};
+    use std::path::PathBuf;
+    use synara_core::TaskId;
+    use synara_workspace::StudioFile;
+
+    #[test]
+    fn reopening_output_is_scoped_to_the_requested_source_task() {
+        let task = TaskId::new();
+        let other = TaskId::new();
+        let path = PathBuf::from("reports/result.md");
+
+        assert_eq!(
+            take_reopen_path(task, Some((task, path.clone()))),
+            Some(path)
+        );
+        assert_eq!(
+            take_reopen_path(task, Some((other, PathBuf::from("reports/other.md")))),
+            None
+        );
+    }
+
+    #[test]
+    fn restored_output_must_still_be_attributed_to_the_reporting_task() {
+        let task = TaskId::new();
+        let other = TaskId::new();
+        let path = PathBuf::from("reports/result.md");
+        let entry = |source_task| StudioFile {
+            path: path.clone(),
+            bytes: 32,
+            reported_output: true,
+            source_task,
+        };
+
+        assert!(restored_output_is_attributed(
+            task,
+            &path,
+            &[entry(Some(task))]
+        ));
+        assert!(!restored_output_is_attributed(
+            task,
+            &path,
+            &[entry(Some(other))]
+        ));
+        assert!(!restored_output_is_attributed(task, &path, &[entry(None)]));
     }
 }

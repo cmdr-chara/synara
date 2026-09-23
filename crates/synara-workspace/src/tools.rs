@@ -83,6 +83,48 @@ pub async fn search_remote_files(
         .await
         .map_err(Into::into)
 }
+pub async fn search_file_names(
+    root: PathBuf,
+    query: String,
+    max_matches: usize,
+) -> WorkspaceResult<Vec<PathBuf>> {
+    tokio::task::spawn_blocking(move || WorkspaceFs::open(&root)?.search_paths(&query, max_matches))
+        .await
+        .map_err(|_| WorkspaceError::Worker)?
+        .map_err(Into::into)
+}
+pub async fn search_remote_file_names(
+    filesystem: synara_runtime::RemoteWorkspaceFs,
+    query: String,
+    max_matches: usize,
+) -> WorkspaceResult<Vec<PathBuf>> {
+    filesystem
+        .search_paths(&query, max_matches)
+        .await
+        .map_err(Into::into)
+}
+pub async fn search_file_entries(
+    root: PathBuf,
+    query: String,
+    max_matches: usize,
+) -> WorkspaceResult<Vec<FileEntry>> {
+    tokio::task::spawn_blocking(move || {
+        WorkspaceFs::open(&root)?.search_entries(&query, max_matches)
+    })
+    .await
+    .map_err(|_| WorkspaceError::Worker)?
+    .map_err(Into::into)
+}
+pub async fn search_remote_file_entries(
+    filesystem: synara_runtime::RemoteWorkspaceFs,
+    query: String,
+    max_matches: usize,
+) -> WorkspaceResult<Vec<FileEntry>> {
+    filesystem
+        .search_entries(&query, max_matches)
+        .await
+        .map_err(Into::into)
+}
 #[derive(Clone, Debug)]
 pub struct Document {
     pub path: PathBuf,

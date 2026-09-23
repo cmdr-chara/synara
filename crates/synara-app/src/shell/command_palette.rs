@@ -59,6 +59,8 @@ enum Action {
     MessageSearch,
     Notes,
     OpenProject,
+    FileNameSearch,
+    SourceSearch,
     Find,
     Replace,
     GoToLine,
@@ -260,6 +262,18 @@ impl Shell {
                 "Choose a workspace directory",
                 Glyph::Folder,
                 Action::OpenProject,
+            ),
+            (
+                "Find file",
+                "Search project file names · Ctrl/Cmd+P",
+                Glyph::Files,
+                Action::FileNameSearch,
+            ),
+            (
+                "Search source",
+                "Find matching lines · Ctrl/Cmd+Shift+F",
+                Glyph::Search,
+                Action::SourceSearch,
             ),
             (
                 "Toggle sidebar",
@@ -480,6 +494,8 @@ impl Shell {
             Action::Notes => self.open_saved_context(window, cx),
             Action::Outputs => self.open_studio_outputs(cx),
             Action::OpenProject => self.browse_workspace(cx),
+            Action::FileNameSearch => self.open_file_name_search(window, cx),
+            Action::SourceSearch => self.open_content_search(window, cx),
             Action::Task(id) => {
                 if self.select_task(id, cx) {
                     self.show_conversation(cx);

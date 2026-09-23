@@ -15,6 +15,7 @@ pub const SETTINGS_VERSION: u32 = 1;
 const MAX_FONT_FAMILY_BYTES: usize = 256;
 const MAX_KEYBINDINGS: usize = 256;
 const MAX_BINDING_BYTES: usize = 128;
+const MAX_PROVIDER_ORDER: usize = 128;
 
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -112,6 +113,9 @@ pub struct OnboardingSettings {
 #[serde(default, deny_unknown_fields)]
 pub struct GeneralSettings {
     pub default_provider: Option<String>,
+    /// User ordering for provider pickers; unlisted providers retain their
+    /// registry order and are appended when discovered.
+    pub provider_order: Vec<String>,
     pub show_chats: bool,
     pub show_studio: bool,
     pub alphabetical_projects: bool,
@@ -122,6 +126,7 @@ impl Default for GeneralSettings {
     fn default() -> Self {
         Self {
             default_provider: None,
+            provider_order: Vec::new(),
             show_chats: true,
             show_studio: true,
             alphabetical_projects: false,
@@ -173,6 +178,18 @@ impl AppSettings {
             .default_provider
             .as_ref()
             .is_some_and(|id| id.is_empty() || id.len() > 128 || id.chars().any(char::is_control))
+            || self.general.provider_order.len() > MAX_PROVIDER_ORDER
+            || self
+                .general
+                .provider_order
+                .iter()
+                .any(|id| id.is_empty() || id.len() > 128 || id.chars().any(char::is_control))
+            || self
+                .general
+                .provider_order
+                .iter()
+                .enumerate()
+                .any(|(index, id)| self.general.provider_order[..index].contains(id))
             || [&self.profile.name, &self.profile.username]
                 .iter()
                 .any(|value| value.len() > 120 || value.chars().any(char::is_control))
@@ -364,6 +381,7 @@ mod tests {
         changed.appearance.dark_theme = DarkThemePreference::Dracula;
         changed.general.alphabetical_projects = true;
         changed.general.show_studio = false;
+        changed.general.provider_order = vec!["claude".into(), "codex".into()];
         changed.profile = ProfileSettings {
             name: "Native user".into(),
             username: "native".into(),
@@ -464,6 +482,19 @@ mod tests {
         };
         assert!(settings.validate().is_err());
         settings.keybindings[1].shortcut = "ctrl+escape\n".into();
+        assert!(settings.validate().is_err());
+    }
+
+    #[test]
+    fn provider_order_is_bounded_and_unique() {
+        let mut settings = AppSettings::default();
+        settings.general.provider_order = vec!["codex".into(), "claude".into()];
+        assert!(settings.validate().is_ok());
+        settings.general.provider_order.push("codex".into());
+        assert!(settings.validate().is_err());
+        settings.general.provider_order = vec!["bad\nprovider".into()];
+        assert!(settings.validate().is_err());
+        settings.general.provider_order = vec!["p".repeat(129)];
         assert!(settings.validate().is_err());
     }
 }

@@ -56,6 +56,7 @@ pub(super) struct GoalsState {
     pub(super) open: bool,
     busy: bool,
     loading: bool,
+    command_save_pending: bool,
     error: Option<String>,
     lease: Option<Lease>,
     epoch: u64,
@@ -93,6 +94,7 @@ impl GoalsState {
             open: false,
             busy: false,
             loading: false,
+            command_save_pending: false,
             error: None,
             lease: None,
             epoch: 0,
@@ -116,12 +118,41 @@ impl GoalsState {
                 || !self.evidence.read(cx).text().is_empty())
     }
 }
+
+fn pause_command_error(
+    selected_task: Option<TaskId>,
+    current_task: Option<TaskId>,
+    goal_task: Option<TaskId>,
+    goal_loaded: bool,
+    lease_task: Option<TaskId>,
+    pending_edits_or_writes: bool,
+) -> Option<&'static str> {
+    let Some(selected_task) = selected_task else {
+        return Some("Select a task before pausing a goal. The command was kept.");
+    };
+    if current_task != Some(selected_task) || goal_task != Some(selected_task) || !goal_loaded {
+        return Some(
+            "The goal for this task is still loading or unavailable. The command was kept.",
+        );
+    }
+    if pending_edits_or_writes {
+        return Some("Finish saving or discard goal edits before pausing. The command was kept.");
+    }
+    if lease_task != Some(selected_task) {
+        return Some(
+            "No active goal is running for this task. Review or resume it from the Goal panel; the command was kept.",
+        );
+    }
+    None
+}
+
 impl Shell {
     pub(super) fn load_goals(&mut self, task: TaskId, cx: &mut Context<Self>) {
         self.goals.task = Some(task);
         self.goals.value = None;
         self.goals.busy = true;
         self.goals.loading = true;
+        self.goals.command_save_pending = false;
         self.goals.epoch = self.goals.epoch.wrapping_add(1);
         let epoch = self.goals.epoch;
         self.goals.open = false;
@@ -147,6 +178,40 @@ impl Shell {
         self.recap.open = false;
         self.goals.open = true;
         cx.notify();
+    }
+    pub(super) fn set_goal_from_command(
+        &mut self,
+        objective: String,
+        cx: &mut Context<Self>,
+    ) -> bool {
+        let blocked = if self.goals.task != self.selected || self.goals.value.is_none() {
+            Some("The goal for this task is still loading or unavailable. The command was kept.")
+        } else if self.goals.loading || self.goals.busy {
+            Some("Wait for the current goal operation to finish. The command was kept.")
+        } else if self.goals.lease.is_some() {
+            Some("Pause the active goal before replacing its objective. The command was kept.")
+        } else if self.goals.dirty(cx) {
+            Some(
+                "Save or discard the open goal edits before replacing its objective. The command was kept.",
+            )
+        } else {
+            None
+        };
+        if let Some(error) = blocked {
+            self.error = Some(error.into());
+            cx.notify();
+            return false;
+        }
+
+        self.open_goals(cx);
+        self.goals.error = None;
+        self.goals.command_save_pending = true;
+        self.notice = None;
+        self.goals
+            .input
+            .update(cx, |entry, cx| entry.set_text(objective.clone(), cx));
+        self.write_goal(0, GoalEdit::Set(objective), cx);
+        true
     }
     fn write_goal(&mut self, delta: u64, edit: GoalEdit, cx: &mut Context<Self>) {
         if self.goals.busy {
@@ -195,6 +260,16 @@ impl Shell {
             },
             cx,
         );
+    }
+    pub(super) fn goal_pause_command_error(&self, cx: &App) -> Option<&'static str> {
+        pause_command_error(
+            self.selected,
+            self.task().map(|task| task.id),
+            self.goals.task,
+            !self.goals.loading && self.goals.value.is_some(),
+            self.goals.lease.as_ref().map(|lease| lease.task),
+            self.goals.busy || self.goals.deferred.is_some() || self.goals.dirty(cx),
+        )
     }
     pub(super) fn goal_send_pending(&self, cx: &App) -> bool {
         self.goals.busy || self.goals.deferred.is_some() || self.goals.dirty(cx)
@@ -562,6 +637,7 @@ impl Shell {
                     return;
                 }
                 self.goals.busy = false;
+                let command_save = std::mem::take(&mut self.goals.command_save_pending);
                 match result {
                     Ok(value) => {
                         if self.goals.input.read(cx).text() == before {
@@ -571,6 +647,11 @@ impl Shell {
                         }
                         self.goals.value = Some(value);
                         self.goals.error = None;
+                        if command_save {
+                            self.notice = Some(
+                                "Goal saved paused. Explicit resume and Send are required to begin.".into(),
+                            );
+                        }
                     }
                     Err(e) => {
                         if let Some(l) = self.goals.lease.take() {
@@ -788,6 +869,14 @@ impl Shell {
                 .child(ui::layout_probe("goal-pause")),
             );
         }
+        if g.pending_write() {
+            root = root.child(
+                div()
+                    .text_xs()
+                    .text_color(rgb(palette().muted))
+                    .child("Saving goal…"),
+            );
+        }
         if !g.open {
             return root.into_any_element();
         }
@@ -949,5 +1038,43 @@ impl Shell {
             .child(ui::layout_probe("goal-close")),
         )
         .into_any_element()
+    }
+}
+
+#[cfg(test)]
+mod pause_command_tests {
+    use super::*;
+
+    #[test]
+    fn pause_command_requires_loaded_goal_and_matching_active_lease() {
+        let task = TaskId::new();
+        let other = TaskId::new();
+        assert!(pause_command_error(None, None, None, false, None, false).is_some());
+        assert!(
+            pause_command_error(Some(task), Some(other), Some(task), true, Some(task), false)
+                .is_some()
+        );
+        assert!(
+            pause_command_error(Some(task), Some(task), Some(other), true, Some(task), false)
+                .is_some()
+        );
+        assert!(
+            pause_command_error(Some(task), Some(task), Some(task), false, Some(task), false)
+                .is_some()
+        );
+        assert!(
+            pause_command_error(Some(task), Some(task), Some(task), true, Some(task), true)
+                .is_some()
+        );
+        assert_eq!(
+            pause_command_error(Some(task), Some(task), Some(task), true, None, false),
+            Some(
+                "No active goal is running for this task. Review or resume it from the Goal panel; the command was kept."
+            )
+        );
+        assert_eq!(
+            pause_command_error(Some(task), Some(task), Some(task), true, Some(task), false),
+            None
+        );
     }
 }

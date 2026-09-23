@@ -1,9 +1,17 @@
 //! Explicit local file/clipboard input. No network fetch, directory walk or source mutation.
 use super::*;
-use image::{ImageFormat, ImageReader, Limits};
-use std::{io::Cursor, path::Path, time::Duration};
+use image::{
+    ColorType, DynamicImage, ImageBuffer, ImageDecoder, ImageFormat, ImageReader, Limits,
+    codecs::webp::WebPDecoder,
+};
+use std::{
+    io::{self, Cursor, Seek, SeekFrom, Write},
+    path::Path,
+    time::Duration,
+};
 static DECODER: tokio::sync::Semaphore = tokio::sync::Semaphore::const_new(1);
 const MAX_FOLDER_SNAPSHOT_ENTRIES: usize = 256;
+const MAX_IMAGE_DECODE_BYTES: usize = 128 * 1024 * 1024;
 
 pub(super) async fn prepare(
     inputs: Vec<AttachmentInput>,
@@ -182,7 +190,10 @@ pub(super) fn inspect(name: String, bytes: &[u8]) -> WorkspaceResult<AttachmentI
             "An attachment has an invalid name, is empty or exceeds 2 MiB.",
         ));
     }
-    let (kind, dimensions) = if let Some((format, w, h)) = crate::studio::image_size(bytes) {
+    let (kind, dimensions) = if is_webp(bytes) {
+        let image = decode_webp(bytes)?;
+        (AttachmentKind::Webp, Some((image.width(), image.height())))
+    } else if let Some((format, w, h)) = crate::studio::image_size(bytes) {
         if w == 0 || h == 0 || w > 8192 || h > 8192 || u64::from(w) * u64::from(h) > 16_000_000 {
             return Err(invalid(
                 "Image dimensions exceed 8192 per side or 16 megapixels.",
@@ -223,22 +234,12 @@ pub(super) fn inspect(name: String, bytes: &[u8]) -> WorkspaceResult<AttachmentI
             .to_ascii_lowercase();
         if matches!(
             extension.as_str(),
-            "png"
-                | "jpg"
-                | "jpeg"
-                | "gif"
-                | "webp"
-                | "pdf"
-                | "zip"
-                | "mp4"
-                | "mp3"
-                | "wav"
-                | "docx"
+            "png" | "jpg" | "jpeg" | "gif" | "pdf" | "zip" | "mp4" | "mp3" | "wav" | "docx"
         ) || bytes.contains(&0)
             || std::str::from_utf8(bytes).is_err()
         {
             return Err(invalid(
-                "Only still PNG/JPEG images and UTF-8 text/code files are supported. Binary files were not attached.",
+                "Only still PNG/JPEG/WebP images and UTF-8 text/code files are supported. Binary files were not attached.",
             ));
         }
         (AttachmentKind::Text, None)
@@ -277,6 +278,153 @@ fn still_png(bytes: &[u8]) -> WorkspaceResult<()> {
     }
     Err(invalid("Truncated PNG attachment."))
 }
+
+fn is_webp(bytes: &[u8]) -> bool {
+    bytes.get(..4) == Some(b"RIFF") && bytes.get(8..12) == Some(b"WEBP")
+}
+
+fn valid_image_dimensions(width: u32, height: u32) -> WorkspaceResult<()> {
+    if width == 0
+        || height == 0
+        || width > 8192
+        || height > 8192
+        || u64::from(width) * u64::from(height) > 16_000_000
+    {
+        return Err(invalid(
+            "Image dimensions exceed 8192 per side or 16 megapixels.",
+        ));
+    }
+    Ok(())
+}
+
+fn decode_webp(bytes: &[u8]) -> WorkspaceResult<DynamicImage> {
+    let mut decoder = WebPDecoder::new(Cursor::new(bytes))
+        .map_err(|_| invalid("The WebP image is damaged or exceeds decoder limits."))?;
+    if decoder.has_animation() {
+        return Err(invalid(
+            "Animated WebP is unsupported. Choose a still image.",
+        ));
+    }
+    let (width, height) = decoder.dimensions();
+    valid_image_dimensions(width, height)?;
+
+    let mut limits = Limits::default();
+    limits.max_image_width = Some(8192);
+    limits.max_image_height = Some(8192);
+    limits.max_alloc = Some(MAX_IMAGE_DECODE_BYTES as u64);
+    decoder
+        .set_limits(limits)
+        .map_err(|_| invalid("The WebP image exceeds decoder limits."))?;
+
+    let size = usize::try_from(decoder.total_bytes())
+        .ok()
+        .filter(|size| *size <= MAX_IMAGE_DECODE_BYTES)
+        .ok_or_else(|| invalid("The WebP image exceeds decoder limits."))?;
+    let color = decoder.color_type();
+    let mut pixels = Vec::new();
+    pixels
+        .try_reserve_exact(size)
+        .map_err(|_| invalid("The WebP image exceeds available decoder memory."))?;
+    pixels.resize(size, 0);
+    decoder
+        .read_image(&mut pixels)
+        .map_err(|_| invalid("The WebP image is damaged or exceeds decoder limits."))?;
+
+    match color {
+        ColorType::Rgb8 => ImageBuffer::from_raw(width, height, pixels)
+            .map(DynamicImage::ImageRgb8)
+            .ok_or(StorageError::Identity.into()),
+        ColorType::Rgba8 => ImageBuffer::from_raw(width, height, pixels)
+            .map(DynamicImage::ImageRgba8)
+            .ok_or(StorageError::Identity.into()),
+        _ => Err(invalid("The WebP image uses an unsupported pixel format.")),
+    }
+}
+
+pub(super) fn webp_to_png(bytes: &[u8]) -> WorkspaceResult<Vec<u8>> {
+    let decoded = decode_webp(bytes)?;
+    let mut output = CappedWriter::new(MAX_ATTACHMENT_BATCH_BYTES);
+    let encoded = decoded.write_to(&mut output, ImageFormat::Png);
+    if output.exceeded {
+        return Err(invalid(
+            "This WebP image becomes larger than 2 MiB when converted to PNG for the selected agent.",
+        ));
+    }
+    encoded
+        .map_err(|_| invalid("The WebP image could not be converted for the selected agent."))?;
+    bounded_png(output.finish())
+}
+
+pub(super) fn bounded_png(png: Vec<u8>) -> WorkspaceResult<Vec<u8>> {
+    if png.len() > MAX_ATTACHMENT_BATCH_BYTES {
+        return Err(invalid(
+            "This WebP image becomes larger than 2 MiB when converted to PNG for the selected agent.",
+        ));
+    }
+    Ok(png)
+}
+
+struct CappedWriter {
+    bytes: Vec<u8>,
+    position: usize,
+    limit: usize,
+    exceeded: bool,
+}
+impl CappedWriter {
+    fn new(limit: usize) -> Self {
+        Self {
+            bytes: Vec::new(),
+            position: 0,
+            limit,
+            exceeded: false,
+        }
+    }
+
+    fn finish(self) -> Vec<u8> {
+        self.bytes
+    }
+}
+impl Write for CappedWriter {
+    fn write(&mut self, bytes: &[u8]) -> io::Result<usize> {
+        let Some(end) = self.position.checked_add(bytes.len()) else {
+            self.exceeded = true;
+            return Err(io::Error::other("PNG output limit exceeded"));
+        };
+        if end > self.limit {
+            self.exceeded = true;
+            return Err(io::Error::other("PNG output limit exceeded"));
+        }
+        if end > self.bytes.len() {
+            self.bytes
+                .try_reserve_exact(end - self.bytes.len())
+                .map_err(io::Error::other)?;
+            self.bytes.resize(end, 0);
+        }
+        self.bytes[self.position..end].copy_from_slice(bytes);
+        self.position = end;
+        Ok(bytes.len())
+    }
+
+    fn flush(&mut self) -> io::Result<()> {
+        Ok(())
+    }
+}
+impl Seek for CappedWriter {
+    fn seek(&mut self, position: SeekFrom) -> io::Result<u64> {
+        let next = match position {
+            SeekFrom::Start(position) => i128::from(position),
+            SeekFrom::Current(offset) => self.position as i128 + i128::from(offset),
+            SeekFrom::End(offset) => self.bytes.len() as i128 + i128::from(offset),
+        };
+        if next < 0 || next > self.limit as i128 {
+            self.exceeded = true;
+            return Err(io::Error::other("PNG output limit exceeded"));
+        }
+        self.position = next as usize;
+        Ok(self.position as u64)
+    }
+}
+
 /// RFC 4648 standard alphabet, with padding. No dependency change is needed.
 pub(super) fn base64(bytes: &[u8]) -> String {
     const ALPHABET: &[u8; 64] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
@@ -299,4 +447,17 @@ pub(super) fn base64(bytes: &[u8]) -> String {
         });
     }
     out
+}
+
+#[cfg(test)]
+mod output_tests {
+    use super::*;
+
+    #[test]
+    fn png_writer_stops_before_exceeding_its_cap() {
+        let mut writer = CappedWriter::new(2);
+        assert!(writer.write_all(&[1, 2, 3]).is_err());
+        assert!(writer.exceeded);
+        assert!(writer.bytes.len() <= 2);
+    }
 }

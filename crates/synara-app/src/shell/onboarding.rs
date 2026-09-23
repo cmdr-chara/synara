@@ -3,7 +3,7 @@
 //! authentication remains owned by the connected agent.
 use super::*;
 use crate::ui::{self, palette};
-use std::path::Path;
+use std::path::{Component, Path, PathBuf};
 
 const STEPS: [&str; 6] = [
     "Welcome",
@@ -22,6 +22,48 @@ fn command_found(command: &Path) -> bool {
         return false;
     };
     std::env::split_paths(&paths).any(|directory| directory.join(command).is_file())
+}
+
+fn validate_new_project_folder(path: &Path) -> Result<(), &'static str> {
+    if !path.is_absolute() {
+        return Err("Enter an absolute path for the new project folder.");
+    }
+    if path
+        .components()
+        .any(|component| matches!(component, Component::ParentDir))
+    {
+        return Err("Use a path without `..` components.");
+    }
+    if path.file_name().is_none() {
+        return Err("Choose a new folder path, not a filesystem root.");
+    }
+    if path.exists() {
+        return Err("That path already exists. Choose another path or select an existing folder.");
+    }
+    let Some(parent) = path.parent() else {
+        return Err("Choose a new folder inside an existing parent directory.");
+    };
+    if !parent.is_dir() {
+        return Err("The parent directory must already exist.");
+    }
+    Ok(())
+}
+
+fn is_registered_local_project(path: &Path, catalog: &Catalog) -> bool {
+    let Ok(root) = path.canonicalize() else {
+        return false;
+    };
+    catalog.projects.iter().any(|project| {
+        project.relative_directory.as_os_str().is_empty()
+            && catalog.workspaces.iter().any(|workspace| {
+                workspace.id == project.workspace_id
+                    && matches!(
+                        &workspace.location,
+                        WorkspaceLocation::Local { root: registered_root }
+                            if registered_root == &root
+                    )
+            })
+    })
 }
 
 impl Shell {
@@ -247,28 +289,150 @@ impl Shell {
     }
 
     fn onboarding_project(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
+        let entered_path = self.workspace_path.read(cx).text().trim().to_owned();
+        let entered_path_buf = PathBuf::from(&entered_path);
+        let existing_directory = entered_path_buf.is_dir();
+        let registered =
+            existing_directory && is_registered_local_project(&entered_path_buf, &self.catalog);
         div()
             .flex()
             .flex_col()
             .gap_3()
-            .child(onboarding_card("Open a project folder", "Choose an existing folder. For a new project, create its folder on disk first, then select it. Synara adds the folder as a local project and opens a task in it. You can also continue without a project."))
+            .child(onboarding_card("Add your first project", "A project is a local folder. Open one that already exists, create a new folder under an existing parent, or continue without a project."))
             .child(ui::button("onboarding-project-browse", "Choose project folder", false)
-                .on_click(cx.listener(|this, _, _, cx| this.browse_workspace(cx))))
+                .on_click(cx.listener(|this, _, _, cx| this.pick_onboarding_project_folder(cx))))
             .child(
                 div()
                     .flex()
                     .flex_col()
                     .gap_2()
-                    .child("Or enter an existing absolute directory")
+                    .child("Or enter an absolute folder path")
                     .child(self.workspace_path.clone())
-                    .child(ui::button("onboarding-project-path", "Open project", false)
-                        .on_click(cx.listener(|this, _, _, cx| this.open_workspace(cx)))),
+                    .children((!entered_path.is_empty()).then(|| {
+                        if existing_directory {
+                            ui::button(
+                                "onboarding-project-add-existing",
+                                if registered {
+                                    "Open project now"
+                                } else {
+                                    "Add existing folder"
+                                },
+                                false,
+                            )
+                            .on_click(cx.listener(move |this, _, _, cx| {
+                                if registered {
+                                    this.open_workspace(cx);
+                                } else {
+                                    this.add_onboarding_project(
+                                        entered_path_buf.clone(),
+                                        false,
+                                        cx,
+                                    );
+                                }
+                            }))
+                        } else {
+                            ui::button("onboarding-project-create", "Create project folder", false)
+                                .on_click(cx.listener(|this, _, _, cx| this.create_onboarding_project(cx)))
+                        }
+                    })),
             )
+            .children(registered.then(|| div()
+                .text_color(rgb(palette().muted))
+                .child("Project added to this workspace. Continue setup or open it now to start a task.")))
+            .children(self.error.as_ref().map(|error| div()
+                .id("onboarding-project-error")
+                .role(gpui::Role::Alert)
+                .text_color(rgb(palette().error))
+                .child(error.clone())))
             .child(ui::button("onboarding-project-import", "Import conversation history", false)
                 .on_click(cx.listener(|this, _, _, cx| {
                     this.open_settings_section(settings::Section::ProjectImport, cx);
                 })))
             .into_any_element()
+    }
+
+    fn create_onboarding_project(&mut self, cx: &mut Context<Self>) {
+        let entered_path = self.workspace_path.read(cx).text().trim().to_owned();
+        let path = PathBuf::from(entered_path);
+        if let Err(error) = validate_new_project_folder(&path) {
+            self.error = Some(error.into());
+            cx.notify();
+            return;
+        }
+        if let Err(error) = std::fs::create_dir(&path) {
+            self.error = Some(if error.kind() == std::io::ErrorKind::AlreadyExists {
+                "That path already exists. Choose another path or select an existing folder.".into()
+            } else {
+                format!("Could not create the project folder: {error}")
+            });
+            cx.notify();
+            return;
+        }
+
+        self.error = None;
+        self.add_onboarding_project(path, true, cx);
+    }
+
+    fn add_onboarding_project(
+        &mut self,
+        path: PathBuf,
+        created_here: bool,
+        cx: &mut Context<Self>,
+    ) {
+        self.error = None;
+        let workspace = self.controller.workspace.clone();
+        self.job(async move {
+            workspace
+                .add_local_workspace(path)
+                .await
+                .map_err(|error| {
+                    WorkspaceError::Invalid(if created_here {
+                        format!("The folder was created, but Synara could not add it: {error}. It remains on disk; select it again as an existing folder to retry.")
+                    } else {
+                        format!("Could not add the selected folder: {error}")
+                    })
+                })?;
+            let catalog = workspace.catalog().await.map_err(|error| {
+                WorkspaceError::Invalid(if created_here {
+                    format!("The folder was created and registered, but Synara could not refresh the project list: {error}")
+                } else {
+                    format!("The folder was added, but Synara could not refresh the project list: {error}")
+                })
+            })?;
+            Ok(Update::Catalog(catalog))
+        });
+        cx.notify();
+    }
+
+    fn pick_onboarding_project_folder(&self, cx: &mut Context<Self>) {
+        let picker = cx.prompt_for_paths(gpui::PathPromptOptions {
+            files: false,
+            directories: true,
+            multiple: false,
+            prompt: Some("Choose a project folder".into()),
+        });
+        cx.spawn(async move |view, cx| {
+            let result = picker.await;
+            let _ = view.update(cx, |this, cx| match result {
+                Ok(Ok(Some(paths))) => {
+                    if let Some(path) = paths.into_iter().next() {
+                        this.workspace_path.update(cx, |entry, cx| {
+                            entry.set_text(path.to_string_lossy().into_owned(), cx)
+                        });
+                        this.error = None;
+                    }
+                    cx.notify();
+                }
+                Ok(Ok(None)) => {}
+                _ => {
+                    this.error = Some(
+                        "The folder picker could not open. Enter the absolute path instead.".into(),
+                    );
+                    cx.notify();
+                }
+            });
+        })
+        .detach();
     }
 }
 
@@ -288,4 +452,32 @@ fn onboarding_card(title: &'static str, detail: &'static str) -> gpui::Div {
                 .line_height(px(22.))
                 .child(detail),
         )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::time::{SystemTime, UNIX_EPOCH};
+
+    fn unique_nonexistent_child(parent: &Path) -> PathBuf {
+        let nonce = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_nanos();
+        parent.join(format!("synara-onboarding-{}-{nonce}", std::process::id()))
+    }
+
+    #[test]
+    fn new_project_folder_requires_an_absolute_normalized_path_and_existing_parent() {
+        assert!(validate_new_project_folder(Path::new("relative/project")).is_err());
+
+        let parent = std::env::temp_dir();
+        let new_folder = unique_nonexistent_child(&parent);
+        assert_eq!(validate_new_project_folder(&new_folder), Ok(()));
+        assert!(validate_new_project_folder(&new_folder.join("missing-parent/project")).is_err());
+        assert!(validate_new_project_folder(&parent).is_err());
+
+        let with_parent = new_folder.join("..").join("another-project");
+        assert!(validate_new_project_folder(&with_parent).is_err());
+    }
 }

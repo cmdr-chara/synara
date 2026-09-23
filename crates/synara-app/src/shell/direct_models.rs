@@ -8,8 +8,9 @@ mod options;
 mod view;
 
 pub(super) enum Reply {
-    Loaded(ProviderSettings),
+    Loaded(ProviderSettings, Result<Vec<ModelFavorite>, String>),
     Saved(ProviderSettings),
+    FavoritesSaved(Vec<ModelFavorite>),
     Binding(TaskId, u64, Result<Option<DirectModelBinding>, String>),
     Selected(TaskId, Option<DirectModelBinding>),
     Catalog(ProviderCatalog),
@@ -42,6 +43,9 @@ pub(super) struct DirectModelState {
     mutating_task: Option<TaskId>,
     error: Option<String>,
     notice: Option<String>,
+    favorites: Vec<ModelFavorite>,
+    favorites_ready: bool,
+    favorites_error: Option<String>,
     query: Entity<TextEntry>,
     editor: Entity<TextEntry>,
     options: Entity<TextEntry>,
@@ -74,6 +78,9 @@ impl DirectModelState {
             mutating_task: None,
             error: None,
             notice: None,
+            favorites: Vec::new(),
+            favorites_ready: false,
+            favorites_error: None,
             query,
             editor,
             options,
@@ -144,10 +151,36 @@ impl Shell {
         let workspace = self.controller.workspace.clone();
         self.direct_model_job(
             async move {
+                let (settings, favorites) = tokio::join!(
+                    workspace.direct_model_settings(),
+                    workspace.model_favorites(),
+                );
+                Ok(Reply::Loaded(
+                    settings.map_err(|e| e.to_string())?,
+                    favorites.map_err(|e| e.to_string()),
+                ))
+            },
+            cx,
+        );
+    }
+    fn toggle_direct_model_favorite(
+        &mut self,
+        provider_id: String,
+        model_id: String,
+        cx: &mut Context<Self>,
+    ) {
+        if self.direct_models.busy || !self.direct_models.favorites_ready {
+            return;
+        }
+        let favorite = direct_model_favorite(&provider_id, &model_id);
+        let enabled = !self.direct_models.favorites.contains(&favorite);
+        let workspace = self.controller.workspace.clone();
+        self.direct_model_job(
+            async move {
                 workspace
-                    .direct_model_settings()
+                    .set_model_favorite(favorite, enabled)
                     .await
-                    .map(Reply::Loaded)
+                    .map(Reply::FavoritesSaved)
                     .map_err(|e| e.to_string())
             },
             cx,
@@ -470,11 +503,36 @@ impl Shell {
         }
         self.direct_models.busy = false;
         match reply {
-            Reply::Loaded(value) => self.direct_models.value = Some(value),
+            Reply::Loaded(value, favorites) => {
+                self.direct_models.value = Some(value);
+                match favorites {
+                    Ok(favorites) => {
+                        self.direct_models.favorites = favorites;
+                        self.direct_models.favorites_ready = true;
+                        self.direct_models.favorites_error = None;
+                    }
+                    Err(_) => {
+                        self.direct_models.favorites.clear();
+                        self.direct_models.favorites_ready = false;
+                        self.direct_models.favorites_error = Some(
+                            "Could not load model favorites. Reload before changing them.".into(),
+                        );
+                    }
+                }
+            }
             Reply::Saved(value) => {
                 self.direct_models.value = Some(value);
                 self.direct_models.editing = false;
                 self.direct_models.notice=Some("Provider metadata saved. Changed profiles require model re-selection. No request was sent.".into());
+            }
+            Reply::FavoritesSaved(favorites) => {
+                self.direct_models.favorites = favorites;
+                self.direct_models.favorites_ready = true;
+                self.direct_models.favorites_error = None;
+                self.direct_models.notice = Some(
+                    "Favorite preference saved. Choosing it still requires route review and confirmation."
+                        .into(),
+                );
             }
             Reply::Selected(task, binding) => {
                 self.direct_models.mutating_task = None;
@@ -573,4 +631,21 @@ impl Shell {
         .child(ui::layout_probe("direct-model-controls"))
         .into_any_element()
     }
+}
+
+const DIRECT_MODEL_FAVORITE_AGENT: &str = "direct-model:";
+
+fn direct_model_favorite(provider_id: &str, model_id: &str) -> ModelFavorite {
+    ModelFavorite {
+        agent: format!("{DIRECT_MODEL_FAVORITE_AGENT}{provider_id}"),
+        option: None,
+        value: model_id.to_owned(),
+    }
+}
+
+fn direct_favorite_provider_id(favorite: &ModelFavorite) -> Option<&str> {
+    (favorite.option.is_none())
+        .then(|| favorite.agent.strip_prefix(DIRECT_MODEL_FAVORITE_AGENT))
+        .flatten()
+        .filter(|provider_id| !provider_id.is_empty())
 }

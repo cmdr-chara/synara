@@ -4,6 +4,7 @@ use crate::{WorkspaceError, WorkspaceResult, WorkspaceService};
 use serde::{Deserialize, Serialize};
 const MAX_DRAFT: usize = 1024 * 1024;
 const MAX_FAVORITES: usize = 256;
+const MAX_MODEL_PRESETS: usize = 256;
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct ModelFavorite {
@@ -21,6 +22,66 @@ impl ModelFavorite {
             && self.agent.len() <= 128
             && text(&self.value)
             && self.option.as_deref().is_none_or(text)
+    }
+}
+/// A user-ordered ACP model preset. Values are stored verbatim from an agent's
+/// advertised session configuration and are revalidated against the live
+/// configuration before the app applies them.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct SessionModelPreset {
+    pub agent: String,
+    /// `None` denotes the legacy model selector; `Some` is an advertised
+    /// model-category option ID.
+    pub model_option: Option<String>,
+    pub model: String,
+    /// The optional advertised select option used for reasoning effort.
+    pub effort_option: Option<String>,
+    pub effort: Option<String>,
+}
+impl SessionModelPreset {
+    fn valid(&self) -> bool {
+        fn text(s: &str, max: usize) -> bool {
+            !s.is_empty() && s.len() <= max && !s.chars().any(char::is_control)
+        }
+        text(&self.agent, 128)
+            && text(&self.model, 1024)
+            && self.model_option.as_deref().is_none_or(|s| text(s, 1024))
+            && match (&self.effort_option, &self.effort) {
+                (Some(option), Some(value)) => text(option, 1024) && text(value, 1024),
+                (None, None) => true,
+                _ => false,
+            }
+    }
+}
+#[derive(Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct ModelPresets {
+    version: u32,
+    entries: Vec<SessionModelPreset>,
+}
+impl Default for ModelPresets {
+    fn default() -> Self {
+        Self {
+            version: 1,
+            entries: vec![],
+        }
+    }
+}
+impl ModelPresets {
+    fn validate(&self) -> StorageResult<()> {
+        if self.version != 1
+            || self.entries.len() > MAX_MODEL_PRESETS
+            || self.entries.iter().any(|preset| !preset.valid())
+            || self
+                .entries
+                .iter()
+                .enumerate()
+                .any(|(index, preset)| self.entries[..index].contains(preset))
+        {
+            return Err(StorageError::Identity);
+        }
+        Ok(())
     }
 }
 #[derive(Serialize, Deserialize)]
@@ -102,6 +163,50 @@ impl Store {
         tx.commit()?;
         Ok(stored.entries)
     }
+    fn session_model_presets(&self) -> StorageResult<Vec<SessionModelPreset>> {
+        let stored = self
+            .preference::<ModelPresets>("session-model-presets")?
+            .unwrap_or_default();
+        stored.validate()?;
+        Ok(stored.entries)
+    }
+    fn set_session_model_preset(
+        &mut self,
+        value: SessionModelPreset,
+        enabled: bool,
+    ) -> StorageResult<Vec<SessionModelPreset>> {
+        if !value.valid() {
+            return Err(StorageError::Identity);
+        }
+        let tx = self
+            .connection
+            .transaction_with_behavior(TransactionBehavior::Immediate)?;
+        let raw: Option<String> = tx
+            .query_row(
+                "SELECT data FROM preferences WHERE key='session-model-presets'",
+                [],
+                |row| row.get(0),
+            )
+            .optional()?;
+        let mut stored = raw
+            .as_deref()
+            .map(decode::<ModelPresets>)
+            .transpose()?
+            .unwrap_or_default();
+        stored.validate()?;
+        if enabled && !stored.entries.contains(&value) {
+            if stored.entries.len() == MAX_MODEL_PRESETS {
+                return Err(StorageError::Limit);
+            }
+            stored.entries.push(value);
+        } else if !enabled {
+            stored.entries.retain(|entry| entry != &value);
+        }
+        stored.validate()?;
+        tx.execute("INSERT INTO preferences(key,data) VALUES('session-model-presets',?1) ON CONFLICT(key) DO UPDATE SET data=excluded.data", [encode(&stored)?])?;
+        tx.commit()?;
+        Ok(stored.entries)
+    }
     fn task_draft(&self, id: TaskId) -> StorageResult<Option<String>> {
         if self.task(id)?.is_none() {
             return Ok(None);
@@ -149,6 +254,19 @@ impl WorkspaceService {
         self.access(move |store| Ok(store.set_model_favorite(favorite, enabled)?))
             .await
     }
+    pub async fn session_model_presets(&self) -> WorkspaceResult<Vec<SessionModelPreset>> {
+        self.access(|store| Ok(store.session_model_presets()?))
+            .await
+    }
+    /// Explicit enable/disable makes retries safe and preserves insertion order.
+    pub async fn set_session_model_preset(
+        &self,
+        preset: SessionModelPreset,
+        enabled: bool,
+    ) -> WorkspaceResult<Vec<SessionModelPreset>> {
+        self.access(move |store| Ok(store.set_session_model_preset(preset, enabled)?))
+            .await
+    }
     pub async fn task_draft(&self, id: TaskId) -> WorkspaceResult<String> {
         self.access(move |store| store.task_draft(id)?.ok_or(WorkspaceError::NotFound))
             .await
@@ -172,6 +290,15 @@ mod tests {
             agent: agent.into(),
             option: Some("model".into()),
             value: value.into(),
+        }
+    }
+    fn preset(agent: &str, model: &str, effort: Option<&str>) -> SessionModelPreset {
+        SessionModelPreset {
+            agent: agent.into(),
+            model_option: Some("model".into()),
+            model: model.into(),
+            effort_option: effort.map(|_| "reasoning_effort".into()),
+            effort: effort.map(str::to_owned),
         }
     }
     #[tokio::test]
@@ -227,6 +354,68 @@ mod tests {
         x.unwrap();
         y.unwrap();
         assert_eq!(a.model_favorites().await.unwrap().len(), 2);
+    }
+    #[tokio::test]
+    async fn model_presets_are_ordered_idempotent_and_survive_reopen() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("data.db");
+        let workspace = WorkspaceService::open(path.clone()).await.unwrap();
+        let first = preset("codex", "gpt-live", Some("high"));
+        let second = preset("claude", "sonnet-live", None);
+        workspace
+            .set_session_model_preset(first.clone(), true)
+            .await
+            .unwrap();
+        workspace
+            .set_session_model_preset(second.clone(), true)
+            .await
+            .unwrap();
+        assert_eq!(
+            workspace
+                .set_session_model_preset(first.clone(), true)
+                .await
+                .unwrap(),
+            vec![first.clone(), second.clone()]
+        );
+        drop(workspace);
+        let reopened = WorkspaceService::open(path).await.unwrap();
+        assert_eq!(
+            reopened.session_model_presets().await.unwrap(),
+            vec![first.clone(), second]
+        );
+        assert_eq!(
+            reopened
+                .set_session_model_preset(first.clone(), false)
+                .await
+                .unwrap(),
+            vec![preset("claude", "sonnet-live", None)]
+        );
+        assert!(
+            reopened.session_model_presets().await.unwrap()[0]
+                .effort
+                .is_none()
+        );
+    }
+    #[tokio::test]
+    async fn model_presets_reject_unpaired_or_unbounded_values() {
+        let workspace = WorkspaceService::memory().unwrap();
+        let mut invalid = preset("codex", "gpt-live", None);
+        invalid.effort = Some("high".into());
+        assert!(
+            workspace
+                .set_session_model_preset(invalid, true)
+                .await
+                .is_err()
+        );
+        let mut oversized = preset("codex", "gpt-live", None);
+        oversized.model = "m".repeat(1025);
+        assert!(
+            workspace
+                .set_session_model_preset(oversized, true)
+                .await
+                .is_err()
+        );
+        assert!(workspace.session_model_presets().await.unwrap().is_empty());
     }
     #[tokio::test]
     async fn malformed_preferences_are_not_silently_replaced() {

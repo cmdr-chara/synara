@@ -86,12 +86,12 @@ fn run() -> Result<()> {
         use std::os::unix::fs::PermissionsExt;
         std::fs::set_permissions(&options.data, std::fs::Permissions::from_mode(0o700))?;
     }
+    let database_path = options.data.join("native-workspace.sqlite3");
+    let _workspace_owner = synara_runtime::WorkspaceOwnerLock::acquire(&database_path)?;
     let runtime = tokio::runtime::Builder::new_multi_thread()
         .enable_all()
         .build()?;
-    let workspace = runtime.block_on(WorkspaceService::open(
-        options.data.join("native-workspace.sqlite3"),
-    ))?;
+    let workspace = runtime.block_on(WorkspaceService::open(database_path))?;
     let bootstrap = runtime.block_on(async {
         workspace.recover_interrupted().await?;
         if let Some(path) = options.agents {

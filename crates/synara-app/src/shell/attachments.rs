@@ -399,6 +399,8 @@ impl Shell {
                                 Arc::new(gpui::Image::from_bytes(
                                     if kind == AttachmentKind::Png {
                                         gpui::ImageFormat::Png
+                                    } else if kind == AttachmentKind::Webp {
+                                        gpui::ImageFormat::Webp
                                     } else {
                                         gpui::ImageFormat::Jpeg
                                     },

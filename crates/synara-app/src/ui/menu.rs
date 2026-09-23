@@ -7,6 +7,7 @@ use gpui::{
     ScrollStrategy, Subscription, UniformListScrollHandle, uniform_list,
 };
 pub use models::{ModelRow, ModelSource};
+use synara_workspace::SessionModelPreset;
 
 #[derive(Default)]
 pub struct Choice {
@@ -16,9 +17,10 @@ pub struct Choice {
     pub icon: Option<Glyph>,
     pub unavailable: Option<String>,
 }
-#[derive(Clone, Copy)]
+#[derive(Clone)]
 pub enum ChoiceEvent {
     Selected(usize),
+    PresetSelected(SessionModelPreset),
     Dismissed,
 }
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -181,7 +183,11 @@ impl ChoiceMenu {
             .get(index)
             .is_some_and(|choice| choice.unavailable.is_none())
         {
-            cx.emit(ChoiceEvent::Selected(index));
+            if let Some(preset) = self.models.as_ref().and_then(|state| state.preset(index)) {
+                cx.emit(ChoiceEvent::PresetSelected(preset));
+            } else {
+                cx.emit(ChoiceEvent::Selected(index));
+            }
         }
     }
     fn search_focused(&self, window: &Window, cx: &gpui::App) -> bool {

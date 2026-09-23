@@ -737,6 +737,9 @@ mod tests {
             "Caffè 日本語\n  exact whitespace\n"
         );
         assert_eq!(payload["messages"][1]["role"], "assistant");
+        assert_eq!(payload["messages"][0]["updatedAtMs"], 1);
+        assert_eq!(payload["messages"][1]["updatedAtMs"], 3);
+        assert_eq!(payload["messages"][2]["updatedAtMs"], 4);
         assert!(payload["messages"][0]["createdAtMs"].is_null());
         assert!(!json.contains("UNSENT-DO-NOT-EXPORT"));
         assert!(payload.get("workingDirectory").is_none());
@@ -786,5 +789,162 @@ mod tests {
                 .to_string_lossy()
                 .starts_with(".synara-export-")
         }));
+    }
+
+    #[tokio::test]
+    async fn zip_export_derives_message_update_times_from_durable_events_after_restart() {
+        use std::io::Read;
+        let dir = tempfile::tempdir().unwrap();
+        let database = dir.path().join("state.sqlite3");
+        let service = WorkspaceService::open(database.clone()).await.unwrap();
+        let task = seed(&service, dir.path()).await;
+        let barrier_event = EventId::new();
+        let explicit_event = EventId::new();
+        let new_tail_event = EventId::new();
+        let tail_event = EventId::new();
+        let fallback_event = EventId::new();
+        let thread_id = task.thread_id;
+        service
+            .access(move |store| {
+                for (sequence, id, timestamp_ms, event) in [
+                    (
+                        7,
+                        barrier_event,
+                        7,
+                        ThreadEvent::Notice {
+                            message: "timeline barrier".into(),
+                        },
+                    ),
+                    (
+                        8,
+                        explicit_event,
+                        8,
+                        ThreadEvent::TextDelta {
+                            message_id: Some("shared".into()),
+                            role: Role::Assistant,
+                            text: " later".into(),
+                        },
+                    ),
+                    (
+                        9,
+                        new_tail_event,
+                        9,
+                        ThreadEvent::TextDelta {
+                            message_id: Some("later-reasoning".into()),
+                            role: Role::Reasoning,
+                            text: "new tail".into(),
+                        },
+                    ),
+                    (
+                        10,
+                        tail_event,
+                        10,
+                        ThreadEvent::TextDelta {
+                            message_id: None,
+                            role: Role::Reasoning,
+                            text: " continued".into(),
+                        },
+                    ),
+                    (
+                        11,
+                        fallback_event,
+                        11,
+                        ThreadEvent::TextDelta {
+                            message_id: None,
+                            role: Role::User,
+                            text: "anonymous message".into(),
+                        },
+                    ),
+                ] {
+                    store.append(&EventEnvelope {
+                        id,
+                        thread_id,
+                        sequence,
+                        timestamp_ms,
+                        event,
+                    })?;
+                }
+                Ok(())
+            })
+            .await
+            .unwrap();
+        drop(service);
+
+        let reopened = WorkspaceService::open(database).await.unwrap();
+        let path = dir.path().join("updated-times.zip");
+        reopened
+            .export_zip_conversation(task.id, path.clone())
+            .await
+            .unwrap();
+        let mut zip = zip::ZipArchive::new(std::io::Cursor::new(fs::read(path).unwrap())).unwrap();
+        let mut json = String::new();
+        zip.by_name("thread.json")
+            .unwrap()
+            .read_to_string(&mut json)
+            .unwrap();
+        let payload: serde_json::Value = serde_json::from_str(&json).unwrap();
+        assert_eq!(payload["snapshotSequence"], 11);
+        assert_eq!(payload["messages"][1]["updatedAtMs"], 8);
+        assert_eq!(payload["messages"][2]["updatedAtMs"], 4);
+        assert_eq!(payload["messages"][3]["updatedAtMs"], 10);
+        assert_eq!(payload["messages"][3]["text"], "new tail continued");
+        assert_eq!(
+            payload["messages"][4]["id"],
+            format!("event-{fallback_event}")
+        );
+        assert_eq!(payload["messages"][4]["updatedAtMs"], 11);
+    }
+
+    #[tokio::test]
+    async fn zip_export_resets_message_update_projection_for_completed_history_replay() {
+        use std::io::Read;
+        let dir = tempfile::tempdir().unwrap();
+        let service = WorkspaceService::memory().unwrap();
+        let task = seed(&service, dir.path()).await;
+        let thread_id = task.thread_id;
+        service
+            .access(move |store| {
+                for (sequence, timestamp_ms, event) in [
+                    (7, 7, ThreadEvent::HistoryStarted),
+                    (
+                        8,
+                        8,
+                        ThreadEvent::TextDelta {
+                            message_id: Some("restored".into()),
+                            role: Role::User,
+                            text: "restored history".into(),
+                        },
+                    ),
+                    (9, 9, ThreadEvent::HistoryCompleted),
+                ] {
+                    store.append(&EventEnvelope {
+                        id: EventId::new(),
+                        thread_id,
+                        sequence,
+                        timestamp_ms,
+                        event,
+                    })?;
+                }
+                Ok(())
+            })
+            .await
+            .unwrap();
+        let path = dir.path().join("restored.zip");
+        service
+            .export_zip_conversation(task.id, path.clone())
+            .await
+            .unwrap();
+        let mut zip = zip::ZipArchive::new(std::io::Cursor::new(fs::read(path).unwrap())).unwrap();
+        let mut json = String::new();
+        zip.by_name("thread.json")
+            .unwrap()
+            .read_to_string(&mut json)
+            .unwrap();
+        let payload: serde_json::Value = serde_json::from_str(&json).unwrap();
+        assert_eq!(payload["snapshotSequence"], 9);
+        assert_eq!(payload["messages"].as_array().unwrap().len(), 1);
+        assert_eq!(payload["messages"][0]["id"], "restored");
+        assert_eq!(payload["messages"][0]["createdAtMs"], 8);
+        assert_eq!(payload["messages"][0]["updatedAtMs"], 8);
     }
 }

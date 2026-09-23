@@ -1,0 +1,32 @@
+name: Locked font reference input
+on:
+  push:
+    branches: [astra/electron-main-parity]
+    paths: [.github/workflows/font-reference-input.yml]
+permissions:
+  contents: read
+jobs:
+  export:
+    if: github.repository == 'cmdr-chara/synara'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - name: Preserve the exact lockfile-pinned package without executing scripts
+        run: |
+          mkdir -p /tmp/locked-font
+          python3 - <<'PY'
+          import base64, hashlib, pathlib, urllib.request
+          expected = 'WBA9elru6Jdp5df2mES55wuOO0WIrn3kpXnI4+W2ek5u3ZgLS9XS4gmIlcQhiZOWEKl95meYdvK7xI+ETLCq/Q=='
+          url = 'https://registry.npmjs.org/@fontsource-variable/jetbrains-mono/-/jetbrains-mono-5.2.8.tgz'
+          with urllib.request.urlopen(url, timeout=30) as response:
+              data = response.read(8 * 1024 * 1024 + 1)
+          assert len(data) <= 8 * 1024 * 1024
+          assert hashlib.sha512(data).digest() == base64.b64decode(expected)
+          pathlib.Path('/tmp/locked-font/jetbrains-mono-5.2.8.tgz').write_bytes(data)
+          pathlib.Path('/tmp/locked-font/SHA256SUMS').write_text(hashlib.sha256(data).hexdigest() + '  jetbrains-mono-5.2.8.tgz\n')
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: locked-font-reference-input
+          path: /tmp/locked-font/
+          retention-days: 3

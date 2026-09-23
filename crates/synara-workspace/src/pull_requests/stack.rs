@@ -15,7 +15,7 @@ struct Identity {
     head: String,
     base_repo: String,
     base_ref: String,
-    base: String,
+    base_commit: String,
 }
 #[derive(Clone, Debug)]
 pub struct StackRow {
@@ -341,11 +341,11 @@ fn parse_identity(repo: &GithubRepository, value: &Value) -> Result<Identity> {
         head: field(head, "sha", 40)?,
         base_repo: slug(base)?,
         base_ref: field(base, "ref", 256)?,
-        base: field(base, "sha", 40)?,
+        base_commit: field(base, "sha", 40)?,
     };
     if out.base_repo != repo.slug().to_ascii_lowercase()
         || !valid_sha(&out.head)
-        || !valid_sha(&out.base)
+        || !valid_sha(&out.base_commit)
     {
         return Err("Stack repository or commit identity is invalid".into());
     }

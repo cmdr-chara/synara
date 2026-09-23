@@ -44,6 +44,15 @@ enum Outcome {
     Capture(SnapWindow, Vec<u8>),
 }
 impl Shell {
+    pub(super) fn open_appsnap_from_settings(&mut self, cx: &mut Context<Self>) {
+        if self.selected.is_none() || self.close != CloseState::Open {
+            return;
+        }
+        self.set_panel(Panel::Conversation, cx);
+        self.appsnap.retire();
+        self.appsnap.open = true;
+        cx.notify();
+    }
     pub(super) fn toggle_appsnap(&mut self, cx: &mut Context<Self>) {
         let open = !self.appsnap.open;
         self.appsnap.retire();

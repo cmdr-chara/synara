@@ -35,7 +35,7 @@ impl Shell {
                     format!("Review route for {title}"),
                     if let Some(selection) = selection {
                         format!(
-                            "Model: {} / {}. Next explicit Send will share this chat's visible user/assistant text with {endpoint}. Hidden reasoning, approvals, provider sessions and filesystem state are not transferred. Existing ACP sessions are retired. Attachments and autonomous tool execution are not available in direct chat yet.",
+                            "Model: {} / {}. Next explicit Send will share this chat's retained visible user/assistant text and user images with {endpoint}. Hidden reasoning, approvals, provider sessions and filesystem state are not transferred. Existing ACP sessions are retired. Reviewed PNG/JPEG images and plain-text attachments are included according to the history window below. Autonomous tool execution is unavailable.",
                             selection.provider_id, selection.model_id
                         )
                     } else {
@@ -63,6 +63,7 @@ impl Shell {
             body=body.child(row().child(title).child(note(detail))
                 .children(matches!(review,Review::Route {selection:Some(_),..}).then(||div().flex().flex_col().gap_2()
                     .child(note("Model options (JSON). Identity is fixed by this review. JSON schema output is validated locally before completion. Supported: types, enum/const, object properties/required/additionalProperties, items, size limits and allOf/anyOf/oneOf/not. References, formats, regexes and numeric ranges are rejected before sending."))
+                    .child(self.direct_option_presets(cx))
                     .child(div().relative().h(px(220.)).flex().flex_col().child(state.options.clone()).child(ui::layout_probe("direct-options-editor")))))
                 .child(div().flex().gap_2()
                     .child(ui::action("direct-confirm","Confirm reviewed change",None,false,cx.listener(|this,_,_,cx|this.confirm_direct_review(cx))).relative().child(ui::layout_probe("direct-confirm")))
@@ -137,6 +138,26 @@ impl Shell {
                     .child(state.query.clone())
                     .child(ui::layout_probe("direct-search")),
             );
+        if let Some(selection) = self
+            .selected
+            .and_then(|id| state.bindings.get(&id))
+            .and_then(Option::as_ref)
+            .map(|binding| binding.selection.clone())
+        {
+            body = body.child(
+                ui::action(
+                    "direct-edit-current",
+                    "Review current model options",
+                    None,
+                    false,
+                    cx.listener(move |this, _, _, cx| {
+                        this.review_direct_route(Some(selection.clone()), cx)
+                    }),
+                )
+                .relative()
+                .child(ui::layout_probe("direct-edit-current")),
+            );
+        }
         let query = state.query.read(cx).text().trim().to_lowercase();
         if let Some(value) = &state.value {
             if value.providers.is_empty() {
@@ -242,6 +263,7 @@ impl Shell {
                         .take(60)
                     {
                         let selection = ModelSelection {
+                            history_turns: None,
                             provider_id: profile.id.clone(),
                             model_id: model.id.clone(),
                             max_output_tokens: model

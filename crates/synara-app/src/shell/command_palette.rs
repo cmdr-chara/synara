@@ -45,6 +45,7 @@ enum Action {
     DebugWorkflow,
     Goals,
     Recap,
+    Handoff,
     ToggleZen,
     Appearance,
     Attention,
@@ -319,6 +320,12 @@ impl Shell {
                     Action::Recap,
                 ),
                 (
+                    "Continue with another agent or model",
+                    "Electron-style handoff menu with immediate unsent creation",
+                    Glyph::Handoff,
+                    Action::Handoff,
+                ),
+                (
                     "Persistent thread goal",
                     "Explicit bounded pursuit, pause, blockers and achievements",
                     Glyph::Goal,
@@ -429,6 +436,7 @@ impl Shell {
             Action::Recap => self.open_recap(cx),
             Action::Goals => self.open_goals(cx),
             Action::DebugWorkflow => self.open_debug(cx),
+            Action::Handoff => self.open_handoff_menu(window, cx),
             Action::ToggleZen => self.toggle_zen(cx),
             Action::Appearance => self.open_appearance(cx),
             Action::Attention => self.open_attention(window, cx),

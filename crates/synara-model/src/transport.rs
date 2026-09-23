@@ -3,6 +3,7 @@ use crate::{
     stream::{ProtocolDecoder, SseDecoder},
     *,
 };
+mod discovery;
 use async_trait::async_trait;
 use futures::StreamExt;
 use reqwest::{Client, RequestBuilder, header::HeaderValue};
@@ -190,50 +191,7 @@ impl HttpModelProvider {
         if profile.protocol == ProtocolFamily::GoogleGenerateContent {
             return self.google_models(profile, secrets).await;
         }
-        let url = profile
-            .base_url()?
-            .join("models")
-            .map_err(|_| ModelError::Invalid("models URL"))?;
-        let mut builder = self.client.get(url).header("accept", "application/json");
-        if profile.protocol == ProtocolFamily::AnthropicMessages {
-            builder = builder.header("anthropic-version", "2023-06-01");
-        }
-        let response = self
-            .authorize(builder, profile, secrets)
-            .await?
-            .send()
-            .await
-            .map_err(|_| ModelError::Transport)?;
-        let value = bounded_json(response, 2 * MAX_REQUEST_BYTES).await?;
-        let data = value["data"].as_array().ok_or(ModelError::Protocol)?;
-        if data.len() > 4096 {
-            return Err(ModelError::Limit);
-        }
-        let mut result = Vec::new();
-        let mut ids = std::collections::HashSet::new();
-        for item in data {
-            let id = item["id"]
-                .as_str()
-                .filter(|v| bounded_identifier(v))
-                .ok_or(ModelError::Protocol)?;
-            if !ids.insert(id) {
-                return Err(ModelError::Protocol);
-            }
-            let name = item["display_name"]
-                .as_str()
-                .filter(|v| bounded_identifier(v))
-                .unwrap_or(id);
-            // /models generally reports identities, not tools, context or image support.
-            result.push(ModelInfo {
-                id: id.into(),
-                name: name.into(),
-                capabilities: ModelCapabilities {
-                    source: "provider /models (identity only, bounded first page)".into(),
-                    ..Default::default()
-                },
-            });
-        }
-        Ok(result)
+        self.standard_models(profile, secrets).await
     }
     async fn google_models(
         &self,

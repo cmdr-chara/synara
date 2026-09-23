@@ -192,8 +192,10 @@ mod tests {
     }
     #[test]
     fn releases_unknown_or_corrupt_history_is_not_replaced() {
-        let mut h = NativeVersionHistory::default();
-        h.format_version = 2;
+        let mut h = NativeVersionHistory {
+            format_version: 2,
+            ..NativeVersionHistory::default()
+        };
         assert!(h.observe("0.1.0", 1).is_err());
         h.format_version = 1;
         h.visits.push(NativeVersionVisit {

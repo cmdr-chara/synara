@@ -77,7 +77,7 @@ fn real_webkit_navigation_consent_input_redirect_and_isolation() {
             let len = stream.read(&mut data).unwrap_or(0);
             let request = String::from_utf8_lossy(&data[..len]).into_owned();
             log.lock().unwrap().push(request.clone());
-            let body = "<!doctype html><title>Native browser fixture</title><h1>REAL WEBKIT PAGE</h1><input aria-label='Name'><button onclick=\"document.querySelector('h1').textContent='Clicked '+document.querySelector('input').value\">Apply</button><script>window.__synaraRefs='page-forgery';</script>";
+            let body = "<!doctype html><title>Native browser fixture</title><style>body{min-height:2400px}</style><h1>REAL WEBKIT PAGE</h1><input aria-label='Name'><button onclick=\"document.querySelector('h1').textContent='Clicked '+document.querySelector('input').value\">Apply</button><script>window.__synaraRefs='page-forgery';</script>";
             let response = if request.starts_with("GET /redirect ") {
                 format!(
                     "HTTP/1.1 302 Found\r\nLocation: {forbidden}\r\nContent-Length: 0\r\nConnection: close\r\n\r\n"
@@ -306,6 +306,86 @@ fn real_webkit_navigation_consent_input_redirect_and_isolation() {
         text.contains("Clicked Synara"),
         "real DOM action was not applied: {text}"
     );
+    // The existing one-shot approval path owns scrolling too. Reading is
+    // required again before an old element can be used after a viewport change.
+    let read = session
+        .request(7, tab, BrowserOperation::ReadDocument, now())
+        .unwrap();
+    session.decide(read, true, now()).unwrap();
+    let Output::Document { elements, .. } = wait(&mut host, &mut session, read) else {
+        panic!()
+    };
+    let old_button = elements
+        .iter()
+        .find(|e| e.name == "Apply")
+        .unwrap()
+        .id
+        .clone();
+    assert!(
+        session
+            .request(
+                7,
+                tab,
+                BrowserOperation::Input {
+                    event: InputEvent::Scroll { x: 0, y: 4097 },
+                },
+                now()
+            )
+            .is_err()
+    );
+    let scroll = session
+        .request(
+            7,
+            tab,
+            BrowserOperation::Input {
+                event: InputEvent::Scroll { x: 0, y: 300 },
+            },
+            now(),
+        )
+        .unwrap();
+    pump(&mut host, &mut session);
+    assert!(matches!(
+        session.result(7, scroll).unwrap().state,
+        RequestState::AwaitingConsent
+    ));
+    session.decide(scroll, true, now()).unwrap();
+    assert!(matches!(
+        wait(&mut host, &mut session, scroll),
+        Output::Done
+    ));
+    assert!(
+        session
+            .request(
+                7,
+                tab,
+                BrowserOperation::Click {
+                    element: old_button
+                },
+                now()
+            )
+            .is_err()
+    );
+    let position = Rc::new(Cell::new(None));
+    let observed = position.clone();
+    host.views[&tab].webview.webview().evaluate_javascript(
+        "window.scrollY",
+        None,
+        None,
+        None::<&gio::Cancellable>,
+        move |result| {
+            observed.set(Some(result.unwrap().to_double()));
+        },
+    );
+    let end = Instant::now() + Duration::from_secs(5);
+    while position.get().is_none() {
+        pump(&mut host, &mut session);
+        assert!(Instant::now() < end, "scroll observation timed out");
+        std::thread::sleep(Duration::from_millis(10));
+    }
+    assert!(
+        position.get().unwrap() >= 299.,
+        "real WebKit viewport did not scroll"
+    );
     let redirect = session
         .request(
             7,
@@ -351,7 +431,7 @@ fn real_webkit_navigation_consent_input_redirect_and_isolation() {
     assert!(host.views.keys().all(|id| *id != tab));
     assert!(host.profiles.keys().all(|key| key != "task-7"));
     println!(
-        "REAL_WEBKIT_ACCEPTANCE: manual load, isolated cookies, consent, document, fill, click, redirect fence, teardown passed"
+        "REAL_WEBKIT_ACCEPTANCE: manual load, isolated cookies, consent, document, fill, click, approved scroll, stale references, redirect fence, teardown passed"
     );
 }
 

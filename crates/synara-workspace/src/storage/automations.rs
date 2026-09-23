@@ -110,6 +110,19 @@ impl Store {
         {
             return Ok(None);
         }
+        let previous_runs = ledger
+            .runs
+            .iter()
+            .filter(|r| r.definition.id == id && r.task_id.is_some())
+            .count();
+        if definition
+            .max_runs
+            .is_some_and(|limit| previous_runs >= limit as usize)
+        {
+            return Err(invalid(
+                "Run limit reached. Increase the limit before running again.",
+            ));
+        }
         if ledger.runs.len() >= 256 {
             return Err(invalid(
                 "Automation history is full. No run was started. Retained history is not silently deleted.",
@@ -188,6 +201,17 @@ impl Store {
             ],
         )?;
         ledger.runs.push(run.clone());
+        if run
+            .definition
+            .max_runs
+            .is_some_and(|limit| previous_runs + 1 >= limit as usize)
+        {
+            ledger.definitions[index].enabled = false;
+            ledger.definitions[index].revision = ledger.definitions[index]
+                .revision
+                .checked_add(1)
+                .ok_or_else(|| invalid("Revision overflow."))?;
+        }
         write(&tx, &ledger)?;
         tx.commit()?;
         Ok(Some(run))

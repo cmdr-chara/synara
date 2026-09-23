@@ -1,5 +1,6 @@
 //! Explicit workspace-wide editor commands. No agent or shell execution.
 use super::*;
+mod refresh;
 use std::sync::atomic::{AtomicBool, Ordering};
 
 pub(super) const CLOSED_LIMIT: usize = 8;
@@ -277,6 +278,16 @@ impl Shell {
                     Some(Glyph::Check),
                     false,
                     cx.listener(|this, _: &(), _, cx| this.save_all_editors(cx)),
+                )
+                .text_size(px(11.)),
+            )
+            .child(
+                ui::action(
+                    "editor-refresh-disk",
+                    "Refresh saved file",
+                    Some(Glyph::Restore),
+                    false,
+                    cx.listener(|this, _: &(), _, cx| this.refresh_saved_editor(cx)),
                 )
                 .text_size(px(11.)),
             )

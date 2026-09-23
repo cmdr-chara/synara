@@ -1,10 +1,12 @@
 # Reviewed provider continuation
 
-**Continue with...** in the conversation header or tools opens a native target
-picker. Choose a saved ACP agent or configured direct model, review the working
-folder and bounded visible context, edit that context, then explicitly create an
-**unsent related conversation**. Opening the source through **Open original**
-returns to the original transcript and draft.
+**Hand off** in the conversation header (next to Checkpoints), **Continue
+with...** in the conversation tools, or the command palette entry open a
+compact Electron-style target menu. Picking **Handoff to X** creates the
+**unsent related conversation** immediately with the generated context. The
+original stays intact and nothing is sent automatically. **Review before
+creating...** at the menu foot opens the full picker where the working
+folder and bounded visible context can be edited before explicit creation.
 
 This is not same-session migration. When provider session transfer has no safe
 contract, Synara creates a fresh TaskId and ThreadId. The UI says so. The original

@@ -12,6 +12,7 @@ pub(super) struct RepositoryPanel {
     runtime: Handle,
     catalog: RepositoryCatalog,
     view: View,
+    worktrees_only: bool,
     query: Entity<TextEntry>,
     form: Option<Form>,
     busy: bool,
@@ -30,6 +31,18 @@ struct Form {
     untracked: bool,
 }
 impl RepositoryPanel {
+    pub(super) fn show_worktrees(&mut self, cx: &mut Context<Self>) {
+        if self.form.is_none() {
+            self.view = View::Worktrees;
+            self.worktrees_only = true;
+            self.query.update(cx, |query, cx| query.clear(cx));
+            cx.notify();
+        }
+    }
+    pub(super) fn show_repository_tabs(&mut self, cx: &mut Context<Self>) {
+        self.worktrees_only = false;
+        cx.notify();
+    }
     pub(super) fn new(
         target: WorkspaceTarget,
         workspace: WorkspaceService,
@@ -45,6 +58,7 @@ impl RepositoryPanel {
             runtime,
             catalog: RepositoryCatalog::default(),
             view: View::Branches,
+            worktrees_only: false,
             query,
             form: None,
             busy: false,

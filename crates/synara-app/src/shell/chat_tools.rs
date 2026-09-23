@@ -27,6 +27,7 @@ enum Action {
     Pins,
     Copy,
     Export,
+    ExportZip,
     ReuseLast,
     Commands,
     Jump(MessageAnchor),
@@ -301,7 +302,7 @@ impl Shell {
                 match result {
                     Ok(()) => {
                         self.notice =
-                            Some("Text conversation exported to the file you selected.".into())
+                            Some("Conversation exported to the file you selected. It may contain private text.".into())
                     }
                     Err(error) => {
                         self.error = Some(format!(
@@ -468,29 +469,54 @@ impl Shell {
             ))))
         });
     }
-    fn export_conversation(&mut self, cx: &mut Context<Self>) {
+    pub(in crate::shell) fn export_conversation(&mut self, cx: &mut Context<Self>) {
+        self.export_conversation_format(false, cx);
+    }
+    pub(in crate::shell) fn export_zip_conversation(&mut self, cx: &mut Context<Self>) -> bool {
+        self.export_conversation_format(true, cx)
+    }
+    fn export_conversation_format(&mut self, zip: bool, cx: &mut Context<Self>) -> bool {
         let Some(task) = self.selected else {
-            return;
+            return false;
         };
-        if self.chat_tools.exporting {
-            return;
+        if self.chat_tools.exporting || self.close != CloseState::Open {
+            return false;
+        }
+        if zip
+            && (self.busy.contains(&task)
+                || self.connecting.contains(&task)
+                || self.controls.is_pending(task))
+        {
+            self.error = Some("Finish or stop this conversation before exporting a ZIP.".into());
+            cx.notify();
+            return false;
         }
         self.chat_tools.exporting = true;
-        let name = format!("synara-{task}.md");
-        // The system dialog makes the destination explicit. The storage worker
-        // writes a private, complete new file and refuses an existing destination.
+        let extension = if zip { "zip" } else { "md" };
+        let name = format!("synara-{task}.{extension}");
         let picker = cx.prompt_for_new_path(&self.scratch_directory, Some(&name));
         cx.spawn(async move |view, cx| {
             let result = picker.await;
             let _ = view.update(cx, |this, cx| match result {
                 Ok(Ok(Some(path))) => {
+                    if this.close != CloseState::Open || zip && (this.busy.contains(&task) || this.connecting.contains(&task) || this.controls.is_pending(task)) {
+                        this.chat_tools.exporting = false;
+                        this.error = Some("Export cancelled because the conversation started or the application is closing.".into());
+                        cx.notify();
+                        return;
+                    }
                     let workspace = this.controller.workspace.clone();
-                    this.job(async move { Ok(Update::ChatTools(Box::new(Reply::Exported(workspace.export_text_conversation(task, path).await.map_err(|error| error.to_string()))))) });
+                    this.job(async move {
+                        let result = if zip { workspace.export_zip_conversation(task, path).await }
+                            else { workspace.export_text_conversation(task, path).await };
+                        Ok(Update::ChatTools(Box::new(Reply::Exported(result.map_err(|error| error.to_string())))))
+                    });
                 }
                 Ok(Ok(None)) => { this.chat_tools.exporting = false; cx.notify(); },
                 _ => { this.chat_tools.exporting = false; this.error = Some("The system save dialog is unavailable. Copy the text conversation instead.".into()); cx.notify(); },
             });
         }).detach();
+        true
     }
     fn open_chat_menu(
         &mut self,
@@ -527,16 +553,18 @@ impl Shell {
             ),
             _subscription: subscription,
         });
+        tracing::debug!(target: "synara_ui_layout", "chat-menu-opened");
         cx.notify();
     }
     pub(super) fn consume_chat_action(&mut self, window: &mut Window, cx: &mut Context<Self>) {
         let Some((task, action)) = self.chat_tools.pending_action.take() else {
             return;
         };
-        if let Some(popup) = self.chat_tools.popup.take()
-            && let Some(focus) = popup.previous_focus
-        {
-            window.focus(&focus, cx);
+        if let Some(popup) = self.chat_tools.popup.take() {
+            if let Some(focus) = popup.previous_focus {
+                window.focus(&focus, cx);
+            }
+            tracing::debug!(target: "synara_ui_layout", "chat-menu-closed");
         }
         let Some(action) = action else {
             return;
@@ -549,6 +577,9 @@ impl Shell {
             Action::Pins => self.open_pinned_messages(window, cx),
             Action::Copy => self.copy_conversation(cx),
             Action::Export => self.export_conversation(cx),
+            Action::ExportZip => {
+                self.export_zip_conversation(cx);
+            }
             Action::ReuseLast => {
                 if let Some(text) = self
                     .thread
@@ -733,6 +764,12 @@ impl Shell {
                 "Copies user, assistant and reasoning text as Markdown",
                 Glyph::Copy,
                 Action::Copy,
+            ),
+            (
+                "Export ZIP conversation",
+                "Save Markdown and structured messages together. Private text, no credentials or file contents.",
+                Glyph::Files,
+                Action::ExportZip,
             ),
             (
                 "Export text conversation",

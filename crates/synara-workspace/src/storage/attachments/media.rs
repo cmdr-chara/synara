@@ -18,7 +18,14 @@ fn decode_image(image: &TranscriptImage) -> WorkspaceResult<Vec<u8>> {
             _ => return None,
         })
     }
-    for (index, chunk) in image.base64.as_bytes().chunks_exact(4).enumerate() {
+    for (index, chunk) in image
+        .base64
+        .as_bytes()
+        .as_chunks::<4>()
+        .0
+        .iter()
+        .enumerate()
+    {
         let final_chunk = index + 1 == image.base64.len() / 4;
         let a = value(chunk[0]).ok_or_else(|| invalid("Malformed image encoding."))?;
         let b = value(chunk[1]).ok_or_else(|| invalid("Malformed image encoding."))?;

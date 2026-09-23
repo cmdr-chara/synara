@@ -2,6 +2,8 @@
 //! Catalog metadata describes capabilities, not authorization or verified account access.
 mod catalog;
 mod config;
+mod input;
+pub use input::*;
 mod google;
 mod protocol;
 mod schema;

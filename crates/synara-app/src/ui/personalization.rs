@@ -1,13 +1,11 @@
 //! Independently authored Synara colorways and native material roles.
 use super::{DARK, LIGHT, Palette};
 use gpui::{Rgba, rgba};
-use synara_workspace::{
-    Colorway, DensityPreference, MotionPreference, Personalization, SurfaceMaterial,
-};
+use synara_workspace::{Colorway, MotionPreference, Personalization, SurfaceMaterial};
 
 thread_local! {
     static STYLE: std::cell::RefCell<Personalization> = std::cell::RefCell::new(Personalization::default());
-    static FONT_SIZES: std::cell::Cell<(f32, f32)> = const { std::cell::Cell::new((14., 13.)) };
+    static FONT_SIZES: std::cell::Cell<(f32, f32)> = const { std::cell::Cell::new((super::metrics::DEFAULT_UI_FONT_SIZE, super::metrics::DEFAULT_CODE_FONT_SIZE)) };
 }
 pub(super) fn configure(value: &synara_workspace::AppearanceSettings) {
     STYLE.with(|style| {
@@ -117,13 +115,16 @@ pub fn glass_edge() -> Rgba {
 pub fn chat_width() -> f32 {
     STYLE.with(|style| f32::from(style.borrow().chat_width))
 }
-pub fn row_height() -> f32 {
-    STYLE.with(|style| match style.borrow().density {
-        DensityPreference::Compact => 28.,
-        DensityPreference::Comfortable => 30.,
-        DensityPreference::Spacious => 36.,
-    })
+pub fn density_metrics() -> super::metrics::DensityMetrics {
+    STYLE.with(|style| super::metrics::DensityMetrics::new(style.borrow().density))
 }
+pub fn row_height() -> f32 {
+    density_metrics().row_height
+}
+pub fn settings_row_padding() -> f32 {
+    density_metrics().settings_row_padding_y
+}
+
 pub fn motion_multiplier() -> f32 {
     STYLE.with(|style| match style.borrow().motion {
         MotionPreference::Off => 0.,

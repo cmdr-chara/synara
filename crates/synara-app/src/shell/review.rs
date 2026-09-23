@@ -142,6 +142,29 @@ fn clear_submitted(current_edits: u64, current_text: &str, submitted: &(u64, Str
 }
 
 impl Shell {
+    pub(super) fn prepare_worktree_settings(&mut self, cx: &mut Context<Self>) {
+        self.open_repository(cx);
+        if let Some(scope) = self.review_scope()
+            && let Some(panel) = self.review.repositories.get(&scope).cloned()
+        {
+            panel.update(cx, |panel, cx| panel.show_worktrees(cx));
+        }
+    }
+    pub(super) fn worktree_settings_view(&self, _: &mut Context<Self>) -> gpui::AnyElement {
+        let scope = self.review_scope();
+        let panel = scope
+            .as_ref()
+            .and_then(|scope| self.review.repositories.get(scope));
+        match panel {
+            Some(panel) => div().w_full().flex().flex_col().gap_3()
+                .child("Worktrees in the selected repository. Existing execution and removal confirmations still apply.")
+                .child(div().h(px(520.)).min_h(px(300.)).w_full().border_1().border_color(rgb(palette().border)).rounded_xl().overflow_hidden().child(panel.clone()))
+                .into_any_element(),
+            None => div().p_6().text_color(rgb(palette().muted))
+                .child("Select a project before managing its worktrees. This page does not create a workspace or start a tool implicitly.")
+                .into_any_element(),
+        }
+    }
     fn open_repository(&mut self, cx: &mut Context<Self>) {
         let (Some(scope), Some(target)) = (self.review_scope(), self.workspace_target()) else {
             return;
@@ -156,9 +179,15 @@ impl Shell {
         }
         let workspace = self.controller.workspace.clone();
         let runtime = self.runtime.clone();
-        self.review.repositories.entry(scope).or_insert_with(|| {
-            cx.new(|cx| repository::RepositoryPanel::new(target, workspace, runtime, cx))
-        });
+        self.review
+            .repositories
+            .entry(scope.clone())
+            .or_insert_with(|| {
+                cx.new(|cx| repository::RepositoryPanel::new(target, workspace, runtime, cx))
+            });
+        if let Some(panel) = self.review.repositories.get(&scope).cloned() {
+            panel.update(cx, |panel, cx| panel.show_repository_tabs(cx));
+        }
         self.review.repository_open = true;
         self.focus_composer = false;
         cx.notify();
@@ -606,6 +635,46 @@ impl Shell {
         cx.notify();
     }
 
+    fn review_open_selected(&mut self, line: Option<usize>, cx: &mut Context<Self>) {
+        if self.saving || self.explorer.modal_open() || self.close != CloseState::Open {
+            return;
+        }
+        let Some(scope) = self.review_scope() else {
+            return;
+        };
+        let Some(session) = self
+            .review
+            .sessions
+            .get(&scope)
+            .filter(|session| session.ready())
+        else {
+            return;
+        };
+        let Some(path) = session.preferences.path.as_ref() else {
+            return;
+        };
+        if !session
+            .status
+            .entries
+            .iter()
+            .any(|entry| entry.path == *path && entry.worktree_status != 'D')
+        {
+            return;
+        }
+        let path = path.clone();
+        if self.editors.index(&path).is_none() && self.editors.tabs.len() >= editors::MAX_TABS {
+            self.notice = Some("Close an editor tab before opening another file.".into());
+            cx.notify();
+            return;
+        }
+        self.set_panel(Panel::Files, cx);
+        if self.panel != Panel::Files {
+            return;
+        }
+        self.editors.jump_after_open = line.map(|line| (path.clone(), line));
+        self.open_file(path, cx);
+    }
+
     pub(super) fn git_panel(&self, width: f32, cx: &mut Context<Self>) -> gpui::AnyElement {
         let Some(scope) = self.review_scope() else {
             return div()
@@ -613,34 +682,34 @@ impl Shell {
                 .child("Open a project to review its changes.")
                 .into_any_element();
         };
-        if self.review.repository_open {
-            if let Some(panel) = self.review.repositories.get(&scope) {
-                let repository = panel.clone();
-                return div()
-                    .flex()
-                    .flex_col()
-                    .flex_1()
-                    .min_h_0()
-                    .min_w_0()
-                    .child(
-                        ui::action(
-                            "repository-back",
-                            "Back to changes",
-                            Some(Glyph::Back),
-                            false,
-                            cx.listener(move |this, _: &(), _, cx| {
-                                if !repository.read(cx).busy() {
-                                    this.review.repository_open = false;
-                                    this.refresh_git(cx);
-                                    cx.notify();
-                                }
-                            }),
-                        )
-                        .text_size(px(12.)),
+        if self.review.repository_open
+            && let Some(panel) = self.review.repositories.get(&scope)
+        {
+            let repository = panel.clone();
+            return div()
+                .flex()
+                .flex_col()
+                .flex_1()
+                .min_h_0()
+                .min_w_0()
+                .child(
+                    ui::action(
+                        "repository-back",
+                        "Back to changes",
+                        Some(Glyph::Back),
+                        false,
+                        cx.listener(move |this, _: &(), _, cx| {
+                            if !repository.read(cx).busy() {
+                                this.review.repository_open = false;
+                                this.refresh_git(cx);
+                                cx.notify();
+                            }
+                        }),
                     )
-                    .child(panel.clone())
-                    .into_any_element();
-            }
+                    .text_size(px(12.)),
+                )
+                .child(panel.clone())
+                .into_any_element();
         }
         let Some(session) = self.review.sessions.get(&scope) else {
             return div()
@@ -959,25 +1028,7 @@ impl Shell {
                 action_disabled
                     || selected.is_none()
                     || file.is_some_and(|entry| entry.worktree_status == 'D'),
-                cx.listener(|this, _: &(), _, cx| {
-                    if this.dirty(cx) || this.saving || this.explorer.modal_open() {
-                        this.error = Some(
-                            "Save or discard the open document before opening a review file."
-                                .into(),
-                        );
-                        cx.notify();
-                        return;
-                    }
-                    let path = this
-                        .review_scope()
-                        .and_then(|scope| this.review.sessions.get(&scope))
-                        .filter(|session| session.ready())
-                        .and_then(|session| session.preferences.path.clone());
-                    if let Some(path) = path {
-                        this.set_panel(Panel::Files, cx);
-                        this.open_file(path, cx);
-                    }
-                }),
+                cx.listener(|this, _: &(), _, cx| this.review_open_selected(None, cx)),
             ))
             .child(
                 ui::action(
@@ -1101,20 +1152,24 @@ impl Shell {
             "review-diff",
             session.diff.lines.len(),
             move |range, _, cx| {
-                entity.update(cx, |this, _| {
+                entity.update(cx, |this, cx| {
                     let Some(session) = this.review.sessions.get(&scope) else {
                         return Vec::new();
                     };
                     range
-                        .filter_map(|index| session.diff.lines.get(index))
-                        .map(|line| {
+                        .filter_map(|index| session.diff.lines.get(index).map(|line| (index, line)))
+                        .map(|(index, line)| {
                             let color = match line.kind {
                                 diff::Kind::Added => palette().focus,
                                 diff::Kind::Removed => palette().error,
                                 diff::Kind::Hunk => palette().muted,
                                 _ => palette().text,
                             };
+                            let line_number =
+                                line.new.and_then(|number| usize::try_from(number).ok());
+                            let jump = session.preferences.path.is_some() && line_number.is_some();
                             div()
+                                .id(("review-diff-line", index))
                                 .h(px(21.))
                                 .w_full()
                                 .min_w_0()
@@ -1156,6 +1211,13 @@ impl Shell {
                                     )
                                 })
                                 .child(div().px_2().child(line.text.clone()))
+                                .when(jump, |el| {
+                                    el.cursor_pointer().on_click(cx.listener(
+                                        move |this, _, _, cx| {
+                                            this.review_open_selected(line_number, cx);
+                                        },
+                                    ))
+                                })
                         })
                         .collect::<Vec<_>>()
                 })

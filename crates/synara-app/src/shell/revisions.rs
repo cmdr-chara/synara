@@ -69,7 +69,7 @@ impl Shell {
             cx.notify();
             return true;
         }
-        if self.revisions.pending {
+        if self.revisions.pending() {
             self.error = Some(
                 "Wait for the revision action to finish before leaving this conversation.".into(),
             );
@@ -421,13 +421,12 @@ impl Shell {
             .on_mouse_down(
                 gpui::MouseButton::Left,
                 cx.listener(|this, _, _, cx| {
-                    if !this.revisions.pending {
-                        if let Some(dialog) = this.revisions.dialog.as_ref()
+                    if !this.revisions.pending
+                        && let Some(dialog) = this.revisions.dialog.as_ref()
                             && dialog.editor.read(cx).text() == dialog.original
                         {
                             this.dismiss_revision(cx);
                         }
-                    }
                     cx.stop_propagation();
                 }),
             )
@@ -452,13 +451,12 @@ impl Shell {
                         cx.stop_propagation()
                     })
                     .on_key_down(cx.listener(|this, event: &gpui::KeyDownEvent, _, cx| {
-                        if event.keystroke.key == "escape" && !this.revisions.pending {
-                            if let Some(dialog) = this.revisions.dialog.as_ref()
+                        if event.keystroke.key == "escape" && !this.revisions.pending
+                            && let Some(dialog) = this.revisions.dialog.as_ref()
                                 && dialog.editor.read(cx).text() == dialog.original
                             {
                                 this.dismiss_revision(cx);
                             }
-                        }
                         cx.stop_propagation();
                     }))
                     .child(

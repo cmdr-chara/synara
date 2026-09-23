@@ -149,6 +149,56 @@ async fn snapshots_restore_atomic_imports_reject_stale_edits_and_never_start_age
         .await
         .unwrap();
 }
+
+#[tokio::test]
+async fn folder_attachment_is_a_bounded_names_only_snapshot() {
+    let dir = tempfile::tempdir().unwrap();
+    let service = WorkspaceService::memory().unwrap();
+    let task = task(&service, dir.path().into()).await;
+    let folder = dir.path().join("selected-folder");
+    let nested = folder.join("nested");
+    std::fs::create_dir_all(&nested).unwrap();
+    for index in 0..258 {
+        let name = format!("item-{index:03}.txt");
+        let body = if index == 0 {
+            "private source contents"
+        } else {
+            "ordinary file contents"
+        };
+        std::fs::write(folder.join(name), body).unwrap();
+    }
+    std::fs::write(nested.join("nested-secret.txt"), "nested contents").unwrap();
+
+    let draft = service
+        .add_attachments(task.id, 0, vec![AttachmentInput::Folder(folder.clone())])
+        .await
+        .unwrap();
+    let info = &draft.pending[0];
+    assert!(info.is_folder_snapshot());
+    assert_eq!(info.kind, AttachmentKind::Text);
+    assert!(draft.unsupported(&AgentCapabilities::default()).is_some());
+    let preview = service
+        .attachment_preview(task.id, info.id.clone())
+        .await
+        .unwrap();
+    let snapshot = String::from_utf8(preview.bytes).unwrap();
+    assert!(snapshot.contains("item-000.txt"));
+    assert!(snapshot.contains("FOLDER (contents not scanned)") && snapshot.contains("nested"));
+    assert!(snapshot.contains("3 additional entries omitted"));
+    assert!(!snapshot.contains("private source contents"));
+    assert!(!snapshot.contains("nested-secret.txt"));
+    assert!(!snapshot.contains(folder.to_str().unwrap()));
+
+    let prompt = service
+        .attached_prompt(task.id, "Review this folder".into(), draft.revision)
+        .await
+        .unwrap();
+    assert!(matches!(
+        &prompt.parts[2],
+        PromptPart::Context { text, .. } if text == &snapshot
+    ));
+}
+
 #[tokio::test]
 async fn acknowledgement_preserves_newer_files_and_future_metadata_is_never_replaced() {
     let dir = tempfile::tempdir().unwrap();

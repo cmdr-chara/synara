@@ -341,7 +341,7 @@ fn direct_request_rejects_unmatched_tool_results_and_oversized_prompts() {
     });
     assert!(validate_request(&p, &r).is_err());
     r = request();
-    r.messages[0] = Message::text(MessageRole::User, "x".repeat(MAX_REQUEST_BYTES));
+    r.messages[0] = Message::text(MessageRole::User, "x".repeat(MAX_INPUT_BYTES));
     assert!(validate_request(&p, &r).is_err());
     r = request();
     r.max_output_tokens = 0;

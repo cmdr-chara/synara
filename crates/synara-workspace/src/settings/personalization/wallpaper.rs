@@ -90,9 +90,9 @@ fn prepare(path: PathBuf, blur: u8) -> WorkspaceResult<WallpaperAsset> {
     let mut pixels = image::imageops::fast_blur(&pixels, f32::from(blur));
     for pixel in pixels.pixels_mut() {
         let alpha = u16::from(pixel[3]);
-        if alpha > 0 {
-            for channel in 0..3 {
-                pixel[channel] = (u16::from(pixel[channel]) * 255 / alpha).min(255) as u8;
+        for channel in 0..3 {
+            if let Some(value) = (u16::from(pixel[channel]) * 255).checked_div(alpha) {
+                pixel[channel] = value.min(255) as u8;
             }
         }
     }

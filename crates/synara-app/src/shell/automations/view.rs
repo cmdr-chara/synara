@@ -112,7 +112,9 @@ impl Shell {
                 .child(div().text_sm().child("Project / workspace"))
                 .child(div().flex().flex_wrap().gap_1().children(projects))
                 .child(state.schedule.clone()).child(state.timezone.clone())
-                .child(div().text_sm().text_color(rgb(palette().muted)).child("Intervals: every 1m through every 10080m. Daily: daily HH:MM. UTC or fixed offset only. DST/IANA zones are explicitly unsupported."))
+                .child(div().text_sm().text_color(rgb(palette().muted)).child("Intervals: every 1m through every 10080m. Also daily HH:MM, weekdays HH:MM, or weekly mon HH:MM (sun through sat). UTC or fixed offset only; DST/IANA zones remain unsupported."))
+                .child(state.max_runs.clone()).child(state.failure_limit.clone())
+                .child(div().text_sm().text_color(rgb(palette().muted)).child("Run and consecutive-failure limits pause the automation automatically. Existing automations keep their saved limits; new automations default to 3 consecutive failures."))
                 .child(ui::button("auto-missed", format!("Missed runs: {:?} (change)", editor.missed), false).on_click(cx.listener(|this, _, _, cx| {
                     if let Some(editor) = &mut this.automations.editor { editor.missed = match editor.missed { MissedRunPolicy::Skip => MissedRunPolicy::CatchUpOnce, MissedRunPolicy::CatchUpOnce => MissedRunPolicy::Skip }; editor.edit_revision = editor.edit_revision.wrapping_add(1); } cx.notify();
                 })))
@@ -130,6 +132,7 @@ impl Shell {
                 div().border_b_1().border_color(rgb(palette().border)).py_3().flex().flex_col().gap_1()
                     .child(div().text_base().child(d.title.clone()))
                     .child(div().text_sm().child(format!("{} / {} / {} / {} / {:?}", if d.enabled { "Enabled" } else { "Paused" }, project, d.agent_id, d.schedule.label(), d.missed)))
+                    .child(div().text_sm().text_color(rgb(palette().muted)).child(format!("Total run limit: {} / Consecutive failures: {} / Failure limit: {}", d.max_runs.map(|n| n.to_string()).unwrap_or_else(|| "none".into()), d.failure_streak, d.stop_after_consecutive_failures.map(|n| n.to_string()).unwrap_or_else(|| "none".into()))))
                     .child(div().text_sm().text_color(rgb(palette().muted)).child(format!("Timezone: {} / Next: {}{}", d.timezone, time_label(d.next_run_ms), if !d.enabled { " (paused)" } else { "" })))
                     .child(div().text_sm().child(d.instructions.chars().take(280).collect::<String>()))
                     .child(div().flex().flex_wrap().gap_1()

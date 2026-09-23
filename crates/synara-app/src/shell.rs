@@ -3,6 +3,7 @@ mod activity;
 mod appsnap;
 mod attachments;
 mod automations;
+mod autonomy;
 mod browser;
 mod chat_tools;
 mod checkpoints;
@@ -28,6 +29,7 @@ mod integrations;
 mod kanban;
 mod messages;
 mod navigation;
+mod onboarding;
 mod organization;
 mod overview;
 mod panels;
@@ -121,6 +123,7 @@ enum Update {
     Checkpoints(Box<checkpoints::Reply>),
     InlineComments(Box<inline_comments::Reply>),
     DirectModels(Box<direct_models::Reply>),
+    Autonomy(Box<autonomy::Reply>),
     ProjectImport(Box<project_import::Reply>),
     Automations(Box<automations::Reply>),
     PullRequests(Box<pull_requests::Reply>),
@@ -239,6 +242,7 @@ pub struct Shell {
     settings: settings::SettingsState,
     integrations: integrations::IntegrationState,
     direct_models: direct_models::DirectModelState,
+    autonomy: autonomy::AutonomyView,
     project_import: project_import::ImportState,
     close: CloseState,
     close_focus: gpui::FocusHandle,
@@ -454,6 +458,8 @@ impl Shell {
             &bootstrap.selection,
             &bootstrap.catalog,
         );
+        let show_onboarding =
+            bootstrap.settings.onboarding.started && !bootstrap.settings.onboarding.completed;
         let mut this = Self {
             goals: goals::GoalsState::new(cx),
             releases: releases::ReleasesState::default(),
@@ -497,6 +503,7 @@ impl Shell {
             settings: settings::SettingsState::new(bootstrap.settings, cx),
             integrations: integrations::IntegrationState::new(cx),
             direct_models: direct_models::DirectModelState::new(cx),
+            autonomy: autonomy::AutonomyView::new(cx),
             project_import: project_import::ImportState::new(cx),
             close: CloseState::Open,
             close_focus: cx.focus_handle(),
@@ -532,7 +539,11 @@ impl Shell {
             draft_state: drafts::DraftState::default(),
             busy: HashSet::new(),
             connecting: HashSet::new(),
-            panel: Panel::Conversation,
+            panel: if show_onboarding {
+                Panel::Settings
+            } else {
+                Panel::Conversation
+            },
             dock_panel: Panel::Dock,
             dock_motion: crate::ui::motion::Drawer::new(false),
             error: None,
@@ -571,6 +582,9 @@ impl Shell {
         this
     }
     pub fn request_close(&mut self, window: &mut Window, cx: &mut Context<Self>) -> bool {
+        if self.autonomy_navigation_blocked(cx) {
+            return false;
+        }
         if self.goal_close_edits_blocked(cx) {
             return false;
         }
@@ -832,6 +846,9 @@ impl Shell {
         }
     }
     fn select_task(&mut self, id: TaskId, cx: &mut Context<Self>) -> bool {
+        if self.autonomy_navigation_blocked(cx) {
+            return false;
+        }
         if self.side_chats.split && self.side_chats.composer.read(cx).is_composing() {
             return false;
         }
@@ -863,6 +880,7 @@ impl Shell {
             return false;
         }
         self.snapshot_draft(cx);
+        self.retire_autonomy_selection();
         self.selection_revision = self.selection_revision.wrapping_add(1);
         self.appsnap.retire();
         self.navigation.studio = task.scope == TaskScope::Studio;
@@ -1247,6 +1265,9 @@ impl Shell {
         {
             return;
         }
+        if self.consume_native_command(cx) {
+            return;
+        }
         let text = self.composer.read(cx).text().to_owned();
         if text.trim().is_empty() {
             return;
@@ -1468,6 +1489,7 @@ impl Shell {
     fn receive(&mut self, update: Update, cx: &mut Context<Self>) {
         match update {
             Update::DirectModels(reply) => self.direct_model_reply(*reply, cx),
+            Update::Autonomy(reply) => self.autonomy_reply(*reply, cx),
             Update::ProjectImport(reply) => self.import_reply(*reply, cx),
             Update::Integrations(reply) => self.integration_reply(*reply, cx),
             Update::Revision(reply) => self.revision_reply(*reply, cx),
@@ -1505,6 +1527,7 @@ impl Shell {
             Update::Automations(reply) => self.automation_reply(*reply, cx),
             Update::Goals(reply) => self.goals_reply(*reply, cx),
             Update::Tick => {
+                self.tick_autonomy(cx);
                 self.tick_goals(cx);
                 self.tick_automations(cx);
                 if self.panel == Panel::Browser {
@@ -1534,6 +1557,11 @@ impl Shell {
             Update::Catalog(catalog) => self.catalog = catalog,
             Update::WorkspaceAdded(project, catalog) => {
                 self.catalog = catalog;
+                if self.settings.value.onboarding.started
+                    && !self.settings.value.onboarding.completed
+                {
+                    self.finish_onboarding(cx);
+                }
                 // The user may have edited while the workspace was opening.
                 if self.dirty(cx)
                     || self.saving
@@ -1761,6 +1789,7 @@ impl Shell {
             Update::SettingsSaved(settings, error) => {
                 self.settings.saving = false;
                 if let Some(error) = error {
+                    self.settings.onboarding_finishing = false;
                     self.error = Some(error);
                 } else {
                     if self.settings.value.device != settings.device {
@@ -1784,6 +1813,10 @@ impl Shell {
                         self.switch_mode(false, cx);
                         self.panel = panel;
                         self.focus_composer = false;
+                    }
+                    if self.settings.onboarding_finishing {
+                        self.settings.onboarding_finishing = false;
+                        self.set_panel(Panel::Conversation, cx);
                     }
                 }
             }
@@ -1919,6 +1952,7 @@ impl Shell {
         self.controls.retire();
         self.settings.popup = None;
         if panel != Panel::Conversation {
+            self.retire_autonomy_selection();
             self.selection_revision = self.selection_revision.wrapping_add(1);
             self.appsnap.retire();
         }

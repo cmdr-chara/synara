@@ -230,15 +230,15 @@ fn matches(schema: &Value, value: &Value, depth: usize, budget: &mut usize) -> M
     if let Some(boolean) = schema.as_bool() {
         return Ok(boolean);
     }
-    if let Some(ty) = schema.get("type") {
-        if !types(ty)?.iter().any(|ty| has_type(value, ty)) {
-            return Ok(false);
-        }
+    if let Some(ty) = schema.get("type")
+        && !types(ty)?.iter().any(|ty| has_type(value, ty))
+    {
+        return Ok(false);
     }
-    if let Some(constant) = schema.get("const") {
-        if !equal(constant, value, budget, 0)? {
-            return Ok(false);
-        }
+    if let Some(constant) = schema.get("const")
+        && !equal(constant, value, budget, 0)?
+    {
+        return Ok(false);
     }
     if let Some(values) = schema.get("enum").and_then(Value::as_array) {
         let mut found = false;
@@ -268,22 +268,21 @@ fn matches(schema: &Value, value: &Value, depth: usize, budget: &mut usize) -> M
             }
         }
     }
-    if let Some(not) = schema.get("not") {
-        if matches(not, value, depth + 1, budget)? {
-            return Ok(false);
-        }
+    if let Some(not) = schema.get("not")
+        && matches(not, value, depth + 1, budget)?
+    {
+        return Ok(false);
     }
     if let Some(object) = value.as_object() {
         if !bounds(schema, object.len(), "minProperties", "maxProperties") {
             return Ok(false);
         }
-        if let Some(required) = schema.get("required").and_then(Value::as_array) {
-            if required
+        if let Some(required) = schema.get("required").and_then(Value::as_array)
+            && required
                 .iter()
                 .any(|key| !object.contains_key(key.as_str().expect("checked required name")))
-            {
-                return Ok(false);
-            }
+        {
+            return Ok(false);
         }
         let properties = schema.get("properties").and_then(Value::as_object);
         for (key, value) in object {
@@ -292,10 +291,10 @@ fn matches(schema: &Value, value: &Value, depth: usize, budget: &mut usize) -> M
                 if !matches(property, value, depth + 1, budget)? {
                     return Ok(false);
                 }
-            } else if let Some(additional) = schema.get("additionalProperties") {
-                if !matches(additional, value, depth + 1, budget)? {
-                    return Ok(false);
-                }
+            } else if let Some(additional) = schema.get("additionalProperties")
+                && !matches(additional, value, depth + 1, budget)?
+            {
+                return Ok(false);
             }
         }
     }
@@ -311,10 +310,10 @@ fn matches(schema: &Value, value: &Value, depth: usize, budget: &mut usize) -> M
             }
         }
     }
-    if let Some(text) = value.as_str() {
-        if !bounds(schema, text.chars().count(), "minLength", "maxLength") {
-            return Ok(false);
-        }
+    if let Some(text) = value.as_str()
+        && !bounds(schema, text.chars().count(), "minLength", "maxLength")
+    {
+        return Ok(false);
     }
     Ok(true)
 }

@@ -168,6 +168,10 @@ impl ProviderSettings {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct ModelSelection {
+    /// None retains all history. Some(0) sends only the new prompt.
+    /// A positive value retains complete prior user turns, never hidden state.
+    #[serde(default)]
+    pub history_turns: Option<u16>,
     pub provider_id: String,
     pub model_id: String,
     pub max_output_tokens: u32,
@@ -203,7 +207,7 @@ pub fn validate_request(profile: &ProviderProfile, request: &ModelRequest) -> Mo
         || serde_json::to_vec(request)
             .map_err(|_| ModelError::Invalid("request"))?
             .len()
-            > MAX_REQUEST_BYTES
+            > MAX_INPUT_BYTES
     {
         return Err(ModelError::Limit);
     }
@@ -294,11 +298,7 @@ pub fn validate_request(profile: &ProviderProfile, request: &ModelRequest) -> Mo
                 }
                 if message.role != MessageRole::User
                     || !matches!(media_type.as_str(), "image/png" | "image/jpeg")
-                    || base64.is_empty()
-                    || base64.len() % 4 != 0
-                    || !base64
-                        .bytes()
-                        .all(|b| b.is_ascii_alphanumeric() || matches!(b, b'+' | b'/' | b'='))
+                    || !crate::input::canonical_base64(base64)
                 {
                     return Err(ModelError::Invalid("inline image"));
                 }

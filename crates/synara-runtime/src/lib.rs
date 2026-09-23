@@ -2,6 +2,8 @@
 mod native_notifications;
 pub use native_notifications::*;
 mod appsnap;
+mod computer_use;
+pub use computer_use::*;
 mod bounded;
 pub use appsnap::*;
 mod device;

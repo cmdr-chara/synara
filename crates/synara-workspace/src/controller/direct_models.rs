@@ -1,3 +1,6 @@
+mod context;
+#[cfg(test)]
+mod multimodal_tests;
 use super::*;
 use crate::{DirectModelBinding, ModelSelection, ProviderSettings};
 use synara_model::{HttpModelProvider, Message, MessageRole, ModelEvent, ModelProvider};
@@ -65,6 +68,7 @@ impl Controller {
             ));
         }
         if let Some(selection) = &selection {
+            selection.validate_context().map_err(model_error)?;
             let profile = settings
                 .providers
                 .iter()
@@ -180,7 +184,7 @@ impl Controller {
         &self,
         id: TaskId,
         binding: DirectModelBinding,
-        text: String,
+        prompt: Prompt,
         cancellation: CancellationToken,
     ) -> WorkspaceResult<String> {
         let _integrations = self.integrations_gate.read().await;
@@ -200,18 +204,19 @@ impl Controller {
             return Err(AgentError::Busy.into());
         }
         let thread = self.workspace.thread(task.thread_id).await?;
-        let mut messages = Vec::new();
-        for message in thread.messages {
-            let role = match message.role {
-                Role::User => MessageRole::User,
-                Role::Assistant => MessageRole::Assistant,
-                _ => continue,
-            };
-            messages.push(Message::text(role, message.text));
-        }
-        messages.push(Message::text(MessageRole::User, text.clone()));
+        let context::PreparedPrompt {
+            message,
+            display,
+            context_text,
+            images,
+        } = context::prepare(prompt)?;
+        let mut messages = context::history(&thread, &binding.selection)?;
+        messages.push(message);
         let request = binding.selection.request(messages);
-        synara_model::validate_request(profile, &request).map_err(model_error)?;
+        synara_model::validate_wire_request(profile, &request).map_err(model_error)?;
+        if cancellation.is_cancelled() {
+            return Err(AgentError::Cancelled.into());
+        }
         let provider = HttpModelProvider::new().map_err(model_error)?;
         let turn = uuid::Uuid::new_v4().to_string();
         self.workspace
@@ -226,10 +231,36 @@ impl Controller {
                 ThreadEvent::TextDelta {
                     message_id: Some(format!("direct:{turn}:user")),
                     role: Role::User,
-                    text,
+                    text: display,
                 },
             )
             .await?;
+        // Keep the original echo for exact attachment acknowledgement. The
+        // actual selected text is also visible and durable, never hidden context.
+        if !context_text.is_empty() {
+            self.workspace
+                .record(
+                    task.thread_id,
+                    ThreadEvent::TextDelta {
+                        message_id: Some(format!("direct:{turn}:user")),
+                        role: Role::User,
+                        text: context_text,
+                    },
+                )
+                .await?;
+        }
+        for image in images {
+            self.workspace
+                .record(
+                    task.thread_id,
+                    ThreadEvent::ImageMessage {
+                        message_id: Some(format!("direct:{turn}:user")),
+                        role: Role::User,
+                        image,
+                    },
+                )
+                .await?;
+        }
         let (tx, mut rx) = tokio::sync::mpsc::channel(32);
         let produce = provider.stream(
             profile,
@@ -336,7 +367,7 @@ mod tests {
             panic!("a direct-model workflow must never launch an ACP agent")
         }
     }
-    async fn setup() -> (tempfile::TempDir, WorkspaceService, Arc<Controller>, Task) {
+    pub(super) async fn setup() -> (tempfile::TempDir, WorkspaceService, Arc<Controller>, Task) {
         let root = tempfile::tempdir().unwrap();
         let workspace = WorkspaceService::open(root.path().join("data.sqlite3"))
             .await
@@ -360,7 +391,11 @@ mod tests {
         ));
         (root, workspace, controller, task)
     }
-    async fn configure(controller: &Controller, task: &Task, endpoint: String) -> ProviderSettings {
+    pub(super) async fn configure(
+        controller: &Controller,
+        task: &Task,
+        endpoint: String,
+    ) -> ProviderSettings {
         let mut profile = synara_model::custom_profile_example();
         profile.endpoint = endpoint;
         profile.models[0].id = "fixture".into();
@@ -376,6 +411,7 @@ mod tests {
             .select_direct_model(
                 task.id,
                 Some(ModelSelection {
+                    history_turns: None,
                     provider_id: "local-compatible".into(),
                     model_id: "fixture".into(),
                     max_output_tokens: 32,
@@ -389,7 +425,9 @@ mod tests {
             .unwrap();
         settings
     }
-    async fn server(stall: bool) -> (String, tokio::task::JoinHandle<serde_json::Value>) {
+    pub(super) async fn server(
+        stall: bool,
+    ) -> (String, tokio::task::JoinHandle<serde_json::Value>) {
         use tokio::io::{AsyncReadExt, AsyncWriteExt};
         let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
         let addr = listener.local_addr().unwrap();

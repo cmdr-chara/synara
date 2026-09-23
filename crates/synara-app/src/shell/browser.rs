@@ -17,6 +17,7 @@ pub(super) struct BrowserView {
     pub(super) error: Option<String>,
     confirmation: Option<TaskId>,
     pub(super) busy: bool,
+    diagnostics_open: bool,
     _subscription: Subscription,
 }
 impl BrowserView {
@@ -66,11 +67,33 @@ impl BrowserView {
             },
             confirmation: None,
             busy: false,
+            diagnostics_open: false,
             _subscription: sub,
         }
     }
 }
 impl Shell {
+    fn browser_open_popup(&mut self, source: HostTabId, cx: &mut Context<Self>) {
+        if self.browser.selected != Some(source) {
+            return;
+        }
+        match self
+            .controller
+            .browser
+            .with(|s, now| s.open_manual_popup(source, now))
+        {
+            Ok((tab, url)) => {
+                self.browser_select(tab, cx);
+                self.browser
+                    .address
+                    .update(cx, |entry, cx| entry.set_text(url, cx));
+            }
+            Err(error) => {
+                self.browser.error = Some(error.to_string());
+                cx.notify();
+            }
+        }
+    }
     fn browser_open(&mut self, cx: &mut Context<Self>) {
         match self
             .controller
@@ -84,12 +107,12 @@ impl Shell {
     }
     fn browser_select(&mut self, tab: HostTabId, cx: &mut Context<Self>) {
         self.browser.selected = Some(tab);
-        if let Ok(tabs) = self.controller.browser.with(|s, _| Ok(s.tabs())) {
-            if let Some(tab) = tabs.iter().find(|t| t.id == tab) {
-                self.browser.address.update(cx, |entry, cx| {
-                    entry.set_text(tab.url.clone().unwrap_or_default(), cx)
-                });
-            }
+        if let Ok(tabs) = self.controller.browser.with(|s, _| Ok(s.tabs()))
+            && let Some(tab) = tabs.iter().find(|t| t.id == tab)
+        {
+            self.browser.address.update(cx, |entry, cx| {
+                entry.set_text(tab.url.clone().unwrap_or_default(), cx)
+            });
         }
         self.browser.error = None;
         cx.notify();
@@ -357,8 +380,95 @@ impl Shell {
         if let Some(error) = &self.browser.error {
             pane = pane.child(div().text_color(rgb(palette().error)).child(error.clone()));
         }
+        if let Some(tab) = active.filter(|tab| tab.profile == BrowserProfile::Manual) {
+            let tab_id = tab.id;
+            if let Ok(Some(preview)) = self
+                .controller
+                .browser
+                .with(|s, _| s.manual_popup_preview(tab_id))
+            {
+                let popup = div()
+                    .flex()
+                    .flex_col()
+                    .gap_1()
+                    .child(format!("This page requested a new tab: {preview}"))
+                    .child(
+                        div()
+                            .flex()
+                            .gap_2()
+                            .child(ui::action(
+                                "browser-popup-open",
+                                "Open in Synara tab",
+                                None,
+                                false,
+                                cx.listener(move |this, _: &(), _, cx| {
+                                    this.browser_open_popup(tab_id, cx)
+                                }),
+                            ))
+                            .child(ui::action(
+                                "browser-popup-dismiss",
+                                "Dismiss",
+                                None,
+                                false,
+                                cx.listener(move |this, _: &(), _, cx| {
+                                    this.browser.error = this
+                                        .controller
+                                        .browser
+                                        .with(|s, _| s.dismiss_manual_popup(tab_id))
+                                        .err()
+                                        .map(|e| e.to_string());
+                                    cx.notify();
+                                }),
+                            )),
+                    );
+                pane = pane.child(popup);
+            }
+            let diagnostics = self
+                .controller
+                .browser
+                .with(|s, _| s.manual_diagnostics(tab_id));
+            if let Ok(diagnostics) = diagnostics {
+                pane = pane.child(
+                    div()
+                        .flex()
+                        .gap_2()
+                        .child(ui::action(
+                            "browser-diagnostics-toggle",
+                            format!("Network diagnostics ({})", diagnostics.len()),
+                            None,
+                            self.browser.diagnostics_open,
+                            cx.listener(|this, _: &(), _, cx| {
+                                this.browser.diagnostics_open = !this.browser.diagnostics_open;
+                                cx.notify();
+                            }),
+                        ))
+                        .child(ui::action(
+                            "browser-diagnostics-clear",
+                            "Clear",
+                            None,
+                            false,
+                            cx.listener(move |this, _: &(), _, cx| {
+                                this.browser.error = this
+                                    .controller
+                                    .browser
+                                    .with(|s, _| s.clear_manual_diagnostics(tab_id))
+                                    .err()
+                                    .map(|e| e.to_string());
+                                cx.notify();
+                            }),
+                        )),
+                );
+                if self.browser.diagnostics_open {
+                    pane = pane.child(div().id("browser-network-diagnostics").max_h(px(160.)).overflow_y_scroll().flex().flex_col()
+                        .child(div().text_xs().text_color(rgb(palette().muted)).child("Manual tab only. URL credentials, query values and fragments are omitted; request headers and bodies are never captured."))
+                        .children(diagnostics.iter().rev().take(30).map(|entry| {
+                            div().text_xs().child(format!("{} | {}{}", entry.status.map(|v| v.to_string()).unwrap_or_else(|| "—".into()), entry.url, entry.error.as_ref().map(|v| format!(" | {v}")).unwrap_or_default()))
+                        })));
+                }
+            }
+        }
         pane = pane.child(self.native_browser_surface());
-        pane = pane.child(div().text_xs().text_color(rgb(palette().muted)).child("Agent browser use uses isolated task storage. Manual cookies, authentication, clipboard and uploads are not exposed. Captures/downloads require bounded native handles; export is not available in this build."));
+        pane = pane.child(div().text_xs().text_color(rgb(palette().muted)).child("On Linux/X11, use a manual page's context menu to copy its viewport image or save a linked HTTP(S) file. Agent tabs remain isolated: no manual cookies, file picker, clipboard or download access."));
         if let Some(task) = self.selected {
             let enabled = self.controller.browser_use_enabled(task);
             pane = pane.child(ui::action(

@@ -1,3 +1,5 @@
+mod autonomy;
+pub use autonomy::*;
 mod imports;
 pub use imports::*;
 mod direct_models;

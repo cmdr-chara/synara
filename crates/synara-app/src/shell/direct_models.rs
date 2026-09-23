@@ -4,6 +4,7 @@ use crate::ui::{self, palette};
 use synara_model::{
     HttpModelProvider, ModelInfo, OutputFormat, ProviderCatalog, custom_profile_example,
 };
+mod options;
 mod view;
 
 pub(super) enum Reply {
@@ -454,6 +455,9 @@ impl Shell {
             match result {
                 Ok(binding) => {
                     self.direct_models.bindings.insert(task, binding);
+                    if self.uses_direct_model() && self.direct_models.value.is_none() {
+                        self.load_direct_models(cx);
+                    }
                 }
                 Err(error) => {
                     if self.selected == Some(task) {
@@ -509,7 +513,7 @@ impl Shell {
                             )
                         });
                         self.direct_models.editing = true;
-                        self.direct_models.notice=Some("Review discovered identities before saving. Only a bounded first page was read. Unreported capabilities remain unknown.".into());
+                        self.direct_models.notice=Some("Review the complete bounded discovery before saving. Reported metadata is proposed only for new identities. Existing reviewed capabilities are retained and missing capabilities remain unknown.".into());
                     } else {
                         self.direct_models.error = Some(
                             "Discovery exceeded profile limits. Existing settings were retained."
@@ -543,8 +547,14 @@ impl Shell {
             .and_then(Option::as_ref)
         {
             format!(
-                "Direct · {} / {}",
-                binding.selection.provider_id, binding.selection.model_id
+                "Direct · {} / {} · {}",
+                binding.selection.provider_id,
+                binding.selection.model_id,
+                match binding.selection.history_turns {
+                    None => "all history".to_owned(),
+                    Some(0) => "current only".to_owned(),
+                    Some(n) => format!("{n} prior turns"),
+                }
             )
         } else {
             "Direct models".into()

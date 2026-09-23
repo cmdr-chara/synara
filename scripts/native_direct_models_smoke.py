@@ -129,11 +129,18 @@ def run(s):
         click(s, 'direct-expand')
         click(s, 'direct-first-model')
         assert binding(s, task) is None and requests == []
+        click(s, 'direct-history-10')
+        click(s, 'direct-history-current')
+        click(s, 'direct-output-1024')
+        assert binding(s, task) is None and requests == [] and s.events() == baseline
+        s.checks.append('native-history-and-output-presets-edit-review-without-mutation-or-send')
         reveal(s, 'direct-options-editor')
         assert s.control_bounds('direct-options-editor')[3] >= 180, 'Model options must not collapse'
         s.desktop.screenshot('direct-model-review', window_only=True)
         click(s, 'direct-confirm')
         wait_until(lambda: binding(s, task), 'reviewed task model binding')
+        assert binding(s, task)['selection']['history_turns'] == 0
+        assert binding(s, task)['selection']['max_output_tokens'] == 1024
         assert requests == [] and s.events() == baseline
         s.checks.append('explicit-model-review-binds-task-without-sending-or-agent-launch')
         s.click_control('settings-back')
@@ -151,6 +158,9 @@ def run(s):
         before = event_cursor(s, task)
         s.prompt('hold')
         wait_until(lambda: len(requests) == 2, 'second explicit request')
+        assert len(requests[-1][1]['messages']) == 1
+        assert requests[-1][1]['max_tokens'] == 1024
+        s.checks.append('native-reviewed-current-only-context-excludes-prior-turns-without-deleting-history')
         wait_until(lambda: any(e.get('text') == 'Direct native answer' for e in s.events()[len(events):]), 'partial streamed answer')
         s.click_control('composer-submit')
         wait_until(lambda: s.task()['state'] == 'failed', 'Stop closes direct request')

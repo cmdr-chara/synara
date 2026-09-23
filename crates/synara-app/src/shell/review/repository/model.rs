@@ -260,7 +260,7 @@ impl Action {
                 branch: values[1].clone(),
             },
             Self::RemoveWorktree(path) => {
-                if PathBuf::from(&values[0]) != *path {
+                if std::path::Path::new(&values[0]) != path.as_path() {
                     return Err("The confirmation must match the exact worktree path.");
                 }
                 GitOperation::RemoveWorktree { path: path.clone() }

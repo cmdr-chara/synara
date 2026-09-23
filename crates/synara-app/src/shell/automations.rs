@@ -21,6 +21,8 @@ pub(super) struct AutomationsView {
     instructions: Entity<TextEntry>,
     schedule: Entity<TextEntry>,
     timezone: Entity<TextEntry>,
+    max_runs: Entity<TextEntry>,
+    failure_limit: Entity<TextEntry>,
     selected_run: Option<AutomationId>,
     error: Option<String>,
     _subscriptions: Vec<Subscription>,
@@ -51,25 +53,46 @@ impl AutomationsView {
             EntryMode::Editor,
             150.,
         );
-        let schedule = make("every 60m or daily 09:00", EntryMode::SingleLine, 34.);
+        let schedule = make(
+            "every 60m, daily 09:00, weekdays 09:00, weekly mon 09:00",
+            EntryMode::SingleLine,
+            34.,
+        );
         let timezone = make(
             "UTC or fixed offset, e.g. +02:00",
             EntryMode::SingleLine,
             34.,
         );
-        let subscriptions = [&title, &instructions, &schedule, &timezone]
-            .into_iter()
-            .map(|input| {
-                cx.subscribe(input, |this, _, event, cx| {
-                    if matches!(event, EntryEvent::Changed)
-                        && let Some(editor) = &mut this.automations.editor
-                    {
-                        editor.edit_revision = editor.edit_revision.wrapping_add(1);
-                    }
-                    cx.notify();
-                })
+        let max_runs = make(
+            "Maximum runs (empty = unlimited)",
+            EntryMode::SingleLine,
+            34.,
+        );
+        let failure_limit = make(
+            "Stop after consecutive failures (empty = unlimited)",
+            EntryMode::SingleLine,
+            34.,
+        );
+        let subscriptions = [
+            &title,
+            &instructions,
+            &schedule,
+            &timezone,
+            &max_runs,
+            &failure_limit,
+        ]
+        .into_iter()
+        .map(|input| {
+            cx.subscribe(input, |this, _, event, cx| {
+                if matches!(event, EntryEvent::Changed)
+                    && let Some(editor) = &mut this.automations.editor
+                {
+                    editor.edit_revision = editor.edit_revision.wrapping_add(1);
+                }
+                cx.notify();
             })
-            .collect();
+        })
+        .collect();
         Self {
             ledger: AutomationLedger::default(),
             scheduler: Arc::new(AutomationScheduler::new(controller)),
@@ -87,6 +110,8 @@ impl AutomationsView {
             instructions,
             schedule,
             timezone,
+            max_runs,
+            failure_limit,
             selected_run: None,
             error: None,
             _subscriptions: subscriptions,
@@ -237,36 +262,43 @@ impl Shell {
         if self.automations.changing || self.automations.editor.is_some() {
             return;
         }
-        let (editor, title, instructions, schedule, timezone) = match definition {
-            Some(d) => (
-                Editor {
-                    id: d.id,
-                    revision: Some(d.revision),
-                    edit_revision: 0,
-                    agent: Some(d.agent_id),
-                    project: Some(d.project_id),
-                    missed: d.missed,
-                },
-                d.title,
-                d.instructions,
-                d.schedule.label(),
-                d.timezone,
-            ),
-            None => (
-                Editor {
-                    id: AutomationId::new_v4(),
-                    revision: None,
-                    edit_revision: 0,
-                    agent: None,
-                    project: self.project,
-                    missed: MissedRunPolicy::Skip,
-                },
-                String::new(),
-                String::new(),
-                "every 60m".into(),
-                "UTC".into(),
-            ),
-        };
+        let (editor, title, instructions, schedule, timezone, max_runs, failure_limit) =
+            match definition {
+                Some(d) => (
+                    Editor {
+                        id: d.id,
+                        revision: Some(d.revision),
+                        edit_revision: 0,
+                        agent: Some(d.agent_id),
+                        project: Some(d.project_id),
+                        missed: d.missed,
+                    },
+                    d.title,
+                    d.instructions,
+                    d.schedule.label(),
+                    d.timezone,
+                    d.max_runs.map(|n| n.to_string()).unwrap_or_default(),
+                    d.stop_after_consecutive_failures
+                        .map(|n| n.to_string())
+                        .unwrap_or_default(),
+                ),
+                None => (
+                    Editor {
+                        id: AutomationId::new_v4(),
+                        revision: None,
+                        edit_revision: 0,
+                        agent: None,
+                        project: self.project,
+                        missed: MissedRunPolicy::Skip,
+                    },
+                    String::new(),
+                    String::new(),
+                    "every 60m".into(),
+                    "UTC".into(),
+                    String::new(),
+                    "3".into(),
+                ),
+            };
         self.automations
             .title
             .update(cx, |entry, cx| entry.set_text(title, cx));
@@ -279,6 +311,12 @@ impl Shell {
         self.automations
             .timezone
             .update(cx, |entry, cx| entry.set_text(timezone, cx));
+        self.automations
+            .max_runs
+            .update(cx, |entry, cx| entry.set_text(max_runs, cx));
+        self.automations
+            .failure_limit
+            .update(cx, |entry, cx| entry.set_text(failure_limit, cx));
         self.automations.editor = Some(editor);
         self.automations.pending = None;
         self.automations.error = None;
@@ -308,6 +346,11 @@ impl Shell {
                 enabled: false,
                 next_run_ms: now_ms(),
                 missed: editor.missed,
+                max_runs: parse_positive_limit(self.automations.max_runs.read(cx).text())?,
+                stop_after_consecutive_failures: parse_positive_limit(
+                    self.automations.failure_limit.read(cx).text(),
+                )?,
+                failure_streak: 0,
             };
             definition.validate()?;
             Ok(definition)
@@ -391,6 +434,19 @@ impl Shell {
             self.set_panel(Panel::Conversation, cx);
         }
     }
+}
+fn parse_positive_limit(text: &str) -> WorkspaceResult<Option<u32>> {
+    let text = text.trim();
+    if text.is_empty() {
+        return Ok(None);
+    }
+    let value: u32 = text.parse().map_err(|_| {
+        WorkspaceError::Invalid("Enter a positive whole-number limit, or leave it empty.".into())
+    })?;
+    if value == 0 {
+        return Err(WorkspaceError::Invalid("Limits must be positive.".into()));
+    }
+    Ok(Some(value))
 }
 fn time_label(value: i64) -> String {
     chrono::DateTime::from_timestamp_millis(value)

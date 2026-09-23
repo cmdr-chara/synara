@@ -1,6 +1,30 @@
 use super::*;
 use gpui::{Animation, AnimationExt};
 impl Shell {
+    /// One compact row replacing the three stacked Goal/Debug/Recap headers.
+    /// Open or active workflows render their full bars below; the palette
+    /// covers empty threads.
+    pub(super) fn workflow_strip(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
+        let mut strip = div().flex().flex_shrink_0().gap_2().px_4().py_1();
+        strip = strip.child(self.autonomy_button(cx));
+        let mut any = self.selected.is_some();
+        if let Some(el) = self.goal_compact(cx) {
+            strip = strip.child(el);
+            any = true;
+        }
+        if let Some(el) = self.debug_compact(cx) {
+            strip = strip.child(el);
+            any = true;
+        }
+        if let Some(el) = self.recap_compact(cx) {
+            strip = strip.child(el);
+            any = true;
+        }
+        if !any {
+            return div().into_any_element();
+        }
+        strip.into_any_element()
+    }
     pub(super) fn conversation(&self, window: &Window, cx: &mut Context<Self>) -> gpui::AnyElement {
         let Some(thread) = &self.thread else {
             return div()
@@ -16,6 +40,7 @@ impl Shell {
         let mut root = div().flex().flex_col().flex_1().min_h_0().min_w_0();
         root = root.child(self.task_split_action(cx));
         root = root.child(self.handoff_source_row(cx));
+        root = root.child(self.workflow_strip(cx));
         root = root.child(self.goal_bar(cx));
         root = root.child(self.debug_bar(cx));
         root = root.child(self.recap_bar(cx));

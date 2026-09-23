@@ -23,7 +23,7 @@ impl CheckpointState {
 }
 pub(super) enum Outcome {
     Loaded(TaskCheckpoints),
-    Reviewed(CheckpointReview),
+    Reviewed(Box<CheckpointReview>),
     Restored(CheckpointRestored),
 }
 pub(super) struct Reply {
@@ -41,11 +41,11 @@ impl Shell {
         true
     }
     pub(super) fn checkpoint_button(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
-        ui::action(
+        ui::header_action(
             "checkpoint-open",
             "Checkpoints",
             None,
-            self.selected.is_none() || self.loading_task.is_some() || self.checkpoints.writing,
+            self.checkpoints.open,
             cx.listener(|this, _: &(), _, cx| this.open_checkpoints(cx)),
         )
         .relative()
@@ -177,6 +177,7 @@ impl Shell {
                 result: workspace
                     .review_task_checkpoint(task, id)
                     .await
+                    .map(Box::new)
                     .map(Outcome::Reviewed)
                     .map_err(|e| e.to_string()),
             })))
@@ -229,7 +230,7 @@ impl Shell {
                 self.checkpoints.history = Some(history);
                 self.checkpoints.review = None;
             }
-            Ok(Outcome::Reviewed(review)) => self.checkpoints.review = Some(review),
+            Ok(Outcome::Reviewed(review)) => self.checkpoints.review = Some(*review),
             Ok(Outcome::Restored(value)) => {
                 // The UI was quiescent during the atomic write. Do not enqueue a
                 // second draft save or restore a prompt/session/approval lease.

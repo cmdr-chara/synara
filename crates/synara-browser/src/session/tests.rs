@@ -41,6 +41,63 @@ fn loaded(s: &mut Session) -> HostTabId {
     tab
 }
 #[test]
+fn manual_network_diagnostics_are_redacted_bounded_and_not_agent_visible() {
+    let (mut s, _) = fixture();
+    let manual = s.open(BrowserProfile::Manual).unwrap();
+    s.user_navigate(manual, "https://example.test/", NavigationKind::Push, 0)
+        .unwrap();
+    let navigation = s.tabs[&manual].navigation.as_ref().unwrap().0;
+    s.event(Event::NetworkDiagnostic {
+        tab: manual,
+        navigation,
+        url: "https://user:secret@example.test/path?token=secret#secret".into(),
+        status: Some(200),
+        error: None,
+    })
+    .unwrap();
+    let entries = s.manual_diagnostics(manual).unwrap();
+    assert_eq!(entries.len(), 1);
+    assert_eq!(entries[0].url, "https://example.test/path");
+    assert_eq!(entries[0].status, Some(200));
+    let agent = s.open(BrowserProfile::AgentTask { task: 1 }).unwrap();
+    assert!(s.manual_diagnostics(agent).is_err());
+    s.clear_manual_diagnostics(manual).unwrap();
+    assert!(s.manual_diagnostics(manual).unwrap().is_empty());
+}
+#[test]
+fn popup_requires_explicit_manual_action_and_stays_in_owned_tab() {
+    let (mut s, _) = fixture();
+    let source = s.open(BrowserProfile::Manual).unwrap();
+    s.user_navigate(source, "https://example.test/", NavigationKind::Push, 0)
+        .unwrap();
+    let navigation = s.tabs[&source].navigation.as_ref().unwrap().0;
+    s.event(Event::Committed {
+        tab: source,
+        navigation,
+        url: "https://example.test/".into(),
+        title: "Source".into(),
+    })
+    .unwrap();
+    s.event(Event::PopupRequested {
+        tab: source,
+        navigation,
+        url: "https://example.test/login?nonce=secret".into(),
+    })
+    .unwrap();
+    assert_eq!(s.tabs().len(), 1);
+    assert_eq!(
+        s.manual_popup_preview(source).unwrap().as_deref(),
+        Some("https://example.test/login")
+    );
+    let (target, target_url) = s.open_manual_popup(source, 1).unwrap();
+    assert_eq!(s.tabs().len(), 2);
+    assert_eq!(target_url, "https://example.test/login?nonce=secret");
+    assert_eq!(s.tabs[&target].view.profile, BrowserProfile::Manual);
+    assert!(s.manual_popup_preview(source).unwrap().is_none());
+    let agent = s.open(BrowserProfile::AgentTask { task: 8 }).unwrap();
+    assert!(s.manual_popup_preview(agent).is_err());
+}
+#[test]
 fn canonical_url_rejects_scheme_credentials_controls_and_origin_forgery() {
     for url in [
         "file:///etc/passwd",

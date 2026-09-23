@@ -7,7 +7,7 @@ mod view;
 pub(super) enum Reply {
     Scanned(HistoryDiscovery),
     Previewed(HistoryPreview),
-    Reviewed(HistoryImportReview),
+    Reviewed(Box<HistoryImportReview>),
     Imported(HistoryImportOutcome),
     Failed(String),
 }
@@ -197,6 +197,7 @@ impl Shell {
                 workspace
                     .review_history_import(preview, project, agent)
                     .await
+                    .map(Box::new)
                     .map(Reply::Reviewed)
                     .map_err(|e| e.to_string())
             },
@@ -237,7 +238,7 @@ impl Shell {
                 self.project_import.message = 0;
                 self.project_import.chunk = 0;
             }
-            Reply::Reviewed(review) => self.project_import.review = Some(review),
+            Reply::Reviewed(review) => self.project_import.review = Some(*review),
             Reply::Imported(outcome) => {
                 self.project_import.review = None;
                 let task = match outcome {
@@ -256,10 +257,10 @@ impl Shell {
                     }
                 };
                 self.project_import.result = task.as_ref().map(|t| t.id);
-                if let Some(task) = task {
-                    if !self.catalog.tasks.iter().any(|t| t.id == task.id) {
-                        self.catalog.tasks.push(task);
-                    }
+                if let Some(task) = task
+                    && !self.catalog.tasks.iter().any(|t| t.id == task.id)
+                {
+                    self.catalog.tasks.push(task);
                 }
             }
             Reply::Failed(error) => self.project_import.error = Some(error),
@@ -270,10 +271,10 @@ impl Shell {
         if self.project_import.pending() {
             return;
         }
-        if let Some(task) = self.project_import.result {
-            if self.select_task(task, cx) {
-                self.show_conversation(cx);
-            }
+        if let Some(task) = self.project_import.result
+            && self.select_task(task, cx)
+        {
+            self.show_conversation(cx);
         }
     }
 }

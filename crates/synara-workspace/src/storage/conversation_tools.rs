@@ -1,5 +1,6 @@
 //! Durable, user-owned conversation utilities. None of these operations submits
 //! prompts, changes approval policy, or launches an agent or workspace process.
+mod archive;
 mod related;
 use super::*;
 use crate::{WorkspaceError, WorkspaceResult, WorkspaceService};
@@ -698,5 +699,92 @@ mod tests {
             "MAIN-DRAFT-CANARY"
         );
         assert_eq!(service.catalog().await.unwrap().tasks.len(), 3);
+    }
+    #[tokio::test]
+    async fn zip_export_keeps_exact_snapshot_private_and_refuses_active_or_existing_targets() {
+        use std::io::Read;
+        let dir = tempfile::tempdir().unwrap();
+        let service = WorkspaceService::memory().unwrap();
+        let task = seed(&service, dir.path()).await;
+        service
+            .save_task_draft(task.id, "UNSENT-DO-NOT-EXPORT".into())
+            .await
+            .unwrap();
+        let original = service.text_conversation(task.id).await.unwrap();
+        let path = dir.path().join("conversation.zip");
+        service
+            .export_zip_conversation(task.id, path.clone())
+            .await
+            .unwrap();
+        let bytes = fs::read(&path).unwrap();
+        let mut zip = zip::ZipArchive::new(std::io::Cursor::new(bytes.clone())).unwrap();
+        assert_eq!(zip.len(), 2);
+        assert_eq!(
+            zip.file_names().collect::<Vec<_>>(),
+            ["thread.json", "transcript.md"]
+        );
+        let mut json = String::new();
+        zip.by_name("thread.json")
+            .unwrap()
+            .read_to_string(&mut json)
+            .unwrap();
+        let payload: serde_json::Value = serde_json::from_str(&json).unwrap();
+        assert_eq!(payload["format"], "synara-thread-export-v1");
+        assert_eq!(payload["snapshotSequence"], 6);
+        assert_eq!(payload["messages"].as_array().unwrap().len(), 3);
+        assert_eq!(
+            payload["messages"][1]["text"],
+            "Caffè 日本語\n  exact whitespace\n"
+        );
+        assert_eq!(payload["messages"][1]["role"], "assistant");
+        assert!(payload["messages"][0]["createdAtMs"].is_null());
+        assert!(!json.contains("UNSENT-DO-NOT-EXPORT"));
+        assert!(payload.get("workingDirectory").is_none());
+        assert!(payload.get("configuration").is_none());
+        let mut markdown = String::new();
+        zip.by_name("transcript.md")
+            .unwrap()
+            .read_to_string(&mut markdown)
+            .unwrap();
+        assert_eq!(markdown, original);
+        assert!(
+            service
+                .export_zip_conversation(task.id, path.clone())
+                .await
+                .is_err()
+        );
+        assert_eq!(fs::read(&path).unwrap(), bytes);
+        assert_eq!(service.text_conversation(task.id).await.unwrap(), original);
+        let thread_id = task.thread_id;
+        service
+            .access(move |store| {
+                store.append(&EventEnvelope {
+                    id: EventId::new(),
+                    thread_id,
+                    sequence: 7,
+                    timestamp_ms: 10,
+                    event: ThreadEvent::PromptStarted {
+                        turn: "active".into(),
+                    },
+                })?;
+                Ok(())
+            })
+            .await
+            .unwrap();
+        let running = dir.path().join("running.zip");
+        assert!(
+            service
+                .export_zip_conversation(task.id, running.clone())
+                .await
+                .is_err()
+        );
+        assert!(!running.exists());
+        assert!(fs::read_dir(dir.path()).unwrap().all(|entry| {
+            !entry
+                .unwrap()
+                .file_name()
+                .to_string_lossy()
+                .starts_with(".synara-export-")
+        }));
     }
 }

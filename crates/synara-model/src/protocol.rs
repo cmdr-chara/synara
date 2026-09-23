@@ -84,7 +84,7 @@ pub(crate) fn encode(profile: &ProviderProfile, request: &ModelRequest) -> Model
     if serde_json::to_vec(&body)
         .map_err(|_| ModelError::Protocol)?
         .len()
-        > MAX_REQUEST_BYTES
+        > MAX_INPUT_BYTES
     {
         return Err(ModelError::Limit);
     }

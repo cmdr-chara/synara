@@ -21,6 +21,9 @@ pub struct SnapWindow {
     pub height: u32,
 }
 impl SnapWindow {
+    pub(crate) fn native_id(&self) -> u32 {
+        self.id
+    }
     pub fn identity(&self) -> String {
         format!(
             "0x{:x} | PID {} | {} | {} x {}",
@@ -123,6 +126,19 @@ impl SnapTools {
             cancel,
         )
         .await
+    }
+    pub(crate) async fn validate_window(
+        &self,
+        reviewed: &SnapWindow,
+        cancel: &CancellationToken,
+    ) -> Result<(), RuntimeError> {
+        if cancel.is_cancelled() {
+            return Err(RuntimeError::Closed);
+        }
+        if &self.inspect(reviewed.id, reviewed.root, cancel).await? != reviewed {
+            return Err(RuntimeError::Conflict);
+        }
+        Ok(())
     }
     async fn inspect(
         &self,

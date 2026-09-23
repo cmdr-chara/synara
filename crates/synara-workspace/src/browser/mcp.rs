@@ -243,6 +243,9 @@ fn dispatch(state: &State, rpc: &Rpc) -> std::result::Result<Value, String> {
                             | BrowserOperation::ReadDocument
                             | BrowserOperation::Click { .. }
                             | BrowserOperation::Fill { .. }
+                            | BrowserOperation::Input {
+                                event: synara_browser::InputEvent::Scroll { .. }
+                            }
                     ) {
                         return Err("Operation not exposed by this transport".into());
                     }
@@ -302,12 +305,13 @@ fn tools() -> Value {
     let receipt = json!({"type":"object","properties":{"request":id},"required":["request"],"additionalProperties":false});
     let mut tools = vec![
         json!({"name":"browser_tabs","description":"List only this task's isolated tab IDs. No page content.","inputSchema":{"type":"object","properties":{},"additionalProperties":false}}),
-        json!({"name":"browser_request","description":"Request one native-approved browser operation. Stable nonce makes retries idempotent. Results require browser_result.",
+        json!({"name":"browser_request","description":"Request one native-approved browser operation. Stable nonce makes retries idempotent. Results require browser_result. Page scroll uses input/event/scroll with x/y CSS-pixel deltas from -4096 to 4096. Read the document again after scrolling.",
         "inputSchema":{"type":"object","properties":{"nonce":{"type":"string","maxLength":128},"tab":id,"operation":{"oneOf":[
         {"type":"object","properties":{"operation":{"const":"navigate"},"url":{"type":"string","maxLength":8192}},"required":["operation","url"],"additionalProperties":false},
         {"type":"object","properties":{"operation":{"const":"read_document"}},"required":["operation"],"additionalProperties":false},
         {"type":"object","properties":{"operation":{"const":"click"},"element":{"type":"string","maxLength":128}},"required":["operation","element"],"additionalProperties":false},
-        {"type":"object","properties":{"operation":{"const":"fill"},"element":{"type":"string","maxLength":128},"text":{"type":"string","maxLength":8192}},"required":["operation","element","text"],"additionalProperties":false}
+        {"type":"object","properties":{"operation":{"const":"fill"},"element":{"type":"string","maxLength":128},"text":{"type":"string","maxLength":8192}},"required":["operation","element","text"],"additionalProperties":false},
+        {"type":"object","properties":{"operation":{"const":"input"},"event":{"type":"object","properties":{"scroll":{"type":"object","properties":{"x":{"type":"integer","minimum":-4096,"maximum":4096},"y":{"type":"integer","minimum":-4096,"maximum":4096}},"required":["x","y"],"additionalProperties":false}},"required":["scroll"],"additionalProperties":false}},"required":["operation","event"],"additionalProperties":false}
         ]}},"required":["nonce","tab","operation"],"additionalProperties":false}}),
     ];
     for (name, description) in [

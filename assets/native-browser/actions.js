@@ -40,6 +40,17 @@
       return JSON.stringify({kind: "document", text, elements});
     }
     const op = request.operation;
+    if (op.operation === "input") {
+      const scroll = op.event && op.event.scroll;
+      if (!scroll || !Number.isInteger(scroll.x) || !Number.isInteger(scroll.y) ||
+          Math.abs(scroll.x) > 4096 || Math.abs(scroll.y) > 4096)
+        throw new Error("Only bounded page scroll input is supported");
+      // A fresh document read is required after viewport changes. Never reuse
+      // pre-scroll references, including operations queued before this action.
+      globalThis.__synaraRefs = new Map();
+      window.scrollBy({left: scroll.x, top: scroll.y, behavior: "instant"});
+      return JSON.stringify({kind: "done"});
+    }
     const ref = globalThis.__synaraRefs && globalThis.__synaraRefs.get(op.element);
     if (!ref) throw new Error("Element inventory is no longer available. Read the document again.");
     if (!visible(ref.node) || signature(ref.node) !== ref.signature)

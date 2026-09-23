@@ -127,15 +127,9 @@ impl Output {
                 }
             }
             (Self::Capture { token: t, bytes }, BrowserOperation::Screenshot { .. })
-                if token(t) && *bytes <= 8 * 1024 * 1024 =>
-            {
-                ()
-            }
+                if token(t) && *bytes <= 8 * 1024 * 1024 => {}
             (Self::Download { token: t, bytes }, BrowserOperation::Download { .. })
-                if token(t) && *bytes <= 32 * 1024 * 1024 =>
-            {
-                ()
-            }
+                if token(t) && *bytes <= 32 * 1024 * 1024 => {}
             _ => return Err(BrowserError::Invalid),
         }
         if serde_json::to_vec(self)
@@ -172,6 +166,13 @@ pub struct RequestView {
     pub state: RequestState,
     pub expires_ms: u64,
 }
+/// Native-only, bounded network receipt. Never returned by the agent browser client.
+#[derive(Clone, Debug, Serialize)]
+pub struct NetworkDiagnostic {
+    pub url: String,
+    pub status: Option<u16>,
+    pub error: Option<String>,
+}
 struct TabState {
     view: TabView,
     navigation: Option<(
@@ -182,8 +183,22 @@ struct TabState {
     )>,
     elements: BTreeSet<String>,
     committed_navigation: Option<HostNavigationId>,
+    diagnostics: VecDeque<NetworkDiagnostic>,
+    pending_popup: Option<String>,
 }
 pub enum Event {
+    PopupRequested {
+        tab: HostTabId,
+        navigation: HostNavigationId,
+        url: String,
+    },
+    NetworkDiagnostic {
+        tab: HostTabId,
+        navigation: HostNavigationId,
+        url: String,
+        status: Option<u16>,
+        error: Option<String>,
+    },
     Committed {
         tab: HostTabId,
         navigation: HostNavigationId,
@@ -259,6 +274,60 @@ impl Session {
     pub fn requests(&self) -> Vec<RequestView> {
         self.requests.values().cloned().collect()
     }
+    /// Trusted manual browser UI only. Agent RPC has no diagnostics method.
+    pub fn manual_diagnostics(&self, tab: HostTabId) -> Result<Vec<NetworkDiagnostic>> {
+        let state = self.tabs.get(&tab).ok_or(BrowserError::MissingTab)?;
+        if state.view.profile != BrowserProfile::Manual {
+            return Err(BrowserError::WrongContext);
+        }
+        Ok(state.diagnostics.iter().cloned().collect())
+    }
+    pub fn clear_manual_diagnostics(&mut self, tab: HostTabId) -> Result<()> {
+        let state = self.tabs.get_mut(&tab).ok_or(BrowserError::MissingTab)?;
+        if state.view.profile != BrowserProfile::Manual {
+            return Err(BrowserError::WrongContext);
+        }
+        state.diagnostics.clear();
+        Ok(())
+    }
+    pub fn manual_popup_preview(&self, tab: HostTabId) -> Result<Option<String>> {
+        let state = self.tabs.get(&tab).ok_or(BrowserError::MissingTab)?;
+        if state.view.profile != BrowserProfile::Manual {
+            return Err(BrowserError::WrongContext);
+        }
+        state
+            .pending_popup
+            .as_deref()
+            .map(redact_diagnostic_url)
+            .transpose()
+    }
+    pub fn dismiss_manual_popup(&mut self, tab: HostTabId) -> Result<()> {
+        let state = self.tabs.get_mut(&tab).ok_or(BrowserError::MissingTab)?;
+        if state.view.profile != BrowserProfile::Manual {
+            return Err(BrowserError::WrongContext);
+        }
+        state.pending_popup = None;
+        Ok(())
+    }
+    /// Explicit trusted-UI action; the page cannot create an unmanaged window.
+    pub fn open_manual_popup(
+        &mut self,
+        source: HostTabId,
+        now: u64,
+    ) -> Result<(HostTabId, String)> {
+        let url = self.tabs.get(&source).ok_or(BrowserError::MissingTab)?;
+        if url.view.profile != BrowserProfile::Manual {
+            return Err(BrowserError::WrongContext);
+        }
+        let url = url.pending_popup.clone().ok_or(BrowserError::Invalid)?;
+        let tab = self.open(BrowserProfile::Manual)?;
+        if let Err(error) = self.user_navigate(tab, &url, NavigationKind::Push, now) {
+            let _ = self.close(tab);
+            return Err(error);
+        }
+        self.dismiss_manual_popup(source)?;
+        Ok((tab, url))
+    }
     pub fn task_tabs(&self, task: u128) -> Vec<HostTabId> {
         self.tabs
             .values()
@@ -296,6 +365,8 @@ impl Session {
                 navigation: None,
                 elements: BTreeSet::new(),
                 committed_navigation: None,
+                diagnostics: VecDeque::new(),
+                pending_popup: None,
             },
         );
         Ok(id)
@@ -373,6 +444,8 @@ impl Session {
         let state = self.tabs.get_mut(&tab).ok_or(BrowserError::MissingTab)?;
         state.elements.clear();
         state.committed_navigation = None;
+        state.diagnostics.clear();
+        state.pending_popup = None;
         state.view.state = "loading".into();
         state.view.error = None;
         state.navigation = Some((nav, now.saturating_add(30_000), allowed.clone(), request));
@@ -394,6 +467,9 @@ impl Session {
             BrowserOperation::Navigate { .. } => c.navigation,
             BrowserOperation::ReadDocument => c.document,
             BrowserOperation::Click { .. } | BrowserOperation::Fill { .. } => c.input,
+            BrowserOperation::Input {
+                event: InputEvent::Scroll { x, y },
+            } => c.input && x.unsigned_abs() <= 4096 && y.unsigned_abs() <= 4096,
             BrowserOperation::Screenshot { .. } => c.capture,
             BrowserOperation::Download { .. } => c.downloads,
             _ => false,
@@ -411,10 +487,10 @@ impl Session {
             return Err(BrowserError::Unavailable);
         }
         let state = self.tabs.get(&tab).ok_or(BrowserError::MissingTab)?;
-        if let BrowserOperation::Click { element } | BrowserOperation::Fill { element, .. } = &op {
-            if !state.elements.contains(element) {
-                return Err(BrowserError::Invalid);
-            }
+        if let BrowserOperation::Click { element } | BrowserOperation::Fill { element, .. } = &op
+            && !state.elements.contains(element)
+        {
+            return Err(BrowserError::Invalid);
         }
         if self.requests.len() >= MAX_PENDING {
             return Err(BrowserError::Limit);
@@ -552,10 +628,10 @@ impl Session {
             t.view.state = "failed".into();
             t.view.error = Some(error.chars().take(1024).collect());
         }
-        if let Some(id) = request {
-            if let Some(r) = self.requests.get_mut(&id) {
-                r.state = RequestState::Failed(error.chars().take(1024).collect());
-            }
+        if let Some(id) = request
+            && let Some(r) = self.requests.get_mut(&id)
+        {
+            r.state = RequestState::Failed(error.chars().take(1024).collect());
         }
     }
     /// Authenticated native host callbacks only, never page JavaScript or MCP.
@@ -564,6 +640,56 @@ impl Session {
     }
     pub fn event_at(&mut self, event: Event, now: u64) -> Result<()> {
         match event {
+            Event::PopupRequested {
+                tab,
+                navigation,
+                url,
+            } => {
+                let Some(state) = self.tabs.get_mut(&tab) else {
+                    return Ok(());
+                };
+                if state.view.profile != BrowserProfile::Manual
+                    || state.committed_navigation != Some(navigation)
+                {
+                    return Ok(());
+                }
+                let Ok(document) = CommittedDocument::parse(&url) else {
+                    return Ok(());
+                };
+                if redact_diagnostic_url(&document.canonical_url).is_ok() {
+                    state.pending_popup = Some(document.canonical_url);
+                }
+            }
+            Event::NetworkDiagnostic {
+                tab,
+                navigation,
+                url,
+                status,
+                error,
+            } => {
+                let Some(state) = self.tabs.get_mut(&tab) else {
+                    return Ok(());
+                };
+                if state.view.profile != BrowserProfile::Manual
+                    || (state.committed_navigation != Some(navigation)
+                        && !state.navigation.as_ref().is_some_and(|n| n.0 == navigation))
+                {
+                    return Ok(());
+                }
+                let Ok(url) = redact_diagnostic_url(&url) else {
+                    return Ok(());
+                };
+                let error = error.map(|_| "Request failed".into());
+                if status.is_some_and(|code| !(100..=599).contains(&code)) {
+                    return Ok(());
+                }
+                if state.diagnostics.len() == 200 {
+                    state.diagnostics.pop_front();
+                }
+                state
+                    .diagnostics
+                    .push_back(NetworkDiagnostic { url, status, error });
+            }
             Event::ManualNavigation {
                 tab,
                 navigation,
@@ -683,6 +809,18 @@ impl Session {
                         .ok_or(BrowserError::MissingTab)?
                         .elements = elements.iter().map(|e| e.id.clone()).collect();
                 }
+                if matches!(
+                    r.operation,
+                    BrowserOperation::Input {
+                        event: InputEvent::Scroll { .. }
+                    }
+                ) {
+                    self.tabs
+                        .get_mut(&r.tab)
+                        .ok_or(BrowserError::MissingTab)?
+                        .elements
+                        .clear();
+                }
                 self.requests.get_mut(&request).unwrap().state = RequestState::Complete(output);
             }
             Event::OperationFailed { request, error } => {
@@ -698,6 +836,21 @@ impl Session {
         }
         Ok(())
     }
+}
+fn redact_diagnostic_url(raw: &str) -> Result<String> {
+    let mut parsed = url::Url::parse(raw).map_err(|_| BrowserError::Invalid)?;
+    if !matches!(parsed.scheme(), "http" | "https") {
+        return Err(BrowserError::Invalid);
+    }
+    let _ = parsed.set_username("");
+    let _ = parsed.set_password(None);
+    parsed.set_query(None);
+    parsed.set_fragment(None);
+    let redacted = parsed.to_string();
+    if redacted.len() > 2_048 {
+        return Err(BrowserError::Limit);
+    }
+    Ok(redacted)
 }
 #[cfg(test)]
 mod tests;

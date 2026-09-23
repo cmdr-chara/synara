@@ -568,6 +568,44 @@ impl Shell {
         let Some(task) = task else {
             return;
         };
+        self.apply_session_control(task, action, cx);
+    }
+    pub(in crate::shell) fn native_plan_mode(&mut self, cx: &mut Context<Self>) -> bool {
+        let Some(task) = self.selected else {
+            return false;
+        };
+        if self.controls_blocked() || self.uses_direct_model() {
+            self.error = Some(
+                "Plan mode requires an idle connected ACP session advertising that mode.".into(),
+            );
+            return false;
+        }
+        let Some((choice, action)) = self
+            .control_choices(ControlKind::Mode)
+            .into_iter()
+            .find(|(choice, _)| choice.label.eq_ignore_ascii_case("plan"))
+        else {
+            self.error = Some(
+                "This session does not advertise a Plan mode. No mode or prompt was changed."
+                    .into(),
+            );
+            return false;
+        };
+        if let Some(reason) = choice.unavailable {
+            self.error = Some(reason);
+            return false;
+        }
+        if !choice.selected {
+            self.apply_session_control(task, action, cx);
+        }
+        true
+    }
+    fn apply_session_control(
+        &mut self,
+        task: TaskId,
+        action: ControlAction,
+        cx: &mut Context<Self>,
+    ) {
         self.controls.pending.insert(task);
         self.error = None;
         let controller = self.controller.clone();

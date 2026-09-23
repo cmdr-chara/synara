@@ -84,6 +84,9 @@ impl Store {
         }
         let binding = selection
             .map(|selection| -> WorkspaceResult<DirectModelBinding> {
+                selection
+                    .validate_context()
+                    .map_err(|e| WorkspaceError::Invalid(e.to_string()))?;
                 let profile = settings
                     .providers
                     .iter()

@@ -3,6 +3,7 @@ mod debug_workflow;
 mod direct_models;
 mod imports;
 mod integrations;
+mod workflows;
 pub use debug_workflow::{DebugEdit, DebugPhase, DebugWorkflow};
 mod goals;
 pub use goals::{
@@ -294,6 +295,17 @@ PRAGMA user_version=2;")?;
         };
         if task.state != TaskState::Archived {
             return Err(StorageError::Identity);
+        }
+        let linked: bool = tx.query_row(
+            "SELECT EXISTS(SELECT 1 FROM preferences WHERE key IN (?1,?2))",
+            params![
+                format!("task-workflow:{id}"),
+                format!("task-workflow-parent:{id}")
+            ],
+            |row| row.get(0),
+        )?;
+        if linked {
+            return Err(StorageError::NotEmpty);
         }
         tx.execute(
             "DELETE FROM sessions WHERE thread_id=?1",
@@ -623,7 +635,11 @@ fn valid_preference_key(key: &str) -> bool {
         .or_else(|| key.strip_prefix("task-recap:"))
         .or_else(|| key.strip_prefix("task-debug:"))
         .or_else(|| key.strip_prefix("task-direct-model:"))
-        .or_else(|| key.strip_prefix("task-draft:"))
+        .or_else(|| {
+            key.strip_prefix("task-workflow:")
+                .or_else(|| key.strip_prefix("task-workflow-parent:"))
+                .or_else(|| key.strip_prefix("task-draft:"))
+        })
         .or_else(|| key.strip_prefix("message-pins:"))
         .or_else(|| key.strip_prefix("task-context:"))
         .or_else(|| key.strip_prefix("task-attachments:"))

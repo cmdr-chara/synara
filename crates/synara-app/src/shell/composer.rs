@@ -1,5 +1,7 @@
 //! Capped conversation input surface around the existing native text/IME entity.
 use super::*;
+mod commands;
+mod context;
 use crate::ui::{self, Glyph, palette};
 
 impl Shell {
@@ -9,6 +11,7 @@ impl Shell {
         cx: &mut Context<Self>,
     ) -> gpui::AnyElement {
         let busy = self.selected.is_some_and(|task| self.busy.contains(&task));
+        let native_command = self.native_command_draft(cx);
         let disabled = !busy
             && (self.direct_route_loading()
                 || self.loading_task.is_some()
@@ -16,9 +19,9 @@ impl Shell {
                     .selected
                     .is_some_and(|t| self.draft_state.loading.contains(&t))
                 || self.goal_send_pending(cx)
-                || self.controls_blocked()
+                || (!native_command && self.controls_blocked())
                 || self.attachment_send_blocked()
-                || self.attachment_capability_error().is_some()
+                || (!native_command && self.attachment_capability_error().is_some())
                 || self.composer.read(cx).text().trim().is_empty());
         let composer_bounds = self.controls.composer_bounds.clone();
         div()
@@ -131,6 +134,8 @@ impl Shell {
                             .text_color(rgb(palette().error))
                             .child(error.clone())
                     }))
+                    .child(self.native_commands_view(cx))
+                    .child(self.context_usage_view(cx))
                     .child(
                         div()
                             .flex()

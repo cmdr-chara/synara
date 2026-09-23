@@ -19,6 +19,7 @@ struct Fixture {
     next_session: u64,
     next_callback: u64,
     sessions: HashMap<String, String>,
+    gateway_sessions: HashMap<String, bool>,
     pending: HashMap<String, Value>,
     callbacks: HashMap<String, Callback>,
 }
@@ -92,11 +93,14 @@ impl Fixture {
                     self.error(id, -32602);
                     return;
                 }
-                let caps = if self.profile == "beta" {
+                let mut caps = if self.profile == "beta" {
                     json!({"promptCapabilities":{}})
                 } else {
                     json!({"loadSession":true,"promptCapabilities":{"image":true},"sessionCapabilities":{"list":{},"resume":{},"close":{},"delete":{},"additionalDirectories":{}},"auth":{"logout":{}}})
                 };
+                if self.launch_arguments.iter().any(|a| a == "--gateway-http") {
+                    caps["mcpCapabilities"] = json!({"http":true});
+                }
                 self.ok(id,json!({"protocolVersion":1,"agentInfo":{"name":format!("fixture-{}",self.profile),"version":"1.0.0"},"agentCapabilities":caps,"authMethods":[{"id":"test-login","name":"Test login"}]}));
             }
             Some("authenticate") => {
@@ -136,6 +140,24 @@ impl Fixture {
                 let session = format!("session-{}", self.next_session);
                 self.sessions
                     .insert(session.clone(), params["cwd"].as_str().unwrap().into());
+                let gateway = params["mcpServers"].as_array().is_some_and(|servers| {
+                    servers.iter().any(|server| {
+                        server["name"] == "synara-agent-gateway"
+                            && server["type"] == "http"
+                            && server["url"].as_str().is_some_and(|url| {
+                                url.starts_with("http://127.0.0.1:") && url.ends_with("/mcp")
+                            })
+                            && server["headers"].as_array().is_some_and(|headers| {
+                                headers.iter().any(|h| {
+                                    h["name"] == "Authorization"
+                                        && h["value"].as_str().is_some_and(|v| {
+                                            v.starts_with("Bearer ") && v.len() == 71
+                                        })
+                                })
+                            })
+                    })
+                });
+                self.gateway_sessions.insert(session.clone(), gateway);
                 // Exercise updates delivered before the new-session response.
                 self.update(
                     &session,
@@ -163,6 +185,7 @@ impl Fixture {
             }
             Some("session/close" | "session/delete") => {
                 self.sessions.remove(&session);
+                self.gateway_sessions.remove(&session);
                 self.ok(id, json!({}));
             }
             Some("session/set_config_option") => {
@@ -189,6 +212,20 @@ impl Fixture {
             }
             Some("session/prompt") => {
                 let text = params["prompt"][0]["text"].as_str().unwrap_or("");
+                if text == "gateway-context"
+                    && self.launch_arguments.iter().any(|a| a == "--gateway-http")
+                {
+                    self.finish(
+                        &session,
+                        id,
+                        if self.gateway_sessions.get(&session) == Some(&true) {
+                            "Scoped HTTP gateway received in this fresh ACP session"
+                        } else {
+                            "No scoped gateway received"
+                        },
+                    );
+                    return;
+                }
                 // Goal scenarios exercise real generic ACP events, not production special cases.
                 if text.starts_with("Synara goal pursuit\n") {
                     if text.contains("fixture-goal-budget") {
@@ -352,6 +389,7 @@ fn main() {
         next_session: 0,
         next_callback: 0,
         sessions: HashMap::new(),
+        gateway_sessions: HashMap::new(),
         pending: HashMap::new(),
         callbacks: HashMap::new(),
     };

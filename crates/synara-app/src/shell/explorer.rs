@@ -56,6 +56,7 @@ pub(super) struct ExplorerState {
     results: Vec<SearchMatch>,
     error: Option<String>,
     searched: bool,
+    project_wide: bool,
     previous_focus: Option<FocusHandle>,
     _subscription: Subscription,
 }
@@ -86,6 +87,7 @@ impl ExplorerState {
             results: vec![],
             error: None,
             searched: false,
+            project_wide: true,
             previous_focus: None,
             _subscription: subscription,
         }
@@ -386,17 +388,22 @@ impl Shell {
         let generation = self.explorer.generation;
         let project = self.project;
         let directory = self.directory.clone();
+        let search_directory = if self.explorer.project_wide {
+            PathBuf::new()
+        } else {
+            directory.clone()
+        };
         let service = self.controller.workspace.clone();
         self.job(async move {
             let result = async {
                 match target {
                     WorkspaceTarget::Local { root } => {
-                        search_files(root, directory.clone(), query, 200).await
+                        search_files(root, search_directory, query, 200).await
                     }
                     WorkspaceTarget::Ssh { workspace, root } => {
                         search_remote_files(
                             remote_filesystem(service, workspace, root).await?,
-                            directory.clone(),
+                            search_directory,
                             query,
                             200,
                         )
@@ -571,6 +578,22 @@ impl Shell {
             )
             .child(
                 ui::button(
+                    "file-search-scope",
+                    if state.project_wide {
+                        "Scope: project"
+                    } else {
+                        "Scope: folder"
+                    },
+                    state.project_wide,
+                )
+                .on_click(cx.listener(|this, _, _, cx| {
+                    this.explorer.project_wide = !this.explorer.project_wide;
+                    this.explorer.reset_search();
+                    cx.notify();
+                })),
+            )
+            .child(
+                ui::button(
                     "file-search-run",
                     if state.searching {
                         "Searching..."
@@ -599,7 +622,14 @@ impl Shell {
                             }
                         )
                     } else {
-                        "Literal search in the current folder. Press Enter.".into()
+                        format!(
+                            "Literal search in the {}. Press Enter.",
+                            if state.project_wide {
+                                "project"
+                            } else {
+                                "current folder"
+                            }
+                        )
                     }),
             )
             .children(

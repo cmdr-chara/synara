@@ -20,6 +20,7 @@ jobs:
           mkdir -p /tmp/source-checkpoint
           git rev-parse HEAD > /tmp/source-checkpoint/revision.txt
           git bundle create /tmp/source-checkpoint/source.bundle HEAD
+          git archive --format=tar.gz --output=/tmp/source-checkpoint/source.tar.gz HEAD
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: source-checkpoint

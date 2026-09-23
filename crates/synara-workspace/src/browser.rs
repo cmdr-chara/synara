@@ -84,16 +84,16 @@ impl BrowserService {
         }
     }
     fn revoke_generation(&self, task: u128, generation: u128) {
-        if let Ok(mut clients) = self.0.clients.lock() {
-            if clients.get(&task).is_some_and(|(g, _)| *g == generation) {
-                if let Some((_, c)) = clients.remove(&task) {
-                    c.cancel();
-                }
-                let _ = self.with(|s, _| {
-                    s.shutdown_task(task);
-                    Ok(())
-                });
+        if let Ok(mut clients) = self.0.clients.lock()
+            && clients.get(&task).is_some_and(|(g, _)| *g == generation)
+        {
+            if let Some((_, c)) = clients.remove(&task) {
+                c.cancel();
             }
+            let _ = self.with(|s, _| {
+                s.shutdown_task(task);
+                Ok(())
+            });
         }
     }
     pub fn shutdown(&self) {

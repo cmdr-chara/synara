@@ -99,6 +99,13 @@ impl EditorState {
         self.tabs.iter().position(|tab| tab.document.path == path)
     }
     pub fn request_open(&mut self, path: PathBuf) -> u64 {
+        if self
+            .jump_after_open
+            .as_ref()
+            .is_some_and(|(target, _)| *target != path)
+        {
+            self.jump_after_open = None;
+        }
         self.generation = self.generation.wrapping_add(1);
         self.loading = Some(path);
         self.generation
@@ -235,12 +242,14 @@ impl Shell {
         self.editors.close = None;
         self.focus_composer = false;
         self.editors.focus_editor = true;
-        if let Some((path, line)) = self.editors.jump_after_open.take()
+        if let Some((path, line)) = self.editors.jump_after_open.as_ref()
             && self
                 .document
                 .as_ref()
-                .is_some_and(|document| document.path == path)
+                .is_some_and(|document| document.path == *path)
         {
+            let line = *line;
+            self.editors.jump_after_open = None;
             self.editor.update(cx, |input, cx| {
                 input.go_to_line(line, 1, cx);
             });

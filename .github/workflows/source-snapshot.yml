@@ -14,13 +14,17 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-      - name: Capture exact authorized source for local implementation
+      - name: Capture exact authorized source and tree for local implementation
         run: |
           mkdir -p /tmp/synara-source-snapshot
           git bundle create /tmp/synara-source-snapshot/source.bundle HEAD
+          git archive HEAD | gzip -n > /tmp/synara-source-snapshot/source.tar.gz
           git rev-parse HEAD > /tmp/synara-source-snapshot/revision.txt
+          git rev-parse 'HEAD^{tree}' > /tmp/synara-source-snapshot/tree.txt
+          cd /tmp/synara-source-snapshot
+          sha256sum source.bundle source.tar.gz > SHA256SUMS
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: local-implementation-source
           path: /tmp/synara-source-snapshot/
-          retention-days: 1
+          retention-days: 3

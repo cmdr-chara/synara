@@ -27,13 +27,13 @@ jobs:
           name: local-parity-current-source
           path: /tmp/parity-source/
           retention-days: 3
-      - name: Prepare immutable public font and theme inputs
+      - name: Install public font verification and native header packages
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq python3-fonttools python3-brotli
-          python3 scripts/parity/export_theme_catalog.py --vectors
-          python3 scripts/parity/vendor_electron_code_font.py --prepare --compare-reference
-      - name: Package only explicit public generated inputs
+          sudo apt-get install -y -qq python3-fonttools python3-brotli libglib2.0-dev libdbus-1-dev libgtk-3-dev
+      - name: Prepare immutable public font inputs
+        run: python3 scripts/parity/vendor_electron_code_font.py --prepare --compare-reference
+      - name: Package only explicit public inputs
         if: always()
         run: |
           mkdir -p /tmp/parity-generated
@@ -41,8 +41,6 @@ jobs:
           from pathlib import Path
           import hashlib, json, tarfile
           names = [
-              'crates/synara-workspace/src/settings/theme/catalog.json',
-              'crates/synara-workspace/src/settings/theme/reference-vectors.json',
               'crates/synara-app/assets/fonts/JetBrainsMono-Variable.ttf',
               'crates/synara-app/assets/fonts/JetBrainsMono-Italic-Variable.ttf',
               'crates/synara-app/assets/licenses/JetBrainsMono-OFL.txt',
@@ -53,6 +51,15 @@ jobs:
               for name in found:
                   archive.add(name, arcname=name)
           Path('/tmp/parity-generated/manifest.json').write_text(json.dumps({name:hashlib.sha256(Path(name).read_bytes()).hexdigest() for name in found}, indent=2))
+          headers = [
+              '/usr/lib/x86_64-linux-gnu/glib-2.0/include',
+              '/usr/lib/x86_64-linux-gnu/dbus-1.0/include',
+              '/usr/lib/x86_64-linux-gnu/gtk-3.0/include',
+          ]
+          with tarfile.open('/tmp/parity-generated/native-header-support.tar.gz', 'w:gz', dereference=True) as archive:
+              for name in headers:
+                  if Path(name).is_dir():
+                      archive.add(name, arcname=name.lstrip('/'))
           PY
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()

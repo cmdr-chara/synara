@@ -10,9 +10,7 @@ mod surface;
 mod tests;
 
 use crate::{
-    session::{
-        Capabilities, Command, Event, NativePort, Output, RuntimeDiagnostic,
-    },
+    session::{Capabilities, Command, Event, NativePort, Output, RuntimeDiagnostic},
     *,
 };
 use gtk::{gio, prelude::*};
@@ -815,10 +813,9 @@ fn observe_manual_runtime_diagnostics(
     let Some(manager) = WebViewExt::user_content_manager(web) else {
         return;
     };
-    if !manager.register_script_message_handler_in_world(
-        MANUAL_RUNTIME_HANDLER,
-        MANUAL_RUNTIME_WORLD,
-    ) {
+    if !manager
+        .register_script_message_handler_in_world(MANUAL_RUNTIME_HANDLER, MANUAL_RUNTIME_WORLD)
+    {
         return;
     }
     let reported = Rc::new(Cell::new(0usize));

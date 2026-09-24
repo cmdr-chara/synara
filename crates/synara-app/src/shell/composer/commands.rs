@@ -38,8 +38,7 @@ const AUTOMATION_USAGE: &str =
     "Automation usage: /synara/automation [list | new | edit <id>]. Nothing was sent.";
 const AUTOMATION_EDIT_USAGE: &str =
     "Automation usage: /synara/automation edit <id>. Nothing was sent.";
-const SETTINGS_USAGE: &str =
-    "Settings usage: /synara/settings <section>. Choose one section from the command menu. Nothing was sent.";
+const SETTINGS_USAGE: &str = "Settings usage: /synara/settings <section>. Choose one section from the command menu. Nothing was sent.";
 const SETTINGS_SECTIONS: &[(&str, &str)] = &[
     ("onboarding", "Getting started"),
     ("device", "Device and capture"),
@@ -270,7 +269,7 @@ fn parse(text: &str) -> Option<Result<ParsedCommand, &'static str>> {
             SETTINGS_SECTIONS
                 .iter()
                 .find(|(name, _)| *name == section)
-                .map(|(name, _)| ParsedCommand::SettingsSection(*name))
+                .map(|(name, _)| ParsedCommand::SettingsSection(name))
                 .ok_or(SETTINGS_USAGE)
         }
     } else {
@@ -730,10 +729,10 @@ mod tests {
             Some(Ok(ParsedCommand::Native(Command::Settings)))
         );
         for (section, _) in SETTINGS_SECTIONS {
-            assert!(settings_section(*section).is_some());
+            assert!(settings_section(section).is_some());
             assert_eq!(
                 parse(&format!("/synara/settings {section}")),
-                Some(Ok(ParsedCommand::SettingsSection(*section)))
+                Some(Ok(ParsedCommand::SettingsSection(section)))
             );
         }
         assert_eq!(

@@ -97,7 +97,8 @@ impl TaskContext {
             })
         {
             return Err(WorkspaceError::Invalid(
-                "Saved context or folder references are invalid or exceed their size limits.".into(),
+                "Saved context or folder references are invalid or exceed their size limits."
+                    .into(),
             ));
         }
         Ok(())
@@ -254,7 +255,9 @@ mod tests {
             notes: "Caffè 日本語\nKeep exact spacing  ".into(),
             ..Default::default()
         };
-        value.folder_references.push(dir.path().to_string_lossy().into_owned());
+        value
+            .folder_references
+            .push(dir.path().to_string_lossy().into_owned());
         value.checklist.push(ChecklistItem::new("Review UI".into()));
         let mut done = ChecklistItem::new("Read source".into());
         done.done = true;
@@ -417,13 +420,15 @@ mod tests {
         ] {
             assert!(TaskContext::validate_folder_reference(invalid).is_err());
         }
-        assert!(TaskContext::validate_folder_reference(
-            &"/".repeat(TaskContext::MAX_FOLDER_REFERENCE_BYTES + 1)
-        )
-        .is_err());
+        assert!(
+            TaskContext::validate_folder_reference(
+                &"/".repeat(TaskContext::MAX_FOLDER_REFERENCE_BYTES + 1)
+            )
+            .is_err()
+        );
 
         let duplicate = TaskContext {
-            folder_references: vec![valid.clone(), valid],
+            folder_references: vec![valid.clone(), valid.clone()],
             ..Default::default()
         };
         assert!(duplicate.validate().is_err());
@@ -467,7 +472,11 @@ mod tests {
         let legacy = service.task_context(task.id).await.unwrap();
         assert_eq!(legacy.version, 1);
         assert!(legacy.folder_references.is_empty());
-        let folder = dir.path().join("chosen-folder").to_string_lossy().into_owned();
+        let folder = dir
+            .path()
+            .join("chosen-folder")
+            .to_string_lossy()
+            .into_owned();
         let upgraded = service
             .save_task_context(
                 task.id,

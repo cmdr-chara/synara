@@ -62,6 +62,9 @@ pub enum StudioPreview {
         text: String,
         markdown: bool,
     },
+    DocumentText {
+        text: String,
+    },
     Image {
         bytes: Vec<u8>,
         format: PreviewImageFormat,
@@ -249,6 +252,13 @@ fn preview(root: &Path, path: &Path) -> WorkspaceResult<StudioPreview> {
         .and_then(|s| s.to_str())
         .unwrap_or("")
         .to_lowercase();
+    if extension == "docx" {
+        if bytes.len() > crate::MAX_ATTACHMENT_BATCH_BYTES {
+            return Ok(StudioPreview::Unsupported { bytes: size });
+        }
+        let text = crate::storage::docx_text(&bytes)?;
+        return Ok(StudioPreview::DocumentText { text });
+    }
     if matches!(
         extension.as_str(),
         "png" | "jpg" | "jpeg" | "gif" | "webp" | "svg" | "pdf" | "mp4"

@@ -3,7 +3,7 @@ const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const vm=require('node:vm');
 const fs=require('node:fs');
-const source=fs.readFileSync('crates/synara-server/src/app.js','utf8');
+const source=fs.readFileSync('assets/web-workspace/app.js','utf8');
 class Element {
   constructor(tag='div'){this.tag=tag;this.value='';this.textContent='';this.children=[];this.listeners={};this.disabled=false;this.attributes={}}
   append(...children){this.children.push(...children)}
@@ -53,7 +53,7 @@ test('run uses reviewed snapshot and does not mark later typing as saved',async(
   const pending=f.button('Run draft').click();await Promise.resolve();
   f.editor().value='New unsaved text';resolve();await pending;
   const body=JSON.parse(f.requests.find(r=>r.options.method==='POST').options.body);
-  assert.deepEqual(body,{text:'Send this',expected_draft:'Original'});
+  assert.deepEqual(body,{text:'Send this',expected_draft:'Original',expected_route:null,expected_remote:null});
   assert.equal(f.evaluate('activeDraftSaved'),'Send this');
   assert.equal(f.editor().value,'New unsaved text');
   assert.equal(f.button('Run draft').disabled,true);

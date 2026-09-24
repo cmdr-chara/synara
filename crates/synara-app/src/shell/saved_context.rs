@@ -289,7 +289,8 @@ impl ContextDialog {
             directories: true,
             multiple: true,
             prompt: Some(
-                "Choose folders to save path references only; folder contents will not be read".into(),
+                "Choose folders to save path references only; folder contents will not be read"
+                    .into(),
             ),
         });
         cx.spawn(async move |view, cx| {
@@ -642,7 +643,7 @@ impl gpui::Render for ContextDialog {
                     )
                     .child(
                         ui::chrome_button(
-                            SharedString::from(format!("context-folder-remove-{index}")),
+                            "context-folder-remove",
                             "Remove saved folder reference",
                             Glyph::Close,
                             false,
@@ -653,6 +654,7 @@ impl gpui::Render for ContextDialog {
                                 cx.notify();
                             }),
                         )
+                        .id(("context-folder-remove", index))
                         .size(px(22.)),
                     )
             })

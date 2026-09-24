@@ -319,7 +319,7 @@ impl Shell {
             directories: true,
             multiple: true,
             prompt: Some(
-                "Attach images or UTF-8 files, or choose folders for names-only snapshots".into(),
+                "Attach PDF/DOCX documents, images or UTF-8 files, or choose folders for names-only snapshots".into(),
             ),
         });
         cx.spawn(async move |view,cx| {
@@ -392,7 +392,7 @@ impl Shell {
                 match result {
                     Ok(asset) => {
                         self.attachments.preview = Some(match asset.info.kind {
-                            AttachmentKind::Text => {
+                            AttachmentKind::Text | AttachmentKind::Pdf | AttachmentKind::Docx => {
                                 Preview::Text(String::from_utf8(asset.bytes).unwrap_or_default())
                             }
                             kind => Preview::Image(

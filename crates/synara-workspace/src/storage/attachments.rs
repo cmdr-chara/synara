@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 use std::{collections::HashSet, path::PathBuf};
 use synara_agent::{Prompt, PromptPart};
 mod intake;
+pub(crate) use intake::docx_text;
 pub(crate) use intake::still_webp_preview;
 mod media;
 #[cfg(test)]
@@ -23,6 +24,8 @@ pub enum AttachmentKind {
     Jpeg,
     Webp,
     Text,
+    Pdf,
+    Docx,
 }
 impl AttachmentKind {
     pub fn mime_type(self) -> &'static str {
@@ -31,10 +34,12 @@ impl AttachmentKind {
             Self::Jpeg => "image/jpeg",
             Self::Webp => "image/webp",
             Self::Text => "text/plain",
+            Self::Pdf => "application/pdf",
+            Self::Docx => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         }
     }
     pub fn is_image(self) -> bool {
-        self != Self::Text
+        matches!(self, Self::Png | Self::Jpeg | Self::Webp)
     }
 }
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -88,8 +93,12 @@ impl AttachmentDraft {
             Some(
                 "This agent did not advertise image prompts. Remove the images or choose a compatible agent.",
             )
-        } else if self.pending.iter().any(|a| a.kind == AttachmentKind::Text)
-            && !capabilities.embedded_context
+        } else if self.pending.iter().any(|a| {
+            matches!(
+                a.kind,
+                AttachmentKind::Text | AttachmentKind::Pdf | AttachmentKind::Docx
+            )
+        }) && !capabilities.embedded_context
         {
             Some(
                 "This agent did not advertise embedded file context. Remove the files or choose a compatible agent.",
@@ -183,7 +192,9 @@ impl Stored {
                 || info.bytes == 0
                 || info.bytes > MAX_ATTACHMENT_BATCH_BYTES
                 || match (info.kind, info.dimensions) {
-                    (AttachmentKind::Text, None) => false,
+                    (AttachmentKind::Text | AttachmentKind::Pdf | AttachmentKind::Docx, None) => {
+                        false
+                    }
                     (
                         AttachmentKind::Png | AttachmentKind::Jpeg | AttachmentKind::Webp,
                         Some((w, h)),
@@ -395,18 +406,29 @@ impl WorkspaceService {
                     .ok_or(WorkspaceError::NotFound)
             })
             .await?;
-        intake::run(move || {
+        let mut preview = intake::run(move || {
             let bytes = item.bytes()?;
             let info = intake::inspect(item.info.name.clone(), &bytes)?;
             if info.kind != item.info.kind || info.dimensions != item.info.dimensions {
                 return Err(StorageError::Identity.into());
             }
+            let bytes = if item.info.kind == AttachmentKind::Docx {
+                intake::docx_text(&bytes)?.into_bytes()
+            } else {
+                bytes
+            };
             Ok(AttachmentPreview {
                 info: item.info,
                 bytes,
             })
         })
-        .await
+        .await?;
+        if preview.info.kind == AttachmentKind::Pdf {
+            preview.bytes = crate::studio::attachment_text(preview.bytes)
+                .await?
+                .into_bytes();
+        }
+        Ok(preview)
     }
     pub(crate) async fn attached_prompt(
         &self,
@@ -421,11 +443,31 @@ impl WorkspaceService {
                 Ok(state)
             })
             .await?;
+        let mut pdf_text = std::collections::HashMap::new();
+        let mut total_pdf_text = 0usize;
+        for item in &state.pending {
+            if item.info.kind == AttachmentKind::Pdf {
+                let bytes = item.bytes()?;
+                let checked = intake::inspect(item.info.name.clone(), &bytes)?;
+                if checked.kind != item.info.kind || checked.dimensions != item.info.dimensions {
+                    return Err(StorageError::Identity.into());
+                }
+                let extracted = crate::studio::attachment_text(bytes).await?;
+                total_pdf_text = total_pdf_text.saturating_add(extracted.len());
+                if total_pdf_text > MAX_ATTACHMENT_BATCH_BYTES {
+                    return Err(invalid(
+                        "Extracted PDF text exceeds the 2 MiB combined prompt limit.",
+                    ));
+                }
+                pdf_text.insert(item.info.id.clone(), extracted);
+            }
+        }
         // Existing ACP encoding checks negotiated capability and the 4 MiB limit
         // before recording a prompt or invoking an agent method.
         intake::run(move || {
             let mut parts = vec![PromptPart::Text(text)];
             let mut projected_media_bytes = 0usize;
+            let mut projected_context_bytes = total_pdf_text;
             for item in state.pending {
                 let bytes = item.bytes()?;
                 let checked = intake::inspect(item.info.name.clone(), &bytes)?;
@@ -439,6 +481,28 @@ impl WorkspaceService {
                         text: String::from_utf8(bytes).map_err(|_| StorageError::Identity)?,
                         mime_type: "text/plain".into(),
                     },
+                    AttachmentKind::Pdf => PromptPart::Context {
+                        uri: item.info.uri(),
+                        text: pdf_text
+                            .remove(&item.info.id)
+                            .ok_or(StorageError::Identity)?,
+                        mime_type: "text/plain".into(),
+                    },
+                    AttachmentKind::Docx => {
+                        let extracted = intake::docx_text(&bytes)?;
+                        projected_context_bytes =
+                            projected_context_bytes.saturating_add(extracted.len());
+                        if projected_context_bytes > MAX_ATTACHMENT_BATCH_BYTES {
+                            return Err(invalid(
+                                "Extracted document text exceeds the 2 MiB combined prompt limit.",
+                            ));
+                        }
+                        PromptPart::Context {
+                            uri: item.info.uri(),
+                            text: extracted,
+                            mime_type: "text/plain".into(),
+                        }
+                    }
                     AttachmentKind::Webp => {
                         let png = intake::webp_to_png(&bytes)?;
                         projected_media_bytes =

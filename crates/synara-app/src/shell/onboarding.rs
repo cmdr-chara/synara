@@ -199,7 +199,7 @@ impl Shell {
             .gap_3()
             .child(onboarding_card(
                 "Configured coding agents",
-                "A command found on disk may still need its own login. Synara checks authentication only after connecting to that agent; no account state is assumed here.",
+                "A command found on disk may still need its own login. Connect starts the selected agent and exposes only its advertised ACP sign-in methods. If it has no ACP sign-in method, use its own CLI login in the setup terminal. Synara never collects provider credentials.",
             ))
             .child(
                 div()
@@ -232,6 +232,7 @@ impl Shell {
                             .text_color(rgb(palette().muted))
                             .child(profile.command.display().to_string()),
                     )
+                    .child(self.onboarding_provider_guide(index, profile, cx))
                     .children(available.then(|| self.onboarding_agent_access(index, &profile.id, cx)))
                     .children(available.then(|| {
                         ui::button(

@@ -414,8 +414,7 @@ impl Shell {
             output: match &binding.selection.output {
                 OutputFormat::JsonSchema { .. }
                     if model.capabilities.structured_output == synara_model::Support::Supported
-                        && profile.protocol
-                            != synara_model::ProtocolFamily::AnthropicMessages =>
+                        && profile.protocol != synara_model::ProtocolFamily::AnthropicMessages =>
                 {
                     binding.selection.output.clone()
                 }
@@ -770,17 +769,15 @@ mod tests {
     #[test]
     fn direct_model_cycle_wraps_across_reviewed_profiles_in_config_order() {
         let settings = fixture_settings();
-        let (profile, model) =
-            next_direct_model(&settings, "first-provider", "second-model", true)
-                .expect("next model should wrap across provider profiles");
+        let (profile, model) = next_direct_model(&settings, "first-provider", "second-model", true)
+            .expect("next model should wrap across provider profiles");
         assert_eq!(
             (profile.id.as_str(), model.id.as_str()),
             ("second-provider", "third-model")
         );
 
-        let (profile, model) =
-            next_direct_model(&settings, "first-provider", "first-model", false)
-                .expect("previous model should wrap to the final configured model");
+        let (profile, model) = next_direct_model(&settings, "first-provider", "first-model", false)
+            .expect("previous model should wrap to the final configured model");
         assert_eq!(
             (profile.id.as_str(), model.id.as_str()),
             ("second-provider", "third-model")

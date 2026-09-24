@@ -99,8 +99,7 @@ fn parse_blame(bytes: &[u8], line_count: usize) -> WorkspaceResult<Vec<GitFileBl
     }
     let text = std::str::from_utf8(bytes).map_err(|_| invalid())?;
     let mut rows: Vec<Option<GitFileBlameLine>> = vec![None; line_count];
-    let mut metadata_by_commit: HashMap<String, (String, Option<String>, String)> =
-        HashMap::new();
+    let mut metadata_by_commit: HashMap<String, (String, Option<String>, String)> = HashMap::new();
     let mut output_lines = text.lines().peekable();
     while let Some(header) = output_lines.next() {
         let fields: Vec<_> = header.split_ascii_whitespace().collect();
@@ -143,21 +142,22 @@ fn parse_blame(bytes: &[u8], line_count: usize) -> WorkspaceResult<Vec<GitFileBl
             return Err(invalid());
         }
         let commit = fields[0].to_owned();
-        let (author, date, subject) = if author.is_some() || author_time.is_some() || subject.is_some() {
-            let author = author.ok_or_else(invalid)?;
-            let subject = subject.ok_or_else(invalid)?;
-            let date = author_time
-                .and_then(|timestamp| chrono::DateTime::from_timestamp(timestamp, 0))
-                .map(|date| date.format("%Y-%m-%d %H:%M UTC").to_string());
-            let metadata = (author, date, subject);
-            metadata_by_commit.insert(commit.clone(), metadata.clone());
-            metadata
-        } else {
-            metadata_by_commit
-                .get(&commit)
-                .cloned()
-                .ok_or_else(invalid)?
-        };
+        let (author, date, subject) =
+            if author.is_some() || author_time.is_some() || subject.is_some() {
+                let author = author.ok_or_else(invalid)?;
+                let subject = subject.ok_or_else(invalid)?;
+                let date = author_time
+                    .and_then(|timestamp| chrono::DateTime::from_timestamp(timestamp, 0))
+                    .map(|date| date.format("%Y-%m-%d %H:%M UTC").to_string());
+                let metadata = (author, date, subject);
+                metadata_by_commit.insert(commit.clone(), metadata.clone());
+                metadata
+            } else {
+                metadata_by_commit
+                    .get(&commit)
+                    .cloned()
+                    .ok_or_else(invalid)?
+            };
         let row = GitFileBlameLine {
             commit,
             author,
@@ -170,7 +170,9 @@ fn parse_blame(bytes: &[u8], line_count: usize) -> WorkspaceResult<Vec<GitFileBl
             }
         }
     }
-    rows.into_iter().collect::<Option<Vec<_>>>().ok_or_else(invalid)
+    rows.into_iter()
+        .collect::<Option<Vec<_>>>()
+        .ok_or_else(invalid)
 }
 fn history_args(args: Vec<String>) -> Vec<String> {
     // Missing promisor objects must be errors, never an implicit network fetch.
@@ -196,8 +198,7 @@ impl GitService {
         let head = String::from_utf8_lossy(&bytes).trim().to_owned();
         if !object_id(&head) || head != history.head {
             return Err(RuntimeError::Denied(
-                "Repository HEAD changed. Reopen file history before requesting line blame."
-                    .into(),
+                "Repository HEAD changed. Reopen file history before requesting line blame.".into(),
             )
             .into());
         }
@@ -452,10 +453,12 @@ mod tests {
         assert_eq!(blame.lines[0].commit, history.commits[0].id);
         assert_eq!(blame.lines[0].author, "Fixture Author");
         assert_eq!(blame.lines[0].subject, "Second");
-        assert!(GitService::new(dir.path().to_path_buf())
-            .file_blame(&history, &history.commits[0].id, &cancel)
-            .await
-            .is_err());
+        assert!(
+            GitService::new(dir.path().to_path_buf())
+                .file_blame(&history, &history.commits[0].id, &cancel)
+                .await
+                .is_err()
+        );
         assert!(!dir.path().join("executed").exists());
         assert_eq!(
             std::fs::read_to_string(dir.path().join(file)).unwrap(),
@@ -524,10 +527,12 @@ mod tests {
                 .await,
             Err(WorkspaceError::Runtime(RuntimeError::Limit))
         ));
-        assert!(service
-            .file_blame(&history, &history.commits[1].id, &cancel)
-            .await
-            .is_err());
+        assert!(
+            service
+                .file_blame(&history, &history.commits[1].id, &cancel)
+                .await
+                .is_err()
+        );
         // HEAD moving does not change an already selected immutable revision.
         assert_eq!(
             service

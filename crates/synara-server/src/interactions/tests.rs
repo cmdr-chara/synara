@@ -59,7 +59,7 @@ async fn approvals_are_one_shot_thread_scoped_and_never_persistent() {
     sender.send(request).await.ok().unwrap();
     inbox.refresh();
     let id = inbox.pending[0].0.clone();
-    let view = public_view(&id, &inbox.pending[0].1).unwrap();
+    let view = public_view(&id, &inbox.pending[0].1, None, None).unwrap();
     assert_eq!(view["choices"].as_array().unwrap().len(), 1);
     assert!(!view.to_string().contains("session-id"));
     assert_eq!(
@@ -289,7 +289,7 @@ async fn queue_and_serialized_views_are_bounded() {
         .pending
         .iter()
         .take(MAX_VISIBLE)
-        .filter_map(|(id, item)| public_view(id, item))
+        .filter_map(|(id, item)| public_view(id, item, None, None))
         .collect();
     assert!(serde_json::to_vec(&views).unwrap().len() < MAX_RESPONSE_BYTES);
     drop(receivers);

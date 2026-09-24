@@ -232,8 +232,12 @@ impl AppSettings {
             // Implemented shortcuts are checked by active context above, so a
             // composer action can share an editor chord. Retained legacy rows
             // are still subject to the old duplicate check.
-            if !NAVIGATION_COMMANDS.iter().any(|command| command.id == binding.command)
-                && !CONTEXTUAL_COMMANDS.iter().any(|command| command.id == binding.command)
+            if !NAVIGATION_COMMANDS
+                .iter()
+                .any(|command| command.id == binding.command)
+                && !CONTEXTUAL_COMMANDS
+                    .iter()
+                    .any(|command| command.id == binding.command)
                 && !legacy_shortcuts.insert(binding.shortcut.as_str())
             {
                 return Err(WorkspaceError::Invalid(

@@ -95,6 +95,16 @@ impl Shell {
             .and_then(|m| m.capabilities.max_output_tokens)
             .unwrap_or(131072)
             .min(131072);
+        if let Some(window) = model.and_then(|m| m.capabilities.context_window) {
+            let reserved = selection
+                .as_ref()
+                .map_or(0, |s| u64::from(s.max_output_tokens));
+            body = body.child(
+                div().text_sm().text_color(rgb(palette().muted)).child(format!(
+                    "Model context: {window} tokens. Requested output: {reserved}. Remaining context is shared by history, attachments and the current prompt."
+                )),
+            );
+        }
         let mut output = div()
             .flex()
             .flex_wrap()
@@ -140,6 +150,61 @@ impl Shell {
                     cx.listener(|this, _, _, cx| this.edit_direct_option(Edit::Effort(None), cx)),
                 ));
             if let Some(model) = model {
+                let offered = &model.capabilities.reasoning_efforts;
+                let fast = ["low", "minimal", "none"]
+                    .iter()
+                    .find_map(|name| offered.iter().find(|effort| effort.as_str() == *name))
+                    .cloned();
+                let balanced = offered
+                    .iter()
+                    .find(|effort| effort.as_str() == "medium")
+                    .cloned();
+                let thinking = ["high", "xhigh", "max"]
+                    .iter()
+                    .find_map(|name| offered.iter().find(|effort| effort.as_str() == *name))
+                    .cloned();
+                if let Some(value) = fast {
+                    let selected = selection
+                        .as_ref()
+                        .is_some_and(|s| s.reasoning_effort.as_ref() == Some(&value));
+                    efforts = efforts.child(ui::action(
+                        "direct-preset-fast",
+                        "Fast",
+                        None,
+                        selected,
+                        cx.listener(move |this, _, _, cx| {
+                            this.edit_direct_option(Edit::Effort(Some(value.clone())), cx)
+                        }),
+                    ));
+                }
+                if let Some(value) = balanced {
+                    let selected = selection
+                        .as_ref()
+                        .is_some_and(|s| s.reasoning_effort.as_ref() == Some(&value));
+                    efforts = efforts.child(ui::action(
+                        "direct-preset-balanced",
+                        "Balanced",
+                        None,
+                        selected,
+                        cx.listener(move |this, _, _, cx| {
+                            this.edit_direct_option(Edit::Effort(Some(value.clone())), cx)
+                        }),
+                    ));
+                }
+                if let Some(value) = thinking {
+                    let selected = selection
+                        .as_ref()
+                        .is_some_and(|s| s.reasoning_effort.as_ref() == Some(&value));
+                    efforts = efforts.child(ui::action(
+                        "direct-preset-thinking",
+                        "Thinking",
+                        None,
+                        selected,
+                        cx.listener(move |this, _, _, cx| {
+                            this.edit_direct_option(Edit::Effort(Some(value.clone())), cx)
+                        }),
+                    ));
+                }
                 for (index, effort) in model.capabilities.reasoning_efforts.iter().enumerate() {
                     let value = effort.clone();
                     efforts = efforts.child(ui::action(
@@ -155,7 +220,11 @@ impl Shell {
                     ));
                 }
             }
-            body = body.child(efforts);
+            body = body.child(efforts).child(
+                div().text_xs().text_color(rgb(palette().muted)).child(
+                    "Presets select only reasoning levels offered by this model. Confirm the route to save; inference starts only when you Send.",
+                ),
+            );
         }
         body
     }

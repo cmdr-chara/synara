@@ -755,7 +755,10 @@ mod tests {
         let payload: serde_json::Value = serde_json::from_str(&json).unwrap();
         assert_eq!(payload["format"], "synara-thread-export-v1");
         assert_eq!(payload["snapshotSequence"], 7);
-        assert_eq!(payload["taskScope"], serde_json::to_value(task.scope).unwrap());
+        assert_eq!(
+            payload["taskScope"],
+            serde_json::to_value(task.scope).unwrap()
+        );
         assert_eq!(payload["turns"].as_array().unwrap().len(), 1);
         assert_eq!(payload["turns"][0]["startedAtMs"], 0);
         assert_eq!(payload["turns"][0]["finishedAtMs"], 5);

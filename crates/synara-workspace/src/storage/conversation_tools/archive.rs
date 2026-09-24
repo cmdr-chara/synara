@@ -131,7 +131,9 @@ impl MessageTimeProjection {
                         }
                     },
                 };
-                self.created_at_ms.entry(key.clone()).or_insert(timestamp_ms);
+                self.created_at_ms
+                    .entry(key.clone())
+                    .or_insert(timestamp_ms);
                 self.updated_at_ms.insert(key, timestamp_ms);
             }
             ThreadEvent::ToolChanged { patch } => {

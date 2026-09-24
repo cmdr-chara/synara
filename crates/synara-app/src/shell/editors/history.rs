@@ -226,9 +226,8 @@ impl Shell {
                         revision.blame = Some(source);
                     }
                 } else {
-                    state.error = Some(
-                        "Line blame is stale. Select the revision again and retry.".into(),
-                    );
+                    state.error =
+                        Some("Line blame is stale. Select the revision again and retry.".into());
                 }
             }
             Err(error) => state.error = Some(error),
@@ -303,7 +302,7 @@ impl Shell {
             .unwrap_or(0) as f32
             * 8.
             + if revision.blame.is_some() { 300. } else { 70. })
-            .max(300.);
+        .max(300.);
         let list = gpui::uniform_list(
             "editor-history-lines",
             revision.lines.len(),
@@ -320,7 +319,8 @@ impl Shell {
                                     .as_ref()
                                     .and_then(|blame| blame.lines.get(index))
                                     .map(|line| {
-                                        let author = line.author.chars().take(20).collect::<String>();
+                                        let author =
+                                            line.author.chars().take(20).collect::<String>();
                                         format!("{} {:<20}  ", &line.commit[..8], author)
                                     })
                                     .unwrap_or_default();
@@ -365,11 +365,7 @@ impl Shell {
                         .child(
                             ui::button(
                                 "editor-history-blame",
-                                if revision
-                                    .blame
-                                    .as_ref()
-                                    .is_some_and(|blame| blame.limited)
-                                {
+                                if revision.blame.as_ref().is_some_and(|blame| blame.limited) {
                                     "Blame first 6000 lines"
                                 } else if revision.blame.is_some() {
                                     "Line blame loaded"
@@ -382,9 +378,11 @@ impl Shell {
                             )
                             .relative()
                             .child(ui::layout_probe("editor-history-blame"))
-                            .on_click(cx.listener(|this, _, window, cx| {
-                                this.read_editor_blame(window, cx)
-                            })),
+                            .on_click(
+                                cx.listener(|this, _, window, cx| {
+                                    this.read_editor_blame(window, cx)
+                                }),
+                            ),
                         )
                         .child(
                             ui::button("editor-history-copy", "Copy revision", false)

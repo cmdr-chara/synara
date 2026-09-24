@@ -10,6 +10,12 @@ pub(super) struct PdfView {
     page_text: Option<String>,
     text_loading: bool,
     text_error: Option<String>,
+    document_text: Option<String>,
+    document_text_loading: bool,
+    document_text_error: Option<String>,
+    page_links: Option<Vec<String>>,
+    links_loading: bool,
+    links_error: Option<String>,
 }
 impl PdfView {
     fn new(document: StudioPdf, page: StudioPdfPage) -> Self {
@@ -22,6 +28,12 @@ impl PdfView {
             page_text: None,
             text_loading: false,
             text_error: None,
+            document_text: None,
+            document_text_loading: false,
+            document_text_error: None,
+            page_links: None,
+            links_loading: false,
+            links_error: None,
         }
     }
 }
@@ -80,6 +92,7 @@ impl Shell {
         self.studio.preview_cancel.cancel();
         self.studio.preview_cancel = Default::default();
         let cancel = self.studio.preview_cancel.clone();
+        view.links_loading = false;
         self.studio.preview_loading = true;
         self.studio.error = None;
         self.job(async move {
@@ -160,6 +173,115 @@ impl Shell {
         .detach();
         cx.notify();
     }
+
+    fn extract_studio_pdf_document_text(&mut self, cx: &mut Context<Self>) {
+        if self.studio.preview_loading || self.close != CloseState::Open {
+            return;
+        }
+        let Some(task) = self.selected.filter(|task| Some(*task) == self.studio.task) else {
+            return;
+        };
+        let Some(path) = self.studio.selected.clone() else {
+            return;
+        };
+        if self.studio.preview_cancel.is_cancelled() {
+            self.studio.preview_cancel = Default::default();
+        }
+        let Some(Preview::Pdf(view)) = &mut self.studio.preview else {
+            return;
+        };
+        if view.document_text_loading || view.document_text.is_some() {
+            return;
+        }
+        view.document_text_loading = true;
+        view.document_text_error = None;
+        let document = view.document.clone();
+        let generation = self.studio.preview_generation;
+        let cancel = self.studio.preview_cancel.clone();
+        cx.spawn(async move |weak, cx| {
+            let result = document
+                .first_pages_text(&cancel)
+                .await
+                .map_err(|error| error.to_string());
+            let _ = weak.update(cx, |this, cx| {
+                if this.selected != Some(task)
+                    || this.studio.task != Some(task)
+                    || this.studio.preview_generation != generation
+                    || this.studio.selected.as_ref() != Some(&path)
+                {
+                    return;
+                }
+                let Some(Preview::Pdf(view)) = &mut this.studio.preview else {
+                    return;
+                };
+                view.document_text_loading = false;
+                match result {
+                    Ok(text) => view.document_text = Some(text),
+                    Err(error) => view.document_text_error = Some(error),
+                }
+                cx.notify();
+            });
+        })
+        .detach();
+        cx.notify();
+    }
+
+    fn inspect_studio_pdf_links(&mut self, cx: &mut Context<Self>) {
+        if self.studio.preview_loading || self.close != CloseState::Open {
+            return;
+        }
+        let Some(task) = self.selected.filter(|task| Some(*task) == self.studio.task) else {
+            return;
+        };
+        let Some(path) = self.studio.selected.clone() else {
+            return;
+        };
+        if self.studio.preview_cancel.is_cancelled() {
+            self.studio.preview_cancel = Default::default();
+        }
+        let Some(Preview::Pdf(view)) = &mut self.studio.preview else {
+            return;
+        };
+        if view.links_loading || view.page_links.is_some() {
+            return;
+        }
+        view.links_loading = true;
+        view.links_error = None;
+        let document = view.document.clone();
+        let number = view.number;
+        let generation = self.studio.preview_generation;
+        let cancel = self.studio.preview_cancel.clone();
+        let expected_path = path.clone();
+        cx.spawn(async move |weak, cx| {
+            let result = document
+                .page_links(number, &cancel)
+                .await
+                .map_err(|error| error.to_string());
+            let _ = weak.update(cx, |this, cx| {
+                if this.selected != Some(task)
+                    || this.studio.task != Some(task)
+                    || this.studio.preview_generation != generation
+                    || this.studio.selected.as_ref() != Some(&expected_path)
+                {
+                    return;
+                }
+                let Some(Preview::Pdf(view)) = &mut this.studio.preview else {
+                    return;
+                };
+                if view.number != number {
+                    return;
+                }
+                view.links_loading = false;
+                match result {
+                    Ok(links) => view.page_links = Some(links),
+                    Err(error) => view.links_error = Some(error),
+                }
+                cx.notify();
+            });
+        })
+        .detach();
+        cx.notify();
+    }
     pub(super) fn studio_pdf_loaded(
         &mut self,
         task: TaskId,
@@ -203,7 +325,7 @@ impl Shell {
                 .child(ui::button("studio-pdf-reload", "Reload file", false).relative().child(ui::layout_probe("studio-pdf-reload"))
                     .on_click(cx.listener(|this, _, _, cx| {if let Some(path)=this.studio.selected.clone(){this.preview_studio_file(path,cx);}}))))
             .child(div().text_size(px(11.)).text_color(rgb(palette().muted))
-                .child("Read-only PDF snapshot · Reload to see disk changes. Extracted text is inert. PDF links and form fields are not exposed, and scripts or embedded files are never run."))
+                .child("Read-only PDF snapshot · Reload to see disk changes. Extracted text is inert. Only HTTP(S) web link annotations are available below. Form fields are not interactive; scripts and embedded files are never run."))
             .child(
                 div()
                     .flex()
@@ -239,8 +361,66 @@ impl Shell {
                     }),
             )
             .when_some(view.text_error.as_ref(), |el, error| el.child(div().text_size(px(11.)).text_color(rgb(palette().error)).child(error.clone())))
+            .child(div().flex().items_center().gap_1().flex_wrap()
+                .child(ui::button("studio-pdf-extract-document", if view.document_text_loading { "Extracting document text..." } else { "Extract first 12 pages" }, view.document_text.is_some())
+                    .on_click(cx.listener(|this, _, _, cx| this.extract_studio_pdf_document_text(cx))))
+                .when(view.document_text.is_some(), |el| el.child(
+                    ui::button("studio-pdf-copy-document", "Copy extracted pages", false)
+                        .on_click(cx.listener(|this, _, _, cx| {
+                            if let Some(Preview::Pdf(view)) = &this.studio.preview
+                                && let Some(text) = &view.document_text
+                            {
+                                cx.write_to_clipboard(gpui::ClipboardItem::new_string(text.clone()));
+                            }
+                        })))))
+            .when_some(view.document_text_error.as_ref(), |el, error| el.child(div().text_size(px(11.)).text_color(rgb(palette().error)).child(error.clone())))
+            .child(div().flex().flex_col().gap_1()
+                .child(ui::button(
+                    "studio-pdf-inspect-links",
+                    if view.links_loading { "Inspecting page links..." } else { "Inspect page links" },
+                    view.page_links.is_some(),
+                )
+                .on_click(cx.listener(|this, _, _, cx| this.inspect_studio_pdf_links(cx))))
+                .when_some(view.links_error.as_ref(), |el, error| el.child(div().text_size(px(11.)).text_color(rgb(palette().error)).child(error.clone())))
+                .when_some(view.page_links.as_ref(), |el, links| {
+                    let page_number = view.number;
+                    let task = self.studio.task;
+                    let path = self.studio.selected.clone();
+                    let generation = self.studio.preview_generation;
+                    el.child(div().id("studio-pdf-page-links").max_h(px(112.)).overflow_y_scroll().flex().flex_col().gap_1()
+                        .when(links.is_empty(), |el| el.child(div().text_size(px(11.)).text_color(rgb(palette().muted)).child("No supported HTTP(S) web links were found on this page.")))
+                        .children(links.iter().enumerate().map(|(index, url)| {
+                                let display = url.split(['?', '#']).next().unwrap_or_default().to_owned();
+                                let url = url.clone();
+                                let expected_path = path.clone();
+                                div().flex().items_center().gap_2()
+                                    .child(div().flex_1().min_w_0().text_size(px(11.)).child(format!("Link {} · {}", index + 1, display)))
+                                    .child(ui::button(("studio-pdf-open-link", index), "Open link", false)
+                                        .on_click(cx.listener(move |this, _, _, cx| {
+                                            let current = task.is_some_and(|task| {
+                                                this.selected == Some(task) && this.studio.task == Some(task)
+                                            })
+                                                && this.studio.selected == expected_path
+                                                && this.studio.preview_generation == generation
+                                                && !this.studio.preview_loading
+                                                && this.close == CloseState::Open
+                                                && matches!(&this.studio.preview, Some(Preview::Pdf(view)) if view.number == page_number);
+                                            if current && synara_agent::validate_web_url(&url).is_ok() {
+                                                cx.open_url(&url);
+                                            } else if current {
+                                                this.studio.error = Some("This PDF link is not a supported website address.".into());
+                                                cx.notify();
+                                            }
+                                        })))
+                                    .into_any_element()
+                            })))
+                })
+            )
             .when_some(view.page_text.as_ref(), |el, text| el.child(div().id("studio-pdf-page-text").max_h(px(180.)).overflow_y_scroll().border_1().border_color(rgb(palette().border)).p_2()
                 .child(div().text_size(px(12.)).child(text.clone()))))
+            .when_some(view.document_text.as_ref(), |el, text| el.child(div().id("studio-pdf-document-text").max_h(px(180.)).overflow_y_scroll().border_1().border_color(rgb(palette().border)).p_2()
+                .child(div().text_size(px(11.)).text_color(rgb(palette().muted)).child("Labeled PDF pages · read only · up to 12 pages and 512 KiB"))
+                .child(div().text_size(px(12.)).font_family(ui::code_font()).child(truncate(text, 128 * 1024)))))
             .child(div().id("studio-pdf-scroll").flex_1().min_h_0().overflow_y_scroll().overflow_x_scroll()
                 .child(if let Some(zoom)=self.studio.image_zoom {
                     div().relative().child(ui::layout_probe("studio-pdf-zoomed"))

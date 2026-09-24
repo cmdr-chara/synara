@@ -25,10 +25,25 @@ pub(super) enum Reply {
         anchor: MessageAnchor,
         result: Result<Vec<ProjectWorktree>, String>,
     },
+    NewWorktree {
+        task: TaskId,
+        revision: u64,
+        anchor: MessageAnchor,
+        result: Result<Box<NewWorktreePlan>, String>,
+    },
     Ignored,
 }
 #[derive(Clone)]
 enum Action {
+    Noop,
+    ReviewNewWorktree {
+        source: TaskId,
+        anchor: MessageAnchor,
+    },
+    ConfirmNewWorktree {
+        plan: Box<NewWorktreePlan>,
+        anchor: MessageAnchor,
+    },
     Find,
     Pins,
     Copy,
@@ -52,6 +67,7 @@ struct Popup {
     previous_focus: Option<FocusHandle>,
     _subscription: Subscription,
 }
+type PendingMenu = (TaskId, String, Vec<(Choice, Action)>);
 pub(super) struct ChatTools {
     pub query: Entity<TextEntry>,
     pub find_open: bool,
@@ -69,7 +85,7 @@ pub(super) struct ChatTools {
     copying: bool,
     popup: Option<Popup>,
     pending_action: Option<(Option<TaskId>, Option<Action>)>,
-    pending_menu: Option<(TaskId, String, Vec<(Choice, Action)>)>,
+    pending_menu: Option<PendingMenu>,
     pub(super) loading_worktrees: HashSet<TaskId>,
     _query_subscription: Subscription,
 }
@@ -347,7 +363,12 @@ impl Shell {
                         self.error = Some(format!("Linked worktrees could not be loaded: {error}"));
                     }
                     Ok(worktrees) => {
-                        let mut rows = Vec::with_capacity(worktrees.len().max(1));
+                        let mut rows = Vec::with_capacity(worktrees.len() + 1);
+                        rows.push((Choice {
+                            label: "Create isolated worktree...".into(),
+                            detail: "Review a new local branch and checkout from committed HEAD. Dirty files are not copied. No agent starts.".into(),
+                            icon: Some(Glyph::Fork), ..Default::default()
+                        }, Action::ReviewNewWorktree { source: task, anchor: anchor.clone() }));
                         for worktree in worktrees {
                             let assigned_title = worktree.assigned_task_title.clone();
                             let unavailable = if worktree.project_root {
@@ -358,10 +379,9 @@ impl Shell {
                                 Some("Git marks this worktree as prunable".into())
                             } else if worktree.locked {
                                 Some("Unlock this worktree in Git before selecting it".into())
-                            } else if let Some(title) = assigned_title {
-                                Some(format!("Already assigned to task: {title}"))
                             } else {
-                                None
+                                assigned_title
+                                    .map(|title| format!("Already assigned to task: {title}"))
                             };
                             let label = worktree
                                 .branch
@@ -385,23 +405,43 @@ impl Shell {
                                 action,
                             ));
                         }
-                        if rows.is_empty() {
-                            rows.push((
-                                Choice {
-                                    label: "No linked worktrees found".into(),
-                                    detail: "Create a Git worktree in the repository, then reopen this menu. Synara will not create or remove it here.".into(),
-                                    unavailable: Some("This project has no additional linked worktrees".into()),
-                                    ..Default::default()
-                                },
-                                Action::BranchWorktree {
-                                    source: task,
-                                    anchor,
-                                    path: PathBuf::new(),
-                                },
-                            ));
-                        }
                         self.chat_tools.pending_menu =
-                            Some((task, "Fork into an existing Git worktree".into(), rows));
+                            Some((task, "Choose fork environment".into(), rows));
+                    }
+                }
+            }
+            Reply::NewWorktree {
+                task,
+                revision,
+                anchor,
+                result,
+            } => {
+                self.chat_tools.loading_worktrees.remove(&task);
+                if self.selected != Some(task)
+                    || self.selection_revision != revision
+                    || self.close != CloseState::Open
+                {
+                    return;
+                }
+                match result {
+                    Err(error) => {
+                        self.error = Some(format!("New worktree review unavailable: {error}"))
+                    }
+                    Ok(plan) => {
+                        let mut rows = Vec::new();
+                        for (label, detail) in [
+                            ("Source repository", plan.repository().display().to_string()),
+                            ("Committed base (source dirty files are excluded)", plan.head().to_owned()),
+                            ("New branch", plan.branch().to_owned()),
+                            ("New local worktree", plan.destination().display().to_string()),
+                            ("Checkout permission", "Git checkout may execute configured repository filters. Hooks, signing, credentials and network helpers remain disabled.".into()),
+                            ("Ownership and recovery", "The new unsent task will own this worktree. No automatic deletion. If task saving fails, keep the reported path for explicit recovery.".into()),
+                        ] {
+                            rows.push((Choice { label: label.into(), detail, unavailable: Some("Review information".into()), ..Default::default() }, Action::Noop));
+                        }
+                        rows.push((Choice { label: "Allow checkout and create unsent fork".into(), detail: "I approve local repository execution for this exact new worktree. Nothing is sent to an agent.".into(), icon: Some(Glyph::Fork), ..Default::default() }, Action::ConfirmNewWorktree { plan, anchor }));
+                        self.chat_tools.pending_menu =
+                            Some((task, "Review isolated fork checkout".into(), rows));
                     }
                 }
             }
@@ -673,6 +713,13 @@ impl Shell {
             return;
         }
         match action {
+            Action::Noop => {}
+            Action::ReviewNewWorktree { source, anchor } => {
+                self.review_new_worktree_fork(source, anchor, cx)
+            }
+            Action::ConfirmNewWorktree { plan, anchor } => {
+                self.branch_message_new_worktree(*plan, anchor, cx)
+            }
             Action::Find => self.open_message_search(window, cx),
             Action::Pins => self.open_pinned_messages(window, cx),
             Action::Copy => self.copy_conversation(cx),

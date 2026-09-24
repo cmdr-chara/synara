@@ -1,3 +1,5 @@
+mod execution;
+mod interactions;
 use anyhow::{Context, Result, bail, ensure};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
@@ -9,7 +11,6 @@ use std::{
     time::Duration,
 };
 use synara_acp::AcpBackend;
-use synara_agent::DenyInteractions;
 use synara_core::{Project, Task, TaskScope, Thread, Workspace, WorkspaceLocation};
 use synara_runtime::WorkspaceOwnerLock;
 use synara_workspace::{AgentProfile, Controller, WorkspaceService};
@@ -79,6 +80,8 @@ struct AppState {
     lifecycle_tx: watch::Sender<Lifecycle>,
     token_digest: [u8; 32],
     runtime: RwLock<Option<RuntimeServices>>,
+    execution: execution::ExecutionOwner,
+    interactions: interactions::Owner,
 }
 
 impl AppState {
@@ -91,6 +94,8 @@ impl AppState {
             lifecycle_tx,
             token_digest: digest,
             runtime: RwLock::new(None),
+            execution: execution::ExecutionOwner::default(),
+            interactions: interactions::Owner::default(),
         })
     }
 
@@ -144,7 +149,7 @@ impl AppState {
         let controller = Arc::new(Controller::new(
             workspace.clone(),
             Arc::new(AcpBackend::default()),
-            Arc::new(DenyInteractions),
+            self.interactions.broker.clone(),
         ));
         *runtime = Some(RuntimeServices {
             workspace,
@@ -396,6 +401,9 @@ impl Response {
         match self.status {
             200 => "OK",
             201 => "Created",
+            202 => "Accepted",
+            409 => "Conflict",
+            429 => "Too Many Requests",
             400 => "Bad Request",
             401 => "Unauthorized",
             404 => "Not Found",
@@ -465,12 +473,9 @@ async fn serve(listener: TcpListener, state: Arc<AppState>, stop: CancellationTo
     };
     connections.abort_all();
     while connections.join_next().await.is_some() {}
+    state.interactions.close().await;
     let controller_result = if let Some(runtime) = state.runtime.write().await.take() {
-        runtime
-            .controller
-            .shutdown()
-            .await
-            .context("controller shutdown failed")
+        state.execution.shutdown(&runtime.controller).await
     } else {
         Ok(())
     };
@@ -718,6 +723,24 @@ async fn dispatch(request: &Request, state: &AppState, local_port: u16) -> Respo
                 Err(_) => Response::json(503, br#"{"error":"profiles_unavailable"}"#.to_vec()),
             }
         }
+        _ if path.starts_with("/api/tasks/")
+            && (path.ends_with("/run") || path.ends_with("/interactions")) =>
+        {
+            if !state.authorized(request.header("authorization")) {
+                return unauthorized();
+            }
+            if state.state() != Lifecycle::Ready {
+                return health_response(state.state());
+            }
+            if request.target != path {
+                return bad_request();
+            }
+            if path.ends_with("/interactions") {
+                interactions::get(path, state).await
+            } else {
+                execution::dispatch_get(path, state).await
+            }
+        }
         _ if path.starts_with("/api/tasks/") && path.ends_with("/draft") => {
             if !state.authorized(request.header("authorization")) {
                 return unauthorized();
@@ -852,6 +875,15 @@ async fn dispatch_post(path: &str, request: &Request, state: &AppState) -> Respo
         return health_response(Lifecycle::Starting);
     };
     match path {
+        _ if path.starts_with("/api/tasks/") && path.ends_with("/interactions") => {
+            interactions::post(path, request, state, runtime).await
+        }
+        _ if path.starts_with("/api/tasks/")
+            && (path.ends_with("/run") || path.ends_with("/stop")) =>
+        {
+            execution::dispatch_post(path, request, state, runtime).await
+        }
+
         "/api/workspaces" => {
             let Ok(payload) = serde_json::from_slice::<NewWorkspaceRequest>(&request.body) else {
                 return bad_request();
@@ -894,6 +926,7 @@ async fn dispatch_post(path: &str, request: &Request, state: &AppState) -> Respo
             let Some(task) = task else {
                 return Response::json(404, br#"{"error":"not_found"}"#.to_vec());
             };
+            let _mutation = state.execution.mutation.lock().await;
             match runtime
                 .workspace
                 .save_task_draft(task.id, payload.text.clone())
@@ -1325,111 +1358,11 @@ fn headless_database_path(base: &Path) -> PathBuf {
 pub const DEFAULT_BIND: IpAddr = IpAddr::V4(Ipv4Addr::LOCALHOST);
 pub const DEFAULT_PORT: u16 = 17341;
 
-const INDEX_HTML: &str = r#"<!doctype html>
-<html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Synara local workspace</title><link rel="stylesheet" href="/style.css"></head>
-<body><main><p class="eyebrow">SYNARA · LOCAL SERVER</p><h1>Workspace tasks</h1><p class="intro">Create local projects and unsent task drafts, then browse recent task messages.</p><label for="token">Bearer token</label><div class="row"><input id="token" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your local server token"><button id="load">Load workspace</button></div><p id="status" role="status">The workspace is available after the server finishes startup.</p><section class="setup"><h2>Set up this workspace</h2><label for="root">Existing local folder</label><div class="row"><input id="root" type="text" spellcheck="false" placeholder="/absolute/path/to/project"><button id="add-workspace">Add folder</button></div><label for="project">Project</label><select id="project"></select><label for="profile">Agent profile</label><select id="profile"></select><label for="title">New task title</label><input id="title" type="text" maxlength="400" placeholder="What are you working on?"><label for="draft">Unsent draft</label><textarea id="draft" maxlength="60000" rows="4" placeholder="Optional prompt to save with this task"></textarea><button id="create-task">Create unsent task</button></section><div class="workspace"><nav id="tasks" aria-label="Tasks"></nav><section id="thread" aria-live="polite"><p>Select a task to read its messages.</p></section></div><footer>This local view creates and edits unsent drafts and reads recent messages. Task execution and remote access are not yet available.</footer></main><script src="/app.js" defer></script></body>
-</html>"#;
+const INDEX_HTML: &str = include_str!("index.html");
 
-const STYLE_CSS: &str = r#"*{box-sizing:border-box}body{margin:0;background:#11131a;color:#e8eaf0;font:16px/1.55 system-ui,sans-serif}main{max-width:1100px;margin:7vh auto;padding:0 24px}.eyebrow{color:#9ba5c5;letter-spacing:.15em;font-size:.75rem}h1{font-size:clamp(2.2rem,7vw,4.2rem);line-height:1.08;margin:.4em 0}.intro{color:#b1b6c5}label{display:block;margin-top:1rem;margin-bottom:.4rem;color:#c7cde0}.row{display:flex;gap:10px}input,button,select,textarea{font:inherit;border-radius:8px;padding:12px 14px;border:1px solid #43485a}input,select,textarea{background:#1b1e28;color:#f4f5f8;flex:1;min-width:0}select,textarea,.setup>input{display:block;width:100%}button{background:#cbd7ff;color:#151a2b;font-weight:650;cursor:pointer}button:disabled{opacity:.6;cursor:wait}#status{min-height:1.5em;color:#b1b6c5}.setup{background:#191c25;border:1px solid #333746;border-radius:10px;padding:16px;margin-top:18px}.setup h2{font-size:1.2rem;margin:0 0 12px}.setup>button{margin-top:12px}.workspace{display:grid;grid-template-columns:minmax(180px,280px) minmax(0,1fr);gap:16px;margin-top:18px}nav,#thread{min-height:12rem;background:#191c25;border:1px solid #333746;border-radius:10px;padding:14px}nav button{display:block;width:100%;text-align:left;margin-bottom:8px;background:#272c3c;color:#e8eaf0;font-weight:500;overflow-wrap:anywhere}nav button:hover,nav button:focus-visible{background:#39425b}article{padding:12px 0;border-bottom:1px solid #333746}article:last-child{border:0}article h3{font-size:.8rem;color:#9ba5c5;text-transform:uppercase;letter-spacing:.08em;margin:0 0 6px}article p{white-space:pre-wrap;overflow-wrap:anywhere;margin:0}#thread h2{margin-top:0}small,.note{color:#b1b6c5}footer{margin-top:2rem;color:#888fa5;font-size:.85rem}@media(max-width:650px){.row{flex-direction:column}.row button{width:100%}.workspace{grid-template-columns:1fr}}"#;
+const STYLE_CSS: &str = include_str!("style.css");
 
-const APP_JS: &str = r#"const token=document.querySelector('#token');
-const load=document.querySelector('#load');
-const addWorkspace=document.querySelector('#add-workspace');
-const createTask=document.querySelector('#create-task');
-const root=document.querySelector('#root');
-const project=document.querySelector('#project');
-const profile=document.querySelector('#profile');
-const titleInput=document.querySelector('#title');
-const draft=document.querySelector('#draft');
-const status=document.querySelector('#status');
-const tasks=document.querySelector('#tasks');
-const thread=document.querySelector('#thread');
-let selectedTask=0;
-let activeDraftEditor=null;
-let activeDraftSaved='';
-function discardUnsaved(){return !activeDraftEditor||activeDraftEditor.value===activeDraftSaved||confirm('Discard unsaved draft changes?')}
-async function getJson(path){
-  const response=await fetch(path,{headers:{Authorization:`Bearer ${token.value}`},cache:'no-store'});
-  const data=await response.json();
-  if(!response.ok)throw new Error(data.error==='unauthorized'?'The token was not accepted.':`Server returned ${response.status}.`);
-  return data;
-}
-async function postJson(path,body){
-  const response=await fetch(path,{method:'POST',headers:{Authorization:`Bearer ${token.value}`,'Content-Type':'application/json'},body:JSON.stringify(body),cache:'no-store'});
-  const data=await response.json();
-  if(!response.ok)throw new Error(data.error==='unauthorized'?'The token was not accepted.':`Server returned ${response.status} (${data.error||'request failed'}).`);
-  return data;
-}
-function fillSelect(select,items,label){
-  select.replaceChildren();
-  for(const item of items){const option=document.createElement('option');option.value=item.id;option.textContent=item.name;select.append(option)}
-  if(items.length===0){const option=document.createElement('option');option.textContent=label;option.value='';select.append(option)}
-}
-function setBusy(busy){for(const button of [load,addWorkspace,createTask])button.disabled=busy}
-async function loadWorkspace(selectedId=null){
-  if(!discardUnsaved())return false;
-  activeDraftEditor=null;
-  ++selectedTask;setBusy(true);status.textContent='Loading…';tasks.replaceChildren();thread.replaceChildren();
-  try{
-    const [catalog,profiles]=await Promise.all([getJson('/api/catalog'),getJson('/api/profiles')]);
-    fillSelect(project,catalog.projects,'Add a local folder first');
-    fillSelect(profile,profiles.profiles,'No agent profiles available');
-    for(const task of catalog.tasks){const button=document.createElement('button');button.type='button';button.textContent=task.title;button.addEventListener('click',()=>showThread(task));tasks.append(button)}
-    status.textContent=catalog.truncated.tasks?'Showing the first 32 tasks.':`${catalog.tasks.length} tasks loaded.`;
-    if(catalog.tasks.length===0){const empty=document.createElement('p');empty.textContent='No tasks yet.';tasks.append(empty)}
-    else await showThread(catalog.tasks.find(task=>task.id===selectedId)||catalog.tasks[0]);
-    return true;
-  }catch(error){status.textContent=error instanceof Error?error.message:'Could not load the workspace.';return false}
-  finally{setBusy(false)}
-}
-async function showThread(task,before=null){
-  if(!discardUnsaved())return;
-  activeDraftEditor=null;
-  const selection=++selectedTask;
-  thread.replaceChildren();
-  const loading=document.createElement('p');loading.textContent='Loading messages…';thread.append(loading);
-  try{
-    const path=`/api/tasks/${encodeURIComponent(task.id)}/thread`+(before===null?'':`?before=${before}`);
-    const [data,unsent]=await Promise.all([getJson(path),getJson(`/api/tasks/${encodeURIComponent(task.id)}/draft`)]);
-    if(selection!==selectedTask)return;
-    const title=document.createElement('h2');title.textContent=data.title;thread.replaceChildren(title);
-    const state=document.createElement('small');state.textContent=`State: ${data.state}`;thread.append(state);
-    const pending=document.createElement('article');const heading=document.createElement('h3');heading.textContent='Unsent draft';pending.append(heading);
-    if(unsent.truncated){const clipped=document.createElement('p');clipped.textContent=unsent.text+'…';pending.append(clipped);const note=document.createElement('small');note.textContent='This draft is too large to edit in the local browser.';pending.append(note)}
-    else{const editor=document.createElement('textarea');editor.rows=5;editor.value=unsent.text;editor.setAttribute('aria-label','Unsent task draft');const save=document.createElement('button');save.type='button';save.textContent='Save draft';save.addEventListener('click',async()=>{if(new TextEncoder().encode(editor.value).length>16384){status.textContent='The task draft is too large for the local server.';return}save.disabled=true;try{await postJson(`/api/tasks/${encodeURIComponent(task.id)}/draft`,{text:editor.value});if(selection===selectedTask){activeDraftSaved=editor.value;status.textContent='Unsent draft saved.'}}catch(error){status.textContent=error instanceof Error?error.message:'Could not save the draft.'}finally{save.disabled=false}});pending.append(editor,save);activeDraftEditor=editor;activeDraftSaved=unsent.text}
-    thread.append(pending);
-    if(data.next_before!==null){const earlier=document.createElement('button');earlier.type='button';earlier.textContent='Earlier messages';earlier.addEventListener('click',()=>showThread(task,data.next_before));thread.append(earlier)}
-    if(before!==null){const latest=document.createElement('button');latest.type='button';latest.textContent='Latest messages';latest.addEventListener('click',()=>showThread(task));thread.append(latest)}
-    if(data.messages.length===0){const empty=document.createElement('p');empty.textContent='No messages yet.';thread.append(empty)}
-    for(const message of data.messages){
-      const article=document.createElement('article');
-      const heading=document.createElement('h3');heading.textContent=message.role;
-      const body=document.createElement('p');body.textContent=message.text+(message.truncated?'…':'');
-      article.append(heading,body);thread.append(article);
-    }
-  }catch(error){if(selection===selectedTask){loading.textContent=error instanceof Error?error.message:'Could not load the task.';thread.replaceChildren(loading)}}
-}
-load.addEventListener('click',()=>loadWorkspace());
-addWorkspace.addEventListener('click',async()=>{
-  if(!discardUnsaved())return;
-  if(!root.value.trim()){status.textContent='Enter an existing absolute folder path.';return}
-  setBusy(true);
-  try{const added=await postJson('/api/workspaces',{root:root.value.trim()});if(await loadWorkspace()){if(!Array.from(project.options).some(option=>option.value===added.id)){const option=document.createElement('option');option.value=added.id;option.textContent=added.name;project.append(option)}project.value=added.id;status.textContent='Local folder added as a project.'}}
-  catch(error){status.textContent=error instanceof Error?error.message:'Could not add the folder.'}
-  finally{setBusy(false)}
-});
-createTask.addEventListener('click',async()=>{
-  if(!discardUnsaved())return;
-  if(!project.value||!profile.value||!titleInput.value.trim()){status.textContent='Choose a project and agent profile, then enter a task title.';return}
-  if(new TextEncoder().encode(titleInput.value.trim()).length>400){status.textContent='The task title is too long.';return}
-  if(new TextEncoder().encode(JSON.stringify({title:titleInput.value.trim(),agent_id:profile.value,draft:draft.value})).length>60000){status.textContent='The task draft is too large for the local server.';return}
-  if(new TextEncoder().encode(draft.value).length>16384){status.textContent='The task draft is too large for the local server.';return}
-  setBusy(true);
-  try{const created=await postJson(`/api/projects/${encodeURIComponent(project.value)}/tasks`,{title:titleInput.value.trim(),agent_id:profile.value,draft:draft.value});titleInput.value='';draft.value='';if(await loadWorkspace(created.id))status.textContent='Unsent task and draft created.'}
-  catch(error){status.textContent=error instanceof Error?error.message:'Could not create the task.'}
-  finally{setBusy(false)}
-});"#;
+const APP_JS: &str = include_str!("app.js");
 
 #[cfg(test)]
 mod tests {

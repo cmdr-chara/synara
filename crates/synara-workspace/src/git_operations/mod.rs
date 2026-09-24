@@ -131,6 +131,11 @@ pub enum GitOperation {
         path: PathBuf,
         branch: String,
     },
+    AddNewWorktree {
+        path: PathBuf,
+        branch: String,
+        head: String,
+    },
     RemoveWorktree {
         path: PathBuf,
     },

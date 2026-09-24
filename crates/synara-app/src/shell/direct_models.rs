@@ -359,6 +359,75 @@ impl Shell {
         self.direct_models.review = Some(review);
         cx.notify();
     }
+    /// Prepare the next configured direct model for explicit route review.
+    /// The caller owns shortcut scope checks (composer focus, IME, modifiers,
+    /// menus and held keys), matching the existing ACP model-cycle shortcut.
+    pub(super) fn cycle_direct_model_for_shortcut(
+        &mut self,
+        forward: bool,
+        cx: &mut Context<Self>,
+    ) -> bool {
+        if !self.uses_direct_model()
+            || self.direct_models.pending()
+            || self.controls_blocked()
+            || self.loading_task.is_some()
+        {
+            return false;
+        }
+        let Some(binding) = self
+            .selected
+            .and_then(|task| self.direct_models.bindings.get(&task))
+            .and_then(Option::as_ref)
+            .cloned()
+        else {
+            return false;
+        };
+        let Some(settings) = self.direct_models.value.as_ref() else {
+            return false;
+        };
+        // A stale or edited provider must be re-reviewed from settings first.
+        if binding.profile(settings).is_err() {
+            return false;
+        }
+        let Some((profile, model)) = next_direct_model(
+            settings,
+            &binding.selection.provider_id,
+            &binding.selection.model_id,
+            forward,
+        ) else {
+            return false;
+        };
+        let maximum = model
+            .capabilities
+            .max_output_tokens
+            .unwrap_or(131_072)
+            .min(131_072) as u32;
+        let selection = ModelSelection {
+            history_turns: binding.selection.history_turns,
+            provider_id: profile.id.clone(),
+            model_id: model.id.clone(),
+            max_output_tokens: binding.selection.max_output_tokens.min(maximum).max(1),
+            reasoning_effort: binding.selection.reasoning_effort.clone().filter(|effort| {
+                profile.protocol == synara_model::ProtocolFamily::OpenAiChat
+                    && model.capabilities.reasoning_efforts.contains(effort)
+            }),
+            output: match &binding.selection.output {
+                OutputFormat::JsonSchema { .. }
+                    if model.capabilities.structured_output == synara_model::Support::Supported
+                        && profile.protocol
+                            != synara_model::ProtocolFamily::AnthropicMessages =>
+                {
+                    binding.selection.output.clone()
+                }
+                _ => OutputFormat::Text,
+            },
+        };
+        self.review_direct_route(Some(selection), cx);
+        matches!(
+            self.direct_models.review.as_ref(),
+            Some(Review::Route { .. })
+        )
+    }
     fn review_direct_key(&mut self, provider: String, delete: bool, cx: &mut Context<Self>) {
         if self.direct_models.busy || self.direct_models.editing {
             return;
@@ -648,4 +717,84 @@ fn direct_favorite_provider_id(favorite: &ModelFavorite) -> Option<&str> {
         .then(|| favorite.agent.strip_prefix(DIRECT_MODEL_FAVORITE_AGENT))
         .flatten()
         .filter(|provider_id| !provider_id.is_empty())
+}
+
+fn next_direct_model<'a>(
+    settings: &'a ProviderSettings,
+    current_provider: &str,
+    current_model: &str,
+    forward: bool,
+) -> Option<(&'a synara_model::ProviderProfile, &'a ModelInfo)> {
+    let candidates = settings
+        .providers
+        .iter()
+        .flat_map(|profile| profile.models.iter().map(move |model| (profile, model)))
+        .collect::<Vec<_>>();
+    if candidates.len() < 2 {
+        return None;
+    }
+    let current = candidates
+        .iter()
+        .position(|(profile, model)| profile.id == current_provider && model.id == current_model)?;
+    let next = if forward {
+        (current + 1) % candidates.len()
+    } else {
+        (current + candidates.len() - 1) % candidates.len()
+    };
+    candidates.get(next).copied()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn fixture_settings() -> ProviderSettings {
+        let mut first = custom_profile_example();
+        first.id = "first-provider".into();
+        first.models[0].id = "first-model".into();
+        first.models.push(ModelInfo {
+            id: "second-model".into(),
+            name: "Second model".into(),
+            capabilities: Default::default(),
+        });
+        let mut second = first.clone();
+        second.id = "second-provider".into();
+        second.models.truncate(1);
+        second.models[0].id = "third-model".into();
+        ProviderSettings {
+            revision: 1,
+            providers: vec![first, second],
+        }
+    }
+
+    #[test]
+    fn direct_model_cycle_wraps_across_reviewed_profiles_in_config_order() {
+        let settings = fixture_settings();
+        let (profile, model) =
+            next_direct_model(&settings, "first-provider", "second-model", true)
+                .expect("next model should wrap across provider profiles");
+        assert_eq!(
+            (profile.id.as_str(), model.id.as_str()),
+            ("second-provider", "third-model")
+        );
+
+        let (profile, model) =
+            next_direct_model(&settings, "first-provider", "first-model", false)
+                .expect("previous model should wrap to the final configured model");
+        assert_eq!(
+            (profile.id.as_str(), model.id.as_str()),
+            ("second-provider", "third-model")
+        );
+    }
+
+    #[test]
+    fn direct_model_cycle_requires_a_current_identity_and_an_alternative() {
+        let mut settings = fixture_settings();
+        settings.providers.truncate(1);
+        settings.providers[0].models.truncate(1);
+        assert!(next_direct_model(&settings, "first-provider", "first-model", true).is_none());
+
+        let settings = fixture_settings();
+        assert!(next_direct_model(&settings, "missing-provider", "missing-model", true).is_none());
+    }
 }

@@ -213,7 +213,7 @@ fn text_export(task: &Task, thread: &Thread) -> StorageResult<String> {
 }
 /// Complete a private file before making the requested filename visible. The
 /// hard-link creation fails rather than replacing any existing file or symlink.
-pub(super) fn write_new_export(destination: &Path, bytes: &[u8]) -> StorageResult<()> {
+pub(crate) fn write_new_export(destination: &Path, bytes: &[u8]) -> StorageResult<()> {
     if !destination.is_absolute() || destination.file_name().is_none() {
         return Err(StorageError::RecoveryDestination);
     }
@@ -710,6 +710,30 @@ mod tests {
             .save_task_draft(task.id, "UNSENT-DO-NOT-EXPORT".into())
             .await
             .unwrap();
+        let thread_id = task.thread_id;
+        service
+            .access(move |store| {
+                store.append(&EventEnvelope {
+                    id: EventId::new(),
+                    thread_id,
+                    sequence: 7,
+                    timestamp_ms: 6,
+                    event: ThreadEvent::ToolChanged {
+                        patch: ToolPatch {
+                            id: "tool".into(),
+                            title: Some("tool title".into()),
+                            status: Some(ToolStatus::Completed),
+                            kind: Some("text".into()),
+                            output: Some(vec![ToolOutput::Text {
+                                text: "TOOL-PAYLOAD-CANARY".into(),
+                            }]),
+                        },
+                    },
+                })?;
+                Ok(())
+            })
+            .await
+            .unwrap();
         let original = service.text_conversation(task.id).await.unwrap();
         let path = dir.path().join("conversation.zip");
         service
@@ -730,7 +754,12 @@ mod tests {
             .unwrap();
         let payload: serde_json::Value = serde_json::from_str(&json).unwrap();
         assert_eq!(payload["format"], "synara-thread-export-v1");
-        assert_eq!(payload["snapshotSequence"], 6);
+        assert_eq!(payload["snapshotSequence"], 7);
+        assert_eq!(payload["taskScope"], serde_json::to_value(task.scope).unwrap());
+        assert_eq!(payload["turns"].as_array().unwrap().len(), 1);
+        assert_eq!(payload["turns"][0]["startedAtMs"], 0);
+        assert_eq!(payload["turns"][0]["finishedAtMs"], 5);
+        assert_eq!(payload["turns"][0]["failed"], false);
         assert_eq!(payload["messages"].as_array().unwrap().len(), 3);
         assert_eq!(
             payload["messages"][1]["text"],
@@ -740,8 +769,11 @@ mod tests {
         assert_eq!(payload["messages"][0]["updatedAtMs"], 1);
         assert_eq!(payload["messages"][1]["updatedAtMs"], 3);
         assert_eq!(payload["messages"][2]["updatedAtMs"], 4);
-        assert!(payload["messages"][0]["createdAtMs"].is_null());
+        assert_eq!(payload["messages"][0]["createdAtMs"], 1);
+        assert_eq!(payload["messages"][1]["createdAtMs"], 2);
+        assert_eq!(payload["messages"][2]["createdAtMs"], 4);
         assert!(!json.contains("UNSENT-DO-NOT-EXPORT"));
+        assert!(!json.contains("TOOL-PAYLOAD-CANARY"));
         assert!(payload.get("workingDirectory").is_none());
         assert!(payload.get("configuration").is_none());
         let mut markdown = String::new();
@@ -764,7 +796,7 @@ mod tests {
                 store.append(&EventEnvelope {
                     id: EventId::new(),
                     thread_id,
-                    sequence: 7,
+                    sequence: 8,
                     timestamp_ms: 10,
                     event: ThreadEvent::PromptStarted {
                         turn: "active".into(),

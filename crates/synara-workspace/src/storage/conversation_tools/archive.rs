@@ -26,13 +26,22 @@ struct Archive<'a> {
     thread_id: ThreadId,
     title: &'a str,
     agent_id: &'a str,
+    task_scope: TaskScope,
     updated_at_ms: i64,
     snapshot_sequence: u64,
     state: TaskState,
     current_model: Option<&'a str>,
     current_mode: Option<&'a str>,
     excluded: &'static [&'static str],
+    turns: Vec<ArchiveTurn>,
     messages: Vec<ArchiveMessage<'a>>,
+}
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct ArchiveTurn {
+    started_at_ms: i64,
+    finished_at_ms: Option<i64>,
+    failed: bool,
 }
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -83,7 +92,8 @@ fn zip_error(error: zip::result::ZipError) -> WorkspaceError {
 type MessageKey = (String, u8);
 
 #[derive(Clone, Default)]
-struct MessageTimestampProjection {
+struct MessageTimeProjection {
+    created_at_ms: BTreeMap<MessageKey, i64>,
     updated_at_ms: BTreeMap<MessageKey, i64>,
     tools: HashSet<String>,
     permissions: HashSet<String>,
@@ -91,7 +101,7 @@ struct MessageTimestampProjection {
     timeline_tail: Option<MessageKey>,
 }
 
-impl MessageTimestampProjection {
+impl MessageTimeProjection {
     fn apply(&mut self, event: ThreadEvent, event_id: &str, timestamp_ms: i64) {
         match event {
             ThreadEvent::TextDelta {
@@ -121,6 +131,7 @@ impl MessageTimestampProjection {
                         }
                     },
                 };
+                self.created_at_ms.entry(key.clone()).or_insert(timestamp_ms);
                 self.updated_at_ms.insert(key, timestamp_ms);
             }
             ThreadEvent::ToolChanged { patch } => {
@@ -161,23 +172,24 @@ fn role_key(role: Role) -> u8 {
     }
 }
 
-/// Derive message update times from the same durable event snapshot as the
-/// transcript. IDs and roles are replayed with the reducer's message/timeline
-/// rules so event timestamps are never guessed from neighboring messages.
-fn read_message_updated_at_ms(
+/// Derive message creation and update times from the same durable event
+/// snapshot as the transcript. IDs and roles are replayed with the reducer's
+/// message/timeline rules so timestamps are never guessed from neighboring
+/// messages or conflated when a provider reuses an ID across roles.
+fn read_message_times(
     connection: &Connection,
     thread_id: ThreadId,
-) -> WorkspaceResult<BTreeMap<MessageKey, i64>> {
-    message_updated_at_ms_with_limits(connection, thread_id, 200_000, MAX_REPLAY_BYTES)
+) -> WorkspaceResult<MessageTimeProjection> {
+    message_times_with_limits(connection, thread_id, 200_000, MAX_REPLAY_BYTES)
 }
 
-fn message_updated_at_ms_with_limits(
+fn message_times_with_limits(
     connection: &Connection,
     thread_id: ThreadId,
     max_events: usize,
     max_bytes: usize,
-) -> WorkspaceResult<BTreeMap<MessageKey, i64>> {
-    let mut projection = MessageTimestampProjection::default();
+) -> WorkspaceResult<MessageTimeProjection> {
+    let mut projection = MessageTimeProjection::default();
     let mut history_backup = None;
     let mut total_bytes = 0usize;
     let mut event_count = 0usize;
@@ -207,7 +219,7 @@ fn message_updated_at_ms_with_limits(
                 if history_backup.is_none() {
                     history_backup = Some(projection.clone());
                 }
-                projection = MessageTimestampProjection::default();
+                projection = MessageTimeProjection::default();
             }
             ThreadEvent::HistoryCompleted => history_backup = None,
             ThreadEvent::Error {
@@ -222,13 +234,13 @@ fn message_updated_at_ms_with_limits(
             event => projection.apply(event, &event_id, timestamp_ms),
         }
     }
-    Ok(projection.updated_at_ms)
+    Ok(projection)
 }
 
 fn archive_bytes(
     task: &Task,
     thread: &Thread,
-    message_updated_at_ms: &BTreeMap<MessageKey, i64>,
+    message_times: &MessageTimeProjection,
 ) -> WorkspaceResult<Vec<u8>> {
     if matches!(task.state, TaskState::Running | TaskState::Waiting)
         || matches!(thread.state, TaskState::Running | TaskState::Waiting)
@@ -241,12 +253,6 @@ fn archive_bytes(
         return Err(WorkspaceError::Invalid("Conversation is running, waiting or restoring history. Finish or stop it before exporting a ZIP.".into()));
     }
     let markdown = text_export(task, thread)?;
-    // The legacy timestamp index is keyed by ID, not role. Preserve unknown
-    // timestamps when providers reuse an ID across roles instead of guessing.
-    let mut id_counts = BTreeMap::new();
-    for message in &thread.messages {
-        *id_counts.entry(message.id.as_str()).or_insert(0usize) += 1;
-    }
     let messages = thread
         .timeline
         .iter()
@@ -258,10 +264,12 @@ fn archive_bytes(
                 id: &message.id,
                 role: message.role,
                 text: &message.text,
-                created_at_ms: (id_counts.get(message.id.as_str()) == Some(&1))
-                    .then(|| thread.message_timestamps.get(&message.id).copied())
-                    .flatten(),
-                updated_at_ms: message_updated_at_ms
+                created_at_ms: message_times
+                    .created_at_ms
+                    .get(&(message.id.clone(), role_key(message.role)))
+                    .copied(),
+                updated_at_ms: message_times
+                    .updated_at_ms
                     .get(&(message.id.clone(), role_key(message.role)))
                     .copied(),
                 images: thread
@@ -284,12 +292,22 @@ fn archive_bytes(
         thread_id: task.thread_id,
         title: &task.title,
         agent_id: &task.agent_id,
+        task_scope: task.scope,
         updated_at_ms: task.updated_at_ms,
         snapshot_sequence: thread.last_sequence,
         state: thread.state,
         current_model: thread.configuration.current_model.as_deref(),
         current_mode: thread.configuration.current_mode.as_deref(),
         excluded: EXCLUDED,
+        turns: thread
+            .turns
+            .iter()
+            .map(|turn| ArchiveTurn {
+                started_at_ms: turn.started_at_ms,
+                finished_at_ms: turn.finished_at_ms,
+                failed: turn.failed,
+            })
+            .collect(),
         messages,
     };
     let mut zip = ZipWriter::new(Cursor::new(Vec::new()));
@@ -331,9 +349,9 @@ impl WorkspaceService {
                     .transaction_with_behavior(TransactionBehavior::Deferred)
                     .map_err(StorageError::from)?;
                 let snapshot = read_conversation(&tx, task)?;
-                let message_updated_at_ms = read_message_updated_at_ms(&tx, snapshot.1.id)?;
+                let message_times = read_message_times(&tx, snapshot.1.id)?;
                 tx.commit().map_err(StorageError::from)?;
-                Ok((snapshot, message_updated_at_ms))
+                Ok((snapshot, message_times))
             })
             .await?;
         tokio::task::spawn_blocking(move || {
@@ -370,7 +388,7 @@ mod tests {
             )
             .unwrap();
 
-        assert!(message_updated_at_ms_with_limits(&connection, thread_id, 0, usize::MAX).is_err());
-        assert!(message_updated_at_ms_with_limits(&connection, thread_id, 1, 0).is_err());
+        assert!(message_times_with_limits(&connection, thread_id, 0, usize::MAX).is_err());
+        assert!(message_times_with_limits(&connection, thread_id, 1, 0).is_err());
     }
 }

@@ -1,7 +1,6 @@
 //! Native navigation bindings. Provider/editor protocols are not rebound here.
 use super::KeyBinding;
 use crate::{WorkspaceError, WorkspaceResult};
-use std::collections::HashSet;
 
 pub struct NavigationCommand {
     pub id: &'static str,
@@ -60,6 +59,232 @@ pub const NAVIGATION_COMMANDS: &[NavigationCommand] = &[
         default: "Primary+0",
     },
 ];
+
+/// Contexts where an application shortcut may run. Global navigation remains
+/// active across views. Composer and editor actions only run while that input
+/// owner has focus, so those two contexts may reuse a shortcut.
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+pub enum KeybindingContext {
+    Global,
+    Composer,
+    Editor,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct ContextualCommand {
+    pub id: &'static str,
+    pub label: &'static str,
+    pub context: KeybindingContext,
+    /// `None` means the existing product setting owns the default behavior.
+    pub default: Option<&'static str>,
+}
+
+pub const CONTEXTUAL_COMMANDS: &[ContextualCommand] = &[
+    ContextualCommand {
+        id: "composer.send",
+        label: "Send message",
+        context: KeybindingContext::Composer,
+        default: None,
+    },
+    ContextualCommand {
+        id: "model.next",
+        label: "Next model",
+        context: KeybindingContext::Composer,
+        default: Some("Alt+]"),
+    },
+    ContextualCommand {
+        id: "model.previous",
+        label: "Previous model",
+        context: KeybindingContext::Composer,
+        default: Some("Alt+["),
+    },
+    ContextualCommand {
+        id: "editor.save",
+        label: "Save current file",
+        context: KeybindingContext::Editor,
+        default: Some("Primary+S"),
+    },
+];
+
+/// A normalized shortcut shape shared by settings validation and app input.
+#[derive(Clone, Debug, Eq, Hash, PartialEq)]
+pub struct KeybindingStroke {
+    pub key: String,
+    pub primary: bool,
+    pub alt: bool,
+    pub shift: bool,
+}
+impl KeybindingStroke {
+    pub fn parse(text: &str) -> WorkspaceResult<Self> {
+        if text.len() > 128 || text.chars().any(char::is_control) {
+            return Err(invalid_contextual());
+        }
+        let lower = text.to_lowercase().replace('-', "+");
+        let mut tokens: Vec<_> = lower.split('+').map(str::trim).collect();
+        let key = tokens
+            .pop()
+            .filter(|key| valid_key_name(key))
+            .ok_or_else(invalid_contextual)?
+            .to_string();
+        let (mut primary, mut alt, mut shift) = (false, false, false);
+        for token in tokens {
+            let flag = match token {
+                "primary" | "ctrl" | "control" | "cmd" | "command" => &mut primary,
+                "alt" | "option" => &mut alt,
+                "shift" => &mut shift,
+                _ => return Err(invalid_contextual()),
+            };
+            if *flag {
+                return Err(invalid_contextual());
+            }
+            *flag = true;
+        }
+        Ok(Self {
+            key,
+            primary,
+            alt,
+            shift,
+        })
+    }
+
+    pub fn display(&self) -> String {
+        let mut parts = Vec::new();
+        if self.primary {
+            parts.push("Primary".to_owned());
+        }
+        if self.alt {
+            parts.push("Alt".to_owned());
+        }
+        if self.shift {
+            parts.push("Shift".to_owned());
+        }
+        parts.push(match self.key.as_str() {
+            "enter" => "Enter".to_owned(),
+            "escape" => "Escape".to_owned(),
+            "tab" => "Tab".to_owned(),
+            "space" => "Space".to_owned(),
+            "backspace" => "Backspace".to_owned(),
+            "delete" => "Delete".to_owned(),
+            "left" => "Left".to_owned(),
+            "right" => "Right".to_owned(),
+            "up" => "Up".to_owned(),
+            "down" => "Down".to_owned(),
+            "home" => "Home".to_owned(),
+            "end" => "End".to_owned(),
+            "pageup" => "PageUp".to_owned(),
+            "pagedown" => "PageDown".to_owned(),
+            "[" | "]" => self.key.clone(),
+            key => key.to_uppercase(),
+        });
+        parts.join("+")
+    }
+}
+
+fn valid_key_name(key: &str) -> bool {
+    (key.len() == 1
+        && key
+            .as_bytes()
+            .first()
+            .is_some_and(|byte| byte.is_ascii_lowercase() || byte.is_ascii_digit())
+        || matches!(
+            key,
+            "[" | "]" | "enter" | "escape" | "tab" | "space" | "backspace" | "delete"
+                | "left" | "right" | "up" | "down" | "home" | "end" | "pageup" | "pagedown"
+        ))
+        || key.strip_prefix('f').is_some_and(|number| {
+            number
+                .parse::<u8>()
+                .is_ok_and(|number| (1..=12).contains(&number) && key == format!("f{number}"))
+        })
+}
+
+fn invalid_contextual() -> WorkspaceError {
+    WorkspaceError::Invalid(
+        "Use a named key, letter, digit, bracket or F1..F12 with Primary, Alt or Shift modifiers".into(),
+    )
+}
+
+pub fn contextual_binding<'a>(bindings: &'a [KeyBinding], command: &str) -> Option<String> {
+    let binding = bindings.iter().find(|binding| binding.command == command);
+    binding
+        .map(|binding| binding.shortcut.clone())
+        .or_else(|| {
+            CONTEXTUAL_COMMANDS
+                .iter()
+                .find(|candidate| candidate.id == command)
+                .and_then(|candidate| candidate.default.map(str::to_owned))
+        })
+}
+
+pub fn has_contextual_override(bindings: &[KeyBinding], command: &str) -> bool {
+    bindings.iter().any(|binding| binding.command == command)
+}
+
+pub fn parse_contextual_shortcut(command_id: &str, text: &str) -> WorkspaceResult<String> {
+    let command = CONTEXTUAL_COMMANDS
+        .iter()
+        .find(|command| command.id == command_id)
+        .ok_or_else(|| {
+            WorkspaceError::Invalid("Unknown context-aware keybinding command".into())
+        })?;
+    let key = KeybindingStroke::parse(text)?;
+    if !contextual_shortcut_is_allowed(command, &key) {
+        return Err(WorkspaceError::Invalid(format!(
+            "{} is not valid in the {:?} context",
+            command.label, command.context
+        )));
+    }
+    Ok(key.display())
+}
+
+pub fn contextual_command_for_key(
+    bindings: &[KeyBinding],
+    context: KeybindingContext,
+    stroke: &KeybindingStroke,
+) -> Option<&'static str> {
+    CONTEXTUAL_COMMANDS
+        .iter()
+        .filter(|command| command.context == context)
+        .find(|command| {
+            contextual_binding(bindings, command.id)
+                .and_then(|shortcut| KeybindingStroke::parse(&shortcut).ok())
+                .is_some_and(|candidate| &candidate == stroke)
+        })
+        .map(|command| command.id)
+}
+
+fn contextual_shortcut_is_allowed(command: &ContextualCommand, key: &KeybindingStroke) -> bool {
+    let safe_primary_alt_letter = key.primary
+        && key.alt
+        && !key.shift
+        && key.key.len() == 1
+        && key.key.as_bytes()[0].is_ascii_lowercase()
+        && !matches!(key.key.as_str(), "t" | "z");
+    let primary_function = key.primary
+        && !key.alt
+        && !key.shift
+        && key.key.starts_with('f');
+    match command.id {
+        "composer.send" => key.key == "enter" && !key.shift,
+        "model.next" => {
+            (key.alt && !key.primary && !key.shift && key.key == "]")
+                || safe_primary_alt_letter
+                || primary_function
+        }
+        "model.previous" => {
+            (key.alt && !key.primary && !key.shift && key.key == "[")
+                || safe_primary_alt_letter
+                || primary_function
+        }
+        "editor.save" => {
+            (key.primary && !key.alt && !key.shift && key.key == "s")
+                || (key.key == "enter" && !key.shift && (key.primary ^ key.alt))
+                || safe_primary_alt_letter
+                || primary_function
+        }
+        _ => false,
+    }
+}
 #[derive(Clone, Debug, Eq, Hash, PartialEq)]
 pub struct NavigationKeystroke {
     pub key: String,
@@ -130,30 +355,67 @@ pub fn navigation_binding<'a>(
         .map_or(command.default, |binding| binding.shortcut.as_str())
 }
 pub fn validate_navigation_bindings(bindings: &[KeyBinding]) -> WorkspaceResult<()> {
-    let mut seen = HashSet::new();
+    let mut effective = Vec::new();
     for command in NAVIGATION_COMMANDS {
         let key = NavigationKeystroke::parse(navigation_binding(bindings, command))?;
-        if !seen.insert(key) {
-            return Err(WorkspaceError::Invalid(format!(
-                "{} conflicts with another effective navigation shortcut, including defaults",
-                command.label
-            )));
-        }
+        effective.push((
+            KeybindingContext::Global,
+            KeybindingStroke {
+                key: key.key,
+                primary: true,
+                alt: key.alt,
+                shift: key.shift,
+            },
+            command.label,
+        ));
     }
-    for binding in bindings
-        .iter()
-        .filter(|binding| binding.command.starts_with("navigation."))
-    {
-        if !NAVIGATION_COMMANDS
-            .iter()
-            .any(|command| command.id == binding.command)
+    for command in CONTEXTUAL_COMMANDS {
+        let Some(shortcut) = contextual_binding(bindings, command.id) else {
+            continue;
+        };
+        let display = parse_contextual_shortcut(command.id, &shortcut)?;
+        let key = KeybindingStroke::parse(&display)?;
+        effective.push((command.context, key, command.label));
+    }
+    for binding in bindings {
+        if binding.command.starts_with("navigation.")
+            && !NAVIGATION_COMMANDS
+                .iter()
+                .any(|command| command.id == binding.command)
         {
             return Err(WorkspaceError::Invalid(
                 "Unknown native navigation command".into(),
             ));
         }
+        if ["composer.", "editor.", "model."]
+            .iter()
+            .any(|namespace| binding.command.starts_with(namespace))
+            && !CONTEXTUAL_COMMANDS
+                .iter()
+                .any(|command| command.id == binding.command)
+        {
+            return Err(WorkspaceError::Invalid(
+                "Unknown context-aware keybinding command".into(),
+            ));
+        }
+    }
+    for right in 0..effective.len() {
+        for left in 0..right {
+            if effective[left].1 == effective[right].1
+                && contexts_overlap(effective[left].0, effective[right].0)
+            {
+                return Err(WorkspaceError::Invalid(format!(
+                    "{} conflicts with {} in an active input context",
+                    effective[right].2, effective[left].2
+                )));
+            }
+        }
     }
     Ok(())
+}
+
+fn contexts_overlap(left: KeybindingContext, right: KeybindingContext) -> bool {
+    left == right || left == KeybindingContext::Global || right == KeybindingContext::Global
 }
 #[cfg(test)]
 mod tests {
@@ -214,5 +476,71 @@ mod tests {
             }])
             .is_ok()
         );
+    }
+
+    #[test]
+    fn contextual_commands_resolve_only_in_their_active_input_scope() {
+        let bindings = [
+            KeyBinding {
+                command: "composer.send".into(),
+                shortcut: "Alt+Enter".into(),
+            },
+            KeyBinding {
+                command: "editor.save".into(),
+                shortcut: "Alt+Enter".into(),
+            },
+        ];
+        assert!(validate_navigation_bindings(&bindings).is_ok());
+        let key = KeybindingStroke::parse("Alt+Enter").unwrap();
+        assert_eq!(
+            contextual_command_for_key(&bindings, KeybindingContext::Composer, &key),
+            Some("composer.send")
+        );
+        assert_eq!(
+            contextual_command_for_key(&bindings, KeybindingContext::Editor, &key),
+            Some("editor.save")
+        );
+        assert_eq!(
+            contextual_command_for_key(&[], KeybindingContext::Composer, &key),
+            None
+        );
+    }
+
+    #[test]
+    fn contextual_defaults_and_normalized_conflicts_are_checked() {
+        let default = contextual_binding(&[], "model.next").unwrap();
+        assert_eq!(KeybindingStroke::parse(&default).unwrap().display(), "Alt+]");
+        assert!(validate_navigation_bindings(&[
+            KeyBinding {
+                command: "model.next".into(),
+                shortcut: "ctrl-alt-a".into(),
+            },
+            KeyBinding {
+                command: "model.previous".into(),
+                shortcut: "Primary+Option+A".into(),
+            },
+        ])
+        .is_err());
+        assert!(validate_navigation_bindings(&[
+            KeyBinding {
+                command: "composer.send".into(),
+                shortcut: "ctrl+1".into(),
+            },
+        ])
+        .is_err());
+        assert!(validate_navigation_bindings(&[
+            KeyBinding {
+                command: "editor.save".into(),
+                shortcut: "enter".into(),
+            },
+        ])
+        .is_err());
+        assert!(validate_navigation_bindings(&[
+            KeyBinding {
+                command: "model.typo".into(),
+                shortcut: "Primary+Alt+A".into(),
+            },
+        ])
+        .is_err());
     }
 }

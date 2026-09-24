@@ -9,11 +9,30 @@ use std::{
 use synara_core::{TaskId, TaskScope, ToolOutput, ToolStatus, WorkspaceLocation};
 use synara_runtime::{RuntimeError, WorkspaceFs};
 
+mod export;
+pub use export::*;
+mod pdf;
+pub use pdf::*;
+
+static PREVIEWS: tokio::sync::Semaphore = tokio::sync::Semaphore::const_new(1);
 const MAX_FILES: usize = 500;
 const MAX_ENTRIES: usize = 10_000;
 const MAX_DEPTH: usize = 8;
 const MAX_PREVIEW_TEXT: usize = 1024 * 1024;
 const MAX_IMAGE_PIXELS: u64 = 16_000_000;
+
+/// Reporting turn reconstructed from durable events. File contents remain current.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct StudioOutputTurn {
+    pub number: usize,
+    pub started_at_ms: i64,
+}
+#[derive(Clone, Debug)]
+struct ReportedOutput {
+    task: TaskId,
+    turn: Option<StudioOutputTurn>,
+    timestamp_ms: i64,
+}
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct StudioFile {
@@ -23,6 +42,8 @@ pub struct StudioFile {
     /// claim about files with no durable attribution.
     pub reported_output: bool,
     pub source_task: Option<TaskId>,
+    pub source_turn: Option<StudioOutputTurn>,
+    pub reported_at_ms: Option<i64>,
 }
 #[derive(Clone, Debug, Default)]
 pub struct StudioFiles {
@@ -79,7 +100,7 @@ fn visible(path: &Path) -> bool {
         )
         && !(segments.len() == 1 && matches!(segments[0].as_str(), "agents.md" | "claude.md"))
 }
-fn scan(root: &Path, reported: HashMap<PathBuf, TaskId>) -> WorkspaceResult<StudioFiles> {
+fn scan(root: &Path, reported: HashMap<PathBuf, ReportedOutput>) -> WorkspaceResult<StudioFiles> {
     let fs = WorkspaceFs::open(root)?;
     let mut pending = vec![(PathBuf::new(), 0)];
     let mut result = StudioFiles::default();
@@ -116,7 +137,13 @@ fn scan(root: &Path, reported: HashMap<PathBuf, TaskId>) -> WorkspaceResult<Stud
                 match fs.file_length(&entry.relative_path) {
                     Ok(bytes) => result.entries.push(StudioFile {
                         reported_output: reported.contains_key(&entry.relative_path),
-                        source_task: reported.get(&entry.relative_path).copied(),
+                        source_task: reported.get(&entry.relative_path).map(|output| output.task),
+                        source_turn: reported
+                            .get(&entry.relative_path)
+                            .and_then(|output| output.turn.clone()),
+                        reported_at_ms: reported
+                            .get(&entry.relative_path)
+                            .map(|output| output.timestamp_ms),
                         path: entry.relative_path,
                         bytes,
                     }),
@@ -190,6 +217,15 @@ fn preview(root: &Path, path: &Path) -> WorkspaceResult<StudioPreview> {
         return Ok(StudioPreview::Unsupported { bytes: size });
     }
     let bytes = fs.read_blob(path)?;
+    if bytes.get(..4) == Some(b"RIFF") && bytes.get(8..12) == Some(b"WEBP") {
+        let (bytes, width, height) = crate::storage::still_webp_preview(&bytes)?;
+        return Ok(StudioPreview::Image {
+            bytes,
+            format: PreviewImageFormat::Png,
+            width,
+            height,
+        });
+    }
     if let Some((format, width, height)) = image_size(&bytes) {
         if width == 0
             || height == 0
@@ -279,29 +315,59 @@ impl WorkspaceService {
                     break;
                 }
             };
-            for path in thread
+            for tool in thread
                 .tools
                 .values()
                 .filter(|tool| tool.status == ToolStatus::Completed)
-                .flat_map(|tool| tool.output.iter())
-                .filter_map(|output| match output {
-                    ToolOutput::Diff { path, .. } => Some(PathBuf::from(path)),
-                    _ => None,
-                })
-                .take(remaining)
             {
-                paths.push((path, peer.id));
-                remaining -= 1;
+                let origin = thread.tool_output_origins.get(&tool.id);
+                let turn = origin
+                    .and_then(|origin| origin.turn_index)
+                    .and_then(|index| {
+                        thread.turns.get(index).map(|turn| StudioOutputTurn {
+                            number: index + 1,
+                            started_at_ms: turn.started_at_ms,
+                        })
+                    });
+                for path in tool
+                    .output
+                    .iter()
+                    .filter_map(|output| match output {
+                        ToolOutput::Diff { path, .. } => Some(PathBuf::from(path)),
+                        _ => None,
+                    })
+                    .take(remaining)
+                {
+                    paths.push((
+                        path,
+                        ReportedOutput {
+                            task: peer.id,
+                            turn: turn.clone(),
+                            timestamp_ms: origin.map_or(i64::MIN, |origin| origin.timestamp_ms),
+                        },
+                    ));
+                    remaining -= 1;
+                }
+                if remaining == 0 {
+                    limited = true;
+                    break;
+                }
             }
         }
         tokio::task::spawn_blocking(move || {
             let fs = WorkspaceFs::open(&root)?;
-            let mut reported = HashMap::new();
-            for (path, task) in paths {
+            let mut reported: HashMap<PathBuf, ReportedOutput> = HashMap::new();
+            for (path, output) in paths {
                 if let Ok(path) = fs.relative(&path)
                     && visible(&path)
                 {
-                    reported.entry(path).or_insert(task);
+                    // A recently opened chat does not outrank a newer actual file report.
+                    let replace = reported.get(&path).is_none_or(|old| {
+                        (output.timestamp_ms, output.task) > (old.timestamp_ms, old.task)
+                    });
+                    if replace {
+                        reported.insert(path, output);
+                    }
                 }
             }
             let mut listing = scan(&root, reported)?;
@@ -317,9 +383,18 @@ impl WorkspaceService {
         path: PathBuf,
     ) -> WorkspaceResult<StudioPreview> {
         let root = self.local_studio_root(id).await?;
-        tokio::task::spawn_blocking(move || preview(&root, &path))
+        let permit = tokio::time::timeout(Duration::from_secs(3), PREVIEWS.acquire())
             .await
-            .map_err(|_| WorkspaceError::Worker)?
+            .map_err(|_| {
+                WorkspaceError::Invalid("Another preview is still decoding. Try again.".into())
+            })?
+            .map_err(|_| WorkspaceError::Worker)?;
+        tokio::task::spawn_blocking(move || {
+            let _permit = permit;
+            preview(&root, &path)
+        })
+        .await
+        .map_err(|_| WorkspaceError::Worker)?
     }
 }
 #[cfg(test)]
@@ -415,5 +490,149 @@ mod tests {
             std::os::unix::fs::symlink("/etc/passwd", dir.path().join("external.txt")).unwrap();
             assert!(preview(dir.path(), Path::new("external.txt")).is_err());
         }
+    }
+
+    #[test]
+    fn still_webp_preview_decodes_pixels_without_rewriting_the_original() {
+        let dir = tempfile::tempdir().unwrap();
+        let pixels = [
+            230, 40, 10, 255, 0, 150, 30, 255, 0, 0, 255, 255, 255, 255, 255, 255,
+        ];
+        let mut webp = Vec::new();
+        image::codecs::webp::WebPEncoder::new_lossless(&mut webp)
+            .encode(&pixels, 2, 2, image::ExtendedColorType::Rgba8)
+            .unwrap();
+        std::fs::write(dir.path().join("still.webp"), &webp).unwrap();
+        let StudioPreview::Image {
+            bytes,
+            format,
+            width,
+            height,
+        } = preview(dir.path(), Path::new("still.webp")).unwrap()
+        else {
+            panic!("still WebP must have a native image preview");
+        };
+        assert_eq!(format, PreviewImageFormat::Png);
+        assert_eq!((width, height), (2, 2));
+        let decoded = image::load_from_memory_with_format(&bytes, image::ImageFormat::Png)
+            .unwrap()
+            .into_rgba8();
+        assert_eq!(decoded.as_raw().as_slice(), pixels.as_slice());
+        assert_eq!(std::fs::read(dir.path().join("still.webp")).unwrap(), webp);
+        std::fs::write(dir.path().join("broken.webp"), b"RIFF0000WEBPinvalid").unwrap();
+        assert!(preview(dir.path(), Path::new("broken.webp")).is_err());
+        #[cfg(unix)]
+        {
+            std::os::unix::fs::symlink(dir.path().join("still.webp"), dir.path().join("link.webp"))
+                .unwrap();
+            assert!(preview(dir.path(), Path::new("link.webp")).is_err());
+        }
+    }
+    #[tokio::test]
+    async fn reporting_turn_uses_latest_actual_output_not_recent_chat_activity_and_survives_reopen()
+    {
+        use synara_core::{ThreadEvent, ToolPatch};
+        let dir = tempfile::tempdir().unwrap();
+        let root = dir.path().join("studio");
+        std::fs::create_dir(&root).unwrap();
+        std::fs::write(root.join("result.txt"), "current content").unwrap();
+        let db = dir.path().join("workspace.sqlite3");
+        let service = WorkspaceService::open(db.clone()).await.unwrap();
+        let project = service.add_local_workspace(root.clone()).await.unwrap();
+        let agent = service.profiles().await.unwrap()[0].id.clone();
+        let first = service
+            .create_scoped_task(project.id, "First".into(), agent.clone(), TaskScope::Studio)
+            .await
+            .unwrap();
+        let second = service
+            .create_scoped_task(project.id, "Second".into(), agent, TaskScope::Studio)
+            .await
+            .unwrap();
+        let report = || ThreadEvent::ToolChanged {
+            patch: ToolPatch {
+                id: "write".into(),
+                status: Some(ToolStatus::Completed),
+                output: Some(vec![ToolOutput::Diff {
+                    path: "result.txt".into(),
+                    before: None,
+                    after: Some("reported content".into()),
+                }]),
+                ..ToolPatch::default()
+            },
+        };
+        for task in [&first, &second] {
+            service
+                .record(
+                    task.thread_id,
+                    ThreadEvent::PromptStarted { turn: "one".into() },
+                )
+                .await
+                .unwrap();
+            service.record(task.thread_id, report()).await.unwrap();
+            service
+                .record(
+                    task.thread_id,
+                    ThreadEvent::PromptFinished {
+                        reason: "end_turn".into(),
+                    },
+                )
+                .await
+                .unwrap();
+            tokio::time::sleep(Duration::from_millis(5)).await;
+        }
+        // The first chat becomes most recently active, but did not replace its file report.
+        service
+            .record(
+                first.thread_id,
+                ThreadEvent::PromptStarted { turn: "two".into() },
+            )
+            .await
+            .unwrap();
+        service
+            .record(
+                first.thread_id,
+                ThreadEvent::ToolChanged {
+                    patch: ToolPatch {
+                        id: "write".into(),
+                        status: Some(ToolStatus::Completed),
+                        title: Some("Status refresh".into()),
+                        ..ToolPatch::default()
+                    },
+                },
+            )
+            .await
+            .unwrap();
+        service
+            .record(
+                first.thread_id,
+                ThreadEvent::PromptFinished {
+                    reason: "end_turn".into(),
+                },
+            )
+            .await
+            .unwrap();
+        let listing = service.studio_files(first.id).await.unwrap();
+        assert_eq!(listing.entries.len(), 1);
+        let file = &listing.entries[0];
+        assert!(file.reported_output);
+        assert_eq!(file.source_task, Some(second.id));
+        assert_eq!(file.source_turn.as_ref().unwrap().number, 1);
+        assert!(file.reported_at_ms.is_some());
+        drop(service);
+        let reopened = WorkspaceService::open(db).await.unwrap();
+        assert_eq!(
+            reopened.studio_files(second.id).await.unwrap().entries,
+            listing.entries
+        );
+        let StudioPreview::Text { text, .. } = reopened
+            .studio_preview(second.id, "result.txt".into())
+            .await
+            .unwrap()
+        else {
+            panic!("text");
+        };
+        assert_eq!(text, "current content");
+        assert!(reopened.session(first.thread_id).await.unwrap().is_none());
+        assert!(reopened.session(second.thread_id).await.unwrap().is_none());
     }
 }

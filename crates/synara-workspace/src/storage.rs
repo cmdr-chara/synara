@@ -19,6 +19,7 @@ pub use inline_comments::{InlineComment, InlineCommentEdit, InlineComments};
 mod followups;
 pub use followups::{FollowupDraft, FollowupEdit, FollowupQueue};
 mod attachments;
+pub(crate) use attachments::still_webp_preview;
 pub use attachments::{
     AttachmentDraft, AttachmentEdit, AttachmentInfo, AttachmentInput, AttachmentKind,
     AttachmentPreview, MAX_ATTACHMENT_BATCH_BYTES,
@@ -37,6 +38,7 @@ pub use task_context::{
     ChecklistItem, MAX_CHECKLIST_ITEMS, MAX_CHECKLIST_TEXT, MAX_NOTE_BYTES, TaskContext,
 };
 mod conversation_tools;
+pub(crate) use conversation_tools::write_new_export;
 pub use conversation_tools::{
     HandoffReview, HandoffTarget, MessageAnchor, MessageSearch, RelatedThreadKind, RevisionSource,
     SideThreadIndex, ThreadOrigin, ThreadRecap,

@@ -100,10 +100,11 @@ async fn stale_target_and_permission_failure_cannot_start_capture() {
     };
     let w = parse_window(0x123, 1, INFO.as_bytes(), PROPS.as_bytes()).unwrap();
     let cancel = CancellationToken::new();
-    assert!(matches!(
-        tools.capture(&w, &cancel).await,
-        Err(RuntimeError::Conflict)
-    ));
+    let captured = tools.capture(&w, &cancel).await;
+    assert!(
+        matches!(captured, Err(RuntimeError::Conflict)),
+        "expected stale-window conflict, got {captured:?}"
+    );
     assert!(!marker.exists());
     let denied = SnapTools {
         info: helper(dir.path(), "denied", "exit 17"),

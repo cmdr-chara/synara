@@ -246,6 +246,12 @@ async fn webp_is_previewable_and_prompt_conversion_is_bounded_png() {
 fn animated_webp_is_rejected_before_preview_or_prompt_projection() {
     let still = webp_2x2();
     let animated = animated_webp_from_still(&still);
+    assert!(
+        intake::still_webp_preview(&animated)
+            .unwrap_err()
+            .to_string()
+            .contains("Animated WebP")
+    );
     let error = intake::inspect("moving.webp".into(), &animated).unwrap_err();
     assert!(error.to_string().contains("Animated WebP is unsupported"));
 }

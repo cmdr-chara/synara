@@ -7,6 +7,7 @@ use synara_runtime::{
 
 pub(super) struct NativeSettings {
     bindings: Vec<Entity<TextEntry>>,
+    contextual_bindings: Vec<Entity<TextEntry>>,
     confirmation: Entity<TextEntry>,
     deleting: Option<TaskId>,
     busy: bool,
@@ -26,11 +27,27 @@ impl NativeSettings {
             });
             bindings.push(entry);
         }
+        let contextual_bindings = CONTEXTUAL_COMMANDS
+            .iter()
+            .map(|command| {
+                let entry = cx.new(|cx| {
+                    TextEntry::new(command.label, EntryMode::SingleLine, 32., cx)
+                });
+                entry.update(cx, |input, cx| {
+                    input.set_text(
+                        contextual_binding(&value.keybindings, command.id).unwrap_or_default(),
+                        cx,
+                    )
+                });
+                entry
+            })
+            .collect();
         let confirmation =
             cx.new(|cx| TextEntry::new("Type DELETE to confirm", EntryMode::SingleLine, 32., cx));
         let subscription = cx.subscribe(&confirmation, |_, _, _, cx| cx.notify());
         Self {
             bindings,
+            contextual_bindings,
             confirmation,
             deleting: None,
             busy: false,
@@ -103,6 +120,17 @@ impl Shell {
             let text = navigation_binding(&self.settings.value.keybindings, command).to_owned();
             entry.update(cx, |input, cx| input.set_text(text, cx));
         }
+        for (entry, command) in self
+            .settings
+            .native
+            .contextual_bindings
+            .iter()
+            .zip(CONTEXTUAL_COMMANDS)
+        {
+            let text = contextual_binding(&self.settings.value.keybindings, command.id)
+                .unwrap_or_default();
+            entry.update(cx, |input, cx| input.set_text(text, cx));
+        }
     }
     fn save_navigation_bindings(&mut self, cx: &mut Context<Self>) {
         let mut bindings: Vec<_> = self
@@ -111,9 +139,8 @@ impl Shell {
             .keybindings
             .iter()
             .filter(|binding| {
-                !NAVIGATION_COMMANDS
-                    .iter()
-                    .any(|command| command.id == binding.command)
+                !NAVIGATION_COMMANDS.iter().any(|command| command.id == binding.command)
+                    && !CONTEXTUAL_COMMANDS.iter().any(|command| command.id == binding.command)
             })
             .cloned()
             .collect();
@@ -139,6 +166,32 @@ impl Shell {
                 });
             }
         }
+        for (entry, command) in self
+            .settings
+            .native
+            .contextual_bindings
+            .iter()
+            .zip(CONTEXTUAL_COMMANDS)
+        {
+            let text = entry.read(cx).text().trim();
+            if text.is_empty() {
+                continue;
+            }
+            let key = match parse_contextual_shortcut(command.id, text) {
+                Ok(key) => key,
+                Err(error) => {
+                    self.settings.native.error = Some(error.to_string());
+                    cx.notify();
+                    return;
+                }
+            };
+            if command.default != Some(key.as_str()) {
+                bindings.push(KeyBinding {
+                    command: command.id.into(),
+                    shortcut: key,
+                });
+            }
+        }
         if let Err(error) = validate_navigation_bindings(&bindings) {
             self.settings.native.error = Some(error.to_string());
             cx.notify();
@@ -149,19 +202,21 @@ impl Shell {
     }
     pub(super) fn editable_keybindings_settings(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
         div().flex().flex_col().gap_3()
-            .child("Primary means Control on Linux/Windows and Command on macOS. Use a digit or F1..F12, or Primary+Alt+letter except T/Z. Shift is optional. Text editing and OS shortcuts keep their existing owners.")
+            .child("Primary means Control on Linux/Windows and Command on macOS. Navigation and focused Composer/Editor actions have separate allowed chords. Leave Send blank to follow Chat settings.")
             .children(self.settings.native.bindings.iter().zip(NAVIGATION_COMMANDS).map(|(entry, command)|
                 row(command.label, format!("Default: {}", command.default), div().w(px(235.)).child(entry.clone()))))
+            .children(self.settings.native.contextual_bindings.iter().zip(CONTEXTUAL_COMMANDS).map(|(entry, command)|
+                row(command.label, format!("{:?} · Default: {}", command.context, command.default.unwrap_or("Chat setting")), div().w(px(235.)).child(entry.clone()))))
             .child(div().flex().gap_2()
                 .child(ui::action("apply-navigation-bindings", "Save shortcuts", None, false, cx.listener(|this, _: &(), _, cx| this.save_navigation_bindings(cx))))
-                .child(ui::action("restore-navigation-bindings", "Restore navigation defaults", None, false, cx.listener(|this, _: &(), _, cx| {
+                .child(ui::action("restore-navigation-bindings", "Restore default shortcuts", None, false, cx.listener(|this, _: &(), _, cx| {
                     this.settings.native.error = None;
-                    this.save_setting(|settings| settings.keybindings.retain(|binding| !NAVIGATION_COMMANDS.iter().any(|command| command.id == binding.command)), cx);
+                    this.save_setting(|settings| settings.keybindings.retain(|binding| !NAVIGATION_COMMANDS.iter().any(|command| command.id == binding.command) && !CONTEXTUAL_COMMANDS.iter().any(|command| command.id == binding.command)), cx);
                     // Also discard an unsaved draft when defaults were already active.
                     this.sync_navigation_bindings(cx);
                 }))))
-            .child("Saved shortcuts appear in the command palette. Composer send behavior is controlled under Chat. Editor, terminal, Zen and Space shortcuts are not editable here yet.")
-            .children(self.settings.value.keybindings.iter().any(|binding| !NAVIGATION_COMMANDS.iter().any(|command| command.id == binding.command)).then(|| div().text_size(px(12.)).child("Legacy or unimplemented bindings are preserved in settings but are not executed by this navigation editor.")))
+            .child("Navigation shortcuts appear in the command palette. Composer and editor shortcuts run only while that input has focus. Terminal, Zen and Space shortcuts are not editable here.")
+            .children(self.settings.value.keybindings.iter().any(|binding| !NAVIGATION_COMMANDS.iter().any(|command| command.id == binding.command) && !CONTEXTUAL_COMMANDS.iter().any(|command| command.id == binding.command)).then(|| div().text_size(px(12.)).child("Legacy or unimplemented bindings are preserved in settings but are not executed by this editor.")))
             .children(self.settings.native.error.as_ref().map(|error| div().text_color(rgb(palette().error)).child(error.clone())))
             .into_any_element()
     }

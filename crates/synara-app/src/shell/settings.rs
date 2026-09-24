@@ -74,7 +74,9 @@ pub(super) struct SettingsState {
     code_font: Entity<TextEntry>,
     pub activity: Option<ProfileActivity>,
     pub onboarding_step: usize,
+    pub onboarding_import_open: bool,
     pub onboarding_finishing: bool,
+    pub onboarding_tasks: HashMap<String, TaskId>,
     pub activity_loading: bool,
     _subscriptions: Vec<Subscription>,
 }
@@ -148,7 +150,9 @@ impl SettingsState {
             code_font,
             activity: None,
             onboarding_step: 0,
+            onboarding_import_open: false,
             onboarding_finishing: false,
+            onboarding_tasks: HashMap::new(),
             activity_loading: false,
             _subscriptions: subscriptions,
         }

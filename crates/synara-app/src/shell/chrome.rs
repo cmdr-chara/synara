@@ -588,6 +588,10 @@ impl Render for Shell {
                     cx.stop_propagation();
                     return;
                 }
+                if this.model_cycle_shortcut(event, window, cx) {
+                    cx.stop_propagation();
+                    return;
+                }
                 if this.chat_tools_shortcut(event, window, cx) {
                     cx.stop_propagation();
                     return;

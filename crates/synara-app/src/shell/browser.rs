@@ -4,7 +4,7 @@ use super::*;
 use crate::ui::{self, Glyph, palette};
 use browser_domain::{
     BrowserProfile, HostTabId, NavigationKind,
-    session::{RequestState, TabView},
+    session::{RequestState, RuntimeDiagnosticKind, TabView},
     session_restore::ManualTabRestoreStore,
 };
 use gpui::AnyElement;
@@ -20,6 +20,7 @@ pub(super) struct BrowserView {
     restore: Option<ManualTabRestoreStore>,
     pub(super) busy: bool,
     diagnostics_open: bool,
+    runtime_diagnostics_open: bool,
     _subscription: Subscription,
 }
 impl BrowserView {
@@ -121,6 +122,7 @@ impl BrowserView {
             restore,
             busy: false,
             diagnostics_open: false,
+            runtime_diagnostics_open: false,
             _subscription: sub,
         }
     }
@@ -631,6 +633,94 @@ impl Shell {
                         .children(diagnostics.iter().rev().take(30).map(|entry| {
                             div().text_xs().child(format!("{} | {}{}", entry.status.map(|v| v.to_string()).unwrap_or_else(|| "—".into()), entry.url, entry.error.as_ref().map(|v| format!(" | {v}")).unwrap_or_default()))
                         })));
+                }
+            }
+            let runtime_diagnostics = self
+                .controller
+                .browser
+                .with(|s, _| s.manual_runtime_diagnostics(tab_id));
+            if let Ok(runtime_diagnostics) = runtime_diagnostics {
+                let mut controls = div()
+                    .flex()
+                    .gap_2()
+                    .child(ui::action(
+                        "browser-runtime-diagnostics-toggle",
+                        format!("Runtime errors ({})", runtime_diagnostics.len()),
+                        None,
+                        self.browser.runtime_diagnostics_open,
+                        cx.listener(|this, _: &(), _, cx| {
+                            this.browser.runtime_diagnostics_open =
+                                !this.browser.runtime_diagnostics_open;
+                            cx.notify();
+                        }),
+                    ))
+                    .child(ui::action(
+                        "browser-runtime-diagnostics-clear",
+                        "Clear runtime errors",
+                        None,
+                        false,
+                        cx.listener(move |this, _: &(), _, cx| {
+                            this.browser.error = this
+                                .controller
+                                .browser
+                                .with(|s, _| s.clear_manual_runtime_diagnostics(tab_id))
+                                .err()
+                                .map(|e| e.to_string());
+                            cx.notify();
+                        }),
+                    ));
+                #[cfg(target_os = "linux")]
+                {
+                    controls = controls.child(ui::action(
+                        "browser-open-web-inspector",
+                        "Open Web Inspector",
+                        Some(Glyph::Debug),
+                        false,
+                        cx.listener(move |this, _: &(), _, cx| {
+                            this.browser.error = this
+                                .browser
+                                .native
+                                .borrow()
+                                .open_manual_inspector(tab_id)
+                                .err()
+                                .map(|e| e.to_string());
+                            cx.notify();
+                        }),
+                    ));
+                }
+                pane = pane.child(controls);
+                if self.browser.runtime_diagnostics_open {
+                    pane = pane.child(
+                        div()
+                            .id("browser-runtime-diagnostics")
+                            .max_h(px(160.))
+                            .overflow_y_scroll()
+                            .flex()
+                            .flex_col()
+                            .child(
+                                div().text_xs().text_color(rgb(palette().muted)).child(
+                                    "Manual tab only. Captures uncaught exceptions and unhandled promise rejections with line numbers. Message text, rejection values, URLs, headers and page content are discarded. Open Web Inspector to inspect the full console locally.",
+                                ),
+                            )
+                            .children(runtime_diagnostics.iter().rev().take(30).map(|entry| {
+                                let kind = match entry.kind {
+                                    RuntimeDiagnosticKind::UncaughtException => {
+                                        "Uncaught JavaScript exception"
+                                    }
+                                    RuntimeDiagnosticKind::UnhandledRejection => {
+                                        "Unhandled promise rejection"
+                                    }
+                                };
+                                let location = match (entry.line, entry.column) {
+                                    (Some(line), Some(column)) => {
+                                        format!(" | line {line}, column {column}")
+                                    }
+                                    (Some(line), None) => format!(" | line {line}"),
+                                    _ => String::new(),
+                                };
+                                div().text_xs().child(format!("{kind}{location}"))
+                            })),
+                    );
                 }
             }
         }

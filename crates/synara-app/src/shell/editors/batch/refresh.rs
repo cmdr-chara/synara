@@ -350,6 +350,20 @@ mod tests {
             Some("Save failed: file changed outside this editor"),
             None
         ));
+        assert!(is_save_conflict(
+            Some(
+                "Auto-save stopped at src/main.rs: file changed outside this editor. Auto-save is off."
+            ),
+            Some(path)
+        ));
+        assert!(!is_save_conflict(
+            Some("Auto-save stopped at src/main.rs:copy: file changed outside this editor"),
+            Some(path)
+        ));
+        assert!(!is_save_conflict(
+            Some("Auto-save stopped at src/other.rs: file changed outside this editor"),
+            Some(path)
+        ));
         assert!(!is_save_conflict(None, Some(path)));
     }
 

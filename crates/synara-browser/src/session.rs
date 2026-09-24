@@ -3,6 +3,8 @@
 use super::*;
 use std::collections::BTreeSet;
 
+const MAX_RUNTIME_DIAGNOSTICS: usize = 200;
+
 #[derive(Clone, Copy, Debug, Default, Serialize)]
 pub struct Capabilities {
     pub navigation: bool,
@@ -173,6 +175,27 @@ pub struct NetworkDiagnostic {
     pub status: Option<u16>,
     pub error: Option<String>,
 }
+/// Safe metadata for a manual tab's JavaScript runtime failures. The page's
+/// message text, values, source URLs, and rejection reasons are never retained.
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum RuntimeDiagnosticKind {
+    UncaughtException,
+    UnhandledRejection,
+}
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct RuntimeDiagnostic {
+    pub kind: RuntimeDiagnosticKind,
+    pub line: Option<u32>,
+    pub column: Option<u32>,
+}
+impl RuntimeDiagnostic {
+    pub(crate) fn is_valid(&self) -> bool {
+        self.line.is_none_or(|line| line <= 10_000_000)
+            && self.column.is_none_or(|column| column <= 10_000_000)
+    }
+}
 struct TabState {
     view: TabView,
     navigation: Option<(
@@ -184,6 +207,7 @@ struct TabState {
     elements: BTreeSet<String>,
     committed_navigation: Option<HostNavigationId>,
     diagnostics: VecDeque<NetworkDiagnostic>,
+    runtime_diagnostics: VecDeque<RuntimeDiagnostic>,
     pending_popup: Option<String>,
 }
 pub enum Event {
@@ -198,6 +222,11 @@ pub enum Event {
         url: String,
         status: Option<u16>,
         error: Option<String>,
+    },
+    RuntimeDiagnostic {
+        tab: HostTabId,
+        navigation: HostNavigationId,
+        diagnostic: RuntimeDiagnostic,
     },
     Committed {
         tab: HostTabId,
@@ -290,6 +319,23 @@ impl Session {
         state.diagnostics.clear();
         Ok(())
     }
+    /// Trusted manual browser UI only. Runtime messages and page values are not
+    /// returned by the agent browser client.
+    pub fn manual_runtime_diagnostics(&self, tab: HostTabId) -> Result<Vec<RuntimeDiagnostic>> {
+        let state = self.tabs.get(&tab).ok_or(BrowserError::MissingTab)?;
+        if state.view.profile != BrowserProfile::Manual {
+            return Err(BrowserError::WrongContext);
+        }
+        Ok(state.runtime_diagnostics.iter().copied().collect())
+    }
+    pub fn clear_manual_runtime_diagnostics(&mut self, tab: HostTabId) -> Result<()> {
+        let state = self.tabs.get_mut(&tab).ok_or(BrowserError::MissingTab)?;
+        if state.view.profile != BrowserProfile::Manual {
+            return Err(BrowserError::WrongContext);
+        }
+        state.runtime_diagnostics.clear();
+        Ok(())
+    }
     pub fn manual_popup_preview(&self, tab: HostTabId) -> Result<Option<String>> {
         let state = self.tabs.get(&tab).ok_or(BrowserError::MissingTab)?;
         if state.view.profile != BrowserProfile::Manual {
@@ -366,6 +412,7 @@ impl Session {
                 elements: BTreeSet::new(),
                 committed_navigation: None,
                 diagnostics: VecDeque::new(),
+                runtime_diagnostics: VecDeque::new(),
                 pending_popup: None,
             },
         );
@@ -445,6 +492,7 @@ impl Session {
         state.elements.clear();
         state.committed_navigation = None;
         state.diagnostics.clear();
+        state.runtime_diagnostics.clear();
         state.pending_popup = None;
         state.view.state = "loading".into();
         state.view.error = None;
@@ -689,6 +737,26 @@ impl Session {
                 state
                     .diagnostics
                     .push_back(NetworkDiagnostic { url, status, error });
+            }
+            Event::RuntimeDiagnostic {
+                tab,
+                navigation,
+                diagnostic,
+            } => {
+                let Some(state) = self.tabs.get_mut(&tab) else {
+                    return Ok(());
+                };
+                if state.view.profile != BrowserProfile::Manual
+                    || (state.committed_navigation != Some(navigation)
+                        && !state.navigation.as_ref().is_some_and(|n| n.0 == navigation))
+                    || !diagnostic.is_valid()
+                {
+                    return Ok(());
+                }
+                if state.runtime_diagnostics.len() == MAX_RUNTIME_DIAGNOSTICS {
+                    state.runtime_diagnostics.pop_front();
+                }
+                state.runtime_diagnostics.push_back(diagnostic);
             }
             Event::ManualNavigation {
                 tab,

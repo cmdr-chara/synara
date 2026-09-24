@@ -38,7 +38,7 @@ class Event(C.Union):
 
 
 class Desktop:
-    def __init__(self, output, scale=1):
+    def __init__(self, output, scale=1, *, startup_timeout=10):
         self.output = output
         self.log = (output / 'xvfb.log').open('w')
         self.xvfb = None
@@ -52,7 +52,9 @@ class Desktop:
                 stdout=self.log, stderr=subprocess.STDOUT)
             os.close(write)
             write = None
-            if not select.select([read], [], [], 10)[0]:
+            if not 1 <= startup_timeout <= 60:
+                raise ValueError('Private display startup timeout must be 1-60 seconds')
+            if not select.select([read], [], [], startup_timeout)[0]:
                 raise RuntimeError('Xvfb did not provide a private display')
             number = os.read(read, 32).decode().strip()
             if not number.isdecimal():
@@ -275,7 +277,8 @@ class Scenario:
             for label in ('alpha', 'beta')]), encoding='utf-8')
         self.binary = options.binary.resolve()
         self.scale = getattr(options, 'scale', 1)
-        self.desktop = Desktop(self.output, self.scale)
+        self.desktop = Desktop(self.output, self.scale,
+                               startup_timeout=getattr(options, 'display_startup_timeout', 10))
         self.process = None
         self.log = None
         self.checks = []

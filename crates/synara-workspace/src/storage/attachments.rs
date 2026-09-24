@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 use std::{collections::HashSet, path::PathBuf};
 use synara_agent::{Prompt, PromptPart};
 mod intake;
+pub(crate) use intake::still_webp_preview;
 mod media;
 #[cfg(test)]
 mod tests;

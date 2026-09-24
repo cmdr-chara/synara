@@ -341,6 +341,21 @@ fn decode_webp(bytes: &[u8]) -> WorkspaceResult<DynamicImage> {
     }
 }
 
+/// Studio previews share the still-image decoder, but not the agent's 2 MiB budget.
+pub(crate) fn still_webp_preview(bytes: &[u8]) -> WorkspaceResult<(Vec<u8>, u32, u32)> {
+    let decoded = decode_webp(bytes)?;
+    let (width, height) = (decoded.width(), decoded.height());
+    let mut output = CappedWriter::new(8 * 1024 * 1024);
+    let encoded = decoded.write_to(&mut output, ImageFormat::Png);
+    if output.exceeded {
+        return Err(invalid(
+            "The decoded WebP exceeds the 8 MiB preview budget.",
+        ));
+    }
+    encoded.map_err(|_| invalid("The WebP could not be converted for preview."))?;
+    Ok((output.finish(), width, height))
+}
+
 pub(super) fn webp_to_png(bytes: &[u8]) -> WorkspaceResult<Vec<u8>> {
     let decoded = decode_webp(bytes)?;
     let mut output = CappedWriter::new(MAX_ATTACHMENT_BATCH_BYTES);

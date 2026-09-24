@@ -5,9 +5,14 @@ use super::*;
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum Command {
     Plan,
+    ModelNext,
+    ModelPrevious,
     Debug,
     Goal,
     GoalPause,
+    GoalResume,
+    GoalClear,
+    GoalEdit,
     Fork,
     Subagents,
     Export,
@@ -16,6 +21,7 @@ enum Command {
     AutomationList,
     AutomationNew,
     Computer,
+    Settings,
     Recap,
     Status,
 }
@@ -23,15 +29,54 @@ enum Command {
 enum ParsedCommand {
     Native(Command),
     SetGoal(String),
+    EditGoal(String),
     AutomationEdit(AutomationId),
+    SettingsSection(&'static str),
 }
 const GOAL_MAX_BYTES: usize = 4096;
 const AUTOMATION_USAGE: &str =
     "Automation usage: /synara/automation [list | new | edit <id>]. Nothing was sent.";
 const AUTOMATION_EDIT_USAGE: &str =
     "Automation usage: /synara/automation edit <id>. Nothing was sent.";
+const SETTINGS_USAGE: &str =
+    "Settings usage: /synara/settings <section>. Choose one section from the command menu. Nothing was sent.";
+const SETTINGS_SECTIONS: &[(&str, &str)] = &[
+    ("onboarding", "Getting started"),
+    ("device", "Device and capture"),
+    ("privacy", "Privacy and security"),
+    ("general", "General preferences"),
+    ("profile", "Local activity and profile"),
+    ("appearance", "Theme and typography"),
+    ("notifications", "Notification preferences"),
+    ("behavior", "Chat behavior"),
+    ("keybindings", "Keyboard shortcuts"),
+    ("usage", "Reported usage and limits"),
+    ("appsnap", "AppSnap capture"),
+    ("computer", "Computer use setup"),
+    ("plugins", "Plugins and integrations"),
+    ("mcp", "MCP connections"),
+    ("providers", "Agent providers"),
+    ("models", "Models and writing"),
+    ("direct-models", "Direct model providers"),
+    ("project-import", "Project import"),
+    ("skills", "Agent skills"),
+    ("worktrees", "Managed worktrees"),
+    ("system", "System tools"),
+    ("archived", "Archived threads"),
+    ("workflows", "Subagents and workflows"),
+];
 const COMMANDS: &[(&str, &str, Command)] = &[
     ("plan", "Select the advertised ACP Plan mode", Command::Plan),
+    (
+        "model next",
+        "Select the next advertised ACP model (Alt+])",
+        Command::ModelNext,
+    ),
+    (
+        "model previous",
+        "Select the previous advertised ACP model (Alt+[)",
+        Command::ModelPrevious,
+    ),
     (
         "debug",
         "Open the evidence-first Debug workflow",
@@ -39,13 +84,28 @@ const COMMANDS: &[(&str, &str, Command)] = &[
     ),
     (
         "goal",
-        "Review this task's goal; pause an active goal or set <objective>",
+        "Review this task's goal and explicit set/edit/pause/resume/clear actions",
         Command::Goal,
     ),
     (
         "goal pause",
-        "Pause active goal continuation; resume from the goal panel",
+        "Pause active goal continuation without sending a provider prompt",
         Command::GoalPause,
+    ),
+    (
+        "goal resume",
+        "Prepare the saved goal with its bounded pursuit; Send stays explicit",
+        Command::GoalResume,
+    ),
+    (
+        "goal clear",
+        "Clear this task's saved goal and history, only while paused",
+        Command::GoalClear,
+    ),
+    (
+        "goal edit",
+        "Open the goal editor; optional text remains unsaved until Save",
+        Command::GoalEdit,
     ),
     (
         "fork",
@@ -87,6 +147,11 @@ const COMMANDS: &[(&str, &str, Command)] = &[
         "Open Computer Use setup, without granting control",
         Command::Computer,
     ),
+    (
+        "settings",
+        "Open General settings or choose a section",
+        Command::Settings,
+    ),
     ("recap", "Review the conversation recap", Command::Recap),
     (
         "status",
@@ -109,9 +174,20 @@ fn parse(text: &str) -> Option<Result<ParsedCommand, &'static str>> {
             if arguments == "pause" {
                 return Some(Ok(ParsedCommand::Native(Command::GoalPause)));
             }
-            let Some(objective) = arguments.strip_prefix("set") else {
+            for (name, command) in [
+                ("resume", Command::GoalResume),
+                ("clear", Command::GoalClear),
+                ("edit", Command::GoalEdit),
+            ] {
+                if arguments == name {
+                    return Some(Ok(ParsedCommand::Native(command)));
+                }
+            }
+            let editing = arguments.starts_with("edit");
+            let Some(objective) = arguments.strip_prefix(if editing { "edit" } else { "set" })
+            else {
                 return Some(Err(
-                    "Goal usage: /synara/goal [pause | set <objective>]. Nothing was sent.",
+                    "Goal usage: /synara/goal [pause | resume | clear | edit [objective] | set <objective>]. Nothing was sent.",
                 ));
             };
             if objective.is_empty() {
@@ -121,7 +197,7 @@ fn parse(text: &str) -> Option<Result<ParsedCommand, &'static str>> {
             }
             if !objective.chars().next().is_some_and(char::is_whitespace) {
                 return Some(Err(
-                    "Goal usage: /synara/goal [pause | set <objective>]. Nothing was sent.",
+                    "Goal usage: /synara/goal [pause | resume | clear | edit [objective] | set <objective>]. Nothing was sent.",
                 ));
             }
             let objective = objective.trim();
@@ -131,7 +207,11 @@ fn parse(text: &str) -> Option<Result<ParsedCommand, &'static str>> {
                     "Goal text must be non-empty, contain no NUL, and fit within 4 KiB. Nothing was sent.",
                 ));
             }
-            Ok(ParsedCommand::SetGoal(objective.to_owned()))
+            Ok(if editing {
+                ParsedCommand::EditGoal(objective.to_owned())
+            } else {
+                ParsedCommand::SetGoal(objective.to_owned())
+            })
         } else {
             Err(
                 "Unknown native command or extra arguments. Use an exact /synara/ command from the menu. Nothing was sent.",
@@ -171,6 +251,28 @@ fn parse(text: &str) -> Option<Result<ParsedCommand, &'static str>> {
                 Err(_) => Err(AUTOMATION_EDIT_USAGE),
             }
         }
+    } else if let Some(rest) = name.strip_prefix("settings") {
+        if rest.is_empty() {
+            COMMANDS
+                .iter()
+                .find(|(candidate, _, _)| *candidate == "settings")
+                .map(|(_, _, command)| ParsedCommand::Native(*command))
+                .ok_or("Unknown native command. Nothing was sent.")
+        } else if !rest.chars().next().is_some_and(char::is_whitespace) {
+            Err(
+                "Unknown native command or extra arguments. Use an exact /synara/ command from the menu. Nothing was sent.",
+            )
+        } else {
+            let section = rest.trim();
+            if section.is_empty() || section.chars().any(char::is_whitespace) {
+                return Some(Err(SETTINGS_USAGE));
+            }
+            SETTINGS_SECTIONS
+                .iter()
+                .find(|(name, _)| *name == section)
+                .map(|(name, _)| ParsedCommand::SettingsSection(*name))
+                .ok_or(SETTINGS_USAGE)
+        }
     } else {
         COMMANDS
             .iter()
@@ -179,6 +281,34 @@ fn parse(text: &str) -> Option<Result<ParsedCommand, &'static str>> {
             .ok_or("Unknown native command or extra arguments. Use an exact /synara/ command from the menu. Nothing was sent.")
     };
     Some(parsed)
+}
+fn settings_section(name: &str) -> Option<settings::Section> {
+    Some(match name {
+        "onboarding" => settings::Section::Onboarding,
+        "device" => settings::Section::Device,
+        "privacy" => settings::Section::Privacy,
+        "general" => settings::Section::General,
+        "profile" => settings::Section::Profile,
+        "appearance" => settings::Section::Appearance,
+        "notifications" => settings::Section::Notifications,
+        "behavior" => settings::Section::Behavior,
+        "keybindings" => settings::Section::Keybindings,
+        "usage" => settings::Section::Usage,
+        "appsnap" => settings::Section::AppSnap,
+        "computer" => settings::Section::Computer,
+        "plugins" => settings::Section::Plugins,
+        "mcp" => settings::Section::Mcp,
+        "providers" => settings::Section::Providers,
+        "models" => settings::Section::Models,
+        "direct-models" => settings::Section::DirectModels,
+        "project-import" => settings::Section::ProjectImport,
+        "skills" => settings::Section::Skills,
+        "worktrees" => settings::Section::Worktrees,
+        "system" => settings::Section::System,
+        "archived" => settings::Section::Archived,
+        "workflows" => settings::Section::Workflows,
+        _ => return None,
+    })
 }
 impl Shell {
     pub(in crate::shell) fn native_command_draft(&self, cx: &App) -> bool {
@@ -210,9 +340,27 @@ impl Shell {
         self.error = None;
         let accepted = match command {
             ParsedCommand::SetGoal(objective) => self.set_goal_from_command(objective, cx),
+            ParsedCommand::EditGoal(objective) => self.edit_goal_from_command(Some(objective), cx),
             ParsedCommand::AutomationEdit(id) => self.open_automation_for_review(id, cx),
+            ParsedCommand::SettingsSection(section) => match settings_section(section) {
+                Some(section) => {
+                    self.set_panel(Panel::Settings, cx);
+                    if self.panel == Panel::Settings {
+                        self.open_settings_section(section, cx);
+                        true
+                    } else {
+                        false
+                    }
+                }
+                None => {
+                    self.error = Some(SETTINGS_USAGE.into());
+                    false
+                }
+            },
             ParsedCommand::Native(command) => match command {
                 Command::Plan => self.native_plan_mode(cx),
+                Command::ModelNext => self.cycle_session_model(true, cx),
+                Command::ModelPrevious => self.cycle_session_model(false, cx),
                 Command::Debug => {
                     self.open_debug(cx);
                     self.debug_workflow.open
@@ -222,6 +370,9 @@ impl Shell {
                     self.goals.open
                 }
                 Command::GoalPause => self.pause_goal_from_command(cx),
+                Command::GoalResume => self.resume_goal_from_command(cx),
+                Command::GoalClear => self.clear_goal_from_command(cx),
+                Command::GoalEdit => self.edit_goal_from_command(None, cx),
                 Command::Recap => {
                     self.open_recap(cx);
                     self.recap.open
@@ -256,6 +407,15 @@ impl Shell {
                 Command::Computer => {
                     self.open_settings_section(settings::Section::Computer, cx);
                     self.panel == Panel::Settings
+                }
+                Command::Settings => {
+                    self.set_panel(Panel::Settings, cx);
+                    if self.panel == Panel::Settings {
+                        self.open_settings_section(settings::Section::General, cx);
+                        true
+                    } else {
+                        false
+                    }
                 }
                 Command::Status => {
                     self.open_settings_section(settings::Section::Usage, cx);
@@ -325,14 +485,14 @@ impl Shell {
             .gap_1()
             .p_2()
             .child(div().text_sm().text_color(rgb(palette().muted)).child(
-                "Synara commands · provider commands remain unchanged. Goal pause/set and automation list/new/edit are native argument forms; goal resume stays in the goal panel.",
+                "Synara commands · provider commands remain unchanged. Goal, automation, settings and model argument forms reuse their native owners. No command is sent to the provider as a prompt.",
             ));
         if prefix.starts_with("goal ") {
             view = view.child(
                 div()
                     .text_sm()
                     .text_color(rgb(palette().muted))
-                    .child("Usage: /synara/goal pause or /synara/goal set <objective> · resume is available in the goal panel; Send remains explicit."),
+                    .child("Usage: /synara/goal pause, resume, clear, set <objective>, or edit [objective]. Edit requires Save. Resume prepares a bounded pursuit and never sends its first prompt."),
             );
         }
         if prefix.starts_with("automation ") {
@@ -342,6 +502,14 @@ impl Shell {
                         .text_color(rgb(palette().muted))
                         .child("Usage: /synara/automation list, /synara/automation new, or /synara/automation edit <id>. Edit opens a saved automation for review; Save stays explicit. New opens an unsaved form; nothing is saved or scheduled."),
                 );
+        }
+        if prefix == "settings" || prefix.starts_with("settings ") {
+            view = view.child(
+                div()
+                    .text_sm()
+                    .text_color(rgb(palette().muted))
+                    .child(SETTINGS_USAGE),
+            );
         }
         let task = self.selected;
         for (index, (name, detail, _)) in COMMANDS.iter().enumerate() {
@@ -377,12 +545,67 @@ impl Shell {
                 .child(ui::layout_probe_slot("native-command-row", index)),
             );
         }
+        for (index, (section, detail)) in SETTINGS_SECTIONS.iter().enumerate() {
+            let name = format!("settings {section}");
+            if !name.starts_with(prefix) {
+                continue;
+            }
+            let command = format!("/synara/{name}");
+            let expected = text.clone();
+            let task = self.selected;
+            view = view.child(
+                ui::action(
+                    ("native-settings-command", index),
+                    format!("{command} · Open {detail}"),
+                    None,
+                    false,
+                    cx.listener(move |this, _, _, cx| {
+                        if this.selected != task
+                            || this.composer.read(cx).text() != expected
+                            || this.composer.read(cx).is_composing()
+                            || task.is_some_and(|id| {
+                                this.busy.contains(&id)
+                                    || this.connecting.contains(&id)
+                                    || this.controls.is_pending(id)
+                            })
+                        {
+                            return;
+                        }
+                        this.composer
+                            .update(cx, |entry, cx| entry.set_text(command.clone(), cx));
+                        this.send_prompt(cx);
+                    }),
+                )
+                .relative()
+                .child(ui::layout_probe_slot("native-settings-command-row", index)),
+            );
+        }
         view.into_any_element()
     }
 }
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn model_cycle_commands_are_exact_and_never_steal_provider_commands() {
+        assert_eq!(
+            parse("/synara/model next"),
+            Some(Ok(ParsedCommand::Native(Command::ModelNext)))
+        );
+        assert_eq!(
+            parse("/synara/model previous"),
+            Some(Ok(ParsedCommand::Native(Command::ModelPrevious)))
+        );
+        assert!(parse("/model next").is_none());
+        for command in [
+            "/synara/model",
+            "/synara/model next now",
+            "/synara/model previous all",
+            "/synara/models next",
+        ] {
+            assert!(parse(command).unwrap().is_err());
+        }
+    }
     #[test]
     fn native_namespace_never_shadows_provider_commands_or_accepts_extra_prompt_text() {
         for text in [
@@ -499,5 +722,63 @@ mod tests {
                 "accepted {text}"
             );
         }
+    }
+    #[test]
+    fn settings_arguments_select_only_known_native_sections() {
+        assert_eq!(
+            parse("/synara/settings"),
+            Some(Ok(ParsedCommand::Native(Command::Settings)))
+        );
+        for (section, _) in SETTINGS_SECTIONS {
+            assert!(settings_section(*section).is_some());
+            assert_eq!(
+                parse(&format!("/synara/settings {section}")),
+                Some(Ok(ParsedCommand::SettingsSection(*section)))
+            );
+        }
+        assert_eq!(
+            parse("/synara/settings   direct-models  "),
+            Some(Ok(ParsedCommand::SettingsSection("direct-models")))
+        );
+        for text in [
+            "/synara/settings unknown",
+            "/synara/settings usage extra",
+            "/synara/settingsx usage",
+            "/synara/settings\nusage\nextra",
+        ] {
+            assert!(
+                parse(text).is_none_or(|result| result.is_err()),
+                "accepted {text}"
+            );
+        }
+        assert!(parse("/settings usage").is_none());
+    }
+    #[test]
+    fn goal_resume_clear_and_edit_are_qualified_and_literal() {
+        assert_eq!(
+            parse("/synara/goal edit Literal 日本語 $HOME"),
+            Some(Ok(ParsedCommand::EditGoal("Literal 日本語 $HOME".into())))
+        );
+        for text in [
+            "/synara/goal resume now",
+            "/synara/goal clear all",
+            "/synara/goal editx",
+            "/synara/goal edit \0hidden",
+            "/goal resume",
+            "/goal clear",
+        ] {
+            assert!(
+                parse(text).is_none_or(|result| result.is_err()),
+                "accepted {text}"
+            );
+        }
+        assert!(
+            parse(&format!(
+                "/synara/goal edit {}",
+                "x".repeat(GOAL_MAX_BYTES + 1)
+            ))
+            .unwrap()
+            .is_err()
+        );
     }
 }

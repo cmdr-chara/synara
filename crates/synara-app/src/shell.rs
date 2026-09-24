@@ -143,6 +143,7 @@ enum Update {
     Hubs(Box<hubs::Reply>),
     Terminals(Box<terminals::Reply>),
     Review(Box<review::Reply>),
+    EditorHistory(Box<editors::history::Reply>),
     Explorer(Box<explorer::ExplorerReply>),
     Studio(Box<studio::StudioReply>),
     SavedContext(Box<saved_context::ContextReply>),
@@ -158,6 +159,7 @@ enum Update {
     WorkspaceAdded(Project, Catalog),
     TaskCreated(Task, Catalog, u64),
     TaskCreationFailed(String),
+    Onboarding(Box<onboarding::Reply>),
     ThreadLoaded(Task, Box<Thread>),
     ThreadLoadFailed(TaskId, String),
     Event(EventEnvelope),
@@ -572,7 +574,14 @@ impl Shell {
         this.load_organization();
         this.load_hubs();
         this.composer.update(cx, |entry, _| {
-            entry.set_send_on_enter(this.settings.value.chat.send_on_enter)
+            entry.set_send_on_enter(this.settings.value.chat.send_on_enter);
+            entry.set_keybindings(&this.settings.value.keybindings);
+        });
+        this.side_chats.composer.update(cx, |entry, _| {
+            entry.set_keybindings(&this.settings.value.keybindings);
+        });
+        this.editor.update(cx, |entry, _| {
+            entry.set_keybindings(&this.settings.value.keybindings);
         });
         if let Some(selected) = selected {
             this.select_task(selected, cx);
@@ -620,6 +629,11 @@ impl Shell {
             || self.project_import.pending()
         {
             self.notice=Some("Finish the integration operation or discard its open Settings form/review before closing.".into());
+            cx.notify();
+            return false;
+        }
+        if self.studio.exporting {
+            self.notice = Some("Finish or cancel the Library export before closing.".into());
             cx.notify();
             return false;
         }
@@ -701,6 +715,7 @@ impl Shell {
     }
 
     fn begin_quit(&mut self, cx: &mut Context<Self>) {
+        self.cancel_editor_history();
         if self.goal_before_quit(cx) {
             return;
         }
@@ -1525,6 +1540,7 @@ impl Shell {
             Update::Hubs(reply) => self.hub_reply(*reply, cx),
             Update::Terminals(reply) => self.terminal_reply(*reply, cx),
             Update::Review(reply) => self.review_reply(*reply, cx),
+            Update::EditorHistory(reply) => self.editor_history_reply(*reply, cx),
             Update::Explorer(reply) => self.explorer_reply(*reply, cx),
             Update::Studio(reply) => self.studio_reply(*reply, cx),
             Update::SavedContext(reply) => self.saved_context_reply(*reply, cx),
@@ -1599,6 +1615,7 @@ impl Shell {
                 self.directory.clear();
                 self.create_task(cx);
             }
+            Update::Onboarding(reply) => self.onboarding_auth_reply(*reply, cx),
             Update::TaskCreated(task, catalog, revision) => {
                 self.creating_task = false;
                 self.catalog = catalog;
@@ -1813,6 +1830,17 @@ impl Shell {
                     self.settings.value = *settings;
                     if bindings_changed {
                         self.sync_navigation_bindings(cx);
+                        self.composer.update(cx, |entry, _| {
+                            entry.set_keybindings(&self.settings.value.keybindings);
+                        });
+                        self.side_chats.composer.update(cx, |entry, _| {
+                            entry.set_keybindings(&self.settings.value.keybindings);
+                        });
+                        self.editor.update(cx, |entry, _| {
+                            entry.set_keybindings(&self.settings.value.keybindings);
+                        });
+                        self.editors
+                            .sync_keybindings(&self.settings.value.keybindings, cx);
                     }
                     self.composer.update(cx, |entry, _| {
                         entry.set_send_on_enter(self.settings.value.chat.send_on_enter)
@@ -1960,9 +1988,13 @@ impl Shell {
             }
         }
         self.studio.open = false;
+        self.studio.cancel_preview();
         self.chat_tools.retire();
         self.environment.retire_popup();
         let panel = self.track_environment_panel(panel);
+        if panel != Panel::Files {
+            self.cancel_editor_history();
+        }
         self.controls.retire();
         self.settings.popup = None;
         if panel != Panel::Conversation {

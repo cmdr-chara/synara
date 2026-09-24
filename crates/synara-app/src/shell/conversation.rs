@@ -1,6 +1,39 @@
 use super::*;
 use gpui::{Animation, AnimationExt};
 impl Shell {
+    pub(super) fn connection_questions(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
+        // Login/configuration questions have no durable task thread yet. Render them
+        // only for the selected connection, using the same native question panel.
+        if let Some(connection_id) = self.details.as_ref().map(|details| details.connection.id) {
+            let mut login_questions: Vec<_> = self
+                .pending
+                .iter()
+                .filter(|(_, interaction)| {
+                    interaction.is_active()
+                        && interaction.context().scope
+                            == InteractionScope::Connection(connection_id)
+                })
+                .map(|(key, _)| key.clone())
+                .collect();
+            login_questions.sort();
+            if !login_questions.is_empty() {
+                return div()
+                    .px_5()
+                    .py_3()
+                    .max_h(px(360.))
+                    .id("connection-questions")
+                    .overflow_y_scroll()
+                    .children(
+                        login_questions
+                            .into_iter()
+                            .map(|key| self.input_request(key, cx)),
+                    )
+                    .into_any_element();
+            }
+        }
+        div().into_any_element()
+    }
+
     /// One compact row replacing the three stacked Goal/Debug/Recap headers.
     /// Open or active workflows render their full bars below; the palette
     /// covers empty threads.
@@ -66,36 +99,7 @@ impl Shell {
                 _ => {}
             }
         }
-        // Login/configuration questions have no durable task thread yet. Render them
-        // only for the selected connection, using the same native question panel.
-        if let Some(connection_id) = self.details.as_ref().map(|details| details.connection.id) {
-            let mut login_questions: Vec<_> = self
-                .pending
-                .iter()
-                .filter(|(_, interaction)| {
-                    interaction.is_active()
-                        && interaction.context().scope
-                            == InteractionScope::Connection(connection_id)
-                })
-                .map(|(key, _)| key.clone())
-                .collect();
-            login_questions.sort();
-            if !login_questions.is_empty() {
-                root = root.child(
-                    div()
-                        .px_5()
-                        .py_3()
-                        .max_h(px(360.))
-                        .id("connection-questions")
-                        .overflow_y_scroll()
-                        .children(
-                            login_questions
-                                .into_iter()
-                                .map(|key| self.input_request(key, cx)),
-                        ),
-                );
-            }
-        }
+        root = root.child(self.connection_questions(cx));
         if !self.zen_active() || self.settings.personalization.details_shown {
             root = root.child(self.chat_tools_bar(cx));
         }

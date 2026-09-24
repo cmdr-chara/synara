@@ -1,5 +1,7 @@
 //! Linux/X11 WebKitGTK child surfaces for the existing Session owner.
-//! Wry owns only the OS webview. There is no page IPC, WebDriver or second session store.
+//! Wry owns only the OS webview. There is no agent page RPC, WebDriver or second
+//! session store. Manual tabs have an isolated one-way channel for value-free
+//! JavaScript runtime error metadata.
 mod bridge;
 mod manual_capture;
 mod manual_downloads;
@@ -8,7 +10,9 @@ mod surface;
 mod tests;
 
 use crate::{
-    session::{Capabilities, Command, Event, NativePort, Output},
+    session::{
+        Capabilities, Command, Event, NativePort, Output, RuntimeDiagnostic,
+    },
     *,
 };
 use gtk::{gio, prelude::*};
@@ -42,7 +46,31 @@ impl ViewportRect {
     }
 }
 const MAX_TABS: usize = 64;
+const MAX_RUNTIME_MESSAGES_PER_DOCUMENT: usize = 100;
+const MAX_QUEUED_RUNTIME_DIAGNOSTICS: usize = 32;
 const WORLD: &str = "synara-browser-actions-v1";
+const MANUAL_RUNTIME_WORLD: &str = "synara-manual-runtime-diagnostics-v1";
+const MANUAL_RUNTIME_HANDLER: &str = "synaraRuntimeDiagnostics";
+const MANUAL_RUNTIME_SCRIPT: &str = r#"(() => {
+  const handler = globalThis.webkit?.messageHandlers?.synaraRuntimeDiagnostics;
+  if (!handler) return;
+  let reported = 0;
+  const report = (kind, event) => {
+    if (reported >= 100) return;
+    reported += 1;
+    const line = Number.isSafeInteger(event?.lineno) ? event.lineno : undefined;
+    const column = Number.isSafeInteger(event?.colno) ? event.colno : undefined;
+    try {
+      handler.postMessage(JSON.stringify({ kind, line, column }));
+    } catch (_) {}
+  };
+  globalThis.addEventListener("error", event => {
+    if (event instanceof ErrorEvent) report("uncaught_exception", event);
+  }, true);
+  globalThis.addEventListener("unhandledrejection", event => {
+    report("unhandled_rejection", event);
+  }, true);
+})();"#;
 const SCRIPT: &str = include_str!("../../../../assets/native-browser/actions.js");
 struct Profile {
     context: WebContext,
@@ -80,11 +108,41 @@ struct Running {
 struct Events {
     sender: mpsc::SyncSender<Event>,
     overflow: Arc<AtomicBool>,
+    runtime_pending: Arc<std::sync::atomic::AtomicUsize>,
 }
 impl Events {
     fn emit(&self, event: Event) {
         if self.sender.try_send(event).is_err() {
             self.overflow.store(true, Ordering::Release);
+        }
+    }
+    /// Runtime events are best-effort telemetry. A noisy page must not turn a
+    /// full event queue into a browser-host failure that closes unrelated tabs.
+    fn emit_runtime_diagnostic(
+        &self,
+        tab: HostTabId,
+        navigation: HostNavigationId,
+        diagnostic: RuntimeDiagnostic,
+    ) {
+        if self
+            .runtime_pending
+            .fetch_update(Ordering::AcqRel, Ordering::Acquire, |pending| {
+                (pending < MAX_QUEUED_RUNTIME_DIAGNOSTICS).then_some(pending + 1)
+            })
+            .is_err()
+        {
+            return;
+        }
+        if self
+            .sender
+            .try_send(Event::RuntimeDiagnostic {
+                tab,
+                navigation,
+                diagnostic,
+            })
+            .is_err()
+        {
+            self.runtime_pending.fetch_sub(1, Ordering::AcqRel);
         }
     }
 }
@@ -120,6 +178,7 @@ impl NativeHost {
                 events: Events {
                     sender,
                     overflow: Arc::new(AtomicBool::new(false)),
+                    runtime_pending: Arc::new(std::sync::atomic::AtomicUsize::new(0)),
                 },
                 receiver,
                 root,
@@ -134,6 +193,19 @@ impl NativeHost {
     }
     pub fn error(&self) -> Option<&str> {
         self.error.as_deref()
+    }
+    pub fn open_manual_inspector(&self, tab: HostTabId) -> Result<()> {
+        let view = self.views.get(&tab).ok_or(BrowserError::MissingTab)?;
+        if view.partition != StoragePartition::Manual {
+            return Err(BrowserError::WrongContext);
+        }
+        let inspector = view
+            .webview
+            .webview()
+            .inspector()
+            .ok_or(BrowserError::Unavailable)?;
+        inspector.show();
+        Ok(())
     }
     pub fn has_tabs(&self) -> bool {
         !self.tabs.is_empty()
@@ -188,6 +260,15 @@ impl NativeHost {
     }
     fn drain_events(&mut self) -> Vec<Event> {
         let mut events: Vec<_> = self.receiver.try_iter().take(256).collect();
+        let runtime_count = events
+            .iter()
+            .filter(|event| matches!(event, Event::RuntimeDiagnostic { .. }))
+            .count();
+        if runtime_count > 0 {
+            self.events
+                .runtime_pending
+                .fetch_sub(runtime_count, Ordering::AcqRel);
+        }
         if self.events.overflow.swap(false, Ordering::AcqRel) {
             self.shared.ready.store(false, Ordering::Release);
             self.error = Some(
@@ -431,6 +512,14 @@ impl NativeHost {
         let web = view.webview();
         harden(&web, partition);
         if partition == StoragePartition::Manual {
+            observe_manual_runtime_diagnostics(
+                &web,
+                self.shared.clone(),
+                self.events.clone(),
+                tab,
+                navigation,
+                epoch,
+            );
             let shared = self.shared.clone();
             let events = self.events.clone();
             web.connect_resource_load_started(move |_, resource, _| {
@@ -714,6 +803,60 @@ fn harden(web: &webkit2gtk::WebView, partition: StoragePartition) {
     if matches!(partition, StoragePartition::AgentTask(_)) {
         web.set_sensitive(false);
     }
+}
+fn observe_manual_runtime_diagnostics(
+    web: &webkit2gtk::WebView,
+    shared: Arc<bridge::Shared>,
+    events: Events,
+    tab: HostTabId,
+    navigation: HostNavigationId,
+    epoch: u64,
+) {
+    let Some(manager) = WebViewExt::user_content_manager(web) else {
+        return;
+    };
+    if !manager.register_script_message_handler_in_world(
+        MANUAL_RUNTIME_HANDLER,
+        MANUAL_RUNTIME_WORLD,
+    ) {
+        return;
+    }
+    let reported = Rc::new(Cell::new(0usize));
+    let reported_by_handler = reported.clone();
+    let current_session = shared.clone();
+    manager.connect_script_message_received(Some(MANUAL_RUNTIME_HANDLER), move |_, result| {
+        if current_session.epoch(tab) != Some(epoch)
+            || reported_by_handler.get() >= MAX_RUNTIME_MESSAGES_PER_DOCUMENT
+        {
+            return;
+        }
+        let Some(value) = result.js_value() else {
+            return;
+        };
+        if !value.is_string() {
+            return;
+        }
+        let raw = value.to_str();
+        if raw.len() > 128 {
+            return;
+        }
+        let Ok(diagnostic) = serde_json::from_str::<RuntimeDiagnostic>(&raw) else {
+            return;
+        };
+        if !diagnostic.is_valid() {
+            return;
+        }
+        reported_by_handler.set(reported_by_handler.get() + 1);
+        events.emit_runtime_diagnostic(tab, navigation, diagnostic);
+    });
+    manager.add_script(&webkit2gtk::UserScript::for_world(
+        MANUAL_RUNTIME_SCRIPT,
+        webkit2gtk::UserContentInjectedFrames::AllFrames,
+        webkit2gtk::UserScriptInjectionTime::Start,
+        MANUAL_RUNTIME_WORLD,
+        &[],
+        &[],
+    ));
 }
 fn profile_key(partition: StoragePartition) -> String {
     match partition {

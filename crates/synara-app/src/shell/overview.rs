@@ -11,6 +11,7 @@ impl Shell {
             .child("Keyboard shortcuts")
             .children(NAVIGATION_COMMANDS.iter().map(|command| div().child(format!("{}: {}", command.label, navigation_binding(&self.settings.value.keybindings, command)))))
             .child("Find a project file: Ctrl/Cmd+P · Search file contents: Ctrl/Cmd+Shift+F")
+            .child("In the composer: Alt+[ previous ACP model · Alt+] next ACP model. IME and other input fields keep their own shortcuts.")
             .child("Agent approval requests are shown for your confirmation. Selecting a model or agent does not send a prompt.")
             .child(div().mt_4().text_size(px(20.)).child("Fonts and icons"))
             .child("Cal Sans · SIL Open Font License 1.1")

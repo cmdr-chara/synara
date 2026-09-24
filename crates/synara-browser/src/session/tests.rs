@@ -65,6 +65,88 @@ fn manual_network_diagnostics_are_redacted_bounded_and_not_agent_visible() {
     assert!(s.manual_diagnostics(manual).unwrap().is_empty());
 }
 #[test]
+fn runtime_diagnostics_are_bounded_manual_only_and_navigation_scoped() {
+    let (mut s, _) = fixture();
+    let manual = s.open(BrowserProfile::Manual).unwrap();
+    s.user_navigate(manual, "https://example.test/", NavigationKind::Push, 0)
+        .unwrap();
+    let first_navigation = s.tabs[&manual].navigation.as_ref().unwrap().0;
+    for diagnostic in [
+        RuntimeDiagnostic {
+            kind: RuntimeDiagnosticKind::UncaughtException,
+            line: Some(10_000_001),
+            column: None,
+        },
+        RuntimeDiagnostic {
+            kind: RuntimeDiagnosticKind::UncaughtException,
+            line: None,
+            column: Some(10_000_001),
+        },
+    ] {
+        s.event(Event::RuntimeDiagnostic {
+            tab: manual,
+            navigation: first_navigation,
+            diagnostic,
+        })
+        .unwrap();
+    }
+    assert!(s.manual_runtime_diagnostics(manual).unwrap().is_empty());
+    assert!(serde_json::from_str::<RuntimeDiagnostic>(
+        r#"{"kind":"uncaught_exception","line":1,"column":2,"text":"secret"}"#
+    )
+    .is_err());
+
+    for line in 0..205 {
+        s.event(Event::RuntimeDiagnostic {
+            tab: manual,
+            navigation: first_navigation,
+            diagnostic: RuntimeDiagnostic {
+                kind: RuntimeDiagnosticKind::UncaughtException,
+                line: Some(line),
+                column: Some(4),
+            },
+        })
+        .unwrap();
+    }
+    let entries = s.manual_runtime_diagnostics(manual).unwrap();
+    assert_eq!(entries.len(), 200);
+    assert_eq!(entries.first().unwrap().line, Some(5));
+    assert_eq!(entries.last().unwrap().line, Some(204));
+
+    let agent = s.open(BrowserProfile::AgentTask { task: 9 }).unwrap();
+    assert!(s.manual_runtime_diagnostics(agent).is_err());
+    assert!(s.clear_manual_runtime_diagnostics(agent).is_err());
+
+    s.clear_manual_runtime_diagnostics(manual).unwrap();
+    assert!(s.manual_runtime_diagnostics(manual).unwrap().is_empty());
+
+    s.user_navigate(manual, "https://example.test/next", NavigationKind::Push, 1)
+        .unwrap();
+    let next_navigation = s.tabs[&manual].navigation.as_ref().unwrap().0;
+    s.event(Event::RuntimeDiagnostic {
+        tab: manual,
+        navigation: first_navigation,
+        diagnostic: RuntimeDiagnostic {
+            kind: RuntimeDiagnosticKind::UnhandledRejection,
+            line: None,
+            column: None,
+        },
+    })
+    .unwrap();
+    assert!(s.manual_runtime_diagnostics(manual).unwrap().is_empty());
+    s.event(Event::RuntimeDiagnostic {
+        tab: manual,
+        navigation: next_navigation,
+        diagnostic: RuntimeDiagnostic {
+            kind: RuntimeDiagnosticKind::UnhandledRejection,
+            line: None,
+            column: None,
+        },
+    })
+    .unwrap();
+    assert_eq!(s.manual_runtime_diagnostics(manual).unwrap().len(), 1);
+}
+#[test]
 fn popup_requires_explicit_manual_action_and_stays_in_owned_tab() {
     let (mut s, _) = fixture();
     let source = s.open(BrowserProfile::Manual).unwrap();

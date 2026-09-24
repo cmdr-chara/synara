@@ -361,16 +361,61 @@ fn cycle_model_action(choices: &[(Choice, ControlAction)], forward: bool) -> Opt
 }
 
 impl Shell {
-    fn cycle_session_model(&mut self, forward: bool, cx: &mut Context<Self>) {
-        if self.controls_blocked() || self.uses_direct_model() {
-            return;
+    pub(super) fn cycle_session_model(&mut self, forward: bool, cx: &mut Context<Self>) -> bool {
+        if self.controls_blocked() || self.uses_direct_model() || self.loading_task.is_some() {
+            return false;
         }
         let models = self.control_choices(ControlKind::Model);
         let Some(action) = cycle_model_action(&models, forward) else {
-            return;
+            return false;
         };
         if let Some(task) = self.selected {
             self.apply_session_control(task, action, cx);
+            return self.controls.is_pending(task);
+        }
+        false
+    }
+
+    /// The configured model cycle, only inside the main composer.
+    /// Text/IME, side-chat, terminal, editor and open menus keep their input.
+    pub(super) fn model_cycle_shortcut(
+        &mut self,
+        event: &gpui::KeyDownEvent,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) -> bool {
+        if event.prefer_character_input
+            || event.is_held
+            || self.close != CloseState::Open
+            || self.hubs.pending(cx)
+            || self.command_palette.open
+            || self.controls.is_open()
+            || self.chat_tools.menu_open()
+            || self.navigation.menu_open
+            || self.environment.menu_open()
+            || self.settings.popup.is_some()
+            || self.composer.read(cx).is_composing()
+            || !self.composer.read(cx).focus_handle(cx).is_focused(window)
+            || (self.panel != Panel::Conversation && !self.dock_open())
+        {
+            return false;
+        }
+        let Some(stroke) = crate::input::keybinding_stroke(event) else {
+            return false;
+        };
+        let forward = match contextual_command_for_key(
+            &self.settings.value.keybindings,
+            KeybindingContext::Composer,
+            &stroke,
+        ) {
+            Some("model.next") => true,
+            Some("model.previous") => false,
+            _ => return false,
+        };
+        if self.uses_direct_model() {
+            self.cycle_direct_model_for_shortcut(forward, cx)
+        } else {
+            self.cycle_session_model(forward, cx)
         }
     }
 
@@ -660,9 +705,11 @@ impl Shell {
                 view.with_models(
                     sources,
                     rows,
-                    current,
-                    task.as_ref()
-                        .map_or_else(String::new, |task| task.agent_id.clone()),
+                    (
+                        current,
+                        task.as_ref()
+                            .map_or_else(String::new, |task| task.agent_id.clone()),
+                    ),
                     self.controller.workspace.clone(),
                     self.runtime.clone(),
                     cx,
@@ -1051,9 +1098,9 @@ impl Shell {
                             .relative()
                             .when(cycle_disabled, |el| el.opacity(0.5).cursor_default())
                             .child(ui::icon(ui::Glyph::Back).size(px(13.)))
-                            .on_click(
-                                cx.listener(|this, _, _, cx| this.cycle_session_model(false, cx)),
-                            ),
+                            .on_click(cx.listener(|this, _, _, cx| {
+                                this.cycle_session_model(false, cx);
+                            })),
                     )
                     .child(
                         ui::button_shell("next-session-model", "Next model", false)
@@ -1062,9 +1109,9 @@ impl Shell {
                             .relative()
                             .when(cycle_disabled, |el| el.opacity(0.5).cursor_default())
                             .child(ui::icon(ui::Glyph::Forward).size(px(13.)))
-                            .on_click(
-                                cx.listener(|this, _, _, cx| this.cycle_session_model(true, cx)),
-                            ),
+                            .on_click(cx.listener(|this, _, _, cx| {
+                                this.cycle_session_model(true, cx);
+                            })),
                     )
             }))
             .into_any_element()

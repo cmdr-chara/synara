@@ -20,6 +20,13 @@ pub struct TurnSummary {
     pub failed: bool,
 }
 
+/// Metadata of the latest durable replacement of a tool's output, not authorship.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct ToolOutputOrigin {
+    pub turn_index: Option<usize>,
+    pub timestamp_ms: i64,
+}
+
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 pub struct Tool {
     pub id: String,
@@ -62,6 +69,7 @@ pub struct Thread {
     pub message_timestamps: BTreeMap<String, i64>,
     pub turns: Vec<TurnSummary>,
     pub tools: BTreeMap<String, Tool>,
+    pub tool_output_origins: BTreeMap<String, ToolOutputOrigin>,
     pub terminals: BTreeMap<String, TerminalRecord>,
     pub permissions: BTreeMap<String, PermissionRequest>,
     pub inputs: BTreeMap<String, UserInputRequest>,
@@ -90,6 +98,7 @@ impl Thread {
             message_timestamps: BTreeMap::new(),
             turns: vec![],
             tools: BTreeMap::new(),
+            tool_output_origins: BTreeMap::new(),
             terminals: BTreeMap::new(),
             permissions: BTreeMap::new(),
             inputs: BTreeMap::new(),
@@ -150,6 +159,7 @@ impl Thread {
                 self.message_timestamps.clear();
                 self.turns.clear();
                 self.tools.clear();
+                self.tool_output_origins.clear();
                 self.terminals.clear();
                 self.timeline.clear();
                 self.permissions.clear();
@@ -266,6 +276,19 @@ impl Thread {
                 }
                 if let Some(output) = &patch.output {
                     tool.output.clone_from(output);
+                    self.tool_output_origins.insert(
+                        patch.id.clone(),
+                        ToolOutputOrigin {
+                            turn_index: self
+                                .turns
+                                .iter()
+                                .enumerate()
+                                .next_back()
+                                .filter(|(_, turn)| turn.finished_at_ms.is_none())
+                                .map(|(index, _)| index),
+                            timestamp_ms: envelope.timestamp_ms,
+                        },
+                    );
                 }
             }
             ThreadEvent::PermissionRequested { request } => {
@@ -683,5 +706,107 @@ mod tests {
             },
         );
         assert_eq!(t.state, TaskState::Failed);
+    }
+
+    #[test]
+    fn output_origins_follow_output_replacement_not_later_tool_status_or_chat_activity() {
+        let mut thread = Thread::new(ThreadId::new());
+        let output = || ThreadEvent::ToolChanged {
+            patch: ToolPatch {
+                id: "write".into(),
+                status: Some(ToolStatus::Completed),
+                output: Some(vec![ToolOutput::Text {
+                    text: "reported".into(),
+                }]),
+                ..ToolPatch::default()
+            },
+        };
+        apply(
+            &mut thread,
+            ThreadEvent::PromptStarted { turn: "one".into() },
+        );
+        apply(&mut thread, output());
+        assert_eq!(thread.tool_output_origins["write"].turn_index, Some(0));
+        apply(
+            &mut thread,
+            ThreadEvent::PromptFinished {
+                reason: "end_turn".into(),
+            },
+        );
+        apply(
+            &mut thread,
+            ThreadEvent::PromptStarted { turn: "two".into() },
+        );
+        apply(
+            &mut thread,
+            ThreadEvent::ToolChanged {
+                patch: ToolPatch {
+                    id: "write".into(),
+                    title: Some("New title, same output".into()),
+                    status: Some(ToolStatus::Completed),
+                    ..ToolPatch::default()
+                },
+            },
+        );
+        assert_eq!(thread.tool_output_origins["write"].turn_index, Some(0));
+        apply(&mut thread, output());
+        assert_eq!(thread.tool_output_origins["write"].turn_index, Some(1));
+        apply(
+            &mut thread,
+            ThreadEvent::PromptFinished {
+                reason: "end_turn".into(),
+            },
+        );
+        apply(&mut thread, output());
+        assert_eq!(thread.tool_output_origins["write"].turn_index, None);
+    }
+    #[test]
+    fn output_origins_replay_exactly_and_failed_history_replacement_restores_them() {
+        let id = ThreadId::new();
+        let events: Vec<_> = [
+            ThreadEvent::PromptStarted { turn: "one".into() },
+            ThreadEvent::ToolChanged {
+                patch: ToolPatch {
+                    id: "write".into(),
+                    output: Some(vec![]),
+                    ..ToolPatch::default()
+                },
+            },
+            ThreadEvent::PromptFinished {
+                reason: "end_turn".into(),
+            },
+        ]
+        .into_iter()
+        .enumerate()
+        .map(|(index, event)| EventEnvelope {
+            id: EventId::new(),
+            thread_id: id,
+            sequence: index as u64 + 1,
+            timestamp_ms: 1000 + index as i64 * 50,
+            event,
+        })
+        .collect();
+        let mut original = Thread::new(id);
+        let mut reopened = Thread::new(id);
+        for event in &events {
+            original.apply(event).unwrap();
+            reopened.apply(event).unwrap();
+            assert!(!reopened.apply(event).unwrap());
+        }
+        assert_eq!(original.tool_output_origins, reopened.tool_output_origins);
+        assert_eq!(reopened.tool_output_origins["write"].timestamp_ms, 1050);
+        apply(&mut reopened, ThreadEvent::HistoryStarted);
+        assert!(reopened.tool_output_origins.is_empty());
+        apply(
+            &mut reopened,
+            ThreadEvent::Error {
+                message: "history failed".into(),
+                recoverable: false,
+            },
+        );
+        assert_eq!(original.tool_output_origins, reopened.tool_output_origins);
+        apply(&mut reopened, ThreadEvent::HistoryStarted);
+        apply(&mut reopened, ThreadEvent::HistoryCompleted);
+        assert!(reopened.tool_output_origins.is_empty());
     }
 }

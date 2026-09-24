@@ -219,16 +219,25 @@ impl AppSettings {
             ));
         }
         let mut commands = HashSet::new();
-        let mut shortcuts = HashSet::new();
+        let mut legacy_shortcuts = HashSet::new();
         for binding in &self.keybindings {
             if !valid_binding_text(&binding.command) || !valid_binding_text(&binding.shortcut) {
                 return Err(WorkspaceError::Invalid("invalid custom keybinding".into()));
             }
-            if !commands.insert(binding.command.as_str())
-                || !shortcuts.insert(binding.shortcut.as_str())
+            if !commands.insert(binding.command.as_str()) {
+                return Err(WorkspaceError::Invalid(
+                    "custom keybindings must have unique commands".into(),
+                ));
+            }
+            // Implemented shortcuts are checked by active context above, so a
+            // composer action can share an editor chord. Retained legacy rows
+            // are still subject to the old duplicate check.
+            if !NAVIGATION_COMMANDS.iter().any(|command| command.id == binding.command)
+                && !CONTEXTUAL_COMMANDS.iter().any(|command| command.id == binding.command)
+                && !legacy_shortcuts.insert(binding.shortcut.as_str())
             {
                 return Err(WorkspaceError::Invalid(
-                    "custom keybindings must have unique commands and shortcuts".into(),
+                    "legacy keybindings must have unique shortcuts".into(),
                 ));
             }
         }

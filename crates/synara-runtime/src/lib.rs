@@ -11,7 +11,9 @@ mod device_tools;
 mod filesystem;
 mod host;
 mod native_secrets;
+mod pdf;
 mod platform;
+pub use pdf::*;
 mod process;
 #[cfg(target_os = "linux")]
 mod process_linux;

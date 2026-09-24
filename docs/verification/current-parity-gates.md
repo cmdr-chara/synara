@@ -10,7 +10,8 @@ observed; a green compile or narrow unit test alone does not close it.
 
 **OPEN does not mean no feature was delivered.** The
 [roadmap's delivered-slice inventory](../../ROADMAP.md#delivered-feature-slices-in-the-september-23-sprint)
-records 25 implemented, pushed slices across three commits. This ledger tracks
+records the original 25 implemented, pushed slices and the separate September 24
+continuation inventory. This ledger tracks
 larger end-to-end parity outcomes, so all 21 gates can remain open while those
 additions are available.
 
@@ -130,3 +131,120 @@ wired. All 21 gates remain **OPEN** until the deciding journeys above are met.
 Focused implementation checks covered the changed worktree, command, browser,
 Simulator, update, model and Studio paths; live macOS Simulator, X11 typing,
 provider login, remote deployment and signed update acceptance were not run.
+
+## September 24 batch 1: local execution, goal commands and Simulator apps
+
+Three bounded additions bring the delivered-slice inventory to 28. **All 21 gates
+remain OPEN**, with the same 16 material-depth and five near-parity areas.
+The [batch receipt](parity-2026-09-24-batch1.md) records verification and limits.
+
+- M2 gains explicit local ACP Run/Stop, status/recent-transcript refresh, duplicate
+  admission rejection, bounded cancellation, draft-conflict protection and owned
+  server shutdown. Credentials, permissions and interactive sign-in are not
+  fabricated. Direct-model tasks and remote workspaces are rejected.
+- D9 gains goal resume, clear and edit command forms. Resume replaces only the
+  exact command with a reviewable draft and arms the existing bounded pursuit.
+  It never sends the first prompt. Edit remains unsaved until Save, and refused
+  actions retain the command. Clear requires a paused, loaded, unedited goal.
+- D3 gains two-step installation of a user-selected local .app directory and
+  explicit bundle termination. The helper is cancellation-owned and arguments
+  are literal. Synthetic CLI tests do not constitute real Simulator acceptance.
+
+Exact deferred blockers: Apple touch/keyboard input requires the upstream native
+CoreSimulator helper and its macOS/private-framework integration, which this
+Rust branch does not package. `simctl` URL/app operations are not a substitute.
+The web product still lacks interactive sign-in/approval and remote TLS/deployment
+acceptance. None of those blockers prevents the delivered local workflows.
+
+## September 24 editor and Studio depth batch
+
+Three further bounded slices bring the delivered inventory to **31** (25 earlier
+plus six continuation additions). All **21 broad gates remain OPEN**, with
+16 material-depth gaps and five near-parity lanes.
+
+`D4` now has opt-in, per-buffer local auto-save after one second idle. It uses
+the existing version-checked writer, preserves later keystrokes and undo, skips
+IME/modal/other-save ownership, and stops auto-save on conflict or write failure
+without overwriting either version. Closed/reopened buffers and application
+restart do not retain auto-save permission. Remote buffers still require Save.
+
+`D14` gains still-WebP previews with decoded-pixel and output caps and a single
+shared preview worker permit. Images remain read-only and animated/damaged WebP
+is refused. It also gains reporting-turn metadata and a turn filter, reconstructed
+from durable tool-output replacement events rather than inferred from recent
+chat activity. Reused tool IDs and status-only updates do not relabel old outputs.
+Displayed bytes are explicitly the current file, not a historical turn snapshot.
+Full long-running output/version organization and cross-platform acceptance
+remain open. See `docs/verification/parity-2026-09-24-batch2.md` for checks.
+
+
+## September 24 setup/worktree/control batch
+
+The delivered inventory is **34 bounded slices**. All **21 gates remain OPEN**:
+16 material-depth gaps and five near-parity lanes. The original task-less
+onboarding blocker is addressed by an explicit, durable, unsent setup chat, not
+by an extra provider backend or inferred account state.
+
+D1 has explicit generic ACP Connect and advertised authentication with the
+existing connection-question UI. Native setup can open the task terminal, but
+provider-specific CLI login automation and live account acceptance remain open.
+D5/D12 have reviewed new local worktree forks with generated branch names,
+commit-pinned checkout, persisted cwd and existing assigned-worktree guards.
+Failed task insertion retains the created worktree for explicit recovery, and
+an abrupt crash can leave a discoverable Git worktree without a task. Automatic
+cleanup/reconciliation, SSH creation and orchestration-wide lifecycle are not
+implemented. D6/D9 gain composer-only model shortcuts and exact qualified
+next/previous command forms, not direct-model cycling or arbitrary keybindings.
+
+The [batch receipt](parity-2026-09-24-batch3.md) distinguishes native/fixture
+validation from live providers and other-platform acceptance. PDF remains
+blocked by binary intake and the absence of a packaged native document renderer.
+Simulator input still needs its macOS helper and platform integration. Neither
+is replaced by a misleading external-open or simctl-only parity claim.
+
+## September 24 document/export/import checkpoint
+
+Batch 4 advances D13/D14 with local Hub Library PDF snapshots, bounded native
+page navigation/zoom/reload and reviewed original-file export. D1 gains inline
+history discovery/preview/import instead of a detour to another Settings section,
+while preserving its existing storage and consent owner. The delivered inventory
+is 37 slices, distinct from the 21 broad gates, which all remain OPEN.
+
+Linux Poppler packages are required. Platform save-picker acceptance, non-Linux
+rendering, PDF prompt intake, richer PDF interaction, Studio historical contents
+and live-provider fresh-install acceptance are not closed by this batch.
+See the [batch verification receipt](parity-2026-09-24-batch4.md).
+
+## September 24 committed-file history checkpoint
+
+`D4` gains commit-pinned local exact-path history, read-only revision inspection
+and explicit text copy, with task/root/tab ownership and retained editor buffers.
+This is one additional delivered slice (38 total), not completion of syntax,
+worktree blame or deeper comparison/editing parity. Worktree blame/diff currently
+needs a filter-execution policy or filter-free implementation because Git's
+`--no-textconv` does not prevent configured clean-filter execution. The new
+committed-object path does not use that conversion boundary.
+See [the receipt](parity-2026-09-24-batch5.md). All 21 gates remain OPEN.
+
+
+## September 24 web interaction and live search checkpoint
+
+Batch 6 adds two bounded slices, bringing the separate delivered inventory to
+40. All 21 broad gates remain OPEN (16 material-depth and five near-parity).
+
+M2 now presents Session-scoped permission choices and structured task questions
+from the existing InteractionBroker. Only AllowOnce/DenyOnce are offered, never
+persistent grants. Fresh application receipts, exact task/thread lookup, schema
+validation, expiry, response-channel closure and turn cancellation fence replies.
+There is no restart replay. Repeated polls retain the same field controls and
+values. Connection/URL sign-in, rich command/diff context, durable question-draft
+recovery, direct models and remote deployment remain open.
+
+N2 gains a 350 ms query debounce, at most one local/SSH traversal and replacement
+coalescing. Retired query, task, root or directory results cannot populate current
+search. SSH setup errors release the owned request slot. Search controls retain
+fixed space and the narrow pane expands while search is open, so result rows
+remain inside their actual hit-test container. The clipping encountered by the
+batch5 test is addressed as product code rather than treating its workaround as
+acceptance. Exact upstream ranking, native SSH and wider platform acceptance
+remain open. See [batch6 scope and evidence](parity-2026-09-24-batch6.md).

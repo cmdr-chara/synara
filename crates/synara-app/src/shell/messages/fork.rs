@@ -6,6 +6,12 @@ use super::*;
 const CONTEXT_LIMIT: usize = 1024 * 1024;
 const MESSAGE_LIMIT: usize = 256;
 
+enum ForkEnvironment {
+    Same,
+    Existing(PathBuf),
+    New(Box<NewWorktreePlan>),
+}
+
 fn append(output: &mut String, text: &str) -> WorkspaceResult<()> {
     if output.len().saturating_add(text.len()) > CONTEXT_LIMIT {
         return Err(WorkspaceError::Invalid("This branch exceeds the 1 MiB draft limit. Quote a smaller selection instead. Nothing was created.".into()));
@@ -92,7 +98,7 @@ impl Shell {
         let loading = source.is_some_and(|task| self.chat_tools.loading_worktrees.contains(&task));
         ui::chrome_button(
             "branch-message-worktree",
-            "Fork into an existing linked Git worktree",
+            "Fork into an existing or reviewed new Git worktree",
             Glyph::BranchSimple,
             source.is_none() || loading || self.creating_task || self.loading_task.is_some(),
             cx.listener(move |this, _: &(), _, cx| {
@@ -102,6 +108,8 @@ impl Shell {
             }),
         )
         .size(px(24.))
+        .relative()
+        .child(ui::layout_probe("branch-message-worktree"))
         .into_any_element()
     }
 
@@ -157,7 +165,7 @@ impl Shell {
         anchor: MessageAnchor,
         cx: &mut Context<Self>,
     ) {
-        self.branch_message_at(source, anchor, None, cx);
+        self.branch_message_at(source, anchor, ForkEnvironment::Same, cx);
     }
 
     pub(in crate::shell) fn branch_message_in_worktree(
@@ -167,14 +175,77 @@ impl Shell {
         worktree_directory: PathBuf,
         cx: &mut Context<Self>,
     ) {
-        self.branch_message_at(source, anchor, Some(worktree_directory), cx);
+        self.branch_message_at(
+            source,
+            anchor,
+            ForkEnvironment::Existing(worktree_directory),
+            cx,
+        );
+    }
+
+    pub(in crate::shell) fn review_new_worktree_fork(
+        &mut self,
+        source: TaskId,
+        anchor: MessageAnchor,
+        cx: &mut Context<Self>,
+    ) {
+        if self.selected != Some(source)
+            || self.creating_task
+            || self.loading_task.is_some()
+            || self.close != CloseState::Open
+            || self.composer.read(cx).is_composing()
+            || self.editor.read(cx).is_composing()
+            || !self.chat_tools.loading_worktrees.insert(source)
+        {
+            return;
+        }
+        let workspace = self.controller.workspace.clone();
+        let parent = self.scratch_directory.clone();
+        let revision = self.selection_revision;
+        self.job(async move {
+            let result = async {
+                // The app's canonical data directory owns this one-level scratch parent.
+                if let Err(error) = std::fs::create_dir(&parent)
+                    && error.kind() != std::io::ErrorKind::AlreadyExists
+                {
+                    return Err(WorkspaceError::Runtime(synara_runtime::RuntimeError::Io(
+                        error,
+                    )));
+                }
+                workspace.prepare_new_worktree_fork(source, parent).await
+            }
+            .await
+            .map(Box::new)
+            .map_err(|error| error.to_string());
+            Ok(Update::ChatTools(Box::new(Reply::NewWorktree {
+                task: source,
+                revision,
+                anchor,
+                result,
+            })))
+        });
+        cx.notify();
+    }
+
+    pub(in crate::shell) fn branch_message_new_worktree(
+        &mut self,
+        plan: NewWorktreePlan,
+        anchor: MessageAnchor,
+        cx: &mut Context<Self>,
+    ) {
+        self.branch_message_at(
+            plan.source(),
+            anchor,
+            ForkEnvironment::New(Box::new(plan)),
+            cx,
+        );
     }
 
     fn branch_message_at(
         &mut self,
         source: TaskId,
         anchor: MessageAnchor,
-        worktree_directory: Option<PathBuf>,
+        environment: ForkEnvironment,
         cx: &mut Context<Self>,
     ) {
         if self.selected != Some(source)
@@ -215,8 +286,23 @@ impl Shell {
                     "Branch: {}",
                     source.title.chars().take(90).collect::<String>()
                 );
-                let task = match worktree_directory {
-                    Some(directory) => {
+                let task = match environment {
+                    ForkEnvironment::New(plan) => {
+                        workspace
+                            .create_new_worktree_fork(
+                                *plan,
+                                title,
+                                draft,
+                                GitOperationPolicy {
+                                    allow_mutation: true,
+                                    allow_repository_execution: true,
+                                    ..Default::default()
+                                },
+                                tokio_util::sync::CancellationToken::new(),
+                            )
+                            .await?
+                    }
+                    ForkEnvironment::Existing(directory) => {
                         workspace
                             .create_scoped_task_in_worktree(
                                 source.project_id,
@@ -228,7 +314,7 @@ impl Shell {
                             )
                             .await?
                     }
-                    None => {
+                    ForkEnvironment::Same => {
                         workspace
                             .create_scoped_task_with_draft(
                                 source.project_id,

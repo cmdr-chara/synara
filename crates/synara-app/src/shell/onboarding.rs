@@ -1,8 +1,10 @@
 //! First-run setup reuses the existing Settings, agent registry, theme, and
 //! workspace controls. Detection only checks a configured command on disk;
 //! authentication remains owned by the connected agent.
+mod auth;
 use super::*;
 use crate::ui::{self, palette};
+pub(super) use auth::Reply;
 use std::path::{Component, Path, PathBuf};
 
 const STEPS: [&str; 6] = [
@@ -68,13 +70,17 @@ fn is_registered_local_project(path: &Path, catalog: &Catalog) -> bool {
 
 impl Shell {
     pub(super) fn replay_onboarding(&mut self, cx: &mut Context<Self>) {
+        if !self.onboarding_navigation_ready(cx) {
+            return;
+        }
         self.settings.onboarding_step = 0;
+        self.settings.onboarding_import_open = false;
         self.set_panel(Panel::Settings, cx);
         self.open_settings_section(settings::Section::Onboarding, cx);
     }
 
     pub(super) fn finish_onboarding(&mut self, cx: &mut Context<Self>) {
-        if self.settings.saving {
+        if self.settings.saving || !self.onboarding_navigation_ready(cx) {
             return;
         }
         self.settings.onboarding_step = STEPS.len() - 1;
@@ -104,7 +110,7 @@ impl Shell {
                 .gap_3()
                 .child(onboarding_card("Tasks and projects", "Keep each conversation with its project, files and review history. Start a local chat or add a project folder."))
                 .child(onboarding_card("Tools in one window", "Use the file editor, diff review, terminal, browser and task history while your agent works."))
-                .child(onboarding_card("Stay in control", "Agent requests and external actions still require the approvals set by their owners. Setup never starts an agent or signs you in."))
+                .child(onboarding_card("Stay in control", "Agent requests and external actions still require the approvals set by their owners. Setup starts no agent until you explicitly use Connect. Sign-in uses only the selected agent's advertised methods."))
                 .into_any_element(),
             2 => self.onboarding_agents(cx),
             3 => self.onboarding_appearance(cx),
@@ -141,6 +147,9 @@ impl Shell {
                     .children((step > 0).then(|| {
                         ui::button("onboarding-back", "Back", false).on_click(cx.listener(
                             |this, _, _, cx| {
+                                if !this.onboarding_navigation_ready(cx) {
+                                    return;
+                                }
                                 this.settings.onboarding_step =
                                     this.settings.onboarding_step.saturating_sub(1);
                                 cx.notify();
@@ -148,12 +157,16 @@ impl Shell {
                         ))
                     }))
                     .child(if step < STEPS.len() - 1 {
-                        ui::button("onboarding-next", "Continue", false).on_click(cx.listener(
-                            |this, _, _, cx| {
+                        ui::button("onboarding-next", "Continue", false)
+                            .relative()
+                            .child(ui::layout_probe("onboarding-next"))
+                            .on_click(cx.listener(|this, _, _, cx| {
+                                if !this.onboarding_navigation_ready(cx) {
+                                    return;
+                                }
                                 this.settings.onboarding_step += 1;
                                 cx.notify();
-                            },
-                        ))
+                            }))
                     } else {
                         ui::button(
                             "onboarding-finish",
@@ -219,6 +232,7 @@ impl Shell {
                             .text_color(rgb(palette().muted))
                             .child(profile.command.display().to_string()),
                     )
+                    .children(available.then(|| self.onboarding_agent_access(index, &profile.id, cx)))
                     .children(available.then(|| {
                         ui::button(
                             ("onboarding-agent-default", index),
@@ -344,11 +358,30 @@ impl Shell {
                 .role(gpui::Role::Alert)
                 .text_color(rgb(palette().error))
                 .child(error.clone())))
-            .child(ui::button("onboarding-project-import", "Import conversation history", false)
+            .child(ui::button("onboarding-project-import", if self.settings.onboarding_import_open { "Hide history import" } else { "Import conversation history here" }, self.settings.onboarding_import_open)
+                .relative().child(ui::layout_probe("onboarding-project-import"))
                 .on_click(cx.listener(|this, _, _, cx| {
-                    this.open_settings_section(settings::Section::ProjectImport, cx);
+                    if this.project_import.pending() {
+                        this.notice = Some("Finish or cancel the history read/review before hiding it.".into());
+                    } else {
+                        this.settings.onboarding_import_open = !this.settings.onboarding_import_open;
+                    }
+                    cx.notify();
                 })))
+            .when(self.settings.onboarding_import_open, |el| el.child(
+                div().id("onboarding-history-import").relative().child(ui::layout_probe("onboarding-history-import"))
+                    .flex().flex_col().gap_2().border_t_1().border_color(rgb(palette().border)).pt_3()
+                    .child(self.project_import_settings(cx))))
             .into_any_element()
+    }
+
+    fn onboarding_navigation_ready(&mut self, cx: &mut Context<Self>) -> bool {
+        if self.settings.onboarding_import_open && self.project_import.pending() {
+            self.notice = Some("Finish the history import or cancel/back out of its review before continuing setup.".into());
+            cx.notify();
+            return false;
+        }
+        true
     }
 
     fn create_onboarding_project(&mut self, cx: &mut Context<Self>) {

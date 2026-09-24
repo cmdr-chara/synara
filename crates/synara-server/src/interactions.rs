@@ -1,0 +1,248 @@
+//! Ephemeral, task-scoped web presentation of the existing agent interaction broker.
+//! No remembered approvals, provider login links, or connection-scoped authority.
+use super::*;
+use std::collections::VecDeque;
+use synara_agent::{
+    InteractionBroker, InteractionScope, UiInteraction, validate_input, validate_input_request,
+};
+use synara_core::{EventId, PermissionKind, TaskId, ThreadId, UserInputResponse};
+use tokio::sync::{Mutex, mpsc};
+
+const MAX_PENDING: usize = 32;
+const MAX_VISIBLE: usize = 2;
+const MAX_ITEM_BYTES: usize = 24 * 1024;
+
+pub(super) struct Owner {
+    pub broker: Arc<InteractionBroker>,
+    inbox: Mutex<Inbox>,
+}
+struct Inbox {
+    receiver: mpsc::Receiver<UiInteraction>,
+    pending: VecDeque<(String, UiInteraction)>,
+}
+impl Default for Owner {
+    fn default() -> Self {
+        let (broker, receiver) = InteractionBroker::new();
+        Self {
+            broker: Arc::new(broker),
+            inbox: Mutex::new(Inbox {
+                receiver,
+                pending: VecDeque::new(),
+            }),
+        }
+    }
+}
+impl Owner {
+    pub async fn close(&self) {
+        let mut inbox = self.inbox.lock().await;
+        inbox.receiver.close();
+        inbox.pending.clear();
+        while inbox.receiver.try_recv().is_ok() {}
+    }
+}
+impl Inbox {
+    fn refresh(&mut self) {
+        self.pending
+            .retain(|(_, interaction)| interaction.is_active());
+        // Broker admission and this queue are independently bounded. Overflow drops
+        // the response sender and therefore cancels rather than implicitly approving.
+        for _ in 0..MAX_PENDING {
+            let Ok(interaction) = self.receiver.try_recv() else {
+                break;
+            };
+            if self.pending.len() < MAX_PENDING && interaction.is_active() {
+                // Fresh UUID receipts never reuse provider IDs, even after restart.
+                let id = EventId::new().to_string();
+                if public_view(&id, &interaction).is_some() {
+                    self.pending.push_back((id, interaction));
+                }
+            }
+        }
+    }
+}
+fn public_view(id: &str, interaction: &UiInteraction) -> Option<serde_json::Value> {
+    if interaction.context().scope != InteractionScope::Session {
+        return None;
+    }
+    let value = match interaction {
+        UiInteraction::Permission { request, .. } => {
+            if request.choices.len() > 64 || request.title.is_empty() || request.title.len() > 8192
+            {
+                return None;
+            }
+            if request
+                .choices
+                .iter()
+                .any(|choice| choice.id.len() > 128 || choice.label.len() > 1024)
+            {
+                return None;
+            }
+            let choices: Vec<_> = request
+                .choices
+                .iter()
+                .filter(|choice| {
+                    matches!(
+                        choice.kind,
+                        PermissionKind::AllowOnce | PermissionKind::DenyOnce
+                    )
+                })
+                .collect();
+            if choices.is_empty()
+                || choices.iter().any(|choice| {
+                    choice.id.is_empty() || choice.id.len() > 128 || choice.label.len() > 1024
+                })
+            {
+                return None;
+            }
+            let unique: std::collections::HashSet<_> =
+                request.choices.iter().map(|choice| &choice.id).collect();
+            if unique.len() != request.choices.len() {
+                return None;
+            }
+            serde_json::json!({"id":id,"kind":"permission","title":request.title,"choices":choices})
+        }
+        UiInteraction::Input { request, .. } => {
+            // Website/connection authentication is a separate product trust boundary.
+            if request.url.is_some() || validate_input_request(request).is_err() {
+                return None;
+            }
+            serde_json::json!({"id":id,"kind":"input","title":request.message,"fields":request.fields})
+        }
+    };
+    (serde_json::to_vec(&value).ok()?.len() <= MAX_ITEM_BYTES).then_some(value)
+}
+fn task_id(path: &str) -> Option<TaskId> {
+    let id = path
+        .strip_prefix("/api/tasks/")?
+        .strip_suffix("/interactions")?;
+    serde_json::from_value(serde_json::Value::String(id.to_owned())).ok()
+}
+fn error(status: u16, error: &'static str) -> Response {
+    Response::json(
+        status,
+        serde_json::to_vec(&serde_json::json!({"error":error})).unwrap(),
+    )
+}
+pub(super) async fn get(path: &str, state: &AppState) -> Response {
+    let Some(id) = task_id(path) else {
+        return bad_request();
+    };
+    let runtime = state.runtime.read().await;
+    let Some(runtime) = runtime.as_ref() else {
+        return health_response(Lifecycle::Starting);
+    };
+    let Ok(task) = runtime.workspace.task(id).await else {
+        return error(404, "not_found");
+    };
+    let mut inbox = state.interactions.inbox.lock().await;
+    inbox.refresh();
+    let pending: Vec<_> = inbox
+        .pending
+        .iter()
+        .filter(|(_, interaction)| interaction.context().thread_id == task.thread_id)
+        .collect();
+    let items: Vec<_> = pending
+        .iter()
+        .take(MAX_VISIBLE)
+        .filter_map(|(id, interaction)| public_view(id, interaction))
+        .collect();
+    let body =
+        serde_json::to_vec(&serde_json::json!({"items":items,"more":pending.len() > MAX_VISIBLE}))
+            .unwrap();
+    if body.len() > MAX_RESPONSE_BYTES {
+        return error(500, "interactions_unavailable");
+    }
+    Response::json(200, body)
+}
+#[derive(Deserialize)]
+#[serde(tag = "action", rename_all = "snake_case", deny_unknown_fields)]
+enum Reply {
+    Permission {
+        id: String,
+        choice: Option<String>,
+    },
+    Input {
+        id: String,
+        response: UserInputResponse,
+    },
+}
+impl Reply {
+    fn id(&self) -> &str {
+        match self {
+            Self::Permission { id, .. } | Self::Input { id, .. } => id,
+        }
+    }
+}
+fn answer(inbox: &mut Inbox, thread: ThreadId, reply: Reply) -> Response {
+    inbox.refresh();
+    let Some(index) = inbox.pending.iter().position(|(id, interaction)| {
+        id == reply.id() && interaction.context().thread_id == thread && interaction.is_active()
+    }) else {
+        return error(409, "interaction_expired");
+    };
+    // Validate against the original broker request before consuming its one-shot sender.
+    match (&inbox.pending[index].1, &reply) {
+        (UiInteraction::Permission { request, .. }, Reply::Permission { choice, .. }) => {
+            if choice.as_ref().is_some_and(|id| {
+                !request.choices.iter().any(|option| {
+                    option.id == *id
+                        && matches!(
+                            option.kind,
+                            PermissionKind::AllowOnce | PermissionKind::DenyOnce
+                        )
+                })
+            }) {
+                return error(400, "invalid_interaction_reply");
+            }
+        }
+        (UiInteraction::Input { request, .. }, Reply::Input { response, .. }) => {
+            if let UserInputResponse::Accept { values } = response
+                && validate_input(request, values).is_err()
+            {
+                return error(400, "invalid_interaction_reply");
+            }
+        }
+        _ => return error(400, "invalid_interaction_reply"),
+    }
+    let (_, interaction) = inbox.pending.remove(index).unwrap();
+    let delivered = match (interaction, reply) {
+        (UiInteraction::Permission { response, .. }, Reply::Permission { choice, .. }) => {
+            response.send(choice).is_ok()
+        }
+        (
+            UiInteraction::Input { response, .. },
+            Reply::Input {
+                response: value, ..
+            },
+        ) => response.send(value).is_ok(),
+        _ => unreachable!("response kind checked before removal"),
+    };
+    if delivered {
+        Response::json(200, br#"{"submitted":true}"#.to_vec())
+    } else {
+        error(409, "interaction_expired")
+    }
+}
+pub(super) async fn post(
+    path: &str,
+    request: &Request,
+    state: &AppState,
+    runtime: &RuntimeServices,
+) -> Response {
+    let Some(id) = task_id(path) else {
+        return bad_request();
+    };
+    let Ok(reply) = serde_json::from_slice::<Reply>(&request.body) else {
+        return bad_request();
+    };
+    if reply.id().len() > 64 {
+        return bad_request();
+    }
+    let Ok(task) = runtime.workspace.task(id).await else {
+        return error(404, "not_found");
+    };
+    let mut inbox = state.interactions.inbox.lock().await;
+    answer(&mut inbox, task.thread_id, reply)
+}
+#[cfg(test)]
+mod tests;

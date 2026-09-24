@@ -23,6 +23,17 @@ jobs:
           git rev-parse 'HEAD^{tree}' > /tmp/synara-source-snapshot/tree.txt
           cd /tmp/synara-source-snapshot
           sha256sum source.bundle source.tar.gz > SHA256SUMS
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          repository: Emanuele-web04/synara
+          ref: eaa61eded31b6755d4f30ba8eabc5d905cf817cb
+          path: upstream-reference
+          persist-credentials: false
+      - name: Capture pinned upstream comparison (September 24 continuation)
+        run: |
+          git -C upstream-reference archive HEAD | gzip -n > /tmp/synara-source-snapshot/upstream.tar.gz
+          cd /tmp/synara-source-snapshot
+          sha256sum upstream.tar.gz >> SHA256SUMS
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: local-implementation-source

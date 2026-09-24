@@ -275,6 +275,94 @@ impl DeviceTools {
         .await?;
         Ok(())
     }
+    /// A reviewed, explicit local application bundle, not an archive or URL.
+    pub fn validate_install_app(
+        &self,
+        device: &ToolDevice,
+        path: &Path,
+    ) -> Result<(), RuntimeError> {
+        if self.backend != DeviceBackend::AppleSimulator {
+            return Err(RuntimeError::Unsupported(
+                "App installation is available for iOS Simulator only".into(),
+            ));
+        }
+        self.address(device)?;
+        if device.availability != DeviceAvailability::Ready {
+            return Err(RuntimeError::Closed);
+        }
+        let Some(text) = path.to_str() else {
+            return Err(RuntimeError::Invalid("Use a UTF-8 app bundle path".into()));
+        };
+        if !path.is_absolute()
+            || text.len() > 4096
+            || text.chars().any(char::is_control)
+            || path
+                .components()
+                .any(|part| matches!(part, std::path::Component::ParentDir))
+            || !path
+                .extension()
+                .is_some_and(|ext| ext.eq_ignore_ascii_case("app"))
+        {
+            return Err(RuntimeError::Invalid(
+                "Choose an absolute local .app bundle without parent traversal".into(),
+            ));
+        }
+        Ok(())
+    }
+    /// Installation never launches the app or grants device input. The OS may
+    /// finish an already-queued install after helper cancellation; no rollback is claimed.
+    pub async fn install_app(
+        &self,
+        device: &ToolDevice,
+        path: &Path,
+        cancel: &CancellationToken,
+    ) -> Result<(), RuntimeError> {
+        self.validate_install_app(device, path)?;
+        if cancel.is_cancelled() {
+            return Err(RuntimeError::Closed);
+        }
+        let metadata = tokio::fs::symlink_metadata(path).await?;
+        let plist = tokio::fs::symlink_metadata(path.join("Info.plist")).await?;
+        if !metadata.is_dir()
+            || metadata.file_type().is_symlink()
+            || !plist.is_file()
+            || plist.file_type().is_symlink()
+            || plist.len() > 1024 * 1024
+        {
+            return Err(RuntimeError::Invalid(
+                "Use a real .app directory with a regular Info.plist of at most 1 MiB".into(),
+            ));
+        }
+        let path = tokio::fs::canonicalize(path).await?;
+        let path = path
+            .to_str()
+            .ok_or_else(|| RuntimeError::Invalid("Use a UTF-8 app bundle path".into()))?
+            .to_owned();
+        command::run(
+            &self.executable,
+            apple::install_args(self.address(device)?, path),
+            DISCOVERY_LIMIT,
+            cancel,
+        )
+        .await?;
+        Ok(())
+    }
+    pub async fn terminate_app(
+        &self,
+        device: &ToolDevice,
+        bundle_id: &str,
+        cancel: &CancellationToken,
+    ) -> Result<(), RuntimeError> {
+        self.validate_launch_app(device, bundle_id)?;
+        command::run(
+            &self.executable,
+            apple::terminate_args(self.address(device)?, bundle_id.to_owned()),
+            DISCOVERY_LIMIT,
+            cancel,
+        )
+        .await?;
+        Ok(())
+    }
     /// Probe the real Android executable, then scope authority to this target.
     /// This value is intentionally non-serializable and is never restored.
     pub async fn approve_input(
@@ -491,3 +579,6 @@ pub fn reconcile_devices(previous: &[ToolDevice], mut fresh: Vec<ToolDevice>) ->
     }
     fresh
 }
+
+#[cfg(test)]
+mod install_tests;

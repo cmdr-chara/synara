@@ -28,6 +28,240 @@ enum Reply {
     Failed(String),
 }
 impl Shell {
+    pub(super) fn toggle_editor_comparison(&mut self, cx: &mut Context<Self>) {
+        if self.editors.compare.open {
+            self.editors.compare.clear();
+            cx.notify();
+            return;
+        }
+        if self.document.is_none() || self.editor_batch_blocked(cx) {
+            return;
+        }
+        let Some(owner) = self.editor_compare_owner() else {
+            return;
+        };
+        if self.editors.compare_ref_root.as_ref() != Some(&owner.root) {
+            let reference = self
+                .editors
+                .compare_refs
+                .get(&owner.root)
+                .cloned()
+                .unwrap_or_else(|| "HEAD".into());
+            self.editors.compare_ref_root = Some(owner.root.clone());
+            self.editors
+                .compare_ref
+                .update(cx, |input, cx| input.set_text(reference, cx));
+        }
+        self.editors.history.clear();
+        self.editors.preview = false;
+        self.editors.compare.open = true;
+        self.editors.compare.owner = Some(owner);
+        self.editors.compare.error = None;
+        cx.notify();
+    }
+
+    fn begin_editor_comparison_request(
+        &mut self,
+        mode: CompareMode,
+        label: &str,
+        cx: &mut Context<Self>,
+    ) -> Option<(CompareOwner, u64, tokio_util::sync::CancellationToken)> {
+        if self.editor_batch_blocked(cx) {
+            return None;
+        }
+        let owner = self.editor_compare_owner()?;
+        let compare = &mut self.editors.compare;
+        compare.cancel.cancel();
+        compare.cancel = Default::default();
+        compare.generation = compare.generation.wrapping_add(1);
+        compare.open = true;
+        compare.pending = true;
+        compare.owner = Some(owner.clone());
+        compare.mode = Some(mode);
+        compare.label = Some(label.into());
+        compare.reference = None;
+        compare.diff = CompareDiff::default();
+        compare.error = None;
+        let request = (owner, compare.generation, compare.cancel.clone());
+        self.editors.history.clear();
+        self.editors.preview = false;
+        cx.notify();
+        Some(request)
+    }
+
+    fn set_editor_comparison_snapshot(
+        &mut self,
+        mode: CompareMode,
+        label: String,
+        reference: String,
+        cx: &mut Context<Self>,
+    ) {
+        if self.editor_batch_blocked(cx) {
+            return;
+        }
+        let Some(owner) = self.editor_compare_owner() else {
+            return;
+        };
+        let current = self.editor.read(cx).text().to_owned();
+        let compare = &mut self.editors.compare;
+        compare.cancel.cancel();
+        compare.cancel = Default::default();
+        compare.generation = compare.generation.wrapping_add(1);
+        compare.open = true;
+        compare.pending = false;
+        compare.owner = Some(owner);
+        compare.mode = Some(mode);
+        compare.label = Some(label);
+        compare.diff = compare_text(&reference, &current);
+        compare.reference = Some(reference);
+        compare.error = None;
+        self.editors.history.clear();
+        self.editors.preview = false;
+        cx.notify();
+    }
+
+    pub(super) fn compare_editor_saved_buffer(&mut self, cx: &mut Context<Self>) {
+        let Some(document) = self.document.clone() else {
+            return;
+        };
+        let label = format!(
+            "Saved snapshot {}",
+            document.snapshot.version.0.chars().take(8).collect::<String>()
+        );
+        self.set_editor_comparison_snapshot(
+            CompareMode::Saved,
+            label,
+            document.snapshot.text.clone(),
+            cx,
+        );
+    }
+
+    pub(super) fn compare_editor_disk(&mut self, cx: &mut Context<Self>) {
+        let Some(target) = self.workspace_target() else {
+            return;
+        };
+        let Some((owner, generation, cancel)) = self.begin_editor_comparison_request(
+            CompareMode::Disk,
+            "Current disk",
+            cx,
+        ) else {
+            return;
+        };
+        let workspace = self.controller.workspace.clone();
+        cx.spawn(async move |view, cx| {
+            let result = tokio::select! {
+                biased;
+                _ = cancel.cancelled() => return,
+                result = async {
+                    match target {
+                        WorkspaceTarget::Local { root } => open_document(root, owner.path.clone())
+                            .await
+                            .map(|document| document.snapshot)
+                            .map_err(|error| error.to_string()),
+                        WorkspaceTarget::Ssh {
+                            workspace: remote,
+                            root,
+                        } => match remote_filesystem(workspace, remote, root).await {
+                            Ok(filesystem) => open_remote_document(filesystem, owner.path.clone())
+                                .await
+                                .map(|document| document.snapshot)
+                                .map_err(|error| error.to_string()),
+                            Err(error) => Err(error.to_string()),
+                        },
+                    }
+                } => result,
+            };
+            let _ = view.update(cx, |this, cx| {
+                if this.editors.compare.generation != generation
+                    || this.editor_compare_owner().as_ref() != Some(&owner)
+                    || this.editors.compare.owner.as_ref() != Some(&owner)
+                {
+                    return;
+                }
+                this.editors.compare.pending = false;
+                match result {
+                    Ok(snapshot) => {
+                        let label = format!(
+                            "Current disk {}",
+                            snapshot.version.0.chars().take(8).collect::<String>()
+                        );
+                        let current = this.editor.read(cx).text().to_owned();
+                        this.editors.compare.label = Some(label);
+                        this.editors.compare.diff = compare_text(&snapshot.text, &current);
+                        this.editors.compare.reference = Some(snapshot.text);
+                    }
+                    Err(error) => this.editors.compare.error = Some(error),
+                }
+                cx.notify();
+            });
+        })
+        .detach();
+    }
+
+    pub(super) fn compare_editor_git_ref(&mut self, cx: &mut Context<Self>) {
+        let Some(owner) = self.editor_compare_owner() else {
+            return;
+        };
+        let reference = self.editors.compare_ref.read(cx).text().trim().to_owned();
+        let reference = if reference.is_empty() {
+            "HEAD".to_owned()
+        } else {
+            reference
+        };
+        self.editors
+            .compare_refs
+            .insert(owner.root.clone(), reference.clone());
+        self.editors.compare_ref_root = Some(owner.root.clone());
+        let Some((owner, generation, cancel)) = self.begin_editor_comparison_request(
+            CompareMode::GitRef,
+            &format!("Reference {reference}"),
+            cx,
+        ) else {
+            return;
+        };
+        if !matches!(self.workspace_target(), Some(WorkspaceTarget::Local { .. })) {
+            if self.editors.compare.generation == generation {
+                self.editors.compare.pending = false;
+            }
+            self.editors.compare.error = Some(
+                "Git reference comparison currently requires a local repository.".into(),
+            );
+            cx.notify();
+            return;
+        }
+        let root = owner.root.clone();
+        cx.spawn(async move |view, cx| {
+            let result = GitService::new(root)
+                .file_at_ref(owner.path.clone(), reference.clone(), &cancel)
+                .await
+                .map(|revision| {
+                    let short = revision.commit.chars().take(8).collect::<String>();
+                    (format!("{reference} ({short})"), revision.text)
+                })
+                .map_err(|error| error.to_string());
+            let _ = view.update(cx, |this, cx| {
+                if this.editors.compare.generation != generation
+                    || this.editor_compare_owner().as_ref() != Some(&owner)
+                    || this.editors.compare.owner.as_ref() != Some(&owner)
+                {
+                    return;
+                }
+                this.editors.compare.pending = false;
+                match result {
+                    Ok((label, text)) => {
+                        let current = this.editor.read(cx).text().to_owned();
+                        this.editors.compare.label = Some(format!("Git ref {label}"));
+                        this.editors.compare.diff = compare_text(&text, &current);
+                        this.editors.compare.reference = Some(text);
+                    }
+                    Err(error) => this.editors.compare.error = Some(error),
+                }
+                cx.notify();
+            });
+        })
+        .detach();
+    }
+
     pub(super) fn editor_batch_blocked(&self, cx: &App) -> bool {
         self.saving
             || self.close != CloseState::Open
@@ -184,6 +418,7 @@ impl Shell {
         cx.notify();
     }
     pub(super) fn retain_closed_editor(&mut self, tab: EditorTab, cx: &App) {
+        self.editors.autosave.forget(tab.id);
         if tab.dirty(cx) || tab.input.read(cx).is_composing() {
             return;
         }

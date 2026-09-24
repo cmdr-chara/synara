@@ -1,9 +1,11 @@
+mod new_worktree;
 use crate::{
     AgentProfile, GitOperation, GitOperationError, GitOperationOptions, GitOperations,
     NewSshWorkspace, SshWorkspaceProfile, StorageError, Store, default_profiles, parse_profiles,
     upsert_ssh_profile, validate_profiles,
 };
 use async_trait::async_trait;
+pub use new_worktree::NewWorktreePlan;
 use serde::{Deserialize, Serialize};
 use std::{
     path::{Path, PathBuf},
@@ -1154,6 +1156,7 @@ impl WorkspaceService {
 #[derive(Default)]
 struct ParsedGitWorktree {
     path: PathBuf,
+    head: Option<String>,
     branch: Option<String>,
     detached: bool,
     locked: bool,
@@ -1181,6 +1184,8 @@ fn parse_git_worktrees(output: &[u8]) -> WorkspaceResult<Vec<ParsedGitWorktree>>
                 WorkspaceError::Invalid("Git returned an invalid worktree path".into())
             })?;
             current.path = path;
+        } else if let Some(head) = field.strip_prefix("HEAD ") {
+            current.head = Some(head.to_owned());
         } else if let Some(branch) = field.strip_prefix("branch refs/heads/") {
             current.branch = Some(branch.to_owned());
         } else if field == "detached" {
@@ -1320,7 +1325,7 @@ mod tests {
     use super::*;
     use std::process::Command;
 
-    fn git(root: &Path, args: &[&str]) {
+    pub(super) fn git(root: &Path, args: &[&str]) {
         let output = Command::new("git")
             .arg("-C")
             .arg(root)
@@ -1334,7 +1339,7 @@ mod tests {
         );
     }
 
-    fn repository(root: &Path) {
+    pub(super) fn repository(root: &Path) {
         std::fs::create_dir_all(root).unwrap();
         let output = Command::new("git")
             .arg("init")

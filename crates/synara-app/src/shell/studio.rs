@@ -2,8 +2,60 @@
 use super::*;
 use crate::ui::{self, Glyph, palette};
 use std::path::Path;
+mod export;
+mod pdf;
+
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+enum StudioKindFilter {
+    #[default]
+    All,
+    Images,
+    Documents,
+    Other,
+}
+
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+enum StudioSortOrder {
+    #[default]
+    OutputsFirst,
+    Name,
+    LatestReport,
+    Largest,
+}
+
+impl StudioSortOrder {
+    fn next(self) -> Self {
+        match self {
+            Self::OutputsFirst => Self::Name,
+            Self::Name => Self::LatestReport,
+            Self::LatestReport => Self::Largest,
+            Self::Largest => Self::OutputsFirst,
+        }
+    }
+
+    fn label(self) -> &'static str {
+        match self {
+            Self::OutputsFirst => "Reported first",
+            Self::Name => "Name",
+            Self::LatestReport => "Latest report",
+            Self::Largest => "Largest",
+        }
+    }
+}
 
 pub(super) enum StudioReply {
+    PdfLoaded {
+        task: TaskId,
+        generation: u64,
+        path: PathBuf,
+        result: Result<(StudioPdf, StudioPdfPage), String>,
+    },
+    ExportReviewed {
+        task: TaskId,
+        generation: u64,
+        result: Result<StudioExportReview, String>,
+    },
+    Exported(Result<(), String>),
     Listed {
         task: TaskId,
         generation: u64,
@@ -17,6 +69,7 @@ pub(super) enum StudioReply {
     },
 }
 enum Preview {
+    Pdf(pdf::PdfView),
     Text {
         text: String,
         markdown: bool,
@@ -35,6 +88,9 @@ pub(super) struct StudioState {
     listing: StudioFiles,
     generation: u64,
     preview_generation: u64,
+    preview_cancel: tokio_util::sync::CancellationToken,
+    pub exporting: bool,
+    export_review: Option<StudioExportReview>,
     loading: bool,
     preview_loading: bool,
     selected: Option<PathBuf>,
@@ -42,7 +98,9 @@ pub(super) struct StudioState {
     preview: Option<Preview>,
     error: Option<String>,
     only_outputs: bool,
-    only_images: bool,
+    kind_filter: StudioKindFilter,
+    sort_order: StudioSortOrder,
+    turn_filter: Option<(TaskId, usize)>,
     raw_text: bool,
     image_zoom: Option<f32>,
     _subscription: Subscription,
@@ -61,6 +119,9 @@ impl StudioState {
             listing: StudioFiles::default(),
             generation: 0,
             preview_generation: 0,
+            preview_cancel: Default::default(),
+            exporting: false,
+            export_review: None,
             loading: false,
             preview_loading: false,
             selected: None,
@@ -68,13 +129,21 @@ impl StudioState {
             preview: None,
             error: None,
             only_outputs: false,
-            only_images: false,
+            kind_filter: StudioKindFilter::All,
+            sort_order: StudioSortOrder::OutputsFirst,
+            turn_filter: None,
             raw_text: false,
             image_zoom: None,
             _subscription: subscription,
         }
     }
+    pub fn cancel_preview(&mut self) {
+        self.preview_cancel.cancel();
+        self.preview_loading = false;
+    }
     pub fn reset(&mut self) {
+        self.preview_cancel.cancel();
+        self.export_review = None;
         self.open = false;
         self.task = None;
         self.generation = self.generation.wrapping_add(1);
@@ -87,13 +156,77 @@ impl StudioState {
         self.preview_loading = false;
         self.error = None;
         self.raw_text = false;
+        self.turn_filter = None;
         self.image_zoom = None;
     }
 }
+impl Drop for StudioState {
+    fn drop(&mut self) {
+        self.preview_cancel.cancel();
+    }
+}
 fn image_path(path: &std::path::Path) -> bool {
-    path.extension()
-        .and_then(|x| x.to_str())
-        .is_some_and(|x| matches!(x.to_ascii_lowercase().as_str(), "png" | "jpg" | "jpeg"))
+    path.extension().and_then(|x| x.to_str()).is_some_and(|x| {
+        matches!(
+            x.to_ascii_lowercase().as_str(),
+            "png" | "jpg" | "jpeg" | "webp"
+        )
+    })
+}
+fn document_path(path: &Path) -> bool {
+    path.extension().and_then(|x| x.to_str()).is_some_and(|x| {
+        matches!(
+            x.to_ascii_lowercase().as_str(),
+            "pdf" | "txt" | "md" | "markdown" | "rst" | "csv" | "tsv" | "rtf"
+                | "doc" | "docx" | "odt" | "json" | "xml" | "yaml" | "yml" | "toml"
+        )
+    })
+}
+fn studio_kind_matches(path: &Path, filter: StudioKindFilter) -> bool {
+    match filter {
+        StudioKindFilter::All => true,
+        StudioKindFilter::Images => image_path(path),
+        StudioKindFilter::Documents => document_path(path),
+        StudioKindFilter::Other => !image_path(path) && !document_path(path),
+    }
+}
+fn studio_files_matching<'a>(
+    entries: &'a [StudioFile],
+    query: &str,
+    only_outputs: bool,
+    kind_filter: StudioKindFilter,
+    turn_filter: Option<(TaskId, usize)>,
+) -> Vec<&'a StudioFile> {
+    entries
+        .iter()
+        .filter(|file| {
+            (!only_outputs || file.reported_output)
+                && studio_kind_matches(&file.path, kind_filter)
+                && turn_filter.is_none_or(|(task, turn)| {
+                    file.source_task == Some(task)
+                        && file
+                            .source_turn
+                            .as_ref()
+                            .is_some_and(|source| source.number == turn)
+                })
+                && (query.is_empty()
+                    || file.path.to_string_lossy().to_lowercase().contains(query))
+        })
+        .collect()
+}
+fn studio_file_path_key(file: &StudioFile) -> String {
+    file.path.to_string_lossy().to_lowercase()
+}
+fn sort_studio_files(files: &mut [&StudioFile], order: StudioSortOrder) {
+    files.sort_by(|left, right| {
+        let primary = match order {
+            StudioSortOrder::OutputsFirst => right.reported_output.cmp(&left.reported_output),
+            StudioSortOrder::Name => std::cmp::Ordering::Equal,
+            StudioSortOrder::LatestReport => right.reported_at_ms.cmp(&left.reported_at_ms),
+            StudioSortOrder::Largest => right.bytes.cmp(&left.bytes),
+        };
+        primary.then_with(|| studio_file_path_key(left).cmp(&studio_file_path_key(right)))
+    });
 }
 fn take_reopen_path(task: TaskId, pending: Option<(TaskId, PathBuf)>) -> Option<PathBuf> {
     pending.and_then(|(expected_task, path)| (expected_task == task).then_some(path))
@@ -145,6 +278,9 @@ impl Shell {
         let Some(task) = self.selected.filter(|task| Some(*task) == self.studio.task) else {
             return;
         };
+        self.studio.preview_cancel.cancel();
+        self.studio.preview_cancel = Default::default();
+        self.studio.export_review = None;
         self.studio.preview_generation = self.studio.preview_generation.wrapping_add(1);
         let generation = self.studio.preview_generation;
         self.studio.selected = Some(path.clone());
@@ -152,6 +288,14 @@ impl Shell {
         self.studio.preview = None;
         self.studio.preview_loading = true;
         self.studio.error = None;
+        if path
+            .extension()
+            .and_then(|s| s.to_str())
+            .is_some_and(|s| s.eq_ignore_ascii_case("pdf"))
+        {
+            self.start_studio_pdf(task, path, generation, cx);
+            return;
+        }
         let workspace = self.controller.workspace.clone();
         self.job(async move {
             Ok(Update::Studio(Box::new(StudioReply::Previewed {
@@ -210,6 +354,24 @@ impl Shell {
     }
     pub(super) fn studio_reply(&mut self, reply: StudioReply, cx: &mut Context<Self>) {
         match reply {
+            StudioReply::PdfLoaded {
+                task,
+                generation,
+                path,
+                result,
+            } => self.studio_pdf_loaded(task, generation, path, result),
+            StudioReply::ExportReviewed {
+                task,
+                generation,
+                result,
+            } => self.studio_export_reviewed(task, generation, result),
+            StudioReply::Exported(result) => {
+                self.studio.exporting = false;
+                match result {
+                    Ok(()) => self.notice = Some("The reviewed Library file was saved to a new destination without replacing existing files.".into()),
+                    Err(e) => self.error = Some(format!("Library export failed: {e}")),
+                }
+            }
             StudioReply::Listed {
                 task,
                 generation,
@@ -349,19 +511,22 @@ impl Shell {
     }
     pub(super) fn studio_files_panel(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
         let query = self.studio.query.read(cx).text().trim().to_lowercase();
-        let matches = self
-            .studio
-            .listing
-            .entries
-            .iter()
-            .filter(|file| {
-                (!self.studio.only_outputs || file.reported_output)
-                    && (!self.studio.only_images || image_path(&file.path))
-                    && (query.is_empty()
-                        || file.path.to_string_lossy().to_lowercase().contains(&query))
-            })
-            .collect::<Vec<_>>();
+        let mut matches = studio_files_matching(
+            &self.studio.listing.entries,
+            &query,
+            self.studio.only_outputs,
+            self.studio.kind_filter,
+            self.studio.turn_filter,
+        );
+        sort_studio_files(&mut matches, self.studio.sort_order);
         let selected = self.studio.selected.clone();
+        let reporting = selected.as_ref().and_then(|path| {
+            self.studio
+                .listing
+                .entries
+                .iter()
+                .find(|entry| &entry.path == path)
+        });
         let source_task = selected
             .as_ref()
             .and_then(|path| {
@@ -373,6 +538,7 @@ impl Shell {
             })
             .and_then(|entry| entry.source_task);
         let preview = match &self.studio.preview {
+            Some(Preview::Pdf(view)) => self.studio_pdf_panel(view, cx),
             Some(Preview::Text { text, markdown }) => {
                 div().id("studio-text-preview").relative().child(ui::layout_probe("studio-text-preview"))
                     .flex_1().min_h_0().overflow_y_scroll().p_3().text_size(px(13.))
@@ -406,7 +572,7 @@ impl Shell {
                     } else { gpui::img(image.clone()).w_full().h(px(240.)).object_fit(gpui::ObjectFit::Contain).into_any_element() }))
                 .into_any_element(),
             Some(Preview::Unsupported(bytes)) => div().flex_1().min_h_0().p_4().text_size(px(12.)).text_color(rgb(palette().muted))
-                .child(format!("Preview unavailable for this file ({bytes} bytes). PNG/JPEG and UTF-8 text are supported within the preview limits. The file has not been executed or opened externally.")).into_any_element(),
+                .child(format!("Preview unavailable for this file ({bytes} bytes). PNG/JPEG, still WebP and UTF-8 text are supported within the preview limits. The file has not been executed or opened externally.")).into_any_element(),
             None => div().flex_1().min_h_0().p_4().text_size(px(13.)).text_color(rgb(palette().muted))
                 .child(if self.studio.preview_loading { "Loading preview..." } else { "Select a file to preview it." }).into_any_element(),
         };
@@ -421,8 +587,40 @@ impl Shell {
             .child(div().flex().items_center().gap_1().flex_wrap()
                 .child(ui::button("studio-all-files","All files",!self.studio.only_outputs).text_size(px(11.)).on_click(cx.listener(|this,_,_,cx| { this.studio.only_outputs=false;cx.notify(); })))
                 .child(ui::button("studio-reported","Reported outputs",self.studio.only_outputs).text_size(px(11.)).on_click(cx.listener(|this,_,_,cx| { this.studio.only_outputs=true;cx.notify(); })))
-                .child(ui::button("studio-images","Images",self.studio.only_images).text_size(px(11.)).on_click(cx.listener(|this,_,_,cx| { this.studio.only_images = !this.studio.only_images;cx.notify(); }))))
-            .child(div().text_size(px(11.)).text_color(rgb(palette().muted)).child(format!("{} files · Reported by completed tools in this Hub, not proof of authorship.",matches.len())))
+            )
+            .child(div().flex().items_center().gap_1().flex_wrap()
+                .child(ui::button("studio-type-all", "All types", self.studio.kind_filter == StudioKindFilter::All).text_size(px(11.)).on_click(cx.listener(|this,_,_,cx| { this.studio.kind_filter=StudioKindFilter::All;cx.notify(); })))
+                .child(ui::button("studio-type-images", "Images", self.studio.kind_filter == StudioKindFilter::Images).text_size(px(11.)).relative().child(ui::layout_probe("studio-images")).on_click(cx.listener(|this,_,_,cx| { this.studio.kind_filter=StudioKindFilter::Images;cx.notify(); })))
+                .child(ui::button("studio-type-documents", "Documents", self.studio.kind_filter == StudioKindFilter::Documents).text_size(px(11.)).on_click(cx.listener(|this,_,_,cx| { this.studio.kind_filter=StudioKindFilter::Documents;cx.notify(); })))
+                .child(ui::button("studio-type-other", "Other", self.studio.kind_filter == StudioKindFilter::Other).text_size(px(11.)).on_click(cx.listener(|this,_,_,cx| { this.studio.kind_filter=StudioKindFilter::Other;cx.notify(); }))))
+            .child(div().flex().items_center().justify_between().flex_wrap().gap_1()
+                .child(div().text_size(px(11.)).text_color(rgb(palette().muted)).child(format!("Showing {} of {} files · Output attribution comes from completed tools, not proof of authorship.",matches.len(),self.studio.listing.entries.len())))
+                .child(ui::button("studio-sort", format!("Sort: {}",self.studio.sort_order.label()), self.studio.sort_order != StudioSortOrder::OutputsFirst).text_size(px(11.)).relative().child(ui::layout_probe("studio-sort"))
+                    .on_click(cx.listener(|this,_,_,cx| { this.studio.sort_order=this.studio.sort_order.next();cx.notify(); })))
+                .when(self.studio.only_outputs || self.studio.kind_filter != StudioKindFilter::All || self.studio.turn_filter.is_some() || !query.is_empty(), |el| el.child(
+                    ui::button("studio-clear-filters", "Clear filters", false).text_size(px(11.)).on_click(cx.listener(|this,_,_,cx| {
+                        this.studio.only_outputs=false;
+                        this.studio.kind_filter=StudioKindFilter::All;
+                        this.studio.turn_filter=None;
+                        this.studio.query.update(cx, |entry,cx| entry.set_text(String::new(),cx));
+                        cx.notify();
+                    }))
+                )))
+            .children(self.studio.turn_filter.map(|(_, turn)| ui::button("studio-all-turns", format!("Turn {turn} filter · Show all turns"), true).relative().child(ui::layout_probe("studio-all-turns"))
+                .text_size(px(11.)).on_click(cx.listener(|this, _, _, cx| { this.studio.turn_filter = None; cx.notify(); }))))
+            .children(reporting.and_then(|entry| entry.source_task.zip(entry.source_turn.as_ref())).map(|(task, turn)| {
+                let number = turn.number;
+                ui::button("studio-reporting-turn", format!("Reported in turn {number} · Show this turn's outputs"), self.studio.turn_filter == Some((task, number))).relative().child(ui::layout_probe("studio-reporting-turn"))
+                    .text_size(px(11.)).on_click(cx.listener(move |this, _, _, cx| {
+                        this.studio.turn_filter = Some((task, number)); this.studio.only_outputs = true; cx.notify();
+                    }))
+            }))
+            .children(reporting.and_then(|entry| entry.reported_at_ms).map(|timestamp| {
+                let time = chrono::DateTime::from_timestamp_millis(timestamp)
+                    .map(|date| date.format("%Y-%m-%d %H:%M:%S UTC").to_string()).unwrap_or_else(|| "unknown time".into());
+                div().text_size(px(11.)).text_color(rgb(palette().muted))
+                    .child(format!("Latest tool report: {time}. Preview shows the current file, not a historical snapshot."))
+            }))
         .children(source_task.zip(selected.clone()).map(|(source, path)| {
             ui::action(
                 "library-source-thread",
@@ -434,7 +632,7 @@ impl Shell {
                 }),
             )
         }))
-            .children(self.studio.error.clone().map(|error| div().text_size(px(12.)).text_color(rgb(palette().error)).child(error)))
+            .children(self.studio.error.clone().map(|error| div().relative().child(ui::layout_probe("studio-error")).text_size(px(12.)).text_color(rgb(palette().error)).child(error)))
             .when(self.studio.listing.limited || self.studio.listing.unreadable>0, |el| el.child(div().text_size(px(11.)).text_color(rgb(palette().muted))
                 .child(format!("Bounded listing{} · {} unreadable directories/files",if self.studio.listing.limited { " reached its limit" } else { "" },self.studio.listing.unreadable))))
             .child(div().id("studio-file-list").h(px(190.)).flex_shrink_0().overflow_y_scroll().flex().flex_col()
@@ -445,7 +643,7 @@ impl Shell {
                         .h(px(28.)).text_size(px(12.)).relative().child(ui::layout_probe_slot("studio-file",index))
                 }))
                 .when(matches.is_empty(), |el| el.child(div().p_3().text_size(px(12.)).text_color(rgb(palette().muted))
-                    .child(if self.studio.loading { "Looking for files..." } else if self.studio.only_outputs { "No completed tool changes reference a visible file yet. All files shows other workspace content." } else { "No files match. Files appear here after they are created in this Hub working folder." }))))
+                    .child(if self.studio.loading { "Looking for files..." } else if self.studio.only_outputs { "No completed tool changes reference a visible file yet. All files shows other workspace content." } else if self.studio.listing.entries.is_empty() { "Files appear here after they are created in this Hub working folder." } else { "No files match the current filters. Clear filters or change the search." }))))
             .child(div().text_size(px(12.)).text_ellipsis().child(selected.as_ref().map(|p|p.to_string_lossy().into_owned()).unwrap_or_default()))
             .when(matches!(self.studio.preview, Some(Preview::Text { markdown: true, .. })), |el| el.child(
                 ui::button("studio-raw-toggle", if self.studio.raw_text { "Show rendered Markdown" } else { "Show raw text" }, self.studio.raw_text)
@@ -456,6 +654,7 @@ impl Shell {
                         cx.notify();
                     }))))
             .child(preview)
+            .child(self.studio_export_controls(cx))
             .child(div().flex().items_center().gap_1().flex_wrap().border_t_1().border_color(rgb(palette().border)).pt_2()
                 .child(ui::button("studio-copy-path","Copy path",false).text_size(px(11.)).on_click(cx.listener(|this,_,_,cx| {
                     if let Some(path)=&this.studio.selected { cx.write_to_clipboard(gpui::ClipboardItem::new_string(path.to_string_lossy().into_owned())); }
@@ -476,10 +675,33 @@ impl Shell {
 
 #[cfg(test)]
 mod tests {
-    use super::{restored_output_is_attributed, take_reopen_path};
+    use super::{
+        StudioKindFilter, StudioSortOrder, restored_output_is_attributed,
+        sort_studio_files, studio_files_matching, take_reopen_path,
+    };
     use std::path::PathBuf;
     use synara_core::TaskId;
-    use synara_workspace::StudioFile;
+    use synara_workspace::{StudioFile, StudioOutputTurn};
+
+    fn file(
+        path: &str,
+        bytes: u64,
+        reported_at_ms: Option<i64>,
+        source_task: Option<TaskId>,
+        source_turn: Option<usize>,
+    ) -> StudioFile {
+        StudioFile {
+            path: PathBuf::from(path),
+            bytes,
+            reported_output: reported_at_ms.is_some(),
+            source_task,
+            source_turn: source_turn.map(|number| StudioOutputTurn {
+                number,
+                started_at_ms: number as i64,
+            }),
+            reported_at_ms,
+        }
+    }
 
     #[test]
     fn reopening_output_is_scoped_to_the_requested_source_task() {
@@ -507,6 +729,8 @@ mod tests {
             bytes: 32,
             reported_output: true,
             source_task,
+            source_turn: None,
+            reported_at_ms: None,
         };
 
         assert!(restored_output_is_attributed(
@@ -520,5 +744,71 @@ mod tests {
             &[entry(Some(other))]
         ));
         assert!(!restored_output_is_attributed(task, &path, &[entry(None)]));
+    }
+
+    #[test]
+    fn library_facets_combine_search_type_output_and_reporting_turn() {
+        let task = TaskId::new();
+        let other_task = TaskId::new();
+        let entries = vec![
+            file("images/hero.WEBP", 20, Some(30), Some(task), Some(4)),
+            file("notes/plan.md", 40, Some(20), Some(task), Some(4)),
+            file("images/draft.png", 50, None, None, None),
+            file("images/other.png", 60, Some(10), Some(other_task), Some(2)),
+        ];
+
+        let matches = studio_files_matching(
+            &entries,
+            "hero",
+            true,
+            StudioKindFilter::Images,
+            Some((task, 4)),
+        );
+
+        assert_eq!(matches.len(), 1);
+        assert_eq!(matches[0].path, PathBuf::from("images/hero.WEBP"));
+        assert!(studio_files_matching(
+            &entries,
+            "",
+            false,
+            StudioKindFilter::Documents,
+            None
+        )
+        .iter()
+        .any(|entry| entry.path == PathBuf::from("notes/plan.md")));
+    }
+
+    #[test]
+    fn library_sort_orders_are_deterministic_and_keep_unknown_reports_last() {
+        let entries = vec![
+            file("zeta.md", 12, Some(100), None, None),
+            file("Alpha.md", 12, Some(300), None, None),
+            file("large.bin", 80, None, None, None),
+        ];
+        let paths = |order| {
+            let mut matches = entries.iter().collect::<Vec<_>>();
+            sort_studio_files(&mut matches, order);
+            matches
+                .into_iter()
+                .map(|entry| entry.path.to_string_lossy().into_owned())
+                .collect::<Vec<_>>()
+        };
+
+        assert_eq!(
+            paths(StudioSortOrder::Name),
+            ["Alpha.md", "large.bin", "zeta.md"]
+        );
+        assert_eq!(
+            paths(StudioSortOrder::LatestReport),
+            ["Alpha.md", "zeta.md", "large.bin"]
+        );
+        assert_eq!(
+            paths(StudioSortOrder::Largest),
+            ["large.bin", "Alpha.md", "zeta.md"]
+        );
+        assert_eq!(
+            paths(StudioSortOrder::OutputsFirst),
+            ["Alpha.md", "zeta.md", "large.bin"]
+        );
     }
 }

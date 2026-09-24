@@ -162,6 +162,8 @@ pub(in crate::shell) struct ContextDialog {
     item: Entity<TextEntry>,
     base: Option<TaskContext>,
     checklist: Vec<ChecklistItem>,
+    folder_references: Vec<String>,
+    picking_folders: bool,
     edit_item: Option<String>,
     loading: bool,
     saving: bool,
@@ -207,6 +209,8 @@ impl ContextDialog {
             item,
             base: None,
             checklist: Vec::new(),
+            folder_references: Vec::new(),
+            picking_folders: false,
             edit_item: None,
             loading: true,
             saving: false,
@@ -234,6 +238,7 @@ impl ContextDialog {
                     self.notes
                         .update(cx, |entry, cx| entry.set_text(value.notes.clone(), cx));
                     self.checklist = value.checklist.clone();
+                    self.folder_references = value.folder_references.clone();
                     self.item.update(cx, |entry, cx| entry.clear(cx));
                     self.edit_item = None;
                 }
@@ -241,7 +246,14 @@ impl ContextDialog {
                 // typed while the worker was writing the submitted snapshot.
                 self.base = Some(value);
                 self.error = None;
-                self.status = saved.then(|| "Notes and checklist saved.".into());
+                let edits_remain = saved && self.dirty(cx);
+                self.status = saved.then(|| {
+                    if edits_remain {
+                        "Saved the submitted context. Newer edits remain unsaved.".into()
+                    } else {
+                        "Notes, checklist, and folder references saved.".into()
+                    }
+                });
             }
             Err(error) => self.error = Some(error),
         }
@@ -249,17 +261,104 @@ impl ContextDialog {
     }
     fn snapshot(&self, cx: &Context<Self>) -> Option<TaskContext> {
         self.base.as_ref().map(|base| TaskContext {
-            version: 1,
+            version: TaskContext::CURRENT_VERSION,
             revision: base.revision,
             notes: self.notes.read(cx).text().to_owned(),
             checklist: self.checklist.clone(),
+            folder_references: self.folder_references.clone(),
         })
     }
     fn dirty(&self, cx: &Context<Self>) -> bool {
         !self.item.read(cx).text().is_empty()
             || self.base.as_ref().is_some_and(|base| {
-                self.notes.read(cx).text() != base.notes || self.checklist != base.checklist
+                self.notes.read(cx).text() != base.notes
+                    || self.checklist != base.checklist
+                    || self.folder_references != base.folder_references
             })
+    }
+    fn choose_folders(&mut self, cx: &mut Context<Self>) {
+        if self.loading || self.saving || self.picking_folders || self.base.is_none() {
+            return;
+        }
+        let revision = self.base.as_ref().map(|value| value.revision);
+        self.picking_folders = true;
+        self.error = None;
+        self.status = None;
+        let picker = cx.prompt_for_paths(gpui::PathPromptOptions {
+            files: false,
+            directories: true,
+            multiple: true,
+            prompt: Some(
+                "Choose folders to save path references only; folder contents will not be read".into(),
+            ),
+        });
+        cx.spawn(async move |view, cx| {
+            let result = picker.await;
+            let _ = view.update(cx, |this, cx| {
+                this.picking_folders = false;
+                if this.base.as_ref().map(|value| value.revision) != revision {
+                    this.status = Some(
+                        "The saved context changed while the folder picker was open. Reload before selecting folders again.".into(),
+                    );
+                    cx.notify();
+                    return;
+                }
+                match result {
+                    Ok(Ok(Some(paths))) => {
+                        let mut selected = Vec::new();
+                        for path in paths {
+                            let Some(path) = path.to_str() else {
+                                this.error = Some(
+                                    "A selected folder path cannot be represented as UTF-8. Nothing was added.".into(),
+                                );
+                                cx.notify();
+                                return;
+                            };
+                            if let Err(error) = TaskContext::validate_folder_reference(path) {
+                                this.error = Some(format!(
+                                    "A selected folder path is not supported: {error}. Nothing was added."
+                                ));
+                                cx.notify();
+                                return;
+                            }
+                            if !selected.iter().any(|existing: &String| existing.as_str() == path)
+                                && !this
+                                    .folder_references
+                                    .iter()
+                                    .any(|existing| existing.as_str() == path)
+                            {
+                                selected.push(path.to_owned());
+                            }
+                        }
+                        if this.folder_references.len() + selected.len()
+                            > TaskContext::MAX_FOLDER_REFERENCES
+                        {
+                            this.error = Some(format!(
+                                "A chat can save at most {} folder references. Nothing was added.",
+                                TaskContext::MAX_FOLDER_REFERENCES
+                            ));
+                        } else if selected.is_empty() {
+                            this.status = Some("Those folder references are already listed.".into());
+                        } else {
+                            let added = selected.len();
+                            this.folder_references.extend(selected);
+                            this.status = Some(format!(
+                                "Added {added} folder path reference(s). Save to keep them with this chat."
+                            ));
+                        }
+                    }
+                    Ok(Ok(None)) => {}
+                    _ => {
+                        this.error = Some(
+                            "The folder picker could not open. No folder references were changed.".into(),
+                        );
+                    }
+                }
+                cx.notify();
+            });
+        })
+        .detach();
+        cx.notify();
     }
     fn apply_item(&mut self, cx: &mut Context<Self>) -> bool {
         if self.loading || self.base.is_none() {
@@ -305,7 +404,7 @@ impl ContextDialog {
         true
     }
     fn save(&mut self, cx: &mut Context<Self>) {
-        if self.saving || self.loading || !self.apply_item(cx) {
+        if self.saving || self.loading || self.picking_folders || !self.apply_item(cx) {
             return;
         }
         let Some(value) = self.snapshot(cx) else {
@@ -322,8 +421,8 @@ impl ContextDialog {
         cx.notify();
     }
     fn dismiss(&mut self, cx: &mut Context<Self>) {
-        if self.saving {
-            self.status = Some("A note save is still in progress.".into());
+        if self.saving || self.picking_folders {
+            self.status = Some("Finish or cancel the current save or folder picker first.".into());
             cx.notify();
             return;
         }
@@ -335,7 +434,7 @@ impl ContextDialog {
         }
     }
     fn reload(&mut self, confirmed: bool, cx: &mut Context<Self>) {
-        if self.saving || self.loading {
+        if self.saving || self.loading || self.picking_folders {
             return;
         }
         if self.dirty(cx) && !confirmed {
@@ -378,7 +477,7 @@ impl ContextDialog {
         }
         let text = value.as_prompt_context();
         if text.is_empty() {
-            self.status = Some("Add notes or checklist items first.".into());
+            self.status = Some("Add notes, checklist items, or folder references first.".into());
             cx.notify();
             None
         } else {
@@ -520,7 +619,45 @@ impl gpui::Render for ContextDialog {
                     )
             })
             .collect::<Vec<_>>();
-        let modal = div().id("saved-context-dialog").role(gpui::Role::Dialog).aria_label("Notes and checklist")
+        let folder_rows = self
+            .folder_references
+            .iter()
+            .enumerate()
+            .map(|(index, path)| {
+                let remove = path.clone();
+                div()
+                    .id(("context-folder", index))
+                    .flex()
+                    .items_center()
+                    .gap_2()
+                    .min_w_0()
+                    .py_1()
+                    .child(
+                        div()
+                            .flex_1()
+                            .min_w_0()
+                            .text_size(px(12.))
+                            .text_ellipsis()
+                            .child(path.clone()),
+                    )
+                    .child(
+                        ui::chrome_button(
+                            SharedString::from(format!("context-folder-remove-{index}")),
+                            "Remove saved folder reference",
+                            Glyph::Close,
+                            false,
+                            cx.listener(move |this, _: &(), _, cx| {
+                                this.folder_references.retain(|saved| saved != &remove);
+                                this.error = None;
+                                this.status = None;
+                                cx.notify();
+                            }),
+                        )
+                        .size(px(22.)),
+                    )
+            })
+            .collect::<Vec<_>>();
+        let modal = div().id("saved-context-dialog").role(gpui::Role::Dialog).aria_label("Saved task context")
             .track_focus(&self.focus).tab_group().tab_stop(true).relative().occlude().w_full().max_w(px(760.))
             .max_h(window.viewport_size().height - px(40.)).min_h_0().flex().flex_col().rounded(px(16.))
             .border_1().border_color(rgb(palette().border)).bg(rgb(palette().overlay)).shadow_lg()
@@ -542,14 +679,14 @@ impl gpui::Render for ContextDialog {
             .child(ui::layout_probe("saved-context-dialog"))
             .child(div().p_4().flex().items_center().gap_2()
                 .child(ui::icon(Glyph::Notebook))
-                .child(div().flex_1().min_w_0().flex().flex_col().child("Notes & checklist").child(div().text_size(px(12.)).text_ellipsis().text_color(rgb(palette().muted)).child(self.title.clone())))
+                .child(div().flex_1().min_w_0().flex().flex_col().child("Notes, checklist & folders").child(div().text_size(px(12.)).text_ellipsis().text_color(rgb(palette().muted)).child(self.title.clone())))
                 .child(div().text_size(px(11.)).text_color(rgb(palette().muted)).child(if self.saving { "Saving..." } else if dirty { "Unsaved changes" } else { "Saved" }))
-                .child(ui::chrome_button("context-close", "Close notes", Glyph::Close, self.saving, cx.listener(|this, _: &(), _, cx| this.dismiss(cx)))))
+                .child(ui::chrome_button("context-close", "Close saved context", Glyph::Close, self.saving || self.picking_folders, cx.listener(|this, _: &(), _, cx| this.dismiss(cx)))))
             .children(self.error.clone().map(|error| div().px_4().py_2().text_color(rgb(palette().error)).child(error)))
             .children(self.status.clone().map(|status| div().px_4().py_1().text_size(px(12.)).text_color(rgb(palette().muted)).child(status)))
             .child(div().id("saved-context-scroll").px_4().min_h_0().overflow_y_scroll().flex().flex_col().gap_3()
-                .child(div().text_size(px(12.)).text_color(rgb(palette().muted)).child("Private to this chat. Notes are not sent to the agent unless you add them to the draft."))
-                .when(self.loading, |el| el.child("Loading saved notes..."))
+                .child(div().text_size(px(12.)).text_color(rgb(palette().muted)).child("Private to this chat. Notes and saved folder paths are not sent to the agent unless you add them to the draft."))
+                .when(self.loading, |el| el.child("Loading saved context..."))
                 .when(available, |el| el
                     .child(div().relative().child(ui::layout_probe("context-notes-input")).child(self.notes.clone()))
                     .child(div().flex().items_center().gap_2()
@@ -564,9 +701,24 @@ impl gpui::Render for ContextDialog {
                             .on_click(cx.listener(|this, _, _, cx| { this.apply_item(cx); })))
                         .when(self.edit_item.is_some(), |el| el.child(ui::button("context-item-cancel", "Cancel", false).on_click(cx.listener(|this, _, _, cx| {
                             this.edit_item = None; this.item.update(cx, |entry, cx| entry.clear(cx)); cx.notify();
-                        })))))))
+                        }))))))
+                    .child(div().pt_2().flex().items_center().gap_2()
+                        .child(div().flex_1().child("Saved folder references"))
+                        .child(ui::button(
+                            "context-choose-folders",
+                            if self.picking_folders { "Choosing…" } else { "Choose folders" },
+                            false,
+                        )
+                            .when(self.picking_folders || self.saving, |el| el.opacity(0.4))
+                            .on_click(cx.listener(|this, _, _, cx| this.choose_folders(cx)))))
+                    .child(div().text_size(px(11.)).text_color(rgb(palette().muted)).child(
+                        "Only selected path strings are saved. Folder contents are not read and these references do not grant filesystem access. Use Add to draft to include them in a prompt."
+                    ))
+                    .children(folder_rows))
             .child(div().p_4().flex().items_center().gap_2().border_t_1().border_color(rgb(palette().border))
-                .child(ui::button("context-reload", "Reload saved", false).on_click(cx.listener(|this, _, _, cx| this.reload(false, cx))))
+                .child(ui::button("context-reload", "Reload saved", false)
+                    .when(self.saving || self.loading || self.picking_folders, |el| el.opacity(0.4))
+                    .on_click(cx.listener(|this, _, _, cx| this.reload(false, cx))))
                 .child(div().flex_1())
                 .child(ui::button("context-copy", "Copy", false).when(!available, |el| el.opacity(0.4)).on_click(cx.listener(|this, _, _, cx| {
                     if let Some(text) = this.context_text(cx) { cx.write_to_clipboard(gpui::ClipboardItem::new_string(text)); }
@@ -575,10 +727,10 @@ impl gpui::Render for ContextDialog {
                     .when(!available, |el| el.opacity(0.4)).on_click(cx.listener(|this, _, _, cx| {
                         if let Some(text) = this.context_text(cx) { cx.emit(ContextEvent::Insert(text)); }
                     })))
-                .child(ui::button("context-save", "Save notes", true).relative().child(ui::layout_probe("context-save"))
-                    .when(!available || self.saving, |el| el.opacity(0.4)).on_click(cx.listener(|this, _, _, cx| this.save(cx)))))
+                .child(ui::button("context-save", "Save context", true).relative().child(ui::layout_probe("context-save"))
+                    .when(!available || self.saving || self.picking_folders, |el| el.opacity(0.4)).on_click(cx.listener(|this, _, _, cx| this.save(cx)))))
             .when(self.confirm_discard || self.confirm_reload, |el| el.child(div().p_3().bg(rgb(palette().notice_surface)).flex().items_center().gap_2()
-                .child(div().flex_1().child("Discard the unsaved notes and checklist edits?"))
+                .child(div().flex_1().child("Discard the unsaved notes, checklist, and folder reference edits?"))
                 .child(ui::button("context-keep", "Keep editing", false).relative().child(ui::layout_probe("context-keep")).on_click(cx.listener(|this, _, _, cx| { this.confirm_discard = false; this.confirm_reload = false; cx.notify(); })))
                 .child(ui::button("context-discard", "Discard edits", false).relative().child(ui::layout_probe("context-discard")).on_click(cx.listener(|this, _, _, cx| {
                     if this.confirm_reload { this.reload(true, cx); } else { cx.emit(ContextEvent::Dismiss); }

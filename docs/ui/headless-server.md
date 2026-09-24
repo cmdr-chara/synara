@@ -1,8 +1,9 @@
-# Native headless workspace preview
+# Native local headless workspace
 
 `synara-server` starts the native workspace service and recovery without GPUI.
 It serves an authenticated local browser for adding existing folders, creating
-unsent tasks, editing their drafts, and reading task messages on loopback. This
+unsent tasks, editing drafts, explicitly running/stopping local ACP agents,
+reviewing one-time task requests and reading messages on loopback. This
 is an early headless surface, not the full upstream
 web workspace.
 
@@ -35,7 +36,7 @@ text, and return generic errors without filesystem paths. They do not start
 an agent or approve an interaction. The browser warns before discarding unsaved
 draft edits when switching tasks.
 It excludes reasoning-role messages and does not add tool output, attachments,
-workspace-root or task-directory fields, or pending interactions. Visible
+workspace-root or task-directory fields to the transcript endpoint. Visible
 message text itself may contain paths or
 other private content. The server also accepts `--token-file PATH` in place of
 the environment variable. On Unix the
@@ -49,10 +50,61 @@ before opening or recovering a database; starting against one already owned
 by another process fails immediately. For an explicit path, the caller is
 responsible for its parent-directory permissions.
 
+## Explicit task execution and requests
+
+`GET /api/tasks/<task-id>/run` reports the current web run. An explicit
+`POST /api/tasks/<task-id>/run` with `{"text":"...","expected_draft":"..."}`
+starts a local ACP prompt after draft, lifecycle and admission checks.
+`POST /api/tasks/<task-id>/stop` with `{}` cancels its owned run. The browser
+asks for confirmation, retains the submitted draft, preserves later typing,
+and polls status and messages. Up to eight runs can be active, each with a
+one-hour limit. Reload does not replay a prompt. This does not grant blanket
+permission: the agent retains only its existing local authority and explicitly
+answered requests. Use an already configured local agent. Direct-model and
+remote tasks are not supported by this execution surface.
+
+`GET /api/tasks/<task-id>/interactions` returns a bounded `items` list and `more`.
+A maximum of two requests are shown at once, from a queue capped at 32, with
+24 KiB per visible item and the existing 64 KiB HTTP response bound. These are
+Session-scoped requests from the existing InteractionBroker, not a separate
+provider backend. Unsupported connection/URL interactions, invalid request
+shapes and overflow cancel rather than grant authority. Broker requests expire
+after five minutes and also retire when the turn or response channel closes.
+
+The browser displays agent-provided request text, with one-time allow/deny/cancel
+choices, or text, finite number, Boolean, single-choice and multi-choice fields.
+No tool output or full command/diff context is shown in this browser slice.
+Deny requests that cannot be assessed from the displayed text. URLs are not
+made into links. Persistent permission choices are never offered. Form values
+are preserved during status polling but are not stored or restored after page
+navigation/reload. Accepted answers are sent to the configured agent.
+
+Responses use `POST /api/tasks/<task-id>/interactions` and the same bearer,
+Host/Origin and JSON checks as all writes. Examples:
+
+```json
+{"action":"permission","id":"<receipt>","choice":"<offered-once-choice>"}
+{"action":"permission","id":"<receipt>","choice":null}
+{"action":"input","id":"<receipt>","response":{"action":"accept","values":{"count":2}}}
+{"action":"input","id":"<receipt>","response":{"action":"decline"}}
+{"action":"input","id":"<receipt>","response":{"action":"cancel"}}
+```
+
+Receipts are newly generated application identifiers, not provider session/request
+IDs. A wrong task, expired request, duplicate answer or previous-server receipt
+returns 409 without delivery. Invalid answers return 400 and leave the original
+request pending for correction. All fields are checked against the original
+schema before consuming its one-shot channel. Successful delivery to the broker
+is not proof that the agent executed a tool or accepted the answer. Stop and
+shutdown cancel pending requests, and restart does not restore approvals.
+
+## Remaining deployment scope
+
 Only loopback bind addresses are accepted. Remote access, TLS termination,
 deployment/update packaging, and the full web workspace remain outside this
 server slice. The responses are bounded and omit workspace filesystem paths.
 Focused tests cover authentication, Host/Origin checks, readiness, lock
 contention/release, shutdown, private default storage, bounded task reads,
-and authenticated task creation and draft updates.
+authenticated task creation and draft updates, one-shot interaction replies,
+queue limits, schema checks and browser draft ownership.
 A deployed remote journey was not exercised.

@@ -184,9 +184,24 @@ impl Shell {
         objective: String,
         cx: &mut Context<Self>,
     ) -> bool {
+        if !self.goal_edit_command_ready(cx) {
+            return false;
+        }
+
+        self.open_goals(cx);
+        self.goals.error = None;
+        self.goals.command_save_pending = true;
+        self.notice = None;
+        self.goals
+            .input
+            .update(cx, |entry, cx| entry.set_text(objective.clone(), cx));
+        self.write_goal(0, GoalEdit::Set(objective), cx);
+        true
+    }
+    fn goal_edit_command_ready(&mut self, cx: &mut Context<Self>) -> bool {
         let blocked = if self.goals.task != self.selected || self.goals.value.is_none() {
             Some("The goal for this task is still loading or unavailable. The command was kept.")
-        } else if self.goals.loading || self.goals.busy {
+        } else if self.goals.loading || self.goals.busy || self.goals.deferred.is_some() {
             Some("Wait for the current goal operation to finish. The command was kept.")
         } else if self.goals.lease.is_some() {
             Some("Pause the active goal before replacing its objective. The command was kept.")
@@ -203,15 +218,44 @@ impl Shell {
             return false;
         }
 
+        true
+    }
+    pub(super) fn edit_goal_from_command(
+        &mut self,
+        objective: Option<String>,
+        cx: &mut Context<Self>,
+    ) -> bool {
+        if !self.goal_edit_command_ready(cx) {
+            return false;
+        }
+        self.open_goals(cx);
+        if let Some(objective) = objective {
+            self.goals
+                .input
+                .update(cx, |entry, cx| entry.set_text(objective, cx));
+        }
+        self.notice = Some(
+            "Goal editor opened. Save is required to change the saved objective. Nothing was sent."
+                .into(),
+        );
+        cx.notify();
+        true
+    }
+    pub(super) fn clear_goal_from_command(&mut self, cx: &mut Context<Self>) -> bool {
+        if !self.goal_edit_command_ready(cx) {
+            return false;
+        }
         self.open_goals(cx);
         self.goals.error = None;
-        self.goals.command_save_pending = true;
         self.notice = None;
-        self.goals
-            .input
-            .update(cx, |entry, cx| entry.set_text(objective.clone(), cx));
-        self.write_goal(0, GoalEdit::Set(objective), cx);
+        self.write_goal(0, GoalEdit::Clear, cx);
         true
+    }
+    pub(super) fn resume_goal_from_command(&mut self, cx: &mut Context<Self>) -> bool {
+        self.open_goals(cx);
+        // The exact command is replaced only on successful preparation. Never
+        // quote the command itself into the provider prompt or discard it on error.
+        self.resume_goals_with_draft(Some(""), cx)
     }
     fn write_goal(&mut self, delta: u64, edit: GoalEdit, cx: &mut Context<Self>) {
         if self.goals.busy {
@@ -328,6 +372,9 @@ impl Shell {
     }
     fn goal_resume_ready(&self, cx: &App) -> bool {
         if self.goals.busy
+            || self.goals.deferred.is_some()
+            || self.goals.loading
+            || self.goals.checking
             || self.goals.lease.is_some()
             || self.goals.dirty(cx)
             || self.loading_task.is_some()
@@ -342,6 +389,7 @@ impl Shell {
             return false;
         };
         Some(task.id) == self.goals.task
+            && task.thread_id == thread.id
             && !self.busy.contains(&task.id)
             && !self.connecting.contains(&task.id)
             && !self.controls.is_pending(task.id)
@@ -354,20 +402,26 @@ impl Shell {
             )
     }
     fn resume_goals(&mut self, cx: &mut Context<Self>) {
+        self.resume_goals_with_draft(None, cx);
+    }
+    fn resume_goals_with_draft(&mut self, draft: Option<&str>, cx: &mut Context<Self>) -> bool {
         if !self.goal_resume_ready(cx) {
             self.goals.error = Some(
                 "Finish the current turn, approvals and attachment edits before resuming a goal."
                     .into(),
             );
             cx.notify();
-            return;
+            return false;
         }
         let (Some(task), Some(thread), Some(value)) =
             (self.task(), self.thread.as_ref(), self.goals.value.as_ref())
         else {
-            return;
+            return false;
         };
-        match value.prepare(task.id, self.composer.read(cx).text()) {
+        let accepted = match value.prepare(
+            task.id,
+            draft.unwrap_or_else(|| self.composer.read(cx).text()),
+        ) {
             Ok(text) => {
                 let task = task.id;
                 let thread = thread.id;
@@ -396,10 +450,15 @@ impl Shell {
                 self.goals.error = None;
                 self.notice=Some("Review the goal request and Send. This resume allows at most two visible, delayed follow-ups. Editing, Pause or navigation disarms it.".into());
                 self.focus_composer = true;
+                true
             }
-            Err(e) => self.goals.error = Some(e.to_string()),
-        }
+            Err(e) => {
+                self.goals.error = Some(e.to_string());
+                false
+            }
+        };
         cx.notify();
+        accepted
     }
     pub(super) fn goal_input_changed(&mut self, cx: &mut Context<Self>) {
         if self.goals.lease.as_ref().is_some_and(|l| {

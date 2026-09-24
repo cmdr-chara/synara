@@ -4,7 +4,9 @@
 //!
 //! Native web engines remain platform adapters. This crate owns tab/session state,
 //! navigation/history, consent binding and the narrow command vocabulary crossing
-//! the Rust/native boundary. It deliberately exposes no generic page-to-host RPC.
+//! the Rust/native boundary. It exposes no generic page-to-host RPC. Manual WebKit
+//! tabs may report bounded, value-free runtime error metadata through an isolated
+//! content-script world; that channel grants no page or agent operation authority.
 
 #[cfg(all(feature = "native-webview", target_os = "linux"))]
 pub mod native;

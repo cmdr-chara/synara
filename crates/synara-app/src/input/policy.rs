@@ -13,6 +13,17 @@ pub(super) fn submits_enter(
         EntryMode::Editor => command,
     }
 }
+
+pub(super) fn submits_enter_with_custom_override(
+    mode: EntryMode,
+    send_on_enter: bool,
+    command: bool,
+    shift: bool,
+    alt: bool,
+    custom_send_binding: bool,
+) -> bool {
+    !custom_send_binding && submits_enter(mode, send_on_enter, command, shift, alt)
+}
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -72,5 +83,27 @@ mod tests {
         ));
         assert!(!submits_enter(EntryMode::Editor, true, false, false, false));
         assert!(submits_enter(EntryMode::Editor, false, true, false, false));
+    }
+
+    #[test]
+    fn explicit_composer_send_binding_replaces_both_enter_defaults() {
+        for (send_on_enter, command) in [(true, false), (false, true)] {
+            assert!(!submits_enter_with_custom_override(
+                EntryMode::Composer,
+                send_on_enter,
+                command,
+                false,
+                false,
+                true,
+            ));
+        }
+        assert!(submits_enter_with_custom_override(
+            EntryMode::Composer,
+            true,
+            false,
+            false,
+            false,
+            false,
+        ));
     }
 }

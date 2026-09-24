@@ -339,6 +339,29 @@ pub(super) fn build(
                 false,
             )
         }
+        AddNewWorktree {
+            path: destination,
+            branch: selected,
+            head,
+        } => {
+            let destination = path(destination, local)?;
+            branch(&selected)?;
+            object_id(&head)?;
+            (
+                args(&[
+                    "worktree",
+                    "add",
+                    "-b",
+                    &selected,
+                    "--",
+                    &destination,
+                    &head,
+                ]),
+                true,
+                true,
+                false,
+            )
+        }
         RemoveWorktree { path: destination } => {
             let destination = path(destination, local)?;
             (

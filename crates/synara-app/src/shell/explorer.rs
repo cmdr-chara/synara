@@ -44,6 +44,7 @@ pub(super) enum ExplorerReply {
         generation: u64,
         project: Option<ProjectId>,
         directory: PathBuf,
+        scope: Option<NameSearchScope>,
         result: Result<Vec<SearchMatch>, String>,
     },
     NameSearch {
@@ -71,6 +72,8 @@ pub(super) struct ExplorerState {
     query: Entity<TextEntry>,
     pub search_open: bool,
     searching: bool,
+    inflight: Option<u64>,
+    debounce: Option<gpui::Task<()>>,
     results: Vec<SearchMatch>,
     paths: Vec<FileEntry>,
     paths_scope: Option<NameSearchScope>,
@@ -90,6 +93,7 @@ impl ExplorerState {
                 EntryEvent::Submit => this.search_explorer(cx),
                 EntryEvent::Changed => {
                     this.explorer.reset_search();
+                    this.schedule_explorer_search(cx);
                 }
                 _ => {}
             }
@@ -101,6 +105,8 @@ impl ExplorerState {
             query,
             search_open: false,
             searching: false,
+            inflight: None,
+            debounce: None,
             results: vec![],
             paths: vec![],
             paths_scope: None,
@@ -117,6 +123,7 @@ impl ExplorerState {
         self.dialog.is_some()
     }
     pub fn reset_search(&mut self) {
+        self.debounce = None;
         self.generation = self.generation.wrapping_add(1);
         self.results.clear();
         self.paths.clear();
@@ -422,11 +429,16 @@ impl Shell {
                 generation,
                 project,
                 directory,
+                scope,
                 result,
             } => {
+                if self.explorer.inflight == Some(generation) {
+                    self.explorer.inflight = None;
+                }
                 if generation != self.explorer.generation
                     || self.project != project
                     || self.directory != directory
+                    || self.current_name_search_scope() != scope
                 {
                     return;
                 }
@@ -443,6 +455,9 @@ impl Shell {
                 scope,
                 result,
             } => {
+                if self.explorer.inflight == Some(generation) {
+                    self.explorer.inflight = None;
+                }
                 if generation != self.explorer.generation
                     || self.project != project
                     || self.current_name_search_scope().as_ref() != Some(&scope)
@@ -477,9 +492,64 @@ impl Shell {
             window.focus(&focus, cx);
         }
     }
+    fn schedule_explorer_search(&mut self, cx: &mut Context<Self>) {
+        if !self.explorer.search_open || self.explorer.query.read(cx).text().trim().is_empty() {
+            return;
+        }
+        let generation = self.explorer.generation;
+        let project = self.project;
+        let selected = self.selected;
+        let scope = self.current_name_search_scope();
+        let directory = self.directory.clone();
+        self.explorer.debounce = Some(cx.spawn(async move |weak, cx| {
+            cx.background_executor()
+                .timer(std::time::Duration::from_millis(350))
+                .await;
+            loop {
+                let waiting = weak
+                    .update(cx, |this, cx| {
+                        if this.explorer.generation != generation
+                            || !this.explorer.search_open
+                            || this.project != project
+                            || this.selected != selected
+                            || this.current_name_search_scope() != scope
+                            || this.directory != directory
+                            || this.panel != Panel::Files
+                            || this.explorer.modal_open()
+                            || this.close != CloseState::Open
+                        {
+                            return false;
+                        }
+                        // Coalesce edits while one local/SSH traversal is still owned.
+                        // Do not turn an old response into the new query's result.
+                        if this.explorer.inflight.is_some()
+                            || this.explorer.query.read(cx).is_composing()
+                        {
+                            return true;
+                        }
+                        this.search_explorer(cx);
+                        false
+                    })
+                    .unwrap_or(false);
+                if !waiting {
+                    break;
+                }
+                cx.background_executor()
+                    .timer(std::time::Duration::from_millis(100))
+                    .await;
+            }
+        }));
+    }
     fn search_explorer(&mut self, cx: &mut Context<Self>) {
         let query = self.explorer.query.read(cx).text().trim().to_owned();
-        if query.is_empty() || self.explorer.searching || self.explorer.modal_open() {
+        if self.explorer.inflight.is_some() {
+            self.schedule_explorer_search(cx);
+            return;
+        }
+        if query.is_empty()
+            || self.explorer.modal_open()
+            || self.explorer.query.read(cx).is_composing()
+        {
             return;
         }
         let Some(target) = self.workspace_target() else {
@@ -498,6 +568,7 @@ impl Shell {
         self.explorer.reset_search();
         self.explorer.searching = true;
         let generation = self.explorer.generation;
+        self.explorer.inflight = Some(generation);
         let project = self.project;
         let kind = self.explorer.search_kind;
         let directory = self.directory.clone();
@@ -507,18 +578,24 @@ impl Shell {
             directory.clone()
         };
         let service = self.controller.workspace.clone();
+        let scope = self.current_name_search_scope();
         if kind == SearchKind::Names {
             let Some(scope) = name_scope else {
                 return;
             };
             self.job(async move {
-                let result = match target {
-                    WorkspaceTarget::Local { root } => search_file_entries(root, query, 200).await,
-                    WorkspaceTarget::Ssh { workspace, root } => {
-                        let filesystem = remote_filesystem(service, workspace, root).await?;
-                        search_remote_file_entries(filesystem, query, 200).await
+                let result = async {
+                    match target {
+                        WorkspaceTarget::Local { root } => {
+                            search_file_entries(root, query, 200).await
+                        }
+                        WorkspaceTarget::Ssh { workspace, root } => {
+                            let filesystem = remote_filesystem(service, workspace, root).await?;
+                            search_remote_file_entries(filesystem, query, 200).await
+                        }
                     }
-                };
+                }
+                .await;
                 Ok(Update::Explorer(Box::new(ExplorerReply::NameSearch {
                     generation,
                     project,
@@ -551,6 +628,7 @@ impl Shell {
                 generation,
                 project,
                 directory,
+                scope,
                 result: result.map_err(|error| error.to_string()),
             })))
         });
@@ -832,6 +910,7 @@ impl Shell {
             }))
             .child(
                 div()
+                    .flex_shrink_0()
                     .px_2()
                     .relative()
                     .child(ui::layout_probe("file-content-query"))
@@ -840,6 +919,7 @@ impl Shell {
             .child(
                 div()
                     .flex()
+                    .flex_shrink_0()
                     .gap_1()
                     .child(
                         ui::button("file-search-names", "Files and folders", names).on_click(
@@ -870,6 +950,7 @@ impl Shell {
                     },
                     state.project_wide,
                 )
+                .flex_shrink_0()
                 .on_click(cx.listener(|this, _, _, cx| {
                     this.explorer.project_wide = !this.explorer.project_wide;
                     this.explorer.reset_search();
@@ -890,12 +971,14 @@ impl Shell {
                     },
                     false,
                 )
+                .flex_shrink_0()
                 .relative()
                 .child(ui::layout_probe("file-search-run"))
                 .on_click(cx.listener(|this, _, _, cx| this.search_explorer(cx))),
             )
             .child(
                 div()
+                    .flex_shrink_0()
                     .px_2()
                     .text_xs()
                     .text_color(rgb(palette().muted))
@@ -920,10 +1003,10 @@ impl Shell {
                         )
                     } else {
                         if names {
-                            "Search file and folder names across the project. Press Enter.".into()
+                            "Search file and folder names. Results update after typing.".into()
                         } else {
                             format!(
-                                "Literal search in the {}. Press Enter.",
+                                "Literal search in the {}. Results update after typing.",
                                 if state.project_wide {
                                     "project"
                                 } else {
@@ -961,6 +1044,7 @@ impl Shell {
                         .min_w_0()
                         .relative()
                         .child(ui::layout_probe_slot("file-name-match", i))
+                        .flex_shrink_0()
                         .child(
                             div()
                                 .flex()
@@ -991,6 +1075,7 @@ impl Shell {
                         .min_w_0()
                         .relative()
                         .child(ui::layout_probe_slot("file-content-match", i))
+                        .flex_shrink_0()
                         .child(div().w_full().text_ellipsis().text_xs().child(format!(
                             "{}:{}",
                             result.relative_path.display(),

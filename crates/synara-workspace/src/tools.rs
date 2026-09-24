@@ -1,4 +1,6 @@
+mod history;
 use crate::{WorkspaceError, WorkspaceResult};
+pub use history::*;
 use std::{path::PathBuf, sync::Arc, time::Duration};
 use synara_runtime::{
     ExecutionHost, FileEntry, FileProbe, FileSnapshot, FileVersion, LaunchSpec, LocalHost,
@@ -462,6 +464,109 @@ impl GitService {
         let bytes = self.run(args, 4 * 1024 * 1024).await?;
         Ok(String::from_utf8_lossy(&bytes).into_owned())
     }
+    /// Read a regular text file from an explicit local commit-ish without
+    /// touching the worktree, index, filters, or remote network.
+    pub async fn file_at_ref(
+        &self,
+        path: PathBuf,
+        reference: String,
+        cancel: &tokio_util::sync::CancellationToken,
+    ) -> WorkspaceResult<GitFileRevision> {
+        if !self.host.is_local() {
+            return Err(RuntimeError::Unsupported(
+                "Git reference comparison currently requires a local repository.".into(),
+            )
+            .into());
+        }
+        let reference = reference.trim().to_owned();
+        if reference.is_empty()
+            || reference.len() > 1024
+            || reference.chars().any(char::is_control)
+            || reference.chars().any(char::is_whitespace)
+        {
+            return Err(WorkspaceError::Invalid(
+                "Enter a branch, tag, or commit without whitespace.".into(),
+            ));
+        }
+        tokio::select! {
+            biased;
+            _ = cancel.cancelled() => Err(RuntimeError::Closed.into()),
+            result = async {
+                let path = self.checked_path(path).await?;
+                let safe = |mut args: Vec<String>| {
+                    let mut prefixed = vec![
+                        "--no-replace-objects".into(),
+                        "--no-lazy-fetch".into(),
+                        "-c".into(),
+                        "protocol.allow=never".into(),
+                        "-c".into(),
+                        "credential.helper=".into(),
+                    ];
+                    prefixed.append(&mut args);
+                    prefixed
+                };
+                let commit = self.run(safe(vec![
+                    "rev-parse".into(),
+                    "--verify".into(),
+                    "--end-of-options".into(),
+                    format!("{reference}^{{commit}}"),
+                ]), 256).await?;
+                let commit = String::from_utf8_lossy(&commit).trim().to_owned();
+                if !git_object_id(&commit) {
+                    return Err(WorkspaceError::Invalid(
+                        "Git did not resolve the selected reference to a commit.".into(),
+                    ));
+                }
+                let tree = self.run(safe(vec![
+                    "ls-tree".into(),
+                    "-z".into(),
+                    commit.clone(),
+                    "--".into(),
+                    path.clone(),
+                ]), 8192).await?;
+                if tree.is_empty() {
+                    return Err(WorkspaceError::NotFound);
+                }
+                if !tree.ends_with(&[0]) || tree[..tree.len().saturating_sub(1)].contains(&0) {
+                    return Err(WorkspaceError::Invalid(
+                        "Git returned malformed file data for this reference.".into(),
+                    ));
+                }
+                let record = std::str::from_utf8(&tree[..tree.len().saturating_sub(1)])
+                    .map_err(|_| WorkspaceError::Invalid("Git returned malformed file data for this reference.".into()))?;
+                let Some((header, returned_path)) = record.split_once('\t') else {
+                    return Err(WorkspaceError::NotFound);
+                };
+                let fields: Vec<_> = header.split_whitespace().collect();
+                if returned_path != path
+                    || fields.len() != 3
+                    || !matches!(fields[0], "100644" | "100755")
+                    || fields[1] != "blob"
+                    || !git_object_id(fields[2])
+                {
+                    return Err(WorkspaceError::Invalid(
+                        "The selected reference does not contain a regular text file at this path.".into(),
+                    ));
+                }
+                let object = fields[2].to_owned();
+                let size = self.run(safe(vec!["cat-file".into(), "-s".into(), object.clone()]), 128).await?;
+                let size: usize = String::from_utf8_lossy(&size)
+                    .trim()
+                    .parse()
+                    .map_err(|_| WorkspaceError::Invalid("Git returned malformed file size data.".into()))?;
+                if size > MAX_EDITOR_BYTES {
+                    return Err(RuntimeError::Limit.into());
+                }
+                let bytes = self.run(safe(vec!["cat-file".into(), "blob".into(), object]), MAX_EDITOR_BYTES).await?;
+                if bytes.contains(&0) {
+                    return Err(RuntimeError::Unsupported("Binary revisions are not compared as text.".into()).into());
+                }
+                let text = String::from_utf8(bytes)
+                    .map_err(|_| RuntimeError::Unsupported("This revision is not UTF-8 text.".into()))?;
+                Ok(GitFileRevision { commit, text })
+            } => result,
+        }
+    }
     async fn checked_path(&self, path: PathBuf) -> WorkspaceResult<String> {
         if self.host.is_local() {
             let root = self.root.clone();
@@ -526,6 +631,9 @@ impl GitService {
         .await?;
         Ok(())
     }
+}
+fn git_object_id(value: &str) -> bool {
+    matches!(value.len(), 40 | 64) && value.bytes().all(|byte| byte.is_ascii_hexdigit())
 }
 fn parse_status(bytes: &[u8]) -> WorkspaceResult<Vec<GitEntry>> {
     let mut fields = bytes.split(|b| *b == 0).peekable();
@@ -655,6 +763,81 @@ mod tests {
         git.unstage("[literal].txt".into()).await.unwrap();
         assert!(git.diff(true, None).await.unwrap().is_empty());
         assert!(git.stage("../escape".into()).await.is_err());
+    }
+
+    #[tokio::test]
+    async fn file_at_ref_reads_only_the_selected_committed_blob() {
+        let root = tempfile::tempdir().unwrap();
+        let run = |args: &[&str]| {
+            let result = std::process::Command::new("git")
+                .args(args)
+                .current_dir(root.path())
+                .output()
+                .unwrap();
+            assert!(
+                result.status.success(),
+                "{}",
+                String::from_utf8_lossy(&result.stderr)
+            );
+        };
+        run(&["init", "-q"]);
+        run(&["config", "user.email", "test@example.invalid"]);
+        run(&["config", "user.name", "Test"]);
+        let file = "literal [name].txt";
+        std::fs::write(root.path().join(file), "committed text\n").unwrap();
+        run(&["add", "--", file]);
+        run(&[
+            "-c",
+            "core.hooksPath=/dev/null",
+            "-c",
+            "commit.gpgSign=false",
+            "commit",
+            "-qm",
+            "initial",
+        ]);
+
+        let marker = root.path().join("filter-ran");
+        std::fs::write(
+            root.path().join(".gitattributes"),
+            "* filter=probe diff=probe\n",
+        )
+        .unwrap();
+        let command = format!("touch '{}'; cat", marker.display());
+        run(&["config", "filter.probe.clean", &command]);
+        run(&["config", "diff.probe.textconv", &command]);
+        std::fs::write(root.path().join(file), "dirty working text\n").unwrap();
+
+        let git = GitService::new(root.path().into());
+        let revision = git
+            .file_at_ref(
+                file.into(),
+                "HEAD".into(),
+                &tokio_util::sync::CancellationToken::new(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(revision.text, "committed text\n");
+        assert_eq!(
+            std::fs::read_to_string(root.path().join(file)).unwrap(),
+            "dirty working text\n"
+        );
+        assert!(!marker.exists());
+        assert!(git
+            .file_at_ref(
+                file.into(),
+                "--help".into(),
+                &tokio_util::sync::CancellationToken::new(),
+            )
+            .await
+            .is_err());
+        assert!(git
+            .file_at_ref(
+                "../outside.txt".into(),
+                "HEAD".into(),
+                &tokio_util::sync::CancellationToken::new(),
+            )
+            .await
+            .is_err());
     }
 
     async fn git_fixture(root: &Path) -> GitService {

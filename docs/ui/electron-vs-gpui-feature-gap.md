@@ -10,6 +10,68 @@ continuation notes remain in the [preserved pre-Hubs inventory](electron-vs-gpui
 The full acceptance backlog remains in [ROADMAP.md](../../ROADMAP.md). No historical
 gap is closed merely because this current view is shorter or a heading was renamed.
 
+## September 24 web interaction and live search
+
+The current inventory is **40 bounded delivered slices** after the separate
+[web-interaction/search batch](../verification/parity-2026-09-24-batch6.md).
+The authenticated loopback browser can review task-scoped one-time permissions
+and structured questions through the existing generic interaction broker.
+Receipt, task and cancellation checks apply at response time, and unchanged
+polls preserve typed form values. Persistent approvals, connection/URL sign-in,
+durable question drafts and richer tool context remain outside this slice.
+Explorer now coalesces live name/content queries after a short idle interval,
+keeps one traversal in flight and fixes narrow-pane search result hit targets.
+M2 and N2 remain OPEN alongside the other 19 broad gates.
+
+## September 24 committed-file history
+
+The preceding history batch brought the inventory to **38 bounded delivered slices**. The native local editor
+now lists commit-pinned exact-path history, previews a selected text blob without
+checkout and copies a revision only on request. Unsaved buffers and Undo survive
+returning from history. Worktree blame and HEAD/worktree comparisons remain open:
+Git can execute configured clean filters even with `--no-textconv`, so this slice
+reads committed objects only and disables lazy fetching/network protocols.
+All 21 broader gates remain OPEN. See the
+[scope, blocker and verification receipt](../verification/parity-2026-09-24-batch5.md).
+
+## September 24 document/export/import continuation
+
+The preceding document batch brought the inventory to **37 bounded slices**. The fourth continuation
+batch adds local Hub Library PDF paging/zoom over immutable snapshots, reviewed
+original-file export using the existing no-overwrite owner, and the shared
+history-import flow embedded directly in onboarding. PDF helpers are OS-managed,
+Linux-only and resource-limited, not an OS sandbox or bundled cross-platform
+renderer. No binary PDF prompt intake or historical Studio file versions are
+implied. All 21 gates remain OPEN. See [native documents](native-documents.md)
+and [exact scope and evidence](../verification/parity-2026-09-24-batch4.md).
+
+## September 24 implementation continuation
+
+Against the same pinned upstream `eaa61eded31b6755d4f30ba8eabc5d905cf817cb`,
+three new bounded slices add explicit local web agent execution and cancellation,
+goal resume/clear/edit command forms, and reviewed local iOS Simulator app install
+plus termination. The previous 25 slices are preserved rather than reimplemented.
+See the [batch receipt](../verification/parity-2026-09-24-batch1.md) and the
+[roadmap's separate delivered inventory](../../ROADMAP.md#delivered-feature-slices-in-the-september-24-continuation).
+All 21 gates remain open. Web sign-in/approval and remote deployment, native Apple
+input/helper packaging and live platform acceptance are still missing.
+
+## September 24 setup, isolated forks and model controls
+
+At this checkpoint the delivered inventory was 34 bounded slices after three continuation
+batches. The third adds an inert setup chat so empty-install onboarding can use
+existing task-scoped ACP Connect, advertised authentication and native connection
+questions. Merely preparing or reopening setup does not start a provider. A
+reported connected session is not evidence of quota or a successful paid turn.
+
+Assistant-turn environment review can now create a new local branch and worktree
+from the reviewed commit. Source dirty files stay untouched and are not copied.
+Checkout requires a separate repository-execution approval, and the saved unsent
+task owns the resulting directory. No automatic cleanup or SSH managed creation
+is claimed. Composer Alt+[ / Alt+] and `/synara/model next` / `previous` use the
+same live-advertised ACP model owner, without changing editor/terminal/IME input.
+All 21 gates remain OPEN. See [scope and evidence](../verification/parity-2026-09-24-batch3.md).
+
 ## September 23 in-progress native continuation
 
 The latest native working tree adds bounded microphone recording and ChatGPT
@@ -409,3 +471,24 @@ platform evidence remains distinct from source presence. See [Hubs](hubs.md) and
 
 The [workspace adaptation receipt](monocode-workspace-adaptation.md) records the
 exact source scope, reference archive, guards and remaining native acceptance.
+
+## September 24 editor and Studio depth batch
+
+Three further bounded slices bring the delivered inventory to **31** (25 earlier
+plus six continuation additions). All **21 broad gates remain OPEN**, with
+16 material-depth gaps and five near-parity lanes.
+
+`D4` now has opt-in, per-buffer local auto-save after one second idle. It uses
+the existing version-checked writer, preserves later keystrokes and undo, skips
+IME/modal/other-save ownership, and stops auto-save on conflict or write failure
+without overwriting either version. Closed/reopened buffers and application
+restart do not retain auto-save permission. Remote buffers still require Save.
+
+`D14` gains still-WebP previews with decoded-pixel and output caps and a single
+shared preview worker permit. Images remain read-only and animated/damaged WebP
+is refused. It also gains reporting-turn metadata and a turn filter, reconstructed
+from durable tool-output replacement events rather than inferred from recent
+chat activity. Reused tool IDs and status-only updates do not relabel old outputs.
+Displayed bytes are explicitly the current file, not a historical turn snapshot.
+Full long-running output/version organization and cross-platform acceptance
+remain open. See `docs/verification/parity-2026-09-24-batch2.md` for checks.

@@ -49,12 +49,12 @@ impl ChoiceMenu {
         mut self,
         sources: Vec<ModelSource>,
         rows: Vec<ModelRow>,
-        current: usize,
-        current_agent: String,
+        selection: (usize, String),
         workspace: WorkspaceService,
         runtime: Handle,
         cx: &mut Context<Self>,
     ) -> Self {
+        let (current, current_agent) = selection;
         debug_assert_eq!(rows.len(), self.choices.len());
         self.search = cx.new(|cx| {
             TextEntry::new("Search models...", EntryMode::SingleLine, 32., cx)

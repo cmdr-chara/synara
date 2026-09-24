@@ -41,6 +41,12 @@ pub(super) fn open_url_args(id: String, url: String) -> Vec<String> {
 pub(super) fn launch_args(id: String, bundle_id: String) -> Vec<String> {
     vec!["simctl".into(), "launch".into(), id, bundle_id]
 }
+pub(super) fn install_args(id: String, path: String) -> Vec<String> {
+    vec!["simctl".into(), "install".into(), id, path]
+}
+pub(super) fn terminate_args(id: String, bundle_id: String) -> Vec<String> {
+    vec!["simctl".into(), "terminate".into(), id, bundle_id]
+}
 pub(super) fn valid_bundle_id(value: &str) -> bool {
     value.len() <= 255
         && value.split('.').count() >= 2

@@ -31,6 +31,8 @@ pub(super) struct DeviceView {
     shutdown_confirmation: bool,
     url: Entity<TextEntry>,
     bundle_id: Entity<TextEntry>,
+    app_path: Entity<TextEntry>,
+    install_confirmation: Option<(DeviceId, PathBuf)>,
 }
 impl DeviceView {
     pub fn new(cx: &mut Context<Shell>) -> Self {
@@ -54,6 +56,10 @@ impl DeviceView {
             bounds: Rc::new(Cell::new(Bounds::default())),
             shutdown_confirmation: false,
             url: cx.new(|cx| TextEntry::new("https://...", EntryMode::SingleLine, 34., cx)),
+            install_confirmation: None,
+            app_path: cx.new(|cx| {
+                TextEntry::new("/absolute/path/to/App.app", EntryMode::SingleLine, 34., cx)
+            }),
             bundle_id: cx
                 .new(|cx| TextEntry::new("com.example.App", EntryMode::SingleLine, 34., cx)),
         }
@@ -77,6 +83,7 @@ impl DeviceView {
         self.captured = None;
         self.grant = None;
         self.shutdown_confirmation = false;
+        self.install_confirmation = None;
     }
     pub fn configuration_changed(&mut self) {
         self.retire();
@@ -103,6 +110,8 @@ enum Outcome {
     Lifecycle,
     UrlOpened,
     AppLaunched,
+    AppInstalled,
+    AppTerminated,
 }
 impl Shell {
     fn device_tools(&self) -> Result<DeviceTools, String> {
@@ -292,6 +301,94 @@ impl Shell {
         });
         cx.notify();
     }
+    fn install_device_app(&mut self, cx: &mut Context<Self>) {
+        if self.device.busy
+            || self.panel != Panel::Device
+            || self.device.app_path.read(cx).is_composing()
+        {
+            return;
+        }
+        let Some(device) = self
+            .device
+            .target()
+            .cloned()
+            .filter(|device| device.availability == DeviceAvailability::Ready)
+        else {
+            return;
+        };
+        let tools = match self.device_tools() {
+            Ok(tools) => tools,
+            Err(error) => {
+                self.fail_device(error, cx);
+                return;
+            }
+        };
+        let path = PathBuf::from(self.device.app_path.read(cx).text().trim());
+        if let Err(error) = tools.validate_install_app(&device, &path) {
+            self.device.error = Some(error.to_string());
+            cx.notify();
+            return;
+        }
+        let review = (device.descriptor.id.clone(), path.clone());
+        if self.device.install_confirmation.as_ref() != Some(&review) {
+            self.device.install_confirmation = Some(review);
+            self.device.message = format!(
+                "Install {} into {}? This may replace an installed app. Press Confirm install to proceed. It will not launch the app.",
+                path.display(),
+                device.descriptor.name
+            );
+            cx.notify();
+            return;
+        }
+        self.device.install_confirmation = None;
+        let cancel = self.device.cancel.clone();
+        self.device_job(async move {
+            tools
+                .install_app(&device, &path, &cancel)
+                .await
+                .map(|_| Outcome::AppInstalled)
+                .map_err(|error| error.to_string())
+        });
+        cx.notify();
+    }
+    fn terminate_device_app(&mut self, cx: &mut Context<Self>) {
+        if self.device.busy
+            || self.panel != Panel::Device
+            || self.device.bundle_id.read(cx).is_composing()
+        {
+            return;
+        }
+        let Some(device) = self
+            .device
+            .target()
+            .cloned()
+            .filter(|device| device.availability == DeviceAvailability::Ready)
+        else {
+            return;
+        };
+        let tools = match self.device_tools() {
+            Ok(tools) => tools,
+            Err(error) => {
+                self.fail_device(error, cx);
+                return;
+            }
+        };
+        let bundle_id = self.device.bundle_id.read(cx).text().trim().to_owned();
+        if let Err(error) = tools.validate_launch_app(&device, &bundle_id) {
+            self.device.error = Some(error.to_string());
+            cx.notify();
+            return;
+        }
+        let cancel = self.device.cancel.clone();
+        self.device_job(async move {
+            tools
+                .terminate_app(&device, &bundle_id, &cancel)
+                .await
+                .map(|_| Outcome::AppTerminated)
+                .map_err(|error| error.to_string())
+        });
+        cx.notify();
+    }
     fn enable_device_input(&mut self, cx: &mut Context<Self>) {
         if self.device.grant.is_some() {
             self.device.retire();
@@ -422,6 +519,17 @@ impl Shell {
                 self.device.retire();
                 self.device.message =
                     "App launched in the selected simulator. Capture to inspect its screen.".into();
+            }
+            Ok(Outcome::AppInstalled) => {
+                self.device.retire();
+                self.device.message =
+                    "App installed in the selected simulator. Launch remains explicit.".into();
+            }
+            Ok(Outcome::AppTerminated) => {
+                self.device.retire();
+                self.device.message =
+                    "App terminated in the selected simulator. Capture to inspect its screen."
+                        .into();
             }
             Err(error) => {
                 self.fail_device(error, cx);
@@ -610,7 +718,15 @@ impl Shell {
                     .child(div().text_size(px(12.)).child("Bundle ID"))
                     .child(self.device.bundle_id.clone())
                     .child(ui::action("device-launch-app", "Launch installed app", None, false,
-                        cx.listener(|this, _: &(), _, cx| this.launch_device_app(cx))))))
+                        cx.listener(|this, _: &(), _, cx| this.launch_device_app(cx))))
+                    .child(ui::action("device-terminate-app", "Terminate app", None, false,
+                        cx.listener(|this, _: &(), _, cx| this.terminate_device_app(cx))))))
+            .children((ready && self.settings.value.device.backend == DeviceBackend::AppleSimulator).then(||
+                div().flex().items_center().gap_2()
+                    .child(div().text_size(px(12.)).child("Local app bundle"))
+                    .child(self.device.app_path.clone())
+                    .child(ui::action("device-install-app", if self.device.install_confirmation.is_some() { "Confirm install" } else { "Install app..." }, None, false,
+                        cx.listener(|this, _: &(), _, cx| this.install_device_app(cx))))))
             .children(self.device.shutdown_confirmation.then(|| div().text_size(px(12.)).child("Shutdown stops the simulator, including work started outside Synara. Select another device or Disconnect to cancel.")))
             .child(viewer);
         if self.device.grant.is_some() {

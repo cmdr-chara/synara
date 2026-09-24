@@ -21,6 +21,7 @@ synara-runtime = { path = "../synara-runtime" }
 synara-workspace = { path = "../synara-workspace" }
 
 [dev-dependencies]
+async-trait.workspace = true
 tempfile.workspace = true
 
 [lints]

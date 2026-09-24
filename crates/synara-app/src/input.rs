@@ -6,12 +6,51 @@ use gpui::{
 };
 use std::{ops::Range, rc::Rc};
 use synara_core::TextBuffer;
+use synara_workspace::{
+    KeyBinding, KeybindingContext, KeybindingStroke, contextual_command_for_key,
+    has_contextual_override,
+};
 
 mod navigation;
 mod policy;
 
 const MAX_INPUT: usize = 1024 * 1024;
 const HISTORY_BYTES: usize = 16 * 1024 * 1024;
+
+pub(crate) fn keybinding_stroke(event: &KeyDownEvent) -> Option<KeybindingStroke> {
+    let modifiers = event.keystroke.modifiers;
+    if modifiers.control && modifiers.platform {
+        return None;
+    }
+    Some(KeybindingStroke {
+        key: event.keystroke.key.to_lowercase(),
+        primary: if cfg!(target_os = "macos") {
+            modifiers.platform
+        } else {
+            modifiers.control
+        },
+        alt: modifiers.alt,
+        shift: modifiers.shift,
+    })
+}
+
+fn input_owns_contextual_action(action: &str) -> bool {
+    matches!(action, "composer.send" | "editor.save")
+}
+
+#[cfg(test)]
+mod keybinding_routing_tests {
+    use super::input_owns_contextual_action;
+
+    #[test]
+    fn model_cycle_shortcuts_are_left_for_the_shell_dispatcher() {
+        assert!(!input_owns_contextual_action("model.next"));
+        assert!(!input_owns_contextual_action("model.previous"));
+        assert!(input_owns_contextual_action("composer.send"));
+        assert!(input_owns_contextual_action("editor.save"));
+    }
+}
+
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub enum EntryMode {
     SingleLine,
@@ -39,6 +78,8 @@ pub struct TextEntry {
     leading_icon: Option<crate::ui::Glyph>,
     picker_chrome: bool,
     send_on_enter: bool,
+    keybindings: Vec<KeyBinding>,
+    keybindings_installed: bool,
     mode: EntryMode,
     height: f32,
     lines: Vec<Line>,
@@ -86,6 +127,8 @@ impl TextEntry {
             leading_icon: None,
             picker_chrome: false,
             send_on_enter: true,
+            keybindings: Vec::new(),
+            keybindings_installed: false,
             mode,
             height,
             lines: vec![],
@@ -114,6 +157,13 @@ impl TextEntry {
 
     pub fn set_send_on_enter(&mut self, enabled: bool) {
         self.send_on_enter = enabled;
+    }
+
+    /// Install app-level keybindings for this input's focus context. Other
+    /// TextEntry modes ignore composer/editor actions automatically.
+    pub fn set_keybindings(&mut self, keybindings: &[KeyBinding]) {
+        self.keybindings = keybindings.to_vec();
+        self.keybindings_installed = true;
     }
 
     /// Whether a platform IME currently owns marked text. Presentation shortcuts
@@ -342,6 +392,37 @@ impl TextEntry {
         if self.buffer.marked().is_some() && matches!(key, "enter" | "escape") {
             return;
         }
+        let has_custom_send = self.mode == EntryMode::Composer
+            && has_contextual_override(&self.keybindings, "composer.send");
+        let has_custom_save = self.mode == EntryMode::Editor
+            && has_contextual_override(&self.keybindings, "editor.save");
+        if self.buffer.marked().is_none()
+            && let Some(stroke) = keybinding_stroke(event)
+        {
+            let context = match (self.keybindings_installed, self.mode) {
+                (true, EntryMode::Composer) => Some(KeybindingContext::Composer),
+                (true, EntryMode::Editor) => Some(KeybindingContext::Editor),
+                _ => None,
+            };
+            if let Some(action) = context.and_then(|context| {
+                contextual_command_for_key(&self.keybindings, context, &stroke)
+            }) {
+                if !input_owns_contextual_action(action) {
+                    // Shell-level shortcuts such as model cycling need to
+                    // bubble to the root's focus- and IME-guarded dispatcher.
+                    return;
+                }
+                if !event.is_held {
+                    match action {
+                        "composer.send" => cx.emit(EntryEvent::Submit),
+                        "editor.save" => cx.emit(EntryEvent::Save),
+                        _ => unreachable!("owned contextual actions are exhaustively handled"),
+                    }
+                }
+                cx.stop_propagation();
+                return;
+            }
+        }
         match (command, key) {
             (true, "a") => {
                 self.buffer.select_all();
@@ -381,14 +462,19 @@ impl TextEntry {
                     self.changed(cx);
                 }
             }
-            (true, "s") if self.mode == EntryMode::Editor => cx.emit(EntryEvent::Save),
+            (true, "s") if self.mode == EntryMode::Editor => {
+                if !has_custom_save {
+                    cx.emit(EntryEvent::Save);
+                }
+            }
             (_, "enter") => {
-                if policy::submits_enter(
+                if policy::submits_enter_with_custom_override(
                     self.mode,
                     self.send_on_enter,
                     command,
                     shift,
                     modifiers.alt,
+                    has_custom_send,
                 ) {
                     if !event.is_held {
                         cx.emit(EntryEvent::Submit);

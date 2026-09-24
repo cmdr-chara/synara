@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check roadmap structure, not feature completion or release readiness."""
+"""Validate the concise execution roadmap and its count-down invariants."""
 from __future__ import annotations
 
 from collections import Counter
@@ -8,116 +8,178 @@ import re
 import sys
 import unittest
 
-LANES = tuple('ABCDEFGHIJKLMNOPQ')
-HEADING = re.compile(r'^## ([A-Z])\. ([^\n]+)$', re.MULTILINE)
-TASK = re.compile(r'^- \[([^\]])\] ([A-Z])([0-9]+) (.+)$', re.MULTILINE)
+ITEM = re.compile(r"^- \[([^\]])\] ([MSA])(\d{2}) (.+)$", re.MULTILINE)
+SUMMARY = {
+    "shipped": re.compile(r"^- Shipped feature slices: \*\*(\d+)\*\*$", re.MULTILINE),
+    "major": re.compile(r"^- Major remaining: \*\*(\d+)\*\*$", re.MULTILINE),
+    "smaller": re.compile(r"^- Smaller remaining: \*\*(\d+)\*\*$", re.MULTILINE),
+    "acceptance": re.compile(
+        r"^- Acceptance/integration remaining: \*\*(\d+)\*\*$", re.MULTILINE
+    ),
+    "total": re.compile(r"^- Total remaining: \*\*(\d+)\*\*$", re.MULTILINE),
+}
+EXPECTED_IDS = {"M": 30, "S": 18, "A": 10}
+BASELINE_SHIPPED = 40
+REQUIRED_SECTIONS = (
+    "## Current status",
+    "## Major features remaining",
+    "## Smaller features remaining",
+    "## Acceptance/integration remaining",
+    "## Next execution queue",
+    "## Shipped",
+    "## How to update this roadmap",
+)
+
+
+def _summary_value(name: str, roadmap: str, errors: list[str]) -> int | None:
+    match = SUMMARY[name].search(roadmap)
+    if not match:
+        errors.append(f"Missing summary count: {name}")
+        return None
+    return int(match.group(1))
 
 
 def inspect(roadmap: str, readme: str) -> tuple[list[str], dict[str, int]]:
-    errors = []
-    headings = list(HEADING.finditer(roadmap))
-    letters = [match.group(1) for match in headings]
-    if tuple(letters) != LANES:
-        errors.append('Expected each delivery lane A-Q exactly once and in order')
-    all_tasks = list(TASK.finditer(roadmap))
-    identifiers = [f'{task.group(2)}{task.group(3)}' for task in all_tasks]
+    errors: list[str] = []
+    items = list(ITEM.finditer(roadmap))
+    identifiers = [f"{item.group(2)}{item.group(3)}" for item in items]
+
     for identifier, count in Counter(identifiers).items():
         if count != 1:
-            errors.append(f'Duplicate task ID: {identifier}')
-    for task in all_tasks:
-        if task.group(1) not in (' ', 'x'):
-            errors.append(f'Invalid checkbox state: {task.group(0)}')
-    accounted = 0
-    for index, heading in enumerate(headings):
-        end = headings[index + 1].start() if index + 1 < len(headings) else len(roadmap)
-        section = roadmap[heading.end():end]
-        lane = heading.group(1)
-        tasks = list(TASK.finditer(section))
-        accounted += len(tasks)
-        if 'Status:' not in section:
-            errors.append(f'Lane {lane} needs an explicit status')
-        if not tasks:
-            errors.append(f'Lane {lane} has no actionable tasks')
-        if any(task.group(2) != lane for task in tasks):
-            errors.append(f'Lane {lane} contains another lane\'s task IDs')
-        numbers = [int(task.group(3)) for task in tasks]
-        if numbers != list(range(1, len(tasks) + 1)):
-            errors.append(f'Lane {lane} task IDs must be consecutive from 1')
-    if accounted != len(all_tasks):
-        errors.append('Tasks outside their delivery lane are not allowed')
-    milestones = re.findall(r'^\| (M[1-5]):', roadmap, re.MULTILINE)
-    if milestones != ['M1', 'M2', 'M3', 'M4', 'M5']:
-        errors.append('Expected ordered milestones M1-M5')
-    if not re.search(r'\[[^\]]+\]\((?:\./)?ROADMAP\.md\)', readme):
-        errors.append('README must link to ROADMAP.md')
-    for section in ['## Verification contract', '### Coverage map', '## Immediate execution queue']:
+            errors.append(f"Duplicate roadmap item: {identifier}")
+
+    for item in items:
+        if item.group(1) not in (" ", "x"):
+            errors.append(f"Invalid checkbox state: {item.group(0)}")
+
+    for prefix, expected_count in EXPECTED_IDS.items():
+        numbers = [
+            int(item.group(3))
+            for item in items
+            if item.group(2) == prefix
+        ]
+        if numbers != list(range(1, expected_count + 1)):
+            errors.append(
+                f"{prefix} items must appear exactly once and consecutively "
+                f"from 01 to {expected_count:02d}"
+            )
+
+    remaining = {
+        prefix: sum(
+            item.group(2) == prefix and item.group(1) == " "
+            for item in items
+        )
+        for prefix in EXPECTED_IDS
+    }
+    checked = sum(item.group(1) == "x" for item in items)
+
+    shipped = _summary_value("shipped", roadmap, errors)
+    major = _summary_value("major", roadmap, errors)
+    smaller = _summary_value("smaller", roadmap, errors)
+    acceptance = _summary_value("acceptance", roadmap, errors)
+    total = _summary_value("total", roadmap, errors)
+
+    if major is not None and major != remaining["M"]:
+        errors.append("Major remaining count does not match M checkboxes")
+    if smaller is not None and smaller != remaining["S"]:
+        errors.append("Smaller remaining count does not match S checkboxes")
+    if acceptance is not None and acceptance != remaining["A"]:
+        errors.append("Acceptance remaining count does not match A checkboxes")
+
+    expected_remaining = sum(remaining.values())
+    if total is not None and total != expected_remaining:
+        errors.append("Total remaining does not match unchecked roadmap items")
+    if shipped is not None and shipped != BASELINE_SHIPPED + checked:
+        errors.append("Shipped count must equal baseline 40 plus checked roadmap items")
+
+    for section in REQUIRED_SECTIONS:
         if section not in roadmap:
-            errors.append(f'Missing roadmap section: {section}')
+            errors.append(f"Missing roadmap section: {section}")
+
+    if "docs/history/roadmap-before-simplification-2026-09-24.md" not in roadmap:
+        errors.append("Roadmap must link the archived detailed ledger")
+    if not re.search(r"\[[^\]]+\]\((?:\./)?ROADMAP\.md\)", readme):
+        errors.append("README must link to ROADMAP.md")
+
     return errors, {
-        'lanes': len(headings),
-        'tasks': len(all_tasks),
-        'checked': sum(task.group(1) == 'x' for task in all_tasks),
+        "items": len(items),
+        "checked": checked,
+        "remaining": expected_remaining,
+        "major_remaining": remaining["M"],
+        "smaller_remaining": remaining["S"],
+        "acceptance_remaining": remaining["A"],
     }
 
 
 class RoadmapTests(unittest.TestCase):
     def setUp(self) -> None:
-        milestones = '\n'.join(f'| M{i}: example | outcome |' for i in range(1, 6))
-        lanes = '\n'.join(
-            f'## {lane}. Example\nStatus: Open\n- [ ] {lane}1 Implement\n- [ ] {lane}2 Verify\n'
-            for lane in LANES
+        self.readme = "[Delivery roadmap](ROADMAP.md)"
+        sections = "\n".join(REQUIRED_SECTIONS)
+        items = []
+        for prefix, count in EXPECTED_IDS.items():
+            items.extend(
+                f"- [ ] {prefix}{number:02d} Example"
+                for number in range(1, count + 1)
+            )
+        self.document = "\n".join(
+            [
+                sections,
+                "- Shipped feature slices: **40**",
+                "- Major remaining: **30**",
+                "- Smaller remaining: **18**",
+                "- Acceptance/integration remaining: **10**",
+                "- Total remaining: **58**",
+                "[archive](docs/history/roadmap-before-simplification-2026-09-24.md)",
+                *items,
+            ]
         )
-        self.document = milestones + '\n' + lanes + '\n'.join([
-            '## Verification contract', '### Coverage map', '## Immediate execution queue',
-        ])
-        self.readme = '[Delivery roadmap](ROADMAP.md)'
 
-    def test_valid_structure_does_not_claim_completion(self) -> None:
+    def test_valid_structure(self) -> None:
         errors, counts = inspect(self.document, self.readme)
         self.assertEqual(errors, [])
-        self.assertEqual(counts, {'lanes': 17, 'tasks': 34, 'checked': 0})
+        self.assertEqual(counts["remaining"], 58)
 
-    def test_missing_lane_is_rejected(self) -> None:
-        self.assertTrue(inspect(self.document.replace('## A.', '### A.'), self.readme)[0])
+    def test_completed_item_updates_counts(self) -> None:
+        document = (
+            self.document.replace("- [ ] M01", "- [x] M01", 1)
+            .replace("Shipped feature slices: **40**", "Shipped feature slices: **41**")
+            .replace("Major remaining: **30**", "Major remaining: **29**")
+            .replace("Total remaining: **58**", "Total remaining: **57**")
+        )
+        self.assertEqual(inspect(document, self.readme)[0], [])
 
-    def test_duplicate_task_is_rejected(self) -> None:
-        self.assertTrue(inspect(self.document.replace('A2 Verify', 'A1 Verify'), self.readme)[0])
+    def test_stale_summary_is_rejected(self) -> None:
+        document = self.document.replace("- [ ] M01", "- [x] M01", 1)
+        self.assertTrue(inspect(document, self.readme)[0])
 
-    def test_task_in_wrong_lane_is_rejected(self) -> None:
-        self.assertTrue(inspect(self.document.replace('A2 Verify', 'Z2 Verify'), self.readme)[0])
-
-    def test_gap_in_task_numbers_is_rejected(self) -> None:
-        self.assertTrue(inspect(self.document.replace('A2 Verify', 'A3 Verify'), self.readme)[0])
+    def test_duplicate_id_is_rejected(self) -> None:
+        document = self.document.replace("M02 Example", "M01 Example", 1)
+        self.assertTrue(inspect(document, self.readme)[0])
 
     def test_invalid_checkbox_is_rejected(self) -> None:
-        self.assertTrue(inspect(self.document.replace('[ ] A1', '[?] A1'), self.readme)[0])
+        document = self.document.replace("- [ ] M01", "- [?] M01", 1)
+        self.assertTrue(inspect(document, self.readme)[0])
 
     def test_broken_readme_link_is_rejected(self) -> None:
-        self.assertTrue(inspect(self.document, '[Roadmap](missing.md)')[0])
-
-    def test_missing_status_is_rejected(self) -> None:
-        self.assertTrue(inspect(self.document.replace('Status: Open', '', 1), self.readme)[0])
-
-    def test_missing_milestone_is_rejected(self) -> None:
-        self.assertTrue(inspect(self.document.replace('| M3:', '| Future:'), self.readme)[0])
+        self.assertTrue(inspect(self.document, "[Roadmap](missing.md)")[0])
 
 
 def main() -> None:
-    if sys.argv[1:] == ['--self-test']:
+    if sys.argv[1:] == ["--self-test"]:
         unittest.main(argv=[sys.argv[0]])
         return
     if sys.argv[1:]:
-        raise SystemExit('Usage: check_roadmap.py [--self-test]')
+        raise SystemExit("Usage: check_roadmap.py [--self-test]")
     root = Path(__file__).resolve().parents[1]
     errors, counts = inspect(
-        (root / 'ROADMAP.md').read_text(encoding='utf-8'),
-        (root / 'README.md').read_text(encoding='utf-8'),
+        (root / "ROADMAP.md").read_text(encoding="utf-8"),
+        (root / "README.md").read_text(encoding="utf-8"),
     )
     if errors:
-        raise SystemExit('\n'.join(errors))
-    print(f'Roadmap structure PASS: {counts}')
-    print('Checkbox counts are not evidence of product completion or release readiness.')
+        raise SystemExit("\n".join(errors))
+    print(f"Roadmap structure PASS: {counts}")
+    print("Remaining counts come from the explicit execution inventory, not broad gates.")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

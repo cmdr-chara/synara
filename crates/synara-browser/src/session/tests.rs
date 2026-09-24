@@ -91,10 +91,12 @@ fn runtime_diagnostics_are_bounded_manual_only_and_navigation_scoped() {
         .unwrap();
     }
     assert!(s.manual_runtime_diagnostics(manual).unwrap().is_empty());
-    assert!(serde_json::from_str::<RuntimeDiagnostic>(
-        r#"{"kind":"uncaught_exception","line":1,"column":2,"text":"secret"}"#
-    )
-    .is_err());
+    assert!(
+        serde_json::from_str::<RuntimeDiagnostic>(
+            r#"{"kind":"uncaught_exception","line":1,"column":2,"text":"secret"}"#
+        )
+        .is_err()
+    );
 
     for line in 0..205 {
         s.event(Event::RuntimeDiagnostic {

@@ -9,6 +9,7 @@ const MESSAGE_LIMIT: usize = 256;
 enum ForkEnvironment {
     Same,
     Existing(PathBuf),
+    Recover(PathBuf),
     New(Box<NewWorktreePlan>),
 }
 
@@ -173,12 +174,17 @@ impl Shell {
         source: TaskId,
         anchor: MessageAnchor,
         worktree_directory: PathBuf,
+        recover: bool,
         cx: &mut Context<Self>,
     ) {
         self.branch_message_at(
             source,
             anchor,
-            ForkEnvironment::Existing(worktree_directory),
+            if recover {
+                ForkEnvironment::Recover(worktree_directory)
+            } else {
+                ForkEnvironment::Existing(worktree_directory)
+            },
             cx,
         );
     }
@@ -312,6 +318,11 @@ impl Shell {
                                 draft,
                                 directory,
                             )
+                            .await?
+                    }
+                    ForkEnvironment::Recover(directory) => {
+                        workspace
+                            .recover_new_worktree_fork(source.id, directory, title, draft)
                             .await?
                     }
                     ForkEnvironment::Same => {

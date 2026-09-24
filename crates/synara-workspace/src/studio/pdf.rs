@@ -10,6 +10,7 @@ use tokio_util::sync::CancellationToken;
 
 const MAX_PDF_TEXT_BYTES: usize = 1024 * 1024;
 const MAX_PDF_DIAGNOSTIC_BYTES: usize = 64 * 1024;
+const MAX_PDF_LINKS: usize = 128;
 
 #[derive(Clone)]
 pub struct StudioPdf {
@@ -24,6 +25,12 @@ pub struct StudioPdfPage {
     pub height: u32,
 }
 impl StudioPdf {
+    /// Read a bounded, labeled text selection from this immutable snapshot.
+    /// The caller's cancellation token also stops work after navigation.
+    pub async fn first_pages_text(&self, cancel: &CancellationToken) -> WorkspaceResult<String> {
+        extract_first_pages_text(self.bytes.clone(), self.pages, cancel).await
+    }
+
     pub async fn page(
         &self,
         number: u32,
@@ -93,6 +100,31 @@ impl StudioPdf {
         drop(permit);
         Ok(text)
     }
+
+    /// Inspect Poppler's external web link annotations on one page.
+    /// Unsupported actions and schemes are omitted; URLs are never fetched.
+    pub async fn page_links(
+        &self,
+        number: u32,
+        cancel: &CancellationToken,
+    ) -> WorkspaceResult<Vec<String>> {
+        if number == 0 || number > self.pages {
+            return Err(WorkspaceError::Invalid(
+                "Choose a page within this PDF.".into(),
+            ));
+        }
+        let permit = tokio::select! {
+            biased;
+            _ = cancel.cancelled() => return Err(RuntimeError::Closed.into()),
+            result = tokio::time::timeout(Duration::from_secs(3), PREVIEWS.acquire()) => result
+                .map_err(|_| WorkspaceError::Invalid("Another preview is still rendering. Try again.".into()))?
+                .map_err(|_| WorkspaceError::Worker)?,
+        };
+        let output = run_pdf_link_tool(self.bytes.clone(), number, cancel).await?;
+        let links = parse_pdf_links(&output, number)?;
+        drop(permit);
+        Ok(links)
+    }
 }
 
 fn pdf_text_arguments(number: u32) -> WorkspaceResult<Vec<String>> {
@@ -115,12 +147,112 @@ fn pdf_text_arguments(number: u32) -> WorkspaceResult<Vec<String>> {
     ])
 }
 
+fn pdf_link_arguments(number: u32) -> WorkspaceResult<Vec<String>> {
+    if !(1..=MAX_PDF_PAGES).contains(&number) {
+        return Err(WorkspaceError::Invalid(
+            "Choose a page within this PDF.".into(),
+        ));
+    }
+    Ok(vec![
+        "-f".into(),
+        number.to_string(),
+        "-l".into(),
+        number.to_string(),
+        "-url".into(),
+        "-".into(),
+    ])
+}
+
+fn parse_pdf_links(output: &[u8], requested_page: u32) -> WorkspaceResult<Vec<String>> {
+    let text = std::str::from_utf8(output)
+        .map_err(|_| WorkspaceError::Invalid("Invalid PDF link metadata.".into()))?;
+    let mut lines = text.lines();
+    if lines.next().is_none_or(|header| {
+        header.split_whitespace().collect::<Vec<_>>() != ["Page", "Type", "URL"]
+    }) {
+        return Err(WorkspaceError::Invalid(
+            "The PDF helper returned unrecognized link metadata.".into(),
+        ));
+    }
+
+    let mut links = Vec::new();
+    for line in lines {
+        let mut fields = line.split_whitespace();
+        let Some(page) = fields.next() else {
+            continue;
+        };
+        let page = page.parse::<u32>().map_err(|_| {
+            WorkspaceError::Invalid("The PDF helper returned invalid link metadata.".into())
+        })?;
+        let Some(kind) = fields.next() else {
+            return Err(WorkspaceError::Invalid(
+                "The PDF helper returned invalid link metadata.".into(),
+            ));
+        };
+        let url = fields.collect::<Vec<_>>().join(" ");
+        if page != requested_page || kind != "Annotation" || url.is_empty() {
+            continue;
+        }
+        // Treat PDF-provided destinations as inert strings and only surface
+        // regular HTTP(S) navigation. Reject credentials and malformed URLs
+        // with the same validator used for other user-visible web links.
+        if synara_agent::validate_web_url(&url).is_err() || links.contains(&url) {
+            continue;
+        }
+        if links.len() == MAX_PDF_LINKS {
+            return Err(RuntimeError::Limit.into());
+        }
+        links.push(url);
+    }
+    Ok(links)
+}
+
 /// Match the rendering helper's fixed executable, limits, empty environment,
-/// stdin-only source and bounded output. `pdftotext` does not interpret the
-/// extracted bytes as markup or execute PDF actions.
+/// stdin-only source and bounded output. These Poppler calls return inert data;
+/// they do not execute PDF actions.
 async fn run_pdf_text_tool(
     bytes: Arc<[u8]>,
     number: u32,
+    cancel: &CancellationToken,
+) -> WorkspaceResult<Vec<u8>> {
+    let args = pdf_text_arguments(number)?;
+    run_pdf_helper(
+        bytes,
+        "/usr/bin/pdftotext",
+        args,
+        MAX_PDF_TEXT_BYTES,
+        "PDF text extraction",
+        cancel,
+    )
+    .await
+}
+
+async fn run_pdf_link_tool(
+    bytes: Arc<[u8]>,
+    number: u32,
+    cancel: &CancellationToken,
+) -> WorkspaceResult<Vec<u8>> {
+    let args = pdf_link_arguments(number)?;
+    run_pdf_helper(
+        bytes,
+        "/usr/bin/pdfinfo",
+        args,
+        MAX_PDF_DIAGNOSTIC_BYTES,
+        "PDF link inspection",
+        cancel,
+    )
+    .await
+}
+
+/// Run a fixed Poppler executable with a fixed-argument builder, the immutable
+/// PDF snapshot on stdin, and bounded output. The operation name and executable
+/// come only from the private wrappers above, never from PDF content.
+async fn run_pdf_helper(
+    bytes: Arc<[u8]>,
+    executable: &'static str,
+    args: Vec<String>,
+    output_limit: usize,
+    operation: &'static str,
     cancel: &CancellationToken,
 ) -> WorkspaceResult<Vec<u8>> {
     if cancel.is_cancelled() {
@@ -134,15 +266,14 @@ async fn run_pdf_text_tool(
             "The selected file has no PDF header.".into(),
         ));
     }
-    let args = pdf_text_arguments(number)?;
     if !cfg!(target_os = "linux")
-        || !std::path::Path::new("/usr/bin/pdftotext").is_file()
+        || !std::path::Path::new(executable).is_file()
         || !std::path::Path::new("/usr/bin/prlimit").is_file()
     {
-        return Err(RuntimeError::Unsupported("PDF text extraction currently requires Linux with the system poppler-utils and util-linux packages installed. No helper was downloaded or started".into()).into());
+        return Err(RuntimeError::Unsupported(format!("{operation} currently requires Linux with the system poppler-utils and util-linux packages installed. No helper was downloaded or started")).into());
     }
     let scratch = tempfile::Builder::new()
-        .prefix("synara-pdf-text-")
+        .prefix("synara-pdf-helper-")
         .tempdir()
         .map_err(RuntimeError::from)?;
     let mut command = Command::new("/usr/bin/prlimit");
@@ -152,7 +283,7 @@ async fn run_pdf_text_tool(
         "--fsize=16777216",
         "--nofile=64",
         "--",
-        "/usr/bin/pdftotext",
+        executable,
     ]);
     command.args(args);
     command
@@ -199,12 +330,12 @@ async fn run_pdf_text_tool(
             let wait = async { child.wait().await.map_err(RuntimeError::from) };
             let (_, output, _, status) = tokio::try_join!(
                 write,
-                bounded_pdf_read(stdout, MAX_PDF_TEXT_BYTES),
+                bounded_pdf_read(stdout, output_limit),
                 bounded_pdf_read(stderr, MAX_PDF_DIAGNOSTIC_BYTES),
                 wait,
             )?;
             if !status.success() {
-                return Err(RuntimeError::Invalid("The PDF text could not be extracted. It may be encrypted, damaged or beyond the helper limits. The source file was not modified".into()));
+                return Err(RuntimeError::Invalid(format!("{operation} failed. The PDF may be encrypted, damaged or beyond the helper limits. The source file was not modified")));
             }
             Ok(output)
         }) => match result {
@@ -282,6 +413,56 @@ impl WorkspaceService {
         })
     }
 }
+
+/// Extract bounded text from a user-selected attachment snapshot. Each page is
+/// labeled so the agent can cite its origin; pages beyond the preview window
+/// are explicitly disclosed rather than silently disappearing.
+pub async fn attachment_text(bytes: Vec<u8>) -> WorkspaceResult<String> {
+    let bytes: Arc<[u8]> = bytes.into();
+    let cancel = CancellationToken::new();
+    let pages = page_count(&run_pdf_tool(bytes.clone(), PdfTool::Information, &cancel).await?)?;
+    extract_first_pages_text(bytes, pages, &cancel).await
+}
+
+async fn extract_first_pages_text(
+    bytes: Arc<[u8]>,
+    pages: u32,
+    cancel: &CancellationToken,
+) -> WorkspaceResult<String> {
+    let mut text = String::new();
+    let mut has_text = false;
+    for number in 1..=pages.min(12) {
+        let page = run_pdf_text_tool(bytes.clone(), number, cancel).await?;
+        let page = std::str::from_utf8(&page).map_err(|_| {
+            WorkspaceError::Invalid("The PDF helper returned invalid UTF-8 text.".into())
+        })?;
+        has_text |= !page.trim().is_empty();
+        let header = format!("\n[PDF page {number}]\n");
+        if text
+            .len()
+            .saturating_add(header.len())
+            .saturating_add(page.len())
+            > 512 * 1024
+        {
+            return Err(WorkspaceError::Invalid(
+                "PDF text exceeds the 512 KiB extraction limit. Choose a smaller document.".into(),
+            ));
+        }
+        text.push_str(&header);
+        text.push_str(page);
+    }
+    if !has_text {
+        return Err(WorkspaceError::Invalid(
+            "This PDF has no extractable text in its first 12 pages.".into(),
+        ));
+    }
+    if pages > 12 {
+        text.push_str(&format!(
+            "\n[Only the first 12 of {pages} PDF pages were included.]"
+        ));
+    }
+    Ok(text)
+}
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -309,18 +490,45 @@ mod tests {
         assert_eq!(
             pdf_text_arguments(7).unwrap(),
             [
-                "-f",
-                "7",
-                "-l",
-                "7",
-                "-layout",
-                "-enc",
-                "UTF-8",
-                "-nopgbrk",
-                "-",
-                "-",
+                "-f", "7", "-l", "7", "-layout", "-enc", "UTF-8", "-nopgbrk", "-", "-",
             ]
         );
+    }
+
+    #[test]
+    fn link_inspection_arguments_are_single_page_fixed_and_bounded() {
+        assert!(pdf_link_arguments(0).is_err());
+        assert!(pdf_link_arguments(MAX_PDF_PAGES + 1).is_err());
+        assert_eq!(
+            pdf_link_arguments(7).unwrap(),
+            ["-f", "7", "-l", "7", "-url", "-"]
+        );
+    }
+
+    #[test]
+    fn link_metadata_exposes_only_supported_web_annotations_for_the_requested_page() {
+        let output = b"Page  Type          URL\n   1  Annotation    https://example.com/report?q=private\n   1  Annotation    javascript:alert(1)\n   1  Annotation    file:///etc/passwd\n   1  Link           https://ignored.example/\n   2  Annotation    https://second.example/\n";
+        assert_eq!(
+            parse_pdf_links(output, 1).unwrap(),
+            ["https://example.com/report?q=private"]
+        );
+        assert!(parse_pdf_links(output, 2).unwrap().is_empty());
+        assert!(parse_pdf_links(b"not pdfinfo output", 1).is_err());
+    }
+
+    #[test]
+    fn link_metadata_deduplicates_and_caps_page_links() {
+        let duplicate = b"Page Type URL\n1 Annotation https://example.com/\n1 Annotation https://example.com/\n";
+        assert_eq!(parse_pdf_links(duplicate, 1).unwrap().len(), 1);
+
+        let mut too_many = String::from("Page Type URL\n");
+        for index in 0..=MAX_PDF_LINKS {
+            too_many.push_str(&format!("1 Annotation https://example{index}.com/\n"));
+        }
+        assert!(matches!(
+            parse_pdf_links(too_many.as_bytes(), 1),
+            Err(WorkspaceError::Runtime(RuntimeError::Limit))
+        ));
     }
     #[tokio::test]
     async fn extracted_text_output_stops_at_its_byte_limit() {

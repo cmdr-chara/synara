@@ -5,13 +5,15 @@ use image::{
     codecs::webp::WebPDecoder,
 };
 use std::{
-    io::{self, Cursor, Seek, SeekFrom, Write},
+    io::{self, Cursor, Read, Seek, SeekFrom, Write},
     path::Path,
     time::Duration,
 };
 static DECODER: tokio::sync::Semaphore = tokio::sync::Semaphore::const_new(1);
 const MAX_FOLDER_SNAPSHOT_ENTRIES: usize = 256;
 const MAX_IMAGE_DECODE_BYTES: usize = 128 * 1024 * 1024;
+const MAX_DOCX_XML_BYTES: usize = 1024 * 1024;
+const MAX_DOCX_TEXT_BYTES: usize = 512 * 1024;
 
 pub(super) async fn prepare(
     inputs: Vec<AttachmentInput>,
@@ -19,7 +21,7 @@ pub(super) async fn prepare(
     if inputs.is_empty() || inputs.len() > MAX_ATTACHMENTS {
         return Err(invalid("Choose between one and eight files."));
     }
-    run(move || {
+    let result = run(move || {
         let mut result = Vec::new();
         let mut total = 0usize;
         for input in inputs {
@@ -76,7 +78,14 @@ pub(super) async fn prepare(
         }
         Ok(result)
     })
-    .await
+    .await?;
+    // Confirm a selected PDF can be read before it becomes a durable draft.
+    for item in &result {
+        if item.info.kind == AttachmentKind::Pdf {
+            crate::studio::attachment_text(item.bytes()?).await?;
+        }
+    }
+    Ok(result)
 }
 
 /// Capture names and item types from one explicitly chosen directory. Opening
@@ -190,7 +199,14 @@ pub(super) fn inspect(name: String, bytes: &[u8]) -> WorkspaceResult<AttachmentI
             "An attachment has an invalid name, is empty or exceeds 2 MiB.",
         ));
     }
-    let (kind, dimensions) = if is_webp(bytes) {
+    let (kind, dimensions) = if name.to_ascii_lowercase().ends_with(".docx")
+        && bytes.starts_with(b"PK\x03\x04")
+    {
+        docx_text(bytes)?;
+        (AttachmentKind::Docx, None)
+    } else if name.to_ascii_lowercase().ends_with(".pdf") && bytes.starts_with(b"%PDF-") {
+        (AttachmentKind::Pdf, None)
+    } else if is_webp(bytes) {
         let image = decode_webp(bytes)?;
         (AttachmentKind::Webp, Some((image.width(), image.height())))
     } else if let Some((format, w, h)) = crate::studio::image_size(bytes) {
@@ -239,7 +255,7 @@ pub(super) fn inspect(name: String, bytes: &[u8]) -> WorkspaceResult<AttachmentI
             || std::str::from_utf8(bytes).is_err()
         {
             return Err(invalid(
-                "Only still PNG/JPEG/WebP images and UTF-8 text/code files are supported. Binary files were not attached.",
+                "Only PDF/DOCX documents, still PNG/JPEG/WebP images and UTF-8 text/code files are supported. Binary files were not attached.",
             ));
         }
         (AttachmentKind::Text, None)
@@ -252,6 +268,139 @@ pub(super) fn inspect(name: String, bytes: &[u8]) -> WorkspaceResult<AttachmentI
         dimensions,
         source: synara_core::ImageSource::Uploaded,
     })
+}
+
+/// Read only the main OOXML text stream. No relationships, embedded objects,
+/// macros, external resources or paths from the archive are opened.
+pub(crate) fn docx_text(bytes: &[u8]) -> WorkspaceResult<String> {
+    let mut archive = zip::ZipArchive::new(Cursor::new(bytes))
+        .map_err(|_| invalid("The selected DOCX is not a readable document archive."))?;
+    if archive.len() > 256 {
+        return Err(invalid("The DOCX contains too many archive entries."));
+    }
+    let document = archive
+        .by_name("word/document.xml")
+        .map_err(|_| invalid("The DOCX has no main document text."))?;
+    if document.size() > MAX_DOCX_XML_BYTES as u64 {
+        return Err(invalid(
+            "The DOCX document XML exceeds 1 MiB after decompression.",
+        ));
+    }
+    let mut xml = Vec::new();
+    document
+        .take(MAX_DOCX_XML_BYTES as u64 + 1)
+        .read_to_end(&mut xml)
+        .map_err(|_| invalid("The DOCX document text could not be decoded."))?;
+    if xml.len() > MAX_DOCX_XML_BYTES {
+        return Err(invalid(
+            "The DOCX document XML exceeds 1 MiB after decompression.",
+        ));
+    }
+    let xml =
+        std::str::from_utf8(&xml).map_err(|_| invalid("The DOCX document XML is not UTF-8."))?;
+    if xml.contains("<!") {
+        return Err(invalid(
+            "DOCX XML declarations and embedded entities are unsupported.",
+        ));
+    }
+    let mut output = String::new();
+    let mut remaining = xml;
+    let mut in_text = false;
+    while let Some(open) = remaining.find('<') {
+        if in_text {
+            append_xml_text(&remaining[..open], &mut output)?;
+        }
+        remaining = &remaining[open + 1..];
+        let mut quote = None;
+        let end = remaining
+            .char_indices()
+            .find_map(|(at, ch)| match (quote, ch) {
+                (None, '"' | '\'') => {
+                    quote = Some(ch);
+                    None
+                }
+                (Some(active), ch) if active == ch => {
+                    quote = None;
+                    None
+                }
+                (None, '>') => Some(at),
+                _ => None,
+            })
+            .ok_or_else(|| invalid("The DOCX document XML has an incomplete tag."))?;
+        let tag = &remaining[..end];
+        if docx_tag(tag, "w:p") && !output.is_empty() && !output.ends_with('\n') {
+            output.push('\n');
+        } else if docx_tag(tag, "w:t") {
+            in_text = !tag.trim_end().ends_with('/');
+        } else if tag == "/w:t" {
+            in_text = false;
+        } else if docx_tag(tag, "w:br") {
+            output.push('\n');
+        } else if docx_tag(tag, "w:tab") {
+            output.push('\t');
+        }
+        if output.len() > MAX_DOCX_TEXT_BYTES {
+            return Err(invalid(
+                "DOCX text exceeds the 512 KiB attachment context limit.",
+            ));
+        }
+        remaining = &remaining[end + 1..];
+    }
+    if in_text || output.trim().is_empty() {
+        return Err(invalid("The DOCX has no extractable document text."));
+    }
+    Ok(output)
+}
+
+fn docx_tag(tag: &str, name: &str) -> bool {
+    tag.strip_prefix(name).is_some_and(|rest| {
+        rest.is_empty()
+            || rest.chars().next().is_some_and(char::is_whitespace)
+            || rest.starts_with('/')
+    })
+}
+
+fn append_xml_text(mut text: &str, output: &mut String) -> WorkspaceResult<()> {
+    while let Some(at) = text.find('&') {
+        output.push_str(&text[..at]);
+        text = &text[at + 1..];
+        let end = text
+            .find(';')
+            .filter(|end| *end <= 12)
+            .ok_or_else(|| invalid("The DOCX text has an invalid XML entity."))?;
+        let entity = &text[..end];
+        let value = match entity {
+            "amp" => '&',
+            "lt" => '<',
+            "gt" => '>',
+            "quot" => '"',
+            "apos" => '\'',
+            _ => {
+                let number = entity
+                    .strip_prefix("#x")
+                    .and_then(|n| u32::from_str_radix(n, 16).ok())
+                    .or_else(|| entity.strip_prefix('#').and_then(|n| n.parse::<u32>().ok()));
+                number
+                    .and_then(char::from_u32)
+                    .filter(|ch| !ch.is_control() || matches!(*ch, '\n' | '\t'))
+                    .ok_or_else(|| invalid("The DOCX text has an unsupported XML entity."))?
+            }
+        };
+        output.push(value);
+        if output.len() > MAX_DOCX_TEXT_BYTES {
+            return Err(invalid(
+                "DOCX text exceeds the 512 KiB attachment context limit.",
+            ));
+        }
+        text = &text[end + 1..];
+    }
+    output.push_str(text);
+    if output.len() > MAX_DOCX_TEXT_BYTES {
+        return Err(invalid(
+            "DOCX text exceeds the 512 KiB attachment context limit.",
+        ));
+    }
+    Ok(())
 }
 fn still_png(bytes: &[u8]) -> WorkspaceResult<()> {
     let mut at = 8usize;

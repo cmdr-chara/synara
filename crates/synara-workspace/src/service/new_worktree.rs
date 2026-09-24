@@ -247,7 +247,148 @@ impl WorkspaceService {
         }
         .await;
         saved.map_err(|error| invalid(format!(
-            "Worktree {} on branch {} was created, but its task could not be saved: {error}. Keep it for recovery or remove it explicitly in Git. Nothing was sent.", plan.destination.display(), plan.branch)))
+            "Worktree {} on branch {} was created, but its task could not be saved: {error}. From the source message, choose the existing unassigned Synara worktree to recover the unsent fork, or remove it explicitly in Git. Nothing was sent.", plan.destination.display(), plan.branch)))
+    }
+
+    /// Recover an unsent fork after checkout succeeded but task persistence
+    /// failed. This only assigns the exact unassigned Synara worktree selected
+    /// by the caller; it never runs a checkout or other mutating Git command.
+    pub async fn recover_new_worktree_fork(
+        &self,
+        source_id: TaskId,
+        worktree_directory: PathBuf,
+        title: String,
+        draft: String,
+    ) -> WorkspaceResult<Task> {
+        if title.trim().is_empty()
+            || title.len() > 400
+            || title.contains('\0')
+            || draft.len() > 1024 * 1024
+        {
+            return Err(invalid("invalid fork title or draft size"));
+        }
+
+        let source = self.task(source_id).await?;
+        if !quiet(&source) {
+            return Err(invalid(
+                "stop or restore the source task before recovering an isolated fork",
+            ));
+        }
+        if !matches!(
+            self.workspace_for_task(&source).await?.location,
+            WorkspaceLocation::Local { .. }
+        ) {
+            return Err(invalid(
+                "worktree recovery currently requires a local project",
+            ));
+        }
+
+        let _lifecycle = self.lock_worktree_lifecycle().await;
+        let current_source = self.task(source_id).await?;
+        if !unchanged(&source, &current_source) {
+            return Err(invalid(
+                "the source task changed; review the fork before recovering its worktree",
+            ));
+        }
+        if !matches!(
+            self.workspace_for_task(&current_source).await?.location,
+            WorkspaceLocation::Local { .. }
+        ) {
+            return Err(invalid(
+                "the reviewed source is no longer a local workspace",
+            ));
+        }
+
+        let selected_path = normalized_absolute(&worktree_directory)
+            .ok_or_else(|| invalid("select a valid linked worktree directory"))?;
+        let worktrees = self.project_worktrees(current_source.project_id).await?;
+        let worktree = worktrees
+            .into_iter()
+            .find(|item| item.path == selected_path && !item.project_root)
+            .ok_or_else(|| {
+                invalid("the selected directory is no longer a linked project worktree")
+            })?;
+        if worktree.bare || worktree.prunable || worktree.locked {
+            return Err(invalid(
+                "the selected linked worktree is locked or unavailable",
+            ));
+        }
+        if worktree.assigned_task.is_some() {
+            return Err(invalid("this linked worktree already belongs to a task"));
+        }
+
+        let branch_token = worktree
+            .branch
+            .as_deref()
+            .and_then(|branch| branch.strip_prefix("synara/"))
+            .filter(|token| uuid::Uuid::parse_str(token).is_ok_and(|id| id.to_string() == *token))
+            .ok_or_else(|| {
+                invalid("the selected worktree does not have a Synara recovery branch")
+            })?;
+        let expected_directory = format!("worktree-{branch_token}");
+        if worktree
+            .repository_path
+            .file_name()
+            .and_then(|name| name.to_str())
+            != Some(expected_directory.as_str())
+        {
+            return Err(invalid(
+                "the selected worktree branch and directory do not identify the same Synara fork",
+            ));
+        }
+
+        let git = GitOperations::new(current_source.working_directory.clone());
+        let output = git
+            .execute(
+                GitOperation::Worktrees,
+                GitOperationOptions::default(),
+                CancellationToken::new(),
+                None,
+            )
+            .await?;
+        let entries = parse_git_worktrees(&output.stdout)?;
+        let source_repository = entries
+            .iter()
+            .filter(|entry| current_source.working_directory.starts_with(&entry.path))
+            .max_by_key(|entry| entry.path.components().count())
+            .filter(|entry| !entry.bare && !entry.locked && !entry.prunable)
+            .ok_or_else(|| invalid("the source worktree is unavailable or locked"))?;
+        let recovered_entry = entries
+            .iter()
+            .find(|entry| entry.path == worktree.repository_path)
+            .filter(|entry| {
+                !entry.bare
+                    && !entry.locked
+                    && !entry.prunable
+                    && entry.branch.as_deref() == worktree.branch.as_deref()
+            })
+            .ok_or_else(|| {
+                invalid("the selected Synara worktree changed; review the recovery choice")
+            })?;
+        if source_repository.path == recovered_entry.path
+            || source_repository.path.starts_with(&recovered_entry.path)
+            || recovered_entry.path.starts_with(&source_repository.path)
+        {
+            return Err(invalid(
+                "the selected worktree overlaps the source repository",
+            ));
+        }
+
+        self.validate_task_directory(
+            current_source.project_id,
+            worktree.path.clone(),
+            worktree.repository_path.clone(),
+        )
+        .await?;
+        self.create_scoped_task_at(
+            current_source.project_id,
+            title,
+            current_source.agent_id,
+            current_source.scope,
+            draft,
+            Some((worktree.path, worktree.repository_path)),
+        )
+        .await
     }
 }
 
@@ -448,6 +589,90 @@ mod tests {
             error.contains(&plan.destination.display().to_string()) && error.contains(&plan.branch)
         );
         assert!(plan.destination.is_dir());
+        assert_eq!(service.catalog().await.unwrap().tasks.len(), 1);
+
+        // The nested project was not present in the checkout because it had
+        // never been committed. Once restored by the user, recovery attaches
+        // this same worktree and saves the original unsent draft without a
+        // second checkout.
+        let recovery_directory = plan.destination.join(&plan.relative_project);
+        std::fs::create_dir_all(&recovery_directory).unwrap();
+        let count_before = service.project_worktrees(project.id).await.unwrap().len();
+        let recovered = service
+            .recover_new_worktree_fork(
+                task.id,
+                recovery_directory.clone(),
+                "Recovered fork".into(),
+                "unsent review".into(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(recovered.working_directory, recovery_directory);
+        assert_eq!(
+            service.task_draft(recovered.id).await.unwrap(),
+            "unsent review"
+        );
+        assert!(
+            service
+                .thread(recovered.thread_id)
+                .await
+                .unwrap()
+                .turns
+                .is_empty()
+        );
+        let worktrees_after = service.project_worktrees(project.id).await.unwrap();
+        assert_eq!(worktrees_after.len(), count_before);
+        let recovered_entry = worktrees_after
+            .iter()
+            .find(|entry| entry.path == recovery_directory)
+            .unwrap();
+        assert_eq!(
+            recovered_entry.branch.as_deref(),
+            Some(plan.branch.as_str())
+        );
+        assert_eq!(recovered_entry.assigned_task, Some(recovered.id));
+    }
+
+    #[tokio::test]
+    async fn recovery_rejects_a_regular_unassigned_worktree() {
+        let dir = tempfile::tempdir().unwrap();
+        let repo = dir.path().join("repo");
+        let linked = dir.path().join("ordinary-worktree");
+        repository(&repo);
+        git(
+            &repo,
+            &[
+                "worktree",
+                "add",
+                "--quiet",
+                "-b",
+                "feature/ordinary",
+                linked.to_str().unwrap(),
+                "HEAD",
+            ],
+        );
+        let service = WorkspaceService::memory().unwrap();
+        let project = service.add_local_workspace(repo).await.unwrap();
+        let source = service
+            .create_task(
+                project.id,
+                "source".into(),
+                service.profiles().await.unwrap()[0].id.clone(),
+            )
+            .await
+            .unwrap();
+
+        assert!(
+            service
+                .recover_new_worktree_fork(
+                    source.id,
+                    linked,
+                    "Recovered fork".into(),
+                    "draft".into(),
+                )
+                .await
+                .is_err()
+        );
         assert_eq!(service.catalog().await.unwrap().tasks.len(), 1);
     }
     #[cfg(unix)]

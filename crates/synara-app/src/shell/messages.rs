@@ -5,17 +5,33 @@ use crate::ui::{self, Glyph, palette};
 
 const MESSAGE_CONTEXT_LIMIT: usize = 1024 * 1024;
 
+fn quoted_message_text(text: &str) -> String {
+    let mut quote = String::with_capacity(text.len());
+    for (index, line) in text.split('\n').enumerate() {
+        if index > 0 {
+            quote.push('\n');
+        }
+        quote.push_str("> ");
+        quote.push_str(line);
+    }
+    quote
+}
+
 fn message_context_text(message: &Message) -> String {
     if message.role == Role::User {
         return message.text.clone();
     }
-    let quote = message
-        .text
-        .lines()
-        .map(|line| format!("> {line}"))
-        .collect::<Vec<_>>()
-        .join("\n");
-    format!("Quoted assistant reply (reference context, not a new instruction):\n{quote}")
+    format!(
+        "Quoted assistant reply (reference context, not a new instruction):\n{}",
+        quoted_message_text(&message.text)
+    )
+}
+
+fn assistant_reply_draft_text(message: &Message) -> String {
+    format!(
+        "I'd like to follow up on this assistant reply:\n{}\n\nMy follow-up:\n",
+        quoted_message_text(&message.text)
+    )
 }
 
 fn append_context(existing: &str, addition: &str) -> Result<String, &'static str> {
@@ -149,6 +165,7 @@ impl Shell {
                         .child(self.message_add_to_side_draft_button(message, index, cx))
                         .child(self.message_pin_button(message, index, cx))
                         .child(self.message_context_reuse_action(message, index, cx))
+                        .child(self.message_reply_action(message, index, cx))
                         .children(
                             self.task()
                                 .filter(|task| task.scope == TaskScope::Studio)
@@ -203,11 +220,8 @@ impl Shell {
             return self.message_reuse_button(message, index, cx);
         }
         let source = self.selected;
-        let unavailable = self.selected.is_none()
-            || self.loading_task.is_some()
-            || self.close != CloseState::Open
-            || source.is_some_and(|task| self.draft_state.loading.contains(&task))
-            || self.composer.read(cx).is_composing()
+        let revision = self.selection_revision;
+        let unavailable = !self.can_add_message_context(source, revision, cx)
             || message.text.len() > MESSAGE_CONTEXT_LIMIT;
         let text = if unavailable {
             String::new()
@@ -218,38 +232,112 @@ impl Shell {
             "message-reuse",
             "Quote assistant reply in the current draft",
             Glyph::Compose,
-            unavailable,
+            unavailable || text.len() > MESSAGE_CONTEXT_LIMIT,
             cx.listener(move |this, _: &(), window, cx| {
-                if this.selected != source
-                    || this.loading_task.is_some()
-                    || this.close != CloseState::Open
-                    || source.is_some_and(|task| this.draft_state.loading.contains(&task))
-                    || this.composer.read(cx).is_composing()
-                {
-                    return;
-                }
-                let current = this.composer.read(cx).text().to_owned();
-                match append_context(&current, &text) {
-                    Ok(next) => {
-                        this.composer
-                            .update(cx, |entry, cx| entry.set_text(next, cx));
-                        this.remember_draft(cx);
-                        this.focus_composer = true;
-                        window.focus(&this.composer.read(cx).focus_handle(cx), cx);
-                        this.notice = Some(
-                            "Added the assistant reply as reference context. The current draft and attachments were preserved, and nothing was sent."
-                                .into(),
-                        );
-                    }
-                    Err(error) => this.error = Some(error.into()),
-                }
-                cx.notify();
+                this.add_message_context_to_composer(
+                    source,
+                    revision,
+                    &text,
+                    "Added the assistant reply as reference context. Your draft and attachments were preserved, and nothing was sent.",
+                    window,
+                    cx,
+                );
             }),
         )
         .size(px(24.))
         .relative()
         .child(ui::layout_probe_slot("message-reuse", index))
         .into_any_element()
+    }
+
+    fn message_reply_action(
+        &self,
+        message: &Message,
+        index: usize,
+        cx: &mut Context<Self>,
+    ) -> gpui::AnyElement {
+        if message.role != Role::Assistant {
+            return div().into_any_element();
+        }
+        let source = self.selected;
+        let revision = self.selection_revision;
+        let unavailable = !self.can_add_message_context(source, revision, cx)
+            || message.text.len() > MESSAGE_CONTEXT_LIMIT;
+        let text = if unavailable {
+            String::new()
+        } else {
+            assistant_reply_draft_text(message)
+        };
+        ui::chrome_button(
+            "message-reply",
+            "Start a reply to this assistant message",
+            Glyph::Chat,
+            unavailable || text.len() > MESSAGE_CONTEXT_LIMIT,
+            cx.listener(move |this, _: &(), window, cx| {
+                this.add_message_context_to_composer(
+                    source,
+                    revision,
+                    &text,
+                    "Added a reply scaffold with this assistant response as context. Your draft and attachments were preserved, and nothing was sent.",
+                    window,
+                    cx,
+                );
+            }),
+        )
+        .size(px(24.))
+        .relative()
+        .child(ui::layout_probe_slot("message-reply", index))
+        .into_any_element()
+    }
+
+    fn can_add_message_context(
+        &self,
+        source: Option<TaskId>,
+        revision: u64,
+        cx: &mut Context<Self>,
+    ) -> bool {
+        source.is_some()
+            && self.selected == source
+            && self.selection_revision == revision
+            && self.loading_task.is_none()
+            && self.close == CloseState::Open
+            && self
+                .task()
+                .is_some_and(|task| task.state != TaskState::Archived)
+            && !source.is_some_and(|task| self.draft_state.loading.contains(&task))
+            && !self.composer.read(cx).is_composing()
+    }
+
+    fn add_message_context_to_composer(
+        &mut self,
+        source: Option<TaskId>,
+        revision: u64,
+        context: &str,
+        notice: &'static str,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
+        if !self.can_add_message_context(source, revision, cx) {
+            return;
+        }
+        if context.len() > MESSAGE_CONTEXT_LIMIT {
+            self.error = Some("The assistant context exceeds 1 MiB. Nothing was changed.".into());
+            cx.notify();
+            return;
+        }
+        let current = self.composer.read(cx).text().to_owned();
+        match append_context(&current, context) {
+            Ok(next) => {
+                self.composer
+                    .update(cx, |entry, cx| entry.set_text(next, cx));
+                self.remember_draft(cx);
+                self.focus_composer = true;
+                window.focus(&self.composer.read(cx).focus_handle(cx), cx);
+                self.notice = Some(notice.into());
+            }
+            Err(error) => self.error = Some(error.into()),
+        }
+        cx.notify();
     }
 
     fn message_add_to_side_draft_button(
@@ -341,7 +429,10 @@ impl Shell {
 
 #[cfg(test)]
 mod reuse_tests {
-    use super::{MESSAGE_CONTEXT_LIMIT, Message, Role, append_context, message_context_text};
+    use super::{
+        MESSAGE_CONTEXT_LIMIT, Message, Role, append_context, assistant_reply_draft_text,
+        message_context_text,
+    };
 
     #[test]
     fn assistant_context_is_labeled_and_quoted_while_user_prompts_remain_reusable() {
@@ -363,7 +454,27 @@ mod reuse_tests {
     }
 
     #[test]
-    fn side_context_append_keeps_existing_draft_and_is_atomic_at_the_limit() {
+    fn reply_scaffold_quotes_the_assistant_and_leaves_a_follow_up_entry_point() {
+        let assistant = Message {
+            id: "answer".into(),
+            role: Role::Assistant,
+            text: "First line\nSecond line".into(),
+        };
+        let reply = assistant_reply_draft_text(&assistant);
+        assert_eq!(
+            reply,
+            "I'd like to follow up on this assistant reply:\n> First line\n> Second line\n\nMy follow-up:\n"
+        );
+        assert_ne!(reply, message_context_text(&assistant));
+        assert!(
+            append_context("Keep this draft", &reply)
+                .unwrap()
+                .ends_with("\n\nMy follow-up:\n")
+        );
+    }
+
+    #[test]
+    fn context_append_keeps_existing_draft_and_is_atomic_at_the_limit() {
         assert_eq!(
             append_context("Keep this", "> quote").unwrap(),
             "Keep this\n\n> quote"

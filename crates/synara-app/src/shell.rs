@@ -1656,6 +1656,11 @@ impl Shell {
                 }
             }
             Update::Event(envelope) => {
+                let studio_output_finished = matches!(
+                    &envelope.event,
+                    ThreadEvent::ToolChanged { patch }
+                        if matches!(patch.status.as_ref(), Some(ToolStatus::Completed))
+                );
                 self.acknowledge_draft(&envelope, cx);
                 self.acknowledge_attachment_event(&envelope);
                 self.side_chat_event(&envelope, cx);
@@ -1704,6 +1709,9 @@ impl Shell {
                     ) {
                         self.sync_transcript_media(cx);
                     }
+                }
+                if studio_output_finished {
+                    self.studio_tool_finished(envelope.thread_id, cx);
                 }
             }
             Update::Hydrate => {

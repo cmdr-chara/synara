@@ -10,6 +10,8 @@ pub(super) const MAX_TABS: usize = 24;
 const MAX_COMPARE_LINES: usize = 6000;
 const MAX_COMPARE_CELLS: usize = 2_000_000;
 const MAX_COMPARE_LINE_CHARS: usize = 2000;
+const MAX_MERGE_LINES: usize = 6000;
+const MAX_MERGE_CELLS: usize = 2_000_000;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum CompareMode {
@@ -95,8 +97,7 @@ fn compare_text(reference: &str, current: &str) -> CompareDiff {
         if text.is_empty() {
             0
         } else {
-            text.bytes().filter(|byte| *byte == b'\n').count()
-                + usize::from(!text.ends_with('\n'))
+            text.bytes().filter(|byte| *byte == b'\n').count() + usize::from(!text.ends_with('\n'))
         }
     };
     if line_count(reference) > MAX_COMPARE_LINES || line_count(current) > MAX_COMPARE_LINES {
@@ -131,11 +132,7 @@ fn compare_text(reference: &str, current: &str) -> CompareDiff {
     let old_middle = &old[prefix..old_end];
     let new_middle = &new[prefix..new_end];
     let width = new_middle.len().saturating_add(1);
-    let cells = old_middle
-        .len()
-        .saturating_add(1)
-        .checked_mul(width)
-        .unwrap_or(usize::MAX);
+    let cells = old_middle.len().saturating_add(1).saturating_mul(width);
     if cells > MAX_COMPARE_CELLS {
         return limited_diff();
     }
@@ -153,11 +150,11 @@ fn compare_text(reference: &str, current: &str) -> CompareDiff {
     }
 
     let mut result = CompareDiff::default();
-    for index in 0..prefix {
+    for (index, line) in old.iter().enumerate().take(prefix) {
         result.lines.push(compare_line(
             Some(index + 1),
             Some(index + 1),
-            old[index],
+            line,
             CompareLineKind::Same,
             &mut result.limited,
         ));
@@ -250,6 +247,243 @@ fn compare_text(reference: &str, current: &str) -> CompareDiff {
     result
 }
 
+fn revert_compare_block(
+    reference: &str,
+    current: &str,
+    diff: &CompareDiff,
+    index: usize,
+) -> Option<String> {
+    if diff.limited
+        || reference.contains('\r')
+        || current.contains('\r')
+        || reference.ends_with('\n') != current.ends_with('\n')
+        || !matches!(
+            diff.lines.get(index)?.kind,
+            CompareLineKind::Added | CompareLineKind::Removed
+        )
+        || index > 0
+            && matches!(
+                diff.lines[index - 1].kind,
+                CompareLineKind::Added | CompareLineKind::Removed
+            )
+    {
+        return None;
+    }
+    let end = index
+        + diff.lines[index..]
+            .iter()
+            .take_while(|line| {
+                matches!(line.kind, CompareLineKind::Added | CompareLineKind::Removed)
+            })
+            .count();
+    let start_line = diff.lines[..index]
+        .iter()
+        .filter(|line| line.new.is_some())
+        .count();
+    let added: Vec<_> = diff.lines[index..end]
+        .iter()
+        .filter(|line| line.kind == CompareLineKind::Added)
+        .map(|line| line.text.as_str())
+        .collect();
+    let removed: Vec<_> = diff.lines[index..end]
+        .iter()
+        .filter(|line| line.kind == CompareLineKind::Removed)
+        .map(|line| line.text.as_str())
+        .collect();
+    let mut lines: Vec<_> = current.split_terminator('\n').collect();
+    if lines.get(start_line..start_line.checked_add(added.len())?)? != added.as_slice() {
+        return None;
+    }
+    lines.splice(start_line..start_line + added.len(), removed);
+    let mut result = lines.join("\n");
+    if current.ends_with('\n') {
+        result.push('\n');
+    }
+    Some(result)
+}
+
+fn restore_compare_all(reference: &str, current: &str, diff: &CompareDiff) -> Option<String> {
+    if diff.limited || reference == current || compare_text(reference, current) != *diff {
+        return None;
+    }
+    Some(reference.to_owned())
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct LineEdit {
+    start: usize,
+    end: usize,
+    replacement: Vec<String>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct ThreeWayMerge {
+    text: Option<String>,
+    local_edits: usize,
+    disk_edits: usize,
+    conflicts: usize,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum MergeLimit {
+    Bytes,
+    Lines,
+    Cells,
+}
+
+fn three_way_merge(base: &str, local: &str, disk: &str) -> Result<ThreeWayMerge, MergeLimit> {
+    if base.len() > MAX_EDITOR_BYTES
+        || local.len() > MAX_EDITOR_BYTES
+        || disk.len() > MAX_EDITOR_BYTES
+    {
+        return Err(MergeLimit::Bytes);
+    }
+    let base_lines: Vec<_> = base.split_inclusive('\n').collect();
+    let local_lines: Vec<_> = local.split_inclusive('\n').collect();
+    let disk_lines: Vec<_> = disk.split_inclusive('\n').collect();
+    if base_lines.len() > MAX_MERGE_LINES
+        || local_lines.len() > MAX_MERGE_LINES
+        || disk_lines.len() > MAX_MERGE_LINES
+    {
+        return Err(MergeLimit::Lines);
+    }
+
+    let local_edits = line_edits(&base_lines, &local_lines)?;
+    let disk_edits = line_edits(&base_lines, &disk_lines)?;
+    let local_edit_count = local_edits.len();
+    let disk_edit_count = disk_edits.len();
+    let mut combined = local_edits
+        .into_iter()
+        .map(|edit| (edit, true))
+        .chain(disk_edits.into_iter().map(|edit| (edit, false)))
+        .collect::<Vec<_>>();
+    combined.sort_by(|(left, left_local), (right, right_local)| {
+        (left.start, left.end, !*left_local).cmp(&(right.start, right.end, !*right_local))
+    });
+
+    let mut accepted = Vec::<(LineEdit, bool)>::new();
+    let mut conflicts = 0;
+    for (edit, is_local) in combined {
+        let mut duplicate = false;
+        for (previous, previous_local) in &accepted {
+            if *previous_local == is_local || !line_edits_overlap(previous, &edit) {
+                continue;
+            }
+            if previous == &edit {
+                duplicate = true;
+            } else {
+                conflicts += 1;
+            }
+        }
+        if !duplicate {
+            accepted.push((edit, is_local));
+        }
+    }
+    if conflicts > 0 {
+        return Ok(ThreeWayMerge {
+            text: None,
+            local_edits: local_edit_count,
+            disk_edits: disk_edit_count,
+            conflicts,
+        });
+    }
+
+    let mut merged = String::new();
+    let mut cursor = 0;
+    for (edit, _) in accepted {
+        if edit.start < cursor || edit.end > base_lines.len() {
+            return Err(MergeLimit::Cells);
+        }
+        for line in &base_lines[cursor..edit.start] {
+            merged.push_str(line);
+        }
+        for line in &edit.replacement {
+            merged.push_str(line);
+        }
+        cursor = edit.end;
+    }
+    for line in &base_lines[cursor..] {
+        merged.push_str(line);
+    }
+    if merged.len() > MAX_EDITOR_BYTES {
+        return Err(MergeLimit::Bytes);
+    }
+    if merged.split_inclusive('\n').count() > MAX_MERGE_LINES {
+        return Err(MergeLimit::Lines);
+    }
+
+    Ok(ThreeWayMerge {
+        text: Some(merged),
+        local_edits: local_edit_count,
+        disk_edits: disk_edit_count,
+        conflicts: 0,
+    })
+}
+
+fn line_edits(base: &[&str], modified: &[&str]) -> Result<Vec<LineEdit>, MergeLimit> {
+    let width = modified.len().saturating_add(1);
+    let cells = base.len().saturating_add(1).saturating_mul(width);
+    if cells > MAX_MERGE_CELLS {
+        return Err(MergeLimit::Cells);
+    }
+    let mut lcs = vec![0u32; cells];
+    for row in (0..base.len()).rev() {
+        for column in (0..modified.len()).rev() {
+            let index = row * width + column;
+            lcs[index] = if base[row] == modified[column] {
+                1 + lcs[(row + 1) * width + column + 1]
+            } else {
+                lcs[(row + 1) * width + column].max(lcs[row * width + column + 1])
+            };
+        }
+    }
+
+    let mut edits = Vec::new();
+    let mut active = None::<LineEdit>;
+    let (mut row, mut column) = (0, 0);
+    while row < base.len() || column < modified.len() {
+        if row < base.len() && column < modified.len() && base[row] == modified[column] {
+            if let Some(edit) = active.take() {
+                edits.push(edit);
+            }
+            row += 1;
+            column += 1;
+        } else if row < base.len()
+            && (column == modified.len()
+                || lcs[(row + 1) * width + column] >= lcs[row * width + column + 1])
+        {
+            let edit = active.get_or_insert_with(|| LineEdit {
+                start: row,
+                end: row,
+                replacement: Vec::new(),
+            });
+            edit.end = row + 1;
+            row += 1;
+        } else {
+            let edit = active.get_or_insert_with(|| LineEdit {
+                start: row,
+                end: row,
+                replacement: Vec::new(),
+            });
+            edit.replacement.push(modified[column].to_owned());
+            column += 1;
+        }
+    }
+    if let Some(edit) = active {
+        edits.push(edit);
+    }
+    Ok(edits)
+}
+
+fn line_edits_overlap(left: &LineEdit, right: &LineEdit) -> bool {
+    match (left.start == left.end, right.start == right.end) {
+        (true, true) => left.start == right.start,
+        (true, false) => left.start >= right.start && left.start <= right.end,
+        (false, true) => right.start >= left.start && right.start <= left.end,
+        (false, false) => left.start < right.end && right.start < left.end,
+    }
+}
+
 #[derive(Default)]
 struct EditorCompare {
     open: bool,
@@ -260,17 +494,18 @@ struct EditorCompare {
     mode: Option<CompareMode>,
     label: Option<String>,
     reference: Option<String>,
+    disk_version: Option<synara_runtime::FileVersion>,
+    buffer_at_read: Option<String>,
     diff: CompareDiff,
     error: Option<String>,
+    restore_all_confirmed: bool,
 }
 impl EditorCompare {
     fn clear(&mut self) {
         self.cancel.cancel();
         let generation = self.generation.wrapping_add(1);
-        *self = Self {
-            generation,
-            ..Default::default()
-        };
+        *self = Self::default();
+        self.generation = generation;
     }
 }
 impl Drop for EditorCompare {
@@ -366,7 +601,12 @@ impl EditorState {
             cx.new(|cx| TextEntry::new("Replace with", EntryMode::SingleLine, 32., cx));
         let line = cx.new(|cx| TextEntry::new("Line:column", EntryMode::SingleLine, 32., cx));
         let compare_ref = cx.new(|cx| {
-            TextEntry::new("Branch, tag or commit (default HEAD)", EntryMode::SingleLine, 32., cx)
+            TextEntry::new(
+                "Branch, tag or commit (default HEAD)",
+                EntryMode::SingleLine,
+                32.,
+                cx,
+            )
         });
         let subscriptions = vec![
             cx.subscribe(&query, |this, _, event, cx| {
@@ -528,10 +768,169 @@ impl Shell {
         if !compare.open || compare.owner.as_ref() != Some(&owner) {
             return;
         }
+        compare.restore_all_confirmed = false;
         if let Some(reference) = &compare.reference {
             compare.diff = compare_text(reference, current);
         }
     }
+    fn revert_editor_compare_block(
+        &mut self,
+        index: usize,
+        expected: CompareLine,
+        generation: u64,
+        cx: &mut Context<Self>,
+    ) {
+        if self.saving
+            || self.editor.read(cx).is_composing()
+            || self.editor_compare_owner().as_ref() != self.editors.compare.owner.as_ref()
+        {
+            return;
+        }
+        let compare = &self.editors.compare;
+        if !compare.open
+            || compare.pending
+            || compare.error.is_some()
+            || compare.generation != generation
+        {
+            return;
+        }
+        let Some(reference) = &compare.reference else {
+            return;
+        };
+        let current = self.editor.read(cx).text().to_owned();
+        let diff = compare_text(reference, &current);
+        if diff.lines.get(index) != Some(&expected) || diff != compare.diff {
+            self.notice = Some(
+                "The editor changed. Review the comparison again before reverting a block.".into(),
+            );
+            cx.notify();
+            return;
+        }
+        let Some(result) = revert_compare_block(reference, &current, &diff, index) else {
+            self.notice =
+                Some("This block cannot be reverted safely from the current comparison.".into());
+            cx.notify();
+            return;
+        };
+        self.editor
+            .update(cx, |input, cx| input.set_text(result.clone(), cx));
+        self.update_editor_compare_buffer(&result);
+        self.notice =
+            Some("One comparison block was restored in the editor. Save to write the file.".into());
+        cx.notify();
+    }
+    fn copy_editor_compare_block(
+        &mut self,
+        index: usize,
+        expected: CompareLine,
+        generation: u64,
+        cx: &mut Context<Self>,
+    ) {
+        if self.editor_compare_owner().as_ref() != self.editors.compare.owner.as_ref() {
+            return;
+        }
+        let compare = &self.editors.compare;
+        if !compare.open
+            || compare.pending
+            || compare.error.is_some()
+            || compare.generation != generation
+            || compare.diff.limited
+        {
+            return;
+        }
+        let Some(reference) = &compare.reference else {
+            return;
+        };
+        let current = self.editor.read(cx).text().to_owned();
+        if compare.diff.lines.get(index) != Some(&expected)
+            || compare_text(reference, &current) != compare.diff
+        {
+            self.notice = Some("The editor changed. Compare again before copying a block.".into());
+            cx.notify();
+            return;
+        }
+        let mut block = String::new();
+        for line in compare.diff.lines[index..]
+            .iter()
+            .take_while(|line| {
+                matches!(line.kind, CompareLineKind::Added | CompareLineKind::Removed)
+            })
+            .take(256)
+        {
+            let marker = if line.kind == CompareLineKind::Added {
+                '+'
+            } else {
+                '-'
+            };
+            if block.len().saturating_add(line.text.len()) > 32 * 1024 {
+                block.push_str("[Block shortened]\n");
+                break;
+            }
+            block.push(marker);
+            block.push_str(&line.text);
+            block.push('\n');
+        }
+        if !block.is_empty() {
+            cx.write_to_clipboard(gpui::ClipboardItem::new_string(block));
+            self.notice = Some("Changed block copied for review.".into());
+            cx.notify();
+        }
+    }
+    fn restore_all_editor_compare_changes(&mut self, generation: u64, cx: &mut Context<Self>) {
+        if self.saving
+            || self.editor.read(cx).is_composing()
+            || self.editor_compare_owner().as_ref() != self.editors.compare.owner.as_ref()
+        {
+            return;
+        }
+        let current = self.editor.read(cx).text().to_owned();
+        let (result, confirmed) = {
+            let compare = &self.editors.compare;
+            if !compare.open
+                || compare.pending
+                || compare.error.is_some()
+                || compare.generation != generation
+                || compare.diff.limited
+            {
+                return;
+            }
+            let Some(reference) = &compare.reference else {
+                return;
+            };
+            (
+                restore_compare_all(reference, &current, &compare.diff),
+                compare.restore_all_confirmed,
+            )
+        };
+        let Some(result) = result else {
+            self.editors.compare.restore_all_confirmed = false;
+            self.notice = Some(
+                "The editor changed. Review the comparison again before restoring all changes."
+                    .into(),
+            );
+            cx.notify();
+            return;
+        };
+        if !confirmed {
+            self.editors.compare.restore_all_confirmed = true;
+            self.notice = Some(
+                "Restore all is ready. Choose it again to replace this unsaved buffer with the comparison reference."
+                    .into(),
+            );
+            cx.notify();
+            return;
+        }
+
+        self.editors.compare.restore_all_confirmed = false;
+        self.editor
+            .update(cx, |input, cx| input.set_text(result.clone(), cx));
+        self.update_editor_compare_buffer(&result);
+        self.notice = Some(
+            "All comparison changes were restored in the editor. Save to write the file.".into(),
+        );
+        cx.notify();
+    }
+
     fn close_editor_compare(&mut self) {
         self.editors.compare.clear();
     }
@@ -553,6 +952,26 @@ impl Shell {
     }
     pub(super) fn clear_conflict_reload_confirmation(&mut self) {
         self.editors.reload_confirmation = None;
+    }
+    fn conflict_merge_ready(&self, cx: &App) -> bool {
+        let Some(owner) = self.editor_compare_owner() else {
+            return false;
+        };
+        let compare = &self.editors.compare;
+        is_save_conflict(
+            self.error.as_deref(),
+            self.document
+                .as_ref()
+                .map(|document| document.path.as_path()),
+        ) && !self.editor_batch_blocked(cx)
+            && compare.open
+            && !compare.pending
+            && compare.mode == Some(CompareMode::Disk)
+            && compare.owner.as_ref() == Some(&owner)
+            && compare.reference.is_some()
+            && compare.disk_version.is_some()
+            && compare.buffer_at_read.as_deref() == Some(self.editor.read(cx).text())
+            && !self.editor.read(cx).is_composing()
     }
     pub(super) fn reset_editor_tabs(&mut self) {
         self.editors.history.clear();
@@ -603,9 +1022,11 @@ impl Shell {
             .closed
             .retain(|tab| tab.document.path != document.path);
         let keybindings = self.settings.value.keybindings.clone();
+        let syntax_path = document.path.clone();
         let input = cx.new(|cx| {
             let mut input = TextEntry::new("", EntryMode::Editor, 480., cx);
             input.set_keybindings(&keybindings);
+            input.set_syntax_from_path(&syntax_path);
             input.set_text(document.snapshot.text.clone(), cx);
             input
         });
@@ -1084,6 +1505,7 @@ impl Shell {
     }
     pub(super) fn editor_tools(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
         let reload_confirmed = self.conflict_reload_confirmed(cx);
+        let merge_ready = self.conflict_merge_ready(cx);
         let markdown = self
             .document
             .as_ref()
@@ -1144,10 +1566,33 @@ impl Shell {
                             .text_size(px(11.))
                             .child(if reload_confirmed {
                                 "The file changed on disk. Reloading discards this buffer; confirm only if that is intended."
+                            } else if merge_ready {
+                                "Disk changes are reviewed. You can apply a three-way merge for non-overlapping edits; the file will not be written until you save."
                             } else {
                                 "Save conflict: the file changed on disk. Your edits are intact."
                             }),
                     )
+                    .child(ui::action(
+                        "editor-conflict-review-disk",
+                        if self.editors.compare.mode == Some(CompareMode::Disk)
+                            && self.editors.compare.pending
+                        {
+                            "Reading disk…"
+                        } else {
+                            "Review disk changes"
+                        },
+                        None,
+                        self.editors.compare.mode == Some(CompareMode::Disk)
+                            && self.editors.compare.pending,
+                        cx.listener(|this, _: &(), _, cx| this.compare_editor_disk(cx)),
+                    ).relative().child(ui::layout_probe("editor-conflict-review-disk")))
+                    .children(merge_ready.then(|| ui::action(
+                        "editor-conflict-merge",
+                        "Apply non-overlapping merge",
+                        None,
+                        false,
+                        cx.listener(|this, _: &(), _, cx| this.merge_conflicted_editor(cx)),
+                    ).relative().child(ui::layout_probe("editor-conflict-merge"))))
                     .child(ui::action(
                         "editor-conflict-reload",
                         if reload_confirmed {
@@ -1223,23 +1668,38 @@ impl Shell {
         }
         let entity = cx.entity();
         let line_count = comparison.diff.lines.len();
+        let restore_all_available = !comparison.pending
+            && comparison.error.is_none()
+            && !comparison.diff.limited
+            && comparison
+                .reference
+                .as_ref()
+                .is_some_and(|reference| reference != self.editor.read(cx).text());
+        let restore_all_confirmed = comparison.restore_all_confirmed;
+        let restore_all_generation = comparison.generation;
         let list = gpui::uniform_list("editor-compare-lines", line_count, move |range, _, cx| {
-            entity.update(cx, |this, _| {
+            entity.update(cx, |this, cx| {
                 range
                     .filter_map(|index| {
                         let line = this.editors.compare.diff.lines.get(index)?;
+                        let first_change =
+                            matches!(line.kind, CompareLineKind::Added | CompareLineKind::Removed)
+                                && (index == 0
+                                    || !matches!(
+                                        this.editors.compare.diff.lines[index - 1].kind,
+                                        CompareLineKind::Added | CompareLineKind::Removed
+                                    ));
+                        let expected = line.clone();
+                        let copy_expected = expected.clone();
+                        let generation = this.editors.compare.generation;
                         let (marker, background, foreground) = match line.kind {
                             CompareLineKind::Same => (" ", palette().canvas, palette().text),
-                            CompareLineKind::Added => (
-                                "+",
-                                palette().notice_surface,
-                                palette().focus,
-                            ),
-                            CompareLineKind::Removed => (
-                                "−",
-                                palette().error_surface,
-                                palette().error,
-                            ),
+                            CompareLineKind::Added => {
+                                ("+", palette().notice_surface, palette().focus)
+                            }
+                            CompareLineKind::Removed => {
+                                ("−", palette().error_surface, palette().error)
+                            }
                             CompareLineKind::Info => ("·", palette().overlay, palette().muted),
                         };
                         Some(
@@ -1259,7 +1719,47 @@ impl Shell {
                                     line.new.map_or_else(|| "".into(), |n| n.to_string()),
                                     marker
                                 ))
-                                .child(div().min_w_0().child(line.text.clone())),
+                                .child(div().min_w_0().flex_1().child(line.text.clone()))
+                                .when(first_change && !this.editors.compare.diff.limited, |el| {
+                                    el.child(
+                                        ui::button(
+                                            ("editor-revert-block", index),
+                                            "Restore block",
+                                            false,
+                                        )
+                                        .text_size(px(10.))
+                                        .on_click(
+                                            cx.listener(move |this, _, _, cx| {
+                                                this.revert_editor_compare_block(
+                                                    index,
+                                                    expected.clone(),
+                                                    generation,
+                                                    cx,
+                                                );
+                                            }),
+                                        ),
+                                    )
+                                })
+                                .when(first_change && !this.editors.compare.diff.limited, |el| {
+                                    el.child(
+                                        ui::button(
+                                            ("editor-copy-block", index),
+                                            "Copy block",
+                                            false,
+                                        )
+                                        .text_size(px(10.))
+                                        .on_click(
+                                            cx.listener(move |this, _, _, cx| {
+                                                this.copy_editor_compare_block(
+                                                    index,
+                                                    copy_expected.clone(),
+                                                    generation,
+                                                    cx,
+                                                );
+                                            }),
+                                        ),
+                                    )
+                                }),
                         )
                     })
                     .collect::<Vec<_>>()
@@ -1296,16 +1796,70 @@ impl Shell {
                         .flex()
                         .items_center()
                         .gap_2()
+                        .child(div().flex_1().min_w_0().text_size(px(11.)).child(format!(
+                            "Compare · {}",
+                            comparison.label.as_deref().unwrap_or("choose a scope")
+                        )))
                         .child(
-                            div()
-                                .flex_1()
-                                .min_w_0()
-                                .text_size(px(11.))
-                                .child(format!(
-                                    "Compare · {}",
-                                    comparison.label.as_deref().unwrap_or("choose a scope")
-                                )),
+                            ui::action(
+                                "editor-compare-copy-review",
+                                "Copy review",
+                                None,
+                                comparison.pending
+                                    || comparison.error.is_some()
+                                    || comparison.diff.limited
+                                    || comparison.reference.is_none(),
+                                cx.listener(|this, _: &(), _, cx| {
+                                    let compare = &this.editors.compare;
+                                    if compare.pending
+                                        || compare.error.is_some()
+                                        || compare.diff.limited
+                                        || compare.reference.is_none()
+                                    {
+                                        return;
+                                    }
+                                    let mut review = format!(
+                                        "Comparison: {}\n",
+                                        compare.label.as_deref().unwrap_or("reference")
+                                    );
+                                    for line in &compare.diff.lines {
+                                        let marker = match line.kind {
+                                            CompareLineKind::Same => ' ',
+                                            CompareLineKind::Added => '+',
+                                            CompareLineKind::Removed => '-',
+                                            CompareLineKind::Info => '#',
+                                        };
+                                        review.push(marker);
+                                        review.push_str(&line.text);
+                                        review.push('\n');
+                                    }
+                                    cx.write_to_clipboard(gpui::ClipboardItem::new_string(review));
+                                }),
+                            )
+                            .text_size(px(10.)),
                         )
+                        .children(restore_all_available.then(|| {
+                            ui::button(
+                                "editor-compare-restore-all",
+                                if restore_all_confirmed {
+                                    "Confirm restore all"
+                                } else {
+                                    "Restore all"
+                                },
+                                restore_all_confirmed,
+                            )
+                            .text_size(px(10.))
+                            .relative()
+                            .child(ui::layout_probe("editor-compare-restore-all"))
+                            .on_click(cx.listener(
+                                move |this, _, _, cx| {
+                                    this.restore_all_editor_compare_changes(
+                                        restore_all_generation,
+                                        cx,
+                                    );
+                                },
+                            ))
+                        }))
                         .child(
                             ui::action(
                                 "editor-compare-saved",
@@ -1342,7 +1896,12 @@ impl Shell {
                         .flex()
                         .items_center()
                         .gap_1()
-                        .child(div().flex_1().min_w_0().child(self.editors.compare_ref.clone()))
+                        .child(
+                            div()
+                                .flex_1()
+                                .min_w_0()
+                                .child(self.editors.compare_ref.clone()),
+                        )
                         .child(
                             ui::action(
                                 "editor-compare-ref-submit",
@@ -1366,8 +1925,9 @@ impl Shell {
                         .text_color(rgb(palette().muted))
                         .child("Reading comparison snapshot…")
                 }))
-                .children((!comparison.pending && comparison.error.is_none()).then(|| {
-                    div()
+                .children(
+                    (!comparison.pending && comparison.error.is_none()).then(|| {
+                        div()
                         .flex()
                         .items_center()
                         .gap_2()
@@ -1379,8 +1939,16 @@ impl Shell {
                         } else {
                             "Current editor buffer is included; comparison is read-only."
                         })
-                }))
-                .child(div().min_h_0().min_w_0().overflow_x_scroll().child(list))
+                    }),
+                )
+                .child(
+                    div()
+                        .id("editor-compare-lines-scroll")
+                        .min_h_0()
+                        .min_w_0()
+                        .overflow_x_scroll()
+                        .child(list),
+                )
                 .into_any_element(),
         )
     }
@@ -1438,9 +2006,58 @@ impl Shell {
 #[cfg(test)]
 mod conflict_confirmation_tests {
     use super::{
-        CompareLineKind, MAX_COMPARE_CELLS, ReloadConfirmation, compare_text,
-        reload_confirmation_matches,
+        CompareLineKind, ReloadConfirmation, compare_text, reload_confirmation_matches,
+        restore_compare_all, revert_compare_block, three_way_merge,
     };
+
+    #[test]
+    fn restores_only_one_comparison_block_and_refuses_stale_or_crlf_input() {
+        let reference = "first\nkeep\nsecond\n";
+        let current = "changed\nkeep\nchanged again\n";
+        let diff = compare_text(reference, current);
+        let first = diff
+            .lines
+            .iter()
+            .position(|line| line.kind == CompareLineKind::Removed)
+            .unwrap();
+        assert_eq!(
+            revert_compare_block(reference, current, &diff, first).as_deref(),
+            Some("first\nkeep\nchanged again\n")
+        );
+        assert!(
+            revert_compare_block(
+                reference,
+                "edited again\nkeep\nchanged again\n",
+                &diff,
+                first
+            )
+            .is_none()
+        );
+        assert!(
+            revert_compare_block("first\r\nkeep\r\n", "changed\r\nkeep\r\n", &diff, first)
+                .is_none()
+        );
+    }
+
+    #[test]
+    fn restore_all_comparison_changes_requires_the_exact_current_diff() {
+        let reference = "first\r\nkeep\r\n";
+        let current = "changed\r\nkeep\r\n";
+        let diff = compare_text(reference, current);
+
+        assert_eq!(
+            restore_compare_all(reference, current, &diff).as_deref(),
+            Some(reference)
+        );
+        assert!(restore_compare_all(reference, "newer\r\nkeep\r\n", &diff).is_none());
+
+        let mut limited = diff.clone();
+        limited.limited = true;
+        assert!(restore_compare_all(reference, current, &limited).is_none());
+
+        let identical = compare_text(reference, reference);
+        assert!(restore_compare_all(reference, reference, &identical).is_none());
+    }
 
     #[test]
     fn comparison_marks_replacements_and_keeps_context_lines() {
@@ -1454,9 +2071,11 @@ mod conflict_confirmation_tests {
         assert!(diff.lines.iter().any(|line| {
             line.kind == CompareLineKind::Added && line.new == Some(3) && line.text == "new"
         }));
-        assert!(diff.lines.iter().any(|line| {
-            line.kind == CompareLineKind::Same && line.text == "after"
-        }));
+        assert!(
+            diff.lines
+                .iter()
+                .any(|line| { line.kind == CompareLineKind::Same && line.text == "after" })
+        );
     }
 
     #[test]
@@ -1479,10 +2098,45 @@ mod conflict_confirmation_tests {
         let old = vec!["old"; 1500].join("\n");
         let new = vec!["new"; 1500].join("\n");
 
-        assert!(1501usize * 1501 > MAX_COMPARE_CELLS);
         let diff = compare_text(&old, &new);
         assert!(diff.limited);
         assert!(diff.added == 0 && diff.removed == 0);
+    }
+
+    #[test]
+    fn three_way_merge_combines_disjoint_edits_and_keeps_line_endings() {
+        let merge = three_way_merge(
+            "one\r\ntwo\r\nthree\r\n",
+            "ONE\r\ntwo\r\nthree\r\n",
+            "one\r\ntwo\r\nTHREE\r\n",
+        )
+        .unwrap();
+
+        assert_eq!(merge.text.as_deref(), Some("ONE\r\ntwo\r\nTHREE\r\n"));
+        assert_eq!(merge.local_edits, 1);
+        assert_eq!(merge.disk_edits, 1);
+        assert_eq!(merge.conflicts, 0);
+    }
+
+    #[test]
+    fn three_way_merge_keeps_the_buffer_when_edits_overlap() {
+        let merge = three_way_merge(
+            "before\ntarget\nafter\n",
+            "before\nlocal\nafter\n",
+            "before\ndisk\nafter\n",
+        )
+        .unwrap();
+
+        assert_eq!(merge.text, None);
+        assert!(merge.conflicts > 0);
+    }
+
+    #[test]
+    fn three_way_merge_deduplicates_identical_edits() {
+        let merge = three_way_merge("old\n", "new\n", "new\n").unwrap();
+
+        assert_eq!(merge.text.as_deref(), Some("new\n"));
+        assert_eq!(merge.conflicts, 0);
     }
 
     #[test]

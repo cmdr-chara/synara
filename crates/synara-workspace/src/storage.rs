@@ -19,6 +19,7 @@ pub use inline_comments::{InlineComment, InlineCommentEdit, InlineComments};
 mod followups;
 pub use followups::{FollowupDraft, FollowupEdit, FollowupQueue};
 mod attachments;
+pub(crate) use attachments::docx_text;
 pub(crate) use attachments::still_webp_preview;
 pub use attachments::{
     AttachmentDraft, AttachmentEdit, AttachmentInfo, AttachmentInput, AttachmentKind,

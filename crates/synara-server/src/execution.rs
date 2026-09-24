@@ -1,9 +1,10 @@
 //! Explicit local web runs reuse the native Controller and task-scoped interaction
 //! broker. Connection-scoped authentication remains unsupported by the web UI.
 use super::*;
+use sha2::{Digest, Sha256};
 use std::collections::HashMap;
-use synara_core::{TaskId, TaskState};
-use synara_workspace::WorkspaceError;
+use synara_core::{TaskId, TaskState, Workspace, WorkspaceLocation};
+use synara_workspace::{DirectModelBinding, WorkspaceError, WorkspaceService};
 use tokio::sync::Mutex;
 
 const MAX_ACTIVE_RUNS: usize = 8;
@@ -57,6 +58,15 @@ pub(super) struct ExecutionOwner {
 struct StartRequest {
     text: String,
     expected_draft: String,
+    #[serde(default)]
+    expected_route: Option<String>,
+    #[serde(default)]
+    expected_remote: Option<String>,
+}
+#[derive(Clone, Serialize)]
+struct RemoteRoute {
+    host: String,
+    stamp: String,
 }
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -72,6 +82,45 @@ fn error(status: u16, message: &'static str) -> Response {
         serde_json::to_vec(&serde_json::json!({"error": message})).unwrap(),
     )
 }
+fn route_stamp(binding: &DirectModelBinding) -> String {
+    format!(
+        "{:x}",
+        Sha256::digest(serde_json::to_vec(binding).expect("valid route"))
+    )
+}
+fn route_view(binding: &DirectModelBinding) -> serde_json::Value {
+    serde_json::json!({
+        "provider_id": binding.selection.provider_id,
+        "model_id": binding.selection.model_id,
+        "stamp": route_stamp(binding),
+    })
+}
+async fn remote_route(
+    service: &WorkspaceService,
+    workspace: &Workspace,
+) -> Result<Option<RemoteRoute>, WorkspaceError> {
+    let WorkspaceLocation::Ssh {
+        host, port, user, ..
+    } = &workspace.location
+    else {
+        return Ok(None);
+    };
+    let profile = service.ssh_profile(workspace.id).await?.ok_or_else(|| {
+        WorkspaceError::Invalid("SSH workspace is missing its pinned connection profile".into())
+    })?;
+    profile.host(workspace)?;
+    let stamp = format!(
+        "{:x}",
+        Sha256::digest(serde_json::to_vec(&(workspace, &profile)).expect("valid SSH route"))
+    );
+    let host = format!(
+        "{}{}:{port}",
+        user.as_deref()
+            .map_or(String::new(), |user| format!("{user}@")),
+        host
+    );
+    Ok(Some(RemoteRoute { host, stamp }))
+}
 
 pub(super) async fn dispatch_get(path: &str, state: &AppState) -> Response {
     let Some(id) = task_id(path, "/run") else {
@@ -81,13 +130,29 @@ pub(super) async fn dispatch_get(path: &str, state: &AppState) -> Response {
     let Some(runtime) = runtime.as_ref() else {
         return health_response(Lifecycle::Starting);
     };
-    if runtime.workspace.task(id).await.is_err() {
+    let Ok(task) = runtime.workspace.task(id).await else {
         return error(404, "not_found");
-    }
+    };
+    let Ok(workspace) = runtime.workspace.workspace_for_task(&task).await else {
+        return error(503, "workspace_unavailable");
+    };
+    let remote = match remote_route(&runtime.workspace, &workspace).await {
+        Ok(remote) => remote,
+        Err(_) => return error(503, "workspace_unavailable"),
+    };
+    let route = match runtime.workspace.direct_model_binding(id).await {
+        Ok(route) => route,
+        Err(_) => return error(503, "route_unavailable"),
+    };
     let runs = state.execution.runs.lock().await;
-    runs.get(&id)
-        .map_or(RunView::new("idle"), Run::view)
-        .response(200)
+    let view = runs.get(&id).map_or(RunView::new("idle"), Run::view);
+    Response::json(
+        200,
+        serde_json::to_vec(&serde_json::json!({
+            "state": view.state, "error": view.error, "route": route.as_ref().map(route_view), "remote": remote,
+        }))
+        .expect("bounded route status"),
+    )
 }
 
 pub(super) async fn dispatch_post(
@@ -159,13 +224,19 @@ pub(super) async fn dispatch_post(
     let Ok(workspace) = runtime.workspace.workspace_for_task(&task).await else {
         return error(503, "workspace_unavailable");
     };
-    if !matches!(workspace.location, WorkspaceLocation::Local { .. }) {
-        return error(409, "local_tasks_only");
+    let remote = match remote_route(&runtime.workspace, &workspace).await {
+        Ok(remote) => remote,
+        Err(_) => return error(503, "workspace_unavailable"),
+    };
+    if remote.as_ref().map(|remote| &remote.stamp) != payload.expected_remote.as_ref() {
+        return error(409, "workspace_changed");
     }
-    match runtime.workspace.direct_model_binding(id).await {
-        Ok(None) => {}
-        Ok(Some(_)) => return error(409, "acp_tasks_only"),
+    let route = match runtime.workspace.direct_model_binding(id).await {
+        Ok(route) => route,
         Err(_) => return error(503, "route_unavailable"),
+    };
+    if route.as_ref().map(route_stamp) != payload.expected_route {
+        return error(409, "route_changed");
     }
     match runtime.workspace.task_draft(id).await {
         Ok(draft) if draft == payload.expected_draft => {}
@@ -198,8 +269,11 @@ pub(super) async fn dispatch_post(
     let view = Arc::new(StdMutex::new(RunView::new("running")));
     let worker = tokio::spawn(run_task(
         runtime.controller.clone(),
+        runtime.workspace.clone(),
         id,
         payload.text,
+        route,
+        payload.expected_remote,
         cancellation.clone(),
         view.clone(),
         RUN_TIMEOUT,
@@ -217,12 +291,43 @@ pub(super) async fn dispatch_post(
 
 async fn run_task(
     controller: Arc<Controller>,
+    workspace: WorkspaceService,
     id: TaskId,
     text: String,
+    expected_route: Option<DirectModelBinding>,
+    expected_remote: Option<String>,
     cancellation: CancellationToken,
     view: Arc<StdMutex<RunView>>,
     run_timeout: Duration,
 ) {
+    let current_remote = async {
+        let task = workspace.task(id).await?;
+        let location = workspace.workspace_for_task(&task).await?;
+        remote_route(&workspace, &location).await
+    }
+    .await;
+    if current_remote
+        .ok()
+        .and_then(|remote| remote.map(|remote| remote.stamp))
+        != expected_remote
+    {
+        *view
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner) = RunView {
+            state: "failed",
+            error: Some("workspace_changed"),
+        };
+        return;
+    }
+    if workspace.direct_model_binding(id).await.ok() != Some(expected_route) {
+        *view
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner) = RunView {
+            state: "failed",
+            error: Some("route_changed"),
+        };
+        return;
+    }
     let submit = controller.submit_interruptible(id, text, cancellation.clone());
     tokio::pin!(submit);
     let outcome = tokio::select! {

@@ -55,11 +55,20 @@ def main():
             old = audit_module(baseline).audit(baseline)
             current = audit_module(root).audit(root)
             assert old["errors"] == ["crates/synara-browser/src/native/actions.js: non-Rust core source"], old
-            # actions.js now belongs to assets/native-browser, outside the Rust
-            # core. Require that repair, while retaining every other baseline
-            # invariant. New errors, including recurrence of this one, fail.
-            assert current == {**old, "errors": []}, {"baseline": old, "current": current}
-            assert historical_ledger((baseline / "ROADMAP.md").read_text()) == historical_ledger((root / "ROADMAP.md").read_text())
+            # Browser and web-workspace JavaScript belong to assets, outside
+            # Rust crates. New workspace crates may be added while the source
+            # boundary and root-history invariants continue to hold.
+            assert current["errors"] == [], {"baseline": old, "current": current}
+            assert current["check"] == old["check"] == "workspace-structure"
+            assert current["root"] == old["root"]
+            assert current["crates"] >= old["crates"]
+            assert current["rust_compilation_performed"] is False
+            # The short execution roadmap moved the original A-Q ledger to
+            # docs/history; compare the archived text against the baseline.
+            current_ledger = root / "ROADMAP.md"
+            if "## A. Recover" not in current_ledger.read_text():
+                current_ledger = root / "docs/history/roadmap-before-simplification-2026-09-24.md"
+            assert historical_ledger((baseline / "ROADMAP.md").read_text()) == historical_ledger(current_ledger.read_text())
         finally:
             # Only remove the clean temporary worktree created above.
             subprocess.run(["git", "worktree", "remove", str(baseline)], cwd=root, check=True)

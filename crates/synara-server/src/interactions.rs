@@ -5,7 +5,9 @@ use std::collections::VecDeque;
 use synara_agent::{
     InteractionBroker, InteractionScope, UiInteraction, validate_input, validate_input_request,
 };
-use synara_core::{EventId, PermissionKind, TaskId, ThreadId, UserInputResponse};
+use synara_core::{
+    EventId, PermissionKind, TaskId, Thread, ThreadId, Tool, ToolOutput, UserInputResponse,
+};
 use tokio::sync::{Mutex, mpsc};
 
 const MAX_PENDING: usize = 32;
@@ -53,14 +55,62 @@ impl Inbox {
             if self.pending.len() < MAX_PENDING && interaction.is_active() {
                 // Fresh UUID receipts never reuse provider IDs, even after restart.
                 let id = EventId::new().to_string();
-                if public_view(&id, &interaction).is_some() {
+                if public_view(&id, &interaction, None, None).is_some() {
                     self.pending.push_back((id, interaction));
                 }
             }
         }
     }
 }
-fn public_view(id: &str, interaction: &UiInteraction) -> Option<serde_json::Value> {
+fn tool_context(tool: &Tool, thread: &Thread) -> serde_json::Value {
+    let diffs: Vec<_> = tool
+        .output
+        .iter()
+        .filter_map(|output| match output {
+            ToolOutput::Diff { path, before, after } => Some(serde_json::json!({
+                "path": path.chars().take(500).collect::<String>(),
+                "before": before.as_deref().map(|value| value.chars().take(2000).collect::<String>()),
+                "after": after.as_deref().map(|value| value.chars().take(2000).collect::<String>()),
+                "truncated": path.chars().count() > 500
+                    || before.as_deref().is_some_and(|value| value.chars().count() > 2000)
+                    || after.as_deref().is_some_and(|value| value.chars().count() > 2000),
+            })),
+            _ => None,
+        })
+        .take(2)
+        .collect();
+    let details: Vec<_> = tool
+        .output
+        .iter()
+        .filter_map(|output| match output {
+            ToolOutput::Text { text } => Some(serde_json::json!({
+                "kind": "text", "text": text.chars().take(3000).collect::<String>(),
+                "truncated": text.chars().count() > 3000,
+            })),
+            ToolOutput::Terminal { id } => thread.terminals.get(id).map(|record| {
+                serde_json::json!({
+                    "kind": "terminal", "text": record.text.chars().take(3000).collect::<String>(),
+                    "truncated": record.truncated || record.text.chars().count() > 3000,
+                    "exit_code": record.exit_code,
+                })
+            }),
+            _ => None,
+        })
+        .take(2)
+        .collect();
+    serde_json::json!({
+        "title": tool.title.chars().take(2000).collect::<String>(),
+        "kind": tool.kind.as_deref().map(|value| value.chars().take(100).collect::<String>()),
+        "diffs": diffs,
+        "details": details,
+    })
+}
+fn public_view(
+    id: &str,
+    interaction: &UiInteraction,
+    tool: Option<&Tool>,
+    thread: Option<&Thread>,
+) -> Option<serde_json::Value> {
     if interaction.context().scope != InteractionScope::Session {
         return None;
     }
@@ -99,7 +149,8 @@ fn public_view(id: &str, interaction: &UiInteraction) -> Option<serde_json::Valu
             if unique.len() != request.choices.len() {
                 return None;
             }
-            serde_json::json!({"id":id,"kind":"permission","title":request.title,"choices":choices})
+            serde_json::json!({"id":id,"kind":"permission","title":request.title,"choices":choices,
+                "tool":tool.zip(thread).map(|(tool, thread)| tool_context(tool, thread)),"tool_id":request.tool_id.as_deref().map(|value| value.chars().take(128).collect::<String>())})
         }
         UiInteraction::Input { request, .. } => {
             // Website/connection authentication is a separate product trust boundary.
@@ -134,6 +185,9 @@ pub(super) async fn get(path: &str, state: &AppState) -> Response {
     let Ok(task) = runtime.workspace.task(id).await else {
         return error(404, "not_found");
     };
+    let Ok(thread) = runtime.workspace.thread(task.thread_id).await else {
+        return error(503, "interactions_unavailable");
+    };
     let mut inbox = state.interactions.inbox.lock().await;
     inbox.refresh();
     let pending: Vec<_> = inbox
@@ -144,7 +198,15 @@ pub(super) async fn get(path: &str, state: &AppState) -> Response {
     let items: Vec<_> = pending
         .iter()
         .take(MAX_VISIBLE)
-        .filter_map(|(id, interaction)| public_view(id, interaction))
+        .filter_map(|(id, interaction)| {
+            let tool = match interaction {
+                UiInteraction::Permission { request, .. } => {
+                    request.tool_id.as_ref().and_then(|id| thread.tools.get(id))
+                }
+                _ => None,
+            };
+            public_view(id, interaction, tool, Some(&thread))
+        })
         .collect();
     let body =
         serde_json::to_vec(&serde_json::json!({"items":items,"more":pending.len() > MAX_VISIBLE}))

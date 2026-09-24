@@ -30,9 +30,8 @@ impl NativeSettings {
         let contextual_bindings = CONTEXTUAL_COMMANDS
             .iter()
             .map(|command| {
-                let entry = cx.new(|cx| {
-                    TextEntry::new(command.label, EntryMode::SingleLine, 32., cx)
-                });
+                let entry =
+                    cx.new(|cx| TextEntry::new(command.label, EntryMode::SingleLine, 32., cx));
                 entry.update(cx, |input, cx| {
                     input.set_text(
                         contextual_binding(&value.keybindings, command.id).unwrap_or_default(),
@@ -139,8 +138,12 @@ impl Shell {
             .keybindings
             .iter()
             .filter(|binding| {
-                !NAVIGATION_COMMANDS.iter().any(|command| command.id == binding.command)
-                    && !CONTEXTUAL_COMMANDS.iter().any(|command| command.id == binding.command)
+                !NAVIGATION_COMMANDS
+                    .iter()
+                    .any(|command| command.id == binding.command)
+                    && !CONTEXTUAL_COMMANDS
+                        .iter()
+                        .any(|command| command.id == binding.command)
             })
             .cloned()
             .collect();

@@ -188,8 +188,21 @@ fn valid_key_name(key: &str) -> bool {
             .is_some_and(|byte| byte.is_ascii_lowercase() || byte.is_ascii_digit())
         || matches!(
             key,
-            "[" | "]" | "enter" | "escape" | "tab" | "space" | "backspace" | "delete"
-                | "left" | "right" | "up" | "down" | "home" | "end" | "pageup" | "pagedown"
+            "[" | "]"
+                | "enter"
+                | "escape"
+                | "tab"
+                | "space"
+                | "backspace"
+                | "delete"
+                | "left"
+                | "right"
+                | "up"
+                | "down"
+                | "home"
+                | "end"
+                | "pageup"
+                | "pagedown"
         ))
         || key.strip_prefix('f').is_some_and(|number| {
             number
@@ -200,20 +213,19 @@ fn valid_key_name(key: &str) -> bool {
 
 fn invalid_contextual() -> WorkspaceError {
     WorkspaceError::Invalid(
-        "Use a named key, letter, digit, bracket or F1..F12 with Primary, Alt or Shift modifiers".into(),
+        "Use a named key, letter, digit, bracket or F1..F12 with Primary, Alt or Shift modifiers"
+            .into(),
     )
 }
 
-pub fn contextual_binding<'a>(bindings: &'a [KeyBinding], command: &str) -> Option<String> {
+pub fn contextual_binding(bindings: &[KeyBinding], command: &str) -> Option<String> {
     let binding = bindings.iter().find(|binding| binding.command == command);
-    binding
-        .map(|binding| binding.shortcut.clone())
-        .or_else(|| {
-            CONTEXTUAL_COMMANDS
-                .iter()
-                .find(|candidate| candidate.id == command)
-                .and_then(|candidate| candidate.default.map(str::to_owned))
-        })
+    binding.map(|binding| binding.shortcut.clone()).or_else(|| {
+        CONTEXTUAL_COMMANDS
+            .iter()
+            .find(|candidate| candidate.id == command)
+            .and_then(|candidate| candidate.default.map(str::to_owned))
+    })
 }
 
 pub fn has_contextual_override(bindings: &[KeyBinding], command: &str) -> bool {
@@ -260,10 +272,7 @@ fn contextual_shortcut_is_allowed(command: &ContextualCommand, key: &KeybindingS
         && key.key.len() == 1
         && key.key.as_bytes()[0].is_ascii_lowercase()
         && !matches!(key.key.as_str(), "t" | "z");
-    let primary_function = key.primary
-        && !key.alt
-        && !key.shift
-        && key.key.starts_with('f');
+    let primary_function = key.primary && !key.alt && !key.shift && key.key.starts_with('f');
     match command.id {
         "composer.send" => key.key == "enter" && !key.shift,
         "model.next" => {
@@ -509,38 +518,43 @@ mod tests {
     #[test]
     fn contextual_defaults_and_normalized_conflicts_are_checked() {
         let default = contextual_binding(&[], "model.next").unwrap();
-        assert_eq!(KeybindingStroke::parse(&default).unwrap().display(), "Alt+]");
-        assert!(validate_navigation_bindings(&[
-            KeyBinding {
-                command: "model.next".into(),
-                shortcut: "ctrl-alt-a".into(),
-            },
-            KeyBinding {
-                command: "model.previous".into(),
-                shortcut: "Primary+Option+A".into(),
-            },
-        ])
-        .is_err());
-        assert!(validate_navigation_bindings(&[
-            KeyBinding {
+        assert_eq!(
+            KeybindingStroke::parse(&default).unwrap().display(),
+            "Alt+]"
+        );
+        assert!(
+            validate_navigation_bindings(&[
+                KeyBinding {
+                    command: "model.next".into(),
+                    shortcut: "ctrl-alt-a".into(),
+                },
+                KeyBinding {
+                    command: "model.previous".into(),
+                    shortcut: "Primary+Option+A".into(),
+                },
+            ])
+            .is_err()
+        );
+        assert!(
+            validate_navigation_bindings(&[KeyBinding {
                 command: "composer.send".into(),
                 shortcut: "ctrl+1".into(),
-            },
-        ])
-        .is_err());
-        assert!(validate_navigation_bindings(&[
-            KeyBinding {
+            },])
+            .is_err()
+        );
+        assert!(
+            validate_navigation_bindings(&[KeyBinding {
                 command: "editor.save".into(),
                 shortcut: "enter".into(),
-            },
-        ])
-        .is_err());
-        assert!(validate_navigation_bindings(&[
-            KeyBinding {
+            },])
+            .is_err()
+        );
+        assert!(
+            validate_navigation_bindings(&[KeyBinding {
                 command: "model.typo".into(),
                 shortcut: "Primary+Alt+A".into(),
-            },
-        ])
-        .is_err());
+            },])
+            .is_err()
+        );
     }
 }

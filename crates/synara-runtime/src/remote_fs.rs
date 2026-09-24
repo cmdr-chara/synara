@@ -740,13 +740,13 @@ mod tests {
     #[test]
     fn helper_typed_name_search_returns_directory_and_file_kinds() {
         let root = tempfile::tempdir().unwrap();
-        std::fs::create_dir(root.path().join("target")).unwrap();
-        std::fs::write(root.path().join("target/target.rs"), "content").unwrap();
+        std::fs::create_dir(root.path().join("group")).unwrap();
+        std::fs::write(root.path().join("group/group.rs"), "content").unwrap();
         let fs = WorkspaceFs::open(root.path()).unwrap();
         let value = execute_helper_operation(
             &fs,
             RemoteFsOperation::SearchEntries {
-                query: "target".into(),
+                query: "group".into(),
                 max_matches: 10,
             },
         )
@@ -755,13 +755,76 @@ mod tests {
             panic!("expected typed name-search results");
         };
         assert!(entries.iter().any(|entry| {
-            entry.relative_path == Path::new("target") && entry.directory && !entry.symlink
+            entry.relative_path == Path::new("group") && entry.directory && !entry.symlink
         }));
         assert!(entries.iter().any(|entry| {
-            entry.relative_path == Path::new("target/target.rs")
-                && !entry.directory
-                && !entry.symlink
+            entry.relative_path == Path::new("group/group.rs") && !entry.directory && !entry.symlink
         }));
+    }
+
+    #[test]
+    fn local_and_remote_searches_share_ignore_and_generated_output_rules() {
+        let root = tempfile::tempdir().unwrap();
+        std::fs::create_dir_all(root.path().join("ignored")).unwrap();
+        std::fs::create_dir_all(root.path().join("src/deep-drop")).unwrap();
+        std::fs::create_dir_all(root.path().join("src/node_modules")).unwrap();
+        std::fs::create_dir_all(root.path().join("target")).unwrap();
+        std::fs::write(
+            root.path().join(".gitignore"),
+            "ignored/\n*.tmp\n!keep-hit.tmp\n**/deep-drop/\n",
+        )
+        .unwrap();
+        std::fs::write(root.path().join("src/.gitignore"), "local-hit.rs\n").unwrap();
+        for path in [
+            "ignored/ignored-hit.rs",
+            "hidden-hit.tmp",
+            "keep-hit.tmp",
+            "src/local-hit.rs",
+            "src/visible-hit.rs",
+            "src/deep-drop/deep-hit.rs",
+            "src/node_modules/package-hit.js",
+            "target/target-hit.rs",
+            "bundle-hit.min.js",
+        ] {
+            std::fs::write(root.path().join(path), "needle").unwrap();
+        }
+
+        let fs = WorkspaceFs::open(root.path()).unwrap();
+        let expected = vec![
+            PathBuf::from("keep-hit.tmp"),
+            PathBuf::from("src/visible-hit.rs"),
+        ];
+        let mut text_paths = fs
+            .search_text(Path::new(""), "needle", 20)
+            .unwrap()
+            .into_iter()
+            .map(|matched| matched.relative_path)
+            .collect::<Vec<_>>();
+        text_paths.sort();
+        assert_eq!(text_paths, expected);
+
+        let mut local_paths = fs.search_paths("hit", 20).unwrap();
+        local_paths.sort();
+        assert_eq!(local_paths, expected);
+
+        let mut entries = fs
+            .search_entries("hit", 20)
+            .unwrap()
+            .into_iter()
+            .map(|entry| entry.relative_path)
+            .collect::<Vec<_>>();
+        entries.sort();
+        assert_eq!(entries, expected);
+
+        let remote_value = execute_helper_operation(
+            &fs,
+            RemoteFsOperation::SearchPaths {
+                query: "hit".into(),
+                max_matches: 20,
+            },
+        )
+        .unwrap();
+        assert!(matches!(remote_value, RemoteFsValue::Paths(paths) if paths == expected));
     }
 
     #[test]

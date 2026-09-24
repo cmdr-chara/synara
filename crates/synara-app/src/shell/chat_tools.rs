@@ -6,6 +6,7 @@ use crate::ui::{
     palette,
 };
 use gpui::{EntityInputHandler, FocusHandle};
+use std::path::Path;
 use std::sync::atomic::{AtomicU64, Ordering};
 
 pub(super) enum Reply {
@@ -59,6 +60,7 @@ enum Action {
         source: TaskId,
         anchor: MessageAnchor,
         path: PathBuf,
+        recover: bool,
     },
 }
 struct Popup {
@@ -68,6 +70,29 @@ struct Popup {
     _subscription: Subscription,
 }
 type PendingMenu = (TaskId, String, Vec<(Choice, Action)>);
+fn recoverable_synara_worktree(worktree: &ProjectWorktree, scratch: &Path) -> bool {
+    if worktree.project_root
+        || worktree.bare
+        || worktree.prunable
+        || worktree.locked
+        || worktree.assigned_task.is_some()
+    {
+        return false;
+    }
+    let Some(token) = worktree
+        .branch
+        .as_deref()
+        .and_then(|branch| branch.strip_prefix("synara/"))
+    else {
+        return false;
+    };
+    let parts: Vec<_> = token.split('-').collect();
+    parts.iter().map(|part| part.len()).collect::<Vec<_>>() == [8, 4, 4, 4, 12]
+        && parts
+            .iter()
+            .all(|part| part.bytes().all(|byte| byte.is_ascii_hexdigit()))
+        && worktree.repository_path == scratch.join(format!("worktree-{token}"))
+}
 pub(super) struct ChatTools {
     pub query: Entity<TextEntry>,
     pub find_open: bool,
@@ -370,6 +395,8 @@ impl Shell {
                             icon: Some(Glyph::Fork), ..Default::default()
                         }, Action::ReviewNewWorktree { source: task, anchor: anchor.clone() }));
                         for worktree in worktrees {
+                            let recoverable =
+                                recoverable_synara_worktree(&worktree, &self.scratch_directory);
                             let assigned_title = worktree.assigned_task_title.clone();
                             let unavailable = if worktree.project_root {
                                 Some("This is the project's current directory".into())
@@ -383,16 +410,25 @@ impl Shell {
                                 assigned_title
                                     .map(|title| format!("Already assigned to task: {title}"))
                             };
-                            let label = worktree
-                                .branch
-                                .clone()
-                                .unwrap_or_else(|| "Detached HEAD".into());
+                            let label = if recoverable {
+                                "Recover unassigned Synara worktree".to_owned()
+                            } else {
+                                worktree
+                                    .branch
+                                    .clone()
+                                    .unwrap_or_else(|| "Detached HEAD".into())
+                            };
                             let path = worktree.path;
-                            let detail = path.display().to_string().chars().take(512).collect();
+                            let detail = if recoverable {
+                                format!("{} · {} · Creates an unsent task in the existing checkout; no new checkout or cleanup.", worktree.branch.as_deref().unwrap_or_default(), path.display())
+                            } else {
+                                path.display().to_string()
+                            }.chars().take(512).collect();
                             let action = Action::BranchWorktree {
                                 source: task,
                                 anchor: anchor.clone(),
                                 path,
+                                recover: recoverable,
                             };
                             rows.push((
                                 Choice {
@@ -435,7 +471,7 @@ impl Shell {
                             ("New branch", plan.branch().to_owned()),
                             ("New local worktree", plan.destination().display().to_string()),
                             ("Checkout permission", "Git checkout may execute configured repository filters. Hooks, signing, credentials and network helpers remain disabled.".into()),
-                            ("Ownership and recovery", "The new unsent task will own this worktree. No automatic deletion. If task saving fails, keep the reported path for explicit recovery.".into()),
+                            ("Ownership and recovery", "The new unsent task will own this worktree. If task saving fails, select the unassigned Synara worktree from this source message to recover it. No automatic deletion.".into()),
                         ] {
                             rows.push((Choice { label: label.into(), detail, unavailable: Some("Review information".into()), ..Default::default() }, Action::Noop));
                         }
@@ -756,7 +792,8 @@ impl Shell {
                 source,
                 anchor,
                 path,
-            } => self.branch_message_in_worktree(source, anchor, path, cx),
+                recover,
+            } => self.branch_message_in_worktree(source, anchor, path, recover, cx),
         }
     }
     fn open_pinned_messages(&mut self, window: &mut Window, cx: &mut Context<Self>) {

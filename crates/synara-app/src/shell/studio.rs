@@ -67,6 +67,18 @@ pub(super) enum StudioReply {
         path: PathBuf,
         result: Result<StudioPreview, String>,
     },
+    HistoryLoaded {
+        task: TaskId,
+        generation: u64,
+        path: PathBuf,
+        result: Result<GitFileHistory, String>,
+    },
+    RevisionLoaded {
+        task: TaskId,
+        generation: u64,
+        path: PathBuf,
+        result: Result<GitFileRevision, String>,
+    },
 }
 enum Preview {
     Pdf(pdf::PdfView),
@@ -74,12 +86,19 @@ enum Preview {
         text: String,
         markdown: bool,
     },
+    DocumentText(String),
     Image {
         image: Arc<gpui::Image>,
         width: u32,
         height: u32,
     },
     Unsupported(u64),
+}
+struct StudioSnapshot {
+    task: TaskId,
+    path: PathBuf,
+    text: String,
+    captured_at_ms: i64,
 }
 pub(super) struct StudioState {
     pub open: bool,
@@ -92,10 +111,16 @@ pub(super) struct StudioState {
     pub exporting: bool,
     export_review: Option<StudioExportReview>,
     loading: bool,
+    refresh_pending: bool,
     preview_loading: bool,
     selected: Option<PathBuf>,
     reopen_after_navigation: Option<(TaskId, PathBuf)>,
     preview: Option<Preview>,
+    history: Option<GitFileHistory>,
+    revision: Option<GitFileRevision>,
+    snapshots: Vec<StudioSnapshot>,
+    selected_snapshot: Option<usize>,
+    history_loading: bool,
     error: Option<String>,
     only_outputs: bool,
     kind_filter: StudioKindFilter,
@@ -123,10 +148,16 @@ impl StudioState {
             exporting: false,
             export_review: None,
             loading: false,
+            refresh_pending: false,
             preview_loading: false,
             selected: None,
             reopen_after_navigation: None,
             preview: None,
+            history: None,
+            revision: None,
+            snapshots: Vec::new(),
+            selected_snapshot: None,
+            history_loading: false,
             error: None,
             only_outputs: false,
             kind_filter: StudioKindFilter::All,
@@ -149,10 +180,16 @@ impl StudioState {
         self.generation = self.generation.wrapping_add(1);
         self.preview_generation = self.preview_generation.wrapping_add(1);
         self.preview = None;
+        self.history = None;
+        self.revision = None;
+        self.snapshots.clear();
+        self.selected_snapshot = None;
+        self.history_loading = false;
         self.selected = None;
         self.reopen_after_navigation = None;
         self.listing = StudioFiles::default();
         self.loading = false;
+        self.refresh_pending = false;
         self.preview_loading = false;
         self.error = None;
         self.raw_text = false;
@@ -177,8 +214,22 @@ fn document_path(path: &Path) -> bool {
     path.extension().and_then(|x| x.to_str()).is_some_and(|x| {
         matches!(
             x.to_ascii_lowercase().as_str(),
-            "pdf" | "txt" | "md" | "markdown" | "rst" | "csv" | "tsv" | "rtf"
-                | "doc" | "docx" | "odt" | "json" | "xml" | "yaml" | "yml" | "toml"
+            "pdf"
+                | "txt"
+                | "md"
+                | "markdown"
+                | "rst"
+                | "csv"
+                | "tsv"
+                | "rtf"
+                | "doc"
+                | "docx"
+                | "odt"
+                | "json"
+                | "xml"
+                | "yaml"
+                | "yml"
+                | "toml"
         )
     })
 }
@@ -209,8 +260,7 @@ fn studio_files_matching<'a>(
                             .as_ref()
                             .is_some_and(|source| source.number == turn)
                 })
-                && (query.is_empty()
-                    || file.path.to_string_lossy().to_lowercase().contains(query))
+                && (query.is_empty() || file.path.to_string_lossy().to_lowercase().contains(query))
         })
         .collect()
 }
@@ -237,6 +287,21 @@ fn restored_output_is_attributed(task: TaskId, path: &Path, listing: &[StudioFil
         .any(|entry| entry.path == path && entry.source_task == Some(task))
 }
 impl Shell {
+    pub(super) fn studio_tool_finished(&mut self, thread: ThreadId, cx: &mut Context<Self>) {
+        if !self.studio.open
+            || self.studio.task != self.selected
+            || !self
+                .task()
+                .is_some_and(|task| task.thread_id == thread && task.scope == TaskScope::Studio)
+        {
+            return;
+        }
+        if self.studio.loading {
+            self.studio.refresh_pending = true;
+        } else {
+            self.refresh_studio_outputs(cx);
+        }
+    }
     pub(super) fn open_studio_outputs(&mut self, cx: &mut Context<Self>) {
         if self
             .task()
@@ -286,6 +351,10 @@ impl Shell {
         self.studio.selected = Some(path.clone());
         self.studio.image_zoom = None;
         self.studio.preview = None;
+        self.studio.history = None;
+        self.studio.revision = None;
+        self.studio.selected_snapshot = None;
+        self.studio.history_loading = false;
         self.studio.preview_loading = true;
         self.studio.error = None;
         if path
@@ -306,6 +375,76 @@ impl Shell {
                     .await
                     .map_err(|error| error.to_string()),
                 path,
+            })))
+        });
+        cx.notify();
+    }
+    fn open_studio_history(&mut self, cx: &mut Context<Self>) {
+        let Some(task) = self.task().filter(|task| {
+            self.studio.open && self.studio.task == Some(task.id) && task.scope == TaskScope::Studio
+        }) else {
+            return;
+        };
+        if !matches!(self.studio.preview, Some(Preview::Text { .. })) || self.studio.history_loading
+        {
+            return;
+        }
+        let Some(path) = self.studio.selected.clone() else {
+            return;
+        };
+        let root = task.working_directory.clone();
+        let task = task.id;
+        let generation = self.studio.preview_generation;
+        let cancel = self.studio.preview_cancel.clone();
+        self.studio.history = None;
+        self.studio.revision = None;
+        self.studio.history_loading = true;
+        self.studio.error = None;
+        self.job(async move {
+            let result = GitService::new(root)
+                .file_history(path.clone(), &cancel)
+                .await
+                .map_err(|error| error.to_string());
+            Ok(Update::Studio(Box::new(StudioReply::HistoryLoaded {
+                task,
+                generation,
+                path,
+                result,
+            })))
+        });
+        cx.notify();
+    }
+    fn open_studio_revision(&mut self, commit: String, cx: &mut Context<Self>) {
+        let Some(task) = self.task().filter(|task| {
+            self.studio.open && self.studio.task == Some(task.id) && task.scope == TaskScope::Studio
+        }) else {
+            return;
+        };
+        let (Some(path), Some(history)) =
+            (self.studio.selected.clone(), self.studio.history.clone())
+        else {
+            return;
+        };
+        if self.studio.history_loading || !history.commits.iter().any(|row| row.id == commit) {
+            return;
+        }
+        let root = task.working_directory.clone();
+        let task = task.id;
+        let generation = self.studio.preview_generation;
+        let cancel = self.studio.preview_cancel.clone();
+        self.studio.history_loading = true;
+        self.studio.revision = None;
+        self.studio.error = None;
+        self.job(async move {
+            let result = GitService::new(root)
+                .file_revision(&history, &commit, &cancel)
+                .await
+                .map_err(|error| error.to_string());
+            Ok(Update::Studio(Box::new(StudioReply::RevisionLoaded {
+                task,
+                generation,
+                path,
+                result,
             })))
         });
         cx.notify();
@@ -421,6 +560,10 @@ impl Shell {
                     }
                     Err(error) => self.studio.error = Some(error),
                 }
+                if self.studio.refresh_pending {
+                    self.studio.refresh_pending = false;
+                    self.refresh_studio_outputs(cx);
+                }
             }
             StudioReply::Previewed {
                 task,
@@ -438,7 +581,30 @@ impl Shell {
                 self.studio.preview_loading = false;
                 match result {
                     Ok(StudioPreview::Text { text, markdown }) => {
+                        if text.len() <= 128 * 1024
+                            && self
+                                .studio
+                                .snapshots
+                                .iter()
+                                .rev()
+                                .find(|snapshot| snapshot.task == task && snapshot.path == path)
+                                .is_none_or(|snapshot| snapshot.text != text)
+                        {
+                            self.studio.snapshots.push(StudioSnapshot {
+                                task,
+                                path: path.clone(),
+                                text: text.clone(),
+                                captured_at_ms: chrono::Utc::now().timestamp_millis(),
+                            });
+                            if self.studio.snapshots.len() > 12 {
+                                self.studio.snapshots.remove(0);
+                                self.studio.selected_snapshot = None;
+                            }
+                        }
                         self.studio.preview = Some(Preview::Text { text, markdown })
+                    }
+                    Ok(StudioPreview::DocumentText { text }) => {
+                        self.studio.preview = Some(Preview::DocumentText(text));
                     }
                     Ok(StudioPreview::Image {
                         bytes,
@@ -459,6 +625,44 @@ impl Shell {
                     Ok(StudioPreview::Unsupported { bytes }) => {
                         self.studio.preview = Some(Preview::Unsupported(bytes))
                     }
+                    Err(error) => self.studio.error = Some(error),
+                }
+            }
+            StudioReply::HistoryLoaded {
+                task,
+                generation,
+                path,
+                result,
+            } => {
+                if self.selected != Some(task)
+                    || self.studio.task != Some(task)
+                    || self.studio.preview_generation != generation
+                    || self.studio.selected.as_ref() != Some(&path)
+                {
+                    return;
+                }
+                self.studio.history_loading = false;
+                match result {
+                    Ok(history) => self.studio.history = Some(history),
+                    Err(error) => self.studio.error = Some(error),
+                }
+            }
+            StudioReply::RevisionLoaded {
+                task,
+                generation,
+                path,
+                result,
+            } => {
+                if self.selected != Some(task)
+                    || self.studio.task != Some(task)
+                    || self.studio.preview_generation != generation
+                    || self.studio.selected.as_ref() != Some(&path)
+                {
+                    return;
+                }
+                self.studio.history_loading = false;
+                match result {
+                    Ok(revision) => self.studio.revision = Some(revision),
                     Err(error) => self.studio.error = Some(error),
                 }
             }
@@ -539,6 +743,9 @@ impl Shell {
             .and_then(|entry| entry.source_task);
         let preview = match &self.studio.preview {
             Some(Preview::Pdf(view)) => self.studio_pdf_panel(view, cx),
+            Some(Preview::DocumentText(text)) => div().id("studio-docx-text-preview")
+                .flex_1().min_h_0().overflow_y_scroll().p_3().font_family(ui::code_font())
+                .text_size(px(13.)).child(truncate(text, 128 * 1024)).into_any_element(),
             Some(Preview::Text { text, markdown }) => {
                 div().id("studio-text-preview").relative().child(ui::layout_probe("studio-text-preview"))
                     .flex_1().min_h_0().overflow_y_scroll().p_3().text_size(px(13.))
@@ -645,6 +852,9 @@ impl Shell {
                 .when(matches.is_empty(), |el| el.child(div().p_3().text_size(px(12.)).text_color(rgb(palette().muted))
                     .child(if self.studio.loading { "Looking for files..." } else if self.studio.only_outputs { "No completed tool changes reference a visible file yet. All files shows other workspace content." } else if self.studio.listing.entries.is_empty() { "Files appear here after they are created in this Hub working folder." } else { "No files match the current filters. Clear filters or change the search." }))))
             .child(div().text_size(px(12.)).text_ellipsis().child(selected.as_ref().map(|p|p.to_string_lossy().into_owned()).unwrap_or_default()))
+            .children(matches!(self.studio.preview, Some(Preview::DocumentText(_))).then(||
+                div().text_size(px(11.)).text_color(rgb(palette().muted))
+                    .child("Extracted DOCX main text · read only. Copy text copies the extraction; export saves the original document.")))
             .when(matches!(self.studio.preview, Some(Preview::Text { markdown: true, .. })), |el| el.child(
                 ui::button("studio-raw-toggle", if self.studio.raw_text { "Show rendered Markdown" } else { "Show raw text" }, self.studio.raw_text)
                     .text_size(px(11.)).aria_label("Toggle raw Markdown source")
@@ -654,6 +864,64 @@ impl Shell {
                         cx.notify();
                     }))))
             .child(preview)
+            .children(matches!(self.studio.preview, Some(Preview::Text { .. })).then(||
+                ui::button("studio-history", if self.studio.history_loading { "Loading committed versions..." } else { "Committed versions" }, self.studio.history_loading)
+                    .text_size(px(11.))
+                    .on_click(cx.listener(|this, _, _, cx| this.open_studio_history(cx)))
+            ))
+            .children(self.studio.history.as_ref().map(|history| {
+                div().id("studio-history-list").max_h(px(150.)).overflow_y_scroll().flex().flex_col().gap_1()
+                    .child(div().text_size(px(11.)).text_color(rgb(palette().muted))
+                        .child(format!("Committed snapshots · {}{}", history.commits.len(), if history.limited { " (first 50)" } else { "" })))
+                    .children(history.commits.iter().enumerate().map(|(index, commit)| {
+                        let id = commit.id.clone();
+                        let label = format!("{} · {}", &id[..8], commit.subject.chars().take(80).collect::<String>());
+                        ui::button(("studio-history-commit", index), label, self.studio.revision.as_ref().is_some_and(|revision| revision.commit == id))
+                            .text_size(px(11.))
+                            .on_click(cx.listener(move |this, _, _, cx| this.open_studio_revision(id.clone(), cx)))
+                    }))
+            }))
+            .children(self.studio.revision.as_ref().map(|revision| {
+                let commit = revision.commit.clone();
+                div().id("studio-history-preview").flex().flex_col().gap_1()
+                    .child(div().flex().items_center().gap_2()
+                        .child(div().flex_1().text_size(px(11.)).child(format!("Historical snapshot {} · read only", &commit[..8])))
+                        .child(ui::button("studio-history-copy", "Copy snapshot", false).text_size(px(11.))
+                            .on_click(cx.listener(|this, _, _, cx| {
+                                if let Some(revision) = &this.studio.revision {
+                                    cx.write_to_clipboard(gpui::ClipboardItem::new_string(revision.text.clone()));
+                                }
+                            }))))
+                    .child(div().id("studio-history-text").max_h(px(180.)).overflow_y_scroll().p_2().font_family(ui::code_font())
+                        .text_size(px(11.)).child(truncate(&revision.text, 128 * 1024)))
+            }))
+            .children(selected.as_ref().and_then(|path| {
+                let versions: Vec<_> = self.studio.snapshots.iter().enumerate()
+                    .filter(|(_, snapshot)| Some(snapshot.task) == self.studio.task && snapshot.path == *path)
+                    .collect();
+                (versions.len() > 1).then(|| div().id("studio-session-versions").flex().flex_col().gap_1()
+                    .child(div().text_size(px(11.)).text_color(rgb(palette().muted))
+                        .child("Session previews · snapshots captured when this file was refreshed; kept in memory until Studio closes"))
+                    .child(div().flex().flex_wrap().gap_1().children(versions.into_iter().map(|(index, snapshot)| {
+                        let timestamp = chrono::DateTime::from_timestamp_millis(snapshot.captured_at_ms)
+                            .map(|date| date.format("%H:%M:%S UTC").to_string()).unwrap_or_else(|| "unknown time".into());
+                        ui::button(("studio-session-version", index), timestamp, self.studio.selected_snapshot == Some(index))
+                            .text_size(px(11.))
+                            .on_click(cx.listener(move |this, _, _, cx| { this.studio.selected_snapshot = Some(index); cx.notify(); }))
+                    })))
+                    .children(self.studio.selected_snapshot.and_then(|index| self.studio.snapshots.get(index))
+                        .filter(|snapshot| Some(snapshot.task) == self.studio.task && snapshot.path == *path)
+                        .map(|snapshot| div().flex().flex_col().gap_1()
+                            .child(ui::button("studio-session-copy", "Copy selected session preview", false).text_size(px(11.))
+                                .on_click(cx.listener(|this, _, _, cx| {
+                                    if let Some(text) = this.studio.selected_snapshot.and_then(|index| this.studio.snapshots.get(index)).map(|snapshot| snapshot.text.clone()) {
+                                        cx.write_to_clipboard(gpui::ClipboardItem::new_string(text));
+                                    }
+                                })))
+                            .child(div().id("studio-session-text").max_h(px(180.)).overflow_y_scroll().p_2().font_family(ui::code_font())
+                                .text_size(px(11.)).child(truncate(&snapshot.text, 128 * 1024)))))
+                )
+            }))
             .child(self.studio_export_controls(cx))
             .child(div().flex().items_center().gap_1().flex_wrap().border_t_1().border_color(rgb(palette().border)).pt_2()
                 .child(ui::button("studio-copy-path","Copy path",false).text_size(px(11.)).on_click(cx.listener(|this,_,_,cx| {
@@ -661,10 +929,15 @@ impl Shell {
                 })))
                 .child(ui::button("studio-reference","Add path to draft",false).text_size(px(11.)).relative().child(ui::layout_probe("studio-reference"))
                     .on_click(cx.listener(|this,_,_,cx| this.studio_reference_to_draft(cx))))
-                .when(matches!(self.studio.preview,Some(Preview::Text {..})), |el| el
+                .when(matches!(self.studio.preview,Some(Preview::Text {..} | Preview::DocumentText(_))), |el| el
                     .child(ui::button("studio-copy-text","Copy text",false).text_size(px(11.)).on_click(cx.listener(|this,_,_,cx| {
-                        if let Some(Preview::Text {text,..})=&this.studio.preview {cx.write_to_clipboard(gpui::ClipboardItem::new_string(text.clone()));}
-                    })))
+                        let text = match &this.studio.preview {
+                            Some(Preview::Text { text, .. } | Preview::DocumentText(text)) => Some(text.clone()),
+                            _ => None,
+                        };
+                        if let Some(text) = text {cx.write_to_clipboard(gpui::ClipboardItem::new_string(text));}
+                    }))))
+                .when(matches!(self.studio.preview,Some(Preview::Text {..})), |el| el
                     .child(ui::button("studio-edit","Open in editor",false).text_size(px(11.)).relative().child(ui::layout_probe("studio-edit"))
                         .on_click(cx.listener(|this,_,_,cx| {
                             if let Some(path)=this.studio.selected.clone() { this.set_panel(Panel::Files,cx); this.open_file(path,cx); }
@@ -676,8 +949,8 @@ impl Shell {
 #[cfg(test)]
 mod tests {
     use super::{
-        StudioKindFilter, StudioSortOrder, restored_output_is_attributed,
-        sort_studio_files, studio_files_matching, take_reopen_path,
+        StudioKindFilter, StudioSortOrder, restored_output_is_attributed, sort_studio_files,
+        studio_files_matching, take_reopen_path,
     };
     use std::path::PathBuf;
     use synara_core::TaskId;
@@ -767,20 +1040,16 @@ mod tests {
 
         assert_eq!(matches.len(), 1);
         assert_eq!(matches[0].path, PathBuf::from("images/hero.WEBP"));
-        assert!(studio_files_matching(
-            &entries,
-            "",
-            false,
-            StudioKindFilter::Documents,
-            None
-        )
-        .iter()
-        .any(|entry| entry.path == PathBuf::from("notes/plan.md")));
+        assert!(
+            studio_files_matching(&entries, "", false, StudioKindFilter::Documents, None)
+                .iter()
+                .any(|entry| entry.path == std::path::Path::new("notes/plan.md"))
+        );
     }
 
     #[test]
     fn library_sort_orders_are_deterministic_and_keep_unknown_reports_last() {
-        let entries = vec![
+        let entries = [
             file("zeta.md", 12, Some(100), None, None),
             file("Alpha.md", 12, Some(300), None, None),
             file("large.bin", 80, None, None, None),

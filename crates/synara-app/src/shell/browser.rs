@@ -640,7 +640,7 @@ impl Shell {
                 .browser
                 .with(|s, _| s.manual_runtime_diagnostics(tab_id));
             if let Ok(runtime_diagnostics) = runtime_diagnostics {
-                let mut controls = div()
+                let controls = div()
                     .flex()
                     .gap_2()
                     .child(ui::action(
@@ -670,24 +670,22 @@ impl Shell {
                         }),
                     ));
                 #[cfg(target_os = "linux")]
-                {
-                    controls = controls.child(ui::action(
-                        "browser-open-web-inspector",
-                        "Open Web Inspector",
-                        Some(Glyph::Debug),
-                        false,
-                        cx.listener(move |this, _: &(), _, cx| {
-                            this.browser.error = this
-                                .browser
-                                .native
-                                .borrow()
-                                .open_manual_inspector(tab_id)
-                                .err()
-                                .map(|e| e.to_string());
-                            cx.notify();
-                        }),
-                    ));
-                }
+                let controls = controls.child(ui::action(
+                    "browser-open-web-inspector",
+                    "Open Web Inspector",
+                    Some(Glyph::Debug),
+                    false,
+                    cx.listener(move |this, _: &(), _, cx| {
+                        this.browser.error = this
+                            .browser
+                            .native
+                            .borrow()
+                            .open_manual_inspector(tab_id)
+                            .err()
+                            .map(|e| e.to_string());
+                        cx.notify();
+                    }),
+                ));
                 pane = pane.child(controls);
                 if self.browser.runtime_diagnostics_open {
                     pane = pane.child(

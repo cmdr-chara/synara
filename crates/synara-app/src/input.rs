@@ -13,6 +13,7 @@ use synara_workspace::{
 
 mod navigation;
 mod policy;
+mod syntax;
 
 const MAX_INPUT: usize = 1024 * 1024;
 const HISTORY_BYTES: usize = 16 * 1024 * 1024;
@@ -93,6 +94,9 @@ pub struct TextEntry {
     undo: Vec<TextBuffer>,
     redo: Vec<TextBuffer>,
     history_bytes: usize,
+    syntax: Option<syntax::Language>,
+    syntax_spans: Vec<syntax::HighlightSpan>,
+    syntax_dirty: bool,
     pub error: Option<String>,
 }
 impl EventEmitter<EntryEvent> for TextEntry {}
@@ -142,6 +146,9 @@ impl TextEntry {
             undo: vec![],
             redo: vec![],
             history_bytes: 0,
+            syntax: None,
+            syntax_spans: Vec::new(),
+            syntax_dirty: true,
             error: None,
         }
     }
@@ -188,6 +195,7 @@ impl TextEntry {
     pub fn set_text(&mut self, text: String, cx: &mut Context<Self>) {
         tracing::debug!(target: "synara_ui_layout", composer = self.mode == EntryMode::Composer, editor = self.mode == EntryMode::Editor, empty = text.is_empty(), "input-replaced");
         self.buffer = TextBuffer::new(text);
+        self.syntax_dirty = true;
         self.undo.clear();
         self.redo.clear();
         self.history_bytes = 0;
@@ -197,6 +205,18 @@ impl TextEntry {
         self.ensure_caret = true;
         self.error = None;
         cx.notify();
+    }
+    /// Select syntax rules from the active file name. Unsupported extensions
+    /// keep the editor's regular plain-text rendering.
+    pub fn set_syntax_from_path(&mut self, path: &std::path::Path) {
+        if self.mode != EntryMode::Editor {
+            return;
+        }
+        let syntax = syntax::Language::from_path(path);
+        if self.syntax != syntax {
+            self.syntax = syntax;
+            self.syntax_dirty = true;
+        }
     }
     pub fn clear(&mut self, cx: &mut Context<Self>) {
         self.set_text(String::new(), cx);
@@ -243,6 +263,7 @@ impl TextEntry {
         }
     }
     fn changed(&mut self, cx: &mut Context<Self>) {
+        self.syntax_dirty = true;
         self.anchor = None;
         self.reversed = false;
         self.ensure_caret = true;
@@ -404,9 +425,9 @@ impl TextEntry {
                 (true, EntryMode::Editor) => Some(KeybindingContext::Editor),
                 _ => None,
             };
-            if let Some(action) = context.and_then(|context| {
-                contextual_command_for_key(&self.keybindings, context, &stroke)
-            }) {
+            if let Some(action) = context
+                .and_then(|context| contextual_command_for_key(&self.keybindings, context, &stroke))
+            {
                 if !input_owns_contextual_action(action) {
                     // Shell-level shortcuts such as model cycling need to
                     // bubble to the root's focus- and IME-guarded dispatcher.
@@ -551,6 +572,15 @@ impl TextEntry {
             tracing::debug!(target: "synara_ui_layout", composer = self.mode == EntryMode::Composer, editor = self.mode == EntryMode::Editor, ?bounds, "input-layout");
         }
         self.bounds = bounds;
+        if self.syntax_dirty {
+            self.syntax_dirty = false;
+            self.syntax_spans = self
+                .syntax
+                .filter(|_| self.buffer.text().len() <= syntax::MAX_HIGHLIGHT_BYTES)
+                .map_or_else(Vec::new, |language| {
+                    syntax::highlight(self.buffer.text(), language)
+                });
+        }
         let empty = self.buffer.text().is_empty();
         let text: SharedString = if empty {
             self.placeholder.clone()
@@ -563,28 +593,45 @@ impl TextEntry {
         let marked = self.buffer.marked();
         if !empty {
             points.extend([selection.start, selection.end]);
+            points.extend(
+                self.syntax_spans
+                    .iter()
+                    .flat_map(|span| [span.range.start, span.range.end]),
+            );
             if let Some(marked) = &marked {
                 points.extend([marked.start, marked.end]);
             }
         }
         points.sort_unstable();
         points.dedup();
+        let palette = crate::ui::palette();
+        let mut syntax_index = 0;
         let runs = points
             .windows(2)
             .map(|range| {
+                while self
+                    .syntax_spans
+                    .get(syntax_index)
+                    .is_some_and(|span| span.range.end <= range[0])
+                {
+                    syntax_index += 1;
+                }
                 let mut run = window.text_style().to_run(range[1] - range[0]);
-                run.color = rgb(if empty {
-                    crate::ui::palette().muted
-                } else {
-                    crate::ui::palette().text
-                })
-                .into();
+                run.color = rgb(if empty { palette.muted } else { palette.text }).into();
+                if !empty
+                    && let Some(span) = self.syntax_spans.get(syntax_index)
+                    && span.range.start <= range[0]
+                    && range[1] <= span.range.end
+                {
+                    run.color = rgb(syntax::color(span.kind, palette)).into();
+                }
                 if !empty
                     && range[0] >= selection.start
                     && range[1] <= selection.end
                     && !selection.is_empty()
                 {
-                    run.background_color = Some(rgb(crate::ui::palette().selected).into());
+                    run.background_color = Some(rgb(palette.selected).into());
+                    run.color = rgb(palette.text).into();
                 }
                 if marked
                     .as_ref()
@@ -592,7 +639,7 @@ impl TextEntry {
                 {
                     run.underline = Some(UnderlineStyle {
                         thickness: px(1.),
-                        color: Some(rgb(crate::ui::palette().focus).into()),
+                        color: Some(rgb(palette.focus).into()),
                         wavy: false,
                     });
                 }

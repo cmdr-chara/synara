@@ -391,12 +391,23 @@ async fn execution_deadline_cancels_and_drains_the_native_owner() {
         .unwrap()
         .controller
         .clone();
+    let workspace = state
+        .runtime
+        .read()
+        .await
+        .as_ref()
+        .unwrap()
+        .workspace
+        .clone();
     timeout(
         Duration::from_secs(3),
         run_task(
             controller,
+            workspace,
             task.id,
             "deadline".into(),
+            None,
+            None,
             CancellationToken::new(),
             view.clone(),
             Duration::from_millis(100),

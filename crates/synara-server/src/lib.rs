@@ -1362,7 +1362,7 @@ const INDEX_HTML: &str = include_str!("index.html");
 
 const STYLE_CSS: &str = include_str!("style.css");
 
-const APP_JS: &str = include_str!("app.js");
+const APP_JS: &str = include_str!("../../../assets/web-workspace/app.js");
 
 #[cfg(test)]
 mod tests {

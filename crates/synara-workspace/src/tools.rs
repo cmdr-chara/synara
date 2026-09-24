@@ -822,22 +822,24 @@ mod tests {
             "dirty working text\n"
         );
         assert!(!marker.exists());
-        assert!(git
-            .file_at_ref(
+        assert!(
+            git.file_at_ref(
                 file.into(),
                 "--help".into(),
                 &tokio_util::sync::CancellationToken::new(),
             )
             .await
-            .is_err());
-        assert!(git
-            .file_at_ref(
+            .is_err()
+        );
+        assert!(
+            git.file_at_ref(
                 "../outside.txt".into(),
                 "HEAD".into(),
                 &tokio_util::sync::CancellationToken::new(),
             )
             .await
-            .is_err());
+            .is_err()
+        );
     }
 
     async fn git_fixture(root: &Path) -> GitService {

@@ -80,8 +80,11 @@ impl Shell {
         compare.mode = Some(mode);
         compare.label = Some(label.into());
         compare.reference = None;
+        compare.disk_version = None;
+        compare.buffer_at_read = None;
         compare.diff = CompareDiff::default();
         compare.error = None;
+        compare.restore_all_confirmed = false;
         let request = (owner, compare.generation, compare.cancel.clone());
         self.editors.history.clear();
         self.editors.preview = false;
@@ -114,7 +117,10 @@ impl Shell {
         compare.label = Some(label);
         compare.diff = compare_text(&reference, &current);
         compare.reference = Some(reference);
+        compare.disk_version = None;
+        compare.buffer_at_read = Some(current);
         compare.error = None;
+        compare.restore_all_confirmed = false;
         self.editors.history.clear();
         self.editors.preview = false;
         cx.notify();
@@ -126,7 +132,13 @@ impl Shell {
         };
         let label = format!(
             "Saved snapshot {}",
-            document.snapshot.version.0.chars().take(8).collect::<String>()
+            document
+                .snapshot
+                .version
+                .0
+                .chars()
+                .take(8)
+                .collect::<String>()
         );
         self.set_editor_comparison_snapshot(
             CompareMode::Saved,
@@ -140,11 +152,9 @@ impl Shell {
         let Some(target) = self.workspace_target() else {
             return;
         };
-        let Some((owner, generation, cancel)) = self.begin_editor_comparison_request(
-            CompareMode::Disk,
-            "Current disk",
-            cx,
-        ) else {
+        let Some((owner, generation, cancel)) =
+            self.begin_editor_comparison_request(CompareMode::Disk, "Current disk", cx)
+        else {
             return;
         };
         let workspace = self.controller.workspace.clone();
@@ -189,6 +199,8 @@ impl Shell {
                         this.editors.compare.label = Some(label);
                         this.editors.compare.diff = compare_text(&snapshot.text, &current);
                         this.editors.compare.reference = Some(snapshot.text);
+                        this.editors.compare.disk_version = Some(snapshot.version);
+                        this.editors.compare.buffer_at_read = Some(current);
                     }
                     Err(error) => this.editors.compare.error = Some(error),
                 }
@@ -223,9 +235,8 @@ impl Shell {
             if self.editors.compare.generation == generation {
                 self.editors.compare.pending = false;
             }
-            self.editors.compare.error = Some(
-                "Git reference comparison currently requires a local repository.".into(),
-            );
+            self.editors.compare.error =
+                Some("Git reference comparison currently requires a local repository.".into());
             cx.notify();
             return;
         }
@@ -253,6 +264,8 @@ impl Shell {
                         this.editors.compare.label = Some(format!("Git ref {label}"));
                         this.editors.compare.diff = compare_text(&text, &current);
                         this.editors.compare.reference = Some(text);
+                        this.editors.compare.disk_version = None;
+                        this.editors.compare.buffer_at_read = Some(current);
                     }
                     Err(error) => this.editors.compare.error = Some(error),
                 }
@@ -260,6 +273,72 @@ impl Shell {
             });
         })
         .detach();
+    }
+
+    pub(super) fn merge_conflicted_editor(&mut self, cx: &mut Context<Self>) {
+        if !self.conflict_merge_ready(cx) {
+            return;
+        }
+        let (Some(document), Some(disk), Some(disk_version), Some(buffer_at_read)) = (
+            self.document.clone(),
+            self.editors.compare.reference.clone(),
+            self.editors.compare.disk_version.clone(),
+            self.editors.compare.buffer_at_read.clone(),
+        ) else {
+            return;
+        };
+        let local = self.editor.read(cx).text().to_owned();
+        if local != buffer_at_read || self.editor.read(cx).is_composing() {
+            self.notice = Some(
+                "The editor buffer changed after the disk comparison. Compare disk again before merging; your edits are intact.".into(),
+            );
+            cx.notify();
+            return;
+        }
+
+        match three_way_merge(&document.snapshot.text, &local, &disk) {
+            Err(MergeLimit::Bytes) => {
+                self.notice = Some(
+                    "The combined text exceeds the safe merge size. Your buffer was kept; use the disk comparison and resolve this file manually.".into(),
+                );
+            }
+            Err(MergeLimit::Lines) => {
+                self.notice = Some(
+                    "The file exceeds the safe line limit for automatic merging. Your buffer was kept; use the disk comparison and resolve this file manually.".into(),
+                );
+            }
+            Err(MergeLimit::Cells) => {
+                self.notice = Some(
+                    "The changes exceed the safe merge limit. Your buffer was kept; use the disk comparison and resolve this file manually.".into(),
+                );
+            }
+            Ok(merge) if merge.text.is_none() => {
+                self.notice = Some(format!(
+                    "The three-way merge found {} overlapping edit pairs. Your buffer was kept. Review the disk comparison, edit the buffer manually, then choose an explicit recovery action.",
+                    merge.conflicts
+                ));
+            }
+            Ok(merge) => {
+                let Some(merged) = merge.text else {
+                    unreachable!("the overlap case returned above")
+                };
+                let mut rebased = document;
+                rebased.snapshot.text = disk;
+                rebased.snapshot.version = disk_version;
+                self.document = Some(rebased);
+                self.sync_editor_document();
+                self.editor
+                    .update(cx, |input, cx| input.set_text(merged.clone(), cx));
+                self.editors.compare.clear();
+                self.clear_conflict_reload_confirmation();
+                self.error = None;
+                self.notice = Some(format!(
+                    "Applied {} local and {} disk change groups without writing the file. Review the merged buffer, then save it explicitly; a newer disk change will still be detected.",
+                    merge.local_edits, merge.disk_edits
+                ));
+            }
+        }
+        cx.notify();
     }
 
     pub(super) fn editor_batch_blocked(&self, cx: &App) -> bool {

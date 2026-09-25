@@ -167,14 +167,15 @@ def main():
         wait_until(enrolled, 'persisted pinned remote workspace', 20)
         checks.append('remote-panel-pinned-enrollment')
 
-        # Text fields consume some control-number combinations through IME/focus handling.
-        # Click the actual navigation tab so this smoke exercises the intended panel.
-        desktop.click(818, 24)
-        time.sleep(1.1)
+        click_control(desktop, log.name, 'Files', timeout=20)
+        wait_until(
+            lambda: control_bounds(log.name, 'file-tree'),
+            'remote file explorer geometry',
+            20,
+        )
         desktop.screenshot('remote-files')
-        desktop.click(310, 170)
-        time.sleep(0.6)
-        desktop.click(850, 190)
+        click_control(desktop, log.name, 'file-row', slot=0)
+        click_control(desktop, log.name, 'editor-input')
         desktop.key('a', ('Control_L',))
         type_text(desktop, 'remote edited\n')
         desktop.key('s', ('Control_L',))
@@ -203,26 +204,28 @@ def main():
         desktop.screenshot('remote-search', window_only=True)
         checks.append('remote-content-and-name-search-over-pinned-ssh')
 
-        desktop.click(992, 24)
-        time.sleep(0.7)
-        desktop.click(1142, 82)
-        time.sleep(1.2)
-        desktop.click(790, 300)
+        click_control(desktop, log.name, 'Terminal', timeout=20)
+        wait_until(
+            lambda: control_bounds(log.name, 'terminal-workspace'),
+            'remote terminal workspace geometry',
+            20,
+        )
+        click_control(desktop, log.name, 'start-shell', timeout=20)
+        click_control(desktop, log.name, 'terminal-screen', timeout=20)
         type_text(desktop, 'touch remote-ui-terminal-marker\n')
         wait_until(terminal_marker.exists, 'direct remote terminal input', 20)
         checks.append('remote-terminal-direct-input')
         desktop.screenshot('remote-terminal')
 
         # Restart through the same native terminal surface and prove stale-session isolation.
-        desktop.click(1142, 82)
-        time.sleep(1.2)
-        desktop.click(790, 300)
+        click_control(desktop, log.name, 'start-shell', timeout=20)
+        click_control(desktop, log.name, 'terminal-screen', timeout=20)
         type_text(desktop, 'touch remote-ui-terminal-restarted\n')
         wait_until(restart_marker.exists, 'remote terminal restart', 20)
         checks.append('remote-terminal-restart')
 
         # Close while a foreground command is active. Synara must stop its owned SSH PTY first.
-        desktop.click(790, 300)
+        click_control(desktop, log.name, 'terminal-screen', timeout=20)
         type_text(desktop, 'sleep 30\n')
         time.sleep(0.35)
         desktop.request_close()

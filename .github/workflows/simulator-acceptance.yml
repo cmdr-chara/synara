@@ -1,0 +1,80 @@
+name: Real Apple Simulator acceptance
+on:
+  workflow_call:
+    inputs:
+      revision:
+        required: true
+        type: string
+  push:
+    branches: [main]
+    paths:
+      - 'crates/synara-runtime/src/device.rs'
+      - 'crates/synara-runtime/src/device_tools/**'
+      - 'crates/synara-runtime/tests/apple_simulator_live.rs'
+      - '.github/workflows/simulator-acceptance.yml'
+permissions:
+  contents: read
+concurrency:
+  group: simulator-acceptance-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  RUSTUP_TOOLCHAIN: '1.98.1'
+jobs:
+  core-simulator:
+    if: github.repository == 'cmdr-chara/synara'
+    runs-on: macos-14
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          ref: ${{ inputs.revision != '' && inputs.revision || github.sha }}
+          persist-credentials: false
+      - name: Record exact candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ inputs.revision != '' && inputs.revision || github.sha }}"
+          mkdir -p acceptance-evidence
+          git rev-parse HEAD > acceptance-evidence/revision.txt
+      - name: Inspect installed Apple simulator runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild -version | tee acceptance-evidence/xcode.txt
+          xcrun simctl list runtimes | tee acceptance-evidence/runtimes.txt
+          xcrun simctl list devices available | tee acceptance-evidence/devices-before.txt
+          xcrun simctl list devices available | grep -q 'iPhone'
+      - name: Install pinned Rust
+        shell: bash
+        run: rustup toolchain install 1.98.1 --profile minimal
+      - name: Compile real-simulator acceptance test
+        shell: bash
+        run: cargo +1.98.1 test --locked -p synara-runtime --test apple_simulator_live --no-run
+      - name: Exercise Synara against CoreSimulator
+        shell: bash
+        env:
+          SYNARA_SIMULATOR_EVIDENCE: ${{ github.workspace }}/acceptance-evidence/simulator.json
+        run: |
+          set -euo pipefail
+          cargo +1.98.1 test --locked -p synara-runtime --test apple_simulator_live             -- --ignored --test-threads=1 --nocapture
+          test -s acceptance-evidence/simulator.json
+      - name: Capture final simulator state
+        if: always()
+        shell: bash
+        run: |
+          xcrun simctl list devices available > acceptance-evidence/devices-after.txt || true
+          xcrun simctl shutdown all || true
+      - name: Verify candidate identity
+        if: always()
+        shell: bash
+        run: |
+          git diff --exit-code
+          git diff --cached --exit-code
+          test "$(git rev-parse HEAD)" = "${{ inputs.revision != '' && inputs.revision || github.sha }}"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: apple-simulator-acceptance
+          path: acceptance-evidence/
+          retention-days: 7
+          if-no-files-found: error

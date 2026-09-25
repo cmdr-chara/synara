@@ -22,7 +22,12 @@ def type_text(ui, value):
         '\n': 'Return',
     }
     for char in value:
-        ui.key(names.get(char, char))
+        if char == '_':
+            ui.key('minus', ('Shift_L',))
+        elif char.isascii() and char.isupper():
+            ui.key(char.lower(), ('Shift_L',))
+        else:
+            ui.key(names.get(char, char))
 
 
 def set_field(ui, x, y, value):

@@ -772,7 +772,14 @@ fn harden(web: &webkit2gtk::WebView, partition: StoragePartition) {
     if let Some(settings) = webkit2gtk::WebViewExt::settings(web) {
         settings.set_enable_developer_extras(manual);
         settings.set_javascript_can_access_clipboard(false);
-        settings.set_javascript_can_open_windows_automatically(false);
+        // Authentication pages may create OAuth/login popups asynchronously.
+        // The native new-window handler still denies every navigation and only
+        // surfaces a reviewed Open/Dismiss request, so this grants no popup
+        // navigation authority to page script.
+        settings.set_javascript_can_open_windows_automatically(matches!(
+            partition,
+            StoragePartition::Authentication(_)
+        ));
         settings.set_allow_file_access_from_file_urls(false);
         settings.set_allow_universal_access_from_file_urls(false);
     }

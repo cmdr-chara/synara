@@ -211,7 +211,7 @@ impl Controller {
                 "required":["stopMatched","confidence","reason"],
                 "properties":{
                     "stopMatched":{"type":"boolean"},
-                    "confidence":{"type":"number","minimum":0,"maximum":1},
+                    "confidence":{"type":"number"},
                     "reason":{"type":"string","maxLength":2000}
                 }
             }),

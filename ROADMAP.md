@@ -9,15 +9,15 @@ Detailed parity evidence lives in:
 
 ## Current status
 
-- Shipped feature slices: **74**
+- Shipped feature slices: **76**
 - Major remaining: **16**
 - Smaller remaining: **0**
-- Acceptance/integration remaining: **8**
-- Total remaining: **24**
+- Acceptance/integration remaining: **6**
+- Total remaining: **22**
 - Completely missing top-level surfaces: **0**
 - Broad verification gates still open: **21**
 
-The **26-item count is the execution count to use going forward**. The 21 verification
+The **22-item count is the execution count to use going forward**. The 21 verification
 gates are larger acceptance buckets and are not a feature count.
 
 Current upstream reference: `Emanuele-web04/synara@eaa61eded31b6755d4f30ba8eabc5d905cf817cb`.
@@ -90,8 +90,8 @@ not large new product subsystems.
 - [x] A03 Windows voice/package acceptance
 - [ ] A04 Fresh-install onboarding with real provider accounts
 - [ ] A05 Authenticated browser login/session/popup acceptance
-- [ ] A06 Real macOS Simulator/device acceptance
-- [ ] A07 SSH worktree/search acceptance
+- [x] A06 Real macOS Simulator/device acceptance
+- [x] A07 SSH worktree/search acceptance
 - [ ] A08 Signed release feed/install/rollback package acceptance
 - [ ] A09 Multi-provider ACP/direct-model interoperability matrix
 - [ ] A10 Cross-platform visual/accessibility/save-picker acceptance
@@ -488,7 +488,8 @@ Verification receipts:
 [batch 30](docs/verification/parity-2026-09-25-batch30.md),
 [batch 31](docs/verification/parity-2026-09-25-batch31.md),
 [batch 32](docs/verification/parity-2026-09-25-batch32.md),
-[batch 33](docs/verification/parity-2026-09-25-batch33.md).
+[batch 33](docs/verification/parity-2026-09-25-batch33.md),
+[batch 34](docs/verification/parity-2026-09-25-batch34.md).
 
 - Batch 32: acceptance infrastructure now has a dedicated Linux/macOS/Windows
   native build and development-package matrix. macOS development packaging uses

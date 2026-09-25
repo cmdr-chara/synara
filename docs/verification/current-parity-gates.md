@@ -265,3 +265,16 @@ and wider platform acceptance remain open. See
 [batch6 scope and evidence](parity-2026-09-24-batch6.md),
 [batch14 scope](parity-2026-09-25-batch14.md) and
 [batch15 completion](parity-2026-09-25-batch15.md).
+
+## September 25 acceptance checkpoint - batch 34
+
+Two acceptance/integration items now have deciding live-environment evidence.
+A06 passed on hosted macOS arm64 against a real iOS Simulator, including Synara
+discovery/boot, frame capture, URL opening and state restoration. A07 passed on
+the current branch head with isolated pinned-SSH transport, remote filesystem,
+search, PTY, managed-worktree/Git lifecycle and native GPUI journeys.
+
+These receipts close the corresponding roadmap acceptance items, not the broad
+parity gates. D3 remains OPEN while M13-M16 are still missing. D5/D12/N2 remain
+OPEN wherever their full workflow criteria extend beyond the accepted SSH
+journey. See [batch 34](parity-2026-09-25-batch34.md).

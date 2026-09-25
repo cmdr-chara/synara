@@ -77,7 +77,9 @@ fn real_webkit_navigation_consent_input_redirect_and_isolation() {
             let len = stream.read(&mut data).unwrap_or(0);
             let request = String::from_utf8_lossy(&data[..len]).into_owned();
             log.lock().unwrap().push(request.clone());
-            let body = if request.starts_with("GET /auth ") || request.starts_with("GET /auth-again ") {
+            let authentication_page = request.starts_with("GET /auth ")
+                || request.starts_with("GET /auth-again ");
+            let body = if authentication_page {
                 "<!doctype html><title>Authentication fixture</title><style>html,body,a{width:100%;height:100%;margin:0}a{display:flex;align-items:center;justify-content:center}</style><a href='/auth-popup?token=private' target='_blank'>Continue sign-in</a>"
             } else {
                 "<!doctype html><title>Native browser fixture</title><style>body{min-height:2400px}</style><h1>REAL WEBKIT PAGE</h1><input aria-label='Name'><button onclick=\"document.querySelector('h1').textContent='Clicked '+document.querySelector('input').value\">Apply</button><script>window.__synaraRefs='page-forgery';</script>"
@@ -479,12 +481,16 @@ fn real_webkit_navigation_consent_input_redirect_and_isolation() {
         .unwrap();
     for _ in 0..1000 {
         pump(&mut host, &mut session);
-        if requests
+        let request_seen = requests
             .lock()
             .unwrap()
             .iter()
-            .any(|r| r.starts_with("GET /auth-again "))
-        {
+            .any(|r| r.starts_with("GET /auth-again "));
+        let ready = session
+            .tabs()
+            .iter()
+            .any(|tab| tab.id == auth && tab.state == "ready");
+        if request_seen && ready {
             break;
         }
         std::thread::sleep(Duration::from_millis(10));
@@ -497,6 +503,13 @@ fn real_webkit_navigation_consent_input_redirect_and_isolation() {
             .any(|r| r.starts_with("GET /auth-again ")
                 && r.to_lowercase().contains("cookie: fixture=manual")),
         "authentication profile did not retain its own cookie"
+    );
+    assert!(
+        session
+            .tabs()
+            .iter()
+            .any(|tab| tab.id == auth && tab.state == "ready"),
+        "authentication continuation did not finish loading"
     );
 
     // Exercise the real user-gesture popup path. Scripted window.open calls are

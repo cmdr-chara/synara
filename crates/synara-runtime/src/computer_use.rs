@@ -389,9 +389,7 @@ impl ComputerTools {
             }
             .await;
             if let Err(error) = step {
-                if pressed
-                    && let Some(button) = drag_button
-                {
+                if pressed && let Some(button) = drag_button {
                     let release = vec![
                         "mouseup".into(),
                         "--window".into(),

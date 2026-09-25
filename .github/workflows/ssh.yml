@@ -9,8 +9,15 @@ on:
     branches: [main]
     paths:
       - 'crates/synara-runtime/tests/ssh_live.rs'
+      - 'crates/synara-runtime/src/filesystem.rs'
+      - 'crates/synara-runtime/src/remote_fs.rs'
       - 'crates/synara-workspace/tests/ssh_live.rs'
+      - 'crates/synara-workspace/src/service.rs'
+      - 'crates/synara-workspace/src/service/new_worktree.rs'
+      - 'crates/synara-workspace/src/storage/task_creation.rs'
+      - 'crates/synara-workspace/Cargo.toml'
       - 'crates/synara-acp/tests/ssh_live.rs'
+      - 'crates/synara-acp/src/session.rs'
       - 'scripts/ssh_smoke.py'
       - 'scripts/remote_native_smoke.py'
       - '.github/workflows/ssh.yml'
@@ -30,11 +37,11 @@ jobs:
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
-          ref: ${{ github.event_name == 'workflow_call' && inputs.revision || github.sha }}
+          ref: ${{ inputs.revision != '' && inputs.revision || github.sha }}
           persist-credentials: false
       - name: Record exact SSH candidate
         run: |
-          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD)" = "${{ inputs.revision != '' && inputs.revision || github.sha }}"
           mkdir -p /tmp/ajm-ssh-evidence
           git rev-parse HEAD > /tmp/ajm-ssh-evidence/revision.txt
       - name: Install pinned Rust, OpenSSH and native prerequisites

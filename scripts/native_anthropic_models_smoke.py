@@ -137,8 +137,10 @@ def run(s):
         s.prompt('hold')
         wait_until(lambda: len(requests) == 2, 'active Anthropic request')
         wait_until(
-            lambda: any(event.get('text') == 'Anthropic native answer'
-                        for event in s.events() if event['type'] == 'message'),
+            lambda: any(
+                event.get('text') == 'Anthropic native answer'
+                for event in s.events()[len(events):]
+            ),
             'Anthropic partial output',
         )
         s.click_control('composer-submit')

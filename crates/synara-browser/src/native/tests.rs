@@ -518,6 +518,17 @@ fn real_webkit_navigation_consent_input_redirect_and_isolation() {
     assert!(host.views[&auth].webview.webview().is_visible());
     window.present();
     window.activate_focus();
+    host.views[&auth].webview.webview().grab_focus();
+    let map_deadline = Instant::now() + Duration::from_secs(5);
+    while !host.views[&auth].webview.webview().is_mapped() {
+        pump(&mut host, &mut session);
+        assert!(
+            Instant::now() < map_deadline,
+            "authentication WebKit view did not map before trusted input"
+        );
+        std::thread::sleep(Duration::from_millis(10));
+    }
+    pump(&mut host, &mut session);
     {
         use x11rb::{
             connection::Connection,

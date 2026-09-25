@@ -99,15 +99,19 @@ jobs:
 
           root = Path('/tmp/direct-conversations-evidence')
           vendor = json.loads((root / 'vendor-acp.json').read_text())
+          assert vendor.get('format') == 1, vendor
+          agents = vendor.get('agents', [])
           required_acp = {'opencode', 'gemini-cli'}
-          observed_acp = {entry['id'] for entry in vendor if entry.get('passed')}
+          observed_acp = {entry['id'] for entry in agents if entry.get('passed')}
           missing = sorted(required_acp - observed_acp)
           assert not missing, f'missing passing ACP release probes: {missing}'
-          for entry in vendor:
+          for entry in agents:
               if entry.get('id') in required_acp:
                   assert entry.get('credentials_supplied') is False
+                  assert entry.get('authentication_attempted') is False
                   assert entry.get('prompt_sent') is False
                   assert entry.get('initialization') == 'passed'
+                  assert entry.get('identity_matches_release') is True
 
           journeys = {}
           for name in ('google_models', 'anthropic_models', 'direct_models', 'handoff', 'model_draft'):
@@ -117,7 +121,11 @@ jobs:
 
           matrix = {
               'status': 'passed',
-              'external_acp_releases': sorted(required_acp),
+              'external_acp_releases': {
+                  entry['id']: entry['release_version']
+                  for entry in agents
+                  if entry.get('id') in required_acp
+              },
               'direct_protocols': ['google-generate-content', 'anthropic-messages', 'openai-chat-compatible'],
               'native_journeys': journeys,
               'credentials_supplied': False,

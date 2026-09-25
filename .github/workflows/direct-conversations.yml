@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 40
     env:
-      CANDIDATE_REVISION: ${{ inputs.revision }}
+      CANDIDATE_REVISION: ${{ inputs.revision != '' && inputs.revision || github.sha }}
       CARGO_BUILD_JOBS: '2'
       PYTHONDONTWRITEBYTECODE: '1'
       GIT_TERMINAL_PROMPT: '0'
@@ -42,7 +42,7 @@ jobs:
         run: '[[ "$CANDIDATE_REVISION" =~ ^[0-9a-f]{40}$ ]]'
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
-          ref: ${{ inputs.revision }}
+          ref: ${{ inputs.revision != '' && inputs.revision || github.sha }}
           persist-credentials: false
       - name: Verify checkout
         run: test "$(git rev-parse HEAD)" = "$CANDIDATE_REVISION"
@@ -58,7 +58,7 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             target
-          key: direct-conversations-1.98.1-${{ runner.os }}-${{ inputs.revision }}
+          key: direct-conversations-1.98.1-${{ runner.os }}-${{ inputs.revision != '' && inputs.revision || github.sha }}
           restore-keys: |
             direct-conversations-1.98.1-${{ runner.os }}-
             max-feature-1.98.1-${{ runner.os }}-

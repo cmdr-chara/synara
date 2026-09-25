@@ -435,12 +435,7 @@ fn real_webkit_navigation_consent_input_redirect_and_isolation() {
         .open(BrowserProfile::Authentication { flow: auth_flow })
         .unwrap();
     session
-        .user_navigate(
-            auth,
-            &format!("{base}/auth"),
-            NavigationKind::Push,
-            now(),
-        )
+        .user_navigate(auth, &format!("{base}/auth"), NavigationKind::Push, now())
         .unwrap();
     for _ in 0..1000 {
         pump(&mut host, &mut session);
@@ -501,7 +496,10 @@ fn real_webkit_navigation_consent_input_redirect_and_isolation() {
     );
 
     let popup_url = format!("{base}/auth-popup?token=private");
-    let popup_script = format!("window.open({});", serde_json::to_string(&popup_url).unwrap());
+    let popup_script = format!(
+        "window.open({});",
+        serde_json::to_string(&popup_url).unwrap()
+    );
     let requested = Rc::new(Cell::new(false));
     let evaluated = requested.clone();
     host.views[&auth].webview.webview().evaluate_javascript(
@@ -525,11 +523,17 @@ fn real_webkit_navigation_consent_input_redirect_and_isolation() {
         {
             break;
         }
-        assert!(Instant::now() < end, "authentication popup request timed out");
+        assert!(
+            Instant::now() < end,
+            "authentication popup request timed out"
+        );
         std::thread::sleep(Duration::from_millis(10));
     }
     assert_eq!(
-        session.authentication_popup_preview(auth).unwrap().as_deref(),
+        session
+            .authentication_popup_preview(auth)
+            .unwrap()
+            .as_deref(),
         Some(format!("{base}/auth-popup").as_str())
     );
     assert!(

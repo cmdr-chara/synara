@@ -9,15 +9,15 @@ Detailed parity evidence lives in:
 
 ## Current status
 
-- Shipped feature slices: **59**
+- Shipped feature slices: **63**
 - Major remaining: **22**
-- Smaller remaining: **7**
+- Smaller remaining: **3**
 - Acceptance/integration remaining: **10**
-- Total remaining: **39**
+- Total remaining: **35**
 - Completely missing top-level surfaces: **0**
 - Broad verification gates still open: **21**
 
-The **39-item count is the execution count to use going forward**. The 21 verification
+The **35-item count is the execution count to use going forward**. The 21 verification
 gates are larger acceptance buckets and are not a feature count.
 
 Current upstream reference: `Emanuele-web04/synara@eaa61eded31b6755d4f30ba8eabc5d905cf817cb`.
@@ -61,13 +61,13 @@ journeys and the cancelled WebKit job remain unverified.
 
 ## Smaller features remaining
 
-- [ ] S01 Provider-specific onboarding setup/login UX
-- [ ] S02 Voice interaction controls beyond record/transcribe-to-draft
+- [x] S01 Provider-specific onboarding setup/login UX
+- [x] S02 Voice interaction controls beyond record/transcribe-to-draft
 - [x] S03 Direct-model keyboard cycling
 - [x] S04 Context-aware custom keybindings
 - [x] S05 Additional native slash-command argument forms
 - [ ] S06 Deeper automation orchestration semantics
-- [ ] S07 Same-task handoff continuation semantics
+- [x] S07 Same-task handoff continuation semantics
 - [ ] S08 Provider-native fork actions
 - [x] S09 Persistent folder references
 - [x] S10 Richer structured metadata in thread export
@@ -75,7 +75,7 @@ journeys and the cancelled WebKit job remain unverified.
 - [x] S12 Reply/context reuse into side/new tasks
 - [x] S13 Exact upstream project-search ranking
 - [x] S14 Exact ignored/generated-file search behavior
-- [ ] S15 Per-turn provider/model activity breakdown
+- [x] S15 Per-turn provider/model activity breakdown
 - [x] S16 Token heatmap
 - [x] S17 Studio organization/filtering polish
 - [ ] S18 PDF text/link/form interaction after basic rendering
@@ -102,7 +102,7 @@ Finish whole workflows instead of spreading work across every gate:
 
 1. **Web workspace:** M01-M02, M06
 2. **Editor/review:** M21
-3. **Worktrees/handoff:** M22-M24, S07-S08
+3. **Worktrees/handoff:** M22-M24, S08
 4. **Documents/Studio:** M29-M30, S18
 5. **Simulator:** M13-M16 when the required macOS/native input backend is available
 
@@ -251,7 +251,7 @@ updater integrity checks and Studio output reopening.
   Missing token telemetry is explicitly omitted rather than inferred. S16 is
   complete; D11 remains open for broader provider/model and real account/quota
   telemetry.
-- Batch 15 (in progress): project file-name and content search now use the
+- Batch 15: project file-name and content search now use the
   upstream project-search static generated-directory set exactly:
   `.git`, `.convex`, `node_modules`, `.next`, `.turbo`, `dist`,
   `build`, `out` and `.cache`. Native-only exclusions such as `target`,
@@ -267,6 +267,69 @@ updater integrity checks and Studio output reopening.
   state. Voice recording now exposes a bounded elapsed-time indicator and
   five-level live input meter in the composer; S02 remains open for broader
   interaction controls and live-provider/platform acceptance.
+- Batch 16: S01 and S02 are complete at the product-feature level. The setup
+  flow already owns an explicit unsent setup task, Connect, advertised ACP auth
+  methods and connection questions; provider-specific Codex, Claude Code,
+  OpenCode and Gemini CLI login guidance now supplies the missing provider UX.
+  Real-account fresh-install proof remains A04/D1. Voice now has start, stop,
+  cancel, stale-result fencing, bounded transcribe-to-draft, elapsed recording
+  feedback and a live input meter. Real microphone/provider/macOS/Windows proof
+  remains A01-A03/M1 rather than duplicating that acceptance work under S02.
+- Batch 17 (in progress): automation history can now be explicitly pruned only
+  for terminal runs whose definitions were already deleted. The operation is
+  confirmation-gated, preserves generated conversations, never removes active
+  runs or history for current definitions, and leaves run-limit semantics
+  unchanged. This removes one source of the 256-entry ledger dead-end without
+  silently discarding current automation evidence. Retained run history can also
+  be exported through the native save dialog as a versioned JSON snapshot using
+  the existing no-overwrite private-file writer. Live-definition terminal
+  history can now also be explicitly pruned without resetting cumulative
+  max-run accounting; generated conversations, failure streak and schedule state
+  remain intact. Automations can opt into Hub shared context for their selected
+  project: each claim snapshots the current saved Hub revision and visible
+  instructions/knowledge into the owned Studio-scoped conversation before
+  provider launch, while legacy/project-mode automations remain project-only.
+  S06 remains open for out-of-process scheduling and wider live-provider
+  lifecycle acceptance.
+  Durable Studio text-version history for a selected file can now be cleared
+  through a two-step native confirmation. The operation is task/path-scoped,
+  preserves the workspace file and histories for other files, and stale replies
+  are ignored by task/path/generation checks. An exact selected durable version
+  can also be saved to a new destination after task/path/generation/selection
+  revalidation; the backend rechecks that the snapshot still exists and never
+  reads or rewrites the current workspace file. M30 remains open for broader
+  long-running lifecycle/version organization.
+- Batch 18: ACP prompt submission now snapshots the exact task agent and the
+  acknowledged single-model selection onto the returned turn ID. The durable
+  route event binds correctly whether it replays before or after PromptStarted,
+  rejects conflicting duplicate attribution, and survives later task-agent or
+  thread-model changes. Transcript activity shows ACP/direct route plus reported
+  turn tokens, and Profile aggregates exact per-turn route/model counts with
+  explicit legacy-unattributed disclosure. S15 is complete. M26/D11 remain open
+  for real account/quota/billing telemetry and live-provider acceptance.
+  PDF preview metadata now discloses whether Poppler reports no form, an AcroForm,
+  XFA, or an unrecognized form technology from the same immutable snapshot.
+  Form data stays read-only and scripts are never run. S18 remains open for safe
+  field inspection/editing/submission rather than pretending metadata is interaction.
+  PPTX joins the bounded document pipeline: only ordered slide XML is opened,
+  DrawingML text is extracted as labeled slide context, and relationships, notes,
+  media, macros and embedded objects are ignored. Composer and Studio share the
+  same read-only extraction. XLSX now follows the same inert path: bounded
+  worksheet/shared-string XML yields coordinate-labeled cached values, formulas
+  are never evaluated, and workbook relationships, macros, charts and embedded
+  objects are ignored. ODP and ODS use the same OpenDocument safety boundary:
+  only bounded content.xml is opened, presentation pages are labeled, spreadsheet
+  cells expose visible/cached values, formulas are ignored, and embedded objects
+  are never read. M29 remains open for richer page/slide/sheet rendering and
+  additional document formats.
+- Batch 19: reviewed provider handoff can now continue in the same TaskId/ThreadId
+  as an explicit alternative to creating a related conversation. The transaction
+  rechecks source transcript, workspace and route identity, refuses a nonempty
+  source draft or pending attachments, atomically replaces ACP/direct route state,
+  invalidates the old saved session and persists the reviewed continuation as a
+  visible unsent draft. No prompt is sent and files/Git state are untouched.
+  Changing the route after review makes the review stale. S07 is complete; D12
+  remains open for provider-native forks and live provider/worktree acceptance.
 
 Verification receipts:
 [batch 1](docs/verification/parity-2026-09-24-batch1.md),
@@ -283,7 +346,11 @@ Verification receipts:
 [batch 12](docs/verification/parity-2026-09-24-batch12.md),
 [batch 13](docs/verification/parity-2026-09-25-batch13.md),
 [batch 14](docs/verification/parity-2026-09-25-batch14.md),
-[batch 15](docs/verification/parity-2026-09-25-batch15.md).
+[batch 15](docs/verification/parity-2026-09-25-batch15.md),
+[batch 16](docs/verification/parity-2026-09-25-batch16.md),
+[batch 17](docs/verification/parity-2026-09-25-batch17.md),
+[batch 18](docs/verification/parity-2026-09-25-batch18.md),
+[batch 19](docs/verification/parity-2026-09-25-batch19.md).
 
 ## How to update this roadmap
 

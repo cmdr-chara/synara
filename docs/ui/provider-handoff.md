@@ -8,19 +8,25 @@ original stays intact and nothing is sent automatically. **Review before
 creating...** at the menu foot opens the full picker where the working
 folder and bounded visible context can be edited before explicit creation.
 
-This is not same-session migration. When provider session transfer has no safe
-contract, Synara creates a fresh TaskId and ThreadId. The UI says so. The original
-task, draft, persisted/live provider session and approvals are not mutated or
-retired to simulate a handoff. The new task shares the same existing project,
-working folder and task scope, not a new Git checkout or a copied worktree.
-It has fresh task authority and no inherited permission decisions.
+The full review also offers **Continue here**. That keeps the existing TaskId,
+ThreadId, working folder, task scope, files, Git state and transcript, but
+explicitly replaces the task's ACP/direct provider route and stores the reviewed
+context as its visible unsent draft. It never sends automatically. Continue here
+is unavailable while the source composer contains an unsent draft, attachments
+are pending/loading, or the conversation is active.
+
+Creating a related conversation still gives the destination fresh task/session
+authority. Same-task continuation invalidates the old saved provider session and
+best-effort retires any old live session only after the route transaction commits.
+Neither form copies approvals, secrets, hidden reasoning or tool state.
 
 ## Review and creation
 
 The review records source identity, transcript sequence, workspace/project/root
-identity and target configuration. Creating the continuation rechecks them all
-inside the existing task reservation and SQLite transaction. Changing the source,
-destination authority, agent profile or direct-model settings invalidates review.
+identity, current ACP/direct route and target configuration. Both child creation
+and same-task continuation recheck them under the existing task reservation and
+SQLite transaction. Changing the source, current route, destination authority,
+agent profile or direct-model settings invalidates review.
 Active tasks and shutdown refuse creation. Repeated confirmation cannot create
 another child from the same review. A rolled-back creation can be explicitly
 retried without leaving a partial task or origin record.
@@ -38,19 +44,22 @@ only on a subsequent authorized request. This is not copying the source task's k
 
 ## Lifecycle and limits
 
-Creation writes the task, unsent draft, origin and optional direct binding atomically
-through the existing related-conversation storage owner. It starts no provider,
-subagent, process, Git action or external write. Only a later explicit Send uses the
-chosen ACP/direct runtime. Restart restores the child and draft without sending it.
+Child creation writes the task, unsent draft, origin and optional direct binding
+atomically through the existing related-conversation storage owner. Same-task
+continuation atomically rewrites only the existing task's provider agent/direct
+binding, saved-session row and reviewed draft after independently confirming that
+the persisted source draft is empty and no attachments are pending. It starts no
+provider, subagent, process, Git action or external write. Only a later explicit
+Send uses the chosen ACP/direct runtime. Restart restores the child and draft without sending it.
 Selection-generation guards prevent a slow review/create response from replacing
 an unrelated newly selected conversation. Escape respects composing text and does
 not silently discard changed review content.
 
-The native related-continuation workflow is implemented. Product handoff remains
-**partial** relative to in-place same-task provider continuation or session transfer.
-Those need an explicit interoperable protocol contract, not provider-name guesses.
-There is no filesystem rollback, checkpoint restore, worktree clone or autonomous
-delegation in this feature.
+The native related-continuation and same-task route-continuation workflows are
+implemented. Product handoff remains **partial** for provider-native session
+fork/transfer capabilities and their live interoperability. Synara does not infer
+those capabilities from provider names. There is no filesystem rollback,
+checkpoint restore, worktree clone or autonomous delegation in this feature.
 
 The [sprint receipt](../verification/max-feature-sprint.md) records seven backend
 handoff tests and the native edited-context/ACP/direct/restart journey, including

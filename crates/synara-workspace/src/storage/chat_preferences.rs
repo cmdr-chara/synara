@@ -120,6 +120,33 @@ struct Draft {
     version: u32,
     text: String,
 }
+pub(crate) fn task_draft_text(
+    connection: &Connection,
+    id: TaskId,
+) -> StorageResult<Option<String>> {
+    let exists: bool = connection.query_row(
+        "SELECT EXISTS(SELECT 1 FROM tasks WHERE id=?1)",
+        [id.to_string()],
+        |row| row.get(0),
+    )?;
+    if !exists {
+        return Ok(None);
+    }
+    let raw: Option<String> = connection
+        .query_row(
+            "SELECT data FROM preferences WHERE key=?1",
+            [format!("task-draft:{id}")],
+            |row| row.get(0),
+        )
+        .optional()?;
+    let draft = raw.as_deref().map(decode::<Draft>).transpose()?;
+    match draft {
+        Some(draft) if draft.version == 1 && draft.text.len() <= MAX_DRAFT => Ok(Some(draft.text)),
+        Some(_) => Err(StorageError::Limit),
+        None => Ok(Some(String::new())),
+    }
+}
+
 impl Store {
     fn model_favorites(&self) -> StorageResult<Vec<ModelFavorite>> {
         let stored = self
@@ -208,17 +235,7 @@ impl Store {
         Ok(stored.entries)
     }
     fn task_draft(&self, id: TaskId) -> StorageResult<Option<String>> {
-        if self.task(id)?.is_none() {
-            return Ok(None);
-        }
-        let draft = self.preference::<Draft>(&format!("task-draft:{id}"))?;
-        match draft {
-            Some(draft) if draft.version == 1 && draft.text.len() <= MAX_DRAFT => {
-                Ok(Some(draft.text))
-            }
-            Some(_) => Err(StorageError::Limit),
-            None => Ok(Some(String::new())),
-        }
+        task_draft_text(&self.connection, id)
     }
     fn save_task_draft(&mut self, id: TaskId, text: String) -> StorageResult<bool> {
         if text.len() > MAX_DRAFT {

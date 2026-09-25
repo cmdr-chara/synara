@@ -95,6 +95,26 @@ fn resolved(connection: &Connection, project: &Project) -> WorkspaceResult<Optio
             .count(),
     }))
 }
+pub(crate) fn automation_hub_context(
+    connection: &Connection,
+    project_id: ProjectId,
+) -> WorkspaceResult<(u64, String)> {
+    let project = project(connection, project_id)?;
+    let profile = resolved(connection, &project)?
+        .ok_or_else(|| {
+            WorkspaceError::Invalid(
+                "Select a project with a Hub before using Hub automation context.".into(),
+            )
+        })?
+        .profile;
+    if profile.archived {
+        return Err(WorkspaceError::Invalid(
+            "Restore this Hub before using it as automation context.".into(),
+        ));
+    }
+    Ok((profile.revision, profile.context_draft()))
+}
+
 fn project(connection: &Connection, id: ProjectId) -> WorkspaceResult<Project> {
     let raw: String = connection
         .query_row(

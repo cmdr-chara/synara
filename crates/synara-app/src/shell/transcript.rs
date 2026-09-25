@@ -450,6 +450,9 @@ mod tests {
             first_timeline_index: 0,
             end_timeline_index: thread.timeline.len(),
             failed: false,
+            direct_provider_id: None,
+            direct_model_id: None,
+            usage: None,
         });
         let rows = projected_rows(&thread);
         assert_eq!(rows.len(), 2);

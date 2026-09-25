@@ -82,8 +82,11 @@ The ledger supports 64 definitions and 256 retained runs. Full history blocks
 new runs rather than silently deleting evidence. Instructions are limited to
 16 KiB, stored output to 4096 characters, and persisted values to the existing
 8 MiB storage boundary. Delete requires confirmation and retains run history
-and generated conversations. The existing backup/restore validator accepts and
-validates this versioned ledger. Restoring it never arms a scheduler.
+and generated conversations. A separate confirmed prune can discard terminal
+history only after its definition has already been deleted; generated
+conversations, active runs, and history for current definitions are preserved.
+The existing backup/restore validator accepts and validates this versioned
+ledger. Restoring it never arms a scheduler.
 
 ## Validation and remaining work
 
@@ -96,6 +99,18 @@ backup/restore. The automation test run passes, and the native app target compil
 
 Live provider completion/cancellation, native click/keyboard/IME/accessibility
 journeys, OS shutdown timing and multi-platform acceptance remain OPEN.
-Retry delay/backoff policies (upstream currently accepts only no retry), history export/pruning,
-Hub-specific context selection and out-of-process scheduling are not implemented.
-This source slice does not close the broad Automations acceptance gate.
+Retry delay/backoff policies are not an effective current-head gap because upstream currently
+rejects non-none retry policies. Retained run history can be explicitly exported through the
+system save dialog. Deleted-definition history can be pruned, and live-definition terminal
+history can be pruned only after preserving a durable cumulative run count, so max-run
+enforcement cannot be reset by cleanup. Generated conversations are never deleted by pruning.
+
+Definitions now choose Project-only or Hub shared context explicitly. Project-only is the
+legacy/default policy. Hub mode requires an active Hub on the selected project, snapshots the
+current Hub revision plus its user-maintained instructions/knowledge inside the atomic run
+claim, creates the owned conversation in Studio scope, and persists the exact combined prompt
+before provider launch. Transcripts and files are never harvested automatically, and later Hub
+edits do not rewrite an already claimed run.
+
+Out-of-process scheduling and wider live-provider lifecycle acceptance remain open. This source
+slice does not close the broad Automations acceptance gate.

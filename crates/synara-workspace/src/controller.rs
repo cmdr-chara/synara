@@ -18,6 +18,27 @@ use synara_core::*;
 use synara_runtime::{ExecutionHost, LocalHost, SecretStore, UnavailableSecretStore};
 use tokio::sync::Mutex;
 
+fn selected_session_model_id(configuration: &SessionConfiguration) -> Option<String> {
+    let mut model_options = configuration
+        .options
+        .iter()
+        .filter(|option| option.category.as_deref() == Some("model"));
+    if let Some(option) = model_options.next() {
+        if model_options.next().is_some() {
+            return None;
+        }
+        let ConfigValue::Select { value } = &option.current else {
+            return None;
+        };
+        return (!value.trim().is_empty()).then(|| value.clone());
+    }
+    configuration
+        .current_model
+        .as_ref()
+        .filter(|value| !value.trim().is_empty())
+        .cloned()
+}
+
 #[derive(Clone, Debug)]
 pub struct SessionDetails {
     pub connection: ConnectionInfo,
@@ -370,7 +391,26 @@ impl Controller {
         if cancellation.is_cancelled() {
             return Err(AgentError::Cancelled.into());
         }
-        session.prompt(prompt).await.map_err(Into::into)
+        let task = self.workspace.task(id).await?;
+        let agent_id = task.agent_id.clone();
+        let thread_id = task.thread_id;
+        let model_id = selected_session_model_id(&session.configuration());
+        let turn = session.prompt(prompt).await?;
+        // Attribution is observational. An accepted provider turn must not be
+        // reported as a failed dispatch merely because this local metadata write
+        // could not be retained.
+        let _ = self
+            .workspace
+            .record(
+                thread_id,
+                ThreadEvent::AcpTurnRoute {
+                    turn: turn.clone(),
+                    agent_id,
+                    model_id,
+                },
+            )
+            .await;
+        Ok(turn)
     }
 
     pub async fn cancel(&self, id: TaskId) -> WorkspaceResult<()> {
@@ -627,6 +667,40 @@ mod device_settings_tests {
             panic!("archived deletion must never start an agent")
         }
     }
+    #[test]
+    fn turn_model_snapshot_prefers_the_single_advertised_model_selector() {
+        let configuration = SessionConfiguration {
+            current_model: Some("legacy".into()),
+            options: vec![SessionOption {
+                id: "model".into(),
+                name: "Model".into(),
+                description: None,
+                category: Some("model".into()),
+                current: ConfigValue::Select {
+                    value: "acknowledged".into(),
+                },
+                choices: vec![],
+            }],
+            ..Default::default()
+        };
+        assert_eq!(
+            selected_session_model_id(&configuration).as_deref(),
+            Some("acknowledged")
+        );
+
+        let ambiguous = SessionConfiguration {
+            options: vec![
+                configuration.options[0].clone(),
+                SessionOption {
+                    id: "second".into(),
+                    ..configuration.options[0].clone()
+                },
+            ],
+            ..Default::default()
+        };
+        assert_eq!(selected_session_model_id(&ambiguous), None);
+    }
+
     #[tokio::test]
     async fn goals_cancelled_preparation_never_launches_or_retries() {
         let root = tempfile::tempdir().unwrap();

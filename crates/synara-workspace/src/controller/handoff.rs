@@ -5,6 +5,39 @@ impl Controller {
     /// Create an unsent related task without touching the source live session.
     /// The existing task reservation serializes this with submission and route
     /// changes. The transaction rechecks persisted scope/configuration state.
+    pub async fn continue_here(
+        &self,
+        review: HandoffReview,
+        draft: String,
+    ) -> WorkspaceResult<Task> {
+        let _integrations = self.integrations_gate.read().await;
+        let slot = self.slot(review.source().id).await?;
+        if slot.active.swap(true, Ordering::AcqRel) {
+            return Err(AgentError::Busy.into());
+        }
+        let _ownership = PromptOwnership(slot.clone());
+        let _creation = slot.creation.lock().await;
+        let _lifetime = self.lifetime.read().await;
+        if self.closing.load(Ordering::Acquire) {
+            return Err(AgentError::Busy.into());
+        }
+        let task = self
+            .workspace
+            .continue_handoff_in_place(review, draft)
+            .await?;
+
+        // Storage is authoritative once committed. Retire any old ACP session
+        // best-effort, but never turn a successful route mutation into a
+        // retryable error that could duplicate the user's handoff.
+        let old = slot.live.lock().map_err(|_| WorkspaceError::Worker)?.take();
+        *slot.connection.lock().map_err(|_| WorkspaceError::Worker)? = None;
+        if let Some(old) = old {
+            let _ =
+                tokio::time::timeout(std::time::Duration::from_secs(8), old.session.close()).await;
+        }
+        Ok(task)
+    }
+
     pub async fn continue_with(
         &self,
         review: HandoffReview,

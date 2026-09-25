@@ -12,6 +12,7 @@ pub(super) enum Reply {
     Targets(u64, Result<(Vec<AgentProfile>, ProviderSettings), String>),
     Reviewed(u64, Result<Box<HandoffReview>, String>),
     Created(u64, Result<Task, String>),
+    Switched(u64, Result<Task, String>),
     Origin(TaskId, u64, Option<ThreadOrigin>),
 }
 struct Dialog {
@@ -304,6 +305,55 @@ impl Shell {
         });
         cx.notify();
     }
+    fn confirm_handoff_here(&mut self, cx: &mut Context<Self>) {
+        if self.handoff.busy || self.creating_task {
+            return;
+        }
+        let Some(dialog) = &self.handoff.dialog else {
+            return;
+        };
+        if dialog.quick {
+            return;
+        }
+        if !self.composer.read(cx).text().is_empty()
+            || self.attachment_send_blocked()
+            || self.attachments_have_pending()
+        {
+            if let Some(dialog) = self.handoff.dialog.as_mut() {
+                dialog.error = Some(
+                    "Continue here requires an empty source composer and no pending attachments. Send, clear, or move that material first; creating a separate continuation remains available.".into(),
+                );
+            }
+            cx.notify();
+            return;
+        }
+        let Some(review) = dialog.review.clone() else {
+            return;
+        };
+        if self.selected != Some(dialog.source)
+            || self.selection_revision != dialog.selection_revision
+            || dialog.editor.read(cx).is_composing()
+        {
+            return;
+        }
+        let draft = dialog.editor.read(cx).text().to_owned();
+        self.handoff.busy = true;
+        self.handoff.creating = true;
+        self.creating_task = true;
+        let generation = self.handoff.generation;
+        let controller = self.controller.clone();
+        self.job(async move {
+            Ok(Update::Handoff(Box::new(Reply::Switched(
+                generation,
+                controller
+                    .continue_here(review, draft)
+                    .await
+                    .map_err(|e| e.to_string()),
+            ))))
+        });
+        cx.notify();
+    }
+
     fn dismiss_handoff(&mut self, cx: &mut Context<Self>) {
         if self.handoff.creating {
             return;
@@ -336,7 +386,10 @@ impl Shell {
             return;
         }
         let generation = match &reply {
-            Reply::Targets(g, _) | Reply::Reviewed(g, _) | Reply::Created(g, _) => *g,
+            Reply::Targets(g, _)
+            | Reply::Reviewed(g, _)
+            | Reply::Created(g, _)
+            | Reply::Switched(g, _) => *g,
             Reply::Origin(..) => unreachable!(),
         };
         if self.handoff.generation != generation || self.handoff.dialog.is_none() {
@@ -430,6 +483,39 @@ impl Shell {
                     Err(error) => self.handoff.dialog.as_mut().unwrap().error = Some(error),
                 }
             }
+            Reply::Switched(_, result) => {
+                self.handoff.creating = false;
+                self.creating_task = false;
+                match result {
+                    Ok(task) => {
+                        let Some(dialog) = self.handoff.dialog.take() else {
+                            return;
+                        };
+                        let current = self.selected == Some(dialog.source)
+                            && self.selection_revision == dialog.selection_revision
+                            && task.id == dialog.source;
+                        if !current {
+                            self.handoff.dialog = Some(dialog);
+                            self.handoff.dialog.as_mut().unwrap().error =
+                                Some("The selected conversation changed after the handoff. Reload before continuing.".into());
+                            cx.notify();
+                            return;
+                        }
+                        let draft = dialog.editor.read(cx).text().to_owned();
+                        let id = task.id;
+                        self.replace_task(task);
+                        self.selection_revision = self.selection_revision.wrapping_add(1);
+                        self.details = None;
+                        self.composer
+                            .update(cx, |entry, cx| entry.set_text(draft, cx));
+                        self.load_attachments(id);
+                        self.handoff.focus_editor = false;
+                        self.focus_composer = true;
+                        self.notice = Some("Provider route changed for this same conversation. The reviewed continuation is an unsent draft; nothing was sent automatically. Files, Git state and transcript were preserved.".into());
+                    }
+                    Err(error) => self.handoff.dialog.as_mut().unwrap().error = Some(error),
+                }
+            }
             Reply::Origin(..) => {}
         }
         cx.notify();
@@ -493,6 +579,9 @@ impl Shell {
         if dialog.quick {
             return self.handoff_menu(cx);
         }
+        let continue_here_blocked = !self.composer.read(cx).text().is_empty()
+            || self.attachment_send_blocked()
+            || self.attachments_have_pending();
         let mut page = div().id("handoff-dialog").role(gpui::Role::Dialog).aria_label("Continue with another provider")
             .tab_group().w_full().max_w(px(720.)).max_h(px(650.)).p_4().flex().flex_col().gap_3()
             .bg(ui::surface(palette().overlay)).border_1().border_color(rgb(palette().border))
@@ -508,13 +597,13 @@ impl Shell {
             }))
             .child(div().text_size(px(21.)).child("Continue with..."))
             .child(div().text_size(px(13.)).text_color(rgb(palette().muted))
-                .child("Create a related conversation, not a transferable provider session. The original stays intact. Files and Git working state are shared, not cloned or reverted. No approvals, secrets, hidden reasoning, attachments or tool state are copied."));
+                .child("Create a related conversation, or explicitly replace the provider route for this same conversation. Neither action sends automatically. Same-conversation handoff requires an empty source composer and no pending attachments. Files, Git state and transcript stay in place; approvals, secrets, hidden reasoning and tool state are never transferred."));
         if let Some(review) = &dialog.review {
             page = page.child(div().text_size(px(13.)).child(format!("Target: {}", review.target_label())))
                 .child(div().text_size(px(12.)).text_color(rgb(palette().muted)).child(format!("{} recent messages, {} omitted. Working folder: {}", review.included_messages(), review.omitted_messages(), review.source().working_directory.display())))
                 .child(div().h(px(230.)).min_h(px(230.)).flex_shrink_0().flex().flex_col().relative()
                     .child(dialog.editor.clone()).child(ui::layout_probe("handoff-draft")))
-                .child(div().text_size(px(12.)).text_color(rgb(palette().muted)).child("Edit the context and request above. Creating the conversation does not send it. Use Send explicitly after reviewing the new draft."));
+                .child(div().text_size(px(12.)).text_color(rgb(palette().muted)).child(if continue_here_blocked { "Edit the context and request above. Continue here is unavailable until the current source composer is empty and attachments are settled; creating a separate unsent continuation is still available." } else { "Edit the context and request above. Continue here replaces only the provider route and visible draft in this task. Creating a separate continuation leaves the source route unchanged. Neither action sends automatically." }));
         } else {
             let query = dialog.query.read(cx).text().trim().to_lowercase();
             let matches: Vec<_> = dialog
@@ -576,6 +665,17 @@ impl Shell {
                         )
                     }))
                     .child(div().flex_1())
+                    .children(dialog.review.is_some().then(|| {
+                        ui::action(
+                            "handoff-continue-here",
+                            "Continue here",
+                            Some(Glyph::Handoff),
+                            continue_here_blocked,
+                            cx.listener(|this, _: &(), _, cx| this.confirm_handoff_here(cx)),
+                        )
+                        .relative()
+                        .child(ui::layout_probe("handoff-continue-here"))
+                    }))
                     .children(dialog.review.is_some().then(|| {
                         ui::action(
                             "handoff-create",

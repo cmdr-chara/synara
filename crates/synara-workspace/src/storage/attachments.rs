@@ -7,8 +7,12 @@ use std::{collections::HashSet, path::PathBuf};
 use synara_agent::{Prompt, PromptPart};
 mod intake;
 pub(crate) use intake::docx_text;
+pub(crate) use intake::odp_text;
+pub(crate) use intake::ods_text;
 pub(crate) use intake::odt_text;
+pub(crate) use intake::pptx_text;
 pub(crate) use intake::still_webp_preview;
+pub(crate) use intake::xlsx_text;
 mod media;
 #[cfg(test)]
 mod tests;
@@ -28,6 +32,10 @@ pub enum AttachmentKind {
     Pdf,
     Docx,
     Odt,
+    Odp,
+    Ods,
+    Pptx,
+    Xlsx,
 }
 impl AttachmentKind {
     pub fn mime_type(self) -> &'static str {
@@ -39,6 +47,12 @@ impl AttachmentKind {
             Self::Pdf => "application/pdf",
             Self::Docx => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
             Self::Odt => "application/vnd.oasis.opendocument.text",
+            Self::Odp => "application/vnd.oasis.opendocument.presentation",
+            Self::Ods => "application/vnd.oasis.opendocument.spreadsheet",
+            Self::Pptx => {
+                "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+            }
+            Self::Xlsx => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         }
     }
     pub fn is_image(self) -> bool {
@@ -103,6 +117,10 @@ impl AttachmentDraft {
                     | AttachmentKind::Pdf
                     | AttachmentKind::Docx
                     | AttachmentKind::Odt
+                    | AttachmentKind::Odp
+                    | AttachmentKind::Ods
+                    | AttachmentKind::Pptx
+                    | AttachmentKind::Xlsx
             )
         }) && !capabilities.embedded_context
         {
@@ -202,7 +220,11 @@ impl Stored {
                         AttachmentKind::Text
                         | AttachmentKind::Pdf
                         | AttachmentKind::Docx
-                        | AttachmentKind::Odt,
+                        | AttachmentKind::Odt
+                        | AttachmentKind::Odp
+                        | AttachmentKind::Ods
+                        | AttachmentKind::Pptx
+                        | AttachmentKind::Xlsx,
                         None,
                     ) => false,
                     (
@@ -267,6 +289,13 @@ fn valid_name(name: &str) -> bool {
 fn key(task: TaskId) -> String {
     format!("task-attachments:{task}")
 }
+pub(crate) fn has_pending_attachments(
+    connection: &Connection,
+    task: TaskId,
+) -> WorkspaceResult<bool> {
+    Ok(!read(connection, task)?.pending.is_empty())
+}
+
 fn read(connection: &Connection, task: TaskId) -> WorkspaceResult<Stored> {
     let exists: bool = connection
         .query_row(
@@ -425,6 +454,10 @@ impl WorkspaceService {
             let bytes = match item.info.kind {
                 AttachmentKind::Docx => intake::docx_text(&bytes)?.into_bytes(),
                 AttachmentKind::Odt => intake::odt_text(&bytes)?.into_bytes(),
+                AttachmentKind::Odp => intake::odp_text(&bytes)?.into_bytes(),
+                AttachmentKind::Ods => intake::ods_text(&bytes)?.into_bytes(),
+                AttachmentKind::Pptx => intake::pptx_text(&bytes)?.into_bytes(),
+                AttachmentKind::Xlsx => intake::xlsx_text(&bytes)?.into_bytes(),
                 _ => bytes,
             };
             Ok(AttachmentPreview {
@@ -498,11 +531,20 @@ impl WorkspaceService {
                             .ok_or(StorageError::Identity)?,
                         mime_type: "text/plain".into(),
                     },
-                    AttachmentKind::Docx | AttachmentKind::Odt => {
-                        let extracted = if item.info.kind == AttachmentKind::Docx {
-                            intake::docx_text(&bytes)?
-                        } else {
-                            intake::odt_text(&bytes)?
+                    AttachmentKind::Docx
+                    | AttachmentKind::Odt
+                    | AttachmentKind::Odp
+                    | AttachmentKind::Ods
+                    | AttachmentKind::Pptx
+                    | AttachmentKind::Xlsx => {
+                        let extracted = match item.info.kind {
+                            AttachmentKind::Docx => intake::docx_text(&bytes)?,
+                            AttachmentKind::Odt => intake::odt_text(&bytes)?,
+                            AttachmentKind::Odp => intake::odp_text(&bytes)?,
+                            AttachmentKind::Ods => intake::ods_text(&bytes)?,
+                            AttachmentKind::Pptx => intake::pptx_text(&bytes)?,
+                            AttachmentKind::Xlsx => intake::xlsx_text(&bytes)?,
+                            _ => unreachable!("document kinds matched above"),
                         };
                         projected_context_bytes =
                             projected_context_bytes.saturating_add(extracted.len());

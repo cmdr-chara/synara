@@ -25,9 +25,11 @@ async fn setup(
         enabled: true,
         next_run_ms: now_ms(),
         missed: MissedRunPolicy::CatchUpOnce,
+        context: AutomationContextPolicy::Project,
         max_runs: None,
         stop_after_consecutive_failures: None,
         failure_streak: 0,
+        run_count: 0,
         max_runtime_seconds: DEFAULT_AUTOMATION_MAX_RUNTIME_SECONDS,
     };
     service
@@ -219,14 +221,18 @@ async fn saving_pauses_and_conflicting_edits_are_rejected() {
     let (service, mut definition, _root) = setup(None).await;
     let mut legacy = serde_json::to_value(&definition).unwrap();
     let old_fields = legacy.as_object_mut().unwrap();
+    old_fields.remove("context");
     old_fields.remove("max_runs");
     old_fields.remove("stop_after_consecutive_failures");
     old_fields.remove("failure_streak");
+    old_fields.remove("run_count");
     old_fields.remove("max_runtime_seconds");
     let decoded: AutomationDefinition = serde_json::from_value(legacy).unwrap();
+    assert_eq!(decoded.context, AutomationContextPolicy::Project);
     assert_eq!(decoded.max_runs, None);
     assert_eq!(decoded.stop_after_consecutive_failures, None);
     assert_eq!(decoded.failure_streak, 0);
+    assert_eq!(decoded.run_count, 0);
     assert_eq!(
         decoded.max_runtime_seconds,
         DEFAULT_AUTOMATION_MAX_RUNTIME_SECONDS
@@ -509,6 +515,7 @@ async fn deletion_needs_confirmation_and_retains_history_and_conversation() {
         .await
         .unwrap()
         .unwrap();
+    let task_id = run.task_id.unwrap();
     assert!(
         service
             .delete_automation(definition.id, 1, true)
@@ -537,8 +544,160 @@ async fn deletion_needs_confirmation_and_retains_history_and_conversation() {
     let ledger = service.automations().await.unwrap();
     assert!(ledger.definitions.is_empty());
     assert_eq!(ledger.runs[0].output, "Explicit failure");
+    assert!(service.task(task_id).await.is_ok());
+    assert!(
+        service
+            .prune_deleted_automation_history(false)
+            .await
+            .is_err()
+    );
+    assert_eq!(
+        service
+            .prune_deleted_automation_history(true)
+            .await
+            .unwrap(),
+        1
+    );
+    assert!(service.automations().await.unwrap().runs.is_empty());
+    assert!(service.task(task_id).await.is_ok());
+}
+
+#[tokio::test]
+async fn history_pruning_never_removes_live_definition_runs() {
+    let (service, definition, _root) = setup(None).await;
+    let owner = AutomationId::new_v4();
+    let run = service
+        .claim_automation(definition.id, owner, false, now_ms())
+        .await
+        .unwrap()
+        .unwrap();
+    service
+        .finish_automation(run.id, owner, AutomationRunStatus::Succeeded, "kept".into())
+        .await
+        .unwrap();
+
+    assert_eq!(
+        service
+            .prune_deleted_automation_history(true)
+            .await
+            .unwrap(),
+        0
+    );
+    let ledger = service.automations().await.unwrap();
+    assert_eq!(ledger.definitions.len(), 1);
+    assert_eq!(ledger.runs.len(), 1);
+    assert_eq!(ledger.runs[0].output, "kept");
     assert!(service.task(run.task_id.unwrap()).await.is_ok());
 }
+
+#[tokio::test]
+async fn hub_context_is_opt_in_snapshotted_and_studio_scoped() {
+    let root = tempfile::tempdir().unwrap();
+    let service = WorkspaceService::memory().unwrap();
+    let agent = service.profiles().await.unwrap()[0].id.clone();
+    let (hub, _) = service
+        .create_hub(
+            root.path().to_path_buf(),
+            "Automation Hub".into(),
+            agent.clone(),
+        )
+        .await
+        .unwrap();
+    let mut hub = hub;
+    hub.instructions = "Use the reviewed Hub method.".into();
+    hub.memory = "Shared fact: release train 7.".into();
+    let hub = service.save_hub(hub.revision, hub).await.unwrap();
+
+    let definition = AutomationDefinition {
+        id: AutomationId::new_v4(),
+        revision: 0,
+        title: "Hub run".into(),
+        instructions: "Inspect the current release status.".into(),
+        agent_id: agent,
+        project_id: hub.project,
+        schedule: AutomationSchedule::Interval { minutes: 60 },
+        timezone: "UTC".into(),
+        enabled: false,
+        next_run_ms: now_ms(),
+        missed: MissedRunPolicy::CatchUpOnce,
+        context: AutomationContextPolicy::Hub,
+        max_runs: None,
+        stop_after_consecutive_failures: None,
+        failure_streak: 0,
+        run_count: 0,
+        max_runtime_seconds: DEFAULT_AUTOMATION_MAX_RUNTIME_SECONDS,
+    };
+    service.save_automation(definition, None).await.unwrap();
+    let current = service.automations().await.unwrap().definitions.remove(0);
+    let run = service
+        .claim_automation(current.id, AutomationId::new_v4(), false, now_ms())
+        .await
+        .unwrap()
+        .unwrap();
+    assert_eq!(run.hub_revision, Some(hub.revision));
+    assert!(run.prompt.contains("## Hub instructions"));
+    assert!(run.prompt.contains("Use the reviewed Hub method."));
+    assert!(run.prompt.contains("Shared fact: release train 7."));
+    assert!(run.prompt.ends_with("Inspect the current release status."));
+    let task = service.task(run.task_id.unwrap()).await.unwrap();
+    assert_eq!(task.scope, synara_core::TaskScope::Studio);
+    assert_eq!(service.task_draft(task.id).await.unwrap(), run.prompt);
+
+    let mut changed = hub.clone();
+    changed.memory = "Newer shared fact".into();
+    service.save_hub(changed.revision, changed).await.unwrap();
+    let retained = service.automations().await.unwrap().runs.remove(0);
+    assert!(retained.prompt.contains("release train 7"));
+    assert!(!retained.prompt.contains("Newer shared fact"));
+}
+
+#[tokio::test]
+async fn project_context_never_harvests_existing_hub_context() {
+    let root = tempfile::tempdir().unwrap();
+    let service = WorkspaceService::memory().unwrap();
+    let agent = service.profiles().await.unwrap()[0].id.clone();
+    let (mut hub, _) = service
+        .create_hub(
+            root.path().to_path_buf(),
+            "Project Hub".into(),
+            agent.clone(),
+        )
+        .await
+        .unwrap();
+    hub.memory = "Must not be injected".into();
+    let hub = service.save_hub(hub.revision, hub).await.unwrap();
+    let definition = AutomationDefinition {
+        id: AutomationId::new_v4(),
+        revision: 0,
+        title: "Project run".into(),
+        instructions: "Only this instruction.".into(),
+        agent_id: agent,
+        project_id: hub.project,
+        schedule: AutomationSchedule::Interval { minutes: 60 },
+        timezone: "UTC".into(),
+        enabled: false,
+        next_run_ms: now_ms(),
+        missed: MissedRunPolicy::CatchUpOnce,
+        context: AutomationContextPolicy::Project,
+        max_runs: None,
+        stop_after_consecutive_failures: None,
+        failure_streak: 0,
+        run_count: 0,
+        max_runtime_seconds: DEFAULT_AUTOMATION_MAX_RUNTIME_SECONDS,
+    };
+    service.save_automation(definition, None).await.unwrap();
+    let current = service.automations().await.unwrap().definitions.remove(0);
+    let run = service
+        .claim_automation(current.id, AutomationId::new_v4(), false, now_ms())
+        .await
+        .unwrap()
+        .unwrap();
+    assert_eq!(run.hub_revision, None);
+    assert_eq!(run.prompt, "Only this instruction.");
+    let task = service.task(run.task_id.unwrap()).await.unwrap();
+    assert_eq!(task.scope, synara_core::TaskScope::Project);
+}
+
 #[tokio::test]
 async fn missing_provider_does_not_fall_back_or_create_a_task() {
     let (service, mut definition, _root) = setup(None).await;
@@ -769,4 +928,142 @@ async fn backup_restores_ledger_and_task_identity_without_replaying_a_claim() {
         definition.agent_id
     );
     assert_eq!(restored.automations().await.unwrap().runs.len(), 1);
+}
+
+#[tokio::test]
+async fn live_history_pruning_preserves_cumulative_run_limit_and_conversations() {
+    let (workspace, mut definition, _root) = setup(None).await;
+    definition.max_runs = Some(2);
+    workspace
+        .save_automation(definition.clone(), Some(definition.revision))
+        .await
+        .unwrap();
+    let mut current = workspace.automations().await.unwrap().definitions.remove(0);
+    workspace
+        .enable_automation(current.id, current.revision, true)
+        .await
+        .unwrap();
+    current = workspace.automations().await.unwrap().definitions.remove(0);
+
+    let owner = AutomationId::new_v4();
+    let first = workspace
+        .claim_automation(current.id, owner, false, now_ms())
+        .await
+        .unwrap()
+        .unwrap();
+    let first_task = first.task_id.unwrap();
+    workspace
+        .finish_automation(
+            first.id,
+            owner,
+            AutomationRunStatus::Succeeded,
+            "first".into(),
+        )
+        .await
+        .unwrap();
+
+    let before_prune = workspace.automations().await.unwrap();
+    let live = before_prune.definitions[0].clone();
+    assert_eq!(effective_run_count(&live, &before_prune.runs), 1);
+    assert!(
+        workspace
+            .prune_automation_history(live.id, live.revision, false)
+            .await
+            .is_err()
+    );
+    assert_eq!(
+        workspace
+            .prune_automation_history(live.id, live.revision, true)
+            .await
+            .unwrap(),
+        1
+    );
+    assert!(workspace.automations().await.unwrap().runs.is_empty());
+    assert!(workspace.task(first_task).await.is_ok());
+
+    let live = workspace.automations().await.unwrap().definitions.remove(0);
+    assert_eq!(live.run_count, 1);
+    let second = workspace
+        .claim_automation(live.id, owner, false, now_ms())
+        .await
+        .unwrap()
+        .unwrap();
+    workspace
+        .finish_automation(
+            second.id,
+            owner,
+            AutomationRunStatus::Succeeded,
+            "second".into(),
+        )
+        .await
+        .unwrap();
+    let exhausted = workspace.automations().await.unwrap().definitions.remove(0);
+    assert_eq!(exhausted.run_count, 2);
+    assert!(!exhausted.enabled);
+
+    assert_eq!(
+        workspace
+            .prune_automation_history(exhausted.id, exhausted.revision, true)
+            .await
+            .unwrap(),
+        1
+    );
+    let exhausted = workspace.automations().await.unwrap().definitions.remove(0);
+    assert_eq!(exhausted.run_count, 2);
+    assert!(
+        workspace
+            .enable_automation(exhausted.id, exhausted.revision, true)
+            .await
+            .is_err()
+    );
+}
+
+#[tokio::test]
+async fn history_export_is_versioned_exact_and_never_overwrites() {
+    let (workspace, definition, _root) = setup(None).await;
+    let owner = AutomationId::new_v4();
+    let run = workspace
+        .claim_automation(definition.id, owner, false, now_ms())
+        .await
+        .unwrap()
+        .unwrap();
+    workspace
+        .finish_automation(
+            run.id,
+            owner,
+            AutomationRunStatus::Succeeded,
+            "exported evidence".into(),
+        )
+        .await
+        .unwrap();
+
+    let dir = tempfile::tempdir().unwrap();
+    let destination = dir.path().join("automation-history.json");
+    assert_eq!(
+        workspace
+            .export_automation_history(destination.clone())
+            .await
+            .unwrap(),
+        1
+    );
+    let bytes = std::fs::read(&destination).unwrap();
+    let payload: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+    assert_eq!(payload["format"], "synara-automation-history-v1");
+    assert!(payload["exportedAtMs"].as_i64().is_some());
+    assert_eq!(payload["runs"].as_array().unwrap().len(), 1);
+    assert_eq!(payload["runs"][0]["id"], run.id.to_string());
+    assert_eq!(
+        payload["runs"][0]["definition"]["id"],
+        definition.id.to_string()
+    );
+    assert_eq!(payload["runs"][0]["output"], "exported evidence");
+
+    std::fs::write(&destination, "user file").unwrap();
+    assert!(
+        workspace
+            .export_automation_history(destination.clone())
+            .await
+            .is_err()
+    );
+    assert_eq!(std::fs::read_to_string(destination).unwrap(), "user file");
 }

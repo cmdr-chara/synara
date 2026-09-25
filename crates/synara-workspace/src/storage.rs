@@ -20,8 +20,12 @@ mod followups;
 pub use followups::{FollowupDraft, FollowupEdit, FollowupQueue};
 mod attachments;
 pub(crate) use attachments::docx_text;
+pub(crate) use attachments::odp_text;
+pub(crate) use attachments::ods_text;
 pub(crate) use attachments::odt_text;
+pub(crate) use attachments::pptx_text;
 pub(crate) use attachments::still_webp_preview;
+pub(crate) use attachments::xlsx_text;
 pub use attachments::{
     AttachmentDraft, AttachmentEdit, AttachmentInfo, AttachmentInput, AttachmentKind,
     AttachmentPreview, MAX_ATTACHMENT_BATCH_BYTES,

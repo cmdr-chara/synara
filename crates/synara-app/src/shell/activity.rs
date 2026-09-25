@@ -59,23 +59,31 @@ impl Shell {
         let telemetry = match (
             turn.direct_provider_id.as_deref(),
             turn.direct_model_id.as_deref(),
+            turn.acp_agent_id.as_deref(),
+            turn.acp_model_id.as_deref(),
             turn.usage.as_ref(),
         ) {
-            (Some(provider), Some(model), usage) => {
+            (Some(provider), Some(model), _, _, usage) => {
                 let tokens = usage
                     .and_then(|usage| usage.input_tokens.zip(usage.output_tokens))
                     .map(|(input, output)| format!(" · {input} in / {output} out"))
                     .unwrap_or_default();
                 Some(format!("Direct model · {provider} / {model}{tokens}"))
             }
-            (None, None, Some(usage)) => {
-                usage
-                    .input_tokens
-                    .zip(usage.output_tokens)
-                    .map(|(input, output)| {
-                        format!("Provider-reported usage · {input} in / {output} out")
-                    })
+            (None, None, Some(agent), model, usage) => {
+                let model = model.unwrap_or("model not reported");
+                let tokens = usage
+                    .and_then(|usage| usage.input_tokens.zip(usage.output_tokens))
+                    .map(|(input, output)| format!(" · {input} in / {output} out"))
+                    .unwrap_or_default();
+                Some(format!("ACP · {agent} / {model}{tokens}"))
             }
+            (None, None, None, None, Some(usage)) => usage
+                .input_tokens
+                .zip(usage.output_tokens)
+                .map(|(input, output)| {
+                    format!("Provider-reported usage · {input} in / {output} out")
+                }),
             _ => None,
         };
         let has_answer = (turn.first_timeline_index..turn.end_timeline_index).any(|index| {

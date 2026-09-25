@@ -85,8 +85,10 @@ pub(super) struct ProfileActivity {
     prompts: usize,
     threads: usize,
     tokens: Option<u64>,
-    /// One latest persisted model selection per local task, not per-turn usage.
+    /// One latest persisted model selection per local task, retained for legacy context.
     model_selections: BTreeMap<(String, Option<profile_activity::SessionModel>), usize>,
+    turn_routes: BTreeMap<profile_activity::TurnRoute, usize>,
+    unattributed_turns: usize,
     days: BTreeMap<i64, u64>,
     token_days: BTreeMap<i64, u64>,
     hours: [usize; 24],
@@ -311,6 +313,7 @@ impl Shell {
                         &task.agent_id,
                         &thread.configuration,
                     );
+                    profile_activity::record_turn_routes(&mut activity, &thread);
                     if !thread.turns.is_empty() {
                         activity.threads += 1;
                     }
@@ -1098,6 +1101,12 @@ impl Shell {
             .child(heading("Active hours"))
             .child(profile_activity::active_hours(
                 activity,
+                self.settings.activity_loading,
+            ))
+            .child(heading("Per-turn provider / model activity"))
+            .child(profile_activity::turn_route_activity(
+                activity,
+                &self.profiles,
                 self.settings.activity_loading,
             ))
             .child(heading("Saved model selections"))

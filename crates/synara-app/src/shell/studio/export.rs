@@ -1,4 +1,21 @@
 use super::*;
+fn studio_version_export_name(path: &Path) -> String {
+    let name = path
+        .file_name()
+        .and_then(|name| name.to_str())
+        .unwrap_or("studio-version");
+    let path = Path::new(name);
+    match (
+        path.file_stem().and_then(|stem| stem.to_str()),
+        path.extension().and_then(|extension| extension.to_str()),
+    ) {
+        (Some(stem), Some(extension)) if !stem.is_empty() && !extension.is_empty() => {
+            format!("{stem}-version.{extension}")
+        }
+        _ => format!("{name}-version.txt"),
+    }
+}
+
 impl Shell {
     fn review_studio_file_export(&mut self, cx: &mut Context<Self>) {
         if self.studio.exporting
@@ -107,6 +124,82 @@ impl Shell {
         .detach();
         cx.notify();
     }
+    pub(super) fn save_selected_studio_version(&mut self, cx: &mut Context<Self>) {
+        if self.studio.exporting
+            || self.close != CloseState::Open
+            || self.studio.task != self.selected
+        {
+            return;
+        }
+        let (Some(task), Some(path), Some(index)) = (
+            self.selected,
+            self.studio.selected.clone(),
+            self.studio.selected_snapshot,
+        ) else {
+            return;
+        };
+        let Some(snapshot) = self.studio.snapshots.get(index).cloned() else {
+            return;
+        };
+        if snapshot.task != task || snapshot.path != path {
+            return;
+        }
+
+        self.studio.exporting = true;
+        self.studio.export_review = None;
+        let generation = self.studio.preview_generation;
+        let name = studio_version_export_name(&path);
+        let picker = cx.prompt_for_new_path(&self.scratch_directory, Some(&name));
+        cx.spawn(async move |view, cx| {
+            let result = picker.await;
+            let _ = view.update(cx, |this, cx| {
+                let selection_matches = this
+                    .studio
+                    .selected_snapshot
+                    .and_then(|selected| this.studio.snapshots.get(selected))
+                    .is_some_and(|current| current == &snapshot);
+                if this.close != CloseState::Open
+                    || this.selected != Some(task)
+                    || this.studio.task != Some(task)
+                    || this.studio.preview_generation != generation
+                    || this.studio.selected.as_ref() != Some(&path)
+                    || !selection_matches
+                {
+                    this.studio.exporting = false;
+                    this.notice = Some(
+                        "Studio version export cancelled because its selection changed.".into(),
+                    );
+                    cx.notify();
+                    return;
+                }
+                match result {
+                    Ok(Ok(Some(destination))) => {
+                        let workspace = this.controller.workspace.clone();
+                        this.job(async move {
+                            Ok(Update::Studio(Box::new(StudioReply::VersionExported(
+                                workspace
+                                    .export_studio_text_version(snapshot, destination)
+                                    .await
+                                    .map_err(|error| error.to_string()),
+                            ))))
+                        });
+                    }
+                    Ok(Ok(None)) => this.studio.exporting = false,
+                    _ => {
+                        this.studio.exporting = false;
+                        this.studio.error = Some(
+                            "The system save dialog is unavailable. No Studio version was exported."
+                                .into(),
+                        );
+                    }
+                }
+                cx.notify();
+            });
+        })
+        .detach();
+        cx.notify();
+    }
+
     pub(super) fn studio_export_controls(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
         let mut row = div().flex().flex_col().gap_1();
         if self.studio.selected.is_some() {

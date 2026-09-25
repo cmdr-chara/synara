@@ -39,9 +39,18 @@ async fn main() -> Result<()> {
     } else {
         config
     };
+    let config = if options.automations {
+        config.with_automations()
+    } else {
+        config
+    };
     let mut server = RunningServer::start(config).await?;
 
-    tracing::info!(address = %server.address(), "Synara native headless server listening on loopback");
+    tracing::info!(
+        address = %server.address(),
+        automations = options.automations,
+        "Synara native headless server listening on loopback"
+    );
     let ready = tokio::select! {
         result = server.wait_ready() => Some(result),
         signal = tokio::signal::ctrl_c() => {
@@ -75,6 +84,7 @@ struct Options {
     port: u16,
     database_path: Option<PathBuf>,
     token_file: Option<PathBuf>,
+    automations: bool,
     help: bool,
 }
 
@@ -92,12 +102,17 @@ where
         port: DEFAULT_PORT,
         database_path: None,
         token_file: None,
+        automations: false,
         help: false,
     };
     let mut args = args.into_iter().map(Into::into);
     while let Some(arg) = args.next() {
         if arg == "--help" || arg == "-h" {
             options.help = true;
+            continue;
+        }
+        if arg == "--automations" {
+            options.automations = true;
             continue;
         }
         let (flag, inline_value) = arg
@@ -143,7 +158,7 @@ fn parse_port(value: &str) -> Result<u16> {
 fn print_usage() {
     println!(
         "Synara native headless workspace server\n\
-         Usage: synara-server [--bind 127.0.0.1] [--port 17341] [--db PATH] [--token-file PATH]\n\
+         Usage: synara-server [--bind 127.0.0.1] [--port 17341] [--db PATH] [--token-file PATH] [--automations]\n\
          The server only binds loopback addresses. Set SYNARA_SERVER_TOKEN or provide a\n\
          private token file with 32 or more printable ASCII characters. The token is never\n\
          printed or logged. A token file must not be accessible by group or other users.\n\
@@ -152,7 +167,10 @@ fn print_usage() {
          in the desktop app; startup fails while another process owns it. Its parent\n\
          directory permissions are your responsibility.\n\
          SYNARA_SERVER_DB can set the database path when --db is omitted.\n\
-         Open http://127.0.0.1:17341/ for the read-only task browser."
+         --automations explicitly arms enabled saved automations in this server process.\n\
+         Without it, saved schedules remain disarmed. The workspace owner lock prevents\n\
+         desktop and headless processes from scheduling the same database concurrently.\n\
+         Open http://127.0.0.1:17341/ for the task browser."
     );
 }
 
@@ -169,6 +187,7 @@ mod tests {
             "--db",
             "./workspace.sqlite3",
             "--token-file=/tmp/synara.token",
+            "--automations",
         ])
         .unwrap();
         assert_eq!(options.bind, "::1".parse::<IpAddr>().unwrap());
@@ -178,5 +197,6 @@ mod tests {
             Some(PathBuf::from("./workspace.sqlite3"))
         );
         assert_eq!(options.token_file, Some(PathBuf::from("/tmp/synara.token")));
+        assert!(options.automations);
     }
 }

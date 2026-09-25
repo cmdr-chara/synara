@@ -15,7 +15,9 @@ Cancel, task navigation and shutdown stop the active operation. If the task or
 draft changes before the result arrives, Synara leaves the newer draft
 untouched. An accepted transcript is written to the task draft store.
 
-The Linux build and focused tests cover audio bounds, URL validation, stale
-drafts and cancellation. A live microphone and ChatGPT upload were not tested
-in this checkpoint. macOS/Windows compilation and packaged microphone
-permission behavior remain acceptance work.
+Focused voice regression tests now pass on Linux x64, macOS arm64 and
+Windows x64. The macOS development package is validated as a Synara.app bundle
+with NSMicrophoneUsageDescription and an executable payload, while the Windows
+package is expanded and checked for the expected executable and target manifest.
+A live microphone plus ChatGPT upload is still a separate end-to-end acceptance
+journey.

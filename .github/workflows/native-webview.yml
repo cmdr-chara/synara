@@ -12,7 +12,7 @@ permissions:
   contents: read
 concurrency:
   group: native-webkit-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   native:
     if: github.repository == 'cmdr-chara/synara'

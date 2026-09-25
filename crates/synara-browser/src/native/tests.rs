@@ -495,6 +495,12 @@ fn real_webkit_navigation_consent_input_redirect_and_isolation() {
         "authentication profile did not retain its own cookie"
     );
 
+    // WebKit only treats authentication popups as user-facing when the reviewed
+    // authentication tab is actually presented. This mirrors the native sign-in
+    // flow instead of asking a hidden background WebView to create a window.
+    host.viewport(Some(auth), Some(ViewportRect::logical(0., 0., 800., 600.)));
+    assert!(host.views[&auth].webview.webview().is_visible());
+
     let popup_url = format!("{base}/auth-popup?token=private");
     let popup_script = format!(
         "window.open({});",

@@ -90,6 +90,7 @@ def cargo_metadata(root: Path) -> dict:
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         text=True,
+        encoding="utf-8",
         timeout=180,
     )
     return json.loads(completed.stdout)

@@ -9,15 +9,15 @@ Detailed parity evidence lives in:
 
 ## Current status
 
-- Shipped feature slices: **74**
+- Shipped feature slices: **75**
 - Major remaining: **16**
 - Smaller remaining: **0**
-- Acceptance/integration remaining: **8**
-- Total remaining: **24**
+- Acceptance/integration remaining: **7**
+- Total remaining: **23**
 - Completely missing top-level surfaces: **0**
 - Broad verification gates still open: **21**
 
-The **26-item count is the execution count to use going forward**. The 21 verification
+The **23-item count is the execution count to use going forward**. The 21 verification
 gates are larger acceptance buckets and are not a feature count.
 
 Current upstream reference: `Emanuele-web04/synara@eaa61eded31b6755d4f30ba8eabc5d905cf817cb`.
@@ -91,7 +91,7 @@ not large new product subsystems.
 - [ ] A04 Fresh-install onboarding with real provider accounts
 - [ ] A05 Authenticated browser login/session/popup acceptance
 - [ ] A06 Real macOS Simulator/device acceptance
-- [ ] A07 SSH worktree/search acceptance
+- [x] A07 SSH worktree/search acceptance
 - [ ] A08 Signed release feed/install/rollback package acceptance
 - [ ] A09 Multi-provider ACP/direct-model interoperability matrix
 - [ ] A10 Cross-platform visual/accessibility/save-picker acceptance
@@ -488,7 +488,8 @@ Verification receipts:
 [batch 30](docs/verification/parity-2026-09-25-batch30.md),
 [batch 31](docs/verification/parity-2026-09-25-batch31.md),
 [batch 32](docs/verification/parity-2026-09-25-batch32.md),
-[batch 33](docs/verification/parity-2026-09-25-batch33.md).
+[batch 33](docs/verification/parity-2026-09-25-batch33.md),
+[batch 34](docs/verification/parity-2026-09-25-batch34.md).
 
 - Batch 32: acceptance infrastructure now has a dedicated Linux/macOS/Windows
   native build and development-package matrix. macOS development packaging uses
@@ -508,6 +509,15 @@ Verification receipts:
   exact target/development manifest. The later A07-only smoke edits do not touch
   voice or platform packaging. A01 remains the separate live microphone +
   ChatGPT transcription end-to-end gate.
+
+- Batch 34: A07 is accepted on the exact candidate
+  `7105eb0b0cab24cf89d481ebfa2c31e6c8731000`. The isolated SSH lane passed
+  11 runtime transport/filesystem/terminal tests and 7 workspace Git/worktree
+  tests, then completed the native GPUI remote journey covering pinned
+  enrollment, guarded save, content and filename search, direct terminal input,
+  explicit restart, and process-owned shutdown before window close. The
+  acceptance harness now routes terminal-lifecycle and confirmation-UI changes
+  deterministically through the SSH lane.
 
 
 ## How to update this roadmap

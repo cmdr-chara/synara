@@ -363,12 +363,16 @@ impl Shell {
                         {
                             this.error = Some("This website request is no longer active.".into());
                         } else if synara_agent::validate_web_url(&url).is_ok() {
-                            cx.open_url(&url);
+                            this.browser_open_authentication_request(
+                                url_key.clone(),
+                                url.clone(),
+                                cx,
+                            );
                         } else {
                             this.error =
                                 Some("The requested website address is not supported.".into());
+                            cx.notify();
                         }
-                        cx.notify();
                     })),
             );
         }
@@ -508,6 +512,10 @@ impl Shell {
             cx.notify();
             return;
         }
+        let authentication_flow = self
+            .forms
+            .get(&key)
+            .and_then(|form| form.authentication_flow);
         let response = if accept {
             let Some(form) = self.forms.get_mut(&key) else {
                 return;
@@ -550,6 +558,10 @@ impl Shell {
             self.error = Some("This input request is no longer active.".into());
         }
         self.forms.remove(&key);
-        cx.notify();
+        if let Some(flow) = authentication_flow {
+            self.browser_close_authentication_flow(flow, cx);
+        } else {
+            cx.notify();
+        }
     }
 }

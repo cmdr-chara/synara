@@ -115,6 +115,7 @@ struct FormState {
     inputs: BTreeMap<String, Entity<TextEntry>>,
     values: BTreeMap<String, InputValue>,
     error: Option<String>,
+    authentication_flow: Option<u128>,
 }
 enum Update {
     Releases(Result<NativeVersionHistory, String>),
@@ -1569,6 +1570,16 @@ impl Shell {
                 self.poll_kanban();
                 self.flush_drafts(false);
                 self.flush_environment(false);
+                let expired_authentication_flows = self
+                    .pending
+                    .iter()
+                    .filter(|(_, interaction)| !interaction.is_active())
+                    .filter_map(|(key, _)| {
+                        self.forms
+                            .get(key)
+                            .and_then(|form| form.authentication_flow)
+                    })
+                    .collect::<Vec<_>>();
                 let previous = self.pending.len();
                 self.pending.retain(|key, interaction| {
                     if !interaction.is_active() {
@@ -1577,6 +1588,9 @@ impl Shell {
                     interaction.is_active()
                 });
                 self.forms.retain(|key, _| self.pending.contains_key(key));
+                for flow in expired_authentication_flows {
+                    self.browser_close_authentication_flow(flow, cx);
+                }
                 if self.pending.len() != previous {
                     cx.notify();
                 }
@@ -1767,6 +1781,7 @@ impl Shell {
                                 inputs,
                                 values,
                                 error: None,
+                                authentication_flow: None,
                             },
                         );
                         key

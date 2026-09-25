@@ -80,6 +80,7 @@ pub(crate) fn initialization(
     let capabilities = AgentCapabilities {
         load_session: enabled("/loadSession"),
         resume_session: supports("/sessionCapabilities/resume"),
+        fork_session: supports("/sessionCapabilities/fork"),
         close_session: supports("/sessionCapabilities/close"),
         list_sessions: supports("/sessionCapabilities/list"),
         delete_session: supports("/sessionCapabilities/delete"),
@@ -554,7 +555,9 @@ mod tests {
     fn capabilities_use_protocol_advertisements_not_agent_names() {
         let (caps, _, methods) = initialization(&json!({"protocolVersion":1,"agentCapabilities":{"loadSession":true,"sessionCapabilities":{"list":{},"resume":null},"auth":{"logout":{}}},"authMethods":[{"id":"login","name":"Login"},{"id":"terminal","type":"terminal","name":"Terminal login"}]})).unwrap();
         assert!(caps.load_session && caps.list_sessions && caps.logout);
-        assert!(!caps.resume_session && !caps.image_prompts);
+        assert!(!caps.resume_session && !caps.fork_session && !caps.image_prompts);
+        let (caps, _, _) = initialization(&json!({"protocolVersion":1,"agentCapabilities":{"sessionCapabilities":{"fork":{},"resume":{}}}})).unwrap();
+        assert!(caps.fork_session && caps.resume_session);
         assert_eq!(methods.len(), 1);
         assert!(initialization(&json!({"protocolVersion":2})).is_err());
     }

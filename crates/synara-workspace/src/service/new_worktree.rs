@@ -13,6 +13,7 @@ pub struct NewWorktreePlan {
     destination: PathBuf,
     branch: String,
     head: String,
+    remote: bool,
 }
 impl NewWorktreePlan {
     pub fn source(&self) -> TaskId {
@@ -29,6 +30,9 @@ impl NewWorktreePlan {
     }
     pub fn head(&self) -> &str {
         &self.head
+    }
+    pub fn remote(&self) -> bool {
+        self.remote
     }
 }
 fn quiet(task: &Task) -> bool {
@@ -48,6 +52,58 @@ fn unchanged(source: &Task, current: &Task) -> bool {
 fn invalid(message: impl Into<String>) -> WorkspaceError {
     WorkspaceError::Invalid(message.into())
 }
+fn remote_worktree_destination(repository: &Path, token: uuid::Uuid) -> WorkspaceResult<PathBuf> {
+    let repository = normalized_absolute(repository)
+        .ok_or_else(|| invalid("Git returned an invalid remote repository root"))?;
+    let parent = repository
+        .parent()
+        .and_then(normalized_absolute)
+        .ok_or_else(|| invalid("the remote repository has no safe sibling directory"))?;
+    if parent.parent().is_none() {
+        return Err(invalid(
+            "managed SSH worktrees require a repository below the remote filesystem root",
+        ));
+    }
+    Ok(parent.join(format!("worktree-{token}")))
+}
+
+async fn git_for_workspace(
+    service: &WorkspaceService,
+    workspace: &Workspace,
+    root: PathBuf,
+) -> WorkspaceResult<GitOperations> {
+    match &workspace.location {
+        WorkspaceLocation::Local { .. } => Ok(GitOperations::new(root)),
+        WorkspaceLocation::Ssh { .. } => {
+            let profile = service
+                .ssh_profile(workspace.id)
+                .await?
+                .ok_or_else(|| invalid("SSH profile is missing"))?;
+            Ok(GitOperations::with_host(
+                root,
+                std::sync::Arc::new(profile.host(workspace)?),
+            ))
+        }
+    }
+}
+
+fn reviewed_remote_destination(
+    repository: &Path,
+    branch: &str,
+    destination: &Path,
+) -> WorkspaceResult<()> {
+    let token = branch
+        .strip_prefix("synara/")
+        .and_then(|value| uuid::Uuid::parse_str(value).ok())
+        .filter(|id| format!("synara/{id}") == branch)
+        .ok_or_else(|| invalid("the reviewed remote worktree branch is invalid"))?;
+    let expected = remote_worktree_destination(repository, token)?;
+    if destination != expected {
+        return Err(invalid("the reviewed remote worktree destination changed"));
+    }
+    Ok(())
+}
+
 fn validate_parent(parent: &Path, repository: &Path) -> WorkspaceResult<PathBuf> {
     if !parent.is_absolute()
         || parent
@@ -80,12 +136,9 @@ impl WorkspaceService {
             ));
         }
         let workspace = self.workspace_for_task(&source).await?;
-        if !matches!(workspace.location, WorkspaceLocation::Local { .. }) {
-            return Err(invalid(
-                "automatic worktree creation currently requires a local project; existing SSH worktree selection remains available",
-            ));
-        }
-        let output = GitOperations::new(source.working_directory.clone())
+        let remote = matches!(workspace.location, WorkspaceLocation::Ssh { .. });
+        let git = git_for_workspace(self, &workspace, source.working_directory.clone()).await?;
+        let output = git
             .execute(
                 GitOperation::Worktrees,
                 GitOperationOptions::default(),
@@ -113,8 +166,12 @@ impl WorkspaceService {
             .ok_or_else(|| {
                 invalid("commit the repository's initial revision before creating a worktree")
             })?;
-        let parent = validate_parent(&parent, &entry.path)?;
         let token = uuid::Uuid::new_v4();
+        let destination = if remote {
+            remote_worktree_destination(&entry.path, token)?
+        } else {
+            validate_parent(&parent, &entry.path)?.join(format!("worktree-{token}"))
+        };
         let relative_project = source
             .working_directory
             .strip_prefix(&entry.path)
@@ -124,9 +181,10 @@ impl WorkspaceService {
             source,
             repository: entry.path.clone(),
             relative_project,
-            destination: parent.join(format!("worktree-{token}")),
+            destination,
             branch: format!("synara/{token}"),
             head,
+            remote,
         })
     }
 
@@ -162,25 +220,28 @@ impl WorkspaceService {
                 "the source task changed; review a new worktree plan",
             ));
         }
-        if !matches!(
-            self.workspace_for_task(&source).await?.location,
-            WorkspaceLocation::Local { .. }
-        ) {
+        let workspace = self.workspace_for_task(&source).await?;
+        let remote = matches!(workspace.location, WorkspaceLocation::Ssh { .. });
+        if remote != plan.remote {
             return Err(invalid(
-                "the reviewed source is no longer a local workspace",
+                "the reviewed workspace location changed; review a new worktree plan",
             ));
         }
-        let parent = plan
-            .destination
-            .parent()
-            .ok_or_else(|| invalid("invalid worktree destination"))?;
-        validate_parent(parent, &plan.repository)?;
-        if std::fs::symlink_metadata(&plan.destination).is_ok() {
-            return Err(invalid(
-                "the reviewed worktree destination already exists; nothing was overwritten",
-            ));
+        if remote {
+            reviewed_remote_destination(&plan.repository, &plan.branch, &plan.destination)?;
+        } else {
+            let parent = plan
+                .destination
+                .parent()
+                .ok_or_else(|| invalid("invalid worktree destination"))?;
+            validate_parent(parent, &plan.repository)?;
+            if std::fs::symlink_metadata(&plan.destination).is_ok() {
+                return Err(invalid(
+                    "the reviewed worktree destination already exists; nothing was overwritten",
+                ));
+            }
         }
-        let git = GitOperations::new(source.working_directory.clone());
+        let git = git_for_workspace(self, &workspace, source.working_directory.clone()).await?;
         let output = git
             .execute(
                 GitOperation::Worktrees,
@@ -274,14 +335,7 @@ impl WorkspaceService {
                 "stop or restore the source task before recovering an isolated fork",
             ));
         }
-        if !matches!(
-            self.workspace_for_task(&source).await?.location,
-            WorkspaceLocation::Local { .. }
-        ) {
-            return Err(invalid(
-                "worktree recovery currently requires a local project",
-            ));
-        }
+        let workspace = self.workspace_for_task(&source).await?;
 
         let _lifecycle = self.lock_worktree_lifecycle().await;
         let current_source = self.task(source_id).await?;
@@ -290,12 +344,10 @@ impl WorkspaceService {
                 "the source task changed; review the fork before recovering its worktree",
             ));
         }
-        if !matches!(
-            self.workspace_for_task(&current_source).await?.location,
-            WorkspaceLocation::Local { .. }
-        ) {
+        let current_workspace = self.workspace_for_task(&current_source).await?;
+        if current_workspace.id != workspace.id {
             return Err(invalid(
-                "the reviewed source is no longer a local workspace",
+                "the reviewed workspace changed; review the fork again",
             ));
         }
 
@@ -337,7 +389,12 @@ impl WorkspaceService {
             ));
         }
 
-        let git = GitOperations::new(current_source.working_directory.clone());
+        let git = git_for_workspace(
+            self,
+            &current_workspace,
+            current_source.working_directory.clone(),
+        )
+        .await?;
         let output = git
             .execute(
                 GitOperation::Worktrees,
@@ -389,6 +446,77 @@ impl WorkspaceService {
             Some((worktree.path, worktree.repository_path)),
         )
         .await
+    }
+
+    /// Remove a fixed, previously reviewed set of recoverable Synara worktrees.
+    /// Each exact path/branch pair is revalidated by the single-worktree owner.
+    /// Failures retain that checkout and are reported; nothing is forced.
+    pub async fn cleanup_recoverable_worktrees(
+        &self,
+        source_id: TaskId,
+        scratch_parent: PathBuf,
+        reviewed: Vec<(PathBuf, String)>,
+        policy: GitOperationPolicy,
+        cancel: CancellationToken,
+    ) -> WorkspaceResult<(usize, Vec<String>)> {
+        if !policy.allow_mutation || !policy.allow_repository_execution {
+            return Err(invalid(
+                "explicit worktree cleanup and repository-execution consent is required",
+            ));
+        }
+        if reviewed.is_empty() || reviewed.len() > 64 {
+            return Err(invalid(
+                "review between 1 and 64 managed worktrees before bulk cleanup",
+            ));
+        }
+        let mut identities = std::collections::HashSet::new();
+        for (path, branch) in &reviewed {
+            let Some(path) = normalized_absolute(path) else {
+                return Err(invalid("reviewed worktree path is invalid"));
+            };
+            if !identities.insert((path, branch.clone())) {
+                return Err(invalid(
+                    "the reviewed cleanup contains a duplicate worktree",
+                ));
+            }
+        }
+
+        let mut removed = 0usize;
+        let mut retained = Vec::new();
+        for (path, branch) in reviewed {
+            if cancel.is_cancelled() {
+                retained.push(format!(
+                    "{branch} · {} · cleanup cancelled before removal",
+                    path.display()
+                ));
+                continue;
+            }
+            let exact_policy = GitOperationPolicy {
+                allow_mutation: true,
+                allow_repository_execution: true,
+                ..Default::default()
+            };
+            match self
+                .cleanup_recoverable_worktree(
+                    source_id,
+                    path.clone(),
+                    scratch_parent.clone(),
+                    branch.clone(),
+                    exact_policy,
+                    cancel.clone(),
+                )
+                .await
+            {
+                Ok(()) => removed = removed.saturating_add(1),
+                Err(error) => retained.push(
+                    format!("{branch} · {} · {error}", path.display())
+                        .chars()
+                        .take(1024)
+                        .collect(),
+                ),
+            }
+        }
+        Ok((removed, retained))
     }
 
     /// Remove only an unassigned Synara-managed scratch checkout after an
@@ -563,6 +691,32 @@ impl WorkspaceService {
 mod tests {
     use super::super::tests::{git, repository};
     use super::*;
+    #[test]
+    fn remote_worktree_destination_is_uuid_sibling_and_never_root_level() {
+        let token = uuid::Uuid::parse_str("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee").unwrap();
+        assert_eq!(
+            remote_worktree_destination(Path::new("/srv/repo"), token).unwrap(),
+            Path::new("/srv/worktree-aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee")
+        );
+        assert!(remote_worktree_destination(Path::new("/repo"), token).is_err());
+        assert!(
+            reviewed_remote_destination(
+                Path::new("/srv/repo"),
+                "synara/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+                Path::new("/srv/worktree-aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"),
+            )
+            .is_ok()
+        );
+        assert!(
+            reviewed_remote_destination(
+                Path::new("/srv/repo"),
+                "synara/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+                Path::new("/srv/other"),
+            )
+            .is_err()
+        );
+    }
+
     #[tokio::test]
     async fn new_worktree_fork_is_pinned_isolated_durable_and_unsent() {
         let dir = tempfile::tempdir().unwrap();
@@ -756,6 +910,159 @@ mod tests {
             std::fs::read_to_string(dirty.join("untracked.txt")).unwrap(),
             "keep me"
         );
+    }
+
+    #[tokio::test]
+    async fn bulk_cleanup_removes_only_exact_clean_unassigned_synara_worktrees() {
+        let dir = tempfile::tempdir().unwrap();
+        let repo = dir.path().join("repo");
+        let scratch = dir.path().join("scratch");
+        std::fs::create_dir(&scratch).unwrap();
+        repository(&repo);
+        let service = WorkspaceService::memory().unwrap();
+        let project = service.add_local_workspace(repo.clone()).await.unwrap();
+        let agent = service.profiles().await.unwrap()[0].id.clone();
+        let source = service
+            .create_task(project.id, "source".into(), agent.clone())
+            .await
+            .unwrap();
+
+        let make = |token: uuid::Uuid| {
+            (
+                format!("synara/{token}"),
+                scratch.join(format!("worktree-{token}")),
+            )
+        };
+        let (clean_branch, clean) = make(uuid::Uuid::new_v4());
+        let (dirty_branch, dirty) = make(uuid::Uuid::new_v4());
+        let (assigned_branch, assigned) = make(uuid::Uuid::new_v4());
+        for (branch, path) in [
+            (&clean_branch, &clean),
+            (&dirty_branch, &dirty),
+            (&assigned_branch, &assigned),
+        ] {
+            git(
+                &repo,
+                &[
+                    "worktree",
+                    "add",
+                    "-b",
+                    branch.as_str(),
+                    path.to_str().unwrap(),
+                    "HEAD",
+                ],
+            );
+        }
+        std::fs::write(dirty.join("untracked.txt"), "keep me").unwrap();
+        let assigned_task = service
+            .create_scoped_task_in_worktree(
+                project.id,
+                "assigned".into(),
+                agent,
+                TaskScope::Project,
+                String::new(),
+                assigned.clone(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(assigned_task.working_directory, assigned);
+
+        let reviewed = vec![
+            (clean.clone(), clean_branch.clone()),
+            (dirty.clone(), dirty_branch.clone()),
+            (assigned.clone(), assigned_branch.clone()),
+        ];
+        let policy = GitOperationPolicy {
+            allow_mutation: true,
+            allow_repository_execution: true,
+            ..Default::default()
+        };
+        let (removed, retained) = service
+            .cleanup_recoverable_worktrees(
+                source.id,
+                scratch.clone(),
+                reviewed,
+                policy,
+                CancellationToken::new(),
+            )
+            .await
+            .unwrap();
+
+        assert_eq!(removed, 1);
+        assert_eq!(retained.len(), 2);
+        assert!(!clean.exists());
+        assert!(dirty.exists());
+        assert_eq!(
+            std::fs::read_to_string(dirty.join("untracked.txt")).unwrap(),
+            "keep me"
+        );
+        assert!(assigned.exists());
+        let worktrees = service.project_worktrees(project.id).await.unwrap();
+        assert!(
+            worktrees.iter().any(|item| {
+                item.path == assigned && item.assigned_task == Some(assigned_task.id)
+            })
+        );
+        assert!(
+            retained
+                .iter()
+                .any(|reason| reason.contains(&dirty_branch) && reason.contains("not forced"))
+        );
+        assert!(retained.iter().any(
+            |reason| reason.contains(&assigned_branch) && reason.contains("belongs to a task")
+        ));
+
+        let branch_list = git(&repo, &["branch", "--format=%(refname:short)"]);
+        assert!(branch_list.contains(&clean_branch));
+        assert!(branch_list.contains(&dirty_branch));
+        assert!(branch_list.contains(&assigned_branch));
+    }
+
+    #[tokio::test]
+    async fn bulk_cleanup_requires_reviewed_consent_before_any_removal() {
+        let dir = tempfile::tempdir().unwrap();
+        let repo = dir.path().join("repo");
+        let scratch = dir.path().join("scratch");
+        std::fs::create_dir(&scratch).unwrap();
+        repository(&repo);
+        let service = WorkspaceService::memory().unwrap();
+        let project = service.add_local_workspace(repo.clone()).await.unwrap();
+        let source = service
+            .create_task(
+                project.id,
+                "source".into(),
+                service.profiles().await.unwrap()[0].id.clone(),
+            )
+            .await
+            .unwrap();
+        let token = uuid::Uuid::new_v4();
+        let branch = format!("synara/{token}");
+        let path = scratch.join(format!("worktree-{token}"));
+        git(
+            &repo,
+            &[
+                "worktree",
+                "add",
+                "-b",
+                branch.as_str(),
+                path.to_str().unwrap(),
+                "HEAD",
+            ],
+        );
+
+        assert!(
+            service
+                .cleanup_recoverable_worktrees(
+                    source.id,
+                    scratch,
+                    vec![(path.clone(), branch)],
+                    GitOperationPolicy::default(),
+                    CancellationToken::new(),
+                )
+                .await
+                .is_err()
+        );
+        assert!(path.exists());
     }
 
     #[tokio::test]

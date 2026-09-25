@@ -15,6 +15,16 @@ context as its visible unsent draft. It never sends automatically. Continue here
 is unavailable while the source composer contains an unsent draft, attachments
 are pending/loading, or the conversation is active.
 
+When the live ACP provider explicitly advertises `sessionCapabilities.fork`
+and load/resume recovery, the handoff UI also offers **Fork provider session**.
+This is a whole-session provider fork, not a fork-at-message action. Synara first
+commits the ordinary retained-context child, then attempts the provider-native
+fork into that child's ThreadId. Native success stores the forked session
+reference and leaves a short unsent continuation draft. Unsupported, rejected,
+timed-out or otherwise ambiguous native fork is never retried automatically; the
+already-created retained-context child remains the fallback. The source session
+is never replaced or closed by this action.
+
 Creating a related conversation still gives the destination fresh task/session
 authority. Same-task continuation invalidates the old saved provider session and
 best-effort retires any old live session only after the route transaction commits.
@@ -48,18 +58,23 @@ Child creation writes the task, unsent draft, origin and optional direct binding
 atomically through the existing related-conversation storage owner. Same-task
 continuation atomically rewrites only the existing task's provider agent/direct
 binding, saved-session row and reviewed draft after independently confirming that
-the persisted source draft is empty and no attachments are pending. It starts no
-provider, subagent, process, Git action or external write. Only a later explicit
-Send uses the chosen ACP/direct runtime. Restart restores the child and draft without sending it.
+the persisted source draft is empty and no attachments are pending. Provider-
+native fork creates that same durable child before asking the external ACP agent
+to copy its live session; failure therefore never requires deleting or retrying
+the child. No handoff action sends a prompt automatically. Only a later explicit
+Send uses the chosen ACP/direct runtime. Restart restores the child and draft
+without sending it.
 Selection-generation guards prevent a slow review/create response from replacing
 an unrelated newly selected conversation. Escape respects composing text and does
 not silently discard changed review content.
 
-The native related-continuation and same-task route-continuation workflows are
-implemented. Product handoff remains **partial** for provider-native session
-fork/transfer capabilities and their live interoperability. Synara does not infer
-those capabilities from provider names. There is no filesystem rollback,
-checkpoint restore, worktree clone or autonomous delegation in this feature.
+The native related-continuation, same-task route-continuation and ACP
+provider-native whole-session fork workflows are implemented. ACP fork remains a
+draft/unstable protocol extension, so Synara enables only the pinned SDK feature
+and still requires runtime capability advertisement plus recovery support; it
+never infers support from provider names. Product handoff remains **partial** for
+live provider/worktree interoperability evidence. There is no filesystem
+rollback, checkpoint restore or autonomous delegation in this feature.
 
 The [sprint receipt](../verification/max-feature-sprint.md) records seven backend
 handoff tests and the native edited-context/ACP/direct/restart journey, including

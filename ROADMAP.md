@@ -9,15 +9,15 @@ Detailed parity evidence lives in:
 
 ## Current status
 
-- Shipped feature slices: **63**
-- Major remaining: **22**
-- Smaller remaining: **3**
+- Shipped feature slices: **70**
+- Major remaining: **17**
+- Smaller remaining: **1**
 - Acceptance/integration remaining: **10**
-- Total remaining: **35**
+- Total remaining: **28**
 - Completely missing top-level surfaces: **0**
 - Broad verification gates still open: **21**
 
-The **35-item count is the execution count to use going forward**. The 21 verification
+The **28-item count is the execution count to use going forward**. The 21 verification
 gates are larger acceptance buckets and are not a feature count.
 
 Current upstream reference: `Emanuele-web04/synara@eaa61eded31b6755d4f30ba8eabc5d905cf817cb`.
@@ -48,16 +48,16 @@ journeys and the cancelled WebKit job remain unverified.
 - [x] M18 Advanced editor conflict recovery
 - [x] M19 Richer editor comparison scopes
 - [x] M20 Safe line blame without repository filter execution
-- [ ] M21 Deeper diff editing/review workflows
+- [x] M21 Deeper diff editing/review workflows
 - [ ] M22 Managed worktree automatic cleanup/recovery
-- [ ] M23 SSH managed worktree creation
-- [ ] M24 Environment-aware task/fork orchestration
+- [x] M23 SSH managed worktree creation
+- [x] M24 Environment-aware task/fork orchestration
 - [ ] M25 Richer model/context controls, including fast/thinking presets and compaction
 - [ ] M26 Real provider/account telemetry integration
 - [ ] M27 Broader Computer Use actions, targeting and preview behavior
 - [ ] M28 Trusted signed updater/install/rollback lifecycle
-- [ ] M29 Binary PDF/document attachment pipeline and broader document viewing
-- [ ] M30 Studio historical output versioning and long-running lifecycle
+- [x] M29 Binary PDF/document attachment pipeline and broader document viewing
+- [x] M30 Studio historical output versioning and long-running lifecycle
 
 ## Smaller features remaining
 
@@ -66,9 +66,9 @@ journeys and the cancelled WebKit job remain unverified.
 - [x] S03 Direct-model keyboard cycling
 - [x] S04 Context-aware custom keybindings
 - [x] S05 Additional native slash-command argument forms
-- [ ] S06 Deeper automation orchestration semantics
+- [x] S06 Deeper automation orchestration semantics
 - [x] S07 Same-task handoff continuation semantics
-- [ ] S08 Provider-native fork actions
+- [x] S08 Provider-native fork actions
 - [x] S09 Persistent folder references
 - [x] S10 Richer structured metadata in thread export
 - [x] S11 Reply/context reuse into the current composer
@@ -102,8 +102,8 @@ Finish whole workflows instead of spreading work across every gate:
 
 1. **Web workspace:** M01-M02, M06
 2. **Editor/review:** M21
-3. **Worktrees/handoff:** M22-M24, S08
-4. **Documents/Studio:** M29-M30, S18
+3. **Worktrees/handoff:** M22, M24
+4. **Documents/Studio:** S18
 5. **Simulator:** M13-M16 when the required macOS/native input backend is available
 
 ## Shipped
@@ -213,13 +213,25 @@ updater integrity checks and Studio output reopening.
   explicitly cleaned up from the fork-environment menu. Cleanup is separately
   reviewed, rechecks source/task/worktree/branch/scratch ownership under the
   lifecycle lock, uses ordinary non-force Git worktree removal, preserves dirty
-  or locked checkouts, and retains the generated branch. M22 remains open for
-  automatic post-task lifecycle cleanup and broader crash reconciliation.
+  or locked checkouts, and retains the generated branch. The same environment
+  chooser now offers one reviewed bulk cleanup when multiple recoverable Synara
+  worktrees exist: it fixes the reviewed set, revalidates each exact checkout,
+  removes only still-safe clean worktrees, and reports every retained dirty,
+  assigned, stale, locked or cancelled checkout without force or branch deletion.
+  M22 remains open for automatic post-task lifecycle cleanup and broader crash
+  reconciliation.
   The worktree fork menu is now a unified environment chooser: it includes the
-  current local or SSH workspace, existing linked worktrees, recoverable
-  Synara worktrees, and reviewed new local worktrees. Remote workspaces clearly
-  disable only new managed checkout creation. M24 remains open for broader
-  orchestration policy across task creation and provider handoff.
+  current local or SSH workspace, existing linked worktrees, recoverable Synara
+  worktrees, and reviewed new worktrees. SSH managed creation now derives an
+  exact UUID sibling checkout from Git's canonical remote worktree root, executes
+  worktree list/add/recovery only through the pinned SSH host, rechecks source
+  HEAD/branch/path before mutation, and uses the existing remote filesystem owner
+  to validate the new task directory. No arbitrary remote destination, ambient
+  SSH config, credentials, hooks, network helper or source dirty file is copied.
+  Failed task persistence remains recoverable from the exact unassigned
+  `synara/<uuid>` worktree. M23 is complete; A07 remains open for live SSH
+  acceptance. M24 remains open for broader orchestration policy across task
+  creation and provider handoff.
   ODT joins PDF and DOCX as a bounded binary document attachment. Only
   `content.xml` is read, extracted text is previewed and sent as inert context,
   embedded objects and external resources are ignored, and Studio can preview
@@ -289,15 +301,27 @@ updater integrity checks and Studio output reopening.
   project: each claim snapshots the current saved Hub revision and visible
   instructions/knowledge into the owned Studio-scoped conversation before
   provider launch, while legacy/project-mode automations remain project-only.
-  S06 remains open for out-of-process scheduling and wider live-provider
-  lifecycle acceptance.
+  Headless scheduling is now also available as an explicit
+  `synara-server --automations` owner using the same durable scheduler under the
+  workspace process lock. Definitions support upstream-shaped Standalone,
+  Heartbeat and Dedicated execution modes. Heartbeat continues a reviewed
+  existing ACP task; Dedicated creates one automation-owned task on first run
+  and reuses it. Continuation runs defer rather than consume a scheduled slot
+  while the target is active, has a draft/attachments, is automation-owned
+  elsewhere, or is inside its configurable activity cooldown; the automation's
+  own last completed run does not self-throttle. S06 remains open for the
+  upstream AI-evaluated completion policy and wider live-provider lifecycle
+  acceptance.
   Durable Studio text-version history for a selected file can now be cleared
   through a two-step native confirmation. The operation is task/path-scoped,
   preserves the workspace file and histories for other files, and stale replies
   are ignored by task/path/generation checks. An exact selected durable version
   can also be saved to a new destination after task/path/generation/selection
   revalidation; the backend rechecks that the snapshot still exists and never
-  reads or rewrites the current workspace file. M30 remains open for broader
+  reads or rewrites the current workspace file. Durable snapshots can now also
+  be pinned. Automatic bounded retention evicts only unpinned versions and fails
+  closed when pinned history fills the retention budget; explicit clear remains
+  the only operation that can remove pinned entries. M30 remains open for broader
   long-running lifecycle/version organization.
 - Batch 18: ACP prompt submission now snapshots the exact task agent and the
   acknowledged single-model selection onto the returned turn ID. The durable
@@ -329,7 +353,82 @@ updater integrity checks and Studio output reopening.
   invalidates the old saved session and persists the reviewed continuation as a
   visible unsent draft. No prompt is sent and files/Git state are untouched.
   Changing the route after review makes the review stale. S07 is complete; D12
-  remains open for provider-native forks and live provider/worktree acceptance.
+  remains open for live provider/worktree acceptance.
+
+- Batch 20 (in progress): the editor comparison panel now has a Changes only
+  review mode that hides unchanged rows while preserving each row's original diff
+  index and old/new line numbers. Restore block and Copy block therefore keep the
+  same owner, generation, exact-line and exact-current-diff rechecks; filtering is
+  presentation-only and never edits the buffer or Git index. A change-block cursor
+  now wraps across only real changed-block starts, highlights the selected block,
+  and exposes toolbar Copy/Restore actions that delegate to those same guarded
+  operations. Any buffer or comparison refresh clears the selection. Together
+  with saved/disk/ref scopes, full-review copy, block restore/copy, restore-all
+  and guarded three-way conflict merge, this completes M21 at the product-feature
+  level. Partial Git staging remains deliberately excluded because no current
+  owner can protect a pre-existing index safely.
+- Batch 21 (in progress): S06 now has an explicit non-GPUI scheduler owner via
+  `synara-server --automations`, plus durable Standalone, Heartbeat and Dedicated
+  execution modes and a bounded continuation cooldown. Heartbeat/dedicated target
+  reuse is task-owned, ACP-only, project/agent-checked, draft/attachment-safe and
+  cross-automation-exclusive. Scheduled target contention/cooldown defers without
+  consuming the due slot; manual Run now reports the blocking condition. This
+  left S06 open only for the pinned upstream AI-evaluated completion policy and
+  live-provider lifecycle acceptance.
+
+- Batch 23: ACP provider-native session fork is now an explicit whole-session
+  action. Synara enables only the pinned SDK's `unstable_session_fork` feature,
+  trusts only advertised `sessionCapabilities.fork`, and additionally requires
+  load/resume recovery support. The ordinary retained-context child is committed
+  first; native fork then attaches the provider copy to that child when successful.
+  Unsupported, rejected or ambiguous fork never auto-retries and leaves exactly
+  that retained-context child intact. The source provider session is unchanged.
+  S08 is complete; D12 remains open for live-provider/worktree acceptance.
+
+- Batch 25: M21 and M24 are complete at the product-feature level. Editor review
+  now has bounded saved/disk/ref scopes, changes-only filtering, whole-review and
+  selected-block copy, selected-block/restore-all buffer edits, changed-block
+  navigation and guarded three-way conflict merge. No Git staging was added
+  because the current API cannot prove preservation of a pre-existing index.
+  Environment-aware fork orchestration now covers current local/SSH workspaces,
+  existing and recoverable worktrees, reviewed managed local/SSH creation,
+  same-task provider continuation and capability-gated provider-native forks.
+  M22 remains separately open for automatic managed-worktree cleanup/recovery,
+  and A07/A09 remain the relevant live transport/provider acceptance work.
+
+- Batch 26: S06 is complete at the product-feature level. Automations can now
+  opt into a reviewed direct-model stop evaluator with a bounded stop condition
+  and confidence threshold. The evaluator is completely separate from the ACP
+  automation task: it receives only the saved policy, automation instructions,
+  exact submitted run prompt and run-scoped assistant output, has no tools or
+  hidden provider/task state, requests strict JSON, times out after 30 seconds,
+  and never retries automatically. Failed/timed-out checks are retained as run
+  metadata and do not fail or pause the automation. A positive evaluation pauses
+  only when the exact saved policy revision is still current; edits/re-enable
+  operations fence late results. D8 remains OPEN for live provider/restart,
+  shutdown and multi-platform acceptance.
+
+- Batch 27: M30 is complete at the product-feature level. Studio now keeps a
+  bounded durable history of text outputs across restart, captures newly reported
+  UTF-8 outputs automatically when a completed tool reports them, and stores the
+  exact reporting task/turn/timestamp with each historical snapshot. Manual
+  preview capture remains available for ordinary text files. Versions can be
+  inspected, copied, pinned/unpinned, exported to a new destination and explicitly
+  cleared without rewriting the workspace file. Automatic retention evicts only
+  unpinned history and fails closed when pinned versions consume the budget.
+  Live-provider/platform acceptance remains part of the broad Studio gate rather
+  than a reason to keep the product feature open.
+
+- Batch 28: M29 is complete at the product-feature level. Explicit binary
+  document intake now covers PDF, DOCX, ODT, ODP, ODS, PPTX and XLSX with bounded
+  format-specific validation and inert text projection for prompt context.
+  Studio reuses those extractors, keeps original-file export separate, and adds
+  immutable PDF page rendering, page/document text extraction, safe HTTP(S) link
+  inspection/opening and read-only form-technology disclosure. OOXML/ODF
+  relationships, macros, scripts, external resources and embedded objects are
+  never executed or followed, and spreadsheet formulas are never evaluated.
+  S18 remains open specifically for a safe PDF field-level interaction contract;
+  D13/A10 remain open for broad failure/package/cross-platform acceptance.
 
 Verification receipts:
 [batch 1](docs/verification/parity-2026-09-24-batch1.md),
@@ -350,7 +449,16 @@ Verification receipts:
 [batch 16](docs/verification/parity-2026-09-25-batch16.md),
 [batch 17](docs/verification/parity-2026-09-25-batch17.md),
 [batch 18](docs/verification/parity-2026-09-25-batch18.md),
-[batch 19](docs/verification/parity-2026-09-25-batch19.md).
+[batch 19](docs/verification/parity-2026-09-25-batch19.md),
+[batch 20](docs/verification/parity-2026-09-25-batch20.md),
+[batch 21](docs/verification/parity-2026-09-25-batch21.md),
+[batch 22](docs/verification/parity-2026-09-25-batch22.md),
+[batch 23](docs/verification/parity-2026-09-25-batch23.md),
+[batch 24](docs/verification/parity-2026-09-25-batch24.md),
+[batch 25](docs/verification/parity-2026-09-25-batch25.md),
+[batch 26](docs/verification/parity-2026-09-25-batch26.md),
+[batch 27](docs/verification/parity-2026-09-25-batch27.md),
+[batch 28](docs/verification/parity-2026-09-25-batch28.md).
 
 ## How to update this roadmap
 

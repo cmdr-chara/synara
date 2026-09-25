@@ -13,6 +13,34 @@ pub struct DirectModelBinding {
     pub reviewed_profile_sha256: String,
 }
 impl DirectModelBinding {
+    pub fn reviewed(
+        settings: &ProviderSettings,
+        selection: ModelSelection,
+    ) -> WorkspaceResult<Self> {
+        settings
+            .validate()
+            .map_err(|error| WorkspaceError::Invalid(error.to_string()))?;
+        let profile = settings
+            .providers
+            .iter()
+            .find(|profile| profile.id == selection.provider_id)
+            .ok_or_else(|| {
+                WorkspaceError::Invalid("The selected direct provider is unavailable.".into())
+            })?;
+        synara_model::validate_request(
+            profile,
+            &selection.request(vec![synara_model::Message::text(
+                synara_model::MessageRole::User,
+                "Validate reviewed model selection".into(),
+            )]),
+        )
+        .map_err(|error| WorkspaceError::Invalid(error.to_string()))?;
+        Ok(Self {
+            reviewed_profile_sha256: profile_digest(profile)?,
+            selection,
+        })
+    }
+
     pub fn profile<'a>(
         &self,
         settings: &'a ProviderSettings,

@@ -444,11 +444,18 @@ async fn negotiated_session_lifecycle_covers_titles_restore_list_delete_and_extr
     assert_eq!(h.events.assistant(history_thread), "Earlier answer");
     assert_eq!(h.events.assistant(resume_thread), "");
 
+    assert!(h.connection.info().capabilities.fork_session);
+    let fork_thread = ThreadId::new();
+    let forked = created.fork_session(h.options(fork_thread)).await.unwrap();
+    assert_ne!(forked.id(), created.id());
+    assert_eq!(forked.thread_id(), fork_thread);
+
     let page = h.connection.list_sessions(None, None).await.unwrap();
-    for id in [created.id(), history.id(), resumed.id()] {
+    for id in [created.id(), history.id(), resumed.id(), forked.id()] {
         assert!(page.sessions.iter().any(|item| item.id == id));
     }
 
+    forked.close().await.unwrap();
     created.close().await.unwrap();
     history.close().await.unwrap();
     resumed.close().await.unwrap();
@@ -458,7 +465,24 @@ async fn negotiated_session_lifecycle_covers_titles_restore_list_delete_and_extr
         .unwrap();
     assert_eq!(calls(&h.connection, "session/load"), 1);
     assert_eq!(calls(&h.connection, "session/resume"), 1);
+    assert_eq!(calls(&h.connection, "session/fork"), 1);
     assert_eq!(calls(&h.connection, "session/delete"), 1);
+    h.connection.disconnect().await.unwrap();
+}
+
+#[tokio::test]
+async fn fork_requires_both_advertised_fork_and_session_recovery() {
+    let h = Harness::start("fork-no-recovery").await;
+    assert!(h.connection.info().capabilities.fork_session);
+    assert!(!h.connection.info().capabilities.load_session);
+    assert!(!h.connection.info().capabilities.resume_session);
+    let source = h.session(ThreadId::new()).await;
+    assert!(matches!(
+        source.fork_session(h.options(ThreadId::new())).await,
+        Err(AgentError::Unsupported(_))
+    ));
+    assert_eq!(calls(&h.connection, "session/fork"), 0);
+    source.close().await.unwrap();
     h.connection.disconnect().await.unwrap();
 }
 

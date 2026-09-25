@@ -2,7 +2,7 @@
 //! Loading records never executes them. The scheduler must be explicitly armed
 //! each process session. Claims and owned conversation creation are atomic.
 mod scheduler;
-use crate::{WorkspaceError, WorkspaceResult, WorkspaceService, now_ms};
+use crate::{DirectModelBinding, WorkspaceError, WorkspaceResult, WorkspaceService, now_ms};
 use jiff::{
     Timestamp,
     tz::{Offset, TimeZone},
@@ -19,10 +19,16 @@ pub const DEFAULT_AUTOMATION_MAX_RUNTIME_SECONDS: u32 = 15 * 60;
 /// Keep execution bounded even though upstream contracts permit an unlimited
 /// (`null`) max runtime.
 pub const MAX_AUTOMATION_MAX_RUNTIME_SECONDS: u32 = 60 * 60;
+pub const DEFAULT_AUTOMATION_HEARTBEAT_COOLDOWN_SECONDS: u32 = 60;
+pub const MAX_AUTOMATION_HEARTBEAT_COOLDOWN_SECONDS: u32 = 24 * 60 * 60;
 pub(crate) const MAX_AUTOMATION_PROMPT_BYTES: usize = 128 * 1024;
 
 fn default_automation_max_runtime_seconds() -> u32 {
     DEFAULT_AUTOMATION_MAX_RUNTIME_SECONDS
+}
+
+fn default_automation_heartbeat_cooldown_seconds() -> u32 {
+    DEFAULT_AUTOMATION_HEARTBEAT_COOLDOWN_SECONDS
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
@@ -458,6 +464,24 @@ pub enum MissedRunPolicy {
 
 #[derive(Clone, Copy, Debug, Default, Serialize, Deserialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
+pub enum AutomationMode {
+    #[default]
+    Standalone,
+    Heartbeat,
+    Dedicated,
+}
+impl AutomationMode {
+    pub fn label(self) -> &'static str {
+        match self {
+            Self::Standalone => "Standalone · new conversation each run",
+            Self::Heartbeat => "Heartbeat · continue selected conversation",
+            Self::Dedicated => "Dedicated · reuse automation-owned conversation",
+        }
+    }
+}
+
+#[derive(Clone, Copy, Debug, Default, Serialize, Deserialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
 pub enum AutomationContextPolicy {
     #[default]
     Project,
@@ -469,6 +493,42 @@ impl AutomationContextPolicy {
             Self::Project => "Project instructions only",
             Self::Hub => "Hub shared context + instructions",
         }
+    }
+}
+
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(tag = "type", rename_all = "snake_case", deny_unknown_fields)]
+pub enum AutomationCompletionPolicy {
+    #[default]
+    None,
+    AiEvaluated {
+        stop_when: String,
+        confidence_threshold: f32,
+        evaluator: DirectModelBinding,
+    },
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct AutomationCompletionEvaluation {
+    pub stop_matched: bool,
+    pub confidence: f32,
+    pub reason: String,
+    #[serde(default)]
+    pub policy_applied: bool,
+    #[serde(default)]
+    pub failed: bool,
+}
+impl AutomationCompletionEvaluation {
+    fn validate(&self) -> WorkspaceResult<()> {
+        if !self.confidence.is_finite()
+            || !(0.0..=1.0).contains(&self.confidence)
+            || self.reason.len() > 2000
+            || self.reason.contains('\0')
+        {
+            return Err(invalid("Invalid automation completion evaluation."));
+        }
+        Ok(())
     }
 }
 
@@ -487,7 +547,15 @@ pub struct AutomationDefinition {
     pub next_run_ms: i64,
     pub missed: MissedRunPolicy,
     #[serde(default)]
+    pub mode: AutomationMode,
+    #[serde(default)]
+    pub target_task_id: Option<TaskId>,
+    #[serde(default = "default_automation_heartbeat_cooldown_seconds")]
+    pub heartbeat_cooldown_seconds: u32,
+    #[serde(default)]
     pub context: AutomationContextPolicy,
+    #[serde(default)]
+    pub completion_policy: AutomationCompletionPolicy,
     #[serde(default)]
     pub max_runs: Option<u32>,
     #[serde(default)]
@@ -515,11 +583,47 @@ impl AutomationDefinition {
             || !(0..=253_402_300_799_000_i64).contains(&self.next_run_ms)
             || self.max_runs == Some(0)
             || self.stop_after_consecutive_failures == Some(0)
+            || self.heartbeat_cooldown_seconds > MAX_AUTOMATION_HEARTBEAT_COOLDOWN_SECONDS
             || !(1..=MAX_AUTOMATION_MAX_RUNTIME_SECONDS).contains(&self.max_runtime_seconds)
         {
             return Err(invalid(
                 "Automation needs a title, instructions (up to 16 KiB), explicit agent and project.",
             ));
+        }
+        match &self.completion_policy {
+            AutomationCompletionPolicy::None => {}
+            AutomationCompletionPolicy::AiEvaluated {
+                stop_when,
+                confidence_threshold,
+                evaluator,
+            } => {
+                if stop_when.trim().is_empty()
+                    || stop_when.len() > 2000
+                    || stop_when.contains('\0')
+                    || !confidence_threshold.is_finite()
+                    || !(0.0..=1.0).contains(confidence_threshold)
+                    || evaluator.selection.history_turns != Some(0)
+                    || evaluator.selection.max_output_tokens == 0
+                    || evaluator.selection.max_output_tokens > 2048
+                {
+                    return Err(invalid(
+                        "Invalid AI-evaluated automation completion policy.",
+                    ));
+                }
+            }
+        }
+        match self.mode {
+            AutomationMode::Standalone if self.target_task_id.is_some() => {
+                return Err(invalid(
+                    "Standalone automations cannot keep a target conversation.",
+                ));
+            }
+            AutomationMode::Heartbeat if self.target_task_id.is_none() => {
+                return Err(invalid(
+                    "Heartbeat automations require a target conversation.",
+                ));
+            }
+            _ => {}
         }
         self.schedule.validate()?;
         parse_timezone(&self.timezone)?;
@@ -554,6 +658,8 @@ pub struct AutomationRun {
     /// Hub revision resolved inside the claim transaction, when Hub context was used.
     #[serde(default)]
     pub hub_revision: Option<u64>,
+    #[serde(default)]
+    pub completion_evaluation: Option<AutomationCompletionEvaluation>,
     pub output: String,
 }
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -597,6 +703,9 @@ impl AutomationLedger {
         ids.clear();
         for r in &self.runs {
             r.definition.validate()?;
+            if let Some(evaluation) = &r.completion_evaluation {
+                evaluation.validate()?;
+            }
             if !ids.insert(r.id)
                 || r.output.len() > 16 * 1024
                 || r.prompt.len() > MAX_AUTOMATION_PROMPT_BYTES
@@ -650,6 +759,13 @@ impl WorkspaceService {
                     expected_revision,
                 ) {
                     (None, None) => {
+                        if definition.mode == AutomationMode::Dedicated
+                            && definition.target_task_id.is_some()
+                        {
+                            return Err(invalid(
+                                "A new dedicated automation cannot import another task as its owned conversation.",
+                            ));
+                        }
                         definition.revision = 1;
                         ledger.definitions.push(definition);
                     }
@@ -664,6 +780,16 @@ impl WorkspaceService {
                         }
                         definition.run_count =
                             effective_run_count(&ledger.definitions[index], &ledger.runs);
+                        definition.target_task_id = match definition.mode {
+                            AutomationMode::Standalone => None,
+                            AutomationMode::Dedicated
+                                if ledger.definitions[index].mode == AutomationMode::Dedicated =>
+                            {
+                                ledger.definitions[index].target_task_id
+                            }
+                            AutomationMode::Dedicated => None,
+                            AutomationMode::Heartbeat => definition.target_task_id,
+                        };
                         definition.revision = revision
                             .checked_add(1)
                             .ok_or_else(|| invalid("Revision overflow."))?;
@@ -911,6 +1037,75 @@ impl WorkspaceService {
         })
         .await
     }
+    pub(crate) async fn record_automation_completion_evaluation(
+        &self,
+        run_id: AutomationId,
+        mut evaluation: AutomationCompletionEvaluation,
+    ) -> WorkspaceResult<bool> {
+        evaluation.validate()?;
+        self.access(move |store| {
+            store.edit_automations(move |ledger| {
+                let run_index = ledger
+                    .runs
+                    .iter()
+                    .position(|run| run.id == run_id)
+                    .ok_or_else(|| invalid("Automation run no longer exists."))?;
+                if ledger.runs[run_index].status != AutomationRunStatus::Succeeded {
+                    return Err(invalid(
+                        "Only a successful automation run can record a completion evaluation.",
+                    ));
+                }
+                if let Some(existing) = &ledger.runs[run_index].completion_evaluation {
+                    return Ok(existing.policy_applied);
+                }
+
+                let definition_id = ledger.runs[run_index].definition.id;
+                let run_revision = ledger.runs[run_index].definition.revision;
+                let policy = ledger.runs[run_index].definition.completion_policy.clone();
+                let threshold = match &policy {
+                    AutomationCompletionPolicy::None => {
+                        return Err(invalid("Automation run has no completion policy."));
+                    }
+                    AutomationCompletionPolicy::AiEvaluated {
+                        confidence_threshold,
+                        ..
+                    } => *confidence_threshold,
+                };
+                let matched = !evaluation.failed
+                    && evaluation.stop_matched
+                    && evaluation.confidence >= threshold;
+                let current_index = ledger
+                    .definitions
+                    .iter()
+                    .position(|definition| definition.id == definition_id);
+                let current = current_index.and_then(|index| ledger.definitions.get(index));
+                let policy_current = current.is_some_and(|definition| {
+                    definition.revision == run_revision
+                        && definition.enabled
+                        && definition.completion_policy == policy
+                });
+
+                evaluation.policy_applied = matched && policy_current;
+                if evaluation.policy_applied
+                    && let Some(index) = current_index
+                {
+                    let definition = &mut ledger.definitions[index];
+                    definition.enabled = false;
+                    definition.revision = definition
+                        .revision
+                        .checked_add(1)
+                        .ok_or_else(|| invalid("Revision overflow."))?;
+                }
+                ledger.runs[run_index].completion_evaluation = Some(evaluation);
+                Ok(ledger.runs[run_index]
+                    .completion_evaluation
+                    .as_ref()
+                    .is_some_and(|evaluation| evaluation.policy_applied))
+            })
+        })
+        .await
+    }
+
     /// Explicit recovery after the user has verified the prior app/process stopped.
     /// Never resubmits a claimed slot. Also pauses its definition.
     pub async fn resolve_interrupted_automation(

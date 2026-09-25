@@ -125,6 +125,8 @@ pub enum ConnectionState {
 pub struct AgentCapabilities {
     pub load_session: bool,
     pub resume_session: bool,
+    #[serde(default)]
+    pub fork_session: bool,
     pub close_session: bool,
     pub list_sessions: bool,
     pub delete_session: bool,

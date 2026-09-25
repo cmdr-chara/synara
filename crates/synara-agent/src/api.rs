@@ -397,6 +397,9 @@ pub trait AgentSession: Send + Sync {
     fn id(&self) -> &str;
     fn thread_id(&self) -> ThreadId;
     fn configuration(&self) -> SessionConfiguration;
+    async fn fork_session(&self, _options: SessionOptions) -> AgentResult<Arc<dyn AgentSession>> {
+        Err(AgentError::Unsupported("session fork".into()))
+    }
     async fn prompt(&self, prompt: Prompt) -> AgentResult<String>;
     async fn cancel(&self) -> AgentResult<()>;
     async fn set_option(

@@ -216,8 +216,15 @@ impl Shell {
         let revision = self.selection_revision;
         self.job(async move {
             let result = async {
-                // The app's canonical data directory owns this one-level scratch parent.
-                if let Err(error) = std::fs::create_dir(&parent)
+                let source_task = workspace.task(source).await?;
+                let remote = matches!(
+                    workspace.workspace_for_task(&source_task).await?.location,
+                    WorkspaceLocation::Ssh { .. }
+                );
+                // Only local workspaces use the app data scratch parent. SSH
+                // plans derive a reviewed UUID sibling from Git's remote root.
+                if !remote
+                    && let Err(error) = std::fs::create_dir(&parent)
                     && error.kind() != std::io::ErrorKind::AlreadyExists
                 {
                     return Err(WorkspaceError::Runtime(synara_runtime::RuntimeError::Io(
@@ -282,6 +289,53 @@ impl Shell {
                 revision,
                 anchor,
                 branch: reply_branch,
+                result,
+            })))
+        });
+        cx.notify();
+    }
+
+    pub(in crate::shell) fn cleanup_branch_worktrees(
+        &mut self,
+        source: TaskId,
+        anchor: MessageAnchor,
+        reviewed: Vec<(PathBuf, String)>,
+        cx: &mut Context<Self>,
+    ) {
+        if self.selected != Some(source)
+            || reviewed.is_empty()
+            || reviewed.len() > 64
+            || self.creating_task
+            || self.loading_task.is_some()
+            || self.close != CloseState::Open
+            || self.composer.read(cx).is_composing()
+            || self.editor.read(cx).is_composing()
+            || !self.chat_tools.loading_worktrees.insert(source)
+        {
+            return;
+        }
+        let workspace = self.controller.workspace.clone();
+        let scratch = self.scratch_directory.clone();
+        let revision = self.selection_revision;
+        self.job(async move {
+            let result = workspace
+                .cleanup_recoverable_worktrees(
+                    source,
+                    scratch,
+                    reviewed,
+                    GitOperationPolicy {
+                        allow_mutation: true,
+                        allow_repository_execution: true,
+                        ..Default::default()
+                    },
+                    tokio_util::sync::CancellationToken::new(),
+                )
+                .await
+                .map_err(|error| error.to_string());
+            Ok(Update::ChatTools(Box::new(Reply::WorktreesCleaned {
+                task: source,
+                revision,
+                anchor,
                 result,
             })))
         });

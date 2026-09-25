@@ -74,6 +74,17 @@ pub(super) enum StudioReply {
         path: PathBuf,
         result: Result<Vec<StudioTextVersion>, String>,
     },
+    VersionPinned {
+        task: TaskId,
+        generation: u64,
+        path: PathBuf,
+        captured_at_ms: i64,
+        result: Result<Vec<StudioTextVersion>, String>,
+    },
+    ReportedVersionsCaptured {
+        task: TaskId,
+        result: Result<usize, String>,
+    },
     VersionsCleared {
         task: TaskId,
         generation: u64,
@@ -306,6 +317,19 @@ impl Shell {
         {
             return;
         }
+        let task = self.selected.expect("selected task checked above");
+        let workspace = self.controller.workspace.clone();
+        self.job(async move {
+            Ok(Update::Studio(Box::new(
+                StudioReply::ReportedVersionsCaptured {
+                    task,
+                    result: workspace
+                        .capture_reported_studio_text_versions(task)
+                        .await
+                        .map_err(|error| error.to_string()),
+                },
+            )))
+        });
         if self.studio.loading {
             self.studio.refresh_pending = true;
         } else {
@@ -391,6 +415,42 @@ impl Shell {
         });
         cx.notify();
     }
+    fn set_selected_studio_version_pinned(&mut self, pinned: bool, cx: &mut Context<Self>) {
+        let Some(task) = self.selected.filter(|task| Some(*task) == self.studio.task) else {
+            return;
+        };
+        let Some(path) = self.studio.selected.clone() else {
+            return;
+        };
+        let Some(snapshot) = self
+            .studio
+            .selected_snapshot
+            .and_then(|index| self.studio.snapshots.get(index))
+            .cloned()
+        else {
+            return;
+        };
+        if snapshot.task != task || snapshot.path != path || snapshot.pinned == pinned {
+            return;
+        }
+        let generation = self.studio.preview_generation;
+        let captured_at_ms = snapshot.captured_at_ms;
+        let workspace = self.controller.workspace.clone();
+        self.job(async move {
+            Ok(Update::Studio(Box::new(StudioReply::VersionPinned {
+                task,
+                generation,
+                path,
+                captured_at_ms,
+                result: workspace
+                    .set_studio_text_version_pinned(snapshot, pinned)
+                    .await
+                    .map_err(|error| error.to_string()),
+            })))
+        });
+        cx.notify();
+    }
+
     fn clear_studio_versions(&mut self, cx: &mut Context<Self>) {
         let Some(task) = self.selected.filter(|task| Some(*task) == self.studio.task) else {
             return;
@@ -706,6 +766,45 @@ impl Shell {
                     }
                 }
             }
+            StudioReply::VersionPinned {
+                task,
+                generation,
+                path,
+                captured_at_ms,
+                result,
+            } => {
+                if self.selected != Some(task)
+                    || self.studio.task != Some(task)
+                    || self.studio.preview_generation != generation
+                    || self.studio.selected.as_ref() != Some(&path)
+                {
+                    return;
+                }
+                match result {
+                    Ok(versions) => {
+                        self.studio.snapshots = versions;
+                        self.studio.selected_snapshot = self
+                            .studio
+                            .snapshots
+                            .iter()
+                            .position(|snapshot| snapshot.captured_at_ms == captured_at_ms);
+                    }
+                    Err(error) => {
+                        self.studio.error =
+                            Some(format!("Studio version pin could not be changed: {error}"))
+                    }
+                }
+            }
+            StudioReply::ReportedVersionsCaptured { task, result } => {
+                if self.selected != Some(task) || self.studio.task != Some(task) {
+                    return;
+                }
+                if let Err(error) = result {
+                    self.studio.error = Some(format!(
+                        "Automatic Studio output versioning could not capture reported text: {error}"
+                    ));
+                }
+            }
             StudioReply::VersionsCleared {
                 task,
                 generation,
@@ -1007,7 +1106,7 @@ impl Shell {
                 let versions: Vec<_> = self.studio.snapshots.iter().enumerate()
                     .filter(|(_, snapshot)| Some(snapshot.task) == self.studio.task && snapshot.path == *path)
                     .collect();
-                (versions.len() > 1).then(|| div().id("studio-session-versions").flex().flex_col().gap_1()
+                (!versions.is_empty()).then(|| div().id("studio-session-versions").flex().flex_col().gap_1()
                     .child(div().text_size(px(11.)).text_color(rgb(palette().muted))
                         .child("Durable previews · snapshots captured when this file was refreshed; retained across restart for this Hub"))
                     .child(ui::button(
@@ -1018,7 +1117,14 @@ impl Shell {
                     .child(div().flex().flex_wrap().gap_1().children(versions.into_iter().map(|(index, snapshot)| {
                         let timestamp = chrono::DateTime::from_timestamp_millis(snapshot.captured_at_ms)
                             .map(|date| date.format("%H:%M:%S UTC").to_string()).unwrap_or_else(|| "unknown time".into());
-                        ui::button(("studio-session-version", index), timestamp, self.studio.selected_snapshot == Some(index))
+                        let mut label = timestamp;
+                        if let Some(turn) = &snapshot.source_turn {
+                            label.push_str(&format!(" · turn {}", turn.number));
+                        }
+                        if snapshot.pinned {
+                            label.push_str(" · pinned");
+                        }
+                        ui::button(("studio-session-version", index), label, self.studio.selected_snapshot == Some(index))
                             .text_size(px(11.))
                             .on_click(cx.listener(move |this, _, _, cx| { this.studio.selected_snapshot = Some(index); cx.notify(); }))
                     })))
@@ -1033,7 +1139,19 @@ impl Shell {
                                         }
                                     })))
                                 .child(ui::button("studio-session-export", "Save selected version as...", false).text_size(px(11.))
-                                    .on_click(cx.listener(|this, _, _, cx| this.save_selected_studio_version(cx)))))
+                                    .on_click(cx.listener(|this, _, _, cx| this.save_selected_studio_version(cx))))
+                                .child(ui::button(
+                                    "studio-session-pin",
+                                    if snapshot.pinned { "Unpin version" } else { "Pin version" },
+                                    snapshot.pinned,
+                                ).text_size(px(11.)).on_click(cx.listener(|this, _, _, cx| {
+                                    let pinned = this
+                                        .studio
+                                        .selected_snapshot
+                                        .and_then(|index| this.studio.snapshots.get(index))
+                                        .is_some_and(|snapshot| snapshot.pinned);
+                                    this.set_selected_studio_version_pinned(!pinned, cx);
+                                }))))
                             .child(div().id("studio-session-text").max_h(px(180.)).overflow_y_scroll().p_2().font_family(ui::code_font())
                                 .text_size(px(11.)).child(truncate(&snapshot.text, 128 * 1024)))))
                 )

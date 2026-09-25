@@ -12,6 +12,7 @@ pub(super) enum Reply {
     Targets(u64, Result<(Vec<AgentProfile>, ProviderSettings), String>),
     Reviewed(u64, Result<Box<HandoffReview>, String>),
     Created(u64, Result<Task, String>),
+    Forked(u64, Result<(Task, bool, Option<String>), String>),
     Switched(u64, Result<Task, String>),
     Origin(TaskId, u64, Option<ThreadOrigin>),
 }
@@ -305,6 +306,46 @@ impl Shell {
         });
         cx.notify();
     }
+    fn native_fork_available(&self, source: TaskId) -> bool {
+        self.selected == Some(source)
+            && self.details.as_ref().is_some_and(|details| {
+                let capabilities = &details.connection.capabilities;
+                capabilities.fork_session
+                    && (capabilities.resume_session || capabilities.load_session)
+            })
+    }
+
+    fn confirm_native_fork(&mut self, cx: &mut Context<Self>) {
+        if self.handoff.busy || self.handoff.creating || self.creating_task {
+            return;
+        }
+        let Some(dialog) = &self.handoff.dialog else {
+            return;
+        };
+        if !self.native_fork_available(dialog.source)
+            || self.selected != Some(dialog.source)
+            || self.selection_revision != dialog.selection_revision
+        {
+            return;
+        }
+        let source = dialog.source;
+        let generation = self.handoff.generation;
+        self.handoff.busy = true;
+        self.handoff.creating = true;
+        self.creating_task = true;
+        let controller = self.controller.clone();
+        self.job(async move {
+            Ok(Update::Handoff(Box::new(Reply::Forked(
+                generation,
+                controller
+                    .fork_current_provider(source)
+                    .await
+                    .map_err(|error| error.to_string()),
+            ))))
+        });
+        cx.notify();
+    }
+
     fn confirm_handoff_here(&mut self, cx: &mut Context<Self>) {
         if self.handoff.busy || self.creating_task {
             return;
@@ -389,6 +430,7 @@ impl Shell {
             Reply::Targets(g, _)
             | Reply::Reviewed(g, _)
             | Reply::Created(g, _)
+            | Reply::Forked(g, _)
             | Reply::Switched(g, _) => *g,
             Reply::Origin(..) => unreachable!(),
         };
@@ -481,6 +523,41 @@ impl Shell {
                         self.notice = Some("Continuation created as a new unsent conversation. The original session is unchanged. Both conversations use the same working folder.".into());
                     }
                     Err(error) => self.handoff.dialog.as_mut().unwrap().error = Some(error),
+                }
+            }
+            Reply::Forked(_, result) => {
+                self.handoff.busy = false;
+                self.handoff.creating = false;
+                self.creating_task = false;
+                match result {
+                    Ok((task, native, fallback_reason)) => {
+                        let dialog = self.handoff.dialog.take();
+                        let select = dialog.as_ref().is_some_and(|dialog| {
+                            self.selected == Some(dialog.source)
+                                && self.selection_revision == dialog.selection_revision
+                        });
+                        let id = task.id;
+                        self.replace_task(task);
+                        if select && self.select_task(id, cx) {
+                            self.show_conversation(cx);
+                        }
+                        self.notice = Some(if native {
+                            "Provider-native session fork created as a new unsent conversation. The source session is unchanged; the child can resume the copied provider context after explicit Send.".into()
+                        } else {
+                            format!(
+                                "Provider-native fork was not used. A safe retained-context child was created instead. {}",
+                                fallback_reason
+                                    .unwrap_or_else(|| "The provider fork was unavailable.".into())
+                            )
+                        });
+                    }
+                    Err(error) => {
+                        if let Some(dialog) = self.handoff.dialog.as_mut() {
+                            dialog.error = Some(error);
+                        } else {
+                            self.error = Some(error);
+                        }
+                    }
                 }
             }
             Reply::Switched(_, result) => {
@@ -582,6 +659,7 @@ impl Shell {
         let continue_here_blocked = !self.composer.read(cx).text().is_empty()
             || self.attachment_send_blocked()
             || self.attachments_have_pending();
+        let native_fork_available = self.native_fork_available(dialog.source);
         let mut page = div().id("handoff-dialog").role(gpui::Role::Dialog).aria_label("Continue with another provider")
             .tab_group().w_full().max_w(px(720.)).max_h(px(650.)).p_4().flex().flex_col().gap_3()
             .bg(ui::surface(palette().overlay)).border_1().border_color(rgb(palette().border))
@@ -664,6 +742,17 @@ impl Shell {
                             }),
                         )
                     }))
+                    .children(native_fork_available.then(|| {
+                        ui::action(
+                            "handoff-native-fork",
+                            "Fork provider session",
+                            Some(Glyph::Fork),
+                            false,
+                            cx.listener(|this, _: &(), _, cx| this.confirm_native_fork(cx)),
+                        )
+                        .relative()
+                        .child(ui::layout_probe("handoff-native-fork"))
+                    }))
                     .child(div().flex_1())
                     .children(dialog.review.is_some().then(|| {
                         ui::action(
@@ -707,6 +796,7 @@ impl Shell {
             return div().into_any_element();
         };
         let idle = !self.handoff.busy && !self.handoff.creating;
+        let native_fork_available = self.native_fork_available(dialog.source);
         let query = dialog.query.read(cx).text().trim().to_lowercase();
         let total = dialog
             .targets
@@ -820,6 +910,19 @@ impl Shell {
                     .child(error.clone()),
             );
         }
+        panel = panel.child(div().px_2().pb_1().children(native_fork_available.then(|| {
+            ui::action(
+                "handoff-native-fork-quick",
+                "Fork current provider session",
+                Some(Glyph::Fork),
+                false,
+                cx.listener(|this, _: &(), _, cx| this.confirm_native_fork(cx)),
+            )
+            .w_full()
+            .rounded(px(10.))
+            .relative()
+            .child(ui::layout_probe("handoff-native-fork-quick"))
+        })));
         panel = panel.child(
             div().px_2().pb_2().child(
                 ui::action(

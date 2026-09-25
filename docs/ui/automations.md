@@ -22,9 +22,12 @@ is appended by the scheduler.
 ## Durable claims and restart behavior
 
 Every mutation takes SQLite's immediate writer transaction before reading the
-ledger. A claim reserves the scheduled slot, creates the owned task/thread
-identity, saves its visible instructions, and advances the schedule atomically.
-The reservation is committed before any provider launch. Independent database
+ledger. A claim reserves the scheduled slot, resolves or creates the mode-owned
+task/thread, saves the exact visible prompt, and advances the schedule atomically.
+Standalone creates a fresh task per run. Heartbeat reuses the explicitly selected
+existing ACP task. Dedicated creates one automation-owned task on first claim and
+persists that target for later runs. The reservation is committed before any
+provider launch. Independent database
 connections cannot claim the same active definition or scheduled slot twice.
 A task belongs to the chosen project and records the explicit profile. Run
 history retains an immutable definition snapshot, owner UUID, scheduled/manual
@@ -112,5 +115,42 @@ claim, creates the owned conversation in Studio scope, and persists the exact co
 before provider launch. Transcripts and files are never harvested automatically, and later Hub
 edits do not rewrite an already claimed run.
 
-Out-of-process scheduling and wider live-provider lifecycle acceptance remain open. This source
-slice does not close the broad Automations acceptance gate.
+The same scheduler can now run without GPUI through explicit
+`synara-server --automations`. The server starts it only after workspace recovery
+and database-owner lock acquisition; ordinary headless startup remains disarmed.
+Shutdown stops/cancels that scheduler before controller teardown, so the desktop
+and headless process cannot concurrently schedule the same owned database.
+
+Execution mode is explicit and persisted: Standalone creates a new conversation
+per run, Heartbeat continues a user-selected existing ACP conversation, and
+Dedicated creates one automation-owned conversation then reuses it. Continuation
+targets are revalidated on every claim for project/agent ownership, archive/active
+state, direct-model route, drafts, pending attachments and competing automation
+runs. A configurable 0–86400 second continuation cooldown defaults to 60 seconds.
+Recent external target activity defers scheduled runs without consuming their due
+slot; an automation's own previously completed run is exempt so short schedules
+do not self-throttle. Manual Run now surfaces the temporary blocker instead.
+
+AI-evaluated completion/stop policy is now explicit and reviewed. A definition
+can select only a saved direct model that reports structured-output support, plus
+a bounded stop condition and 0–1 confidence threshold. The saved evaluator carries
+the reviewed provider-profile digest, so later endpoint/model changes invalidate
+the stale policy instead of silently switching providers.
+
+After a successful run, Synara may issue one separate 30-second, tool-free direct-
+model evaluation. The evaluator receives only the stop condition, automation
+instructions, exact submitted run prompt and assistant output produced after this
+run began. It receives no ACP session state, approvals, files, attachments, tool
+authority or hidden reasoning. Synara requests a strict JSON object
+(`stopMatched`, `confidence`, `reason`) and independently decodes/bounds the
+result. There is no automatic retry.
+
+A failed, timed-out or malformed stop check is recorded as evaluation metadata;
+it does not turn the successful automation run into a failure and cannot pause the
+definition. A matching evaluation disables the automation only when the exact
+completion-policy revision is still current and enabled. Edits or re-enables that
+race a slow evaluator therefore fence the late result.
+
+Live-provider completion/cancellation, restart/shutdown timing, native interaction
+and multi-platform acceptance remain open under D8. The product-feature S06 slice
+is complete, but the broad Automations acceptance gate remains OPEN.

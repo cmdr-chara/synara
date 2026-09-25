@@ -95,8 +95,10 @@ impl Fixture {
                 }
                 let mut caps = if self.profile == "beta" {
                     json!({"promptCapabilities":{}})
+                } else if self.profile == "fork-no-recovery" {
+                    json!({"promptCapabilities":{},"sessionCapabilities":{"fork":{}}})
                 } else {
-                    json!({"loadSession":true,"promptCapabilities":{"image":true},"sessionCapabilities":{"list":{},"resume":{},"close":{},"delete":{},"additionalDirectories":{}},"auth":{"logout":{}}})
+                    json!({"loadSession":true,"promptCapabilities":{"image":true},"sessionCapabilities":{"list":{},"resume":{},"fork":{},"close":{},"delete":{},"additionalDirectories":{}},"auth":{"logout":{}}})
                 };
                 if self.launch_arguments.iter().any(|a| a == "--gateway-http") {
                     caps["mcpCapabilities"] = json!({"http":true});
@@ -165,6 +167,19 @@ impl Fixture {
                 );
                 let mut result = self.configuration();
                 result["sessionId"] = json!(session);
+                self.ok(id, result);
+            }
+            Some("session/fork") => {
+                if !self.sessions.contains_key(&session) {
+                    self.error(id, -32602);
+                    return;
+                }
+                self.next_session += 1;
+                let forked = format!("session-{}", self.next_session);
+                self.sessions
+                    .insert(forked.clone(), params["cwd"].as_str().unwrap().into());
+                let mut result = self.configuration();
+                result["sessionId"] = json!(forked);
                 self.ok(id, result);
             }
             Some("session/load" | "session/resume") => {

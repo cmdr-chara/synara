@@ -77,7 +77,7 @@ fn real_webkit_navigation_consent_input_redirect_and_isolation() {
             let len = stream.read(&mut data).unwrap_or(0);
             let request = String::from_utf8_lossy(&data[..len]).into_owned();
             log.lock().unwrap().push(request.clone());
-            let body = if request.starts_with("GET /auth ") {
+            let body = if request.starts_with("GET /auth ") || request.starts_with("GET /auth-again ") {
                 "<!doctype html><title>Authentication fixture</title><style>html,body,a{width:100%;height:100%;margin:0}a{display:flex;align-items:center;justify-content:center}</style><a href='/auth-popup?token=private' target='_blank'>Continue sign-in</a>"
             } else {
                 "<!doctype html><title>Native browser fixture</title><style>body{min-height:2400px}</style><h1>REAL WEBKIT PAGE</h1><input aria-label='Name'><button onclick=\"document.querySelector('h1').textContent='Clicked '+document.querySelector('input').value\">Apply</button><script>window.__synaraRefs='page-forgery';</script>"
@@ -501,10 +501,7 @@ fn real_webkit_navigation_consent_input_redirect_and_isolation() {
 
     // Exercise the real user-gesture popup path. Scripted window.open calls are
     // intentionally not treated as equivalent to a person clicking a sign-in link.
-    host.viewport(
-        Some(auth),
-        Some(ViewportRect::logical(0., 0., 800., 600.)),
-    );
+    host.viewport(Some(auth), Some(ViewportRect::logical(0., 0., 800., 600.)));
     assert!(host.views[&auth].webview.webview().is_visible());
     window.present();
     window.activate_focus();

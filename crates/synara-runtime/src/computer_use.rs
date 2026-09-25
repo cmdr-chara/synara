@@ -389,21 +389,21 @@ impl ComputerTools {
             }
             .await;
             if let Err(error) = step {
-                if pressed {
-                    if let Some(button) = drag_button {
-                        let release = vec![
-                            "mouseup".into(),
-                            "--window".into(),
-                            window.native_id().to_string(),
-                            button.to_string(),
-                        ];
-                        let cleanup = CancellationToken::new();
-                        let _ = tokio::time::timeout(
-                            Duration::from_secs(1),
-                            command::run(Path::new("/usr/bin/xdotool"), release, 1024, &cleanup),
-                        )
-                        .await;
-                    }
+                if pressed
+                    && let Some(button) = drag_button
+                {
+                    let release = vec![
+                        "mouseup".into(),
+                        "--window".into(),
+                        window.native_id().to_string(),
+                        button.to_string(),
+                    ];
+                    let cleanup = CancellationToken::new();
+                    let _ = tokio::time::timeout(
+                        Duration::from_secs(1),
+                        command::run(Path::new("/usr/bin/xdotool"), release, 1024, &cleanup),
+                    )
+                    .await;
                 }
                 return Err(error);
             }

@@ -1,4 +1,5 @@
 mod new_worktree;
+use crate::storage::ManagedWorktreeOwnership;
 use crate::{
     AgentProfile, GitOperation, GitOperationError, GitOperationOptions, GitOperations,
     NewSshWorkspace, SshWorkspaceProfile, StorageError, Store, default_profiles, parse_profiles,
@@ -16,6 +17,7 @@ use synara_agent::{AgentError, AgentResult, EventSink};
 use synara_core::*;
 use synara_runtime::{PinnedSshHost, RemoteWorkspaceFs, RuntimeError, WorkspaceFs};
 use tokio::sync::broadcast;
+use tokio_util::sync::CancellationToken;
 
 #[derive(Debug, thiserror::Error)]
 pub enum WorkspaceError {

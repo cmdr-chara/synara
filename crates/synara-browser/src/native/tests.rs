@@ -80,7 +80,7 @@ fn real_webkit_navigation_consent_input_redirect_and_isolation() {
             let authentication_page =
                 request.starts_with("GET /auth ") || request.starts_with("GET /auth-again ");
             let body = if authentication_page {
-                "<!doctype html><title>Authentication fixture</title><style>html,body,button{width:100%;height:100%;margin:0}button{display:flex;align-items:center;justify-content:center}</style><button onclick=\"document.title='Authentication click received';window.open('/auth-popup?token=private','synara-auth','popup,width=480,height=640');return false\">Continue sign-in</button>"
+                "<!doctype html><title>Authentication fixture</title><style>html,body,a{width:100%;height:100%;margin:0}a{display:flex;align-items:center;justify-content:center}</style><a href='/auth-popup?token=private' target='_blank' onclick=\"document.title='Authentication click received'\">Continue sign-in</a>"
             } else {
                 "<!doctype html><title>Native browser fixture</title><style>body{min-height:2400px}</style><h1>REAL WEBKIT PAGE</h1><input aria-label='Name'><button onclick=\"document.querySelector('h1').textContent='Clicked '+document.querySelector('input').value\">Apply</button><script>window.__synaraRefs='page-forgery';</script>"
             };

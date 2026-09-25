@@ -54,6 +54,7 @@ def await_server(server: subprocess.Popen, port: int) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument('--native-only', action='store_true')
+    parser.add_argument('--skip-acp-tests', action='store_true')
     parser.add_argument('--native-binary', type=Path)
     parser.add_argument('--fixture', type=Path)
     parser.add_argument('--native-output', type=Path)
@@ -159,7 +160,11 @@ def main() -> None:
                 )
                 await_server(server, port)
                 if not options.native_only:
-                    for package in ['synara-runtime', 'synara-workspace', 'synara-acp']:
+                    packages = ['synara-runtime', 'synara-workspace']
+                    if not options.skip_acp_tests:
+                        packages.append('synara-acp')
+                    for package in packages:
+                        print(f'Running isolated SSH acceptance tests for {package}...', flush=True)
                         run([
                             tools['cargo'], 'test', '--locked', '-p', package,
                             '--test', 'ssh_live', '--', '--ignored', '--test-threads=1',

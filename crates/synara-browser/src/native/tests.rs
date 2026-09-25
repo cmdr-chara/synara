@@ -509,7 +509,6 @@ fn real_webkit_navigation_consent_input_redirect_and_isolation() {
     window.present();
     window.activate_focus();
     {
-        use gdkx11::X11WindowExt;
         use x11rb::{
             connection::Connection,
             protocol::{xproto::ConnectionExt as _, xtest::ConnectionExt as _},
@@ -520,7 +519,7 @@ fn real_webkit_navigation_consent_input_redirect_and_isolation() {
             .webview()
             .window()
             .expect("authentication WebKit view must have an X11 window");
-        let (origin_x, origin_y) = gdk_window.origin();
+        let (origin_x, origin_y, _) = gdk_window.origin();
         let (connection, screen) = x11rb::connect(None).expect("connect to private X11 display");
         let root = connection.setup().roots[screen].root;
         let x = i16::try_from(origin_x + 400).expect("authentication click x fits X11");

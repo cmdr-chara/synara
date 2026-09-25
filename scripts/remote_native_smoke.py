@@ -37,7 +37,7 @@ def set_field(ui, x, y, value):
 
 
 def control_bounds(log_path, control, slot=None, enabled=None):
-    text = re.sub(r'\\x1b\\[[0-9;]*[A-Za-z]', '', Path(log_path).read_text(errors='replace'))
+    text = re.sub(r'\x1b\[[0-9;]*[A-Za-z]', '', Path(log_path).read_text(errors='replace'))
     rows = [
         line for line in text.splitlines()
         if 'control-layout' in line

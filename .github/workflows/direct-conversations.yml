@@ -79,14 +79,52 @@ jobs:
           set -euo pipefail
           cargo +1.98.1 test --locked -p synara-acp --test vendor_probe -- --ignored --nocapture --test-threads=1
 
-      - name: Owned native journeys, without provider credentials
+      - name: Provider interoperability native journeys, without credentials
         run: |
           set -euo pipefail
-          for journey in google_models anthropic_models direct_models project_import handoff model_draft browser_webview integrations; do
+          # Keep this acceptance lane scoped to provider routing/interoperability.
+          # Project import, browser and MCP integration have independent native lanes.
+          for journey in google_models anthropic_models direct_models handoff model_draft; do
             /usr/bin/python3 "scripts/native_${journey}_smoke.py" \
               --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture \
               --output "/tmp/direct-conversations-evidence/$journey"
           done
+
+      - name: Verify representative ACP/direct-model matrix
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          root = Path('/tmp/direct-conversations-evidence')
+          vendor = json.loads((root / 'vendor-acp.json').read_text())
+          required_acp = {'opencode', 'gemini-cli'}
+          observed_acp = {entry['id'] for entry in vendor if entry.get('passed')}
+          missing = sorted(required_acp - observed_acp)
+          assert not missing, f'missing passing ACP release probes: {missing}'
+          for entry in vendor:
+              if entry.get('id') in required_acp:
+                  assert entry.get('credentials_supplied') is False
+                  assert entry.get('prompt_sent') is False
+                  assert entry.get('initialization') == 'passed'
+
+          journeys = {}
+          for name in ('google_models', 'anthropic_models', 'direct_models', 'handoff', 'model_draft'):
+              result = json.loads((root / name / 'result.json').read_text())
+              assert result.get('status') == 'passed', (name, result)
+              journeys[name] = result.get('checks', [])
+
+          matrix = {
+              'status': 'passed',
+              'external_acp_releases': sorted(required_acp),
+              'direct_protocols': ['google-generate-content', 'anthropic-messages', 'openai-chat-compatible'],
+              'native_journeys': journeys,
+              'credentials_supplied': False,
+          }
+          (root / 'interoperability-matrix.json').write_text(json.dumps(matrix, indent=2) + '\n')
+          print(json.dumps(matrix, indent=2))
+          PY
           git diff --exit-code
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()

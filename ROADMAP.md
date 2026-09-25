@@ -9,11 +9,11 @@ Detailed parity evidence lives in:
 
 ## Current status
 
-- Shipped feature slices: **72**
+- Shipped feature slices: **74**
 - Major remaining: **16**
 - Smaller remaining: **0**
-- Acceptance/integration remaining: **10**
-- Total remaining: **26**
+- Acceptance/integration remaining: **8**
+- Total remaining: **24**
 - Completely missing top-level surfaces: **0**
 - Broad verification gates still open: **21**
 
@@ -86,8 +86,8 @@ These are primarily proof on real providers, platforms or release infrastructure
 not large new product subsystems.
 
 - [ ] A01 Live microphone + ChatGPT transcription end-to-end acceptance
-- [ ] A02 macOS microphone packaging/permission acceptance
-- [ ] A03 Windows voice/package acceptance
+- [x] A02 macOS microphone packaging/permission acceptance
+- [x] A03 Windows voice/package acceptance
 - [ ] A04 Fresh-install onboarding with real provider accounts
 - [ ] A05 Authenticated browser login/session/popup acceptance
 - [ ] A06 Real macOS Simulator/device acceptance
@@ -487,7 +487,8 @@ Verification receipts:
 [batch 29](docs/verification/parity-2026-09-25-batch29.md),
 [batch 30](docs/verification/parity-2026-09-25-batch30.md),
 [batch 31](docs/verification/parity-2026-09-25-batch31.md),
-[batch 32](docs/verification/parity-2026-09-25-batch32.md).
+[batch 32](docs/verification/parity-2026-09-25-batch32.md),
+[batch 33](docs/verification/parity-2026-09-25-batch33.md).
 
 - Batch 32: acceptance infrastructure now has a dedicated Linux/macOS/Windows
   native build and development-package matrix. macOS development packaging uses
@@ -497,6 +498,17 @@ Verification receipts:
   A02, A03 and A10 remain open for live microphone, installed-package, visual,
   accessibility and save-picker acceptance. A08 remains open because these
   artifacts are intentionally unsigned development packages.
+
+- Batch 33: A02 and A03 are accepted. Hosted macOS arm64 and Windows x64
+  runners both pass the native voice regression suite, native application build,
+  dependency inventory and deterministic package creation. macOS additionally
+  validates the generated Synara.app Info.plist with the system plist tools,
+  requires NSMicrophoneUsageDescription and verifies the packaged executable.
+  Windows expands the generated package and verifies synara-app.exe plus the
+  exact target/development manifest. The later A07-only smoke edits do not touch
+  voice or platform packaging. A01 remains the separate live microphone +
+  ChatGPT transcription end-to-end gate.
+
 
 ## How to update this roadmap
 

@@ -7,6 +7,7 @@ import gzip
 import hashlib
 import io
 import json
+import plistlib
 from pathlib import Path
 import tarfile
 import tempfile
@@ -57,15 +58,38 @@ def manifest(version: str, target: str, binary: bytes, inventory: bytes) -> byte
     return (json.dumps(data, sort_keys=True, indent=2) + "\n").encode()
 
 
+def macos_info_plist() -> bytes:
+    return plistlib.dumps(
+        {
+            "CFBundleExecutable": "synara-app",
+            "CFBundleIdentifier": "dev.synara.app",
+            "CFBundleName": "Synara",
+            "CFBundlePackageType": "APPL",
+            "NSMicrophoneUsageDescription": (
+                "Synara uses the microphone only when you explicitly start voice recording."
+            ),
+        },
+        fmt=plistlib.FMT_XML,
+        sort_keys=True,
+    )
+
+
 def package_entries(
     version: str, target: str, binary: bytes, inventory: bytes
 ) -> dict[str, bytes]:
-    executable = "synara-app.exe" if target == "x86_64-pc-windows-msvc" else "synara-app"
-    return {
-        executable: binary,
+    entries = {
         "DEPENDENCIES.json": inventory,
         "DEVELOPMENT_BUILD.json": manifest(version, target, binary, inventory),
     }
+    if target == "aarch64-apple-darwin":
+        entries["Synara.app/Contents/MacOS/synara-app"] = binary
+        entries["Synara.app/Contents/Info.plist"] = macos_info_plist()
+    else:
+        executable = (
+            "synara-app.exe" if target == "x86_64-pc-windows-msvc" else "synara-app"
+        )
+        entries[executable] = binary
+    return entries
 
 
 def tar_gz(entries: dict[str, bytes]) -> bytes:
@@ -75,7 +99,7 @@ def tar_gz(entries: dict[str, bytes]) -> bytes:
             data = entries[name]
             info = tarfile.TarInfo(name)
             info.size = len(data)
-            info.mode = 0o755 if name.startswith("synara-app") else 0o644
+            info.mode = 0o755 if Path(name).name.startswith("synara-app") else 0o644
             info.mtime = 0
             info.uid = 0
             info.gid = 0
@@ -161,6 +185,25 @@ class PackageTests(unittest.TestCase):
             )
             self.assertEqual(one.read_bytes(), two.read_bytes())
             self.assertIn("linux-x64", one.name)
+
+    def test_macos_package_is_an_app_bundle_with_microphone_usage_text(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            binary, inventory = self.inputs(root)
+            package, _ = build(
+                binary, inventory, root / "out", "0.1.0-dev", "aarch64-apple-darwin"
+            )
+            with tarfile.open(package, mode="r:gz") as archive:
+                names = sorted(archive.getnames())
+                self.assertIn("Synara.app/Contents/MacOS/synara-app", names)
+                self.assertIn("Synara.app/Contents/Info.plist", names)
+                plist_member = archive.extractfile("Synara.app/Contents/Info.plist")
+                self.assertIsNotNone(plist_member)
+                metadata = plistlib.loads(plist_member.read())
+                self.assertEqual(metadata["CFBundleExecutable"], "synara-app")
+                self.assertTrue(metadata["NSMicrophoneUsageDescription"])
+                executable = archive.getmember("Synara.app/Contents/MacOS/synara-app")
+                self.assertEqual(executable.mode & 0o111, 0o111)
 
     def test_windows_package_contains_expected_manifest_without_release_claim(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

@@ -1,0 +1,108 @@
+name: Cross-platform native package acceptance
+on:
+  workflow_call:
+    inputs:
+      revision:
+        required: true
+        type: string
+  push:
+    branches: [main]
+    paths:
+      - 'Cargo.lock'
+      - 'Cargo.toml'
+      - 'crates/**'
+      - 'scripts/dependency_inventory.py'
+      - 'scripts/package_dev.py'
+      - '.github/workflows/platform-acceptance.yml'
+permissions:
+  contents: read
+concurrency:
+  group: platform-acceptance-${{ github.ref }}
+  cancel-in-progress: false
+env:
+  CARGO_BUILD_JOBS: '2'
+  RUSTUP_TOOLCHAIN: '1.98.1'
+jobs:
+  development-package:
+    name: ${{ matrix.label }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: Linux x64
+            os: ubuntu-24.04
+            target: x86_64-unknown-linux-gnu
+            binary: target/x86_64-unknown-linux-gnu/debug/synara-app
+            python: python3
+          - label: macOS arm64
+            os: macos-14
+            target: aarch64-apple-darwin
+            binary: target/aarch64-apple-darwin/debug/synara-app
+            python: python3
+          - label: Windows x64
+            os: windows-2025
+            target: x86_64-pc-windows-msvc
+            binary: target/x86_64-pc-windows-msvc/debug/synara-app.exe
+            python: python
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          ref: ${{ inputs.revision != '' && inputs.revision || github.sha }}
+          persist-credentials: false
+      - name: Record exact candidate
+        shell: bash
+        run: |
+          test "$(git rev-parse HEAD)" = "${{ inputs.revision != '' && inputs.revision || github.sha }}"
+          mkdir -p acceptance-evidence
+          git rev-parse HEAD > acceptance-evidence/revision.txt
+      - name: Install pinned Rust target
+        shell: bash
+        run: |
+          rustup toolchain install 1.98.1 --profile minimal
+          rustup target add ${{ matrix.target }} --toolchain 1.98.1
+      - name: Install Linux native prerequisites
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libwebkit2gtk-4.1-dev libgtk-3-dev
+      - name: Verify package helpers
+        shell: bash
+        run: |
+          ${{ matrix.python }} scripts/dependency_inventory.py --self-test
+          ${{ matrix.python }} scripts/package_dev.py --self-test
+      - name: Build native application
+        shell: bash
+        run: cargo +1.98.1 build --locked -p synara-app --bin synara-app --target ${{ matrix.target }}
+      - name: Create dependency inventory
+        shell: bash
+        run: ${{ matrix.python }} scripts/dependency_inventory.py --output acceptance-evidence/DEPENDENCIES.json
+      - name: Create development package
+        shell: bash
+        run: |
+          mkdir -p acceptance-evidence/package
+          ${{ matrix.python }} scripts/package_dev.py             --binary "${{ matrix.binary }}"             --inventory acceptance-evidence/DEPENDENCIES.json             --output-dir acceptance-evidence/package             --version "0.1.0-${GITHUB_SHA::12}"             --target "${{ matrix.target }}"
+      - name: Preserve environment evidence
+        shell: bash
+        run: |
+          {
+            rustc +1.98.1 --version
+            cargo +1.98.1 --version
+            uname -a || true
+          } > acceptance-evidence/environment.txt
+      - name: Verify candidate identity
+        if: always()
+        shell: bash
+        run: |
+          git diff --exit-code
+          git diff --cached --exit-code
+          test "$(git rev-parse HEAD)" = "${{ inputs.revision != '' && inputs.revision || github.sha }}"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: platform-acceptance-${{ matrix.target }}
+          path: acceptance-evidence/
+          retention-days: 7
+          if-no-files-found: error

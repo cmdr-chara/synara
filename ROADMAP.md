@@ -486,7 +486,17 @@ Verification receipts:
 [batch 28](docs/verification/parity-2026-09-25-batch28.md),
 [batch 29](docs/verification/parity-2026-09-25-batch29.md),
 [batch 30](docs/verification/parity-2026-09-25-batch30.md),
-[batch 31](docs/verification/parity-2026-09-25-batch31.md).
+[batch 31](docs/verification/parity-2026-09-25-batch31.md),
+[batch 32](docs/verification/parity-2026-09-25-batch32.md).
+
+- Batch 32: acceptance infrastructure now has a dedicated Linux/macOS/Windows
+  native build and development-package matrix. macOS development packaging uses
+  a real `Synara.app` bundle layout and declares `NSMicrophoneUsageDescription`
+  for explicit user-initiated recording. The matrix preserves exact-candidate
+  evidence and runs deterministic package/inventory checks on each platform.
+  A02, A03 and A10 remain open for live microphone, installed-package, visual,
+  accessibility and save-picker acceptance. A08 remains open because these
+  artifacts are intentionally unsigned development packages.
 
 ## How to update this roadmap
 

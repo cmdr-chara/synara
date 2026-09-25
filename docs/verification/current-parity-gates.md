@@ -29,8 +29,8 @@ additions are available.
 | D8 Automations | Support upstream recurrence, effective no-retry policy and orchestration semantics over durable claims | Schedule/DST/restart tests and live run/failure journeys | OPEN |
 | D9 Commands/keybindings | Support needed argument forms and context-aware keybindings without stealing provider commands | Command parser, key routing and native interaction journeys | OPEN |
 | D10 Releases/updater | Verify trusted native artifacts and provide signed install/update/rollback | Feed provenance/signature, upgrade and rollback tests on release packages | OPEN |
-| D11 Profile/analytics | Show provider/model mix, token heatmap and account/usage statistics from actual sources | Real telemetry fixture and account integration journeys | OPEN |
-| D12 Handoff/forks | Continue or fork same-task/provider sessions with explicit environment choice | Provider and worktree continuation journeys | OPEN |
+| D11 Profile/analytics | Show provider/model mix, token heatmap and account/usage statistics from actual sources | Per-turn route/model mix and token heatmap are implemented; real account/quota telemetry and provider integration journeys remain | OPEN |
+| D12 Handoff/forks | Continue or fork provider sessions with explicit task/environment ownership | Same-task reviewed route continuation is implemented; provider-native fork and live provider/worktree journeys remain | OPEN |
 | D13 Attachments/media | Preserve folder references, broaden formats and view PDF/documents in app | Persistence, preview, export and failure journeys | OPEN |
 | D14 Studio | Match current upstream long-running output lifecycle and organization | Output/task lifecycle and recovery journeys | OPEN |
 | N1 Theme/density | Finish visual, accessibility and platform acceptance for native appearance controls | Screenshot, keyboard, screen-reader and platform matrix | OPEN |
@@ -57,13 +57,19 @@ while all 21 completion gates remain OPEN.
 `D8` gained five-field cron, DST-aware schedule claims and a configurable
 1–3600-second execution limit. Upstream currently rejects fixed/exponential
 retry policies at create/update despite contract shapes, so those policies are
-not treated as an effective-current-head difference. `N2` gained fuzzy name
+not treated as an effective-current-head difference. D8 also has versioned run
+history export, explicit live/deleted terminal-history pruning that preserves a
+durable cumulative max-run counter, and an opt-in Hub context policy whose claim
+atomically snapshots the current Hub revision and visible shared context into the
+owned run prompt. Out-of-process scheduling and live provider lifecycle evidence
+remain open. `N2` gained fuzzy name
 ranking, generated-directory filtering and typed file/directory results with
 Explorer navigation; entry queries now also use the upstream prefix normalization
 and POSIX path-ranking semantics, while older SSH helpers remain file-only.
 `D11` now prefers a 274-day UTC heatmap of durable provider-reported turn tokens
-when available and falls back to persisted local turn starts; account usage
-remains separate. `N3` gained durable message update times in ZIP export from the
+when available and falls back to persisted local turn starts. Direct and ACP
+turns also retain exact route/model attribution for current-history events;
+legacy unattributed turns are disclosed. Account/quota usage remains separate. `N3` gained durable message update times in ZIP export from the
 same SQLite snapshot. Cross-platform GUI, microphone hardware and live ChatGPT
 transcription journeys have not been exercised here.
 `D9` gained exact `/synara/automation list` and `new` forms that open the
@@ -248,7 +254,9 @@ search. SSH setup errors release the owned request slot. Search controls retain
 fixed space and the narrow pane expands while search is open, so result rows
 remain inside their actual hit-test container. The clipping encountered by the
 batch5 test is addressed as product code rather than treating its workaround as
-acceptance. Exact ignored/generated-file behavior, native SSH and wider
-platform acceptance remain open. See
-[batch6 scope and evidence](parity-2026-09-24-batch6.md) and
-[batch14 scope](parity-2026-09-25-batch14.md).
+acceptance. Ranking and ignored/generated-file behavior now match the pinned
+upstream owner for local and current SSH-helper search; native SSH interaction
+and wider platform acceptance remain open. See
+[batch6 scope and evidence](parity-2026-09-24-batch6.md),
+[batch14 scope](parity-2026-09-25-batch14.md) and
+[batch15 completion](parity-2026-09-25-batch15.md).

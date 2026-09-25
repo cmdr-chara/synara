@@ -12,10 +12,29 @@ const MAX_PDF_TEXT_BYTES: usize = 1024 * 1024;
 const MAX_PDF_DIAGNOSTIC_BYTES: usize = 64 * 1024;
 const MAX_PDF_LINKS: usize = 128;
 
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum PdfFormKind {
+    None,
+    AcroForm,
+    Xfa,
+    Unknown,
+}
+impl PdfFormKind {
+    pub fn label(self) -> &'static str {
+        match self {
+            Self::None => "No interactive form reported",
+            Self::AcroForm => "AcroForm detected",
+            Self::Xfa => "XFA form detected",
+            Self::Unknown => "Unrecognized PDF form metadata",
+        }
+    }
+}
+
 #[derive(Clone)]
 pub struct StudioPdf {
     bytes: Arc<[u8]>,
     pub pages: u32,
+    pub form: PdfFormKind,
 }
 #[derive(Debug)]
 pub struct StudioPdfPage {
@@ -364,6 +383,24 @@ async fn bounded_pdf_read(
     }
     Ok(bytes)
 }
+fn form_kind(info: &[u8]) -> WorkspaceResult<PdfFormKind> {
+    let text = std::str::from_utf8(info)
+        .map_err(|_| WorkspaceError::Invalid("Invalid PDF metadata.".into()))?;
+    let mut values = text.lines().filter_map(|line| line.strip_prefix("Form:"));
+    let value = values.next().map(str::trim);
+    if values.next().is_some() {
+        return Err(WorkspaceError::Invalid(
+            "The PDF form metadata is ambiguous.".into(),
+        ));
+    }
+    Ok(match value {
+        Some("none") | None => PdfFormKind::None,
+        Some("AcroForm") => PdfFormKind::AcroForm,
+        Some("XFA") => PdfFormKind::Xfa,
+        Some(_) => PdfFormKind::Unknown,
+    })
+}
+
 fn page_count(info: &[u8]) -> WorkspaceResult<u32> {
     let text = std::str::from_utf8(info)
         .map_err(|_| WorkspaceError::Invalid("Invalid PDF metadata.".into()))?;
@@ -410,6 +447,7 @@ impl WorkspaceService {
         Ok(StudioPdf {
             bytes,
             pages: page_count(&info)?,
+            form: form_kind(&info)?,
         })
     }
 }
@@ -484,6 +522,31 @@ mod tests {
         }
     }
     #[test]
+    fn form_metadata_is_bounded_read_only_and_never_inferred_from_other_fields() {
+        assert_eq!(
+            form_kind(b"Pages: 2\nForm: none\n").unwrap(),
+            PdfFormKind::None
+        );
+        assert_eq!(
+            form_kind(b"Pages: 2\nForm: AcroForm\n").unwrap(),
+            PdfFormKind::AcroForm
+        );
+        assert_eq!(
+            form_kind(b"Pages: 2\nForm: XFA\n").unwrap(),
+            PdfFormKind::Xfa
+        );
+        assert_eq!(
+            form_kind(b"Pages: 2\nForm: SomethingNew\n").unwrap(),
+            PdfFormKind::Unknown
+        );
+        assert_eq!(
+            form_kind(b"Pages: 2\nTitle: Form: AcroForm\n").unwrap(),
+            PdfFormKind::None
+        );
+        assert!(form_kind(b"Form: none\nForm: AcroForm\n").is_err());
+    }
+
+    #[test]
     fn text_extraction_arguments_are_single_page_fixed_and_bounded() {
         assert!(pdf_text_arguments(0).is_err());
         assert!(pdf_text_arguments(MAX_PDF_PAGES + 1).is_err());
@@ -543,6 +606,7 @@ mod tests {
         let pdf = StudioPdf {
             bytes: Arc::from(&b"%PDF-1.4"[..]),
             pages: 1,
+            form: PdfFormKind::None,
         };
         let cancel = CancellationToken::new();
         assert!(pdf.page_text(0, &cancel).await.is_err());

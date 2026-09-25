@@ -2,6 +2,19 @@ use super::*;
 impl Shell {
     pub(in crate::shell) fn automations_panel(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
         let state = &self.automations;
+        let prunable_history = state
+            .ledger
+            .runs
+            .iter()
+            .filter(|run| {
+                run.status != AutomationRunStatus::Running
+                    && !state
+                        .ledger
+                        .definitions
+                        .iter()
+                        .any(|definition| definition.id == run.definition.id)
+            })
+            .count();
         let mut pane = div().size_full().flex().flex_col().min_h_0().gap_2().text_color(rgb(palette().text))
             .child(div().flex().items_center().gap_2().p_3().border_b_1().border_color(rgb(palette().border))
                 .child(div().flex_1().text_lg().child("Automations"))
@@ -20,10 +33,12 @@ impl Shell {
         if let Some(pending) = &state.pending {
             let message = match pending {
                 Pending::Arm => "Start currently enabled schedules in this app session? Their saved instructions will be sent at the scheduled time. Overdue slots use each definition's visible missed-run policy. Existing permission prompts still apply.".into(),
-                Pending::Run(d) => format!("Run '{}' now using {} in project {}? A new owned conversation will be created. Maximum runtime: {} seconds. Exact instructions:\n{}", d.title, d.agent_id, d.project_id, d.max_runtime_seconds, d.instructions),
+                Pending::Run(d) => format!("Run '{}' now using {} in project {}? A new owned conversation will be created using {}. Hub context, when selected, is snapshotted from the current saved Hub at claim time. Maximum runtime: {} seconds. Exact automation instructions:\n{}", d.title, d.agent_id, d.project_id, d.context.label(), d.max_runtime_seconds, d.instructions),
                 Pending::Enable(d, enabled) => format!("{} '{}'? {}", if *enabled { "Resume" } else { "Pause" }, d.title, if *enabled { "The next run is recalculated from now. It will run only when scheduling is armed." } else { "This stops future scheduled runs, not an active run." }),
                 Pending::Delete(d) => format!("Delete '{}'? Run history and generated conversations will be retained. This cannot be undone here.", d.title),
                 Pending::Recover(r) => format!("Resolve the previous process's run of '{}'? Confirm only after verifying that the other process has stopped. External effects are unknown. This marks Interrupted, pauses the definition, and does not retry.", r.definition.title),
+                Pending::PruneHistory(count) => format!("Permanently remove {count} retained run-history record{} whose automation definitions were already deleted? Generated conversations remain intact. Active runs and history belonging to current definitions are not eligible.", if *count == 1 { "" } else { "s" }),
+                Pending::PruneDefinitionHistory(d, count) => format!("Permanently remove {count} retained terminal run-history record{} for '{}'? Generated conversations remain intact. Its cumulative run count stays at {}, so pruning cannot reset the maximum-run limit. Failure streak and schedule state are unchanged.", if *count == 1 { "" } else { "s" }, d.title, d.run_count.max(state.ledger.runs.iter().filter(|run| run.definition.id == d.id && run.task_id.is_some()).count() as u32)),
             };
             pane = pane.child(
                 div()
@@ -111,6 +126,13 @@ impl Shell {
                 .child(div().flex().flex_wrap().gap_1().children(profiles))
                 .child(div().text_sm().child("Project / workspace"))
                 .child(div().flex().flex_wrap().gap_1().children(projects))
+                .child(div().text_sm().child("Run context"))
+                .child(div().flex().flex_wrap().gap_1()
+                    .child(ui::button("auto-context-project", AutomationContextPolicy::Project.label(), editor.context == AutomationContextPolicy::Project)
+                        .on_click(cx.listener(|this, _, _, cx| { if let Some(editor)=&mut this.automations.editor { editor.context=AutomationContextPolicy::Project; editor.edit_revision=editor.edit_revision.wrapping_add(1); } cx.notify(); })))
+                    .child(ui::button("auto-context-hub", AutomationContextPolicy::Hub.label(), editor.context == AutomationContextPolicy::Hub)
+                        .on_click(cx.listener(|this, _, _, cx| { if let Some(editor)=&mut this.automations.editor { editor.context=AutomationContextPolicy::Hub; editor.edit_revision=editor.edit_revision.wrapping_add(1); } cx.notify(); }))))
+                .child(div().text_sm().text_color(rgb(palette().muted)).child("Project context submits only the saved automation instructions. Hub context requires the selected project to have an active Hub and snapshots its user-maintained shared instructions/knowledge into the visible owned conversation before each run. Transcripts and files are never harvested automatically."))
                 .child(state.schedule.clone()).child(state.timezone.clone())
                 .child(div().text_sm().text_color(rgb(palette().muted)).child("Schedules: every 1m through every 10080m, daily HH:MM, weekdays HH:MM, weekly mon HH:MM, or cron followed by five fields: minute hour day-of-month month day-of-week. Cron supports lists, ranges, steps, and sun through sat names, with an eight-year search horizon. If both day-of-month and weekday are constrained, either match runs. Time uses UTC, a fixed offset, or an IANA zone. A spring-forward gap skips that wall-clock slot; a fall-back fold runs at the earlier occurrence once. Saved schedule, timezone, and next run appear in the automation row."))
                 .child(state.max_runs.clone()).child(state.failure_limit.clone()).child(state.max_runtime.clone())
@@ -127,13 +149,16 @@ impl Shell {
         pane.child(div().flex_1().min_h_0().id("auto-content").overflow_y_scroll().p_3().flex().flex_col().gap_2()
             .children((state.loaded && state.ledger.definitions.is_empty()).then(|| div().text_sm().child("No automations. Create one, choose its profile and project, then save it paused.")))
             .children(state.ledger.definitions.iter().enumerate().map(|(i, d)| {
-                let edit = d.clone(); let run = d.clone(); let enable = d.clone(); let delete = d.clone();
+                let edit = d.clone(); let run = d.clone(); let enable = d.clone(); let delete = d.clone(); let prune = d.clone();
+                let retained_claimed = state.ledger.runs.iter().filter(|history| history.definition.id == d.id && history.task_id.is_some()).count();
+                let run_count = d.run_count.max(u32::try_from(retained_claimed).unwrap_or(u32::MAX));
+                let prunable = state.ledger.runs.iter().filter(|history| history.definition.id == d.id && history.status != AutomationRunStatus::Running).count();
                 let project = self.catalog.projects.iter().find(|p| p.id == d.project_id).map(|p| p.name.as_str()).unwrap_or("Unavailable project");
                 div().border_b_1().border_color(rgb(palette().border)).py_3().flex().flex_col().gap_1()
                     .child(div().text_base().child(d.title.clone()))
                     .child(div().text_xs().text_color(rgb(palette().muted)).child(format!("ID: {}", d.id)))
-                    .child(div().text_sm().child(format!("{} / {} / {} / {} / {:?}", if d.enabled { "Enabled" } else { "Paused" }, project, d.agent_id, d.schedule.label(), d.missed)))
-                    .child(div().text_sm().text_color(rgb(palette().muted)).child(format!("Total run limit: {} / Consecutive failures: {} / Failure limit: {}", d.max_runs.map(|n| n.to_string()).unwrap_or_else(|| "none".into()), d.failure_streak, d.stop_after_consecutive_failures.map(|n| n.to_string()).unwrap_or_else(|| "none".into()))))
+                    .child(div().text_sm().child(format!("{} / {} / {} / {} / {:?} / {}", if d.enabled { "Enabled" } else { "Paused" }, project, d.agent_id, d.schedule.label(), d.missed, d.context.label())))
+                    .child(div().text_sm().text_color(rgb(palette().muted)).child(format!("Runs claimed: {run_count} / Total run limit: {} / Consecutive failures: {} / Failure limit: {}", d.max_runs.map(|n| n.to_string()).unwrap_or_else(|| "none".into()), d.failure_streak, d.stop_after_consecutive_failures.map(|n| n.to_string()).unwrap_or_else(|| "none".into()))))
                     .child(div().text_sm().text_color(rgb(palette().muted)).child(format!("Maximum runtime: {} seconds", d.max_runtime_seconds)))
                     .child(div().text_sm().text_color(rgb(palette().muted)).child(format!("Timezone: {} / Next: {}{}", d.timezone, time_label(d.next_run_ms), if !d.enabled { " (paused)" } else { "" })))
                     .child(div().text_sm().child(d.instructions.chars().take(280).collect::<String>()))
@@ -141,17 +166,35 @@ impl Shell {
                         .child(ui::button(("auto-run", i), "Run now...", false).on_click(cx.listener(move |this, _, _, cx| { this.automations.pending = Some(Pending::Run(run.clone())); cx.notify(); })))
                         .child(ui::button(("auto-enable", i), if d.enabled { "Pause..." } else { "Resume..." }, false).on_click(cx.listener(move |this, _, _, cx| { this.automations.pending = Some(Pending::Enable(enable.clone(), !enable.enabled)); cx.notify(); })))
                         .child(ui::button(("auto-edit", i), "Edit", false).on_click(cx.listener(move |this, _, _, cx| this.edit_automation(Some(edit.clone()), cx))))
+                        .children((prunable > 0).then(|| ui::button(("auto-prune-definition-history", i), format!("Prune {prunable} history..."), false).on_click(cx.listener(move |this, _, _, cx| { this.automations.pending = Some(Pending::PruneDefinitionHistory(prune.clone(), prunable)); cx.notify(); }))))
                         .child(ui::button(("auto-delete", i), "Delete...", false).on_click(cx.listener(move |this, _, _, cx| { this.automations.pending = Some(Pending::Delete(delete.clone())); cx.notify(); }))))
             }))
-            .child(div().pt_3().text_lg().child(format!("Run history ({}/256)", state.ledger.runs.len())))
-            .child(div().text_sm().text_color(rgb(palette().muted)).child("History is retained on deletion. At capacity, new runs stop rather than silently removing evidence. Open a row for its exact instructions and output."))
+            .child(div().pt_3().flex().items_center().gap_2()
+                .child(div().flex_1().text_lg().child(format!("Run history ({}/256)", state.ledger.runs.len())))
+                .child(ui::button(
+                    "auto-export-history",
+                    if state.exporting_history { "Exporting..." } else { "Export history..." },
+                    false,
+                ).on_click(cx.listener(|this, _, _, cx| this.export_automation_history(cx)))))
+            .child(div().text_sm().text_color(rgb(palette().muted)).child("History is retained by default. Export writes a versioned JSON snapshot of retained run records and may contain private instructions or output. Terminal history can be explicitly pruned for a live or deleted definition; generated conversations remain. Live-definition pruning preserves its cumulative run count, failure streak, schedule and maximum-run enforcement."))
+            .children((prunable_history > 0).then(|| {
+                ui::button(
+                    "auto-prune-history",
+                    format!("Prune {prunable_history} deleted-definition history record{}...", if prunable_history == 1 { "" } else { "s" }),
+                    false,
+                )
+                .on_click(cx.listener(move |this, _, _, cx| {
+                    this.automations.pending = Some(Pending::PruneHistory(prunable_history));
+                    cx.notify();
+                }))
+            }))
             .children(state.ledger.runs.iter().rev().enumerate().map(|(i, run)| {
                 let id = run.id; let recover = run.clone();
                 let expanded = state.selected_run == Some(id);
                 let mut row = div().py_2().border_b_1().border_color(rgb(palette().border)).flex().flex_col().gap_1()
                     .child(ui::button(("auto-history", i), format!("{} / {:?} / {}", run.definition.title, run.status, time_label(run.started_ms)), expanded).on_click(cx.listener(move |this, _, _, cx| { this.automations.selected_run = if this.automations.selected_run == Some(id) { None } else { Some(id) }; cx.notify(); })));
                 if expanded {
-                    row = row.child(div().text_sm().child(format!("Agent: {} / Project: {} / Scheduled: {} / Maximum runtime: {} seconds\nInstructions:\n{}\nOutput / error:\n{}", run.definition.agent_id, run.definition.project_id, run.scheduled_ms.map(time_label).unwrap_or_else(|| "Manual run".into()), run.definition.max_runtime_seconds, run.definition.instructions, run.output)))
+                    row = row.child(div().text_sm().child(format!("Agent: {} / Project: {} / Context: {}{} / Scheduled: {} / Maximum runtime: {} seconds\nAutomation instructions:\n{}\nExact submitted prompt:\n{}\nOutput / error:\n{}", run.definition.agent_id, run.definition.project_id, run.definition.context.label(), run.hub_revision.map(|revision| format!(" (Hub revision {revision})")).unwrap_or_default(), run.scheduled_ms.map(time_label).unwrap_or_else(|| "Manual run".into()), run.definition.max_runtime_seconds, run.definition.instructions, if run.prompt.is_empty() { "(not retained for this legacy/skipped run)" } else { run.prompt.as_str() }, run.output)))
                         .children(run.task_id.map(|task| ui::button(("auto-open-task", i), "Open owned conversation", false).on_click(cx.listener(move |this, _, _, cx| this.open_automation_task(task, cx)))));
                     if run.owner != state.scheduler.owner() && run.status == AutomationRunStatus::Running {
                         row = row.child(div().text_sm().child("Previous process: outcome unknown. No automatic restart."))

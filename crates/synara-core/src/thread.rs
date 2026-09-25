@@ -18,9 +18,12 @@ pub struct TurnSummary {
     pub first_timeline_index: usize,
     pub end_timeline_index: usize,
     pub failed: bool,
-    /// Exact reviewed direct-model route for this turn. ACP turns remain None.
+    /// Exact reviewed direct-model route for this turn.
     pub direct_provider_id: Option<String>,
     pub direct_model_id: Option<String>,
+    /// Exact ACP task agent and acknowledged model snapshot for this turn.
+    pub acp_agent_id: Option<String>,
+    pub acp_model_id: Option<String>,
     /// Latest usage reported while this turn was active.
     pub usage: Option<Usage>,
 }
@@ -89,6 +92,7 @@ pub struct Thread {
     max_text_bytes: usize,
     max_events: usize,
     activity: ThreadActivity,
+    pending_acp_routes: HashMap<String, (String, Option<String>)>,
     replay_backup: Option<Box<Thread>>,
 }
 
@@ -118,6 +122,7 @@ impl Thread {
             max_text_bytes: 64 * 1024 * 1024,
             max_events: 200_000,
             activity: ThreadActivity::new("New task".into()),
+            pending_acp_routes: HashMap::new(),
             replay_backup: None,
         }
     }
@@ -171,6 +176,7 @@ impl Thread {
                 self.inputs.clear();
                 self.plan.clear();
                 self.commands.clear();
+                self.pending_acp_routes.clear();
                 self.text_bytes = 0;
             }
             ThreadEvent::HistoryCompleted => {
@@ -201,6 +207,10 @@ impl Thread {
                 );
             }
             ThreadEvent::PromptStarted { turn } => {
+                let (acp_agent_id, acp_model_id) = self
+                    .pending_acp_routes
+                    .remove(turn)
+                    .map_or((None, None), |(agent, model)| (Some(agent), model));
                 self.turns.push(TurnSummary {
                     id: turn.clone(),
                     started_at_ms: envelope.timestamp_ms,
@@ -210,6 +220,8 @@ impl Thread {
                     failed: false,
                     direct_provider_id: None,
                     direct_model_id: None,
+                    acp_agent_id,
+                    acp_model_id,
                     usage: None,
                 });
             }
@@ -330,6 +342,57 @@ impl Thread {
                     .filter(|turn| turn.finished_at_ms.is_none())
                 {
                     turn.usage = Some(usage.clone());
+                }
+            }
+            ThreadEvent::AcpTurnRoute {
+                turn,
+                agent_id,
+                model_id,
+            } => {
+                let valid_route = |value: &str| {
+                    !value.is_empty() && value.len() <= 256 && !value.chars().any(char::is_control)
+                };
+                if turn.is_empty()
+                    || turn.len() > 1024
+                    || turn.chars().any(char::is_control)
+                    || !valid_route(agent_id)
+                    || model_id.as_deref().is_some_and(|model| !valid_route(model))
+                {
+                    return Err(ReplayError::Limit);
+                }
+                if let Some(summary) = self
+                    .turns
+                    .iter_mut()
+                    .rev()
+                    .find(|summary| summary.id == *turn)
+                {
+                    if let Some(current_agent) = summary.acp_agent_id.as_ref() {
+                        if current_agent != agent_id
+                            || summary.acp_model_id.as_ref() != model_id.as_ref()
+                        {
+                            return Err(ReplayError::Limit);
+                        }
+                    } else {
+                        summary.acp_agent_id = Some(agent_id.clone());
+                        summary.acp_model_id = model_id.clone();
+                    }
+                } else {
+                    if self.pending_acp_routes.len() >= 64
+                        && !self.pending_acp_routes.contains_key(turn)
+                    {
+                        return Err(ReplayError::Limit);
+                    }
+                    match self.pending_acp_routes.get(turn) {
+                        Some((current_agent, current_model))
+                            if current_agent != agent_id || current_model != model_id =>
+                        {
+                            return Err(ReplayError::Limit);
+                        }
+                        _ => {
+                            self.pending_acp_routes
+                                .insert(turn.clone(), (agent_id.clone(), model_id.clone()));
+                        }
+                    }
                 }
             }
             ThreadEvent::DirectModelRoute {
@@ -625,10 +688,49 @@ mod tests {
         );
         assert_eq!(thread.turns[1].direct_provider_id, None);
         assert_eq!(thread.turns[1].direct_model_id, None);
+        assert_eq!(thread.turns[1].acp_agent_id, None);
         assert_eq!(
             thread.turns[1].usage.as_ref().unwrap().input_tokens,
             Some(7)
         );
+    }
+
+    #[test]
+    fn acp_route_binds_to_exact_turn_before_or_after_prompt_start() {
+        let mut thread = Thread::new(ThreadId::new());
+        apply(
+            &mut thread,
+            ThreadEvent::AcpTurnRoute {
+                turn: "first".into(),
+                agent_id: "opencode".into(),
+                model_id: Some("model-a".into()),
+            },
+        );
+        apply(
+            &mut thread,
+            ThreadEvent::PromptStarted {
+                turn: "first".into(),
+            },
+        );
+        apply(
+            &mut thread,
+            ThreadEvent::PromptStarted {
+                turn: "second".into(),
+            },
+        );
+        apply(
+            &mut thread,
+            ThreadEvent::AcpTurnRoute {
+                turn: "second".into(),
+                agent_id: "gemini".into(),
+                model_id: None,
+            },
+        );
+
+        assert_eq!(thread.turns[0].acp_agent_id.as_deref(), Some("opencode"));
+        assert_eq!(thread.turns[0].acp_model_id.as_deref(), Some("model-a"));
+        assert_eq!(thread.turns[1].acp_agent_id.as_deref(), Some("gemini"));
+        assert_eq!(thread.turns[1].acp_model_id, None);
     }
 
     #[test]

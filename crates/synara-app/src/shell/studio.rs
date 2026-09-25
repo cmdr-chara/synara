@@ -56,6 +56,7 @@ pub(super) enum StudioReply {
         result: Result<StudioExportReview, String>,
     },
     Exported(Result<(), String>),
+    VersionExported(Result<(), String>),
     Listed {
         task: TaskId,
         generation: u64,
@@ -72,6 +73,12 @@ pub(super) enum StudioReply {
         generation: u64,
         path: PathBuf,
         result: Result<Vec<StudioTextVersion>, String>,
+    },
+    VersionsCleared {
+        task: TaskId,
+        generation: u64,
+        path: PathBuf,
+        result: Result<usize, String>,
     },
     HistoryLoaded {
         task: TaskId,
@@ -120,6 +127,7 @@ pub(super) struct StudioState {
     revision: Option<GitFileRevision>,
     snapshots: Vec<StudioTextVersion>,
     selected_snapshot: Option<usize>,
+    clear_versions_confirm: bool,
     history_loading: bool,
     error: Option<String>,
     only_outputs: bool,
@@ -157,6 +165,7 @@ impl StudioState {
             revision: None,
             snapshots: Vec::new(),
             selected_snapshot: None,
+            clear_versions_confirm: false,
             history_loading: false,
             error: None,
             only_outputs: false,
@@ -184,6 +193,7 @@ impl StudioState {
         self.revision = None;
         self.snapshots.clear();
         self.selected_snapshot = None;
+        self.clear_versions_confirm = false;
         self.history_loading = false;
         self.selected = None;
         self.reopen_after_navigation = None;
@@ -355,6 +365,7 @@ impl Shell {
         self.studio.revision = None;
         self.studio.snapshots.clear();
         self.studio.selected_snapshot = None;
+        self.studio.clear_versions_confirm = false;
         self.studio.history_loading = false;
         self.studio.preview_loading = true;
         self.studio.error = None;
@@ -380,6 +391,38 @@ impl Shell {
         });
         cx.notify();
     }
+    fn clear_studio_versions(&mut self, cx: &mut Context<Self>) {
+        let Some(task) = self.selected.filter(|task| Some(*task) == self.studio.task) else {
+            return;
+        };
+        let Some(path) = self.studio.selected.clone() else {
+            return;
+        };
+        if self.studio.snapshots.is_empty() {
+            return;
+        }
+        if !self.studio.clear_versions_confirm {
+            self.studio.clear_versions_confirm = true;
+            cx.notify();
+            return;
+        }
+        self.studio.clear_versions_confirm = false;
+        let generation = self.studio.preview_generation;
+        let workspace = self.controller.workspace.clone();
+        self.job(async move {
+            Ok(Update::Studio(Box::new(StudioReply::VersionsCleared {
+                task,
+                generation,
+                path: path.clone(),
+                result: workspace
+                    .clear_studio_text_versions(task, path, true)
+                    .await
+                    .map_err(|error| error.to_string()),
+            })))
+        });
+        cx.notify();
+    }
+
     fn open_studio_history(&mut self, cx: &mut Context<Self>) {
         let Some(task) = self.task().filter(|task| {
             self.studio.open && self.studio.task == Some(task.id) && task.scope == TaskScope::Studio
@@ -510,6 +553,18 @@ impl Shell {
                 match result {
                     Ok(()) => self.notice = Some("The reviewed Library file was saved to a new destination without replacing existing files.".into()),
                     Err(e) => self.error = Some(format!("Library export failed: {e}")),
+                }
+            }
+            StudioReply::VersionExported(result) => {
+                self.studio.exporting = false;
+                match result {
+                    Ok(()) => self.notice = Some(
+                        "The selected durable Studio version was saved to a new destination without changing the workspace file."
+                            .into(),
+                    ),
+                    Err(error) => {
+                        self.error = Some(format!("Studio version export failed: {error}"))
+                    }
                 }
             }
             StudioReply::Listed {
@@ -647,6 +702,36 @@ impl Shell {
                     Err(error) => {
                         self.studio.error = Some(format!(
                             "Studio version history could not be saved: {error}"
+                        ))
+                    }
+                }
+            }
+            StudioReply::VersionsCleared {
+                task,
+                generation,
+                path,
+                result,
+            } => {
+                if self.selected != Some(task)
+                    || self.studio.task != Some(task)
+                    || self.studio.preview_generation != generation
+                    || self.studio.selected.as_ref() != Some(&path)
+                {
+                    return;
+                }
+                self.studio.clear_versions_confirm = false;
+                match result {
+                    Ok(_) => {
+                        self.studio.snapshots.clear();
+                        self.studio.selected_snapshot = None;
+                        self.notice = Some(
+                            "Durable preview history cleared. The workspace file was not changed."
+                                .into(),
+                        );
+                    }
+                    Err(error) => {
+                        self.studio.error = Some(format!(
+                            "Studio version history could not be cleared: {error}"
                         ))
                     }
                 }
@@ -802,7 +887,7 @@ impl Shell {
                     } else { gpui::img(image.clone()).w_full().h(px(240.)).object_fit(gpui::ObjectFit::Contain).into_any_element() }))
                 .into_any_element(),
             Some(Preview::Unsupported(bytes)) => div().flex_1().min_h_0().p_4().text_size(px(12.)).text_color(rgb(palette().muted))
-                .child(format!("Preview unavailable for this file ({bytes} bytes). PNG/JPEG, still WebP, DOCX/ODT text and UTF-8 text are supported within the preview limits. The file has not been executed or opened externally.")).into_any_element(),
+                .child(format!("Preview unavailable for this file ({bytes} bytes). PNG/JPEG, still WebP, DOCX/ODT/ODP/ODS/PPTX/XLSX text and UTF-8 text are supported within the preview limits. The file has not been executed or opened externally.")).into_any_element(),
             None => div().flex_1().min_h_0().p_4().text_size(px(13.)).text_color(rgb(palette().muted))
                 .child(if self.studio.preview_loading { "Loading preview..." } else { "Select a file to preview it." }).into_any_element(),
         };
@@ -925,6 +1010,11 @@ impl Shell {
                 (versions.len() > 1).then(|| div().id("studio-session-versions").flex().flex_col().gap_1()
                     .child(div().text_size(px(11.)).text_color(rgb(palette().muted))
                         .child("Durable previews · snapshots captured when this file was refreshed; retained across restart for this Hub"))
+                    .child(ui::button(
+                        "studio-clear-versions",
+                        if self.studio.clear_versions_confirm { "Confirm clear durable previews" } else { "Clear durable previews..." },
+                        self.studio.clear_versions_confirm,
+                    ).text_size(px(11.)).on_click(cx.listener(|this, _, _, cx| this.clear_studio_versions(cx))))
                     .child(div().flex().flex_wrap().gap_1().children(versions.into_iter().map(|(index, snapshot)| {
                         let timestamp = chrono::DateTime::from_timestamp_millis(snapshot.captured_at_ms)
                             .map(|date| date.format("%H:%M:%S UTC").to_string()).unwrap_or_else(|| "unknown time".into());
@@ -935,12 +1025,15 @@ impl Shell {
                     .children(self.studio.selected_snapshot.and_then(|index| self.studio.snapshots.get(index))
                         .filter(|snapshot| Some(snapshot.task) == self.studio.task && snapshot.path == *path)
                         .map(|snapshot| div().flex().flex_col().gap_1()
-                            .child(ui::button("studio-session-copy", "Copy selected session preview", false).text_size(px(11.))
-                                .on_click(cx.listener(|this, _, _, cx| {
-                                    if let Some(text) = this.studio.selected_snapshot.and_then(|index| this.studio.snapshots.get(index)).map(|snapshot| snapshot.text.clone()) {
-                                        cx.write_to_clipboard(gpui::ClipboardItem::new_string(text));
-                                    }
-                                })))
+                            .child(div().flex().flex_wrap().gap_1()
+                                .child(ui::button("studio-session-copy", "Copy selected durable preview", false).text_size(px(11.))
+                                    .on_click(cx.listener(|this, _, _, cx| {
+                                        if let Some(text) = this.studio.selected_snapshot.and_then(|index| this.studio.snapshots.get(index)).map(|snapshot| snapshot.text.clone()) {
+                                            cx.write_to_clipboard(gpui::ClipboardItem::new_string(text));
+                                        }
+                                    })))
+                                .child(ui::button("studio-session-export", "Save selected version as...", false).text_size(px(11.))
+                                    .on_click(cx.listener(|this, _, _, cx| this.save_selected_studio_version(cx)))))
                             .child(div().id("studio-session-text").max_h(px(180.)).overflow_y_scroll().p_2().font_family(ui::code_font())
                                 .text_size(px(11.)).child(truncate(&snapshot.text, 128 * 1024)))))
                 )

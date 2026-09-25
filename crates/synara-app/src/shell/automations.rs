@@ -12,6 +12,7 @@ pub(super) struct AutomationsView {
     changing: bool,
     save_snapshot: Option<(AutomationId, u64)>,
     executing: bool,
+    exporting_history: bool,
     generation: u64,
     refreshed: Instant,
     polled: Instant,
@@ -36,6 +37,7 @@ struct Editor {
     agent: Option<String>,
     project: Option<ProjectId>,
     missed: MissedRunPolicy,
+    context: AutomationContextPolicy,
 }
 #[derive(Clone)]
 enum Pending {
@@ -44,6 +46,8 @@ enum Pending {
     Enable(AutomationDefinition, bool),
     Delete(AutomationDefinition),
     Recover(AutomationRun),
+    PruneHistory(usize),
+    PruneDefinitionHistory(AutomationDefinition, usize),
 }
 impl AutomationsView {
     pub fn new(controller: Arc<Controller>, cx: &mut Context<Shell>) -> Self {
@@ -108,6 +112,7 @@ impl AutomationsView {
             changing: false,
             save_snapshot: None,
             executing: false,
+            exporting_history: false,
             generation: 0,
             refreshed: Instant::now(),
             polled: Instant::now(),
@@ -142,9 +147,17 @@ pub(super) enum Reply {
     },
     Changed(Result<(), String>),
     Finished(Result<(), String>),
+    HistoryExported(Result<usize, String>),
 }
 impl Shell {
     pub(super) fn automation_before_quit(&mut self, cx: &mut Context<Self>) -> bool {
+        if self.automations.exporting_history {
+            self.panel = Panel::Automations;
+            self.automations.error =
+                Some("Finish or cancel the automation history export before quitting.".into());
+            cx.notify();
+            return true;
+        }
         if self.automations.editor.is_some() || self.automations.changing {
             self.panel = Panel::Automations;
             self.automations.error =
@@ -259,6 +272,23 @@ impl Shell {
                 }
                 self.refresh_automations(cx);
             }
+            Reply::HistoryExported(result) => {
+                self.automations.exporting_history = false;
+                match result {
+                    Ok(count) => {
+                        self.automations.error = None;
+                        self.notice = Some(format!(
+                            "Exported {count} retained automation run record{} to the selected new file.",
+                            if count == 1 { "" } else { "s" }
+                        ));
+                    }
+                    Err(error) => {
+                        self.automations.error = Some(format!(
+                            "Automation history export failed: {error}. Existing files are never overwritten."
+                        ));
+                    }
+                }
+            }
         }
         cx.notify();
     }
@@ -280,6 +310,7 @@ impl Shell {
                         agent: Some(d.agent_id),
                         project: Some(d.project_id),
                         missed: d.missed,
+                        context: d.context,
                     },
                     d.title,
                     d.instructions,
@@ -299,6 +330,7 @@ impl Shell {
                         agent: None,
                         project: self.project,
                         missed: MissedRunPolicy::Skip,
+                        context: AutomationContextPolicy::Project,
                     },
                     String::new(),
                     String::new(),
@@ -417,11 +449,13 @@ impl Shell {
                 enabled: false,
                 next_run_ms: now_ms(),
                 missed: editor.missed,
+                context: editor.context,
                 max_runs: parse_positive_limit(self.automations.max_runs.read(cx).text())?,
                 stop_after_consecutive_failures: parse_positive_limit(
                     self.automations.failure_limit.read(cx).text(),
                 )?,
                 failure_streak: 0,
+                run_count: 0,
                 max_runtime_seconds: parse_runtime_seconds(
                     self.automations.max_runtime.read(cx).text(),
                 )?,
@@ -448,6 +482,50 @@ impl Shell {
         }
         cx.notify();
     }
+    fn export_automation_history(&mut self, cx: &mut Context<Self>) {
+        if self.automations.exporting_history || self.close != CloseState::Open {
+            return;
+        }
+        self.automations.exporting_history = true;
+        self.automations.error = None;
+        let picker =
+            cx.prompt_for_new_path(&self.scratch_directory, Some("automation-history.json"));
+        cx.spawn(async move |view, cx| {
+            let result = picker.await;
+            let _ = view.update(cx, |this, cx| {
+                if this.close != CloseState::Open {
+                    this.automations.exporting_history = false;
+                    cx.notify();
+                    return;
+                }
+                match result {
+                    Ok(Ok(Some(destination))) => {
+                        let workspace = this.controller.workspace.clone();
+                        this.job(async move {
+                            Ok(Update::Automations(Box::new(Reply::HistoryExported(
+                                workspace
+                                    .export_automation_history(destination)
+                                    .await
+                                    .map_err(|error| error.to_string()),
+                            ))))
+                        });
+                    }
+                    Ok(Ok(None)) => this.automations.exporting_history = false,
+                    _ => {
+                        this.automations.exporting_history = false;
+                        this.automations.error = Some(
+                            "The system save dialog is unavailable. No history was exported."
+                                .into(),
+                        );
+                    }
+                }
+                cx.notify();
+            });
+        })
+        .detach();
+        cx.notify();
+    }
+
     fn confirm_automation(&mut self, cx: &mut Context<Self>) {
         if self.automations.changing {
             return;
@@ -494,6 +572,14 @@ impl Shell {
                                 .resolve_interrupted_automation(run.id, owner, true)
                                 .await
                         }
+                        Pending::PruneHistory(_) => workspace
+                            .prune_deleted_automation_history(true)
+                            .await
+                            .map(|_| ()),
+                        Pending::PruneDefinitionHistory(definition, _) => workspace
+                            .prune_automation_history(definition.id, definition.revision, true)
+                            .await
+                            .map(|_| ()),
                         _ => unreachable!("arm/run handled on the UI thread"),
                     }
                     .map_err(|e| e.to_string());

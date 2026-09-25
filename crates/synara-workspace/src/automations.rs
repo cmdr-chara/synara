@@ -9,6 +9,7 @@ use jiff::{
 };
 pub use scheduler::AutomationScheduler;
 use serde::{Deserialize, Serialize};
+use std::path::PathBuf;
 use synara_core::{ProjectId, TaskId};
 pub use uuid::Uuid as AutomationId;
 
@@ -18,6 +19,7 @@ pub const DEFAULT_AUTOMATION_MAX_RUNTIME_SECONDS: u32 = 15 * 60;
 /// Keep execution bounded even though upstream contracts permit an unlimited
 /// (`null`) max runtime.
 pub const MAX_AUTOMATION_MAX_RUNTIME_SECONDS: u32 = 60 * 60;
+pub(crate) const MAX_AUTOMATION_PROMPT_BYTES: usize = 128 * 1024;
 
 fn default_automation_max_runtime_seconds() -> u32 {
     DEFAULT_AUTOMATION_MAX_RUNTIME_SECONDS
@@ -453,6 +455,23 @@ pub enum MissedRunPolicy {
     Skip,
     CatchUpOnce,
 }
+
+#[derive(Clone, Copy, Debug, Default, Serialize, Deserialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AutomationContextPolicy {
+    #[default]
+    Project,
+    Hub,
+}
+impl AutomationContextPolicy {
+    pub fn label(self) -> &'static str {
+        match self {
+            Self::Project => "Project instructions only",
+            Self::Hub => "Hub shared context + instructions",
+        }
+    }
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct AutomationDefinition {
@@ -468,11 +487,17 @@ pub struct AutomationDefinition {
     pub next_run_ms: i64,
     pub missed: MissedRunPolicy,
     #[serde(default)]
+    pub context: AutomationContextPolicy,
+    #[serde(default)]
     pub max_runs: Option<u32>,
     #[serde(default)]
     pub stop_after_consecutive_failures: Option<u32>,
     #[serde(default)]
     pub failure_streak: u32,
+    /// Cumulative task-backed runs claimed for this definition. Legacy ledgers
+    /// derive a floor from retained run history before any history is pruned.
+    #[serde(default)]
+    pub run_count: u32,
     #[serde(default = "default_automation_max_runtime_seconds")]
     pub max_runtime_seconds: u32,
 }
@@ -522,6 +547,13 @@ pub struct AutomationRun {
     pub finished_ms: Option<i64>,
     pub status: AutomationRunStatus,
     pub task_id: Option<TaskId>,
+    /// Exact visible prompt submitted for this claimed run. Legacy/skipped runs
+    /// may be empty because they predate prompt snapshots or launched no task.
+    #[serde(default)]
+    pub prompt: String,
+    /// Hub revision resolved inside the claim transaction, when Hub context was used.
+    #[serde(default)]
+    pub hub_revision: Option<u64>,
     pub output: String,
 }
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -540,6 +572,14 @@ impl Default for AutomationLedger {
         }
     }
 }
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct AutomationHistoryExport<'a> {
+    format: &'static str,
+    exported_at_ms: i64,
+    runs: &'a [AutomationRun],
+}
+
 impl AutomationLedger {
     pub(crate) fn validate(&self) -> WorkspaceResult<()> {
         if self.version != 1 || self.definitions.len() > 64 || self.runs.len() > 256 {
@@ -557,13 +597,30 @@ impl AutomationLedger {
         ids.clear();
         for r in &self.runs {
             r.definition.validate()?;
-            if !ids.insert(r.id) || r.output.len() > 16 * 1024 {
+            if !ids.insert(r.id)
+                || r.output.len() > 16 * 1024
+                || r.prompt.len() > MAX_AUTOMATION_PROMPT_BYTES
+                || r.prompt.contains('\0')
+            {
                 return Err(invalid("Invalid run history."));
             }
         }
         Ok(())
     }
 }
+pub(crate) fn effective_run_count(
+    definition: &AutomationDefinition,
+    runs: &[AutomationRun],
+) -> u32 {
+    let retained = runs
+        .iter()
+        .filter(|run| run.definition.id == definition.id && run.task_id.is_some())
+        .count();
+    definition
+        .run_count
+        .max(u32::try_from(retained).unwrap_or(u32::MAX))
+}
+
 pub(crate) fn invalid(message: impl Into<String>) -> WorkspaceError {
     WorkspaceError::Invalid(message.into())
 }
@@ -605,6 +662,8 @@ impl WorkspaceService {
                         }) {
                             return Err(invalid("Stop the active run before editing."));
                         }
+                        definition.run_count =
+                            effective_run_count(&ledger.definitions[index], &ledger.runs);
                         definition.revision = revision
                             .checked_add(1)
                             .ok_or_else(|| invalid("Revision overflow."))?;
@@ -629,21 +688,15 @@ impl WorkspaceService {
     ) -> WorkspaceResult<()> {
         self.access(move |store| {
             store.edit_automations(move |ledger| {
-                let completed_runs = ledger
-                    .runs
-                    .iter()
-                    .filter(|run| run.definition.id == id && run.task_id.is_some())
-                    .count();
-                let definition = ledger
+                let index = ledger
                     .definitions
-                    .iter_mut()
-                    .find(|d| d.id == id && d.revision == revision)
+                    .iter()
+                    .position(|d| d.id == id && d.revision == revision)
                     .ok_or_else(|| invalid("Automation changed. Reload first."))?;
-                if enabled
-                    && definition
-                        .max_runs
-                        .is_some_and(|max| completed_runs >= max as usize)
-                {
+                let run_count = effective_run_count(&ledger.definitions[index], &ledger.runs);
+                let definition = &mut ledger.definitions[index];
+                definition.run_count = run_count;
+                if enabled && definition.max_runs.is_some_and(|max| run_count >= max) {
                     return Err(invalid(
                         "Run limit reached. Increase the limit before resuming.",
                     ));
@@ -690,6 +743,96 @@ impl WorkspaceService {
                 ledger.definitions.remove(index);
                 // Historical snapshots and generated tasks remain owned and inspectable.
                 Ok(())
+            })
+        })
+        .await
+    }
+
+    /// Export the exact retained run ledger without changing definitions,
+    /// schedules, claims or generated conversations. Existing files are never
+    /// replaced by the shared export writer.
+    pub async fn export_automation_history(&self, destination: PathBuf) -> WorkspaceResult<usize> {
+        let (bytes, count) = self
+            .access(|store| {
+                let ledger = store.automation_ledger()?;
+                ledger.validate()?;
+                let payload = AutomationHistoryExport {
+                    format: "synara-automation-history-v1",
+                    exported_at_ms: now_ms(),
+                    runs: &ledger.runs,
+                };
+                let bytes = serde_json::to_vec_pretty(&payload)
+                    .map_err(|_| invalid("Automation history could not be encoded."))?;
+                if bytes.len() > 8 * 1024 * 1024 {
+                    return Err(invalid("Automation history export exceeds 8 MiB."));
+                }
+                Ok((bytes, ledger.runs.len()))
+            })
+            .await?;
+        tokio::task::spawn_blocking(move || crate::storage::write_new_export(&destination, &bytes))
+            .await
+            .map_err(|_| WorkspaceError::Worker)??;
+        Ok(count)
+    }
+
+    /// Explicitly discard terminal history for one live definition while
+    /// preserving its cumulative run-limit counter and generated conversations.
+    /// An active run makes the operation unavailable.
+    pub async fn prune_automation_history(
+        &self,
+        id: AutomationId,
+        revision: u64,
+        confirmed: bool,
+    ) -> WorkspaceResult<usize> {
+        if !confirmed {
+            return Err(invalid("History pruning requires explicit confirmation."));
+        }
+        self.access(move |store| {
+            store.edit_automations(move |ledger| {
+                let index = ledger
+                    .definitions
+                    .iter()
+                    .position(|definition| definition.id == id && definition.revision == revision)
+                    .ok_or_else(|| invalid("Automation changed. Reload first."))?;
+                if ledger.runs.iter().any(|run| {
+                    run.definition.id == id && run.status == AutomationRunStatus::Running
+                }) {
+                    return Err(invalid(
+                        "Stop or resolve the active run before pruning history.",
+                    ));
+                }
+                let run_count = effective_run_count(&ledger.definitions[index], &ledger.runs);
+                let before = ledger.runs.len();
+                ledger.runs.retain(|run| run.definition.id != id);
+                ledger.definitions[index].run_count = run_count;
+                Ok(before.saturating_sub(ledger.runs.len()))
+            })
+        })
+        .await
+    }
+
+    /// Explicitly discard retained ledger evidence only for definitions that
+    /// have already been deleted. Generated conversations remain untouched,
+    /// and active/live-definition runs are never eligible.
+    pub async fn prune_deleted_automation_history(
+        &self,
+        confirmed: bool,
+    ) -> WorkspaceResult<usize> {
+        if !confirmed {
+            return Err(invalid("History pruning requires explicit confirmation."));
+        }
+        self.access(move |store| {
+            store.edit_automations(move |ledger| {
+                let live: std::collections::HashSet<_> = ledger
+                    .definitions
+                    .iter()
+                    .map(|definition| definition.id)
+                    .collect();
+                let before = ledger.runs.len();
+                ledger.runs.retain(|run| {
+                    run.status == AutomationRunStatus::Running || live.contains(&run.definition.id)
+                });
+                Ok(before.saturating_sub(ledger.runs.len()))
             })
         })
         .await

@@ -12,6 +12,55 @@ fn odt(body: &str) -> Vec<u8> {
     zip.finish().unwrap().into_inner()
 }
 
+fn pptx(slides: &[(u32, &str)]) -> Vec<u8> {
+    let mut zip = ZipWriter::new(Cursor::new(Vec::new()));
+    let options = SimpleFileOptions::default()
+        .compression_method(CompressionMethod::Deflated)
+        .last_modified_time(zip::DateTime::default());
+    for (number, body) in slides {
+        zip.start_file(format!("ppt/slides/slide{number}.xml"), options)
+            .unwrap();
+        zip.write_all(body.as_bytes()).unwrap();
+    }
+    zip.start_file("ppt/embeddings/ignored.bin", options)
+        .unwrap();
+    zip.write_all(b"EMBEDDED-CANARY").unwrap();
+    zip.finish().unwrap().into_inner()
+}
+
+fn odf(content: &str) -> Vec<u8> {
+    let mut zip = ZipWriter::new(Cursor::new(Vec::new()));
+    let options = SimpleFileOptions::default()
+        .compression_method(CompressionMethod::Deflated)
+        .last_modified_time(zip::DateTime::default());
+    zip.start_file("content.xml", options).unwrap();
+    zip.write_all(content.as_bytes()).unwrap();
+    zip.start_file("ObjectReplacements/ignored.bin", options)
+        .unwrap();
+    zip.write_all(b"ODF-EMBEDDED-CANARY").unwrap();
+    zip.finish().unwrap().into_inner()
+}
+
+fn xlsx(shared: Option<&str>, sheets: &[(u32, &str)]) -> Vec<u8> {
+    let mut zip = ZipWriter::new(Cursor::new(Vec::new()));
+    let options = SimpleFileOptions::default()
+        .compression_method(CompressionMethod::Deflated)
+        .last_modified_time(zip::DateTime::default());
+    if let Some(shared) = shared {
+        zip.start_file("xl/sharedStrings.xml", options).unwrap();
+        zip.write_all(shared.as_bytes()).unwrap();
+    }
+    for (number, body) in sheets {
+        zip.start_file(format!("xl/worksheets/sheet{number}.xml"), options)
+            .unwrap();
+        zip.write_all(body.as_bytes()).unwrap();
+    }
+    zip.start_file("xl/embeddings/ignored.bin", options)
+        .unwrap();
+    zip.write_all(b"XLSX-EMBEDDED-CANARY").unwrap();
+    zip.finish().unwrap().into_inner()
+}
+
 fn text(name: &str, body: &str) -> AttachmentInput {
     AttachmentInput::Bytes {
         name: name.into(),
@@ -124,6 +173,198 @@ async fn odt_main_text_is_previewed_and_sent_as_bounded_inert_context() {
             if text == &preview && mime_type == "text/plain"
     ));
     assert!(intake::inspect("fake.odt".into(), b"PK\x03\x04not-a-zip").is_err());
+}
+
+#[tokio::test]
+async fn pptx_slide_text_is_ordered_bounded_and_ignores_embedded_objects() {
+    let bytes = pptx(&[
+        (
+            2,
+            r#"<p:sld xmlns:p="p" xmlns:a="a"><a:p><a:t>Second &amp; final</a:t></a:p></p:sld>"#,
+        ),
+        (
+            1,
+            r#"<p:sld xmlns:p="p" xmlns:a="a"><a:p><a:t>First</a:t><a:br/><a:t>line</a:t></a:p></p:sld>"#,
+        ),
+    ]);
+    let info = intake::inspect("slides.pptx".into(), &bytes).unwrap();
+    assert_eq!(info.kind, AttachmentKind::Pptx);
+    assert_eq!(
+        info.kind.mime_type(),
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+    );
+
+    let extracted = intake::pptx_text(&bytes).unwrap();
+    assert!(extracted.starts_with("[Slide 1]\n"));
+    assert!(extracted.contains("First\nline"));
+    assert!(extracted.contains("[Slide 2]\n"));
+    assert!(extracted.contains("Second & final"));
+    assert!(!extracted.contains("EMBEDDED-CANARY"));
+
+    let dir = tempfile::tempdir().unwrap();
+    let service = WorkspaceService::memory().unwrap();
+    let task = task(&service, dir.path().into()).await;
+    let draft = service
+        .add_attachments(
+            task.id,
+            0,
+            vec![AttachmentInput::Bytes {
+                name: "slides.pptx".into(),
+                bytes,
+            }],
+        )
+        .await
+        .unwrap();
+    let preview = service
+        .attachment_preview(task.id, draft.pending[0].id.clone())
+        .await
+        .unwrap();
+    assert_eq!(String::from_utf8(preview.bytes).unwrap(), extracted);
+    let prompt = service
+        .attached_prompt(task.id, "Review slides".into(), draft.revision)
+        .await
+        .unwrap();
+    assert!(matches!(
+        &prompt.parts[2],
+        PromptPart::Context { text, mime_type, .. }
+            if text == &extracted && mime_type == "text/plain"
+    ));
+
+    assert!(intake::inspect("fake.pptx".into(), b"PK\x03\x04not-a-zip").is_err());
+    assert!(intake::pptx_text(&pptx(&[])).is_err());
+}
+
+#[tokio::test]
+async fn xlsx_cached_values_are_coordinate_labeled_and_formulas_are_never_executed() {
+    let bytes = xlsx(
+        Some(
+            r#"<sst><si><t>Alpha &amp; Beta</t></si><si><r><t>Rich</t></r><r><t> text</t></r></si></sst>"#,
+        ),
+        &[
+            (
+                2,
+                r#"<worksheet><sheetData><row><c r="A1" t="inlineStr"><is><t>Second sheet</t></is></c></row></sheetData></worksheet>"#,
+            ),
+            (
+                1,
+                r#"<worksheet><sheetData><row><c r="A1" t="s"><v>0</v></c><c r="B1"><f>2+2</f><v>4</v></c><c r="C1" t="s"><v>1</v></c><c r="D1" t="b"><v>1</v></c></row></sheetData></worksheet>"#,
+            ),
+        ],
+    );
+    let info = intake::inspect("table.xlsx".into(), &bytes).unwrap();
+    assert_eq!(info.kind, AttachmentKind::Xlsx);
+    assert_eq!(
+        info.kind.mime_type(),
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+
+    let extracted = intake::xlsx_text(&bytes).unwrap();
+    assert!(extracted.starts_with("[Sheet 1]\n"));
+    assert!(extracted.contains("A1\tAlpha & Beta\n"));
+    assert!(extracted.contains("B1\t4\n"));
+    assert!(extracted.contains("C1\tRich text\n"));
+    assert!(extracted.contains("D1\tTRUE\n"));
+    assert!(extracted.contains("[Sheet 2]\nA1\tSecond sheet\n"));
+    assert!(!extracted.contains("2+2"));
+    assert!(!extracted.contains("XLSX-EMBEDDED-CANARY"));
+
+    let dir = tempfile::tempdir().unwrap();
+    let service = WorkspaceService::memory().unwrap();
+    let task = task(&service, dir.path().into()).await;
+    let draft = service
+        .add_attachments(
+            task.id,
+            0,
+            vec![AttachmentInput::Bytes {
+                name: "table.xlsx".into(),
+                bytes,
+            }],
+        )
+        .await
+        .unwrap();
+    let preview = service
+        .attachment_preview(task.id, draft.pending[0].id.clone())
+        .await
+        .unwrap();
+    assert_eq!(String::from_utf8(preview.bytes).unwrap(), extracted);
+    let prompt = service
+        .attached_prompt(task.id, "Review table".into(), draft.revision)
+        .await
+        .unwrap();
+    assert!(matches!(
+        &prompt.parts[2],
+        PromptPart::Context { text, mime_type, .. }
+            if text == &extracted && mime_type == "text/plain"
+    ));
+    assert!(intake::inspect("fake.xlsx".into(), b"PK\x03\x04not-a-zip").is_err());
+    assert!(intake::xlsx_text(&xlsx(None, &[])).is_err());
+}
+
+#[tokio::test]
+async fn odp_and_ods_project_only_visible_cached_content() {
+    let odp = odf(
+        r#"<office:document-content xmlns:office="office" xmlns:draw="draw" xmlns:text="text"><office:body><office:presentation><draw:page><text:p>First &amp; intro</text:p></draw:page><draw:page><text:p>Second</text:p><text:p>slide</text:p></draw:page></office:presentation></office:body></office:document-content>"#,
+    );
+    assert_eq!(
+        intake::inspect("slides.odp".into(), &odp).unwrap().kind,
+        AttachmentKind::Odp
+    );
+    let odp_text = intake::odp_text(&odp).unwrap();
+    assert!(odp_text.contains("[Slide 1]\nFirst & intro"));
+    assert!(odp_text.contains("[Slide 2]\nSecond\nslide"));
+    assert!(!odp_text.contains("ODF-EMBEDDED-CANARY"));
+
+    let ods = odf(
+        r#"<office:document-content xmlns:office="office" xmlns:table="table" xmlns:text="text"><office:body><office:spreadsheet><table:table><table:table-row><table:table-cell office:value-type="string"><text:p>Name</text:p></table:table-cell><table:table-cell table:formula="of:=1+1" office:value-type="float" office:value="2"/><table:table-cell table:number-columns-repeated="2" office:string-value="same"/></table:table-row></table:table></office:spreadsheet></office:body></office:document-content>"#,
+    );
+    assert_eq!(
+        intake::inspect("table.ods".into(), &ods).unwrap().kind,
+        AttachmentKind::Ods
+    );
+    let ods_text = intake::ods_text(&ods).unwrap();
+    assert!(ods_text.contains("[Sheet 1]\n"));
+    assert!(ods_text.contains("R1C1\tName"));
+    assert!(ods_text.contains("R1C2\t2"));
+    assert!(ods_text.contains("R1C3-C4\tsame"));
+    assert!(!ods_text.contains("1+1"));
+    assert!(!ods_text.contains("ODF-EMBEDDED-CANARY"));
+
+    let dir = tempfile::tempdir().unwrap();
+    let service = WorkspaceService::memory().unwrap();
+    let task = task(&service, dir.path().into()).await;
+    let draft = service
+        .add_attachments(
+            task.id,
+            0,
+            vec![
+                AttachmentInput::Bytes {
+                    name: "slides.odp".into(),
+                    bytes: odp,
+                },
+                AttachmentInput::Bytes {
+                    name: "table.ods".into(),
+                    bytes: ods,
+                },
+            ],
+        )
+        .await
+        .unwrap();
+    let odp_preview = service
+        .attachment_preview(task.id, draft.pending[0].id.clone())
+        .await
+        .unwrap();
+    assert_eq!(String::from_utf8(odp_preview.bytes).unwrap(), odp_text);
+    let ods_preview = service
+        .attachment_preview(task.id, draft.pending[1].id.clone())
+        .await
+        .unwrap();
+    assert_eq!(String::from_utf8(ods_preview.bytes).unwrap(), ods_text);
+    let prompt = service
+        .attached_prompt(task.id, "Review ODF files".into(), draft.revision)
+        .await
+        .unwrap();
+    assert!(matches!(&prompt.parts[2], PromptPart::Context { text, .. } if text == &odp_text));
+    assert!(matches!(&prompt.parts[4], PromptPart::Context { text, .. } if text == &ods_text));
 }
 
 #[tokio::test]

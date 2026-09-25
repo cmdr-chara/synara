@@ -19,6 +19,7 @@ pub struct HandoffReview {
     recap: bool,
     source: Task,
     source_identity: String,
+    source_route_identity: String,
     authority: String,
     sequence: u64,
     target: HandoffTarget,
@@ -84,6 +85,25 @@ fn authority(db: &Connection, source: &Task) -> WorkspaceResult<String> {
     // root. Never recompute it from the project or materialize it locally.
     digest(&(project, workspace, &source.working_directory, source.scope))
 }
+fn source_binding(db: &Connection, source: &Task) -> WorkspaceResult<Option<DirectModelBinding>> {
+    let raw: Option<String> = db
+        .query_row(
+            "SELECT data FROM preferences WHERE key=?1",
+            [format!("task-direct-model:{}", source.id)],
+            |row| row.get(0),
+        )
+        .optional()?;
+    Ok(raw
+        .as_deref()
+        .map(decode::<Option<DirectModelBinding>>)
+        .transpose()?
+        .flatten())
+}
+
+fn source_route_identity(db: &Connection, source: &Task) -> WorkspaceResult<String> {
+    digest(&(source.agent_id.clone(), source_binding(db, source)?))
+}
+
 fn target(
     db: &Connection,
     source: &Task,
@@ -207,6 +227,7 @@ impl WorkspaceService {
             let review = HandoffReview {
                 recap: false,
                 source_identity: digest(&source)?,
+                source_route_identity: source_route_identity(&tx, &source)?,
                 authority: authority(&tx, &source)?,
                 source,
                 sequence: thread.last_sequence,
@@ -240,6 +261,109 @@ impl WorkspaceService {
         Ok(review)
     }
 
+    pub(crate) async fn continue_handoff_in_place(
+        &self,
+        review: HandoffReview,
+        draft: String,
+    ) -> WorkspaceResult<Task> {
+        if review.recap {
+            return Err(invalid(
+                "A recap cannot replace the current provider route.",
+            ));
+        }
+        if draft.trim().is_empty() || draft.len() > MAX_DRAFT || draft.contains('\0') {
+            return Err(invalid(
+                "The reviewed continuation draft must be nonempty and fit within 1 MiB.",
+            ));
+        }
+        self.access(move |store| {
+            let tx = store
+                .connection
+                .transaction_with_behavior(TransactionBehavior::Immediate)?;
+            let (mut source, thread) = read_conversation(&tx, review.source.id)?;
+            idle(&source, &thread)?;
+            if digest(&source)? != review.source_identity
+                || source_route_identity(&tx, &source)? != review.source_route_identity
+                || thread.last_sequence != review.sequence
+                || authority(&tx, &source)? != review.authority
+            {
+                return Err(invalid(
+                    "The source conversation, route, or workspace changed. Review the handoff again. Your existing draft was preserved.",
+                ));
+            }
+            let existing_draft =
+                crate::storage::chat_preferences::task_draft_text(&tx, source.id)?
+                    .ok_or(WorkspaceError::NotFound)?;
+            if !existing_draft.is_empty() {
+                return Err(invalid(
+                    "The current conversation has an unsent draft. Send, clear, or move it before continuing here.",
+                ));
+            }
+            if crate::storage::attachments::has_pending_attachments(&tx, source.id)? {
+                return Err(invalid(
+                    "The current conversation has pending attachments. Send or remove them before continuing here.",
+                ));
+            }
+
+            let current_binding = source_binding(&tx, &source)?;
+            match (&review.target, &current_binding) {
+                (HandoffTarget::Agent(agent), None) if agent == &source.agent_id => {
+                    return Err(invalid("Choose a different provider for an in-place handoff."));
+                }
+                (HandoffTarget::Direct(selection), Some(binding))
+                    if &binding.selection == selection =>
+                {
+                    return Err(invalid("Choose a different provider or model for an in-place handoff."));
+                }
+                _ => {}
+            }
+
+            let (identity, _, agent, binding) = target(&tx, &source, &review.target)?;
+            if identity != review.target_identity {
+                return Err(invalid(
+                    "The selected provider or agent changed. Review the handoff again. Your existing draft was preserved.",
+                ));
+            }
+
+            source.agent_id = agent;
+            source.updated_at_ms = crate::now_ms();
+            let changed = tx.execute(
+                "UPDATE tasks SET updated_ms=?2,data=?3 WHERE id=?1 AND project_id=?4 AND thread_id=?5",
+                params![
+                    source.id.to_string(),
+                    source.updated_at_ms,
+                    encode(&source)?,
+                    source.project_id.to_string(),
+                    source.thread_id.to_string(),
+                ],
+            )?;
+            if changed != 1 {
+                return Err(StorageError::Identity.into());
+            }
+            tx.execute(
+                "INSERT INTO preferences(key,data) VALUES(?1,?2) ON CONFLICT(key) DO UPDATE SET data=excluded.data",
+                params![
+                    format!("task-direct-model:{}", source.id),
+                    encode(&binding)?
+                ],
+            )?;
+            tx.execute(
+                "DELETE FROM sessions WHERE thread_id=?1",
+                [source.thread_id.to_string()],
+            )?;
+            tx.execute(
+                "INSERT INTO preferences(key,data) VALUES(?1,?2) ON CONFLICT(key) DO UPDATE SET data=excluded.data",
+                params![
+                    format!("task-draft:{}", source.id),
+                    encode(&serde_json::json!({"version":1,"text":draft}))?
+                ],
+            )?;
+            tx.commit()?;
+            Ok(source)
+        })
+        .await
+    }
+
     pub(crate) async fn create_handoff(
         &self,
         review: HandoffReview,
@@ -258,9 +382,11 @@ impl WorkspaceService {
             if exists { return Err(invalid("This continuation was already created. Open it from the conversation list.")); }
             let (source, thread) = read_conversation(&tx, review.source.id)?;
             idle(&source, &thread)?;
-            if digest(&source)? != review.source_identity || thread.last_sequence != review.sequence
+            if digest(&source)? != review.source_identity
+                || source_route_identity(&tx, &source)? != review.source_route_identity
+                || thread.last_sequence != review.sequence
                 || authority(&tx, &source)? != review.authority
-            { return Err(invalid("The source conversation or workspace changed. Review the continuation again. Your draft is retained.")); }
+            { return Err(invalid("The source conversation, route, or workspace changed. Review the continuation again. Your draft is retained.")); }
             let (identity, _, agent, binding) = target(&tx, &source, &review.target)?;
             if identity != review.target_identity { return Err(invalid("The selected provider or agent changed. Review the continuation again. Your draft is retained.")); }
             let title = format!("{}: {}", if review.recap { "Recap" } else { "Continue" }, source.title.chars().take(80).collect::<String>());

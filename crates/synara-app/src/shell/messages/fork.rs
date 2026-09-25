@@ -114,7 +114,7 @@ impl Shell {
         .into_any_element()
     }
 
-    pub(super) fn load_branch_worktree_choices(
+    pub(in crate::shell) fn load_branch_worktree_choices(
         &mut self,
         source: TaskId,
         anchor: MessageAnchor,

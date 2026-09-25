@@ -1,6 +1,7 @@
 //! User-owned project organization. Spaces never move directories or change
 //! task/agent ownership. Each explicit edit is applied to the latest transaction.
 mod hubs;
+pub(crate) use hubs::automation_hub_context;
 #[cfg(test)]
 mod hubs_tests;
 use super::*;

@@ -325,7 +325,7 @@ impl Shell {
                 .child(ui::button("studio-pdf-reload", "Reload file", false).relative().child(ui::layout_probe("studio-pdf-reload"))
                     .on_click(cx.listener(|this, _, _, cx| {if let Some(path)=this.studio.selected.clone(){this.preview_studio_file(path,cx);}}))))
             .child(div().text_size(px(11.)).text_color(rgb(palette().muted))
-                .child("Read-only PDF snapshot · Reload to see disk changes. Extracted text is inert. Only HTTP(S) web link annotations are available below. Form fields are not interactive; scripts and embedded files are never run."))
+                .child(format!("Read-only PDF snapshot · {} · Reload to see disk changes. Extracted text is inert. Only HTTP(S) web link annotations are available below. Form fields are not interactive; scripts and embedded files are never run.", view.document.form.label())))
             .child(
                 div()
                     .flex()

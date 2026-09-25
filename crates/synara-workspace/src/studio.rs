@@ -310,14 +310,21 @@ fn preview(root: &Path, path: &Path) -> WorkspaceResult<StudioPreview> {
         .and_then(|s| s.to_str())
         .unwrap_or("")
         .to_lowercase();
-    if matches!(extension.as_str(), "docx" | "odt") {
+    if matches!(
+        extension.as_str(),
+        "docx" | "odt" | "odp" | "ods" | "pptx" | "xlsx"
+    ) {
         if bytes.len() > crate::MAX_ATTACHMENT_BATCH_BYTES {
             return Ok(StudioPreview::Unsupported { bytes: size });
         }
-        let text = if extension == "docx" {
-            crate::storage::docx_text(&bytes)?
-        } else {
-            crate::storage::odt_text(&bytes)?
+        let text = match extension.as_str() {
+            "docx" => crate::storage::docx_text(&bytes)?,
+            "odt" => crate::storage::odt_text(&bytes)?,
+            "odp" => crate::storage::odp_text(&bytes)?,
+            "ods" => crate::storage::ods_text(&bytes)?,
+            "pptx" => crate::storage::pptx_text(&bytes)?,
+            "xlsx" => crate::storage::xlsx_text(&bytes)?,
+            _ => unreachable!("document extension matched above"),
         };
         return Ok(StudioPreview::DocumentText { text });
     }
@@ -524,6 +531,82 @@ impl WorkspaceService {
         })
         .await
     }
+
+    /// Export one exact durable text snapshot without reading or changing the
+    /// current workspace file. A removed/evicted/stale snapshot fails closed.
+    pub async fn export_studio_text_version(
+        &self,
+        snapshot: StudioTextVersion,
+        destination: PathBuf,
+    ) -> WorkspaceResult<()> {
+        self.local_studio_root(snapshot.task).await?;
+        if !visible(&snapshot.path)
+            || snapshot.text.len() > MAX_STUDIO_TEXT_VERSION_BYTES
+            || snapshot.captured_at_ms <= 0
+        {
+            return Err(WorkspaceError::Invalid(
+                "This Studio text version is outside the export bounds.".into(),
+            ));
+        }
+        let bytes = self
+            .access(move |store| {
+                store.task(snapshot.task)?.ok_or(WorkspaceError::NotFound)?;
+                let stored = store
+                    .preference::<StoredStudioTextVersions>(&studio_versions_key(snapshot.task))?
+                    .unwrap_or_default();
+                stored.validate(snapshot.task)?;
+                if !stored.entries.contains(&snapshot) {
+                    return Err(WorkspaceError::Invalid(
+                        "The selected Studio version changed or was removed. Refresh and choose it again."
+                            .into(),
+                    ));
+                }
+                Ok(snapshot.text.into_bytes())
+            })
+            .await?;
+        tokio::task::spawn_blocking(move || crate::storage::write_new_export(&destination, &bytes))
+            .await
+            .map_err(|_| WorkspaceError::Worker)??;
+        Ok(())
+    }
+
+    /// Explicitly clear durable text-preview history for one visible Studio
+    /// path. The workspace file itself is never read, written or removed here.
+    pub async fn clear_studio_text_versions(
+        &self,
+        id: TaskId,
+        path: PathBuf,
+        confirmed: bool,
+    ) -> WorkspaceResult<usize> {
+        if !confirmed {
+            return Err(WorkspaceError::Invalid(
+                "Clearing Studio preview history requires explicit confirmation.".into(),
+            ));
+        }
+        self.local_studio_root(id).await?;
+        if !visible(&path) {
+            return Err(WorkspaceError::Invalid(
+                "This path is not a visible Studio output.".into(),
+            ));
+        }
+        self.access(move |store| {
+            store.task(id)?.ok_or(WorkspaceError::NotFound)?;
+            let key = studio_versions_key(id);
+            let mut stored = store
+                .preference::<StoredStudioTextVersions>(&key)?
+                .unwrap_or_default();
+            stored.validate(id)?;
+            let before = stored.entries.len();
+            stored.entries.retain(|entry| entry.path != path);
+            let removed = before.saturating_sub(stored.entries.len());
+            if removed > 0 {
+                stored.validate(id)?;
+                store.set_preference(&key, &stored)?;
+            }
+            Ok(removed)
+        })
+        .await
+    }
 }
 #[cfg(test)]
 mod tests {
@@ -651,6 +734,22 @@ mod tests {
         assert_eq!(versions[0].text, "one");
         assert_eq!(versions[1].text, "two");
 
+        let old_snapshot = versions[0].clone();
+        let exported = dir.path().join("report-version.md");
+        service
+            .export_studio_text_version(old_snapshot.clone(), exported.clone())
+            .await
+            .unwrap();
+        assert_eq!(std::fs::read_to_string(&exported).unwrap(), "one");
+        std::fs::write(&exported, "user file").unwrap();
+        assert!(
+            service
+                .export_studio_text_version(old_snapshot.clone(), exported.clone())
+                .await
+                .is_err()
+        );
+        assert_eq!(std::fs::read_to_string(&exported).unwrap(), "user file");
+
         let payload = "x".repeat(96 * 1024);
         let mut versions = Vec::new();
         for index in 0..20 {
@@ -667,6 +766,60 @@ mod tests {
         assert!(
             versions.iter().map(|entry| entry.text.len()).sum::<usize>()
                 <= MAX_STUDIO_TEXT_VERSION_TOTAL_BYTES
+        );
+
+        let other = service
+            .capture_studio_text_version(task.id, "other.md".into(), "other".into())
+            .await
+            .unwrap();
+        assert_eq!(other.len(), 1);
+        assert!(
+            service
+                .clear_studio_text_versions(task.id, "report.md".into(), false)
+                .await
+                .is_err()
+        );
+        assert!(
+            service
+                .clear_studio_text_versions(task.id, "../escape.md".into(), true)
+                .await
+                .is_err()
+        );
+        assert!(
+            service
+                .clear_studio_text_versions(task.id, "report.md".into(), true)
+                .await
+                .unwrap()
+                > 0
+        );
+        assert_eq!(
+            std::fs::read_to_string(root.join("report.md")).unwrap(),
+            "one"
+        );
+        assert_eq!(
+            service
+                .capture_studio_text_version(task.id, "other.md".into(), "other".into())
+                .await
+                .unwrap()
+                .len(),
+            1
+        );
+        assert_eq!(
+            service
+                .capture_studio_text_version(task.id, "report.md".into(), "fresh".into())
+                .await
+                .unwrap()
+                .len(),
+            1
+        );
+        assert!(
+            service
+                .export_studio_text_version(
+                    old_snapshot,
+                    dir.path().join("stale-report-version.md"),
+                )
+                .await
+                .is_err()
         );
     }
 

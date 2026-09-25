@@ -85,8 +85,8 @@ and a persisted execution limit advance Automations. File-search ranking,
 generated-directory filtering and typed file/directory results that navigate
 into Explorer advance its near-parity lane. The Profile page now prefers a
 bounded UTC heatmap from durable provider-reported per-turn tokens when available,
-falling back to persisted local turn starts; provider/model mix and real account
-statistics remain a material gap. ZIP exports now include durable message
+falling back to persisted local turn starts; exact direct/ACP per-turn route and
+model mix is now available, while real account statistics remain a material gap. ZIP exports now include durable message
 update times from the same database snapshot. The separate
 [current parity gates](../verification/current-parity-gates.md) remain open until
 their full journeys and acceptance evidence are complete.
@@ -119,18 +119,18 @@ old census did not count cleanly.
 
 | Area | GPUI has | Still missing versus current upstream |
 | --- | --- | --- |
-| First-run onboarding/setup replay | Persistent six-step guide with local agent command summary, appearance setup, existing-folder registration, one-level folder creation and Settings replay | Provider enable/sign-in, inline history import and full fresh-install acceptance |
+| First-run onboarding/setup replay | Persistent six-step guide with local agent command summary, provider-specific login guidance, advertised ACP authentication, appearance setup, inline history import, folder registration/creation and Settings replay | Real-provider fresh-install acceptance |
 | Browser sessions/WebMCP | Embedded native browser, manual uploads/inspection/viewport capture/link downloads, reviewed popup handoff, bounded network diagnostics, approved task browser-use bridge and opt-in Manual tab URL restoration | Protected cookie/session import, complete popup auth, agent upload/download, console diagnostics, task/auth tab restoration and page-declared WebMCP |
 | iOS Simulator/device | Discovery, boot/shutdown, screenshots, user-triggered HTTP(S) URL opening and installed-app launch in a selected booted simulator | Live input, swipe/type/buttons, recording, app install, accessibility tree and element targeting |
 | Editor/diff | Native tabs, find/replace, Markdown preview, changed-file/diff-row navigation, Explorer and Git review, plus explicit reload/overwrite controls after a save conflict | Autosave and broader conflict parity, syntax-highlighted depth, compare scopes, blame and richer diff editing |
 | Managed worktrees | Git worktree operations; assistant-turn forks can choose an existing linked worktree with persisted task cwd and task-aware removal guard | Automatic per-task managed creation/cleanup and broader environment-aware fork/orchestration ownership |
 | Provider/model/context | Generic ACP controls with advertised-order model cycling, persisted live-advertised model+effort presets and ACP provider ordering; direct-model runtime and favorites | Fast/thinking preset variants, keyboard cycling, richer compaction/context UX and provider/account usage telemetry |
 | Computer Use | Reviewed X11 selected-window observation/input with bounded Unicode typing | Broader action/input/preview/target semantics plus macOS/other-platform parity |
-| Automations | Durable fixed-offset and IANA/DST daily/weekly schedules, run/failure stop limits, history and cancellation | Broader recurrence, retry policy and deeper orchestration |
+| Automations | Durable fixed-offset/IANA/DST daily/weekly/five-field cron schedules, run/failure/runtime limits, exact retained-history export, explicit live/deleted history pruning with preserved cumulative run limits, cancellation, and opt-in Project-vs-Hub context snapshots | Out-of-process scheduling and wider live-provider lifecycle/orchestration acceptance |
 | Slash commands/keybindings | Qualified native workflow commands including paused goal set/pause and saved automation review by exact ID, provider commands, palette and constrained remaps | Goal resume/clear/edit and other argument forms, upstream semantics and broad context-aware custom keybindings |
 | Releases/updater | Local version history, executable SHA-256 fingerprint and staged artifact integrity recheck before a prospective handoff | Trusted native feed, publisher signing identity and signed install/update/rollback lifecycle |
-| Profile/activity | Local activity, token-first UTC heatmap with turn-start fallback, active-hour distribution, real task token/context values and latest saved session-model snapshots by agent | Per-turn provider/model mix and real account/usage statistics |
-| Handoff/forks | Reviewed related continuation and context-derived branch drafts, including existing linked-worktree selection for assistant-turn forks | Same-task continuation, provider-native forks and managed new-worktree creation |
+| Profile/activity | Local activity, token-first UTC heatmap with turn-start fallback, active-hour distribution, exact direct/ACP per-turn route/model mix, real task token/context values and legacy latest-session snapshots | Real account/quota/billing statistics and live provider acceptance |
+| Handoff/forks | Reviewed related continuation, guarded same-task ACP/direct route replacement with visible unsent context, and context-derived branch drafts including existing linked-worktree selection | Provider-native forks, managed new-worktree lifecycle and live provider/worktree acceptance |
 | Attachments/media | Still PNG/JPEG/WebP and text intake, bounded one-level folder snapshots and transcript images; WebP converts to bounded PNG for prompts | Persistent folder references, broader formats and PDF/document viewer |
 | Studio | Native Studio/Hubs, file/output preview and attributed output reopening in its reporting chat's Library | Current upstream per-turn output capture and long-running/output-oriented Studio depth |
 
@@ -145,8 +145,8 @@ tracked separately from the large gaps above.
 
 Empty-install onboarding now has a persistent six-step guide, local agent-command
 discovery, appearance and project setup, and Settings replay. Existing installs are
-not forced through it. Authentication is described as guidance; the guide does not
-claim sign-in or provider health. Browser popup requests use reviewed manual-tab
+not forced through it. Provider-specific CLI login guidance and advertised ACP authentication are integrated;
+the guide still does not claim real-account sign-in or provider health without acceptance evidence. Browser popup requests use reviewed manual-tab
 handoff, while network diagnostics are bounded and redact URL credentials, queries
 and fragments. Editor and search navigation, folder snapshots, fixed-offset weekly
 automations with run/failure limits, and UTC profile active hours also advanced.
@@ -200,9 +200,10 @@ automation, Computer Use, usage, Markdown export and reconstructed-fork owners.
 Plan mode uses negotiated ACP choices and the existing session-control dispatcher.
 Only exact bare commands are accepted. Provider commands are not shadowed,
 unsent commands do not execute on restart, and command execution grants no implicit
-provider prompt, scheduler or computer-input authority. Upstream's unqualified
-names, richer command arguments, ZIP export, same-task/native-provider forks and
-broader keybindings remain open.
+provider prompt, scheduler or computer-input authority. Same-task provider
+continuation is now guarded and explicit; provider-native forks, upstream's
+unqualified names, richer command arguments, ZIP export and broader keybindings
+remain open.
 
 Both areas stay in **material depth gap**, not Present or near parity.
 All three missing product surfaces and the other current parity lanes remain open.
@@ -409,7 +410,7 @@ in the receipt rather than represented as successful acceptance.
 | Releases | Current compiled version, native notes, local observation history and read/dismiss state | Partial: verified release feed and production installer remain unavailable |
 | Direct model providers | Separate `synara-model` runtime, three transport families, reviewed registry/custom endpoints, Settings/model selection, endpoint-bound OS references, streaming/Stop, usage and local structured-output checks | Partial toward 75+ interoperability, additional auth and approved tools. Reviewed multimodal context is implemented; see direct-model docs |
 | Project Import | Reviewed local Codex/Claude text-history discovery/import, atomic receipt and recovery | Broader real-history/platform acceptance; no session/approval/secret transfer |
-| Provider continuation | Reviewed unsent related ACP/direct conversations with original link and unchanged source session/root | No in-place same-task session migration or filesystem rollback |
+| Provider continuation | Reviewed unsent related ACP/direct conversations plus guarded same-task route continuation that preserves TaskId/ThreadId/root and requires explicit Send | Provider-native session transfer/fork acceptance and no filesystem rollback semantics |
 | Plugins/integrations | Native searchable built-in and managed inventory, ownership and reported-capability separation | External catalog/installed-state/lifecycle requires an actual provider contract, not inferred support; E8/I9 |
 | Skills | Reviewed local Markdown documents, hashes/origin/version, explicit disabled install/update, enable, unsent draft insertion and removal | Remote catalogs, provider-native bundles, native picker/update and broader input/platform acceptance; E8/I9 |
 | MCP | Native scoped add/edit/enable/test/remove, secret references, modern/legacy HTTP discovery, generic negotiated session context and safe retirement | OS secret-store acceptance, OAuth, SSH, process/legacy SSE, vendor and platform acceptance; E8/I9 |

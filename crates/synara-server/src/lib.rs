@@ -13,7 +13,7 @@ use std::{
 use synara_acp::AcpBackend;
 use synara_core::{Project, Task, TaskScope, Thread, Workspace, WorkspaceLocation};
 use synara_runtime::WorkspaceOwnerLock;
-use synara_workspace::{AgentProfile, Controller, WorkspaceService};
+use synara_workspace::{AgentProfile, AutomationScheduler, Controller, WorkspaceService};
 use tokio::sync::{RwLock, Semaphore, watch};
 use tokio::{
     io::{AsyncReadExt, AsyncWriteExt},
@@ -48,6 +48,7 @@ pub struct ServerConfig {
     pub port: u16,
     pub database_path: PathBuf,
     private_database_directory: bool,
+    run_automations: bool,
     token: String,
 }
 
@@ -58,6 +59,7 @@ impl ServerConfig {
             port,
             database_path,
             private_database_directory: false,
+            run_automations: false,
             token,
         }
     }
@@ -67,11 +69,86 @@ impl ServerConfig {
         self.private_database_directory = true;
         self
     }
+
+    /// Explicitly arm enabled durable automations in this headless process.
+    /// The database owner lock prevents another Synara process from scheduling
+    /// the same workspace concurrently.
+    pub fn with_automations(mut self) -> Self {
+        self.run_automations = true;
+        self
+    }
+}
+
+struct AutomationOwner {
+    scheduler: Arc<AutomationScheduler>,
+    stop: CancellationToken,
+    worker: JoinHandle<()>,
+}
+
+impl AutomationOwner {
+    fn start(controller: Arc<Controller>) -> Self {
+        let scheduler = Arc::new(AutomationScheduler::new(controller));
+        scheduler.arm(true);
+        let stop = CancellationToken::new();
+        let worker_scheduler = scheduler.clone();
+        let worker_stop = stop.clone();
+        let worker = tokio::spawn(async move {
+            let mut interval = tokio::time::interval(Duration::from_secs(1));
+            interval.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
+            loop {
+                tokio::select! {
+                    biased;
+                    () = worker_stop.cancelled() => {
+                        worker_scheduler.arm(false);
+                        worker_scheduler.stop();
+                        break;
+                    }
+                    _ = interval.tick() => {
+                        let tick = worker_scheduler.tick();
+                        tokio::pin!(tick);
+                        tokio::select! {
+                            biased;
+                            () = worker_stop.cancelled() => {
+                                worker_scheduler.arm(false);
+                                worker_scheduler.stop();
+                                let _ = timeout(Duration::from_secs(20), &mut tick).await;
+                                break;
+                            }
+                            result = &mut tick => {
+                                if let Err(error) = result {
+                                    tracing::warn!(error = %error, "headless automation scheduler tick failed");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        Self {
+            scheduler,
+            stop,
+            worker,
+        }
+    }
+
+    async fn shutdown(mut self) {
+        self.stop.cancel();
+        self.scheduler.arm(false);
+        self.scheduler.stop();
+        if timeout(Duration::from_secs(20), &mut self.worker)
+            .await
+            .is_err()
+        {
+            self.worker.abort();
+            let _ = self.worker.await;
+        }
+    }
 }
 
 struct RuntimeServices {
     workspace: WorkspaceService,
     controller: Arc<Controller>,
+    automation: Option<AutomationOwner>,
     _owner_lock: Option<WorkspaceOwnerLock>,
 }
 
@@ -137,6 +214,7 @@ impl AppState {
         &self,
         workspace: WorkspaceService,
         owner_lock: Option<WorkspaceOwnerLock>,
+        run_automations: bool,
     ) {
         let mut runtime = self.runtime.write().await;
         let mut lifecycle = self
@@ -151,9 +229,11 @@ impl AppState {
             Arc::new(AcpBackend::default()),
             self.interactions.broker.clone(),
         ));
+        let automation = run_automations.then(|| AutomationOwner::start(controller.clone()));
         *runtime = Some(RuntimeServices {
             workspace,
             controller,
+            automation,
             _owner_lock: owner_lock,
         });
         *lifecycle = Lifecycle::Ready;
@@ -193,7 +273,7 @@ impl RunningServer {
             match result {
                 Ok((workspace, owner_lock)) => {
                     startup_state
-                        .install_runtime(workspace, Some(owner_lock))
+                        .install_runtime(workspace, Some(owner_lock), config.run_automations)
                         .await;
                     Ok(())
                 }
@@ -474,7 +554,10 @@ async fn serve(listener: TcpListener, state: Arc<AppState>, stop: CancellationTo
     connections.abort_all();
     while connections.join_next().await.is_some() {}
     state.interactions.close().await;
-    let controller_result = if let Some(runtime) = state.runtime.write().await.take() {
+    let controller_result = if let Some(mut runtime) = state.runtime.write().await.take() {
+        if let Some(automation) = runtime.automation.take() {
+            automation.shutdown().await;
+        }
         state.execution.shutdown(&runtime.controller).await
     } else {
         Ok(())
@@ -1389,7 +1472,7 @@ mod tests {
     async fn ready_state(token: &str) -> Arc<AppState> {
         let state = Arc::new(AppState::new(token).unwrap());
         let workspace = WorkspaceService::memory().unwrap();
-        state.install_runtime(workspace, None).await;
+        state.install_runtime(workspace, None, false).await;
         state
     }
 
@@ -1545,7 +1628,7 @@ mod tests {
             .await
             .unwrap();
         let state = Arc::new(AppState::new(TOKEN).unwrap());
-        state.install_runtime(workspace.clone(), None).await;
+        state.install_runtime(workspace.clone(), None, false).await;
         let path = format!("/api/tasks/{}/thread", task.id);
         assert_eq!(
             dispatch(&make_request(&path, 17341, None), &state, 17341)
@@ -1670,6 +1753,39 @@ mod tests {
     }
 
     #[tokio::test]
+    async fn headless_automation_scheduler_is_explicit_and_shutdown_owned() {
+        let without = Arc::new(AppState::new(TOKEN).unwrap());
+        without
+            .install_runtime(WorkspaceService::memory().unwrap(), None, false)
+            .await;
+        assert!(
+            without
+                .runtime
+                .read()
+                .await
+                .as_ref()
+                .unwrap()
+                .automation
+                .is_none()
+        );
+
+        let with = Arc::new(AppState::new(TOKEN).unwrap());
+        with.install_runtime(WorkspaceService::memory().unwrap(), None, true)
+            .await;
+        let scheduler = {
+            let runtime = with.runtime.read().await;
+            let automation = runtime.as_ref().unwrap().automation.as_ref().unwrap();
+            assert!(automation.scheduler.armed());
+            automation.scheduler.clone()
+        };
+        let mut runtime = with.runtime.write().await.take().unwrap();
+        let automation = runtime.automation.take().unwrap();
+        automation.shutdown().await;
+        assert!(!scheduler.armed());
+        with.execution.shutdown(&runtime.controller).await.unwrap();
+    }
+
+    #[tokio::test]
     async fn readiness_is_503_while_starting_and_after_shutdown() {
         let state = AppState::new(TOKEN).unwrap();
         assert_eq!(
@@ -1679,7 +1795,7 @@ mod tests {
             503
         );
         state
-            .install_runtime(WorkspaceService::memory().unwrap(), None)
+            .install_runtime(WorkspaceService::memory().unwrap(), None, false)
             .await;
         assert_eq!(
             dispatch(&make_request("/ready", 17341, None), &state, 17341)
@@ -1702,7 +1818,7 @@ mod tests {
         let state = AppState::new(TOKEN).unwrap();
         state.transition(Lifecycle::Stopping);
         state
-            .install_runtime(WorkspaceService::memory().unwrap(), None)
+            .install_runtime(WorkspaceService::memory().unwrap(), None, false)
             .await;
         assert_eq!(state.state(), Lifecycle::Stopping);
         assert!(state.runtime.read().await.is_none());

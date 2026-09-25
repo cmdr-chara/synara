@@ -404,6 +404,11 @@ pub enum ThreadEvent {
         provider_id: String,
         model_id: String,
     },
+    AcpTurnRoute {
+        turn: String,
+        agent_id: String,
+        model_id: Option<String>,
+    },
     ConfigurationChanged {
         configuration: SessionConfiguration,
     },

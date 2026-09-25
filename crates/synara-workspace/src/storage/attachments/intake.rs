@@ -206,6 +206,18 @@ pub(super) fn inspect(name: String, bytes: &[u8]) -> WorkspaceResult<AttachmentI
     } else if lower_name.ends_with(".odt") && bytes.starts_with(b"PK\x03\x04") {
         odt_text(bytes)?;
         (AttachmentKind::Odt, None)
+    } else if lower_name.ends_with(".odp") && bytes.starts_with(b"PK\x03\x04") {
+        odp_text(bytes)?;
+        (AttachmentKind::Odp, None)
+    } else if lower_name.ends_with(".ods") && bytes.starts_with(b"PK\x03\x04") {
+        ods_text(bytes)?;
+        (AttachmentKind::Ods, None)
+    } else if lower_name.ends_with(".pptx") && bytes.starts_with(b"PK\x03\x04") {
+        pptx_text(bytes)?;
+        (AttachmentKind::Pptx, None)
+    } else if lower_name.ends_with(".xlsx") && bytes.starts_with(b"PK\x03\x04") {
+        xlsx_text(bytes)?;
+        (AttachmentKind::Xlsx, None)
     } else if lower_name.ends_with(".pdf") && bytes.starts_with(b"%PDF-") {
         (AttachmentKind::Pdf, None)
     } else if is_webp(bytes) {
@@ -252,12 +264,26 @@ pub(super) fn inspect(name: String, bytes: &[u8]) -> WorkspaceResult<AttachmentI
             .to_ascii_lowercase();
         if matches!(
             extension.as_str(),
-            "png" | "jpg" | "jpeg" | "gif" | "pdf" | "zip" | "mp4" | "mp3" | "wav" | "docx" | "odt"
+            "png"
+                | "jpg"
+                | "jpeg"
+                | "gif"
+                | "pdf"
+                | "zip"
+                | "mp4"
+                | "mp3"
+                | "wav"
+                | "docx"
+                | "odt"
+                | "odp"
+                | "ods"
+                | "pptx"
+                | "xlsx"
         ) || bytes.contains(&0)
             || std::str::from_utf8(bytes).is_err()
         {
             return Err(invalid(
-                "Only PDF/DOCX documents, still PNG/JPEG/WebP images and UTF-8 text/code files are supported. Binary files were not attached.",
+                "Only PDF/DOCX/ODT/ODP/ODS/PPTX/XLSX documents, still PNG/JPEG/WebP images and UTF-8 text/code files are supported. Binary files were not attached.",
             ));
         }
         (AttachmentKind::Text, None)
@@ -438,6 +464,764 @@ pub(crate) fn odt_text(bytes: &[u8]) -> WorkspaceResult<String> {
     }
     if in_document || output.trim().is_empty() {
         return Err(invalid("The ODT has no extractable document text."));
+    }
+    Ok(output)
+}
+
+fn odf_content_xml(bytes: &[u8], format: &str) -> WorkspaceResult<String> {
+    let mut archive = zip::ZipArchive::new(Cursor::new(bytes)).map_err(|_| {
+        invalid(&format!(
+            "The selected {format} is not a readable document archive."
+        ))
+    })?;
+    if archive.len() > 512 {
+        return Err(invalid(&format!(
+            "The {format} contains too many archive entries."
+        )));
+    }
+    let content = archive
+        .by_name("content.xml")
+        .map_err(|_| invalid(&format!("The {format} has no main content XML.")))?;
+    if content.size() > MAX_DOCX_XML_BYTES as u64 {
+        return Err(invalid(&format!(
+            "The {format} content XML exceeds 1 MiB after decompression."
+        )));
+    }
+    let mut xml = Vec::new();
+    content
+        .take(MAX_DOCX_XML_BYTES as u64 + 1)
+        .read_to_end(&mut xml)
+        .map_err(|_| invalid(&format!("{format} content could not be decoded.")))?;
+    if xml.len() > MAX_DOCX_XML_BYTES {
+        return Err(invalid(&format!(
+            "The {format} content XML exceeds 1 MiB after decompression."
+        )));
+    }
+    let xml = std::str::from_utf8(&xml)
+        .map_err(|_| invalid(&format!("{format} content XML is not UTF-8.")))?;
+    if xml.contains("<!") {
+        return Err(invalid(&format!(
+            "{format} XML declarations with embedded entities are unsupported."
+        )));
+    }
+    Ok(xml.to_owned())
+}
+
+pub(crate) fn odp_text(bytes: &[u8]) -> WorkspaceResult<String> {
+    let xml = odf_content_xml(bytes, "ODP")?;
+    let mut output = String::new();
+    let mut remaining = xml.as_str();
+    let mut in_presentation = false;
+    let mut in_text = false;
+    let mut slide = 0u32;
+    let mut has_text = false;
+    while let Some(open) = remaining.find('<') {
+        if in_text {
+            let before = output.len();
+            append_xml_text(&remaining[..open], &mut output)?;
+            has_text |= output.len() > before;
+        }
+        remaining = &remaining[open + 1..];
+        let mut quote = None;
+        let end = remaining
+            .char_indices()
+            .find_map(|(at, ch)| match (quote, ch) {
+                (None, '"' | '\'') => {
+                    quote = Some(ch);
+                    None
+                }
+                (Some(active), ch) if active == ch => {
+                    quote = None;
+                    None
+                }
+                (None, '>') => Some(at),
+                _ => None,
+            })
+            .ok_or_else(|| invalid("ODP content XML has an incomplete tag."))?;
+        let tag = &remaining[..end];
+        if xml_tag(tag, "office:presentation") {
+            in_presentation = !tag.trim_end().ends_with('/');
+        } else if tag == "/office:presentation" {
+            in_presentation = false;
+        } else if in_presentation && xml_tag(tag, "draw:page") {
+            slide = slide.saturating_add(1);
+            if slide > 256 {
+                return Err(invalid("The ODP contains too many slides."));
+            }
+            if !output.is_empty() && !output.ends_with('\n') {
+                output.push('\n');
+            }
+            output.push_str(&format!("[Slide {slide}]\n"));
+        } else if in_presentation && (xml_tag(tag, "text:p") || xml_tag(tag, "text:h")) {
+            if !output.ends_with('\n') {
+                output.push('\n');
+            }
+            in_text = !tag.trim_end().ends_with('/');
+        } else if tag == "/text:p" || tag == "/text:h" {
+            in_text = false;
+            if !output.ends_with('\n') {
+                output.push('\n');
+            }
+        } else if in_text && xml_tag(tag, "text:line-break") {
+            output.push('\n');
+        } else if in_text && xml_tag(tag, "text:tab") {
+            output.push('\t');
+        } else if in_text && xml_tag(tag, "text:s") {
+            output.push(' ');
+        }
+        if output.len() > MAX_DOCX_TEXT_BYTES {
+            return Err(invalid(
+                "ODP text exceeds the 512 KiB attachment context limit.",
+            ));
+        }
+        remaining = &remaining[end + 1..];
+    }
+    if in_text || slide == 0 || !has_text {
+        return Err(invalid("The ODP has no extractable slide text."));
+    }
+    Ok(output)
+}
+
+fn emit_ods_cell(
+    output: &mut String,
+    row: usize,
+    row_repeat: usize,
+    start_column: usize,
+    repeat: usize,
+    cached: &str,
+    text: &str,
+) -> WorkspaceResult<bool> {
+    let text = text.trim_end_matches('\n');
+    let value = if text.is_empty() { cached } else { text };
+    if value.is_empty() {
+        return Ok(false);
+    }
+    if repeat == 1 {
+        output.push_str(&format!("R{row}C{start_column}\t{value}"));
+    } else {
+        output.push_str(&format!(
+            "R{row}C{start_column}-C{}\t{value}",
+            start_column.saturating_add(repeat - 1)
+        ));
+    }
+    if row_repeat > 1 {
+        output.push_str(&format!(" [row repeated {row_repeat}x]"));
+    }
+    output.push('\n');
+    if output.len() > MAX_DOCX_TEXT_BYTES {
+        return Err(invalid(
+            "ODS text exceeds the 512 KiB attachment context limit.",
+        ));
+    }
+    Ok(true)
+}
+
+pub(crate) fn ods_text(bytes: &[u8]) -> WorkspaceResult<String> {
+    let xml = odf_content_xml(bytes, "ODS")?;
+    let mut output = String::new();
+    let mut remaining = xml.as_str();
+    let mut in_spreadsheet = false;
+    let mut in_cell_text = false;
+    let mut sheet = 0u32;
+    let mut row = 0usize;
+    let mut column = 0usize;
+    let mut row_repeat = 1usize;
+    let mut cell: Option<(usize, usize, String, String)> = None;
+    let mut cells_left = 20_000usize;
+    let mut has_values = false;
+    while let Some(open) = remaining.find('<') {
+        if in_cell_text && let Some((_, _, _, text)) = &mut cell {
+            append_xml_text(&remaining[..open], text)?;
+        }
+        remaining = &remaining[open + 1..];
+        let mut quote = None;
+        let end = remaining
+            .char_indices()
+            .find_map(|(at, ch)| match (quote, ch) {
+                (None, '"' | '\'') => {
+                    quote = Some(ch);
+                    None
+                }
+                (Some(active), ch) if active == ch => {
+                    quote = None;
+                    None
+                }
+                (None, '>') => Some(at),
+                _ => None,
+            })
+            .ok_or_else(|| invalid("ODS content XML has an incomplete tag."))?;
+        let tag = &remaining[..end];
+        if xml_tag(tag, "office:spreadsheet") {
+            in_spreadsheet = !tag.trim_end().ends_with('/');
+        } else if tag == "/office:spreadsheet" {
+            in_spreadsheet = false;
+        } else if in_spreadsheet && xml_tag(tag, "table:table") {
+            sheet = sheet.saturating_add(1);
+            if sheet > 128 {
+                return Err(invalid("The ODS contains too many sheets."));
+            }
+            row = 0;
+            column = 0;
+            output.push_str(&format!("[Sheet {sheet}]\n"));
+        } else if in_spreadsheet && xml_tag(tag, "table:table-row") {
+            if cell.is_some() || in_cell_text {
+                return Err(invalid(
+                    "ODS row started before the previous cell was closed.",
+                ));
+            }
+            row = row.saturating_add(1);
+            column = 0;
+            row_repeat = xml_attribute(tag, "table:number-rows-repeated")
+                .and_then(|value| value.parse::<usize>().ok())
+                .unwrap_or(1);
+            if row_repeat == 0 || row_repeat > 10_000 {
+                return Err(invalid("ODS row repetition exceeds the preview bounds."));
+            }
+        } else if in_spreadsheet && xml_tag(tag, "table:table-cell") {
+            if cell.is_some() {
+                return Err(invalid(
+                    "ODS cell started before the previous cell was closed.",
+                ));
+            }
+            let repeat = xml_attribute(tag, "table:number-columns-repeated")
+                .and_then(|value| value.parse::<usize>().ok())
+                .unwrap_or(1);
+            if repeat == 0 || repeat > 1024 || repeat > cells_left {
+                return Err(invalid("ODS cell repetition exceeds the preview bounds."));
+            }
+            cells_left -= repeat;
+            let cached = [
+                "office:string-value",
+                "office:value",
+                "office:boolean-value",
+                "office:date-value",
+                "office:time-value",
+            ]
+            .into_iter()
+            .find_map(|name| xml_attribute(tag, name))
+            .unwrap_or_default()
+            .to_owned();
+            cell = Some((column.saturating_add(1), repeat, cached, String::new()));
+            if tag.trim_end().ends_with('/')
+                && let Some((start, repeat, cached, text)) = cell.take()
+            {
+                has_values |=
+                    emit_ods_cell(&mut output, row, row_repeat, start, repeat, &cached, &text)?;
+                column = column.saturating_add(repeat);
+            }
+        } else if in_spreadsheet && xml_tag(tag, "table:covered-table-cell") {
+            let repeat = xml_attribute(tag, "table:number-columns-repeated")
+                .and_then(|value| value.parse::<usize>().ok())
+                .unwrap_or(1);
+            if repeat == 0 || repeat > 1024 || repeat > cells_left {
+                return Err(invalid("ODS cell repetition exceeds the preview bounds."));
+            }
+            cells_left -= repeat;
+            column = column.saturating_add(repeat);
+        } else if cell.is_some() && (xml_tag(tag, "text:p") || xml_tag(tag, "text:h")) {
+            in_cell_text = !tag.trim_end().ends_with('/');
+        } else if tag == "/text:p" || tag == "/text:h" {
+            in_cell_text = false;
+            if let Some((_, _, _, text)) = &mut cell
+                && !text.ends_with('\n')
+            {
+                text.push('\n');
+            }
+        } else if in_cell_text && xml_tag(tag, "text:line-break") {
+            if let Some((_, _, _, text)) = &mut cell {
+                text.push('\n');
+            }
+        } else if in_cell_text && xml_tag(tag, "text:tab") {
+            if let Some((_, _, _, text)) = &mut cell {
+                text.push('\t');
+            }
+        } else if in_cell_text && xml_tag(tag, "text:s") {
+            if let Some((_, _, _, text)) = &mut cell {
+                text.push(' ');
+            }
+        } else if tag == "/table:table-cell"
+            && let Some((start, repeat, cached, text)) = cell.take()
+        {
+            has_values |=
+                emit_ods_cell(&mut output, row, row_repeat, start, repeat, &cached, &text)?;
+            column = column.saturating_add(repeat);
+        } else if tag == "/table:table-row" {
+            if cell.is_some() || in_cell_text {
+                return Err(invalid("ODS row ended with an unclosed cell."));
+            }
+            row = row.saturating_add(row_repeat.saturating_sub(1));
+            row_repeat = 1;
+        }
+        remaining = &remaining[end + 1..];
+    }
+    if in_cell_text || cell.is_some() || sheet == 0 || !has_values {
+        return Err(invalid("The ODS has no extractable cached cell values."));
+    }
+    Ok(output)
+}
+
+fn pptx_slide_number(name: &str) -> Option<u32> {
+    let number = name
+        .strip_prefix("ppt/slides/slide")?
+        .strip_suffix(".xml")?
+        .parse::<u32>()
+        .ok()?;
+    (1..=256).contains(&number).then_some(number)
+}
+
+/// Read only ordered DrawingML text from bounded slide XML entries. Relationships,
+/// notes, embedded objects, media, macros and external resources are never opened.
+pub(crate) fn pptx_text(bytes: &[u8]) -> WorkspaceResult<String> {
+    let mut archive = zip::ZipArchive::new(Cursor::new(bytes))
+        .map_err(|_| invalid("The selected PPTX is not a readable presentation archive."))?;
+    if archive.len() > 512 {
+        return Err(invalid("The PPTX contains too many archive entries."));
+    }
+    let mut slides = Vec::new();
+    for index in 0..archive.len() {
+        let entry = archive
+            .by_index(index)
+            .map_err(|_| invalid("The PPTX archive directory is unreadable."))?;
+        if let Some(number) = pptx_slide_number(entry.name()) {
+            slides.push((number, entry.name().to_owned()));
+        }
+    }
+    slides.sort_by_key(|(number, _)| *number);
+    if slides.is_empty() || slides.windows(2).any(|pair| pair[0].0 == pair[1].0) {
+        return Err(invalid("The PPTX has no unique bounded slide XML entries."));
+    }
+
+    let mut output = String::new();
+    let mut has_text = false;
+    for (number, name) in slides {
+        let slide = archive
+            .by_name(&name)
+            .map_err(|_| invalid("A PPTX slide could not be reopened."))?;
+        if slide.size() > MAX_DOCX_XML_BYTES as u64 {
+            return Err(invalid(
+                "A PPTX slide XML exceeds 1 MiB after decompression.",
+            ));
+        }
+        let mut xml = Vec::new();
+        slide
+            .take(MAX_DOCX_XML_BYTES as u64 + 1)
+            .read_to_end(&mut xml)
+            .map_err(|_| invalid("PPTX slide text could not be decoded."))?;
+        if xml.len() > MAX_DOCX_XML_BYTES {
+            return Err(invalid(
+                "A PPTX slide XML exceeds 1 MiB after decompression.",
+            ));
+        }
+        let xml = std::str::from_utf8(&xml).map_err(|_| invalid("PPTX slide XML is not UTF-8."))?;
+        if xml.contains("<!") {
+            return Err(invalid(
+                "PPTX XML declarations with embedded entities are unsupported.",
+            ));
+        }
+        let header = format!("[Slide {number}]\n");
+        if output.len().saturating_add(header.len()) > MAX_DOCX_TEXT_BYTES {
+            return Err(invalid(
+                "PPTX text exceeds the 512 KiB attachment context limit.",
+            ));
+        }
+        output.push_str(&header);
+
+        let mut remaining = xml;
+        let mut in_text = false;
+        while let Some(open) = remaining.find('<') {
+            if in_text {
+                let before = output.len();
+                append_xml_text(&remaining[..open], &mut output)?;
+                has_text |= output.len() > before;
+            }
+            remaining = &remaining[open + 1..];
+            let mut quote = None;
+            let end = remaining
+                .char_indices()
+                .find_map(|(at, ch)| match (quote, ch) {
+                    (None, '"' | '\'') => {
+                        quote = Some(ch);
+                        None
+                    }
+                    (Some(active), ch) if active == ch => {
+                        quote = None;
+                        None
+                    }
+                    (None, '>') => Some(at),
+                    _ => None,
+                })
+                .ok_or_else(|| invalid("PPTX slide XML has an incomplete tag."))?;
+            let tag = &remaining[..end];
+            if xml_tag(tag, "a:p") && !output.ends_with('\n') {
+                output.push('\n');
+            } else if xml_tag(tag, "a:t") {
+                in_text = !tag.trim_end().ends_with('/');
+            } else if tag == "/a:t" {
+                in_text = false;
+            } else if xml_tag(tag, "a:br") {
+                output.push('\n');
+            } else if xml_tag(tag, "a:tab") {
+                output.push('\t');
+            }
+            if output.len() > MAX_DOCX_TEXT_BYTES {
+                return Err(invalid(
+                    "PPTX text exceeds the 512 KiB attachment context limit.",
+                ));
+            }
+            remaining = &remaining[end + 1..];
+        }
+        if in_text {
+            return Err(invalid("PPTX slide XML has an unclosed text node."));
+        }
+        if !output.ends_with('\n') {
+            output.push('\n');
+        }
+    }
+    if !has_text {
+        return Err(invalid("The PPTX has no extractable slide text."));
+    }
+    Ok(output)
+}
+
+fn xml_attribute<'a>(tag: &'a str, name: &str) -> Option<&'a str> {
+    let bytes = tag.as_bytes();
+    let mut at = tag.find(char::is_whitespace)?;
+    while at < bytes.len() {
+        while at < bytes.len() && bytes[at].is_ascii_whitespace() {
+            at += 1;
+        }
+        if at >= bytes.len() || bytes[at] == b'/' {
+            break;
+        }
+        let key_start = at;
+        while at < bytes.len()
+            && !bytes[at].is_ascii_whitespace()
+            && bytes[at] != b'='
+            && bytes[at] != b'/'
+        {
+            at += 1;
+        }
+        let key = &tag[key_start..at];
+        while at < bytes.len() && bytes[at].is_ascii_whitespace() {
+            at += 1;
+        }
+        if at >= bytes.len() || bytes[at] != b'=' {
+            while at < bytes.len() && !bytes[at].is_ascii_whitespace() {
+                at += 1;
+            }
+            continue;
+        }
+        at += 1;
+        while at < bytes.len() && bytes[at].is_ascii_whitespace() {
+            at += 1;
+        }
+        let quote = *bytes.get(at)?;
+        if !matches!(quote, b'\'' | b'"') {
+            return None;
+        }
+        at += 1;
+        let value_start = at;
+        while at < bytes.len() && bytes[at] != quote {
+            at += 1;
+        }
+        if at >= bytes.len() {
+            return None;
+        }
+        if key == name {
+            return Some(&tag[value_start..at]);
+        }
+        at += 1;
+    }
+    None
+}
+
+fn xml_text_nodes(xml: &str, name: &str) -> WorkspaceResult<String> {
+    let mut output = String::new();
+    let mut remaining = xml;
+    let mut in_text = false;
+    while let Some(open) = remaining.find('<') {
+        if in_text {
+            append_xml_text(&remaining[..open], &mut output)?;
+        }
+        remaining = &remaining[open + 1..];
+        let mut quote = None;
+        let end = remaining
+            .char_indices()
+            .find_map(|(at, ch)| match (quote, ch) {
+                (None, '"' | '\'') => {
+                    quote = Some(ch);
+                    None
+                }
+                (Some(active), ch) if active == ch => {
+                    quote = None;
+                    None
+                }
+                (None, '>') => Some(at),
+                _ => None,
+            })
+            .ok_or_else(|| invalid("Spreadsheet XML has an incomplete tag."))?;
+        let tag = &remaining[..end];
+        if xml_tag(tag, name) {
+            in_text = !tag.trim_end().ends_with('/');
+        } else if tag.strip_prefix('/').is_some_and(|tag| tag == name) {
+            in_text = false;
+        }
+        remaining = &remaining[end + 1..];
+    }
+    if in_text {
+        return Err(invalid("Spreadsheet XML has an unclosed text node."));
+    }
+    Ok(output)
+}
+
+fn xlsx_sheet_number(name: &str) -> Option<u32> {
+    let number = name
+        .strip_prefix("xl/worksheets/sheet")?
+        .strip_suffix(".xml")?
+        .parse::<u32>()
+        .ok()?;
+    (1..=128).contains(&number).then_some(number)
+}
+
+fn xlsx_shared_strings(
+    archive: &mut zip::ZipArchive<Cursor<&[u8]>>,
+) -> WorkspaceResult<Vec<String>> {
+    let Ok(file) = archive.by_name("xl/sharedStrings.xml") else {
+        return Ok(Vec::new());
+    };
+    if file.size() > MAX_DOCX_XML_BYTES as u64 {
+        return Err(invalid(
+            "The XLSX shared-string XML exceeds 1 MiB after decompression.",
+        ));
+    }
+    let mut xml = Vec::new();
+    file.take(MAX_DOCX_XML_BYTES as u64 + 1)
+        .read_to_end(&mut xml)
+        .map_err(|_| invalid("XLSX shared strings could not be decoded."))?;
+    if xml.len() > MAX_DOCX_XML_BYTES {
+        return Err(invalid(
+            "The XLSX shared-string XML exceeds 1 MiB after decompression.",
+        ));
+    }
+    let xml =
+        std::str::from_utf8(&xml).map_err(|_| invalid("XLSX shared-string XML is not UTF-8."))?;
+    if xml.contains("<!") {
+        return Err(invalid(
+            "XLSX XML declarations with embedded entities are unsupported.",
+        ));
+    }
+    let mut strings = Vec::new();
+    let mut remaining = xml;
+    while let Some(start) = remaining.find("<si") {
+        remaining = &remaining[start + 3..];
+        let Some(tag_end) = remaining.find('>') else {
+            return Err(invalid("XLSX shared-string XML has an incomplete item."));
+        };
+        remaining = &remaining[tag_end + 1..];
+        let Some(end) = remaining.find("</si>") else {
+            return Err(invalid("XLSX shared-string XML has an unclosed item."));
+        };
+        if strings.len() == 65_536 {
+            return Err(invalid("The XLSX has too many shared strings."));
+        }
+        strings.push(xml_text_nodes(&remaining[..end], "t")?);
+        remaining = &remaining[end + 5..];
+    }
+    Ok(strings)
+}
+
+fn xlsx_cell_reference(value: Option<&str>, ordinal: usize) -> String {
+    value
+        .filter(|value| {
+            !value.is_empty()
+                && value.len() <= 16
+                && value
+                    .bytes()
+                    .all(|byte| byte.is_ascii_uppercase() || byte.is_ascii_digit() || byte == b'$')
+        })
+        .map(str::to_owned)
+        .unwrap_or_else(|| format!("cell-{ordinal}"))
+}
+
+fn xlsx_sheet_text(
+    xml: &str,
+    shared: &[String],
+    remaining_cells: &mut usize,
+) -> WorkspaceResult<String> {
+    if xml.contains("<!") {
+        return Err(invalid(
+            "XLSX XML declarations with embedded entities are unsupported.",
+        ));
+    }
+    let mut output = String::new();
+    let mut remaining = xml;
+    let mut ordinal = 0usize;
+    while let Some(start) = remaining.find("<c") {
+        let candidate = &remaining[start + 2..];
+        if candidate
+            .chars()
+            .next()
+            .is_some_and(|ch| !ch.is_whitespace() && ch != '>' && ch != '/')
+        {
+            remaining = &remaining[start + 2..];
+            continue;
+        }
+        let mut quote = None;
+        let tag_end = candidate
+            .char_indices()
+            .find_map(|(at, ch)| match (quote, ch) {
+                (None, '"' | '\'') => {
+                    quote = Some(ch);
+                    None
+                }
+                (Some(active), ch) if active == ch => {
+                    quote = None;
+                    None
+                }
+                (None, '>') => Some(at),
+                _ => None,
+            })
+            .ok_or_else(|| invalid("XLSX cell XML has an incomplete tag."))?;
+        let tag = &candidate[..tag_end];
+        let body = &candidate[tag_end + 1..];
+        let Some(close) = body.find("</c>") else {
+            return Err(invalid("XLSX cell XML has an unclosed cell."));
+        };
+        ordinal = ordinal.saturating_add(1);
+        if *remaining_cells == 0 {
+            return Err(invalid(
+                "The XLSX contains too many cells to preview safely.",
+            ));
+        }
+        *remaining_cells -= 1;
+        let cell_type = xml_attribute(tag, "t");
+        let cell_ref = xlsx_cell_reference(xml_attribute(tag, "r"), ordinal);
+        let cell = &body[..close];
+
+        let cached = cell
+            .find("<v>")
+            .and_then(|open| {
+                let rest = &cell[open + 3..];
+                rest.find("</v>").map(|end| &rest[..end])
+            })
+            .map(|value| {
+                let mut decoded = String::new();
+                append_xml_text(value, &mut decoded)?;
+                Ok::<_, WorkspaceError>(decoded)
+            })
+            .transpose()?;
+        let inline = if cell_type == Some("inlineStr") {
+            Some(xml_text_nodes(cell, "t")?)
+        } else {
+            None
+        };
+        let value = match cell_type {
+            Some("s") => {
+                let index = cached
+                    .as_deref()
+                    .and_then(|value| value.trim().parse::<usize>().ok())
+                    .ok_or_else(|| invalid("XLSX shared-string cell has an invalid index."))?;
+                shared
+                    .get(index)
+                    .cloned()
+                    .ok_or_else(|| invalid("XLSX shared-string cell refers outside the table."))?
+            }
+            Some("inlineStr") => inline.unwrap_or_default(),
+            Some("b") => match cached.as_deref().map(str::trim) {
+                Some("1") => "TRUE".into(),
+                Some("0") => "FALSE".into(),
+                Some(value) => value.to_owned(),
+                None => String::new(),
+            },
+            Some("e") => cached
+                .map(|value| format!("[error {value}]"))
+                .unwrap_or_default(),
+            _ => cached.unwrap_or_default(),
+        };
+        if !value.is_empty() {
+            output.push_str(&cell_ref);
+            output.push('\t');
+            output.push_str(&value);
+            output.push('\n');
+            if output.len() > MAX_DOCX_TEXT_BYTES {
+                return Err(invalid(
+                    "XLSX text exceeds the 512 KiB attachment context limit.",
+                ));
+            }
+        }
+        remaining = &body[close + 4..];
+    }
+    Ok(output)
+}
+
+/// Read only bounded worksheet XML plus the optional shared-string table.
+/// Formulas are never evaluated; only cached cell values are projected.
+pub(crate) fn xlsx_text(bytes: &[u8]) -> WorkspaceResult<String> {
+    let mut archive = zip::ZipArchive::new(Cursor::new(bytes))
+        .map_err(|_| invalid("The selected XLSX is not a readable workbook archive."))?;
+    if archive.len() > 1024 {
+        return Err(invalid("The XLSX contains too many archive entries."));
+    }
+    let mut sheets = Vec::new();
+    for index in 0..archive.len() {
+        let entry = archive
+            .by_index(index)
+            .map_err(|_| invalid("The XLSX archive directory is unreadable."))?;
+        if let Some(number) = xlsx_sheet_number(entry.name()) {
+            sheets.push((number, entry.name().to_owned()));
+        }
+    }
+    sheets.sort_by_key(|(number, _)| *number);
+    if sheets.is_empty() || sheets.windows(2).any(|pair| pair[0].0 == pair[1].0) {
+        return Err(invalid(
+            "The XLSX has no unique bounded worksheet XML entries.",
+        ));
+    }
+    let shared = xlsx_shared_strings(&mut archive)?;
+    let mut output = String::new();
+    let mut remaining_cells = 20_000usize;
+    let mut has_values = false;
+    for (number, name) in sheets {
+        let sheet = archive
+            .by_name(&name)
+            .map_err(|_| invalid("An XLSX worksheet could not be reopened."))?;
+        if sheet.size() > MAX_DOCX_XML_BYTES as u64 {
+            return Err(invalid(
+                "An XLSX worksheet XML exceeds 1 MiB after decompression.",
+            ));
+        }
+        let mut xml = Vec::new();
+        sheet
+            .take(MAX_DOCX_XML_BYTES as u64 + 1)
+            .read_to_end(&mut xml)
+            .map_err(|_| invalid("XLSX worksheet text could not be decoded."))?;
+        if xml.len() > MAX_DOCX_XML_BYTES {
+            return Err(invalid(
+                "An XLSX worksheet XML exceeds 1 MiB after decompression.",
+            ));
+        }
+        let xml =
+            std::str::from_utf8(&xml).map_err(|_| invalid("XLSX worksheet XML is not UTF-8."))?;
+        let values = xlsx_sheet_text(xml, &shared, &mut remaining_cells)?;
+        if !values.is_empty() {
+            has_values = true;
+        }
+        let header = format!("[Sheet {number}]\n");
+        if output
+            .len()
+            .saturating_add(header.len())
+            .saturating_add(values.len())
+            > MAX_DOCX_TEXT_BYTES
+        {
+            return Err(invalid(
+                "XLSX text exceeds the 512 KiB attachment context limit.",
+            ));
+        }
+        output.push_str(&header);
+        output.push_str(&values);
+    }
+    if !has_values {
+        return Err(invalid("The XLSX has no cached cell values to preview."));
     }
     Ok(output)
 }

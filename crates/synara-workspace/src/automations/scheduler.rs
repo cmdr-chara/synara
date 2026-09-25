@@ -131,10 +131,15 @@ impl AutomationScheduler {
         let task_id = run
             .task_id
             .ok_or_else(|| invalid("Claim did not create its owned task."))?;
+        let prompt = if run.prompt.is_empty() {
+            run.definition.instructions.clone()
+        } else {
+            run.prompt.clone()
+        };
         let result = tokio::select! {
             biased;
             _ = cancel.cancelled() => Err(invalid("Automation cancelled before or during execution.")),
-            result = tokio::time::timeout(Duration::from_secs(u64::from(run.definition.max_runtime_seconds)), self.controller.submit(task_id, run.definition.instructions.clone())) => result.unwrap_or_else(|_| Err(invalid(format!("Automation exceeded its {}-second execution limit.", run.definition.max_runtime_seconds)))),
+            result = tokio::time::timeout(Duration::from_secs(u64::from(run.definition.max_runtime_seconds)), self.controller.submit(task_id, prompt)) => result.unwrap_or_else(|_| Err(invalid(format!("Automation exceeded its {}-second execution limit.", run.definition.max_runtime_seconds)))),
         };
         let (status, output) = match result {
             Ok(_) => {
@@ -168,8 +173,8 @@ impl AutomationScheduler {
                 )
             }
         };
-        // The exact instructions remain in the immutable run snapshot. Do not
-        // leave a prompt in the composer that appears safe to send a second time.
+        // The exact submitted prompt remains in the immutable run snapshot. Do
+        // not leave it in the composer where it could look safe to send twice.
         let _ = self
             .controller
             .workspace

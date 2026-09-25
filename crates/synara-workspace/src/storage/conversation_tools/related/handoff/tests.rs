@@ -117,6 +117,172 @@ async fn handoff_is_unsent_atomic_related_and_restart_inert() {
     );
 }
 #[tokio::test]
+async fn same_task_handoff_is_atomic_route_safe_and_preserves_user_owned_state() {
+    let root = tempfile::tempdir().unwrap();
+    let service = WorkspaceService::memory().unwrap();
+    let task = seed(&service, root.path().into()).await;
+    let before = service.thread(task.thread_id).await.unwrap();
+
+    let settings = service
+        .save_direct_model_settings(ProviderSettings {
+            revision: 0,
+            providers: vec![synara_model::custom_profile_example()],
+        })
+        .await
+        .unwrap();
+    let profile = &settings.providers[0];
+    let selection = ModelSelection {
+        history_turns: None,
+        provider_id: profile.id.clone(),
+        model_id: profile.models[0].id.clone(),
+        max_output_tokens: 32,
+        reasoning_effort: None,
+        output: Default::default(),
+    };
+
+    // The existing user draft belongs to the source composer and is never overwritten.
+    let review = service
+        .review_handoff(task.id, HandoffTarget::Direct(selection.clone()))
+        .await
+        .unwrap();
+    assert!(
+        service
+            .continue_handoff_in_place(review, "reviewed direct continuation".into())
+            .await
+            .is_err()
+    );
+    assert_eq!(
+        service.task_draft(task.id).await.unwrap(),
+        "Original unsent draft"
+    );
+
+    service
+        .save_task_draft(task.id, String::new())
+        .await
+        .unwrap();
+    let attachments = service.attachment_draft(task.id).await.unwrap();
+    let attachments = service
+        .add_attachments(
+            task.id,
+            attachments.revision,
+            vec![crate::AttachmentInput::Bytes {
+                name: "note.txt".into(),
+                bytes: b"private pending attachment".to_vec(),
+            }],
+        )
+        .await
+        .unwrap();
+    let review = service
+        .review_handoff(task.id, HandoffTarget::Direct(selection.clone()))
+        .await
+        .unwrap();
+    assert!(
+        service
+            .continue_handoff_in_place(review, "reviewed direct continuation".into())
+            .await
+            .is_err()
+    );
+    assert_eq!(service.catalog().await.unwrap().tasks.len(), 1);
+    service
+        .edit_attachments(
+            task.id,
+            attachments.revision,
+            crate::AttachmentEdit::ClearPending,
+        )
+        .await
+        .unwrap();
+
+    service
+        .save_session(
+            task.thread_id,
+            SessionReference {
+                agent_id: task.agent_id.clone(),
+                remote_id: "old-provider-session".into(),
+                working_directory: task.working_directory.clone(),
+                title: None,
+            },
+        )
+        .await
+        .unwrap();
+
+    let review = service
+        .review_handoff(task.id, HandoffTarget::Direct(selection.clone()))
+        .await
+        .unwrap();
+    let switched = service
+        .continue_handoff_in_place(review, "reviewed direct continuation".into())
+        .await
+        .unwrap();
+    assert_eq!(switched.id, task.id);
+    assert_eq!(switched.thread_id, task.thread_id);
+    assert_eq!(switched.working_directory, task.working_directory);
+    assert_eq!(switched.scope, task.scope);
+    assert_eq!(service.catalog().await.unwrap().tasks.len(), 1);
+    assert_eq!(
+        service.task_draft(task.id).await.unwrap(),
+        "reviewed direct continuation"
+    );
+    assert!(service.session(task.thread_id).await.unwrap().is_none());
+    assert_eq!(
+        service
+            .direct_model_binding(task.id)
+            .await
+            .unwrap()
+            .unwrap()
+            .selection,
+        selection
+    );
+    assert_eq!(
+        service.thread(task.thread_id).await.unwrap().messages,
+        before.messages
+    );
+
+    // Switching back to ACP keeps the task/thread but clears the direct binding.
+    service
+        .save_task_draft(task.id, String::new())
+        .await
+        .unwrap();
+    let review = service
+        .review_handoff(task.id, HandoffTarget::Agent(task.agent_id.clone()))
+        .await
+        .unwrap();
+    let switched = service
+        .continue_handoff_in_place(review, "reviewed ACP continuation".into())
+        .await
+        .unwrap();
+    assert_eq!(switched.id, task.id);
+    assert!(
+        service
+            .direct_model_binding(task.id)
+            .await
+            .unwrap()
+            .is_none()
+    );
+
+    // Route changes after review invalidate the single-use handoff review.
+    service
+        .save_task_draft(task.id, String::new())
+        .await
+        .unwrap();
+    let review = service
+        .review_handoff(task.id, HandoffTarget::Direct(selection.clone()))
+        .await
+        .unwrap();
+    let sequence = service.thread(task.thread_id).await.unwrap().last_sequence;
+    service
+        .bind_direct_model(task.id, Some(selection), settings.revision, sequence)
+        .await
+        .unwrap();
+    assert!(
+        service
+            .continue_handoff_in_place(review, "stale review".into())
+            .await
+            .is_err()
+    );
+    assert_eq!(service.task_draft(task.id).await.unwrap(), "");
+}
+
+#[tokio::test]
 async fn handoff_refuses_stale_source_and_agent_configuration() {
     let root = tempfile::tempdir().unwrap();
     let service = WorkspaceService::memory().unwrap();

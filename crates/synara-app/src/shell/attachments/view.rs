@@ -121,9 +121,18 @@ impl Shell {
                         },
                     ))
             }))
-            .children((pending.iter().any(|a| matches!(a.kind, AttachmentKind::Pdf | AttachmentKind::Docx | AttachmentKind::Odt))).then(|| {
+            .children((pending.iter().any(|a| matches!(
+                a.kind,
+                AttachmentKind::Pdf
+                    | AttachmentKind::Docx
+                    | AttachmentKind::Odt
+                    | AttachmentKind::Odp
+                    | AttachmentKind::Ods
+                    | AttachmentKind::Pptx
+                    | AttachmentKind::Xlsx
+            ))).then(|| {
                 div().px_2().text_size(px(11.)).text_color(rgb(palette().muted))
-                    .child("Document text: PDF first 12 pages, DOCX main text or ODT content text, up to 512 KiB each; binary files stay local and extracted text is sent as context.")
+                    .child("Document text: PDF first 12 pages, DOCX/ODT main text, ODP/PPTX slide text or ODS/XLSX cached cell values, up to 512 KiB each; binary files stay local and extracted text is sent as context.")
             }))
             .children(
                 self.details

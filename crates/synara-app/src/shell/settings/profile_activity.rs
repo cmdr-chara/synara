@@ -199,6 +199,146 @@ pub(super) fn record_model_selection(
     *count = count.saturating_add(1);
 }
 
+#[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
+pub(super) enum TurnRouteKind {
+    Acp,
+    Direct,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
+pub(super) struct TurnRoute {
+    pub kind: TurnRouteKind,
+    pub provider: String,
+    pub model: Option<String>,
+}
+
+pub(super) fn record_turn_routes(activity: &mut ProfileActivity, thread: &Thread) {
+    for turn in &thread.turns {
+        let route = match (
+            turn.direct_provider_id.as_ref(),
+            turn.direct_model_id.as_ref(),
+            turn.acp_agent_id.as_ref(),
+            turn.acp_model_id.as_ref(),
+        ) {
+            (Some(provider), Some(model), _, _) => Some(TurnRoute {
+                kind: TurnRouteKind::Direct,
+                provider: provider.clone(),
+                model: Some(model.clone()),
+            }),
+            (None, None, Some(agent), model) => Some(TurnRoute {
+                kind: TurnRouteKind::Acp,
+                provider: agent.clone(),
+                model: model.cloned(),
+            }),
+            _ => None,
+        };
+        if let Some(route) = route {
+            let count = activity.turn_routes.entry(route).or_default();
+            *count = count.saturating_add(1);
+        } else {
+            activity.unattributed_turns = activity.unattributed_turns.saturating_add(1);
+        }
+    }
+}
+
+pub(super) fn turn_route_activity(
+    activity: Option<&ProfileActivity>,
+    profiles: &[AgentProfile],
+    loading: bool,
+) -> gpui::AnyElement {
+    let Some(activity) = activity else {
+        return div()
+            .text_color(rgb(palette().muted))
+            .child(if loading {
+                "Loading per-turn provider activity…"
+            } else {
+                "Per-turn provider activity has not been loaded yet."
+            })
+            .into_any_element();
+    };
+
+    let mut rows = activity
+        .turn_routes
+        .iter()
+        .map(|(route, count)| (route, *count))
+        .collect::<Vec<_>>();
+    rows.sort_by(|left, right| right.1.cmp(&left.1).then_with(|| left.0.cmp(right.0)));
+    let attributed = rows
+        .iter()
+        .fold(0_usize, |total, row| total.saturating_add(row.1));
+    if attributed == 0 {
+        return div()
+            .text_color(rgb(palette().muted))
+            .child(if activity.unattributed_turns > 0 {
+                format!(
+                    "{} historical turns do not contain route snapshots.",
+                    activity.unattributed_turns
+                )
+            } else {
+                "No local turn activity has been recorded.".into()
+            })
+            .into_any_element();
+    }
+
+    let displayed = rows.len().min(10);
+    div()
+        .w_full()
+        .flex()
+        .flex_col()
+        .gap_2()
+        .children(rows.iter().take(displayed).map(|(route, count)| {
+            let provider = match route.kind {
+                TurnRouteKind::Acp => profiles
+                    .iter()
+                    .find(|profile| profile.id == route.provider)
+                    .map(|profile| profile.name.clone())
+                    .unwrap_or_else(|| route.provider.clone()),
+                TurnRouteKind::Direct => route.provider.clone(),
+            };
+            let source = match route.kind {
+                TurnRouteKind::Acp => "ACP",
+                TurnRouteKind::Direct => "Direct",
+            };
+            let model = route.model.as_deref().unwrap_or("model not reported");
+            let percent = (*count as f64 * 100.0) / attributed as f64;
+            div()
+                .flex()
+                .items_center()
+                .justify_between()
+                .gap_2()
+                .child(
+                    div()
+                        .min_w_0()
+                        .text_ellipsis()
+                        .text_size(px(12.))
+                        .child(format!("{source} · {provider} · {model}")),
+                )
+                .child(
+                    div()
+                        .flex_shrink_0()
+                        .text_size(px(11.))
+                        .text_color(rgb(palette().muted))
+                        .child(format!("{count} turns · {percent:.1}%")),
+                )
+        }))
+        .children((rows.len() > displayed).then(|| {
+            div()
+                .text_size(px(11.))
+                .text_color(rgb(palette().muted))
+                .child(format!("{} more route combinations", rows.len() - displayed))
+        }))
+        .child(
+            div()
+                .text_size(px(11.))
+                .text_color(rgb(palette().muted))
+                .child(format!(
+                    "{attributed} attributed turns · {} historical turns without a route snapshot. Percentages exclude unattributed legacy turns and are not account usage or billing.",
+                    activity.unattributed_turns
+                )),
+        )
+        .into_any_element()
+}
+
 pub(super) fn saved_model_selections(
     activity: Option<&ProfileActivity>,
     profiles: &[AgentProfile],
@@ -612,6 +752,77 @@ mod tests {
                 .windows(2)
                 .any(|months| months == ["Dec", "Jan"])
         );
+    }
+
+    #[test]
+    fn turn_route_activity_counts_direct_acp_and_legacy_gaps() {
+        let mut activity = ProfileActivity::default();
+        let mut thread = Thread::new(ThreadId::new());
+        let apply_event = |thread: &mut Thread, sequence: u64, event| {
+            thread
+                .apply(&EventEnvelope {
+                    id: EventId::new(),
+                    thread_id: thread.id,
+                    sequence,
+                    timestamp_ms: sequence as i64,
+                    event,
+                })
+                .unwrap();
+        };
+        apply_event(
+            &mut thread,
+            1,
+            ThreadEvent::PromptStarted {
+                turn: "direct".into(),
+            },
+        );
+        apply_event(
+            &mut thread,
+            2,
+            ThreadEvent::DirectModelRoute {
+                provider_id: "openai".into(),
+                model_id: "gpt".into(),
+            },
+        );
+        apply_event(
+            &mut thread,
+            3,
+            ThreadEvent::PromptFinished {
+                reason: "stop".into(),
+            },
+        );
+        apply_event(
+            &mut thread,
+            4,
+            ThreadEvent::AcpTurnRoute {
+                turn: "acp".into(),
+                agent_id: "opencode".into(),
+                model_id: Some("claude".into()),
+            },
+        );
+        apply_event(
+            &mut thread,
+            5,
+            ThreadEvent::PromptStarted { turn: "acp".into() },
+        );
+        apply_event(
+            &mut thread,
+            6,
+            ThreadEvent::PromptFinished {
+                reason: "stop".into(),
+            },
+        );
+        apply_event(
+            &mut thread,
+            7,
+            ThreadEvent::PromptStarted {
+                turn: "legacy".into(),
+            },
+        );
+        record_turn_routes(&mut activity, &thread);
+
+        assert_eq!(activity.turn_routes.values().sum::<usize>(), 2);
+        assert_eq!(activity.unattributed_turns, 1);
     }
 
     #[test]

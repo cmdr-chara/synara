@@ -1,6 +1,7 @@
 //! One versioned scheduler ledger in the existing SQLite store. Every mutation
 //! takes the database writer lock before reading. Transcript events never decide
 //! whether a scheduled slot has already been claimed.
+use super::organization::automation_hub_context;
 use super::*;
 use crate::automations::*;
 use crate::{AgentProfile, WorkspaceResult, default_profiles};
@@ -54,6 +55,9 @@ fn context(
         [project.workspace_id.to_string()],
         |r| r.get(0),
     )?;
+    if definition.context == AutomationContextPolicy::Hub {
+        let _ = automation_hub_context(connection, project.id)?;
+    }
     Ok((project, decode(&workspace)?))
 }
 impl Store {
@@ -110,14 +114,10 @@ impl Store {
         {
             return Ok(None);
         }
-        let previous_runs = ledger
-            .runs
-            .iter()
-            .filter(|r| r.definition.id == id && r.task_id.is_some())
-            .count();
+        let previous_runs = effective_run_count(&definition, &ledger.runs);
         if definition
             .max_runs
-            .is_some_and(|limit| previous_runs >= limit as usize)
+            .is_some_and(|limit| previous_runs >= limit)
         {
             return Err(invalid(
                 "Run limit reached. Increase the limit before running again.",
@@ -151,6 +151,8 @@ impl Store {
                     finished_ms: Some(now),
                     status: AutomationRunStatus::Skipped,
                     task_id: None,
+                    prompt: String::new(),
+                    hub_revision: None,
                     output: "Missed-run policy skipped an overdue slot. No agent was launched."
                         .into(),
                 });
@@ -160,6 +162,22 @@ impl Store {
             }
         }
         let (project, workspace) = context(&tx, &definition)?;
+        let (scope, prompt, hub_revision) = match definition.context {
+            AutomationContextPolicy::Project => {
+                (TaskScope::Project, definition.instructions.clone(), None)
+            }
+            AutomationContextPolicy::Hub => {
+                let (revision, shared) = automation_hub_context(&tx, project.id)?;
+                let mut prompt = shared;
+                prompt.push_str(&definition.instructions);
+                if prompt.len() > MAX_AUTOMATION_PROMPT_BYTES || prompt.contains('\0') {
+                    return Err(invalid(
+                        "Combined Hub automation context exceeds the 128 KiB prompt limit.",
+                    ));
+                }
+                (TaskScope::Studio, prompt, Some(revision))
+            }
+        };
         let task = Task {
             id: TaskId::new(),
             project_id: project.id,
@@ -169,7 +187,7 @@ impl Store {
             agent_id: definition.agent_id.clone(),
             working_directory: crate::service::project_directory(&workspace, &project)?,
             updated_at_ms: now,
-            scope: TaskScope::Project,
+            scope,
         };
         let run = AutomationRun {
             id: AutomationId::new_v4(),
@@ -180,6 +198,8 @@ impl Store {
             finished_ms: None,
             status: AutomationRunStatus::Running,
             task_id: Some(task.id),
+            prompt,
+            hub_revision,
             output: String::new(),
         };
         // Claimed slot, conversation identity and its visible unsent prompt are one transaction.
@@ -197,14 +217,18 @@ impl Store {
             "INSERT INTO preferences(key,data) VALUES(?1,?2)",
             params![
                 format!("task-draft:{}", task.id),
-                encode(&serde_json::json!({"version":1,"text":run.definition.instructions}))?
+                encode(&serde_json::json!({"version":1,"text":run.prompt}))?
             ],
         )?;
         ledger.runs.push(run.clone());
+        let next_run_count = previous_runs
+            .checked_add(1)
+            .ok_or_else(|| invalid("Automation run count overflow."))?;
+        ledger.definitions[index].run_count = next_run_count;
         if run
             .definition
             .max_runs
-            .is_some_and(|limit| previous_runs + 1 >= limit as usize)
+            .is_some_and(|limit| next_run_count >= limit)
         {
             ledger.definitions[index].enabled = false;
             ledger.definitions[index].revision = ledger.definitions[index]

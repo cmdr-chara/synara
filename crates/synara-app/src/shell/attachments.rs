@@ -395,7 +395,11 @@ impl Shell {
                             AttachmentKind::Text
                             | AttachmentKind::Pdf
                             | AttachmentKind::Docx
-                            | AttachmentKind::Odt => {
+                            | AttachmentKind::Odt
+                            | AttachmentKind::Odp
+                            | AttachmentKind::Ods
+                            | AttachmentKind::Pptx
+                            | AttachmentKind::Xlsx => {
                                 Preview::Text(String::from_utf8(asset.bytes).unwrap_or_default())
                             }
                             kind => Preview::Image(

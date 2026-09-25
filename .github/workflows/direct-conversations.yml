@@ -7,6 +7,7 @@ on:
       - 'crates/synara-acp/**'
       - 'crates/synara-model/**'
       - 'crates/synara-app/**'
+      - 'crates/synara-workspace/**'
       - 'scripts/native_direct_models_smoke.py'
       - 'scripts/native_anthropic_models_smoke.py'
       - 'scripts/native_google_models_smoke.py'

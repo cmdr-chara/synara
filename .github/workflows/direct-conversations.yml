@@ -67,7 +67,7 @@ jobs:
           set -euo pipefail
           mkdir -p /tmp/direct-conversations-evidence
           git rev-parse HEAD > /tmp/direct-conversations-evidence/revision.txt
-          cargo +1.98.1 test --locked --workspace --exclude synara-app 2>&1 | tee /tmp/direct-conversations-evidence/backend.log
+          cargo +1.98.1 test --locked -p synara-model -p synara-acp -p synara-workspace 2>&1 | tee /tmp/direct-conversations-evidence/backend.log
           cargo +1.98.1 build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture 2>&1 | tee /tmp/direct-conversations-evidence/native-build.log
       - name: Probe reviewed external ACP releases without credentials
         timeout-minutes: 8

@@ -69,6 +69,12 @@ def fill_control(ui, log_path, control, value):
     type_text(ui, value)
 
 
+def choose_environment_tool(ui, log_path, label):
+    click_control(ui, log_path, 'environment-add')
+    type_text(ui, label)
+    ui.key('Return')
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--binary', type=Path, required=True)
@@ -168,6 +174,7 @@ def main():
         checks.append('remote-panel-pinned-enrollment')
 
         click_control(desktop, log.name, 'Files', timeout=20)
+        choose_environment_tool(desktop, log.name, 'Explorer')
         wait_until(
             lambda: control_bounds(log.name, 'file-tree'),
             'remote file explorer geometry',
@@ -204,7 +211,7 @@ def main():
         desktop.screenshot('remote-search', window_only=True)
         checks.append('remote-content-and-name-search-over-pinned-ssh')
 
-        click_control(desktop, log.name, 'Terminal', timeout=20)
+        choose_environment_tool(desktop, log.name, 'Terminal')
         wait_until(
             lambda: control_bounds(log.name, 'terminal-workspace'),
             'remote terminal workspace geometry',

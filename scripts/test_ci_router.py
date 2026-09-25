@@ -129,6 +129,24 @@ class RouterTests(unittest.TestCase):
         )
         self.assertTrue(route.ssh)
 
+    def test_terminal_lifecycle_change_forces_ssh_lane(self):
+        route = ci_router.semantic_route(
+            ["crates/synara-app/src/shell/terminals.rs"],
+            response(
+                lane=ci_router.ENVIRONMENT,
+                ssh=ci_router.SSH_SKIP,
+            ),
+        )
+        self.assertTrue(route.environment)
+        self.assertTrue(route.ssh)
+
+    def test_router_change_forces_ssh_lane(self):
+        route = ci_router.semantic_route(
+            ["scripts/ci_router.py"],
+            response(ssh=ci_router.SSH_SKIP),
+        )
+        self.assertTrue(route.ssh)
+
     def test_low_confidence_backend_decision_fails_closed(self):
         route = ci_router.semantic_route(
             ["crates/synara-agent/src/new_logic.rs"],

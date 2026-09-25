@@ -65,6 +65,12 @@ NATIVE_BATCH_ANCHORS = frozenset({
     ".github/workflows/native.yml",
 })
 SSH_ANCHORS = frozenset({
+    "crates/synara-app/src/shell/terminal.rs",
+    "crates/synara-app/src/shell/terminals.rs",
+    "crates/synara-runtime/src/remote_terminal.rs",
+    "crates/synara-runtime/src/terminal.rs",
+    "crates/synara-runtime/src/terminal/posix.rs",
+    "scripts/ci_router.py",
     "scripts/ssh_smoke.py",
     "scripts/remote_native_smoke.py",
     ".github/workflows/ssh.yml",

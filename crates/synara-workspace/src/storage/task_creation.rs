@@ -1,5 +1,7 @@
 //! Creation and unsent content commit together. A partial task is never visible.
 use super::*;
+use serde::{Deserialize, Serialize};
+use std::path::{Path, PathBuf};
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]

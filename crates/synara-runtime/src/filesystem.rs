@@ -576,7 +576,7 @@ impl WorkspaceFs {
 fn normalize_workspace_entry_search_query(query: &str) -> String {
     query
         .trim()
-        .trim_start_matches(|character: char| matches!(character, '@' | '.' | '/'))
+        .trim_start_matches(['@', '.', '/'])
         .to_lowercase()
 }
 

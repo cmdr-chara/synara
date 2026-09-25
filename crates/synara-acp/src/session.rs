@@ -1,6 +1,7 @@
 use crate::{backend::AcpSession, wire};
 use async_trait::async_trait;
 use serde_json::json;
+use std::sync::Arc;
 use std::sync::atomic::Ordering;
 use synara_agent::*;
 use synara_core::*;

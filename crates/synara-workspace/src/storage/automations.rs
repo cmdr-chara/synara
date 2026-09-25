@@ -5,7 +5,8 @@ use super::organization::automation_hub_context;
 use super::*;
 use crate::automations::*;
 use crate::{
-    AgentProfile, DirectModelBinding, ProviderSettings, WorkspaceResult, default_profiles,
+    AgentProfile, DirectModelBinding, ProviderSettings, WorkspaceError, WorkspaceResult,
+    default_profiles,
 };
 const KEY: &str = "automation-ledger-v1";
 fn read(connection: &Connection) -> WorkspaceResult<AutomationLedger> {

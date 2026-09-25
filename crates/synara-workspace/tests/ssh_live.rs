@@ -72,10 +72,25 @@ async fn explicit_forwarding_uses_pinned_ssh_loopback_and_cleans_up() {
                         .set_write_timeout(Some(Duration::from_secs(2)))
                         .unwrap();
                     let mut request = [0_u8; 4];
-                    stream.read_exact(&mut request).unwrap();
-                    assert_eq!(&request, b"ping");
-                    stream.write_all(b"pong").unwrap();
-                    return;
+                    match stream.read_exact(&mut request) {
+                        Ok(_) => {
+                            assert_eq!(&request, b"ping");
+                            stream.write_all(b"pong").unwrap();
+                            return;
+                        }
+                        Err(error)
+                            if matches!(
+                                error.kind(),
+                                std::io::ErrorKind::UnexpectedEof
+                                    | std::io::ErrorKind::TimedOut
+                                    | std::io::ErrorKind::WouldBlock
+                                    | std::io::ErrorKind::ConnectionReset
+                            ) && Instant::now() < deadline =>
+                        {
+                            continue;
+                        }
+                        Err(error) => panic!("forward target read failed: {error}"),
+                    }
                 }
                 Err(error)
                     if error.kind() == std::io::ErrorKind::WouldBlock

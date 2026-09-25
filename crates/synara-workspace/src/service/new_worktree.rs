@@ -531,7 +531,12 @@ impl WorkspaceService {
             return Err(invalid("managed worktree changed or is not safe to remove"));
         }
 
-        let git = git_for_workspace(self, &workspace, managed.repository_path.clone()).await?;
+        // Run removal from the stable project checkout rather than the managed
+        // checkout being removed. On SSH, using the target worktree as the remote
+        // cwd can make the transport report cleanup failure after Git successfully
+        // removes that directory.
+        let stable_root = project_directory(&workspace, &project)?;
+        let git = git_for_workspace(self, &workspace, stable_root).await?;
         let listed = git
             .execute(
                 GitOperation::Worktrees,

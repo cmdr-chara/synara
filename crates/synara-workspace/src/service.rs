@@ -288,12 +288,12 @@ impl WorkspaceService {
                 .cleanup_deleted_managed_worktree(managed.clone(), CancellationToken::new())
                 .await
         {
-            tracing::warn!(
-                task = %managed.task,
-                branch = %managed.branch,
-                repository = %managed.repository_path.display(),
-                error = %error,
-                "managed worktree retained after task deletion"
+            eprintln!(
+                "managed worktree retained after task deletion: task={} branch={} repository={} error={}",
+                managed.task,
+                managed.branch,
+                managed.repository_path.display(),
+                error
             );
         }
         Ok(())

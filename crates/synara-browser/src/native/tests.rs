@@ -80,7 +80,7 @@ fn real_webkit_navigation_consent_input_redirect_and_isolation() {
             let authentication_page =
                 request.starts_with("GET /auth ") || request.starts_with("GET /auth-again ");
             let body = if authentication_page {
-                "<!doctype html><title>Authentication fixture</title><style>html,body,a{width:100%;height:100%;margin:0}a{display:flex;align-items:center;justify-content:center}</style><a href='/auth-popup?token=private' target='_blank'>Continue sign-in</a>"
+                "<!doctype html><title>Authentication fixture</title><style>html,body,button{width:100%;height:100%;margin:0}button{display:flex;align-items:center;justify-content:center}</style><button onclick=\"document.title='Authentication click received';window.open('/auth-popup?token=private','synara-auth','popup,width=480,height=640');return false\">Continue sign-in</button>"
             } else {
                 "<!doctype html><title>Native browser fixture</title><style>body{min-height:2400px}</style><h1>REAL WEBKIT PAGE</h1><input aria-label='Name'><button onclick=\"document.querySelector('h1').textContent='Clicked '+document.querySelector('input').value\">Apply</button><script>window.__synaraRefs='page-forgery';</script>"
             };
@@ -564,21 +564,35 @@ fn real_webkit_navigation_consent_input_redirect_and_isolation() {
     }
 
     let popup_url = format!("{base}/auth-popup?token=private");
-    let requested = Rc::new(Cell::new(true));
+    let click_end = Instant::now() + Duration::from_secs(5);
+    loop {
+        pump(&mut host, &mut session);
+        if session
+            .tabs()
+            .iter()
+            .any(|tab| tab.id == auth && tab.title == "Authentication click received")
+        {
+            break;
+        }
+        assert!(
+            Instant::now() < click_end,
+            "trusted X11 click did not reach the authentication WebKit page"
+        );
+        std::thread::sleep(Duration::from_millis(10));
+    }
     let end = Instant::now() + Duration::from_secs(8);
     loop {
         pump(&mut host, &mut session);
-        if requested.get()
-            && session
-                .authentication_popup_preview(auth)
-                .unwrap()
-                .is_some()
+        if session
+            .authentication_popup_preview(auth)
+            .unwrap()
+            .is_some()
         {
             break;
         }
         assert!(
             Instant::now() < end,
-            "authentication popup request timed out"
+            "authentication popup request timed out after trusted page gesture"
         );
         std::thread::sleep(Duration::from_millis(10));
     }

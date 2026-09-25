@@ -9,7 +9,7 @@ const MILLIS_PER_DAY: i64 = 86_400_000;
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct HeatmapCell {
     epoch_day: i64,
-    count: usize,
+    count: u64,
     intensity: u8,
     date_label: String,
     month_label: String,
@@ -25,7 +25,7 @@ struct HeatmapColumn {
 /// Build a Sunday-first calendar for a fixed, bounded UTC window.
 /// Padding cells are `None`, so dates before the window and after `today` never
 /// acquire misleading zero counts.
-fn heatmap_columns(days: &BTreeMap<i64, usize>, today: i64) -> Vec<HeatmapColumn> {
+fn heatmap_columns(days: &BTreeMap<i64, u64>, today: i64) -> Vec<HeatmapColumn> {
     let first_day = today.saturating_sub(HEATMAP_WINDOW_DAYS - 1);
     let leading_padding = weekday_sunday_first(first_day);
     let mut cells = Vec::with_capacity(leading_padding + HEATMAP_WINDOW_DAYS as usize + 6);
@@ -98,7 +98,7 @@ fn date_labels(epoch_day: i64) -> (String, String, Option<(i32, u32)>) {
     )
 }
 
-fn heatmap_intensity(count: usize, sorted_active_counts: &[usize]) -> u8 {
+fn heatmap_intensity(count: u64, sorted_active_counts: &[u64]) -> u8 {
     if count == 0 || sorted_active_counts.is_empty() {
         return 0;
     }
@@ -316,8 +316,37 @@ pub(super) fn saved_model_selections(
         .into_any_element()
 }
 
-pub(super) fn turn_heatmap(activity: &ProfileActivity, today: i64) -> gpui::AnyElement {
-    let columns = heatmap_columns(&activity.days, today);
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum HeatmapMetric {
+    Tokens,
+    Prompts,
+}
+
+fn activity_heatmap_series(activity: &ProfileActivity) -> (&BTreeMap<i64, u64>, HeatmapMetric) {
+    if activity.token_days.values().any(|count| *count > 0) {
+        (&activity.token_days, HeatmapMetric::Tokens)
+    } else {
+        (&activity.days, HeatmapMetric::Prompts)
+    }
+}
+
+pub(super) fn activity_heatmap(activity: &ProfileActivity, today: i64) -> gpui::AnyElement {
+    let (days, metric) = activity_heatmap_series(activity);
+    let columns = heatmap_columns(days, today);
+    let (group_label, group_description, summary, disclosure) = match metric {
+        HeatmapMetric::Tokens => (
+            "Local token activity heatmap",
+            "Each labeled square is a UTC date and the number of provider-reported tokens from persisted turns. Weeks begin Sunday.",
+            "Provider-reported token activity · last 274 days · UTC dates and week boundaries",
+            "Token cells include only turns with both provider-reported input and output token counts; turns without token telemetry are omitted.",
+        ),
+        HeatmapMetric::Prompts => (
+            "Local turn activity heatmap",
+            "Each labeled square is a UTC date and the number of persisted turn starts. Weeks begin Sunday.",
+            "Local workspace turn starts · last 274 days · UTC dates and week boundaries",
+            "Counts come from persisted turn timestamps on this installation; they are not provider or account usage.",
+        ),
+    };
     let month_row = div()
         .w_full()
         .flex()
@@ -353,10 +382,11 @@ pub(super) fn turn_heatmap(activity: &ProfileActivity, today: i64) -> gpui::AnyE
                             .w_full()
                             .h(px(10.));
                     };
-                    let noun = if cell.count == 1 {
-                        "turn start"
-                    } else {
-                        "turn starts"
+                    let noun = match (metric, cell.count) {
+                        (HeatmapMetric::Tokens, 1) => "provider-reported token",
+                        (HeatmapMetric::Tokens, _) => "provider-reported tokens",
+                        (HeatmapMetric::Prompts, 1) => "turn start",
+                        (HeatmapMetric::Prompts, _) => "turn starts",
                     };
                     let label = format!("{}: {} {noun}", cell.date_label, cell.count);
                     div()
@@ -380,10 +410,8 @@ pub(super) fn turn_heatmap(activity: &ProfileActivity, today: i64) -> gpui::AnyE
             div()
                 .id("profile-turn-heatmap")
                 .role(gpui::Role::Group)
-                .aria_label("Local turn activity heatmap")
-                .aria_description(
-                    "Each labeled square is a UTC date and the number of persisted turn starts. Weeks begin Sunday.",
-                )
+                .aria_label(group_label)
+                .aria_description(group_description)
                 .flex()
                 .flex_col()
                 .gap(px(2.))
@@ -394,13 +422,13 @@ pub(super) fn turn_heatmap(activity: &ProfileActivity, today: i64) -> gpui::AnyE
             div()
                 .text_size(px(11.))
                 .text_color(rgb(palette().muted))
-                .child("Local workspace turn starts · last 274 days · UTC dates and week boundaries"),
+                .child(summary),
         )
         .child(
             div()
                 .text_size(px(11.))
                 .text_color(rgb(palette().muted))
-                .child("Counts come from persisted turn timestamps on this installation; they are not provider or account usage."),
+                .child(disclosure),
         )
         .into_any_element()
 }
@@ -584,6 +612,21 @@ mod tests {
                 .windows(2)
                 .any(|months| months == ["Dec", "Jan"])
         );
+    }
+
+    #[test]
+    fn activity_heatmap_prefers_reported_tokens_and_falls_back_to_turns() {
+        let mut activity = ProfileActivity::default();
+        activity.days.insert(10, 3);
+
+        let (days, metric) = activity_heatmap_series(&activity);
+        assert_eq!(metric, HeatmapMetric::Prompts);
+        assert_eq!(days.get(&10), Some(&3));
+
+        activity.token_days.insert(10, 4_500);
+        let (days, metric) = activity_heatmap_series(&activity);
+        assert_eq!(metric, HeatmapMetric::Tokens);
+        assert_eq!(days.get(&10), Some(&4_500));
     }
 
     #[test]

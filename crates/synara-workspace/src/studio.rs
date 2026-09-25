@@ -1,6 +1,7 @@
 //! Read-only Studio outputs and previews. Filesystem reads retain WorkspaceFs's
 //! handle-relative containment. Merely browsing never runs tools or writes files.
 use crate::{WorkspaceError, WorkspaceResult, WorkspaceService};
+use serde::{Deserialize, Serialize};
 use std::{
     collections::HashMap,
     path::{Component, Path, PathBuf},
@@ -20,6 +21,9 @@ const MAX_ENTRIES: usize = 10_000;
 const MAX_DEPTH: usize = 8;
 const MAX_PREVIEW_TEXT: usize = 1024 * 1024;
 const MAX_IMAGE_PIXELS: u64 = 16_000_000;
+const MAX_STUDIO_TEXT_VERSIONS: usize = 12;
+const MAX_STUDIO_TEXT_VERSION_BYTES: usize = 128 * 1024;
+const MAX_STUDIO_TEXT_VERSION_TOTAL_BYTES: usize = 1024 * 1024;
 
 /// Reporting turn reconstructed from durable events. File contents remain current.
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -75,6 +79,60 @@ pub enum StudioPreview {
         bytes: u64,
     },
 }
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct StudioTextVersion {
+    pub task: TaskId,
+    pub path: PathBuf,
+    pub text: String,
+    pub captured_at_ms: i64,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct StoredStudioTextVersions {
+    version: u32,
+    entries: Vec<StudioTextVersion>,
+}
+impl Default for StoredStudioTextVersions {
+    fn default() -> Self {
+        Self {
+            version: 1,
+            entries: Vec::new(),
+        }
+    }
+}
+impl StoredStudioTextVersions {
+    fn validate(&self, task: TaskId) -> WorkspaceResult<()> {
+        let total = self
+            .entries
+            .iter()
+            .try_fold(0usize, |total, entry| total.checked_add(entry.text.len()))
+            .ok_or_else(|| {
+                WorkspaceError::Invalid("Studio version history is too large.".into())
+            })?;
+        if self.version != 1
+            || self.entries.len() > MAX_STUDIO_TEXT_VERSIONS
+            || total > MAX_STUDIO_TEXT_VERSION_TOTAL_BYTES
+            || self.entries.iter().any(|entry| {
+                entry.task != task
+                    || !visible(&entry.path)
+                    || entry.text.len() > MAX_STUDIO_TEXT_VERSION_BYTES
+                    || entry.captured_at_ms <= 0
+            })
+        {
+            return Err(WorkspaceError::Invalid(
+                "Stored Studio version history is invalid or exceeds its bounds.".into(),
+            ));
+        }
+        Ok(())
+    }
+}
+fn studio_versions_key(task: TaskId) -> String {
+    format!("task-studio-versions:{task}")
+}
+
 fn visible(path: &Path) -> bool {
     let Some(text) = path.to_str() else {
         return false;
@@ -252,11 +310,15 @@ fn preview(root: &Path, path: &Path) -> WorkspaceResult<StudioPreview> {
         .and_then(|s| s.to_str())
         .unwrap_or("")
         .to_lowercase();
-    if extension == "docx" {
+    if matches!(extension.as_str(), "docx" | "odt") {
         if bytes.len() > crate::MAX_ATTACHMENT_BATCH_BYTES {
             return Ok(StudioPreview::Unsupported { bytes: size });
         }
-        let text = crate::storage::docx_text(&bytes)?;
+        let text = if extension == "docx" {
+            crate::storage::docx_text(&bytes)?
+        } else {
+            crate::storage::odt_text(&bytes)?
+        };
         return Ok(StudioPreview::DocumentText { text });
     }
     if matches!(
@@ -406,6 +468,62 @@ impl WorkspaceService {
         .await
         .map_err(|_| WorkspaceError::Worker)?
     }
+
+    /// Persist only a bounded text preview already selected and read through the
+    /// Studio filesystem boundary. Source files are never written by this ledger.
+    pub async fn capture_studio_text_version(
+        &self,
+        id: TaskId,
+        path: PathBuf,
+        text: String,
+    ) -> WorkspaceResult<Vec<StudioTextVersion>> {
+        self.local_studio_root(id).await?;
+        if !visible(&path) || text.len() > MAX_STUDIO_TEXT_VERSION_BYTES {
+            return Err(WorkspaceError::Invalid(
+                "This Studio text preview is outside the durable version-history bounds.".into(),
+            ));
+        }
+        self.access(move |store| {
+            store.task(id)?.ok_or(WorkspaceError::NotFound)?;
+            let key = studio_versions_key(id);
+            let mut stored = store
+                .preference::<StoredStudioTextVersions>(&key)?
+                .unwrap_or_default();
+            stored.validate(id)?;
+            let changed = stored
+                .entries
+                .iter()
+                .rev()
+                .find(|entry| entry.path == path)
+                .is_none_or(|entry| entry.text != text);
+            if changed {
+                stored.entries.push(StudioTextVersion {
+                    task: id,
+                    path: path.clone(),
+                    text,
+                    captured_at_ms: chrono::Utc::now().timestamp_millis(),
+                });
+                while stored.entries.len() > MAX_STUDIO_TEXT_VERSIONS
+                    || stored
+                        .entries
+                        .iter()
+                        .map(|entry| entry.text.len())
+                        .sum::<usize>()
+                        > MAX_STUDIO_TEXT_VERSION_TOTAL_BYTES
+                {
+                    stored.entries.remove(0);
+                }
+                stored.validate(id)?;
+                store.set_preference(&key, &stored)?;
+            }
+            Ok(stored
+                .entries
+                .into_iter()
+                .filter(|entry| entry.path == path)
+                .collect())
+        })
+        .await
+    }
 }
 #[cfg(test)]
 mod tests {
@@ -480,6 +598,78 @@ mod tests {
                 .is_empty()
         );
     }
+    #[tokio::test]
+    async fn studio_text_versions_survive_restart_dedupe_and_stay_bounded() {
+        let dir = tempfile::tempdir().unwrap();
+        let root = dir.path().join("studio");
+        std::fs::create_dir(&root).unwrap();
+        std::fs::write(root.join("report.md"), "one").unwrap();
+        let database = dir.path().join("workspace.sqlite3");
+        let service = WorkspaceService::open(database.clone()).await.unwrap();
+        let project = service.add_local_workspace(root.clone()).await.unwrap();
+        let agent = service.profiles().await.unwrap()[0].id.clone();
+        let task = service
+            .create_scoped_task_with_draft(
+                project.id,
+                "Studio".into(),
+                agent,
+                TaskScope::Studio,
+                "draft".into(),
+            )
+            .await
+            .unwrap();
+
+        assert_eq!(
+            service
+                .capture_studio_text_version(task.id, "report.md".into(), "one".into())
+                .await
+                .unwrap()
+                .len(),
+            1
+        );
+        assert_eq!(
+            service
+                .capture_studio_text_version(task.id, "report.md".into(), "one".into())
+                .await
+                .unwrap()
+                .len(),
+            1
+        );
+        let versions = service
+            .capture_studio_text_version(task.id, "report.md".into(), "two".into())
+            .await
+            .unwrap();
+        assert_eq!(versions.len(), 2);
+        drop(service);
+
+        let service = WorkspaceService::open(database).await.unwrap();
+        let versions = service
+            .capture_studio_text_version(task.id, "report.md".into(), "two".into())
+            .await
+            .unwrap();
+        assert_eq!(versions.len(), 2);
+        assert_eq!(versions[0].text, "one");
+        assert_eq!(versions[1].text, "two");
+
+        let payload = "x".repeat(96 * 1024);
+        let mut versions = Vec::new();
+        for index in 0..20 {
+            versions = service
+                .capture_studio_text_version(
+                    task.id,
+                    "report.md".into(),
+                    format!("{index:02}{payload}"),
+                )
+                .await
+                .unwrap();
+        }
+        assert!(versions.len() <= MAX_STUDIO_TEXT_VERSIONS);
+        assert!(
+            versions.iter().map(|entry| entry.text.len()).sum::<usize>()
+                <= MAX_STUDIO_TEXT_VERSION_TOTAL_BYTES
+        );
+    }
+
     #[test]
     fn preview_limits_and_symlinks_keep_filesystem_boundary() {
         let dir = tempfile::tempdir().unwrap();

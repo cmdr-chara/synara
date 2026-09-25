@@ -9,15 +9,15 @@ Detailed parity evidence lives in:
 
 ## Current status
 
-- Shipped feature slices: **56**
+- Shipped feature slices: **59**
 - Major remaining: **22**
-- Smaller remaining: **10**
+- Smaller remaining: **7**
 - Acceptance/integration remaining: **10**
-- Total remaining: **42**
+- Total remaining: **39**
 - Completely missing top-level surfaces: **0**
 - Broad verification gates still open: **21**
 
-The **42-item count is the execution count to use going forward**. The 21 verification
+The **39-item count is the execution count to use going forward**. The 21 verification
 gates are larger acceptance buckets and are not a feature count.
 
 Current upstream reference: `Emanuele-web04/synara@eaa61eded31b6755d4f30ba8eabc5d905cf817cb`.
@@ -73,10 +73,10 @@ journeys and the cancelled WebKit job remain unverified.
 - [x] S10 Richer structured metadata in thread export
 - [x] S11 Reply/context reuse into the current composer
 - [x] S12 Reply/context reuse into side/new tasks
-- [ ] S13 Exact upstream project-search ranking
-- [ ] S14 Exact ignored/generated-file search behavior
+- [x] S13 Exact upstream project-search ranking
+- [x] S14 Exact ignored/generated-file search behavior
 - [ ] S15 Per-turn provider/model activity breakdown
-- [ ] S16 Token heatmap
+- [x] S16 Token heatmap
 - [x] S17 Studio organization/filtering polish
 - [ ] S18 PDF text/link/form interaction after basic rendering
 
@@ -207,6 +207,67 @@ updater integrity checks and Studio output reopening.
   confirmation. M21 remains open for richer hunk review and any staging path
   that can protect the existing Git index correctly.
 
+### September 25 continuation
+
+- Batch 13 (in progress): recoverable Synara scratch worktrees can now be
+  explicitly cleaned up from the fork-environment menu. Cleanup is separately
+  reviewed, rechecks source/task/worktree/branch/scratch ownership under the
+  lifecycle lock, uses ordinary non-force Git worktree removal, preserves dirty
+  or locked checkouts, and retains the generated branch. M22 remains open for
+  automatic post-task lifecycle cleanup and broader crash reconciliation.
+  The worktree fork menu is now a unified environment chooser: it includes the
+  current local or SSH workspace, existing linked worktrees, recoverable
+  Synara worktrees, and reviewed new local worktrees. Remote workspaces clearly
+  disable only new managed checkout creation. M24 remains open for broader
+  orchestration policy across task creation and provider handoff.
+  ODT joins PDF and DOCX as a bounded binary document attachment. Only
+  `content.xml` is read, extracted text is previewed and sent as inert context,
+  embedded objects and external resources are ignored, and Studio can preview
+  the same read-only extraction. M29 remains open for wider document formats,
+  richer viewing and page-level workflows.
+  Studio text preview versions are now persisted per Hub under a bounded
+  12-entry/1 MiB ledger, deduplicated by file content and restored when the file
+  is previewed again after restart. Source files remain read-only and deleting
+  the task removes its version ledger. M30 remains open for richer long-running
+  lifecycle/version organization beyond text previews.
+  Computer Use now supports reviewed pointer movement and double-click in addition
+  to click, scroll, literal typing and named keys. Both new actions stay
+  window-addressed, coordinate-bounded, one-frame/one-action and stale-frame
+  checked. M27 remains open for richer targeting and broader platform behavior.
+  Direct-model turns now retain the exact reviewed provider/model route together
+  with the real token usage reported by that provider stream, and the transcript
+  activity summary shows that per-turn breakdown. ACP turns only show token
+  counts when their provider reports them; no provider/model identity is inferred.
+  M26 remains open for account/quota/billing telemetry, and S15 remains open for
+  provider/model attribution on ACP turns.
+- Batch 14: project entry-name search now applies the upstream leading
+  `@`/`.`/`/` query normalization before the existing exact/prefix/fuzzy/path
+  rank tiers and scores normalized POSIX-style paths on every platform. The
+  existing score/depth/path tie-break remains intact. S13 is complete; S14 and
+  N2 stay open for exact ignored/generated-file semantics, SSH GUI behavior and
+  wider platform acceptance. Profile Activity now prefers a bounded 274-day UTC
+  token heatmap when durable turns contain provider-reported input and output
+  token counts, otherwise it falls back to the existing turn-start heatmap.
+  Missing token telemetry is explicitly omitted rather than inferred. S16 is
+  complete; D11 remains open for broader provider/model and real account/quota
+  telemetry.
+- Batch 15 (in progress): project file-name and content search now use the
+  upstream project-search static generated-directory set exactly:
+  `.git`, `.convex`, `node_modules`, `.next`, `.turbo`, `dist`,
+  `build`, `out` and `.cache`. Native-only exclusions such as `target`,
+  `coverage`, virtual environments, minified files, source maps and compiled
+  extensions no longer disappear from project search merely because of their
+  name. Git worktrees now use bounded hardened `git ls-files --cached --others
+  --exclude-standard` plus chunked `git check-ignore --no-index`; non-Git
+  folders apply only the upstream generated-directory set. The same owner backs
+  local and SSH-helper search. S14 is complete.
+  Provider onboarding guidance now also covers Codex and Claude Code alongside
+  OpenCode and Gemini CLI, with exact executable checks before presenting a
+  copyable login command. S01 remains open for deeper provider-native setup/login
+  state. Voice recording now exposes a bounded elapsed-time indicator and
+  five-level live input meter in the composer; S02 remains open for broader
+  interaction controls and live-provider/platform acceptance.
+
 Verification receipts:
 [batch 1](docs/verification/parity-2026-09-24-batch1.md),
 [batch 2](docs/verification/parity-2026-09-24-batch2.md),
@@ -219,7 +280,10 @@ Verification receipts:
 [batch 9](docs/verification/parity-2026-09-24-batch9.md),
 [batch 10](docs/verification/parity-2026-09-24-batch10.md),
 [batch 11](docs/verification/parity-2026-09-24-batch11.md),
-[batch 12](docs/verification/parity-2026-09-24-batch12.md).
+[batch 12](docs/verification/parity-2026-09-24-batch12.md),
+[batch 13](docs/verification/parity-2026-09-25-batch13.md),
+[batch 14](docs/verification/parity-2026-09-25-batch14.md),
+[batch 15](docs/verification/parity-2026-09-25-batch15.md).
 
 ## How to update this roadmap
 

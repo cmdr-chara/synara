@@ -199,12 +199,14 @@ pub(super) fn inspect(name: String, bytes: &[u8]) -> WorkspaceResult<AttachmentI
             "An attachment has an invalid name, is empty or exceeds 2 MiB.",
         ));
     }
-    let (kind, dimensions) = if name.to_ascii_lowercase().ends_with(".docx")
-        && bytes.starts_with(b"PK\x03\x04")
-    {
+    let lower_name = name.to_ascii_lowercase();
+    let (kind, dimensions) = if lower_name.ends_with(".docx") && bytes.starts_with(b"PK\x03\x04") {
         docx_text(bytes)?;
         (AttachmentKind::Docx, None)
-    } else if name.to_ascii_lowercase().ends_with(".pdf") && bytes.starts_with(b"%PDF-") {
+    } else if lower_name.ends_with(".odt") && bytes.starts_with(b"PK\x03\x04") {
+        odt_text(bytes)?;
+        (AttachmentKind::Odt, None)
+    } else if lower_name.ends_with(".pdf") && bytes.starts_with(b"%PDF-") {
         (AttachmentKind::Pdf, None)
     } else if is_webp(bytes) {
         let image = decode_webp(bytes)?;
@@ -250,7 +252,7 @@ pub(super) fn inspect(name: String, bytes: &[u8]) -> WorkspaceResult<AttachmentI
             .to_ascii_lowercase();
         if matches!(
             extension.as_str(),
-            "png" | "jpg" | "jpeg" | "gif" | "pdf" | "zip" | "mp4" | "mp3" | "wav" | "docx"
+            "png" | "jpg" | "jpeg" | "gif" | "pdf" | "zip" | "mp4" | "mp3" | "wav" | "docx" | "odt"
         ) || bytes.contains(&0)
             || std::str::from_utf8(bytes).is_err()
         {
@@ -328,15 +330,15 @@ pub(crate) fn docx_text(bytes: &[u8]) -> WorkspaceResult<String> {
             })
             .ok_or_else(|| invalid("The DOCX document XML has an incomplete tag."))?;
         let tag = &remaining[..end];
-        if docx_tag(tag, "w:p") && !output.is_empty() && !output.ends_with('\n') {
+        if xml_tag(tag, "w:p") && !output.is_empty() && !output.ends_with('\n') {
             output.push('\n');
-        } else if docx_tag(tag, "w:t") {
+        } else if xml_tag(tag, "w:t") {
             in_text = !tag.trim_end().ends_with('/');
         } else if tag == "/w:t" {
             in_text = false;
-        } else if docx_tag(tag, "w:br") {
+        } else if xml_tag(tag, "w:br") {
             output.push('\n');
-        } else if docx_tag(tag, "w:tab") {
+        } else if xml_tag(tag, "w:tab") {
             output.push('\t');
         }
         if output.len() > MAX_DOCX_TEXT_BYTES {
@@ -352,7 +354,95 @@ pub(crate) fn docx_text(bytes: &[u8]) -> WorkspaceResult<String> {
     Ok(output)
 }
 
-fn docx_tag(tag: &str, name: &str) -> bool {
+/// Read only the ODT main content stream. Embedded objects, scripts,
+/// package relationships and external resources are never opened.
+pub(crate) fn odt_text(bytes: &[u8]) -> WorkspaceResult<String> {
+    let mut archive = zip::ZipArchive::new(Cursor::new(bytes))
+        .map_err(|_| invalid("The selected ODT is not a readable document archive."))?;
+    if archive.len() > 256 {
+        return Err(invalid("The ODT contains too many archive entries."));
+    }
+    let document = archive
+        .by_name("content.xml")
+        .map_err(|_| invalid("The ODT has no main content XML."))?;
+    if document.size() > MAX_DOCX_XML_BYTES as u64 {
+        return Err(invalid(
+            "The ODT content XML exceeds 1 MiB after decompression.",
+        ));
+    }
+    let mut xml = Vec::new();
+    document
+        .take(MAX_DOCX_XML_BYTES as u64 + 1)
+        .read_to_end(&mut xml)
+        .map_err(|_| invalid("The ODT document text could not be decoded."))?;
+    if xml.len() > MAX_DOCX_XML_BYTES {
+        return Err(invalid(
+            "The ODT content XML exceeds 1 MiB after decompression.",
+        ));
+    }
+    let xml =
+        std::str::from_utf8(&xml).map_err(|_| invalid("The ODT content XML is not UTF-8."))?;
+    if xml.contains("<!") {
+        return Err(invalid(
+            "ODT XML declarations with embedded entities are unsupported.",
+        ));
+    }
+    let mut output = String::new();
+    let mut remaining = xml;
+    let mut in_document = false;
+    while let Some(open) = remaining.find('<') {
+        if in_document {
+            append_xml_text(&remaining[..open], &mut output)?;
+        }
+        remaining = &remaining[open + 1..];
+        let mut quote = None;
+        let end = remaining
+            .char_indices()
+            .find_map(|(at, ch)| match (quote, ch) {
+                (None, '"' | '\'') => {
+                    quote = Some(ch);
+                    None
+                }
+                (Some(active), ch) if active == ch => {
+                    quote = None;
+                    None
+                }
+                (None, '>') => Some(at),
+                _ => None,
+            })
+            .ok_or_else(|| invalid("The ODT content XML has an incomplete tag."))?;
+        let tag = &remaining[..end];
+        if xml_tag(tag, "office:text") {
+            in_document = !tag.trim_end().ends_with('/');
+        } else if tag == "/office:text" {
+            in_document = false;
+        } else if in_document
+            && (xml_tag(tag, "text:p") || xml_tag(tag, "text:h"))
+            && !output.is_empty()
+            && !output.ends_with('\n')
+        {
+            output.push('\n');
+        } else if in_document && xml_tag(tag, "text:line-break") {
+            output.push('\n');
+        } else if in_document && xml_tag(tag, "text:tab") {
+            output.push('\t');
+        } else if in_document && xml_tag(tag, "text:s") {
+            output.push(' ');
+        }
+        if output.len() > MAX_DOCX_TEXT_BYTES {
+            return Err(invalid(
+                "ODT text exceeds the 512 KiB attachment context limit.",
+            ));
+        }
+        remaining = &remaining[end + 1..];
+    }
+    if in_document || output.trim().is_empty() {
+        return Err(invalid("The ODT has no extractable document text."));
+    }
+    Ok(output)
+}
+
+fn xml_tag(tag: &str, name: &str) -> bool {
     tag.strip_prefix(name).is_some_and(|rest| {
         rest.is_empty()
             || rest.chars().next().is_some_and(char::is_whitespace)
@@ -367,7 +457,7 @@ fn append_xml_text(mut text: &str, output: &mut String) -> WorkspaceResult<()> {
         let end = text
             .find(';')
             .filter(|end| *end <= 12)
-            .ok_or_else(|| invalid("The DOCX text has an invalid XML entity."))?;
+            .ok_or_else(|| invalid("The document text has an invalid XML entity."))?;
         let entity = &text[..end];
         let value = match entity {
             "amp" => '&',
@@ -383,7 +473,7 @@ fn append_xml_text(mut text: &str, output: &mut String) -> WorkspaceResult<()> {
                 number
                     .and_then(char::from_u32)
                     .filter(|ch| !ch.is_control() || matches!(*ch, '\n' | '\t'))
-                    .ok_or_else(|| invalid("The DOCX text has an unsupported XML entity."))?
+                    .ok_or_else(|| invalid("The document text has an unsupported XML entity."))?
             }
         };
         output.push(value);

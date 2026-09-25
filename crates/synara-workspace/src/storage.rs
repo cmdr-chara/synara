@@ -20,6 +20,7 @@ mod followups;
 pub use followups::{FollowupDraft, FollowupEdit, FollowupQueue};
 mod attachments;
 pub(crate) use attachments::docx_text;
+pub(crate) use attachments::odt_text;
 pub(crate) use attachments::still_webp_preview;
 pub use attachments::{
     AttachmentDraft, AttachmentEdit, AttachmentInfo, AttachmentInput, AttachmentKind,
@@ -329,7 +330,7 @@ PRAGMA user_version=2;")?;
             [task.thread_id.to_string()],
         )?;
         tx.execute(
-            "DELETE FROM preferences WHERE key IN (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13)",
+            "DELETE FROM preferences WHERE key IN (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13,?14)",
             params![
                 format!("task-draft:{id}"),
                 format!("message-pins:{id}"),
@@ -343,7 +344,8 @@ PRAGMA user_version=2;")?;
                 format!("task-recap:{id}"),
                 format!("task-inline-comments:{id}"),
                 format!("task-checkpoints:{id}"),
-                format!("task-goal:{id}")
+                format!("task-goal:{id}"),
+                format!("task-studio-versions:{id}")
             ],
         )?;
         let changed = tx.execute("DELETE FROM tasks WHERE id=?1", [id.to_string()])?;
@@ -635,6 +637,7 @@ fn valid_preference_key(key: &str) -> bool {
     }
     if let Some(id) = key
         .strip_prefix("task-goal:")
+        .or_else(|| key.strip_prefix("task-studio-versions:"))
         .or_else(|| key.strip_prefix("task-checkpoints:"))
         .or_else(|| key.strip_prefix("task-inline-comments:"))
         .or_else(|| key.strip_prefix("task-recap:"))

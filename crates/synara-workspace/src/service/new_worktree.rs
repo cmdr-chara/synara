@@ -390,6 +390,173 @@ impl WorkspaceService {
         )
         .await
     }
+
+    /// Remove only an unassigned Synara-managed scratch checkout after an
+    /// explicit review. Git's normal non-force worktree removal remains the
+    /// final dirty/locked-worktree guard; the generated branch is retained.
+    pub async fn cleanup_recoverable_worktree(
+        &self,
+        source_id: TaskId,
+        worktree_directory: PathBuf,
+        scratch_parent: PathBuf,
+        expected_branch: String,
+        policy: GitOperationPolicy,
+        cancel: CancellationToken,
+    ) -> WorkspaceResult<()> {
+        if !policy.allow_mutation || !policy.allow_repository_execution {
+            return Err(invalid(
+                "explicit worktree cleanup and repository-execution consent is required",
+            ));
+        }
+        if cancel.is_cancelled() {
+            return Err(invalid("worktree cleanup was cancelled before removal"));
+        }
+
+        let source = self.task(source_id).await?;
+        if !quiet(&source) {
+            return Err(invalid(
+                "stop or restore the source task before cleaning up an isolated fork",
+            ));
+        }
+        if !matches!(
+            self.workspace_for_task(&source).await?.location,
+            WorkspaceLocation::Local { .. }
+        ) {
+            return Err(invalid(
+                "managed worktree cleanup currently requires a local project",
+            ));
+        }
+
+        let _lifecycle = self.lock_worktree_lifecycle().await;
+        let current_source = self.task(source_id).await?;
+        if !unchanged(&source, &current_source) {
+            return Err(invalid(
+                "the source task changed; review the cleanup choice again",
+            ));
+        }
+        let selected_path = normalized_absolute(&worktree_directory)
+            .ok_or_else(|| invalid("select a valid linked worktree directory"))?;
+        let worktree = self
+            .project_worktrees(current_source.project_id)
+            .await?
+            .into_iter()
+            .find(|item| item.path == selected_path && !item.project_root)
+            .ok_or_else(|| {
+                invalid("the selected directory is no longer a linked project worktree")
+            })?;
+        if worktree.bare || worktree.prunable || worktree.locked {
+            return Err(invalid(
+                "the selected linked worktree is locked or unavailable",
+            ));
+        }
+        if worktree.assigned_task.is_some() {
+            return Err(invalid(
+                "the selected worktree now belongs to a task; nothing was removed",
+            ));
+        }
+        if worktree.branch.as_deref() != Some(expected_branch.as_str()) {
+            return Err(invalid(
+                "the selected worktree branch changed; review cleanup again",
+            ));
+        }
+        let token = expected_branch
+            .strip_prefix("synara/")
+            .filter(|token| uuid::Uuid::parse_str(token).is_ok_and(|id| id.to_string() == *token))
+            .ok_or_else(|| invalid("the selected worktree is not a Synara recovery branch"))?;
+        let expected_directory = format!("worktree-{token}");
+        if worktree
+            .repository_path
+            .file_name()
+            .and_then(|name| name.to_str())
+            != Some(expected_directory.as_str())
+        {
+            return Err(invalid(
+                "the selected worktree branch and directory no longer identify the same Synara fork",
+            ));
+        }
+
+        let git = GitOperations::new(current_source.working_directory.clone());
+        let listed = git
+            .execute(
+                GitOperation::Worktrees,
+                GitOperationOptions::default(),
+                CancellationToken::new(),
+                None,
+            )
+            .await?;
+        let entries = parse_git_worktrees(&listed.stdout)?;
+        let source_repository = entries
+            .iter()
+            .filter(|entry| current_source.working_directory.starts_with(&entry.path))
+            .max_by_key(|entry| entry.path.components().count())
+            .filter(|entry| !entry.bare && !entry.locked && !entry.prunable)
+            .ok_or_else(|| invalid("the source worktree is unavailable or locked"))?;
+        let scratch = validate_parent(&scratch_parent, &source_repository.path)?;
+        if worktree.repository_path.parent() != Some(scratch.as_path()) {
+            return Err(invalid(
+                "the selected worktree is outside Synara's managed scratch directory",
+            ));
+        }
+        let target = entries
+            .iter()
+            .find(|entry| entry.path == worktree.repository_path)
+            .filter(|entry| {
+                !entry.bare
+                    && !entry.locked
+                    && !entry.prunable
+                    && entry.branch.as_deref() == Some(expected_branch.as_str())
+            })
+            .ok_or_else(|| invalid("the selected Synara worktree changed; review cleanup again"))?;
+        if source_repository.path == target.path
+            || source_repository.path.starts_with(&target.path)
+            || target.path.starts_with(&source_repository.path)
+        {
+            return Err(invalid(
+                "the selected worktree overlaps the source repository",
+            ));
+        }
+
+        let options = GitOperationOptions {
+            policy: GitOperationPolicy {
+                allow_mutation: true,
+                allow_repository_execution: true,
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        git.execute(
+            GitOperation::RemoveWorktree {
+                path: worktree.repository_path.clone(),
+            },
+            options,
+            cancel,
+            None,
+        )
+        .await
+        .map_err(|error| {
+            invalid(format!(
+                "Managed worktree cleanup failed: {error}. Dirty or locked files were not forced away."
+            ))
+        })?;
+
+        let listed = git
+            .execute(
+                GitOperation::Worktrees,
+                GitOperationOptions::default(),
+                CancellationToken::new(),
+                None,
+            )
+            .await?;
+        if parse_git_worktrees(&listed.stdout)?
+            .iter()
+            .any(|entry| entry.path == worktree.repository_path)
+        {
+            return Err(invalid(
+                "Git still reports the managed worktree after cleanup",
+            ));
+        }
+        Ok(())
+    }
 }
 
 #[cfg(test)]
@@ -492,6 +659,105 @@ mod tests {
         assert_eq!(entry.assigned_task, Some(task.id));
         assert_eq!(entry.branch.as_deref(), Some(branch.as_str()));
     }
+    #[tokio::test]
+    async fn recoverable_worktree_cleanup_is_exact_non_force_and_keeps_dirty_checkouts() {
+        let dir = tempfile::tempdir().unwrap();
+        let repo = dir.path().join("repo");
+        let scratch = dir.path().join("scratch");
+        std::fs::create_dir(&scratch).unwrap();
+        repository(&repo);
+        let service = WorkspaceService::memory().unwrap();
+        let project = service.add_local_workspace(repo.clone()).await.unwrap();
+        let source = service
+            .create_task(
+                project.id,
+                "source".into(),
+                service.profiles().await.unwrap()[0].id.clone(),
+            )
+            .await
+            .unwrap();
+        let policy = GitOperationPolicy {
+            allow_mutation: true,
+            allow_repository_execution: true,
+            ..Default::default()
+        };
+
+        let token = uuid::Uuid::new_v4();
+        let branch = format!("synara/{token}");
+        let destination = scratch.join(format!("worktree-{token}"));
+        git(
+            &repo,
+            &[
+                "worktree",
+                "add",
+                "-b",
+                branch.as_str(),
+                destination.to_str().unwrap(),
+                "HEAD",
+            ],
+        );
+        assert!(
+            service
+                .cleanup_recoverable_worktree(
+                    source.id,
+                    destination.clone(),
+                    scratch.clone(),
+                    branch.clone(),
+                    GitOperationPolicy::default(),
+                    CancellationToken::new(),
+                )
+                .await
+                .is_err()
+        );
+        assert!(destination.exists());
+        service
+            .cleanup_recoverable_worktree(
+                source.id,
+                destination.clone(),
+                scratch.clone(),
+                branch,
+                policy,
+                CancellationToken::new(),
+            )
+            .await
+            .unwrap();
+        assert!(!destination.exists());
+
+        let token = uuid::Uuid::new_v4();
+        let dirty_branch = format!("synara/{token}");
+        let dirty = scratch.join(format!("worktree-{token}"));
+        git(
+            &repo,
+            &[
+                "worktree",
+                "add",
+                "-b",
+                dirty_branch.as_str(),
+                dirty.to_str().unwrap(),
+                "HEAD",
+            ],
+        );
+        std::fs::write(dirty.join("untracked.txt"), "keep me").unwrap();
+        assert!(
+            service
+                .cleanup_recoverable_worktree(
+                    source.id,
+                    dirty.clone(),
+                    scratch,
+                    dirty_branch,
+                    policy,
+                    CancellationToken::new(),
+                )
+                .await
+                .is_err()
+        );
+        assert!(dirty.exists());
+        assert_eq!(
+            std::fs::read_to_string(dirty.join("untracked.txt")).unwrap(),
+            "keep me"
+        );
+    }
+
     #[tokio::test]
     async fn stale_head_and_cancelled_plans_create_nothing() {
         let dir = tempfile::tempdir().unwrap();

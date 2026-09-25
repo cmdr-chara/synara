@@ -12,7 +12,7 @@ use std::{
     ffi::OsString,
     io::{Read, Write},
     path::{Component, Path, PathBuf},
-    sync::{Arc, Mutex},
+    sync::Mutex,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -437,66 +437,38 @@ impl WorkspaceFs {
         } else {
             self.relative(directory)?
         };
-        let mut ignore_work = SearchIgnoreWorkBudget::default();
-        let (start_rules, start_ignored) = self.search_ignore_state(&start, &mut ignore_work)?;
-        if start_ignored {
-            return Ok(Vec::new());
-        }
-        let mut pending = vec![(start, start_rules)];
-        let mut scanned = 0_usize;
+        let entries = crate::project_search::entries(self)?;
         let mut matches = Vec::new();
-        while let Some((directory, inherited_rules)) = pending.pop() {
-            let rules =
-                self.extend_search_ignore_rules(&directory, inherited_rules, &mut ignore_work)?;
-            for entry in self.entries(&directory)? {
-                scanned = scanned.checked_add(1).ok_or(RuntimeError::Limit)?;
-                if scanned > 10_000 {
-                    return Err(RuntimeError::Limit);
-                }
-                if entry.symlink || (!entry.directory && skip_search_file(&entry.name)) {
-                    continue;
-                }
-                if self.search_path_ignored(
-                    &entry.relative_path,
-                    entry.directory,
-                    &rules,
-                    &mut ignore_work,
-                )? {
-                    continue;
-                }
-                if entry.directory {
-                    if skip_search_directory(&entry.name) {
-                        continue;
-                    }
-                    pending.push((entry.relative_path.clone(), rules.clone()));
-                    continue;
-                }
-                let snapshot = match self.read(&entry.relative_path) {
-                    Ok(snapshot) => snapshot,
-                    Err(RuntimeError::Unsupported(_) | RuntimeError::Limit) => continue,
-                    Err(error) => return Err(error),
-                };
-                for (line_index, line) in snapshot.text.lines().enumerate() {
-                    for (column, _) in line.match_indices(query) {
-                        matches.push(SearchMatch {
-                            relative_path: entry.relative_path.clone(),
-                            line: u64::try_from(line_index + 1).map_err(|_| RuntimeError::Limit)?,
-                            column: u64::try_from(column + 1).map_err(|_| RuntimeError::Limit)?,
-                            preview: line.chars().take(256).collect(),
-                        });
-                        if matches.len() >= max_matches {
-                            return Ok(matches);
-                        }
+        for entry in entries {
+            if entry.directory
+                || (!start.as_os_str().is_empty() && !entry.relative_path.starts_with(&start))
+            {
+                continue;
+            }
+            let snapshot = match self.read(&entry.relative_path) {
+                Ok(snapshot) => snapshot,
+                Err(
+                    RuntimeError::Io(_)
+                    | RuntimeError::Denied(_)
+                    | RuntimeError::Unsupported(_)
+                    | RuntimeError::Limit,
+                ) => continue,
+                Err(error) => return Err(error),
+            };
+            for (line_index, line) in snapshot.text.lines().enumerate() {
+                for (column, _) in line.match_indices(query) {
+                    matches.push(SearchMatch {
+                        relative_path: entry.relative_path.clone(),
+                        line: u64::try_from(line_index + 1).map_err(|_| RuntimeError::Limit)?,
+                        column: u64::try_from(column + 1).map_err(|_| RuntimeError::Limit)?,
+                        preview: line.chars().take(256).collect(),
+                    });
+                    if matches.len() >= max_matches {
+                        return Ok(matches);
                     }
                 }
             }
         }
-        matches.sort_by(|a, b| {
-            a.relative_path
-                .cmp(&b.relative_path)
-                .then(a.line.cmp(&b.line))
-                .then(a.column.cmp(&b.column))
-        });
         Ok(matches)
     }
 
@@ -541,45 +513,19 @@ impl WorkspaceFs {
         {
             return Err(RuntimeError::Invalid("invalid file name search".into()));
         }
-        let query = query.trim().to_lowercase();
-        let mut ignore_work = SearchIgnoreWorkBudget::default();
-        let (start_rules, _) = self.search_ignore_state(Path::new(""), &mut ignore_work)?;
-        let mut pending = vec![(PathBuf::new(), start_rules)];
-        let mut scanned = 0_usize;
+        let query = normalize_workspace_entry_search_query(query);
+        if query.is_empty() {
+            return Err(RuntimeError::Invalid("invalid file name search".into()));
+        }
         let mut matches = Vec::<(u32, PathBuf, FileEntry)>::new();
-        while let Some((directory, inherited_rules)) = pending.pop() {
-            let rules =
-                self.extend_search_ignore_rules(&directory, inherited_rules, &mut ignore_work)?;
-            for entry in self.entries(&directory)? {
-                scanned = scanned.checked_add(1).ok_or(RuntimeError::Limit)?;
-                if scanned > 10_000 {
-                    return Err(RuntimeError::Limit);
-                }
-                if entry.symlink || (!entry.directory && skip_search_file(&entry.name)) {
-                    continue;
-                }
-                if self.search_path_ignored(
-                    &entry.relative_path,
-                    entry.directory,
-                    &rules,
-                    &mut ignore_work,
-                )? {
-                    continue;
-                }
-                if entry.directory {
-                    if skip_search_directory(&entry.name) {
-                        continue;
-                    }
-                    pending.push((entry.relative_path.clone(), rules.clone()));
-                    if !include_directories {
-                        continue;
-                    }
-                }
-                let name = entry.name.to_lowercase();
-                let path = entry.relative_path.to_string_lossy().to_lowercase();
-                if let Some(score) = file_search_score(&name, &path, &query) {
-                    matches.push((score, entry.relative_path.clone(), entry));
-                }
+        for entry in crate::project_search::entries(self)? {
+            if entry.directory && !include_directories {
+                continue;
+            }
+            let name = entry.name.to_lowercase();
+            let path = normalized_workspace_entry_search_path(&entry.relative_path);
+            if let Some(score) = file_search_score(&name, &path, &query) {
+                matches.push((score, entry.relative_path.clone(), entry));
             }
         }
         matches.sort_by(|a, b| {
@@ -589,135 +535,6 @@ impl WorkspaceFs {
         });
         matches.truncate(max_matches);
         Ok(matches.into_iter().map(|(_, _, entry)| entry).collect())
-    }
-
-    /// Load rules from each ancestor before searching a subtree. Rules in a
-    /// directory apply to its children; rules from deeper directories are
-    /// appended later and therefore take precedence.
-    fn search_ignore_state(
-        &self,
-        directory: &Path,
-        ignore_work: &mut SearchIgnoreWorkBudget,
-    ) -> Result<(Arc<Vec<SearchIgnoreRule>>, bool), RuntimeError> {
-        let mut rules = Arc::new(Vec::new());
-        let mut prefix = PathBuf::new();
-        for component in directory.components() {
-            match component {
-                Component::Normal(name) => {
-                    rules = self.extend_search_ignore_rules(&prefix, rules, ignore_work)?;
-                    prefix.push(name);
-                    if self.search_path_ignored(&prefix, true, &rules, ignore_work)? {
-                        return Ok((rules, true));
-                    }
-                }
-                Component::CurDir => {}
-                _ => return Err(RuntimeError::Denied("invalid search directory".into())),
-            }
-        }
-        Ok((rules, false))
-    }
-
-    fn extend_search_ignore_rules(
-        &self,
-        directory: &Path,
-        rules: Arc<Vec<SearchIgnoreRule>>,
-        ignore_work: &mut SearchIgnoreWorkBudget,
-    ) -> Result<Arc<Vec<SearchIgnoreRule>>, RuntimeError> {
-        let mut added = Vec::new();
-        for ignore_name in [".gitignore", ".ignore", ".rgignore"] {
-            let path = directory.join(ignore_name);
-            let bytes = match self.file_length(&path) {
-                Ok(bytes) => bytes,
-                Err(
-                    RuntimeError::Io(_)
-                    | RuntimeError::Denied(_)
-                    | RuntimeError::Limit
-                    | RuntimeError::Unsupported(_),
-                ) => continue,
-                Err(error) => return Err(error),
-            };
-            if bytes > MAX_SEARCH_IGNORE_BYTES as u64 {
-                continue;
-            }
-            ignore_work.charge(usize::try_from(bytes).map_err(|_| RuntimeError::Limit)?)?;
-            let snapshot = match self.read(&path) {
-                Ok(snapshot) => snapshot,
-                // Ignore files must not make an otherwise searchable tree
-                // fail. This also keeps symlink and permission behavior
-                // bounded without opening or following non-regular files.
-                Err(
-                    RuntimeError::Io(_)
-                    | RuntimeError::Denied(_)
-                    | RuntimeError::Limit
-                    | RuntimeError::Unsupported(_),
-                ) => continue,
-                Err(error) => return Err(error),
-            };
-            if snapshot.text.len() > MAX_SEARCH_IGNORE_BYTES {
-                continue;
-            }
-            for line in snapshot.text.lines() {
-                if rules.len() + added.len() < MAX_SEARCH_IGNORE_RULES {
-                    if let Some(rule) = parse_search_ignore_rule(directory, line) {
-                        added.push(rule);
-                    }
-                }
-            }
-        }
-        if added.is_empty() {
-            return Ok(rules);
-        }
-        let mut combined = (*rules).clone();
-        combined.extend(added);
-        Ok(Arc::new(combined))
-    }
-
-    fn search_path_ignored(
-        &self,
-        path: &Path,
-        directory: bool,
-        rules: &[SearchIgnoreRule],
-        ignore_work: &mut SearchIgnoreWorkBudget,
-    ) -> Result<bool, RuntimeError> {
-        if rules.is_empty() {
-            return Ok(false);
-        }
-        ignore_work.charge(path.as_os_str().len().max(1))?;
-        let parts = path
-            .components()
-            .map(|component| match component {
-                Component::Normal(name) => name
-                    .to_str()
-                    .ok_or_else(|| RuntimeError::Unsupported("search path is not UTF-8".into())),
-                _ => Err(RuntimeError::Denied("invalid search path component".into())),
-            })
-            .collect::<Result<Vec<_>, _>>()?;
-        let mut ignored = false;
-        for rule in rules {
-            let base_work = rule
-                .base_components
-                .iter()
-                .map(String::len)
-                .fold(1_usize, |total, length| total.saturating_add(length));
-            ignore_work.charge(base_work)?;
-            if rule.base_components.len() > parts.len()
-                || !parts
-                    .iter()
-                    .zip(&rule.base_components)
-                    .all(|(part, base)| *part == base)
-            {
-                continue;
-            }
-            if search_ignore_rule_matches(
-                rule,
-                &parts[rule.base_components.len()..],
-                directory,
-                ignore_work,
-            )? {
-                ignored = !rule.negated;
-            }
-        }
-        Ok(ignored)
     }
 
     pub fn entries(&self, path: &Path) -> Result<Vec<FileEntry>, RuntimeError> {
@@ -756,417 +573,15 @@ impl WorkspaceFs {
     }
 }
 
-const MAX_SEARCH_IGNORE_BYTES: usize = 1024 * 1024;
-const MAX_SEARCH_IGNORE_RULES: usize = 4096;
-const MAX_SEARCH_IGNORE_PATTERN_CHARS: usize = 1024;
-// Charges ignore-file bytes and upper bounds for path/rule and glob-DP work.
-const MAX_SEARCH_IGNORE_MATCH_WORK: usize = 5_000_000;
-
-struct SearchIgnoreWorkBudget {
-    remaining: usize,
+fn normalize_workspace_entry_search_query(query: &str) -> String {
+    query
+        .trim()
+        .trim_start_matches(|character: char| matches!(character, '@' | '.' | '/'))
+        .to_lowercase()
 }
 
-impl Default for SearchIgnoreWorkBudget {
-    fn default() -> Self {
-        Self {
-            remaining: MAX_SEARCH_IGNORE_MATCH_WORK,
-        }
-    }
-}
-
-impl SearchIgnoreWorkBudget {
-    fn charge(&mut self, work: usize) -> Result<(), RuntimeError> {
-        self.remaining = self
-            .remaining
-            .checked_sub(work)
-            .ok_or(RuntimeError::Limit)?;
-        Ok(())
-    }
-}
-
-#[derive(Clone, Debug)]
-struct SearchIgnoreRule {
-    base_components: Vec<String>,
-    pattern: Vec<SearchIgnoreToken>,
-    negated: bool,
-    directory_only: bool,
-    anchored: bool,
-    has_slash: bool,
-    literal: Option<String>,
-}
-
-#[derive(Clone, Debug)]
-enum SearchIgnoreToken {
-    Literal(char),
-    Any,
-    StarNoSlash,
-    StarAny,
-    StarDirectories,
-    Class {
-        negated: bool,
-        ranges: Vec<(char, char)>,
-    },
-}
-
-fn parse_search_ignore_rule(base: &Path, line: &str) -> Option<SearchIgnoreRule> {
-    let mut line = trim_unescaped_trailing_spaces(line).to_owned();
-    if line.is_empty() {
-        return None;
-    }
-    if line.starts_with('#') {
-        return None;
-    }
-    let escaped_leading_special = line.starts_with("\\#") || line.starts_with("\\!");
-    if escaped_leading_special {
-        line.remove(0);
-    }
-
-    let negated = if !escaped_leading_special && line.starts_with('!') {
-        line.remove(0);
-        true
-    } else {
-        false
-    };
-    if line.is_empty() {
-        return None;
-    }
-    let anchored = line.starts_with('/');
-    if anchored {
-        line.remove(0);
-    }
-    let directory_only = line.ends_with('/');
-    if directory_only {
-        line.pop();
-    }
-    if line.is_empty() {
-        return None;
-    }
-    if line.chars().count() > MAX_SEARCH_IGNORE_PATTERN_CHARS {
-        return None;
-    }
-
-    let (pattern, has_slash, literal) = compile_search_ignore_pattern(&line);
-    let base_components = base
-        .components()
-        .filter_map(|component| match component {
-            Component::Normal(name) => name.to_str().map(str::to_owned),
-            _ => None,
-        })
-        .collect();
-    Some(SearchIgnoreRule {
-        base_components,
-        pattern,
-        negated,
-        directory_only,
-        anchored,
-        has_slash,
-        literal,
-    })
-}
-
-fn trim_unescaped_trailing_spaces(line: &str) -> &str {
-    let bytes = line.as_bytes();
-    let mut end = bytes.len();
-    while end > 0 && bytes[end - 1] == b' ' {
-        let mut slash_count = 0;
-        let mut cursor = end - 1;
-        while cursor > 0 && bytes[cursor - 1] == b'\\' {
-            slash_count += 1;
-            cursor -= 1;
-        }
-        if slash_count % 2 == 1 {
-            break;
-        }
-        end -= 1;
-    }
-    &line[..end]
-}
-
-fn compile_search_ignore_pattern(source: &str) -> (Vec<SearchIgnoreToken>, bool, Option<String>) {
-    let chars: Vec<char> = source.chars().collect();
-    let mut tokens = Vec::new();
-    let mut has_slash = false;
-    let mut is_literal = true;
-    let mut literal = String::new();
-    let mut index = 0;
-    while index < chars.len() {
-        match chars[index] {
-            '\\' if index + 1 < chars.len() => {
-                let escaped = chars[index + 1];
-                if escaped == '/' {
-                    has_slash = true;
-                }
-                tokens.push(SearchIgnoreToken::Literal(escaped));
-                literal.push(escaped);
-                index += 2;
-            }
-            '/' => {
-                has_slash = true;
-                tokens.push(SearchIgnoreToken::Literal('/'));
-                literal.push('/');
-                index += 1;
-            }
-            '?' => {
-                is_literal = false;
-                tokens.push(SearchIgnoreToken::Any);
-                index += 1;
-            }
-            '[' => {
-                if let Some((next, negated, ranges)) = parse_search_ignore_class(&chars, index) {
-                    is_literal = false;
-                    tokens.push(SearchIgnoreToken::Class { negated, ranges });
-                    index = next;
-                } else {
-                    tokens.push(SearchIgnoreToken::Literal('['));
-                    literal.push('[');
-                    index += 1;
-                }
-            }
-            '*' => {
-                is_literal = false;
-                let start = index;
-                while index < chars.len() && chars[index] == '*' {
-                    index += 1;
-                }
-                let count = index - start;
-                let previous_is_slash = start > 0 && chars[start - 1] == '/';
-                let next_is_slash = index < chars.len() && chars[index] == '/';
-                if count >= 2 && next_is_slash && (start == 0 || previous_is_slash) {
-                    tokens.push(SearchIgnoreToken::StarDirectories);
-                    index += 1;
-                } else if count >= 2 && (index == chars.len() || previous_is_slash) {
-                    tokens.push(SearchIgnoreToken::StarAny);
-                } else {
-                    tokens.push(SearchIgnoreToken::StarNoSlash);
-                }
-            }
-            character => {
-                tokens.push(SearchIgnoreToken::Literal(character));
-                literal.push(character);
-                index += 1;
-            }
-        }
-    }
-    (
-        tokens,
-        has_slash,
-        if is_literal { Some(literal) } else { None },
-    )
-}
-
-fn parse_search_ignore_class(
-    chars: &[char],
-    start: usize,
-) -> Option<(usize, bool, Vec<(char, char)>)> {
-    let mut index = start + 1;
-    if index >= chars.len() {
-        return None;
-    }
-    let negated = matches!(chars[index], '!' | '^');
-    if negated {
-        index += 1;
-    }
-    let mut members = Vec::new();
-    let mut closed = false;
-    while index < chars.len() {
-        match chars[index] {
-            ']' if !members.is_empty() => {
-                index += 1;
-                closed = true;
-                break;
-            }
-            '\\' if index + 1 < chars.len() => {
-                members.push(chars[index + 1]);
-                index += 2;
-            }
-            character => {
-                members.push(character);
-                index += 1;
-            }
-        }
-    }
-    if !closed || members.is_empty() {
-        return None;
-    }
-    let mut ranges = Vec::new();
-    let mut member = 0;
-    while member < members.len() {
-        if member + 2 < members.len() && members[member + 1] == '-' {
-            let first = members[member];
-            let last = members[member + 2];
-            if first <= last {
-                ranges.push((first, last));
-                member += 3;
-                continue;
-            }
-        }
-        ranges.push((members[member], members[member]));
-        member += 1;
-    }
-    Some((index, negated, ranges))
-}
-
-fn search_ignore_rule_matches(
-    rule: &SearchIgnoreRule,
-    parts: &[&str],
-    path_is_directory: bool,
-    ignore_work: &mut SearchIgnoreWorkBudget,
-) -> Result<bool, RuntimeError> {
-    if parts.is_empty() {
-        return Ok(false);
-    }
-
-    for end in 1..=parts.len() {
-        ignore_work.charge(1)?;
-        let is_directory = end < parts.len() || path_is_directory;
-        if rule.directory_only && !is_directory {
-            continue;
-        }
-        let matched = if !rule.anchored && !rule.has_slash {
-            let part = parts[end - 1];
-            match &rule.literal {
-                Some(literal) => {
-                    ignore_work.charge(literal.len().saturating_add(part.len()).max(1))?;
-                    literal == part
-                }
-                None => search_ignore_glob_matches(&rule.pattern, part, ignore_work)?,
-            }
-        } else {
-            let prefix_size = parts[..end]
-                .iter()
-                .map(|part| part.len().saturating_add(1))
-                .fold(0_usize, |total, length| total.saturating_add(length));
-            ignore_work.charge(prefix_size.max(1))?;
-            let relative_prefix = parts[..end].join("/");
-            match &rule.literal {
-                Some(literal) => {
-                    ignore_work
-                        .charge(literal.len().saturating_add(relative_prefix.len()).max(1))?;
-                    literal == &relative_prefix
-                }
-                None => search_ignore_glob_matches(&rule.pattern, &relative_prefix, ignore_work)?,
-            }
-        };
-        if matched {
-            return Ok(true);
-        }
-    }
-    Ok(false)
-}
-
-fn search_ignore_glob_matches(
-    pattern: &[SearchIgnoreToken],
-    value: &str,
-    ignore_work: &mut SearchIgnoreWorkBudget,
-) -> Result<bool, RuntimeError> {
-    let work = pattern
-        .len()
-        .saturating_mul(value.len().saturating_add(1))
-        .saturating_add(value.len())
-        .max(1);
-    ignore_work.charge(work)?;
-    let value: Vec<char> = value.chars().collect();
-    let mut current = vec![false; value.len() + 1];
-    current[0] = true;
-    for token in pattern {
-        let mut next = vec![false; value.len() + 1];
-        match token {
-            SearchIgnoreToken::Literal(expected) => {
-                for index in 0..value.len() {
-                    if current[index] && value[index] == *expected {
-                        next[index + 1] = true;
-                    }
-                }
-            }
-            SearchIgnoreToken::Any => {
-                for index in 0..value.len() {
-                    if current[index] && value[index] != '/' {
-                        next[index + 1] = true;
-                    }
-                }
-            }
-            SearchIgnoreToken::Class { negated, ranges } => {
-                for index in 0..value.len() {
-                    let character = value[index];
-                    let contains = ranges
-                        .iter()
-                        .any(|(first, last)| *first <= character && character <= *last);
-                    if current[index] && character != '/' && (contains != *negated) {
-                        next[index + 1] = true;
-                    }
-                }
-            }
-            SearchIgnoreToken::StarNoSlash | SearchIgnoreToken::StarAny => {
-                let may_cross_slash = matches!(token, SearchIgnoreToken::StarAny);
-                for index in 0..=value.len() {
-                    next[index] = current[index]
-                        || (index > 0
-                            && next[index - 1]
-                            && (may_cross_slash || value[index - 1] != '/'));
-                }
-            }
-            SearchIgnoreToken::StarDirectories => {
-                let mut reachable_start = false;
-                for index in 0..=value.len() {
-                    next[index] =
-                        current[index] || (index > 0 && value[index - 1] == '/' && reachable_start);
-                    reachable_start |= current[index];
-                }
-            }
-        }
-        current = next;
-    }
-    Ok(current[value.len()])
-}
-
-fn skip_search_file(name: &str) -> bool {
-    let lower = name.to_ascii_lowercase();
-    lower == ".ds_store"
-        || lower == "thumbs.db"
-        || lower.ends_with(".min.js")
-        || lower.ends_with(".min.css")
-        || lower.ends_with(".js.map")
-        || lower.ends_with(".css.map")
-        || lower.ends_with(".pyc")
-        || lower.ends_with(".pyo")
-        || lower.ends_with(".class")
-        || lower.ends_with(".tsbuildinfo")
-        || [".o", ".obj", ".a", ".lib", ".so", ".dylib", ".dll", ".exe"]
-            .iter()
-            .any(|extension| lower.ends_with(*extension))
-}
-
-fn skip_search_directory(name: &str) -> bool {
-    matches!(
-        name,
-        ".git"
-            | ".convex"
-            | "node_modules"
-            | ".next"
-            | ".turbo"
-            | "dist"
-            | "build"
-            | "out"
-            | ".cache"
-            | "target"
-            | "coverage"
-            | ".venv"
-            | "venv"
-            | "__pycache__"
-            | ".pytest_cache"
-            | ".mypy_cache"
-            | ".ruff_cache"
-            | ".tox"
-            | "bower_components"
-            | "Pods"
-            | "DerivedData"
-            | ".gradle"
-            | ".parcel-cache"
-            | ".svelte-kit"
-            | ".angular"
-            | "bin"
-            | "obj"
-    )
+fn normalized_workspace_entry_search_path(path: &Path) -> String {
+    path.to_string_lossy().replace('\\', "/").to_lowercase()
 }
 
 fn subsequence_penalty(value: &str, query: &str) -> Option<u32> {
@@ -1379,6 +794,29 @@ mod tests {
         );
         assert_eq!(fs.search_paths("report", 1).unwrap().len(), 1);
         assert!(fs.search_paths("", 10).is_err());
+    }
+
+    #[test]
+    fn name_search_normalizes_upstream_entry_prefixes_before_ranking() {
+        let root = tempfile::tempdir().unwrap();
+        std::fs::create_dir_all(root.path().join("src/components")).unwrap();
+        std::fs::write(root.path().join("src/components/Composer.tsx"), "one").unwrap();
+        std::fs::write(root.path().join("src/components/composePrompt.ts"), "two").unwrap();
+        let fs = WorkspaceFs::open(root.path()).unwrap();
+
+        assert_eq!(
+            fs.search_entries("@./COMP", 10).unwrap(),
+            fs.search_entries("comp", 10).unwrap()
+        );
+        assert_eq!(
+            fs.search_entries("./SRC/COMP", 10).unwrap(),
+            fs.search_entries("src/comp", 10).unwrap()
+        );
+        assert_eq!(
+            normalized_workspace_entry_search_path(Path::new(r"src\components\Composer.tsx")),
+            "src/components/composer.tsx"
+        );
+        assert!(fs.search_entries("@./", 10).is_err());
     }
 
     #[test]

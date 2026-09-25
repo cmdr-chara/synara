@@ -7,6 +7,7 @@ use std::{collections::HashSet, path::PathBuf};
 use synara_agent::{Prompt, PromptPart};
 mod intake;
 pub(crate) use intake::docx_text;
+pub(crate) use intake::odt_text;
 pub(crate) use intake::still_webp_preview;
 mod media;
 #[cfg(test)]
@@ -26,6 +27,7 @@ pub enum AttachmentKind {
     Text,
     Pdf,
     Docx,
+    Odt,
 }
 impl AttachmentKind {
     pub fn mime_type(self) -> &'static str {
@@ -36,6 +38,7 @@ impl AttachmentKind {
             Self::Text => "text/plain",
             Self::Pdf => "application/pdf",
             Self::Docx => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            Self::Odt => "application/vnd.oasis.opendocument.text",
         }
     }
     pub fn is_image(self) -> bool {
@@ -96,7 +99,10 @@ impl AttachmentDraft {
         } else if self.pending.iter().any(|a| {
             matches!(
                 a.kind,
-                AttachmentKind::Text | AttachmentKind::Pdf | AttachmentKind::Docx
+                AttachmentKind::Text
+                    | AttachmentKind::Pdf
+                    | AttachmentKind::Docx
+                    | AttachmentKind::Odt
             )
         }) && !capabilities.embedded_context
         {
@@ -192,9 +198,13 @@ impl Stored {
                 || info.bytes == 0
                 || info.bytes > MAX_ATTACHMENT_BATCH_BYTES
                 || match (info.kind, info.dimensions) {
-                    (AttachmentKind::Text | AttachmentKind::Pdf | AttachmentKind::Docx, None) => {
-                        false
-                    }
+                    (
+                        AttachmentKind::Text
+                        | AttachmentKind::Pdf
+                        | AttachmentKind::Docx
+                        | AttachmentKind::Odt,
+                        None,
+                    ) => false,
                     (
                         AttachmentKind::Png | AttachmentKind::Jpeg | AttachmentKind::Webp,
                         Some((w, h)),
@@ -412,10 +422,10 @@ impl WorkspaceService {
             if info.kind != item.info.kind || info.dimensions != item.info.dimensions {
                 return Err(StorageError::Identity.into());
             }
-            let bytes = if item.info.kind == AttachmentKind::Docx {
-                intake::docx_text(&bytes)?.into_bytes()
-            } else {
-                bytes
+            let bytes = match item.info.kind {
+                AttachmentKind::Docx => intake::docx_text(&bytes)?.into_bytes(),
+                AttachmentKind::Odt => intake::odt_text(&bytes)?.into_bytes(),
+                _ => bytes,
             };
             Ok(AttachmentPreview {
                 info: item.info,
@@ -488,8 +498,12 @@ impl WorkspaceService {
                             .ok_or(StorageError::Identity)?,
                         mime_type: "text/plain".into(),
                     },
-                    AttachmentKind::Docx => {
-                        let extracted = intake::docx_text(&bytes)?;
+                    AttachmentKind::Docx | AttachmentKind::Odt => {
+                        let extracted = if item.info.kind == AttachmentKind::Docx {
+                            intake::docx_text(&bytes)?
+                        } else {
+                            intake::odt_text(&bytes)?
+                        };
                         projected_context_bytes =
                             projected_context_bytes.saturating_add(extracted.len());
                         if projected_context_bytes > MAX_ATTACHMENT_BATCH_BYTES {

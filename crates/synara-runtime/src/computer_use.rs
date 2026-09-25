@@ -134,7 +134,16 @@ impl ComputerKey {
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(tag = "action", rename_all = "snake_case", deny_unknown_fields)]
 pub enum ComputerAction {
+    Move {
+        x: u32,
+        y: u32,
+    },
     Click {
+        x: u32,
+        y: u32,
+        button: ComputerButton,
+    },
+    DoubleClick {
         x: u32,
         y: u32,
         button: ComputerButton,
@@ -155,7 +164,16 @@ pub enum ComputerAction {
 impl ComputerAction {
     pub fn validate(&self, width: u32, height: u32) -> Result<(), RuntimeError> {
         match self {
-            Self::Click { x, y, .. } | Self::Scroll { x, y, .. } if *x >= width || *y >= height => Err(RuntimeError::Invalid("Input coordinates are outside the observed window".into())),
+            Self::Move { x, y }
+            | Self::Click { x, y, .. }
+            | Self::DoubleClick { x, y, .. }
+            | Self::Scroll { x, y, .. }
+                if *x >= width || *y >= height =>
+            {
+                Err(RuntimeError::Invalid(
+                    "Input coordinates are outside the observed window".into(),
+                ))
+            }
             Self::Scroll { steps, .. } if !(1..=8).contains(steps) => Err(RuntimeError::Limit),
             Self::Type { text } if !valid_typed_text(text) => Err(RuntimeError::Invalid("Window typing accepts 1-512 UTF-8 bytes of text without controls, line separators, or bidirectional formatting characters. Use separate reviewed keys for Enter or Tab".into())),
             _ if width == 0 || height == 0 => Err(RuntimeError::Invalid("Window dimensions must be positive".into())),
@@ -186,7 +204,8 @@ impl ComputerAction {
             ]
         };
         match self {
-            Self::Click { x, y, button } => vec![
+            Self::Move { x, y } => vec![move_to(*x, *y)],
+            Self::Click { x, y, button } | Self::DoubleClick { x, y, button } => vec![
                 move_to(*x, *y),
                 click(
                     match button {
@@ -194,7 +213,11 @@ impl ComputerAction {
                         ComputerButton::Middle => 2,
                         ComputerButton::Right => 3,
                     },
-                    1,
+                    if matches!(self, Self::DoubleClick { .. }) {
+                        2
+                    } else {
+                        1
+                    },
                 ),
             ],
             Self::Scroll { x, y, down, steps } => {
@@ -305,9 +328,15 @@ mod tests {
     #[test]
     fn every_input_command_is_explicitly_window_addressed() {
         for action in [
+            ComputerAction::Move { x: 4, y: 8 },
             ComputerAction::Click {
                 x: 5,
                 y: 9,
+                button: ComputerButton::Left,
+            },
+            ComputerAction::DoubleClick {
+                x: 7,
+                y: 11,
                 button: ComputerButton::Left,
             },
             ComputerAction::Scroll {
@@ -347,6 +376,20 @@ mod tests {
                 }));
             }
         }
+        let action = ComputerAction::DoubleClick {
+            x: 7,
+            y: 11,
+            button: ComputerButton::Left,
+        };
+        assert_eq!(
+            action.commands(42),
+            vec![
+                vec!["mousemove", "--window", "42", "7", "11"],
+                vec![
+                    "click", "--window", "42", "--repeat", "2", "--delay", "20", "1"
+                ],
+            ]
+        );
         let action = ComputerAction::Key {
             key: ComputerKey::SelectWordRight,
         };
@@ -412,6 +455,20 @@ mod tests {
         assert!(
             ComputerAction::Type {
                 text: "a".repeat(513)
+            }
+            .validate(10, 10)
+            .is_err()
+        );
+        assert!(
+            ComputerAction::Move { x: 10, y: 0 }
+                .validate(10, 10)
+                .is_err()
+        );
+        assert!(
+            ComputerAction::DoubleClick {
+                x: 10,
+                y: 0,
+                button: ComputerButton::Left
             }
             .validate(10, 10)
             .is_err()

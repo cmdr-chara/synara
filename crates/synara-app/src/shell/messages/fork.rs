@@ -146,7 +146,13 @@ impl Shell {
                         "Restore the source conversation before branching.".into(),
                     ));
                 }
-                workspace.project_worktrees(source_task.project_id).await
+                let current_directory = source_task.working_directory.clone();
+                let remote = matches!(
+                    workspace.workspace_for_task(&source_task).await?.location,
+                    WorkspaceLocation::Ssh { .. }
+                );
+                let worktrees = workspace.project_worktrees(source_task.project_id).await?;
+                Ok::<_, WorkspaceError>((current_directory, remote, worktrees))
             }
             .await
             .map_err(|error| error.to_string());
@@ -227,6 +233,55 @@ impl Shell {
                 task: source,
                 revision,
                 anchor,
+                result,
+            })))
+        });
+        cx.notify();
+    }
+
+    pub(in crate::shell) fn cleanup_branch_worktree(
+        &mut self,
+        source: TaskId,
+        anchor: MessageAnchor,
+        path: PathBuf,
+        branch: String,
+        cx: &mut Context<Self>,
+    ) {
+        if self.selected != Some(source)
+            || self.creating_task
+            || self.loading_task.is_some()
+            || self.close != CloseState::Open
+            || self.composer.read(cx).is_composing()
+            || self.editor.read(cx).is_composing()
+            || !self.chat_tools.loading_worktrees.insert(source)
+        {
+            return;
+        }
+        let workspace = self.controller.workspace.clone();
+        let scratch = self.scratch_directory.clone();
+        let revision = self.selection_revision;
+        let reply_branch = branch.clone();
+        self.job(async move {
+            let result = workspace
+                .cleanup_recoverable_worktree(
+                    source,
+                    path,
+                    scratch,
+                    branch,
+                    GitOperationPolicy {
+                        allow_mutation: true,
+                        allow_repository_execution: true,
+                        ..Default::default()
+                    },
+                    tokio_util::sync::CancellationToken::new(),
+                )
+                .await
+                .map_err(|error| error.to_string());
+            Ok(Update::ChatTools(Box::new(Reply::WorktreeCleaned {
+                task: source,
+                revision,
+                anchor,
+                branch: reply_branch,
                 result,
             })))
         });

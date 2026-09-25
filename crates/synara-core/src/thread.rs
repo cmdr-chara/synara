@@ -18,6 +18,11 @@ pub struct TurnSummary {
     pub first_timeline_index: usize,
     pub end_timeline_index: usize,
     pub failed: bool,
+    /// Exact reviewed direct-model route for this turn. ACP turns remain None.
+    pub direct_provider_id: Option<String>,
+    pub direct_model_id: Option<String>,
+    /// Latest usage reported while this turn was active.
+    pub usage: Option<Usage>,
 }
 
 /// Metadata of the latest durable replacement of a tool's output, not authorship.
@@ -203,6 +208,9 @@ impl Thread {
                     first_timeline_index: self.timeline.len(),
                     end_timeline_index: self.timeline.len(),
                     failed: false,
+                    direct_provider_id: None,
+                    direct_model_id: None,
+                    usage: None,
                 });
             }
             ThreadEvent::TextDelta {
@@ -314,7 +322,38 @@ impl Thread {
                 self.inputs.remove(id);
             }
             ThreadEvent::PlanChanged { entries } => self.plan.clone_from(entries),
-            ThreadEvent::UsageChanged { usage } => self.usage = usage.clone(),
+            ThreadEvent::UsageChanged { usage } => {
+                self.usage = usage.clone();
+                if let Some(turn) = self
+                    .turns
+                    .last_mut()
+                    .filter(|turn| turn.finished_at_ms.is_none())
+                {
+                    turn.usage = Some(usage.clone());
+                }
+            }
+            ThreadEvent::DirectModelRoute {
+                provider_id,
+                model_id,
+            } => {
+                if provider_id.is_empty()
+                    || provider_id.len() > 256
+                    || provider_id.chars().any(char::is_control)
+                    || model_id.is_empty()
+                    || model_id.len() > 256
+                    || model_id.chars().any(char::is_control)
+                {
+                    return Err(ReplayError::Limit);
+                }
+                if let Some(turn) = self
+                    .turns
+                    .last_mut()
+                    .filter(|turn| turn.finished_at_ms.is_none())
+                {
+                    turn.direct_provider_id = Some(provider_id.clone());
+                    turn.direct_model_id = Some(model_id.clone());
+                }
+            }
             ThreadEvent::ConfigurationChanged { configuration } => {
                 self.configuration = configuration.clone()
             }
@@ -513,6 +552,106 @@ mod tests {
         }
         assert_eq!(restored.turns, live.turns);
         assert_eq!(restored.message_timestamps, live.message_timestamps);
+    }
+
+    #[test]
+    fn direct_route_and_usage_are_bound_to_only_the_active_turn() {
+        let mut thread = Thread::new(ThreadId::new());
+        apply(
+            &mut thread,
+            ThreadEvent::PromptStarted {
+                turn: "direct".into(),
+            },
+        );
+        apply(
+            &mut thread,
+            ThreadEvent::DirectModelRoute {
+                provider_id: "openai".into(),
+                model_id: "gpt-test".into(),
+            },
+        );
+        let usage = Usage {
+            context_used: Some(15),
+            context_limit: Some(8192),
+            input_tokens: Some(12),
+            output_tokens: Some(3),
+            ..Default::default()
+        };
+        apply(
+            &mut thread,
+            ThreadEvent::UsageChanged {
+                usage: usage.clone(),
+            },
+        );
+        apply(
+            &mut thread,
+            ThreadEvent::PromptFinished {
+                reason: "stop".into(),
+            },
+        );
+        apply(
+            &mut thread,
+            ThreadEvent::UsageChanged {
+                usage: Usage {
+                    input_tokens: Some(99),
+                    ..Default::default()
+                },
+            },
+        );
+
+        assert_eq!(
+            thread.turns[0].direct_provider_id.as_deref(),
+            Some("openai")
+        );
+        assert_eq!(thread.turns[0].direct_model_id.as_deref(), Some("gpt-test"));
+        assert_eq!(thread.turns[0].usage, Some(usage));
+        assert_eq!(thread.usage.input_tokens, Some(99));
+
+        apply(
+            &mut thread,
+            ThreadEvent::PromptStarted {
+                turn: "agent".into(),
+            },
+        );
+        apply(
+            &mut thread,
+            ThreadEvent::UsageChanged {
+                usage: Usage {
+                    input_tokens: Some(7),
+                    output_tokens: Some(2),
+                    ..Default::default()
+                },
+            },
+        );
+        assert_eq!(thread.turns[1].direct_provider_id, None);
+        assert_eq!(thread.turns[1].direct_model_id, None);
+        assert_eq!(
+            thread.turns[1].usage.as_ref().unwrap().input_tokens,
+            Some(7)
+        );
+    }
+
+    #[test]
+    fn malformed_direct_route_is_rejected_without_attributing_a_turn() {
+        let mut thread = Thread::new(ThreadId::new());
+        apply(
+            &mut thread,
+            ThreadEvent::PromptStarted {
+                turn: "direct".into(),
+            },
+        );
+        let envelope = EventEnvelope {
+            id: EventId::new(),
+            thread_id: thread.id,
+            sequence: thread.last_sequence + 1,
+            timestamp_ms: 0,
+            event: ThreadEvent::DirectModelRoute {
+                provider_id: "bad\nprovider".into(),
+                model_id: "model".into(),
+            },
+        };
+        assert_eq!(thread.apply(&envelope), Err(ReplayError::Limit));
+        assert_eq!(thread.turns[0].direct_provider_id, None);
     }
 
     #[test]

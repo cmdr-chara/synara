@@ -24,7 +24,14 @@ pub(super) enum Reply {
         task: TaskId,
         revision: u64,
         anchor: MessageAnchor,
-        result: Result<Vec<ProjectWorktree>, String>,
+        result: Result<(PathBuf, bool, Vec<ProjectWorktree>), String>,
+    },
+    WorktreeCleaned {
+        task: TaskId,
+        revision: u64,
+        anchor: MessageAnchor,
+        branch: String,
+        result: Result<(), String>,
     },
     NewWorktree {
         task: TaskId,
@@ -44,6 +51,22 @@ enum Action {
     ConfirmNewWorktree {
         plan: Box<NewWorktreePlan>,
         anchor: MessageAnchor,
+    },
+    BranchSame {
+        source: TaskId,
+        anchor: MessageAnchor,
+    },
+    ReviewCleanupWorktree {
+        source: TaskId,
+        anchor: MessageAnchor,
+        path: PathBuf,
+        branch: String,
+    },
+    ConfirmCleanupWorktree {
+        source: TaskId,
+        anchor: MessageAnchor,
+        path: PathBuf,
+        branch: String,
     },
     Find,
     Pins,
@@ -387,12 +410,41 @@ impl Shell {
                     Err(error) => {
                         self.error = Some(format!("Linked worktrees could not be loaded: {error}"));
                     }
-                    Ok(worktrees) => {
-                        let mut rows = Vec::with_capacity(worktrees.len() + 1);
+                    Ok((current_directory, remote, worktrees)) => {
+                        let mut rows = Vec::with_capacity(worktrees.len().saturating_mul(2) + 2);
+                        rows.push((
+                            Choice {
+                                label: "Current workspace".into(),
+                                detail: format!(
+                                    "{} · {} · Creates a new unsent chat without a checkout.",
+                                    if remote {
+                                        "SSH workspace"
+                                    } else {
+                                        "Local workspace"
+                                    },
+                                    current_directory.display()
+                                )
+                                .chars()
+                                .take(512)
+                                .collect(),
+                                icon: Some(Glyph::Fork),
+                                ..Default::default()
+                            },
+                            Action::BranchSame {
+                                source: task,
+                                anchor: anchor.clone(),
+                            },
+                        ));
                         rows.push((Choice {
                             label: "Create isolated worktree...".into(),
-                            detail: "Review a new local branch and checkout from committed HEAD. Dirty files are not copied. No agent starts.".into(),
-                            icon: Some(Glyph::Fork), ..Default::default()
+                            detail: if remote {
+                                "Managed checkout creation requires a local workspace; existing SSH worktrees remain selectable.".into()
+                            } else {
+                                "Review a new local branch and checkout from committed HEAD. Dirty files are not copied. No agent starts.".into()
+                            },
+                            icon: Some(Glyph::Fork),
+                            unavailable: remote.then(|| "New managed worktrees are local-only".into()),
+                            ..Default::default()
                         }, Action::ReviewNewWorktree { source: task, anchor: anchor.clone() }));
                         for worktree in worktrees {
                             let recoverable =
@@ -424,6 +476,8 @@ impl Shell {
                             } else {
                                 path.display().to_string()
                             }.chars().take(512).collect();
+                            let cleanup_path = path.clone();
+                            let cleanup_branch = worktree.branch.clone();
                             let action = Action::BranchWorktree {
                                 source: task,
                                 anchor: anchor.clone(),
@@ -440,9 +494,57 @@ impl Shell {
                                 },
                                 action,
                             ));
+                            if recoverable && let Some(branch) = cleanup_branch {
+                                rows.push((
+                                    Choice {
+                                        label: "Clean up orphaned Synara worktree...".into(),
+                                        detail: format!(
+                                            "{branch} · {} · Review non-force checkout removal. Dirty files are preserved and the branch is retained.",
+                                            cleanup_path.display()
+                                        )
+                                        .chars()
+                                        .take(512)
+                                        .collect(),
+                                        icon: Some(Glyph::Close),
+                                        ..Default::default()
+                                    },
+                                    Action::ReviewCleanupWorktree {
+                                        source: task,
+                                        anchor: anchor.clone(),
+                                        path: cleanup_path,
+                                        branch,
+                                    },
+                                ));
+                            }
                         }
                         self.chat_tools.pending_menu =
                             Some((task, "Choose fork environment".into(), rows));
+                    }
+                }
+            }
+            Reply::WorktreeCleaned {
+                task,
+                revision,
+                anchor,
+                branch,
+                result,
+            } => {
+                self.chat_tools.loading_worktrees.remove(&task);
+                if self.selected != Some(task)
+                    || self.selection_revision != revision
+                    || self.close != CloseState::Open
+                {
+                    return;
+                }
+                match result {
+                    Ok(()) => {
+                        self.notice = Some(format!(
+                            "Managed worktree checkout removed. Branch {branch} was retained."
+                        ));
+                        self.load_branch_worktree_choices(task, anchor, cx);
+                    }
+                    Err(error) => {
+                        self.error = Some(format!("Managed worktree cleanup failed: {error}"));
                     }
                 }
             }
@@ -756,6 +858,59 @@ impl Shell {
             Action::ConfirmNewWorktree { plan, anchor } => {
                 self.branch_message_new_worktree(*plan, anchor, cx)
             }
+            Action::BranchSame { source, anchor } => self.branch_message(source, anchor, cx),
+            Action::ReviewCleanupWorktree {
+                source,
+                anchor,
+                path,
+                branch,
+            } => {
+                self.chat_tools.pending_menu = Some((
+                    source,
+                    "Review managed worktree cleanup".into(),
+                    vec![
+                        (
+                            Choice {
+                                label: "Managed checkout".into(),
+                                detail: path.display().to_string(),
+                                unavailable: Some("Review information".into()),
+                                ..Default::default()
+                            },
+                            Action::Noop,
+                        ),
+                        (
+                            Choice {
+                                label: "Branch retained".into(),
+                                detail: branch.clone(),
+                                unavailable: Some("Review information".into()),
+                                ..Default::default()
+                            },
+                            Action::Noop,
+                        ),
+                        (
+                            Choice {
+                                label: "Remove managed checkout".into(),
+                                detail: "Uses normal non-force Git worktree removal. Dirty or locked files are not discarded. Nothing is sent to an agent.".into(),
+                                icon: Some(Glyph::Close),
+                                ..Default::default()
+                            },
+                            Action::ConfirmCleanupWorktree {
+                                source,
+                                anchor,
+                                path,
+                                branch,
+                            },
+                        ),
+                    ],
+                ));
+                cx.notify();
+            }
+            Action::ConfirmCleanupWorktree {
+                source,
+                anchor,
+                path,
+                branch,
+            } => self.cleanup_branch_worktree(source, anchor, path, branch, cx),
             Action::Find => self.open_message_search(window, cx),
             Action::Pins => self.open_pinned_messages(window, cx),
             Action::Copy => self.copy_conversation(cx),

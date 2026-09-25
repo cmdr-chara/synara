@@ -763,10 +763,71 @@ mod tests {
     }
 
     #[test]
-    fn local_and_remote_searches_share_ignore_and_generated_output_rules() {
+    fn non_git_search_uses_only_the_upstream_generated_directory_policy() {
         let root = tempfile::tempdir().unwrap();
         std::fs::create_dir_all(root.path().join("ignored")).unwrap();
         std::fs::create_dir_all(root.path().join("src/deep-drop")).unwrap();
+        std::fs::create_dir_all(root.path().join("node_modules")).unwrap();
+        std::fs::create_dir_all(root.path().join("target")).unwrap();
+        std::fs::write(
+            root.path().join(".gitignore"),
+            "ignored/\n*.tmp\n!keep-hit.tmp\n**/deep-drop/\n",
+        )
+        .unwrap();
+        for path in [
+            "ignored/ignored-hit.rs",
+            "hidden-hit.tmp",
+            "keep-hit.tmp",
+            "src/deep-drop/deep-hit.rs",
+            "src/visible-hit.rs",
+            "node_modules/package-hit.js",
+            "target/target-hit.rs",
+            "bundle-hit.min.js",
+        ] {
+            std::fs::write(root.path().join(path), "needle").unwrap();
+        }
+
+        let fs = WorkspaceFs::open(root.path()).unwrap();
+        let expected = vec![
+            PathBuf::from("bundle-hit.min.js"),
+            PathBuf::from("hidden-hit.tmp"),
+            PathBuf::from("ignored/ignored-hit.rs"),
+            PathBuf::from("keep-hit.tmp"),
+            PathBuf::from("src/deep-drop/deep-hit.rs"),
+            PathBuf::from("src/visible-hit.rs"),
+            PathBuf::from("target/target-hit.rs"),
+        ];
+        let mut text_paths = fs
+            .search_text(Path::new(""), "needle", 20)
+            .unwrap()
+            .into_iter()
+            .map(|matched| matched.relative_path)
+            .collect::<Vec<_>>();
+        text_paths.sort();
+        assert_eq!(text_paths, expected);
+
+        let mut name_paths = fs.search_paths("hit", 20).unwrap();
+        name_paths.sort();
+        assert_eq!(name_paths, expected);
+    }
+
+    #[test]
+    fn git_search_uses_standard_ignore_rules_for_local_and_helper_paths() {
+        let root = tempfile::tempdir().unwrap();
+        let Ok(status) = std::process::Command::new("git")
+            .args(["init", "-q"])
+            .current_dir(root.path())
+            .status()
+        else {
+            return;
+        };
+        if !status.success() {
+            return;
+        }
+
+        std::fs::create_dir_all(root.path().join("ignored")).unwrap();
+        std::fs::create_dir_all(root.path().join("src/deep-drop")).unwrap();
+        std::fs::create_dir_all(root.path().join("node_modules")).unwrap();
         std::fs::create_dir_all(root.path().join("src/node_modules")).unwrap();
         std::fs::create_dir_all(root.path().join("target")).unwrap();
         std::fs::write(
@@ -782,7 +843,8 @@ mod tests {
             "src/local-hit.rs",
             "src/visible-hit.rs",
             "src/deep-drop/deep-hit.rs",
-            "src/node_modules/package-hit.js",
+            "node_modules/package-hit.js",
+            "src/node_modules/nested-hit.js",
             "target/target-hit.rs",
             "bundle-hit.min.js",
         ] {
@@ -791,8 +853,11 @@ mod tests {
 
         let fs = WorkspaceFs::open(root.path()).unwrap();
         let expected = vec![
+            PathBuf::from("bundle-hit.min.js"),
             PathBuf::from("keep-hit.tmp"),
+            PathBuf::from("src/node_modules/nested-hit.js"),
             PathBuf::from("src/visible-hit.rs"),
+            PathBuf::from("target/target-hit.rs"),
         ];
         let mut text_paths = fs
             .search_text(Path::new(""), "needle", 20)
@@ -807,15 +872,6 @@ mod tests {
         local_paths.sort();
         assert_eq!(local_paths, expected);
 
-        let mut entries = fs
-            .search_entries("hit", 20)
-            .unwrap()
-            .into_iter()
-            .map(|entry| entry.relative_path)
-            .collect::<Vec<_>>();
-        entries.sort();
-        assert_eq!(entries, expected);
-
         let remote_value = execute_helper_operation(
             &fs,
             RemoteFsOperation::SearchPaths {
@@ -824,7 +880,11 @@ mod tests {
             },
         )
         .unwrap();
-        assert!(matches!(remote_value, RemoteFsValue::Paths(paths) if paths == expected));
+        let RemoteFsValue::Paths(mut remote_paths) = remote_value else {
+            panic!("remote helper must return path results");
+        };
+        remote_paths.sort();
+        assert_eq!(remote_paths, expected);
     }
 
     #[test]

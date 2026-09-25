@@ -19,7 +19,25 @@ fn provider_login_guide(profile: &AgentProfile) -> Option<ProviderLoginGuide> {
         .map(|name| name.to_string_lossy().to_ascii_lowercase())
         .unwrap_or_default();
     let identity = format!("{} {} {command}", profile.id, profile.name).to_ascii_lowercase();
-    if identity.contains("opencode") {
+    if identity.contains("codex") {
+        Some(ProviderLoginGuide {
+            provider: "Codex",
+            description: "Codex owns its ChatGPT or API sign-in. Run the provider login flow in its own terminal, complete authentication there, then reconnect this setup chat.",
+            command_args: "login",
+            terminal_label: "Open terminal · run Codex sign-in",
+            docs_url: "https://trysynara.com/docs/providers/codex",
+            docs_label: "Codex setup guide",
+        })
+    } else if identity.contains("claude") {
+        Some(ProviderLoginGuide {
+            provider: "Claude Code",
+            description: "Claude Code owns its Anthropic sign-in. Start Claude in its own terminal and complete any authentication it requests, then reconnect this setup chat.",
+            command_args: "",
+            terminal_label: "Open terminal · start Claude Code sign-in",
+            docs_url: "https://trysynara.com/docs/providers/claude-code",
+            docs_label: "Claude Code setup guide",
+        })
+    } else if identity.contains("opencode") {
         Some(ProviderLoginGuide {
             provider: "OpenCode",
             description: "OpenCode manages provider sign-in in its own CLI. Choose the provider you plan to use, follow its prompt, then reconnect here.",
@@ -49,6 +67,8 @@ fn provider_login_command(profile: &AgentProfile, guide: ProviderLoginGuide) -> 
         .to_string_lossy()
         .to_ascii_lowercase();
     let known_executable = match guide.provider {
+        "Codex" => executable == "codex" || executable == "codex.exe",
+        "Claude Code" => executable == "claude" || executable == "claude.exe",
         "OpenCode" => executable == "opencode" || executable == "opencode.exe",
         "Gemini CLI" => matches!(
             executable.as_str(),
@@ -386,5 +406,43 @@ impl Shell {
                 })))
             .child("Replay Getting started from Settings to return. A connected session is not proof of subscription, quota or successful provider execution.")
             .into_any_element()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn profile(id: &str, name: &str, command: &str) -> AgentProfile {
+        AgentProfile {
+            registry: None,
+            id: id.into(),
+            name: name.into(),
+            command: command.into(),
+            args: vec![],
+            inherit_env: vec![],
+            secret_env: Default::default(),
+        }
+    }
+
+    #[test]
+    fn provider_guides_cover_upstream_codex_and_claude_login_surfaces() {
+        let codex = profile("codex", "Codex", "codex");
+        let codex_guide = provider_login_guide(&codex).unwrap();
+        assert_eq!(codex_guide.provider, "Codex");
+        assert!(
+            provider_login_command(&codex, codex_guide)
+                .unwrap()
+                .contains("login")
+        );
+
+        let claude = profile("claude", "Claude Code", "claude");
+        let claude_guide = provider_login_guide(&claude).unwrap();
+        assert_eq!(claude_guide.provider, "Claude Code");
+        assert!(provider_login_command(&claude, claude_guide).is_some());
+
+        let wrapper = profile("codex-wrapper", "Codex wrapper", "/tmp/provider-wrapper");
+        let guide = provider_login_guide(&wrapper).unwrap();
+        assert!(provider_login_command(&wrapper, guide).is_none());
     }
 }

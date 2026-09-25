@@ -59,9 +59,11 @@ while all 21 completion gates remain OPEN.
 retry policies at create/update despite contract shapes, so those policies are
 not treated as an effective-current-head difference. `N2` gained fuzzy name
 ranking, generated-directory filtering and typed file/directory results with
-Explorer navigation; older SSH helpers remain file-only. `D11` gained a
-274-day UTC heatmap of persisted local turn starts, distinct from provider or
-account usage. `N3` gained durable message update times in ZIP export from the
+Explorer navigation; entry queries now also use the upstream prefix normalization
+and POSIX path-ranking semantics, while older SSH helpers remain file-only.
+`D11` now prefers a 274-day UTC heatmap of durable provider-reported turn tokens
+when available and falls back to persisted local turn starts; account usage
+remains separate. `N3` gained durable message update times in ZIP export from the
 same SQLite snapshot. Cross-platform GUI, microphone hardware and live ChatGPT
 transcription journeys have not been exercised here.
 `D9` gained exact `/synara/automation list` and `new` forms that open the
@@ -246,5 +248,7 @@ search. SSH setup errors release the owned request slot. Search controls retain
 fixed space and the narrow pane expands while search is open, so result rows
 remain inside their actual hit-test container. The clipping encountered by the
 batch5 test is addressed as product code rather than treating its workaround as
-acceptance. Exact upstream ranking, native SSH and wider platform acceptance
-remain open. See [batch6 scope and evidence](parity-2026-09-24-batch6.md).
+acceptance. Exact ignored/generated-file behavior, native SSH and wider
+platform acceptance remain open. See
+[batch6 scope and evidence](parity-2026-09-24-batch6.md) and
+[batch14 scope](parity-2026-09-25-batch14.md).

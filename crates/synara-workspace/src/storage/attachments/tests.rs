@@ -1,4 +1,16 @@
 use super::*;
+use std::io::{Cursor, Write};
+use zip::{CompressionMethod, ZipWriter, write::SimpleFileOptions};
+
+fn odt(body: &str) -> Vec<u8> {
+    let mut zip = ZipWriter::new(Cursor::new(Vec::new()));
+    let options = SimpleFileOptions::default()
+        .compression_method(CompressionMethod::Deflated)
+        .last_modified_time(zip::DateTime::default());
+    zip.start_file("content.xml", options).unwrap();
+    zip.write_all(body.as_bytes()).unwrap();
+    zip.finish().unwrap().into_inner()
+}
 
 fn text(name: &str, body: &str) -> AttachmentInput {
     AttachmentInput::Bytes {
@@ -71,6 +83,49 @@ fn base64_uses_standard_padding_and_inspection_rejects_hostile_files() {
     let info = intake::inspect("notes.md".into(), "日本語\nkeep  ".as_bytes()).unwrap();
     assert_eq!(info.kind, AttachmentKind::Text);
 }
+#[tokio::test]
+async fn odt_main_text_is_previewed_and_sent_as_bounded_inert_context() {
+    let bytes = odt(r#"<?xml version="1.0" encoding="UTF-8"?>
+<office:document-content xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0"><office:body><office:text><text:h>Heading</text:h><text:p>Caffè &amp; 日本語<text:tab/>tab<text:line-break/>line<text:s/>end</text:p></office:text></office:body></office:document-content>"#);
+    let info = intake::inspect("notes.odt".into(), &bytes).unwrap();
+    assert_eq!(info.kind, AttachmentKind::Odt);
+    assert_eq!(
+        info.kind.mime_type(),
+        "application/vnd.oasis.opendocument.text"
+    );
+    let dir = tempfile::tempdir().unwrap();
+    let service = WorkspaceService::memory().unwrap();
+    let task = task(&service, dir.path().into()).await;
+    let draft = service
+        .add_attachments(
+            task.id,
+            0,
+            vec![AttachmentInput::Bytes {
+                name: "notes.odt".into(),
+                bytes,
+            }],
+        )
+        .await
+        .unwrap();
+    let preview = service
+        .attachment_preview(task.id, draft.pending[0].id.clone())
+        .await
+        .unwrap();
+    let preview = String::from_utf8(preview.bytes).unwrap();
+    assert!(preview.contains("Heading"));
+    assert!(preview.contains("Caffè & 日本語\ttab\nline end"));
+    let prompt = service
+        .attached_prompt(task.id, "Read it".into(), draft.revision)
+        .await
+        .unwrap();
+    assert!(matches!(
+        &prompt.parts[2],
+        PromptPart::Context { text, mime_type, .. }
+            if text == &preview && mime_type == "text/plain"
+    ));
+    assert!(intake::inspect("fake.odt".into(), b"PK\x03\x04not-a-zip").is_err());
+}
+
 #[tokio::test]
 async fn snapshots_restore_atomic_imports_reject_stale_edits_and_never_start_agents() {
     let dir = tempfile::tempdir().unwrap();

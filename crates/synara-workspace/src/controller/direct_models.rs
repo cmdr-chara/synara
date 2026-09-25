@@ -228,6 +228,15 @@ impl Controller {
         self.workspace
             .record(
                 task.thread_id,
+                ThreadEvent::DirectModelRoute {
+                    provider_id: binding.selection.provider_id.clone(),
+                    model_id: binding.selection.model_id.clone(),
+                },
+            )
+            .await?;
+        self.workspace
+            .record(
+                task.thread_id,
                 ThreadEvent::TextDelta {
                     message_id: Some(format!("direct:{turn}:user")),
                     role: Role::User,
@@ -581,6 +590,19 @@ mod tests {
         assert_eq!(thread.usage.context_used, Some(15));
         assert_eq!(thread.usage.context_limit, Some(8192));
         assert_eq!(thread.usage.cost_amount, None);
+        assert_eq!(
+            thread.turns[0].direct_provider_id.as_deref(),
+            Some("local-compatible")
+        );
+        assert_eq!(thread.turns[0].direct_model_id.as_deref(), Some("fixture"));
+        assert_eq!(
+            thread.turns[0].usage.as_ref().unwrap().input_tokens,
+            Some(12)
+        );
+        assert_eq!(
+            thread.turns[0].usage.as_ref().unwrap().output_tokens,
+            Some(3)
+        );
         assert!(workspace.session(task.thread_id).await.unwrap().is_none());
         assert!(controller.details(task.id).await.unwrap().is_none());
         assert!(

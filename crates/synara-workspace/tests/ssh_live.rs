@@ -473,17 +473,12 @@ async fn remote_typed_mutation_refuses_changed_host_without_local_fallback() {
     );
 }
 
-
 #[tokio::test]
 #[ignore = "requires the isolated server from scripts/ssh_smoke.py"]
 async fn managed_remote_worktree_lifecycle_uses_pinned_ssh_and_retains_dirty_recovery() {
     let (root, target) = fixture();
     let repository = seeded_project(&root, "managed remote project", true);
-    std::fs::write(
-        repository.join("searchable.txt"),
-        "managed remote source\n",
-    )
-    .unwrap();
+    std::fs::write(repository.join("searchable.txt"), "managed remote source\n").unwrap();
     git(&["add", "--", "searchable.txt"], &repository);
     git(&["commit", "-qm", "searchable source"], &repository);
 

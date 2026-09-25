@@ -392,7 +392,10 @@ impl Shell {
                 match result {
                     Ok(asset) => {
                         self.attachments.preview = Some(match asset.info.kind {
-                            AttachmentKind::Text | AttachmentKind::Pdf | AttachmentKind::Docx => {
+                            AttachmentKind::Text
+                            | AttachmentKind::Pdf
+                            | AttachmentKind::Docx
+                            | AttachmentKind::Odt => {
                                 Preview::Text(String::from_utf8(asset.bytes).unwrap_or_default())
                             }
                             kind => Preview::Image(

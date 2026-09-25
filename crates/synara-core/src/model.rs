@@ -400,6 +400,10 @@ pub enum ThreadEvent {
     UsageChanged {
         usage: Usage,
     },
+    DirectModelRoute {
+        provider_id: String,
+        model_id: String,
+    },
     ConfigurationChanged {
         configuration: SessionConfiguration,
     },

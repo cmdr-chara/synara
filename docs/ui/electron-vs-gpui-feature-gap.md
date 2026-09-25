@@ -83,8 +83,9 @@ provide the upstream web workspace or remote deployment/TLS/update lifecycle;
 voice still needs live device/provider and platform acceptance. Five-field cron
 and a persisted execution limit advance Automations. File-search ranking,
 generated-directory filtering and typed file/directory results that navigate
-into Explorer advance its near-parity lane. The Profile page now renders a
-bounded UTC heatmap from persisted local turn starts; provider and account
+into Explorer advance its near-parity lane. The Profile page now prefers a
+bounded UTC heatmap from durable provider-reported per-turn tokens when available,
+falling back to persisted local turn starts; provider/model mix and real account
 statistics remain a material gap. ZIP exports now include durable message
 update times from the same database snapshot. The separate
 [current parity gates](../verification/current-parity-gates.md) remain open until
@@ -128,7 +129,7 @@ old census did not count cleanly.
 | Automations | Durable fixed-offset and IANA/DST daily/weekly schedules, run/failure stop limits, history and cancellation | Broader recurrence, retry policy and deeper orchestration |
 | Slash commands/keybindings | Qualified native workflow commands including paused goal set/pause and saved automation review by exact ID, provider commands, palette and constrained remaps | Goal resume/clear/edit and other argument forms, upstream semantics and broad context-aware custom keybindings |
 | Releases/updater | Local version history, executable SHA-256 fingerprint and staged artifact integrity recheck before a prospective handoff | Trusted native feed, publisher signing identity and signed install/update/rollback lifecycle |
-| Profile/activity | Local activity, UTC turn-start heatmap and active-hour distribution, real task token/context values and latest saved session-model snapshots by agent | Per-turn provider/model mix, token heatmap and real account/usage statistics |
+| Profile/activity | Local activity, token-first UTC heatmap with turn-start fallback, active-hour distribution, real task token/context values and latest saved session-model snapshots by agent | Per-turn provider/model mix and real account/usage statistics |
 | Handoff/forks | Reviewed related continuation and context-derived branch drafts, including existing linked-worktree selection for assistant-turn forks | Same-task continuation, provider-native forks and managed new-worktree creation |
 | Attachments/media | Still PNG/JPEG/WebP and text intake, bounded one-level folder snapshots and transcript images; WebP converts to bounded PNG for prompts | Persistent folder references, broader formats and PDF/document viewer |
 | Studio | Native Studio/Hubs, file/output preview and attributed output reopening in its reporting chat's Library | Current upstream per-turn output capture and long-running/output-oriented Studio depth |

@@ -188,6 +188,37 @@ impl Shell {
                                 .size(px(28.)),
                             )
                             .child(self.followup_toggle(cx))
+                            .children(self.voice.recording_status().map(|(duration, level)| {
+                                div()
+                                    .id("voice-recording-status")
+                                    .flex()
+                                    .items_center()
+                                    .gap_1()
+                                    .child(
+                                        div()
+                                            .text_xs()
+                                            .text_color(rgb(palette().muted))
+                                            .child(duration),
+                                    )
+                                    .child(
+                                        div()
+                                            .h(px(14.))
+                                            .flex()
+                                            .items_end()
+                                            .gap(px(2.))
+                                            .children((0_usize..5).map(move |index| {
+                                                div()
+                                                    .w(px(3.))
+                                                    .h(px(4. + index as f32 * 2.))
+                                                    .rounded(px(2.))
+                                                    .bg(rgb(if index < usize::from(level) {
+                                                        palette().focus
+                                                    } else {
+                                                        palette().border
+                                                    }))
+                                            })),
+                                    )
+                            }))
                             .child(if cfg!(any(
                                 target_os = "linux",
                                 target_os = "macos",

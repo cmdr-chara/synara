@@ -91,6 +91,16 @@ impl VoiceState {
         matches!(self.phase(), Phase::Recording { .. })
     }
 
+    pub(super) fn recording_status(&self) -> Option<(String, u8)> {
+        match self.phase() {
+            Phase::Recording { recorder, .. } => Some((
+                format_recording_duration(recorder.elapsed()),
+                recorder.level(),
+            )),
+            _ => None,
+        }
+    }
+
     pub(super) fn transcribing(&self) -> bool {
         matches!(self.phase(), Phase::Transcribing { .. })
     }
@@ -173,6 +183,10 @@ impl Recorder {
         self.started.elapsed()
     }
 
+    fn level(&self) -> u8 {
+        self.capture.lock().map_or(0, |capture| capture.level)
+    }
+
     fn capture_error(&self) -> Option<String> {
         self.capture
             .lock()
@@ -217,6 +231,7 @@ struct CaptureBuffer {
     samples: usize,
     resample_phase: u64,
     limit_reached: bool,
+    level: u8,
     error: Option<String>,
 }
 
@@ -248,6 +263,19 @@ impl CaptureBuffer {
             self.limit_reached = true;
         }
     }
+}
+
+fn format_recording_duration(elapsed: Duration) -> String {
+    let seconds = elapsed.as_secs().min(MAX_DURATION.as_secs());
+    format!("{:02}:{:02} / 02:00", seconds / 60, seconds % 60)
+}
+
+fn voice_level_from_peak(peak: u16) -> u8 {
+    if peak < 256 {
+        return 0;
+    }
+    let max = u32::from(i16::MAX as u16);
+    u8::try_from((u32::from(peak).saturating_mul(5).div_ceil(max)).clamp(1, 5)).unwrap_or(5)
 }
 
 fn max_samples() -> usize {
@@ -362,6 +390,7 @@ fn append_audio_samples<T: ToVoiceSample + Copy>(
     let Ok(mut capture) = capture.lock() else {
         return;
     };
+    let mut peak = 0_u16;
     for frame in data.chunks_exact(channels) {
         if capture.limit_reached || capture.error.is_some() {
             return;
@@ -371,8 +400,10 @@ fn append_audio_samples<T: ToVoiceSample + Copy>(
             .map(|sample| i64::from((*sample).to_voice_sample()))
             .sum::<i64>();
         let mono = (total / channels as i64) as i16;
+        peak = peak.max(mono.unsigned_abs());
         capture.append_frame(mono, sample_rate);
     }
+    capture.level = voice_level_from_peak(peak);
 }
 
 fn finalize_wav_header(wav: &mut [u8]) -> Result<(), String> {
@@ -792,7 +823,11 @@ impl Shell {
                 cx.notify();
             }
             Some(Ok(())) => self.stop_voice_recording(cx),
-            None => {}
+            None => {
+                if self.voice.recording() {
+                    cx.notify();
+                }
+            }
         }
     }
 
@@ -944,6 +979,23 @@ mod tests {
         wav.extend_from_slice(data);
         finalize_wav_header(&mut wav).unwrap();
         wav
+    }
+
+    #[test]
+    fn recording_presentation_is_bounded_and_levels_are_scaled() {
+        assert_eq!(format_recording_duration(Duration::ZERO), "00:00 / 02:00");
+        assert_eq!(
+            format_recording_duration(Duration::from_secs(61)),
+            "01:01 / 02:00"
+        );
+        assert_eq!(
+            format_recording_duration(Duration::from_secs(9_999)),
+            "02:00 / 02:00"
+        );
+        assert_eq!(voice_level_from_peak(0), 0);
+        assert_eq!(voice_level_from_peak(255), 0);
+        assert_eq!(voice_level_from_peak(i16::MAX as u16), 5);
+        assert!((1..=5).contains(&voice_level_from_peak(8_000)));
     }
 
     #[test]

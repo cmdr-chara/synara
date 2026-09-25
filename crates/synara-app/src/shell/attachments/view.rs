@@ -121,9 +121,9 @@ impl Shell {
                         },
                     ))
             }))
-            .children((pending.iter().any(|a| matches!(a.kind, AttachmentKind::Pdf | AttachmentKind::Docx))).then(|| {
+            .children((pending.iter().any(|a| matches!(a.kind, AttachmentKind::Pdf | AttachmentKind::Docx | AttachmentKind::Odt))).then(|| {
                 div().px_2().text_size(px(11.)).text_color(rgb(palette().muted))
-                    .child("Document text: PDF first 12 pages or DOCX main text, up to 512 KiB each; binary files stay local and extracted text is sent as context.")
+                    .child("Document text: PDF first 12 pages, DOCX main text or ODT content text, up to 512 KiB each; binary files stay local and extracted text is sent as context.")
             }))
             .children(
                 self.details

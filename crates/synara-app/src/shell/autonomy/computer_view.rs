@@ -161,7 +161,7 @@ impl Shell {
                 .child(gpui::img(image.clone()).w_full().h(px(240.)).object_fit(gpui::ObjectFit::Contain)))
                 .child(div().text_sm().child(format!("Frame {id}. Input lease: 60 seconds, one action. Preview is untrusted application content.")));
         }
-        body = body.child(div().text_sm().child("Input examples: {\"action\":\"type\",\"text\":\"hello\"}, {\"action\":\"key\",\"key\":\"enter\"}, {\"action\":\"click\",\"x\":20,\"y\":40,\"button\":\"left\"}. Scroll uses x, y, down and steps 1-8. Typing accepts up to 512 UTF-8 bytes, including Unicode, but rejects control characters, line separators and bidirectional formatting characters. Use separate reviewed keys for Enter and Tab. X11 keymap or application support can vary; delivery does not prove the text was accepted. Keys include insert, f1-f12, back_tab, shift_enter and named editing combinations. No arbitrary key sequences, clipboard operations or Alt/Meta shortcuts."));
+        body = body.child(div().text_sm().child("Input examples: {\"action\":\"type\",\"text\":\"hello\"}, {\"action\":\"key\",\"key\":\"enter\"}, {\"action\":\"move\",\"x\":20,\"y\":40}, {\"action\":\"click\",\"x\":20,\"y\":40,\"button\":\"left\"}, {\"action\":\"double_click\",\"x\":20,\"y\":40,\"button\":\"left\"}. Pointer move changes only the reviewed window-relative pointer position. Double-click uses two bounded clicks on the same reviewed target. Scroll uses x, y, down and steps 1-8. Typing accepts up to 512 UTF-8 bytes, including Unicode, but rejects control characters, line separators and bidirectional formatting characters. Use separate reviewed keys for Enter and Tab. X11 keymap or application support can vary; delivery does not prove the text was accepted. Keys include insert, f1-f12, back_tab, shift_enter and named editing combinations. No arbitrary key sequences, clipboard operations or Alt/Meta shortcuts."));
         let mut presets = div().flex().flex_wrap().gap_2();
         for (index, (label, key)) in [
             ("Enter", ComputerKey::Enter),
@@ -219,7 +219,7 @@ impl Shell {
         if let Some((frame, action)) = &self.autonomy.computer_review {
             body = body.child(div().p_3().border_1().border_color(rgb(palette().focus)).flex().flex_col().gap_2()
                 .child(format!("Approve frame {frame}: {}", serde_json::to_string(action).unwrap_or_default()))
-                .child("Click and scroll move the shared pointer to the reviewed window coordinates. Input is explicitly window-addressed. Some applications reject synthetic window events or use different editing shortcuts. Delivery does not prove success. A changing screen is refused rather than acted on using stale coordinates.")
+                .child("Move, click, double-click and scroll use reviewed window-relative coordinates. Input is explicitly window-addressed. Some applications reject synthetic window events or use different editing shortcuts. Delivery does not prove success. A changing screen is refused rather than acted on using stale coordinates.")
                 .child(div().flex().gap_2()
                     .child(ui::action("computer-confirm-input", "Apply this input once", None, false, cx.listener(|this, _, _, cx| this.apply_computer_input(cx))).relative().child(ui::layout_probe("computer-confirm-input")))
                     .child(ui::action("computer-cancel-input", "Cancel review", None, false, cx.listener(|this, _, _, cx| { this.autonomy.computer_review = None; cx.notify(); })).relative().child(ui::layout_probe("computer-cancel-input")))));

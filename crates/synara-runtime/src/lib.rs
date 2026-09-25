@@ -13,6 +13,7 @@ mod host;
 mod native_secrets;
 mod pdf;
 mod platform;
+mod project_search;
 pub use pdf::*;
 mod process;
 #[cfg(target_os = "linux")]

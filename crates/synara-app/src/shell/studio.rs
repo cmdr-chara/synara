@@ -67,6 +67,12 @@ pub(super) enum StudioReply {
         path: PathBuf,
         result: Result<StudioPreview, String>,
     },
+    VersionsCaptured {
+        task: TaskId,
+        generation: u64,
+        path: PathBuf,
+        result: Result<Vec<StudioTextVersion>, String>,
+    },
     HistoryLoaded {
         task: TaskId,
         generation: u64,
@@ -94,12 +100,6 @@ enum Preview {
     },
     Unsupported(u64),
 }
-struct StudioSnapshot {
-    task: TaskId,
-    path: PathBuf,
-    text: String,
-    captured_at_ms: i64,
-}
 pub(super) struct StudioState {
     pub open: bool,
     task: Option<TaskId>,
@@ -118,7 +118,7 @@ pub(super) struct StudioState {
     preview: Option<Preview>,
     history: Option<GitFileHistory>,
     revision: Option<GitFileRevision>,
-    snapshots: Vec<StudioSnapshot>,
+    snapshots: Vec<StudioTextVersion>,
     selected_snapshot: Option<usize>,
     history_loading: bool,
     error: Option<String>,
@@ -353,6 +353,7 @@ impl Shell {
         self.studio.preview = None;
         self.studio.history = None;
         self.studio.revision = None;
+        self.studio.snapshots.clear();
         self.studio.selected_snapshot = None;
         self.studio.history_loading = false;
         self.studio.preview_loading = true;
@@ -581,25 +582,25 @@ impl Shell {
                 self.studio.preview_loading = false;
                 match result {
                     Ok(StudioPreview::Text { text, markdown }) => {
-                        if text.len() <= 128 * 1024
-                            && self
-                                .studio
-                                .snapshots
-                                .iter()
-                                .rev()
-                                .find(|snapshot| snapshot.task == task && snapshot.path == path)
-                                .is_none_or(|snapshot| snapshot.text != text)
-                        {
-                            self.studio.snapshots.push(StudioSnapshot {
-                                task,
-                                path: path.clone(),
-                                text: text.clone(),
-                                captured_at_ms: chrono::Utc::now().timestamp_millis(),
+                        if text.len() <= 128 * 1024 {
+                            let workspace = self.controller.workspace.clone();
+                            let version_path = path.clone();
+                            let version_text = text.clone();
+                            self.job(async move {
+                                Ok(Update::Studio(Box::new(StudioReply::VersionsCaptured {
+                                    task,
+                                    generation,
+                                    path: version_path.clone(),
+                                    result: workspace
+                                        .capture_studio_text_version(
+                                            task,
+                                            version_path,
+                                            version_text,
+                                        )
+                                        .await
+                                        .map_err(|error| error.to_string()),
+                                })))
                             });
-                            if self.studio.snapshots.len() > 12 {
-                                self.studio.snapshots.remove(0);
-                                self.studio.selected_snapshot = None;
-                            }
                         }
                         self.studio.preview = Some(Preview::Text { text, markdown })
                     }
@@ -626,6 +627,28 @@ impl Shell {
                         self.studio.preview = Some(Preview::Unsupported(bytes))
                     }
                     Err(error) => self.studio.error = Some(error),
+                }
+            }
+            StudioReply::VersionsCaptured {
+                task,
+                generation,
+                path,
+                result,
+            } => {
+                if self.selected != Some(task)
+                    || self.studio.task != Some(task)
+                    || self.studio.preview_generation != generation
+                    || self.studio.selected.as_ref() != Some(&path)
+                {
+                    return;
+                }
+                match result {
+                    Ok(versions) => self.studio.snapshots = versions,
+                    Err(error) => {
+                        self.studio.error = Some(format!(
+                            "Studio version history could not be saved: {error}"
+                        ))
+                    }
                 }
             }
             StudioReply::HistoryLoaded {
@@ -779,7 +802,7 @@ impl Shell {
                     } else { gpui::img(image.clone()).w_full().h(px(240.)).object_fit(gpui::ObjectFit::Contain).into_any_element() }))
                 .into_any_element(),
             Some(Preview::Unsupported(bytes)) => div().flex_1().min_h_0().p_4().text_size(px(12.)).text_color(rgb(palette().muted))
-                .child(format!("Preview unavailable for this file ({bytes} bytes). PNG/JPEG, still WebP and UTF-8 text are supported within the preview limits. The file has not been executed or opened externally.")).into_any_element(),
+                .child(format!("Preview unavailable for this file ({bytes} bytes). PNG/JPEG, still WebP, DOCX/ODT text and UTF-8 text are supported within the preview limits. The file has not been executed or opened externally.")).into_any_element(),
             None => div().flex_1().min_h_0().p_4().text_size(px(13.)).text_color(rgb(palette().muted))
                 .child(if self.studio.preview_loading { "Loading preview..." } else { "Select a file to preview it." }).into_any_element(),
         };
@@ -854,7 +877,7 @@ impl Shell {
             .child(div().text_size(px(12.)).text_ellipsis().child(selected.as_ref().map(|p|p.to_string_lossy().into_owned()).unwrap_or_default()))
             .children(matches!(self.studio.preview, Some(Preview::DocumentText(_))).then(||
                 div().text_size(px(11.)).text_color(rgb(palette().muted))
-                    .child("Extracted DOCX main text · read only. Copy text copies the extraction; export saves the original document.")))
+                    .child("Extracted document text · read only. Copy text copies the extraction; export saves the original document.")))
             .when(matches!(self.studio.preview, Some(Preview::Text { markdown: true, .. })), |el| el.child(
                 ui::button("studio-raw-toggle", if self.studio.raw_text { "Show rendered Markdown" } else { "Show raw text" }, self.studio.raw_text)
                     .text_size(px(11.)).aria_label("Toggle raw Markdown source")
@@ -901,7 +924,7 @@ impl Shell {
                     .collect();
                 (versions.len() > 1).then(|| div().id("studio-session-versions").flex().flex_col().gap_1()
                     .child(div().text_size(px(11.)).text_color(rgb(palette().muted))
-                        .child("Session previews · snapshots captured when this file was refreshed; kept in memory until Studio closes"))
+                        .child("Durable previews · snapshots captured when this file was refreshed; retained across restart for this Hub"))
                     .child(div().flex().flex_wrap().gap_1().children(versions.into_iter().map(|(index, snapshot)| {
                         let timestamp = chrono::DateTime::from_timestamp_millis(snapshot.captured_at_ms)
                             .map(|date| date.format("%H:%M:%S UTC").to_string()).unwrap_or_else(|| "unknown time".into());

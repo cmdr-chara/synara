@@ -87,7 +87,8 @@ pub(super) struct ProfileActivity {
     tokens: Option<u64>,
     /// One latest persisted model selection per local task, not per-turn usage.
     model_selections: BTreeMap<(String, Option<profile_activity::SessionModel>), usize>,
-    days: BTreeMap<i64, usize>,
+    days: BTreeMap<i64, u64>,
+    token_days: BTreeMap<i64, u64>,
     hours: [usize; 24],
     error: Option<String>,
 }
@@ -315,13 +316,22 @@ impl Shell {
                     }
                     activity.prompts += thread.turns.len();
                     for turn in thread.turns {
-                        *activity
-                            .days
-                            .entry(turn.started_at_ms.div_euclid(86_400_000))
-                            .or_default() += 1;
+                        let day = turn.started_at_ms.div_euclid(86_400_000);
+                        let prompt_count = activity.days.entry(day).or_default();
+                        *prompt_count = prompt_count.saturating_add(1);
                         let hour = turn.started_at_ms.rem_euclid(86_400_000) / 3_600_000;
                         activity.hours[hour as usize] =
                             activity.hours[hour as usize].saturating_add(1);
+                        if let Some(usage) = turn.usage.as_ref()
+                            && let (Some(input), Some(output)) =
+                                (usage.input_tokens, usage.output_tokens)
+                        {
+                            let tokens = input.saturating_add(output);
+                            if tokens > 0 {
+                                let token_count = activity.token_days.entry(day).or_default();
+                                *token_count = token_count.saturating_add(tokens);
+                            }
+                        }
                     }
                     if let (Some(input), Some(output)) =
                         (thread.usage.input_tokens, thread.usage.output_tokens)
@@ -1065,7 +1075,7 @@ impl Shell {
                 ),
             )
             .child(heading("Activity"))
-            .children(activity.map(|activity| profile_activity::turn_heatmap(activity, today)))
+            .children(activity.map(|activity| profile_activity::activity_heatmap(activity, today)))
             .children(
                 (activity.is_none() && self.settings.activity_loading).then(|| {
                     div()

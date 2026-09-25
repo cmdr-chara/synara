@@ -1,6 +1,6 @@
 //! Immutable PDF snapshots. Switching pages never rereads a changing source.
 use super::*;
-use std::{io::Cursor, sync::Arc};
+use std::{collections::HashSet, io::Cursor, sync::Arc};
 use synara_runtime::{MAX_PDF_BYTES, MAX_PDF_PAGES, PDF_PAGE_EDGE, PdfTool, run_pdf_tool};
 use tokio::{
     io::{AsyncRead, AsyncReadExt, AsyncWriteExt},
@@ -11,6 +11,12 @@ use tokio_util::sync::CancellationToken;
 const MAX_PDF_TEXT_BYTES: usize = 1024 * 1024;
 const MAX_PDF_DIAGNOSTIC_BYTES: usize = 64 * 1024;
 const MAX_PDF_LINKS: usize = 128;
+const MAX_PDF_FORM_FIELDS: usize = 128;
+const MAX_PDF_FORM_OPTIONS: usize = 64;
+const MAX_PDF_FORM_VALUE_BYTES: usize = 8 * 1024;
+const MAX_PDF_FORM_METADATA_BYTES: usize = 256 * 1024;
+const MAX_PDF_FILLED_BYTES: usize = 16 * 1024 * 1024;
+const MAX_PDF_OCR_BYTES: usize = 1024 * 1024;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum PdfFormKind {
@@ -28,6 +34,75 @@ impl PdfFormKind {
             Self::Unknown => "Unrecognized PDF form metadata",
         }
     }
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum PdfFormFieldType {
+    Text,
+    Button,
+    Choice,
+    Signature,
+    Unknown,
+}
+impl PdfFormFieldType {
+    pub fn label(self) -> &'static str {
+        match self {
+            Self::Text => "Text",
+            Self::Button => "Button",
+            Self::Choice => "Choice",
+            Self::Signature => "Signature",
+            Self::Unknown => "Unsupported",
+        }
+    }
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct PdfFormField {
+    pub name: String,
+    pub alternate_name: Option<String>,
+    pub kind: PdfFormFieldType,
+    pub value: String,
+    pub default_value: Option<String>,
+    pub flags: u32,
+    pub options: Vec<String>,
+}
+impl PdfFormField {
+    pub fn read_only(&self) -> bool {
+        self.flags & 1 != 0
+    }
+    pub fn required(&self) -> bool {
+        self.flags & 2 != 0
+    }
+    pub fn editable(&self) -> bool {
+        if self.read_only() {
+            return false;
+        }
+        match self.kind {
+            PdfFormFieldType::Text => {
+                const PASSWORD: u32 = 1 << 13;
+                const FILE_SELECT: u32 = 1 << 20;
+                const COMB: u32 = 1 << 24;
+                const RICH_TEXT: u32 = 1 << 25;
+                self.flags & (PASSWORD | FILE_SELECT | COMB | RICH_TEXT) == 0
+            }
+            PdfFormFieldType::Button => {
+                const PUSHBUTTON: u32 = 1 << 16;
+                self.flags & PUSHBUTTON == 0 && !self.options.is_empty()
+            }
+            PdfFormFieldType::Choice => {
+                const EDITABLE_COMBO: u32 = 1 << 18;
+                const MULTI_SELECT: u32 = 1 << 21;
+                self.flags & (EDITABLE_COMBO | MULTI_SELECT) == 0 && !self.options.is_empty()
+            }
+            PdfFormFieldType::Signature | PdfFormFieldType::Unknown => false,
+        }
+    }
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct PdfFormEdit {
+    pub name: String,
+    pub value: String,
 }
 
 #[derive(Clone)]
@@ -118,6 +193,123 @@ impl StudioPdf {
         })?;
         drop(permit);
         Ok(text)
+    }
+
+    /// Inspect AcroForm fields without executing document actions or scripts.
+    pub async fn form_fields(
+        &self,
+        cancel: &CancellationToken,
+    ) -> WorkspaceResult<Vec<PdfFormField>> {
+        match self.form {
+            PdfFormKind::None => return Ok(Vec::new()),
+            PdfFormKind::Xfa => {
+                return Err(RuntimeError::Unsupported(
+                    "XFA form fields are not inspected or executed.".into(),
+                )
+                .into());
+            }
+            PdfFormKind::Unknown => {
+                return Err(RuntimeError::Unsupported(
+                    "This PDF reports an unsupported form technology.".into(),
+                )
+                .into());
+            }
+            PdfFormKind::AcroForm => {}
+        }
+        let permit = tokio::select! {
+            biased;
+            _ = cancel.cancelled() => return Err(RuntimeError::Closed.into()),
+            result = tokio::time::timeout(Duration::from_secs(3), PREVIEWS.acquire()) => result
+                .map_err(|_| WorkspaceError::Invalid("Another preview is still rendering. Try again.".into()))?
+                .map_err(|_| WorkspaceError::Worker)?,
+        };
+        let output = run_pdf_form_dump(self.bytes.clone(), cancel).await?;
+        let fields = parse_pdf_form_fields(&output)?;
+        drop(permit);
+        Ok(fields)
+    }
+
+    /// OCR one rendered page when the fixed system Tesseract executable exists.
+    /// OCR is explicit and never replaces ordinary text extraction silently.
+    pub async fn page_ocr_text(
+        &self,
+        number: u32,
+        cancel: &CancellationToken,
+    ) -> WorkspaceResult<String> {
+        if number == 0 || number > self.pages {
+            return Err(WorkspaceError::Invalid(
+                "Choose a page within this PDF.".into(),
+            ));
+        }
+        let permit = tokio::select! {
+            biased;
+            _ = cancel.cancelled() => return Err(RuntimeError::Closed.into()),
+            result = tokio::time::timeout(Duration::from_secs(3), PREVIEWS.acquire()) => result
+                .map_err(|_| WorkspaceError::Invalid("Another preview is still rendering. Try again.".into()))?
+                .map_err(|_| WorkspaceError::Worker)?,
+        };
+        let png = run_pdf_tool(self.bytes.clone(), PdfTool::Page(number), cancel).await?;
+        let output = run_pdf_ocr_tool(png.into(), cancel).await?;
+        let text = String::from_utf8(output).map_err(|_| {
+            WorkspaceError::Invalid("The OCR helper returned invalid UTF-8.".into())
+        })?;
+        drop(permit);
+        if text.trim().is_empty() {
+            return Err(WorkspaceError::Invalid(
+                "OCR did not find readable text on this page.".into(),
+            ));
+        }
+        Ok(text)
+    }
+
+    /// Fill a reviewed safe subset of AcroForm fields and save a new PDF.
+    /// The immutable source snapshot is never changed, and PDF actions/scripts
+    /// are never executed or submitted to the network.
+    pub async fn export_filled_form(
+        &self,
+        edits: Vec<PdfFormEdit>,
+        destination: PathBuf,
+    ) -> WorkspaceResult<()> {
+        if edits.is_empty() {
+            return Err(WorkspaceError::Invalid(
+                "Change at least one editable field before saving a filled copy.".into(),
+            ));
+        }
+        let cancel = CancellationToken::new();
+        let fields = self.form_fields(&cancel).await?;
+        validate_pdf_form_edits(&fields, &edits)?;
+        let xfdf = build_pdf_xfdf(&edits)?;
+        let filled = run_pdftk_fill(self.bytes.clone(), xfdf, &cancel).await?;
+        if !filled.starts_with(b"%PDF-") || filled.len() > MAX_PDF_FILLED_BYTES {
+            return Err(WorkspaceError::Invalid(
+                "The form helper returned an invalid or oversized PDF.".into(),
+            ));
+        }
+        // Re-inspect the generated copy before writing it. Requested values must
+        // round-trip exactly through the helper.
+        let verified =
+            parse_pdf_form_fields(&run_pdf_form_dump(filled.clone().into(), &cancel).await?)?;
+        for edit in &edits {
+            let field = verified
+                .iter()
+                .find(|field| field.name == edit.name)
+                .ok_or_else(|| {
+                    WorkspaceError::Invalid(
+                        "The filled PDF no longer contains a reviewed form field.".into(),
+                    )
+                })?;
+            if field.value != edit.value {
+                return Err(WorkspaceError::Invalid(
+                    "The filled PDF did not retain the reviewed field value.".into(),
+                ));
+            }
+        }
+        tokio::task::spawn_blocking(move || {
+            crate::storage::write_new_export(&destination, &filled)
+        })
+        .await
+        .map_err(|_| WorkspaceError::Worker)??;
+        Ok(())
     }
 
     /// Inspect Poppler's external web link annotations on one page.
@@ -226,6 +418,397 @@ fn parse_pdf_links(output: &[u8], requested_page: u32) -> WorkspaceResult<Vec<St
     Ok(links)
 }
 
+fn parse_pdf_form_fields(output: &[u8]) -> WorkspaceResult<Vec<PdfFormField>> {
+    let text = std::str::from_utf8(output)
+        .map_err(|_| WorkspaceError::Invalid("Invalid PDF form metadata.".into()))?;
+    #[derive(Default)]
+    struct Pending {
+        kind: Option<PdfFormFieldType>,
+        name: Option<String>,
+        alternate_name: Option<String>,
+        value: String,
+        default_value: Option<String>,
+        flags: Option<u32>,
+        options: Vec<String>,
+    }
+    fn finish(
+        pending: Pending,
+        fields: &mut Vec<PdfFormField>,
+        names: &mut HashSet<String>,
+    ) -> WorkspaceResult<()> {
+        if pending.name.is_none() && pending.kind.is_none() && pending.flags.is_none() {
+            return Ok(());
+        }
+        let name = pending
+            .name
+            .ok_or_else(|| WorkspaceError::Invalid("PDF form field has no name.".into()))?;
+        if name.is_empty()
+            || name.len() > 1024
+            || name.chars().any(|c| c.is_control())
+            || !names.insert(name.clone())
+        {
+            return Err(WorkspaceError::Invalid(
+                "PDF form field names are invalid or ambiguous.".into(),
+            ));
+        }
+        if fields.len() >= MAX_PDF_FORM_FIELDS {
+            return Err(RuntimeError::Limit.into());
+        }
+        if pending.options.len() > MAX_PDF_FORM_OPTIONS
+            || pending.value.len() > MAX_PDF_FORM_VALUE_BYTES
+            || pending
+                .default_value
+                .as_ref()
+                .is_some_and(|v| v.len() > MAX_PDF_FORM_VALUE_BYTES)
+        {
+            return Err(RuntimeError::Limit.into());
+        }
+        fields.push(PdfFormField {
+            name,
+            alternate_name: pending.alternate_name,
+            kind: pending.kind.unwrap_or(PdfFormFieldType::Unknown),
+            value: pending.value,
+            default_value: pending.default_value,
+            flags: pending.flags.unwrap_or(0),
+            options: pending.options,
+        });
+        Ok(())
+    }
+
+    let mut fields = Vec::new();
+    let mut names = HashSet::new();
+    let mut pending = Pending::default();
+    for line in text.lines() {
+        if line == "---" {
+            finish(std::mem::take(&mut pending), &mut fields, &mut names)?;
+            continue;
+        }
+        let Some((key, value)) = line.split_once(':') else {
+            continue;
+        };
+        let value = value.strip_prefix(' ').unwrap_or(value);
+        if value.len() > MAX_PDF_FORM_VALUE_BYTES || value.contains('\0') {
+            return Err(RuntimeError::Limit.into());
+        }
+        match key {
+            "FieldType" => {
+                pending.kind = Some(match value {
+                    "Text" => PdfFormFieldType::Text,
+                    "Button" => PdfFormFieldType::Button,
+                    "Choice" => PdfFormFieldType::Choice,
+                    "Signature" => PdfFormFieldType::Signature,
+                    _ => PdfFormFieldType::Unknown,
+                });
+            }
+            "FieldName" => pending.name = Some(value.to_owned()),
+            "FieldNameAlt" => pending.alternate_name = Some(value.to_owned()),
+            "FieldValue" => pending.value = value.to_owned(),
+            "FieldValueDefault" => pending.default_value = Some(value.to_owned()),
+            "FieldFlags" => {
+                pending.flags =
+                    Some(value.parse::<u32>().map_err(|_| {
+                        WorkspaceError::Invalid("Invalid PDF form field flags.".into())
+                    })?)
+            }
+            "FieldStateOption" => {
+                if pending.options.len() == MAX_PDF_FORM_OPTIONS {
+                    return Err(RuntimeError::Limit.into());
+                }
+                pending.options.push(value.to_owned());
+            }
+            _ => {}
+        }
+    }
+    finish(pending, &mut fields, &mut names)?;
+    Ok(fields)
+}
+
+fn valid_pdf_form_value(value: &str) -> bool {
+    value.len() <= MAX_PDF_FORM_VALUE_BYTES
+        && !value.contains('\0')
+        && value
+            .chars()
+            .all(|c| c == '\t' || c == '\n' || c == '\r' || !c.is_control())
+}
+
+fn validate_pdf_form_edits(fields: &[PdfFormField], edits: &[PdfFormEdit]) -> WorkspaceResult<()> {
+    if edits.len() > MAX_PDF_FORM_FIELDS {
+        return Err(RuntimeError::Limit.into());
+    }
+    let mut names = HashSet::new();
+    for edit in edits {
+        if !names.insert(edit.name.as_str()) || !valid_pdf_form_value(&edit.value) {
+            return Err(WorkspaceError::Invalid("Invalid PDF form edit.".into()));
+        }
+        let field = fields
+            .iter()
+            .find(|field| field.name == edit.name)
+            .ok_or_else(|| {
+                WorkspaceError::Invalid("PDF form field changed after review.".into())
+            })?;
+        if !field.editable() {
+            return Err(WorkspaceError::Invalid(
+                "This PDF field type or flag combination is inspection-only.".into(),
+            ));
+        }
+        match field.kind {
+            PdfFormFieldType::Text => {}
+            PdfFormFieldType::Button | PdfFormFieldType::Choice => {
+                if !field.options.iter().any(|option| option == &edit.value) {
+                    return Err(WorkspaceError::Invalid(
+                        "Choose one of the PDF field's reported states/options.".into(),
+                    ));
+                }
+            }
+            PdfFormFieldType::Signature | PdfFormFieldType::Unknown => {
+                return Err(WorkspaceError::Invalid(
+                    "This PDF field cannot be edited safely.".into(),
+                ));
+            }
+        }
+    }
+    Ok(())
+}
+
+fn xml_escape(value: &str, output: &mut String) {
+    for ch in value.chars() {
+        match ch {
+            '&' => output.push_str("&amp;"),
+            '<' => output.push_str("&lt;"),
+            '>' => output.push_str("&gt;"),
+            '"' => output.push_str("&quot;"),
+            '\'' => output.push_str("&apos;"),
+            _ => output.push(ch),
+        }
+    }
+}
+
+fn build_pdf_xfdf(edits: &[PdfFormEdit]) -> WorkspaceResult<Vec<u8>> {
+    let mut xml = String::from(
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?><xfdf xmlns=\"http://ns.adobe.com/xfdf/\" xml:space=\"preserve\"><fields>",
+    );
+    for edit in edits {
+        if edit.name.is_empty()
+            || edit.name.len() > 1024
+            || edit.name.chars().any(|c| c.is_control())
+            || !valid_pdf_form_value(&edit.value)
+        {
+            return Err(WorkspaceError::Invalid("Invalid PDF form edit.".into()));
+        }
+        xml.push_str("<field name=\"");
+        xml_escape(&edit.name, &mut xml);
+        xml.push_str("\"><value>");
+        xml_escape(&edit.value, &mut xml);
+        xml.push_str("</value></field>");
+        if xml.len() > MAX_PDF_FORM_METADATA_BYTES {
+            return Err(RuntimeError::Limit.into());
+        }
+    }
+    xml.push_str("</fields></xfdf>");
+    Ok(xml.into_bytes())
+}
+
+async fn run_pdf_form_dump(
+    bytes: Arc<[u8]>,
+    cancel: &CancellationToken,
+) -> WorkspaceResult<Vec<u8>> {
+    run_pdf_helper(
+        bytes,
+        "/usr/bin/pdftk",
+        vec![
+            "-".into(),
+            "dump_data_fields_utf8".into(),
+            "output".into(),
+            "-".into(),
+        ],
+        MAX_PDF_FORM_METADATA_BYTES,
+        "PDF AcroForm inspection",
+        cancel,
+    )
+    .await
+}
+
+async fn run_pdf_ocr_tool(png: Arc<[u8]>, cancel: &CancellationToken) -> WorkspaceResult<Vec<u8>> {
+    if cancel.is_cancelled() {
+        return Err(RuntimeError::Closed.into());
+    }
+    if png.len() > 12 * 1024 * 1024 || !png.starts_with(b"\x89PNG\r\n\x1a\n") {
+        return Err(RuntimeError::Limit.into());
+    }
+    let executable = "/usr/bin/tesseract";
+    if !cfg!(target_os = "linux")
+        || !std::path::Path::new(executable).is_file()
+        || !std::path::Path::new("/usr/bin/prlimit").is_file()
+    {
+        return Err(RuntimeError::Unsupported(
+            "PDF OCR currently requires Linux with the system tesseract-ocr and util-linux packages installed. No helper was downloaded or started".into(),
+        )
+        .into());
+    }
+    let scratch = tempfile::Builder::new()
+        .prefix("synara-pdf-ocr-")
+        .tempdir()
+        .map_err(RuntimeError::from)?;
+    let mut command = Command::new("/usr/bin/prlimit");
+    command.args([
+        "--as=805306368",
+        "--cpu=15",
+        "--fsize=16777216",
+        "--nofile=64",
+        "--",
+        executable,
+        "stdin",
+        "stdout",
+        "-l",
+        "eng",
+        "--psm",
+        "3",
+    ]);
+    command
+        .current_dir(scratch.path())
+        .env_clear()
+        .env("PATH", "/usr/bin:/bin")
+        .env("LC_ALL", "C")
+        .env("HOME", scratch.path())
+        .env("TMPDIR", scratch.path())
+        .env("OMP_THREAD_LIMIT", "1")
+        .stdin(std::process::Stdio::piped())
+        .stdout(std::process::Stdio::piped())
+        .stderr(std::process::Stdio::piped())
+        .kill_on_drop(true);
+    let mut child = command.spawn().map_err(RuntimeError::from)?;
+    let mut stdin = child.stdin.take().ok_or_else(|| WorkspaceError::Worker)?;
+    let stdout = child.stdout.take().ok_or_else(|| WorkspaceError::Worker)?;
+    let stderr = child.stderr.take().ok_or_else(|| WorkspaceError::Worker)?;
+    let input = png.clone();
+    let result = tokio::select! {
+        biased;
+        _ = cancel.cancelled() => Err(RuntimeError::Closed.into()),
+        result = tokio::time::timeout(Duration::from_secs(20), async {
+            let write = async move {
+                stdin.write_all(&input).await?;
+                stdin.shutdown().await?;
+                Ok::<_, RuntimeError>(())
+            };
+            let wait = async { child.wait().await.map_err(RuntimeError::from) };
+            let (_, output, _, status) = tokio::try_join!(
+                write,
+                bounded_pdf_read(stdout, MAX_PDF_OCR_BYTES),
+                bounded_pdf_read(stderr, MAX_PDF_DIAGNOSTIC_BYTES),
+                wait,
+            )?;
+            if !status.success() {
+                return Err(RuntimeError::Invalid("PDF OCR failed. The source PDF was not modified".into()));
+            }
+            Ok(output)
+        }) => match result {
+            Ok(result) => result.map_err(WorkspaceError::from),
+            Err(_) => Err(RuntimeError::Timeout.into()),
+        },
+    };
+    if result.is_err() {
+        let _ = child.start_kill();
+        let _ = tokio::time::timeout(Duration::from_secs(1), child.wait()).await;
+    }
+    result
+}
+
+async fn run_pdftk_fill(
+    bytes: Arc<[u8]>,
+    xfdf: Vec<u8>,
+    cancel: &CancellationToken,
+) -> WorkspaceResult<Vec<u8>> {
+    if cancel.is_cancelled() {
+        return Err(RuntimeError::Closed.into());
+    }
+    if bytes.len() > MAX_PDF_BYTES
+        || !bytes.starts_with(b"%PDF-")
+        || xfdf.len() > MAX_PDF_FORM_METADATA_BYTES
+    {
+        return Err(RuntimeError::Limit.into());
+    }
+    let executable = "/usr/bin/pdftk";
+    if !cfg!(target_os = "linux")
+        || !std::path::Path::new(executable).is_file()
+        || !std::path::Path::new("/usr/bin/prlimit").is_file()
+    {
+        return Err(RuntimeError::Unsupported(
+            "PDF AcroForm editing currently requires Linux with the system pdftk-java and util-linux packages installed. No helper was downloaded or started".into(),
+        )
+        .into());
+    }
+    let scratch = tempfile::Builder::new()
+        .prefix("synara-pdf-form-")
+        .tempdir()
+        .map_err(RuntimeError::from)?;
+    let xfdf_path = scratch.path().join("reviewed-values.xfdf");
+    tokio::fs::write(&xfdf_path, xfdf)
+        .await
+        .map_err(RuntimeError::from)?;
+    let mut command = Command::new("/usr/bin/prlimit");
+    command.args([
+        "--as=805306368",
+        "--cpu=15",
+        "--fsize=16777216",
+        "--nofile=64",
+        "--",
+        executable,
+        "-",
+        "fill_form",
+        "reviewed-values.xfdf",
+        "output",
+        "-",
+        "need_appearances",
+        "keep_first_id",
+    ]);
+    command
+        .current_dir(scratch.path())
+        .env_clear()
+        .env("PATH", "/usr/bin:/bin")
+        .env("LC_ALL", "C")
+        .env("HOME", scratch.path())
+        .env("TMPDIR", scratch.path())
+        .stdin(std::process::Stdio::piped())
+        .stdout(std::process::Stdio::piped())
+        .stderr(std::process::Stdio::piped())
+        .kill_on_drop(true);
+    let mut child = command.spawn().map_err(RuntimeError::from)?;
+    let mut stdin = child.stdin.take().ok_or_else(|| WorkspaceError::Worker)?;
+    let stdout = child.stdout.take().ok_or_else(|| WorkspaceError::Worker)?;
+    let stderr = child.stderr.take().ok_or_else(|| WorkspaceError::Worker)?;
+    let input = bytes.clone();
+    let result = tokio::select! {
+        biased;
+        _ = cancel.cancelled() => Err(RuntimeError::Closed.into()),
+        result = tokio::time::timeout(Duration::from_secs(20), async {
+            let write = async move {
+                stdin.write_all(&input).await?;
+                stdin.shutdown().await?;
+                Ok::<_, RuntimeError>(())
+            };
+            let wait = async { child.wait().await.map_err(RuntimeError::from) };
+            let (_, output, _, status) = tokio::try_join!(
+                write,
+                bounded_pdf_read(stdout, MAX_PDF_FILLED_BYTES),
+                bounded_pdf_read(stderr, MAX_PDF_DIAGNOSTIC_BYTES),
+                wait,
+            )?;
+            if !status.success() {
+                return Err(RuntimeError::Invalid("PDF form filling failed. The source PDF was not modified".into()));
+            }
+            Ok(output)
+        }) => match result {
+            Ok(result) => result.map_err(WorkspaceError::from),
+            Err(_) => Err(RuntimeError::Timeout.into()),
+        },
+    };
+    if result.is_err() {
+        let _ = child.start_kill();
+        let _ = tokio::time::timeout(Duration::from_secs(1), child.wait()).await;
+    }
+    result
+}
+
 /// Match the rendering helper's fixed executable, limits, empty environment,
 /// stdin-only source and bounded output. These Poppler calls return inert data;
 /// they do not execute PDF actions.
@@ -289,7 +872,15 @@ async fn run_pdf_helper(
         || !std::path::Path::new(executable).is_file()
         || !std::path::Path::new("/usr/bin/prlimit").is_file()
     {
-        return Err(RuntimeError::Unsupported(format!("{operation} currently requires Linux with the system poppler-utils and util-linux packages installed. No helper was downloaded or started")).into());
+        let package = if executable == "/usr/bin/pdftk" {
+            "pdftk-java"
+        } else {
+            "poppler-utils"
+        };
+        return Err(RuntimeError::Unsupported(format!(
+            "{operation} currently requires Linux with the system {package} and util-linux packages installed. No helper was downloaded or started"
+        ))
+        .into());
     }
     let scratch = tempfile::Builder::new()
         .prefix("synara-pdf-helper-")
@@ -504,6 +1095,85 @@ async fn extract_first_pages_text(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn form_dump_parser_and_xfdf_are_bounded_and_safe() {
+        let dump = b"---\nFieldType: Text\nFieldName: name\nFieldNameAlt: Full name\nFieldFlags: 2\nFieldValue: Ada\n---\nFieldType: Button\nFieldName: agree\nFieldFlags: 0\nFieldValue: Off\nFieldStateOption: Off\nFieldStateOption: Yes\n---\nFieldType: Signature\nFieldName: signature\nFieldFlags: 0\n";
+        let fields = parse_pdf_form_fields(dump).unwrap();
+        assert_eq!(fields.len(), 3);
+        assert!(fields[0].editable());
+        assert!(fields[0].required());
+        assert!(fields[1].editable());
+        assert!(!fields[2].editable());
+        validate_pdf_form_edits(
+            &fields,
+            &[
+                PdfFormEdit {
+                    name: "name".into(),
+                    value: "A&B <reviewed>".into(),
+                },
+                PdfFormEdit {
+                    name: "agree".into(),
+                    value: "Yes".into(),
+                },
+            ],
+        )
+        .unwrap();
+        assert!(
+            validate_pdf_form_edits(
+                &fields,
+                &[PdfFormEdit {
+                    name: "agree".into(),
+                    value: "invented".into(),
+                }],
+            )
+            .is_err()
+        );
+        let xfdf = String::from_utf8(
+            build_pdf_xfdf(&[PdfFormEdit {
+                name: "name".into(),
+                value: "A&B <reviewed>".into(),
+            }])
+            .unwrap(),
+        )
+        .unwrap();
+        assert!(xfdf.contains("A&amp;B &lt;reviewed&gt;"));
+        assert!(!xfdf.contains("A&B <reviewed>"));
+    }
+
+    #[test]
+    fn unsafe_form_field_flags_stay_inspection_only() {
+        let text = PdfFormField {
+            name: "password".into(),
+            alternate_name: None,
+            kind: PdfFormFieldType::Text,
+            value: String::new(),
+            default_value: None,
+            flags: 1 << 13,
+            options: vec![],
+        };
+        let push = PdfFormField {
+            name: "submit".into(),
+            alternate_name: None,
+            kind: PdfFormFieldType::Button,
+            value: String::new(),
+            default_value: None,
+            flags: 1 << 16,
+            options: vec!["Go".into()],
+        };
+        let multi = PdfFormField {
+            name: "many".into(),
+            alternate_name: None,
+            kind: PdfFormFieldType::Choice,
+            value: String::new(),
+            default_value: None,
+            flags: 1 << 21,
+            options: vec!["a".into(), "b".into()],
+        };
+        assert!(!text.editable());
+        assert!(!push.editable());
+        assert!(!multi.editable());
+    }
+
     #[test]
     fn page_metadata_refuses_ambiguous_unbounded_and_injected_values() {
         assert_eq!(

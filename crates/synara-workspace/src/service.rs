@@ -271,16 +271,35 @@ impl WorkspaceService {
     }
 
     pub async fn delete_task(&self, id: TaskId) -> WorkspaceResult<()> {
+        let managed = self
+            .access(move |store| Ok(store.managed_worktree(id)?))
+            .await?;
         self.access(move |store| {
             if !store.delete_task(id)? {
                 return Err(WorkspaceError::NotFound);
             }
             Ok(())
         })
-        .await
+        .await?;
+        if let Some(managed) = managed
+            && let Err(error) = self
+                .cleanup_deleted_managed_worktree(managed.clone(), CancellationToken::new())
+                .await
+        {
+            tracing::warn!(
+                task = %managed.task,
+                branch = %managed.branch,
+                repository = %managed.repository_path.display(),
+                error = %error,
+                "managed worktree retained after task deletion"
+            );
+        }
+        Ok(())
     }
 
     pub async fn delete_project(&self, id: ProjectId) -> WorkspaceResult<()> {
+        self.retry_pending_managed_worktree_cleanup(Some(id), None)
+            .await?;
         self.access(move |store| {
             if !store.delete_project(id)? {
                 return Err(WorkspaceError::NotFound);
@@ -291,6 +310,8 @@ impl WorkspaceService {
     }
 
     pub async fn delete_workspace(&self, id: WorkspaceId) -> WorkspaceResult<()> {
+        self.retry_pending_managed_worktree_cleanup(None, Some(id))
+            .await?;
         self.access(move |store| {
             if !store.delete_workspace(id)? {
                 return Err(WorkspaceError::NotFound);
@@ -458,7 +479,7 @@ impl WorkspaceService {
         scope: TaskScope,
         draft: String,
     ) -> WorkspaceResult<Task> {
-        self.create_scoped_task_at(project, title, agent_id, scope, draft, None)
+        self.create_scoped_task_at(project, title, agent_id, scope, draft, None, None)
             .await
     }
 
@@ -509,6 +530,7 @@ impl WorkspaceService {
             scope,
             draft,
             Some((worktree.path, worktree.repository_path)),
+            None,
         )
         .await
     }
@@ -528,6 +550,7 @@ impl WorkspaceService {
         scope: TaskScope,
         draft: String,
         selected_directory: Option<(PathBuf, PathBuf)>,
+        managed_branch: Option<(String, bool)>,
     ) -> WorkspaceResult<Task> {
         if draft.len() > 1024 * 1024 {
             return Err(WorkspaceError::Invalid("Task draft exceeds 1 MiB".into()));
@@ -592,7 +615,27 @@ impl WorkspaceService {
                 updated_at_ms: now_ms(),
                 scope,
             };
-            store.insert_task_with_draft(&task, draft)?;
+            let managed = managed_branch
+                .map(|(branch, remote)| {
+                    let (_, repository_path) =
+                        selected_directory.as_ref().ok_or(WorkspaceError::Invalid(
+                            "managed worktree task is missing its repository root".into(),
+                        ))?;
+                    let managed = ManagedWorktreeOwnership {
+                        version: 1,
+                        task: task.id,
+                        project: project.id,
+                        workspace: workspace.id,
+                        repository_path: repository_path.clone(),
+                        task_path: task.working_directory.clone(),
+                        branch,
+                        remote,
+                    };
+                    managed.validate().map_err(WorkspaceError::Storage)?;
+                    Ok::<_, WorkspaceError>(managed)
+                })
+                .transpose()?;
+            store.insert_task_with_draft_and_managed_worktree(&task, draft, managed)?;
             Ok(task)
         })
         .await

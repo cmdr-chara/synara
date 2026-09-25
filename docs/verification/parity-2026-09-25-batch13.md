@@ -48,3 +48,14 @@ inferred from thread-level configuration. Account quota, billing and ACP
 per-turn route attribution remain open.
 
 Validation pending with final focused checks.
+
+
+M27 partial: Computer Use now supports explicit horizontal scrolling in addition
+to vertical scrolling. The action carries one reviewed window-relative point,
+left/right direction and 1–8 steps. It maps only to X11 scroll buttons 6/7 after
+moving inside the reviewed window, and the runtime revalidates the exact window
+before each command. Invalid coordinates or step counts fail before input.
+
+Drag was deliberately not added in this slice: a multi-command mousedown/mouseup
+sequence can leave a button held if cancellation or target invalidation happens
+between commands. The current one-shot actions remain cancellation-safe.

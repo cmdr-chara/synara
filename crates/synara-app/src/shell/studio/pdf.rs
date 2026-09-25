@@ -1,6 +1,13 @@
 //! Single snapshot, single rendered page, task/generation-fenced native PDF UI.
 use super::*;
 
+struct PdfFormEditor {
+    fields: Vec<PdfFormField>,
+    values: Vec<String>,
+    selected: Option<usize>,
+    input: Option<Entity<TextEntry>>,
+}
+
 pub(super) struct PdfView {
     document: StudioPdf,
     number: u32,
@@ -16,6 +23,12 @@ pub(super) struct PdfView {
     page_links: Option<Vec<String>>,
     links_loading: bool,
     links_error: Option<String>,
+    ocr_text: Option<String>,
+    ocr_loading: bool,
+    ocr_error: Option<String>,
+    form_loading: bool,
+    form_error: Option<String>,
+    form_editor: Option<PdfFormEditor>,
 }
 impl PdfView {
     fn new(document: StudioPdf, page: StudioPdfPage) -> Self {
@@ -34,6 +47,12 @@ impl PdfView {
             page_links: None,
             links_loading: false,
             links_error: None,
+            ocr_text: None,
+            ocr_loading: false,
+            ocr_error: None,
+            form_loading: false,
+            form_error: None,
+            form_editor: None,
         }
     }
 }
@@ -93,6 +112,8 @@ impl Shell {
         self.studio.preview_cancel = Default::default();
         let cancel = self.studio.preview_cancel.clone();
         view.links_loading = false;
+        view.ocr_loading = false;
+        view.form_loading = false;
         self.studio.preview_loading = true;
         self.studio.error = None;
         self.job(async move {
@@ -160,7 +181,7 @@ impl Shell {
                 match result {
                     Ok(text) if text.trim().is_empty() => {
                         view.text_error = Some(
-                            "No text was found on this page. Scanned pages are not OCR processed."
+                            "No embedded text was found on this page. Use OCR page if the optional system OCR helper is installed."
                                 .into(),
                         );
                     }
@@ -282,6 +303,306 @@ impl Shell {
         .detach();
         cx.notify();
     }
+    fn ocr_studio_pdf_page(&mut self, cx: &mut Context<Self>) {
+        if self.studio.preview_loading || self.close != CloseState::Open {
+            return;
+        }
+        let Some(task) = self.selected.filter(|task| Some(*task) == self.studio.task) else {
+            return;
+        };
+        let Some(path) = self.studio.selected.clone() else {
+            return;
+        };
+        if self.studio.preview_cancel.is_cancelled() {
+            self.studio.preview_cancel = Default::default();
+        }
+        let Some(Preview::Pdf(view)) = &mut self.studio.preview else {
+            return;
+        };
+        if view.ocr_loading || view.ocr_text.is_some() {
+            return;
+        }
+        view.ocr_loading = true;
+        view.ocr_error = None;
+        let document = view.document.clone();
+        let number = view.number;
+        let generation = self.studio.preview_generation;
+        let cancel = self.studio.preview_cancel.clone();
+        let expected_path = path.clone();
+        cx.spawn(async move |weak, cx| {
+            let result = document
+                .page_ocr_text(number, &cancel)
+                .await
+                .map_err(|error| error.to_string());
+            let _ = weak.update(cx, |this, cx| {
+                if this.selected != Some(task)
+                    || this.studio.task != Some(task)
+                    || this.studio.preview_generation != generation
+                    || this.studio.selected.as_ref() != Some(&expected_path)
+                {
+                    return;
+                }
+                let Some(Preview::Pdf(view)) = &mut this.studio.preview else {
+                    return;
+                };
+                if view.number != number {
+                    return;
+                }
+                view.ocr_loading = false;
+                match result {
+                    Ok(text) => view.ocr_text = Some(text),
+                    Err(error) => view.ocr_error = Some(error),
+                }
+                cx.notify();
+            });
+        })
+        .detach();
+        cx.notify();
+    }
+
+    fn inspect_studio_pdf_form(&mut self, cx: &mut Context<Self>) {
+        if self.studio.preview_loading || self.close != CloseState::Open {
+            return;
+        }
+        let Some(task) = self.selected.filter(|task| Some(*task) == self.studio.task) else {
+            return;
+        };
+        let Some(path) = self.studio.selected.clone() else {
+            return;
+        };
+        if self.studio.preview_cancel.is_cancelled() {
+            self.studio.preview_cancel = Default::default();
+        }
+        let Some(Preview::Pdf(view)) = &mut self.studio.preview else {
+            return;
+        };
+        if view.form_loading
+            || view.form_editor.is_some()
+            || view.document.form != PdfFormKind::AcroForm
+        {
+            return;
+        }
+        view.form_loading = true;
+        view.form_error = None;
+        let document = view.document.clone();
+        let generation = self.studio.preview_generation;
+        let cancel = self.studio.preview_cancel.clone();
+        let expected_path = path.clone();
+        cx.spawn(async move |weak, cx| {
+            let result = document
+                .form_fields(&cancel)
+                .await
+                .map_err(|error| error.to_string());
+            let _ = weak.update(cx, |this, cx| {
+                if this.selected != Some(task)
+                    || this.studio.task != Some(task)
+                    || this.studio.preview_generation != generation
+                    || this.studio.selected.as_ref() != Some(&expected_path)
+                {
+                    return;
+                }
+                let Some(Preview::Pdf(view)) = &mut this.studio.preview else {
+                    return;
+                };
+                view.form_loading = false;
+                match result {
+                    Ok(fields) => {
+                        let values = fields
+                            .iter()
+                            .map(|field| field.value.clone())
+                            .collect::<Vec<_>>();
+                        let selected = fields
+                            .iter()
+                            .position(PdfFormField::editable)
+                            .or_else(|| (!fields.is_empty()).then_some(0));
+                        let input = selected.and_then(|index| {
+                            let field = fields.get(index)?;
+                            if field.editable() && field.kind == PdfFormFieldType::Text {
+                                let entry = cx.new(|cx| {
+                                    TextEntry::new("PDF field value", EntryMode::Editor, 72., cx)
+                                });
+                                let value = field.value.clone();
+                                entry.update(cx, |entry, cx| entry.set_text(value, cx));
+                                Some(entry)
+                            } else {
+                                None
+                            }
+                        });
+                        view.form_editor = Some(PdfFormEditor {
+                            fields,
+                            values,
+                            selected,
+                            input,
+                        });
+                    }
+                    Err(error) => view.form_error = Some(error),
+                }
+                cx.notify();
+            });
+        })
+        .detach();
+        cx.notify();
+    }
+
+    fn sync_pdf_form_input(view: &mut PdfView, cx: &mut Context<Self>) {
+        let Some(editor) = &mut view.form_editor else {
+            return;
+        };
+        let Some(index) = editor.selected else {
+            return;
+        };
+        let Some(input) = &editor.input else {
+            return;
+        };
+        if let Some(value) = editor.values.get_mut(index) {
+            *value = input.read(cx).text().to_owned();
+        }
+    }
+
+    fn select_studio_pdf_form_field(&mut self, index: usize, cx: &mut Context<Self>) {
+        let Some(Preview::Pdf(view)) = &mut self.studio.preview else {
+            return;
+        };
+        Self::sync_pdf_form_input(view, cx);
+        let Some(editor) = &mut view.form_editor else {
+            return;
+        };
+        let Some(field) = editor.fields.get(index) else {
+            return;
+        };
+        editor.selected = Some(index);
+        editor.input = if field.editable() && field.kind == PdfFormFieldType::Text {
+            let input = cx.new(|cx| TextEntry::new("PDF field value", EntryMode::Editor, 72., cx));
+            let value = editor.values.get(index).cloned().unwrap_or_default();
+            input.update(cx, |entry, cx| entry.set_text(value, cx));
+            Some(input)
+        } else {
+            None
+        };
+        cx.notify();
+    }
+
+    fn set_studio_pdf_form_option(&mut self, index: usize, value: String, cx: &mut Context<Self>) {
+        let Some(Preview::Pdf(view)) = &mut self.studio.preview else {
+            return;
+        };
+        Self::sync_pdf_form_input(view, cx);
+        let Some(editor) = &mut view.form_editor else {
+            return;
+        };
+        let Some(field) = editor.fields.get(index) else {
+            return;
+        };
+        if !field.editable() || !field.options.iter().any(|option| option == &value) {
+            view.form_error = Some("Choose one of the PDF field's reported options.".into());
+            cx.notify();
+            return;
+        }
+        if let Some(current) = editor.values.get_mut(index) {
+            *current = value;
+        }
+        cx.notify();
+    }
+
+    fn pdf_form_edits(
+        &mut self,
+        cx: &mut Context<Self>,
+    ) -> Result<(StudioPdf, Vec<PdfFormEdit>), String> {
+        let Some(Preview::Pdf(view)) = &mut self.studio.preview else {
+            return Err("No PDF form is open.".into());
+        };
+        Self::sync_pdf_form_input(view, cx);
+        let Some(editor) = &view.form_editor else {
+            return Err("Inspect the AcroForm fields before saving a filled copy.".into());
+        };
+        let edits = editor
+            .fields
+            .iter()
+            .zip(&editor.values)
+            .filter(|(field, value)| field.editable() && &field.value != *value)
+            .map(|(field, value)| PdfFormEdit {
+                name: field.name.clone(),
+                value: value.clone(),
+            })
+            .collect::<Vec<_>>();
+        if edits.is_empty() {
+            return Err(
+                "Change at least one editable PDF field before saving a filled copy.".into(),
+            );
+        }
+        Ok((view.document.clone(), edits))
+    }
+
+    fn save_studio_pdf_form_copy(&mut self, cx: &mut Context<Self>) {
+        if self.studio.exporting || self.close != CloseState::Open {
+            return;
+        }
+        let (document, edits) = match self.pdf_form_edits(cx) {
+            Ok(value) => value,
+            Err(error) => {
+                self.studio.error = Some(error);
+                cx.notify();
+                return;
+            }
+        };
+        let (Some(task), Some(path)) = (self.selected, self.studio.selected.clone()) else {
+            return;
+        };
+        if self.studio.task != Some(task) {
+            return;
+        }
+        let generation = self.studio.preview_generation;
+        let name = path
+            .file_stem()
+            .and_then(|stem| stem.to_str())
+            .filter(|stem| !stem.is_empty())
+            .map(|stem| format!("{stem}-filled.pdf"))
+            .unwrap_or_else(|| "filled-form.pdf".into());
+        self.studio.exporting = true;
+        let picker = cx.prompt_for_new_path(&self.scratch_directory, Some(&name));
+        cx.spawn(async move |view, cx| {
+            let result = picker.await;
+            let _ = view.update(cx, |this, cx| {
+                if this.close != CloseState::Open
+                    || this.selected != Some(task)
+                    || this.studio.task != Some(task)
+                    || this.studio.preview_generation != generation
+                    || this.studio.selected.as_ref() != Some(&path)
+                {
+                    this.studio.exporting = false;
+                    this.notice = Some(
+                        "Filled PDF export cancelled because its source selection changed.".into(),
+                    );
+                    cx.notify();
+                    return;
+                }
+                match result {
+                    Ok(Ok(Some(destination))) => {
+                        this.job(async move {
+                            Ok(Update::Studio(Box::new(StudioReply::PdfFormExported(
+                                document
+                                    .export_filled_form(edits, destination)
+                                    .await
+                                    .map_err(|error| error.to_string()),
+                            ))))
+                        });
+                    }
+                    Ok(Ok(None)) => this.studio.exporting = false,
+                    _ => {
+                        this.studio.exporting = false;
+                        this.studio.error = Some(
+                            "The system save dialog is unavailable. No filled PDF was exported."
+                                .into(),
+                        );
+                    }
+                }
+                cx.notify();
+            });
+        })
+        .detach();
+        cx.notify();
+    }
+
     pub(super) fn studio_pdf_loaded(
         &mut self,
         task: TaskId,
@@ -299,7 +620,15 @@ impl Shell {
         }
         self.studio.preview_loading = false;
         match result {
-            Ok((doc, page)) => self.studio.preview = Some(Preview::Pdf(PdfView::new(doc, page))),
+            Ok((doc, page)) => {
+                let retained_form = match &mut self.studio.preview {
+                    Some(Preview::Pdf(previous)) => previous.form_editor.take(),
+                    _ => None,
+                };
+                let mut next = PdfView::new(doc, page);
+                next.form_editor = retained_form;
+                self.studio.preview = Some(Preview::Pdf(next));
+            }
             Err(error) => self.studio.error = Some(error),
         }
     }
@@ -325,7 +654,7 @@ impl Shell {
                 .child(ui::button("studio-pdf-reload", "Reload file", false).relative().child(ui::layout_probe("studio-pdf-reload"))
                     .on_click(cx.listener(|this, _, _, cx| {if let Some(path)=this.studio.selected.clone(){this.preview_studio_file(path,cx);}}))))
             .child(div().text_size(px(11.)).text_color(rgb(palette().muted))
-                .child(format!("Read-only PDF snapshot · {} · Reload to see disk changes. Extracted text is inert. Only HTTP(S) web link annotations are available below. Form fields are not interactive; scripts and embedded files are never run.", view.document.form.label())))
+                .child(format!("Immutable PDF snapshot · {} · Reload to see disk changes. Extracted/OCR text is inert. HTTP(S) links open only after a click. AcroForm edits are local until an explicit filled-copy export; PDF scripts, embedded files and SubmitForm network actions are never executed.", view.document.form.label())))
             .child(
                 div()
                     .flex()
@@ -361,6 +690,22 @@ impl Shell {
                     }),
             )
             .when_some(view.text_error.as_ref(), |el, error| el.child(div().text_size(px(11.)).text_color(rgb(palette().error)).child(error.clone())))
+            .child(div().flex().items_center().gap_1().flex_wrap()
+                .child(ui::button("studio-pdf-ocr", if view.ocr_loading { "Running OCR..." } else { "OCR page" }, view.ocr_text.is_some())
+                    .on_click(cx.listener(|this, _, _, cx| this.ocr_studio_pdf_page(cx))))
+                .when(view.ocr_text.is_some(), |el| el.child(
+                    ui::button("studio-pdf-copy-ocr", "Copy OCR text", false)
+                        .on_click(cx.listener(|this, _, _, cx| {
+                            if let Some(Preview::Pdf(view)) = &this.studio.preview
+                                && let Some(text) = &view.ocr_text
+                            {
+                                cx.write_to_clipboard(gpui::ClipboardItem::new_string(text.clone()));
+                            }
+                        })))))
+            .when_some(view.ocr_error.as_ref(), |el, error| el.child(div().text_size(px(11.)).text_color(rgb(palette().error)).child(error.clone())))
+            .when_some(view.ocr_text.as_ref(), |el, text| el.child(div().id("studio-pdf-ocr-text").max_h(px(180.)).overflow_y_scroll().border_1().border_color(rgb(palette().border)).p_2()
+                .child(div().text_size(px(11.)).text_color(rgb(palette().muted)).child("OCR page text · English model · review before use"))
+                .child(div().text_size(px(12.)).child(text.clone()))))
             .child(div().flex().items_center().gap_1().flex_wrap()
                 .child(ui::button("studio-pdf-extract-document", if view.document_text_loading { "Extracting document text..." } else { "Extract first 12 pages" }, view.document_text.is_some())
                     .on_click(cx.listener(|this, _, _, cx| this.extract_studio_pdf_document_text(cx))))
@@ -416,6 +761,68 @@ impl Shell {
                             })))
                 })
             )
+            .child(div().flex().flex_col().gap_1()
+                .when(view.document.form == PdfFormKind::AcroForm, |el| el
+                    .child(ui::button(
+                        "studio-pdf-inspect-form",
+                        if view.form_loading { "Inspecting form fields..." } else { "Inspect AcroForm fields" },
+                        view.form_editor.is_some(),
+                    ).on_click(cx.listener(|this, _, _, cx| this.inspect_studio_pdf_form(cx)))
+                    .when_some(view.form_error.as_ref(), |el, error| el.child(div().text_size(px(11.)).text_color(rgb(palette().error)).child(error.clone())))
+                    .when_some(view.form_editor.as_ref(), |el, editor| {
+                        let selected = editor.selected;
+                        el.child(div().text_size(px(11.)).text_color(rgb(palette().muted))
+                            .child(format!("{} fields · edits stay local until Save filled copy", editor.fields.len())))
+                            .child(div().id("studio-pdf-form-fields").max_h(px(150.)).overflow_y_scroll().flex().flex_col().gap_1()
+                                .children(editor.fields.iter().enumerate().map(|(index, field)| {
+                                    let value = editor.values.get(index).cloned().unwrap_or_default();
+                                    let label = field.alternate_name.as_deref().unwrap_or(field.name.as_str());
+                                    ui::button(
+                                        ("studio-pdf-form-field", index),
+                                        format!("{} · {} · {}", label, field.kind.label(), if value.is_empty() { "(empty)" } else { value.as_str() }),
+                                        selected == Some(index),
+                                    ).text_size(px(11.)).on_click(cx.listener(move |this, _, _, cx| this.select_studio_pdf_form_field(index, cx)))
+                                })))
+                            .children(selected.and_then(|index| editor.fields.get(index).map(|field| (index, field))).map(|(index, field)| {
+                                let current = editor.values.get(index).cloned().unwrap_or_default();
+                                let mut detail = div().border_1().border_color(rgb(palette().border)).p_2().flex().flex_col().gap_1()
+                                    .child(div().text_size(px(11.)).child(format!(
+                                        "{} · {}{}{}",
+                                        field.name,
+                                        field.kind.label(),
+                                        if field.read_only() { " · read only" } else { "" },
+                                        if field.required() { " · required" } else { "" }
+                                    )));
+                                if !field.editable() {
+                                    detail = detail.child(div().text_size(px(11.)).text_color(rgb(palette().muted))
+                                        .child("Inspection only. Signatures, password/file-select/rich-text/comb text, push buttons, multi-select choices and unknown/read-only fields are never edited."));
+                                } else if field.kind == PdfFormFieldType::Text {
+                                    if let Some(input) = &editor.input {
+                                        detail = detail.child(input.clone());
+                                    }
+                                } else {
+                                    detail = detail.child(div().flex().flex_wrap().gap_1().children(field.options.iter().enumerate().map(|(option_index, option)| {
+                                        let value = option.clone();
+                                        ui::button(
+                                            ("studio-pdf-form-option", option_index),
+                                            option.clone(),
+                                            current.as_str() == option.as_str(),
+                                        ).text_size(px(11.)).on_click(cx.listener(move |this, _, _, cx| this.set_studio_pdf_form_option(index, value.clone(), cx)))
+                                    })));
+                                }
+                                detail
+                            }))
+                            .child(ui::button(
+                                "studio-pdf-save-filled",
+                                if self.studio.exporting { "Saving filled copy..." } else { "Save filled copy as..." },
+                                false,
+                            ).on_click(cx.listener(|this, _, _, cx| this.save_studio_pdf_form_copy(cx))))
+                    }))
+                )
+                .when(view.document.form == PdfFormKind::Xfa, |el| el.child(div().text_size(px(11.)).text_color(rgb(palette().muted))
+                    .child("XFA forms are disclosed but not inspected, edited or executed.")))
+                .when(view.document.form == PdfFormKind::Unknown, |el| el.child(div().text_size(px(11.)).text_color(rgb(palette().muted))
+                    .child("This PDF form technology is unsupported and remains inert."))))
             .when_some(view.page_text.as_ref(), |el, text| el.child(div().id("studio-pdf-page-text").max_h(px(180.)).overflow_y_scroll().border_1().border_color(rgb(palette().border)).p_2()
                 .child(div().text_size(px(12.)).child(text.clone()))))
             .when_some(view.document_text.as_ref(), |el, text| el.child(div().id("studio-pdf-document-text").max_h(px(180.)).overflow_y_scroll().border_1().border_color(rgb(palette().border)).p_2()

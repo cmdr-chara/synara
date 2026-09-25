@@ -42,13 +42,13 @@ def control_bounds(log_path, control, slot=None, enabled=None):
         line for line in text.splitlines()
         if 'control-layout' in line
         and ('control="' + control + '"') in line
-        and (slot is None or re.search(r'\\bslot=' + str(slot) + r'\\b', line))
+        and (slot is None or re.search(r'\bslot=' + str(slot) + r'\b', line))
     ]
     if not rows:
         return None
     if enabled is not None and ('enabled=' + str(enabled).lower()) not in rows[-1]:
         return None
-    values = dict(re.findall(r'\\b(x|y|width|height)=(-?[0-9]+(?:\\.[0-9]+)?)', rows[-1]))
+    values = dict(re.findall(r'\b(x|y|width|height)=(-?[0-9]+(?:\.[0-9]+)?)', rows[-1]))
     if len(values) != 4:
         return None
     return tuple(float(values[key]) for key in ('x', 'y', 'width', 'height'))

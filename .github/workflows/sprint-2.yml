@@ -1,7 +1,7 @@
 name: Native conversation workflow regression
 on:
   push:
-    branches: [astra/max-feature-sprint-2, astra/feature-closure-sprint-2, astra/gpui-clean-rewrite]
+    branches: [astra/max-feature-sprint-2, astra/feature-closure-sprint-2, main]
     paths:
       - 'crates/**'
       - 'Cargo.toml'
@@ -9,7 +9,7 @@ on:
       - 'scripts/**'
       - '.github/workflows/sprint-2.yml'
   pull_request:
-    branches: [astra/gpui-clean-rewrite]
+    branches: [main]
     paths: ['crates/**', 'Cargo.toml', 'Cargo.lock', 'scripts/**', '.github/workflows/sprint-2.yml']
 permissions:
   contents: read

@@ -6,6 +6,9 @@ permissions, filesystem services and terminals. Agent runtimes remain external
 processes. A separate direct-inference runtime supports reviewed HTTP providers
 without launching an ACP agent.
 
+The GPUI implementation is on the default `main` branch. The earlier Electron
+implementation remains available on `main-electron`.
+
 This branch is a development build, not a production release. Linux compilation,
 fixture-agent integration, native X11 interaction and a controlled loopback SSH
 server have been exercised. macOS, Windows and a complete remote-workspace

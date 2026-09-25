@@ -341,7 +341,7 @@ def changed_paths(base: str, head: str) -> list[str] | None:
 def build_context(paths: list[str], base: str, head: str) -> str:
     lines = [
         "Repository: cmdr-chara/synara",
-        "Branch: astra/gpui-clean-rewrite",
+        "Branch: main",
         (
             "Purpose: route CI. Cheap roadmap/format/security/dependency checks run separately. "
             "Expensive lanes are backend acceptance (Linux or full cross-platform), the specialized "

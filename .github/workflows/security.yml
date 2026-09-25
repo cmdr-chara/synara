@@ -1,7 +1,7 @@
 name: Security and dependency audit
 on:
   push:
-    branches: [astra/gpui-clean-rewrite]
+    branches: [main]
     paths:
       - 'Cargo.toml'
       - 'Cargo.lock'
@@ -18,7 +18,7 @@ env:
   PYTHONDONTWRITEBYTECODE: '1'
 jobs:
   rustsec:
-    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/gpui-clean-rewrite'
+    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:

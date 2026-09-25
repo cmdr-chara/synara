@@ -65,6 +65,7 @@ impl Shell {
         self.panel == Panel::Browser
             && !self.zen_active()
             && self.close == CloseState::Open
+            && !self.terminal_layout_quitting
             && !self.terminal_closing
             && !self.draft_state.quitting
             && !self.environment.quitting

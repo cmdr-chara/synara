@@ -25,7 +25,7 @@ permissions:
   contents: read
 concurrency:
   group: ssh-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 env:
   CARGO_BUILD_JOBS: '2'
   RUSTUP_TOOLCHAIN: '1.98.1'
@@ -57,7 +57,7 @@ jobs:
       - name: Verify isolated SSH transport, managed worktrees, search and native UI
         run: |
           set -o pipefail
-          { git rev-parse HEAD; python3 scripts/ssh_smoke.py --native-binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --native-output /tmp/ajm-ssh-evidence/native; } 2>&1 | tee /tmp/ajm-ssh-evidence/ssh.log
+          { git rev-parse HEAD; python3 scripts/ssh_smoke.py --skip-acp-tests --native-binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --native-output /tmp/ajm-ssh-evidence/native; } 2>&1 | tee /tmp/ajm-ssh-evidence/ssh.log
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:

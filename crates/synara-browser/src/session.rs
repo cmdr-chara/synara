@@ -420,6 +420,13 @@ impl Session {
             .map(|t| t.view.id)
             .collect()
     }
+    pub fn authentication_tabs(&self, flow: u128) -> Vec<HostTabId> {
+        self.tabs
+            .values()
+            .filter(|t| t.view.profile == BrowserProfile::Authentication { flow })
+            .map(|t| t.view.id)
+            .collect()
+    }
     pub fn open(&mut self, profile: BrowserProfile) -> Result<HostTabId> {
         let id = self.host.open_tab(profile)?;
         let error = self

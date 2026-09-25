@@ -18,6 +18,7 @@ pub(super) struct BrowserView {
     pub(super) error: Option<String>,
     confirmation: Option<TaskId>,
     restore: Option<ManualTabRestoreStore>,
+    next_authentication_flow: u128,
     pub(super) busy: bool,
     diagnostics_open: bool,
     runtime_diagnostics_open: bool,
@@ -120,6 +121,7 @@ impl BrowserView {
             },
             confirmation: None,
             restore,
+            next_authentication_flow: 0,
             busy: false,
             diagnostics_open: false,
             runtime_diagnostics_open: false,
@@ -234,6 +236,119 @@ impl Shell {
             }
         }
     }
+    fn browser_open_authentication_popup(
+        &mut self,
+        source: HostTabId,
+        cx: &mut Context<Self>,
+    ) {
+        if self.browser.selected != Some(source) {
+            return;
+        }
+        match self
+            .controller
+            .browser
+            .with(|session, now| session.open_authentication_popup(source, now))
+        {
+            Ok((tab, url)) => {
+                self.browser_select(tab, cx);
+                self.browser
+                    .address
+                    .update(cx, |entry, cx| entry.set_text(url, cx));
+            }
+            Err(error) => {
+                self.browser.error = Some(error.to_string());
+                cx.notify();
+            }
+        }
+    }
+
+    pub(super) fn browser_open_authentication_request(
+        &mut self,
+        key: InteractionKey,
+        url: String,
+        cx: &mut Context<Self>,
+    ) {
+        if synara_agent::validate_web_url(&url).is_err()
+            || !self
+                .pending
+                .get(&key)
+                .is_some_and(UiInteraction::is_active)
+        {
+            self.error = Some("This website request is no longer active or valid.".into());
+            cx.notify();
+            return;
+        }
+
+        let existing_flow = self
+            .forms
+            .get(&key)
+            .and_then(|form| form.authentication_flow);
+        let flow = match existing_flow {
+            Some(flow) => flow,
+            None => {
+                let Some(flow) = self.browser.next_authentication_flow.checked_add(1) else {
+                    self.error = Some("Authentication browser flow limit reached.".into());
+                    cx.notify();
+                    return;
+                };
+                self.browser.next_authentication_flow = flow;
+                if let Some(form) = self.forms.get_mut(&key) {
+                    form.authentication_flow = Some(flow);
+                } else {
+                    return;
+                }
+                flow
+            }
+        };
+
+        let result = self.controller.browser.with(|session, now| {
+            if let Some(tab) = session.authentication_tabs(flow).first().copied() {
+                return Ok(tab);
+            }
+            let tab = session.open(BrowserProfile::Authentication { flow })?;
+            if let Err(error) =
+                session.user_navigate(tab, &url, NavigationKind::Push, now)
+            {
+                let _ = session.close(tab);
+                return Err(error);
+            }
+            Ok(tab)
+        });
+        match result {
+            Ok(tab) => {
+                self.browser_select(tab, cx);
+                self.set_panel(Panel::Browser, cx);
+                self.notice = Some(
+                    "Provider sign-in opened in an isolated Synara browser profile. Return to the request and Submit only after the provider flow finishes."
+                        .into(),
+                );
+            }
+            Err(error) => {
+                self.browser.error = Some(error.to_string());
+                cx.notify();
+            }
+        }
+    }
+
+    pub(super) fn browser_close_authentication_flow(
+        &mut self,
+        flow: u128,
+        cx: &mut Context<Self>,
+    ) {
+        let tabs = self
+            .controller
+            .browser
+            .with(|session, _| Ok(session.authentication_tabs(flow)))
+            .unwrap_or_default();
+        for tab in tabs {
+            let _ = self.controller.browser.with(|session, _| session.close(tab));
+            if self.browser.selected == Some(tab) {
+                self.browser.selected = None;
+            }
+        }
+        cx.notify();
+    }
+
     fn browser_open(&mut self, cx: &mut Context<Self>) {
         match self
             .controller
@@ -283,6 +398,32 @@ impl Shell {
                     cx.notify();
                     return;
                 }
+            }
+        }
+        if kind == NavigationKind::Push {
+            let authentication = self
+                .controller
+                .browser
+                .with(|session, _| {
+                    Ok(session
+                        .tabs()
+                        .iter()
+                        .any(|state| {
+                            state.id == tab
+                                && matches!(
+                                    state.profile,
+                                    BrowserProfile::Authentication { .. }
+                                )
+                        }))
+                })
+                .unwrap_or(false);
+            if authentication {
+                self.browser.error = Some(
+                    "Provider sign-in tabs cannot be redirected from the address bar. Use the provider request or its reviewed popup controls."
+                        .into(),
+                );
+                cx.notify();
+                return;
             }
         }
         let url = self.browser.address.read(cx).text().to_owned();
@@ -369,10 +510,10 @@ impl Shell {
             let id = tab.id;
             let label = format!(
                 "{}{}",
-                if matches!(tab.profile, BrowserProfile::AgentTask { .. }) {
-                    "Agent: "
-                } else {
-                    ""
+                match tab.profile {
+                    BrowserProfile::AgentTask { .. } => "Agent: ",
+                    BrowserProfile::Authentication { .. } => "Sign-in: ",
+                    BrowserProfile::Manual => "",
                 },
                 tab.title
             );
@@ -548,6 +689,61 @@ impl Shell {
         }
         if let Some(error) = &self.browser.error {
             pane = pane.child(div().text_color(rgb(palette().error)).child(error.clone()));
+        }
+        if let Some(tab) = active.filter(|tab| {
+            matches!(tab.profile, BrowserProfile::Authentication { .. })
+        }) {
+            let tab_id = tab.id;
+            pane = pane.child(
+                div()
+                    .text_xs()
+                    .text_color(rgb(palette().muted))
+                    .child("Isolated provider sign-in tab. It is never restored and its storage is deleted after the last tab in this sign-in flow closes."),
+            );
+            if let Ok(Some(preview)) = self
+                .controller
+                .browser
+                .with(|session, _| session.authentication_popup_preview(tab_id))
+            {
+                pane = pane.child(
+                    div()
+                        .flex()
+                        .flex_col()
+                        .gap_1()
+                        .child(format!("Sign-in requested another page: {preview}"))
+                        .child(
+                            div()
+                                .flex()
+                                .gap_2()
+                                .child(ui::action(
+                                    "browser-auth-popup-open",
+                                    "Open sign-in popup",
+                                    None,
+                                    false,
+                                    cx.listener(move |this, _: &(), _, cx| {
+                                        this.browser_open_authentication_popup(tab_id, cx)
+                                    }),
+                                ))
+                                .child(ui::action(
+                                    "browser-auth-popup-dismiss",
+                                    "Dismiss",
+                                    None,
+                                    false,
+                                    cx.listener(move |this, _: &(), _, cx| {
+                                        this.browser.error = this
+                                            .controller
+                                            .browser
+                                            .with(|session, _| {
+                                                session.dismiss_authentication_popup(tab_id)
+                                            })
+                                            .err()
+                                            .map(|error| error.to_string());
+                                        cx.notify();
+                                    }),
+                                )),
+                        ),
+                );
+            }
         }
         if let Some(tab) = active.filter(|tab| tab.profile == BrowserProfile::Manual) {
             let tab_id = tab.id;

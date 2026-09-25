@@ -389,7 +389,7 @@ impl Shell {
                     .child(ui::action("terminal-confirm", label, None, false, cx.listener(move |this, _: &(), _, cx| {
                         if let Some(group) = this.terminals.groups.get_mut(&accept_scope) { group.confirmation = None; }
                         this.stop_terminal_entry(accept_scope.clone(), confirmed_id, action, cx);
-                    })))
+                    })).relative().child(ui::layout_probe("terminal-confirm")))
                     .child(ui::action("terminal-keep", "Keep running", None, false, cx.listener(move |this, _: &(), _, cx| {
                         if let Some(group) = this.terminals.groups.get_mut(&cancel_scope) { group.confirmation = None; }
                         cx.notify();

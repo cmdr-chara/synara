@@ -301,6 +301,71 @@ async fn remote_filesystem_is_guarded_and_workspace_bound() {
 
 #[tokio::test]
 #[ignore = "requires the isolated server from scripts/ssh_smoke.py"]
+async fn remote_search_uses_the_pinned_helper_and_stays_workspace_bound() {
+    let (root, target) = fixture();
+    let host =
+        PinnedSshHost::new(target, root.join("known hosts"), root.join("identity")).unwrap();
+    let project = root.join("remote-search-project");
+    std::fs::create_dir_all(project.join("nested")).unwrap();
+    std::fs::create_dir_all(project.join("node_modules/nested")).unwrap();
+    std::fs::write(
+        project.join("nested/report.txt"),
+        "prefix unique remote ssh needle suffix\n",
+    )
+    .unwrap();
+    std::fs::write(
+        project.join("node_modules/nested/hidden.txt"),
+        "unique remote ssh needle\n",
+    )
+    .unwrap();
+
+    let remote = RemoteWorkspaceFs::connect(host, &project, remote_helper())
+        .await
+        .unwrap();
+    let entries = remote.search_entries("nested", 20).await.unwrap();
+    assert!(
+        entries
+            .iter()
+            .any(|entry| entry.relative_path == std::path::Path::new("nested") && entry.directory)
+    );
+    assert!(
+        entries
+            .iter()
+            .any(|entry| entry.relative_path == std::path::Path::new("nested/report.txt"))
+    );
+    assert!(
+        !entries
+            .iter()
+            .any(|entry| entry.relative_path.starts_with("node_modules"))
+    );
+
+    assert_eq!(
+        remote.search_paths("report", 10).await.unwrap(),
+        vec![PathBuf::from("nested/report.txt")]
+    );
+    let matches = remote
+        .search_text(
+            std::path::Path::new(""),
+            "unique remote ssh needle",
+            10,
+        )
+        .await
+        .unwrap();
+    assert_eq!(matches.len(), 1);
+    assert_eq!(
+        matches[0].relative_path,
+        std::path::Path::new("nested/report.txt")
+    );
+    assert!(
+        remote
+            .search_text(std::path::Path::new("../"), "needle", 10)
+            .await
+            .is_err()
+    );
+}
+
+#[tokio::test]
+#[ignore = "requires the isolated server from scripts/ssh_smoke.py"]
 async fn remote_filesystem_detects_workspace_identity_changes() {
     let (root, target) = fixture();
     let host = PinnedSshHost::new(target, root.join("known hosts"), root.join("identity")).unwrap();

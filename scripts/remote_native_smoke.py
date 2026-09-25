@@ -3,6 +3,7 @@
 import argparse
 import json
 import os
+import re
 from pathlib import Path
 import sqlite3
 import shutil
@@ -26,6 +27,39 @@ def type_text(ui, value):
 
 def set_field(ui, x, y, value):
     ui.click(x, y)
+    ui.key('a', ('Control_L',))
+    type_text(ui, value)
+
+
+def control_bounds(log_path, control, slot=None, enabled=None):
+    text = re.sub(r'\\x1b\\[[0-9;]*[A-Za-z]', '', Path(log_path).read_text(errors='replace'))
+    rows = [
+        line for line in text.splitlines()
+        if 'control-layout' in line
+        and ('control="' + control + '"') in line
+        and (slot is None or re.search(r'\\bslot=' + str(slot) + r'\\b', line))
+    ]
+    if not rows:
+        return None
+    if enabled is not None and ('enabled=' + str(enabled).lower()) not in rows[-1]:
+        return None
+    values = dict(re.findall(r'\\b(x|y|width|height)=(-?[0-9]+(?:\\.[0-9]+)?)', rows[-1]))
+    if len(values) != 4:
+        return None
+    return tuple(float(values[key]) for key in ('x', 'y', 'width', 'height'))
+
+
+def click_control(ui, log_path, control, slot=None, enabled=None, timeout=20):
+    x, y, width, height = wait_until(
+        lambda: control_bounds(log_path, control, slot, enabled),
+        control + ' remote native geometry/state',
+        timeout,
+    )
+    ui.click_client(round(x + width / 2), round(y + height / 2))
+
+
+def fill_control(ui, log_path, control, value):
+    click_control(ui, log_path, control)
     ui.key('a', ('Control_L',))
     type_text(ui, value)
 
@@ -82,7 +116,7 @@ def main():
             HOME=str(home),
             GPUI_PLATFORM='x11',
             LIBGL_ALWAYS_SOFTWARE='1',
-            RUST_LOG='synara=info,gpui=warn',
+            RUST_LOG='synara=info,synara_ui_layout=debug,gpui=warn',
         )
         process = subprocess.Popen([
             str(options.binary.resolve()),
@@ -145,6 +179,24 @@ def main():
             20,
         )
         checks.append('remote-files-guarded-save')
+
+        search_document = remote_project / 'remote-search-target.txt'
+        search_document.write_text('unique remote ssh search needle\\n', encoding='utf-8')
+        click_control(desktop, log.name, 'files-content-search')
+        fill_control(desktop, log.name, 'file-content-query', 'unique remote ssh search needle')
+        click_control(desktop, log.name, 'file-content-match', slot=0)
+        click_control(desktop, log.name, 'editor-input')
+        assert desktop.copy_input() == 'unique remote ssh search needle\\n'
+        desktop.key('p', ('Control_L',))
+        fill_control(desktop, log.name, 'file-content-query', 'remote-search-target.txt')
+        click_control(desktop, log.name, 'file-name-match', slot=0)
+        click_control(desktop, log.name, 'editor-input')
+        assert desktop.copy_input() == 'unique remote ssh search needle\\n'
+        click_control(desktop, log.name, 'file-content-query')
+        desktop.key('Escape')
+        assert search_document.read_text(encoding='utf-8') == 'unique remote ssh search needle\\n'
+        desktop.screenshot('remote-search', window_only=True)
+        checks.append('remote-content-and-name-search-over-pinned-ssh')
 
         desktop.click(992, 24)
         time.sleep(0.7)

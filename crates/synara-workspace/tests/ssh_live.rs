@@ -11,7 +11,7 @@ use std::{
 use synara_runtime::{ApprovedPortForward, PinnedSshHost, SshTarget};
 use synara_workspace::{
     GitNetworkPolicy, GitOperation, GitOperationErrorKind, GitOperationOptions, GitOperationOutput,
-    GitOperationPolicy, GitOperations, GitService,
+    GitOperationPolicy, GitOperations, GitService, NewSshWorkspace, WorkspaceService,
 };
 use tokio_util::sync::CancellationToken;
 
@@ -471,4 +471,105 @@ async fn remote_typed_mutation_refuses_changed_host_without_local_fallback() {
         std::fs::read(project.join("tracked.txt")).unwrap(),
         b"base\n"
     );
+}
+
+
+#[tokio::test]
+#[ignore = "requires the isolated server from scripts/ssh_smoke.py"]
+async fn managed_remote_worktree_lifecycle_uses_pinned_ssh_and_retains_dirty_recovery() {
+    let (root, target) = fixture();
+    let repository = seeded_project(&root, "managed remote project", true);
+    std::fs::write(
+        repository.join("searchable.txt"),
+        "managed remote source\n",
+    )
+    .unwrap();
+    git(&["add", "--", "searchable.txt"], &repository);
+    git(&["commit", "-qm", "searchable source"], &repository);
+
+    let service = WorkspaceService::memory().unwrap();
+    let project = service
+        .add_ssh_workspace(NewSshWorkspace {
+            name: "Managed SSH acceptance".into(),
+            target,
+            root: repository.to_string_lossy().into_owned(),
+            known_hosts: root.join("known hosts"),
+            identity_file: root.join("identity"),
+            helper: PathBuf::from(
+                std::env::var_os("SYNARA_REMOTE_FS_HELPER")
+                    .expect("ssh_smoke.py builds the remote helper"),
+            ),
+        })
+        .await
+        .unwrap();
+    let agent = service.profiles().await.unwrap()[0].id.clone();
+    let source = service
+        .create_task(project.id, "Remote source".into(), agent)
+        .await
+        .unwrap();
+
+    let plan = service
+        .prepare_new_worktree_fork(source.id, root.clone())
+        .await
+        .unwrap();
+    assert!(plan.remote());
+    let destination = plan.destination().to_path_buf();
+    let branch = plan.branch().to_owned();
+    let head = plan.head().to_owned();
+    assert!(!destination.exists());
+
+    let fork = service
+        .create_new_worktree_fork(
+            plan,
+            "Remote isolated fork".into(),
+            "unsent remote fork draft".into(),
+            GitOperationPolicy {
+                allow_mutation: true,
+                allow_repository_execution: true,
+                ..Default::default()
+            },
+            CancellationToken::new(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(fork.working_directory, destination);
+    assert_eq!(
+        std::fs::read_to_string(destination.join("searchable.txt")).unwrap(),
+        "managed remote source\n"
+    );
+    let worktree = service
+        .project_worktrees(project.id)
+        .await
+        .unwrap()
+        .into_iter()
+        .find(|item| item.repository_path == destination)
+        .expect("managed remote worktree must be visible through pinned SSH");
+    assert_eq!(worktree.assigned_task, Some(fork.id));
+    assert_eq!(worktree.branch.as_deref(), Some(branch.as_str()));
+    assert_eq!(
+        service.task_draft(fork.id).await.unwrap(),
+        "unsent remote fork draft"
+    );
+
+    std::fs::write(destination.join("dirty-recovery.txt"), "retain me\n").unwrap();
+    service.archive_task(fork.id).await.unwrap();
+    service.delete_task(fork.id).await.unwrap();
+    assert!(
+        destination.exists(),
+        "ordinary cleanup must retain a dirty managed SSH worktree"
+    );
+    assert!(
+        git(&["worktree", "list", "--porcelain"], &repository)
+            .contains(destination.to_str().unwrap())
+    );
+
+    std::fs::remove_file(destination.join("dirty-recovery.txt")).unwrap();
+    service.archive_task(source.id).await.unwrap();
+    service.delete_task(source.id).await.unwrap();
+    service.delete_project(project.id).await.unwrap();
+    assert!(
+        !destination.exists(),
+        "explicit project deletion must retry and complete safe managed cleanup"
+    );
+    assert_eq!(git(&["rev-parse", &branch], &repository).trim(), head);
 }

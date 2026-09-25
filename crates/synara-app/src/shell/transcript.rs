@@ -452,6 +452,8 @@ mod tests {
             failed: false,
             direct_provider_id: None,
             direct_model_id: None,
+            acp_agent_id: None,
+            acp_model_id: None,
             usage: None,
         });
         let rows = projected_rows(&thread);

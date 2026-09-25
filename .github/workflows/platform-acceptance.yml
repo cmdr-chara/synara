@@ -73,6 +73,9 @@ jobs:
         run: |
           ${{ matrix.python }} scripts/dependency_inventory.py --self-test
           ${{ matrix.python }} scripts/package_dev.py --self-test
+      - name: Run native voice regression tests
+        shell: bash
+        run: cargo +1.98.1 test --locked -p synara-app --bin synara-app shell::voice::tests --target ${{ matrix.target }}
       - name: Build native application
         shell: bash
         run: cargo +1.98.1 build --locked -p synara-app --bin synara-app --target ${{ matrix.target }}

@@ -737,9 +737,11 @@ impl Shell {
     }
     pub(super) fn terminal_layout_before_quit(&mut self, cx: &mut Context<Self>) -> bool {
         self.flush_terminal_layouts(true);
-        let interactive = self.terminals.groups.values().any(|group| {
-            group.renaming.is_some() || group.confirmation.is_some()
-        });
+        let interactive = self
+            .terminals
+            .groups
+            .values()
+            .any(|group| group.renaming.is_some() || group.confirmation.is_some());
         if interactive {
             self.terminal_layout_quitting = false;
             self.notice = Some(
@@ -765,12 +767,7 @@ impl Shell {
             cx.notify();
             return true;
         }
-        if self
-            .terminals
-            .groups
-            .values()
-            .any(Group::pending_save)
-        {
+        if self.terminals.groups.values().any(Group::pending_save) {
             self.terminal_layout_quitting = true;
             self.notice = Some(
                 "Saving terminal tab layouts before closing Synara. Shells remain running until the save completes."

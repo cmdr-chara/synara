@@ -380,9 +380,7 @@ impl Render for Shell {
             window.focus(&self.close_focus, cx);
             return self.draft_close_panel(cx);
         }
-        if self.close != CloseState::Open
-            || self.terminal_layout_quitting
-            || self.terminal_closing
+        if self.close != CloseState::Open || self.terminal_layout_quitting || self.terminal_closing
         {
             return self.close_panel(cx);
         }

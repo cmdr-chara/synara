@@ -443,6 +443,10 @@ impl NativeHost {
         document.validate().map_err(|e| e.to_string())?;
         let agent = matches!(partition, StoragePartition::AgentTask(_));
         let manual = partition == StoragePartition::Manual;
+        let popup_review = matches!(
+            partition,
+            StoragePartition::Manual | StoragePartition::Authentication(_)
+        );
         if agent && allowed.as_ref() != Some(&document.origin) {
             return Err("Missing approved navigation origin".into());
         }
@@ -463,7 +467,7 @@ impl NativeHost {
             .with_visible(false)
             .with_devtools(manual)
             .with_new_window_req_handler(move |url, _| {
-                if partition == StoragePartition::Manual
+                if popup_review
                     && popup_ready.get()
                     && popup_shared.epoch(tab) == Some(epoch)
                 {

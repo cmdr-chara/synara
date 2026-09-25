@@ -347,9 +347,28 @@ impl Session {
             .map(redact_diagnostic_url)
             .transpose()
     }
+    pub fn authentication_popup_preview(&self, tab: HostTabId) -> Result<Option<String>> {
+        let state = self.tabs.get(&tab).ok_or(BrowserError::MissingTab)?;
+        if !matches!(state.view.profile, BrowserProfile::Authentication { .. }) {
+            return Err(BrowserError::WrongContext);
+        }
+        state
+            .pending_popup
+            .as_deref()
+            .map(redact_diagnostic_url)
+            .transpose()
+    }
     pub fn dismiss_manual_popup(&mut self, tab: HostTabId) -> Result<()> {
         let state = self.tabs.get_mut(&tab).ok_or(BrowserError::MissingTab)?;
         if state.view.profile != BrowserProfile::Manual {
+            return Err(BrowserError::WrongContext);
+        }
+        state.pending_popup = None;
+        Ok(())
+    }
+    pub fn dismiss_authentication_popup(&mut self, tab: HostTabId) -> Result<()> {
+        let state = self.tabs.get_mut(&tab).ok_or(BrowserError::MissingTab)?;
+        if !matches!(state.view.profile, BrowserProfile::Authentication { .. }) {
             return Err(BrowserError::WrongContext);
         }
         state.pending_popup = None;
@@ -372,6 +391,26 @@ impl Session {
             return Err(error);
         }
         self.dismiss_manual_popup(source)?;
+        Ok((tab, url))
+    }
+    /// Explicit trusted-host action for an authentication flow. The child keeps
+    /// the exact authentication partition and never falls back to Manual storage.
+    pub fn open_authentication_popup(
+        &mut self,
+        source: HostTabId,
+        now: u64,
+    ) -> Result<(HostTabId, String)> {
+        let state = self.tabs.get(&source).ok_or(BrowserError::MissingTab)?;
+        let BrowserProfile::Authentication { flow } = state.view.profile else {
+            return Err(BrowserError::WrongContext);
+        };
+        let url = state.pending_popup.clone().ok_or(BrowserError::Invalid)?;
+        let tab = self.open(BrowserProfile::Authentication { flow })?;
+        if let Err(error) = self.user_navigate(tab, &url, NavigationKind::Push, now) {
+            let _ = self.close(tab);
+            return Err(error);
+        }
+        self.dismiss_authentication_popup(source)?;
         Ok((tab, url))
     }
     pub fn task_tabs(&self, task: u128) -> Vec<HostTabId> {
@@ -696,8 +735,10 @@ impl Session {
                 let Some(state) = self.tabs.get_mut(&tab) else {
                     return Ok(());
                 };
-                if state.view.profile != BrowserProfile::Manual
-                    || state.committed_navigation != Some(navigation)
+                if !matches!(
+                    state.view.profile,
+                    BrowserProfile::Manual | BrowserProfile::Authentication { .. }
+                ) || state.committed_navigation != Some(navigation)
                 {
                     return Ok(());
                 }

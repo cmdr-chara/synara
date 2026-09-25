@@ -1,16 +1,88 @@
 //! Creation and unsent content commit together. A partial task is never visible.
 use super::*;
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub(crate) struct ManagedWorktreeOwnership {
+    pub version: u32,
+    pub task: TaskId,
+    pub project: ProjectId,
+    pub workspace: WorkspaceId,
+    pub repository_path: PathBuf,
+    pub task_path: PathBuf,
+    pub branch: String,
+    pub remote: bool,
+}
+impl ManagedWorktreeOwnership {
+    pub(crate) fn validate(&self) -> StorageResult<()> {
+        let token = self
+            .branch
+            .strip_prefix("synara/")
+            .and_then(|value| uuid::Uuid::parse_str(value).ok())
+            .filter(|id| format!("synara/{id}") == self.branch)
+            .ok_or(StorageError::Identity)?;
+        let expected = format!("worktree-{token}");
+        let safe_path = |path: &Path| {
+            path.is_absolute()
+                && !path.components().any(|component| {
+                    matches!(
+                        component,
+                        std::path::Component::ParentDir | std::path::Component::CurDir
+                    )
+                })
+        };
+        if self.version != 1
+            || !safe_path(&self.repository_path)
+            || !safe_path(&self.task_path)
+            || !self.task_path.starts_with(&self.repository_path)
+            || self
+                .repository_path
+                .file_name()
+                .and_then(|name| name.to_str())
+                != Some(expected.as_str())
+        {
+            return Err(StorageError::Identity);
+        }
+        Ok(())
+    }
+}
+pub(crate) fn managed_worktree_key(task: TaskId) -> String {
+    format!("managed-worktree:{task}")
+}
+
 impl Store {
     pub(crate) fn insert_task_with_draft(
         &mut self,
         task: &Task,
         text: String,
     ) -> StorageResult<()> {
+        self.insert_task_with_draft_and_managed_worktree(task, text, None)
+    }
+
+    pub(crate) fn insert_task_with_draft_and_managed_worktree(
+        &mut self,
+        task: &Task,
+        text: String,
+        managed: Option<ManagedWorktreeOwnership>,
+    ) -> StorageResult<()> {
         if task.state != TaskState::Ready || text.len() > 1024 * 1024 {
             return Err(StorageError::Limit);
         }
+        if let Some(managed) = managed.as_ref() {
+            managed.validate()?;
+            if managed.task != task.id
+                || managed.project != task.project_id
+                || managed.task_path != task.working_directory
+            {
+                return Err(StorageError::Identity);
+            }
+        }
         let data = encode(task)?;
         let draft = encode(&serde_json::json!({"version": 1, "text": text}))?;
+        let managed = managed
+            .as_ref()
+            .map(|managed| encode(managed))
+            .transpose()?;
         let tx = self
             .connection
             .transaction_with_behavior(TransactionBehavior::Immediate)?;
@@ -29,7 +101,73 @@ impl Store {
             "INSERT INTO preferences(key,data) VALUES(?1,?2)",
             params![format!("task-draft:{}", task.id), draft],
         )?;
+        if let Some(managed) = managed {
+            tx.execute(
+                "INSERT INTO preferences(key,data) VALUES(?1,?2)",
+                params![managed_worktree_key(task.id), managed],
+            )?;
+        }
         tx.commit()?;
+        Ok(())
+    }
+    pub(crate) fn managed_worktree(
+        &self,
+        task: TaskId,
+    ) -> StorageResult<Option<ManagedWorktreeOwnership>> {
+        let raw: Option<String> = self
+            .connection
+            .query_row(
+                "SELECT data FROM preferences WHERE key=?1",
+                [managed_worktree_key(task)],
+                |row| row.get(0),
+            )
+            .optional()?;
+        let value = raw
+            .as_deref()
+            .map(decode::<ManagedWorktreeOwnership>)
+            .transpose()?;
+        if let Some(value) = value.as_ref() {
+            value.validate()?;
+            if value.task != task {
+                return Err(StorageError::Identity);
+            }
+        }
+        Ok(value)
+    }
+
+    pub(crate) fn managed_worktrees(&self) -> StorageResult<Vec<ManagedWorktreeOwnership>> {
+        let mut query = self.connection.prepare(
+            "SELECT data FROM preferences WHERE key LIKE 'managed-worktree:%' ORDER BY key",
+        )?;
+        let rows = query.query_map([], |row| row.get::<_, String>(0))?;
+        let mut values = Vec::new();
+        for row in rows {
+            if values.len() >= 10_000 {
+                return Err(StorageError::Limit);
+            }
+            let value: ManagedWorktreeOwnership = decode(&row?)?;
+            value.validate()?;
+            values.push(value);
+        }
+        Ok(values)
+    }
+
+    pub(crate) fn forget_managed_worktree(
+        &self,
+        expected: &ManagedWorktreeOwnership,
+    ) -> StorageResult<()> {
+        expected.validate()?;
+        let current = self.managed_worktree(expected.task)?;
+        if current.as_ref() != Some(expected) {
+            return Err(StorageError::Identity);
+        }
+        let changed = self.connection.execute(
+            "DELETE FROM preferences WHERE key=?1",
+            [managed_worktree_key(expected.task)],
+        )?;
+        if changed != 1 {
+            return Err(StorageError::Identity);
+        }
         Ok(())
     }
 }

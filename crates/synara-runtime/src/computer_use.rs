@@ -3,7 +3,7 @@
 //! Command completion proves delivery attempt, not application-level success.
 use crate::{RuntimeError, SnapTools, SnapWindow, device_tools::command};
 use serde::{Deserialize, Serialize};
-use std::path::Path;
+use std::{path::Path, time::Duration};
 use tokio_util::sync::CancellationToken;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -148,10 +148,23 @@ pub enum ComputerAction {
         y: u32,
         button: ComputerButton,
     },
+    Drag {
+        from_x: u32,
+        from_y: u32,
+        to_x: u32,
+        to_y: u32,
+        button: ComputerButton,
+    },
     Scroll {
         x: u32,
         y: u32,
         down: bool,
+        steps: u8,
+    },
+    HorizontalScroll {
+        x: u32,
+        y: u32,
+        right: bool,
         steps: u8,
     },
     Type {
@@ -168,13 +181,33 @@ impl ComputerAction {
             | Self::Click { x, y, .. }
             | Self::DoubleClick { x, y, .. }
             | Self::Scroll { x, y, .. }
+            | Self::HorizontalScroll { x, y, .. }
                 if *x >= width || *y >= height =>
             {
                 Err(RuntimeError::Invalid(
                     "Input coordinates are outside the observed window".into(),
                 ))
             }
-            Self::Scroll { steps, .. } if !(1..=8).contains(steps) => Err(RuntimeError::Limit),
+            Self::Drag {
+                from_x,
+                from_y,
+                to_x,
+                to_y,
+                ..
+            } if *from_x >= width
+                || *from_y >= height
+                || *to_x >= width
+                || *to_y >= height =>
+            {
+                Err(RuntimeError::Invalid(
+                    "Drag coordinates are outside the observed window".into(),
+                ))
+            }
+            Self::Scroll { steps, .. } | Self::HorizontalScroll { steps, .. }
+                if !(1..=8).contains(steps) =>
+            {
+                Err(RuntimeError::Limit)
+            }
             Self::Type { text } if !valid_typed_text(text) => Err(RuntimeError::Invalid("Window typing accepts 1-512 UTF-8 bytes of text without controls, line separators, or bidirectional formatting characters. Use separate reviewed keys for Enter or Tab".into())),
             _ if width == 0 || height == 0 => Err(RuntimeError::Invalid("Window dimensions must be positive".into())),
             _ => Ok(()),
@@ -203,16 +236,17 @@ impl ComputerAction {
                 button.to_string(),
             ]
         };
+        let button_number = |button: &ComputerButton| match button {
+            ComputerButton::Left => 1,
+            ComputerButton::Middle => 2,
+            ComputerButton::Right => 3,
+        };
         match self {
             Self::Move { x, y } => vec![move_to(*x, *y)],
             Self::Click { x, y, button } | Self::DoubleClick { x, y, button } => vec![
                 move_to(*x, *y),
                 click(
-                    match button {
-                        ComputerButton::Left => 1,
-                        ComputerButton::Middle => 2,
-                        ComputerButton::Right => 3,
-                    },
+                    button_number(button),
                     if matches!(self, Self::DoubleClick { .. }) {
                         2
                     } else {
@@ -220,8 +254,33 @@ impl ComputerAction {
                     },
                 ),
             ],
+            Self::Drag {
+                from_x,
+                from_y,
+                to_x,
+                to_y,
+                button,
+            } => vec![
+                move_to(*from_x, *from_y),
+                vec![
+                    "mousedown".into(),
+                    "--window".into(),
+                    window.clone(),
+                    button_number(button).to_string(),
+                ],
+                move_to(*to_x, *to_y),
+                vec![
+                    "mouseup".into(),
+                    "--window".into(),
+                    window.clone(),
+                    button_number(button).to_string(),
+                ],
+            ],
             Self::Scroll { x, y, down, steps } => {
                 vec![move_to(*x, *y), click(if *down { 5 } else { 4 }, *steps)]
+            }
+            Self::HorizontalScroll { x, y, right, steps } => {
+                vec![move_to(*x, *y), click(if *right { 7 } else { 6 }, *steps)]
             }
             Self::Type { text } => vec![vec![
                 "type".into(),
@@ -309,12 +368,50 @@ impl ComputerTools {
             ));
         }
         action.validate(window.width, window.height)?;
+        let drag_button = match action {
+            ComputerAction::Drag { button, .. } => Some(match button {
+                ComputerButton::Left => 1,
+                ComputerButton::Middle => 2,
+                ComputerButton::Right => 3,
+            }),
+            _ => None,
+        };
+        let mut pressed = false;
         for args in action.commands(window.native_id()) {
-            if cancel.is_cancelled() {
-                return Err(RuntimeError::Closed);
+            let is_down = args.first().is_some_and(|arg| arg == "mousedown");
+            let is_up = args.first().is_some_and(|arg| arg == "mouseup");
+            let step = async {
+                if cancel.is_cancelled() {
+                    return Err(RuntimeError::Closed);
+                }
+                self.capture.validate_window(window, cancel).await?;
+                command::run(Path::new("/usr/bin/xdotool"), args, 1024, cancel).await
             }
-            self.capture.validate_window(window, cancel).await?;
-            command::run(Path::new("/usr/bin/xdotool"), args, 1024, cancel).await?;
+            .await;
+            if let Err(error) = step {
+                if pressed {
+                    if let Some(button) = drag_button {
+                        let release = vec![
+                            "mouseup".into(),
+                            "--window".into(),
+                            window.native_id().to_string(),
+                            button.to_string(),
+                        ];
+                        let cleanup = CancellationToken::new();
+                        let _ = tokio::time::timeout(
+                            Duration::from_secs(1),
+                            command::run(Path::new("/usr/bin/xdotool"), release, 1024, &cleanup),
+                        )
+                        .await;
+                    }
+                }
+                return Err(error);
+            }
+            if is_down {
+                pressed = true;
+            } else if is_up {
+                pressed = false;
+            }
         }
         if cancel.is_cancelled() {
             return Err(RuntimeError::Closed);
@@ -339,10 +436,23 @@ mod tests {
                 y: 11,
                 button: ComputerButton::Left,
             },
+            ComputerAction::Drag {
+                from_x: 3,
+                from_y: 4,
+                to_x: 30,
+                to_y: 40,
+                button: ComputerButton::Left,
+            },
             ComputerAction::Scroll {
                 x: 1,
                 y: 2,
                 down: true,
+                steps: 8,
+            },
+            ComputerAction::HorizontalScroll {
+                x: 1,
+                y: 2,
+                right: true,
                 steps: 8,
             },
             ComputerAction::Type {
@@ -369,13 +479,45 @@ mod tests {
                         "windowactivate",
                         "windowfocus",
                         "--clearmodifiers",
-                        "mousedown",
                         "keydown",
                     ]
                     .contains(&a.as_str())
                 }));
             }
         }
+        let action = ComputerAction::Drag {
+            from_x: 3,
+            from_y: 4,
+            to_x: 30,
+            to_y: 40,
+            button: ComputerButton::Left,
+        };
+        assert_eq!(
+            action.commands(42),
+            vec![
+                vec!["mousemove", "--window", "42", "3", "4"],
+                vec!["mousedown", "--window", "42", "1"],
+                vec!["mousemove", "--window", "42", "30", "40"],
+                vec!["mouseup", "--window", "42", "1"],
+            ]
+        );
+
+        let action = ComputerAction::HorizontalScroll {
+            x: 7,
+            y: 11,
+            right: true,
+            steps: 3,
+        };
+        assert_eq!(
+            action.commands(42),
+            vec![
+                vec!["mousemove", "--window", "42", "7", "11"],
+                vec![
+                    "click", "--window", "42", "--repeat", "3", "--delay", "20", "7"
+                ],
+            ]
+        );
+
         let action = ComputerAction::DoubleClick {
             x: 7,
             y: 11,
@@ -474,6 +616,17 @@ mod tests {
             .is_err()
         );
         assert!(
+            ComputerAction::Drag {
+                from_x: 0,
+                from_y: 0,
+                to_x: 10,
+                to_y: 9,
+                button: ComputerButton::Left
+            }
+            .validate(10, 10)
+            .is_err()
+        );
+        assert!(
             ComputerAction::Click {
                 x: 10,
                 y: 0,
@@ -488,6 +641,26 @@ mod tests {
                 y: 0,
                 down: true,
                 steps: 9
+            }
+            .validate(10, 10)
+            .is_err()
+        );
+        assert!(
+            ComputerAction::HorizontalScroll {
+                x: 0,
+                y: 0,
+                right: true,
+                steps: 9
+            }
+            .validate(10, 10)
+            .is_err()
+        );
+        assert!(
+            ComputerAction::HorizontalScroll {
+                x: 10,
+                y: 0,
+                right: false,
+                steps: 1
             }
             .validate(10, 10)
             .is_err()

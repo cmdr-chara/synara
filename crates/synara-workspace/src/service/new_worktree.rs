@@ -303,6 +303,7 @@ impl WorkspaceService {
                 source.scope,
                 draft,
                 Some((directory, plan.destination.clone())),
+                Some((plan.branch.clone(), plan.remote)),
             )
             .await
         }
@@ -444,8 +445,202 @@ impl WorkspaceService {
             current_source.scope,
             draft,
             Some((worktree.path, worktree.repository_path)),
+            Some((
+                worktree
+                    .branch
+                    .clone()
+                    .ok_or_else(|| invalid("the recovered worktree branch disappeared"))?,
+                matches!(current_workspace.location, WorkspaceLocation::Ssh { .. }),
+            )),
         )
         .await
+    }
+
+    /// Cleanup after deletion uses only durable Synara ownership written with
+    /// the task. Ordinary/non-managed worktrees never enter this path.
+    pub(super) async fn cleanup_deleted_managed_worktree(
+        &self,
+        managed: ManagedWorktreeOwnership,
+        cancel: CancellationToken,
+    ) -> WorkspaceResult<()> {
+        managed.validate().map_err(WorkspaceError::Storage)?;
+        if cancel.is_cancelled() {
+            return Err(invalid("managed worktree cleanup was cancelled"));
+        }
+        let _lifecycle = self.lock_worktree_lifecycle().await;
+
+        let (workspace, project, tasks, current_marker) = self
+            .access({
+                let managed = managed.clone();
+                move |store| {
+                    let catalog = catalog(store)?;
+                    let workspace = catalog
+                        .workspaces
+                        .iter()
+                        .find(|workspace| workspace.id == managed.workspace)
+                        .cloned()
+                        .ok_or(WorkspaceError::NotFound)?;
+                    let project = catalog
+                        .projects
+                        .iter()
+                        .find(|project| {
+                            project.id == managed.project
+                                && project.workspace_id == managed.workspace
+                        })
+                        .cloned()
+                        .ok_or(WorkspaceError::NotFound)?;
+                    let tasks = catalog
+                        .tasks
+                        .into_iter()
+                        .filter(|task| task.project_id == managed.project)
+                        .collect::<Vec<_>>();
+                    let current = store.managed_worktree(managed.task)?;
+                    Ok((workspace, project, tasks, current))
+                }
+            })
+            .await?;
+        if current_marker.as_ref() != Some(&managed) {
+            return Err(invalid("managed worktree ownership changed"));
+        }
+        if tasks.iter().any(|task| {
+            normalized_absolute(&task.working_directory)
+                .is_some_and(|path| path.starts_with(&managed.repository_path))
+        }) {
+            return Err(invalid("the managed worktree is still assigned to a task"));
+        }
+        let remote = matches!(workspace.location, WorkspaceLocation::Ssh { .. });
+        if remote != managed.remote {
+            return Err(invalid("managed worktree workspace location changed"));
+        }
+
+        let worktree = self
+            .project_worktrees(project.id)
+            .await?
+            .into_iter()
+            .find(|worktree| {
+                worktree.repository_path == managed.repository_path
+                    && worktree.path == managed.task_path
+            })
+            .ok_or_else(|| invalid("managed worktree is no longer linked to its project"))?;
+        if worktree.assigned_task.is_some()
+            || worktree.bare
+            || worktree.locked
+            || worktree.prunable
+            || worktree.branch.as_deref() != Some(managed.branch.as_str())
+        {
+            return Err(invalid("managed worktree changed or is not safe to remove"));
+        }
+
+        let git = git_for_workspace(self, &workspace, managed.repository_path.clone()).await?;
+        let listed = git
+            .execute(
+                GitOperation::Worktrees,
+                GitOperationOptions::default(),
+                CancellationToken::new(),
+                None,
+            )
+            .await?;
+        let entries = parse_git_worktrees(&listed.stdout)?;
+        let target = entries
+            .iter()
+            .find(|entry| entry.path == managed.repository_path)
+            .filter(|entry| {
+                !entry.bare
+                    && !entry.locked
+                    && !entry.prunable
+                    && entry.branch.as_deref() == Some(managed.branch.as_str())
+            })
+            .ok_or_else(|| invalid("managed Git worktree identity changed"))?;
+        if target.path.parent().is_none() {
+            return Err(invalid("managed worktree has no safe parent"));
+        }
+
+        git.execute(
+            GitOperation::RemoveWorktree {
+                path: managed.repository_path.clone(),
+            },
+            GitOperationOptions {
+                policy: GitOperationPolicy {
+                    allow_mutation: true,
+                    allow_repository_execution: true,
+                    ..Default::default()
+                },
+                ..Default::default()
+            },
+            cancel,
+            None,
+        )
+        .await
+        .map_err(|error| {
+            invalid(format!(
+                "automatic managed-worktree cleanup retained the checkout: {error}"
+            ))
+        })?;
+
+        let listed = git
+            .execute(
+                GitOperation::Worktrees,
+                GitOperationOptions::default(),
+                CancellationToken::new(),
+                None,
+            )
+            .await?;
+        if parse_git_worktrees(&listed.stdout)?
+            .iter()
+            .any(|entry| entry.path == managed.repository_path)
+        {
+            return Err(invalid(
+                "Git still reports the managed worktree after cleanup",
+            ));
+        }
+        self.access(move |store| {
+            store.forget_managed_worktree(&managed)?;
+            Ok(())
+        })
+        .await
+    }
+
+    /// Retry durable cleanup markers during explicit project/workspace deletion.
+    /// A single retained dirty/stale checkout blocks metadata deletion so ownership
+    /// can never disappear while the managed checkout still exists.
+    pub(super) async fn retry_pending_managed_worktree_cleanup(
+        &self,
+        project: Option<ProjectId>,
+        workspace: Option<WorkspaceId>,
+    ) -> WorkspaceResult<()> {
+        let pending = self
+            .access(move |store| {
+                Ok(store
+                    .managed_worktrees()?
+                    .into_iter()
+                    .filter(|managed| {
+                        project.is_none_or(|id| managed.project == id)
+                            && workspace.is_none_or(|id| managed.workspace == id)
+                    })
+                    .collect::<Vec<_>>())
+            })
+            .await?;
+        let mut retained = Vec::new();
+        for managed in pending {
+            if let Err(error) = self
+                .cleanup_deleted_managed_worktree(managed.clone(), CancellationToken::new())
+                .await
+            {
+                retained.push(format!(
+                    "{} · {} · {error}",
+                    managed.branch,
+                    managed.repository_path.display()
+                ));
+            }
+        }
+        if retained.is_empty() {
+            Ok(())
+        } else {
+            Err(invalid(format!(
+                "managed worktree cleanup is still pending: {}",
+                retained.join(" | ").chars().take(2048).collect::<String>()
+            )))
+        }
     }
 
     /// Remove a fixed, previously reviewed set of recoverable Synara worktrees.
@@ -691,6 +886,161 @@ impl WorkspaceService {
 mod tests {
     use super::super::tests::{git, repository};
     use super::*;
+    #[tokio::test]
+    async fn managed_task_deletion_cleans_only_owned_checkouts_and_retries_dirty_markers() {
+        let dir = tempfile::tempdir().unwrap();
+        let repo = dir.path().join("repo");
+        let scratch = dir.path().join("scratch");
+        std::fs::create_dir(&scratch).unwrap();
+        repository(&repo);
+        std::fs::write(repo.join("tracked.txt"), "tracked").unwrap();
+        git(&repo, &["add", "."]);
+        git(&repo, &["commit", "-qm", "tracked"]);
+
+        let service = WorkspaceService::memory().unwrap();
+        let project = service.add_local_workspace(repo.clone()).await.unwrap();
+        let agent = service.profiles().await.unwrap()[0].id.clone();
+        let source = service
+            .create_task(project.id, "source".into(), agent.clone())
+            .await
+            .unwrap();
+        let policy = GitOperationPolicy {
+            allow_mutation: true,
+            allow_repository_execution: true,
+            ..Default::default()
+        };
+
+        let clean_plan = service
+            .prepare_new_worktree_fork(source.id, scratch.canonicalize().unwrap())
+            .await
+            .unwrap();
+        let clean_path = clean_plan.destination().to_path_buf();
+        let clean_branch = clean_plan.branch().to_owned();
+        let clean = service
+            .create_new_worktree_fork(
+                clean_plan,
+                "clean fork".into(),
+                "draft".into(),
+                policy,
+                CancellationToken::new(),
+            )
+            .await
+            .unwrap();
+        assert!(
+            service
+                .access({
+                    let id = clean.id;
+                    move |store| Ok(store.managed_worktree(id)?.is_some())
+                })
+                .await
+                .unwrap()
+        );
+        service.archive_task(clean.id).await.unwrap();
+        service.delete_task(clean.id).await.unwrap();
+        assert!(!clean_path.exists());
+        assert!(
+            !service
+                .access({
+                    let id = clean.id;
+                    move |store| Ok(store.managed_worktree(id)?.is_some())
+                })
+                .await
+                .unwrap()
+        );
+        let clean_ref = format!("refs/heads/{clean_branch}");
+        git(&repo, &["show-ref", "--verify", clean_ref.as_str()]);
+
+        let dirty_plan = service
+            .prepare_new_worktree_fork(source.id, scratch.canonicalize().unwrap())
+            .await
+            .unwrap();
+        let dirty_path = dirty_plan.destination().to_path_buf();
+        let dirty_branch = dirty_plan.branch().to_owned();
+        let dirty = service
+            .create_new_worktree_fork(
+                dirty_plan,
+                "dirty fork".into(),
+                "draft".into(),
+                policy,
+                CancellationToken::new(),
+            )
+            .await
+            .unwrap();
+        std::fs::write(dirty_path.join("keep.txt"), "do not remove").unwrap();
+        service.archive_task(dirty.id).await.unwrap();
+        service.delete_task(dirty.id).await.unwrap();
+        assert_eq!(
+            std::fs::read_to_string(dirty_path.join("keep.txt")).unwrap(),
+            "do not remove"
+        );
+        assert!(
+            service
+                .access({
+                    let id = dirty.id;
+                    move |store| Ok(store.managed_worktree(id)?.is_some())
+                })
+                .await
+                .unwrap()
+        );
+
+        let manual = dir.path().join("manual-worktree");
+        git(
+            &repo,
+            &[
+                "worktree",
+                "add",
+                "-b",
+                "user-owned-worktree",
+                manual.to_str().unwrap(),
+                "HEAD",
+            ],
+        );
+        let manual_task = service
+            .create_scoped_task_in_worktree(
+                project.id,
+                "manual".into(),
+                agent,
+                TaskScope::Project,
+                String::new(),
+                manual.clone(),
+            )
+            .await
+            .unwrap();
+        service.archive_task(manual_task.id).await.unwrap();
+        service.delete_task(manual_task.id).await.unwrap();
+        assert!(manual.exists());
+        assert!(
+            !service
+                .access({
+                    let id = manual_task.id;
+                    move |store| Ok(store.managed_worktree(id)?.is_some())
+                })
+                .await
+                .unwrap()
+        );
+
+        service.archive_task(source.id).await.unwrap();
+        service.delete_task(source.id).await.unwrap();
+        assert!(service.delete_project(project.id).await.is_err());
+        assert!(dirty_path.exists());
+
+        std::fs::remove_file(dirty_path.join("keep.txt")).unwrap();
+        service.delete_project(project.id).await.unwrap();
+        assert!(!dirty_path.exists());
+        let dirty_ref = format!("refs/heads/{dirty_branch}");
+        git(&repo, &["show-ref", "--verify", dirty_ref.as_str()]);
+        assert!(manual.exists());
+        assert!(
+            !service
+                .access({
+                    let id = dirty.id;
+                    move |store| Ok(store.managed_worktree(id)?.is_some())
+                })
+                .await
+                .unwrap()
+        );
+    }
+
     #[test]
     fn remote_worktree_destination_is_uuid_sibling_and_never_root_level() {
         let token = uuid::Uuid::parse_str("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee").unwrap();

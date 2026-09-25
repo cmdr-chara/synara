@@ -56,6 +56,7 @@ pub(super) enum StudioReply {
         result: Result<StudioExportReview, String>,
     },
     Exported(Result<(), String>),
+    PdfFormExported(Result<(), String>),
     VersionExported(Result<(), String>),
     Listed {
         task: TaskId,
@@ -613,6 +614,18 @@ impl Shell {
                 match result {
                     Ok(()) => self.notice = Some("The reviewed Library file was saved to a new destination without replacing existing files.".into()),
                     Err(e) => self.error = Some(format!("Library export failed: {e}")),
+                }
+            }
+            StudioReply::PdfFormExported(result) => {
+                self.studio.exporting = false;
+                match result {
+                    Ok(()) => self.notice = Some(
+                        "Filled PDF copy saved to a new destination. The source PDF was not changed and no PDF submit action or script was executed."
+                            .into(),
+                    ),
+                    Err(error) => {
+                        self.studio.error = Some(format!("Filled PDF export failed: {error}"))
+                    }
                 }
             }
             StudioReply::VersionExported(result) => {

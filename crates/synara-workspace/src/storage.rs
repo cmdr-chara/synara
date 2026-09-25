@@ -51,6 +51,7 @@ pub use conversation_tools::{
 };
 mod task_creation;
 pub use chat_preferences::{ModelFavorite, SessionModelPreset};
+pub(crate) use task_creation::{ManagedWorktreeOwnership, managed_worktree_key};
 mod recovery;
 pub use recovery::*;
 
@@ -357,6 +358,13 @@ PRAGMA user_version=2;")?;
         Ok(changed == 1)
     }
     pub fn delete_project(&mut self, id: ProjectId) -> StorageResult<bool> {
+        if self
+            .managed_worktrees()?
+            .iter()
+            .any(|managed| managed.project == id)
+        {
+            return Err(StorageError::NotEmpty);
+        }
         let count: i64 = self.connection.query_row(
             "SELECT COUNT(*) FROM tasks WHERE project_id=?1",
             [id.to_string()],
@@ -371,6 +379,13 @@ PRAGMA user_version=2;")?;
             == 1)
     }
     pub fn delete_workspace(&mut self, id: WorkspaceId) -> StorageResult<bool> {
+        if self
+            .managed_worktrees()?
+            .iter()
+            .any(|managed| managed.workspace == id)
+        {
+            return Err(StorageError::NotEmpty);
+        }
         let count: i64 = self.connection.query_row(
             "SELECT COUNT(*) FROM projects WHERE workspace_id=?1",
             [id.to_string()],
@@ -641,6 +656,7 @@ fn valid_preference_key(key: &str) -> bool {
     }
     if let Some(id) = key
         .strip_prefix("task-goal:")
+        .or_else(|| key.strip_prefix("managed-worktree:"))
         .or_else(|| key.strip_prefix("task-studio-versions:"))
         .or_else(|| key.strip_prefix("task-checkpoints:"))
         .or_else(|| key.strip_prefix("task-inline-comments:"))

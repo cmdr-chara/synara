@@ -9,15 +9,15 @@ Detailed parity evidence lives in:
 
 ## Current status
 
-- Shipped feature slices: **70**
-- Major remaining: **17**
-- Smaller remaining: **1**
+- Shipped feature slices: **72**
+- Major remaining: **16**
+- Smaller remaining: **0**
 - Acceptance/integration remaining: **10**
-- Total remaining: **28**
+- Total remaining: **26**
 - Completely missing top-level surfaces: **0**
 - Broad verification gates still open: **21**
 
-The **28-item count is the execution count to use going forward**. The 21 verification
+The **26-item count is the execution count to use going forward**. The 21 verification
 gates are larger acceptance buckets and are not a feature count.
 
 Current upstream reference: `Emanuele-web04/synara@eaa61eded31b6755d4f30ba8eabc5d905cf817cb`.
@@ -49,7 +49,7 @@ journeys and the cancelled WebKit job remain unverified.
 - [x] M19 Richer editor comparison scopes
 - [x] M20 Safe line blame without repository filter execution
 - [x] M21 Deeper diff editing/review workflows
-- [ ] M22 Managed worktree automatic cleanup/recovery
+- [x] M22 Managed worktree automatic cleanup/recovery
 - [x] M23 SSH managed worktree creation
 - [x] M24 Environment-aware task/fork orchestration
 - [ ] M25 Richer model/context controls, including fast/thinking presets and compaction
@@ -78,7 +78,7 @@ journeys and the cancelled WebKit job remain unverified.
 - [x] S15 Per-turn provider/model activity breakdown
 - [x] S16 Token heatmap
 - [x] S17 Studio organization/filtering polish
-- [ ] S18 PDF text/link/form interaction after basic rendering
+- [x] S18 PDF text/link/form interaction after basic rendering
 
 ## Acceptance/integration remaining
 
@@ -101,10 +101,11 @@ not large new product subsystems.
 Finish whole workflows instead of spreading work across every gate:
 
 1. **Web workspace:** M01-M02, M06
-2. **Editor/review:** M21
-3. **Worktrees/handoff:** M22, M24
-4. **Documents/Studio:** S18
-5. **Simulator:** M13-M16 when the required macOS/native input backend is available
+2. **Browser/auth:** M07-M09, M11-M12
+3. **Simulator:** M13-M16 when the required macOS/native input backend is available
+4. **Provider/context:** M25-M26
+5. **Computer Use:** M27
+6. **Releases/updater:** M28
 
 ## Shipped
 
@@ -218,8 +219,14 @@ updater integrity checks and Studio output reopening.
   worktrees exist: it fixes the reviewed set, revalidates each exact checkout,
   removes only still-safe clean worktrees, and reports every retained dirty,
   assigned, stale, locked or cancelled checkout without force or branch deletion.
-  M22 remains open for automatic post-task lifecycle cleanup and broader crash
-  reconciliation.
+  Managed worktree task creation now atomically persists an exact ownership marker.
+  Deleting an archived managed task automatically attempts ordinary non-force
+  cleanup of only that marked checkout, for local or pinned SSH workspaces.
+  Dirty/locked/stale failures retain both checkout and marker; project/workspace
+  deletion retries those durable markers and refuses to erase ownership metadata
+  while any checkout remains unsafe. Ordinary user-managed worktrees never receive
+  a marker and are never auto-removed. Generated branches remain intact. M22 is
+  complete at the product-feature level; A07 remains the live SSH acceptance gate.
   The worktree fork menu is now a unified environment chooser: it includes the
   current local or SSH workspace, existing linked worktrees, recoverable Synara
   worktrees, and reviewed new worktrees. SSH managed creation now derives an
@@ -245,7 +252,13 @@ updater integrity checks and Studio output reopening.
   Computer Use now supports reviewed pointer movement and double-click in addition
   to click, scroll, literal typing and named keys. Both new actions stay
   window-addressed, coordinate-bounded, one-frame/one-action and stale-frame
-  checked. M27 remains open for richer targeting and broader platform behavior.
+  checked. Horizontal scrolling is now a separate typed action using the same
+  reviewed window-relative point and 1–8 step bound; it maps only to X11 buttons
+  6/7 and retains fresh-window revalidation before each command. Reviewed drag
+  now adds bounded start/end coordinates with fresh-window validation before each
+  pointer step; if a later step fails after mouse-down, Synara best-effort releases
+  the same window-addressed button to avoid persistent input state. M27 remains
+  open for richer targeting and broader platform behavior.
   Direct-model turns now retain the exact reviewed provider/model route together
   with the real token usage reported by that provider stream, and the transcript
   activity summary shows that per-turn breakdown. ACP turns only show token
@@ -430,6 +443,18 @@ updater integrity checks and Studio output reopening.
   S18 remains open specifically for a safe PDF field-level interaction contract;
   D13/A10 remain open for broad failure/package/cross-platform acceptance.
 
+- Batch 31: S18 is complete at the product-feature level. Studio keeps the PDF
+  source as an immutable snapshot, exposes page/document text and explicit
+  HTTP(S) link opening, offers opt-in OCR through the fixed system Tesseract
+  helper, and allows a reviewed safe subset of AcroForm text/button/choice
+  fields to be edited locally before an explicit new-copy export. Password,
+  file-select, rich-text/comb, push-button, multi-select, signature, XFA and
+  unknown/read-only fields remain inspection-only or inert. The fill path
+  revalidates fields against the snapshot, uses bounded XFDF/pdftk helpers,
+  round-trips requested values before publishing, never executes scripts or
+  SubmitForm actions, and writes only through the existing no-overwrite export
+  owner. D13/A10 remain open for broad failure/package/cross-platform acceptance.
+
 Verification receipts:
 [batch 1](docs/verification/parity-2026-09-24-batch1.md),
 [batch 2](docs/verification/parity-2026-09-24-batch2.md),
@@ -458,7 +483,10 @@ Verification receipts:
 [batch 25](docs/verification/parity-2026-09-25-batch25.md),
 [batch 26](docs/verification/parity-2026-09-25-batch26.md),
 [batch 27](docs/verification/parity-2026-09-25-batch27.md),
-[batch 28](docs/verification/parity-2026-09-25-batch28.md).
+[batch 28](docs/verification/parity-2026-09-25-batch28.md),
+[batch 29](docs/verification/parity-2026-09-25-batch29.md),
+[batch 30](docs/verification/parity-2026-09-25-batch30.md),
+[batch 31](docs/verification/parity-2026-09-25-batch31.md).
 
 ## How to update this roadmap
 

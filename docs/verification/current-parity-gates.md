@@ -31,7 +31,7 @@ additions are available.
 | D10 Releases/updater | Verify trusted native artifacts and provide signed install/update/rollback | Feed provenance/signature, upgrade and rollback tests on release packages | OPEN |
 | D11 Profile/analytics | Show provider/model mix, token heatmap and account/usage statistics from actual sources | Per-turn route/model mix and token heatmap are implemented; real account/quota telemetry and provider integration journeys remain | OPEN |
 | D12 Handoff/forks | Continue or fork provider sessions with explicit task/environment ownership | Same-task continuation and capability-gated ACP native fork are implemented; live provider/worktree journeys remain | OPEN |
-| D13 Attachments/media | Preserve folder references, broad binary document intake/viewing and safe PDF interaction | Format persistence/preview/export failures, true PDF field interaction and cross-platform/package acceptance | OPEN |
+| D13 Attachments/media | Preserve folder references, broad binary document intake/viewing and safe PDF interaction | Safe PDF field interaction is implemented; format persistence/preview/export failure paths and cross-platform/package acceptance remain | OPEN |
 | D14 Studio | Match current upstream long-running output lifecycle and organization | Output/task lifecycle and recovery journeys | OPEN |
 | N1 Theme/density | Finish visual, accessibility and platform acceptance for native appearance controls | Screenshot, keyboard, screen-reader and platform matrix | OPEN |
 | N2 File/source search | Match ranking, ignored-file and platform behavior of project search | Local/SSH fixtures plus native navigation/search acceptance | OPEN |

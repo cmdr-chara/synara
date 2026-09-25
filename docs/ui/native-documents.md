@@ -1,19 +1,23 @@
 # Native Library documents and export
 
-The Hub Library now renders local PDF files as a read-only, single-page native
-image with previous/next, fit, zoom and explicit reload. The document is an
-immutable snapshot: changing the file on disk does not mix versions while paging.
-Reload starts again at page one and rejects a newly damaged or missing file.
-Changing the selected file/task, leaving the Library or closing the app cancels
-an outstanding PDF request and rejects any stale result.
+The Hub Library renders local PDF files from an immutable snapshot with native
+single-page image paging, fit/zoom/reload, page and bounded document-text
+extraction, explicit HTTP(S) link inspection/opening, optional OCR, and reviewed
+safe-subset AcroForm editing. Changing the file on disk does not mix versions
+while paging or editing. Reload starts again at page one and rejects a newly
+damaged or missing file. Changing the selected file/task, leaving the Library or
+closing the app cancels outstanding preview work and rejects stale results.
 
 ## Operating boundary
 
-The initial renderer is Linux-only and requires OS-managed `poppler-utils`
-(`/usr/bin/pdfinfo` and `/usr/bin/pdftoppm`) and `util-linux`
-(`/usr/bin/prlimit`). Synara does not install or download a helper, search a
-project's PATH, launch a browser, or send document bytes to a provider. Missing
-helpers and other platforms report unsupported. Keep these OS packages updated.
+The PDF helpers are Linux-only and OS-managed. Rendering/text/link inspection
+requires `poppler-utils` (`/usr/bin/pdfinfo`, `/usr/bin/pdftoppm` and
+`/usr/bin/pdftotext`) plus `util-linux` (`/usr/bin/prlimit`). Optional OCR
+requires the fixed `/usr/bin/tesseract`; AcroForm inspection/filling requires
+the fixed `/usr/bin/pdftk` from `pdftk-java`. Synara does not install or
+download helpers, search a project's PATH, launch arbitrary PDF actions, or send
+document bytes to a provider from this Library surface. Missing helpers and other
+platforms report unsupported. Keep these OS packages updated.
 
 WorkspaceFs opens only regular contained non-symlink files. Input is at most
 8 MiB and 2000 pages. One preview decoder is admitted at a time. The selected
@@ -24,13 +28,24 @@ spool/font-cache files use a private temporary directory, and its environment
 contains no inherited credential or display variables. The existing process-tree
 owner stops and reaps helpers on errors, cancellation and dropped callers.
 These controls are **not an OS security sandbox** and do not prove immunity to
-renderer vulnerabilities. The native surface does not enable PDF links, scripts,
-forms, attachments, editing, text selection or password entry. Encrypted,
-malformed and over-limit inputs can be refused rather than partly represented.
+renderer vulnerabilities. Extracted/OCR text is inert. Only validated HTTP(S)
+annotations can be opened, and only after an explicit click. PDF scripts,
+embedded files and SubmitForm/network actions are never executed. XFA, signature,
+unknown/read-only, password, file-select, rich-text/comb, push-button and
+multi-select fields are not edited.
 
-The renderer is currently a Hub Library surface, not binary prompt intake or a
-remote workspace/Explorer PDF implementation. Raster zoom enlarges the bounded
-page image rather than claiming vector/text-layer parity with upstream pdf.js.
+AcroForm edits stay local until "Save filled copy as...". Before filling, Synara
+re-reads field metadata from the immutable snapshot and rejects stale/unsupported
+field names, flags or option values. A bounded XFDF document is passed to the
+fixed pdftk helper under the same private-directory/resource-limit policy; the
+generated PDF is re-inspected and every requested value must round-trip exactly
+before the existing no-overwrite export owner publishes a new file. The source
+PDF is never modified.
+
+Binary PDF prompt intake now exists through the separate bounded attachment
+pipeline. This document describes the Hub Library/Studio interaction surface, not
+a remote workspace/Explorer implementation. Raster zoom enlarges the bounded page
+image rather than claiming vector/text-layer parity with upstream pdf.js.
 
 ## Save current file as
 

@@ -501,8 +501,8 @@ mod tests {
     use super::*;
     use crate::{
         AutomationContextPolicy, AutomationId, AutomationMode, AutomationSchedule,
-        MissedRunPolicy, DEFAULT_AUTOMATION_HEARTBEAT_COOLDOWN_SECONDS,
-        DEFAULT_AUTOMATION_MAX_RUNTIME_SECONDS, now_ms,
+        DEFAULT_AUTOMATION_HEARTBEAT_COOLDOWN_SECONDS, DEFAULT_AUTOMATION_MAX_RUNTIME_SECONDS,
+        MissedRunPolicy, now_ms,
     };
     struct NeverLaunch;
     #[async_trait::async_trait]

@@ -508,13 +508,40 @@ fn real_webkit_navigation_consent_input_redirect_and_isolation() {
     assert!(host.views[&auth].webview.webview().is_visible());
     window.present();
     window.activate_focus();
-    #[allow(deprecated)]
-    let clicked = gtk::test_widget_click(
-        host.views[&auth].webview.webview(),
-        1,
-        gtk::gdk::ModifierType::empty(),
-    );
-    assert!(clicked, "could not synthesize the reviewed authentication click");
+    {
+        use gdkx11::X11WindowExt;
+        use x11rb::{
+            connection::Connection,
+            protocol::{xproto::ConnectionExt as _, xtest::ConnectionExt as _},
+        };
+
+        let gdk_window = host.views[&auth]
+            .webview
+            .webview()
+            .window()
+            .expect("authentication WebKit view must have an X11 window");
+        let (origin_x, origin_y) = gdk_window.origin();
+        let (connection, screen) = x11rb::connect(None).expect("connect to private X11 display");
+        let root = connection.setup().roots[screen].root;
+        let x = i16::try_from(origin_x + 400).expect("authentication click x fits X11");
+        let y = i16::try_from(origin_y + 300).expect("authentication click y fits X11");
+        connection
+            .warp_pointer(x11rb::NONE, root, 0, 0, 0, 0, x, y)
+            .expect("queue pointer move")
+            .check()
+            .expect("move pointer over authentication link");
+        connection
+            .xtest_fake_input(4, 1, x11rb::CURRENT_TIME, root, x, y, 0)
+            .expect("queue authentication press")
+            .check()
+            .expect("press authentication link");
+        connection
+            .xtest_fake_input(5, 1, x11rb::CURRENT_TIME, root, x, y, 0)
+            .expect("queue authentication release")
+            .check()
+            .expect("release authentication link");
+        connection.flush().expect("flush authentication click");
+    }
 
     let popup_url = format!("{base}/auth-popup?token=private");
     let requested = Rc::new(Cell::new(true));
@@ -603,7 +630,7 @@ fn real_webkit_navigation_consent_input_redirect_and_isolation() {
     assert!(host.views.keys().all(|id| *id != tab));
     assert!(host.profiles.keys().all(|key| key != "task-7"));
     println!(
-        "REAL_WEBKIT_ACCEPTANCE: manual load, isolated cookies, consent, document, fill, click, approved scroll, stale references, redirect fence, teardown passed"
+        "REAL_WEBKIT_ACCEPTANCE: manual load, isolated cookies, consent, document, fill, click, approved scroll, stale references, redirect fence, reviewed authentication popup lifecycle and teardown passed"
     );
 }
 

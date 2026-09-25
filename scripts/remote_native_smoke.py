@@ -63,6 +63,14 @@ def click_control(ui, log_path, control, slot=None, enabled=None, timeout=20):
     ui.click_client(round(x + width / 2), round(y + height / 2))
 
 
+def control_count(log_path, control):
+    text = re.sub(r'\x1b\[[0-9;]*[A-Za-z]', '', Path(log_path).read_text(errors='replace'))
+    return sum(
+        1 for line in text.splitlines()
+        if 'control-layout' in line and ('control="' + control + '"') in line
+    )
+
+
 def replace_focused_text(ui, value):
     ui.key('a', ('Control_L',))
     type_text(ui, value)
@@ -226,10 +234,11 @@ def main():
         # Restart through the same native terminal surface and prove stale-session isolation.
         # A running terminal requires explicit confirmation before Synara stops its PTY.
         click_control(desktop, log.name, 'start-shell', timeout=20)
+        prior_screens = control_count(log.name, 'terminal-screen')
         click_control(desktop, log.name, 'terminal-confirm', timeout=20)
         wait_until(
-            lambda: not control_bounds(log.name, 'terminal-confirm'),
-            'remote terminal restart confirmation to clear',
+            lambda: control_count(log.name, 'terminal-screen') > prior_screens,
+            'replacement remote terminal screen',
             20,
         )
         click_control(desktop, log.name, 'terminal-screen', timeout=20)

@@ -53,14 +53,6 @@ pub(crate) fn managed_worktree_key(task: TaskId) -> String {
 }
 
 impl Store {
-    pub(crate) fn insert_task_with_draft(
-        &mut self,
-        task: &Task,
-        text: String,
-    ) -> StorageResult<()> {
-        self.insert_task_with_draft_and_managed_worktree(task, text, None)
-    }
-
     pub(crate) fn insert_task_with_draft_and_managed_worktree(
         &mut self,
         task: &Task,

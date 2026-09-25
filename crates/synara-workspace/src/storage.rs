@@ -51,7 +51,7 @@ pub use conversation_tools::{
 };
 mod task_creation;
 pub use chat_preferences::{ModelFavorite, SessionModelPreset};
-pub(crate) use task_creation::{ManagedWorktreeOwnership, managed_worktree_key};
+pub(crate) use task_creation::ManagedWorktreeOwnership;
 mod recovery;
 pub use recovery::*;
 

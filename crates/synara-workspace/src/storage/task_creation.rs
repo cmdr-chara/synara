@@ -312,7 +312,7 @@ mod tests {
             .access(move |store| {
                 assert!(
                     store
-                        .insert_task_with_draft(&task, "replacement".into())
+                        .insert_task_with_draft_and_managed_worktree(&task, "replacement".into(), None)
                         .is_err()
                 );
                 Ok(())

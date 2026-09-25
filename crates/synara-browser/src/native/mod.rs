@@ -467,10 +467,7 @@ impl NativeHost {
             .with_visible(false)
             .with_devtools(manual)
             .with_new_window_req_handler(move |url, _| {
-                if popup_review
-                    && popup_ready.get()
-                    && popup_shared.epoch(tab) == Some(epoch)
-                {
+                if popup_review && popup_ready.get() && popup_shared.epoch(tab) == Some(epoch) {
                     popup_events.emit(Event::PopupRequested {
                         tab,
                         navigation,

@@ -185,8 +185,13 @@ fn popup_requires_explicit_manual_action_and_stays_in_owned_tab() {
 fn authentication_popup_requires_explicit_host_action_and_keeps_flow_partition() {
     let (mut s, _) = fixture();
     let source = s.open(BrowserProfile::Authentication { flow: 41 }).unwrap();
-    s.user_navigate(source, "https://login.example.test/start", NavigationKind::Push, 0)
-        .unwrap();
+    s.user_navigate(
+        source,
+        "https://login.example.test/start",
+        NavigationKind::Push,
+        0,
+    )
+    .unwrap();
     let navigation = s.tabs[&source].navigation.as_ref().unwrap().0;
     s.event(Event::Committed {
         tab: source,
@@ -210,7 +215,10 @@ fn authentication_popup_requires_explicit_host_action_and_keeps_flow_partition()
     assert!(s.manual_popup_preview(source).is_err());
 
     let (target, target_url) = s.open_authentication_popup(source, 1).unwrap();
-    assert_eq!(target_url, "https://login.example.test/continue?code=secret");
+    assert_eq!(
+        target_url,
+        "https://login.example.test/continue?code=secret"
+    );
     assert_eq!(
         s.tabs[&target].view.profile,
         BrowserProfile::Authentication { flow: 41 }

@@ -53,45 +53,23 @@ async fn live_apple_simulator_boot_capture_and_open_url() {
     let result = async {
         let ready = ready_device(&tools, &id, &cancel).await?;
 
-        let mut capture_error = None;
-        let png = loop {
+        let mut capture_error = "unknown error".to_owned();
+        let mut png = None;
+        for _ in 0..30 {
             match tools.capture(&ready, &cancel).await {
-                Ok(bytes) => break bytes,
+                Ok(bytes) => {
+                    png = Some(bytes);
+                    break;
+                }
                 Err(error) => {
-                    capture_error = Some(error.to_string());
+                    capture_error = error.to_string();
                     tokio::time::sleep(Duration::from_secs(1)).await;
                 }
             }
-            if capture_error.is_some() {
-                let elapsed_ready = tools
-                    .discover(&cancel)
-                    .await
-                    .map_err(|error| error.to_string())?
-                    .into_iter()
-                    .any(|device| {
-                        device.descriptor.id.as_str() == id
-                            && device.availability == DeviceAvailability::Ready
-                    });
-                if !elapsed_ready {
-                    return Err("iOS Simulator stopped while waiting for capture".into());
-                }
-            }
-            // Capture can lag behind the Booted state while SpringBoard starts.
-            // Bound the total retry count with the outer helper deadline below.
-            if capture_error.as_deref().is_some_and(|_| false) {
-                unreachable!();
-            }
-            // The command adapter itself is deadline-bounded. A short fixed retry
-            // window keeps this live acceptance deterministic.
-            static ATTEMPTS: std::sync::atomic::AtomicUsize =
-                std::sync::atomic::AtomicUsize::new(0);
-            if ATTEMPTS.fetch_add(1, std::sync::atomic::Ordering::Relaxed) >= 29 {
-                return Err(format!(
-                    "Simulator capture did not become available: {}",
-                    capture_error.unwrap_or_else(|| "unknown error".into())
-                ));
-            }
-        };
+        }
+        let png = png.ok_or_else(|| {
+            format!("Simulator capture did not become available: {capture_error}")
+        })?;
         if !png.starts_with(b"\x89PNG\r\n\x1a\n") {
             return Err("Synara Simulator capture did not return PNG data".into());
         }

@@ -2,7 +2,9 @@
 
 use std::time::Duration;
 
-use synara_runtime::{DeviceAvailability, DeviceBackend, DeviceCancellation, DeviceTools, ToolDevice};
+use synara_runtime::{
+    DeviceAvailability, DeviceBackend, DeviceCancellation, DeviceTools, ToolDevice,
+};
 
 async fn ready_device(
     tools: &DeviceTools,
@@ -10,7 +12,10 @@ async fn ready_device(
     cancel: &DeviceCancellation,
 ) -> Result<ToolDevice, String> {
     for _ in 0..60 {
-        let devices = tools.discover(cancel).await.map_err(|error| error.to_string())?;
+        let devices = tools
+            .discover(cancel)
+            .await
+            .map_err(|error| error.to_string())?;
         if let Some(device) = devices.into_iter().find(|device| {
             device.descriptor.id.as_str() == id && device.availability == DeviceAvailability::Ready
         }) {
@@ -82,9 +87,7 @@ async fn live_apple_simulator_boot_capture_and_open_url() {
     }
     .await;
 
-    if booted_by_test
-        && let Ok(current) = ready_device(&tools, &id, &cancel).await
-    {
+    if booted_by_test && let Ok(current) = ready_device(&tools, &id, &cancel).await {
         tools
             .set_running(&current, false, &cancel)
             .await

@@ -3,8 +3,10 @@ mod context;
 mod multimodal_tests;
 use super::*;
 use crate::{
-    AutomationCompletionEvaluation, AutomationCompletionPolicy, AutomationDefinition,
-    AutomationRun, DirectModelBinding, ModelSelection, ProviderSettings,
+    AutomationCompletionEvaluation, AutomationCompletionPolicy, AutomationContextPolicy,
+    AutomationDefinition, AutomationId, AutomationMode, AutomationRun, AutomationSchedule,
+    DirectModelBinding, MissedRunPolicy, ModelSelection, ProviderSettings,
+    DEFAULT_AUTOMATION_HEARTBEAT_COOLDOWN_SECONDS, DEFAULT_AUTOMATION_MAX_RUNTIME_SECONDS, now_ms,
 };
 use synara_model::{HttpModelProvider, Message, MessageRole, ModelEvent, ModelProvider};
 use synara_runtime::SecretValue;

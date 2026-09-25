@@ -236,11 +236,7 @@ impl Shell {
             }
         }
     }
-    fn browser_open_authentication_popup(
-        &mut self,
-        source: HostTabId,
-        cx: &mut Context<Self>,
-    ) {
+    fn browser_open_authentication_popup(&mut self, source: HostTabId, cx: &mut Context<Self>) {
         if self.browser.selected != Some(source) {
             return;
         }
@@ -269,10 +265,7 @@ impl Shell {
         cx: &mut Context<Self>,
     ) {
         if synara_agent::validate_web_url(&url).is_err()
-            || !self
-                .pending
-                .get(&key)
-                .is_some_and(UiInteraction::is_active)
+            || !self.pending.get(&key).is_some_and(UiInteraction::is_active)
         {
             self.error = Some("This website request is no longer active or valid.".into());
             cx.notify();
@@ -306,9 +299,7 @@ impl Shell {
                 return Ok(tab);
             }
             let tab = session.open(BrowserProfile::Authentication { flow })?;
-            if let Err(error) =
-                session.user_navigate(tab, &url, NavigationKind::Push, now)
-            {
+            if let Err(error) = session.user_navigate(tab, &url, NavigationKind::Push, now) {
                 let _ = session.close(tab);
                 return Err(error);
             }
@@ -330,18 +321,17 @@ impl Shell {
         }
     }
 
-    pub(super) fn browser_close_authentication_flow(
-        &mut self,
-        flow: u128,
-        cx: &mut Context<Self>,
-    ) {
+    pub(super) fn browser_close_authentication_flow(&mut self, flow: u128, cx: &mut Context<Self>) {
         let tabs = self
             .controller
             .browser
             .with(|session, _| Ok(session.authentication_tabs(flow)))
             .unwrap_or_default();
         for tab in tabs {
-            let _ = self.controller.browser.with(|session, _| session.close(tab));
+            let _ = self
+                .controller
+                .browser
+                .with(|session, _| session.close(tab));
             if self.browser.selected == Some(tab) {
                 self.browser.selected = None;
             }
@@ -405,16 +395,10 @@ impl Shell {
                 .controller
                 .browser
                 .with(|session, _| {
-                    Ok(session
-                        .tabs()
-                        .iter()
-                        .any(|state| {
-                            state.id == tab
-                                && matches!(
-                                    state.profile,
-                                    BrowserProfile::Authentication { .. }
-                                )
-                        }))
+                    Ok(session.tabs().iter().any(|state| {
+                        state.id == tab
+                            && matches!(state.profile, BrowserProfile::Authentication { .. })
+                    }))
                 })
                 .unwrap_or(false);
             if authentication {
@@ -690,9 +674,9 @@ impl Shell {
         if let Some(error) = &self.browser.error {
             pane = pane.child(div().text_color(rgb(palette().error)).child(error.clone()));
         }
-        if let Some(tab) = active.filter(|tab| {
-            matches!(tab.profile, BrowserProfile::Authentication { .. })
-        }) {
+        if let Some(tab) =
+            active.filter(|tab| matches!(tab.profile, BrowserProfile::Authentication { .. }))
+        {
             let tab_id = tab.id;
             pane = pane.child(
                 div()

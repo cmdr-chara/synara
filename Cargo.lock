@@ -7270,6 +7270,7 @@ dependencies = [
  "image",
  "jiff",
  "rusqlite",
+ "same-file",
  "serde",
  "serde_json",
  "sha2",

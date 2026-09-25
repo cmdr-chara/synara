@@ -9,15 +9,15 @@ Detailed parity evidence lives in:
 
 ## Current status
 
-- Shipped feature slices: **75**
+- Shipped feature slices: **76**
 - Major remaining: **16**
 - Smaller remaining: **0**
-- Acceptance/integration remaining: **7**
-- Total remaining: **23**
+- Acceptance/integration remaining: **6**
+- Total remaining: **22**
 - Completely missing top-level surfaces: **0**
 - Broad verification gates still open: **21**
 
-The **23-item count is the execution count to use going forward**. The 21 verification
+The **22-item count is the execution count to use going forward**. The 21 verification
 gates are larger acceptance buckets and are not a feature count.
 
 Current upstream reference: `Emanuele-web04/synara@eaa61eded31b6755d4f30ba8eabc5d905cf817cb`.
@@ -90,7 +90,7 @@ not large new product subsystems.
 - [x] A03 Windows voice/package acceptance
 - [ ] A04 Fresh-install onboarding with real provider accounts
 - [ ] A05 Authenticated browser login/session/popup acceptance
-- [ ] A06 Real macOS Simulator/device acceptance
+- [x] A06 Real macOS Simulator/device acceptance
 - [x] A07 SSH worktree/search acceptance
 - [ ] A08 Signed release feed/install/rollback package acceptance
 - [ ] A09 Multi-provider ACP/direct-model interoperability matrix
@@ -489,7 +489,8 @@ Verification receipts:
 [batch 31](docs/verification/parity-2026-09-25-batch31.md),
 [batch 32](docs/verification/parity-2026-09-25-batch32.md),
 [batch 33](docs/verification/parity-2026-09-25-batch33.md),
-[batch 34](docs/verification/parity-2026-09-25-batch34.md).
+[batch 34](docs/verification/parity-2026-09-25-batch34.md),
+[batch 35](docs/verification/parity-2026-09-25-batch35.md).
 
 - Batch 32: acceptance infrastructure now has a dedicated Linux/macOS/Windows
   native build and development-package matrix. macOS development packaging uses
@@ -518,6 +519,14 @@ Verification receipts:
   explicit restart, and process-owned shutdown before window close. The
   acceptance harness now routes terminal-lifecycle and confirmation-UI changes
   deterministically through the SSH lane.
+
+- Batch 35: A06 is accepted on hosted macOS arm64 against a real CoreSimulator
+  runtime. Exact candidate `cf9237f7e072b7b729cc1a84c593c74b0d289cfe`
+  discovered and booted an iPhone 15 Pro on iOS 17.0 through Synara's
+  `DeviceTools` owner, captured a PNG screenshot, opened a reviewed HTTP URL,
+  launched/terminated Safari, compiled and installed a fresh local simulator
+  `.app`, launched/terminated it, and shut the simulator down. M13-M16 remain
+  open for live frames, native input, recording and accessibility targeting.
 
 
 ## How to update this roadmap

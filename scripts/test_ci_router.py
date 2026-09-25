@@ -140,6 +140,13 @@ class RouterTests(unittest.TestCase):
         self.assertTrue(route.environment)
         self.assertTrue(route.ssh)
 
+    def test_terminal_confirmation_ui_change_forces_ssh_lane(self):
+        route = ci_router.semantic_route(
+            ["crates/synara-app/src/shell/terminals/view.rs"],
+            response(ssh=ci_router.SSH_SKIP),
+        )
+        self.assertTrue(route.ssh)
+
     def test_router_change_forces_ssh_lane(self):
         route = ci_router.semantic_route(
             ["scripts/ci_router.py"],

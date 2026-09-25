@@ -67,6 +67,7 @@ NATIVE_BATCH_ANCHORS = frozenset({
 SSH_ANCHORS = frozenset({
     "crates/synara-app/src/shell/terminal.rs",
     "crates/synara-app/src/shell/terminals.rs",
+    "crates/synara-app/src/shell/terminals/view.rs",
     "crates/synara-runtime/src/remote_terminal.rs",
     "crates/synara-runtime/src/terminal.rs",
     "crates/synara-runtime/src/terminal/posix.rs",

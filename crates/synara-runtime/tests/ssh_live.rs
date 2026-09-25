@@ -303,8 +303,7 @@ async fn remote_filesystem_is_guarded_and_workspace_bound() {
 #[ignore = "requires the isolated server from scripts/ssh_smoke.py"]
 async fn remote_search_uses_the_pinned_helper_and_stays_workspace_bound() {
     let (root, target) = fixture();
-    let host =
-        PinnedSshHost::new(target, root.join("known hosts"), root.join("identity")).unwrap();
+    let host = PinnedSshHost::new(target, root.join("known hosts"), root.join("identity")).unwrap();
     let project = root.join("remote-search-project");
     std::fs::create_dir_all(project.join("nested")).unwrap();
     std::fs::create_dir_all(project.join("node_modules/nested")).unwrap();
@@ -344,11 +343,7 @@ async fn remote_search_uses_the_pinned_helper_and_stays_workspace_bound() {
         vec![PathBuf::from("nested/report.txt")]
     );
     let matches = remote
-        .search_text(
-            std::path::Path::new(""),
-            "unique remote ssh needle",
-            10,
-        )
+        .search_text(std::path::Path::new(""), "unique remote ssh needle", 10)
         .await
         .unwrap();
     assert_eq!(matches.len(), 1);

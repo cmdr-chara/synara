@@ -224,7 +224,14 @@ def main():
         desktop.screenshot('remote-terminal')
 
         # Restart through the same native terminal surface and prove stale-session isolation.
+        # A running terminal requires explicit confirmation before Synara stops its PTY.
         click_control(desktop, log.name, 'start-shell', timeout=20)
+        click_control(desktop, log.name, 'terminal-confirm', timeout=20)
+        wait_until(
+            lambda: not control_bounds(log.name, 'terminal-confirm'),
+            'remote terminal restart confirmation to clear',
+            20,
+        )
         click_control(desktop, log.name, 'terminal-screen', timeout=20)
         type_text(desktop, 'touch remote-ui-terminal-restarted\n')
         wait_until(restart_marker.exists, 'remote terminal restart', 20)

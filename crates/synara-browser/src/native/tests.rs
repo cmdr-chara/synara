@@ -77,8 +77,8 @@ fn real_webkit_navigation_consent_input_redirect_and_isolation() {
             let len = stream.read(&mut data).unwrap_or(0);
             let request = String::from_utf8_lossy(&data[..len]).into_owned();
             log.lock().unwrap().push(request.clone());
-            let authentication_page = request.starts_with("GET /auth ")
-                || request.starts_with("GET /auth-again ");
+            let authentication_page =
+                request.starts_with("GET /auth ") || request.starts_with("GET /auth-again ");
             let body = if authentication_page {
                 "<!doctype html><title>Authentication fixture</title><style>html,body,a{width:100%;height:100%;margin:0}a{display:flex;align-items:center;justify-content:center}</style><a href='/auth-popup?token=private' target='_blank'>Continue sign-in</a>"
             } else {

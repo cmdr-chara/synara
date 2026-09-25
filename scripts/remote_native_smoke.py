@@ -63,8 +63,7 @@ def click_control(ui, log_path, control, slot=None, enabled=None, timeout=20):
     ui.click_client(round(x + width / 2), round(y + height / 2))
 
 
-def fill_control(ui, log_path, control, value):
-    click_control(ui, log_path, control)
+def replace_focused_text(ui, value):
     ui.key('a', ('Control_L',))
     type_text(ui, value)
 
@@ -196,12 +195,12 @@ def main():
         search_document = remote_project / 'remote-search-target.txt'
         search_document.write_text('unique remote ssh search needle\\n', encoding='utf-8')
         desktop.key('f', ('Control_L', 'Shift_L'))
-        fill_control(desktop, log.name, 'file-content-query', 'unique remote ssh search needle')
+        replace_focused_text(desktop, 'unique remote ssh search needle')
         click_control(desktop, log.name, 'file-content-match', slot=0)
         click_control(desktop, log.name, 'editor-input')
         assert desktop.copy_input() == 'unique remote ssh search needle\\n'
         desktop.key('p', ('Control_L',))
-        fill_control(desktop, log.name, 'file-content-query', 'remote-search-target.txt')
+        replace_focused_text(desktop, 'remote-search-target.txt')
         click_control(desktop, log.name, 'file-name-match', slot=0)
         click_control(desktop, log.name, 'editor-input')
         assert desktop.copy_input() == 'unique remote ssh search needle\\n'

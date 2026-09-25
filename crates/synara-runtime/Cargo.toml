@@ -34,6 +34,7 @@ keyring = { version = "=3.6.3", default-features = false, features = ["sync-secr
 rustix = { version = "=1.1.5", features = ["process", "event"] }
 
 [target.'cfg(windows)'.dependencies]
+same-file = "=1.0.6"
 win32job = "=2.0.3"
 
 

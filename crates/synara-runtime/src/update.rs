@@ -296,7 +296,7 @@ fn verify_artifact_file(
     let mut file = OpenOptions::new().read(true).open(path)?;
     let opened_before = file.metadata()?;
     if !opened_before.is_file()
-        || !same_file_entry(&path_before, &opened_before)
+        || !same_file_entry(path, &file, &path_before, &opened_before)?
         || opened_before.len() != expected_length
         || opened_before.modified().ok() != path_before.modified().ok()
     {
@@ -327,7 +327,7 @@ fn verify_artifact_file(
         || opened_after.modified().ok() != opened_before.modified().ok()
         || !path_after.is_file()
         || path_after.file_type().is_symlink()
-        || !same_file_entry(&path_after, &opened_after)
+        || !same_file_entry(path, &file, &path_after, &opened_after)?
         || path_after.len() != opened_after.len()
         || path_after.modified().ok() != opened_after.modified().ok()
     {
@@ -345,29 +345,36 @@ fn verify_artifact_file(
 }
 
 #[cfg(unix)]
-fn same_file_entry(left: &std::fs::Metadata, right: &std::fs::Metadata) -> bool {
+fn same_file_entry(
+    _path: &Path,
+    _file: &std::fs::File,
+    left: &std::fs::Metadata,
+    right: &std::fs::Metadata,
+) -> Result<bool, RuntimeError> {
     use std::os::unix::fs::MetadataExt;
-    left.dev() == right.dev() && left.ino() == right.ino()
+    Ok(left.dev() == right.dev() && left.ino() == right.ino())
 }
 
 #[cfg(windows)]
-fn same_file_entry(left: &std::fs::Metadata, right: &std::fs::Metadata) -> bool {
-    use std::os::windows::fs::MetadataExt;
-    matches!(
-        (
-            left.volume_serial_number(),
-            left.file_index(),
-            right.volume_serial_number(),
-            right.file_index()
-        ),
-        (Some(left_volume), Some(left_index), Some(right_volume), Some(right_index))
-            if left_volume == right_volume && left_index == right_index
-    )
+fn same_file_entry(
+    path: &Path,
+    file: &std::fs::File,
+    _left: &std::fs::Metadata,
+    _right: &std::fs::Metadata,
+) -> Result<bool, RuntimeError> {
+    let opened = same_file::Handle::from_file(file.try_clone()?)?;
+    let current = same_file::Handle::from_path(path)?;
+    Ok(opened == current)
 }
 
 #[cfg(not(any(unix, windows)))]
-fn same_file_entry(_left: &std::fs::Metadata, _right: &std::fs::Metadata) -> bool {
-    true
+fn same_file_entry(
+    _path: &Path,
+    _file: &std::fs::File,
+    _left: &std::fs::Metadata,
+    _right: &std::fs::Metadata,
+) -> Result<bool, RuntimeError> {
+    Ok(true)
 }
 
 fn valid_label(value: &str) -> bool {

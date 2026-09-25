@@ -87,6 +87,30 @@ jobs:
         run: |
           mkdir -p acceptance-evidence/package
           ${{ matrix.python }} scripts/package_dev.py             --binary "${{ matrix.binary }}"             --inventory acceptance-evidence/DEPENDENCIES.json             --output-dir acceptance-evidence/package             --version "0.1.0-${GITHUB_SHA::12}"             --target "${{ matrix.target }}"
+      - name: Validate macOS app permission contract
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          mkdir -p acceptance-evidence/macos-app
+          tar -xzf acceptance-evidence/package/*.tar.gz -C acceptance-evidence/macos-app
+          plist=acceptance-evidence/macos-app/Synara.app/Contents/Info.plist
+          plutil -lint "$plist"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "$plist")" = "synara-app"
+          test -n "$(/usr/libexec/PlistBuddy -c 'Print :NSMicrophoneUsageDescription' "$plist")"
+          test -x acceptance-evidence/macos-app/Synara.app/Contents/MacOS/synara-app
+      - name: Validate Windows development package
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $archive = Get-ChildItem acceptance-evidence/package/*.zip | Select-Object -First 1
+          Expand-Archive -LiteralPath $archive.FullName -DestinationPath acceptance-evidence/windows-package
+          if (-not (Test-Path acceptance-evidence/windows-package/synara-app.exe -PathType Leaf)) {
+            throw "Windows package is missing synara-app.exe"
+          }
+          $manifest = Get-Content acceptance-evidence/windows-package/DEVELOPMENT_BUILD.json -Raw | ConvertFrom-Json
+          if ($manifest.target -ne "x86_64-pc-windows-msvc" -or $manifest.release_status -ne "development-only") {
+            throw "Windows package manifest does not match the accepted target"
+          }
       - name: Preserve environment evidence
         shell: bash
         run: |

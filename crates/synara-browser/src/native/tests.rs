@@ -436,6 +436,21 @@ fn real_webkit_navigation_consent_input_redirect_and_isolation() {
 }
 
 #[test]
+fn popup_callbacks_are_enabled_only_for_manual_and_authentication_partitions() {
+    for (partition, expected) in [
+        (StoragePartition::Manual, true),
+        (StoragePartition::Authentication(7), true),
+        (StoragePartition::AgentTask(7), false),
+    ] {
+        let popup_review = matches!(
+            partition,
+            StoragePartition::Manual | StoragePartition::Authentication(_)
+        );
+        assert_eq!(popup_review, expected);
+    }
+}
+
+#[test]
 fn cancelled_queued_requests_release_capacity() {
     let root = tempfile::tempdir().unwrap();
     let (mut host, mut port) = NativeHost::new(root.path().to_path_buf());

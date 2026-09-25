@@ -182,6 +182,57 @@ fn popup_requires_explicit_manual_action_and_stays_in_owned_tab() {
     assert!(s.manual_popup_preview(agent).is_err());
 }
 #[test]
+fn authentication_popup_requires_explicit_host_action_and_keeps_flow_partition() {
+    let (mut s, _) = fixture();
+    let source = s.open(BrowserProfile::Authentication { flow: 41 }).unwrap();
+    s.user_navigate(source, "https://login.example.test/start", NavigationKind::Push, 0)
+        .unwrap();
+    let navigation = s.tabs[&source].navigation.as_ref().unwrap().0;
+    s.event(Event::Committed {
+        tab: source,
+        navigation,
+        url: "https://login.example.test/start".into(),
+        title: "Sign in".into(),
+    })
+    .unwrap();
+    s.event(Event::PopupRequested {
+        tab: source,
+        navigation,
+        url: "https://login.example.test/continue?code=secret".into(),
+    })
+    .unwrap();
+
+    assert_eq!(s.tabs().len(), 1);
+    assert_eq!(
+        s.authentication_popup_preview(source).unwrap().as_deref(),
+        Some("https://login.example.test/continue")
+    );
+    assert!(s.manual_popup_preview(source).is_err());
+
+    let (target, target_url) = s.open_authentication_popup(source, 1).unwrap();
+    assert_eq!(target_url, "https://login.example.test/continue?code=secret");
+    assert_eq!(
+        s.tabs[&target].view.profile,
+        BrowserProfile::Authentication { flow: 41 }
+    );
+    assert!(s.authentication_popup_preview(source).unwrap().is_none());
+
+    let manual = s.open(BrowserProfile::Manual).unwrap();
+    assert!(s.authentication_popup_preview(manual).is_err());
+    assert!(s.open_authentication_popup(manual, 2).is_err());
+
+    let agent = loaded(&mut s);
+    let agent_navigation = s.tabs[&agent].committed_navigation.unwrap();
+    s.event(Event::PopupRequested {
+        tab: agent,
+        navigation: agent_navigation,
+        url: "https://example.test/agent-popup".into(),
+    })
+    .unwrap();
+    assert!(s.tabs[&agent].pending_popup.is_none());
+}
+
+#[test]
 fn canonical_url_rejects_scheme_credentials_controls_and_origin_forgery() {
     for url in [
         "file:///etc/passwd",

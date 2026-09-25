@@ -195,7 +195,7 @@ def main():
 
         search_document = remote_project / 'remote-search-target.txt'
         search_document.write_text('unique remote ssh search needle\\n', encoding='utf-8')
-        click_control(desktop, log.name, 'files-content-search')
+        desktop.key('f', ('Control_L', 'Shift_L'))
         fill_control(desktop, log.name, 'file-content-query', 'unique remote ssh search needle')
         click_control(desktop, log.name, 'file-content-match', slot=0)
         click_control(desktop, log.name, 'editor-input')

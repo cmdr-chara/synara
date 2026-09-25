@@ -6,7 +6,7 @@ use std::{
     net::{Ipv4Addr, SocketAddr, TcpListener, TcpStream},
     path::PathBuf,
     sync::Arc,
-    time::Duration,
+    time::{Duration, Instant},
 };
 use synara_runtime::{ApprovedPortForward, PinnedSshHost, SshTarget};
 use synara_workspace::{
@@ -58,19 +58,37 @@ fn git(args: &[&str], cwd: &std::path::Path) -> String {
 async fn explicit_forwarding_uses_pinned_ssh_loopback_and_cleans_up() {
     let (root, target) = fixture();
     let remote_listener = TcpListener::bind((Ipv4Addr::LOCALHOST, 0)).unwrap();
+    remote_listener.set_nonblocking(true).unwrap();
     let remote_port = remote_listener.local_addr().unwrap().port();
     let server = tokio::task::spawn_blocking(move || {
-        for _ in 0..4 {
-            let (mut stream, _) = remote_listener.accept().unwrap();
-            let mut request = [0_u8; 4];
-            if stream.read_exact(&mut request).is_err() {
-                continue;
+        let deadline = Instant::now() + Duration::from_secs(5);
+        loop {
+            match remote_listener.accept() {
+                Ok((mut stream, _)) => {
+                    stream
+                        .set_read_timeout(Some(Duration::from_secs(2)))
+                        .unwrap();
+                    stream
+                        .set_write_timeout(Some(Duration::from_secs(2)))
+                        .unwrap();
+                    let mut request = [0_u8; 4];
+                    stream.read_exact(&mut request).unwrap();
+                    assert_eq!(&request, b"ping");
+                    stream.write_all(b"pong").unwrap();
+                    return;
+                }
+                Err(error)
+                    if error.kind() == std::io::ErrorKind::WouldBlock
+                        && Instant::now() < deadline =>
+                {
+                    std::thread::sleep(Duration::from_millis(25));
+                }
+                Err(error) if error.kind() == std::io::ErrorKind::WouldBlock => {
+                    panic!("forward never delivered the test payload before the deadline");
+                }
+                Err(error) => panic!("forward listener failed: {error}"),
             }
-            assert_eq!(&request, b"ping");
-            stream.write_all(b"pong").unwrap();
-            return;
         }
-        panic!("forward never delivered the test payload");
     });
 
     let local_probe = TcpListener::bind((Ipv4Addr::LOCALHOST, 0)).unwrap();
@@ -88,6 +106,12 @@ async fn explicit_forwarding_uses_pinned_ssh_loopback_and_cleans_up() {
     let address = SocketAddr::from((Ipv4Addr::LOCALHOST, local_port));
     let response = tokio::task::spawn_blocking(move || {
         let mut stream = TcpStream::connect_timeout(&address, Duration::from_secs(2)).unwrap();
+        stream
+            .set_read_timeout(Some(Duration::from_secs(2)))
+            .unwrap();
+        stream
+            .set_write_timeout(Some(Duration::from_secs(2)))
+            .unwrap();
         stream.write_all(b"ping").unwrap();
         let mut response = [0_u8; 4];
         stream.read_exact(&mut response).unwrap();

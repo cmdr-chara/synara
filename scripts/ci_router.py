@@ -66,6 +66,7 @@ NATIVE_BATCH_ANCHORS = frozenset({
 })
 SSH_ANCHORS = frozenset({
     "scripts/ssh_smoke.py",
+    "scripts/remote_native_smoke.py",
     ".github/workflows/ssh.yml",
 })
 

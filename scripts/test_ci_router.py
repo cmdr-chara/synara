@@ -122,6 +122,13 @@ class RouterTests(unittest.TestCase):
         )
         self.assertTrue(route.ssh)
 
+    def test_remote_native_ssh_smoke_change_forces_ssh_lane(self):
+        route = ci_router.semantic_route(
+            ["scripts/remote_native_smoke.py"],
+            response(ssh=ci_router.SSH_SKIP),
+        )
+        self.assertTrue(route.ssh)
+
     def test_low_confidence_backend_decision_fails_closed(self):
         route = ci_router.semantic_route(
             ["crates/synara-agent/src/new_logic.rs"],

@@ -426,6 +426,168 @@ fn real_webkit_navigation_consent_input_redirect_and_isolation() {
         ),
         "redirect did not fail closed"
     );
+
+    // Authentication tabs use a separate ephemeral partition. Cookies must be
+    // continuous inside one reviewed sign-in flow, unavailable to Manual/Agent
+    // profiles, and shared with a popup only after explicit host approval.
+    let auth_flow = 41;
+    let auth = session
+        .open(BrowserProfile::Authentication { flow: auth_flow })
+        .unwrap();
+    session
+        .user_navigate(
+            auth,
+            &format!("{base}/auth"),
+            NavigationKind::Push,
+            now(),
+        )
+        .unwrap();
+    for _ in 0..1000 {
+        pump(&mut host, &mut session);
+        if session
+            .tabs()
+            .iter()
+            .any(|t| t.id == auth && t.state == "ready")
+        {
+            break;
+        }
+        std::thread::sleep(Duration::from_millis(10));
+    }
+    assert!(
+        session
+            .tabs()
+            .iter()
+            .any(|t| t.id == auth && t.state == "ready")
+    );
+    let first_auth = requests
+        .lock()
+        .unwrap()
+        .iter()
+        .find(|r| r.starts_with("GET /auth "))
+        .unwrap()
+        .clone();
+    assert!(
+        !first_auth.to_lowercase().contains("cookie:"),
+        "authentication profile inherited another profile's cookies"
+    );
+    session
+        .user_navigate(
+            auth,
+            &format!("{base}/auth-again"),
+            NavigationKind::Push,
+            now(),
+        )
+        .unwrap();
+    for _ in 0..1000 {
+        pump(&mut host, &mut session);
+        if requests
+            .lock()
+            .unwrap()
+            .iter()
+            .any(|r| r.starts_with("GET /auth-again "))
+        {
+            break;
+        }
+        std::thread::sleep(Duration::from_millis(10));
+    }
+    assert!(
+        requests
+            .lock()
+            .unwrap()
+            .iter()
+            .any(|r| r.starts_with("GET /auth-again ")
+                && r.to_lowercase().contains("cookie: fixture=manual")),
+        "authentication profile did not retain its own cookie"
+    );
+
+    let popup_url = format!("{base}/auth-popup?token=private");
+    let popup_script = format!("window.open({});", serde_json::to_string(&popup_url).unwrap());
+    let requested = Rc::new(Cell::new(false));
+    let evaluated = requested.clone();
+    host.views[&auth].webview.webview().evaluate_javascript(
+        &popup_script,
+        None,
+        None,
+        None::<&gio::Cancellable>,
+        move |result| {
+            assert!(result.is_ok());
+            evaluated.set(true);
+        },
+    );
+    let end = Instant::now() + Duration::from_secs(8);
+    loop {
+        pump(&mut host, &mut session);
+        if requested.get()
+            && session
+                .authentication_popup_preview(auth)
+                .unwrap()
+                .is_some()
+        {
+            break;
+        }
+        assert!(Instant::now() < end, "authentication popup request timed out");
+        std::thread::sleep(Duration::from_millis(10));
+    }
+    assert_eq!(
+        session.authentication_popup_preview(auth).unwrap().as_deref(),
+        Some(format!("{base}/auth-popup").as_str())
+    );
+    assert!(
+        !requests
+            .lock()
+            .unwrap()
+            .iter()
+            .any(|r| r.starts_with("GET /auth-popup?token=private ")),
+        "authentication popup navigated before explicit host approval"
+    );
+
+    let (popup, reviewed_url) = session.open_authentication_popup(auth, now()).unwrap();
+    assert_eq!(reviewed_url, popup_url);
+    assert_eq!(
+        session
+            .tabs()
+            .iter()
+            .find(|tab| tab.id == popup)
+            .unwrap()
+            .profile,
+        BrowserProfile::Authentication { flow: auth_flow }
+    );
+    for _ in 0..1000 {
+        pump(&mut host, &mut session);
+        if requests
+            .lock()
+            .unwrap()
+            .iter()
+            .any(|r| r.starts_with("GET /auth-popup?token=private "))
+        {
+            break;
+        }
+        std::thread::sleep(Duration::from_millis(10));
+    }
+    assert!(
+        requests
+            .lock()
+            .unwrap()
+            .iter()
+            .any(|r| r.starts_with("GET /auth-popup?token=private ")
+                && r.to_lowercase().contains("cookie: fixture=manual")),
+        "approved authentication popup did not keep the sign-in flow partition"
+    );
+    let auth_key = profile_key(StoragePartition::Authentication(auth_flow));
+    assert!(host.profiles.contains_key(&auth_key));
+    session.close(auth).unwrap();
+    pump(&mut host, &mut session);
+    assert!(
+        host.profiles.contains_key(&auth_key),
+        "authentication storage was dropped while its popup was still open"
+    );
+    session.close(popup).unwrap();
+    pump(&mut host, &mut session);
+    assert!(
+        !host.profiles.contains_key(&auth_key),
+        "authentication storage survived the last sign-in tab"
+    );
+
     session.shutdown_task(7);
     pump(&mut host, &mut session);
     assert!(host.views.keys().all(|id| *id != tab));

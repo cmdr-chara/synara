@@ -510,6 +510,46 @@ impl NativeHost {
             build(builder).map_err(|e| format!("Could not create native WebKit view: {e}"))?;
         let web = view.webview();
         harden(&web, partition);
+        if popup_review {
+            let popup_ready = completed.clone();
+            let popup_shared = self.shared.clone();
+            let popup_events = self.events.clone();
+            web.connect_decide_policy(move |_, decision, policy_type| {
+                if policy_type != PolicyDecisionType::NewWindowAction
+                    || !popup_ready.get()
+                    || popup_shared.epoch(tab) != Some(epoch)
+                {
+                    return false;
+                }
+                let Some(policy) = decision.dynamic_cast_ref::<NavigationPolicyDecision>() else {
+                    decision.ignore();
+                    return true;
+                };
+                let Some(action) = policy.navigation_action() else {
+                    decision.ignore();
+                    return true;
+                };
+                let Some(request) = action.request() else {
+                    decision.ignore();
+                    return true;
+                };
+                let Some(uri) = request.uri() else {
+                    decision.ignore();
+                    return true;
+                };
+                let Ok(document) = CommittedDocument::parse(uri.as_str()) else {
+                    decision.ignore();
+                    return true;
+                };
+                popup_events.emit(Event::PopupRequested {
+                    tab,
+                    navigation,
+                    url: document.canonical_url,
+                });
+                decision.ignore();
+                true
+            });
+        }
         if partition == StoragePartition::Manual {
             observe_manual_runtime_diagnostics(
                 &web,

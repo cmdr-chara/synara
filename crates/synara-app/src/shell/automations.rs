@@ -6,6 +6,7 @@ use std::time::{Duration, Instant};
 
 pub(super) struct AutomationsView {
     ledger: AutomationLedger,
+    direct_models: ProviderSettings,
     scheduler: Arc<AutomationScheduler>,
     loaded: bool,
     loading: bool,
@@ -25,6 +26,9 @@ pub(super) struct AutomationsView {
     max_runs: Entity<TextEntry>,
     failure_limit: Entity<TextEntry>,
     max_runtime: Entity<TextEntry>,
+    heartbeat_cooldown: Entity<TextEntry>,
+    completion_stop_when: Entity<TextEntry>,
+    completion_threshold: Entity<TextEntry>,
     selected_run: Option<AutomationId>,
     error: Option<String>,
     _subscriptions: Vec<Subscription>,
@@ -37,7 +41,10 @@ struct Editor {
     agent: Option<String>,
     project: Option<ProjectId>,
     missed: MissedRunPolicy,
+    mode: AutomationMode,
+    target_task: Option<TaskId>,
     context: AutomationContextPolicy,
+    completion_selection: Option<ModelSelection>,
 }
 #[derive(Clone)]
 enum Pending {
@@ -83,6 +90,18 @@ impl AutomationsView {
             EntryMode::SingleLine,
             34.,
         );
+        let heartbeat_cooldown = make(
+            "Continuation cooldown in seconds (0–86400; default 60)",
+            EntryMode::SingleLine,
+            34.,
+        );
+        let completion_stop_when =
+            make("Stop when… (up to 2000 characters)", EntryMode::Editor, 96.);
+        let completion_threshold = make(
+            "Stop confidence threshold (0–1; default 0.8)",
+            EntryMode::SingleLine,
+            34.,
+        );
         let subscriptions = [
             &title,
             &instructions,
@@ -91,6 +110,9 @@ impl AutomationsView {
             &max_runs,
             &failure_limit,
             &max_runtime,
+            &heartbeat_cooldown,
+            &completion_stop_when,
+            &completion_threshold,
         ]
         .into_iter()
         .map(|input| {
@@ -106,6 +128,7 @@ impl AutomationsView {
         .collect();
         Self {
             ledger: AutomationLedger::default(),
+            direct_models: ProviderSettings::default(),
             scheduler: Arc::new(AutomationScheduler::new(controller)),
             loaded: false,
             loading: false,
@@ -125,6 +148,9 @@ impl AutomationsView {
             max_runs,
             failure_limit,
             max_runtime,
+            heartbeat_cooldown,
+            completion_stop_when,
+            completion_threshold,
             selected_run: None,
             error: None,
             _subscriptions: subscriptions,
@@ -143,7 +169,15 @@ impl Drop for AutomationsView {
 pub(super) enum Reply {
     Loaded {
         generation: u64,
-        result: Result<(AutomationLedger, Catalog, Vec<AgentProfile>), String>,
+        result: Result<
+            (
+                AutomationLedger,
+                Catalog,
+                Vec<AgentProfile>,
+                ProviderSettings,
+            ),
+            String,
+        >,
     },
     Changed(Result<(), String>),
     Finished(Result<(), String>),
@@ -182,6 +216,7 @@ impl Shell {
                     workspace.automations().await?,
                     workspace.catalog().await?,
                     workspace.profiles().await?,
+                    workspace.direct_model_settings().await?,
                 ))
             }
             .await
@@ -228,8 +263,9 @@ impl Shell {
                     return;
                 }
                 match result {
-                    Ok((ledger, catalog, profiles)) => {
+                    Ok((ledger, catalog, profiles, direct_models)) => {
                         self.automations.ledger = ledger;
+                        self.automations.direct_models = direct_models;
                         self.automations.loaded = true;
                         self.catalog = catalog;
                         self.profiles = profiles;
@@ -300,9 +336,34 @@ impl Shell {
         if self.automations.changing || self.automations.editor.is_some() {
             return;
         }
-        let (editor, title, instructions, schedule, timezone, max_runs, failure_limit, max_runtime) =
-            match definition {
-                Some(d) => (
+        let (
+            editor,
+            title,
+            instructions,
+            schedule,
+            timezone,
+            max_runs,
+            failure_limit,
+            max_runtime,
+            heartbeat_cooldown,
+            completion_stop_when,
+            completion_threshold,
+        ) = match definition {
+            Some(d) => {
+                let (completion_selection, completion_stop_when, completion_threshold) =
+                    match &d.completion_policy {
+                        AutomationCompletionPolicy::None => (None, String::new(), "0.8".into()),
+                        AutomationCompletionPolicy::AiEvaluated {
+                            stop_when,
+                            confidence_threshold,
+                            evaluator,
+                        } => (
+                            Some(evaluator.selection.clone()),
+                            stop_when.clone(),
+                            confidence_threshold.to_string(),
+                        ),
+                    };
+                (
                     Editor {
                         id: d.id,
                         revision: Some(d.revision),
@@ -310,7 +371,10 @@ impl Shell {
                         agent: Some(d.agent_id),
                         project: Some(d.project_id),
                         missed: d.missed,
+                        mode: d.mode,
+                        target_task: d.target_task_id,
                         context: d.context,
+                        completion_selection,
                     },
                     d.title,
                     d.instructions,
@@ -321,26 +385,36 @@ impl Shell {
                         .map(|n| n.to_string())
                         .unwrap_or_default(),
                     d.max_runtime_seconds.to_string(),
-                ),
-                None => (
-                    Editor {
-                        id: AutomationId::new_v4(),
-                        revision: None,
-                        edit_revision: 0,
-                        agent: None,
-                        project: self.project,
-                        missed: MissedRunPolicy::Skip,
-                        context: AutomationContextPolicy::Project,
-                    },
-                    String::new(),
-                    String::new(),
-                    "every 60m".into(),
-                    "UTC".into(),
-                    String::new(),
-                    "3".into(),
-                    DEFAULT_AUTOMATION_MAX_RUNTIME_SECONDS.to_string(),
-                ),
-            };
+                    d.heartbeat_cooldown_seconds.to_string(),
+                    completion_stop_when,
+                    completion_threshold,
+                )
+            }
+            None => (
+                Editor {
+                    id: AutomationId::new_v4(),
+                    revision: None,
+                    edit_revision: 0,
+                    agent: None,
+                    project: self.project,
+                    missed: MissedRunPolicy::Skip,
+                    mode: AutomationMode::Standalone,
+                    target_task: None,
+                    context: AutomationContextPolicy::Project,
+                    completion_selection: None,
+                },
+                String::new(),
+                String::new(),
+                "every 60m".into(),
+                "UTC".into(),
+                String::new(),
+                "3".into(),
+                DEFAULT_AUTOMATION_MAX_RUNTIME_SECONDS.to_string(),
+                DEFAULT_AUTOMATION_HEARTBEAT_COOLDOWN_SECONDS.to_string(),
+                String::new(),
+                "0.8".into(),
+            ),
+        };
         self.automations
             .title
             .update(cx, |entry, cx| entry.set_text(title, cx));
@@ -362,6 +436,15 @@ impl Shell {
         self.automations
             .max_runtime
             .update(cx, |entry, cx| entry.set_text(max_runtime, cx));
+        self.automations
+            .heartbeat_cooldown
+            .update(cx, |entry, cx| entry.set_text(heartbeat_cooldown, cx));
+        self.automations
+            .completion_stop_when
+            .update(cx, |entry, cx| entry.set_text(completion_stop_when, cx));
+        self.automations
+            .completion_threshold
+            .update(cx, |entry, cx| entry.set_text(completion_threshold, cx));
         self.automations.editor = Some(editor);
         self.automations.pending = None;
         self.automations.error = None;
@@ -433,6 +516,32 @@ impl Shell {
             return;
         };
         let result = (|| -> WorkspaceResult<_> {
+            let completion_policy = if let Some(selection) = editor.completion_selection.clone() {
+                let stop_when = self
+                    .automations
+                    .completion_stop_when
+                    .read(cx)
+                    .text()
+                    .trim()
+                    .to_owned();
+                if stop_when.is_empty() {
+                    return Err(WorkspaceError::Invalid(
+                        "Enter the condition that should stop this automation.".into(),
+                    ));
+                }
+                let confidence_threshold = parse_completion_threshold(
+                    self.automations.completion_threshold.read(cx).text(),
+                )?;
+                let evaluator =
+                    DirectModelBinding::reviewed(&self.automations.direct_models, selection)?;
+                AutomationCompletionPolicy::AiEvaluated {
+                    stop_when,
+                    confidence_threshold,
+                    evaluator,
+                }
+            } else {
+                AutomationCompletionPolicy::None
+            };
             let definition = AutomationDefinition {
                 id: editor.id,
                 revision: editor.revision.unwrap_or(0),
@@ -449,7 +558,13 @@ impl Shell {
                 enabled: false,
                 next_run_ms: now_ms(),
                 missed: editor.missed,
+                mode: editor.mode,
+                target_task_id: editor.target_task,
                 context: editor.context,
+                completion_policy,
+                heartbeat_cooldown_seconds: parse_cooldown_seconds(
+                    self.automations.heartbeat_cooldown.read(cx).text(),
+                )?,
                 max_runs: parse_positive_limit(self.automations.max_runs.read(cx).text())?,
                 stop_after_consecutive_failures: parse_positive_limit(
                     self.automations.failure_limit.read(cx).text(),
@@ -608,6 +723,44 @@ fn parse_positive_limit(text: &str) -> WorkspaceResult<Option<u32>> {
     }
     Ok(Some(value))
 }
+fn parse_completion_threshold(text: &str) -> WorkspaceResult<f32> {
+    let text = text.trim();
+    let value: f32 = if text.is_empty() {
+        0.8
+    } else {
+        text.parse().map_err(|_| {
+            WorkspaceError::Invalid(
+                "Stop confidence threshold must be a number from 0 to 1.".into(),
+            )
+        })?
+    };
+    if !value.is_finite() || !(0.0..=1.0).contains(&value) {
+        return Err(WorkspaceError::Invalid(
+            "Stop confidence threshold must be from 0 to 1.".into(),
+        ));
+    }
+    Ok(value)
+}
+
+fn parse_cooldown_seconds(text: &str) -> WorkspaceResult<u32> {
+    let text = text.trim();
+    let seconds = if text.is_empty() {
+        DEFAULT_AUTOMATION_HEARTBEAT_COOLDOWN_SECONDS
+    } else {
+        text.parse().map_err(|_| {
+            WorkspaceError::Invalid(
+                "Continuation cooldown must be a whole number from 0 to 86400 seconds.".into(),
+            )
+        })?
+    };
+    if seconds > MAX_AUTOMATION_HEARTBEAT_COOLDOWN_SECONDS {
+        return Err(WorkspaceError::Invalid(format!(
+            "Maximum continuation cooldown is {MAX_AUTOMATION_HEARTBEAT_COOLDOWN_SECONDS} seconds."
+        )));
+    }
+    Ok(seconds)
+}
+
 fn parse_runtime_seconds(text: &str) -> WorkspaceResult<u32> {
     let seconds = parse_positive_limit(text)?.unwrap_or(DEFAULT_AUTOMATION_MAX_RUNTIME_SECONDS);
     if seconds > MAX_AUTOMATION_MAX_RUNTIME_SECONDS {

@@ -245,6 +245,92 @@ impl Connection {
     pub fn capabilities(&self) -> AgentCapabilities {
         self.state.borrow().capabilities.clone()
     }
+    pub(crate) async fn fork_session(
+        self: &Arc<Self>,
+        source_id: &str,
+        options: SessionOptions,
+    ) -> AgentResult<Arc<dyn AgentSession>> {
+        let _setup = self.setup_gate.lock().await;
+        self.ensure_connected()?;
+        let capabilities = self.capabilities();
+        if !capabilities.fork_session {
+            return Err(AgentError::Unsupported("session fork".into()));
+        }
+        if !capabilities.resume_session && !capabilities.load_session {
+            return Err(AgentError::Unsupported(
+                "forked session recovery is not advertised".into(),
+            ));
+        }
+        let source = self.sessions.get(source_id)?;
+        if source.active.load(Ordering::Acquire) {
+            return Err(AgentError::Busy);
+        }
+        self.ensure_thread_available(options.thread_id)?;
+        let mut params = wire::session_params(&options, &capabilities)?;
+        params["sessionId"] = json!(source_id);
+        let prepared = SessionState::build(
+            String::new(),
+            &options,
+            &self.context,
+            self.rpc.cancelled().child_token(),
+        )
+        .await?;
+        let _creating = CreatingGuard::new(self.sessions.clone());
+        let mut setup_owner = SetupOwner {
+            connection: self,
+            completed: false,
+        };
+        let response = match self
+            .call("session/fork", params, self.timeouts.operation)
+            .await
+        {
+            Ok(value) => value,
+            Err(error) => {
+                if matches!(
+                    error,
+                    AgentError::Remote { .. }
+                        | AgentError::AuthenticationRequired
+                        | AgentError::Unsupported(_)
+                ) {
+                    setup_owner.completed = true;
+                }
+                return Err(error);
+            }
+        };
+        self.rpc.barrier().await?;
+        let id = wire::id(&response, "sessionId")?;
+        if id == source_id || self.sessions.states.lock().unwrap().contains_key(&id) {
+            return Err(wire::invalid("agent returned an invalid forked session ID"));
+        }
+        let mut prepared = Arc::try_unwrap(prepared).map_err(|_| AgentError::Busy)?;
+        prepared.id = id.clone();
+        *prepared.configuration.write().unwrap() =
+            wire::configuration(&response, &SessionConfiguration::default())?;
+        let session = Arc::new(prepared);
+        let lock = session.update_gate.lock().await;
+        self.register_session(session.clone())?;
+        let configuration = session.configuration.read().unwrap().clone();
+        session
+            .emit(
+                &self.context,
+                ThreadEvent::ConfigurationChanged { configuration },
+            )
+            .await?;
+        let updates = std::mem::take(&mut *self.sessions.early_updates.lock().unwrap());
+        for (owner, update) in updates {
+            if owner == id {
+                session.apply_update_locked(&self.context, &update).await?;
+            }
+        }
+        drop(lock);
+        self.ensure_connected()?;
+        setup_owner.completed = true;
+        Ok(Arc::new(AcpSession {
+            connection: self.clone(),
+            state: session,
+        }))
+    }
+
     pub async fn notify_session(&self, params: Value) -> AgentResult<()> {
         let id = wire::id(&params, "sessionId")?;
         let update = params

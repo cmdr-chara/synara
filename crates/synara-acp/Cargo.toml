@@ -5,7 +5,7 @@ edition.workspace = true
 publish.workspace = true
 
 [dependencies]
-agent-client-protocol = "=2.1.0"
+agent-client-protocol = { version = "=2.1.0", features = ["unstable_session_fork"] }
 synara-core = { path = "../synara-core" }
 synara-runtime = { path = "../synara-runtime" }
 synara-agent = { path = "../synara-agent" }

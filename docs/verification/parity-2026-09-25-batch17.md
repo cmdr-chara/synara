@@ -118,3 +118,22 @@ coverage verifies exact historical content, no-overwrite behavior and rejection
 after the durable snapshot is cleared.
 
 M30 remains open for broader long-running lifecycle/version organization.
+
+
+## M30 partial: pinned durable versions
+
+Durable Studio text versions can now be pinned and unpinned by exact snapshot
+identity. Pin state is persisted with the Hub-owned version ledger and shown in
+the native version picker.
+
+Automatic retention now removes only unpinned snapshots. If pinned entries consume
+the 12-entry or 1 MiB retention budget, a new capture fails with an explicit
+message instead of silently evicting pinned history. Explicit Clear durable
+previews remains the deliberate destructive action and can still remove pinned
+entries after its existing two-step confirmation.
+
+Pin/unpin reopens the durable ledger and requires the exact task/path/text/capture
+record to still exist. A cleared or stale snapshot fails closed. Focused storage
+coverage verifies pinned retention across repeated captures and stale pin refusal.
+
+M30 remains open for broader long-running lifecycle/version organization.

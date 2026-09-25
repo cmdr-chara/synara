@@ -1,5 +1,5 @@
 use super::*;
-use crate::WorkspaceService;
+use crate::{DirectModelBinding, ModelSelection, ProviderSettings, WorkspaceService};
 use std::sync::Arc;
 async fn setup(
     path: Option<std::path::PathBuf>,
@@ -25,7 +25,11 @@ async fn setup(
         enabled: true,
         next_run_ms: now_ms(),
         missed: MissedRunPolicy::CatchUpOnce,
+        mode: AutomationMode::Standalone,
+        target_task_id: None,
+        heartbeat_cooldown_seconds: DEFAULT_AUTOMATION_HEARTBEAT_COOLDOWN_SECONDS,
         context: AutomationContextPolicy::Project,
+        completion_policy: AutomationCompletionPolicy::None,
         max_runs: None,
         stop_after_consecutive_failures: None,
         failure_streak: 0,
@@ -221,14 +225,25 @@ async fn saving_pauses_and_conflicting_edits_are_rejected() {
     let (service, mut definition, _root) = setup(None).await;
     let mut legacy = serde_json::to_value(&definition).unwrap();
     let old_fields = legacy.as_object_mut().unwrap();
+    old_fields.remove("mode");
+    old_fields.remove("target_task_id");
+    old_fields.remove("heartbeat_cooldown_seconds");
     old_fields.remove("context");
+    old_fields.remove("completion_policy");
     old_fields.remove("max_runs");
     old_fields.remove("stop_after_consecutive_failures");
     old_fields.remove("failure_streak");
     old_fields.remove("run_count");
     old_fields.remove("max_runtime_seconds");
     let decoded: AutomationDefinition = serde_json::from_value(legacy).unwrap();
+    assert_eq!(decoded.mode, AutomationMode::Standalone);
+    assert_eq!(decoded.target_task_id, None);
+    assert_eq!(
+        decoded.heartbeat_cooldown_seconds,
+        DEFAULT_AUTOMATION_HEARTBEAT_COOLDOWN_SECONDS
+    );
     assert_eq!(decoded.context, AutomationContextPolicy::Project);
+    assert_eq!(decoded.completion_policy, AutomationCompletionPolicy::None);
     assert_eq!(decoded.max_runs, None);
     assert_eq!(decoded.stop_after_consecutive_failures, None);
     assert_eq!(decoded.failure_streak, 0);
@@ -448,6 +463,189 @@ async fn skip_and_catch_up_once_have_explicit_bounded_semantics() {
     }
 }
 #[tokio::test]
+async fn heartbeat_reuses_only_the_reviewed_clean_target() {
+    let (service, mut definition, _root) = setup(None).await;
+    let target = service
+        .create_task(
+            definition.project_id,
+            "Heartbeat target".into(),
+            definition.agent_id.clone(),
+        )
+        .await
+        .unwrap();
+    definition.mode = AutomationMode::Heartbeat;
+    definition.target_task_id = Some(target.id);
+    definition.heartbeat_cooldown_seconds = 0;
+    service
+        .save_automation(definition.clone(), Some(definition.revision))
+        .await
+        .unwrap();
+    let current = service.automations().await.unwrap().definitions.remove(0);
+    let owner = AutomationId::new_v4();
+    let run = service
+        .claim_automation(current.id, owner, false, now_ms())
+        .await
+        .unwrap()
+        .unwrap();
+    assert_eq!(run.task_id, Some(target.id));
+    assert_eq!(service.catalog().await.unwrap().tasks.len(), 1);
+    service
+        .finish_automation(
+            run.id,
+            owner,
+            AutomationRunStatus::Succeeded,
+            "first".into(),
+        )
+        .await
+        .unwrap();
+
+    service
+        .save_task_draft(target.id, "user draft".into())
+        .await
+        .unwrap();
+    assert!(
+        service
+            .claim_automation(current.id, owner, false, now_ms())
+            .await
+            .is_err()
+    );
+    assert_eq!(service.task_draft(target.id).await.unwrap(), "user draft");
+}
+
+#[tokio::test]
+async fn heartbeat_cooldown_defers_scheduled_external_activity_without_consuming_slot() {
+    let (service, mut definition, _root) = setup(None).await;
+    let target = service
+        .create_task(
+            definition.project_id,
+            "Recent heartbeat target".into(),
+            definition.agent_id.clone(),
+        )
+        .await
+        .unwrap();
+    definition.mode = AutomationMode::Heartbeat;
+    definition.target_task_id = Some(target.id);
+    definition.heartbeat_cooldown_seconds = 60;
+    service
+        .save_automation(definition.clone(), Some(definition.revision))
+        .await
+        .unwrap();
+    let current = service.automations().await.unwrap().definitions.remove(0);
+    let due = now_ms();
+    let id = current.id;
+    service
+        .access(move |store| {
+            store.edit_automations(move |ledger| {
+                let definition = ledger
+                    .definitions
+                    .iter_mut()
+                    .find(|definition| definition.id == id)
+                    .ok_or_else(|| invalid("Test automation missing."))?;
+                definition.enabled = true;
+                definition.next_run_ms = due;
+                Ok(())
+            })
+        })
+        .await
+        .unwrap();
+
+    assert!(
+        service
+            .claim_automation(current.id, AutomationId::new_v4(), true, due)
+            .await
+            .unwrap()
+            .is_none()
+    );
+    let deferred = service.automations().await.unwrap();
+    assert!(deferred.runs.is_empty());
+    assert_eq!(deferred.definitions[0].next_run_ms, due);
+    assert!(
+        service
+            .claim_automation(current.id, AutomationId::new_v4(), false, due)
+            .await
+            .is_err()
+    );
+
+    let run = service
+        .claim_automation(current.id, AutomationId::new_v4(), false, due + 61_000)
+        .await
+        .unwrap()
+        .unwrap();
+    assert_eq!(run.task_id, Some(target.id));
+}
+
+#[tokio::test]
+async fn dedicated_automation_creates_one_owned_task_then_reuses_it() {
+    let (service, mut definition, _root) = setup(None).await;
+    definition.mode = AutomationMode::Dedicated;
+    definition.target_task_id = None;
+    service
+        .save_automation(definition.clone(), Some(definition.revision))
+        .await
+        .unwrap();
+    let current = service.automations().await.unwrap().definitions.remove(0);
+    let owner = AutomationId::new_v4();
+    let first = service
+        .claim_automation(current.id, owner, false, now_ms())
+        .await
+        .unwrap()
+        .unwrap();
+    let target = first.task_id.unwrap();
+    let persisted = service.automations().await.unwrap().definitions.remove(0);
+    assert_eq!(persisted.mode, AutomationMode::Dedicated);
+    assert_eq!(persisted.target_task_id, Some(target));
+    assert_eq!(service.catalog().await.unwrap().tasks.len(), 1);
+    service
+        .finish_automation(
+            first.id,
+            owner,
+            AutomationRunStatus::Succeeded,
+            "first".into(),
+        )
+        .await
+        .unwrap();
+    service
+        .save_task_draft(target, String::new())
+        .await
+        .unwrap();
+
+    let second = service
+        .claim_automation(current.id, owner, false, now_ms())
+        .await
+        .unwrap()
+        .unwrap();
+    assert_eq!(second.task_id, Some(target));
+    assert_eq!(service.catalog().await.unwrap().tasks.len(), 1);
+}
+
+#[tokio::test]
+async fn standalone_automation_keeps_fresh_task_per_run() {
+    let (service, definition, _root) = setup(None).await;
+    let owner = AutomationId::new_v4();
+    let first = service
+        .claim_automation(definition.id, owner, false, now_ms())
+        .await
+        .unwrap()
+        .unwrap();
+    service
+        .finish_automation(
+            first.id,
+            owner,
+            AutomationRunStatus::Succeeded,
+            "first".into(),
+        )
+        .await
+        .unwrap();
+    let second = service
+        .claim_automation(definition.id, owner, false, now_ms())
+        .await
+        .unwrap()
+        .unwrap();
+    assert_ne!(first.task_id, second.task_id);
+    assert_eq!(service.catalog().await.unwrap().tasks.len(), 2);
+}
+
+#[tokio::test]
 async fn run_limit_and_failure_limit_pause_durably_without_replaying() {
     let db = tempfile::tempdir().unwrap();
     let path = db.path().join("workspace.sqlite");
@@ -620,7 +818,11 @@ async fn hub_context_is_opt_in_snapshotted_and_studio_scoped() {
         enabled: false,
         next_run_ms: now_ms(),
         missed: MissedRunPolicy::CatchUpOnce,
+        mode: AutomationMode::Standalone,
+        target_task_id: None,
+        heartbeat_cooldown_seconds: DEFAULT_AUTOMATION_HEARTBEAT_COOLDOWN_SECONDS,
         context: AutomationContextPolicy::Hub,
+        completion_policy: AutomationCompletionPolicy::None,
         max_runs: None,
         stop_after_consecutive_failures: None,
         failure_streak: 0,
@@ -678,7 +880,11 @@ async fn project_context_never_harvests_existing_hub_context() {
         enabled: false,
         next_run_ms: now_ms(),
         missed: MissedRunPolicy::CatchUpOnce,
+        mode: AutomationMode::Standalone,
+        target_task_id: None,
+        heartbeat_cooldown_seconds: DEFAULT_AUTOMATION_HEARTBEAT_COOLDOWN_SECONDS,
         context: AutomationContextPolicy::Project,
+        completion_policy: AutomationCompletionPolicy::None,
         max_runs: None,
         stop_after_consecutive_failures: None,
         failure_streak: 0,
@@ -1015,6 +1221,185 @@ async fn live_history_pruning_preserves_cumulative_run_limit_and_conversations()
             .enable_automation(exhausted.id, exhausted.revision, true)
             .await
             .is_err()
+    );
+}
+
+async fn reviewed_completion_policy(
+    service: &WorkspaceService,
+    stop_when: &str,
+) -> AutomationCompletionPolicy {
+    let mut profile = synara_model::custom_profile_example();
+    profile.models[0].capabilities.structured_output = synara_model::Support::Supported;
+    profile.models[0].capabilities.max_output_tokens = Some(512);
+    let settings = service
+        .save_direct_model_settings(ProviderSettings {
+            revision: 0,
+            providers: vec![profile.clone()],
+        })
+        .await
+        .unwrap();
+    let evaluator = DirectModelBinding::reviewed(
+        &settings,
+        ModelSelection {
+            history_turns: Some(0),
+            provider_id: profile.id.clone(),
+            model_id: profile.models[0].id.clone(),
+            max_output_tokens: 128,
+            reasoning_effort: None,
+            output: synara_model::OutputFormat::Text,
+        },
+    )
+    .unwrap();
+    AutomationCompletionPolicy::AiEvaluated {
+        stop_when: stop_when.into(),
+        confidence_threshold: 0.8,
+        evaluator,
+    }
+}
+
+#[tokio::test]
+async fn matching_completion_evaluation_disables_only_current_policy_once() {
+    let (service, mut definition, _root) = setup(None).await;
+    definition.completion_policy =
+        reviewed_completion_policy(&service, "Release is complete").await;
+    service
+        .save_automation(definition.clone(), Some(definition.revision))
+        .await
+        .unwrap();
+    let saved = service.automations().await.unwrap().definitions.remove(0);
+    service
+        .enable_automation(saved.id, saved.revision, true)
+        .await
+        .unwrap();
+    let current = service.automations().await.unwrap().definitions.remove(0);
+    let owner = AutomationId::new_v4();
+    let run = service
+        .claim_automation(current.id, owner, false, now_ms())
+        .await
+        .unwrap()
+        .unwrap();
+    service
+        .finish_automation(
+            run.id,
+            owner,
+            AutomationRunStatus::Succeeded,
+            "Release completed cleanly".into(),
+        )
+        .await
+        .unwrap();
+
+    assert!(
+        service
+            .record_automation_completion_evaluation(
+                run.id,
+                AutomationCompletionEvaluation {
+                    stop_matched: true,
+                    confidence: 0.95,
+                    reason: "The release is complete.".into(),
+                    policy_applied: false,
+                    failed: false,
+                },
+            )
+            .await
+            .unwrap()
+    );
+    let ledger = service.automations().await.unwrap();
+    assert!(!ledger.definitions[0].enabled);
+    assert!(
+        ledger.runs[0]
+            .completion_evaluation
+            .as_ref()
+            .is_some_and(|evaluation| evaluation.policy_applied)
+    );
+    assert!(
+        service
+            .record_automation_completion_evaluation(
+                run.id,
+                AutomationCompletionEvaluation {
+                    stop_matched: false,
+                    confidence: 0.0,
+                    reason: "duplicate".into(),
+                    policy_applied: false,
+                    failed: true,
+                },
+            )
+            .await
+            .unwrap()
+    );
+}
+
+#[tokio::test]
+async fn stale_completion_evaluation_cannot_disable_edited_policy() {
+    let (service, mut definition, _root) = setup(None).await;
+    definition.completion_policy = reviewed_completion_policy(&service, "Old stop condition").await;
+    service
+        .save_automation(definition.clone(), Some(definition.revision))
+        .await
+        .unwrap();
+    let saved = service.automations().await.unwrap().definitions.remove(0);
+    service
+        .enable_automation(saved.id, saved.revision, true)
+        .await
+        .unwrap();
+    let old = service.automations().await.unwrap().definitions.remove(0);
+    let owner = AutomationId::new_v4();
+    let run = service
+        .claim_automation(old.id, owner, false, now_ms())
+        .await
+        .unwrap()
+        .unwrap();
+    service
+        .finish_automation(
+            run.id,
+            owner,
+            AutomationRunStatus::Succeeded,
+            "Old run output".into(),
+        )
+        .await
+        .unwrap();
+
+    let mut changed = service.automations().await.unwrap().definitions.remove(0);
+    let evaluator = match &changed.completion_policy {
+        AutomationCompletionPolicy::AiEvaluated { evaluator, .. } => evaluator.clone(),
+        AutomationCompletionPolicy::None => panic!("reviewed policy expected"),
+    };
+    changed.completion_policy = AutomationCompletionPolicy::AiEvaluated {
+        stop_when: "New stop condition".into(),
+        confidence_threshold: 0.8,
+        evaluator,
+    };
+    service
+        .save_automation(changed.clone(), Some(changed.revision))
+        .await
+        .unwrap();
+    let changed = service.automations().await.unwrap().definitions.remove(0);
+    service
+        .enable_automation(changed.id, changed.revision, true)
+        .await
+        .unwrap();
+
+    assert!(
+        !service
+            .record_automation_completion_evaluation(
+                run.id,
+                AutomationCompletionEvaluation {
+                    stop_matched: true,
+                    confidence: 1.0,
+                    reason: "Matched the stale condition.".into(),
+                    policy_applied: false,
+                    failed: false,
+                },
+            )
+            .await
+            .unwrap()
+    );
+    let ledger = service.automations().await.unwrap();
+    assert!(ledger.definitions[0].enabled);
+    assert!(
+        ledger.runs[0]
+            .completion_evaluation
+            .as_ref()
+            .is_some_and(|evaluation| !evaluation.policy_applied)
     );
 }
 

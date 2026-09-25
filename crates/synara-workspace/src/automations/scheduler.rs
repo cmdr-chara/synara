@@ -136,6 +136,16 @@ impl AutomationScheduler {
         } else {
             run.prompt.clone()
         };
+        let before_messages = match self.controller.workspace.task(task_id).await {
+            Ok(task) => self
+                .controller
+                .workspace
+                .thread(task.thread_id)
+                .await
+                .ok()
+                .map(|thread| thread.messages.len()),
+            Err(_) => None,
+        };
         let result = tokio::select! {
             biased;
             _ = cancel.cancelled() => Err(invalid("Automation cancelled before or during execution.")),
@@ -148,10 +158,17 @@ impl AutomationScheduler {
                     let task = self.controller.workspace.task(task_id).await?;
                     let thread = self.controller.workspace.thread(task.thread_id).await?;
                     let mut output = String::new();
-                    for message in thread.messages.iter().filter(|m| m.role == synara_core::Role::Assistant) {
-                        let remaining = 4096_usize.saturating_sub(output.chars().count());
-                        if remaining == 0 { break; }
-                        output.extend(message.text.chars().take(remaining));
+                    if let Some(before_messages) = before_messages {
+                        for message in thread
+                            .messages
+                            .iter()
+                            .skip(before_messages)
+                            .filter(|m| m.role == synara_core::Role::Assistant)
+                        {
+                            let remaining = 4096_usize.saturating_sub(output.chars().count());
+                            if remaining == 0 { break; }
+                            output.extend(message.text.chars().take(remaining));
+                        }
                     }
                     if output.is_empty() { output = "Run completed. Open the owned conversation for tool output and details.".into(); }
                     Ok::<_, WorkspaceError>(output)
@@ -180,10 +197,56 @@ impl AutomationScheduler {
             .workspace
             .save_task_draft(task_id, String::new())
             .await;
+        let completion_output = output.clone();
         self.controller
             .workspace
             .finish_automation(run.id, self.owner, status, output)
-            .await
+            .await?;
+
+        if status == AutomationRunStatus::Succeeded
+            && matches!(
+                &run.definition.completion_policy,
+                AutomationCompletionPolicy::AiEvaluated { .. }
+            )
+        {
+            let current = self.controller.workspace.automations().await?;
+            let policy_current = current.definitions.iter().any(|definition| {
+                definition.id == run.definition.id
+                    && definition.revision == run.definition.revision
+                    && definition.enabled
+                    && definition.completion_policy == run.definition.completion_policy
+            });
+            if policy_current {
+                let mut evaluated_run = run.clone();
+                evaluated_run.output = completion_output;
+                let evaluation = match self
+                    .controller
+                    .evaluate_automation_completion(&run.definition, &evaluated_run)
+                    .await
+                {
+                    Ok(evaluation) => evaluation,
+                    Err(error) => AutomationCompletionEvaluation {
+                        stop_matched: false,
+                        confidence: 0.0,
+                        reason: format!("Stop check failed: {error}")
+                            .chars()
+                            .take(2000)
+                            .collect(),
+                        policy_applied: false,
+                        failed: true,
+                    },
+                };
+                // A stop-check failure is metadata, not a failed automation run.
+                // The atomic recorder rechecks the exact policy revision before
+                // it can disable anything.
+                let _ = self
+                    .controller
+                    .workspace
+                    .record_automation_completion_evaluation(run.id, evaluation)
+                    .await;
+            }
+        }
+        Ok(())
     }
 }
 impl Drop for AutomationScheduler {

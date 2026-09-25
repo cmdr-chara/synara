@@ -26,7 +26,7 @@ const MAX_STUDIO_TEXT_VERSION_BYTES: usize = 128 * 1024;
 const MAX_STUDIO_TEXT_VERSION_TOTAL_BYTES: usize = 1024 * 1024;
 
 /// Reporting turn reconstructed from durable events. File contents remain current.
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct StudioOutputTurn {
     pub number: usize,
     pub started_at_ms: i64,
@@ -87,6 +87,14 @@ pub struct StudioTextVersion {
     pub path: PathBuf,
     pub text: String,
     pub captured_at_ms: i64,
+    #[serde(default)]
+    pub pinned: bool,
+    #[serde(default)]
+    pub source_task: Option<TaskId>,
+    #[serde(default)]
+    pub source_turn: Option<StudioOutputTurn>,
+    #[serde(default)]
+    pub reported_at_ms: Option<i64>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -120,6 +128,8 @@ impl StoredStudioTextVersions {
                     || !visible(&entry.path)
                     || entry.text.len() > MAX_STUDIO_TEXT_VERSION_BYTES
                     || entry.captured_at_ms <= 0
+                    || entry.source_task.is_some() != entry.source_turn.is_some()
+                    || entry.reported_at_ms.is_some_and(|timestamp| timestamp < 0)
             })
         {
             return Err(WorkspaceError::Invalid(
@@ -476,16 +486,21 @@ impl WorkspaceService {
         .map_err(|_| WorkspaceError::Worker)?
     }
 
-    /// Persist only a bounded text preview already selected and read through the
-    /// Studio filesystem boundary. Source files are never written by this ledger.
-    pub async fn capture_studio_text_version(
+    async fn capture_studio_text_version_record(
         &self,
         id: TaskId,
         path: PathBuf,
         text: String,
-    ) -> WorkspaceResult<Vec<StudioTextVersion>> {
+        source_task: Option<TaskId>,
+        source_turn: Option<StudioOutputTurn>,
+        reported_at_ms: Option<i64>,
+    ) -> WorkspaceResult<(Vec<StudioTextVersion>, bool)> {
         self.local_studio_root(id).await?;
-        if !visible(&path) || text.len() > MAX_STUDIO_TEXT_VERSION_BYTES {
+        if !visible(&path)
+            || text.len() > MAX_STUDIO_TEXT_VERSION_BYTES
+            || source_task.is_some() != source_turn.is_some()
+            || reported_at_ms.is_some_and(|timestamp| timestamp < 0)
+        {
             return Err(WorkspaceError::Invalid(
                 "This Studio text preview is outside the durable version-history bounds.".into(),
             ));
@@ -504,29 +519,169 @@ impl WorkspaceService {
                 .find(|entry| entry.path == path)
                 .is_none_or(|entry| entry.text != text);
             if changed {
-                stored.entries.push(StudioTextVersion {
-                    task: id,
-                    path: path.clone(),
-                    text,
-                    captured_at_ms: chrono::Utc::now().timestamp_millis(),
-                });
-                while stored.entries.len() > MAX_STUDIO_TEXT_VERSIONS
+                while stored.entries.len().saturating_add(1) > MAX_STUDIO_TEXT_VERSIONS
                     || stored
                         .entries
                         .iter()
                         .map(|entry| entry.text.len())
                         .sum::<usize>()
+                        .saturating_add(text.len())
                         > MAX_STUDIO_TEXT_VERSION_TOTAL_BYTES
                 {
-                    stored.entries.remove(0);
+                    let Some(index) = stored.entries.iter().position(|entry| !entry.pinned) else {
+                        return Err(WorkspaceError::Invalid(
+                            "Pinned Studio versions fill the retention budget. Unpin or clear a version before capturing another."
+                                .into(),
+                        ));
+                    };
+                    stored.entries.remove(index);
                 }
+                stored.entries.push(StudioTextVersion {
+                    task: id,
+                    path: path.clone(),
+                    text,
+                    captured_at_ms: chrono::Utc::now().timestamp_millis(),
+                    pinned: false,
+                    source_task,
+                    source_turn,
+                    reported_at_ms,
+                });
                 stored.validate(id)?;
                 store.set_preference(&key, &stored)?;
             }
+            Ok((
+                stored
+                    .entries
+                    .into_iter()
+                    .filter(|entry| entry.path == path)
+                    .collect(),
+                changed,
+            ))
+        })
+        .await
+    }
+
+    /// Persist only a bounded text preview already selected and read through the
+    /// Studio filesystem boundary. Source files are never written by this ledger.
+    pub async fn capture_studio_text_version(
+        &self,
+        id: TaskId,
+        path: PathBuf,
+        text: String,
+    ) -> WorkspaceResult<Vec<StudioTextVersion>> {
+        self.capture_studio_text_version_record(id, path, text, None, None, None)
+            .await
+            .map(|(versions, _)| versions)
+    }
+
+    /// Snapshot current bounded UTF-8 files that completed tools reported for this
+    /// Hub. Attribution comes from durable tool/turn events, not file timestamps.
+    pub async fn capture_reported_studio_text_versions(
+        &self,
+        id: TaskId,
+    ) -> WorkspaceResult<usize> {
+        let root = self.local_studio_root(id).await?;
+        let mut candidates: Vec<_> = self
+            .studio_files(id)
+            .await?
+            .entries
+            .into_iter()
+            .filter(|entry| {
+                entry.reported_output
+                    && entry.source_task.is_some()
+                    && entry.source_turn.is_some()
+                    && entry.bytes > 0
+                    && entry.bytes <= MAX_STUDIO_TEXT_VERSION_BYTES as u64
+            })
+            .collect();
+        candidates.sort_by_key(|entry| {
+            (
+                std::cmp::Reverse(entry.reported_at_ms.unwrap_or(i64::MIN)),
+                entry.path.clone(),
+            )
+        });
+        candidates.truncate(16);
+
+        let records = tokio::task::spawn_blocking(move || {
+            let fs = WorkspaceFs::open(&root)?;
+            let mut records = Vec::new();
+            for entry in candidates {
+                let bytes = match fs.read_blob(&entry.path) {
+                    Ok(bytes) if bytes.len() <= MAX_STUDIO_TEXT_VERSION_BYTES => bytes,
+                    Ok(_) | Err(_) => continue,
+                };
+                if bytes.contains(&0) {
+                    continue;
+                }
+                let Ok(text) = String::from_utf8(bytes) else {
+                    continue;
+                };
+                records.push((
+                    entry.path,
+                    text,
+                    entry.source_task,
+                    entry.source_turn,
+                    entry.reported_at_ms,
+                ));
+            }
+            Ok::<_, WorkspaceError>(records)
+        })
+        .await
+        .map_err(|_| WorkspaceError::Worker)??;
+
+        let mut captured = 0usize;
+        for (path, text, source_task, source_turn, reported_at_ms) in records {
+            let (_, changed) = self
+                .capture_studio_text_version_record(
+                    id,
+                    path,
+                    text,
+                    source_task,
+                    source_turn,
+                    reported_at_ms,
+                )
+                .await?;
+            captured = captured.saturating_add(usize::from(changed));
+        }
+        Ok(captured)
+    }
+
+    /// Pin or unpin one exact durable snapshot. Pinning affects only automatic
+    /// bounded retention; explicit clear remains an explicit destructive action.
+    pub async fn set_studio_text_version_pinned(
+        &self,
+        snapshot: StudioTextVersion,
+        pinned: bool,
+    ) -> WorkspaceResult<Vec<StudioTextVersion>> {
+        self.local_studio_root(snapshot.task).await?;
+        if !visible(&snapshot.path)
+            || snapshot.text.len() > MAX_STUDIO_TEXT_VERSION_BYTES
+            || snapshot.captured_at_ms <= 0
+        {
+            return Err(WorkspaceError::Invalid(
+                "This Studio text version is outside the pinning bounds.".into(),
+            ));
+        }
+        self.access(move |store| {
+            store.task(snapshot.task)?.ok_or(WorkspaceError::NotFound)?;
+            let key = studio_versions_key(snapshot.task);
+            let mut stored = store
+                .preference::<StoredStudioTextVersions>(&key)?
+                .unwrap_or_default();
+            stored.validate(snapshot.task)?;
+            let Some(entry) = stored.entries.iter_mut().find(|entry| **entry == snapshot) else {
+                return Err(WorkspaceError::Invalid(
+                    "The selected Studio version changed or was removed. Refresh and choose it again."
+                        .into(),
+                ));
+            };
+            entry.pinned = pinned;
+            stored.validate(snapshot.task)?;
+            store.set_preference(&key, &stored)?;
             Ok(stored
                 .entries
                 .into_iter()
-                .filter(|entry| entry.path == path)
+                .filter(|entry| entry.path == snapshot.path)
                 .collect())
         })
         .await
@@ -735,6 +890,13 @@ mod tests {
         assert_eq!(versions[1].text, "two");
 
         let old_snapshot = versions[0].clone();
+        let versions = service
+            .set_studio_text_version_pinned(old_snapshot.clone(), true)
+            .await
+            .unwrap();
+        assert!(versions[0].pinned);
+        let old_snapshot = versions[0].clone();
+
         let exported = dir.path().join("report-version.md");
         service
             .export_studio_text_version(old_snapshot.clone(), exported.clone())
@@ -767,6 +929,11 @@ mod tests {
             versions.iter().map(|entry| entry.text.len()).sum::<usize>()
                 <= MAX_STUDIO_TEXT_VERSION_TOTAL_BYTES
         );
+        assert!(versions.iter().any(|entry| {
+            entry.captured_at_ms == old_snapshot.captured_at_ms
+                && entry.text == old_snapshot.text
+                && entry.pinned
+        }));
 
         let other = service
             .capture_studio_text_version(task.id, "other.md".into(), "other".into())
@@ -815,11 +982,161 @@ mod tests {
         assert!(
             service
                 .export_studio_text_version(
-                    old_snapshot,
+                    old_snapshot.clone(),
                     dir.path().join("stale-report-version.md"),
                 )
                 .await
                 .is_err()
+        );
+        assert!(
+            service
+                .set_studio_text_version_pinned(old_snapshot, false)
+                .await
+                .is_err()
+        );
+    }
+
+    #[tokio::test]
+    async fn reported_text_outputs_capture_turn_attributed_versions_without_duplicates() {
+        let dir = tempfile::tempdir().unwrap();
+        let root = dir.path().join("studio-reported");
+        std::fs::create_dir(&root).unwrap();
+        std::fs::write(root.join("report.md"), "version one").unwrap();
+
+        let service = WorkspaceService::memory().unwrap();
+        let project = service.add_local_workspace(root.clone()).await.unwrap();
+        let agent = service.profiles().await.unwrap()[0].id.clone();
+        let task = service
+            .create_scoped_task_with_draft(
+                project.id,
+                "Studio output".into(),
+                agent,
+                TaskScope::Studio,
+                "draft".into(),
+            )
+            .await
+            .unwrap();
+
+        service
+            .record(
+                task.thread_id,
+                synara_core::ThreadEvent::PromptStarted {
+                    turn: "turn-1".into(),
+                },
+            )
+            .await
+            .unwrap();
+        service
+            .record(
+                task.thread_id,
+                synara_core::ThreadEvent::ToolChanged {
+                    patch: synara_core::ToolPatch {
+                        id: "tool-1".into(),
+                        title: Some("Write report".into()),
+                        status: Some(ToolStatus::Completed),
+                        kind: Some("edit".into()),
+                        output: Some(vec![ToolOutput::Diff {
+                            path: "report.md".into(),
+                            before: None,
+                            after: Some("version one".into()),
+                        }]),
+                    },
+                },
+            )
+            .await
+            .unwrap();
+        service
+            .record(
+                task.thread_id,
+                synara_core::ThreadEvent::PromptFinished {
+                    reason: "stop".into(),
+                },
+            )
+            .await
+            .unwrap();
+
+        assert_eq!(
+            service
+                .capture_reported_studio_text_versions(task.id)
+                .await
+                .unwrap(),
+            1
+        );
+        assert_eq!(
+            service
+                .capture_reported_studio_text_versions(task.id)
+                .await
+                .unwrap(),
+            0
+        );
+
+        std::fs::write(root.join("report.md"), "version two").unwrap();
+        service
+            .record(
+                task.thread_id,
+                synara_core::ThreadEvent::PromptStarted {
+                    turn: "turn-2".into(),
+                },
+            )
+            .await
+            .unwrap();
+        service
+            .record(
+                task.thread_id,
+                synara_core::ThreadEvent::ToolChanged {
+                    patch: synara_core::ToolPatch {
+                        id: "tool-2".into(),
+                        title: Some("Rewrite report".into()),
+                        status: Some(ToolStatus::Completed),
+                        kind: Some("edit".into()),
+                        output: Some(vec![ToolOutput::Diff {
+                            path: "report.md".into(),
+                            before: Some("version one".into()),
+                            after: Some("version two".into()),
+                        }]),
+                    },
+                },
+            )
+            .await
+            .unwrap();
+        service
+            .record(
+                task.thread_id,
+                synara_core::ThreadEvent::PromptFinished {
+                    reason: "stop".into(),
+                },
+            )
+            .await
+            .unwrap();
+
+        assert_eq!(
+            service
+                .capture_reported_studio_text_versions(task.id)
+                .await
+                .unwrap(),
+            1
+        );
+        let versions = service
+            .capture_studio_text_version(task.id, "report.md".into(), "version two".into())
+            .await
+            .unwrap();
+        assert_eq!(versions.len(), 2);
+        assert_eq!(versions[0].text, "version one");
+        assert_eq!(versions[1].text, "version two");
+        assert_eq!(versions[0].source_task, Some(task.id));
+        assert_eq!(versions[1].source_task, Some(task.id));
+        assert_eq!(
+            versions[0].source_turn.as_ref().map(|turn| turn.number),
+            Some(1)
+        );
+        assert_eq!(
+            versions[1].source_turn.as_ref().map(|turn| turn.number),
+            Some(2)
+        );
+        assert!(
+            versions
+                .iter()
+                .all(|version| version.reported_at_ms.is_some())
         );
     }
 

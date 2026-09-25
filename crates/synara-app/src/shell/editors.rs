@@ -309,6 +309,51 @@ fn restore_compare_all(reference: &str, current: &str, diff: &CompareDiff) -> Op
     Some(reference.to_owned())
 }
 
+fn compare_visible_indices(diff: &CompareDiff, changes_only: bool) -> Vec<usize> {
+    if !changes_only {
+        return (0..diff.lines.len()).collect();
+    }
+    diff.lines
+        .iter()
+        .enumerate()
+        .filter_map(|(index, line)| (line.kind != CompareLineKind::Same).then_some(index))
+        .collect()
+}
+
+fn compare_change_starts(diff: &CompareDiff) -> Vec<usize> {
+    diff.lines
+        .iter()
+        .enumerate()
+        .filter_map(|(index, line)| {
+            let changed = matches!(line.kind, CompareLineKind::Added | CompareLineKind::Removed);
+            let previous_changed = index > 0
+                && matches!(
+                    diff.lines[index - 1].kind,
+                    CompareLineKind::Added | CompareLineKind::Removed
+                );
+            (changed && !previous_changed).then_some(index)
+        })
+        .collect()
+}
+
+fn next_compare_change(
+    diff: &CompareDiff,
+    current: Option<usize>,
+    backwards: bool,
+) -> Option<usize> {
+    let starts = compare_change_starts(diff);
+    if starts.is_empty() {
+        return None;
+    }
+    let position = current.and_then(|current| starts.iter().position(|index| *index == current));
+    Some(match (position, backwards) {
+        (Some(position), true) => starts[(position + starts.len() - 1) % starts.len()],
+        (Some(position), false) => starts[(position + 1) % starts.len()],
+        (None, true) => *starts.last()?,
+        (None, false) => starts[0],
+    })
+}
+
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct LineEdit {
     start: usize,
@@ -499,6 +544,8 @@ struct EditorCompare {
     diff: CompareDiff,
     error: Option<String>,
     restore_all_confirmed: bool,
+    changes_only: bool,
+    selected_change: Option<usize>,
 }
 impl EditorCompare {
     fn clear(&mut self) {
@@ -769,6 +816,7 @@ impl Shell {
             return;
         }
         compare.restore_all_confirmed = false;
+        compare.selected_change = None;
         if let Some(reference) = &compare.reference {
             compare.diff = compare_text(reference, current);
         }
@@ -876,6 +924,42 @@ impl Shell {
             cx.notify();
         }
     }
+    fn select_editor_compare_change(&mut self, backwards: bool, cx: &mut Context<Self>) {
+        let compare = &mut self.editors.compare;
+        if !compare.open || compare.pending || compare.error.is_some() || compare.diff.limited {
+            return;
+        }
+        compare.selected_change =
+            next_compare_change(&compare.diff, compare.selected_change, backwards);
+        cx.notify();
+    }
+
+    fn copy_selected_editor_compare_block(&mut self, cx: &mut Context<Self>) {
+        let Some(index) = self.editors.compare.selected_change else {
+            return;
+        };
+        let Some(expected) = self.editors.compare.diff.lines.get(index).cloned() else {
+            self.editors.compare.selected_change = None;
+            cx.notify();
+            return;
+        };
+        let generation = self.editors.compare.generation;
+        self.copy_editor_compare_block(index, expected, generation, cx);
+    }
+
+    fn restore_selected_editor_compare_block(&mut self, cx: &mut Context<Self>) {
+        let Some(index) = self.editors.compare.selected_change else {
+            return;
+        };
+        let Some(expected) = self.editors.compare.diff.lines.get(index).cloned() else {
+            self.editors.compare.selected_change = None;
+            cx.notify();
+            return;
+        };
+        let generation = self.editors.compare.generation;
+        self.revert_editor_compare_block(index, expected, generation, cx);
+    }
+
     fn restore_all_editor_compare_changes(&mut self, generation: u64, cx: &mut Context<Self>) {
         if self.saving
             || self.editor.read(cx).is_composing()
@@ -1667,7 +1751,20 @@ impl Shell {
             return None;
         }
         let entity = cx.entity();
-        let line_count = comparison.diff.lines.len();
+        let visible_indices = compare_visible_indices(&comparison.diff, comparison.changes_only);
+        let row_count = visible_indices.len();
+        let changes_only = comparison.changes_only;
+        let change_starts = compare_change_starts(&comparison.diff);
+        let selected_change = comparison
+            .selected_change
+            .filter(|index| change_starts.contains(index));
+        let selected_position = selected_change
+            .and_then(|selected| change_starts.iter().position(|index| *index == selected))
+            .map(|position| position + 1);
+        let change_navigation_available = !comparison.pending
+            && comparison.error.is_none()
+            && !comparison.diff.limited
+            && !change_starts.is_empty();
         let restore_all_available = !comparison.pending
             && comparison.error.is_none()
             && !comparison.diff.limited
@@ -1677,10 +1774,11 @@ impl Shell {
                 .is_some_and(|reference| reference != self.editor.read(cx).text());
         let restore_all_confirmed = comparison.restore_all_confirmed;
         let restore_all_generation = comparison.generation;
-        let list = gpui::uniform_list("editor-compare-lines", line_count, move |range, _, cx| {
+        let list = gpui::uniform_list("editor-compare-lines", row_count, move |range, _, cx| {
             entity.update(cx, |this, cx| {
                 range
-                    .filter_map(|index| {
+                    .filter_map(|visible_index| {
+                        let index = *visible_indices.get(visible_index)?;
                         let line = this.editors.compare.diff.lines.get(index)?;
                         let first_change =
                             matches!(line.kind, CompareLineKind::Added | CompareLineKind::Removed)
@@ -1692,6 +1790,7 @@ impl Shell {
                         let expected = line.clone();
                         let copy_expected = expected.clone();
                         let generation = this.editors.compare.generation;
+                        let selected_change = this.editors.compare.selected_change == Some(index);
                         let (marker, background, foreground) = match line.kind {
                             CompareLineKind::Same => (" ", palette().canvas, palette().text),
                             CompareLineKind::Added => {
@@ -1710,6 +1809,9 @@ impl Shell {
                                 .items_center()
                                 .gap_1()
                                 .bg(rgb(background))
+                                .when(selected_change, |el| {
+                                    el.border_l_2().border_color(rgb(palette().focus))
+                                })
                                 .font_family(ui::code_font())
                                 .text_size(px(11.))
                                 .text_color(rgb(foreground))
@@ -1838,6 +1940,57 @@ impl Shell {
                             )
                             .text_size(px(10.)),
                         )
+                        .child(
+                            ui::button(
+                                "editor-compare-changes-only",
+                                if changes_only {
+                                    "Show all"
+                                } else {
+                                    "Changes only"
+                                },
+                                changes_only,
+                            )
+                            .text_size(px(10.))
+                            .relative()
+                            .child(ui::layout_probe("editor-compare-changes-only"))
+                            .on_click(cx.listener(|this, _, _, cx| {
+                                this.editors.compare.changes_only =
+                                    !this.editors.compare.changes_only;
+                                cx.notify();
+                            })),
+                        )
+                        .children(change_navigation_available.then(|| {
+                            ui::button("editor-compare-change-prev", "Previous change", false)
+                                .text_size(px(10.))
+                                .on_click(cx.listener(|this, _, _, cx| {
+                                    this.select_editor_compare_change(true, cx)
+                                }))
+                        }))
+                        .children(change_navigation_available.then(|| {
+                            ui::button("editor-compare-change-next", "Next change", false)
+                                .text_size(px(10.))
+                                .on_click(cx.listener(|this, _, _, cx| {
+                                    this.select_editor_compare_change(false, cx)
+                                }))
+                        }))
+                        .children(selected_change.map(|_| {
+                            ui::button("editor-compare-copy-selected", "Copy selected block", false)
+                                .text_size(px(10.))
+                                .on_click(cx.listener(|this, _, _, cx| {
+                                    this.copy_selected_editor_compare_block(cx)
+                                }))
+                        }))
+                        .children(selected_change.map(|_| {
+                            ui::button(
+                                "editor-compare-restore-selected",
+                                "Restore selected block",
+                                false,
+                            )
+                            .text_size(px(10.))
+                            .on_click(cx.listener(|this, _, _, cx| {
+                                this.restore_selected_editor_compare_block(cx)
+                            }))
+                        }))
                         .children(restore_all_available.then(|| {
                             ui::button(
                                 "editor-compare-restore-all",
@@ -1934,6 +2087,12 @@ impl Shell {
                         .text_size(px(10.))
                         .text_color(rgb(palette().muted))
                         .child(summary)
+                        .children(selected_position.map(|position| {
+                            div().child(format!(
+                                "Selected change {position}/{}",
+                                change_starts.len()
+                            ))
+                        }))
                         .child(if dirty {
                             "Current unsaved editor buffer is included; comparison is read-only."
                         } else {
@@ -2006,7 +2165,8 @@ impl Shell {
 #[cfg(test)]
 mod conflict_confirmation_tests {
     use super::{
-        CompareLineKind, ReloadConfirmation, compare_text, reload_confirmation_matches,
+        CompareLineKind, ReloadConfirmation, compare_change_starts, compare_text,
+        compare_visible_indices, next_compare_change, reload_confirmation_matches,
         restore_compare_all, revert_compare_block, three_way_merge,
     };
 
@@ -2057,6 +2217,64 @@ mod conflict_confirmation_tests {
 
         let identical = compare_text(reference, reference);
         assert!(restore_compare_all(reference, reference, &identical).is_none());
+    }
+
+    #[test]
+    fn changes_only_filter_preserves_original_diff_indices_and_info_rows() {
+        let diff = compare_text("same\nbefore\nold\nafter\n", "same\nbefore\nnew\nafter");
+        let visible = compare_visible_indices(&diff, true);
+        assert_eq!(
+            visible,
+            diff.lines
+                .iter()
+                .enumerate()
+                .filter_map(|(index, line)| {
+                    (line.kind != CompareLineKind::Same).then_some(index)
+                })
+                .collect::<Vec<_>>()
+        );
+        assert!(visible.iter().any(|index| {
+            diff.lines[*index].kind == CompareLineKind::Removed && diff.lines[*index].text == "old"
+        }));
+        assert!(visible.iter().any(|index| {
+            diff.lines[*index].kind == CompareLineKind::Added && diff.lines[*index].text == "new"
+        }));
+        assert!(
+            visible
+                .iter()
+                .any(|index| diff.lines[*index].kind == CompareLineKind::Info)
+        );
+        assert_eq!(
+            compare_visible_indices(&diff, false),
+            (0..diff.lines.len()).collect::<Vec<_>>()
+        );
+    }
+
+    #[test]
+    fn comparison_change_cursor_visits_only_block_starts_and_wraps() {
+        let diff = compare_text(
+            "one\nkeep\ntwo\nkeep2\nthree\n",
+            "ONE\nkeep\nTWO\nkeep2\nTHREE\n",
+        );
+        let starts = compare_change_starts(&diff);
+        assert_eq!(starts.len(), 3);
+        assert_eq!(next_compare_change(&diff, None, false), Some(starts[0]));
+        assert_eq!(
+            next_compare_change(&diff, Some(starts[0]), false),
+            Some(starts[1])
+        );
+        assert_eq!(
+            next_compare_change(&diff, Some(starts[0]), true),
+            Some(starts[2])
+        );
+        assert_eq!(
+            next_compare_change(&diff, Some(starts[2]), false),
+            Some(starts[0])
+        );
+
+        let unchanged = compare_text("same\n", "same\n");
+        assert!(compare_change_starts(&unchanged).is_empty());
+        assert_eq!(next_compare_change(&unchanged, None, false), None);
     }
 
     #[test]

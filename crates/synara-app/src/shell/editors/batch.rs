@@ -85,6 +85,7 @@ impl Shell {
         compare.diff = CompareDiff::default();
         compare.error = None;
         compare.restore_all_confirmed = false;
+        compare.selected_change = None;
         let request = (owner, compare.generation, compare.cancel.clone());
         self.editors.history.clear();
         self.editors.preview = false;
@@ -121,6 +122,7 @@ impl Shell {
         compare.buffer_at_read = Some(current);
         compare.error = None;
         compare.restore_all_confirmed = false;
+        compare.selected_change = None;
         self.editors.history.clear();
         self.editors.preview = false;
         cx.notify();

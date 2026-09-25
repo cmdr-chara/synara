@@ -30,8 +30,8 @@ additions are available.
 | D9 Commands/keybindings | Support needed argument forms and context-aware keybindings without stealing provider commands | Command parser, key routing and native interaction journeys | OPEN |
 | D10 Releases/updater | Verify trusted native artifacts and provide signed install/update/rollback | Feed provenance/signature, upgrade and rollback tests on release packages | OPEN |
 | D11 Profile/analytics | Show provider/model mix, token heatmap and account/usage statistics from actual sources | Per-turn route/model mix and token heatmap are implemented; real account/quota telemetry and provider integration journeys remain | OPEN |
-| D12 Handoff/forks | Continue or fork provider sessions with explicit task/environment ownership | Same-task reviewed route continuation is implemented; provider-native fork and live provider/worktree journeys remain | OPEN |
-| D13 Attachments/media | Preserve folder references, broaden formats and view PDF/documents in app | Persistence, preview, export and failure journeys | OPEN |
+| D12 Handoff/forks | Continue or fork provider sessions with explicit task/environment ownership | Same-task continuation and capability-gated ACP native fork are implemented; live provider/worktree journeys remain | OPEN |
+| D13 Attachments/media | Preserve folder references, broad binary document intake/viewing and safe PDF interaction | Format persistence/preview/export failures, true PDF field interaction and cross-platform/package acceptance | OPEN |
 | D14 Studio | Match current upstream long-running output lifecycle and organization | Output/task lifecycle and recovery journeys | OPEN |
 | N1 Theme/density | Finish visual, accessibility and platform acceptance for native appearance controls | Screenshot, keyboard, screen-reader and platform matrix | OPEN |
 | N2 File/source search | Match ranking, ignored-file and platform behavior of project search | Local/SSH fixtures plus native navigation/search acceptance | OPEN |
@@ -61,8 +61,13 @@ not treated as an effective-current-head difference. D8 also has versioned run
 history export, explicit live/deleted terminal-history pruning that preserves a
 durable cumulative max-run counter, and an opt-in Hub context policy whose claim
 atomically snapshots the current Hub revision and visible shared context into the
-owned run prompt. Out-of-process scheduling and live provider lifecycle evidence
-remain open. `N2` gained fuzzy name
+owned run prompt. The existing durable scheduler now has an explicit
+`synara-server --automations` owner and upstream-shaped Standalone, Heartbeat and
+Dedicated execution modes with guarded ACP target reuse and a bounded activity
+cooldown. D8 also now has a separately reviewed direct-model completion evaluator:
+strict structured output, no tools, 30-second timeout, no retry, run-scoped input
+and exact-policy stale-result fencing. Product orchestration semantics are present;
+live provider lifecycle, restart/shutdown and platform evidence remain open. `N2` gained fuzzy name
 ranking, generated-directory filtering and typed file/directory results with
 Explorer navigation; entry queries now also use the upstream prefix normalization
 and POSIX path-ranking semantics, while older SSH helpers remain file-only.

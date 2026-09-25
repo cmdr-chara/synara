@@ -22,6 +22,7 @@ pub(crate) fn request(method: &str, value: &Value) -> AgentResult<()> {
         "session/close" => validate::<v1::CloseSessionRequest>(value, method),
         "session/list" => validate::<v1::ListSessionsRequest>(value, method),
         "session/delete" => validate::<v1::DeleteSessionRequest>(value, method),
+        "session/fork" => validate::<v1::ForkSessionRequest>(value, method),
         "session/set_mode" => validate::<v1::SetSessionModeRequest>(value, method),
         "session/set_config_option" => validate::<v1::SetSessionConfigOptionRequest>(value, method),
         "session/new" => validate::<v1::NewSessionRequest>(value, method),
@@ -39,6 +40,7 @@ pub(crate) fn response(method: &str, value: &Value) -> AgentResult<()> {
         "session/close" => validate::<v1::CloseSessionResponse>(value, method),
         "session/list" => validate::<v1::ListSessionsResponse>(value, method),
         "session/delete" => validate::<v1::DeleteSessionResponse>(value, method),
+        "session/fork" => validate::<v1::ForkSessionResponse>(value, method),
         "session/set_mode" => validate::<v1::SetSessionModeResponse>(value, method),
         "session/set_config_option" => {
             validate::<v1::SetSessionConfigOptionResponse>(value, method)
@@ -87,6 +89,10 @@ mod tests {
             ),
             ("session/close", json!({"sessionId":"s"})),
             ("session/delete", json!({"sessionId":"s"})),
+            (
+                "session/fork",
+                json!({"sessionId":"s","cwd":"/workspace","mcpServers":[]}),
+            ),
             ("session/list", json!({})),
             ("session/set_mode", json!({"sessionId":"s","modeId":"code"})),
             (
@@ -111,6 +117,7 @@ mod tests {
             "session/close",
             "session/list",
             "session/delete",
+            "session/fork",
             "session/set_mode",
             "session/set_config_option",
             "session/prompt",

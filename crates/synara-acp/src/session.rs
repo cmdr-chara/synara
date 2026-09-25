@@ -17,6 +17,10 @@ impl AgentSession for AcpSession {
     fn configuration(&self) -> SessionConfiguration {
         self.state.configuration.read().unwrap().clone()
     }
+    async fn fork_session(&self, options: SessionOptions) -> AgentResult<Arc<dyn AgentSession>> {
+        self.ensure_open()?;
+        self.connection.fork_session(self.id(), options).await
+    }
     async fn prompt(&self, prompt: Prompt) -> AgentResult<String> {
         let cancellation = self
             .state

@@ -48,6 +48,7 @@ impl TraceLog {
                 | "session/new"
                 | "session/load"
                 | "session/resume"
+                | "session/fork"
                 | "session/close"
                 | "session/list"
                 | "session/delete"

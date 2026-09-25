@@ -19,7 +19,7 @@ jobs:
   loopback:
     if: github.repository == 'cmdr-chara/synara' && (github.event_name == 'workflow_call' || github.ref == 'refs/heads/astra/session-ajm')
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
@@ -30,18 +30,20 @@ jobs:
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           mkdir -p /tmp/ajm-ssh-evidence
           git rev-parse HEAD > /tmp/ajm-ssh-evidence/revision.txt
-      - name: Install pinned Rust and OpenSSH
+      - name: Install pinned Rust, OpenSSH and native prerequisites
         run: |
           rustup toolchain install 1.98.1 --profile minimal
           sudo apt-get update
-          sudo apt-get install -y openssh-client openssh-server
+          sudo apt-get install -y openssh-client openssh-server clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libwebkit2gtk-4.1-dev libgtk-3-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil xclip fonts-dejavu-core fonts-liberation
           sudo install -d -m 0755 /run/sshd
       - name: Check fixture syntax
-        run: python3 -m py_compile scripts/ssh_smoke.py
-      - name: Verify isolated SSH transport and generic ACP
+        run: python3 -m py_compile scripts/ssh_smoke.py scripts/remote_native_smoke.py
+      - name: Build native SSH acceptance binaries
+        run: cargo +1.98.1 build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture
+      - name: Verify isolated SSH transport, managed worktrees, search and native UI
         run: |
           set -o pipefail
-          { git rev-parse HEAD; python3 scripts/ssh_smoke.py; } 2>&1 | tee /tmp/ajm-ssh-evidence/ssh.log
+          { git rev-parse HEAD; python3 scripts/ssh_smoke.py --native-binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --native-output /tmp/ajm-ssh-evidence/native; } 2>&1 | tee /tmp/ajm-ssh-evidence/ssh.log
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:

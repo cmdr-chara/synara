@@ -737,15 +737,50 @@ impl Shell {
     }
     pub(super) fn terminal_layout_before_quit(&mut self, cx: &mut Context<Self>) -> bool {
         self.flush_terminal_layouts(true);
-        let pending = self.terminals.groups.values().any(|group| {
-            group.pending_save() || group.renaming.is_some() || group.confirmation.is_some()
+        let interactive = self.terminals.groups.values().any(|group| {
+            group.renaming.is_some() || group.confirmation.is_some()
         });
-        if pending {
-            self.notice = Some("Finish terminal confirmations or name edits and let tab layouts save before closing. Shells remain running.".into());
+        if interactive {
+            self.terminal_layout_quitting = false;
+            self.notice = Some(
+                "Finish terminal confirmations or name edits before closing. Shells remain running."
+                    .into(),
+            );
             self.close.cancel();
             cx.notify();
+            return true;
         }
-        pending
+        if self
+            .terminals
+            .groups
+            .values()
+            .any(|group| group.save_error.is_some())
+        {
+            self.terminal_layout_quitting = false;
+            self.notice = Some(
+                "Terminal layout was not saved. Retry after the layout save succeeds; shells remain running."
+                    .into(),
+            );
+            self.close.cancel();
+            cx.notify();
+            return true;
+        }
+        if self
+            .terminals
+            .groups
+            .values()
+            .any(Group::pending_save)
+        {
+            self.terminal_layout_quitting = true;
+            self.notice = Some(
+                "Saving terminal tab layouts before closing Synara. Shells remain running until the save completes."
+                    .into(),
+            );
+            cx.notify();
+            return true;
+        }
+        self.terminal_layout_quitting = false;
+        false
     }
     pub(super) fn begin_terminal_shutdown(&mut self, cx: &mut Context<Self>) {
         self.terminal_closing = true;
@@ -818,21 +853,33 @@ impl Shell {
                 }
             }
             Reply::Saved(scope, edits, result) => {
-                let Some(group) = self.terminals.groups.get_mut(&scope) else {
-                    return;
-                };
-                group.saving = false;
-                match result {
-                    Ok(value) => {
-                        group.layout.revision = value.revision;
-                        group.saved_edits = edits;
+                let saved = {
+                    let Some(group) = self.terminals.groups.get_mut(&scope) else {
+                        return;
+                    };
+                    group.saving = false;
+                    match result {
+                        Ok(value) => {
+                            group.layout.revision = value.revision;
+                            group.saved_edits = edits;
+                            true
+                        }
+                        Err(error) => {
+                            group.save_error = Some(error);
+                            self.notice = Some(
+                                "Terminal layout was not saved. Local tabs and processes are retained."
+                                    .into(),
+                            );
+                            false
+                        }
                     }
-                    Err(error) => {
-                        group.save_error = Some(error);
-                        self.notice = Some(
-                            "Terminal layout was not saved. Local tabs and processes are retained."
-                                .into(),
-                        );
+                };
+                if self.terminal_layout_quitting {
+                    if saved {
+                        self.begin_quit(cx);
+                    } else {
+                        self.terminal_layout_quitting = false;
+                        self.close.cancel();
                     }
                 }
             }

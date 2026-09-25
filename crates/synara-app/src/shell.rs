@@ -300,6 +300,7 @@ pub struct Shell {
     file_page: usize,
     document: Option<Document>,
     saving: bool,
+    terminal_layout_quitting: bool,
     terminal_closing: bool,
     polling: bool,
     _updates: gpui::Task<()>,
@@ -565,6 +566,7 @@ impl Shell {
             file_page: 0,
             document: None,
             saving: false,
+            terminal_layout_quitting: false,
             terminal_closing: false,
             polling: false,
             _updates: updates,
@@ -698,7 +700,11 @@ impl Shell {
             }
             self.kanban.dialog = None;
         }
-        if self.terminal_closing || self.draft_state.quitting || self.environment.quitting {
+        if self.terminal_layout_quitting
+            || self.terminal_closing
+            || self.draft_state.quitting
+            || self.environment.quitting
+        {
             return false;
         }
         self.reveal_dirty_editor(cx);
@@ -759,6 +765,7 @@ impl Shell {
     }
     fn close_panel(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
         let waiting = self.close == CloseState::WaitingForSave;
+        let terminal_layout_quitting = self.terminal_layout_quitting;
         let terminal_closing = self.terminal_closing;
         div().size_full().flex().flex_col().items_center().justify_center()
             .bg(rgb(0x10151d)).text_color(rgb(0xe3e8f0)).font_family("DejaVu Sans")
@@ -772,7 +779,9 @@ impl Shell {
                         cx.notify();
                     }
                 }))
-                .child(div().text_xl().child(if terminal_closing && self.terminals.starting() {
+                .child(div().text_xl().child(if terminal_layout_quitting {
+                    "Saving terminal layout before closing Synara"
+                } else if terminal_closing && self.terminals.starting() {
                     "Waiting for terminal startup before closing Synara"
                 } else if terminal_closing {
                     "Stopping terminal before closing Synara"
@@ -786,14 +795,15 @@ impl Shell {
                 .children(self.error.as_ref().map(|e| div().text_color(rgb(0xffb1b5)).child(e.clone())))
                 .child(div().flex().gap_3()
                     .children((!terminal_closing).then(|| button("cancel-close", "Keep working", false).on_click(cx.listener(|this, _, window, cx| {
+                        this.terminal_layout_quitting = false;
                         this.close.cancel();
                         window.focus(&this.editor.read(cx).focus_handle(cx), cx);
                         cx.notify();
                     }))))
-                    .children((!waiting && !terminal_closing).then(|| button("discard-and-close", "Discard and close", false)
+                    .children((!waiting && !terminal_layout_quitting && !terminal_closing).then(|| button("discard-and-close", "Discard and close", false)
                         .relative().child(crate::ui::layout_probe("discard-and-close"))
                         .on_click(cx.listener(|this, _, _, cx| { if !this.saving { this.discard_active_document(cx); this.begin_quit(cx); } }))))
-                    .children((!waiting && !terminal_closing).then(|| button("save-and-close", "Save and close", true)
+                    .children((!waiting && !terminal_layout_quitting && !terminal_closing).then(|| button("save-and-close", "Save and close", true)
                         .relative().child(crate::ui::layout_probe("save-and-close"))
                         .on_click(cx.listener(|this, _, _, cx| {
                             this.close = CloseState::WaitingForSave;

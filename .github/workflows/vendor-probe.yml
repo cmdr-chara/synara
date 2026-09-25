@@ -1,7 +1,7 @@
 name: Reviewed vendor ACP probe
 on:
   push:
-    branches: [astra/gpui-clean-rewrite]
+    branches: [main]
     paths:
       - crates/synara-acp/tests/vendor_probe.rs
       - crates/synara-acp/tests/fixtures/vendor_releases.json
@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   no-credentials:
-    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/gpui-clean-rewrite'
+    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     env:

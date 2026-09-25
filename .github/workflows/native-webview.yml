@@ -1,7 +1,7 @@
 name: Native WebKit acceptance
 on:
   push:
-    branches: [astra/gpui-clean-rewrite]
+    branches: [main]
     paths:
       - crates/synara-browser/**
       - assets/native-browser/**

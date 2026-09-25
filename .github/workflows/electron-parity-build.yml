@@ -10,7 +10,7 @@ on:
       - 'docs/ui/parity/**'
       - '.github/workflows/electron-parity-build.yml'
   pull_request:
-    branches: [astra/gpui-clean-rewrite]
+    branches: [main]
     paths:
       - 'crates/**'
       - 'Cargo.toml'

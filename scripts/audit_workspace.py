@@ -15,7 +15,7 @@ import tomllib
 
 DEPENDENCY_TABLES = ('dependencies', 'dev-dependencies', 'build-dependencies')
 PROTOCOL_PACKAGE = 'agent-client-protocol'
-EXPECTED_ROOT = '43b1fb89bf19dadc388d18008f9ceb21b8215716'
+EXPECTED_ROOT = 'd87e0672a193da01206aceb366b0d8353666c8cf'
 
 
 def dependency_tables(package):

@@ -1,12 +1,12 @@
 name: Roadmap and formatting
 on:
   push:
-    branches: [astra/gpui-clean-rewrite]
+    branches: [main]
 permissions:
   contents: read
 jobs:
   static:
-    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/gpui-clean-rewrite'
+    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:

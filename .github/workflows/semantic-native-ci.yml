@@ -2,7 +2,7 @@ name: Semantic native CI routing
 
 on:
   push:
-    branches: [astra/gpui-clean-rewrite]
+    branches: [main]
 
 permissions:
   contents: read
@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   route:
-    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/astra/gpui-clean-rewrite'
+    if: github.repository == 'cmdr-chara/synara' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     outputs:

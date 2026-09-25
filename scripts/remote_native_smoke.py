@@ -224,7 +224,11 @@ def main():
         desktop.screenshot('remote-terminal')
 
         # Restart through the same native terminal surface and prove stale-session isolation.
+        # A running shell requires explicit confirmation; leaving that review open correctly
+        # blocks application shutdown, so acceptance must exercise the real restart flow.
         click_control(desktop, log.name, 'start-shell', timeout=20)
+        click_control(desktop, log.name, 'terminal-confirm', timeout=20)
+        time.sleep(0.8)
         click_control(desktop, log.name, 'terminal-screen', timeout=20)
         type_text(desktop, 'touch remote-ui-terminal-restarted\n')
         wait_until(restart_marker.exists, 'remote terminal restart', 20)

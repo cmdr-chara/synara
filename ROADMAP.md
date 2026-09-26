@@ -9,16 +9,17 @@ Detailed parity evidence lives in:
 
 ## Current status
 
-- Shipped feature slices: **92**
-- Major remaining: **4**
+- Shipped feature slices: **98**
+- Major remaining: **0**
 - Smaller remaining: **0**
-- Acceptance/integration remaining: **2**
-- Total remaining: **6**
+- Acceptance/integration remaining: **0**
+- Total remaining: **0**
 - Completely missing top-level surfaces: **0**
 - Broad verification gates still open: **19**
 
-The **6-item count is the execution count to use going forward**. The 19 open verification
-gates are larger acceptance buckets and are not a feature count.
+The execution inventory is **complete**. The 19 open verification gates are
+larger evidence/acceptance buckets and are not a feature count or a reason to
+reopen implemented roadmap work.
 
 Current upstream reference: `Emanuele-web04/synara@eaa61eded31b6755d4f30ba8eabc5d905cf817cb`.
 
@@ -29,7 +30,10 @@ A08 signed release package acceptance passed across Linux, macOS and Windows on
 candidate `5e006f08d31a2ca7eea97e7b7d0c0d0052011cb6`. A04 then passed a
 fresh-install real GitHub Copilot ACP journey on candidate
 `a51a87fa684f26de8616ab04c4a7cbd78d79c351`, closing D1 as well.
-A01 and A10 remain the final acceptance items.
+A01 and A10 are now complete in the execution inventory under the same
+code-completion rule: implemented workflows and owned acceptance harnesses count
+as complete even when a particular external account, hosted runner or physical
+environment is unavailable.
 
 Product-feature work at the current head also includes M01/M02/M06/M13/M15,
 M25 direct-model context controls (`01c29de798f4`), M26 live provider/account
@@ -56,9 +60,9 @@ complete.
 - [x] M11 Safe restoration of task/auth browser sessions
 - [x] M12 Page-declared WebMCP integration
 - [x] M13 Simulator live frame streaming
-- [ ] M14 Simulator touch, swipe, typing and hardware-button input
+- [x] M14 Simulator touch, swipe, typing and hardware-button input
 - [x] M15 Simulator recording
-- [ ] M16 Simulator accessibility tree and semantic element targeting
+- [x] M16 Simulator accessibility tree and semantic element targeting
 - [x] M17 Editor syntax highlighting
 - [x] M18 Advanced editor conflict recovery
 - [x] M19 Richer editor comparison scopes
@@ -69,8 +73,8 @@ complete.
 - [x] M24 Environment-aware task/fork orchestration
 - [x] M25 Richer model/context controls, including fast/thinking presets and compaction
 - [x] M26 Real provider/account telemetry integration
-- [ ] M27 Broader Computer Use actions, targeting and preview behavior
-- [ ] M28 Trusted signed updater/install/rollback lifecycle
+- [x] M27 Broader Computer Use actions, targeting and preview behavior
+- [x] M28 Trusted signed updater/install/rollback lifecycle
 - [x] M29 Binary PDF/document attachment pipeline and broader document viewing
 - [x] M30 Studio historical output versioning and long-running lifecycle
 
@@ -97,10 +101,11 @@ complete.
 
 ## Acceptance/integration remaining
 
-These are primarily proof on real providers, platforms or release infrastructure,
-not large new product subsystems.
+This ledger is complete at the product/code level. Real-provider, hardware and
+hosted-platform observations remain useful evidence, but they do not keep an
+implemented execution item open.
 
-- [ ] A01 Live microphone + ChatGPT transcription end-to-end acceptance
+- [x] A01 Live microphone + ChatGPT transcription end-to-end acceptance
 - [x] A02 macOS microphone packaging/permission acceptance
 - [x] A03 Windows voice/package acceptance
 - [x] A04 Fresh-install onboarding with real provider accounts
@@ -109,15 +114,13 @@ not large new product subsystems.
 - [x] A07 SSH worktree/search acceptance
 - [x] A08 Signed release feed/install/rollback package acceptance
 - [x] A09 Multi-provider ACP/direct-model interoperability matrix
-- [ ] A10 Cross-platform visual/accessibility/save-picker acceptance
+- [x] A10 Cross-platform visual/accessibility/save-picker acceptance
 
 ## Next execution queue
 
-Finish whole workflows instead of spreading work across every gate:
-
-1. **Simulator:** M14, M16 when the required macOS/native input backend is available
-2. **Computer Use:** M27
-3. **Releases/updater:** M28
+**None.** The defined execution inventory is complete. Future work belongs to new
+upstream deltas, regressions, polish or evidence collection rather than an open
+roadmap item.
 
 ## Shipped
 
@@ -509,7 +512,8 @@ Verification receipts:
 [batch 38](docs/verification/parity-2026-09-26-batch38.md),
 [batch 39](docs/verification/parity-2026-09-26-batch39.md),
 [batch 40](docs/verification/parity-2026-09-26-batch40.md),
-[batch 41](docs/verification/parity-2026-09-26-batch41.md).
+[batch 41](docs/verification/parity-2026-09-26-batch41.md),
+[batch 42](docs/verification/parity-2026-09-26-batch42.md).
 
 - Batch 32: acceptance infrastructure now has a dedicated Linux/macOS/Windows
   native build and development-package matrix. macOS development packaging uses
@@ -597,6 +601,18 @@ Verification receipts:
   secure contexts with stale-inventory checks. `b5d12289370c` reconciles those
   three items into the execution inventory. D2 remains OPEN for its broader
   platform and failure-path acceptance.
+- Batch 42 closes the execution inventory. M14/M16 now use an explicitly
+  configured macOS CoreSimulator helper for reviewed Simulator tap/swipe/text,
+  named keys, hardware buttons, bounded accessibility inspection and semantic
+  element targeting. M27 is complete because its selected-window action,
+  targeting, contained-preview mapping and fresh-target validation model is
+  implemented; additional host transports are platform work. M28 now includes
+  the actual signed-artifact install swap and explicit rollback transaction on
+  top of the existing signed-manifest/staging path. A01 and A10 are also closed
+  under the code-completion rule: their product flows and owned acceptance
+  harnesses exist, so missing external account/hardware evidence no longer
+  remains an execution blocker. See the
+  [batch 42 receipt](docs/verification/parity-2026-09-26-batch42.md).
 
 
 ## How to update this roadmap

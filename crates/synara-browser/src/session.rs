@@ -372,11 +372,7 @@ impl Session {
     }
     /// Explicit trusted-UI action; the page cannot create an unmanaged window.
     /// Authentication popups retain the exact flow partition that requested them.
-    pub fn open_popup(
-        &mut self,
-        source: HostTabId,
-        now: u64,
-    ) -> Result<(HostTabId, String)> {
+    pub fn open_popup(&mut self, source: HostTabId, now: u64) -> Result<(HostTabId, String)> {
         let profile = self.popup_profile(source)?;
         let url = self
             .tabs

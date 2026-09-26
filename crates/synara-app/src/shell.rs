@@ -115,7 +115,6 @@ struct FormState {
     inputs: BTreeMap<String, Entity<TextEntry>>,
     values: BTreeMap<String, InputValue>,
     error: Option<String>,
-    authentication_flow: Option<u128>,
 }
 enum Update {
     Releases(Result<NativeVersionHistory, String>),
@@ -301,6 +300,7 @@ pub struct Shell {
     file_page: usize,
     document: Option<Document>,
     saving: bool,
+    terminal_layout_quitting: bool,
     terminal_closing: bool,
     polling: bool,
     _updates: gpui::Task<()>,
@@ -566,6 +566,7 @@ impl Shell {
             file_page: 0,
             document: None,
             saving: false,
+            terminal_layout_quitting: false,
             terminal_closing: false,
             polling: false,
             _updates: updates,
@@ -699,7 +700,11 @@ impl Shell {
             }
             self.kanban.dialog = None;
         }
-        if self.terminal_closing || self.draft_state.quitting || self.environment.quitting {
+        if self.terminal_layout_quitting
+            || self.terminal_closing
+            || self.draft_state.quitting
+            || self.environment.quitting
+        {
             return false;
         }
         self.reveal_dirty_editor(cx);
@@ -760,6 +765,7 @@ impl Shell {
     }
     fn close_panel(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
         let waiting = self.close == CloseState::WaitingForSave;
+        let terminal_layout_quitting = self.terminal_layout_quitting;
         let terminal_closing = self.terminal_closing;
         div().size_full().flex().flex_col().items_center().justify_center()
             .bg(rgb(0x10151d)).text_color(rgb(0xe3e8f0)).font_family("DejaVu Sans")
@@ -773,7 +779,9 @@ impl Shell {
                         cx.notify();
                     }
                 }))
-                .child(div().text_xl().child(if terminal_closing && self.terminals.starting() {
+                .child(div().text_xl().child(if terminal_layout_quitting {
+                    "Saving terminal layout before closing Synara"
+                } else if terminal_closing && self.terminals.starting() {
                     "Waiting for terminal startup before closing Synara"
                 } else if terminal_closing {
                     "Stopping terminal before closing Synara"
@@ -787,14 +795,15 @@ impl Shell {
                 .children(self.error.as_ref().map(|e| div().text_color(rgb(0xffb1b5)).child(e.clone())))
                 .child(div().flex().gap_3()
                     .children((!terminal_closing).then(|| button("cancel-close", "Keep working", false).on_click(cx.listener(|this, _, window, cx| {
+                        this.terminal_layout_quitting = false;
                         this.close.cancel();
                         window.focus(&this.editor.read(cx).focus_handle(cx), cx);
                         cx.notify();
                     }))))
-                    .children((!waiting && !terminal_closing).then(|| button("discard-and-close", "Discard and close", false)
+                    .children((!waiting && !terminal_layout_quitting && !terminal_closing).then(|| button("discard-and-close", "Discard and close", false)
                         .relative().child(crate::ui::layout_probe("discard-and-close"))
                         .on_click(cx.listener(|this, _, _, cx| { if !this.saving { this.discard_active_document(cx); this.begin_quit(cx); } }))))
-                    .children((!waiting && !terminal_closing).then(|| button("save-and-close", "Save and close", true)
+                    .children((!waiting && !terminal_layout_quitting && !terminal_closing).then(|| button("save-and-close", "Save and close", true)
                         .relative().child(crate::ui::layout_probe("save-and-close"))
                         .on_click(cx.listener(|this, _, _, cx| {
                             this.close = CloseState::WaitingForSave;
@@ -906,6 +915,7 @@ impl Shell {
         self.retire_autonomy_selection();
         self.selection_revision = self.selection_revision.wrapping_add(1);
         self.appsnap.retire();
+        self.device.retire();
         self.navigation.studio = task.scope == TaskScope::Studio;
         if self.navigation.studio {
             self.hubs.selected = Some(task.project_id);
@@ -1570,16 +1580,6 @@ impl Shell {
                 self.poll_kanban();
                 self.flush_drafts(false);
                 self.flush_environment(false);
-                let expired_authentication_flows = self
-                    .pending
-                    .iter()
-                    .filter(|(_, interaction)| !interaction.is_active())
-                    .filter_map(|(key, _)| {
-                        self.forms
-                            .get(key)
-                            .and_then(|form| form.authentication_flow)
-                    })
-                    .collect::<Vec<_>>();
                 let previous = self.pending.len();
                 self.pending.retain(|key, interaction| {
                     if !interaction.is_active() {
@@ -1588,9 +1588,6 @@ impl Shell {
                     interaction.is_active()
                 });
                 self.forms.retain(|key, _| self.pending.contains_key(key));
-                for flow in expired_authentication_flows {
-                    self.browser_close_authentication_flow(flow, cx);
-                }
                 if self.pending.len() != previous {
                     cx.notify();
                 }
@@ -1781,7 +1778,6 @@ impl Shell {
                                 inputs,
                                 values,
                                 error: None,
-                                authentication_flow: None,
                             },
                         );
                         key
@@ -1791,6 +1787,7 @@ impl Shell {
                     self.pause_goals("A permission or question requires the user. Resume explicitly after resolving it.",true,cx);
                 }
                 self.transcript.interaction_changed(&key);
+                self.browser_close_authentication_request(&key);
                 self.pending.insert(key, interaction);
             }
             Update::Connected {
@@ -2015,6 +2012,7 @@ impl Shell {
         self.chat_tools.retire();
         self.environment.retire_popup();
         let panel = self.track_environment_panel(panel);
+        self.device.retire();
         if panel != Panel::Files {
             self.cancel_editor_history();
         }

@@ -443,7 +443,6 @@ impl NativeHost {
         document.validate().map_err(|e| e.to_string())?;
         let agent = matches!(partition, StoragePartition::AgentTask(_));
         let manual = partition == StoragePartition::Manual;
-        let authentication = matches!(partition, StoragePartition::Authentication(_));
         if agent && allowed.as_ref() != Some(&document.origin) {
             return Err("Missing approved navigation origin".into());
         }

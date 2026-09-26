@@ -558,14 +558,18 @@ fn native_manual_navigation_uses_current_identity_and_never_agent_authority() {
     );
 }
 
-
 #[test]
 fn authentication_popup_retains_flow_partition_and_agent_isolation() {
     let (mut s, _) = fixture();
     let profile = BrowserProfile::Authentication { flow: 44 };
     let source = s.open(profile).unwrap();
-    s.user_navigate(source, "https://login.example.test/start", NavigationKind::Push, 0)
-        .unwrap();
+    s.user_navigate(
+        source,
+        "https://login.example.test/start",
+        NavigationKind::Push,
+        0,
+    )
+    .unwrap();
     let navigation = s.tabs[&source].navigation.as_ref().unwrap().0;
     s.event(Event::Committed {
         tab: source,
@@ -588,10 +592,7 @@ fn authentication_popup_retains_flow_partition_and_agent_isolation() {
     assert!(s.manual_popup_preview(source).is_err());
 
     let (popup, url) = s.open_popup(source, 1).unwrap();
-    assert_eq!(
-        url,
-        "https://login.example.test/oauth?code=secret#callback"
-    );
+    assert_eq!(url, "https://login.example.test/oauth?code=secret#callback");
     assert_eq!(s.tabs[&popup].view.profile, profile);
     assert!(s.popup_preview(source).unwrap().is_none());
 

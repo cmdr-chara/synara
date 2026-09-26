@@ -544,7 +544,6 @@ fn a_selected_tab_row_without_a_view_never_maps_the_native_surface() {
     assert!(host.visible_bounds().is_none());
 }
 
-
 /// Real WebKitGTK authentication flow with cookie-backed session state and a
 /// denied-by-default popup that the trusted host reopens in the same partition.
 #[test]
@@ -664,15 +663,21 @@ fn real_webkit_authentication_login_session_and_popup() {
         );
         std::thread::sleep(Duration::from_millis(10));
     }
+    let popup_preview = format!("{base}/oauth");
     assert_eq!(
         session.popup_preview(source).unwrap().as_deref(),
-        Some(format!("{base}/oauth").as_str())
+        Some(popup_preview.as_str())
     );
 
     let (popup, popup_url) = session.open_popup(source, now()).unwrap();
     assert_eq!(popup_url, format!("{base}/oauth?code=secret"));
     assert_eq!(
-        session.tabs().iter().find(|view| view.id == popup).unwrap().profile,
+        session
+            .tabs()
+            .iter()
+            .find(|view| view.id == popup)
+            .unwrap()
+            .profile,
         profile
     );
     wait_ready(&mut host, &mut session, popup);

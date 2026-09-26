@@ -1245,7 +1245,10 @@ mod tests {
             parse_pdf_links(output, 1).unwrap(),
             ["https://example.com/report?q=private"]
         );
-        assert!(parse_pdf_links(output, 2).unwrap().is_empty());
+        assert_eq!(
+            parse_pdf_links(output, 2).unwrap(),
+            ["https://second.example/"]
+        );
         assert!(parse_pdf_links(b"not pdfinfo output", 1).is_err());
     }
 

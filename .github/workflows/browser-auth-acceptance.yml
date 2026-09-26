@@ -1,7 +1,7 @@
 name: Authenticated browser acceptance
 on:
   push:
-    branches: [main]
+    branches: [main, astra/gpui-clean-rewrite]
     paths:
       - 'crates/synara-browser/**'
       - '.github/workflows/browser-auth-acceptance.yml'

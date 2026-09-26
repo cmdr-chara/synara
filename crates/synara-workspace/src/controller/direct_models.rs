@@ -209,7 +209,7 @@ impl Controller {
                 "required":["stopMatched","confidence","reason"],
                 "properties":{
                     "stopMatched":{"type":"boolean"},
-                    "confidence":{"type":"number","minimum":0,"maximum":1},
+                    "confidence":{"type":"number"},
                     "reason":{"type":"string","maxLength":2000}
                 }
             }),
@@ -499,6 +499,11 @@ fn model_error(error: synara_model::ModelError) -> WorkspaceError {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::{
+        AutomationContextPolicy, AutomationId, AutomationMode, AutomationSchedule,
+        DEFAULT_AUTOMATION_HEARTBEAT_COOLDOWN_SECONDS, DEFAULT_AUTOMATION_MAX_RUNTIME_SECONDS,
+        MissedRunPolicy, now_ms,
+    };
     struct NeverLaunch;
     #[async_trait::async_trait]
     impl AgentBackend for NeverLaunch {

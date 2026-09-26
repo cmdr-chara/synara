@@ -1,0 +1,67 @@
+name: Fresh-install real-provider onboarding acceptance
+on:
+  workflow_dispatch:
+    inputs:
+      revision:
+        description: Exact reviewed commit to exercise
+        required: true
+        type: string
+      provider_profile_json:
+        description: Provider profile JSON (id/name/command/args only; never credentials)
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: live-onboarding-acceptance
+  cancel-in-progress: false
+jobs:
+  real-provider:
+    runs-on: [self-hosted, synara-live-provider]
+    timeout-minutes: 30
+    env:
+      RUSTUP_TOOLCHAIN: '1.98.1'
+      CARGO_BUILD_JOBS: '2'
+      SYNARA_LIVE_PROVIDER_PROFILE: ${{ inputs.provider_profile_json }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          ref: ${{ inputs.revision }}
+          persist-credentials: false
+      - name: Verify exact candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "${{ inputs.revision }}" =~ ^[0-9a-f]{40}$ ]]
+          test "$(git rev-parse HEAD)" = "${{ inputs.revision }}"
+      - name: Install native acceptance prerequisites
+        shell: bash
+        run: |
+          set -euo pipefail
+          rustup toolchain install 1.98.1 --profile minimal
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libwebkit2gtk-4.1-dev libgtk-3-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil xclip fonts-dejavu-core fonts-liberation
+      - name: Build actual GPUI app and fixture support binary
+        shell: bash
+        run: cargo +1.98.1 build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture
+      - name: Exercise fresh-install onboarding with the real provider account
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p acceptance-evidence
+          python3 scripts/native_onboarding_live_smoke.py             --binary target/debug/synara-app             --fixture target/debug/synara-acp-fixture             --output acceptance-evidence/onboarding 2>&1 | tee acceptance-evidence/onboarding.log
+          grep -q 'ONBOARDING_LIVE_ACCEPTANCE:' acceptance-evidence/onboarding.log
+      - name: Verify source identity
+        if: always()
+        shell: bash
+        run: |
+          git diff --exit-code
+          git diff --cached --exit-code
+          test "$(git rev-parse HEAD)" = "${{ inputs.revision }}"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: live-onboarding-acceptance
+          path: acceptance-evidence/
+          retention-days: 7
+          if-no-files-found: error

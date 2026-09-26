@@ -9,22 +9,25 @@ Detailed parity evidence lives in:
 
 ## Current status
 
-- Shipped feature slices: **83**
+- Shipped feature slices: **84**
 - Major remaining: **10**
 - Smaller remaining: **0**
-- Acceptance/integration remaining: **5**
-- Total remaining: **15**
+- Acceptance/integration remaining: **4**
+- Total remaining: **14**
 - Completely missing top-level surfaces: **0**
-- Broad verification gates still open: **21**
+- Broad verification gates still open: **20**
 
-The **15-item count is the execution count to use going forward**. The 21 verification
+The **14-item count is the execution count to use going forward**. The 20 open verification
 gates are larger acceptance buckets and are not a feature count.
 
 Current upstream reference: `Emanuele-web04/synara@eaa61eded31b6755d4f30ba8eabc5d905cf817cb`.
 
-Batch 7 validation: roadmap, formatting, native compilation and focused tests passed
-after compile corrections. Strict lint corrections accompany batch 8; Xvfb-backed
-journeys and the cancelled WebKit job remain unverified.
+Current continuation status: A05 authenticated browser acceptance passed on exact
+candidate `163d59cf1eaba301e413f1d02848a4d4cb397f69`, and A09 provider
+interoperability passed on `fd41caa5d7077d9176afe749b2c2fe3f0cb57c03`.
+The mainline M01/M02/M06/M13/M15 implementations are also incorporated. A01 and
+A04 now have explicit opt-in live acceptance lanes but still require suitably
+configured real machines/provider state before they can close.
 
 ## Major features remaining
 
@@ -93,7 +96,7 @@ not large new product subsystems.
 - [x] A06 Real macOS Simulator/device acceptance
 - [x] A07 SSH worktree/search acceptance
 - [ ] A08 Signed release feed/install/rollback package acceptance
-- [ ] A09 Multi-provider ACP/direct-model interoperability matrix
+- [x] A09 Multi-provider ACP/direct-model interoperability matrix
 - [ ] A10 Cross-platform visual/accessibility/save-picker acceptance
 
 ## Next execution queue
@@ -489,8 +492,10 @@ Verification receipts:
 [batch 32](docs/verification/parity-2026-09-25-batch32.md),
 [batch 33](docs/verification/parity-2026-09-25-batch33.md),
 [batch 34](docs/verification/parity-2026-09-25-batch34.md),
-[batch 35](docs/verification/parity-2026-09-25-batch35.md),
-[batch 36](docs/verification/parity-2026-09-26-batch36.md).
+[batch 35 - Simulator](docs/verification/parity-2026-09-25-batch35.md),
+[batch 35 - provider/browser](docs/verification/parity-2026-09-26-batch35.md),
+[batch 36](docs/verification/parity-2026-09-26-batch36.md),
+[batch 37](docs/verification/parity-2026-09-26-batch37.md).
 
 - Batch 32: acceptance infrastructure now has a dedicated Linux/macOS/Windows
   native build and development-package matrix. macOS development packaging uses
@@ -511,47 +516,48 @@ Verification receipts:
   voice or platform packaging. A01 remains the separate live microphone +
   ChatGPT transcription end-to-end gate.
 
-- Batch 34: A07 is accepted on the exact candidate
-  `7105eb0b0cab24cf89d481ebfa2c31e6c8731000`. The isolated SSH lane passed
-  11 runtime transport/filesystem/terminal tests and 7 workspace Git/worktree
-  tests, then completed the native GPUI remote journey covering pinned
-  enrollment, guarded save, content and filename search, direct terminal input,
-  explicit restart, and process-owned shutdown before window close. The
-  acceptance harness now routes terminal-lifecycle and confirmation-UI changes
-  deterministically through the SSH lane.
 
-- Batch 35: A06 is accepted on hosted macOS arm64 against a real CoreSimulator
-  runtime. Exact candidate `cf9237f7e072b7b729cc1a84c593c74b0d289cfe`
-  discovered and booted an iPhone 15 Pro on iOS 17.0 through Synara's
-  `DeviceTools` owner, captured a PNG screenshot, opened a reviewed HTTP URL,
-  launched/terminated Safari, compiled and installed a fresh local simulator
-  `.app`, launched/terminated it, and shut the simulator down. M13-M16 remain
-  open for live frames, native input, recording and accessibility targeting.
+### September 26 continuation
 
+- Batch 35: M08 is complete at the product-feature level. Provider website
+  requests now open in request-owned authentication profiles, cookies stay
+  isolated from manual and agent-task browsing, and reviewed popup children
+  retain the exact authentication partition. Popup navigation is withheld until
+  explicit host review, and request completion, cancellation or expiry closes the
+  owned authentication flow. A05 remains open because the branch-head real
+  WebKit journey still fails to deliver the trusted X11 click to the auth page.
+- A09 is accepted on exact candidate
+  `fd41caa5d7077d9176afe749b2c2fe3f0cb57c03`. The dedicated native provider
+  lane passed external OpenCode and Gemini CLI ACP initialization probes plus
+  representative Google and Anthropic direct-model journeys, ACP/direct route
+  switching and task/conversation ownership checks. This supplies the deciding
+  evidence for N5, which is now PASS. See the
+  [batch 35 receipt](docs/verification/parity-2026-09-26-batch35.md).
 - Batch 36: A05 is accepted on exact candidate
-  `63c507a7e1f0a4651ae4b8009c502ecac7c27641`. A dedicated real WebKitGTK
-  lane proved an authentication flow can retain cookie-backed session state,
-  capture an OAuth-style popup without granting an unmanaged window, reopen it
-  explicitly inside the same isolated authentication partition, and keep those
-  cookies out of the manual browser profile. Agent-task popup authority remains
-  denied. The lane also passed strict browser formatting/Clippy and source
-  identity checks. M07, M08 and M11 remain separate product-depth gaps.
+  `163d59cf1eaba301e413f1d02848a4d4cb397f69`. The dedicated authenticated
+  browser lane passed the partition/authority unit contract and a real
+  WebKitGTK/Xvfb login journey covering cookie-backed session continuity,
+  pre-navigation popup review, same-flow popup ownership, opener callback/form
+  POST behavior, isolation from manual/other-auth profiles, final-tab cleanup,
+  formatting and strict Clippy. D2 remains OPEN because M07, M09, M11 and M12
+  are still product-depth gaps. A01 also gained a manual-only live acceptance
+  workflow for a physical microphone plus a ChatGPT-authenticated Codex session.
+  See the [batch 36 receipt](docs/verification/parity-2026-09-26-batch36.md).
 
 
-- Batch 37: six product features complete: M01 adds explicit task-owned web
-  provider connection/reconnection and advertised authentication, including
-  scoped questions and reviewed URLs. M02 adds live bounded tool input, proposed
-  diffs and exact-context approval receipts. M06 adds an explicit HTTPS origin,
-  local TLS proxy/service configuration and versioned Linux headless packaging,
-  activation and rollback. M08 adds request-owned private sign-in tabs, reviewed
-  native popups preserving opener callbacks and POSTs, and full request/close/
-  timeout cleanup. M13 adds a bounded latest-frame Simulator stream; M15 adds
-  explicit MOV recording with stop/save/discard and navigation cancellation.
-  Computer Use also gains screenshot targeting, drag, scroll, typing/key controls,
-  window filtering and takeover; M27 remains open for broader platform support.
-  New native browser and Simulator paths await platform CI/live acceptance;
-  account, signed-updater and broad verification gates remain separate.
-  See the [batch 37 receipt](docs/verification/parity-2026-09-26-batch37.md).
+- Batch 37: six product features complete on the mainline implementation: M01
+  adds explicit task-owned web provider connection/reconnection and advertised
+  authentication. M02 adds live bounded tool input, proposed diffs and exact-
+  context approval receipts. M06 adds an explicit HTTPS origin, local TLS proxy/
+  service configuration and versioned Linux headless packaging, activation and
+  rollback. M08 adds request-owned private sign-in tabs and reviewed native
+  popups; the Rust branch subsequently hardened this path and passed A05. M13
+  adds bounded latest-frame Simulator streaming, and M15 adds explicit MOV
+  recording with stop/save/discard and navigation cancellation. Computer Use
+  also gains screenshot targeting, drag, scroll, typing/key controls, window
+  filtering and takeover; M27 remains open for broader platform support. See the
+  [batch 37 receipt](docs/verification/parity-2026-09-26-batch37.md).
+
 
 ## How to update this roadmap
 
@@ -563,4 +569,4 @@ When a remaining item ships:
 5. Keep the broader verification gate OPEN until its full workflow and required
    provider/platform failure paths are actually accepted.
 
-Do not use the 21-gate count as the feature count.
+Do not use the broad verification gate count as the feature count.

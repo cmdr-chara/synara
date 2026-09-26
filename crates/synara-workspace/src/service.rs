@@ -1370,7 +1370,7 @@ mod tests {
     use super::*;
     use std::process::Command;
 
-    pub(super) fn git(root: &Path, args: &[&str]) {
+    pub(super) fn git(root: &Path, args: &[&str]) -> String {
         let output = Command::new("git")
             .arg("-C")
             .arg(root)
@@ -1382,6 +1382,7 @@ mod tests {
             "git {args:?} failed: {}",
             String::from_utf8_lossy(&output.stderr)
         );
+        String::from_utf8_lossy(&output.stdout).into_owned()
     }
 
     pub(super) fn repository(root: &Path) {

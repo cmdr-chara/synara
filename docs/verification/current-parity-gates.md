@@ -12,8 +12,8 @@ observed; a green compile or narrow unit test alone does not close it.
 [roadmap's delivered-slice inventory](../../ROADMAP.md#delivered-feature-slices-in-the-september-23-sprint)
 records the original 25 implemented, pushed slices and the separate September 24
 continuation inventory. This ledger tracks
-larger end-to-end parity outcomes, so all 21 gates can remain open while those
-additions are available.
+larger end-to-end parity outcomes. After the September 26 provider acceptance,
+20 gates remain OPEN while those additions are available.
 
 | Gate | Outcome needed to close the current-head gap | Deciding evidence | State |
 | --- | --- | --- | --- |
@@ -37,7 +37,7 @@ additions are available.
 | N2 File/source search | Match ranking, ignored-file and platform behavior of project search | Local/SSH fixtures plus native navigation/search acceptance | OPEN |
 | N3 Thread export | Complete structured metadata and save-picker/platform behavior | Round-trip content/privacy and native save-picker journeys | OPEN |
 | N4 Replies/context reuse | Match upstream selection-to-current/side/new-task interaction | Context and branch placement journeys | OPEN |
-| N5 Multi-provider workspace | Prove representative upstream runtime breadth and provider-specific UX | ACP/direct-provider interoperability matrix | OPEN |
+| N5 Multi-provider workspace | Prove representative upstream runtime breadth and provider-specific UX | ACP/direct-provider interoperability matrix | PASS |
 
 `M` denotes a baseline missing surface, `D` a material depth gap and `N` a
 near-parity lane. Each row is a separately auditable outcome. When a slice lands,
@@ -265,3 +265,65 @@ and wider platform acceptance remain open. See
 [batch6 scope and evidence](parity-2026-09-24-batch6.md),
 [batch14 scope](parity-2026-09-25-batch14.md) and
 [batch15 completion](parity-2026-09-25-batch15.md).
+
+## September 25 acceptance checkpoint - batch 34
+
+Two acceptance/integration items now have deciding live-environment evidence.
+A06 passed on hosted macOS arm64 against a real iOS Simulator, including Synara
+discovery/boot, frame capture, URL opening and state restoration. A07 passed on
+the current branch head with isolated pinned-SSH transport, remote filesystem,
+search, PTY, managed-worktree/Git lifecycle and native GPUI journeys.
+
+These receipts close the corresponding roadmap acceptance items, not the broad
+parity gates. D3 remains OPEN while M13-M16 are still missing. D5/D12/N2 remain
+OPEN wherever their full workflow criteria extend beyond the accepted SSH
+journey. See [batch 34](parity-2026-09-25-batch34.md).
+
+## September 26 acceptance checkpoint - batch 35
+
+The representative multi-provider matrix now has deciding acceptance evidence.
+GitHub Actions run `36194519926`, job `108267198945`, passed on exact
+candidate `fd41caa5d7077d9176afe749b2c2fe3f0cb57c03`. It covered reviewed
+external OpenCode and Gemini CLI ACP initialization plus native Google and
+Anthropic direct-model journeys, ACP/direct route switching, durable
+conversation continuity and task/provider ownership boundaries.
+
+That evidence closes N5. D6, D11 and D12 remain OPEN where their criteria extend
+to richer context controls, real account/quota telemetry or additional live
+provider/worktree cases.
+
+M08 is also complete at product-feature level through request-owned
+authentication partitions and reviewed same-flow popup handling. D2 and A05
+remain OPEN: branch-head Native WebKit run `36195025196`, job
+`108268868564`, still fails the real authentication journey because the trusted
+X11 click does not reach the authentication WebKit page. M07, M09, M11 and M12
+also remain separate browser-depth gaps.
+
+See [batch 35](parity-2026-09-26-batch35.md).
+
+## September 26 acceptance checkpoint - batch 36
+
+A05 now has deciding live-environment evidence. Authenticated browser acceptance
+run `36241446487`, job `108402605713`, passed on exact candidate
+`163d59cf1eaba301e413f1d02848a4d4cb397f69`. It proved the
+authentication-partition authority contract and a real WebKitGTK login/session/
+popup journey, then passed formatting and strict Clippy.
+
+The flow retains authentication cookies only inside the reviewed flow, prevents
+the popup destination from becoming an unmanaged window, preserves same-flow
+opener callback/form POST behavior after explicit review, isolates Manual and
+separate authentication profiles, and destroys the ephemeral profile after its
+final tab closes.
+
+A05 is therefore accepted. D2 remains OPEN because protected import, agent
+upload/download, safe task/auth restoration and page WebMCP remain separate
+product gaps (M07, M09, M11 and M12).
+
+A01 remains OPEN, but batch 36 adds a dedicated manual acceptance lane requiring
+a self-hosted machine labeled `synara-live-voice`, a physical/default
+microphone with OS permission and a ChatGPT-authenticated Codex installation.
+The ignored live test records real microphone input and exercises the exact
+Codex-auth-to-official-ChatGPT transcription path without logging transcript
+content.
+
+See [batch 36](parity-2026-09-26-batch36.md).

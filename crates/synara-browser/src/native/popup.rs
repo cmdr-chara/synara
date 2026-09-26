@@ -1,4 +1,4 @@
-//! Related OAuth windows stay hidden and resource-blocked until explicit review.
+//! Related OAuth windows stay hidden and navigation-blocked until explicit review.
 use super::*;
 
 #[derive(Clone, Copy)]
@@ -7,12 +7,14 @@ struct Authority {
     navigation: HostNavigationId,
     epoch: u64,
 }
+
 #[derive(Default)]
 struct Gate {
     authority: Option<Authority>,
     decision: Option<webkit2gtk::PolicyDecision>,
     cancelled: bool,
 }
+
 pub(super) struct Pending {
     pub epoch: u64,
     pub url: String,
@@ -20,8 +22,8 @@ pub(super) struct Pending {
     pub view: Option<WebView>,
     pub completed: Rc<Cell<bool>>,
     gate: Rc<RefCell<Gate>>,
-    filter: webkit2gtk::UserContentFilter,
 }
+
 impl Pending {
     pub fn activate(
         &self,
@@ -39,9 +41,6 @@ impl Pending {
             });
             gate.decision.take()
         };
-        if let Some(manager) = web.user_content_manager() {
-            manager.remove_filter(&self.filter);
-        }
         if let Some(settings) = WebViewExt::settings(web) {
             settings.set_enable_javascript(true);
         }
@@ -50,6 +49,7 @@ impl Pending {
         }
     }
 }
+
 impl Drop for Pending {
     fn drop(&mut self) {
         if self.view.is_some() {
@@ -70,7 +70,6 @@ pub(super) fn create(
     url: String,
     opener: webkit2gtk::WebView,
     pending: Rc<RefCell<BTreeMap<HostTabId, Pending>>>,
-    filter: Rc<RefCell<Option<webkit2gtk::UserContentFilter>>>,
     shared: Arc<bridge::Shared>,
     events: Events,
     source: HostTabId,
@@ -78,9 +77,6 @@ pub(super) fn create(
     epoch: u64,
 ) -> wry::NewWindowResponse {
     let Ok(document) = CommittedDocument::parse(&url) else {
-        return wry::NewWindowResponse::Deny;
-    };
-    let Some(rule) = filter.borrow().clone() else {
         return wry::NewWindowResponse::Deny;
     };
     if shared.epoch(source) != Some(epoch) {
@@ -92,14 +88,15 @@ pub(super) fn create(
     else {
         return wry::NewWindowResponse::Deny;
     };
+
     let gate = Rc::new(RefCell::new(Gate::default()));
     let completed = Rc::new(Cell::new(false));
     let child_gate = gate.clone();
     let child_complete = completed.clone();
     let child_pending = pending.clone();
-    let child_filter = filter.clone();
     let child_shared = shared.clone();
     let child_events = events.clone();
+
     let result = WebViewBuilder::new()
         .with_related_view(opener)
         .with_visible(false)
@@ -112,7 +109,6 @@ pub(super) fn create(
                     url,
                     features.opener.webview,
                     child_pending.clone(),
-                    child_filter.clone(),
                     child_shared.clone(),
                     child_events.clone(),
                     authority.tab,
@@ -128,16 +124,16 @@ pub(super) fn create(
     let Ok(view) = result else {
         return wry::NewWindowResponse::Deny;
     };
+
     let web = view.webview();
     WebViewExt::set_settings(&web, &webkit2gtk::Settings::new());
     harden(&web, StoragePartition::Authentication(0));
-    let Some(manager) = web.user_content_manager() else {
-        return wry::NewWindowResponse::Deny;
-    };
-    manager.add_filter(&rule);
     if let Some(settings) = WebViewExt::settings(&web) {
+        // The related view exists so WebKit can preserve opener/session state,
+        // but no page code runs before the reviewed top-level policy resumes.
         settings.set_enable_javascript(false);
     }
+
     let policy_gate = gate.clone();
     let policy_shared = shared.clone();
     let expected = document.canonical_url.clone();
@@ -151,6 +147,7 @@ pub(super) fn create(
             .and_then(|action| action.request())
             .and_then(|request| request.uri())
             .and_then(|uri| CommittedDocument::parse(uri.as_str()).ok());
+
         let mut gate = policy_gate.borrow_mut();
         if gate.cancelled || target.is_none() {
             decision.ignore();
@@ -167,12 +164,15 @@ pub(super) fn create(
         } else if gate.decision.is_none()
             && target.is_some_and(|target| target.canonical_url == expected)
         {
+            // Holding the policy decision prevents the popup's top-level request
+            // from being committed until trusted UI explicitly approves it.
             gate.decision = Some(decision.clone());
         } else {
             decision.ignore();
         }
         true
     });
+
     pending.borrow_mut().insert(
         source,
         Pending {
@@ -182,7 +182,6 @@ pub(super) fn create(
             view: Some(view),
             completed,
             gate,
-            filter: rule,
         },
     );
     events.emit(Event::PopupRequested {
@@ -191,52 +190,4 @@ pub(super) fn create(
         url: document.canonical_url,
     });
     wry::NewWindowResponse::Create { webview: web }
-}
-
-#[allow(clippy::too_many_arguments)]
-pub(super) fn protected_load(
-    web: webkit2gtk::WebView,
-    url: String,
-    root: PathBuf,
-    filter: Rc<RefCell<Option<webkit2gtk::UserContentFilter>>>,
-    shared: Arc<bridge::Shared>,
-    events: Events,
-    tab: HostTabId,
-    navigation: HostNavigationId,
-    epoch: u64,
-) -> std::result::Result<(), String> {
-    if filter.borrow().is_some() {
-        web.load_uri(&url);
-        return Ok(());
-    }
-    let root = root.join("popup-rules");
-    private_directory(&root)?;
-    let store = webkit2gtk::UserContentFilterStore::new(
-        root.to_str().ok_or("Invalid popup rule directory")?,
-    );
-    let rules = gtk::glib::Bytes::from_static(
-        br#"[{"trigger":{"url-filter":".*","resource-type":["image","style-sheet","script","font","raw","svg-document","media","popup"]},"action":{"type":"block"}}]"#,
-    );
-    store.save(
-        "synara-popup-quarantine",
-        &rules,
-        None::<&gio::Cancellable>,
-        move |result| {
-            if shared.epoch(tab) != Some(epoch) {
-                return;
-            }
-            match result {
-                Ok(rule) => {
-                    *filter.borrow_mut() = Some(rule);
-                    web.load_uri(&url);
-                }
-                Err(_) => events.emit(Event::Failed {
-                    tab,
-                    navigation,
-                    error: "Could not protect sign-in popups".into(),
-                }),
-            }
-        },
-    );
-    Ok(())
 }

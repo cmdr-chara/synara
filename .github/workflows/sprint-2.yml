@@ -50,6 +50,9 @@ jobs:
             sprint-2-v1-${{ runner.os }}-
       - name: Source, roadmap and baseline checks
         run: |
+          # The historical ledger predates the independent native rewrite and
+          # is intentionally not reachable from main's commit history.
+          git fetch --no-tags origin fe515833c565d666204f24e5257d85025dede0e9
           mkdir -p /tmp/native-conversation-evidence
           set -o pipefail
           python3 scripts/verify_sprint2_integration.py --output /tmp/native-conversation-evidence 2>&1 | tee /tmp/native-conversation-evidence/source-checks.log

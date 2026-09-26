@@ -2,7 +2,8 @@
 use super::*;
 use crate::ui::{self, palette};
 use synara_model::{
-    HttpModelProvider, ModelInfo, OutputFormat, ProviderCatalog, custom_profile_example,
+    HttpModelProvider, ModelInfo, OutputFormat, ProviderCatalog, ProviderTelemetry,
+    custom_profile_example,
 };
 mod options;
 mod view;
@@ -15,6 +16,7 @@ pub(super) enum Reply {
     Selected(TaskId, Option<DirectModelBinding>),
     Catalog(ProviderCatalog),
     Discovered(String, u64, Vec<ModelInfo>),
+    Telemetry(String, u64, ProviderTelemetry),
     KeyChanged,
     Failed(String),
 }
@@ -51,6 +53,7 @@ pub(super) struct DirectModelState {
     options: Entity<TextEntry>,
     editing: bool,
     catalog: Option<ProviderCatalog>,
+    telemetry: HashMap<String, (u64, ProviderTelemetry)>,
     expanded: Option<String>,
     review: Option<Review>,
     _subscription: Subscription,
@@ -86,6 +89,7 @@ impl DirectModelState {
             options,
             editing: false,
             catalog: None,
+            telemetry: HashMap::new(),
             expanded: None,
             review: None,
             _subscription: subscription,
@@ -306,6 +310,30 @@ impl Shell {
         }
         cx.notify();
     }
+    fn refresh_direct_provider_telemetry(&mut self, id: String, cx: &mut Context<Self>) {
+        if self.direct_models.editing || self.direct_models.review.is_some() {
+            return;
+        }
+        let Some(value) = self.direct_models.value.as_ref() else {
+            return;
+        };
+        if !value.providers.iter().any(|profile| profile.id == id) {
+            return;
+        }
+        let revision = value.revision;
+        let controller = self.controller.clone();
+        self.direct_model_job(
+            async move {
+                controller
+                    .direct_provider_telemetry(id.clone(), revision)
+                    .await
+                    .map(|telemetry| Reply::Telemetry(id, revision, telemetry))
+                    .map_err(|e| e.to_string())
+            },
+            cx,
+        );
+    }
+
     fn discover_direct_models(&mut self, id: String, cx: &mut Context<Self>) {
         if self.direct_models.editing || self.direct_models.review.is_some() {
             return;
@@ -572,6 +600,9 @@ impl Shell {
         self.direct_models.busy = false;
         match reply {
             Reply::Loaded(value, favorites) => {
+                self.direct_models
+                    .telemetry
+                    .retain(|_, (revision, _)| *revision == value.revision);
                 self.direct_models.value = Some(value);
                 match favorites {
                     Ok(favorites) => {
@@ -589,6 +620,7 @@ impl Shell {
                 }
             }
             Reply::Saved(value) => {
+                self.direct_models.telemetry.clear();
                 self.direct_models.value = Some(value);
                 self.direct_models.editing = false;
                 self.direct_models.notice=Some("Provider metadata saved. Changed profiles require model re-selection. No request was sent.".into());
@@ -646,6 +678,20 @@ impl Shell {
                                 .into(),
                         );
                     }
+                }
+            }
+            Reply::Telemetry(id, revision, telemetry) => {
+                if self
+                    .direct_models
+                    .value
+                    .as_ref()
+                    .is_some_and(|settings| settings.revision == revision)
+                {
+                    self.direct_models.telemetry.insert(id, (revision, telemetry));
+                    self.direct_models.notice = Some(
+                        "Live provider metadata refreshed. Only values returned by the reviewed endpoint are shown."
+                            .into(),
+                    );
                 }
             }
             Reply::KeyChanged => {

@@ -4,6 +4,41 @@ fn note(text: impl Into<SharedString>) -> gpui::Div {
     let text: SharedString = text.into();
     div().text_sm().text_color(rgb(palette().muted)).child(text)
 }
+fn telemetry_note(telemetry: &ProviderTelemetry) -> String {
+    let quota = |name: &str, value: &synara_model::RateLimitTelemetry| {
+        if value.limit.is_none() && value.remaining.is_none() && value.reset.is_none() {
+            return None;
+        }
+        Some(format!(
+            "{name} quota: limit {} · remaining {} · reset {}",
+            value.limit.map_or_else(|| "not reported".into(), |v| v.to_string()),
+            value
+                .remaining
+                .map_or_else(|| "not reported".into(), |v| v.to_string()),
+            value.reset.as_deref().unwrap_or("not reported")
+        ))
+    };
+    let mut parts = vec![if telemetry.credentialed {
+        "Credentialed provider metadata request succeeded.".to_owned()
+    } else {
+        "Live provider metadata request succeeded; this profile declares no credential.".to_owned()
+    }];
+    if let Some(value) = quota("Request", &telemetry.requests) {
+        parts.push(value);
+    }
+    if let Some(value) = quota("Token", &telemetry.tokens) {
+        parts.push(value);
+    }
+    if let Some(retry) = &telemetry.retry_after {
+        parts.push(format!("Retry-After: {retry}"));
+    }
+    if parts.len() == 1 {
+        parts.push("Rate/quota headers were not reported by this endpoint.".into());
+    }
+    parts.push("Billing/credits: not exposed by this provider metadata endpoint.".into());
+    parts.join(" ")
+}
+
 fn row() -> gpui::Div {
     div()
         .py_3()
@@ -301,6 +336,7 @@ impl Shell {
             }) {
                 let id = profile.id.clone();
                 let discover = id.clone();
+                let telemetry_id = id.clone();
                 let store = id.clone();
                 let delete = id.clone();
                 body = body.child(
@@ -353,6 +389,25 @@ impl Shell {
                                     .relative()
                                     .child(ui::layout_probe("direct-discover")),
                                 )
+                                .child(
+                                    ui::action(
+                                        ("direct-telemetry", index),
+                                        "Refresh live account",
+                                        None,
+                                        false,
+                                        cx.listener(move |this, _, _, cx| {
+                                            this.refresh_direct_provider_telemetry(
+                                                telemetry_id.clone(),
+                                                cx,
+                                            )
+                                        }),
+                                    )
+                                    .relative()
+                                    .children(
+                                        (index == 0)
+                                            .then(|| ui::layout_probe("direct-first-telemetry")),
+                                    ),
+                                )
                                 .children(profile.requires_key.then(|| {
                                     ui::action(
                                         ("direct-key", index),
@@ -375,6 +430,13 @@ impl Shell {
                                         }),
                                     )
                                 })),
+                        )
+                        .children(
+                            state
+                                .telemetry
+                                .get(&profile.id)
+                                .filter(|(revision, _)| *revision == value.revision)
+                                .map(|(_, telemetry)| note(telemetry_note(telemetry))),
                         ),
                 );
                 if state.expanded.as_ref() == Some(&profile.id) {

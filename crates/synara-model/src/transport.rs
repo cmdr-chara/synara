@@ -6,7 +6,10 @@ use crate::{
 mod discovery;
 use async_trait::async_trait;
 use futures::StreamExt;
-use reqwest::{Client, RequestBuilder, header::HeaderValue};
+use reqwest::{
+    Client, RequestBuilder,
+    header::{HeaderMap, HeaderValue},
+};
 use std::time::Duration;
 use synara_runtime::SecretStore;
 use tokio::sync::mpsc;
@@ -182,6 +185,51 @@ impl HttpModelProvider {
         }
         Err(ModelError::Protocol)
     }
+    /// Explicit live provider/account probe. This performs one authenticated
+    /// metadata request against the reviewed provider endpoint and reports only
+    /// bounded rate/quota headers actually returned by that provider. It never
+    /// infers billing, subscription tier, credits or account identity.
+    pub async fn account_telemetry(
+        &self,
+        profile: &ProviderProfile,
+        secrets: &dyn SecretStore,
+        cancellation: CancellationToken,
+    ) -> ModelResult<ProviderTelemetry> {
+        profile.validate()?;
+        let mut url = profile
+            .base_url()?
+            .join("models")
+            .map_err(|_| ModelError::Invalid("models URL"))?;
+        match profile.protocol {
+            ProtocolFamily::GoogleGenerateContent => {
+                url.query_pairs_mut().append_pair("pageSize", "1");
+            }
+            ProtocolFamily::AnthropicMessages => {
+                url.query_pairs_mut().append_pair("limit", "1");
+            }
+            ProtocolFamily::OpenAiChat => {}
+        }
+        let mut builder = self.client.get(url).header("accept", "application/json");
+        if profile.protocol == ProtocolFamily::AnthropicMessages {
+            builder = builder.header("anthropic-version", "2023-06-01");
+        }
+        let response = tokio::select! {
+            biased;
+            () = cancellation.cancelled() => return Err(ModelError::Cancelled),
+            response = self.authorize(builder, profile, secrets) => {
+                let builder = response?;
+                tokio::time::timeout(Duration::from_secs(30), builder.send())
+                    .await
+                    .map_err(|_| ModelError::Transport)?
+                    .map_err(|_| ModelError::Transport)?
+            }
+        };
+        if !response.status().is_success() {
+            return Err(ModelError::Http(response.status().as_u16()));
+        }
+        telemetry_from_headers(profile, response.headers())
+    }
+
     async fn models(
         &self,
         profile: &ProviderProfile,
@@ -305,4 +353,78 @@ async fn bounded_json(response: reqwest::Response, limit: usize) -> ModelResult<
         body.extend_from_slice(&chunk);
     }
     serde_json::from_slice(&body).map_err(|_| ModelError::Protocol)
+}
+
+
+fn telemetry_from_headers(
+    profile: &ProviderProfile,
+    headers: &HeaderMap,
+) -> ModelResult<ProviderTelemetry> {
+    fn text(headers: &HeaderMap, names: &[&str]) -> ModelResult<Option<String>> {
+        for name in names {
+            let Some(value) = headers.get(*name) else { continue };
+            let value = value.to_str().map_err(|_| ModelError::Protocol)?.trim();
+            if value.is_empty()
+                || value.len() > 128
+                || value.chars().any(char::is_control)
+            {
+                return Err(ModelError::Protocol);
+            }
+            return Ok(Some(value.to_owned()));
+        }
+        Ok(None)
+    }
+    fn count(headers: &HeaderMap, names: &[&str]) -> ModelResult<Option<u64>> {
+        match text(headers, names)? {
+            None => Ok(None),
+            Some(value) => value
+                .parse::<u64>()
+                .map(Some)
+                .map_err(|_| ModelError::Protocol),
+        }
+    }
+
+    let (request_limit, request_remaining, request_reset, token_limit, token_remaining, token_reset) =
+        match profile.protocol {
+            ProtocolFamily::AnthropicMessages => (
+                &["anthropic-ratelimit-requests-limit", "ratelimit-limit"][..],
+                &["anthropic-ratelimit-requests-remaining", "ratelimit-remaining"][..],
+                &["anthropic-ratelimit-requests-reset", "ratelimit-reset"][..],
+                &["anthropic-ratelimit-tokens-limit"][..],
+                &["anthropic-ratelimit-tokens-remaining"][..],
+                &["anthropic-ratelimit-tokens-reset"][..],
+            ),
+            ProtocolFamily::OpenAiChat => (
+                &["x-ratelimit-limit-requests", "ratelimit-limit"][..],
+                &["x-ratelimit-remaining-requests", "ratelimit-remaining"][..],
+                &["x-ratelimit-reset-requests", "ratelimit-reset"][..],
+                &["x-ratelimit-limit-tokens"][..],
+                &["x-ratelimit-remaining-tokens"][..],
+                &["x-ratelimit-reset-tokens"][..],
+            ),
+            ProtocolFamily::GoogleGenerateContent => (
+                &["x-ratelimit-limit-requests", "ratelimit-limit"][..],
+                &["x-ratelimit-remaining-requests", "ratelimit-remaining"][..],
+                &["x-ratelimit-reset-requests", "ratelimit-reset"][..],
+                &["x-ratelimit-limit-tokens"][..],
+                &["x-ratelimit-remaining-tokens"][..],
+                &["x-ratelimit-reset-tokens"][..],
+            ),
+        };
+
+    Ok(ProviderTelemetry {
+        provider_id: profile.id.clone(),
+        credentialed: profile.requires_key,
+        requests: RateLimitTelemetry {
+            limit: count(headers, request_limit)?,
+            remaining: count(headers, request_remaining)?,
+            reset: text(headers, request_reset)?,
+        },
+        tokens: RateLimitTelemetry {
+            limit: count(headers, token_limit)?,
+            remaining: count(headers, token_remaining)?,
+            reset: text(headers, token_reset)?,
+        },
+        retry_after: text(headers, &["retry-after"])?,
+    })
 }

@@ -9,15 +9,15 @@ Detailed parity evidence lives in:
 
 ## Current status
 
-- Shipped feature slices: **87**
-- Major remaining: **9**
+- Shipped feature slices: **88**
+- Major remaining: **8**
 - Smaller remaining: **0**
 - Acceptance/integration remaining: **2**
-- Total remaining: **11**
+- Total remaining: **10**
 - Completely missing top-level surfaces: **0**
 - Broad verification gates still open: **19**
 
-The **11-item count is the execution count to use going forward**. The 19 open verification
+The **10-item count is the execution count to use going forward**. The 19 open verification
 gates are larger acceptance buckets and are not a feature count.
 
 Current upstream reference: `Emanuele-web04/synara@eaa61eded31b6755d4f30ba8eabc5d905cf817cb`.
@@ -59,7 +59,7 @@ A01 and A10 remain the final acceptance items.
 - [x] M23 SSH managed worktree creation
 - [x] M24 Environment-aware task/fork orchestration
 - [x] M25 Richer model/context controls, including fast/thinking presets and compaction
-- [ ] M26 Real provider/account telemetry integration
+- [x] M26 Real provider/account telemetry integration
 - [ ] M27 Broader Computer Use actions, targeting and preview behavior
 - [ ] M28 Trusted signed updater/install/rollback lifecycle
 - [x] M29 Binary PDF/document attachment pipeline and broader document viewing
@@ -108,9 +108,8 @@ Finish whole workflows instead of spreading work across every gate:
 
 1. **Browser/auth:** M07, M09, M11-M12
 2. **Simulator:** M14, M16 when the required macOS/native input backend is available
-3. **Provider/context:** M26
-4. **Computer Use:** M27
-5. **Releases/updater:** M28
+3. **Computer Use:** M27
+4. **Releases/updater:** M28
 
 ## Shipped
 

@@ -9,15 +9,15 @@ Detailed parity evidence lives in:
 
 ## Current status
 
-- Shipped feature slices: **89**
-- Major remaining: **7**
+- Shipped feature slices: **92**
+- Major remaining: **4**
 - Smaller remaining: **0**
 - Acceptance/integration remaining: **2**
-- Total remaining: **9**
+- Total remaining: **6**
 - Completely missing top-level surfaces: **0**
 - Broad verification gates still open: **19**
 
-The **9-item count is the execution count to use going forward**. The 19 open verification
+The **6-item count is the execution count to use going forward**. The 19 open verification
 gates are larger acceptance buckets and are not a feature count.
 
 Current upstream reference: `Emanuele-web04/synara@eaa61eded31b6755d4f30ba8eabc5d905cf817cb`.
@@ -43,10 +43,10 @@ M07 is also complete: reviewed Netscape/Mozilla cookie jars can be imported only
 - [x] M06 Production headless deployment with bind/TLS/update packaging
 - [x] M07 Protected browser session/cookie import
 - [x] M08 Complete browser popup authentication lifecycle
-- [ ] M09 Agent-controlled browser upload/download
+- [x] M09 Agent-controlled browser upload/download
 - [x] M10 Browser console/runtime diagnostics
-- [ ] M11 Safe restoration of task/auth browser sessions
-- [ ] M12 Page-declared WebMCP integration
+- [x] M11 Safe restoration of task/auth browser sessions
+- [x] M12 Page-declared WebMCP integration
 - [x] M13 Simulator live frame streaming
 - [ ] M14 Simulator touch, swipe, typing and hardware-button input
 - [x] M15 Simulator recording
@@ -107,10 +107,9 @@ not large new product subsystems.
 
 Finish whole workflows instead of spreading work across every gate:
 
-1. **Browser/auth:** M09, M11-M12
-2. **Simulator:** M14, M16 when the required macOS/native input backend is available
-3. **Computer Use:** M27
-4. **Releases/updater:** M28
+1. **Simulator:** M14, M16 when the required macOS/native input backend is available
+2. **Computer Use:** M27
+3. **Releases/updater:** M28
 
 ## Shipped
 

@@ -1,0 +1,57 @@
+name: Live microphone and ChatGPT transcription acceptance
+on:
+  workflow_dispatch:
+    inputs:
+      revision:
+        description: Exact reviewed commit to exercise
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: live-voice-acceptance
+  cancel-in-progress: false
+jobs:
+  live-voice:
+    # This intentionally requires a separately configured machine with a physical
+    # microphone, OS permission and a ChatGPT-authenticated Codex installation.
+    runs-on: [self-hosted, synara-live-voice]
+    timeout-minutes: 20
+    env:
+      RUSTUP_TOOLCHAIN: '1.98.1'
+      SYNARA_VOICE_ACCEPTANCE: live-microphone-chatgpt
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          ref: ${{ inputs.revision }}
+          persist-credentials: false
+      - name: Verify exact candidate and live prerequisites
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "${{ inputs.revision }}" =~ ^[0-9a-f]{40}$ ]]
+          test "$(git rev-parse HEAD)" = "${{ inputs.revision }}"
+          command -v codex
+          mkdir -p acceptance-evidence
+          git rev-parse HEAD > acceptance-evidence/revision.txt
+      - name: Exercise real microphone through ChatGPT transcription
+        shell: bash
+        run: |
+          set -euo pipefail
+          rustup toolchain install 1.98.1 --profile minimal
+          cargo +1.98.1 test --locked -p synara-app --bin synara-app             shell::voice::tests::live_microphone_chatgpt_transcription_end_to_end             -- --ignored --exact --nocapture 2>&1 | tee acceptance-evidence/live-voice.log
+          grep -q 'VOICE_LIVE_ACCEPTANCE: microphone capture + Codex ChatGPT auth + official transcription upload' acceptance-evidence/live-voice.log
+      - name: Verify source identity
+        if: always()
+        shell: bash
+        run: |
+          git diff --exit-code
+          git diff --cached --exit-code
+          test "$(git rev-parse HEAD)" = "${{ inputs.revision }}"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: live-voice-acceptance
+          path: acceptance-evidence/
+          retention-days: 7
+          if-no-files-found: error

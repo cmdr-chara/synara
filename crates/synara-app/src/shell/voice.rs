@@ -1088,6 +1088,45 @@ mod tests {
         assert!(multipart_body(&vec![0; MAX_AUDIO_BYTES + 1]).is_err());
     }
 
+    #[cfg(any(target_os = "linux", target_os = "macos", target_os = "windows"))]
+    #[tokio::test(flavor = "current_thread")]
+    #[ignore = "requires a real microphone and a ChatGPT-authenticated Codex session"]
+    async fn live_microphone_chatgpt_transcription_end_to_end() {
+        assert_eq!(
+            std::env::var("SYNARA_VOICE_ACCEPTANCE").as_deref(),
+            Ok("live-microphone-chatgpt"),
+            "set SYNARA_VOICE_ACCEPTANCE only on the dedicated live acceptance runner"
+        );
+        let stamp = DraftStamp {
+            task: TaskId::new(),
+            project: None,
+            selection_revision: 0,
+            draft_epoch: 0,
+            draft_text: String::new(),
+        };
+        let recorder = Recorder::start(stamp)
+            .expect("open the real default microphone; grant OS microphone permission first");
+        tokio::time::sleep(Duration::from_secs(4)).await;
+        let (wav, clip, _) = recorder
+            .finish()
+            .expect("capture real microphone audio for the acceptance phrase");
+        assert!(
+            clip.duration_ms >= 2_000,
+            "live microphone capture was unexpectedly short"
+        );
+        let transcript = transcribe(wav, clip.duration_ms, CancellationToken::new())
+            .await
+            .expect("real Codex ChatGPT authentication and transcription upload");
+        assert!(
+            !transcript.trim().is_empty(),
+            "ChatGPT returned an empty live transcription"
+        );
+        println!(
+            "VOICE_LIVE_ACCEPTANCE: microphone capture + Codex ChatGPT auth + official transcription upload; transcript_bytes={}",
+            transcript.len()
+        );
+    }
+
     #[test]
     fn cancelling_a_transcription_invalidates_its_operation() {
         let mut state = VoiceState::default();

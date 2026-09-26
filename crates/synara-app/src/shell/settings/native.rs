@@ -231,11 +231,13 @@ impl Shell {
                 ui::action(("device-backend", index), label, None, settings.backend == backend, cx.listener(move |this, _: &(), _, cx| this.save_setting(|settings| settings.device.backend = backend, cx))))))
             .child(row("ADB executable", settings.adb_path.as_ref().map_or("Not configured".into(), |path| path.display().to_string()),
                 ui::action("choose-adb", if self.settings.native.picker { "Choosing..." } else { "Choose executable" }, Some(Glyph::Files), false, cx.listener(|this, _: &(), _, cx| this.choose_adb(cx)))))
-            .child("Only select adb from your trusted Android SDK installation. Selecting an executable authorizes Synara to run it for explicit device actions. Synara does not download or install helpers.")
+            .child(row("Apple Simulator helper", settings.apple_helper_path.as_ref().map_or("Not configured".into(), |path| path.display().to_string()),
+                ui::action("choose-apple-device-helper", if self.settings.native.picker { "Choosing..." } else { "Choose helper" }, Some(Glyph::Files), false, cx.listener(|this, _: &(), _, cx| this.choose_apple_device_helper(cx)))))
+            .child("Only select adb from your trusted Android SDK installation or a trusted synara-device-helper built for your Xcode installation. Helpers are never downloaded or started during settings load.")
             .child(row("Capture while visible", "Capture every two seconds after your first explicit capture. Hidden viewers stop capturing. No frames are saved or attached automatically.",
                 self.toggle("device-auto-capture", "Capture while visible", settings.auto_capture, |settings| settings.device.auto_capture = !settings.device.auto_capture, cx)))
             .child(row("Authority", "Input is off by default, scoped to the selected device and revoked on disconnect, hiding, configuration changes, errors or orientation changes.", "Ask each session"))
-            .child(row("Supported paths", "Android: connected targets, screenshots, probed tap/swipe/key input and emulator shutdown. macOS: installed iOS simulators, boot/shutdown and screenshots. Apple input, physical iOS devices and Android cold boot remain unavailable.", ""))
+            .child(row("Supported paths", "Android: connected targets, screenshots, tap/swipe/text/key input and emulator shutdown. macOS: installed iOS simulators, boot/shutdown, screenshots, recording, app lifecycle, helper-backed touch/swipe/text/keys/hardware buttons, accessibility inspection and semantic targeting. Physical iOS devices and Android cold boot remain outside this backend.", ""))
             .children((settings.backend == DeviceBackend::AppleSimulator && !cfg!(target_os = "macos")).then(|| div().text_color(rgb(palette().error)).child("Unsupported on this host: Apple Simulator requires macOS and Xcode. No helper will run here.")))
             .child(div().flex().gap_2()
                 .child(ui::action("open-device-viewer", "Open Device viewer", Some(Glyph::Window), false, cx.listener(|this, _: &(), _, cx| this.set_panel(Panel::Device, cx))))
@@ -278,6 +280,59 @@ impl Shell {
         }).detach();
         cx.notify();
     }
+    fn choose_apple_device_helper(&mut self, cx: &mut Context<Self>) {
+        if self.settings.native.picker || self.settings.saving {
+            return;
+        }
+        self.settings.native.picker = true;
+        let before = self.settings.value.device.clone();
+        let picker = cx.prompt_for_paths(gpui::PathPromptOptions {
+            files: true,
+            directories: false,
+            multiple: false,
+            prompt: Some("Choose the trusted synara-device-helper executable".into()),
+        });
+        cx.spawn(async move |view, cx| {
+            let result = picker.await;
+            let _ = view.update(cx, |this, cx| {
+                this.settings.native.picker = false;
+                if this.settings.value.device != before || this.settings.saving {
+                    this.settings.native.error = Some(
+                        "Settings changed during selection. The late helper choice was ignored."
+                            .into(),
+                    );
+                    cx.notify();
+                    return;
+                }
+                match result {
+                    Ok(Ok(Some(paths))) => {
+                        if let Some(path) = paths.into_iter().next() {
+                            if path.is_absolute() && path.is_file() {
+                                this.save_setting(
+                                    |settings| settings.device.apple_helper_path = Some(path),
+                                    cx,
+                                );
+                            } else {
+                                this.settings.native.error =
+                                    Some("Choose an existing absolute executable path.".into());
+                            }
+                        }
+                    }
+                    Ok(Ok(None)) => {}
+                    _ => {
+                        this.settings.native.error = Some(
+                            "The native file picker could not open. Device configuration is unchanged."
+                                .into(),
+                        )
+                    }
+                }
+                cx.notify();
+            });
+        })
+        .detach();
+        cx.notify();
+    }
+
     pub(super) fn notification_settings(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
         div().flex().flex_col().gap_3()
             .child(row("Background chat completion", "Notify when a chat other than the selected chat finishes. Messages contain no prompt, task title, path or response text. Default: off.",

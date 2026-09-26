@@ -1,0 +1,160 @@
+name: Signed release acceptance
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Cargo.lock'
+      - 'Cargo.toml'
+      - 'crates/synara-runtime/**'
+      - 'crates/synara-app/**'
+      - 'scripts/dependency_inventory.py'
+      - 'scripts/package_dev.py'
+      - 'scripts/release_acceptance.py'
+      - '.github/workflows/release-acceptance.yml'
+permissions:
+  contents: read
+  id-token: write
+concurrency:
+  group: signed-release-acceptance-${{ github.ref }}
+  cancel-in-progress: false
+env:
+  RUSTUP_TOOLCHAIN: '1.98.1'
+  CARGO_BUILD_JOBS: '2'
+  COSIGN_VERSION: 'v3.1.3'
+  COSIGN_IDENTITY: 'https://github.com/cmdr-chara/synara/.github/workflows/release-acceptance.yml@refs/heads/main'
+  COSIGN_ISSUER: 'https://token.actions.githubusercontent.com'
+jobs:
+  signed-package:
+    name: ${{ matrix.label }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: Linux x64
+            os: ubuntu-24.04
+            target: x86_64-unknown-linux-gnu
+            platform: linux
+            architecture: x86_64
+            binary: target/x86_64-unknown-linux-gnu/debug/synara-app
+            python: python3
+          - label: macOS arm64
+            os: macos-14
+            target: aarch64-apple-darwin
+            platform: macos
+            architecture: aarch64
+            binary: target/aarch64-apple-darwin/debug/synara-app
+            python: python3
+          - label: Windows x64
+            os: windows-2025
+            target: x86_64-pc-windows-msvc
+            platform: windows
+            architecture: x86_64
+            binary: target/x86_64-pc-windows-msvc/debug/synara-app.exe
+            python: python
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          persist-credentials: false
+      - name: Record exact candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p acceptance-evidence/package
+          git rev-parse HEAD > acceptance-evidence/revision.txt
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+      - name: Install pinned Rust target
+        shell: bash
+        run: |
+          rustup toolchain install 1.98.1 --profile minimal
+          rustup target add ${{ matrix.target }} --toolchain 1.98.1
+      - name: Install Linux native prerequisites
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libwebkit2gtk-4.1-dev libgtk-3-dev
+      - name: Verify release helpers
+        shell: bash
+        run: |
+          ${{ matrix.python }} scripts/package_dev.py --self-test
+          ${{ matrix.python }} scripts/release_acceptance.py --self-test
+      - name: Build native release candidate
+        shell: bash
+        run: cargo +1.98.1 build --locked -p synara-app --bin synara-app --target ${{ matrix.target }}
+      - name: Create deterministic candidate package
+        shell: bash
+        run: |
+          ${{ matrix.python }} scripts/dependency_inventory.py --output acceptance-evidence/DEPENDENCIES.json
+          ${{ matrix.python }} scripts/package_dev.py \
+            --binary "${{ matrix.binary }}" \
+            --inventory acceptance-evidence/DEPENDENCIES.json \
+            --output-dir acceptance-evidence/package \
+            --version "0.1.0-${GITHUB_SHA::12}" \
+            --target "${{ matrix.target }}"
+          package="$(find acceptance-evidence/package -maxdepth 1 -type f ! -name '*.sha256' | head -n1)"
+          test -n "$package"
+          echo "PACKAGE=$package" >> "$GITHUB_ENV"
+      - name: Build bound update manifest and release feed
+        shell: bash
+        run: |
+          ${{ matrix.python }} scripts/release_acceptance.py \
+            --artifact "$PACKAGE" \
+            --target "${{ matrix.target }}" \
+            --version "0.1.0-${GITHUB_SHA::12}" \
+            --manifest-out acceptance-evidence/update-manifest.json \
+            --feed-out acceptance-evidence/release-feed.json
+      - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6
+        with:
+          cosign-release: ${{ env.COSIGN_VERSION }}
+      - name: Keyless-sign package, manifest and feed with GitHub OIDC
+        shell: bash
+        run: |
+          set -euo pipefail
+          cosign sign-blob --yes --bundle acceptance-evidence/package.bundle "$PACKAGE"
+          cosign sign-blob --yes --bundle acceptance-evidence/update-manifest.bundle acceptance-evidence/update-manifest.json
+          cosign sign-blob --yes --bundle acceptance-evidence/release-feed.bundle acceptance-evidence/release-feed.json
+      - name: Verify exact workflow identity on package, manifest and feed
+        shell: bash
+        run: |
+          set -euo pipefail
+          for pair in \
+            "$PACKAGE acceptance-evidence/package.bundle" \
+            "acceptance-evidence/update-manifest.json acceptance-evidence/update-manifest.bundle" \
+            "acceptance-evidence/release-feed.json acceptance-evidence/release-feed.bundle"
+          do
+            set -- $pair
+            cosign verify-blob \
+              --bundle "$2" \
+              --certificate-identity "$COSIGN_IDENTITY" \
+              --certificate-oidc-issuer "$COSIGN_ISSUER" \
+              "$1"
+          done
+      - name: Exercise Synara signed staging, install and rollback contract
+        shell: bash
+        env:
+          SYNARA_RELEASE_ACCEPTANCE: github-oidc
+          SYNARA_UPDATE_MANIFEST: ${{ github.workspace }}/acceptance-evidence/update-manifest.json
+          SYNARA_UPDATE_BUNDLE: ${{ github.workspace }}/acceptance-evidence/update-manifest.bundle
+          SYNARA_UPDATE_ARTIFACT: ${{ github.workspace }}/${{ env.PACKAGE }}
+          SYNARA_UPDATE_PLATFORM: ${{ matrix.platform }}
+          SYNARA_UPDATE_ARCH: ${{ matrix.architecture }}
+          SYNARA_COSIGN_IDENTITY: ${{ env.COSIGN_IDENTITY }}
+          SYNARA_COSIGN_ISSUER: ${{ env.COSIGN_ISSUER }}
+          SYNARA_RELEASE_EVIDENCE: ${{ github.workspace }}/acceptance-evidence/install-rollback.json
+        run: cargo +1.98.1 test --locked -p synara-runtime --test signed_update_live --target ${{ matrix.target }} github_oidc_signed_update_installs_and_rolls_back -- --ignored --nocapture
+      - name: Verify exact candidate stayed unchanged
+        if: always()
+        shell: bash
+        run: |
+          git diff --exit-code
+          git diff --cached --exit-code
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: signed-release-${{ matrix.target }}
+          path: acceptance-evidence/
+          retention-days: 7
+          if-no-files-found: error

@@ -82,6 +82,7 @@ async fn install_bundle_uses_owned_helper_and_rejects_symlinks_or_missing_plist(
     let tools = DeviceTools {
         backend: DeviceBackend::AppleSimulator,
         executable: helper.clone(),
+        apple_helper: None,
     };
     let bundle = dir.path().join("日本語 $HOME.app");
     std::fs::create_dir(&bundle).unwrap();

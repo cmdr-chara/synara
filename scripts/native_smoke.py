@@ -266,6 +266,7 @@ class Scenario:
         self.project = self.output / 'project'
         self.project.mkdir()
         (self.output / 'home').mkdir()
+        self.home = self.output / 'home'
         self.runtime = self.output / 'runtime'
         self.runtime.mkdir(mode=0o700)
         self.document = self.project / 'document.txt'
@@ -288,7 +289,7 @@ class Scenario:
         self.log = (self.output / f'app-{self.launch_count}.log').open('w')
         env = {key: os.environ[key] for key in ('PATH', 'LD_LIBRARY_PATH') if key in os.environ}
         env.update(DISPLAY=self.desktop.name, XDG_RUNTIME_DIR=str(self.runtime),
-                   HOME=str(self.output / 'home'), GPUI_PLATFORM='x11',
+                   HOME=str(self.home), GPUI_PLATFORM='x11',
                    GPUI_X11_SCALE_FACTOR=str(self.scale),
                    LIBGL_ALWAYS_SOFTWARE='1', RUST_LOG='synara=info,synara_ui_layout=debug,gpui=warn')
         args = [str(self.binary), '--data-dir', str(self.data)]

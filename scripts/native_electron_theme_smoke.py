@@ -102,6 +102,63 @@ def themes(scenario):
 def wait_pack(scenario, variant, predicate, message):
     return wait_until(lambda: themes(scenario) and predicate(themes(scenario)[variant]), message)
 
+def _atspi_nodes(root, limit=1200):
+    nodes = []
+    queue = [root]
+    while queue and len(nodes) < limit:
+        node = queue.pop(0)
+        nodes.append(node)
+        try:
+            count = int(node.childCount)
+        except Exception:
+            count = 0
+        for index in range(min(count, limit - len(nodes))):
+            try:
+                child = node.getChildAtIndex(index)
+            except Exception:
+                child = None
+            if child is not None:
+                queue.append(child)
+    return nodes
+
+
+def atspi_activate_named(scenario, label):
+    if os.environ.get('SYNARA_A10_ATSPI') != '1':
+        return False
+    import pyatspi
+
+    def locate():
+        desktop = pyatspi.Registry.getDesktop(0)
+        for node in _atspi_nodes(desktop):
+            try:
+                if (node.name or '').strip() != label:
+                    continue
+                action = node.queryAction()
+                names = [
+                    (action.getName(index) or '').strip().lower()
+                    for index in range(action.nActions)
+                ]
+                if not names:
+                    continue
+                preferred = next(
+                    (
+                        index
+                        for index, name in enumerate(names)
+                        if name in {'click', 'press', 'activate'}
+                    ),
+                    0,
+                )
+                return action, preferred, node.getRoleName()
+            except Exception:
+                continue
+        return None
+
+    action, index, role = wait_until(locate, f'AT-SPI accessible {label}', 20)
+    assert role, f'AT-SPI node {label} had no role'
+    assert action.doAction(index), f'AT-SPI action failed for {label}'
+    return True
+
+
 
 def capture(scenario, name, output, *, expected_accent=None, slot=None):
     from PIL import Image
@@ -159,6 +216,15 @@ def run(scenario, captures):
     events = scenario.events()
     task = scenario.task()['id']
     ui.key('6', ('Control_L',))
+    appearance(scenario)
+    if atspi_activate_named(scenario, 'Light'):
+        wait_until(
+            lambda: settings(scenario) and settings(scenario)['appearance']['theme'] == 'light',
+            'AT-SPI Light activation',
+        )
+        scenario.checks.append(
+            'real-at-spi-tree-exposes-labeled-button-and-assistive-click-updates-settings'
+        )
     set_mode(scenario, 'light')
     baseline = copy.deepcopy(settings(scenario))
     assert themes(scenario)['light']['codeThemeId'] == 'codex'

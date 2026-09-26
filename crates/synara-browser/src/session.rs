@@ -99,6 +99,16 @@ pub struct Element {
     pub role: String,
     pub name: String,
 }
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct WebMcpTool {
+    pub id: String,
+    pub name: String,
+    pub description: String,
+    pub auto_submit: bool,
+    pub input_schema: String,
+}
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case", deny_unknown_fields)]
 pub enum Output {
@@ -115,6 +125,9 @@ pub enum Output {
     Download {
         token: String,
         bytes: usize,
+    },
+    WebMcpTools {
+        tools: Vec<WebMcpTool>,
     },
 }
 impl Output {
@@ -158,6 +171,40 @@ impl Output {
                 if token(t) && *bytes <= 8 * 1024 * 1024 => {}
             (Self::Download { token: t, bytes }, BrowserOperation::Download { .. })
                 if token(t) && *bytes <= 32 * 1024 * 1024 => {}
+            (Self::WebMcpTools { tools }, BrowserOperation::WebMcpTools) => {
+                if tools.len() > 32 {
+                    return Err(BrowserError::Limit);
+                }
+                let mut ids = BTreeSet::new();
+                let mut names = BTreeSet::new();
+                let mut bytes = 0usize;
+                for tool in tools {
+                    if !token(&tool.id)
+                        || tool.name.is_empty()
+                        || tool.name.len() > 128
+                        || !tool
+                            .name
+                            .bytes()
+                            .all(|b| b.is_ascii_alphanumeric() || b"_.-".contains(&b))
+                        || tool.description.len() > 2048
+                        || tool.description.chars().any(char::is_control)
+                        || tool.input_schema.len() > 32 * 1024
+                        || serde_json::from_str::<serde_json::Value>(&tool.input_schema).is_err()
+                        || !ids.insert(tool.id.as_str())
+                        || !names.insert(tool.name.as_str())
+                    {
+                        return Err(BrowserError::Invalid);
+                    }
+                    bytes = bytes
+                        .saturating_add(tool.id.len())
+                        .saturating_add(tool.name.len())
+                        .saturating_add(tool.description.len())
+                        .saturating_add(tool.input_schema.len());
+                }
+                if bytes > 128 * 1024 {
+                    return Err(BrowserError::Limit);
+                }
+            }
             _ => return Err(BrowserError::Invalid),
         }
         if serde_json::to_vec(self)
@@ -231,6 +278,7 @@ struct TabState {
         Option<HostRequestId>,
     )>,
     elements: BTreeSet<String>,
+    webmcp_tools: BTreeSet<String>,
     committed_navigation: Option<HostNavigationId>,
     diagnostics: VecDeque<NetworkDiagnostic>,
     runtime_diagnostics: VecDeque<RuntimeDiagnostic>,
@@ -317,6 +365,11 @@ pub enum Event {
         token: String,
         name: String,
         bytes: Vec<u8>,
+    },
+    AgentToolCommitted {
+        tab: HostTabId,
+        url: String,
+        title: String,
     },
 }
 pub struct Session {
@@ -627,6 +680,7 @@ impl Session {
                 },
                 navigation: None,
                 elements: BTreeSet::new(),
+                webmcp_tools: BTreeSet::new(),
                 committed_navigation: None,
                 diagnostics: VecDeque::new(),
                 runtime_diagnostics: VecDeque::new(),
@@ -653,6 +707,7 @@ impl Session {
         state.authentication_loading_until = None;
         state.committed_navigation = None;
         state.elements.clear();
+        state.webmcp_tools.clear();
         state.view.state = "stopped".into();
         let _ = self.port.send(Command::Stop { tab });
         Ok(())
@@ -712,6 +767,7 @@ impl Session {
             matches!(profile, BrowserProfile::AgentTask { .. }).then(|| document.origin.clone());
         let state = self.tabs.get_mut(&tab).ok_or(BrowserError::MissingTab)?;
         state.elements.clear();
+        state.webmcp_tools.clear();
         state.committed_navigation = None;
         state.diagnostics.clear();
         state.runtime_diagnostics.clear();
@@ -745,6 +801,8 @@ impl Session {
             BrowserOperation::Screenshot { .. } => c.capture,
             BrowserOperation::Download { .. } => c.downloads,
             BrowserOperation::Upload { .. } => c.uploads,
+            BrowserOperation::WebMcpTools => c.document,
+            BrowserOperation::WebMcpInvoke { .. } => c.input,
             _ => false,
         }
     }
@@ -769,6 +827,11 @@ impl Session {
             _ => None,
         };
         if element.is_some_and(|element| !state.elements.contains(element)) {
+            return Err(BrowserError::Invalid);
+        }
+        if let BrowserOperation::WebMcpInvoke { tool_id, .. } = &op
+            && !state.webmcp_tools.contains(tool_id)
+        {
             return Err(BrowserError::Invalid);
         }
         if self.requests.len() >= MAX_PENDING {
@@ -1191,6 +1254,12 @@ impl Session {
                         .ok_or(BrowserError::MissingTab)?
                         .elements = elements.iter().map(|e| e.id.clone()).collect();
                 }
+                if let Output::WebMcpTools { tools } = &output {
+                    self.tabs
+                        .get_mut(&r.tab)
+                        .ok_or(BrowserError::MissingTab)?
+                        .webmcp_tools = tools.iter().map(|tool| tool.id.clone()).collect();
+                }
                 if matches!(
                     r.operation,
                     BrowserOperation::Input {
@@ -1214,6 +1283,28 @@ impl Session {
                     return Err(BrowserError::Invalid);
                 }
                 r.state = RequestState::Failed(error.chars().take(1024).collect());
+            }
+            Event::AgentToolCommitted { tab, url, title } => {
+                let state = self.tabs.get(&tab).ok_or(BrowserError::MissingTab)?;
+                if !matches!(state.view.profile, BrowserProfile::AgentTask { .. })
+                    || title.len() > 4096
+                {
+                    return Err(BrowserError::WrongContext);
+                }
+                let document = CommittedDocument::parse(&url)?;
+                let navigation = self.host.begin_navigation(tab, NavigationKind::Push)?;
+                self.host.commit_navigation(navigation, document.clone())?;
+                let history = self.host.history(tab)?;
+                let state = self.tabs.get_mut(&tab).unwrap();
+                state.elements.clear();
+                state.webmcp_tools.clear();
+                state.committed_navigation = Some(navigation);
+                state.view.url = Some(document.canonical_url);
+                state.view.title = title;
+                state.view.state = "ready".into();
+                state.view.error = None;
+                state.view.back = history.current.is_some_and(|at| at > 0);
+                state.view.forward = false;
             }
             Event::DownloadReady {
                 request,

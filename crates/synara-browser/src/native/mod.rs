@@ -86,6 +86,7 @@ struct NativeTab {
     capture: Option<manual_capture::Owner>,
     downloads: Option<manual_downloads::Owner>,
     agent_transfers: Option<agent_transfers::Owner>,
+    tool_navigation: Rc<Cell<bool>>,
 }
 impl Drop for NativeTab {
     fn drop(&mut self) {
@@ -562,6 +563,10 @@ impl NativeHost {
             .unwrap_or_else(|| Rc::new(Cell::new(false)));
         let finished = completed.clone();
         let popup_ready = completed.clone();
+        let tool_navigation = Rc::new(Cell::new(false));
+        let tool_navigation_policy = tool_navigation.clone();
+        let tool_navigation_loading = Rc::new(Cell::new(false));
+        let tool_navigation_loading_policy = tool_navigation_loading.clone();
         let popup_shared = shared.clone();
         let popup_events = events.clone();
         let pending_popups = self.pending_popups.clone();
@@ -629,6 +634,13 @@ impl NativeHost {
                             navigation,
                             url: doc.canonical_url,
                         });
+                    }
+                    if agent
+                        && tool_navigation_policy.replace(false)
+                        && approved_origin_allows(allowed_navigation.as_ref(), &doc)
+                    {
+                        tool_navigation_loading_policy.set(true);
+                        return true;
                     }
                     return false;
                 }
@@ -736,8 +748,10 @@ impl NativeHost {
                 events.emit(Event::AuthenticationLoading { tab, navigation });
                 return;
             }
+            let agent_tool_followup =
+                agent && done.get() && tool_navigation_loading.replace(false);
             if event != webkit2gtk::LoadEvent::Finished
-                || (done.get() && !authentication)
+                || (done.get() && !authentication && !agent_tool_followup)
                 || shared.epoch(tab) != Some(epoch)
             {
                 return;
@@ -758,7 +772,13 @@ impl NativeHost {
             }
             let subsequent = done.replace(true);
             *current_document.borrow_mut() = Some(doc.clone());
-            let event = if authentication && subsequent {
+            let event = if agent_tool_followup {
+                Event::AgentToolCommitted {
+                    tab,
+                    url: doc.canonical_url,
+                    title: bounded_title(web.title().as_deref().unwrap_or("")),
+                }
+            } else if authentication && subsequent {
                 Event::AuthenticationCommitted {
                     tab,
                     navigation,
@@ -855,6 +875,7 @@ impl NativeHost {
                 capture,
                 downloads,
                 agent_transfers,
+                tool_navigation,
             },
         );
         // Creation may occur after the canvas selected a blank tab. Reapply its
@@ -896,6 +917,8 @@ impl NativeHost {
                 }
                 | BrowserOperation::Download { .. }
                 | BrowserOperation::Upload { .. }
+                | BrowserOperation::WebMcpTools
+                | BrowserOperation::WebMcpInvoke { .. }
         ) {
             return Err("Native operation is not supported".into());
         }
@@ -926,6 +949,11 @@ impl NativeHost {
                 flag,
             );
         }
+        let tool_navigation = matches!(command.operation, BrowserOperation::WebMcpInvoke { .. })
+            .then(|| view.tool_navigation.clone());
+        if let Some(permit) = &tool_navigation {
+            permit.set(true);
+        }
         let cancelled = gio::Cancellable::new();
         let running = self.running.clone();
         running.borrow_mut().insert(
@@ -947,6 +975,9 @@ impl NativeHost {
             move |result| {
                 running.borrow_mut().remove(&request);
                 shared.finish(request);
+                if let Some(permit) = tool_navigation {
+                    permit.set(false);
+                }
                 if flag.load(Ordering::Acquire) || shared.epoch(command.tab) != Some(epoch) {
                     return;
                 }

@@ -37,15 +37,16 @@ mod cases {
             ["tap", "20", "30"]
         );
         assert!(android_input_args(&DeviceInput::Tap { x: 100, y: 0 }, 100, 200).is_err());
-        assert!(
+        assert_eq!(
             android_input_args(
                 &DeviceInput::Text {
-                    text: "hello".into()
+                    text: "hello world".into()
                 },
                 100,
                 200
             )
-            .is_err()
+            .unwrap(),
+            ["text", "hello%sworld"]
         );
         for key in [";reboot", "POWER", "3", "home;ls"] {
             assert!(android_input_args(&DeviceInput::Key { key: key.into() }, 100, 200).is_err());
@@ -53,6 +54,71 @@ mod cases {
         assert_eq!(
             android_input_args(&DeviceInput::Key { key: "back".into() }, 100, 200).unwrap(),
             ["keyevent", "4"]
+        );
+        assert!(
+            android_input_args(
+                &DeviceInput::Button {
+                    button: "home".into()
+                },
+                100,
+                200
+            )
+            .is_err()
+        );
+    }
+
+    #[test]
+    fn accessibility_tree_targets_labels_and_activation_points_safely() {
+        let tree = DeviceAccessibilityTree {
+            point_width: 100.0,
+            point_height: 200.0,
+            root: DeviceUiNode {
+                role: "Window".into(),
+                subrole: None,
+                label: None,
+                value: None,
+                identifier: None,
+                title: None,
+                frame: Some(DeviceUiFrame {
+                    x: 0.0,
+                    y: 0.0,
+                    width: 100.0,
+                    height: 200.0,
+                }),
+                activation_point: None,
+                enabled: Some(true),
+                truncated: false,
+                children: vec![DeviceUiNode {
+                    role: "Button".into(),
+                    subrole: None,
+                    label: Some("Continue".into()),
+                    value: Some(serde_json::json!("Ready")),
+                    identifier: None,
+                    title: None,
+                    frame: Some(DeviceUiFrame {
+                        x: 10.0,
+                        y: 20.0,
+                        width: 40.0,
+                        height: 20.0,
+                    }),
+                    activation_point: Some(DeviceUiPoint { x: 45.0, y: 25.0 }),
+                    enabled: Some(true),
+                    truncated: false,
+                    children: vec![],
+                }],
+            },
+        };
+        tree.validate().unwrap();
+        let targets = tree.targets(8);
+        assert_eq!(targets.len(), 1);
+        assert_eq!(targets[0].label, "Continue");
+        assert_eq!(
+            tree.semantic_pixel_point("Continue", Some("Button"), 200, 400),
+            Some((90, 50))
+        );
+        assert_eq!(
+            tree.semantic_pixel_point("Missing", Some("Button"), 200, 400),
+            None
         );
     }
     #[test]
@@ -68,6 +134,7 @@ mod cases {
         let tools = DeviceTools {
             backend: DeviceBackend::AppleSimulator,
             executable: PathBuf::from("/not-installed"),
+            apple_helper: None,
         };
         let device = ToolDevice {
             descriptor: DeviceDescriptor {

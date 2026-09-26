@@ -1,8 +1,8 @@
 //! Approved agent-task uploads/downloads for one owned WebKit document.
-use super::{bridge, Events, HostRequestId, Ordering};
+use super::{Events, HostRequestId, Ordering, bridge};
 use crate::{
-    session::{Event, Output, UploadPayload},
     HostTabId,
+    session::{Event, Output, UploadPayload},
 };
 use gtk::{gio, glib, prelude::*};
 use std::{
@@ -230,7 +230,10 @@ impl Owner {
                     || native
                         .web_view()
                         .is_none_or(|web| state.web.upgrade().as_ref() != Some(&web))
-                    || native.request().and_then(|request| request.uri()).as_deref()
+                    || native
+                        .request()
+                        .and_then(|request| request.uri())
+                        .as_deref()
                         != Some(transfer.source.as_str())
                 {
                     native.cancel();
@@ -322,7 +325,9 @@ impl Owner {
                     value.is_string()
                         && serde_json::from_str::<serde_json::Value>(&value.to_str())
                             .ok()
-                            .and_then(|json| json.get("kind").and_then(|v| v.as_str()).map(str::to_owned))
+                            .and_then(|json| {
+                                json.get("kind").and_then(|v| v.as_str()).map(str::to_owned)
+                            })
                             .as_deref()
                             == Some("upload_requested")
                 });
@@ -360,28 +365,26 @@ impl Owner {
             None,
             None::<&gio::Cancellable>,
             move |result| {
-                let target = result
-                    .map_err(|error| error.to_string())
-                    .and_then(|value| {
-                        if !value.is_string() {
-                            return Err("Malformed download target".into());
-                        }
-                        let json: serde_json::Value =
-                            serde_json::from_str(&value.to_str()).map_err(|error| error.to_string())?;
-                        if let Some(error) = json.get("error").and_then(|v| v.as_str()) {
-                            return Err(error.chars().take(500).collect());
-                        }
-                        let raw = json
-                            .get("url")
-                            .and_then(|v| v.as_str())
-                            .ok_or_else(|| "Page did not return a download target.".to_owned())?;
-                        let parsed =
-                            url::Url::parse(raw).map_err(|_| "Invalid download target".to_owned())?;
-                        if parsed.origin() != origin || !matches!(parsed.scheme(), "http" | "https") {
-                            return Err("Download target left the committed origin.".into());
-                        }
-                        Ok(parsed.to_string())
-                    });
+                let target = result.map_err(|error| error.to_string()).and_then(|value| {
+                    if !value.is_string() {
+                        return Err("Malformed download target".into());
+                    }
+                    let json: serde_json::Value =
+                        serde_json::from_str(&value.to_str()).map_err(|error| error.to_string())?;
+                    if let Some(error) = json.get("error").and_then(|v| v.as_str()) {
+                        return Err(error.chars().take(500).collect());
+                    }
+                    let raw = json
+                        .get("url")
+                        .and_then(|v| v.as_str())
+                        .ok_or_else(|| "Page did not return a download target.".to_owned())?;
+                    let parsed =
+                        url::Url::parse(raw).map_err(|_| "Invalid download target".to_owned())?;
+                    if parsed.origin() != origin || !matches!(parsed.scheme(), "http" | "https") {
+                        return Err("Download target left the committed origin.".into());
+                    }
+                    Ok(parsed.to_string())
+                });
                 let target = match target {
                     Ok(target) => target,
                     Err(error) => {

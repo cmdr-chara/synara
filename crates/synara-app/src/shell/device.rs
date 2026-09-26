@@ -783,7 +783,9 @@ impl Shell {
         }
         self.send_device_input(DeviceInput::Text { text }, cx);
         if self.device.busy {
-            self.device.input_text.update(cx, |entry, cx| entry.clear(cx));
+            self.device
+                .input_text
+                .update(cx, |entry, cx| entry.clear(cx));
         }
     }
 
@@ -825,12 +827,7 @@ impl Shell {
         cx.notify();
     }
 
-    fn tap_device_accessibility(
-        &mut self,
-        label: String,
-        role: String,
-        cx: &mut Context<Self>,
-    ) {
+    fn tap_device_accessibility(&mut self, label: String, role: String, cx: &mut Context<Self>) {
         let Some((width, height)) = self.device.dimensions else {
             return;
         };
@@ -1254,7 +1251,9 @@ impl Shell {
                     ),
                 )
                 .children((!apple).then(|| {
-                    div().flex().gap_2()
+                    div()
+                        .flex()
+                        .gap_2()
                         .child(ui::action(
                             "device-android-home",
                             "Home",
@@ -1336,53 +1335,54 @@ impl Shell {
                 );
         }
         if !accessibility_targets.is_empty() {
-            root = root.child(
-                div()
-                    .flex()
-                    .flex_col()
-                    .gap_1()
-                    .child(div().text_size(px(12.)).child(
-                        "Accessibility targets. Enable input to tap a semantic element.",
-                    ))
-                    .child(
-                        div()
-                            .id("device-accessibility-targets")
-                            .max_h(px(220.))
-                            .overflow_y_scroll()
-                            .flex()
-                            .flex_col()
-                            .gap_1()
-                            .children(accessibility_targets.into_iter().enumerate().map(
-                                |(index, target)| {
-                                    let label = target.label.clone();
-                                    let role = target.role.clone();
-                                    let detail = target.value.as_ref().map_or_else(
-                                        || format!("{} | {}", target.label, target.role),
-                                        |value| {
-                                            format!(
-                                                "{} | {} | {}",
-                                                target.label, target.role, value
-                                            )
-                                        },
-                                    );
-                                    ui::action(
-                                        ("device-accessibility-target", index),
-                                        detail,
-                                        None,
-                                        false,
-                                        cx.listener(move |this, _: &(), _, cx| {
-                                            this.tap_device_accessibility(
-                                                label.clone(),
-                                                role.clone(),
-                                                cx,
-                                            )
-                                        }),
-                                    )
-                                    .text_size(px(11.))
-                                },
-                            )),
-                    ),
-            );
+            root =
+                root.child(
+                    div()
+                        .flex()
+                        .flex_col()
+                        .gap_1()
+                        .child(div().text_size(px(12.)).child(
+                            "Accessibility targets. Enable input to tap a semantic element.",
+                        ))
+                        .child(
+                            div()
+                                .id("device-accessibility-targets")
+                                .max_h(px(220.))
+                                .overflow_y_scroll()
+                                .flex()
+                                .flex_col()
+                                .gap_1()
+                                .children(accessibility_targets.into_iter().enumerate().map(
+                                    |(index, target)| {
+                                        let label = target.label.clone();
+                                        let role = target.role.clone();
+                                        let detail = target.value.as_ref().map_or_else(
+                                            || format!("{} | {}", target.label, target.role),
+                                            |value| {
+                                                format!(
+                                                    "{} | {} | {}",
+                                                    target.label, target.role, value
+                                                )
+                                            },
+                                        );
+                                        ui::action(
+                                            ("device-accessibility-target", index),
+                                            detail,
+                                            None,
+                                            false,
+                                            cx.listener(move |this, _: &(), _, cx| {
+                                                this.tap_device_accessibility(
+                                                    label.clone(),
+                                                    role.clone(),
+                                                    cx,
+                                                )
+                                            }),
+                                        )
+                                        .text_size(px(11.))
+                                    },
+                                )),
+                        ),
+                );
         }
         root.child(div().text_size(px(11.)).text_color(rgb(palette().muted)).child("Input grants and accessibility snapshots are never restored or exposed to agents. Captures stay in memory unless explicitly attached (2 MiB maximum). Attaching does not send or grant input authority. Apple Simulator input/accessibility require the explicitly configured native helper. Physical iOS devices and Android cold boot remain outside this backend."))
             .into_any_element()

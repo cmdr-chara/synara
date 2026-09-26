@@ -311,10 +311,9 @@ fn dispatch(
                             .block_on(async {
                                 tokio::time::timeout(
                                     Duration::from_secs(3),
-                                    state.workspace.browser_attachment_file(
-                                        state.task,
-                                        file_token.clone(),
-                                    ),
+                                    state
+                                        .workspace
+                                        .browser_attachment_file(state.task, file_token.clone()),
                                 )
                                 .await
                             })

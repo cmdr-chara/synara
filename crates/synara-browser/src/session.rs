@@ -447,7 +447,8 @@ impl Session {
         if current_count >= 32 || current_bytes.saturating_add(bytes.len()) > 64 * 1024 * 1024 {
             return Err(BrowserError::Limit);
         }
-        self.files.insert((task, token), BrowserFile { name, bytes });
+        self.files
+            .insert((task, token), BrowserFile { name, bytes });
         Ok(())
     }
 
@@ -621,7 +622,12 @@ impl Session {
     /// Trusted host restoration after explicit task browser re-enrollment.
     /// This recreates fresh isolated views only: grants, requests, files,
     /// cookies, popup state and in-flight operations are never restored.
-    pub fn restore_task_tabs(&mut self, task: u128, urls: &[String], now: u64) -> Result<Vec<HostTabId>> {
+    pub fn restore_task_tabs(
+        &mut self,
+        task: u128,
+        urls: &[String],
+        now: u64,
+    ) -> Result<Vec<HostTabId>> {
         if urls.len() > 16 {
             return Err(BrowserError::Limit);
         }
@@ -636,14 +642,8 @@ impl Session {
         for url in urls {
             let document = CommittedDocument::parse(url)?;
             let tab = self.open(BrowserProfile::AgentTask { task })?;
-            if let Err(error) = self.navigate(
-                tab,
-                document,
-                NavigationKind::Push,
-                now,
-                None,
-                None,
-            ) {
+            if let Err(error) = self.navigate(tab, document, NavigationKind::Push, now, None, None)
+            {
                 let _ = self.close(tab);
                 return Err(error);
             }

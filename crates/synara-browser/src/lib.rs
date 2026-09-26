@@ -8,9 +8,9 @@
 //! tabs may report bounded, value-free runtime error metadata through an isolated
 //! content-script world; that channel grants no page or agent operation authority.
 
+pub mod cookie_import;
 #[cfg(all(feature = "native-webview", target_os = "linux"))]
 pub mod native;
-pub mod cookie_import;
 #[path = "../../../foundations/browser/lib.rs"]
 pub mod policy;
 pub mod session;

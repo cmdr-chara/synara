@@ -687,7 +687,9 @@ impl Shell {
                     .as_ref()
                     .is_some_and(|settings| settings.revision == revision)
                 {
-                    self.direct_models.telemetry.insert(id, (revision, telemetry));
+                    self.direct_models
+                        .telemetry
+                        .insert(id, (revision, telemetry));
                     self.direct_models.notice = Some(
                         "Live provider metadata refreshed. Only values returned by the reviewed endpoint are shown."
                             .into(),

@@ -188,7 +188,9 @@ impl DeviceInput {
                 ) {
                     Ok(())
                 } else {
-                    Err(RuntimeError::Invalid("invalid device hardware button".into()))
+                    Err(RuntimeError::Invalid(
+                        "invalid device hardware button".into(),
+                    ))
                 }
             }
         }

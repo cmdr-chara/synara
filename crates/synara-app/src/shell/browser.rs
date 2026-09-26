@@ -228,7 +228,10 @@ impl Shell {
     }
 
     pub(super) fn browser_save_owned_restore(&mut self) {
-        let snapshot = self.controller.browser.with(|session, _| Ok(session.tabs()));
+        let snapshot = self
+            .controller
+            .browser
+            .with(|session, _| Ok(session.tabs()));
         let Ok(tabs) = snapshot else { return };
 
         let mut by_task: BTreeMap<u128, Vec<String>> = BTreeMap::new();
@@ -291,9 +294,11 @@ impl Shell {
         if urls.is_empty() {
             return;
         }
-        match self.controller.browser.with(|session, now| {
-            session.restore_task_tabs(task.0.as_u128(), &urls, now)
-        }) {
+        match self
+            .controller
+            .browser
+            .with(|session, now| session.restore_task_tabs(task.0.as_u128(), &urls, now))
+        {
             Ok(tabs) => {
                 if let Some(tab) = tabs.last().copied() {
                     self.browser_select(tab, cx);

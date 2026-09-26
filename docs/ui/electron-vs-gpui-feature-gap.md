@@ -121,14 +121,14 @@ old census did not count cleanly.
 | --- | --- | --- |
 | First-run onboarding/setup replay | Persistent six-step guide with local agent command summary, provider-specific login guidance, advertised ACP authentication, appearance setup, inline history import, folder registration/creation and Settings replay | Real-provider fresh-install acceptance |
 | Browser sessions/WebMCP | Embedded native browser, manual uploads/inspection/viewport capture/link downloads, reviewed popup handoff, bounded network diagnostics, approved task browser-use bridge, opt-in Manual tab URL restoration and request-owned protected cookie/session import | Agent upload/download, task/auth tab restoration and page-declared WebMCP |
-| iOS Simulator/device | Discovery, boot/shutdown, screenshots, user-triggered HTTP(S) URL opening and installed-app launch in a selected booted simulator | Live input, swipe/type/buttons, recording, app install, accessibility tree and element targeting |
+| iOS Simulator/device | Discovery, boot/shutdown, screenshots/live frames, recording, app install/launch/terminate, HTTP(S) URL opening, helper-backed touch/swipe/text/keys/hardware buttons, bounded accessibility tree and semantic element targeting | Product feature complete; physical iOS devices and live platform evidence remain separate from the roadmap feature inventory |
 | Editor/diff | Native tabs, find/replace, Markdown preview, changed-file/diff-row navigation, Explorer and Git review, plus explicit reload/overwrite controls after a save conflict | Autosave and broader conflict parity, syntax-highlighted depth, compare scopes, blame and richer diff editing |
 | Managed worktrees | Git worktree operations; assistant-turn forks can choose an existing linked worktree with persisted task cwd and task-aware removal guard | Automatic per-task managed creation/cleanup and broader environment-aware fork/orchestration ownership |
 | Provider/model/context | Generic ACP controls with advertised-order model cycling, persisted live-advertised model+effort presets and ACP provider ordering; direct-model runtime and favorites | Fast/thinking preset variants, keyboard cycling, richer compaction/context UX and provider/account usage telemetry |
-| Computer Use | Reviewed X11 selected-window observation/input with bounded Unicode typing | Broader action/input/preview/target semantics plus macOS/other-platform parity |
+| Computer Use | Reviewed selected-window observation with preview-to-source coordinate targeting, move/click/double-click/drag, vertical/horizontal scroll, bounded Unicode typing, named editing/navigation keys, fresh-window revalidation, cancellation and takeover | Product action/target/preview behavior complete; host transport breadth remains a platform implementation concern rather than an open M27 feature |
 | Automations | Durable fixed-offset/IANA/DST daily/weekly/five-field cron schedules, run/failure/runtime limits, exact history export/pruning, cancellation, Project-vs-Hub context snapshots, explicit headless scheduling, Standalone/Heartbeat/Dedicated continuation modes with target safety + cooldown, and reviewed tool-free AI completion policy with stale-result fencing | Live-provider lifecycle/restart/shutdown and platform acceptance |
 | Slash commands/keybindings | Qualified native workflow commands including paused goal set/pause and saved automation review by exact ID, provider commands, palette and constrained remaps | Goal resume/clear/edit and other argument forms, upstream semantics and broad context-aware custom keybindings |
-| Releases/updater | Local version history, executable SHA-256 fingerprint and staged artifact integrity recheck before a prospective handoff | Trusted native feed, publisher signing identity and signed install/update/rollback lifecycle |
+| Releases/updater | Local version history/fingerprint plus signed-manifest verification, target/schema enforcement, bounded no-clobber staging, staged-byte revalidation, exact install swap, retained rollback copy and explicit rollback transaction | Product updater lifecycle complete; development builds intentionally have no invented production feed URL or publisher identity |
 | Profile/activity | Local activity, token-first UTC heatmap with turn-start fallback, active-hour distribution, exact direct/ACP per-turn route/model mix, real task token/context values and legacy latest-session snapshots | Real account/quota/billing statistics and live provider acceptance |
 | Handoff/forks | Reviewed related continuation, guarded same-task ACP/direct route replacement, capability-gated ACP provider-native whole-session fork with retained-context fallback, and context-derived branch drafts including reviewed worktree creation/selection | Managed worktree lifecycle depth and live provider/worktree acceptance |
 | Attachments/media | Persistent folder references; still PNG/JPEG/WebP and UTF-8 text; bounded PDF, DOCX, ODT, ODP, ODS, PPTX and XLSX intake with inert prompt projection; Studio document previews/original export; PDF paging/text/HTTP(S) links, optional OCR and reviewed safe-subset AcroForm editing with new-copy export | Cross-platform/package and wider live PDF failure acceptance |
@@ -162,8 +162,9 @@ The qualified `/synara/goal set <objective>` command saves a paused task goal;
 explicit Resume and Send remain required.
 
 Native subagents/workflows, Agent Gateway and incoming external MCP remain
-substantially implemented. Computer Use is retained as a depth gap because current
-upstream behavior is materially broader than the present X11 slice.
+substantially implemented. Computer Use now carries the complete reviewed
+action/target/preview contract in the roadmap inventory. Additional host transports
+remain platform work rather than a missing action model.
 
 ## September 23: manual download and ZIP continuation
 

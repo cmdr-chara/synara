@@ -1,12 +1,15 @@
 # Current-upstream native parity gates
 
-This is a completion ledger for the continuing GPUI parity effort, not a release
-claim or a percentage. Baseline: native `ef30c3db931dbf179d0a26657c891fb1ff89dbe9` and
+This is an evidence ledger for the continuing GPUI parity effort, not the
+execution roadmap, a release claim or a percentage. ROADMAP.md is complete at the
+product/code level; OPEN rows here mean additional real-environment evidence can
+still be collected, not that a roadmap feature is unimplemented. Baseline: native `ef30c3db931dbf179d0a26657c891fb1ff89dbe9` and
 upstream `eaa61eded31b6755d4f30ba8eabc5d905cf817cb` on 2026-09-23. The
 [current feature-gap audit](../ui/electron-vs-gpui-feature-gap.md) supplies the
 evidence and product scope behind each row. A gate remains **OPEN** until its
 workflow, failure path, and relevant platform/provider acceptance have been
-observed; a green compile or narrow unit test alone does not close it.
+observed. These states are evidence quality markers only and do not reopen a
+completed product/code item in ROADMAP.md.
 
 **OPEN does not mean no feature was delivered.** The
 [roadmap's delivered-slice inventory](../../ROADMAP.md#delivered-feature-slices-in-the-september-23-sprint)

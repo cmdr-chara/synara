@@ -15,6 +15,7 @@ import time
 from native_smoke import Scenario, wait_until
 from native_navigation_smoke import selection, task_count
 from native_model_draft_smoke import close, preference
+from native_integrations_smoke import fill
 
 
 def provider_profile():
@@ -84,8 +85,7 @@ def main():
 
         scenario.click_control("onboarding-next")  # Appearance
         scenario.click_control("onboarding-next")  # Project
-        scenario.click_control("onboarding-project-path")
-        scenario.desktop.text(str(scenario.project))
+        fill(scenario, "onboarding-project-path", str(scenario.project))
         wait_until(
             lambda: scenario.control_bounds("onboarding-project-add-existing"),
             "existing project onboarding action",

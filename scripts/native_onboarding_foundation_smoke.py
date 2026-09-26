@@ -8,7 +8,7 @@ from pathlib import Path
 from native_smoke import Scenario, wait_until
 from native_navigation_smoke import selection, task_count
 from native_controls_smoke import option
-from native_integrations_smoke import click
+from native_integrations_smoke import click, fill
 from native_model_draft_smoke import close, preference
 
 
@@ -47,8 +47,7 @@ def run(s):
 
     click(s, "onboarding-next")  # Appearance
     click(s, "onboarding-next")  # Project
-    click(s, "onboarding-project-path")
-    s.desktop.text(str(s.project))
+    fill(s, "onboarding-project-path", str(s.project))
     wait_until(
         lambda: s.control_bounds("onboarding-project-add-existing"),
         "existing project action",

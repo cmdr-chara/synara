@@ -598,8 +598,44 @@ impl DeviceTools {
         .await?;
         Ok(())
     }
-    /// Probe the real Android executable, then scope authority to this target.
-    /// This value is intentionally non-serializable and is never restored.
+    fn configured_apple_helper(&self) -> Result<&Path, RuntimeError> {
+        let helper = self.apple_helper.as_deref().ok_or_else(|| {
+            RuntimeError::Unsupported(
+                "Select a trusted synara-device-helper executable in Device settings".into(),
+            )
+        })?;
+        if !helper.is_absolute() || !helper.is_file() {
+            return Err(RuntimeError::Unsupported(
+                "The configured Apple device helper is missing or is not an absolute executable path"
+                    .into(),
+            ));
+        }
+        Ok(helper)
+    }
+
+    pub fn can_input(&self, device: &ToolDevice) -> bool {
+        device.availability == DeviceAvailability::Ready
+            && match self.backend {
+                DeviceBackend::Android => true,
+                DeviceBackend::AppleSimulator => self
+                    .apple_helper
+                    .as_deref()
+                    .is_some_and(|path| path.is_absolute() && path.is_file()),
+            }
+    }
+
+    pub fn can_inspect_accessibility(&self, device: &ToolDevice) -> bool {
+        self.backend == DeviceBackend::AppleSimulator
+            && device.availability == DeviceAvailability::Ready
+            && self
+                .apple_helper
+                .as_deref()
+                .is_some_and(|path| path.is_absolute() && path.is_file())
+    }
+
+    /// Probe the selected native input owner, then scope authority to this
+    /// exact device/backend/helper tuple. Grants are intentionally
+    /// non-serializable and are never restored.
     pub async fn approve_input(
         &self,
         device: &ToolDevice,
@@ -607,33 +643,46 @@ impl DeviceTools {
         cancel: &CancellationToken,
     ) -> Result<DeviceInputGrant, RuntimeError> {
         let id = self.address(device)?;
-        if self.backend != DeviceBackend::Android
-            || device.availability != DeviceAvailability::Ready
-        {
-            return Err(RuntimeError::Unsupported(
-                "Input is only implemented for an authorized Android target with /system/bin/input"
-                    .into(),
-            ));
+        if device.availability != DeviceAvailability::Ready {
+            return Err(RuntimeError::Closed);
         }
-        command::run(
-            &self.executable,
-            vec![
-                "-s".into(),
-                id.clone(),
-                "shell".into(),
-                "test".into(),
-                "-x".into(),
-                "/system/bin/input".into(),
-            ],
-            4096,
-            cancel,
-        )
-        .await?;
+        let helper = match self.backend {
+            DeviceBackend::Android => {
+                command::run(
+                    &self.executable,
+                    vec![
+                        "-s".into(),
+                        id.clone(),
+                        "shell".into(),
+                        "test".into(),
+                        "-x".into(),
+                        "/system/bin/input".into(),
+                    ],
+                    4096,
+                    cancel,
+                )
+                .await?;
+                None
+            }
+            DeviceBackend::AppleSimulator => {
+                let helper = self.configured_apple_helper()?.to_path_buf();
+                let attached = apple_helper::probe(&helper, &id, cancel).await?;
+                if !attached.capabilities.input {
+                    return Err(RuntimeError::Unsupported(
+                        "The selected Simulator helper reports no HID input capability".into(),
+                    ));
+                }
+                Some(helper)
+            }
+        };
         Ok(DeviceInputGrant {
+            backend: self.backend,
             device: id,
             executable: self.executable.clone(),
+            apple_helper: helper,
         })
     }
+
     pub async fn input(
         &self,
         device: &ToolDevice,
@@ -644,25 +693,160 @@ impl DeviceTools {
         cancel: &CancellationToken,
     ) -> Result<(), RuntimeError> {
         let id = self.address(device)?;
-        if self.backend != DeviceBackend::Android
-            || device.availability != DeviceAvailability::Ready
+        if device.availability != DeviceAvailability::Ready
             || id != grant.device
+            || self.backend != grant.backend
             || self.executable != grant.executable
         {
             return Err(RuntimeError::Denied(
                 "Device input authority is missing or belongs to another target".into(),
             ));
         }
-        let mut args = vec!["-s".into(), id, "shell".into(), "/system/bin/input".into()];
-        args.extend(android_input_args(&input, width, height)?);
-        command::run(&self.executable, args, 4096, cancel).await?;
+        input.validate()?;
+        match self.backend {
+            DeviceBackend::Android => {
+                if grant.apple_helper.is_some() {
+                    return Err(RuntimeError::Denied(
+                        "Device input authority belongs to another backend".into(),
+                    ));
+                }
+                let mut args =
+                    vec!["-s".into(), id, "shell".into(), "/system/bin/input".into()];
+                args.extend(android_input_args(&input, width, height)?);
+                command::run(&self.executable, args, 4096, cancel).await?;
+            }
+            DeviceBackend::AppleSimulator => {
+                if width == 0 || height == 0 || width > 16_384 || height > 16_384 {
+                    return Err(RuntimeError::Limit);
+                }
+                let helper = grant.apple_helper.as_deref().ok_or_else(|| {
+                    RuntimeError::Denied(
+                        "Simulator input authority has no native helper".into(),
+                    )
+                })?;
+                if self.configured_apple_helper()? != helper {
+                    return Err(RuntimeError::Denied(
+                        "Simulator helper changed after input was approved".into(),
+                    ));
+                }
+                let normalized = |value: u32, bound: u32| -> Result<f64, RuntimeError> {
+                    if value >= bound {
+                        return Err(RuntimeError::Invalid(
+                            "Input coordinates are outside the latest capture".into(),
+                        ));
+                    }
+                    Ok(f64::from(value) / f64::from(bound))
+                };
+                let (method, params) = match input {
+                    DeviceInput::Tap { x, y } => (
+                        "tap",
+                        json!({
+                            "x": normalized(x, width)?,
+                            "y": normalized(y, height)?,
+                        }),
+                    ),
+                    DeviceInput::Swipe {
+                        from_x,
+                        from_y,
+                        to_x,
+                        to_y,
+                        duration_ms,
+                    } => {
+                        if duration_ms > 10_000 {
+                            return Err(RuntimeError::Limit);
+                        }
+                        (
+                            "swipe",
+                            json!({
+                                "startX": normalized(from_x, width)?,
+                                "startY": normalized(from_y, height)?,
+                                "endX": normalized(to_x, width)?,
+                                "endY": normalized(to_y, height)?,
+                                "durationMs": duration_ms,
+                            }),
+                        )
+                    }
+                    DeviceInput::Text { text } => ("text", json!({ "text": text })),
+                    DeviceInput::Key { key } => (
+                        "key",
+                        json!({ "usage": apple_key_usage(&key)? }),
+                    ),
+                    DeviceInput::Button { button } => (
+                        "button",
+                        json!({ "name": button }),
+                    ),
+                };
+                let (attached, _) = apple_helper::invoke(helper, &id, method, params, cancel).await?;
+                if !attached.capabilities.input {
+                    return Err(RuntimeError::Unsupported(
+                        "The Simulator helper lost HID input capability".into(),
+                    ));
+                }
+            }
+        }
         Ok(())
+    }
+
+    pub async fn describe_ui(
+        &self,
+        device: &ToolDevice,
+        cancel: &CancellationToken,
+    ) -> Result<DeviceAccessibilityTree, RuntimeError> {
+        if self.backend != DeviceBackend::AppleSimulator
+            || device.availability != DeviceAvailability::Ready
+        {
+            return Err(RuntimeError::Unsupported(
+                "Accessibility inspection is available for a booted iOS Simulator only".into(),
+            ));
+        }
+        let id = self.address(device)?;
+        let helper = self.configured_apple_helper()?;
+        let (attached, result) =
+            apple_helper::invoke(helper, &id, "describe-ui", json!({ "maxDepth": 40 }), cancel)
+                .await?;
+        if !attached.capabilities.accessibility {
+            return Err(RuntimeError::Unsupported(
+                "The selected Simulator helper reports no accessibility capability".into(),
+            ));
+        }
+        let tree_value = result
+            .get("tree")
+            .cloned()
+            .unwrap_or(result);
+        let root: DeviceUiNode = serde_json::from_value(tree_value)
+            .map_err(|_| RuntimeError::Invalid("invalid Simulator accessibility tree".into()))?;
+        let tree = DeviceAccessibilityTree {
+            point_width: attached.point_width,
+            point_height: attached.point_height,
+            root,
+        };
+        tree.validate()?;
+        Ok(tree)
     }
 }
 #[derive(Debug)]
 pub struct DeviceInputGrant {
+    backend: DeviceBackend,
     device: String,
     executable: PathBuf,
+    apple_helper: Option<PathBuf>,
+}
+
+fn apple_key_usage(key: &str) -> Result<u16, RuntimeError> {
+    match key {
+        "enter" => Ok(0x28),
+        "escape" => Ok(0x29),
+        "backspace" => Ok(0x2a),
+        "tab" => Ok(0x2b),
+        "space" => Ok(0x2c),
+        "right" => Ok(0x4f),
+        "left" => Ok(0x50),
+        "down" => Ok(0x51),
+        "up" => Ok(0x52),
+        _ => Err(RuntimeError::Unsupported(
+            "This Simulator key is not supported".into(),
+        )),
+    }
 }
 fn android_input_args(
     input: &DeviceInput,
@@ -712,8 +896,14 @@ fn android_input_args(
             };
             Ok(vec!["keyevent".into(), code.into()])
         }
-        DeviceInput::Text { .. } => Err(RuntimeError::Unsupported(
-            "Text injection is not implemented".into(),
+        DeviceInput::Text { text } => {
+            if text.is_empty() {
+                return Err(RuntimeError::Invalid("Device text must not be empty".into()));
+            }
+            Ok(vec!["text".into(), text.replace(' ', "%s")])
+        }
+        DeviceInput::Button { .. } => Err(RuntimeError::Unsupported(
+            "Hardware buttons are available for iOS Simulator only".into(),
         )),
         _ => Err(RuntimeError::Invalid(
             "Input coordinates are outside the latest capture".into(),

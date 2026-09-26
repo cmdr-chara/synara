@@ -13,26 +13,28 @@ records exact revisions and earlier failures. These are not hardware or GUI acce
 
 Open **Settings > Device / capture**. Choose Android / ADB or Apple Simulator.
 For Android, select the **trusted installed SDK adb executable** using the native
-file picker. No executable is downloaded, installed or discovered through a
-project's PATH. The path is a preference, not a permission grant. Selection alone
-runs nothing. Open Device in the Environment menu or command palette, then Refresh.
-The ADB executable can execute code on the host: do not select an untrusted file.
+file picker. For iOS Simulator input/accessibility, select a trusted
+`synara-device-helper` built against the local Xcode toolchain. No executable is
+downloaded, installed or discovered through a project's PATH. These paths are
+preferences, not permission grants. Selection alone runs nothing. Open Device in
+the Environment menu or command palette, then Refresh.
 
 | Target | Source implementation | Explicit limits |
 | --- | --- | --- |
-| Android USB device | ADB discovery, authorization/offline status, PNG capture, probed tap/swipe/key input | USB debugging and RSA authorization must be configured by the user. No physical-device shutdown, boot, text injection or automatic pairing |
-| Running Android emulator | ADB discovery, PNG capture, probed input, confirmed emulator shutdown | Cold boot and AVD enumeration are not implemented. Start the emulator externally |
+| Android USB device | ADB discovery, authorization/offline status, PNG capture, tap/swipe/text/named-key input | USB debugging and RSA authorization must be configured by the user. No physical-device shutdown, boot or automatic pairing |
+| Running Android emulator | ADB discovery, PNG capture, tap/swipe/text/key input and confirmed emulator shutdown | Cold boot and AVD enumeration are outside this backend. Start the emulator externally |
 | Android network target | Listed when ADB reports it | Physical/emulated kind stays unknown without USB or emulator evidence. No automatic network pairing or reconnect to guessed addresses |
-| iOS Simulator on macOS | Installed-runtime discovery, boot, confirmed shutdown, simctl PNG capture, user-triggered HTTP(S) URL opening and installed-app launch | Requires Xcode and an available iOS runtime. No Apple input API, app installation, physical iOS device support or private framework linkage |
+| iOS Simulator on macOS | Installed-runtime discovery, boot/shutdown, PNG capture, live frames, recording, app install/launch/terminate, HTTP(S) URL opening, helper-backed tap/swipe/text/named-key/hardware-button input, accessibility-tree inspection and semantic element targeting | Requires Xcode, an available iOS runtime and the explicitly configured native helper for HID/accessibility. Physical iOS devices remain outside this backend |
 | Other Apple runtimes | Explicit unsupported rows when simctl reports them | tvOS/watchOS/visionOS and unavailable runtimes are not exposed as working iOS targets |
 | Apple target on non-macOS | Explicit unsupported setup state | No helper invocation |
 | Desktop AppSnap/window capture | Not implemented | No claimed screen-recording permission, window enumeration or shortcut support |
 
-All Apple command construction/parsing is in
-`crates/synara-runtime/src/device_tools/apple.rs`. Portable domain logic keeps
-`DeviceDescriptor`, `DeviceId`, `DeviceInput`, `DeviceInputConsent` and frame
-validation. The existing protocol remains available for a future native helper.
-These command adapters are not a claim that that entire helper protocol is complete.
+Ordinary Simulator lifecycle/app/capture commands stay in
+`crates/synara-runtime/src/device_tools/apple.rs`. HID input and accessibility
+use the separately configured native-helper JSON-RPC client in
+`apple_helper.rs`, keeping private CoreSimulator details outside the portable
+Rust domain. `DeviceInputGrant` binds authority to the exact backend, target and
+helper and is never serialized or restored.
 
 ## Viewer and authority
 
@@ -49,13 +51,20 @@ Input is validated before a helper starts. The previous screenshot is cleared on
 success; choose Capture to inspect the new screen. These actions grant no input
 authority and have not been exercised against a live macOS simulator in this sprint.
 
-Input is off until the user explicitly enables it on the selected ready Android
-target. A real `/system/bin/input` executable probe must succeed first. The grant
-is bound to that target and helper, is not serializable, and is never restored.
-Tap, preset vertical swipes, Home/Back/Enter/Backspace buttons and focused arrow-key
-input use fixed command names and integer arguments. User text, shell fragments and
-arbitrary keycodes are not accepted. Input requires a capture at most 10 seconds old.
-This checks a helper capability, not successful physical-device input acceptance.
+Input is off until the user explicitly enables it on the selected ready target.
+Android first probes the real `/system/bin/input` path. Apple Simulator input
+attaches through the configured native helper and requires its reported HID
+capability. Grants are bound to the exact target/backend/helper, are not
+serializable and are never restored.
+
+Both backends support bounded taps, vertical swipes, text entry and named keys.
+Android retains Home/Back through its fixed key-event allowlist. Apple adds
+Home/Lock/Side/volume hardware-button actions through the helper. Input requires a
+capture at most 10 seconds old. Simulator accessibility inspection returns a
+bounded tree with roles, labels, values, frames and activation points. Labelled
+elements are presented as semantic targets; selecting one resolves its activation
+point (or safe frame center fallback) back into the current captured pixel space
+before sending an ordinary reviewed tap.
 
 Selection, Refresh, errors, configuration changes, hiding, disconnect, Escape and
 orientation changes revoke authority. Late replies carry an epoch and cannot replace

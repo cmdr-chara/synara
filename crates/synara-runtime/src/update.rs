@@ -261,8 +261,9 @@ impl VerifiedUpdate {
     }
 }
 
-/// Serializable handoff to a future platform replacement helper. It contains no
-/// update URL, credential or signing key.
+/// Serializable install transaction. It contains no update URL, credential or
+/// signing key. A launcher/helper may persist this value and execute it after
+/// the application has exited on platforms that lock running executables.
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct UpdateHandoff {
@@ -275,9 +276,169 @@ pub struct UpdateHandoff {
     pub current_data_schema: u32,
 }
 
-/// Re-reads staged bytes immediately before producing a handoff. The eventual
-/// platform helper must still independently verify the signed manifest and
-/// this byte identity immediately before any executable replacement.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UpdateInstallReceipt {
+    pub release_version: String,
+    pub installed_path: PathBuf,
+    pub rollback_path: PathBuf,
+}
+
+impl UpdateHandoff {
+    fn expected_digest(&self) -> Result<[u8; 32], RuntimeError> {
+        if self.expected_byte_length == 0 || self.expected_byte_length > MAX_ARTIFACT_BYTES {
+            return Err(RuntimeError::Invalid(
+                "invalid update handoff length".into(),
+            ));
+        }
+        let digest = hex::decode(&self.expected_sha256)
+            .map_err(|_| RuntimeError::Invalid("invalid update handoff digest".into()))?;
+        digest
+            .try_into()
+            .map_err(|_| RuntimeError::Invalid("invalid update handoff digest".into()))
+    }
+
+    fn validate_paths(&self) -> Result<(), RuntimeError> {
+        for path in [
+            &self.staged_artifact,
+            &self.current_executable,
+            &self.rollback_copy,
+        ] {
+            if !path.is_absolute() {
+                return Err(RuntimeError::Invalid(
+                    "update install paths must be absolute".into(),
+                ));
+            }
+        }
+        if self.staged_artifact == self.current_executable
+            || self.staged_artifact == self.rollback_copy
+            || self.current_executable == self.rollback_copy
+        {
+            return Err(RuntimeError::Invalid(
+                "update install paths must be distinct".into(),
+            ));
+        }
+        Ok(())
+    }
+
+    /// Replace the current executable/package with the previously verified
+    /// staged artifact while retaining exactly one rollback copy.
+    ///
+    /// The transaction is intentionally rename-based: current and staged bytes
+    /// must live on the same filesystem so replacement is never degraded into a
+    /// partially copied executable. On Windows this method is expected to be
+    /// called by the launcher/updater helper after the running executable exits.
+    pub fn install(&self) -> Result<UpdateInstallReceipt, RuntimeError> {
+        self.validate_paths()?;
+        let digest = self.expected_digest()?;
+        verify_artifact_file(
+            &self.staged_artifact,
+            self.expected_byte_length,
+            &digest,
+        )?;
+
+        let current_metadata = fs::symlink_metadata(&self.current_executable)?;
+        if !current_metadata.is_file() || current_metadata.file_type().is_symlink() {
+            return Err(RuntimeError::Denied(
+                "installed executable must be a regular non-symlink file".into(),
+            ));
+        }
+        if fs::symlink_metadata(&self.rollback_copy).is_ok() {
+            return Err(RuntimeError::Denied(
+                "rollback destination already exists".into(),
+            ));
+        }
+
+        // A staged file is created private. Before it becomes executable, copy
+        // the currently installed permission bits/ACL-facing mode through the
+        // portable permissions object.
+        fs::set_permissions(
+            &self.staged_artifact,
+            current_metadata.permissions(),
+        )?;
+
+        fs::rename(&self.current_executable, &self.rollback_copy).map_err(|error| {
+            RuntimeError::Io(error)
+        })?;
+
+        if let Err(error) = fs::rename(&self.staged_artifact, &self.current_executable) {
+            if fs::rename(&self.rollback_copy, &self.current_executable).is_err() {
+                return Err(RuntimeError::WriteOutcomeUnknown);
+            }
+            return Err(RuntimeError::Io(error));
+        }
+
+        if let Err(error) = verify_artifact_file(
+            &self.current_executable,
+            self.expected_byte_length,
+            &digest,
+        ) {
+            let _ = fs::remove_file(&self.current_executable);
+            if fs::rename(&self.rollback_copy, &self.current_executable).is_err() {
+                return Err(RuntimeError::WriteOutcomeUnknown);
+            }
+            return Err(error);
+        }
+
+        sync_parent(&self.current_executable)?;
+        Ok(UpdateInstallReceipt {
+            release_version: self.release_version.clone(),
+            installed_path: self.current_executable.clone(),
+            rollback_path: self.rollback_copy.clone(),
+        })
+    }
+
+    /// Restore the retained pre-update executable. The currently installed
+    /// update is moved back to the staging path first, then removed only after
+    /// rollback has been published successfully.
+    pub fn rollback(&self) -> Result<PathBuf, RuntimeError> {
+        self.validate_paths()?;
+        if fs::symlink_metadata(&self.staged_artifact).is_ok() {
+            return Err(RuntimeError::Denied(
+                "rollback scratch path is not empty".into(),
+            ));
+        }
+        let rollback_metadata = fs::symlink_metadata(&self.rollback_copy)?;
+        let current_metadata = fs::symlink_metadata(&self.current_executable)?;
+        if !rollback_metadata.is_file()
+            || rollback_metadata.file_type().is_symlink()
+            || !current_metadata.is_file()
+            || current_metadata.file_type().is_symlink()
+        {
+            return Err(RuntimeError::Denied(
+                "rollback requires regular installed and rollback files".into(),
+            ));
+        }
+
+        fs::rename(&self.current_executable, &self.staged_artifact)?;
+        if let Err(error) = fs::rename(&self.rollback_copy, &self.current_executable) {
+            if fs::rename(&self.staged_artifact, &self.current_executable).is_err() {
+                return Err(RuntimeError::WriteOutcomeUnknown);
+            }
+            return Err(RuntimeError::Io(error));
+        }
+        let _ = fs::remove_file(&self.staged_artifact);
+        sync_parent(&self.current_executable)?;
+        Ok(self.current_executable.clone())
+    }
+}
+
+fn sync_parent(path: &Path) -> Result<(), RuntimeError> {
+    let parent = path
+        .parent()
+        .ok_or_else(|| RuntimeError::Invalid("update path has no parent directory".into()))?;
+    #[cfg(unix)]
+    {
+        File::open(parent)?.sync_all()?;
+    }
+    #[cfg(not(unix))]
+    {
+        let _ = parent;
+    }
+    Ok(())
+}
+
+/// Re-reads staged bytes immediately before any install handoff or executable
+/// replacement.
 fn verify_artifact_file(
     path: &Path,
     expected_length: u64,

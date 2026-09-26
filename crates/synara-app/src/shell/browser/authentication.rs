@@ -91,6 +91,9 @@ impl Shell {
 
     fn browser_close_authentication_flow(&mut self, id: u128) {
         self.browser.authentication_flows.remove(&id);
+        if self.browser.cookie_importing == Some(id) {
+            self.browser.cookie_importing = None;
+        }
         let mut selected_closed = false;
         let selected = self.browser.selected;
         let result = self.controller.browser.with(|session, _| {
@@ -233,6 +236,114 @@ impl Shell {
         cx.notify();
     }
 
+    fn browser_import_authentication_cookies(&mut self, id: u128, cx: &mut Context<Self>) {
+        if self.browser.cookie_importing.is_some() {
+            return;
+        }
+        let Some(flow) = self.browser.authentication_flows.get(&id) else {
+            return;
+        };
+        if flow.initial || !self.browser_authentication_active(flow) {
+            self.browser.error = Some("Open the private sign-in page before importing cookies.".into());
+            cx.notify();
+            return;
+        }
+        self.browser.cookie_importing = Some(id);
+        let picker = cx.prompt_for_paths(gpui::PathPromptOptions {
+            files: true,
+            directories: false,
+            multiple: false,
+            prompt: Some("Import a Netscape/Mozilla cookies.txt file into this private sign-in flow".into()),
+        });
+        cx.spawn(async move |view, cx| {
+            let selected = picker.await;
+            let _ = view.update(cx, |this, cx| {
+                if this.browser.cookie_importing != Some(id) {
+                    return;
+                }
+                this.browser.cookie_importing = None;
+                let Some(flow) = this.browser.authentication_flows.get(&id) else {
+                    return;
+                };
+                if !this.browser_authentication_active(flow) || flow.initial {
+                    this.browser.error = Some("The sign-in request changed before cookies could be imported.".into());
+                    cx.notify();
+                    return;
+                }
+                let path = match selected {
+                    Ok(Ok(Some(paths))) if paths.len() == 1 && paths[0].is_file() => paths[0].clone(),
+                    Ok(Ok(None)) => {
+                        cx.notify();
+                        return;
+                    }
+                    _ => {
+                        this.browser.error = Some("Choose one readable Netscape/Mozilla cookies.txt file.".into());
+                        cx.notify();
+                        return;
+                    }
+                };
+                let now = std::time::SystemTime::now()
+                    .duration_since(std::time::UNIX_EPOCH)
+                    .map(|duration| duration.as_secs())
+                    .unwrap_or(0);
+                let jar = match browser_domain::cookie_import::read_netscape_cookie_jar(&path, now) {
+                    Ok(jar) => jar,
+                    Err(error) => {
+                        this.browser.error = Some(error.to_string());
+                        cx.notify();
+                        return;
+                    }
+                };
+
+                #[cfg(target_os = "linux")]
+                let imported = this
+                    .browser
+                    .native
+                    .borrow_mut()
+                    .import_authentication_cookies(id, &jar);
+                #[cfg(not(target_os = "linux"))]
+                let imported: browser_domain::Result<usize> = Err(browser_domain::BrowserError::Unavailable);
+
+                let count = match imported {
+                    Ok(count) => count,
+                    Err(error) => {
+                        this.browser.error = Some(error.to_string());
+                        cx.notify();
+                        return;
+                    }
+                };
+
+                let reload = this.controller.browser.with(|session, now| {
+                    let tabs = session
+                        .tabs()
+                        .into_iter()
+                        .filter(|tab| tab.profile == (BrowserProfile::Authentication { flow: id }))
+                        .map(|tab| tab.id)
+                        .collect::<Vec<_>>();
+                    if tabs.is_empty() {
+                        return Err(browser_domain::BrowserError::MissingTab);
+                    }
+                    for tab in tabs {
+                        session.user_navigate(tab, "", NavigationKind::Reload, now)?;
+                    }
+                    Ok(())
+                });
+                match reload {
+                    Ok(()) => {
+                        this.browser.error = None;
+                        this.notice = Some(format!(
+                            "Imported {count} protected cookies into this private sign-in flow. The sign-in page is reloading."
+                        ));
+                    }
+                    Err(error) => this.browser.error = Some(error.to_string()),
+                }
+                cx.notify();
+            });
+        })
+        .detach();
+        cx.notify();
+    }
+
     fn browser_retry_authentication(&mut self, id: u128, cx: &mut Context<Self>) {
         let Some(flow) = self.browser.authentication_flows.get(&id) else {
             return;
@@ -246,10 +357,14 @@ impl Shell {
     pub(super) fn browser_authentication_controls(&self, cx: &mut Context<Self>) -> AnyElement {
         div().flex().flex_col().gap_2().children(self.browser.authentication_flows.iter().map(|(id, flow)| {
             let id = *id;
+            let importing = self.browser.cookie_importing == Some(id);
+            let import_disabled = flow.initial || self.browser.cookie_importing.is_some();
             div().flex().flex_col().gap_1()
                 .child(format!("Private sign-in {id}: {}", flow.label))
-                .child(div().text_xs().child("Only this request shares these sign-in tabs. Complete sign-in on the provider website, then confirm below. Cancelling or expiry closes the entire flow and clears its temporary browser data."))
+                .child(div().text_xs().child("Only this request shares these sign-in tabs. You can import a reviewed Netscape/Mozilla cookies.txt file into this temporary flow; imported cookies never enter Manual or agent browser profiles and are destroyed with the flow."))
                 .child(div().flex().gap_2()
+                    .child(ui::action(format!("browser-auth-import-{id}"), if importing { "Importing cookies..." } else { "Import cookies..." }, None, import_disabled,
+                        cx.listener(move |this, _: &(), _, cx| this.browser_import_authentication_cookies(id, cx))))
                     .child(ui::action(format!("browser-auth-retry-{id}"), "Restart sign-in", None, false,
                         cx.listener(move |this, _: &(), _, cx| this.browser_retry_authentication(id, cx))))
                     .child(ui::action(format!("browser-auth-finish-{id}"), "I finished sign-in", None, false,

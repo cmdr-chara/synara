@@ -4,26 +4,30 @@ Date: 2026-09-26
 
 ## Delivered
 
-### M25 Richer model/context controls
+### M07 Protected browser session/cookie import
 
-The direct-model review already exposed reviewed Fast/Balanced/Thinking effort
-presets only when the selected model advertises matching reasoning levels, output
-budgets bounded by model metadata, custom history windows and keyboard model
-cycling.
+Private provider sign-in flows can now import a user-selected Netscape/Mozilla
+`cookies.txt` jar. The source is read through a no-follow bounded reader,
+normalized into a validated Netscape jar, and loaded only into the exact
+request-owned `Authentication { flow }` WebKit profile.
 
-This batch adds the remaining explicit context-compaction workflow. **Fit context**
-derives the largest recent complete-turn history window that fits beneath the
-reviewed model context limit using a conservative UTF-8/base64 byte upper bound,
-while reserving requested output plus space for the next prompt. The action edits
-only the review draft and still requires route confirmation followed by explicit
-Send. It never deletes, rewrites or summarizes the durable transcript.
+The import deliberately does not inspect browser databases or copy cookies from
+Chrome, Firefox, Manual tabs or agent tabs. It accepts one explicitly selected
+file, rejects malformed, expired, oversized and suspicious cookie records, and
+never logs cookie values or source paths.
 
-The estimator includes retained user/assistant text and stored image payloads,
-never expands beyond 256 reviewed turns, and returns current-message-only when
-even the newest prior turn exceeds the safe budget.
+Import replaces the current authentication WebKit profile with a fresh temporary
+profile seeded from the normalized jar, then reloads the existing sign-in tabs
+through the normal Session navigation owner. Popup authority and request lifetime
+remain unchanged.
+
+The temporary profile directory and its cookie store are destroyed when the final
+authentication tab closes, the request is cancelled, expires, is restarted or is
+finished. Manual and AgentTask profiles are never import targets.
 
 ## Inventory effect
 
-- M25 complete: major remaining 10 -> 9.
-- Shipped feature slices 86 -> 87.
-- Execution total 12 -> 11.
+- M07 complete: major remaining 8 -> 7.
+- Shipped feature slices 88 -> 89.
+- Execution total 10 -> 9.
+- D2 remains OPEN for M09, M11 and M12.

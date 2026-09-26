@@ -104,6 +104,37 @@ impl Shell {
                     "Model context: {window} tokens. Requested output: {reserved}. Remaining context is shared by history, attachments and the current prompt."
                 )),
             );
+            if let (Some(selection), Some(thread)) = (selection.as_ref(), self.thread.as_ref()) {
+                let fitted = synara_workspace::suggested_direct_history_turns(
+                    thread,
+                    window,
+                    selection.max_output_tokens,
+                );
+                let label = match fitted {
+                    None => "Fit context: all history".to_owned(),
+                    Some(0) => "Fit context: current message only".to_owned(),
+                    Some(turns) => format!("Fit context: last {turns} turns"),
+                };
+                body = body
+                    .child(
+                        ui::action(
+                            "direct-history-fit",
+                            label,
+                            None,
+                            selection.history_turns == fitted,
+                            cx.listener(move |this, _, _, cx| {
+                                this.edit_direct_option(Edit::History(fitted), cx)
+                            }),
+                        )
+                        .relative()
+                        .child(ui::layout_probe("direct-history-fit")),
+                    )
+                    .child(
+                        div().text_xs().text_color(rgb(palette().muted)).child(
+                            "Fit context uses a conservative byte upper bound against the reviewed model window, reserves output plus space for the next prompt, and only changes the reviewed history window. It never deletes or summarizes the local transcript.",
+                        ),
+                    );
+            }
         }
         let mut output = div()
             .flex()

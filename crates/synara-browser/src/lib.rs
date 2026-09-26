@@ -10,6 +10,7 @@
 
 #[cfg(all(feature = "native-webview", target_os = "linux"))]
 pub mod native;
+pub mod cookie_import;
 #[path = "../../../foundations/browser/lib.rs"]
 pub mod policy;
 pub mod session;

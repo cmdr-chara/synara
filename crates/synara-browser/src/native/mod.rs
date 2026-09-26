@@ -11,6 +11,7 @@ mod surface;
 mod tests;
 
 use crate::{
+    cookie_import::ProtectedCookieJar,
     session::{Capabilities, Command, Event, NativePort, Output, RuntimeDiagnostic},
     *,
 };
@@ -195,6 +196,74 @@ impl NativeHost {
     pub fn error(&self) -> Option<&str> {
         self.error.as_deref()
     }
+    /// Replace one request-owned Authentication profile with a fresh temporary
+    /// profile seeded only from the explicitly reviewed Netscape cookie jar.
+    /// Manual and AgentTask profiles are never eligible.
+    pub fn import_authentication_cookies(
+        &mut self,
+        flow: u128,
+        jar: &ProtectedCookieJar,
+    ) -> Result<usize> {
+        let partition = StoragePartition::Authentication(flow);
+        let tabs = self
+            .tabs
+            .iter()
+            .filter_map(|(tab, profile)| (*profile == partition).then_some(*tab))
+            .collect::<Vec<_>>();
+        if tabs.is_empty() {
+            return Err(BrowserError::MissingTab);
+        }
+
+        // Destroy every live WebKit view before replacing the profile. The
+        // session owner will explicitly reload these same tabs after import.
+        self.views.retain(|tab, _| !tabs.contains(tab));
+        self.pending_popups
+            .borrow_mut()
+            .retain(|source, _| !tabs.contains(source));
+        self.sync_surface();
+
+        let key = profile_key(partition);
+        self.profiles.remove(&key);
+        let directory = tempfile::Builder::new()
+            .prefix("auth-import-")
+            .tempdir_in(&self.root)
+            .map_err(|_| BrowserError::Unavailable)?;
+        let path = directory.path().to_path_buf();
+        private_directory(&path).map_err(|_| BrowserError::Unavailable)?;
+        let cookie_path = path.join("cookies");
+        let mut options = std::fs::OpenOptions::new();
+        options.write(true).create_new(true);
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::OpenOptionsExt;
+            options.mode(0o600);
+        }
+        let mut file = options
+            .open(&cookie_path)
+            .map_err(|_| BrowserError::Unavailable)?;
+        {
+            use std::io::Write;
+            file.write_all(jar.bytes())
+                .and_then(|_| file.sync_all())
+                .map_err(|_| BrowserError::Unavailable)?;
+        }
+
+        // Wry configures WebKitGTK's Netscape-text CookieManager storage while
+        // constructing this context, so the validated jar is loaded before the
+        // replacement authentication views navigate.
+        let mut context = WebContext::new(Some(path));
+        context.set_allows_automation(false);
+        self.profiles.insert(
+            key,
+            Profile {
+                context,
+                downloads: Rc::new(manual_downloads::Gate::default()),
+                _directory: Some(directory),
+            },
+        );
+        Ok(jar.count())
+    }
+
     pub fn open_manual_inspector(&self, tab: HostTabId) -> Result<()> {
         let view = self.views.get(&tab).ok_or(BrowserError::MissingTab)?;
         if view.partition != StoragePartition::Manual {

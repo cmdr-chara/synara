@@ -9,15 +9,15 @@ Detailed parity evidence lives in:
 
 ## Current status
 
-- Shipped feature slices: **88**
-- Major remaining: **8**
+- Shipped feature slices: **89**
+- Major remaining: **7**
 - Smaller remaining: **0**
 - Acceptance/integration remaining: **2**
-- Total remaining: **10**
+- Total remaining: **9**
 - Completely missing top-level surfaces: **0**
 - Broad verification gates still open: **19**
 
-The **10-item count is the execution count to use going forward**. The 19 open verification
+The **9-item count is the execution count to use going forward**. The 19 open verification
 gates are larger acceptance buckets and are not a feature count.
 
 Current upstream reference: `Emanuele-web04/synara@eaa61eded31b6755d4f30ba8eabc5d905cf817cb`.
@@ -31,6 +31,7 @@ candidate `5e006f08d31a2ca7eea97e7b7d0c0d0052011cb6`. A04 then passed a
 fresh-install real GitHub Copilot ACP journey on candidate
 `a51a87fa684f26de8616ab04c4a7cbd78d79c351`, closing D1 as well.
 A01 and A10 remain the final acceptance items.
+M07 is also complete: reviewed Netscape/Mozilla cookie jars can be imported only into request-owned temporary Authentication profiles; the normalized cookie state is destroyed with the flow and never enters Manual or AgentTask storage.
 
 ## Major features remaining
 
@@ -40,7 +41,7 @@ A01 and A10 remain the final acceptance items.
 - [x] M04 Direct-model execution from the web workspace
 - [x] M05 Remote workspace execution
 - [x] M06 Production headless deployment with bind/TLS/update packaging
-- [ ] M07 Protected browser session/cookie import
+- [x] M07 Protected browser session/cookie import
 - [x] M08 Complete browser popup authentication lifecycle
 - [ ] M09 Agent-controlled browser upload/download
 - [x] M10 Browser console/runtime diagnostics
@@ -106,7 +107,7 @@ not large new product subsystems.
 
 Finish whole workflows instead of spreading work across every gate:
 
-1. **Browser/auth:** M07, M09, M11-M12
+1. **Browser/auth:** M09, M11-M12
 2. **Simulator:** M14, M16 when the required macOS/native input backend is available
 3. **Computer Use:** M27
 4. **Releases/updater:** M28

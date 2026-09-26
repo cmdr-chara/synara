@@ -24,6 +24,7 @@ pub(super) struct BrowserView {
     runtime_diagnostics_open: bool,
     authentication_flows: BTreeMap<u128, authentication::Flow>,
     next_authentication_flow: u128,
+    cookie_importing: Option<u128>,
     _subscription: Subscription,
 }
 impl BrowserView {
@@ -128,6 +129,7 @@ impl BrowserView {
             runtime_diagnostics_open: false,
             authentication_flows: BTreeMap::new(),
             next_authentication_flow: 0,
+            cookie_importing: None,
             _subscription: sub,
         }
     }

@@ -6,6 +6,7 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+import tempfile
 
 PLATFORMS = {"macos", "windows", "linux"}
 REQUIRED = {
@@ -120,13 +121,63 @@ def validate(doc: dict, root: Path, revision: str, expected_platform: str) -> di
     }
 
 
+def self_test() -> None:
+    revision = "a" * 40
+    with tempfile.TemporaryDirectory() as directory:
+        root = Path(directory)
+        artifacts = []
+        for kind in sorted(ARTIFACT_KINDS):
+            path = root / (kind + ".txt")
+            path.write_text("synthetic " + kind + "\n", encoding="utf-8")
+            artifacts.append({"kind": kind, "file": path.name, "sha256": digest(path)})
+        document = {
+            "format": "synara-a10-live-v1",
+            "revision": revision,
+            "platform": "macos",
+            "environment": {
+                "os_version": "synthetic-os",
+                "screen_reader": "synthetic-reader",
+                "accessibility_api": "synthetic-api",
+                "scale_factor": 2.0,
+            },
+            "visual": {key: True for key in REQUIRED["visual"]},
+            "accessibility": {key: True for key in REQUIRED["accessibility"]},
+            "save_picker": {key: True for key in REQUIRED["save_picker"]},
+            "artifacts": artifacts,
+        }
+        summary = validate(document, root, revision, "macos")
+        assert summary["platform"] == "macos"
+        assert len(summary["artifacts"]) == len(ARTIFACT_KINDS)
+        try:
+            validate(document, root, revision, "windows")
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("platform mismatch was accepted")
+        tampered = root / artifacts[0]["file"]
+        tampered.write_text("tampered\n", encoding="utf-8")
+        try:
+            validate(document, root, revision, "macos")
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("tampered artifact was accepted")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--evidence", type=Path, required=True)
-    parser.add_argument("--revision", required=True)
-    parser.add_argument("--platform", choices=sorted(PLATFORMS), required=True)
-    parser.add_argument("--summary-out", type=Path, required=True)
+    parser.add_argument("--evidence", type=Path)
+    parser.add_argument("--revision")
+    parser.add_argument("--platform", choices=sorted(PLATFORMS))
+    parser.add_argument("--summary-out", type=Path)
+    parser.add_argument("--self-test", action="store_true")
     args = parser.parse_args()
+    if args.self_test:
+        self_test()
+        print("A10 validator self-test passed")
+        return 0
+    if not all((args.evidence, args.revision, args.platform, args.summary_out)):
+        parser.error("--evidence, --revision, --platform and --summary-out are required")
     if len(args.revision) != 40 or any(
         ch not in "0123456789abcdef" for ch in args.revision
     ):

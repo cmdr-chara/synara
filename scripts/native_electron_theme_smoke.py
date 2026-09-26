@@ -19,9 +19,12 @@ import time
 from native_smoke import Scenario, wait_until
 from native_model_draft_smoke import preference
 from native_electron_parity_smoke import PAGES, open_page, section_slots, resize, read_log
+from parity.export_theme_catalog import CATALOG_SHA, catalog_from_source, read_pinned
 
 ROOT = Path(__file__).resolve().parents[1]
-CATALOG = json.loads((ROOT / 'crates/synara-workspace/src/settings/theme/catalog.json').read_text())
+CATALOG = catalog_from_source(
+    read_pinned(ROOT / 'docs/ui/reference/electron-theme.seed.ts', CATALOG_SHA)
+)
 PREFIX = 'codex-theme-v1:'
 
 

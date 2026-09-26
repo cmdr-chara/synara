@@ -70,28 +70,15 @@ fn github_oidc_signed_update_installs_and_rolls_back() {
     let manifest = fs::read(&manifest_path).unwrap();
     let bundle = fs::read(&bundle_path).unwrap();
 
-    let update = UpdateManifest::verify_signed(
-        &manifest,
-        &bundle,
-        &verifier,
-        &platform,
-        &architecture,
-        1,
-    )
-    .unwrap();
+    let update =
+        UpdateManifest::verify_signed(&manifest, &bundle, &verifier, &platform, &architecture, 1)
+            .unwrap();
 
     let mut tampered = manifest.clone();
     tampered.push(b' ');
     assert!(
-        UpdateManifest::verify_signed(
-            &tampered,
-            &bundle,
-            &verifier,
-            &platform,
-            &architecture,
-            1,
-        )
-        .is_err()
+        UpdateManifest::verify_signed(&tampered, &bundle, &verifier, &platform, &architecture, 1,)
+            .is_err()
     );
 
     let root = tempfile::tempdir().unwrap();
@@ -113,7 +100,10 @@ fn github_oidc_signed_update_installs_and_rolls_back() {
     fs::remove_file(&current).unwrap();
     fs::rename(&staged, &current).unwrap();
     assert_eq!(sha256(&current), handoff.expected_sha256);
-    assert_eq!(fs::metadata(&current).unwrap().len(), handoff.expected_byte_length);
+    assert_eq!(
+        fs::metadata(&current).unwrap().len(),
+        handoff.expected_byte_length
+    );
 
     fs::remove_file(&current).unwrap();
     fs::rename(&rollback, &current).unwrap();

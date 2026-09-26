@@ -187,7 +187,17 @@ class Desktop:
         self.key('a', ('Control_L',))
         self.key('c', ('Control_L',))
         time.sleep(0.12)
-        env = {key: os.environ[key] for key in ('PATH', 'LD_LIBRARY_PATH') if key in os.environ}
+        env = {
+            key: os.environ[key]
+            for key in (
+                'PATH',
+                'LD_LIBRARY_PATH',
+                'DBUS_SESSION_BUS_ADDRESS',
+                'NO_AT_BRIDGE',
+                'XDG_DATA_DIRS',
+            )
+            if key in os.environ
+        }
         env['DISPLAY'] = self.name
         result = subprocess.run(['xclip', '-selection', 'clipboard', '-out'], env=env,
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=3)

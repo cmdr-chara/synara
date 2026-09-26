@@ -48,7 +48,7 @@ jobs:
           set -euo pipefail
           rustup toolchain install 1.98.1 --profile minimal --component rustfmt
           sudo apt-get update -qq
-          sudo apt-get install -y -qq clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libwebkit2gtk-4.1-dev libgtk-3-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil xclip fonts-dejavu-core fonts-liberation
+          sudo apt-get install -y -qq clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libwebkit2gtk-4.1-dev libgtk-3-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil python3-pyatspi dbus-x11 at-spi2-core xclip fonts-dejavu-core fonts-liberation
       - name: Validate live-evidence parser
         run: python3 scripts/validate_a10_live_evidence.py --self-test
       - name: Build actual GPUI app and owned ACP fixture
@@ -56,7 +56,16 @@ jobs:
       - name: Exercise real theme paint and keyboard interaction
         run: |
           set -euo pipefail
-          python3 scripts/native_electron_theme_smoke.py             --binary target/debug/synara-app             --fixture target/debug/synara-acp-fixture             --output acceptance-evidence/theme
+          dbus-run-session -- bash -lc '
+            set -euo pipefail
+            launcher="$(command -v at-spi-bus-launcher || true)"
+            if [ -z "$launcher" ]; then launcher=/usr/libexec/at-spi-bus-launcher; fi
+            test -x "$launcher"
+            "$launcher" --launch-immediately > /tmp/synara-atspi-bus.log 2>&1 &
+            export NO_AT_BRIDGE=0
+            export SYNARA_A10_ATSPI=1
+            python3 scripts/native_electron_theme_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output acceptance-evidence/theme
+          '
           python3 - <<'PY'
           import json
           from pathlib import Path

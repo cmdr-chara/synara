@@ -49,7 +49,7 @@ jobs:
           set -euo pipefail
           rustup toolchain install 1.98.1 --profile minimal --component rustfmt
           sudo apt-get update -qq
-          sudo apt-get install -y -qq clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libwebkit2gtk-4.1-dev libgtk-3-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil python3-pyatspi dbus-x11 at-spi2-core xclip fonts-dejavu-core fonts-liberation
+          sudo apt-get install -y -qq clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libwebkit2gtk-4.1-dev libgtk-3-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil python3-pyatspi dbus-x11 at-spi2-core orca xclip fonts-dejavu-core fonts-liberation
       - name: Validate live-evidence parser
         run: python3 scripts/validate_a10_live_evidence.py --self-test
       - name: Build actual GPUI app and owned ACP fixture
@@ -64,16 +64,24 @@ jobs:
             test -x "$launcher"
             "$launcher" --launch-immediately > /tmp/synara-atspi-bus.log 2>&1 &
             export NO_AT_BRIDGE=0
-            # accesskit_unix stays lazy until the accessibility status service
-            # reports that assistive technology is enabled. An inspector alone
-            # does not activate it.
+            # AccessKit activates only after the AT-SPI status object reports
+            # assistive technology. The status object is /org/a11y/status.
             for _ in $(seq 1 50); do
-              if busctl --user set-property org.a11y.Bus /org/a11y/bus org.a11y.Status IsEnabled b true 2>/dev/null; then
+              if busctl --user set-property org.a11y.Bus /org/a11y/status org.a11y.Status IsEnabled b true 2>/dev/null; then
+                busctl --user set-property org.a11y.Bus /org/a11y/status org.a11y.Status ScreenReaderEnabled b true
                 break
               fi
               sleep 0.1
             done
-            test "$(busctl --user get-property org.a11y.Bus /org/a11y/bus org.a11y.Status IsEnabled | awk '{print $2}')" = "true"
+            test "$(busctl --user get-property org.a11y.Bus /org/a11y/status org.a11y.Status IsEnabled | awk '{print $2}')" = "true"
+            test "$(busctl --user get-property org.a11y.Bus /org/a11y/status org.a11y.Status ScreenReaderEnabled | awk '{print $2}')" = "true"
+            orca_args=()
+            orca --help 2>&1 | grep -q -- "--replace" && orca_args+=(--replace)
+            orca --help 2>&1 | grep -q -- "--no-setup" && orca_args+=(--no-setup)
+            orca "${orca_args[@]}" > /tmp/synara-orca.log 2>&1 &
+            orca_pid=$!
+            sleep 2
+            kill -0 "$orca_pid"
             export SYNARA_A10_ATSPI=1
             python3 scripts/native_electron_theme_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output acceptance-evidence/theme
           '

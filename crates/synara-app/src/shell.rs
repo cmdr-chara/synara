@@ -438,6 +438,10 @@ impl Shell {
             cx.subscribe(&workspace_path, |this, _, event, cx| {
                 if matches!(event, EntryEvent::Submit) {
                     this.open_workspace(cx)
+                } else {
+                    // The onboarding Project page derives its action state from
+                    // the live path text, so character edits must re-render it.
+                    cx.notify();
                 }
             }),
             cx.subscribe(&task_title, |this, _, event, cx| {

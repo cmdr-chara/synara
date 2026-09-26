@@ -298,6 +298,19 @@ class Scenario:
     def launch(self, *, preserve_selection=False):
         self.log = (self.output / f'app-{self.launch_count}.log').open('w')
         env = {key: os.environ[key] for key in ('PATH', 'LD_LIBRARY_PATH') if key in os.environ}
+        # Live acceptance profiles may explicitly request bounded inherited
+        # environment names. Forward only those names into the Synara process;
+        # the product profile owner performs its own validation before launch.
+        try:
+            profiles = json.loads(self.profiles.read_text(encoding='utf-8'))
+        except (OSError, json.JSONDecodeError):
+            profiles = []
+        for profile in profiles if isinstance(profiles, list) else []:
+            if not isinstance(profile, dict):
+                continue
+            for key in profile.get('inherit_env', []):
+                if isinstance(key, str) and key in os.environ:
+                    env[key] = os.environ[key]
         env.update(DISPLAY=self.desktop.name, XDG_RUNTIME_DIR=str(self.runtime),
                    HOME=str(self.home), GPUI_PLATFORM='x11',
                    GPUI_X11_SCALE_FACTOR=str(self.scale),

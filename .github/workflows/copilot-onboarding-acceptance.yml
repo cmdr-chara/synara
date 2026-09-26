@@ -1,0 +1,107 @@
+name: Hosted Copilot onboarding acceptance
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/copilot-onboarding-acceptance.yml'
+      - 'crates/synara-agent/**'
+      - 'crates/synara-app/src/shell.rs'
+      - 'crates/synara-app/src/shell/onboarding.rs'
+      - 'crates/synara-app/src/shell/onboarding/**'
+      - 'crates/synara-workspace/src/profiles.rs'
+      - 'scripts/native_onboarding_live_smoke.py'
+      - 'scripts/native_smoke.py'
+permissions:
+  contents: read
+  copilot-requests: write
+concurrency:
+  group: hosted-copilot-onboarding-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  CARGO_BUILD_JOBS: '2'
+  RUSTUP_TOOLCHAIN: '1.98.1'
+  PYTHONDONTWRITEBYTECODE: '1'
+jobs:
+  real-provider:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
+      COPILOT_AUTO_UPDATE: 'false'
+      COPILOT_MODEL: claude-haiku-4.5
+      COPILOT_HOME: ${{ runner.temp }}/synara-copilot-home
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          persist-credentials: false
+      - name: Record exact candidate
+        run: |
+          set -euo pipefail
+          mkdir -p acceptance-evidence
+          git rev-parse HEAD | tee acceptance-evidence/revision.txt
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+      - name: Install pinned Copilot CLI and native prerequisites
+        run: |
+          set -euo pipefail
+          node --version
+          npm --version
+          npm install --global --ignore-scripts=false @github/copilot@1.0.88
+          command -v copilot | tee acceptance-evidence/copilot-command.txt
+          copilot --version | tee acceptance-evidence/copilot-version.txt
+          grep -q '1.0.88' acceptance-evidence/copilot-version.txt
+          rustup toolchain install 1.98.1 --profile minimal
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libwebkit2gtk-4.1-dev libgtk-3-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil xclip fonts-dejavu-core fonts-liberation
+      - name: Build actual GPUI app and ACP fixture support binary
+        run: cargo +1.98.1 build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture
+      - name: Exercise fresh-install onboarding with GitHub Copilot ACP
+        run: |
+          set -euo pipefail
+          copilot_bin="$(command -v copilot)"
+          SYNARA_LIVE_PROVIDER_PROFILE="$(python3 - "$copilot_bin" <<'PY'
+          import json, sys
+          print(json.dumps({
+              "id": "github-copilot",
+              "name": "GitHub Copilot CLI",
+              "command": sys.argv[1],
+              "args": [
+                  "--acp",
+                  "--stdio",
+                  "--disable-builtin-mcps",
+                  "--available-tools=view",
+                  "--deny-tool=read"
+              ],
+              "inherit_env": [
+                  "GITHUB_TOKEN",
+                  "COPILOT_AUTO_UPDATE",
+                  "COPILOT_MODEL",
+                  "COPILOT_HOME"
+              ]
+          }))
+          PY
+          )"
+          export SYNARA_LIVE_PROVIDER_PROFILE
+          python3 scripts/native_onboarding_live_smoke.py             --binary target/debug/synara-app             --fixture target/debug/synara-acp-fixture             --output acceptance-evidence/onboarding 2>&1 | tee acceptance-evidence/onboarding.log
+          grep -q 'ONBOARDING_LIVE_ACCEPTANCE:' acceptance-evidence/onboarding.log
+      - name: Verify source identity and redact provider artifacts
+        if: always()
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          git diff --cached --exit-code
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          # The acceptance result records only provider identity/check names.
+          # Never upload Copilot state, token material, transcripts or raw app logs.
+          rm -rf acceptance-evidence/onboarding/home acceptance-evidence/onboarding/data || true
+          rm -f acceptance-evidence/onboarding/app-*.log acceptance-evidence/onboarding/*.png || true
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: hosted-copilot-onboarding-acceptance
+          path: |
+            acceptance-evidence/revision.txt
+            acceptance-evidence/copilot-command.txt
+            acceptance-evidence/copilot-version.txt
+            acceptance-evidence/onboarding/result.json
+          retention-days: 7
+          if-no-files-found: warn

@@ -3,6 +3,7 @@ on:
   push:
     branches: [main]
     paths:
+      - 'crates/synara-app/src/shell.rs'
       - 'crates/synara-app/src/shell/onboarding.rs'
       - 'crates/synara-app/src/shell/onboarding/**'
       - 'scripts/native_onboarding_foundation_smoke.py'

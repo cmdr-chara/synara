@@ -8,8 +8,9 @@ use std::{
     time::{Duration, Instant},
 };
 use synara_runtime::{
-    DeviceAvailability, DeviceBackend, DeviceCancellation, DeviceId, DeviceInput,
-    DeviceInputConsent, DeviceInputGrant, DeviceKind, DeviceTools, ToolDevice, reconcile_devices,
+    DeviceAccessibilityTree, DeviceAvailability, DeviceBackend, DeviceCancellation, DeviceId,
+    DeviceInput, DeviceInputConsent, DeviceInputGrant, DeviceKind, DeviceTools, ToolDevice,
+    reconcile_devices,
 };
 
 pub(super) struct DeviceView {
@@ -24,6 +25,8 @@ pub(super) struct DeviceView {
     dimensions: Option<(u32, u32)>,
     captured: Option<Instant>,
     grant: Option<Arc<DeviceInputGrant>>,
+    accessibility: Option<DeviceAccessibilityTree>,
+    input_text: Entity<TextEntry>,
     error: Option<String>,
     message: String,
     focus: FocusHandle,
@@ -88,6 +91,8 @@ impl DeviceView {
             dimensions: None,
             captured: None,
             grant: None,
+            accessibility: None,
+            input_text: cx.new(|cx| TextEntry::new("Text to type", EntryMode::SingleLine, 34., cx)),
             error: None,
             message:
                 "Choose a helper in Device settings, then Refresh. Nothing starts automatically."
@@ -129,6 +134,7 @@ impl DeviceView {
         self.dimensions = None;
         self.captured = None;
         self.grant = None;
+        self.accessibility = None;
         self.shutdown_confirmation = false;
         self.install_confirmation = None;
     }
@@ -154,6 +160,7 @@ enum Outcome {
     Capture(DeviceCapture),
     InputApproved(DeviceInputGrant),
     InputSent,
+    Accessibility(DeviceAccessibilityTree),
     Lifecycle,
     UrlOpened,
     AppLaunched,
@@ -418,6 +425,7 @@ impl Shell {
         DeviceTools::new(
             self.settings.value.device.backend,
             self.settings.value.device.adb_path.as_deref(),
+            self.settings.value.device.apple_helper_path.as_deref(),
         )
         .map_err(|error| error.to_string())
     }

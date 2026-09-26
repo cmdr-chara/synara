@@ -137,13 +137,14 @@ jobs:
           SYNARA_RELEASE_ACCEPTANCE: github-oidc
           SYNARA_UPDATE_MANIFEST: ${{ github.workspace }}/acceptance-evidence/update-manifest.json
           SYNARA_UPDATE_BUNDLE: ${{ github.workspace }}/acceptance-evidence/update-manifest.bundle
-          SYNARA_UPDATE_ARTIFACT: ${{ github.workspace }}/${{ env.PACKAGE }}
           SYNARA_UPDATE_PLATFORM: ${{ matrix.platform }}
           SYNARA_UPDATE_ARCH: ${{ matrix.architecture }}
           SYNARA_COSIGN_IDENTITY: ${{ env.COSIGN_IDENTITY }}
           SYNARA_COSIGN_ISSUER: ${{ env.COSIGN_ISSUER }}
           SYNARA_RELEASE_EVIDENCE: ${{ github.workspace }}/acceptance-evidence/install-rollback.json
-        run: cargo +1.98.1 test --locked -p synara-runtime --test signed_update_live --target ${{ matrix.target }} github_oidc_signed_update_installs_and_rolls_back -- --ignored --nocapture
+        run: |
+          export SYNARA_UPDATE_ARTIFACT="${GITHUB_WORKSPACE}/${PACKAGE}"
+          cargo +1.98.1 test --locked -p synara-runtime --test signed_update_live --target ${{ matrix.target }} github_oidc_signed_update_installs_and_rolls_back -- --ignored --nocapture
       - name: Verify exact candidate stayed unchanged
         if: always()
         shell: bash

@@ -368,8 +368,10 @@ impl Shell {
                 cx,
             )
         });
-        let workspace_path =
-            cx.new(|cx| TextEntry::new("Workspace directory", EntryMode::SingleLine, 38., cx));
+        let workspace_path = cx.new(|cx| {
+            TextEntry::new("Workspace directory", EntryMode::SingleLine, 38., cx)
+                .with_layout_probe("onboarding-project-path")
+        });
         let remote_host = cx.new(|cx| TextEntry::new("SSH host", EntryMode::SingleLine, 36., cx));
         let remote_port = cx.new(|cx| TextEntry::new("SSH port", EntryMode::SingleLine, 36., cx));
         remote_port.update(cx, |entry, cx| entry.set_text("22".into(), cx));

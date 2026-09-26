@@ -9,6 +9,7 @@ bindings. No network request, package installation or production profile access.
 from __future__ import annotations
 
 import argparse
+import ast
 import hashlib
 import json
 from pathlib import Path
@@ -35,7 +36,7 @@ def read_pinned(path: Path, expected: str) -> str:
 
 
 class LiteralParser:
-    token = re.compile(r'\s+|//[^\n]*|"(?:[^"\\]|\\.)*"|[A-Za-z_$][\w$]*|-?(?:0|[1-9]\d*)(?:\.\d+)?|[{}:,;]')
+    token = re.compile(r'''\s+|//[^\n]*|"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|[A-Za-z_$][\w$]*|-?(?:0|[1-9]\d*)(?:\.\d+)?|[{}:,;]''')
 
     def __init__(self, source: str):
         self.tokens = []
@@ -71,7 +72,8 @@ class LiteralParser:
                 return result
             while True:
                 key = self.take()
-                key = json.loads(key) if key.startswith('"') else key
+                if key.startswith(('"', "'")):
+                    key = ast.literal_eval(key)
                 if not isinstance(key, str) or key in result:
                     raise ValueError('Invalid or duplicate catalog key')
                 self.take(':')
@@ -84,7 +86,9 @@ class LiteralParser:
                 if self.tokens[self.index] == '}':
                     self.take('}')
                     return result
-        if value.startswith('"') or value in ('true', 'false', 'null') or re.fullmatch(r'-?\d+(?:\.\d+)?', value):
+        if value.startswith(('"', "'")):
+            return ast.literal_eval(value)
+        if value in ('true', 'false', 'null') or re.fullmatch(r'-?\d+(?:\.\d+)?', value):
             return json.loads(value)
         raise ValueError(f'Catalog expressions are not permitted: {value}')
 

@@ -322,12 +322,7 @@ impl Shell {
                     .flex_col()
                     .gap_2()
                     .child("Or enter an absolute folder path")
-                    .child(
-                        div()
-                            .relative()
-                            .child(ui::layout_probe("onboarding-project-path"))
-                            .child(self.workspace_path.clone()),
-                    )
+                    .child(self.workspace_path.clone())
                     .children((!entered_path.is_empty()).then(|| {
                         if existing_directory {
                             ui::button(

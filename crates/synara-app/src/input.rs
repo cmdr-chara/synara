@@ -76,6 +76,7 @@ pub struct TextEntry {
     buffer: TextBuffer,
     focus: FocusHandle,
     placeholder: String,
+    layout_probe: Option<&'static str>,
     leading_icon: Option<crate::ui::Glyph>,
     picker_chrome: bool,
     send_on_enter: bool,
@@ -128,6 +129,7 @@ impl TextEntry {
             buffer: TextBuffer::default(),
             focus: cx.focus_handle(),
             placeholder: placeholder.into(),
+            layout_probe: None,
             leading_icon: None,
             picker_chrome: false,
             send_on_enter: true,
@@ -154,6 +156,13 @@ impl TextEntry {
     }
     pub fn with_leading_icon(mut self, icon: crate::ui::Glyph) -> Self {
         self.leading_icon = Some(icon);
+        self
+    }
+
+    /// Static geometry diagnostics for owned acceptance controls. The identifier
+    /// is source-defined and never contains user text, paths or prompt content.
+    pub fn with_layout_probe(mut self, id: &'static str) -> Self {
+        self.layout_probe = Some(id);
         self
     }
 
@@ -741,6 +750,7 @@ impl Render for TextEntry {
             .cursor_text()
             .when(self.mode == EntryMode::Composer, |el| el.child(crate::ui::layout_probe("composer-input")))
             .when(self.mode == EntryMode::Editor, |el| el.child(crate::ui::layout_probe("editor-input")))
+            .when_some(self.layout_probe, |el, id| el.child(crate::ui::layout_probe(id)))
             .on_key_down(cx.listener(Self::key))
             .on_mouse_down(
                 MouseButton::Left,

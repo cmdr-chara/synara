@@ -12,6 +12,12 @@ import sys
 sys.dont_write_bytecode = True
 
 BASELINE = "fe515833c565d666204f24e5257d85025dede0e9"
+# The original sprint ledger was imported into the parentless Rust rewrite.
+# Its source remains pinned and compared below, but it is not an ancestor of
+# that rewrite. Verify each lineage explicitly instead of requiring a false
+# ancestry relationship between the two histories.
+HISTORICAL_ROOT = "43b1fb89bf19dadc388d18008f9ceb21b8215716"
+NATIVE_ROOT = "d87e0672a193da01206aceb366b0d8353666c8cf"
 
 def audit_module(root):
     spec = importlib.util.spec_from_file_location("workspace_audit", root / "scripts/audit_workspace.py")
@@ -46,7 +52,8 @@ def main():
     head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
     state = subprocess.check_output(["git", "status", "--porcelain"], cwd=root, text=True).strip()
     assert not state, f"Verification requires a clean committed candidate: {state}"
-    subprocess.run(["git", "merge-base", "--is-ancestor", BASELINE, head], cwd=root, check=True)
+    subprocess.run(["git", "merge-base", "--is-ancestor", NATIVE_ROOT, head], cwd=root, check=True)
+    subprocess.run(["git", "cat-file", "-e", f"{BASELINE}^{{commit}}"], cwd=root, check=True)
     subprocess.run(["git", "diff", "--check", BASELINE, head], cwd=root, check=True)
     with tempfile.TemporaryDirectory(prefix="synara-ledger-baseline-") as temp:
         baseline = Path(temp) / "source"
@@ -60,7 +67,8 @@ def main():
             # boundary and root-history invariants continue to hold.
             assert current["errors"] == [], {"baseline": old, "current": current}
             assert current["check"] == old["check"] == "workspace-structure"
-            assert current["root"] == old["root"]
+            assert old["root"] == [HISTORICAL_ROOT], old
+            assert current["root"] == [NATIVE_ROOT], current
             assert current["crates"] >= old["crates"]
             assert current["rust_compilation_performed"] is False
             # The short execution roadmap moved the original A-Q ledger to
@@ -81,6 +89,8 @@ def main():
     assert "persist-credentials: false" in workflow and "git push" not in workflow
     report = {
         "candidate": head, "baseline": BASELINE, "status": "passed",
+        "history": {"historical_root": HISTORICAL_ROOT, "native_root": NATIVE_ROOT,
+                    "relationship": "original ledger imported into the independent native rewrite"},
         "historical_A_Q_ledger": "task bodies, checkboxes and historical evidence byte-identical; current lane statuses excluded",
         "structural_baseline": old, "structural_candidate": current,
         "structural_regressions": [],

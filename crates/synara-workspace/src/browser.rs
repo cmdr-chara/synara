@@ -138,6 +138,12 @@ impl Client {
     pub fn cancel(&self, id: HostRequestId) -> Result<()> {
         self.with(|s, n| s.cancel(self.task, id, n))
     }
+    pub fn register_file(&self, token: String, name: String, bytes: Vec<u8>) -> Result<()> {
+        self.with(|s, _| s.register_file(self.task, token, name, bytes))
+    }
+    pub fn files(&self) -> Result<Vec<session::BrowserFileView>> {
+        self.with(|s, _| Ok(s.files(self.task)))
+    }
     pub fn forget(&self, id: HostRequestId) -> Result<()> {
         self.with(|s, _| s.forget(self.task, id))
     }

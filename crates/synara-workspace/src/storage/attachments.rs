@@ -429,6 +429,30 @@ impl WorkspaceService {
         })
         .await
     }
+    pub(crate) async fn browser_attachment_file(
+        &self,
+        task: TaskId,
+        id: String,
+    ) -> WorkspaceResult<(String, Vec<u8>)> {
+        let item = self
+            .access(move |store| {
+                let state = read(&store.connection, task)?;
+                state
+                    .pending
+                    .into_iter()
+                    .find(|a| a.info.id == id)
+                    .ok_or(WorkspaceError::NotFound)
+            })
+            .await?;
+        let name = item.info.name.clone();
+        let bytes = item.bytes()?;
+        let checked = intake::inspect(name.clone(), &bytes)?;
+        if checked.kind != item.info.kind || checked.dimensions != item.info.dimensions {
+            return Err(StorageError::Identity.into());
+        }
+        Ok((name, bytes))
+    }
+
     pub async fn attachment_preview(
         &self,
         task: TaskId,

@@ -24,7 +24,7 @@
       let node;
       for (let i = 0; i < 4096 && elements.length < 128 && (node = nodes.nextNode()); i++) {
         if (!node.matches("a[href],button,input,textarea,select,[role=button]") ||
-            !visible(node) || node.type === "file" || node.type === "hidden") continue;
+            !visible(node) || node.type === "hidden") continue;
         const id = "e" + request.nonce + "_" + elements.length;
         refs.set(id, {node, signature: signature(node)});
         elements.push({id, role: clip(node.getAttribute("role") || node.tagName.toLowerCase(), 64), name: name(node)});
@@ -51,7 +51,8 @@
       window.scrollBy({left: scroll.x, top: scroll.y, behavior: "instant"});
       return JSON.stringify({kind: "done"});
     }
-    const ref = globalThis.__synaraRefs && globalThis.__synaraRefs.get(op.element);
+    const refId = op.element || op.download_id || op.chooser_id;
+    const ref = globalThis.__synaraRefs && globalThis.__synaraRefs.get(refId);
     if (!ref) throw new Error("Element inventory is no longer available. Read the document again.");
     if (!visible(ref.node) || signature(ref.node) !== ref.signature)
       throw new Error("Element changed. Read the document again before acting.");
@@ -59,6 +60,18 @@
     if (op.operation === "click") {
       if (node.closest("a[href]")) throw new Error("Use an explicit navigation request for links.");
       node.click();
+    } else if (op.operation === "download") {
+      const link = node.closest("a[href]");
+      if (!link) throw new Error("Download target is not a link.");
+      const target = new URL(link.href, location.href);
+      if (!["http:", "https:"].includes(target.protocol) || target.origin !== location.origin)
+        throw new Error("Downloads must stay on the committed origin.");
+      return JSON.stringify({kind: "download_target", url: target.toString()});
+    } else if (op.operation === "upload") {
+      if (node.tagName !== "INPUT" || node.type !== "file" || node.disabled)
+        throw new Error("Upload target is not an enabled file input.");
+      node.click();
+      return JSON.stringify({kind: "upload_requested"});
     } else if (op.operation === "fill") {
       if (!["INPUT", "TEXTAREA"].includes(node.tagName) || node.readOnly ||
           ["file", "hidden", "button", "submit", "reset", "image", "checkbox", "radio"].includes(node.type))

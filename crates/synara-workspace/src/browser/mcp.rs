@@ -198,7 +198,7 @@ fn serve(
                                 (400, None)
                             }
                         } else {
-                            let result = dispatch(&state, &rpc);
+                            let result = dispatch(&state, &rpc, runtime);
                             let response = match result {
                                 Ok(result) => json!({"jsonrpc":"2.0","id":rpc.id,"result":result}),
                                 Err(e) => {
@@ -215,7 +215,11 @@ fn serve(
     };
     http::respond(&mut socket, status, body, deadline)
 }
-fn dispatch(state: &State, rpc: &Rpc) -> std::result::Result<Value, String> {
+fn dispatch(
+    state: &State,
+    rpc: &Rpc,
+    runtime: &tokio::runtime::Handle,
+) -> std::result::Result<Value, String> {
     match rpc.method.as_str() {
         "initialize" => Ok(
             json!({"protocolVersion": match rpc.params["protocolVersion"].as_str() { Some("2025-03-26") => "2025-03-26", _ => "2025-06-18" },
@@ -234,6 +238,48 @@ fn dispatch(state: &State, rpc: &Rpc) -> std::result::Result<Value, String> {
                     }
                     state.client.tabs().map(|v| json!({"tabs":v}))
                 }
+                "browser_files" => {
+                    if call.arguments != json!({}) {
+                        return Err("browser_files accepts no arguments".into());
+                    }
+                    let draft = runtime
+                        .block_on(async {
+                            tokio::time::timeout(
+                                Duration::from_secs(3),
+                                state.workspace.attachment_draft(state.task),
+                            )
+                            .await
+                        })
+                        .map_err(|_| "Attachment lookup timed out")?
+                        .map_err(|e| e.to_string())?;
+                    let attachments: Vec<_> = draft
+                        .pending
+                        .into_iter()
+                        .map(|file| {
+                            json!({
+                                "token": file.id,
+                                "name": file.name,
+                                "bytes": file.bytes,
+                                "source": "attachment"
+                            })
+                        })
+                        .collect();
+                    let downloads: Vec<_> = state
+                        .client
+                        .files()
+                        .map_err(|e| e.to_string())?
+                        .into_iter()
+                        .map(|file| {
+                            json!({
+                                "token": file.token,
+                                "name": file.name,
+                                "bytes": file.bytes,
+                                "source": "browser_download"
+                            })
+                        })
+                        .collect();
+                    Ok(json!({"attachments":attachments,"downloads":downloads}))
+                }
                 "browser_request" => {
                     let r: Request = serde_json::from_value(call.arguments.clone())
                         .map_err(|_| "Invalid browser request")?;
@@ -243,11 +289,39 @@ fn dispatch(state: &State, rpc: &Rpc) -> std::result::Result<Value, String> {
                             | BrowserOperation::ReadDocument
                             | BrowserOperation::Click { .. }
                             | BrowserOperation::Fill { .. }
+                            | BrowserOperation::Download { .. }
+                            | BrowserOperation::Upload { .. }
                             | BrowserOperation::Input {
                                 event: synara_browser::InputEvent::Scroll { .. }
                             }
                     ) {
                         return Err("Operation not exposed by this transport".into());
+                    }
+                    if let BrowserOperation::Upload { file_token, .. } = &r.operation
+                        && !state
+                            .client
+                            .files()
+                            .map_err(|e| e.to_string())?
+                            .iter()
+                            .any(|file| &file.token == file_token)
+                    {
+                        let (name, bytes) = runtime
+                            .block_on(async {
+                                tokio::time::timeout(
+                                    Duration::from_secs(3),
+                                    state.workspace.browser_attachment_file(
+                                        state.task,
+                                        file_token.clone(),
+                                    ),
+                                )
+                                .await
+                            })
+                            .map_err(|_| "Attachment lookup timed out")?
+                            .map_err(|e| e.to_string())?;
+                        state
+                            .client
+                            .register_file(file_token.clone(), name, bytes)
+                            .map_err(|e| e.to_string())?;
                     }
                     if r.nonce.is_empty()
                         || r.nonce.len() > 128
@@ -305,12 +379,15 @@ fn tools() -> Value {
     let receipt = json!({"type":"object","properties":{"request":id},"required":["request"],"additionalProperties":false});
     let mut tools = vec![
         json!({"name":"browser_tabs","description":"List only this task's isolated tab IDs. No page content.","inputSchema":{"type":"object","properties":{},"additionalProperties":false}}),
+        json!({"name":"browser_files","description":"List task-owned attachment tokens and browser-download tokens that can be used by an approved upload. No local paths are exposed.","inputSchema":{"type":"object","properties":{},"additionalProperties":false}}),
         json!({"name":"browser_request","description":"Request one native-approved browser operation. Stable nonce makes retries idempotent. Results require browser_result. Page scroll uses input/event/scroll with x/y CSS-pixel deltas from -4096 to 4096. Read the document again after scrolling.",
         "inputSchema":{"type":"object","properties":{"nonce":{"type":"string","maxLength":128},"tab":id,"operation":{"oneOf":[
         {"type":"object","properties":{"operation":{"const":"navigate"},"url":{"type":"string","maxLength":8192}},"required":["operation","url"],"additionalProperties":false},
         {"type":"object","properties":{"operation":{"const":"read_document"}},"required":["operation"],"additionalProperties":false},
         {"type":"object","properties":{"operation":{"const":"click"},"element":{"type":"string","maxLength":128}},"required":["operation","element"],"additionalProperties":false},
         {"type":"object","properties":{"operation":{"const":"fill"},"element":{"type":"string","maxLength":128},"text":{"type":"string","maxLength":8192}},"required":["operation","element","text"],"additionalProperties":false},
+        {"type":"object","properties":{"operation":{"const":"download"},"download_id":{"type":"string","maxLength":128}},"required":["operation","download_id"],"additionalProperties":false},
+        {"type":"object","properties":{"operation":{"const":"upload"},"chooser_id":{"type":"string","maxLength":128},"file_token":{"type":"string","maxLength":128}},"required":["operation","chooser_id","file_token"],"additionalProperties":false},
         {"type":"object","properties":{"operation":{"const":"input"},"event":{"type":"object","properties":{"scroll":{"type":"object","properties":{"x":{"type":"integer","minimum":-4096,"maximum":4096},"y":{"type":"integer","minimum":-4096,"maximum":4096}},"required":["x","y"],"additionalProperties":false}},"required":["scroll"],"additionalProperties":false}},"required":["operation","event"],"additionalProperties":false}
         ]}},"required":["nonce","tab","operation"],"additionalProperties":false}}),
     ];

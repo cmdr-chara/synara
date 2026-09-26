@@ -57,6 +57,7 @@ impl Shell {
         }
         if changed {
             self.browser_save_manual_restore();
+            self.browser_save_owned_restore();
         }
         let _ = self.controller.browser.with(|_, _| Ok(()));
         if changed {

@@ -297,6 +297,197 @@ fn sync_directory(_: &Path) -> std::io::Result<()> {
     Ok(())
 }
 
+
+const OWNED_SNAPSHOT_NAME: &str = "owned-tabs.json";
+const MAX_OWNERS: usize = 128;
+const MAX_OWNED_TABS: usize = 128;
+const MAX_OWNED_SNAPSHOT_BYTES: u64 = 256 * 1024;
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+struct AuthSnapshot {
+    origin: String,
+    url: String,
+}
+
+#[derive(Debug, Default, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+struct OwnedSnapshot {
+    version: u8,
+    tasks: std::collections::BTreeMap<String, Vec<String>>,
+    auth: std::collections::BTreeMap<String, AuthSnapshot>,
+}
+
+#[derive(Debug)]
+pub struct OwnedTabRestoreStore {
+    root: PathBuf,
+    value: OwnedSnapshot,
+}
+
+impl OwnedTabRestoreStore {
+    pub fn open(root: impl Into<PathBuf>) -> Result<Self, RestoreError> {
+        let root = root.into();
+        let path = root.join(OWNED_SNAPSHOT_NAME);
+        let value = match open_read_nofollow(&path) {
+            Ok(file) => {
+                let metadata = file.metadata().map_err(|_| RestoreError::Storage)?;
+                if !metadata.is_file() || metadata.len() > MAX_OWNED_SNAPSHOT_BYTES {
+                    return Err(RestoreError::Invalid);
+                }
+                let mut bytes = Vec::with_capacity(metadata.len() as usize);
+                file.take(MAX_OWNED_SNAPSHOT_BYTES + 1)
+                    .read_to_end(&mut bytes)
+                    .map_err(|_| RestoreError::Storage)?;
+                if bytes.len() as u64 > MAX_OWNED_SNAPSHOT_BYTES {
+                    return Err(RestoreError::Invalid);
+                }
+                let decoded = serde_json::from_slice(&bytes).map_err(|_| RestoreError::Invalid)?;
+                bytes.fill(0);
+                decoded
+            }
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => OwnedSnapshot {
+                version: 1,
+                ..OwnedSnapshot::default()
+            },
+            Err(_) => return Err(RestoreError::Storage),
+        };
+        validate_owned(&value)?;
+        Ok(Self { root, value })
+    }
+
+    pub fn task_urls(&self, task: u128) -> Vec<String> {
+        self.value
+            .tasks
+            .get(&owner_key(task))
+            .cloned()
+            .unwrap_or_default()
+    }
+
+    pub fn save_task(&mut self, task: u128, urls: &[String]) -> Result<(), RestoreError> {
+        let urls = validate_urls(urls)?;
+        let key = owner_key(task);
+        if urls.is_empty() {
+            self.value.tasks.remove(&key);
+        } else {
+            self.value.tasks.insert(key, urls);
+        }
+        self.write()
+    }
+
+    /// Return a previous sanitized auth path only for a fresh request owned by
+    /// the same task and exact HTTP(S) origin. Cookies and request authority are
+    /// deliberately not restored.
+    pub fn auth_url(&self, task: u128, request_url: &str) -> Option<String> {
+        let request = crate::CommittedDocument::parse(request_url).ok()?;
+        let saved = self.value.auth.get(&owner_key(task))?;
+        let saved_doc = crate::CommittedDocument::parse(&saved.url).ok()?;
+        (saved.origin == origin_key(&request) && saved_doc.origin == request.origin)
+            .then(|| saved.url.clone())
+    }
+
+    pub fn save_auth(
+        &mut self,
+        task: u128,
+        request_url: &str,
+        committed_url: &str,
+    ) -> Result<(), RestoreError> {
+        let request = crate::CommittedDocument::parse(request_url).map_err(|_| RestoreError::Invalid)?;
+        let committed =
+            crate::CommittedDocument::parse(committed_url).map_err(|_| RestoreError::Invalid)?;
+        if request.origin != committed.origin {
+            return Err(RestoreError::Invalid);
+        }
+        let url = restorable_manual_url(&committed.canonical_url)?;
+        self.value.auth.insert(
+            owner_key(task),
+            AuthSnapshot {
+                origin: origin_key(&request),
+                url,
+            },
+        );
+        self.write()
+    }
+
+    pub fn clear_task(&mut self, task: u128) -> Result<(), RestoreError> {
+        let key = owner_key(task);
+        self.value.tasks.remove(&key);
+        self.value.auth.remove(&key);
+        self.write()
+    }
+
+    fn write(&self) -> Result<(), RestoreError> {
+        validate_owned(&self.value)?;
+        secure_directory(&self.root)?;
+        let path = self.root.join(OWNED_SNAPSHOT_NAME);
+        if path_exists_nofollow(&path)? {
+            let metadata = fs::symlink_metadata(&path).map_err(|_| RestoreError::Storage)?;
+            if metadata.file_type().is_symlink() || !metadata.is_file() {
+                return Err(RestoreError::Storage);
+            }
+        }
+        let bytes = serde_json::to_vec(&self.value).map_err(|_| RestoreError::Invalid)?;
+        if bytes.len() as u64 > MAX_OWNED_SNAPSHOT_BYTES {
+            return Err(RestoreError::Invalid);
+        }
+        let sequence = TEMP_SEQUENCE.fetch_add(1, Ordering::Relaxed);
+        let temporary = self.root.join(format!(
+            ".owned-tabs-{}-{sequence}.tmp",
+            std::process::id()
+        ));
+        let mut file = create_temp_nofollow(&temporary).map_err(|_| RestoreError::Storage)?;
+        let result = (|| {
+            file.write_all(&bytes)?;
+            file.sync_all()?;
+            fs::rename(&temporary, &path)?;
+            sync_directory(&self.root)?;
+            Ok::<_, std::io::Error>(())
+        })();
+        if result.is_err() {
+            let _ = fs::remove_file(&temporary);
+            return Err(RestoreError::Storage);
+        }
+        Ok(())
+    }
+}
+
+fn owner_key(task: u128) -> String {
+    format!("{task:032x}")
+}
+fn origin_key(document: &crate::CommittedDocument) -> String {
+    format!(
+        "{:?}://{}:{}",
+        document.origin.scheme, document.origin.host, document.origin.port
+    )
+}
+fn validate_owned(value: &OwnedSnapshot) -> Result<(), RestoreError> {
+    if value.version != 1
+        || value.tasks.len() > MAX_OWNERS
+        || value.auth.len() > MAX_OWNERS
+        || value.tasks.values().map(Vec::len).sum::<usize>() > MAX_OWNED_TABS
+    {
+        return Err(RestoreError::Invalid);
+    }
+    for (owner, urls) in &value.tasks {
+        if owner.len() != 32 || !owner.bytes().all(|b| b.is_ascii_hexdigit()) {
+            return Err(RestoreError::Invalid);
+        }
+        if validate_snapshot_urls(urls.clone())? != *urls {
+            return Err(RestoreError::Invalid);
+        }
+    }
+    for (owner, auth) in &value.auth {
+        if owner.len() != 32
+            || !owner.bytes().all(|b| b.is_ascii_hexdigit())
+            || auth.origin.is_empty()
+            || auth.origin.len() > 512
+            || restorable_manual_url(&auth.url)? != auth.url
+        {
+            return Err(RestoreError::Invalid);
+        }
+    }
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

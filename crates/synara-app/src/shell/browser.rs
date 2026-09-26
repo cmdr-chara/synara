@@ -6,7 +6,7 @@ use crate::ui::{self, Glyph, palette};
 use browser_domain::{
     BrowserProfile, HostTabId, NavigationKind,
     session::{RequestState, RuntimeDiagnosticKind, TabView},
-    session_restore::ManualTabRestoreStore,
+    session_restore::{ManualTabRestoreStore, OwnedTabRestoreStore},
 };
 use gpui::AnyElement;
 pub(super) struct BrowserView {
@@ -19,6 +19,7 @@ pub(super) struct BrowserView {
     pub(super) error: Option<String>,
     confirmation: Option<TaskId>,
     restore: Option<ManualTabRestoreStore>,
+    owned_restore: Option<OwnedTabRestoreStore>,
     pub(super) busy: bool,
     diagnostics_open: bool,
     runtime_diagnostics_open: bool,
@@ -30,6 +31,10 @@ pub(super) struct BrowserView {
 impl BrowserView {
     pub fn new(controller: &Arc<Controller>, root: PathBuf, cx: &mut Context<Shell>) -> Self {
         let (restore, restore_error) = match ManualTabRestoreStore::open(root.clone()) {
+            Ok(store) => (Some(store), None),
+            Err(error) => (None, Some(error.to_string())),
+        };
+        let (owned_restore, owned_restore_error) = match OwnedTabRestoreStore::open(root.clone()) {
             Ok(store) => (Some(store), None),
             Err(error) => (None, Some(error.to_string())),
         };
@@ -112,7 +117,9 @@ impl BrowserView {
             address,
             selected: restored_selected,
             error: {
-                let restore_error = restore_start_error.or(restore_error);
+                let restore_error = restore_start_error
+                    .or(restore_error)
+                    .or(owned_restore_error);
                 #[cfg(target_os = "linux")]
                 {
                     restore_error.or(install_error)
@@ -124,6 +131,7 @@ impl BrowserView {
             },
             confirmation: None,
             restore,
+            owned_restore,
             busy: false,
             diagnostics_open: false,
             runtime_diagnostics_open: false,
@@ -217,6 +225,82 @@ impl Shell {
             Err(error) => self.browser.error = Some(error.to_string()),
         }
         cx.notify();
+    }
+
+    pub(super) fn browser_save_owned_restore(&mut self) {
+        let snapshot = self.controller.browser.with(|session, _| Ok(session.tabs()));
+        let Ok(tabs) = snapshot else { return };
+
+        let mut by_task: BTreeMap<u128, Vec<String>> = BTreeMap::new();
+        for tab in &tabs {
+            if let BrowserProfile::AgentTask { task } = tab.profile
+                && let Some(url) = &tab.url
+            {
+                by_task.entry(task).or_default().push(url.clone());
+            }
+        }
+        if let Some(store) = self.browser.owned_restore.as_mut() {
+            for (task, mut urls) in by_task {
+                if urls.len() > 16 {
+                    urls.drain(0..urls.len() - 16);
+                }
+                if let Err(error) = store.save_task(task, &urls) {
+                    self.browser.error = Some(error.to_string());
+                    return;
+                }
+            }
+        }
+
+        let auth: Vec<_> = self
+            .browser
+            .authentication_flows
+            .iter()
+            .filter_map(|(flow_id, flow)| {
+                let task = self
+                    .catalog
+                    .tasks
+                    .iter()
+                    .find(|task| task.thread_id == flow.key.0)?;
+                let url = tabs
+                    .iter()
+                    .filter(|tab| {
+                        tab.profile == (BrowserProfile::Authentication { flow: *flow_id })
+                    })
+                    .filter_map(|tab| tab.url.clone())
+                    .last()?;
+                Some((task.id.0.as_u128(), flow.url.clone(), url))
+            })
+            .collect();
+        if let Some(store) = self.browser.owned_restore.as_mut() {
+            for (task, request_url, url) in auth {
+                if let Err(error) = store.save_auth(task, &request_url, &url) {
+                    self.browser.error = Some(error.to_string());
+                    return;
+                }
+            }
+        }
+    }
+
+    pub(super) fn browser_restore_task(&mut self, task: TaskId, cx: &mut Context<Self>) {
+        let urls = self
+            .browser
+            .owned_restore
+            .as_ref()
+            .map(|store| store.task_urls(task.0.as_u128()))
+            .unwrap_or_default();
+        if urls.is_empty() {
+            return;
+        }
+        match self.controller.browser.with(|session, now| {
+            session.restore_task_tabs(task.0.as_u128(), &urls, now)
+        }) {
+            Ok(tabs) => {
+                if let Some(tab) = tabs.last().copied() {
+                    self.browser_select(tab, cx);
+                }
+            }
+            Err(error) => self.browser.error = Some(error.to_string()),
+        }
     }
 
     fn browser_open_popup(&mut self, source: HostTabId, revision: u64, cx: &mut Context<Self>) {
@@ -352,7 +436,7 @@ impl Shell {
                 .configure_browser_use(task, true)
                 .await
                 .map_err(|e| e.to_string());
-            let _ = sender.send(Update::BrowserConfigured(result)).await;
+            let _ = sender.send(Update::BrowserConfigured(task, result)).await;
         });
         cx.notify();
     }

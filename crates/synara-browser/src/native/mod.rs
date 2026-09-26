@@ -2,6 +2,7 @@
 //! Wry owns only the OS webview. There is no agent page RPC, WebDriver or second
 //! session store. Manual tabs have an isolated one-way channel for value-free
 //! JavaScript runtime error metadata.
+mod agent_transfers;
 mod bridge;
 mod manual_capture;
 mod manual_downloads;
@@ -84,11 +85,13 @@ struct NativeTab {
     document: Rc<RefCell<Option<CommittedDocument>>>,
     capture: Option<manual_capture::Owner>,
     downloads: Option<manual_downloads::Owner>,
+    agent_transfers: Option<agent_transfers::Owner>,
 }
 impl Drop for NativeTab {
     fn drop(&mut self) {
         drop(self.capture.take());
         drop(self.downloads.take());
+        drop(self.agent_transfers.take());
         let web = self.webview.webview();
         if self.partition == StoragePartition::Manual
             && let Some(inspector) = web.inspector()
@@ -488,6 +491,7 @@ impl NativeHost {
             Command::Operation {
                 request,
                 command,
+                upload,
                 max_output_bytes,
             } => {
                 if delivery.cancelled.load(Ordering::Acquire)
@@ -501,6 +505,7 @@ impl NativeHost {
                     command,
                     epoch,
                     delivery.cancelled,
+                    upload,
                     max_output_bytes,
                 ) {
                     self.shared.finish(request);
@@ -563,6 +568,8 @@ impl NativeHost {
         let allowed_navigation = allowed.clone();
         let downloads = self.context(partition)?.downloads.clone();
         let download_route = downloads.clone();
+        let agent_transfers = agent.then(agent_transfers::Gate::new);
+        let agent_download_route = agent_transfers.clone();
         let builder = WebViewBuilder::new_with_web_context(&mut self.context(partition)?.context)
             .with_focused(false)
             .with_visible(false)
@@ -595,7 +602,13 @@ impl NativeHost {
                 wry::NewWindowResponse::Deny
             })
             .with_download_started_handler(move |url, path| {
-                manual && download_route.destination(&url, path)
+                if manual {
+                    download_route.destination(&url, path)
+                } else {
+                    agent_download_route
+                        .as_ref()
+                        .is_some_and(|gate| gate.destination(&url, path))
+                }
             })
             .with_navigation_handler(move |url| {
                 if shared.epoch(tab) != Some(epoch) {
@@ -815,6 +828,16 @@ impl NativeHost {
         let downloads = manual.then(|| {
             manual_downloads::Owner::new(&web, self.shared.clone(), tab, epoch, downloads)
         });
+        let agent_transfers = agent_transfers.map(|gate| {
+            agent_transfers::Owner::new(
+                &web,
+                self.shared.clone(),
+                self.events.clone(),
+                tab,
+                epoch,
+                gate,
+            )
+        });
         // The native navigation policy is installed before the first network request.
         // Acceptance tests assert that a cross-origin redirect never reaches its target.
         if let Some((_, pending)) = pending_popup.as_ref() {
@@ -831,6 +854,7 @@ impl NativeHost {
                 document: committed,
                 capture,
                 downloads,
+                agent_transfers,
             },
         );
         // Creation may occur after the canvas selected a blank tab. Reapply its
@@ -844,6 +868,7 @@ impl NativeHost {
         command: NativeCommand,
         epoch: u64,
         flag: Arc<AtomicBool>,
+        upload: Option<crate::session::UploadPayload>,
         max_bytes: usize,
     ) -> std::result::Result<(), String> {
         command.validate().map_err(|e| e.to_string())?;
@@ -869,15 +894,38 @@ impl NativeHost {
                 | BrowserOperation::Input {
                     event: InputEvent::Scroll { .. }
                 }
+                | BrowserOperation::Download { .. }
+                | BrowserOperation::Upload { .. }
         ) {
             return Err("Native operation is not supported".into());
         }
-        let origin = url::Url::parse(&document.canonical_url)
-            .map_err(|e| e.to_string())?
-            .origin()
-            .ascii_serialization();
+        let document_url = url::Url::parse(&document.canonical_url).map_err(|e| e.to_string())?;
+        let origin = document_url.origin().ascii_serialization();
         let args = serde_json::json!({"origin": origin, "nonce": request.0.to_string(), "operation": command.operation});
         let script = format!("{SCRIPT}({args})");
+
+        if matches!(command.operation, BrowserOperation::Upload { .. }) {
+            let payload = upload.ok_or("Approved upload file is unavailable")?;
+            let transfers = view
+                .agent_transfers
+                .as_ref()
+                .ok_or("Agent transfer owner is unavailable")?;
+            transfers.prepare_upload(request, payload, flag)?;
+            return transfers.evaluate_upload(&view.webview.webview(), request, &script);
+        }
+        if matches!(command.operation, BrowserOperation::Download { .. }) {
+            let transfers = view
+                .agent_transfers
+                .as_ref()
+                .ok_or("Agent transfer owner is unavailable")?;
+            return transfers.evaluate_download(
+                &view.webview.webview(),
+                request,
+                &document_url,
+                &script,
+                flag,
+            );
+        }
         let cancelled = gio::Cancellable::new();
         let running = self.running.clone();
         running.borrow_mut().insert(
@@ -958,15 +1006,17 @@ fn harden(web: &webkit2gtk::WebView, partition: StoragePartition) {
         permission.deny();
         true
     });
-    web.connect_run_file_chooser(move |_, request| {
-        if manual {
-            // Let WebKit present its native picker. No path is selected on the user's behalf.
-            false
-        } else {
-            request.cancel();
-            true
-        }
-    });
+    if !matches!(partition, StoragePartition::AgentTask(_)) {
+        web.connect_run_file_chooser(move |_, request| {
+            if manual {
+                // Let WebKit present its native picker. No path is selected on the user's behalf.
+                false
+            } else {
+                request.cancel();
+                true
+            }
+        });
+    }
     web.connect_enter_fullscreen(|_| true);
     web.connect_script_dialog(move |_, dialog| {
         if manual {

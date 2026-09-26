@@ -28,7 +28,8 @@ impl NativePort for Port {
             document: ready,
             input: ready,
             capture: false,
-            downloads: false,
+            downloads: ready,
+            uploads: ready,
         }
     }
     fn send(&mut self, command: Command) -> Result<()> {

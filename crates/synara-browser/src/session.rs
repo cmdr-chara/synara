@@ -12,6 +12,7 @@ pub struct Capabilities {
     pub input: bool,
     pub capture: bool,
     pub downloads: bool,
+    pub uploads: bool,
 }
 /// Nonblocking native adapter. Enforce partitions and limits. Block agent
 /// cross-origin redirects BEFORE networking. No arbitrary host IPC or evaluation.
@@ -28,6 +29,25 @@ impl NativePort for UnavailablePort {
         Err(BrowserError::Unavailable)
     }
 }
+#[derive(Clone, Debug)]
+pub struct UploadPayload {
+    pub name: String,
+    pub bytes: Vec<u8>,
+}
+
+#[derive(Clone, Debug, Serialize)]
+pub struct BrowserFileView {
+    pub token: String,
+    pub name: String,
+    pub bytes: usize,
+}
+
+#[derive(Clone, Debug)]
+struct BrowserFile {
+    name: String,
+    bytes: Vec<u8>,
+}
+
 #[derive(Clone, Debug, Serialize)]
 pub enum Command {
     Open {
@@ -54,6 +74,7 @@ pub enum Command {
     Operation {
         request: HostRequestId,
         command: NativeCommand,
+        upload: Option<UploadPayload>,
         max_output_bytes: usize,
     },
     Cancel {
@@ -110,7 +131,8 @@ impl Output {
                 BrowserOperation::Navigate { .. }
                 | BrowserOperation::Click { .. }
                 | BrowserOperation::Fill { .. }
-                | BrowserOperation::Input { .. },
+                | BrowserOperation::Input { .. }
+                | BrowserOperation::Upload { .. },
             ) => (),
             (Self::Document { text, elements }, BrowserOperation::ReadDocument) => {
                 if text.len() > 64 * 1024 || elements.len() > 512 {
@@ -290,12 +312,19 @@ pub enum Event {
         request: HostRequestId,
         error: String,
     },
+    DownloadReady {
+        request: HostRequestId,
+        token: String,
+        name: String,
+        bytes: Vec<u8>,
+    },
 }
 pub struct Session {
     host: BrowserHost,
     port: Box<dyn NativePort>,
     tabs: BTreeMap<HostTabId, TabState>,
     requests: BTreeMap<HostRequestId, RequestView>,
+    files: BTreeMap<(u128, String), BrowserFile>,
 }
 impl Default for Session {
     fn default() -> Self {
@@ -309,6 +338,7 @@ impl Session {
             port,
             tabs: BTreeMap::new(),
             requests: BTreeMap::new(),
+            files: BTreeMap::new(),
         }
     }
     /// Install the UI-thread transport before any tabs or grants exist.
@@ -327,6 +357,57 @@ impl Session {
     }
     pub fn requests(&self) -> Vec<RequestView> {
         self.requests.values().cloned().collect()
+    }
+
+    pub fn register_file(
+        &mut self,
+        task: u128,
+        token: String,
+        name: String,
+        bytes: Vec<u8>,
+    ) -> Result<()> {
+        if token.is_empty()
+            || token.len() > 128
+            || !token
+                .bytes()
+                .all(|b| b.is_ascii_alphanumeric() || b"_-".contains(&b))
+            || name.is_empty()
+            || name.len() > 240
+            || name.chars().any(char::is_control)
+            || name.contains(['/', '\\'])
+            || bytes.is_empty()
+            || bytes.len() > 32 * 1024 * 1024
+        {
+            return Err(BrowserError::Invalid);
+        }
+        let current_bytes = self
+            .files
+            .iter()
+            .filter(|((owner, key), _)| *owner == task && key != &token)
+            .map(|(_, file)| file.bytes.len())
+            .sum::<usize>();
+        let current_count = self
+            .files
+            .keys()
+            .filter(|(owner, key)| *owner == task && key != &token)
+            .count();
+        if current_count >= 32 || current_bytes.saturating_add(bytes.len()) > 64 * 1024 * 1024 {
+            return Err(BrowserError::Limit);
+        }
+        self.files.insert((task, token), BrowserFile { name, bytes });
+        Ok(())
+    }
+
+    pub fn files(&self, task: u128) -> Vec<BrowserFileView> {
+        self.files
+            .iter()
+            .filter(|((owner, _), _)| *owner == task)
+            .map(|((_, token), file)| BrowserFileView {
+                token: token.clone(),
+                name: file.name.clone(),
+                bytes: file.bytes.len(),
+            })
+            .collect()
     }
     /// Trusted manual browser UI only. Agent RPC has no diagnostics method.
     pub fn manual_diagnostics(&self, tab: HostTabId) -> Result<Vec<NetworkDiagnostic>> {
@@ -548,6 +629,7 @@ impl Session {
         }
         self.host.shutdown_task(task);
         self.requests.retain(|_, r| r.task != task);
+        self.files.retain(|(owner, _), _| *owner != task);
     }
     pub fn user_navigate(
         &mut self,
@@ -628,6 +710,7 @@ impl Session {
             } => c.input && x.unsigned_abs() <= 4096 && y.unsigned_abs() <= 4096,
             BrowserOperation::Screenshot { .. } => c.capture,
             BrowserOperation::Download { .. } => c.downloads,
+            BrowserOperation::Upload { .. } => c.uploads,
             _ => false,
         }
     }
@@ -643,9 +726,15 @@ impl Session {
             return Err(BrowserError::Unavailable);
         }
         let state = self.tabs.get(&tab).ok_or(BrowserError::MissingTab)?;
-        if let BrowserOperation::Click { element } | BrowserOperation::Fill { element, .. } = &op
-            && !state.elements.contains(element)
-        {
+        let element = match &op {
+            BrowserOperation::Click { element } | BrowserOperation::Fill { element, .. } => {
+                Some(element)
+            }
+            BrowserOperation::Download { download_id } => Some(download_id),
+            BrowserOperation::Upload { chooser_id, .. } => Some(chooser_id),
+            _ => None,
+        };
+        if element.is_some_and(|element| !state.elements.contains(element)) {
             return Err(BrowserError::Invalid);
         }
         if self.requests.len() >= MAX_PENDING {
@@ -695,9 +784,23 @@ impl Session {
                     None,
                 )
             } else {
+                let upload = match &command.operation {
+                    BrowserOperation::Upload { file_token, .. } => {
+                        let file = self
+                            .files
+                            .get(&(view.task, file_token.clone()))
+                            .ok_or(BrowserError::Invalid)?;
+                        Some(UploadPayload {
+                            name: file.name.clone(),
+                            bytes: file.bytes.clone(),
+                        })
+                    }
+                    _ => None,
+                };
                 self.port.send(Command::Operation {
                     request,
                     command,
+                    upload,
                     max_output_bytes: MAX_IPC_FRAME_BYTES,
                 })
             }
@@ -1077,6 +1180,31 @@ impl Session {
                     return Err(BrowserError::Invalid);
                 }
                 r.state = RequestState::Failed(error.chars().take(1024).collect());
+            }
+            Event::DownloadReady {
+                request,
+                token,
+                name,
+                bytes,
+            } => {
+                let r = self
+                    .requests
+                    .get(&request)
+                    .ok_or(BrowserError::MissingRequest)?;
+                if !matches!(r.state, RequestState::Running)
+                    || !matches!(r.operation, BrowserOperation::Download { .. })
+                {
+                    return Err(BrowserError::Invalid);
+                }
+                let task = r.task;
+                let byte_length = bytes.len();
+                self.register_file(task, token.clone(), name, bytes)?;
+                let output = Output::Download {
+                    token,
+                    bytes: byte_length,
+                };
+                output.validate(&r.operation)?;
+                self.requests.get_mut(&request).unwrap().state = RequestState::Complete(output);
             }
         }
         Ok(())

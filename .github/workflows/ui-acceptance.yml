@@ -1,0 +1,80 @@
+name: Native UI acceptance foundation
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Cargo.lock'
+      - 'Cargo.toml'
+      - 'crates/synara-app/**'
+      - 'crates/synara-workspace/src/settings/**'
+      - 'scripts/native_electron_theme_smoke.py'
+      - 'scripts/native_smoke.py'
+      - '.github/workflows/ui-acceptance.yml'
+  workflow_dispatch:
+    inputs:
+      revision:
+        description: Exact reviewed commit
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: native-ui-acceptance-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  CARGO_BUILD_JOBS: '2'
+  RUSTUP_TOOLCHAIN: '1.98.1'
+jobs:
+  linux-visual-keyboard:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      CANDIDATE_REVISION: ${{ inputs.revision != '' && inputs.revision || github.sha }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          ref: ${{ inputs.revision != '' && inputs.revision || github.sha }}
+          persist-credentials: false
+      - name: Record exact candidate
+        run: |
+          set -euo pipefail
+          [[ "$CANDIDATE_REVISION" =~ ^[0-9a-f]{40}$ ]]
+          test "$(git rev-parse HEAD)" = "$CANDIDATE_REVISION"
+          mkdir -p acceptance-evidence
+          git rev-parse HEAD > acceptance-evidence/revision.txt
+      - name: Install native visual prerequisites
+        run: |
+          set -euo pipefail
+          rustup toolchain install 1.98.1 --profile minimal --component rustfmt
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libwebkit2gtk-4.1-dev libgtk-3-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil xclip fonts-dejavu-core fonts-liberation
+      - name: Build actual GPUI app and owned ACP fixture
+        run: cargo +1.98.1 build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture
+      - name: Exercise real theme paint and keyboard interaction
+        run: |
+          set -euo pipefail
+          python3 scripts/native_electron_theme_smoke.py             --binary target/debug/synara-app             --fixture target/debug/synara-acp-fixture             --output acceptance-evidence/theme
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          result = json.loads(Path("acceptance-evidence/theme/result.json").read_text())
+          assert result["status"] == "passed", result
+          assert result["captures"], result
+          assert any("keyboard" in check for check in result["checks"]), result
+          print("A10_LINUX_VISUAL_KEYBOARD: passed")
+          PY
+      - name: Verify save-picker ownership contract
+        run: cargo +1.98.1 test --locked -p synara-app --bin synara-app shell::rich_media::tests -- --nocapture
+      - name: Verify exact source stayed unchanged
+        if: always()
+        run: |
+          git diff --exit-code
+          git diff --cached --exit-code
+          test "$(git rev-parse HEAD)" = "$CANDIDATE_REVISION"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-ui-foundation
+          path: acceptance-evidence/
+          retention-days: 7
+          if-no-files-found: error

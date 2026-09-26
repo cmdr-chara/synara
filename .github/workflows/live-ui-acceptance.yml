@@ -1,0 +1,40 @@
+name: Cross-platform visual accessibility save-picker acceptance
+on:
+  workflow_dispatch:
+    inputs:
+      revision:
+        description: Exact reviewed commit represented by the evidence
+        required: true
+        type: string
+      evidence_path:
+        description: Absolute path to reviewed synara-a10-live-v1 evidence on the self-hosted runner
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: live-ui-accessibility-acceptance
+  cancel-in-progress: false
+jobs:
+  validate-live-evidence:
+    runs-on: [self-hosted, synara-live-ui]
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          ref: ${{ inputs.revision }}
+          persist-credentials: false
+      - name: Verify candidate and reviewed evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "${{ inputs.revision }}" =~ ^[0-9a-f]{40}$ ]]
+          test "$(git rev-parse HEAD)" = "${{ inputs.revision }}"
+          python3 scripts/validate_a10_live_evidence.py             --revision "${{ inputs.revision }}"             --evidence "${{ inputs.evidence_path }}"
+      - name: Preserve candidate identity
+        if: always()
+        shell: bash
+        run: |
+          git diff --exit-code
+          git diff --cached --exit-code
+          test "$(git rev-parse HEAD)" = "${{ inputs.revision }}"

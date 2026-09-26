@@ -300,3 +300,30 @@ X11 click does not reach the authentication WebKit page. M07, M09, M11 and M12
 also remain separate browser-depth gaps.
 
 See [batch 35](parity-2026-09-26-batch35.md).
+
+## September 26 acceptance checkpoint - batch 36
+
+A05 now has deciding live-environment evidence. Authenticated browser acceptance
+run `36241446487`, job `108402605713`, passed on exact candidate
+`163d59cf1eaba301e413f1d02848a4d4cb397f69`. It proved the
+authentication-partition authority contract and a real WebKitGTK login/session/
+popup journey, then passed formatting and strict Clippy.
+
+The flow retains authentication cookies only inside the reviewed flow, prevents
+the popup destination from becoming an unmanaged window, preserves same-flow
+opener callback/form POST behavior after explicit review, isolates Manual and
+separate authentication profiles, and destroys the ephemeral profile after its
+final tab closes.
+
+A05 is therefore accepted. D2 remains OPEN because protected import, agent
+upload/download, safe task/auth restoration and page WebMCP remain separate
+product gaps (M07, M09, M11 and M12).
+
+A01 remains OPEN, but batch 36 adds a dedicated manual acceptance lane requiring
+a self-hosted machine labeled `synara-live-voice`, a physical/default
+microphone with OS permission and a ChatGPT-authenticated Codex installation.
+The ignored live test records real microphone input and exercises the exact
+Codex-auth-to-official-ChatGPT transcription path without logging transcript
+content.
+
+See [batch 36](parity-2026-09-26-batch36.md).

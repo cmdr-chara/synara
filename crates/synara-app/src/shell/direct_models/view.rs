@@ -11,7 +11,9 @@ fn telemetry_note(telemetry: &ProviderTelemetry) -> String {
         }
         Some(format!(
             "{name} quota: limit {} · remaining {} · reset {}",
-            value.limit.map_or_else(|| "not reported".into(), |v| v.to_string()),
+            value
+                .limit
+                .map_or_else(|| "not reported".into(), |v| v.to_string()),
             value
                 .remaining
                 .map_or_else(|| "not reported".into(), |v| v.to_string()),

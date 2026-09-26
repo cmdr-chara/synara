@@ -78,7 +78,8 @@ fn parse_netscape(
     source: &str,
     now_unix_seconds: u64,
 ) -> Result<ProtectedCookieJar, CookieImportError> {
-    let mut output = b"# Netscape HTTP Cookie File\n# Temporary Synara authentication import\n".to_vec();
+    let mut output =
+        b"# Netscape HTTP Cookie File\n# Temporary Synara authentication import\n".to_vec();
     let mut count = 0usize;
 
     for raw in source.lines() {
@@ -165,7 +166,10 @@ fn parse_netscape(
     if count == 0 {
         return Err(CookieImportError::Empty);
     }
-    Ok(ProtectedCookieJar { bytes: output, count })
+    Ok(ProtectedCookieJar {
+        bytes: output,
+        count,
+    })
 }
 
 fn parse_bool(value: &str) -> Result<bool, CookieImportError> {
@@ -184,8 +188,8 @@ fn validate_host(host: &str) -> Result<(), CookieImportError> {
     {
         return Err(CookieImportError::Invalid);
     }
-    let parsed = url::Url::parse(&format!("https://{host}/"))
-        .map_err(|_| CookieImportError::Invalid)?;
+    let parsed =
+        url::Url::parse(&format!("https://{host}/")).map_err(|_| CookieImportError::Invalid)?;
     let normalized = parsed.host_str().ok_or(CookieImportError::Invalid)?;
     if normalized != host.to_ascii_lowercase() {
         return Err(CookieImportError::Invalid);

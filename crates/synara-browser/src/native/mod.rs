@@ -748,8 +748,7 @@ impl NativeHost {
                 events.emit(Event::AuthenticationLoading { tab, navigation });
                 return;
             }
-            let agent_tool_followup =
-                agent && done.get() && tool_navigation_loading.replace(false);
+            let agent_tool_followup = agent && done.get() && tool_navigation_loading.replace(false);
             if event != webkit2gtk::LoadEvent::Finished
                 || (done.get() && !authentication && !agent_tool_followup)
                 || shared.epoch(tab) != Some(epoch)

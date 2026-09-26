@@ -8,7 +8,9 @@ use crate::{ExecutionHost, LaunchSpec, LocalHost, RuntimeError};
 use serde::Deserialize;
 use serde_json::{Value, json};
 use std::{path::Path, time::Duration};
-use tokio::io::{AsyncBufRead, AsyncBufReadExt, AsyncReadExt, AsyncWrite, AsyncWriteExt, BufReader};
+use tokio::io::{
+    AsyncBufRead, AsyncBufReadExt, AsyncReadExt, AsyncWrite, AsyncWriteExt, BufReader,
+};
 use tokio_util::sync::CancellationToken;
 
 const MAX_RPC_LINE: usize = 4 * 1024 * 1024;
@@ -163,10 +165,10 @@ pub(super) async fn invoke(
 
     let transaction = async {
         write_request(&mut stdin, 1, "attach", json!({ "udid": udid })).await?;
-        let attached: AttachResult = serde_json::from_value(
-            read_response(&mut stdout, 1, cancel).await?,
-        )
-        .map_err(|_| RuntimeError::Invalid("device helper returned invalid attach geometry".into()))?;
+        let attached: AttachResult =
+            serde_json::from_value(read_response(&mut stdout, 1, cancel).await?).map_err(|_| {
+                RuntimeError::Invalid("device helper returned invalid attach geometry".into())
+            })?;
         if attached.pixel_width == 0
             || attached.pixel_height == 0
             || !attached.point_width.is_finite()

@@ -319,12 +319,10 @@ impl Shell {
                         }
                     }
                     Ok(Ok(None)) => {}
-                    _ => {
-                        this.settings.native.error = Some(
-                            "The native file picker could not open. Device configuration is unchanged."
-                                .into(),
-                        )
-                    }
+                    _ => this.settings.native.error = Some(
+                        "The native file picker could not open. Device configuration is unchanged."
+                            .into(),
+                    ),
                 }
                 cx.notify();
             });

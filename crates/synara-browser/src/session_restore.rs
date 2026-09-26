@@ -297,7 +297,6 @@ fn sync_directory(_: &Path) -> std::io::Result<()> {
     Ok(())
 }
 
-
 const OWNED_SNAPSHOT_NAME: &str = "owned-tabs.json";
 const MAX_OWNERS: usize = 128;
 const MAX_OWNED_TABS: usize = 128;
@@ -391,7 +390,8 @@ impl OwnedTabRestoreStore {
         request_url: &str,
         committed_url: &str,
     ) -> Result<(), RestoreError> {
-        let request = crate::CommittedDocument::parse(request_url).map_err(|_| RestoreError::Invalid)?;
+        let request =
+            crate::CommittedDocument::parse(request_url).map_err(|_| RestoreError::Invalid)?;
         let committed =
             crate::CommittedDocument::parse(committed_url).map_err(|_| RestoreError::Invalid)?;
         if request.origin != committed.origin {
@@ -430,10 +430,9 @@ impl OwnedTabRestoreStore {
             return Err(RestoreError::Invalid);
         }
         let sequence = TEMP_SEQUENCE.fetch_add(1, Ordering::Relaxed);
-        let temporary = self.root.join(format!(
-            ".owned-tabs-{}-{sequence}.tmp",
-            std::process::id()
-        ));
+        let temporary = self
+            .root
+            .join(format!(".owned-tabs-{}-{sequence}.tmp", std::process::id()));
         let mut file = create_temp_nofollow(&temporary).map_err(|_| RestoreError::Storage)?;
         let result = (|| {
             file.write_all(&bytes)?;

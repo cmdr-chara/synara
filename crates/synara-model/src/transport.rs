@@ -355,19 +355,17 @@ async fn bounded_json(response: reqwest::Response, limit: usize) -> ModelResult<
     serde_json::from_slice(&body).map_err(|_| ModelError::Protocol)
 }
 
-
 fn telemetry_from_headers(
     profile: &ProviderProfile,
     headers: &HeaderMap,
 ) -> ModelResult<ProviderTelemetry> {
     fn text(headers: &HeaderMap, names: &[&str]) -> ModelResult<Option<String>> {
         for name in names {
-            let Some(value) = headers.get(*name) else { continue };
+            let Some(value) = headers.get(*name) else {
+                continue;
+            };
             let value = value.to_str().map_err(|_| ModelError::Protocol)?.trim();
-            if value.is_empty()
-                || value.len() > 128
-                || value.chars().any(char::is_control)
-            {
+            if value.is_empty() || value.len() > 128 || value.chars().any(char::is_control) {
                 return Err(ModelError::Protocol);
             }
             return Ok(Some(value.to_owned()));
@@ -384,33 +382,42 @@ fn telemetry_from_headers(
         }
     }
 
-    let (request_limit, request_remaining, request_reset, token_limit, token_remaining, token_reset) =
-        match profile.protocol {
-            ProtocolFamily::AnthropicMessages => (
-                &["anthropic-ratelimit-requests-limit", "ratelimit-limit"][..],
-                &["anthropic-ratelimit-requests-remaining", "ratelimit-remaining"][..],
-                &["anthropic-ratelimit-requests-reset", "ratelimit-reset"][..],
-                &["anthropic-ratelimit-tokens-limit"][..],
-                &["anthropic-ratelimit-tokens-remaining"][..],
-                &["anthropic-ratelimit-tokens-reset"][..],
-            ),
-            ProtocolFamily::OpenAiChat => (
-                &["x-ratelimit-limit-requests", "ratelimit-limit"][..],
-                &["x-ratelimit-remaining-requests", "ratelimit-remaining"][..],
-                &["x-ratelimit-reset-requests", "ratelimit-reset"][..],
-                &["x-ratelimit-limit-tokens"][..],
-                &["x-ratelimit-remaining-tokens"][..],
-                &["x-ratelimit-reset-tokens"][..],
-            ),
-            ProtocolFamily::GoogleGenerateContent => (
-                &["x-ratelimit-limit-requests", "ratelimit-limit"][..],
-                &["x-ratelimit-remaining-requests", "ratelimit-remaining"][..],
-                &["x-ratelimit-reset-requests", "ratelimit-reset"][..],
-                &["x-ratelimit-limit-tokens"][..],
-                &["x-ratelimit-remaining-tokens"][..],
-                &["x-ratelimit-reset-tokens"][..],
-            ),
-        };
+    let (
+        request_limit,
+        request_remaining,
+        request_reset,
+        token_limit,
+        token_remaining,
+        token_reset,
+    ) = match profile.protocol {
+        ProtocolFamily::AnthropicMessages => (
+            &["anthropic-ratelimit-requests-limit", "ratelimit-limit"][..],
+            &[
+                "anthropic-ratelimit-requests-remaining",
+                "ratelimit-remaining",
+            ][..],
+            &["anthropic-ratelimit-requests-reset", "ratelimit-reset"][..],
+            &["anthropic-ratelimit-tokens-limit"][..],
+            &["anthropic-ratelimit-tokens-remaining"][..],
+            &["anthropic-ratelimit-tokens-reset"][..],
+        ),
+        ProtocolFamily::OpenAiChat => (
+            &["x-ratelimit-limit-requests", "ratelimit-limit"][..],
+            &["x-ratelimit-remaining-requests", "ratelimit-remaining"][..],
+            &["x-ratelimit-reset-requests", "ratelimit-reset"][..],
+            &["x-ratelimit-limit-tokens"][..],
+            &["x-ratelimit-remaining-tokens"][..],
+            &["x-ratelimit-reset-tokens"][..],
+        ),
+        ProtocolFamily::GoogleGenerateContent => (
+            &["x-ratelimit-limit-requests", "ratelimit-limit"][..],
+            &["x-ratelimit-remaining-requests", "ratelimit-remaining"][..],
+            &["x-ratelimit-reset-requests", "ratelimit-reset"][..],
+            &["x-ratelimit-limit-tokens"][..],
+            &["x-ratelimit-remaining-tokens"][..],
+            &["x-ratelimit-reset-tokens"][..],
+        ),
+    };
 
     Ok(ProviderTelemetry {
         provider_id: profile.id.clone(),

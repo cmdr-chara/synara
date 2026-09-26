@@ -254,7 +254,8 @@ impl Shell {
             return;
         };
         if flow.initial || !self.browser_authentication_active(flow) {
-            self.browser.error = Some("Open the private sign-in page before importing cookies.".into());
+            self.browser.error =
+                Some("Open the private sign-in page before importing cookies.".into());
             cx.notify();
             return;
         }
@@ -263,7 +264,9 @@ impl Shell {
             files: true,
             directories: false,
             multiple: false,
-            prompt: Some("Import a Netscape/Mozilla cookies.txt file into this private sign-in flow".into()),
+            prompt: Some(
+                "Import a Netscape/Mozilla cookies.txt file into this private sign-in flow".into(),
+            ),
         });
         cx.spawn(async move |view, cx| {
             let selected = picker.await;

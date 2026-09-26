@@ -205,22 +205,16 @@ fn validate_ui_node(
         && !value.is_null()
         && ui_value_text(value).is_none()
     {
-        return Err(RuntimeError::Invalid(
-            "invalid accessibility value".into(),
-        ));
+        return Err(RuntimeError::Invalid("invalid accessibility value".into()));
     }
     if let Some(frame) = &node.frame {
         for number in [frame.x, frame.y, frame.width, frame.height] {
             if !number.is_finite() || number.abs() > 100_000.0 {
-                return Err(RuntimeError::Invalid(
-                    "invalid accessibility frame".into(),
-                ));
+                return Err(RuntimeError::Invalid("invalid accessibility frame".into()));
             }
         }
         if frame.width < 0.0 || frame.height < 0.0 {
-            return Err(RuntimeError::Invalid(
-                "invalid accessibility node".into(),
-            ));
+            return Err(RuntimeError::Invalid("invalid accessibility node".into()));
         }
     }
     if node.children.len() > 512 {
@@ -246,7 +240,11 @@ fn node_label(node: &DeviceUiNode) -> Option<&str> {
     node.label
         .as_deref()
         .filter(|value| !value.trim().is_empty())
-        .or_else(|| node.title.as_deref().filter(|value| !value.trim().is_empty()))
+        .or_else(|| {
+            node.title
+                .as_deref()
+                .filter(|value| !value.trim().is_empty())
+        })
         .or_else(|| {
             node.identifier
                 .as_deref()
@@ -265,11 +263,7 @@ fn ui_value_text(value: &serde_json::Value) -> Option<String> {
     bounded_ui_text(&text, 1024).then_some(text)
 }
 
-fn collect_ui_targets(
-    node: &DeviceUiNode,
-    limit: usize,
-    out: &mut Vec<DeviceAccessibilityTarget>,
-) {
+fn collect_ui_targets(node: &DeviceUiNode, limit: usize, out: &mut Vec<DeviceAccessibilityTarget>) {
     if out.len() >= limit {
         return;
     }
@@ -299,7 +293,8 @@ fn find_ui_node<'a>(
     label: &str,
     role: Option<&str>,
 ) -> Option<&'a DeviceUiNode> {
-    let label_matches = node_label(node).is_some_and(|candidate| candidate.eq_ignore_ascii_case(label));
+    let label_matches =
+        node_label(node).is_some_and(|candidate| candidate.eq_ignore_ascii_case(label));
     let role_matches = role
         .filter(|value| !value.is_empty())
         .is_none_or(|expected| node.role.eq_ignore_ascii_case(expected));
@@ -735,8 +730,7 @@ impl DeviceTools {
                         "Device input authority belongs to another backend".into(),
                     ));
                 }
-                let mut args =
-                    vec!["-s".into(), id, "shell".into(), "/system/bin/input".into()];
+                let mut args = vec!["-s".into(), id, "shell".into(), "/system/bin/input".into()];
                 args.extend(android_input_args(&input, width, height)?);
                 command::run(&self.executable, args, 4096, cancel).await?;
             }
@@ -745,9 +739,7 @@ impl DeviceTools {
                     return Err(RuntimeError::Limit);
                 }
                 let helper = grant.apple_helper.as_deref().ok_or_else(|| {
-                    RuntimeError::Denied(
-                        "Simulator input authority has no native helper".into(),
-                    )
+                    RuntimeError::Denied("Simulator input authority has no native helper".into())
                 })?;
                 if self.configured_apple_helper()? != helper {
                     return Err(RuntimeError::Denied(
@@ -792,16 +784,11 @@ impl DeviceTools {
                         )
                     }
                     DeviceInput::Text { text } => ("text", json!({ "text": text })),
-                    DeviceInput::Key { key } => (
-                        "key",
-                        json!({ "usage": apple_key_usage(&key)? }),
-                    ),
-                    DeviceInput::Button { button } => (
-                        "button",
-                        json!({ "name": button }),
-                    ),
+                    DeviceInput::Key { key } => ("key", json!({ "usage": apple_key_usage(&key)? })),
+                    DeviceInput::Button { button } => ("button", json!({ "name": button })),
                 };
-                let (attached, _) = apple_helper::invoke(helper, &id, method, params, cancel).await?;
+                let (attached, _) =
+                    apple_helper::invoke(helper, &id, method, params, cancel).await?;
                 if !attached.capabilities.input {
                     return Err(RuntimeError::Unsupported(
                         "The Simulator helper lost HID input capability".into(),
@@ -826,18 +813,20 @@ impl DeviceTools {
         }
         let id = self.address(device)?;
         let helper = self.configured_apple_helper()?;
-        let (attached, result) =
-            apple_helper::invoke(helper, &id, "describe-ui", json!({ "maxDepth": 40 }), cancel)
-                .await?;
+        let (attached, result) = apple_helper::invoke(
+            helper,
+            &id,
+            "describe-ui",
+            json!({ "maxDepth": 40 }),
+            cancel,
+        )
+        .await?;
         if !attached.capabilities.accessibility {
             return Err(RuntimeError::Unsupported(
                 "The selected Simulator helper reports no accessibility capability".into(),
             ));
         }
-        let tree_value = result
-            .get("tree")
-            .cloned()
-            .unwrap_or(result);
+        let tree_value = result.get("tree").cloned().unwrap_or(result);
         let root: DeviceUiNode = serde_json::from_value(tree_value)
             .map_err(|_| RuntimeError::Invalid("invalid Simulator accessibility tree".into()))?;
         let tree = DeviceAccessibilityTree {
@@ -923,7 +912,9 @@ fn android_input_args(
         }
         DeviceInput::Text { text } => {
             if text.is_empty() {
-                return Err(RuntimeError::Invalid("Device text must not be empty".into()));
+                return Err(RuntimeError::Invalid(
+                    "Device text must not be empty".into(),
+                ));
             }
             Ok(vec!["text".into(), text.replace(' ', "%s")])
         }

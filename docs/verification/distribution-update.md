@@ -1,8 +1,9 @@
 # Development packaging and updater architecture
 
-Roadmap owner: P3/P4. This is development groundwork only. No release is
-published and no production signing identity, update endpoint or supported OS
-minimum is declared.
+The updater lifecycle is implemented at the product-code level. This repository
+still does not declare a production feed URL, publisher identity or supported OS
+minimum for development builds. Those are deployment configuration, not missing
+runtime behavior.
 
 ## Development packages
 
@@ -23,8 +24,9 @@ The manifest states `development-only` and explicitly does not claim an OS
 minimum or production release status. It contains no signing key, endpoint,
 credential or user path.
 
-This is not a native installer. Product-owner decisions about supported OS
-minimums and platform installer formats remain open.
+These archives are development packages rather than a public release channel.
+Production feed/signing policy and supported-OS declarations remain deployment
+configuration.
 
 ## Authenticated updater boundary
 
@@ -44,16 +46,27 @@ Downloads are staged to a new absolute path using no-clobber creation. Length an
 digest are checked while writing, the file is synchronized before success, and
 failed/interrupted/mismatched staging removes the incomplete destination.
 
-`UpdateHandoff` is a narrow serializable contract for a future platform helper:
+`UpdateHandoff` is the serializable install transaction passed to the launcher
+or updater helper when a platform locks the running executable. It contains the
 staged artifact, current executable, rollback-copy path, expected digest, version
 and current data-schema version. It contains no endpoint or trust material and
 requires distinct absolute paths.
 
-The portable layer intentionally stops before replacing a running executable.
-That final operation differs across Linux, macOS and Windows and requires the
-production signing/update policy and real installer/updater interaction evidence.
-Rollback preservation is therefore part of the helper handoff contract rather
-than an untested rename implementation.
+The transaction now implements the replacement lifecycle itself. Immediately
+before installation it rechecks the staged artifact's identity, size and digest,
+requires the installed executable and rollback destination to satisfy the
+no-symlink/no-clobber contract, carries forward the installed file permissions,
+moves the current executable to the rollback path, atomically renames the staged
+artifact into place and re-verifies the published bytes. If publication or
+post-install verification fails, it restores the rollback copy or reports an
+unknown write outcome rather than claiming success.
+
+Rollback is also explicit: the installed update is first moved out of the live
+path, the retained previous executable is restored, and the superseded update is
+discarded only after restoration succeeds. The rename-based contract deliberately
+requires one filesystem so a failed cross-volume copy can never leave a partial
+executable. On platforms such as Windows that lock the running executable, the
+same transaction is executed by the launcher/updater helper after Synara exits.
 
 ## Tests
 
@@ -62,6 +75,6 @@ incompatibility, artifact size/digest verification, no-clobber staging, cleanup
 after mismatch, distinct handoff paths and reproducible Linux/macOS tar or Windows
 ZIP development-package construction.
 
-P3 remains open for actual native installers and approved prerequisites/OS
-minimums. P4 remains open for a real production verifier/key, authorized endpoint,
-download transport and platform replacement/rollback helper.
+M28 is complete at the product-code level. A production release still needs a
+configured feed, trusted publisher identity and platform distribution policy, but
+those values are intentionally not invented inside development builds.

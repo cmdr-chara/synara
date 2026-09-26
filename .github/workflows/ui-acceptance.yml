@@ -8,6 +8,7 @@ on:
       - 'crates/synara-app/**'
       - 'crates/synara-workspace/src/settings/**'
       - 'scripts/native_electron_theme_smoke.py'
+      - 'scripts/native_electron_parity_smoke.py'
       - 'scripts/native_smoke.py'
       - 'scripts/validate_a10_live_evidence.py'
       - '.github/workflows/ui-acceptance.yml'

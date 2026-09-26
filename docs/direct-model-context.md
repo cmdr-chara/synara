@@ -27,11 +27,17 @@ not silently dropped or relabelled as user input.
 ## History and generation controls
 
 The model review has native presets for all history, the last 10 prior user turns,
-or the current message only. `history_turns` also accepts custom integers 0-256
-in the existing JSON review. Older bindings default to `null` (all history).
-A turn includes its user message, images and following visible assistant replies.
-The current prompt is always added separately. Hidden reasoning, permissions,
-sessions and tool state are not copied. The complete local transcript is retained.
+or the current message only. It also offers **Fit context**, which computes the
+largest recent complete-turn window that fits a conservative byte upper bound
+inside the reviewed model context window after reserving requested output and
+space for the next prompt. This is explicit compaction of the outbound context,
+not transcript deletion or hidden summarization. If all retained history fits,
+the preset keeps `null` (all history); otherwise it writes the reviewed
+`history_turns` value. Custom integers 0-256 remain available in the existing
+JSON review. A turn includes its user message, images and following visible
+assistant replies. The current prompt is always added separately. Hidden
+reasoning, permissions, sessions and tool state are not copied. The complete
+local transcript is retained.
 
 Output-token presets respect the reviewed model maximum. Reasoning presets are
 shown only for effort values reviewed on the supported OpenAI-compatible transport.

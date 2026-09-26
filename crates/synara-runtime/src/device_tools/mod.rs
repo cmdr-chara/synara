@@ -60,7 +60,7 @@ impl ToolDevice {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct DeviceUiFrame {
     pub x: f64,
@@ -79,22 +79,26 @@ pub struct DeviceUiPoint {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DeviceUiNode {
+    #[serde(default)]
     pub role: String,
     #[serde(default)]
     pub subrole: Option<String>,
     #[serde(default)]
     pub label: Option<String>,
     #[serde(default)]
-    pub value: Option<String>,
+    pub value: Option<serde_json::Value>,
     #[serde(default)]
     pub identifier: Option<String>,
     #[serde(default)]
     pub title: Option<String>,
-    pub frame: DeviceUiFrame,
+    #[serde(default)]
+    pub frame: Option<DeviceUiFrame>,
     #[serde(default)]
     pub activation_point: Option<DeviceUiPoint>,
     #[serde(default)]
     pub enabled: Option<bool>,
+    #[serde(default)]
+    pub truncated: bool,
     #[serde(default)]
     pub children: Vec<DeviceUiNode>,
 }
@@ -147,9 +151,10 @@ impl DeviceAccessibilityTree {
             return None;
         }
         let node = find_ui_node(&self.root, label.trim(), role.map(str::trim))?;
+        let frame = node.frame.as_ref()?;
         let point = node.activation_point.clone().unwrap_or(DeviceUiPoint {
-            x: node.frame.x + node.frame.width / 2.0,
-            y: node.frame.y + node.frame.height / 2.0,
+            x: frame.x + frame.width / 2.0,
+            y: frame.y + frame.height / 2.0,
         });
         if !point.x.is_finite()
             || !point.y.is_finite()
@@ -197,22 +202,22 @@ fn validate_ui_node(
             return Err(RuntimeError::Limit);
         }
     }
-    for number in [
-        node.frame.x,
-        node.frame.y,
-        node.frame.width,
-        node.frame.height,
-    ] {
-        if !number.is_finite() || number.abs() > 100_000.0 {
+    if let Some(frame) = &node.frame {
+        for number in [frame.x, frame.y, frame.width, frame.height] {
+            if !number.is_finite() || number.abs() > 100_000.0 {
+                return Err(RuntimeError::Invalid(
+                    "invalid accessibility frame".into(),
+                ));
+            }
+        }
+        if frame.width < 0.0 || frame.height < 0.0 {
             return Err(RuntimeError::Invalid(
-                "invalid accessibility frame".into(),
+                "invalid accessibility node".into(),
             ));
         }
     }
-    if node.frame.width < 0.0 || node.frame.height < 0.0 || node.children.len() > 512 {
-        return Err(RuntimeError::Invalid(
-            "invalid accessibility node".into(),
-        ));
+    if node.children.len() > 512 {
+        return Err(RuntimeError::Limit);
     }
     if let Some(point) = &node.activation_point
         && (!point.x.is_finite()
@@ -242,6 +247,17 @@ fn node_label(node: &DeviceUiNode) -> Option<&str> {
         })
 }
 
+fn ui_value_text(value: &serde_json::Value) -> Option<String> {
+    let text = match value {
+        serde_json::Value::String(value) => value.clone(),
+        serde_json::Value::Number(value) => value.to_string(),
+        serde_json::Value::Bool(value) => value.to_string(),
+        serde_json::Value::Null => return None,
+        _ => return None,
+    };
+    bounded_ui_text(&text, 1024).then_some(text)
+}
+
 fn collect_ui_targets(
     node: &DeviceUiNode,
     limit: usize,
@@ -252,13 +268,15 @@ fn collect_ui_targets(
     }
     if let Some(label) = node_label(node)
         && node.enabled.unwrap_or(true)
-        && node.frame.width > 0.0
-        && node.frame.height > 0.0
+        && node
+            .frame
+            .as_ref()
+            .is_some_and(|frame| frame.width > 0.0 && frame.height > 0.0)
     {
         out.push(DeviceAccessibilityTarget {
             label: label.to_owned(),
             role: node.role.clone(),
-            value: node.value.clone(),
+            value: node.value.as_ref().and_then(ui_value_text),
         });
     }
     for child in &node.children {

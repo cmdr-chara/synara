@@ -52,8 +52,11 @@ def read_log(scenario: Scenario) -> str:
 def section_slots() -> dict[str, int]:
     source = (Path(__file__).resolve().parents[1] / 'crates/synara-app/src/shell/settings.rs').read_text()
     body = source.split('enum Section {', 1)[1].split('}', 1)[0]
-    variants = re.findall(r'^\s*(\w+),\s*
-
+    variants = re.findall(r'^\s*(\w+),\s*$', body, re.M)
+    required = {page[0] for page in PAGES + EXTENSIONS}
+    assert len(variants) == len(set(variants)), variants
+    assert required <= set(variants), (sorted(required - set(variants)), variants)
+    return {name: index for index, name in enumerate(variants)}
 
 def open_page(scenario: Scenario, page, slots):
     variant, query, _ = page

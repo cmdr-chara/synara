@@ -1,0 +1,155 @@
+name: Hosted platform accessibility probe
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hosted-accessibility-probe.yml'
+permissions:
+  contents: read
+concurrency:
+  group: hosted-platform-accessibility-probe
+  cancel-in-progress: true
+env:
+  RUSTUP_TOOLCHAIN: '1.98.1'
+  CARGO_BUILD_JOBS: '2'
+
+jobs:
+  macos-ax:
+    runs-on: macos-14
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          persist-credentials: false
+      - name: Build native app
+        run: |
+          set -euo pipefail
+          rustup toolchain install 1.98.1 --profile minimal
+          cargo +1.98.1 build --locked -p synara-app --bin synara-app
+      - name: Launch fresh onboarding window
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/synara-a10-data" acceptance-evidence
+          target/debug/synara-app --data-dir "$RUNNER_TEMP/synara-a10-data" > acceptance-evidence/macos-app.log 2>&1 &
+          echo $! > acceptance-evidence/macos-pid.txt
+          sleep 4
+          kill -0 "$(cat acceptance-evidence/macos-pid.txt)"
+      - name: Exercise macOS AX tree
+        run: |
+          set -euo pipefail
+          cat > "$RUNNER_TEMP/ax_probe.swift" <<'SWIFT'
+          import ApplicationServices
+          import Foundation
+
+          guard CommandLine.arguments.count == 2, let raw = Int32(CommandLine.arguments[1]) else {
+              fputs("missing pid\n", stderr)
+              exit(2)
+          }
+          if !AXIsProcessTrusted() {
+              print("MACOS_AX_BLOCKED: runner process is not Accessibility-trusted")
+              exit(42)
+          }
+          let app = AXUIElementCreateApplication(raw)
+          var queue: [AXUIElement] = [app]
+          var seen = 0
+          var target: AXUIElement? = nil
+          while !queue.isEmpty && seen < 2000 {
+              let element = queue.removeFirst()
+              seen += 1
+              var roleValue: CFTypeRef?
+              var titleValue: CFTypeRef?
+              _ = AXUIElementCopyAttributeValue(element, kAXRoleAttribute as CFString, &roleValue)
+              _ = AXUIElementCopyAttributeValue(element, kAXTitleAttribute as CFString, &titleValue)
+              let role = roleValue as? String ?? ""
+              let title = titleValue as? String ?? ""
+              if role == (kAXButtonRole as String) && title == "Continue" {
+                  target = element
+                  break
+              }
+              var childrenValue: CFTypeRef?
+              if AXUIElementCopyAttributeValue(element, kAXChildrenAttribute as CFString, &childrenValue) == .success,
+                 let children = childrenValue as? [AXUIElement] {
+                  queue.append(contentsOf: children)
+              }
+          }
+          guard let button = target else {
+              print("MACOS_AX_FAILED: accessible Continue button not found; nodes=\(seen)")
+              exit(43)
+          }
+          let result = AXUIElementPerformAction(button, kAXPressAction as CFString)
+          guard result == .success else {
+              print("MACOS_AX_FAILED: Continue AXPress failed: \(result.rawValue)")
+              exit(44)
+          }
+          print("MACOS_AX_ACCEPTANCE: accessible Continue button found and AXPress succeeded; nodes=\(seen)")
+          SWIFT
+          swiftc "$RUNNER_TEMP/ax_probe.swift" -framework ApplicationServices -o "$RUNNER_TEMP/ax_probe"
+          "$RUNNER_TEMP/ax_probe" "$(cat acceptance-evidence/macos-pid.txt)" | tee acceptance-evidence/macos-ax.txt
+          grep -q 'MACOS_AX_ACCEPTANCE:' acceptance-evidence/macos-ax.txt
+      - name: Stop app and verify source identity
+        if: always()
+        run: |
+          kill "$(cat acceptance-evidence/macos-pid.txt)" 2>/dev/null || true
+          git diff --exit-code
+          git diff --cached --exit-code
+          git rev-parse HEAD > acceptance-evidence/revision.txt
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: hosted-macos-ax-probe
+          path: acceptance-evidence/
+          retention-days: 3
+
+  windows-uia:
+    runs-on: windows-2025
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          persist-credentials: false
+      - name: Build native app
+        shell: pwsh
+        run: |
+          rustup toolchain install 1.98.1 --profile minimal
+          cargo +1.98.1 build --locked -p synara-app --bin synara-app
+      - name: Exercise Windows UI Automation tree
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          New-Item -ItemType Directory -Force acceptance-evidence | Out-Null
+          $data = Join-Path $env:RUNNER_TEMP 'synara-a10-data'
+          New-Item -ItemType Directory -Force $data | Out-Null
+          $stdout = Join-Path (Resolve-Path acceptance-evidence) 'windows-app.stdout.log'
+          $stderr = Join-Path (Resolve-Path acceptance-evidence) 'windows-app.stderr.log'
+          $process = Start-Process -FilePath 'target\debug\synara-app.exe' -ArgumentList @('--data-dir', $data) -PassThru -RedirectStandardOutput $stdout -RedirectStandardError $stderr
+          try {
+            Start-Sleep -Seconds 4
+            if ($process.HasExited) { throw 'Synara exited before UIA inspection' }
+            Add-Type -AssemblyName UIAutomationClient
+            Add-Type -AssemblyName UIAutomationTypes
+            $root = [System.Windows.Automation.AutomationElement]::RootElement
+            $pc = New-Object System.Windows.Automation.PropertyCondition([System.Windows.Automation.AutomationElement]::ProcessIdProperty, $process.Id)
+            $window = $root.FindFirst([System.Windows.Automation.TreeScope]::Children, $pc)
+            if ($null -eq $window) { throw 'Synara top-level window not found through UIA' }
+            $type = New-Object System.Windows.Automation.PropertyCondition([System.Windows.Automation.AutomationElement]::ControlTypeProperty, [System.Windows.Automation.ControlType]::Button)
+            $name = New-Object System.Windows.Automation.PropertyCondition([System.Windows.Automation.AutomationElement]::NameProperty, 'Continue')
+            $condition = New-Object System.Windows.Automation.AndCondition($pc, $type, $name)
+            $button = $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $condition)
+            if ($null -eq $button) { throw 'Accessible Continue button not found through UIA' }
+            $pattern = $null
+            if (-not $button.TryGetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern, [ref]$pattern)) { throw 'Continue button does not expose InvokePattern' }
+            ([System.Windows.Automation.InvokePattern]$pattern).Invoke()
+            Start-Sleep -Milliseconds 750
+            'WINDOWS_UIA_ACCEPTANCE: accessible Continue button found and InvokePattern succeeded' | Tee-Object -FilePath acceptance-evidence/windows-uia.txt
+          } finally {
+            if ($null -ne $process -and -not $process.HasExited) { Stop-Process -Id $process.Id -Force }
+          }
+          git diff --exit-code
+          git diff --cached --exit-code
+          git rev-parse HEAD | Out-File -Encoding ascii acceptance-evidence/revision.txt
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: hosted-windows-uia-probe
+          path: acceptance-evidence/
+          retention-days: 3

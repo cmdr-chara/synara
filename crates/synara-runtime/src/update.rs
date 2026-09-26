@@ -9,7 +9,7 @@ use crate::RuntimeError;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::{
-    fs::{self, OpenOptions},
+    fs::{self, File, OpenOptions},
     io::{Read, Write},
     path::{Path, PathBuf},
 };

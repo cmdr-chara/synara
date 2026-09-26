@@ -177,6 +177,8 @@ impl Shell {
                             },
                             false,
                         )
+                        .relative()
+                        .child(ui::layout_probe("onboarding-finish"))
                         .on_click(cx.listener(|this, _, _, cx| this.finish_onboarding(cx)))
                     })
                     .children((step < STEPS.len() - 1).then(|| {
@@ -334,6 +336,8 @@ impl Shell {
                                 },
                                 false,
                             )
+                            .relative()
+                            .child(ui::layout_probe("onboarding-project-add-existing"))
                             .on_click(cx.listener(move |this, _, _, cx| {
                                 if registered {
                                     this.open_workspace(cx);

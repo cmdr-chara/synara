@@ -106,7 +106,7 @@ impl Shell {
             .child("This is a development build. Locally observed versions below are not published release announcements.")
             .child(div().text_size(px(12.)).child(include_str!("../../../../docs/ui/native-build-notes.md")))
             .child(div().relative().child(ui::layout_probe("native-update-unconfigured"))
-                .child("Automatic updates unavailable: no production endpoint, trusted signing identity or platform replacement helper is configured. No update check or download was performed."))
+                .child("Automatic update checks are unavailable in this development build because no production feed or trusted signing identity is configured. The runtime now supports signed-manifest verification, bounded staging, exact-byte revalidation, install swap and rollback. No network update check was performed."))
             .child(div().text_size(px(12.)).child("Local executable integrity (on disk; SHA-256 only, not a signature or publisher verification):"));
         if self.releases.integrity_busy {
             pane = pane.child(
@@ -132,7 +132,7 @@ impl Shell {
                     )),
             );
         }
-        pane = pane.child("Published native release history: not configured. Electron releases and fork tags are not presented as native releases.");
+        pane = pane.child("Published native release history/feed: not configured for this development build. Electron releases and fork tags are not presented as native releases.");
         if let Some(error) = &self.releases.integrity_error {
             pane = pane.child(div().text_color(rgb(palette().error)).child(format!(
                 "Could not fingerprint the current executable: {error}"

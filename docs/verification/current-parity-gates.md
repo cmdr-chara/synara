@@ -327,3 +327,37 @@ Codex-auth-to-official-ChatGPT transcription path without logging transcript
 content.
 
 See [batch 36](parity-2026-09-26-batch36.md).
+
+## September 26 acceptance checkpoint - batch 38
+
+A08 now has deciding package-level release evidence. Signed release acceptance
+run `36243757479` passed on exact candidate
+`5e006f08d31a2ca7eea97e7b7d0c0d0052011cb6` on all three target
+platforms:
+
+- Linux x64 job `108409041271`;
+- macOS arm64 job `108409041457`;
+- Windows x64 job `108409041403`.
+
+Each job built the native candidate package, generated a bound update manifest
+and release feed, keyless-signed the package/manifest/feed with GitHub OIDC,
+verified the exact workflow identity and issuer with Sigstore/cosign, and passed
+the signed staging/install/rollback contract. The runtime acceptance also rejects
+tampered manifests, wrong workflow identity/issuer, corrupt downloads and staged
+artifact replacement before handoff.
+
+A08 is accepted as the signed release-package acceptance item. D10 remains OPEN
+because M28 still owns the product-facing production updater/installer lifecycle,
+authorized production endpoint and running-executable replacement policy. The
+acceptance run deliberately does not claim that broader production lifecycle.
+
+Later commits through the current batch touch only acceptance harnesses,
+validation scripts and documentation, not the signed release payload/runtime
+paths exercised by the accepted candidate.
+
+A01, A04 and A10 remain OPEN. Their live lanes are now explicit:
+`live-voice-acceptance.yml`, `live-onboarding-acceptance.yml` and
+`live-ui-acceptance.yml`, with hermetic foundation lanes for onboarding and
+Linux visual/keyboard/save-picker behavior.
+
+See [batch 38](parity-2026-09-26-batch38.md).

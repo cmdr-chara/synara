@@ -9,15 +9,15 @@ Detailed parity evidence lives in:
 
 ## Current status
 
-- Shipped feature slices: **84**
+- Shipped feature slices: **85**
 - Major remaining: **10**
 - Smaller remaining: **0**
-- Acceptance/integration remaining: **4**
-- Total remaining: **14**
+- Acceptance/integration remaining: **3**
+- Total remaining: **13**
 - Completely missing top-level surfaces: **0**
 - Broad verification gates still open: **20**
 
-The **14-item count is the execution count to use going forward**. The 20 open verification
+The **13-item count is the execution count to use going forward**. The 20 open verification
 gates are larger acceptance buckets and are not a feature count.
 
 Current upstream reference: `Emanuele-web04/synara@eaa61eded31b6755d4f30ba8eabc5d905cf817cb`.
@@ -25,9 +25,11 @@ Current upstream reference: `Emanuele-web04/synara@eaa61eded31b6755d4f30ba8eabc5
 Current continuation status: A05 authenticated browser acceptance passed on exact
 candidate `163d59cf1eaba301e413f1d02848a4d4cb397f69`, and A09 provider
 interoperability passed on `fd41caa5d7077d9176afe749b2c2fe3f0cb57c03`.
-The mainline M01/M02/M06/M13/M15 implementations are also incorporated. A01 and
-A04 now have explicit opt-in live acceptance lanes but still require suitably
-configured real machines/provider state before they can close.
+The mainline M01/M02/M06/M13/M15 implementations are also incorporated. A08
+signed release package acceptance passed across Linux, macOS and Windows on
+candidate `5e006f08d31a2ca7eea97e7b7d0c0d0052011cb6`. A01, A04 and A10
+now have explicit live acceptance lanes but still require suitably configured
+real microphone/provider/accessibility environments before they can close.
 
 ## Major features remaining
 
@@ -95,7 +97,7 @@ not large new product subsystems.
 - [x] A05 Authenticated browser login/session/popup acceptance
 - [x] A06 Real macOS Simulator/device acceptance
 - [x] A07 SSH worktree/search acceptance
-- [ ] A08 Signed release feed/install/rollback package acceptance
+- [x] A08 Signed release feed/install/rollback package acceptance
 - [x] A09 Multi-provider ACP/direct-model interoperability matrix
 - [ ] A10 Cross-platform visual/accessibility/save-picker acceptance
 
@@ -495,7 +497,8 @@ Verification receipts:
 [batch 35 - Simulator](docs/verification/parity-2026-09-25-batch35.md),
 [batch 35 - provider/browser](docs/verification/parity-2026-09-26-batch35.md),
 [batch 36](docs/verification/parity-2026-09-26-batch36.md),
-[batch 37](docs/verification/parity-2026-09-26-batch37.md).
+[batch 37](docs/verification/parity-2026-09-26-batch37,
+[batch 38](docs/verification/parity-2026-09-26-batch38.md).md).
 
 - Batch 32: acceptance infrastructure now has a dedicated Linux/macOS/Windows
   native build and development-package matrix. macOS development packaging uses

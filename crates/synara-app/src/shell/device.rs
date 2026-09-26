@@ -764,6 +764,7 @@ impl Shell {
             }
         };
         let cancel = self.device.cancel.clone();
+        self.device.accessibility = None;
         self.device_job(async move {
             tools
                 .input(&device, input, &grant, width, height, &cancel)
@@ -773,6 +774,84 @@ impl Shell {
         });
         cx.notify();
     }
+    fn send_device_text(&mut self, cx: &mut Context<Self>) {
+        let text = self.device.input_text.read(cx).text().to_owned();
+        if text.is_empty() {
+            self.device.error = Some("Enter text to type first.".into());
+            cx.notify();
+            return;
+        }
+        self.send_device_input(DeviceInput::Text { text }, cx);
+        if self.device.busy {
+            self.device.input_text.update(cx, |entry, cx| entry.clear(cx));
+        }
+    }
+
+    fn inspect_device_accessibility(&mut self, cx: &mut Context<Self>) {
+        if self.device.busy || self.panel != Panel::Device {
+            return;
+        }
+        let Some(device) = self
+            .device
+            .target()
+            .cloned()
+            .filter(|device| device.availability == DeviceAvailability::Ready)
+        else {
+            return;
+        };
+        let tools = match self.device_tools() {
+            Ok(tools) if tools.can_inspect_accessibility(&device) => tools,
+            Ok(_) => {
+                self.device.error = Some(
+                    "Accessibility inspection requires the configured macOS Simulator helper."
+                        .into(),
+                );
+                cx.notify();
+                return;
+            }
+            Err(error) => {
+                self.fail_device(error, cx);
+                return;
+            }
+        };
+        let cancel = self.device.cancel.clone();
+        self.device_job(async move {
+            tools
+                .describe_ui(&device, &cancel)
+                .await
+                .map(Outcome::Accessibility)
+                .map_err(|error| error.to_string())
+        });
+        cx.notify();
+    }
+
+    fn tap_device_accessibility(
+        &mut self,
+        label: String,
+        role: String,
+        cx: &mut Context<Self>,
+    ) {
+        let Some((width, height)) = self.device.dimensions else {
+            return;
+        };
+        let Some(tree) = self.device.accessibility.as_ref() else {
+            return;
+        };
+        let Some((x, y)) = tree.semantic_pixel_point(
+            &label,
+            (!role.is_empty()).then_some(role.as_str()),
+            width,
+            height,
+        ) else {
+            self.device.error = Some(
+                "That accessibility element is no longer targetable. Inspect the UI again.".into(),
+            );
+            cx.notify();
+            return;
+        };
+        self.send_device_input(DeviceInput::Tap { x, y }, cx);
+    }
+
     pub(super) fn device_reply(&mut self, reply: Reply, cx: &mut Context<Self>) {
         if reply.epoch != self.device.epoch {
             return;
@@ -786,7 +865,7 @@ impl Shell {
                     "No devices reported. Start an Android emulator externally or connect and authorize a device.".into()
                 } else {
                     format!(
-                        "{} targets reported. Input is off until explicitly enabled for a selected Android device.",
+                        "{} targets reported. Input remains off until explicitly enabled for the selected target.",
                         devices.len()
                     )
                 };
@@ -797,9 +876,17 @@ impl Shell {
             }
             Ok(Outcome::InputApproved(grant)) => {
                 self.device.grant = Some(Arc::new(grant));
-                self.device.message = "Input enabled for this selected Android target only. Escape or Disable input revokes it.".into();
+                self.device.message = "Input enabled for this selected target only. Escape, Disable input, hiding the viewer or changing targets revokes it.".into();
             }
             Ok(Outcome::InputSent) => self.capture_device(cx),
+            Ok(Outcome::Accessibility(tree)) => {
+                let count = tree.targets(128).len();
+                self.device.accessibility = Some(tree);
+                self.device.message = format!(
+                    "Accessibility tree inspected. {count} labelled target{} available.",
+                    if count == 1 { "" } else { "s" }
+                );
+            }
             Ok(Outcome::Lifecycle) => {
                 self.refresh_devices(cx);
                 return;

@@ -64,6 +64,16 @@ jobs:
             test -x "$launcher"
             "$launcher" --launch-immediately > /tmp/synara-atspi-bus.log 2>&1 &
             export NO_AT_BRIDGE=0
+            # accesskit_unix stays lazy until the accessibility status service
+            # reports that assistive technology is enabled. An inspector alone
+            # does not activate it.
+            for _ in $(seq 1 50); do
+              if busctl --user set-property org.a11y.Bus /org/a11y/bus org.a11y.Status IsEnabled b true 2>/dev/null; then
+                break
+              fi
+              sleep 0.1
+            done
+            test "$(busctl --user get-property org.a11y.Bus /org/a11y/bus org.a11y.Status IsEnabled | awk '{print $2}')" = "true"
             export SYNARA_A10_ATSPI=1
             python3 scripts/native_electron_theme_smoke.py --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output acceptance-evidence/theme
           '

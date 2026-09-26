@@ -25,13 +25,21 @@ Current upstream reference: `Emanuele-web04/synara@eaa61eded31b6755d4f30ba8eabc5
 Current continuation status: A05 authenticated browser acceptance passed on exact
 candidate `163d59cf1eaba301e413f1d02848a4d4cb397f69`, and A09 provider
 interoperability passed on `fd41caa5d7077d9176afe749b2c2fe3f0cb57c03`.
-The mainline M01/M02/M06/M13/M15 implementations are also incorporated. A08
-signed release package acceptance passed across Linux, macOS and Windows on
+A08 signed release package acceptance passed across Linux, macOS and Windows on
 candidate `5e006f08d31a2ca7eea97e7b7d0c0d0052011cb6`. A04 then passed a
 fresh-install real GitHub Copilot ACP journey on candidate
 `a51a87fa684f26de8616ab04c4a7cbd78d79c351`, closing D1 as well.
 A01 and A10 remain the final acceptance items.
-M07 is also complete: reviewed Netscape/Mozilla cookie jars can be imported only into request-owned temporary Authentication profiles; the normalized cookie state is destroyed with the flow and never enters Manual or AgentTask storage.
+
+Product-feature work at the current head also includes M01/M02/M06/M13/M15,
+M25 direct-model context controls (`01c29de798f4`), M26 live provider/account
+telemetry (`cb2abe0efaa5`) and the completed browser-depth lane: M07 protected
+cookie import (`efc85372a2ae`), M09 agent-owned upload/download
+(`a90215e0a3c5`), M11 owned task/auth session restoration
+(`c7966312f7a1`) and M12 declarative page WebMCP
+(`6780c548f268`). The broad D2/D6 gates remain separate end-to-end acceptance
+buckets and therefore stay OPEN until their listed platform/provider evidence is
+complete.
 
 ## Major features remaining
 
@@ -497,8 +505,11 @@ Verification receipts:
 [batch 35 - Simulator](docs/verification/parity-2026-09-25-batch35.md),
 [batch 35 - provider/browser](docs/verification/parity-2026-09-26-batch35.md),
 [batch 36](docs/verification/parity-2026-09-26-batch36.md),
-[batch 37](docs/verification/parity-2026-09-26-batch37,
-[batch 38](docs/verification/parity-2026-09-26-batch38.md).md).
+[batch 37](docs/verification/parity-2026-09-26-batch37.md),
+[batch 38](docs/verification/parity-2026-09-26-batch38.md),
+[batch 39](docs/verification/parity-2026-09-26-batch39.md),
+[batch 40](docs/verification/parity-2026-09-26-batch40.md),
+[batch 41](docs/verification/parity-2026-09-26-batch41.md).
 
 - Batch 32: acceptance infrastructure now has a dedicated Linux/macOS/Windows
   native build and development-package matrix. macOS development packaging uses
@@ -560,6 +571,32 @@ Verification receipts:
   also gains screenshot targeting, drag, scroll, typing/key controls, window
   filtering and takeover; M27 remains open for broader platform support. See the
   [batch 37 receipt](docs/verification/parity-2026-09-26-batch37.md).
+- Batch 38 accepted A08 on exact candidate
+  `5e006f08d31a2ca7eea97e7b7d0c0d0052011cb6`: Linux, macOS and Windows
+  release packages were built, signed through the pinned GitHub OIDC/Sigstore
+  identity, verified, tamper-tested, installed into the owned test location and
+  rolled back. M28/D10 remain open because the production running-executable
+  updater lifecycle and production trust policy are wider than this package gate.
+- Batch 39 accepted A04 and D1 on exact candidate
+  `a51a87fa684f26de8616ab04c4a7cbd78d79c351` using a fresh real GitHub
+  Copilot ACP onboarding journey through setup, project registration, explicit
+  first turn and restart without provider autostart.
+- The direct-model lane then closed M25 at `01c29de798f4` with an explicit
+  context-fit history policy that never rewrites the durable transcript, and
+  batch 41 closed M26 at `cb2abe0efaa5` with explicit live provider metadata
+  probes that surface only bounded telemetry actually returned by the provider.
+- Batch 40 closed M07 at `efc85372a2ae`: reviewed Netscape/Mozilla cookie jars
+  can seed only request-owned temporary Authentication profiles, and imported
+  cookie state is destroyed with that flow rather than entering Manual or
+  AgentTask storage.
+- The latest browser-depth commits close the remaining product-feature items in
+  that lane: M09 at `a90215e0a3c5` adds bounded task-owned browser upload and
+  download, M11 at `c7966312f7a1` restores only owned AgentTask/authentication
+  sessions through the persisted ownership contract, and M12 at
+  `6780c548f268` discovers and invokes bounded declarative page WebMCP only in
+  secure contexts with stale-inventory checks. `b5d12289370c` reconciles those
+  three items into the execution inventory. D2 remains OPEN for its broader
+  platform and failure-path acceptance.
 
 
 ## How to update this roadmap

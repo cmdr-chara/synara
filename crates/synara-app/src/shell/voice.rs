@@ -1106,7 +1106,12 @@ mod tests {
         };
         let recorder = Recorder::start(stamp)
             .expect("open the real default microphone; grant OS microphone permission first");
-        tokio::time::sleep(Duration::from_secs(4)).await;
+        tokio::time::sleep(Duration::from_secs(2)).await;
+        assert!(
+            recorder.level() > 0,
+            "the live microphone opened but no audible input was observed; speak during the acceptance capture"
+        );
+        tokio::time::sleep(Duration::from_secs(2)).await;
         let (wav, clip, _) = recorder
             .finish()
             .expect("capture real microphone audio for the acceptance phrase");

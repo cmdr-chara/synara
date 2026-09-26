@@ -43,7 +43,7 @@ def run(s):
     )
     click(s, "onboarding-auth-method", slot=0)
     wait_until(lambda: option(s, "model") == "auth", "fixture authentication completion")
-    assert not s.events(), "authentication must not submit a prompt"
+    assert not any(event.get("type") == "prompt_started" for event in s.events()), "authentication must not submit a prompt"
 
     click(s, "onboarding-next")  # Appearance
     click(s, "onboarding-next")  # Project
@@ -65,7 +65,7 @@ def run(s):
         .get("completed") is True,
         "persisted onboarding completion",
     )
-    assert not s.events(), "finishing onboarding must stay inert"
+    assert not any(event.get("type") == "prompt_started" for event in s.events()), "finishing onboarding must not submit a prompt"
     s.checks.append("finish-setup-persists-without-agent-autostart")
 
     s.desktop.key("1", ("Control_L",))

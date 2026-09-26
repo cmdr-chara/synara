@@ -112,7 +112,7 @@ def main():
             "persisted onboarding completion",
             20,
         )
-        assert not scenario.events(), "finishing onboarding must not send a provider prompt"
+        assert not any(event.get("type") == "prompt_started" for event in scenario.events()), "finishing onboarding must not send a provider prompt"
         scenario.checks.append("fresh-install-onboarding-completes-without-agent-autostart")
 
         # Prove the previously connected real account can perform one explicit

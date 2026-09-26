@@ -291,6 +291,8 @@ fn dispatch(
                             | BrowserOperation::Fill { .. }
                             | BrowserOperation::Download { .. }
                             | BrowserOperation::Upload { .. }
+                            | BrowserOperation::WebMcpTools
+                            | BrowserOperation::WebMcpInvoke { .. }
                             | BrowserOperation::Input {
                                 event: synara_browser::InputEvent::Scroll { .. }
                             }
@@ -388,6 +390,8 @@ fn tools() -> Value {
         {"type":"object","properties":{"operation":{"const":"fill"},"element":{"type":"string","maxLength":128},"text":{"type":"string","maxLength":8192}},"required":["operation","element","text"],"additionalProperties":false},
         {"type":"object","properties":{"operation":{"const":"download"},"download_id":{"type":"string","maxLength":128}},"required":["operation","download_id"],"additionalProperties":false},
         {"type":"object","properties":{"operation":{"const":"upload"},"chooser_id":{"type":"string","maxLength":128},"file_token":{"type":"string","maxLength":128}},"required":["operation","chooser_id","file_token"],"additionalProperties":false},
+        {"type":"object","properties":{"operation":{"const":"web_mcp_tools"}},"required":["operation"],"additionalProperties":false},
+        {"type":"object","properties":{"operation":{"const":"web_mcp_invoke"},"tool_id":{"type":"string","maxLength":128},"arguments":{"type":"object","maxProperties":64}},"required":["operation","tool_id","arguments"],"additionalProperties":false},
         {"type":"object","properties":{"operation":{"const":"input"},"event":{"type":"object","properties":{"scroll":{"type":"object","properties":{"x":{"type":"integer","minimum":-4096,"maximum":4096},"y":{"type":"integer","minimum":-4096,"maximum":4096}},"required":["x","y"],"additionalProperties":false}},"required":["scroll"],"additionalProperties":false}},"required":["operation","event"],"additionalProperties":false}
         ]}},"required":["nonce","tab","operation"],"additionalProperties":false}}),
     ];

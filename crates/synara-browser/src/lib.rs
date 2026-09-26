@@ -265,6 +265,11 @@ pub enum BrowserOperation {
         chooser_id: String,
         file_token: String,
     },
+    WebMcpTools,
+    WebMcpInvoke {
+        tool_id: String,
+        arguments: BTreeMap<String, serde_json::Value>,
+    },
     ClipboardRead,
     ClipboardWrite {
         text: String,
@@ -293,6 +298,16 @@ impl BrowserOperation {
                 chooser_id,
                 file_token,
             } if token(chooser_id) && token(file_token) => Ok(()),
+            Self::WebMcpTools => Ok(()),
+            Self::WebMcpInvoke { tool_id, arguments }
+                if token(tool_id)
+                    && arguments.len() <= 64
+                    && serde_json::to_vec(arguments)
+                        .is_ok_and(|bytes| bytes.len() <= MAX_INPUT_BYTES)
+                    && arguments.values().all(valid_webmcp_value) =>
+            {
+                Ok(())
+            }
             Self::ClipboardWrite { text }
                 if text.len() <= MAX_INPUT_BYTES && !text.contains('\0') =>
             {
@@ -313,9 +328,30 @@ impl BrowserOperation {
             Self::Input { .. } => Action::Input,
             Self::Download { .. } => Action::Download,
             Self::Upload { .. } => Action::Upload,
+            Self::WebMcpTools => Action::ReadDocument,
+            Self::WebMcpInvoke { .. } => Action::Input,
             Self::ClipboardRead => Action::ClipboardRead,
             Self::ClipboardWrite { .. } => Action::ClipboardWrite,
         })
+    }
+}
+
+fn valid_webmcp_value(value: &serde_json::Value) -> bool {
+    match value {
+        serde_json::Value::Null | serde_json::Value::Bool(_) | serde_json::Value::Number(_) => true,
+        serde_json::Value::String(value) => value.len() <= MAX_INPUT_BYTES && !value.contains('\0'),
+        serde_json::Value::Array(values) => {
+            values.len() <= 64
+                && values.iter().all(|value| {
+                    matches!(
+                        value,
+                        serde_json::Value::String(_)
+                            | serde_json::Value::Number(_)
+                            | serde_json::Value::Bool(_)
+                    ) && valid_webmcp_value(value)
+                })
+        }
+        serde_json::Value::Object(_) => false,
     }
 }
 

@@ -17,6 +17,54 @@
     node.getAttribute("href"), node.getAttribute("formaction")]);
   try {
     if (location.origin !== request.origin) throw new Error("Document origin changed");
+    if (request.operation.operation === "web_mcp_tools") {
+      if (location.protocol !== "https:" &&
+          !(location.protocol === "http:" && ["localhost", "127.0.0.1", "::1"].includes(location.hostname)))
+        throw new Error("WebMCP declarations require a secure context.");
+      const refs = new Map(), tools = [];
+      const forms = Array.from(document.querySelectorAll("form[toolname][tooldescription]")).slice(0, 32);
+      for (const form of forms) {
+        const toolName = clip(form.getAttribute("toolname"), 128).trim();
+        const description = clip(form.getAttribute("tooldescription"), 2048).trim();
+        if (!/^[A-Za-z0-9_.-]{1,128}$/.test(toolName) || !description) continue;
+        const properties = {}, required = [], controls = Array.from(form.elements).slice(0, 128);
+        let unsupported = false;
+        for (const control of controls) {
+          if (!control.name || control.disabled || control.form !== form ||
+              !["INPUT", "TEXTAREA", "SELECT"].includes(control.tagName)) continue;
+          const field = clip(control.name, 128), type = String(control.type || "").toLowerCase();
+          if (!/^[A-Za-z0-9_.-]{1,128}$/.test(field) || properties[field] ||
+              ["file", "password", "hidden"].includes(type)) { unsupported = true; break; }
+          const schema = {type: type === "checkbox" ? "boolean" :
+            ["number", "range"].includes(type) ? "number" : "string"};
+          const fieldDescription = clip(control.getAttribute("toolparamdescription"), 1024).trim();
+          if (fieldDescription) schema.description = fieldDescription;
+          if (control.tagName === "SELECT") {
+            const values = Array.from(control.options).filter(option => !option.disabled)
+              .slice(0, 64).map(option => clip(option.value, 512));
+            if (values.length) schema.enum = values;
+          }
+          properties[field] = schema;
+          if (control.required) required.push(field);
+        }
+        if (unsupported) continue;
+        const schema = {type: "object", properties, additionalProperties: false};
+        if (required.length) schema.required = required;
+        const id = "w" + request.nonce + "_" + tools.length;
+        const signatureValue = JSON.stringify([
+          toolName, description, form.hasAttribute("toolautosubmit"),
+          form.getAttribute("action"), form.getAttribute("method"),
+          controls.map(control => [control.tagName, control.type || "", control.name || "",
+            control.required, control.getAttribute("toolparamdescription")])
+        ]);
+        refs.set(id, {form, signature: signatureValue});
+        tools.push({id, name: toolName, description,
+          auto_submit: form.hasAttribute("toolautosubmit"),
+          input_schema: JSON.stringify(schema)});
+      }
+      globalThis.__synaraWebMcpRefs = refs;
+      return JSON.stringify({kind: "web_mcp_tools", tools});
+    }
     if (request.operation.operation === "read_document") {
       const refs = new Map();
       const elements = [];
@@ -40,6 +88,74 @@
       return JSON.stringify({kind: "document", text, elements});
     }
     const op = request.operation;
+    if (op.operation === "web_mcp_invoke") {
+      const ref = globalThis.__synaraWebMcpRefs && globalThis.__synaraWebMcpRefs.get(op.tool_id);
+      if (!ref || !ref.form.isConnected)
+        throw new Error("WebMCP tool inventory changed. Discover tools again.");
+      const form = ref.form, controls = Array.from(form.elements).slice(0, 128);
+      const signatureValue = JSON.stringify([
+        clip(form.getAttribute("toolname"), 128).trim(),
+        clip(form.getAttribute("tooldescription"), 2048).trim(),
+        form.hasAttribute("toolautosubmit"),
+        form.getAttribute("action"), form.getAttribute("method"),
+        controls.map(control => [control.tagName, control.type || "", control.name || "",
+          control.required, control.getAttribute("toolparamdescription")])
+      ]);
+      if (signatureValue !== ref.signature)
+        throw new Error("WebMCP tool changed. Discover tools again.");
+      const args = op.arguments && typeof op.arguments === "object" && !Array.isArray(op.arguments)
+        ? op.arguments : {};
+      const known = new Set();
+      for (const control of controls) {
+        if (!control.name || control.disabled || control.form !== form ||
+            !["INPUT", "TEXTAREA", "SELECT"].includes(control.tagName)) continue;
+        const field = control.name, type = String(control.type || "").toLowerCase();
+        known.add(field);
+        if (!Object.prototype.hasOwnProperty.call(args, field)) {
+          if (control.required) throw new Error("Missing required WebMCP field: " + field);
+          continue;
+        }
+        const value = args[field];
+        if (type === "checkbox") {
+          if (typeof value !== "boolean") throw new Error("WebMCP checkbox requires boolean.");
+          control.checked = value;
+        } else if (type === "radio") {
+          const selected = controls.find(candidate =>
+            candidate.name === field && candidate.type === "radio" &&
+            String(candidate.value) === String(value));
+          if (!selected) throw new Error("WebMCP radio value is unavailable.");
+          selected.checked = true;
+        } else if (control.tagName === "SELECT") {
+          const values = Array.isArray(value) ? value.map(String) : [String(value)];
+          for (const option of control.options) option.selected = values.includes(option.value);
+          if (!Array.from(control.selectedOptions).length)
+            throw new Error("WebMCP select value is unavailable.");
+        } else {
+          if (value !== null && !["string", "number", "boolean"].includes(typeof value))
+            throw new Error("WebMCP field must be a scalar value.");
+          const prototype = control.tagName === "TEXTAREA"
+            ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
+          Object.getOwnPropertyDescriptor(prototype, "value").set.call(
+            control, value === null ? "" : String(value));
+        }
+        control.dispatchEvent(new Event("input", {bubbles: true}));
+        control.dispatchEvent(new Event("change", {bubbles: true}));
+      }
+      for (const key of Object.keys(args))
+        if (!known.has(key)) throw new Error("Unknown WebMCP field: " + key);
+      if (form.hasAttribute("toolautosubmit")) {
+        form.requestSubmit();
+      } else {
+        const submitter = form.querySelector('button[type="submit"],input[type="submit"],button:not([type])');
+        if (submitter) {
+          submitter.focus({preventScroll: true});
+          submitter.scrollIntoView({block: "center", inline: "nearest"});
+        } else {
+          form.scrollIntoView({block: "center", inline: "nearest"});
+        }
+      }
+      return JSON.stringify({kind: "done"});
+    }
     if (op.operation === "input") {
       const scroll = op.event && op.event.scroll;
       if (!scroll || !Number.isInteger(scroll.x) || !Number.isInteger(scroll.y) ||

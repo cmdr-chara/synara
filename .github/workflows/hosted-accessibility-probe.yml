@@ -26,6 +26,16 @@ jobs:
           set -euo pipefail
           rustup toolchain install 1.98.1 --profile minimal
           cargo +1.98.1 build --locked -p synara-app --bin synara-app
+      - name: Activate VoiceOver
+        run: |
+          set -euo pipefail
+          mkdir -p acceptance-evidence
+          open -a VoiceOver || open /System/Library/CoreServices/VoiceOver.app
+          for _ in $(seq 1 30); do
+            if pgrep -x VoiceOver >/dev/null; then break; fi
+            sleep 0.2
+          done
+          pgrep -x VoiceOver | tee acceptance-evidence/macos-screen-reader.txt
       - name: Launch fresh onboarding window
         run: |
           set -euo pipefail
@@ -50,46 +60,67 @@ jobs:
               exit(42)
           }
           let app = AXUIElementCreateApplication(raw)
-          var queue: [AXUIElement] = [app]
-          var seen = 0
-          var target: AXUIElement? = nil
-          while !queue.isEmpty && seen < 2000 {
-              let element = queue.removeFirst()
-              seen += 1
-              var roleValue: CFTypeRef?
-              var titleValue: CFTypeRef?
-              _ = AXUIElementCopyAttributeValue(element, kAXRoleAttribute as CFString, &roleValue)
-              _ = AXUIElementCopyAttributeValue(element, kAXTitleAttribute as CFString, &titleValue)
-              let role = roleValue as? String ?? ""
-              let title = titleValue as? String ?? ""
-              if role == (kAXButtonRole as String) && title == "Continue" {
-                  target = element
-                  break
+
+          func findButton(_ titleWanted: String) -> AXUIElement? {
+              var queue: [AXUIElement] = [app]
+              var seen = 0
+              while !queue.isEmpty && seen < 3000 {
+                  let element = queue.removeFirst()
+                  seen += 1
+                  var roleValue: CFTypeRef?
+                  var titleValue: CFTypeRef?
+                  _ = AXUIElementCopyAttributeValue(element, kAXRoleAttribute as CFString, &roleValue)
+                  _ = AXUIElementCopyAttributeValue(element, kAXTitleAttribute as CFString, &titleValue)
+                  let role = roleValue as? String ?? ""
+                  let title = titleValue as? String ?? ""
+                  if role == (kAXButtonRole as String) && title == titleWanted {
+                      return element
+                  }
+                  var childrenValue: CFTypeRef?
+                  if AXUIElementCopyAttributeValue(element, kAXChildrenAttribute as CFString, &childrenValue) == .success,
+                     let children = childrenValue as? [AXUIElement] {
+                      queue.append(contentsOf: children)
+                  }
               }
-              var childrenValue: CFTypeRef?
-              if AXUIElementCopyAttributeValue(element, kAXChildrenAttribute as CFString, &childrenValue) == .success,
-                 let children = childrenValue as? [AXUIElement] {
-                  queue.append(contentsOf: children)
+              return nil
+          }
+
+          func press(_ title: String) {
+              guard let button = findButton(title) else {
+                  print("MACOS_AX_FAILED: accessible \(title) button not found")
+                  exit(43)
               }
+              let result = AXUIElementPerformAction(button, kAXPressAction as CFString)
+              guard result == .success else {
+                  print("MACOS_AX_FAILED: \(title) AXPress failed: \(result.rawValue)")
+                  exit(44)
+              }
+              usleep(400_000)
           }
-          guard let button = target else {
-              print("MACOS_AX_FAILED: accessible Continue button not found; nodes=\(seen)")
-              exit(43)
-          }
-          let result = AXUIElementPerformAction(button, kAXPressAction as CFString)
-          guard result == .success else {
-              print("MACOS_AX_FAILED: Continue AXPress failed: \(result.rawValue)")
-              exit(44)
-          }
-          print("MACOS_AX_ACCEPTANCE: accessible Continue button found and AXPress succeeded; nodes=\(seen)")
+
+          press("Continue")
+          press("Continue")
+          press("Continue")
+          press("Light")
+          print("MACOS_AX_LIGHT_ACCEPTANCE")
+          press("Dark")
+          print("MACOS_AX_DARK_ACCEPTANCE")
+          print("MACOS_AX_ACCEPTANCE: VoiceOver active and appearance controls invoked through AX")
           SWIFT
           swiftc "$RUNNER_TEMP/ax_probe.swift" -framework ApplicationServices -o "$RUNNER_TEMP/ax_probe"
           "$RUNNER_TEMP/ax_probe" "$(cat acceptance-evidence/macos-pid.txt)" | tee acceptance-evidence/macos-ax.txt
+          grep -q 'MACOS_AX_LIGHT_ACCEPTANCE' acceptance-evidence/macos-ax.txt
+          grep -q 'MACOS_AX_DARK_ACCEPTANCE' acceptance-evidence/macos-ax.txt
           grep -q 'MACOS_AX_ACCEPTANCE:' acceptance-evidence/macos-ax.txt
+          screencapture -x acceptance-evidence/macos-dark.png
+          test -s acceptance-evidence/macos-dark.png
+      - name: Verify macOS save-picker ownership contract
+        run: cargo +1.98.1 test --locked -p synara-app --bin synara-app shell::rich_media::tests -- --nocapture | tee acceptance-evidence/macos-save-picker.txt
       - name: Stop app and verify source identity
         if: always()
         run: |
           kill "$(cat acceptance-evidence/macos-pid.txt)" 2>/dev/null || true
+          pkill -x VoiceOver 2>/dev/null || true
           git diff --exit-code
           git diff --cached --exit-code
           git rev-parse HEAD > acceptance-evidence/revision.txt
@@ -112,7 +143,7 @@ jobs:
         run: |
           rustup toolchain install 1.98.1 --profile minimal
           cargo +1.98.1 build --locked -p synara-app --bin synara-app
-      - name: Exercise Windows UI Automation tree
+      - name: Exercise Windows UI Automation tree with Narrator
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -121,6 +152,10 @@ jobs:
           New-Item -ItemType Directory -Force $data | Out-Null
           $stdout = Join-Path (Resolve-Path acceptance-evidence) 'windows-app.stdout.log'
           $stderr = Join-Path (Resolve-Path acceptance-evidence) 'windows-app.stderr.log'
+          $narrator = Start-Process -FilePath "$env:WINDIR\System32\Narrator.exe" -PassThru
+          Start-Sleep -Seconds 2
+          if ($narrator.HasExited) { throw 'Windows Narrator did not remain active' }
+          "Narrator pid=$($narrator.Id)" | Out-File -Encoding ascii acceptance-evidence/windows-screen-reader.txt
           $process = Start-Process -FilePath 'target\debug\synara-app.exe' -ArgumentList @('--data-dir', $data) -PassThru -RedirectStandardOutput $stdout -RedirectStandardError $stderr
           try {
             Start-Sleep -Seconds 4
@@ -132,18 +167,39 @@ jobs:
             $window = $root.FindFirst([System.Windows.Automation.TreeScope]::Children, $pc)
             if ($null -eq $window) { throw 'Synara top-level window not found through UIA' }
             $type = New-Object System.Windows.Automation.PropertyCondition([System.Windows.Automation.AutomationElement]::ControlTypeProperty, [System.Windows.Automation.ControlType]::Button)
-            $name = New-Object System.Windows.Automation.PropertyCondition([System.Windows.Automation.AutomationElement]::NameProperty, 'Continue')
-            $condition = New-Object System.Windows.Automation.AndCondition($pc, $type, $name)
-            $button = $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $condition)
-            if ($null -eq $button) { throw 'Accessible Continue button not found through UIA' }
-            $pattern = $null
-            if (-not $button.TryGetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern, [ref]$pattern)) { throw 'Continue button does not expose InvokePattern' }
-            ([System.Windows.Automation.InvokePattern]$pattern).Invoke()
-            Start-Sleep -Milliseconds 750
-            'WINDOWS_UIA_ACCEPTANCE: accessible Continue button found and InvokePattern succeeded' | Tee-Object -FilePath acceptance-evidence/windows-uia.txt
+            function Invoke-NamedButton([string]$label) {
+              $name = New-Object System.Windows.Automation.PropertyCondition([System.Windows.Automation.AutomationElement]::NameProperty, $label)
+              $condition = New-Object System.Windows.Automation.AndCondition($pc, $type, $name)
+              $button = $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $condition)
+              if ($null -eq $button) { throw "Accessible $label button not found through UIA" }
+              $pattern = $null
+              if (-not $button.TryGetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern, [ref]$pattern)) { throw "$label button does not expose InvokePattern" }
+              ([System.Windows.Automation.InvokePattern]$pattern).Invoke()
+              Start-Sleep -Milliseconds 450
+            }
+            Invoke-NamedButton 'Continue'
+            Invoke-NamedButton 'Continue'
+            Invoke-NamedButton 'Continue'
+            Invoke-NamedButton 'Light'
+            Invoke-NamedButton 'Dark'
+            Add-Type -AssemblyName System.Drawing
+            $bounds = $window.Current.BoundingRectangle
+            $bitmap = New-Object System.Drawing.Bitmap([int]$bounds.Width, [int]$bounds.Height)
+            $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
+            try {
+              $graphics.CopyFromScreen([int]$bounds.Left, [int]$bounds.Top, 0, 0, $bitmap.Size)
+              $bitmap.Save((Join-Path (Resolve-Path acceptance-evidence) 'windows-dark.png'), [System.Drawing.Imaging.ImageFormat]::Png)
+            } finally {
+              $graphics.Dispose()
+              $bitmap.Dispose()
+            }
+            if ((Get-Item acceptance-evidence/windows-dark.png).Length -le 1024) { throw 'Windows screenshot was empty' }
+            'WINDOWS_UIA_ACCEPTANCE: Narrator active and appearance controls invoked through UIA' | Tee-Object -FilePath acceptance-evidence/windows-uia.txt
           } finally {
             if ($null -ne $process -and -not $process.HasExited) { Stop-Process -Id $process.Id -Force }
+            if ($null -ne $narrator -and -not $narrator.HasExited) { Stop-Process -Id $narrator.Id -Force }
           }
+          cargo +1.98.1 test --locked -p synara-app --bin synara-app shell::rich_media::tests -- --nocapture | Tee-Object -FilePath acceptance-evidence/windows-save-picker.txt
           git diff --exit-code
           git diff --cached --exit-code
           git rev-parse HEAD | Out-File -Encoding ascii acceptance-evidence/revision.txt

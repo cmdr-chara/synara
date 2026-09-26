@@ -1,0 +1,59 @@
+name: Apple Simulator acceptance
+
+on:
+  push:
+    branches: [astra/gpui-clean-rewrite]
+    paths:
+      - 'crates/synara-runtime/**'
+      - '.github/workflows/apple-simulator-acceptance.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: apple-simulator-acceptance-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  RUSTUP_TOOLCHAIN: '1.98.1'
+
+jobs:
+  live-simulator:
+    if: github.repository == 'cmdr-chara/synara'
+    runs-on: macos-14
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          persist-credentials: false
+      - name: Record exact candidate
+        run: |
+          mkdir -p acceptance-evidence
+          git rev-parse HEAD | tee acceptance-evidence/revision.txt
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+      - name: Install pinned Rust
+        run: rustup toolchain install 1.98.1 --profile minimal
+      - name: Record available Simulator runtimes
+        run: |
+          xcrun simctl list runtimes | tee acceptance-evidence/runtimes.txt
+          xcrun simctl list devices | tee acceptance-evidence/devices-before.txt
+      - name: Exercise Synara against a real iOS Simulator
+        run: |
+          set -o pipefail
+          cargo +1.98.1 test --locked -p synara-runtime --test apple_simulator_live -- --nocapture 2>&1 | tee acceptance-evidence/test.log
+      - name: Record final Simulator state
+        if: always()
+        run: xcrun simctl list devices | tee acceptance-evidence/devices-after.txt
+      - name: Verify candidate identity
+        if: always()
+        run: |
+          git diff --exit-code
+          git diff --cached --exit-code
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: apple-simulator-acceptance
+          path: acceptance-evidence/
+          retention-days: 7
+          if-no-files-found: error

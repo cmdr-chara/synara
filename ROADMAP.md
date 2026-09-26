@@ -9,15 +9,15 @@ Detailed parity evidence lives in:
 
 ## Current status
 
-- Shipped feature slices: **85**
+- Shipped feature slices: **86**
 - Major remaining: **10**
 - Smaller remaining: **0**
-- Acceptance/integration remaining: **3**
-- Total remaining: **13**
+- Acceptance/integration remaining: **2**
+- Total remaining: **12**
 - Completely missing top-level surfaces: **0**
-- Broad verification gates still open: **20**
+- Broad verification gates still open: **19**
 
-The **13-item count is the execution count to use going forward**. The 20 open verification
+The **12-item count is the execution count to use going forward**. The 19 open verification
 gates are larger acceptance buckets and are not a feature count.
 
 Current upstream reference: `Emanuele-web04/synara@eaa61eded31b6755d4f30ba8eabc5d905cf817cb`.
@@ -27,9 +27,10 @@ candidate `163d59cf1eaba301e413f1d02848a4d4cb397f69`, and A09 provider
 interoperability passed on `fd41caa5d7077d9176afe749b2c2fe3f0cb57c03`.
 The mainline M01/M02/M06/M13/M15 implementations are also incorporated. A08
 signed release package acceptance passed across Linux, macOS and Windows on
-candidate `5e006f08d31a2ca7eea97e7b7d0c0d0052011cb6`. A01, A04 and A10
-now have explicit live acceptance lanes but still require suitably configured
-real microphone/provider/accessibility environments before they can close.
+candidate `5e006f08d31a2ca7eea97e7b7d0c0d0052011cb6`. A04 then passed a
+fresh-install real GitHub Copilot ACP journey on candidate
+`a51a87fa684f26de8616ab04c4a7cbd78d79c351`, closing D1 as well.
+A01 and A10 remain the final acceptance items.
 
 ## Major features remaining
 
@@ -93,7 +94,7 @@ not large new product subsystems.
 - [ ] A01 Live microphone + ChatGPT transcription end-to-end acceptance
 - [x] A02 macOS microphone packaging/permission acceptance
 - [x] A03 Windows voice/package acceptance
-- [ ] A04 Fresh-install onboarding with real provider accounts
+- [x] A04 Fresh-install onboarding with real provider accounts
 - [x] A05 Authenticated browser login/session/popup acceptance
 - [x] A06 Real macOS Simulator/device acceptance
 - [x] A07 SSH worktree/search acceptance

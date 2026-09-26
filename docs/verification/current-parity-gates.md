@@ -19,7 +19,7 @@ larger end-to-end parity outcomes. After the September 26 provider acceptance,
 | --- | --- | --- | --- |
 | M1 Voice recording/transcription | Record, cancel and transcribe bounded microphone audio into an editable unsent draft with explicit permissions and stale-result fencing | Native capture/transcription journey, refusal/cancel/error tests, provider and platform acceptance | OPEN |
 | M2 Headless/web workspace | Run the workspace without GPUI and use its authenticated web product remotely under a documented bind/TLS/update policy | Server/API/browser journeys, auth/Origin tests, readiness and shutdown, remote deployment acceptance | OPEN |
-| D1 Onboarding | Complete provider enable/sign-in, project creation and replay through the native setup flow | Fresh-install and replay journeys with real provider/project state | OPEN |
+| D1 Onboarding | Complete provider enable/sign-in, project creation and replay through the native setup flow | Fresh-install and replay journeys with real provider/project state | PASS |
 | D2 Browser/WebMCP | Restore sessions/logins and popup auth, support agent file transfer and diagnostics, and expose page WebMCP under explicit authority | Authenticated browser journeys, privacy and partition tests, platform acceptance | OPEN |
 | D3 iOS device | Present live simulator frames and scoped input, recording, app/URL operations and accessibility targeting | Hardware/simulator journeys and permission/lifecycle tests | OPEN |
 | D4 Editor/diff | Match upstream syntax, autosave/conflict, comparison, blame and editing behavior | Multi-file editing and conflict journeys plus native interaction acceptance | OPEN |
@@ -361,3 +361,23 @@ A01, A04 and A10 remain OPEN. Their live lanes are now explicit:
 Linux visual/keyboard/save-picker behavior.
 
 See [batch 38](parity-2026-09-26-batch38.md).
+
+## September 26 acceptance checkpoint - batch 39
+
+A04 and broad gate D1 now have deciding real-provider evidence. Hosted Copilot
+onboarding acceptance run `36248953688`, job `108423260218`, passed on exact
+candidate `a51a87fa684f26de8616ab04c4a7cbd78d79c351`.
+
+The run installed pinned GitHub Copilot CLI `1.0.88`, connected it through ACP
+using the repository-scoped GitHub token, started from a fresh Synara data
+directory, prepared the setup task without sending a prompt, explicitly connected
+the real provider, added an existing local project through first-run onboarding,
+persisted Finish setup, completed one explicit real-provider turn, then restarted
+and verified durable task/project/history restoration without autostart.
+
+Uploaded evidence excludes provider state, tokens, transcripts and raw app logs.
+The two later commits before this receipt modify only hosted accessibility
+workflows, so the accepted onboarding/provider path is unchanged.
+
+A04 is accepted and D1 is PASS. A01 and A10 remain the only open
+acceptance/integration items.

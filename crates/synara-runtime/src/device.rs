@@ -144,6 +144,9 @@ pub enum DeviceInput {
     Key {
         key: String,
     },
+    Button {
+        button: String,
+    },
 }
 
 impl DeviceInput {
@@ -176,6 +179,16 @@ impl DeviceInput {
                     Ok(())
                 } else {
                     Err(RuntimeError::Invalid("invalid device key".into()))
+                }
+            }
+            Self::Button { button } => {
+                if matches!(
+                    button.as_str(),
+                    "home" | "lock" | "side" | "siri" | "volume-up" | "volume-down"
+                ) {
+                    Ok(())
+                } else {
+                    Err(RuntimeError::Invalid("invalid device hardware button".into()))
                 }
             }
         }

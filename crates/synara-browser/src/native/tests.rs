@@ -543,3 +543,178 @@ fn a_selected_tab_row_without_a_view_never_maps_the_native_surface() {
     assert!(!host.tabs.contains_key(&tab));
     assert!(host.visible_bounds().is_none());
 }
+
+
+/// Real WebKitGTK authentication flow with cookie-backed session state and a
+/// denied-by-default popup that the trusted host reopens in the same partition.
+#[test]
+#[ignore = "requires WebKitGTK 4.1 and an isolated X11 display"]
+fn real_webkit_authentication_login_session_and_popup() {
+    use std::{
+        io::{Read, Write},
+        net::TcpListener,
+        sync::Mutex,
+    };
+
+    gtk::init().unwrap();
+    let requests = Arc::new(Mutex::new(Vec::<String>::new()));
+    let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+    let base = format!("http://{}", listener.local_addr().unwrap());
+    let log = requests.clone();
+    std::thread::spawn(move || {
+        for stream in listener.incoming().take(32) {
+            let mut stream = stream.unwrap();
+            stream
+                .set_read_timeout(Some(Duration::from_secs(2)))
+                .unwrap();
+            let mut data = [0; 8192];
+            let len = stream.read(&mut data).unwrap_or(0);
+            let request = String::from_utf8_lossy(&data[..len]).into_owned();
+            log.lock().unwrap().push(request.clone());
+            let request_line = request.lines().next().unwrap_or_default();
+            let (headers, body) = if request_line.starts_with("GET /login ") {
+                (
+                    "Set-Cookie: synara_auth=accepted; Path=/; HttpOnly\r\n",
+                    "<!doctype html><title>Login</title><h1>Authenticated</h1><script>setTimeout(()=>window.open('/oauth?code=secret','oauth'),250)</script>",
+                )
+            } else if request_line.starts_with("GET /oauth?code=secret ") {
+                (
+                    "Set-Cookie: synara_oauth=complete; Path=/; HttpOnly\r\n",
+                    "<!doctype html><title>OAuth</title><h1>OAuth complete</h1>",
+                )
+            } else {
+                (
+                    "",
+                    "<!doctype html><title>Session</title><h1>Session check</h1>",
+                )
+            };
+            let response = format!(
+                "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n{headers}Content-Length: {}\r\nConnection: close\r\n\r\n{body}",
+                body.len()
+            );
+            let _ = stream.write_all(response.as_bytes());
+        }
+    });
+
+    let root = tempfile::tempdir().unwrap();
+    let (mut host, port) = NativeHost::new(root.path().to_path_buf());
+    host.initialized = true;
+    host.shared.ready.store(true, Ordering::Release);
+    let mut session = Session::new(port);
+    let window = gtk::Window::new(gtk::WindowType::Toplevel);
+    window.set_default_size(800, 600);
+    let container = gtk::Fixed::new();
+    window.add(&container);
+    window.show_all();
+    let clock = Instant::now();
+    let now = || clock.elapsed().as_millis() as u64;
+    let pump = |host: &mut NativeHost, session: &mut Session| {
+        host.reap();
+        while let Ok(delivery) = host.commands.try_recv() {
+            host.dispatch(delivery, |builder| builder.build_gtk(&container));
+        }
+        for _ in 0..32 {
+            if !gtk::events_pending() {
+                break;
+            }
+            gtk::main_iteration_do(false);
+        }
+        for event in host.drain_events() {
+            let _ = session.event_at(event, now());
+        }
+        session.tick(now());
+    };
+    let wait_ready = |host: &mut NativeHost, session: &mut Session, tab: HostTabId| {
+        let end = Instant::now() + Duration::from_secs(20);
+        loop {
+            pump(host, session);
+            if session
+                .tabs()
+                .iter()
+                .any(|view| view.id == tab && view.state == "ready")
+            {
+                break;
+            }
+            assert!(Instant::now() < end, "authentication page timed out");
+            std::thread::sleep(Duration::from_millis(10));
+        }
+    };
+
+    let profile = BrowserProfile::Authentication { flow: 77 };
+    let source = session.open(profile).unwrap();
+    session
+        .user_navigate(
+            source,
+            &format!("{base}/login"),
+            NavigationKind::Push,
+            now(),
+        )
+        .unwrap();
+    wait_ready(&mut host, &mut session, source);
+
+    let popup_deadline = Instant::now() + Duration::from_secs(20);
+    loop {
+        pump(&mut host, &mut session);
+        if session.popup_preview(source).unwrap().is_some() {
+            break;
+        }
+        assert!(
+            Instant::now() < popup_deadline,
+            "authentication popup was not captured"
+        );
+        std::thread::sleep(Duration::from_millis(10));
+    }
+    assert_eq!(
+        session.popup_preview(source).unwrap().as_deref(),
+        Some(format!("{base}/oauth").as_str())
+    );
+
+    let (popup, popup_url) = session.open_popup(source, now()).unwrap();
+    assert_eq!(popup_url, format!("{base}/oauth?code=secret"));
+    assert_eq!(
+        session.tabs().iter().find(|view| view.id == popup).unwrap().profile,
+        profile
+    );
+    wait_ready(&mut host, &mut session, popup);
+
+    session
+        .user_navigate(
+            source,
+            &format!("{base}/session"),
+            NavigationKind::Push,
+            now(),
+        )
+        .unwrap();
+    wait_ready(&mut host, &mut session, source);
+
+    let manual = session.open(BrowserProfile::Manual).unwrap();
+    session
+        .user_navigate(
+            manual,
+            &format!("{base}/session"),
+            NavigationKind::Push,
+            now(),
+        )
+        .unwrap();
+    wait_ready(&mut host, &mut session, manual);
+
+    let requests = requests.lock().unwrap();
+    let oauth = requests
+        .iter()
+        .find(|request| request.starts_with("GET /oauth?code=secret "))
+        .expect("OAuth popup request");
+    assert!(oauth.contains("synara_auth=accepted"));
+    let sessions: Vec<_> = requests
+        .iter()
+        .filter(|request| request.starts_with("GET /session "))
+        .collect();
+    assert!(sessions.len() >= 2);
+    assert!(sessions[0].contains("synara_auth=accepted"));
+    assert!(sessions[0].contains("synara_oauth=complete"));
+    assert!(!sessions.last().unwrap().contains("synara_auth=accepted"));
+    assert!(!sessions.last().unwrap().contains("synara_oauth=complete"));
+
+    println!(
+        "AUTH_WEBKIT_ACCEPTANCE: login cookie, explicit popup, shared auth session, manual isolation"
+    );
+}

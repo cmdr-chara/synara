@@ -54,6 +54,12 @@ jobs:
           set -euo pipefail
           xvfb-run -a -s '-screen 0 1280x800x24 -nolisten tcp' cargo +1.98.1 test --locked -p synara-browser --features native-webview --lib real_webkit_navigation_consent_input_redirect_and_isolation -- --ignored --test-threads=1 --nocapture 2>&1 | tee /tmp/native-webkit-evidence/real-webkit.log
           grep -q REAL_WEBKIT_ACCEPTANCE /tmp/native-webkit-evidence/real-webkit.log
+      - name: Real authenticated login, session and popup acceptance
+        if: steps.domain.outcome == 'success'
+        run: |
+          set -euo pipefail
+          xvfb-run -a -s '-screen 0 1280x800x24 -nolisten tcp' cargo +1.98.1 test --locked -p synara-browser --features native-webview --lib real_webkit_authentication_login_session_and_popup -- --ignored --test-threads=1 --nocapture 2>&1 | tee /tmp/native-webkit-evidence/authentication.log
+          grep -q AUTH_WEBKIT_ACCEPTANCE /tmp/native-webkit-evidence/authentication.log
       - name: Real manual viewport capture and stale-result refusal
         if: ${{ !cancelled() && steps.domain.outcome == 'success' }}
         run: |

@@ -1173,7 +1173,7 @@ impl Shell {
                 .children((can_boot && !self.device.busy).then(|| ui::action("device-boot", "Boot simulator", None, false, cx.listener(|this, _: &(), _, cx| this.device_running(true, cx)))))
                 .children((can_stop && !self.device.busy).then(|| ui::action("device-stop", if self.device.shutdown_confirmation { "Confirm shutdown" } else { "Shut down simulator" }, None, false, cx.listener(|this, _: &(), _, cx| this.device_running(false, cx)))))
                 .children((can_input && self.device.image.is_some() && !self.device.busy).then(|| ui::action("device-consent", if self.device.grant.is_some() { "Disable input" } else { "Enable input for this device" }, None, self.device.grant.is_some(), cx.listener(|this, _: &(), _, cx| this.enable_device_input(cx)))))
-                .children((can_accessibility && !self.device.busy).then(|| ui::action("device-accessibility", "Inspect accessibility", None, false, cx.listener(|this, _: &(), _, cx| this.inspect_device_accessibility(cx)))))
+                .children((can_accessibility && !self.device.busy).then(|| ui::action("device-accessibility", "Inspect accessibility", None, false, cx.listener(|this, _: &(), _, cx| this.inspect_device_accessibility(cx))))))
             .children(recording_stopping.then(|| div().text_size(px(12.)).child("Stopping the previous recording...")))
             .children(self.device.recording.as_ref().map(|recording| {
                 let label = match recording.started {

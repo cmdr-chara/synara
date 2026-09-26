@@ -14,7 +14,7 @@ import time
 
 from native_smoke import Scenario, wait_until
 from native_navigation_smoke import selection, task_count
-from native_model_draft_smoke import close
+from native_model_draft_smoke import close, preference
 
 
 def provider_profile():
@@ -78,9 +78,45 @@ def main():
 
         scenario.click_control("onboarding-agent-connect", slot=0)
         # The provider is expected to be pre-authenticated on this dedicated
-        # runner. Give ACP initialization time, then prove account/model access
-        # with one explicit user prompt in the setup task.
+        # runner. Connection may continue while the user completes the remaining
+        # first-run pages; onboarding itself must never submit a prompt.
         time.sleep(3)
+
+        scenario.click_control("onboarding-next")  # Appearance
+        scenario.click_control("onboarding-next")  # Project
+        scenario.click_control("onboarding-project-path")
+        scenario.desktop.text(str(scenario.project))
+        wait_until(
+            lambda: scenario.control_bounds("onboarding-project-add-existing"),
+            "existing project onboarding action",
+        )
+        scenario.click_control("onboarding-project-add-existing")
+
+        database = scenario.data / "native-workspace.sqlite3"
+        def project_registered():
+            if not database.exists():
+                return False
+            with sqlite3.connect(database.as_uri() + "?mode=ro", uri=True) as db:
+                rows = [row[0] for row in db.execute("SELECT data FROM workspaces")]
+            return any(str(scenario.project.resolve()) in row for row in rows)
+
+        wait_until(project_registered, "persisted onboarding project", 30)
+        scenario.checks.append("fresh-install-project-is-added-through-onboarding")
+
+        scenario.click_control("onboarding-next")  # Ready
+        scenario.click_control("onboarding-finish")
+        wait_until(
+            lambda: (preference(scenario, "settings") or {})
+                .get("onboarding", {})
+                .get("completed") is True,
+            "persisted onboarding completion",
+            20,
+        )
+        assert not scenario.events(), "finishing onboarding must not send a provider prompt"
+        scenario.checks.append("fresh-install-onboarding-completes-without-agent-autostart")
+
+        # Prove the previously connected real account can perform one explicit
+        # user turn after the full first-run flow.
         scenario.desktop.key("1", ("Control_L",))
         before = scenario.prompt("Reply briefly with SYNARA_ACCEPTED to confirm this real provider session.")
         wait_until(
@@ -97,10 +133,12 @@ def main():
         scenario.launch(preserve_selection=True)
         assert selection(scenario) == task, "setup task was not restored after restart"
         assert scenario.events() == events, "restart replayed or mutated provider history"
-        scenario.checks.append("fresh-install-provider-task-and-history-replay-without-autostart")
+        settings = preference(scenario, "settings") or {}
+        assert settings.get("onboarding", {}).get("completed") is True
+        scenario.checks.append("fresh-install-provider-project-and-history-replay-without-autostart")
         result["status"] = "passed"
         result["assistant_response_observed"] = True
-        print("ONBOARDING_LIVE_ACCEPTANCE: fresh Synara data + real provider account + durable replay")
+        print("ONBOARDING_LIVE_ACCEPTANCE: fresh Synara data + real provider account + project + completed onboarding + durable replay")
     except BaseException as error:
         result["error"] = str(error)
         if scenario.process and scenario.process.poll() is None:

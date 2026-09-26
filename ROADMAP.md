@@ -9,22 +9,23 @@ Detailed parity evidence lives in:
 
 ## Current status
 
-- Shipped feature slices: **76**
-- Major remaining: **16**
+- Shipped feature slices: **78**
+- Major remaining: **15**
 - Smaller remaining: **0**
-- Acceptance/integration remaining: **6**
-- Total remaining: **22**
+- Acceptance/integration remaining: **5**
+- Total remaining: **20**
 - Completely missing top-level surfaces: **0**
-- Broad verification gates still open: **21**
+- Broad verification gates still open: **20**
 
-The **22-item count is the execution count to use going forward**. The 21 verification
+The **20-item count is the execution count to use going forward**. The 20 open verification
 gates are larger acceptance buckets and are not a feature count.
 
 Current upstream reference: `Emanuele-web04/synara@eaa61eded31b6755d4f30ba8eabc5d905cf817cb`.
 
-Batch 7 validation: roadmap, formatting, native compilation and focused tests passed
-after compile corrections. Strict lint corrections accompany batch 8; Xvfb-backed
-journeys and the cancelled WebKit job remain unverified.
+Current continuation status: the representative ACP/direct-model interoperability
+matrix passed on exact candidate `fd41caa5d7077d9176afe749b2c2fe3f0cb57c03`.
+The branch-head Native WebKit acceptance still fails because trusted X11 input
+does not reach the authentication page, so A05 remains open.
 
 ## Major features remaining
 
@@ -35,7 +36,7 @@ journeys and the cancelled WebKit job remain unverified.
 - [x] M05 Remote workspace execution
 - [ ] M06 Production headless deployment with bind/TLS/update packaging
 - [ ] M07 Protected browser session/cookie import
-- [ ] M08 Complete browser popup authentication lifecycle
+- [x] M08 Complete browser popup authentication lifecycle
 - [ ] M09 Agent-controlled browser upload/download
 - [x] M10 Browser console/runtime diagnostics
 - [ ] M11 Safe restoration of task/auth browser sessions
@@ -93,7 +94,7 @@ not large new product subsystems.
 - [x] A06 Real macOS Simulator/device acceptance
 - [x] A07 SSH worktree/search acceptance
 - [ ] A08 Signed release feed/install/rollback package acceptance
-- [ ] A09 Multi-provider ACP/direct-model interoperability matrix
+- [x] A09 Multi-provider ACP/direct-model interoperability matrix
 - [ ] A10 Cross-platform visual/accessibility/save-picker acceptance
 
 ## Next execution queue
@@ -101,7 +102,7 @@ not large new product subsystems.
 Finish whole workflows instead of spreading work across every gate:
 
 1. **Web workspace:** M01-M02, M06
-2. **Browser/auth:** M07-M09, M11-M12
+2. **Browser/auth:** M07, M09, M11-M12
 3. **Simulator:** M13-M16 when the required macOS/native input backend is available
 4. **Provider/context:** M25-M26
 5. **Computer Use:** M27
@@ -489,7 +490,8 @@ Verification receipts:
 [batch 31](docs/verification/parity-2026-09-25-batch31.md),
 [batch 32](docs/verification/parity-2026-09-25-batch32.md),
 [batch 33](docs/verification/parity-2026-09-25-batch33.md),
-[batch 34](docs/verification/parity-2026-09-25-batch34.md).
+[batch 34](docs/verification/parity-2026-09-25-batch34.md),
+[batch 35](docs/verification/parity-2026-09-26-batch35.md).
 
 - Batch 32: acceptance infrastructure now has a dedicated Linux/macOS/Windows
   native build and development-package matrix. macOS development packaging uses
@@ -511,6 +513,24 @@ Verification receipts:
   ChatGPT transcription end-to-end gate.
 
 
+### September 26 continuation
+
+- Batch 35: M08 is complete at the product-feature level. Provider website
+  requests now open in request-owned authentication profiles, cookies stay
+  isolated from manual and agent-task browsing, and reviewed popup children
+  retain the exact authentication partition. Popup navigation is withheld until
+  explicit host review, and request completion, cancellation or expiry closes the
+  owned authentication flow. A05 remains open because the branch-head real
+  WebKit journey still fails to deliver the trusted X11 click to the auth page.
+- A09 is accepted on exact candidate
+  `fd41caa5d7077d9176afe749b2c2fe3f0cb57c03`. The dedicated native provider
+  lane passed external OpenCode and Gemini CLI ACP initialization probes plus
+  representative Google and Anthropic direct-model journeys, ACP/direct route
+  switching and task/conversation ownership checks. This supplies the deciding
+  evidence for N5, which is now PASS. See the
+  [batch 35 receipt](docs/verification/parity-2026-09-26-batch35.md).
+
+
 ## How to update this roadmap
 
 When a remaining item ships:
@@ -521,4 +541,4 @@ When a remaining item ships:
 5. Keep the broader verification gate OPEN until its full workflow and required
    provider/platform failure paths are actually accepted.
 
-Do not use the 21-gate count as the feature count.
+Do not use the broad verification gate count as the feature count.

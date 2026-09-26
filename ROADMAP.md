@@ -9,23 +9,24 @@ Detailed parity evidence lives in:
 
 ## Current status
 
-- Shipped feature slices: **78**
+- Shipped feature slices: **79**
 - Major remaining: **15**
 - Smaller remaining: **0**
-- Acceptance/integration remaining: **5**
-- Total remaining: **20**
+- Acceptance/integration remaining: **4**
+- Total remaining: **19**
 - Completely missing top-level surfaces: **0**
 - Broad verification gates still open: **20**
 
-The **20-item count is the execution count to use going forward**. The 20 open verification
+The **19-item count is the execution count to use going forward**. The 20 open verification
 gates are larger acceptance buckets and are not a feature count.
 
 Current upstream reference: `Emanuele-web04/synara@eaa61eded31b6755d4f30ba8eabc5d905cf817cb`.
 
-Current continuation status: the representative ACP/direct-model interoperability
-matrix passed on exact candidate `fd41caa5d7077d9176afe749b2c2fe3f0cb57c03`.
-The branch-head Native WebKit acceptance still fails because trusted X11 input
-does not reach the authentication page, so A05 remains open.
+Current continuation status: A05 authenticated browser acceptance passed on exact
+candidate `163d59cf1eaba301e413f1d02848a4d4cb397f69`, and A09 provider
+interoperability passed on `fd41caa5d7077d9176afe749b2c2fe3f0cb57c03`.
+A01 now has an explicit opt-in live microphone/ChatGPT acceptance lane but still
+requires a suitably configured real machine before it can close.
 
 ## Major features remaining
 
@@ -90,7 +91,7 @@ not large new product subsystems.
 - [x] A02 macOS microphone packaging/permission acceptance
 - [x] A03 Windows voice/package acceptance
 - [ ] A04 Fresh-install onboarding with real provider accounts
-- [ ] A05 Authenticated browser login/session/popup acceptance
+- [x] A05 Authenticated browser login/session/popup acceptance
 - [x] A06 Real macOS Simulator/device acceptance
 - [x] A07 SSH worktree/search acceptance
 - [ ] A08 Signed release feed/install/rollback package acceptance
@@ -491,7 +492,8 @@ Verification receipts:
 [batch 32](docs/verification/parity-2026-09-25-batch32.md),
 [batch 33](docs/verification/parity-2026-09-25-batch33.md),
 [batch 34](docs/verification/parity-2026-09-25-batch34.md),
-[batch 35](docs/verification/parity-2026-09-26-batch35.md).
+[batch 35](docs/verification/parity-2026-09-26-batch35.md),
+[batch 36](docs/verification/parity-2026-09-26-batch36.md).
 
 - Batch 32: acceptance infrastructure now has a dedicated Linux/macOS/Windows
   native build and development-package matrix. macOS development packaging uses
@@ -529,6 +531,16 @@ Verification receipts:
   switching and task/conversation ownership checks. This supplies the deciding
   evidence for N5, which is now PASS. See the
   [batch 35 receipt](docs/verification/parity-2026-09-26-batch35.md).
+- Batch 36: A05 is accepted on exact candidate
+  `163d59cf1eaba301e413f1d02848a4d4cb397f69`. The dedicated authenticated
+  browser lane passed the partition/authority unit contract and a real
+  WebKitGTK/Xvfb login journey covering cookie-backed session continuity,
+  pre-navigation popup review, same-flow popup ownership, opener callback/form
+  POST behavior, isolation from manual/other-auth profiles, final-tab cleanup,
+  formatting and strict Clippy. D2 remains OPEN because M07, M09, M11 and M12
+  are still product-depth gaps. A01 also gained a manual-only live acceptance
+  workflow for a physical microphone plus a ChatGPT-authenticated Codex session.
+  See the [batch 36 receipt](docs/verification/parity-2026-09-26-batch36.md).
 
 
 ## How to update this roadmap

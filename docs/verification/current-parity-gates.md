@@ -12,8 +12,8 @@ observed; a green compile or narrow unit test alone does not close it.
 [roadmap's delivered-slice inventory](../../ROADMAP.md#delivered-feature-slices-in-the-september-23-sprint)
 records the original 25 implemented, pushed slices and the separate September 24
 continuation inventory. This ledger tracks
-larger end-to-end parity outcomes, so all 21 gates can remain open while those
-additions are available.
+larger end-to-end parity outcomes. After the September 26 provider acceptance,
+20 gates remain OPEN while those additions are available.
 
 | Gate | Outcome needed to close the current-head gap | Deciding evidence | State |
 | --- | --- | --- | --- |
@@ -37,7 +37,7 @@ additions are available.
 | N2 File/source search | Match ranking, ignored-file and platform behavior of project search | Local/SSH fixtures plus native navigation/search acceptance | OPEN |
 | N3 Thread export | Complete structured metadata and save-picker/platform behavior | Round-trip content/privacy and native save-picker journeys | OPEN |
 | N4 Replies/context reuse | Match upstream selection-to-current/side/new-task interaction | Context and branch placement journeys | OPEN |
-| N5 Multi-provider workspace | Prove representative upstream runtime breadth and provider-specific UX | ACP/direct-provider interoperability matrix | OPEN |
+| N5 Multi-provider workspace | Prove representative upstream runtime breadth and provider-specific UX | ACP/direct-provider interoperability matrix | PASS |
 
 `M` denotes a baseline missing surface, `D` a material depth gap and `N` a
 near-parity lane. Each row is a separately auditable outcome. When a slice lands,
@@ -278,3 +278,25 @@ These receipts close the corresponding roadmap acceptance items, not the broad
 parity gates. D3 remains OPEN while M13-M16 are still missing. D5/D12/N2 remain
 OPEN wherever their full workflow criteria extend beyond the accepted SSH
 journey. See [batch 34](parity-2026-09-25-batch34.md).
+
+## September 26 acceptance checkpoint - batch 35
+
+The representative multi-provider matrix now has deciding acceptance evidence.
+GitHub Actions run `36194519926`, job `108267198945`, passed on exact
+candidate `fd41caa5d7077d9176afe749b2c2fe3f0cb57c03`. It covered reviewed
+external OpenCode and Gemini CLI ACP initialization plus native Google and
+Anthropic direct-model journeys, ACP/direct route switching, durable
+conversation continuity and task/provider ownership boundaries.
+
+That evidence closes N5. D6, D11 and D12 remain OPEN where their criteria extend
+to richer context controls, real account/quota telemetry or additional live
+provider/worktree cases.
+
+M08 is also complete at product-feature level through request-owned
+authentication partitions and reviewed same-flow popup handling. D2 and A05
+remain OPEN: branch-head Native WebKit run `36195025196`, job
+`108268868564`, still fails the real authentication journey because the trusted
+X11 click does not reach the authentication WebKit page. M07, M09, M11 and M12
+also remain separate browser-depth gaps.
+
+See [batch 35](parity-2026-09-26-batch35.md).

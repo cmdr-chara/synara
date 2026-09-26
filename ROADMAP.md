@@ -9,15 +9,15 @@ Detailed parity evidence lives in:
 
 ## Current status
 
-- Shipped feature slices: **76**
+- Shipped feature slices: **77**
 - Major remaining: **16**
 - Smaller remaining: **0**
-- Acceptance/integration remaining: **6**
-- Total remaining: **22**
+- Acceptance/integration remaining: **5**
+- Total remaining: **21**
 - Completely missing top-level surfaces: **0**
 - Broad verification gates still open: **21**
 
-The **22-item count is the execution count to use going forward**. The 21 verification
+The **21-item count is the execution count to use going forward**. The 21 verification
 gates are larger acceptance buckets and are not a feature count.
 
 Current upstream reference: `Emanuele-web04/synara@eaa61eded31b6755d4f30ba8eabc5d905cf817cb`.
@@ -89,7 +89,7 @@ not large new product subsystems.
 - [x] A02 macOS microphone packaging/permission acceptance
 - [x] A03 Windows voice/package acceptance
 - [ ] A04 Fresh-install onboarding with real provider accounts
-- [ ] A05 Authenticated browser login/session/popup acceptance
+- [x] A05 Authenticated browser login/session/popup acceptance
 - [x] A06 Real macOS Simulator/device acceptance
 - [x] A07 SSH worktree/search acceptance
 - [ ] A08 Signed release feed/install/rollback package acceptance
@@ -490,7 +490,8 @@ Verification receipts:
 [batch 32](docs/verification/parity-2026-09-25-batch32.md),
 [batch 33](docs/verification/parity-2026-09-25-batch33.md),
 [batch 34](docs/verification/parity-2026-09-25-batch34.md),
-[batch 35](docs/verification/parity-2026-09-25-batch35.md).
+[batch 35](docs/verification/parity-2026-09-25-batch35.md),
+[batch 36](docs/verification/parity-2026-09-26-batch36.md).
 
 - Batch 32: acceptance infrastructure now has a dedicated Linux/macOS/Windows
   native build and development-package matrix. macOS development packaging uses
@@ -527,6 +528,15 @@ Verification receipts:
   launched/terminated Safari, compiled and installed a fresh local simulator
   `.app`, launched/terminated it, and shut the simulator down. M13-M16 remain
   open for live frames, native input, recording and accessibility targeting.
+
+- Batch 36: A05 is accepted on exact candidate
+  `63c507a7e1f0a4651ae4b8009c502ecac7c27641`. A dedicated real WebKitGTK
+  lane proved an authentication flow can retain cookie-backed session state,
+  capture an OAuth-style popup without granting an unmanaged window, reopen it
+  explicitly inside the same isolated authentication partition, and keep those
+  cookies out of the manual browser profile. Agent-task popup authority remains
+  denied. The lane also passed strict browser formatting/Clippy and source
+  identity checks. M07, M08 and M11 remain separate product-depth gaps.
 
 
 ## How to update this roadmap

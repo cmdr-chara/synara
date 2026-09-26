@@ -22,9 +22,12 @@ from native_electron_parity_smoke import PAGES, open_page, section_slots, resize
 from parity.export_theme_catalog import CATALOG_SHA, catalog_from_source, read_pinned
 
 ROOT = Path(__file__).resolve().parents[1]
-CATALOG = catalog_from_source(
-    read_pinned(ROOT / 'docs/ui/reference/electron-theme.seed.ts', CATALOG_SHA)
+_CATALOG_SOURCE = read_pinned(
+    ROOT / 'docs/ui/reference/electron-theme.seed.ts', CATALOG_SHA
 )
+if _CATALOG_SOURCE.count('} as const;') != 1:
+    raise ValueError('Pinned theme catalog has an unexpected TypeScript suffix')
+CATALOG = catalog_from_source(_CATALOG_SOURCE.replace('} as const;', '};'))
 PREFIX = 'codex-theme-v1:'
 
 

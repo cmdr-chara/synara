@@ -336,43 +336,84 @@ impl Session {
         state.runtime_diagnostics.clear();
         Ok(())
     }
-    pub fn manual_popup_preview(&self, tab: HostTabId) -> Result<Option<String>> {
-        let state = self.tabs.get(&tab).ok_or(BrowserError::MissingTab)?;
-        if state.view.profile != BrowserProfile::Manual {
-            return Err(BrowserError::WrongContext);
+    fn popup_profile(&self, tab: HostTabId) -> Result<BrowserProfile> {
+        let profile = self
+            .tabs
+            .get(&tab)
+            .ok_or(BrowserError::MissingTab)?
+            .view
+            .profile;
+        if matches!(
+            profile,
+            BrowserProfile::Manual | BrowserProfile::Authentication { .. }
+        ) {
+            Ok(profile)
+        } else {
+            Err(BrowserError::WrongContext)
         }
-        state
+    }
+    pub fn popup_preview(&self, tab: HostTabId) -> Result<Option<String>> {
+        self.popup_profile(tab)?;
+        self.tabs
+            .get(&tab)
+            .ok_or(BrowserError::MissingTab)?
             .pending_popup
             .as_deref()
             .map(redact_diagnostic_url)
             .transpose()
     }
-    pub fn dismiss_manual_popup(&mut self, tab: HostTabId) -> Result<()> {
-        let state = self.tabs.get_mut(&tab).ok_or(BrowserError::MissingTab)?;
-        if state.view.profile != BrowserProfile::Manual {
-            return Err(BrowserError::WrongContext);
-        }
-        state.pending_popup = None;
+    pub fn dismiss_popup(&mut self, tab: HostTabId) -> Result<()> {
+        self.popup_profile(tab)?;
+        self.tabs
+            .get_mut(&tab)
+            .ok_or(BrowserError::MissingTab)?
+            .pending_popup = None;
         Ok(())
     }
     /// Explicit trusted-UI action; the page cannot create an unmanaged window.
+    /// Authentication popups retain the exact flow partition that requested them.
+    pub fn open_popup(
+        &mut self,
+        source: HostTabId,
+        now: u64,
+    ) -> Result<(HostTabId, String)> {
+        let profile = self.popup_profile(source)?;
+        let url = self
+            .tabs
+            .get(&source)
+            .ok_or(BrowserError::MissingTab)?
+            .pending_popup
+            .clone()
+            .ok_or(BrowserError::Invalid)?;
+        let tab = self.open(profile)?;
+        if let Err(error) = self.user_navigate(tab, &url, NavigationKind::Push, now) {
+            let _ = self.close(tab);
+            return Err(error);
+        }
+        self.dismiss_popup(source)?;
+        Ok((tab, url))
+    }
+    pub fn manual_popup_preview(&self, tab: HostTabId) -> Result<Option<String>> {
+        if self.popup_profile(tab)? != BrowserProfile::Manual {
+            return Err(BrowserError::WrongContext);
+        }
+        self.popup_preview(tab)
+    }
+    pub fn dismiss_manual_popup(&mut self, tab: HostTabId) -> Result<()> {
+        if self.popup_profile(tab)? != BrowserProfile::Manual {
+            return Err(BrowserError::WrongContext);
+        }
+        self.dismiss_popup(tab)
+    }
     pub fn open_manual_popup(
         &mut self,
         source: HostTabId,
         now: u64,
     ) -> Result<(HostTabId, String)> {
-        let url = self.tabs.get(&source).ok_or(BrowserError::MissingTab)?;
-        if url.view.profile != BrowserProfile::Manual {
+        if self.popup_profile(source)? != BrowserProfile::Manual {
             return Err(BrowserError::WrongContext);
         }
-        let url = url.pending_popup.clone().ok_or(BrowserError::Invalid)?;
-        let tab = self.open(BrowserProfile::Manual)?;
-        if let Err(error) = self.user_navigate(tab, &url, NavigationKind::Push, now) {
-            let _ = self.close(tab);
-            return Err(error);
-        }
-        self.dismiss_manual_popup(source)?;
-        Ok((tab, url))
+        self.open_popup(source, now)
     }
     pub fn task_tabs(&self, task: u128) -> Vec<HostTabId> {
         self.tabs
@@ -696,8 +737,10 @@ impl Session {
                 let Some(state) = self.tabs.get_mut(&tab) else {
                     return Ok(());
                 };
-                if state.view.profile != BrowserProfile::Manual
-                    || state.committed_navigation != Some(navigation)
+                if !matches!(
+                    state.view.profile,
+                    BrowserProfile::Manual | BrowserProfile::Authentication { .. }
+                ) || state.committed_navigation != Some(navigation)
                 {
                     return Ok(());
                 }

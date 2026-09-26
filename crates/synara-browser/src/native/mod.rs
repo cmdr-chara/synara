@@ -443,6 +443,7 @@ impl NativeHost {
         document.validate().map_err(|e| e.to_string())?;
         let agent = matches!(partition, StoragePartition::AgentTask(_));
         let manual = partition == StoragePartition::Manual;
+        let authentication = matches!(partition, StoragePartition::Authentication(_));
         if agent && allowed.as_ref() != Some(&document.origin) {
             return Err("Missing approved navigation origin".into());
         }
@@ -463,8 +464,10 @@ impl NativeHost {
             .with_visible(false)
             .with_devtools(manual)
             .with_new_window_req_handler(move |url, _| {
-                if partition == StoragePartition::Manual
-                    && popup_ready.get()
+                if matches!(
+                    partition,
+                    StoragePartition::Manual | StoragePartition::Authentication(_)
+                ) && popup_ready.get()
                     && popup_shared.epoch(tab) == Some(epoch)
                 {
                     popup_events.emit(Event::PopupRequested {
@@ -768,10 +771,14 @@ fn harden(web: &webkit2gtk::WebView, partition: StoragePartition) {
     // Only human-operated tabs receive interactive native dialogs and inspection.
     // Authentication is a separate partition, not an implicit grant of manual authority.
     let manual = partition == StoragePartition::Manual;
+    let authentication = matches!(partition, StoragePartition::Authentication(_));
     if let Some(settings) = webkit2gtk::WebViewExt::settings(web) {
         settings.set_enable_developer_extras(manual);
         settings.set_javascript_can_access_clipboard(false);
-        settings.set_javascript_can_open_windows_automatically(false);
+        // Authentication pages may request OAuth-style popups without a gesture,
+        // but every request is still denied by the native handler until the
+        // trusted host explicitly opens it in the same flow partition.
+        settings.set_javascript_can_open_windows_automatically(authentication);
         settings.set_allow_file_access_from_file_urls(false);
         settings.set_allow_universal_access_from_file_urls(false);
     }

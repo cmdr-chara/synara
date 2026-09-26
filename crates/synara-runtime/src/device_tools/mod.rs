@@ -191,7 +191,6 @@ fn validate_ui_node(
     for value in [
         node.subrole.as_deref(),
         node.label.as_deref(),
-        node.value.as_deref(),
         node.identifier.as_deref(),
         node.title.as_deref(),
     ]
@@ -201,6 +200,14 @@ fn validate_ui_node(
         if !bounded_ui_text(value, 1024) {
             return Err(RuntimeError::Limit);
         }
+    }
+    if let Some(value) = &node.value
+        && !value.is_null()
+        && ui_value_text(value).is_none()
+    {
+        return Err(RuntimeError::Invalid(
+            "invalid accessibility value".into(),
+        ));
     }
     if let Some(frame) = &node.frame {
         for number in [frame.x, frame.y, frame.width, frame.height] {

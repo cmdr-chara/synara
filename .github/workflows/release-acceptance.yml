@@ -16,7 +16,7 @@ permissions:
   id-token: write
 concurrency:
   group: signed-release-acceptance-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 env:
   RUSTUP_TOOLCHAIN: '1.98.1'
   CARGO_BUILD_JOBS: '2'

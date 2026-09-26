@@ -28,7 +28,7 @@ jobs:
       GITHUB_TOKEN: ${{ github.token }}
       COPILOT_AUTO_UPDATE: 'false'
       COPILOT_MODEL: claude-haiku-4.5
-      COPILOT_HOME: ${{ runner.temp }}/synara-copilot-home
+      COPILOT_HOME: /tmp/synara-copilot-home
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:

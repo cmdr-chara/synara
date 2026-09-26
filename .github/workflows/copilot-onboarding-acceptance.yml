@@ -13,7 +13,6 @@ on:
       - 'scripts/native_smoke.py'
 permissions:
   contents: read
-  copilot-requests: write
 concurrency:
   group: hosted-copilot-onboarding-${{ github.ref }}
   cancel-in-progress: true

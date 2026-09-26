@@ -129,7 +129,7 @@ enum Update {
     ProjectImport(Box<project_import::Reply>),
     Automations(Box<automations::Reply>),
     PullRequests(Box<pull_requests::Reply>),
-    BrowserConfigured(Result<(), String>),
+    BrowserConfigured(TaskId, Result<(), String>),
     Integrations(Box<integrations::Reply>),
     Revision(Box<revisions::Reply>),
     Handoff(Box<handoff::Reply>),
@@ -1539,9 +1539,15 @@ impl Shell {
             Update::SideChats(reply) => self.side_chat_reply(*reply, cx),
             Update::NativeSettings(reply) => self.native_settings_reply(*reply, cx),
             Update::PullRequests(reply) => self.pr_reply(*reply, cx),
-            Update::BrowserConfigured(result) => {
+            Update::BrowserConfigured(task, result) => {
                 self.browser.busy = false;
-                self.browser.error = result.err();
+                match result {
+                    Ok(()) => {
+                        self.browser.error = None;
+                        self.browser_restore_task(task, cx);
+                    }
+                    Err(error) => self.browser.error = Some(error),
+                }
             }
             Update::Device(reply) => self.device_reply(*reply, cx),
             Update::AppSnap(reply) => self.appsnap_reply(*reply, cx),

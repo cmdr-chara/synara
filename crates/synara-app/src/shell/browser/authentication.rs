@@ -63,13 +63,22 @@ impl Shell {
         let Some(id) = self.browser.next_authentication_flow.checked_add(1) else {
             return;
         };
-        let label = self
+        let task = self
             .catalog
             .tasks
             .iter()
-            .find(|task| task.thread_id == key.0)
+            .find(|task| task.thread_id == key.0);
+        let label = task
             .map(|task| format!("{} / {}", task.agent_id, task.title))
             .unwrap_or_else(|| format!("Thread {}", key.0));
+        let url = task
+            .and_then(|task| {
+                self.browser
+                    .owned_restore
+                    .as_ref()
+                    .and_then(|store| store.auth_url(task.id.0.as_u128(), &url))
+            })
+            .unwrap_or(url);
         self.browser.next_authentication_flow = id;
         self.browser.authentication_flows.insert(
             id,
@@ -233,6 +242,7 @@ impl Shell {
             self.browser.selected = None;
         }
         self.browser_save_manual_restore();
+        self.browser_save_owned_restore();
         cx.notify();
     }
 

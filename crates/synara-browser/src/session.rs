@@ -564,6 +564,40 @@ impl Session {
             .map(|t| t.view.id)
             .collect()
     }
+
+    /// Trusted host restoration after explicit task browser re-enrollment.
+    /// This recreates fresh isolated views only: grants, requests, files,
+    /// cookies, popup state and in-flight operations are never restored.
+    pub fn restore_task_tabs(&mut self, task: u128, urls: &[String], now: u64) -> Result<Vec<HostTabId>> {
+        if urls.len() > 16 {
+            return Err(BrowserError::Limit);
+        }
+        for tab in self.task_tabs(task) {
+            self.close(tab)?;
+        }
+        let mut restored = Vec::new();
+        if urls.is_empty() {
+            restored.push(self.open(BrowserProfile::AgentTask { task })?);
+            return Ok(restored);
+        }
+        for url in urls {
+            let document = CommittedDocument::parse(url)?;
+            let tab = self.open(BrowserProfile::AgentTask { task })?;
+            if let Err(error) = self.navigate(
+                tab,
+                document,
+                NavigationKind::Push,
+                now,
+                None,
+                None,
+            ) {
+                let _ = self.close(tab);
+                return Err(error);
+            }
+            restored.push(tab);
+        }
+        Ok(restored)
+    }
     pub fn open(&mut self, profile: BrowserProfile) -> Result<HostTabId> {
         let id = self.host.open_tab(profile)?;
         let error = self

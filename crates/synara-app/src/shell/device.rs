@@ -1030,6 +1030,18 @@ impl Shell {
         let can_record = target
             .zip(tools.as_ref())
             .is_some_and(|(device, tools)| tools.can_record_video(device));
+        let can_input = target
+            .zip(tools.as_ref())
+            .is_some_and(|(device, tools)| tools.can_input(device));
+        let can_accessibility = target
+            .zip(tools.as_ref())
+            .is_some_and(|(device, tools)| tools.can_inspect_accessibility(device));
+        let accessibility_targets = self
+            .device
+            .accessibility
+            .as_ref()
+            .map(|tree| tree.targets(48))
+            .unwrap_or_default();
         let recording_stopping = self.device.recording.is_none()
             && self
                 .device
@@ -1160,7 +1172,8 @@ impl Shell {
                         })).relative().child(ui::layout_probe("device-attach-frame"))))
                 .children((can_boot && !self.device.busy).then(|| ui::action("device-boot", "Boot simulator", None, false, cx.listener(|this, _: &(), _, cx| this.device_running(true, cx)))))
                 .children((can_stop && !self.device.busy).then(|| ui::action("device-stop", if self.device.shutdown_confirmation { "Confirm shutdown" } else { "Shut down simulator" }, None, false, cx.listener(|this, _: &(), _, cx| this.device_running(false, cx)))))
-                .children((ready && self.device.image.is_some() && self.settings.value.device.backend == DeviceBackend::Android && !self.device.busy).then(|| ui::action("device-consent", if self.device.grant.is_some() { "Disable input" } else { "Enable input for this device" }, None, self.device.grant.is_some(), cx.listener(|this, _: &(), _, cx| this.enable_device_input(cx))))))
+                .children((can_input && self.device.image.is_some() && !self.device.busy).then(|| ui::action("device-consent", if self.device.grant.is_some() { "Disable input" } else { "Enable input for this device" }, None, self.device.grant.is_some(), cx.listener(|this, _: &(), _, cx| this.enable_device_input(cx)))))
+                .children((can_accessibility && !self.device.busy).then(|| ui::action("device-accessibility", "Inspect accessibility", None, false, cx.listener(|this, _: &(), _, cx| this.inspect_device_accessibility(cx)))))
             .children(recording_stopping.then(|| div().text_size(px(12.)).child("Stopping the previous recording...")))
             .children(self.device.recording.as_ref().map(|recording| {
                 let label = match recording.started {
@@ -1198,14 +1211,32 @@ impl Shell {
             .children(self.device.shutdown_confirmation.then(|| div().text_size(px(12.)).child("Shutdown stops the simulator, including work started outside Synara. Select another device or Disconnect to cancel.")))
             .child(viewer);
         if self.device.grant.is_some() {
+            let apple = self.settings.value.device.backend == DeviceBackend::AppleSimulator;
             root = root
+                .child(
+                    div()
+                        .flex()
+                        .items_center()
+                        .gap_2()
+                        .child(div().text_size(px(12.)).child("Type text"))
+                        .child(self.device.input_text.clone())
+                        .child(ui::action(
+                            "device-type-text",
+                            "Type",
+                            None,
+                            false,
+                            cx.listener(|this, _: &(), _, cx| this.send_device_text(cx)),
+                        )),
+                )
                 .child(
                     div().flex().flex_wrap().gap_2().children(
                         [
-                            ("home", "Home"),
-                            ("back", "Back"),
                             ("enter", "Enter"),
                             ("backspace", "Backspace"),
+                            ("up", "Up"),
+                            ("down", "Down"),
+                            ("left", "Left"),
+                            ("right", "Right"),
                         ]
                         .into_iter()
                         .enumerate()
@@ -1222,6 +1253,56 @@ impl Shell {
                         }),
                     ),
                 )
+                .children((!apple).then(|| {
+                    div().flex().gap_2()
+                        .child(ui::action(
+                            "device-android-home",
+                            "Home",
+                            None,
+                            false,
+                            cx.listener(|this, _: &(), _, cx| {
+                                this.send_device_input(DeviceInput::Key { key: "home".into() }, cx)
+                            }),
+                        ))
+                        .child(ui::action(
+                            "device-android-back",
+                            "Back",
+                            None,
+                            false,
+                            cx.listener(|this, _: &(), _, cx| {
+                                this.send_device_input(DeviceInput::Key { key: "back".into() }, cx)
+                            }),
+                        ))
+                }))
+                .children(apple.then(|| {
+                    div().flex().flex_wrap().gap_2().children(
+                        [
+                            ("home", "Home"),
+                            ("lock", "Lock"),
+                            ("side", "Side"),
+                            ("volume-up", "Volume +"),
+                            ("volume-down", "Volume -"),
+                        ]
+                        .into_iter()
+                        .enumerate()
+                        .map(|(index, (button, label))| {
+                            ui::action(
+                                ("device-button", index),
+                                label,
+                                None,
+                                false,
+                                cx.listener(move |this, _: &(), _, cx| {
+                                    this.send_device_input(
+                                        DeviceInput::Button {
+                                            button: button.into(),
+                                        },
+                                        cx,
+                                    )
+                                }),
+                            )
+                        }),
+                    )
+                }))
                 .child(
                     div().flex().gap_2().children(
                         [(true, "Swipe up"), (false, "Swipe down")]
@@ -1254,7 +1335,56 @@ impl Shell {
                     ),
                 );
         }
-        root.child(div().text_size(px(11.)).text_color(rgb(palette().muted)).child("Input is never restored or exposed to agents. Captures stay in memory unless explicitly attached (2 MiB maximum). Attaching does not send or grant input authority. Apple input, physical iOS devices and Android cold boot are not implemented."))
+        if !accessibility_targets.is_empty() {
+            root = root.child(
+                div()
+                    .flex()
+                    .flex_col()
+                    .gap_1()
+                    .child(div().text_size(px(12.)).child(
+                        "Accessibility targets. Enable input to tap a semantic element.",
+                    ))
+                    .child(
+                        div()
+                            .id("device-accessibility-targets")
+                            .max_h(px(220.))
+                            .overflow_y_scroll()
+                            .flex()
+                            .flex_col()
+                            .gap_1()
+                            .children(accessibility_targets.into_iter().enumerate().map(
+                                |(index, target)| {
+                                    let label = target.label.clone();
+                                    let role = target.role.clone();
+                                    let detail = target.value.as_ref().map_or_else(
+                                        || format!("{} | {}", target.label, target.role),
+                                        |value| {
+                                            format!(
+                                                "{} | {} | {}",
+                                                target.label, target.role, value
+                                            )
+                                        },
+                                    );
+                                    ui::action(
+                                        ("device-accessibility-target", index),
+                                        detail,
+                                        None,
+                                        false,
+                                        cx.listener(move |this, _: &(), _, cx| {
+                                            this.tap_device_accessibility(
+                                                label.clone(),
+                                                role.clone(),
+                                                cx,
+                                            )
+                                        }),
+                                    )
+                                    .text_size(px(11.))
+                                },
+                            )),
+                    ),
+            );
+        }
+        root.child(div().text_size(px(11.)).text_color(rgb(palette().muted)).child("Input grants and accessibility snapshots are never restored or exposed to agents. Captures stay in memory unless explicitly attached (2 MiB maximum). Attaching does not send or grant input authority. Apple Simulator input/accessibility require the explicitly configured native helper. Physical iOS devices and Android cold boot remain outside this backend."))
             .into_any_element()
     }
 }

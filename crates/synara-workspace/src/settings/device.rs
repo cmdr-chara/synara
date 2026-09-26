@@ -8,19 +8,27 @@ use synara_runtime::DeviceBackend;
 pub struct DeviceSettings {
     pub backend: DeviceBackend,
     pub adb_path: Option<PathBuf>,
+    /// User-selected macOS CoreSimulator helper. It is never downloaded or
+    /// executed until an explicit Simulator input/accessibility action.
+    pub apple_helper_path: Option<PathBuf>,
     /// Opt-in screenshots every two seconds, only while the viewer is visible.
     pub auto_capture: bool,
 }
 impl DeviceSettings {
     pub fn validate(&self) -> WorkspaceResult<()> {
-        if self.adb_path.as_ref().is_some_and(|path| {
-            !path.is_absolute()
-                || path.as_os_str().len() > 4096
-                || path.to_string_lossy().chars().any(char::is_control)
-        }) {
-            return Err(WorkspaceError::Invalid(
-                "ADB must be an absolute executable path, without control characters".into(),
-            ));
+        for (path, label) in [
+            (self.adb_path.as_ref(), "ADB"),
+            (self.apple_helper_path.as_ref(), "Apple device helper"),
+        ] {
+            if path.is_some_and(|path| {
+                !path.is_absolute()
+                    || path.as_os_str().len() > 4096
+                    || path.to_string_lossy().chars().any(char::is_control)
+            }) {
+                return Err(WorkspaceError::Invalid(format!(
+                    "{label} must be an absolute executable path, without control characters"
+                )));
+            }
         }
         Ok(())
     }
@@ -33,10 +41,14 @@ mod tests {
         let settings = DeviceSettings::default();
         assert!(!settings.auto_capture);
         assert!(settings.adb_path.is_none());
+        assert!(settings.apple_helper_path.is_none());
         assert!(settings.validate().is_ok());
-        let mut bad = settings;
+        let mut bad = settings.clone();
         bad.adb_path = Some(PathBuf::from("adb"));
         assert!(bad.validate().is_err());
+        let mut bad_helper = settings;
+        bad_helper.apple_helper_path = Some(PathBuf::from("synara-device-helper"));
+        assert!(bad_helper.validate().is_err());
     }
 }
 
@@ -89,6 +101,7 @@ mod persistence_tests {
         let service = WorkspaceService::open(db.clone()).await.unwrap();
         let mut settings = AppSettings::default();
         settings.device.adb_path = Some(root.path().join("adb"));
+        settings.device.apple_helper_path = Some(root.path().join("synara-device-helper"));
         settings.device.auto_capture = true;
         settings.general.restore_last_chat = false;
         settings.appearance.high_contrast = true;

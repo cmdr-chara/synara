@@ -5,6 +5,7 @@
 //! input support. Physical Apple devices and Android cold boot are unsupported.
 mod apple;
 pub(crate) mod command;
+mod recording;
 mod tests;
 use crate::{
     DeviceDescriptor, DeviceId, DeviceInput, DeviceInputConsent, DeviceKind, DeviceState,

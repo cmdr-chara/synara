@@ -343,6 +343,21 @@ impl Shell {
                     .child(form.request.message.clone()),
             );
         if let Some(url) = &form.request.url {
+            if cfg!(target_os = "linux") && form.request.fields.is_empty() {
+                let private_key = key.clone();
+                let private_url = url.clone();
+                panel = panel.child(
+                    button("open-input-private-url", "Open private sign-in tab", false)
+                        .mt_2()
+                        .on_click(cx.listener(move |this, _, _, cx| {
+                            this.browser_authentication_request(
+                                private_key.clone(),
+                                private_url.clone(),
+                                cx,
+                            );
+                        })),
+                );
+            }
             let url = url.clone();
             let url_key = key.clone();
             let destination = url.split(['?', '#']).next().unwrap_or_default().to_owned();
@@ -501,6 +516,7 @@ impl Shell {
         fallback: UserInputResponse,
         cx: &mut Context<Self>,
     ) {
+        self.browser_close_authentication_request(&key);
         if !self.pending.get(&key).is_some_and(UiInteraction::is_active) {
             self.pending.remove(&key);
             self.forms.remove(&key);

@@ -2,8 +2,15 @@
 //! only and never become chat attachments or agent-visible tools automatically.
 use crate::{WorkspaceError, WorkspaceResult};
 use image::{ImageFormat, ImageReader, Limits};
-use std::io::Cursor;
-use synara_runtime::{DeviceFrame, FrameFormat};
+use std::{io::Cursor, sync::Arc, time::Duration};
+use synara_runtime::{DeviceCancellation, DeviceFrame, DeviceTools, FrameFormat, ToolDevice};
+use tokio::sync::watch;
+
+#[derive(Clone)]
+pub struct DeviceStreamFrame {
+    pub sequence: u64,
+    pub capture: Arc<DeviceCapture>,
+}
 
 pub struct DeviceCapture {
     pub png: Vec<u8>,
@@ -11,6 +18,47 @@ pub struct DeviceCapture {
     pub height: u32,
 }
 impl DeviceCapture {
+    /// Continuous, single-flight capture. A watch channel retains only the newest
+    /// decoded frame when the UI is busy. No frame history or recording is kept.
+    /// Four frames per second is a ceiling; helper/decoder time can lower it.
+    pub async fn stream(
+        tools: DeviceTools,
+        device: ToolDevice,
+        frames: &watch::Sender<Option<Result<DeviceStreamFrame, String>>>,
+        cancel: &DeviceCancellation,
+    ) -> WorkspaceResult<()> {
+        let mut sequence = 0_u64;
+        loop {
+            if cancel.is_cancelled() || frames.is_closed() {
+                return Ok(());
+            }
+            let started = tokio::time::Instant::now();
+            let png = tools.capture(&device, cancel).await?;
+            let capture = tokio::task::spawn_blocking(move || Self::decode(png))
+                .await
+                .map_err(|_| WorkspaceError::Invalid("Device frame decoder stopped".into()))??;
+            if cancel.is_cancelled() {
+                return Ok(());
+            }
+            sequence = sequence.wrapping_add(1);
+            if frames
+                .send(Some(Ok(DeviceStreamFrame {
+                    sequence,
+                    capture: Arc::new(capture),
+                })))
+                .is_err()
+            {
+                return Ok(());
+            }
+            tokio::select! {
+                biased;
+                _ = cancel.cancelled() => return Ok(()),
+                _ = frames.closed() => return Ok(()),
+                _ = tokio::time::sleep_until(started + Duration::from_millis(250)) => {},
+            }
+        }
+    }
+
     pub fn decode(png: Vec<u8>) -> WorkspaceResult<Self> {
         if png.len() > 32 * 1024 * 1024 || !png.starts_with(b"\x89PNG\r\n\x1a\n") {
             return Err(WorkspaceError::Invalid(

@@ -33,7 +33,47 @@ pub(super) struct DeviceView {
     bundle_id: Entity<TextEntry>,
     app_path: Entity<TextEntry>,
     install_confirmation: Option<(DeviceId, PathBuf)>,
+    live: Option<LiveView>,
+    live_worker: Option<tokio::task::JoinHandle<()>>,
+    recording: Option<Recording>,
+    recording_worker: Option<tokio::task::JoinHandle<()>>,
+    next_recording: u64,
 }
+
+#[derive(Clone)]
+struct DeviceOwner {
+    task: Option<TaskId>,
+    project: Option<ProjectId>,
+    revision: u64,
+    device: DeviceId,
+    epoch: u64,
+}
+
+struct LiveView {
+    owner: DeviceOwner,
+    cancel: DeviceCancellation,
+    sequence: u64,
+    _subscription: gpui::Task<()>,
+}
+impl Drop for LiveView {
+    fn drop(&mut self) {
+        self.cancel.cancel();
+    }
+}
+
+struct Recording {
+    id: u64,
+    owner: DeviceOwner,
+    cancel: DeviceCancellation,
+    stop: DeviceCancellation,
+    started: Option<Instant>,
+}
+impl Drop for Recording {
+    fn drop(&mut self) {
+        self.cancel.cancel();
+    }
+}
+
 impl DeviceView {
     pub fn new(cx: &mut Context<Shell>) -> Self {
         Self {
@@ -57,6 +97,11 @@ impl DeviceView {
             shutdown_confirmation: false,
             url: cx.new(|cx| TextEntry::new("https://...", EntryMode::SingleLine, 34., cx)),
             install_confirmation: None,
+            live: None,
+            live_worker: None,
+            recording: None,
+            recording_worker: None,
+            next_recording: 0,
             app_path: cx.new(|cx| {
                 TextEntry::new("/absolute/path/to/App.app", EntryMode::SingleLine, 34., cx)
             }),
@@ -72,6 +117,8 @@ impl DeviceView {
     /// Invalidate every late reply and revoke transient input authority. This
     /// never shuts down a simulator, issues ADB kill-server, or changes chats.
     pub fn retire(&mut self) {
+        self.live = None;
+        self.recording = None;
         self.cancel.cancel();
         self.cancel = DeviceCancellation::new();
         self.epoch = self.epoch.wrapping_add(1);
@@ -112,8 +159,261 @@ enum Outcome {
     AppLaunched,
     AppInstalled,
     AppTerminated,
+    RecordingFinished(u64, Result<PathBuf, String>),
 }
 impl Shell {
+    fn device_owner(&self) -> Option<DeviceOwner> {
+        Some(DeviceOwner {
+            task: self.selected,
+            project: self.project,
+            revision: self.selection_revision,
+            device: self.device.selected.clone()?,
+            epoch: self.device.epoch,
+        })
+    }
+
+    fn device_owner_matches(&self, owner: &DeviceOwner) -> bool {
+        self.close == CloseState::Open
+            && self.panel == Panel::Device
+            && (!self.zen_active() || self.settings.personalization.tools_shown)
+            && self.selected == owner.task
+            && self.project == owner.project
+            && self.selection_revision == owner.revision
+            && self.device.selected.as_ref() == Some(&owner.device)
+            && self.device.epoch == owner.epoch
+    }
+
+    fn toggle_device_live(&mut self, cx: &mut Context<Self>) {
+        if self.device.live.take().is_some() {
+            self.device.active = false;
+            self.device.message = "Live view stopped. The last frame is retained.".into();
+            cx.notify();
+            return;
+        }
+        if self.device.busy || self.close != CloseState::Open || self.panel != Panel::Device {
+            return;
+        }
+        if self
+            .device
+            .live_worker
+            .as_ref()
+            .is_some_and(|worker| !worker.is_finished())
+        {
+            self.device.message = "The previous live view is stopping. Try again shortly.".into();
+            cx.notify();
+            return;
+        }
+        let Some(device) = self
+            .device
+            .target()
+            .cloned()
+            .filter(|target| target.availability == DeviceAvailability::Ready)
+        else {
+            return;
+        };
+        let Some(owner) = self.device_owner() else {
+            return;
+        };
+        let tools = match self.device_tools() {
+            Ok(tools) => tools,
+            Err(error) => {
+                self.fail_device(error, cx);
+                return;
+            }
+        };
+        let cancel = self.device.cancel.child_token();
+        let worker_cancel = cancel.clone();
+        let (frames, mut receiver) = tokio::sync::watch::channel(None);
+        self.device.live_worker = Some(self.runtime.spawn(async move {
+            let result = DeviceCapture::stream(tools, device, &frames, &worker_cancel).await;
+            if !worker_cancel.is_cancelled()
+                && let Err(error) = result
+            {
+                let _ = frames.send(Some(Err(error.to_string())));
+            }
+        }));
+        let stream_owner = owner.clone();
+        let subscription = cx.spawn(async move |view, cx| {
+            while receiver.changed().await.is_ok() {
+                let frame = receiver.borrow_and_update().clone();
+                let keep_running = view.update(cx, |this, cx| {
+                    if !this.device_owner_matches(&stream_owner) {
+                        this.device.live = None;
+                        this.device.active = false;
+                        cx.notify();
+                        return false;
+                    }
+                    let Some(live) = this.device.live.as_mut() else {
+                        return false;
+                    };
+                    match frame {
+                        Some(Ok(frame)) if frame.sequence > live.sequence => {
+                            live.sequence = frame.sequence;
+                            this.present_device_capture(&frame.capture, true);
+                            cx.notify();
+                        }
+                        Some(Err(error)) => {
+                            this.fail_device(error, cx);
+                            return false;
+                        }
+                        _ => {}
+                    }
+                    true
+                });
+                if !matches!(keep_running, Ok(true)) {
+                    break;
+                }
+            }
+        });
+        self.device.live = Some(LiveView {
+            owner,
+            cancel,
+            sequence: 0,
+            _subscription: subscription,
+        });
+        self.device.active = true;
+        self.device.error = None;
+        self.device.message = "Starting live view, up to 4 frames per second.".into();
+        cx.notify();
+    }
+
+    fn start_device_recording(&mut self, cx: &mut Context<Self>) {
+        if self.device.busy
+            || self.device.recording.is_some()
+            || self.close != CloseState::Open
+            || self
+                .device
+                .recording_worker
+                .as_ref()
+                .is_some_and(|worker| !worker.is_finished())
+        {
+            return;
+        }
+        let Some(device) = self.device.target().cloned() else {
+            return;
+        };
+        let Some(owner) = self.device_owner() else {
+            return;
+        };
+        if !self.device_owner_matches(&owner) {
+            return;
+        }
+        let tools = match self.device_tools() {
+            Ok(tools) if tools.can_record_video(&device) => tools,
+            _ => return,
+        };
+        self.device.next_recording = self.device.next_recording.wrapping_add(1);
+        let id = self.device.next_recording;
+        let cancel = self.device.cancel.child_token();
+        let stop = DeviceCancellation::new();
+        self.device.recording = Some(Recording {
+            id,
+            owner: owner.clone(),
+            cancel: cancel.clone(),
+            stop: stop.clone(),
+            started: None,
+        });
+        self.device.error = None;
+        let picker =
+            cx.prompt_for_new_path(&self.scratch_directory, Some("simulator-recording.mov"));
+        cx.spawn(async move |view, cx| {
+            let chosen = picker.await;
+            let _ = view.update(cx, |this, cx| {
+                if !this
+                    .device
+                    .recording
+                    .as_ref()
+                    .is_some_and(|recording| recording.id == id)
+                {
+                    return;
+                }
+                if !this.device_owner_matches(&owner) || cancel.is_cancelled() {
+                    this.device.recording = None;
+                    cx.notify();
+                    return;
+                }
+                let destination = match chosen {
+                    Ok(Ok(Some(path))) => path,
+                    Ok(Ok(None)) => {
+                        this.device.recording = None;
+                        cx.notify();
+                        return;
+                    }
+                    _ => {
+                        this.device.recording = None;
+                        this.device.error = Some(
+                            "The system save dialog is unavailable. Recording did not start."
+                                .into(),
+                        );
+                        cx.notify();
+                        return;
+                    }
+                };
+                if let Some(recording) = this.device.recording.as_mut() {
+                    recording.started = Some(Instant::now());
+                }
+                let sender = this.sender.clone();
+                this.device.recording_worker = Some(this.runtime.spawn(async move {
+                    let result = tools
+                        .record_video(&device, destination, &stop, &cancel)
+                        .await
+                        .map_err(|error| error.to_string());
+                    let _ = sender
+                        .send(Update::Device(Box::new(Reply {
+                            epoch: owner.epoch,
+                            result: Ok(Outcome::RecordingFinished(id, result)),
+                        })))
+                        .await;
+                }));
+                cx.notify();
+            });
+        })
+        .detach();
+        cx.notify();
+    }
+
+    fn stop_device_recording(&mut self, save: bool, cx: &mut Context<Self>) {
+        if let Some(recording) = self.device.recording.as_ref() {
+            if save && recording.started.is_some() {
+                recording.stop.cancel();
+            } else {
+                self.device.recording = None;
+                self.notice = Some("Simulator recording discarded.".into());
+            }
+            cx.notify();
+        }
+    }
+
+    fn present_device_capture(&mut self, capture: &DeviceCapture, live: bool) {
+        let dimensions = (capture.width, capture.height);
+        if self
+            .device
+            .dimensions
+            .is_some_and(|previous| previous != dimensions)
+        {
+            self.device.grant = None;
+        }
+        self.device.message = format!(
+            "{} x {} pixels | {} | {}",
+            capture.width,
+            capture.height,
+            capture.orientation(),
+            if live {
+                "Live view, up to 4 fps"
+            } else {
+                "Screenshot"
+            },
+        );
+        self.device.dimensions = Some(dimensions);
+        self.device.image_bytes =
+            (capture.png.len() <= MAX_ATTACHMENT_BATCH_BYTES).then(|| capture.png.clone());
+        self.device.image = Some(Arc::new(gpui::Image::from_bytes(
+            gpui::ImageFormat::Png,
+            capture.png.clone(),
+        )));
+        self.device.captured = Some(Instant::now());
+    }
+
     fn device_tools(&self) -> Result<DeviceTools, String> {
         DeviceTools::new(
             self.settings.value.device.backend,
@@ -165,7 +465,14 @@ impl Shell {
         cx.notify();
     }
     fn capture_device(&mut self, cx: &mut Context<Self>) {
-        if self.device.busy {
+        if self.device.busy
+            || self.device.live.is_some()
+            || self
+                .device
+                .live_worker
+                .as_ref()
+                .is_some_and(|worker| !worker.is_finished())
+        {
             return;
         }
         let Some(device) = self
@@ -462,7 +769,9 @@ impl Shell {
         if reply.epoch != self.device.epoch {
             return;
         }
-        self.device.busy = false;
+        if !matches!(&reply.result, Ok(Outcome::RecordingFinished(..))) {
+            self.device.busy = false;
+        }
         match reply.result {
             Ok(Outcome::Discovery(devices)) => {
                 self.device.message = if devices.is_empty() {
@@ -476,30 +785,7 @@ impl Shell {
                 self.device.devices = reconcile_devices(&self.device.devices, devices);
             }
             Ok(Outcome::Capture(capture)) => {
-                let dimensions = (capture.width, capture.height);
-                // A rotation invalidates a grant: never reinterpret an old target
-                // coordinate system as authority over the new orientation.
-                if self
-                    .device
-                    .dimensions
-                    .is_some_and(|previous| previous != dimensions)
-                {
-                    self.device.grant = None;
-                }
-                self.device.message = format!(
-                    "{} x {} pixels | {} | Screenshot, not a video stream",
-                    capture.width,
-                    capture.height,
-                    capture.orientation()
-                );
-                self.device.dimensions = Some(dimensions);
-                self.device.image_bytes =
-                    (capture.png.len() <= MAX_ATTACHMENT_BATCH_BYTES).then(|| capture.png.clone());
-                self.device.image = Some(Arc::new(gpui::Image::from_bytes(
-                    gpui::ImageFormat::Png,
-                    capture.png,
-                )));
-                self.device.captured = Some(Instant::now());
+                self.present_device_capture(&capture, false);
             }
             Ok(Outcome::InputApproved(grant)) => {
                 self.device.grant = Some(Arc::new(grant));
@@ -531,6 +817,26 @@ impl Shell {
                     "App terminated in the selected simulator. Capture to inspect its screen."
                         .into();
             }
+            Ok(Outcome::RecordingFinished(id, result)) => {
+                if !self
+                    .device
+                    .recording
+                    .as_ref()
+                    .is_some_and(|recording| recording.id == id)
+                {
+                    return;
+                }
+                self.device.recording = None;
+                match result {
+                    Ok(path) => {
+                        self.notice =
+                            Some(format!("Simulator recording saved to {}", path.display()))
+                    }
+                    Err(error) => {
+                        self.device.error = Some(format!("Recording was not saved: {error}"))
+                    }
+                }
+            }
             Err(error) => {
                 self.fail_device(error, cx);
                 return;
@@ -552,10 +858,48 @@ impl Shell {
         cx.notify();
     }
     pub(super) fn tick_devices(&mut self, cx: &mut Context<Self>) {
+        if self
+            .device
+            .live_worker
+            .as_ref()
+            .is_some_and(|worker| worker.is_finished())
+        {
+            self.device.live_worker = None;
+        }
+        if self
+            .device
+            .recording_worker
+            .as_ref()
+            .is_some_and(|worker| worker.is_finished())
+        {
+            self.device.recording_worker = None;
+        }
+        let owner_changed = self
+            .device
+            .live
+            .as_ref()
+            .is_some_and(|live| !self.device_owner_matches(&live.owner))
+            || self
+                .device
+                .recording
+                .as_ref()
+                .is_some_and(|recording| !self.device_owner_matches(&recording.owner));
+        if owner_changed {
+            self.device.retire();
+            self.device.message =
+                "Device session stopped after navigation. Any unfinished recording was discarded."
+                    .into();
+            cx.notify();
+            return;
+        }
         let visible = self.panel == Panel::Device
             && (!self.zen_active() || self.settings.personalization.tools_shown);
         if !visible {
-            if self.device.active || self.device.busy || self.device.grant.is_some() {
+            if self.device.active
+                || self.device.busy
+                || self.device.grant.is_some()
+                || self.device.recording.is_some()
+            {
                 self.device.retire();
                 self.device.message =
                     "Viewer paused. Capture to resume. The device itself was left running.".into();
@@ -565,6 +909,7 @@ impl Shell {
         }
         if self.settings.value.device.auto_capture
             && self.device.active
+            && self.device.live.is_none()
             && !self.device.busy
             && self
                 .device
@@ -572,6 +917,9 @@ impl Shell {
                 .is_some_and(|time| time.elapsed() >= Duration::from_secs(2))
         {
             self.capture_device(cx);
+        }
+        if self.device.recording.is_some() {
+            cx.notify();
         }
     }
     pub(super) fn device_panel(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
@@ -584,11 +932,20 @@ impl Shell {
         let can_stop = target
             .zip(tools.as_ref())
             .is_some_and(|(device, tools)| tools.can_shutdown(device));
+        let can_record = target
+            .zip(tools.as_ref())
+            .is_some_and(|(device, tools)| tools.can_record_video(device));
+        let recording_stopping = self.device.recording.is_none()
+            && self
+                .device
+                .recording_worker
+                .as_ref()
+                .is_some_and(|worker| !worker.is_finished());
         let bounds = self.device.bounds.clone();
         let mut viewer = div()
             .id("device-frame")
             .role(gpui::Role::Group)
-            .aria_label("Device screenshot. Enable input before clicking or using arrow keys.")
+            .aria_label("Device display. Enable input before clicking or using arrow keys.")
             .tab_index(0)
             .track_focus(&self.device.focus)
             .relative()
@@ -670,7 +1027,7 @@ impl Shell {
                     .justify_center()
                     .p_4()
                     .text_color(rgb(palette().muted))
-                    .child("No captured frame. Select a ready device, then Capture."),
+                    .child("Select a ready device, then Capture or Start live view."),
             )
         };
         let mut root = div().id("device-view").flex_1().min_h_0().min_w_0().flex().flex_col().gap_2().p_3()
@@ -695,7 +1052,9 @@ impl Shell {
             .children(self.device.error.as_ref().map(|error| div().text_size(px(12.)).text_color(rgb(palette().error)).child(error.clone())))
             .children(self.device.busy.then(|| div().text_size(px(12.)).child("Working... Refresh or Disconnect cancels the current request.")))
             .child(div().flex().flex_wrap().gap_2()
-                .children((ready && !self.device.busy).then(|| ui::action("device-capture", "Capture", Some(Glyph::Capture), false, cx.listener(|this, _: &(), _, cx| this.capture_device(cx)))))
+                .children((ready && !self.device.busy && self.device.live.is_none()).then(|| ui::action("device-capture", "Capture", Some(Glyph::Capture), false, cx.listener(|this, _: &(), _, cx| this.capture_device(cx)))))
+                .children((ready && (!self.device.busy || self.device.live.is_some())).then(|| ui::action("device-live", if self.device.live.is_some() { "Stop live view" } else { "Start live view" }, None, self.device.live.is_some(), cx.listener(|this, _: &(), _, cx| this.toggle_device_live(cx)))))
+                .children((can_record && !self.device.busy && self.device.recording.is_none() && !recording_stopping).then(|| ui::action("device-record", "Record simulator...", Some(Glyph::Capture), false, cx.listener(|this, _: &(), _, cx| this.start_device_recording(cx)))))
                 .children((self.device.image_bytes.is_some() && self.selected.is_some() && !self.device.busy).then(||
                     ui::action("device-attach-frame","Attach frame to selected conversation",Some(Glyph::Attach),false,
                         cx.listener(|this,_:&(),_,cx| {
@@ -707,6 +1066,20 @@ impl Shell {
                 .children((can_boot && !self.device.busy).then(|| ui::action("device-boot", "Boot simulator", None, false, cx.listener(|this, _: &(), _, cx| this.device_running(true, cx)))))
                 .children((can_stop && !self.device.busy).then(|| ui::action("device-stop", if self.device.shutdown_confirmation { "Confirm shutdown" } else { "Shut down simulator" }, None, false, cx.listener(|this, _: &(), _, cx| this.device_running(false, cx)))))
                 .children((ready && self.device.image.is_some() && self.settings.value.device.backend == DeviceBackend::Android && !self.device.busy).then(|| ui::action("device-consent", if self.device.grant.is_some() { "Disable input" } else { "Enable input for this device" }, None, self.device.grant.is_some(), cx.listener(|this, _: &(), _, cx| this.enable_device_input(cx))))))
+            .children(recording_stopping.then(|| div().text_size(px(12.)).child("Stopping the previous recording...")))
+            .children(self.device.recording.as_ref().map(|recording| {
+                let label = match recording.started {
+                    None => "Choose a new MOV destination to begin recording.".into(),
+                    Some(_) if recording.stop.is_cancelled() => "Finalizing simulator recording...".into(),
+                    Some(started) => format!("Recording {:02}:{:02} | Auto-saves at 5 minutes | 512 MiB limit", started.elapsed().as_secs() / 60, started.elapsed().as_secs() % 60),
+                };
+                div().flex().flex_col().gap_1()
+                    .child(div().text_size(px(12.)).child(label))
+                    .child(div().flex().gap_2()
+                        .children((recording.started.is_some() && !recording.stop.is_cancelled()).then(|| ui::action("device-record-stop", "Stop and save", None, false, cx.listener(|this, _: &(), _, cx| this.stop_device_recording(true, cx)))))
+                        .child(ui::action("device-record-discard", "Discard recording", None, false, cx.listener(|this, _: &(), _, cx| this.stop_device_recording(false, cx)))))
+                    .child(div().text_size(px(11.)).text_color(rgb(palette().muted)).child("Navigation, Disconnect or closing cancels an unfinished recording. Files over 512 MiB are discarded. Existing files are never replaced."))
+            }))
             .children((ready && self.settings.value.device.backend == DeviceBackend::AppleSimulator).then(||
                 div().flex().items_center().gap_2()
                     .child(div().text_size(px(12.)).child("Web URL"))

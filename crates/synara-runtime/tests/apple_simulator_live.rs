@@ -181,6 +181,29 @@ async fn real_core_simulator_accepts_synara_lifecycle_and_app_operations() {
     assert!(png.len() > 1024);
     checks.push("screenshot");
 
+    let recordings = tempfile::tempdir().expect("owned recording directory");
+    let destination = recordings.path().join("simulator.mov");
+    let stop = DeviceCancellation::new();
+    assert!(tools.can_record_video(&ready));
+    let (recorded, ()) = tokio::join!(
+        tools.record_video(&ready, destination.clone(), &stop, &cancel),
+        async {
+            tokio::time::sleep(Duration::from_secs(1)).await;
+            stop.cancel();
+        },
+    );
+    assert_eq!(
+        recorded.expect("record and finalize real simulator video"),
+        destination
+    );
+    assert!(
+        std::fs::metadata(&destination)
+            .expect("finalized MOV")
+            .len()
+            > 1024
+    );
+    checks.push("record-stop-finalize-mov");
+
     tools
         .open_url(&ready, "https://example.com/synara-a06", &cancel)
         .await

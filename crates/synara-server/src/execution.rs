@@ -1,5 +1,5 @@
 //! Explicit local web runs reuse the native Controller and task-scoped interaction
-//! broker. Connection-scoped authentication remains unsupported by the web UI.
+//! broker. Provider setup is explicitly owned by the separate web connection job.
 use super::*;
 use sha2::{Digest, Sha256};
 use std::collections::HashMap;
@@ -200,6 +200,9 @@ pub(super) async fn dispatch_post(
     // Serialize admission, including the preflight awaits. Nothing is detached until
     // ownership has been installed. Dropping an HTTP request can only save a draft.
     let _mutation = state.execution.mutation.lock().await;
+    if state.providers.busy(id).await {
+        return error(409, "provider_busy");
+    }
     let mut runs = state.execution.runs.lock().await;
     if runs.get(&id).is_some_and(|run| !run.worker.is_finished()) {
         return error(409, "run_active");
@@ -358,6 +361,13 @@ async fn run_task(
 }
 
 impl ExecutionOwner {
+    pub(super) async fn active(&self, id: TaskId) -> bool {
+        self.runs
+            .lock()
+            .await
+            .get(&id)
+            .is_some_and(|run| !run.worker.is_finished())
+    }
     pub(super) async fn shutdown(&self, controller: &Controller) -> Result<()> {
         let mut runs = self.runs.lock().await;
         for run in runs.values() {

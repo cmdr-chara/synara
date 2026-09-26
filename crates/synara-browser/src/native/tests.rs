@@ -574,12 +574,17 @@ fn real_webkit_authentication_login_session_and_popup() {
             let (headers, body) = if request_line.starts_with("GET /login ") {
                 (
                     "Set-Cookie: synara_auth=accepted; Path=/; HttpOnly\r\n",
-                    "<!doctype html><title>Login</title><h1>Authenticated</h1><script>setTimeout(()=>window.open('/oauth?code=secret','oauth'),250)</script>",
+                    "<!doctype html><title>Login</title><h1>Authenticated</h1><form method='post' action='/authenticated'><input name='proof' value='opener'></form><script>addEventListener('message',event=>{if(event.origin===location.origin&&event.data==='oauth-complete')document.querySelector('form').submit()});setTimeout(()=>window.open('/oauth?code=secret','oauth'),250)</script>",
                 )
             } else if request_line.starts_with("GET /oauth?code=secret ") {
                 (
                     "Set-Cookie: synara_oauth=complete; Path=/; HttpOnly\r\n",
-                    "<!doctype html><title>OAuth</title><h1>OAuth complete</h1>",
+                    "<!doctype html><title>OAuth</title><h1>OAuth complete</h1><script>window.opener.postMessage('oauth-complete',location.origin)</script>",
+                )
+            } else if request_line.starts_with("POST /authenticated ") {
+                (
+                    "",
+                    "<!doctype html><title>Popup callback accepted</title><h1>Authenticated by original opener POST</h1>",
                 )
             } else {
                 (
@@ -668,6 +673,14 @@ fn real_webkit_authentication_login_session_and_popup() {
         session.popup_preview(source).unwrap().as_deref(),
         Some(popup_preview.as_str())
     );
+    assert!(
+        !requests
+            .lock()
+            .unwrap()
+            .iter()
+            .any(|request| request.starts_with("GET /oauth?code=secret ")),
+        "capturing a popup must not contact its destination before approval"
+    );
 
     let (popup, popup_url) = session.open_popup(source, now()).unwrap();
     assert_eq!(popup_url, format!("{base}/oauth?code=secret"));
@@ -681,6 +694,21 @@ fn real_webkit_authentication_login_session_and_popup() {
         profile
     );
     wait_ready(&mut host, &mut session, popup);
+
+    let callback_deadline = Instant::now() + Duration::from_secs(20);
+    loop {
+        pump(&mut host, &mut session);
+        if session.tabs().iter().any(|tab| {
+            tab.id == source && tab.state == "ready" && tab.title == "Popup callback accepted"
+        }) {
+            break;
+        }
+        assert!(
+            Instant::now() < callback_deadline,
+            "native popup opener/postMessage callback and original POST did not complete"
+        );
+        std::thread::sleep(Duration::from_millis(10));
+    }
 
     session
         .user_navigate(
@@ -703,7 +731,65 @@ fn real_webkit_authentication_login_session_and_popup() {
         .unwrap();
     wait_ready(&mut host, &mut session, manual);
 
+    let other_flow = session
+        .open(BrowserProfile::Authentication { flow: 78 })
+        .unwrap();
+    session
+        .user_navigate(
+            other_flow,
+            &format!("{base}/session-other-flow"),
+            NavigationKind::Push,
+            now(),
+        )
+        .unwrap();
+    wait_ready(&mut host, &mut session, other_flow);
+
+    // Closing the opener must preserve the authenticated popup's live session.
+    let auth_key = profile_key(profile.storage_partition());
+    let auth_directory = host.profiles[&auth_key]
+        ._directory
+        .as_ref()
+        .unwrap()
+        .path()
+        .to_path_buf();
+    session.close(source).unwrap();
+    pump(&mut host, &mut session);
+    assert!(host.profiles.contains_key(&auth_key));
+    assert!(auth_directory.is_dir());
+    session
+        .user_navigate(
+            popup,
+            &format!("{base}/session-retained"),
+            NavigationKind::Push,
+            now(),
+        )
+        .unwrap();
+    wait_ready(&mut host, &mut session, popup);
+
+    // The final tab owns the ephemeral profile. Reusing its flow ID after close
+    // must create a fresh session, even while another auth flow remains alive.
+    session.close(popup).unwrap();
+    pump(&mut host, &mut session);
+    assert!(!host.profiles.contains_key(&auth_key));
+    assert!(!auth_directory.exists());
+    let reopened = session.open(profile).unwrap();
+    session
+        .user_navigate(
+            reopened,
+            &format!("{base}/session-reopened"),
+            NavigationKind::Push,
+            now(),
+        )
+        .unwrap();
+    wait_ready(&mut host, &mut session, reopened);
+
     let requests = requests.lock().unwrap();
+    assert!(
+        requests
+            .iter()
+            .any(|request| request.starts_with("POST /authenticated ")),
+        "sign-in form method was not preserved"
+    );
     let oauth = requests
         .iter()
         .find(|request| request.starts_with("GET /oauth?code=secret "))
@@ -718,8 +804,23 @@ fn real_webkit_authentication_login_session_and_popup() {
     assert!(sessions[0].contains("synara_oauth=complete"));
     assert!(!sessions.last().unwrap().contains("synara_auth=accepted"));
     assert!(!sessions.last().unwrap().contains("synara_oauth=complete"));
+    let retained = requests
+        .iter()
+        .find(|request| request.starts_with("GET /session-retained "))
+        .expect("live popup session request");
+    assert!(retained.contains("synara_auth=accepted"));
+    assert!(retained.contains("synara_oauth=complete"));
+    for path in ["/session-other-flow", "/session-reopened"] {
+        let request_line = format!("GET {path} ");
+        let request = requests
+            .iter()
+            .find(|request| request.starts_with(&request_line))
+            .expect("isolated authentication session request");
+        assert!(!request.contains("synara_auth=accepted"), "{path}");
+        assert!(!request.contains("synara_oauth=complete"), "{path}");
+    }
 
     println!(
-        "AUTH_WEBKIT_ACCEPTANCE: login cookie, explicit popup, shared auth session, manual isolation"
+        "AUTH_WEBKIT_ACCEPTANCE: login cookie, explicit popup, shared auth session, manual isolation, pre-network popup approval, flow isolation, live-session retention, final-close cleanup"
     );
 }

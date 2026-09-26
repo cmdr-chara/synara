@@ -1,0 +1,5 @@
+# Set this host to match SYNARA_PUBLIC_ORIGIN in /etc/synara/server.env.
+synara.example.com {
+    reverse_proxy 127.0.0.1:17341
+    header Strict-Transport-Security "max-age=31536000"
+}

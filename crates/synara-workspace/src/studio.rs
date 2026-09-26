@@ -1031,6 +1031,7 @@ mod tests {
                 task.thread_id,
                 synara_core::ThreadEvent::ToolChanged {
                     patch: synara_core::ToolPatch {
+                        input: None,
                         id: "tool-1".into(),
                         title: Some("Write report".into()),
                         status: Some(ToolStatus::Completed),
@@ -1085,6 +1086,7 @@ mod tests {
                 task.thread_id,
                 synara_core::ThreadEvent::ToolChanged {
                     patch: synara_core::ToolPatch {
+                        input: None,
                         id: "tool-2".into(),
                         title: Some("Rewrite report".into()),
                         status: Some(ToolStatus::Completed),

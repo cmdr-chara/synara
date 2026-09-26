@@ -37,12 +37,16 @@ pub enum Command {
     Close {
         tab: HostTabId,
     },
+    DismissPopup {
+        tab: HostTabId,
+    },
     Navigate {
         tab: HostTabId,
         navigation: HostNavigationId,
         document: CommittedDocument,
         partition: StoragePartition,
         allowed_origin: Option<CanonicalOrigin>,
+        popup_source: Option<HostTabId>,
     },
     Stop {
         tab: HostTabId,
@@ -209,8 +213,29 @@ struct TabState {
     diagnostics: VecDeque<NetworkDiagnostic>,
     runtime_diagnostics: VecDeque<RuntimeDiagnostic>,
     pending_popup: Option<String>,
+    popup_revision: u64,
+    authentication_loading_until: Option<u64>,
 }
 pub enum Event {
+    /// Auth-only in-view navigation preserves form bodies and provider redirects.
+    AuthenticationLoading {
+        tab: HostTabId,
+        navigation: HostNavigationId,
+    },
+    AuthenticationCommitted {
+        tab: HostTabId,
+        navigation: HostNavigationId,
+        url: String,
+        title: String,
+    },
+    AuthenticationFailed {
+        tab: HostTabId,
+        navigation: HostNavigationId,
+    },
+    CloseRequested {
+        tab: HostTabId,
+        navigation: HostNavigationId,
+    },
     PopupRequested {
         tab: HostTabId,
         navigation: HostNavigationId,
@@ -362,12 +387,39 @@ impl Session {
             .map(redact_diagnostic_url)
             .transpose()
     }
+    pub fn popup_revision(&self, tab: HostTabId) -> Result<u64> {
+        self.popup_profile(tab)?;
+        Ok(self
+            .tabs
+            .get(&tab)
+            .ok_or(BrowserError::MissingTab)?
+            .popup_revision)
+    }
+    /// Pin the reviewed popup, including private query values, without exposing them.
+    pub fn open_reviewed_popup(
+        &mut self,
+        source: HostTabId,
+        revision: u64,
+        now: u64,
+    ) -> Result<(HostTabId, String)> {
+        if self.popup_revision(source)? != revision {
+            return Err(BrowserError::Invalid);
+        }
+        self.open_popup(source, now)
+    }
+    pub fn dismiss_reviewed_popup(&mut self, source: HostTabId, revision: u64) -> Result<()> {
+        if self.popup_revision(source)? != revision {
+            return Err(BrowserError::Invalid);
+        }
+        self.dismiss_popup(source)
+    }
     pub fn dismiss_popup(&mut self, tab: HostTabId) -> Result<()> {
         self.popup_profile(tab)?;
         self.tabs
             .get_mut(&tab)
             .ok_or(BrowserError::MissingTab)?
             .pending_popup = None;
+        self.port.send(Command::DismissPopup { tab })?;
         Ok(())
     }
     /// Explicit trusted-UI action; the page cannot create an unmanaged window.
@@ -382,11 +434,24 @@ impl Session {
             .clone()
             .ok_or(BrowserError::Invalid)?;
         let tab = self.open(profile)?;
-        if let Err(error) = self.user_navigate(tab, &url, NavigationKind::Push, now) {
+        let document = CommittedDocument::parse(&url)?;
+        let source_profile =
+            matches!(profile, BrowserProfile::Authentication { .. }).then_some(source);
+        if let Err(error) = self.navigate(
+            tab,
+            document,
+            NavigationKind::Push,
+            now,
+            None,
+            source_profile,
+        ) {
             let _ = self.close(tab);
             return Err(error);
         }
-        self.dismiss_popup(source)?;
+        self.tabs
+            .get_mut(&source)
+            .ok_or(BrowserError::MissingTab)?
+            .pending_popup = None;
         Ok((tab, url))
     }
     pub fn manual_popup_preview(&self, tab: HostTabId) -> Result<Option<String>> {
@@ -451,6 +516,8 @@ impl Session {
                 diagnostics: VecDeque::new(),
                 runtime_diagnostics: VecDeque::new(),
                 pending_popup: None,
+                popup_revision: 0,
+                authentication_loading_until: None,
             },
         );
         Ok(id)
@@ -468,6 +535,7 @@ impl Session {
         self.invalidate(tab, None);
         let state = self.tabs.get_mut(&tab).ok_or(BrowserError::MissingTab)?;
         state.navigation = None;
+        state.authentication_loading_until = None;
         state.committed_navigation = None;
         state.elements.clear();
         state.view.state = "stopped".into();
@@ -507,7 +575,7 @@ impl Session {
         } else {
             CommittedDocument::parse(url)?
         };
-        self.navigate(tab, document, kind, now, None)
+        self.navigate(tab, document, kind, now, None, None)
     }
     fn navigate(
         &mut self,
@@ -516,6 +584,7 @@ impl Session {
         kind: NavigationKind,
         now: u64,
         request: Option<HostRequestId>,
+        popup_source: Option<HostTabId>,
     ) -> Result<()> {
         if !self.capabilities().navigation {
             return Err(BrowserError::Unavailable);
@@ -531,6 +600,7 @@ impl Session {
         state.diagnostics.clear();
         state.runtime_diagnostics.clear();
         state.pending_popup = None;
+        state.authentication_loading_until = None;
         state.view.state = "loading".into();
         state.view.error = None;
         state.navigation = Some((nav, now.saturating_add(30_000), allowed.clone(), request));
@@ -540,6 +610,7 @@ impl Session {
             document,
             partition: profile.storage_partition(),
             allowed_origin: allowed,
+            popup_source,
         }) {
             self.fail_tab(tab, &e.to_string());
             return Err(e);
@@ -621,6 +692,7 @@ impl Session {
                     NavigationKind::Push,
                     now,
                     Some(request),
+                    None,
                 )
             } else {
                 self.port.send(Command::Operation {
@@ -685,7 +757,10 @@ impl Session {
         let expired: Vec<_> = self
             .tabs
             .iter()
-            .filter(|(_, t)| t.navigation.as_ref().is_some_and(|n| now >= n.1))
+            .filter(|(_, t)| {
+                t.navigation.as_ref().is_some_and(|n| now >= n.1)
+                    || t.authentication_loading_until.is_some_and(|end| now >= end)
+            })
             .map(|(id, _)| *id)
             .collect();
         for id in expired {
@@ -725,6 +800,65 @@ impl Session {
     }
     pub fn event_at(&mut self, event: Event, now: u64) -> Result<()> {
         match event {
+            Event::AuthenticationLoading { tab, navigation } => {
+                let state = self.tabs.get_mut(&tab).ok_or(BrowserError::MissingTab)?;
+                if !matches!(state.view.profile, BrowserProfile::Authentication { .. })
+                    || state.committed_navigation != Some(navigation)
+                {
+                    return Err(BrowserError::WrongContext);
+                }
+                state.pending_popup = None;
+                state.authentication_loading_until = Some(now.saturating_add(30_000));
+                state.view.state = "loading".into();
+                state.view.error = None;
+            }
+            Event::AuthenticationCommitted {
+                tab,
+                navigation,
+                url,
+                title,
+            } => {
+                let state = self.tabs.get(&tab).ok_or(BrowserError::MissingTab)?;
+                if !matches!(state.view.profile, BrowserProfile::Authentication { .. })
+                    || state.committed_navigation != Some(navigation)
+                    || title.len() > 4096
+                {
+                    return Err(BrowserError::WrongContext);
+                }
+                let document = CommittedDocument::parse(&url)?;
+                let next = self.host.begin_navigation(tab, NavigationKind::Push)?;
+                self.host.commit_navigation(next, document.clone())?;
+                let history = self.host.history(tab)?;
+                let state = self.tabs.get_mut(&tab).unwrap();
+                state.authentication_loading_until = None;
+                state.view.url = Some(document.canonical_url);
+                state.view.title = title;
+                state.view.state = "ready".into();
+                state.view.error = None;
+                state.view.back = history.current.is_some_and(|at| at > 0);
+                state.view.forward = false;
+            }
+            Event::AuthenticationFailed { tab, navigation } => {
+                let state = self.tabs.get(&tab).ok_or(BrowserError::MissingTab)?;
+                if !matches!(state.view.profile, BrowserProfile::Authentication { .. })
+                    || state.committed_navigation != Some(navigation)
+                {
+                    return Err(BrowserError::WrongContext);
+                }
+                self.fail_tab(
+                    tab,
+                    "Sign-in page could not be loaded. Retry or cancel sign-in.",
+                );
+            }
+            Event::CloseRequested { tab, navigation } => {
+                let state = self.tabs.get(&tab).ok_or(BrowserError::MissingTab)?;
+                if !matches!(state.view.profile, BrowserProfile::Authentication { .. })
+                    || state.committed_navigation != Some(navigation)
+                {
+                    return Err(BrowserError::WrongContext);
+                }
+                self.close(tab)?;
+            }
             Event::PopupRequested {
                 tab,
                 navigation,
@@ -744,6 +878,10 @@ impl Session {
                     return Ok(());
                 };
                 if redact_diagnostic_url(&document.canonical_url).is_ok() {
+                    let Some(revision) = state.popup_revision.checked_add(1) else {
+                        return Err(BrowserError::Limit);
+                    };
+                    state.popup_revision = revision;
                     state.pending_popup = Some(document.canonical_url);
                 }
             }

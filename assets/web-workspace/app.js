@@ -53,7 +53,7 @@ async function requestJson(path,body){
   const response=await fetch(path,options);
   const data=await response.json();
   if(!response.ok){
-    const errors={unauthorized:'The token was not accepted.',interaction_expired:'This request is no longer active. Refresh to review current requests.',invalid_interaction_reply:'The response does not match the current request. Check required fields and offered choices.',draft_changed:'The saved draft changed in another tab. Reload and review it before running.',route_changed:'The selected model or agent route changed. Refresh and review it before running.',workspace_changed:'The SSH workspace connection changed. Refresh and review the destination before running.',run_active:'This task already has an active web run.',authentication_required:'Sign in with the agent locally before running it here.'};
+    const errors={unauthorized:'The token was not accepted.',interaction_expired:'This request is no longer active. Refresh to review current requests.',invalid_interaction_reply:'The response does not match the current request. Check required fields and offered choices.',draft_changed:'The saved draft changed in another tab. Reload and review it before running.',route_changed:'The selected model or agent route changed. Refresh and review it before running.',workspace_changed:'The SSH workspace connection changed. Refresh and review the destination before running.',run_active:'This task already has an active web run.',authentication_required:'Use Connect and the advertised sign-in method below.',provider_changed:'The provider connection changed. Refresh and review it again.',provider_busy:'A provider connection or sign-in operation is already active.',tool_context_changed:'The tool input or diff changed. Review the refreshed context before allowing it.'};
     throw new Error(errors[data.error]||`Server returned ${response.status} (${data.error||'request failed'}).`);
   }
   return data;
@@ -103,14 +103,14 @@ function interactionPanel(base,current,onAnswered){
   const element=document.createElement('section');
   element.setAttribute('aria-label','Agent requests');
   const heading=document.createElement('h3');heading.textContent='Agent requests';
-  const note=document.createElement('p');note.textContent='Only one-time permissions and task questions are supported. Login links are not opened here.';
+  const note=document.createElement('p');note.textContent='Review tool requests and provider sign-in prompts before responding.';
   const list=document.createElement('div');element.append(heading,note,list);
   const rows=new Map();let order='';let available=true;
   function enable(row){for(const control of row.controls)control.disabled=!available||row.posting||!current()}
   function create(item){
     const card=document.createElement('article');const title=document.createElement('h4');title.textContent=item.title;card.append(title);
     const feedback=document.createElement('p');feedback.setAttribute('role','status');
-    const row={card,controls:[],posting:false};
+    const row={card,controls:[],posting:false,signature:JSON.stringify(item)};
     function action(label,payload,review=false){
       const control=button(label,async()=>{
         if(!current()||row.posting||!available)return;
@@ -127,13 +127,16 @@ function interactionPanel(base,current,onAnswered){
     if(item.kind==='permission'){
       const context=document.createElement('div');context.setAttribute('aria-label','Tool context');
       if(item.tool){
-        const detail=document.createElement('p');detail.textContent=`Tool: ${item.tool.title||'Untitled'}${item.tool.kind?` (${item.tool.kind})`:''}`;context.append(detail);
+        const detail=document.createElement('p');detail.textContent=`Tool: ${item.tool.title||'Untitled'}${item.tool.kind?` (${item.tool.kind})`:''} · ${item.tool.status||'pending'}`;context.append(detail);
+        if(item.tool.input){const label=document.createElement('strong');label.textContent='Agent-reported command / input';const input=document.createElement('pre');input.textContent=item.tool.input.text;context.append(label,input);if(item.tool.input.truncated){const note=document.createElement('p');note.textContent='Input was shortened or sensitive fields were redacted. Deny if the remaining context is insufficient.';context.append(note)}}
+        else{const note=document.createElement('p');note.textContent='The agent did not provide structured input for this tool.';context.append(note)}
         for(const diff of item.tool.diffs){
-          const preview=document.createElement('details');const label=document.createElement('summary');label.textContent=`Recorded diff: ${diff.path}`;preview.append(label);
+          const preview=document.createElement('details');const label=document.createElement('summary');label.textContent=`Live proposed diff: ${diff.path}`;preview.append(label);
           for(const [name,value] of [['Before',diff.before],['After',diff.after]])if(value!==null){const heading=document.createElement('strong');heading.textContent=name;const content=document.createElement('pre');content.textContent=value;preview.append(heading,content)}
-          if(diff.truncated){const note=document.createElement('p');note.textContent='This recorded diff was shortened. Review the complete change in the native workspace before granting permission.';preview.append(note)}
+          if(diff.truncated){const note=document.createElement('p');note.textContent='This proposed diff was shortened. Deny if you cannot assess the complete change.';preview.append(note)}
           context.append(preview);
         }
+        if(item.tool.diffs_omitted){const omitted=document.createElement('p');omitted.textContent=`${item.tool.diffs_omitted} additional diffs are omitted from this bounded review.`;context.append(omitted)}
         for(const detail of item.tool.details||[]){
           const preview=document.createElement('details');const label=document.createElement('summary');label.textContent=detail.kind==='terminal'?'Recorded terminal output':'Recorded tool text';preview.append(label);
           const content=document.createElement('pre');content.textContent=detail.text;preview.append(content);
@@ -145,18 +148,26 @@ function interactionPanel(base,current,onAnswered){
       card.append(context);
       for(const choice of item.choices){
         if(choice.kind!=='allow_once'&&choice.kind!=='deny_once')continue;
-        action(`${choice.kind==='allow_once'?'Allow once':'Deny once'}: ${choice.label}`,()=>({action:'permission',id:item.id,choice:choice.id}),choice.kind==='allow_once');
+        action(`${choice.kind==='allow_once'?'Allow once':'Deny once'}: ${choice.label}`,()=>({action:'permission',id:item.id,choice:choice.id,review:item.review}),choice.kind==='allow_once');
       }
       action('Cancel request',()=>({action:'permission',id:item.id,choice:null}));
+    }else if(item.kind==='url'){
+      const address=document.createElement('p');address.textContent=item.url;card.append(address);
+      const guidance=document.createElement('p');guidance.textContent='This address was supplied by the agent. Open it only if you recognize the provider. Opening does not report sign-in success.';card.append(guidance);
+      const open=button('Open reviewed website',()=>{if(!current()||!available||row.posting)return;let url;try{url=new URL(item.url);if(!['https:','http:'].includes(url.protocol)||url.username||url.password)throw new Error()}catch(_){feedback.textContent='The website address is invalid.';return}if(confirm(`Open this agent-provided website?\n\n${url.href}`))window.open(url.href,'_blank','noopener,noreferrer')});row.controls.push(open);card.append(open);
+      action('I completed the website step',()=>({action:'input',id:item.id,response:{action:'accept',values:{}}}));
+      action('Decline website request',()=>({action:'input',id:item.id,response:{action:'decline'}}));
+      action('Cancel request',()=>({action:'input',id:item.id,response:{action:'cancel'}}));
     }else if(item.kind==='input'){
       const fields=[];
-      const restored=readQuestionDraft(base,item);
+      const mayPersist=item.persist_draft!==false&&!item.connection_scoped;
+      const restored=mayPersist?readQuestionDraft(base,item):null;
       for(const field of item.fields){
         const label=document.createElement('label');label.textContent=field.label+(field.required?' (required)':' (optional)');
         const kind=field.kind;
-        const control=document.createElement(kind.kind==='text'?'textarea':kind.kind==='number'?'input':'select');
+        const control=document.createElement(kind.kind==='text'?(item.connection_scoped?'input':'textarea'):kind.kind==='number'?'input':'select');
         control.setAttribute('aria-label',field.label);control.autocomplete='off';
-        if(kind.kind==='text'){control.rows=2;control.maxLength=65536}
+        if(kind.kind==='text'){if(item.connection_scoped)control.type='password';else control.rows=2;control.maxLength=65536}
         else if(kind.kind==='number'){control.type='number';control.step=kind.integer?'1':'any';if(kind.minimum!==null)control.min=String(kind.minimum);if(kind.maximum!==null)control.max=String(kind.maximum)}
         else{
           if(kind.kind==='multi_choice')control.multiple=true;
@@ -172,13 +183,13 @@ function interactionPanel(base,current,onAnswered){
         label.append(control);card.append(label);row.controls.push(control);fields.push({field,control});
       }
       function persist(){
-        if(!current())return;
+        if(!current()||!mayPersist)return;
         const values=Object.create(null);
         for(const {field,control} of fields)values[field.id]=field.kind.kind==='multi_choice'?Array.from(control.selectedOptions,option=>option.value):control.value;
         if(!saveQuestionDraft(base,item,values))feedback.textContent='Could not save this question draft in the browser. Keep this page open until you submit.';
       }
       for(const {control} of fields){control.addEventListener('input',persist);control.addEventListener('change',persist)}
-      const draftNote=document.createElement('small');draftNote.textContent='Unsubmitted answers are saved in this browser profile for up to 24 hours. They are not sent to the agent until you submit.';card.append(draftNote);
+      const draftNote=document.createElement('small');draftNote.textContent=mayPersist?'Unsubmitted answers are saved in this browser profile for up to 24 hours. They are not sent to the agent until you submit.':'Sign-in answers stay only in this page and are sent to the provider only when you submit.';card.append(draftNote);
       const clear=button('Clear saved answers',()=>{if(!current())return;clearQuestionDraft(base,item.id);for(const {control} of fields){if(control.multiple)for(const option of control.options)option.selected=false;else control.value=''}feedback.textContent='Saved answers cleared.'});row.controls.push(clear);card.append(clear);
       action('Submit answers',()=>{
         // A null-prototype object preserves literal provider field IDs such as __proto__.
@@ -205,14 +216,44 @@ function interactionPanel(base,current,onAnswered){
       available=true;
       const items=data.items||[];const ids=new Set(items.map(item=>item.id));
       for(const id of rows.keys())if(!ids.has(id)){clearQuestionDraft(base,id);rows.delete(id)}
-      for(const item of items)if(!rows.has(item.id))rows.set(item.id,create(item));
-      const next=JSON.stringify(items.map(item=>item.id));
+      for(const item of items){const existing=rows.get(item.id);if(!existing||(item.kind==='permission'&&!existing.posting&&existing.signature!==JSON.stringify(item)))rows.set(item.id,create(item))}
+      const next=JSON.stringify(items.map(item=>[item.id,rows.get(item.id).signature]));
       if(next!==order){list.replaceChildren(...items.map(item=>rows.get(item.id).card));order=next}
       for(const row of rows.values())enable(row);
-      note.textContent=data.more?'More requests are queued. Respond to these to review the next requests.':items.length?'Agent-provided requests. Recorded tool context appears when available. Deny anything you cannot assess. Answers go to the configured agent.':'No pending requests. Connection sign-in and URL requests remain unsupported.';
+      note.textContent=data.more?'More requests are queued. Respond to these to review the next requests.':items.length?'Agent-provided requests. Tool input and proposed diffs refresh while permission is pending. Answers go to the configured agent.':'No pending requests.';
     },
     unavailable(){available=false;for(const row of rows.values())enable(row);note.textContent='Requests could not be refreshed. Values are retained; refresh status before answering.'}
   };
+}
+
+function providerPanel(base,current,onChanged){
+  const element=document.createElement('section');element.setAttribute('aria-label','Provider connection');
+  let latest=null,posting=false;
+  function render(){
+    element.replaceChildren();if(!latest||latest.direct)return;
+    const heading=document.createElement('h3');heading.textContent='Provider connection';
+    const state=document.createElement('p');state.textContent=`${latest.agent_id}: ${latest.state}${latest.busy?' · operation in progress':''}${latest.error?` (${latest.error})`:''}`;
+    const note=document.createElement('p');note.textContent='Connect starts the configured agent without sending the draft. Sign-in uses only methods advertised by that connection and may apply to other tasks sharing it.';
+    element.append(heading,state,note);
+    function action(label,kind,method=null){
+      const control=button(label,async()=>{
+        if(!current()||posting)return;
+        if(kind!=='cancel'&&!confirm(kind==='authenticate'?`Start the provider sign-in method "${label}" for this task?`:'Start the configured agent connection in this task workspace? No prompt will be sent.'))return;
+        const reviewed=latest;posting=true;render();
+        try{await postJson(base+'/provider',{action:kind,method,expected_stamp:reviewed.stamp,expected_connection:reviewed.connection_id,expected_operation:reviewed.operation_id});if(current())await onChanged()}
+        catch(error){if(current())status.textContent=message(error,'Provider operation failed.')}
+        finally{posting=false;if(current())render()}
+      });control.disabled=posting||!current()||(latest.busy&&kind!=='cancel');element.append(control);
+    }
+    action('Connect / check sign-in','connect');
+    if(latest.state==='failed'||latest.state==='exited'||latest.state==='disconnected')action('Restart provider connection','reconnect');
+    if(latest.state==='authentication_required'){
+      for(const method of latest.methods||[])action(method.name||method.id,'authenticate',method.id);
+      if(!latest.methods?.length){const missing=document.createElement('p');missing.textContent='This provider advertises no web sign-in method. Complete its own CLI login, then restart the connection.';element.append(missing)}
+    }
+    if(latest.busy)action('Cancel connection / sign-in','cancel');
+  }
+  return {element,update(value){latest=value;render();return value.busy},unavailable(){latest=null;element.replaceChildren();const note=document.createElement('p');note.textContent='Provider status is unavailable. Refresh before connecting.';element.append(note)}};
 }
 
 async function showThread(task,before=null){
@@ -224,13 +265,15 @@ async function showThread(task,before=null){
   thread.replaceChildren();
   const loading=document.createElement('p');loading.textContent='Loading messages…';thread.append(loading);
   try{
-    const [data,unsent,initialRun,initialInteractions]=await Promise.all([getJson(path),getJson(base+'/draft'),getJson(base+'/run'),getJson(base+'/interactions')]);
+    const [data,unsent,initialRun,initialInteractions,initialProvider]=await Promise.all([getJson(path),getJson(base+'/draft'),getJson(base+'/run'),getJson(base+'/interactions'),getJson(base+'/provider')]);
     if(!current())return;
     const title=document.createElement('h2');title.textContent=data.title;thread.replaceChildren(title);
     const state=document.createElement('small');state.textContent=`State: ${data.state}`;thread.append(state);
     const runStatus=document.createElement('p');runStatus.setAttribute('role','status');thread.append(runStatus);
     const pending=document.createElement('article');const heading=document.createElement('h3');heading.textContent='Task draft';pending.append(heading);
     let running=false;
+    let providerBusy=initialProvider.busy;
+    const provider=providerPanel(base,current,refresh);thread.append(provider.element);provider.update(initialProvider);
     let posting=false;
     let route=initialRun.route;
     let remote=initialRun.remote;
@@ -243,7 +286,7 @@ async function showThread(task,before=null){
       catch(error){if(current())status.textContent=message(error,'Could not stop the run.')}
       finally{posting=false;updateButtons();if(current())schedulePoll()}
     });
-    function updateButtons(){stopButton.disabled=!running||posting;if(runButton)runButton.disabled=running||posting;if(saveButton)saveButton.disabled=posting}
+    function updateButtons(){stopButton.disabled=!running||posting;if(runButton)runButton.disabled=running||posting||providerBusy;if(saveButton)saveButton.disabled=posting}
     function showRun(run){if(Object.hasOwn(run,'route'))route=run.route;if(Object.hasOwn(run,'remote'))remote=run.remote;running=run.state==='running'||run.state==='stopping';runStatus.textContent=`Web run: ${run.state}${run.error?` (${run.error})`:''}. ${route?`Direct model: ${route.provider_id} / ${route.model_id}`:remote?'ACP agent on SSH workspace':'Local ACP agent'}${remote?` · SSH: ${remote.host}`:''}`;updateButtons()}
     if(unsent.truncated){const clipped=document.createElement('p');clipped.textContent=unsent.text+'…';pending.append(clipped);const note=document.createElement('small');note.textContent='This draft is too large to edit or run in the local browser.';pending.append(note)}
     else{
@@ -262,7 +305,7 @@ async function showThread(task,before=null){
         if(!current()||posting||running)return;
         const text=editor.value;
         if(!text.trim()||new TextEncoder().encode(text).length>16384||text.includes('\0')){status.textContent='Enter a non-empty prompt of at most 16 KiB without NUL characters.';return}
-        const review=route?`Run this prompt with the reviewed direct model ${route.provider_id} / ${route.model_id}? This sends the prompt and selected history to its configured provider. It does not grant agent tools. Provider charges may apply.${remote?` This task belongs to the SSH workspace ${remote.host}, but the direct model does not run tools there.`:''} The draft is retained for review and retry.`:remote?`Run this prompt with the configured agent on SSH workspace ${remote.host}? The agent can use its existing remote permissions. One-time permission requests and task questions require explicit replies here. Sign-in links are not supported. The draft is retained for review and retry.`:'Run this prompt with the configured local agent in this task folder? The agent can use its existing local permissions. One-time permission requests and task questions require explicit replies in this page. Sign-in links are not supported. The draft is retained for review and retry.';
+        const review=route?`Run this prompt with the reviewed direct model ${route.provider_id} / ${route.model_id}? This sends the prompt and selected history to its configured provider. It does not grant agent tools. Provider charges may apply.${remote?` This task belongs to the SSH workspace ${remote.host}, but the direct model does not run tools there.`:''} The draft is retained for review and retry.`:remote?`Run this prompt with the configured agent on SSH workspace ${remote.host}? The agent can use its existing remote permissions. One-time permission requests and task questions require explicit replies here. Sign-in prompts are reviewed separately below. The draft is retained for review and retry.`:'Run this prompt with the configured local agent in this task folder? The agent can use its existing local permissions. One-time permission requests and task questions require explicit replies in this page. Sign-in prompts are reviewed separately below. The draft is retained for review and retry.';
         if(!confirm(review))return;
         const expected_draft=activeDraftSaved;
         const expected_route=route?.stamp||null;
@@ -285,14 +328,14 @@ async function showThread(task,before=null){
       if(!current())return;
       const sequence=++refreshSequence;
       try{
-        const [run,latest,interactions]=await Promise.all([getJson(base+'/run'),getJson(path),getJson(base+'/interactions')]);
+        const [run,latest,interactions,connection]=await Promise.all([getJson(base+'/run'),getJson(path),getJson(base+'/interactions'),getJson(base+'/provider')]);
         if(!current()||sequence!==refreshSequence)return;
-        reviews.update(interactions);showRun(run);state.textContent=`State: ${latest.state}`;renderMessages(messages,latest,task,before);
-        if(running)schedulePoll();
-      }catch(error){if(current()&&sequence===refreshSequence){reviews.unavailable();runStatus.textContent='Live status unavailable. Reload to reconnect; a run may still be active.';status.textContent=message(error,'Could not refresh status.')}}
+        providerBusy=provider.update(connection);reviews.update(interactions);showRun(run);state.textContent=`State: ${latest.state}`;renderMessages(messages,latest,task,before);
+        if(running||providerBusy)schedulePoll();
+      }catch(error){if(current()&&sequence===refreshSequence){provider.unavailable();reviews.unavailable();runStatus.textContent='Live status unavailable. Reload to reconnect; a run may still be active.';status.textContent=message(error,'Could not refresh status.')}}
     }
     thread.append(button('Refresh status and messages',refresh));
-    showRun(initialRun);if(running)schedulePoll();
+    showRun(initialRun);if(running||providerBusy)schedulePoll();
   }catch(error){if(current()){loading.textContent=message(error,'Could not load the task.');thread.replaceChildren(loading)}}
 }
 // Changing credentials retires in-flight reads and polling. Credentials are never stored.

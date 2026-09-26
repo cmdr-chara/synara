@@ -210,6 +210,7 @@ impl Shell {
             }
             self.snapshot_draft(cx);
             self.selection_revision = self.selection_revision.wrapping_add(1);
+            self.device.retire();
             self.selected = None;
             self.loading_task = None;
             self.thread = None;

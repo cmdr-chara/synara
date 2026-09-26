@@ -915,6 +915,7 @@ impl Shell {
         self.retire_autonomy_selection();
         self.selection_revision = self.selection_revision.wrapping_add(1);
         self.appsnap.retire();
+        self.device.retire();
         self.navigation.studio = task.scope == TaskScope::Studio;
         if self.navigation.studio {
             self.hubs.selected = Some(task.project_id);
@@ -1786,6 +1787,7 @@ impl Shell {
                     self.pause_goals("A permission or question requires the user. Resume explicitly after resolving it.",true,cx);
                 }
                 self.transcript.interaction_changed(&key);
+                self.browser_close_authentication_request(&key);
                 self.pending.insert(key, interaction);
             }
             Update::Connected {
@@ -2010,6 +2012,7 @@ impl Shell {
         self.chat_tools.retire();
         self.environment.retire_popup();
         let panel = self.track_environment_panel(panel);
+        self.device.retire();
         if panel != Panel::Files {
             self.cancel_editor_history();
         }

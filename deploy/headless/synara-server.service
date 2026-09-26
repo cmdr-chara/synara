@@ -1,0 +1,28 @@
+[Unit]
+Description=Synara headless workspace
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=synara
+Group=synara
+WorkingDirectory=/srv/synara
+EnvironmentFile=/etc/synara/server.env
+ExecStart=/opt/synara-server/current/bin/synara-server --bind 127.0.0.1 --port 17341 --db /var/lib/synara/server.sqlite3 --token-file /etc/synara/token --public-origin ${SYNARA_PUBLIC_ORIGIN}
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=60
+StateDirectory=synara
+StateDirectoryMode=0700
+RuntimeDirectory=synara
+RuntimeDirectoryMode=0700
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/srv/synara /var/lib/synara /run/synara
+
+[Install]
+WantedBy=multi-user.target

@@ -200,6 +200,7 @@ async fn fixture() -> (tempfile::TempDir, Arc<AppState>, Task, Arc<Evidence>) {
     *state.runtime.write().await = Some(RuntimeServices {
         workspace,
         controller,
+        automation: None,
         _owner_lock: None,
     });
     state.transition(Lifecycle::Ready);
@@ -289,7 +290,9 @@ async fn explicit_run_delivers_durable_text_retains_draft_and_does_not_replay() 
     .await
     .unwrap();
     let restarted = AppState::new(TOKEN).unwrap();
-    restarted.install_runtime(workspace.clone(), None).await;
+    restarted
+        .install_runtime(workspace.clone(), None, false)
+        .await;
     let idle = dispatch(&request(task.id, "run", None), &restarted, PORT).await;
     assert!(String::from_utf8(idle.body).unwrap().contains("idle"));
     assert_eq!(evidence.prompts.load(Ordering::Acquire), 1);

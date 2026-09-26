@@ -582,6 +582,7 @@ impl Shell {
                         let id = task.id;
                         self.replace_task(task);
                         self.selection_revision = self.selection_revision.wrapping_add(1);
+                        self.device.retire();
                         self.details = None;
                         self.composer
                             .update(cx, |entry, cx| entry.set_text(draft, cx));

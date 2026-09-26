@@ -1,11 +1,12 @@
-# Native local headless workspace
+# Headless workspace
 
 `synara-server` starts the native workspace service and recovery without GPUI.
 It serves an authenticated local browser for adding existing folders, creating
 unsent tasks, editing drafts, explicitly running/stopping local ACP agents,
-reviewing one-time task requests and reading messages on loopback. This
-is an early headless surface, not the full upstream
-web workspace.
+reviewing live tool context and one-time task requests, connecting providers,
+and reading messages. It also runs previously reviewed direct-model routes and
+configured SSH tasks. Remote HTTPS deployment uses an explicit public origin
+and a local TLS reverse proxy.
 
 ```sh
 SYNARA_SERVER_TOKEN='replace-with-a-private-32-character-or-longer-token' \
@@ -30,7 +31,7 @@ previous page when one exists.
 `{"title":"...","agent_id":"...","draft":"..."}` and creates a ready but
 unsent task with its draft atomically. `POST /api/tasks/<task-id>/draft` accepts
 `{"text":"..."}` to save an unsent draft. These JSON writes require the same
-token; any supplied Origin must match the loopback Host. They are limited to
+token; any supplied Origin must match the configured Host. They are limited to
 64 KiB bodies and 16 KiB draft
 text, and return generic errors without filesystem paths. They do not start
 an agent or approve an interaction. The browser warns before discarding unsaved
@@ -60,30 +61,42 @@ asks for confirmation, retains the submitted draft, preserves later typing,
 and polls status and messages. Up to eight runs can be active, each with a
 one-hour limit. Reload does not replay a prompt. This does not grant blanket
 permission: the agent retains only its existing local authority and explicitly
-answered requests. Use an already configured local agent. Direct-model and
-remote tasks are not supported by this execution surface.
+answered requests. Previously configured direct-model and SSH routes are also
+supported: read their current stamps from the run endpoint and submit
+`expected_route` and `expected_remote` respectively. A changed route is rejected.
+
+`GET /api/tasks/<task-id>/provider` returns connection state, available ACP sign-in
+methods, the route stamp and the current operation ID. Explicit `connect`,
+`reconnect`, `authenticate` and `cancel` actions use the corresponding POST
+endpoint with `expected_stamp`, `expected_connection`, `expected_operation` and,
+for authentication, the advertised `method`. These operations never send a
+prompt. Connection questions belong only to the task owning the active operation.
+Providers without advertised authentication methods still require their own CLI
+setup. Native credential storage supplies previously configured direct-model keys.
 
 `GET /api/tasks/<task-id>/interactions` returns a bounded `items` list and `more`.
 A maximum of two requests are shown at once, from a queue capped at 32, with
 24 KiB per visible item and the existing 64 KiB HTTP response bound. These are
-Session-scoped requests from the existing InteractionBroker, not a separate
-provider backend. Unsupported connection/URL interactions, invalid request
-shapes and overflow cancel rather than grant authority. Broker requests expire
+Requests come from the existing InteractionBroker. Session requests and the
+active task-owned connection's authentication questions are supported; invalid
+request shapes and overflow cancel rather than grant authority. Broker requests expire
 after five minutes and also retire when the turn or response channel closes.
 
 The browser displays agent-provided request text, with one-time allow/deny/cancel
 choices, or text, finite number, Boolean, single-choice and multi-choice fields.
-No tool output or full command/diff context is shown in this browser slice.
-Deny requests that cannot be assessed from the displayed text. URLs are not
-made into links. Persistent permission choices are never offered. Form values
-are preserved during status polling but are not stored or restored after page
-navigation/reload. Accepted answers are sent to the configured agent.
+The panel shows bounded, redacted live tool input, proposed before/after diffs,
+status and recorded output. Allow requires the exact current review fingerprint;
+a changed command or diff requires another review. Truncation is disclosed.
+URL questions have separate explicit website-opening and completion actions.
+Persistent permission choices are never offered. Ordinary question drafts are
+restored for the same task/request for up to 24 hours; authentication and URL
+answers are never stored. Accepted answers go to the configured agent.
 
 Responses use `POST /api/tasks/<task-id>/interactions` and the same bearer,
 Host/Origin and JSON checks as all writes. Examples:
 
 ```json
-{"action":"permission","id":"<receipt>","choice":"<offered-once-choice>"}
+{"action":"permission","id":"<receipt>","choice":"<offered-once-choice>","review":"<current-review-fingerprint>"}
 {"action":"permission","id":"<receipt>","choice":null}
 {"action":"input","id":"<receipt>","response":{"action":"accept","values":{"count":2}}}
 {"action":"input","id":"<receipt>","response":{"action":"decline"}}
@@ -98,13 +111,11 @@ schema before consuming its one-shot channel. Successful delivery to the broker
 is not proof that the agent executed a tool or accepted the answer. Stop and
 shutdown cancel pending requests, and restart does not restore approvals.
 
-## Remaining deployment scope
+## Deployment
 
-Only loopback bind addresses are accepted. Remote access, TLS termination,
-deployment/update packaging, and the full web workspace remain outside this
-server slice. The responses are bounded and omit workspace filesystem paths.
-Focused tests cover authentication, Host/Origin checks, readiness, lock
-contention/release, shutdown, private default storage, bounded task reads,
-authenticated task creation and draft updates, one-shot interaction replies,
-queue limits, schema checks and browser draft ownership.
-A deployed remote journey was not exercised.
+For remote HTTPS access, service installation and versioned updates, see
+[Headless deployment](headless-deployment.md). The backend remains loopback-only.
+`--public-origin https://HOST` permits one explicitly configured public origin
+through a local TLS reverse proxy while preserving bearer authentication.
+
+Real production-host TLS/account acceptance remains environment-dependent.

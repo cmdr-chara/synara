@@ -176,6 +176,7 @@ impl Shell {
             return;
         }
         self.selection_revision = self.selection_revision.wrapping_add(1);
+        self.device.retire();
         self.navigation.studio = studio;
         self.navigation.task_page = 0;
         self.navigation
@@ -872,6 +873,7 @@ impl Shell {
                 .insert(previous, self.composer.read(cx).text().to_owned());
         }
         self.selection_revision = self.selection_revision.wrapping_add(1);
+        self.device.retire();
         self.project = Some(project);
         self.snapshot_draft(cx);
         self.selected = None;

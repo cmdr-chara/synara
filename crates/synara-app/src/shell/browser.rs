@@ -1,4 +1,5 @@
 //! Pane-local native controls over the existing browser owner, never a web UI.
+mod authentication;
 mod native;
 use super::*;
 use crate::ui::{self, Glyph, palette};
@@ -21,6 +22,8 @@ pub(super) struct BrowserView {
     pub(super) busy: bool,
     diagnostics_open: bool,
     runtime_diagnostics_open: bool,
+    authentication_flows: BTreeMap<u128, authentication::Flow>,
+    next_authentication_flow: u128,
     _subscription: Subscription,
 }
 impl BrowserView {
@@ -123,6 +126,8 @@ impl BrowserView {
             busy: false,
             diagnostics_open: false,
             runtime_diagnostics_open: false,
+            authentication_flows: BTreeMap::new(),
+            next_authentication_flow: 0,
             _subscription: sub,
         }
     }
@@ -212,14 +217,15 @@ impl Shell {
         cx.notify();
     }
 
-    fn browser_open_popup(&mut self, source: HostTabId, cx: &mut Context<Self>) {
+    fn browser_open_popup(&mut self, source: HostTabId, revision: u64, cx: &mut Context<Self>) {
+        self.browser_tick_authentication(cx);
         if self.browser.selected != Some(source) {
             return;
         }
         match self
             .controller
             .browser
-            .with(|s, now| s.open_manual_popup(source, now))
+            .with(|s, now| s.open_reviewed_popup(source, revision, now))
         {
             Ok((tab, url)) => {
                 self.browser_select(tab, cx);
@@ -369,10 +375,10 @@ impl Shell {
             let id = tab.id;
             let label = format!(
                 "{}{}",
-                if matches!(tab.profile, BrowserProfile::AgentTask { .. }) {
-                    "Agent: "
-                } else {
-                    ""
+                match tab.profile {
+                    BrowserProfile::AgentTask { .. } => "Agent: ",
+                    BrowserProfile::Authentication { .. } => "Sign-in: ",
+                    BrowserProfile::Manual => "",
                 },
                 tab.title
             );
@@ -395,17 +401,7 @@ impl Shell {
                         Some(Glyph::Close),
                         false,
                         cx.listener(move |this, _: &(), _, cx| {
-                            this.browser.error = this
-                                .controller
-                                .browser
-                                .with(|s, _| s.close(id))
-                                .err()
-                                .map(|e| e.to_string());
-                            if this.browser.selected == Some(id) {
-                                this.browser.selected = None;
-                            }
-                            this.browser_save_manual_restore();
-                            cx.notify();
+                            this.browser_close_tab(id, cx);
                         }),
                     )
                     .relative()
@@ -529,6 +525,7 @@ impl Shell {
             )
             .child(tabbar)
             .child(toolbar);
+        pane = pane.child(self.browser_authentication_controls(cx));
         if let Some(tab) = active {
             pane = pane.child(
                 div()
@@ -549,12 +546,17 @@ impl Shell {
         if let Some(error) = &self.browser.error {
             pane = pane.child(div().text_color(rgb(palette().error)).child(error.clone()));
         }
-        if let Some(tab) = active.filter(|tab| tab.profile == BrowserProfile::Manual) {
+        if let Some(tab) = active.filter(|tab| {
+            matches!(
+                tab.profile,
+                BrowserProfile::Manual | BrowserProfile::Authentication { .. }
+            )
+        }) {
             let tab_id = tab.id;
-            if let Ok(Some(preview)) = self
+            if let Ok((Some(preview), revision)) = self
                 .controller
                 .browser
-                .with(|s, _| s.manual_popup_preview(tab_id))
+                .with(|s, _| Ok((s.popup_preview(tab_id)?, s.popup_revision(tab_id)?)))
             {
                 let popup = div()
                     .flex()
@@ -571,7 +573,7 @@ impl Shell {
                                 None,
                                 false,
                                 cx.listener(move |this, _: &(), _, cx| {
-                                    this.browser_open_popup(tab_id, cx)
+                                    this.browser_open_popup(tab_id, revision, cx)
                                 }),
                             ))
                             .child(ui::action(
@@ -583,7 +585,7 @@ impl Shell {
                                     this.browser.error = this
                                         .controller
                                         .browser
-                                        .with(|s, _| s.dismiss_manual_popup(tab_id))
+                                        .with(|s, _| s.dismiss_reviewed_popup(tab_id, revision))
                                         .err()
                                         .map(|e| e.to_string());
                                     cx.notify();
@@ -592,6 +594,9 @@ impl Shell {
                     );
                 pane = pane.child(popup);
             }
+        }
+        if let Some(tab) = active.filter(|tab| tab.profile == BrowserProfile::Manual) {
+            let tab_id = tab.id;
             let diagnostics = self
                 .controller
                 .browser

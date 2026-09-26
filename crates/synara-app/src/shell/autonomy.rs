@@ -27,6 +27,7 @@ pub(super) struct AutonomyView {
     submitted: Option<(String, Option<usize>)>,
     request: Option<GatewayRequest>,
     computer_review: Option<(Uuid, ComputerAction)>,
+    computer_ui: computer_view::ComputerUi,
     windows: Vec<SnapWindow>,
     tools: Option<ComputerTools>,
     preview: Option<(Uuid, Arc<gpui::Image>)>,
@@ -72,6 +73,7 @@ impl AutonomyView {
             submitted: None,
             request: None,
             computer_review: None,
+            computer_ui: computer_view::ComputerUi::new(cx),
             windows: vec![],
             tools: None,
             preview: None,
@@ -142,6 +144,7 @@ impl Shell {
         self.autonomy.busy = false;
         self.autonomy.request = None;
         self.autonomy.computer_review = None;
+        self.autonomy.computer_ui.reset(cx);
         self.autonomy.steer = None;
         self.autonomy.submitted = None;
         self.autonomy.windows.clear();

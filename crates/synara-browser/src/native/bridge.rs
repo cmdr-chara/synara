@@ -49,6 +49,9 @@ impl NativePort for Port {
             Command::Close { tab } => {
                 state.epochs.remove(tab);
             }
+            Command::DismissPopup { tab } => {
+                epoch = *state.epochs.get(tab).ok_or(BrowserError::MissingTab)?;
+            }
             Command::Navigate { tab, .. } | Command::Stop { tab } => {
                 let value = state.epochs.get_mut(tab).ok_or(BrowserError::MissingTab)?;
                 *value = value.checked_add(1).ok_or(BrowserError::Limit)?;

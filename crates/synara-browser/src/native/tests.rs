@@ -77,13 +77,7 @@ fn real_webkit_navigation_consent_input_redirect_and_isolation() {
             let len = stream.read(&mut data).unwrap_or(0);
             let request = String::from_utf8_lossy(&data[..len]).into_owned();
             log.lock().unwrap().push(request.clone());
-            let authentication_page =
-                request.starts_with("GET /auth ") || request.starts_with("GET /auth-again ");
-            let body = if authentication_page {
-                "<!doctype html><title>Authentication fixture</title><style>html,body,a{width:100%;height:100%;margin:0}a{display:flex;align-items:center;justify-content:center}</style><a href='/auth-popup?token=private' target='_blank' onclick=\"document.title='Authentication click received'\">Continue sign-in</a>"
-            } else {
-                "<!doctype html><title>Native browser fixture</title><style>body{min-height:2400px}</style><h1>REAL WEBKIT PAGE</h1><input aria-label='Name'><button onclick=\"document.querySelector('h1').textContent='Clicked '+document.querySelector('input').value\">Apply</button><script>window.__synaraRefs='page-forgery';</script>"
-            };
+            let body = "<!doctype html><title>Native browser fixture</title><style>body{min-height:2400px}</style><h1>REAL WEBKIT PAGE</h1><input aria-label='Name'><button onclick=\"document.querySelector('h1').textContent='Clicked '+document.querySelector('input').value\">Apply</button><script>window.__synaraRefs='page-forgery';</script>";
             let response = if request.starts_with("GET /redirect ") {
                 format!(
                     "HTTP/1.1 302 Found\r\nLocation: {forbidden}\r\nContent-Length: 0\r\nConnection: close\r\n\r\n"
@@ -432,255 +426,13 @@ fn real_webkit_navigation_consent_input_redirect_and_isolation() {
         ),
         "redirect did not fail closed"
     );
-
-    // Authentication tabs use a separate ephemeral partition. Cookies must be
-    // continuous inside one reviewed sign-in flow, unavailable to Manual/Agent
-    // profiles, and shared with a popup only after explicit host approval.
-    let auth_flow = 41;
-    let auth = session
-        .open(BrowserProfile::Authentication { flow: auth_flow })
-        .unwrap();
-    session
-        .user_navigate(auth, &format!("{base}/auth"), NavigationKind::Push, now())
-        .unwrap();
-    for _ in 0..1000 {
-        pump(&mut host, &mut session);
-        if session
-            .tabs()
-            .iter()
-            .any(|t| t.id == auth && t.state == "ready")
-        {
-            break;
-        }
-        std::thread::sleep(Duration::from_millis(10));
-    }
-    assert!(
-        session
-            .tabs()
-            .iter()
-            .any(|t| t.id == auth && t.state == "ready")
-    );
-    let first_auth = requests
-        .lock()
-        .unwrap()
-        .iter()
-        .find(|r| r.starts_with("GET /auth "))
-        .unwrap()
-        .clone();
-    assert!(
-        !first_auth.to_lowercase().contains("cookie:"),
-        "authentication profile inherited another profile's cookies"
-    );
-    session
-        .user_navigate(
-            auth,
-            &format!("{base}/auth-again"),
-            NavigationKind::Push,
-            now(),
-        )
-        .unwrap();
-    for _ in 0..1000 {
-        pump(&mut host, &mut session);
-        let request_seen = requests
-            .lock()
-            .unwrap()
-            .iter()
-            .any(|r| r.starts_with("GET /auth-again "));
-        let ready = session
-            .tabs()
-            .iter()
-            .any(|tab| tab.id == auth && tab.state == "ready");
-        if request_seen && ready {
-            break;
-        }
-        std::thread::sleep(Duration::from_millis(10));
-    }
-    assert!(
-        requests
-            .lock()
-            .unwrap()
-            .iter()
-            .any(|r| r.starts_with("GET /auth-again ")
-                && r.to_lowercase().contains("cookie: fixture=manual")),
-        "authentication profile did not retain its own cookie"
-    );
-    assert!(
-        session
-            .tabs()
-            .iter()
-            .any(|tab| tab.id == auth && tab.state == "ready"),
-        "authentication continuation did not finish loading"
-    );
-
-    // Exercise the real user-gesture popup path. Scripted window.open calls are
-    // intentionally not treated as equivalent to a person clicking a sign-in link.
-    host.viewport(Some(auth), Some(ViewportRect::logical(0., 0., 800., 600.)));
-    assert!(host.views[&auth].webview.webview().is_visible());
-    window.present();
-    window.activate_focus();
-    host.views[&auth].webview.webview().grab_focus();
-    let map_deadline = Instant::now() + Duration::from_secs(5);
-    while !host.views[&auth].webview.webview().is_mapped() {
-        pump(&mut host, &mut session);
-        assert!(
-            Instant::now() < map_deadline,
-            "authentication WebKit view did not map before trusted input"
-        );
-        std::thread::sleep(Duration::from_millis(10));
-    }
-    pump(&mut host, &mut session);
-    {
-        use x11rb::{
-            connection::Connection,
-            protocol::{xproto::ConnectionExt as _, xtest::ConnectionExt as _},
-        };
-
-        let gdk_window = host.views[&auth]
-            .webview
-            .webview()
-            .window()
-            .expect("authentication WebKit view must have an X11 window");
-        let (origin_x, origin_y, _) = gdk_window.origin();
-        let (connection, screen) = x11rb::connect(None).expect("connect to private X11 display");
-        let root = connection.setup().roots[screen].root;
-        let x = i16::try_from(origin_x + 400).expect("authentication click x fits X11");
-        let y = i16::try_from(origin_y + 300).expect("authentication click y fits X11");
-        connection
-            .warp_pointer(x11rb::NONE, root, 0, 0, 0, 0, x, y)
-            .expect("queue pointer move")
-            .check()
-            .expect("move pointer over authentication link");
-        connection
-            .xtest_fake_input(4, 1, x11rb::CURRENT_TIME, root, x, y, 0)
-            .expect("queue authentication press")
-            .check()
-            .expect("press authentication link");
-        connection
-            .xtest_fake_input(5, 1, x11rb::CURRENT_TIME, root, x, y, 0)
-            .expect("queue authentication release")
-            .check()
-            .expect("release authentication link");
-        connection.flush().expect("flush authentication click");
-    }
-
-    let popup_url = format!("{base}/auth-popup?token=private");
-    let click_end = Instant::now() + Duration::from_secs(5);
-    loop {
-        pump(&mut host, &mut session);
-        if session
-            .tabs()
-            .iter()
-            .any(|tab| tab.id == auth && tab.title == "Authentication click received")
-        {
-            break;
-        }
-        assert!(
-            Instant::now() < click_end,
-            "trusted X11 click did not reach the authentication WebKit page"
-        );
-        std::thread::sleep(Duration::from_millis(10));
-    }
-    let end = Instant::now() + Duration::from_secs(8);
-    loop {
-        pump(&mut host, &mut session);
-        if session
-            .authentication_popup_preview(auth)
-            .unwrap()
-            .is_some()
-        {
-            break;
-        }
-        assert!(
-            Instant::now() < end,
-            "authentication popup request timed out after trusted page gesture"
-        );
-        std::thread::sleep(Duration::from_millis(10));
-    }
-    assert_eq!(
-        session
-            .authentication_popup_preview(auth)
-            .unwrap()
-            .as_deref(),
-        Some(format!("{base}/auth-popup").as_str())
-    );
-    assert!(
-        !requests
-            .lock()
-            .unwrap()
-            .iter()
-            .any(|r| r.starts_with("GET /auth-popup?token=private ")),
-        "authentication popup navigated before explicit host approval"
-    );
-
-    let (popup, reviewed_url) = session.open_authentication_popup(auth, now()).unwrap();
-    assert_eq!(reviewed_url, popup_url);
-    assert_eq!(
-        session
-            .tabs()
-            .iter()
-            .find(|tab| tab.id == popup)
-            .unwrap()
-            .profile,
-        BrowserProfile::Authentication { flow: auth_flow }
-    );
-    for _ in 0..1000 {
-        pump(&mut host, &mut session);
-        if requests
-            .lock()
-            .unwrap()
-            .iter()
-            .any(|r| r.starts_with("GET /auth-popup?token=private "))
-        {
-            break;
-        }
-        std::thread::sleep(Duration::from_millis(10));
-    }
-    assert!(
-        requests
-            .lock()
-            .unwrap()
-            .iter()
-            .any(|r| r.starts_with("GET /auth-popup?token=private ")
-                && r.to_lowercase().contains("cookie: fixture=manual")),
-        "approved authentication popup did not keep the sign-in flow partition"
-    );
-    let auth_key = profile_key(StoragePartition::Authentication(auth_flow));
-    assert!(host.profiles.contains_key(&auth_key));
-    session.close(auth).unwrap();
-    pump(&mut host, &mut session);
-    assert!(
-        host.profiles.contains_key(&auth_key),
-        "authentication storage was dropped while its popup was still open"
-    );
-    session.close(popup).unwrap();
-    pump(&mut host, &mut session);
-    assert!(
-        !host.profiles.contains_key(&auth_key),
-        "authentication storage survived the last sign-in tab"
-    );
-
     session.shutdown_task(7);
     pump(&mut host, &mut session);
     assert!(host.views.keys().all(|id| *id != tab));
     assert!(host.profiles.keys().all(|key| key != "task-7"));
     println!(
-        "REAL_WEBKIT_ACCEPTANCE: manual load, isolated cookies, consent, document, fill, click, approved scroll, stale references, redirect fence, reviewed authentication popup lifecycle and teardown passed"
+        "REAL_WEBKIT_ACCEPTANCE: manual load, isolated cookies, consent, document, fill, click, approved scroll, stale references, redirect fence, teardown passed"
     );
-}
-
-#[test]
-fn popup_callbacks_are_enabled_only_for_manual_and_authentication_partitions() {
-    for (partition, expected) in [
-        (StoragePartition::Manual, true),
-        (StoragePartition::Authentication(7), true),
-        (StoragePartition::AgentTask(7), false),
-    ] {
-        let popup_review = matches!(
-            partition,
-            StoragePartition::Manual | StoragePartition::Authentication(_)
-        );
-        assert_eq!(popup_review, expected);
-    }
 }
 
 #[test]
@@ -790,4 +542,285 @@ fn a_selected_tab_row_without_a_view_never_maps_the_native_surface() {
     host.reap();
     assert!(!host.tabs.contains_key(&tab));
     assert!(host.visible_bounds().is_none());
+}
+
+/// Real WebKitGTK authentication flow with cookie-backed session state and a
+/// denied-by-default popup that the trusted host reopens in the same partition.
+#[test]
+#[ignore = "requires WebKitGTK 4.1 and an isolated X11 display"]
+fn real_webkit_authentication_login_session_and_popup() {
+    use std::{
+        io::{Read, Write},
+        net::TcpListener,
+        sync::Mutex,
+    };
+
+    gtk::init().unwrap();
+    let requests = Arc::new(Mutex::new(Vec::<String>::new()));
+    let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+    let base = format!("http://{}", listener.local_addr().unwrap());
+    let log = requests.clone();
+    std::thread::spawn(move || {
+        for stream in listener.incoming().take(32) {
+            let mut stream = stream.unwrap();
+            stream
+                .set_read_timeout(Some(Duration::from_secs(2)))
+                .unwrap();
+            let mut data = [0; 8192];
+            let len = stream.read(&mut data).unwrap_or(0);
+            let request = String::from_utf8_lossy(&data[..len]).into_owned();
+            log.lock().unwrap().push(request.clone());
+            let request_line = request.lines().next().unwrap_or_default();
+            let (headers, body) = if request_line.starts_with("GET /login ") {
+                (
+                    "Set-Cookie: synara_auth=accepted; Path=/; HttpOnly\r\n",
+                    "<!doctype html><title>Login</title><h1>Authenticated</h1><form method='post' action='/authenticated'><input name='proof' value='opener'></form><script>addEventListener('message',event=>{if(event.origin===location.origin&&event.data==='oauth-complete')document.querySelector('form').submit()});setTimeout(()=>window.open('/oauth?code=secret','oauth'),250)</script>",
+                )
+            } else if request_line.starts_with("GET /oauth?code=secret ") {
+                (
+                    "Set-Cookie: synara_oauth=complete; Path=/; HttpOnly\r\n",
+                    "<!doctype html><title>OAuth</title><h1>OAuth complete</h1><script>window.opener.postMessage('oauth-complete',location.origin)</script>",
+                )
+            } else if request_line.starts_with("POST /authenticated ") {
+                (
+                    "",
+                    "<!doctype html><title>Popup callback accepted</title><h1>Authenticated by original opener POST</h1>",
+                )
+            } else {
+                (
+                    "",
+                    "<!doctype html><title>Session</title><h1>Session check</h1>",
+                )
+            };
+            let response = format!(
+                "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n{headers}Content-Length: {}\r\nConnection: close\r\n\r\n{body}",
+                body.len()
+            );
+            let _ = stream.write_all(response.as_bytes());
+        }
+    });
+
+    let root = tempfile::tempdir().unwrap();
+    let (mut host, port) = NativeHost::new(root.path().to_path_buf());
+    host.initialized = true;
+    host.shared.ready.store(true, Ordering::Release);
+    let mut session = Session::new(port);
+    let window = gtk::Window::new(gtk::WindowType::Toplevel);
+    window.set_default_size(800, 600);
+    let container = gtk::Fixed::new();
+    window.add(&container);
+    window.show_all();
+    let clock = Instant::now();
+    let now = || clock.elapsed().as_millis() as u64;
+    let pump = |host: &mut NativeHost, session: &mut Session| {
+        host.reap();
+        while let Ok(delivery) = host.commands.try_recv() {
+            host.dispatch(delivery, |builder| builder.build_gtk(&container));
+        }
+        for _ in 0..32 {
+            if !gtk::events_pending() {
+                break;
+            }
+            gtk::main_iteration_do(false);
+        }
+        for event in host.drain_events() {
+            let _ = session.event_at(event, now());
+        }
+        session.tick(now());
+    };
+    let wait_ready = |host: &mut NativeHost, session: &mut Session, tab: HostTabId| {
+        let end = Instant::now() + Duration::from_secs(20);
+        loop {
+            pump(host, session);
+            if session
+                .tabs()
+                .iter()
+                .any(|view| view.id == tab && view.state == "ready")
+            {
+                break;
+            }
+            assert!(Instant::now() < end, "authentication page timed out");
+            std::thread::sleep(Duration::from_millis(10));
+        }
+    };
+
+    let profile = BrowserProfile::Authentication { flow: 77 };
+    let source = session.open(profile).unwrap();
+    session
+        .user_navigate(
+            source,
+            &format!("{base}/login"),
+            NavigationKind::Push,
+            now(),
+        )
+        .unwrap();
+    wait_ready(&mut host, &mut session, source);
+
+    let popup_deadline = Instant::now() + Duration::from_secs(20);
+    loop {
+        pump(&mut host, &mut session);
+        if session.popup_preview(source).unwrap().is_some() {
+            break;
+        }
+        assert!(
+            Instant::now() < popup_deadline,
+            "authentication popup was not captured"
+        );
+        std::thread::sleep(Duration::from_millis(10));
+    }
+    let popup_preview = format!("{base}/oauth");
+    assert_eq!(
+        session.popup_preview(source).unwrap().as_deref(),
+        Some(popup_preview.as_str())
+    );
+    assert!(
+        !requests
+            .lock()
+            .unwrap()
+            .iter()
+            .any(|request| request.starts_with("GET /oauth?code=secret ")),
+        "capturing a popup must not contact its destination before approval"
+    );
+
+    let (popup, popup_url) = session.open_popup(source, now()).unwrap();
+    assert_eq!(popup_url, format!("{base}/oauth?code=secret"));
+    assert_eq!(
+        session
+            .tabs()
+            .iter()
+            .find(|view| view.id == popup)
+            .unwrap()
+            .profile,
+        profile
+    );
+    wait_ready(&mut host, &mut session, popup);
+
+    let callback_deadline = Instant::now() + Duration::from_secs(20);
+    loop {
+        pump(&mut host, &mut session);
+        if session.tabs().iter().any(|tab| {
+            tab.id == source && tab.state == "ready" && tab.title == "Popup callback accepted"
+        }) {
+            break;
+        }
+        assert!(
+            Instant::now() < callback_deadline,
+            "native popup opener/postMessage callback and original POST did not complete"
+        );
+        std::thread::sleep(Duration::from_millis(10));
+    }
+
+    session
+        .user_navigate(
+            source,
+            &format!("{base}/session"),
+            NavigationKind::Push,
+            now(),
+        )
+        .unwrap();
+    wait_ready(&mut host, &mut session, source);
+
+    let manual = session.open(BrowserProfile::Manual).unwrap();
+    session
+        .user_navigate(
+            manual,
+            &format!("{base}/session"),
+            NavigationKind::Push,
+            now(),
+        )
+        .unwrap();
+    wait_ready(&mut host, &mut session, manual);
+
+    let other_flow = session
+        .open(BrowserProfile::Authentication { flow: 78 })
+        .unwrap();
+    session
+        .user_navigate(
+            other_flow,
+            &format!("{base}/session-other-flow"),
+            NavigationKind::Push,
+            now(),
+        )
+        .unwrap();
+    wait_ready(&mut host, &mut session, other_flow);
+
+    // Closing the opener must preserve the authenticated popup's live session.
+    let auth_key = profile_key(profile.storage_partition());
+    let auth_directory = host.profiles[&auth_key]
+        ._directory
+        .as_ref()
+        .unwrap()
+        .path()
+        .to_path_buf();
+    session.close(source).unwrap();
+    pump(&mut host, &mut session);
+    assert!(host.profiles.contains_key(&auth_key));
+    assert!(auth_directory.is_dir());
+    session
+        .user_navigate(
+            popup,
+            &format!("{base}/session-retained"),
+            NavigationKind::Push,
+            now(),
+        )
+        .unwrap();
+    wait_ready(&mut host, &mut session, popup);
+
+    // The final tab owns the ephemeral profile. Reusing its flow ID after close
+    // must create a fresh session, even while another auth flow remains alive.
+    session.close(popup).unwrap();
+    pump(&mut host, &mut session);
+    assert!(!host.profiles.contains_key(&auth_key));
+    assert!(!auth_directory.exists());
+    let reopened = session.open(profile).unwrap();
+    session
+        .user_navigate(
+            reopened,
+            &format!("{base}/session-reopened"),
+            NavigationKind::Push,
+            now(),
+        )
+        .unwrap();
+    wait_ready(&mut host, &mut session, reopened);
+
+    let requests = requests.lock().unwrap();
+    assert!(
+        requests
+            .iter()
+            .any(|request| request.starts_with("POST /authenticated ")),
+        "sign-in form method was not preserved"
+    );
+    let oauth = requests
+        .iter()
+        .find(|request| request.starts_with("GET /oauth?code=secret "))
+        .expect("OAuth popup request");
+    assert!(oauth.contains("synara_auth=accepted"));
+    let sessions: Vec<_> = requests
+        .iter()
+        .filter(|request| request.starts_with("GET /session "))
+        .collect();
+    assert!(sessions.len() >= 2);
+    assert!(sessions[0].contains("synara_auth=accepted"));
+    assert!(sessions[0].contains("synara_oauth=complete"));
+    assert!(!sessions.last().unwrap().contains("synara_auth=accepted"));
+    assert!(!sessions.last().unwrap().contains("synara_oauth=complete"));
+    let retained = requests
+        .iter()
+        .find(|request| request.starts_with("GET /session-retained "))
+        .expect("live popup session request");
+    assert!(retained.contains("synara_auth=accepted"));
+    assert!(retained.contains("synara_oauth=complete"));
+    for path in ["/session-other-flow", "/session-reopened"] {
+        let request_line = format!("GET {path} ");
+        let request = requests
+            .iter()
+            .find(|request| request.starts_with(&request_line))
+            .expect("isolated authentication session request");
+        assert!(!request.contains("synara_auth=accepted"), "{path}");
+        assert!(!request.contains("synara_oauth=complete"), "{path}");
+    }
+
+    println!(
+        "AUTH_WEBKIT_ACCEPTANCE: login cookie, explicit popup, shared auth session, manual isolation, pre-network popup approval, flow isolation, live-session retention, final-close cleanup"
+    );
 }

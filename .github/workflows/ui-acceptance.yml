@@ -9,6 +9,7 @@ on:
       - 'crates/synara-workspace/src/settings/**'
       - 'scripts/native_electron_theme_smoke.py'
       - 'scripts/native_smoke.py'
+      - 'scripts/validate_a10_live_evidence.py'
       - '.github/workflows/ui-acceptance.yml'
   workflow_dispatch:
     inputs:
@@ -48,6 +49,8 @@ jobs:
           rustup toolchain install 1.98.1 --profile minimal --component rustfmt
           sudo apt-get update -qq
           sudo apt-get install -y -qq clang cmake pkg-config libasound2-dev libxcb1-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libvulkan-dev libegl1-mesa-dev libfontconfig1-dev libfreetype-dev libssl-dev libclang-dev libzstd-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libwebkit2gtk-4.1-dev libgtk-3-dev xvfb mesa-vulkan-drivers libxtst6 python3-pil xclip fonts-dejavu-core fonts-liberation
+      - name: Validate live-evidence parser
+        run: python3 scripts/validate_a10_live_evidence.py --self-test
       - name: Build actual GPUI app and owned ACP fixture
         run: cargo +1.98.1 build --locked -p synara-app --bin synara-app -p synara-acp --bin synara-acp-fixture
       - name: Exercise real theme paint and keyboard interaction

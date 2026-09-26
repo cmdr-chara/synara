@@ -150,7 +150,6 @@ pub struct NativeHost {
     views: BTreeMap<HostTabId, NativeTab>,
     profiles: BTreeMap<String, Profile>,
     pending_popups: Rc<RefCell<BTreeMap<HostTabId, popup::Pending>>>,
-    popup_filter: Rc<RefCell<Option<webkit2gtk::UserContentFilter>>>,
     tabs: BTreeMap<HostTabId, StoragePartition>,
     running: Rc<RefCell<BTreeMap<HostRequestId, Running>>>,
     commands: mpsc::Receiver<bridge::Delivery>,
@@ -173,7 +172,6 @@ impl NativeHost {
                 views: BTreeMap::new(),
                 profiles: BTreeMap::new(),
                 pending_popups: Rc::new(RefCell::new(BTreeMap::new())),
-                popup_filter: Rc::new(RefCell::new(None)),
                 tabs: BTreeMap::new(),
                 running: Rc::new(RefCell::new(BTreeMap::new())),
                 commands,
@@ -493,7 +491,6 @@ impl NativeHost {
         let popup_shared = shared.clone();
         let popup_events = events.clone();
         let pending_popups = self.pending_popups.clone();
-        let popup_filter = self.popup_filter.clone();
         let allowed_navigation = allowed.clone();
         let downloads = self.context(partition)?.downloads.clone();
         let download_route = downloads.clone();
@@ -507,7 +504,6 @@ impl NativeHost {
                         url,
                         features.opener.webview,
                         pending_popups.clone(),
-                        popup_filter.clone(),
                         popup_shared.clone(),
                         popup_events.clone(),
                         tab,
@@ -754,18 +750,6 @@ impl NativeHost {
         // Acceptance tests assert that a cross-origin redirect never reaches its target.
         if let Some((_, pending)) = pending_popup.as_ref() {
             pending.activate(&web, tab, navigation, epoch);
-        } else if authentication {
-            popup::protected_load(
-                web.clone(),
-                document.canonical_url.clone(),
-                self.root.clone(),
-                self.popup_filter.clone(),
-                self.shared.clone(),
-                self.events.clone(),
-                tab,
-                navigation,
-                epoch,
-            )?;
         } else {
             web.load_uri(&document.canonical_url);
         }

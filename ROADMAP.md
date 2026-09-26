@@ -15,7 +15,7 @@ Detailed parity evidence lives in:
 - Acceptance/integration remaining: **0**
 - Total remaining: **0**
 - Completely missing top-level surfaces: **0**
-- Broad verification gates still open: **19**
+- Evidence-only verification buckets still collecting proof: **19**
 
 The execution inventory is **complete**. The 19 open verification gates are
 larger evidence/acceptance buckets and are not a feature count or a reason to
@@ -45,7 +45,7 @@ cookie import (`efc85372a2ae`), M09 agent-owned upload/download
 buckets and therefore stay OPEN until their listed platform/provider evidence is
 complete.
 
-## Major features remaining
+## Major features
 
 - [x] M01 Web workspace provider connection/sign-in
 - [x] M02 Rich web approval context for tools, commands and diffs
@@ -78,7 +78,7 @@ complete.
 - [x] M29 Binary PDF/document attachment pipeline and broader document viewing
 - [x] M30 Studio historical output versioning and long-running lifecycle
 
-## Smaller features remaining
+## Smaller features
 
 - [x] S01 Provider-specific onboarding setup/login UX
 - [x] S02 Voice interaction controls beyond record/transcribe-to-draft
@@ -99,7 +99,7 @@ complete.
 - [x] S17 Studio organization/filtering polish
 - [x] S18 PDF text/link/form interaction after basic rendering
 
-## Acceptance/integration remaining
+## Acceptance/integration
 
 This ledger is complete at the product/code level. Real-provider, hardware and
 hosted-platform observations remain useful evidence, but they do not keep an

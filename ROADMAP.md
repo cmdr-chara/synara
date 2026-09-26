@@ -9,15 +9,15 @@ Detailed parity evidence lives in:
 
 ## Current status
 
-- Shipped feature slices: **77**
-- Major remaining: **16**
+- Shipped feature slices: **83**
+- Major remaining: **10**
 - Smaller remaining: **0**
 - Acceptance/integration remaining: **5**
-- Total remaining: **21**
+- Total remaining: **15**
 - Completely missing top-level surfaces: **0**
 - Broad verification gates still open: **21**
 
-The **21-item count is the execution count to use going forward**. The 21 verification
+The **15-item count is the execution count to use going forward**. The 21 verification
 gates are larger acceptance buckets and are not a feature count.
 
 Current upstream reference: `Emanuele-web04/synara@eaa61eded31b6755d4f30ba8eabc5d905cf817cb`.
@@ -28,21 +28,21 @@ journeys and the cancelled WebKit job remain unverified.
 
 ## Major features remaining
 
-- [ ] M01 Web workspace provider connection/sign-in
-- [ ] M02 Rich web approval context for tools, commands and diffs
+- [x] M01 Web workspace provider connection/sign-in
+- [x] M02 Rich web approval context for tools, commands and diffs
 - [x] M03 Durable web question drafts across navigation/restart
 - [x] M04 Direct-model execution from the web workspace
 - [x] M05 Remote workspace execution
-- [ ] M06 Production headless deployment with bind/TLS/update packaging
+- [x] M06 Production headless deployment with bind/TLS/update packaging
 - [ ] M07 Protected browser session/cookie import
-- [ ] M08 Complete browser popup authentication lifecycle
+- [x] M08 Complete browser popup authentication lifecycle
 - [ ] M09 Agent-controlled browser upload/download
 - [x] M10 Browser console/runtime diagnostics
 - [ ] M11 Safe restoration of task/auth browser sessions
 - [ ] M12 Page-declared WebMCP integration
-- [ ] M13 Simulator live frame streaming
+- [x] M13 Simulator live frame streaming
 - [ ] M14 Simulator touch, swipe, typing and hardware-button input
-- [ ] M15 Simulator recording
+- [x] M15 Simulator recording
 - [ ] M16 Simulator accessibility tree and semantic element targeting
 - [x] M17 Editor syntax highlighting
 - [x] M18 Advanced editor conflict recovery
@@ -100,12 +100,11 @@ not large new product subsystems.
 
 Finish whole workflows instead of spreading work across every gate:
 
-1. **Web workspace:** M01-M02, M06
-2. **Browser/auth:** M07-M09, M11-M12
-3. **Simulator:** M13-M16 when the required macOS/native input backend is available
-4. **Provider/context:** M25-M26
-5. **Computer Use:** M27
-6. **Releases/updater:** M28
+1. **Browser/auth:** M07, M09, M11-M12
+2. **Simulator:** M14, M16 when the required macOS/native input backend is available
+3. **Provider/context:** M25-M26
+4. **Computer Use:** M27
+5. **Releases/updater:** M28
 
 ## Shipped
 
@@ -538,6 +537,21 @@ Verification receipts:
   denied. The lane also passed strict browser formatting/Clippy and source
   identity checks. M07, M08 and M11 remain separate product-depth gaps.
 
+
+- Batch 37: six product features complete: M01 adds explicit task-owned web
+  provider connection/reconnection and advertised authentication, including
+  scoped questions and reviewed URLs. M02 adds live bounded tool input, proposed
+  diffs and exact-context approval receipts. M06 adds an explicit HTTPS origin,
+  local TLS proxy/service configuration and versioned Linux headless packaging,
+  activation and rollback. M08 adds request-owned private sign-in tabs, reviewed
+  native popups preserving opener callbacks and POSTs, and full request/close/
+  timeout cleanup. M13 adds a bounded latest-frame Simulator stream; M15 adds
+  explicit MOV recording with stop/save/discard and navigation cancellation.
+  Computer Use also gains screenshot targeting, drag, scroll, typing/key controls,
+  window filtering and takeover; M27 remains open for broader platform support.
+  New native browser and Simulator paths await platform CI/live acceptance;
+  account, signed-updater and broad verification gates remain separate.
+  See the [batch 37 receipt](docs/verification/parity-2026-09-26-batch37.md).
 
 ## How to update this roadmap
 

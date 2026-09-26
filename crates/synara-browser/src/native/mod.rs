@@ -5,6 +5,7 @@
 mod bridge;
 mod manual_capture;
 mod manual_downloads;
+mod popup;
 mod surface;
 #[cfg(test)]
 mod tests;
@@ -148,6 +149,8 @@ impl Events {
 pub struct NativeHost {
     views: BTreeMap<HostTabId, NativeTab>,
     profiles: BTreeMap<String, Profile>,
+    pending_popups: Rc<RefCell<BTreeMap<HostTabId, popup::Pending>>>,
+    approved_popups: Rc<RefCell<BTreeMap<HostTabId, popup::Approved>>>,
     tabs: BTreeMap<HostTabId, StoragePartition>,
     running: Rc<RefCell<BTreeMap<HostRequestId, Running>>>,
     commands: mpsc::Receiver<bridge::Delivery>,
@@ -169,6 +172,8 @@ impl NativeHost {
             Self {
                 views: BTreeMap::new(),
                 profiles: BTreeMap::new(),
+                pending_popups: Rc::new(RefCell::new(BTreeMap::new())),
+                approved_popups: Rc::new(RefCell::new(BTreeMap::new())),
                 tabs: BTreeMap::new(),
                 running: Rc::new(RefCell::new(BTreeMap::new())),
                 commands,
@@ -281,6 +286,14 @@ impl NativeHost {
         events
     }
     fn reap(&mut self) {
+        self.pending_popups.borrow_mut().retain(|source, popup| {
+            self.shared.epoch(*source) == Some(popup.epoch) && Instant::now() < popup.expires
+        });
+        self.approved_popups.borrow_mut().retain(|source, popup| {
+            self.shared.epoch(*source) == Some(popup.source_epoch)
+                && self.shared.epoch(popup.tab) == Some(popup.epoch)
+                && Instant::now() < popup.expires
+        });
         self.views
             .retain(|tab, view| self.shared.epoch(*tab) == Some(view.epoch));
         self.tabs.retain(|tab, _| self.shared.epoch(*tab).is_some());
@@ -375,12 +388,16 @@ impl NativeHost {
                 }
             }
             Command::Close { .. } | Command::Stop { .. } | Command::Cancel { .. } => self.reap(),
+            Command::DismissPopup { tab } => {
+                self.pending_popups.borrow_mut().remove(&tab);
+            }
             Command::Navigate {
                 tab,
                 navigation,
                 document,
                 partition,
                 allowed_origin,
+                popup_source,
             } => {
                 if self.shared.epoch(tab) != Some(epoch) {
                     return;
@@ -395,6 +412,7 @@ impl NativeHost {
                     document,
                     partition,
                     allowed_origin,
+                    popup_source,
                     build,
                 );
                 if let Err(error) = result {
@@ -438,10 +456,31 @@ impl NativeHost {
         document: CommittedDocument,
         partition: StoragePartition,
         allowed: Option<CanonicalOrigin>,
+        popup_source: Option<HostTabId>,
         build: impl FnOnce(WebViewBuilder<'_>) -> wry::Result<WebView>,
     ) -> std::result::Result<(), String> {
         document.validate().map_err(|e| e.to_string())?;
         let agent = matches!(partition, StoragePartition::AgentTask(_));
+        let authentication = matches!(partition, StoragePartition::Authentication(_));
+        let mut pending_popup = if let Some(source) = popup_source {
+            if !authentication || self.tabs.get(&source) != Some(&partition) {
+                return Err("Sign-in popup does not belong to this flow".into());
+            }
+            let pending = self
+                .pending_popups
+                .borrow_mut()
+                .remove(&source)
+                .ok_or("Sign-in popup expired. Request it again on the sign-in page.")?;
+            if self.shared.epoch(source) != Some(pending.epoch)
+                || pending.url != document.canonical_url
+                || Instant::now() >= pending.expires
+            {
+                return Err("The reviewed sign-in popup is no longer current".into());
+            }
+            Some((source, pending))
+        } else {
+            None
+        };
         let manual = partition == StoragePartition::Manual;
         if agent && allowed.as_ref() != Some(&document.origin) {
             return Err("Missing approved navigation origin".into());
@@ -455,62 +494,100 @@ impl NativeHost {
         let popup_ready = completed.clone();
         let popup_shared = shared.clone();
         let popup_events = events.clone();
+        let approved_popups = self.approved_popups.clone();
         let allowed_navigation = allowed.clone();
         let downloads = self.context(partition)?.downloads.clone();
         let download_route = downloads.clone();
-        let builder = WebViewBuilder::new_with_web_context(&mut self.context(partition)?.context)
-            .with_focused(false)
-            .with_visible(false)
-            .with_devtools(manual)
-            .with_new_window_req_handler(move |url, _| {
-                if matches!(
-                    partition,
-                    StoragePartition::Manual | StoragePartition::Authentication(_)
-                ) && popup_ready.get()
-                    && popup_shared.epoch(tab) == Some(epoch)
-                {
-                    popup_events.emit(Event::PopupRequested {
-                        tab,
-                        navigation,
-                        url,
-                    });
-                }
-                wry::NewWindowResponse::Deny
-            })
-            .with_download_started_handler(move |url, path| {
-                manual && download_route.destination(&url, path)
-            })
-            .with_navigation_handler(move |url| {
-                if shared.epoch(tab) != Some(epoch) {
-                    return false;
-                }
-                let Ok(doc) = CommittedDocument::parse(&url) else {
-                    return false;
-                };
-                if finished.get() {
-                    if partition == StoragePartition::Manual {
-                        events.emit(Event::ManualNavigation {
+        let related = popup_source
+            .and_then(|source| self.views.get(&source).map(|view| view.webview.webview()));
+        let mut builder =
+            WebViewBuilder::new_with_web_context(&mut self.context(partition)?.context)
+                .with_focused(false)
+                .with_visible(false)
+                .with_devtools(manual)
+                .with_new_window_req_handler(move |url, _| {
+                    if authentication {
+                        if let Some(approved) = approved_popups.borrow_mut().remove(&tab)
+                            && approved.source_epoch == epoch
+                            && popup_shared.epoch(tab) == Some(epoch)
+                            && popup_shared.epoch(approved.tab) == Some(approved.epoch)
+                            && CommittedDocument::parse(&url)
+                                .is_ok_and(|doc| doc.canonical_url == approved.url)
+                        {
+                            return wry::NewWindowResponse::Create {
+                                webview: approved.webview,
+                            };
+                        }
+                        return wry::NewWindowResponse::Deny;
+                    }
+                    if matches!(
+                        partition,
+                        StoragePartition::Manual | StoragePartition::Authentication(_)
+                    ) && popup_ready.get()
+                        && popup_shared.epoch(tab) == Some(epoch)
+                    {
+                        popup_events.emit(Event::PopupRequested {
                             tab,
                             navigation,
-                            url: doc.canonical_url,
+                            url,
                         });
                     }
-                    return false;
-                }
-                let allow = approved_origin_allows(allowed_navigation.as_ref(), &doc);
-                if !allow {
-                    events.emit(Event::Failed {
-                        tab,
-                        navigation,
-                        error: "Navigation to an unapproved origin was denied".into(),
-                    });
-                }
-                allow
-            });
+                    wry::NewWindowResponse::Deny
+                })
+                .with_download_started_handler(move |url, path| {
+                    manual && download_route.destination(&url, path)
+                })
+                .with_navigation_handler(move |url| {
+                    if shared.epoch(tab) != Some(epoch) {
+                        return false;
+                    }
+                    let Ok(doc) = CommittedDocument::parse(&url) else {
+                        return false;
+                    };
+                    if finished.get() {
+                        if authentication {
+                            // Keep this webview alive so POST bodies, redirects and
+                            // the provider's in-page state survive the sign-in flow.
+                            return true;
+                        }
+                        if partition == StoragePartition::Manual {
+                            events.emit(Event::ManualNavigation {
+                                tab,
+                                navigation,
+                                url: doc.canonical_url,
+                            });
+                        }
+                        return false;
+                    }
+                    let allow = approved_origin_allows(allowed_navigation.as_ref(), &doc);
+                    if !allow {
+                        events.emit(Event::Failed {
+                            tab,
+                            navigation,
+                            error: "Navigation to an unapproved origin was denied".into(),
+                        });
+                    }
+                    allow
+                });
+        if let Some(related) = related {
+            builder = builder.with_related_view(related);
+        }
         let view =
             build(builder).map_err(|e| format!("Could not create native WebKit view: {e}"))?;
         let web = view.webview();
         harden(&web, partition);
+        if authentication {
+            popup::defer(
+                &web,
+                self.pending_popups.clone(),
+                self.shared.clone(),
+                self.events.clone(),
+                completed.clone(),
+                tab,
+                navigation,
+                epoch,
+            );
+        }
         if partition == StoragePartition::Manual {
             observe_manual_runtime_diagnostics(
                 &web,
@@ -581,9 +658,23 @@ impl NativeHost {
         let shared = self.shared.clone();
         let events = self.events.clone();
         let done = completed.clone();
+        let loading_popups = self.pending_popups.clone();
+        let loading_approved_popups = self.approved_popups.clone();
         web.connect_load_changed(move |web, event| {
+            if authentication
+                && done.get()
+                && event == webkit2gtk::LoadEvent::Started
+                && shared.epoch(tab) == Some(epoch)
+            {
+                // Load signals describe the main frame. An iframe request must
+                // not start a top-level timeout or discard a reviewed popup.
+                loading_popups.borrow_mut().remove(&tab);
+                loading_approved_popups.borrow_mut().remove(&tab);
+                events.emit(Event::AuthenticationLoading { tab, navigation });
+                return;
+            }
             if event != webkit2gtk::LoadEvent::Finished
-                || done.get()
+                || (done.get() && !authentication)
                 || shared.epoch(tab) != Some(epoch)
             {
                 return;
@@ -602,28 +693,55 @@ impl NativeHost {
                 });
                 return;
             }
-            done.set(true);
+            let subsequent = done.replace(true);
             *current_document.borrow_mut() = Some(doc.clone());
-            events.emit(Event::Committed {
-                tab,
-                navigation,
-                url: doc.canonical_url,
-                title: bounded_title(web.title().as_deref().unwrap_or("")),
-            });
+            let event = if authentication && subsequent {
+                Event::AuthenticationCommitted {
+                    tab,
+                    navigation,
+                    url: doc.canonical_url,
+                    title: bounded_title(web.title().as_deref().unwrap_or("")),
+                }
+            } else {
+                Event::Committed {
+                    tab,
+                    navigation,
+                    url: doc.canonical_url,
+                    title: bounded_title(web.title().as_deref().unwrap_or("")),
+                }
+            };
+            events.emit(event);
         });
         let shared = self.shared.clone();
         let events = self.events.clone();
         let failed = completed.clone();
         web.connect_load_failed(move |_, _, _, error| {
-            if shared.epoch(tab) == Some(epoch) && !failed.replace(true) {
-                events.emit(Event::Failed {
-                    tab,
-                    navigation,
-                    error: error.to_string().chars().take(500).collect(),
-                });
+            if shared.epoch(tab) == Some(epoch) {
+                if !failed.replace(true) {
+                    events.emit(Event::Failed {
+                        tab,
+                        navigation,
+                        error: if authentication {
+                            "Sign-in page could not be loaded".into()
+                        } else {
+                            error.to_string().chars().take(500).collect()
+                        },
+                    });
+                } else if authentication {
+                    events.emit(Event::AuthenticationFailed { tab, navigation });
+                }
             }
             true // Suppress engine-generated error pages, keep the native error row authoritative.
         });
+        if authentication {
+            let shared = self.shared.clone();
+            let events = self.events.clone();
+            web.connect_close(move |_| {
+                if shared.epoch(tab) == Some(epoch) {
+                    events.emit(Event::CloseRequested { tab, navigation });
+                }
+            });
+        }
         let shared = self.shared.clone();
         let events = self.events.clone();
         web.connect_web_process_terminated(move |_, _| {
@@ -649,7 +767,24 @@ impl NativeHost {
         });
         // The native navigation policy is installed before the first network request.
         // Acceptance tests assert that a cross-origin redirect never reaches its target.
-        web.load_uri(&document.canonical_url);
+        if let Some((source, pending)) = pending_popup.as_mut() {
+            self.approved_popups.borrow_mut().insert(
+                *source,
+                popup::Approved {
+                    source_epoch: pending.epoch,
+                    tab,
+                    epoch,
+                    url: document.canonical_url.clone(),
+                    webview: web.clone(),
+                    expires: Instant::now() + Duration::from_secs(30),
+                },
+            );
+            if let Some(decision) = pending.decision.take() {
+                decision.use_();
+            }
+        } else {
+            web.load_uri(&document.canonical_url);
+        }
         self.views.insert(
             tab,
             NativeTab {
@@ -757,6 +892,8 @@ impl NativeHost {
 impl Drop for NativeHost {
     fn drop(&mut self) {
         self.shared.ready.store(false, Ordering::Release);
+        self.pending_popups.borrow_mut().clear();
+        self.approved_popups.borrow_mut().clear();
         for run in self.running.borrow().values() {
             run.flag.store(true, Ordering::Release);
             run.cancellable.cancel();

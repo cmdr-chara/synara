@@ -44,7 +44,9 @@ impl Shell {
     }
     #[cfg(target_os = "linux")]
     fn pump_native_browser(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        self.browser_tick_authentication(cx);
         let events = self.browser.native.borrow_mut().pump(window);
+        self.browser_tick_authentication(cx);
         let changed = !events.is_empty();
         for event in events {
             // Stale callbacks after cancellation/close are expected and never restore authority.

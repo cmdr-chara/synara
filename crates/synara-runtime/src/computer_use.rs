@@ -319,17 +319,57 @@ fn valid_typed_text(text: &str) -> bool {
                 )
         })
 }
+
+/// Map a click on a contained screenshot to the original window pixels.
+/// Letterbox margins never become input coordinates. Preview resizing changes
+/// presentation only, not the observed window's coordinate space or authority.
+pub fn computer_preview_point(
+    x: f32,
+    y: f32,
+    viewport_width: f32,
+    viewport_height: f32,
+    window_width: u32,
+    window_height: u32,
+) -> Option<(u32, u32)> {
+    if ![x, y, viewport_width, viewport_height]
+        .into_iter()
+        .all(f32::is_finite)
+        || viewport_width <= 0.
+        || viewport_height <= 0.
+        || window_width == 0
+        || window_height == 0
+    {
+        return None;
+    }
+    let scale = (viewport_width / window_width as f32).min(viewport_height / window_height as f32);
+    let left = (viewport_width - window_width as f32 * scale) / 2.;
+    let top = (viewport_height - window_height as f32 * scale) / 2.;
+    let pixel_x = (x - left) / scale;
+    let pixel_y = (y - top) / scale;
+    (pixel_x >= 0.
+        && pixel_y >= 0.
+        && pixel_x < window_width as f32
+        && pixel_y < window_height as f32)
+        .then(|| (pixel_x.floor() as u32, pixel_y.floor() as u32))
+}
+
 #[derive(Clone)]
 pub struct ComputerTools {
     capture: SnapTools,
 }
 impl ComputerTools {
-    /// Setup inspects installed helpers only. Nothing is downloaded or launched.
-    pub fn setup() -> Result<Self, RuntimeError> {
-        let capture = SnapTools::setup()?;
+    /// Read-only readiness check. Does not discover or capture any window.
+    pub fn support() -> Result<(), RuntimeError> {
+        SnapTools::setup()?;
         if !Path::new("/usr/bin/xdotool").is_file() {
             return Err(RuntimeError::Unsupported("Computer Use requires the installed /usr/bin/xdotool helper in addition to AppSnap. No automatic install or fallback".into()));
         }
+        Ok(())
+    }
+    /// Setup inspects installed helpers only. Nothing is downloaded or launched.
+    pub fn setup() -> Result<Self, RuntimeError> {
+        Self::support()?;
+        let capture = SnapTools::setup()?;
         Ok(Self { capture })
     }
     pub async fn discover(
@@ -420,6 +460,42 @@ impl ComputerTools {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn preview_points_respect_contain_scaling_and_reject_margins() {
+        assert_eq!(
+            computer_preview_point(100., 100., 400., 200., 200, 200),
+            Some((0, 100))
+        );
+        assert_eq!(
+            computer_preview_point(99., 100., 400., 200., 200, 200),
+            None
+        );
+        assert_eq!(
+            computer_preview_point(300., 100., 400., 200., 200, 200),
+            None
+        );
+        assert_eq!(
+            computer_preview_point(100., 150., 200., 400., 400, 200),
+            Some((200, 0))
+        );
+        assert_eq!(
+            computer_preview_point(100., 149., 200., 400., 400, 200),
+            None
+        );
+        assert_eq!(
+            computer_preview_point(100., 250., 200., 400., 400, 200),
+            None
+        );
+        assert_eq!(
+            computer_preview_point(199.9, 199.9, 200., 200., 400, 400),
+            Some((399, 399))
+        );
+        assert_eq!(
+            computer_preview_point(f32::NAN, 0., 200., 200., 200, 200),
+            None
+        );
+        assert_eq!(computer_preview_point(0., 0., 0., 200., 200, 200), None);
+    }
     #[test]
     fn every_input_command_is_explicitly_window_addressed() {
         for action in [

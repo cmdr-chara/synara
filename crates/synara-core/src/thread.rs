@@ -41,6 +41,8 @@ pub struct Tool {
     pub title: String,
     pub status: ToolStatus,
     pub kind: Option<String>,
+    #[serde(default)]
+    pub input: Option<ToolInput>,
     pub output: Vec<ToolOutput>,
 }
 
@@ -293,6 +295,9 @@ impl Thread {
                 }
                 if let Some(kind) = &patch.kind {
                     tool.kind = Some(kind.clone());
+                }
+                if let Some(input) = &patch.input {
+                    tool.input = Some(input.clone());
                 }
                 if let Some(output) = &patch.output {
                     tool.output.clone_from(output);

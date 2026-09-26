@@ -19,6 +19,34 @@ pub(super) struct MediaState {
     automatic: HashSet<EventId>,
     pub saving: bool,
 }
+
+struct ImageExportSelection {
+    task: TaskId,
+    project: Option<ProjectId>,
+    revision: u64,
+    thread: ThreadId,
+    image: EventId,
+}
+
+impl ImageExportSelection {
+    fn matches(
+        &self,
+        close: CloseState,
+        selected: Option<TaskId>,
+        project: Option<ProjectId>,
+        revision: u64,
+        thread: Option<&Thread>,
+    ) -> bool {
+        close == CloseState::Open
+            && selected == Some(self.task)
+            && project == self.project
+            && revision == self.revision
+            && thread.is_some_and(|thread| {
+                thread.id == self.thread && thread.images.iter().any(|image| image.id == self.image)
+            })
+    }
+}
+
 impl Shell {
     pub(super) fn sync_transcript_media(&mut self, cx: &mut Context<Self>) {
         if self.media.task != self.selected {
@@ -117,12 +145,18 @@ impl Shell {
             return;
         }
         let Some(task) = self.selected else { return };
-        let Some(media) = self
-            .thread
-            .as_ref()
-            .and_then(|t| t.images.iter().find(|m| m.id == id))
-        else {
+        let Some(thread) = self.thread.as_ref() else {
             return;
+        };
+        let Some(media) = thread.images.iter().find(|m| m.id == id) else {
+            return;
+        };
+        let selection = ImageExportSelection {
+            task,
+            project: self.project,
+            revision: self.selection_revision,
+            thread: thread.id,
+            image: id,
         };
         let name = format!(
             "synara-image-{id}.{}",
@@ -134,21 +168,45 @@ impl Shell {
         );
         self.media.saving = true;
         let picker = cx.prompt_for_new_path(&self.scratch_directory, Some(&name));
-        cx.spawn(async move |view,cx| {
-            let chosen=picker.await;
-            let _=view.update(cx,|this,cx| {
+        cx.spawn(async move |view, cx| {
+            let chosen = picker.await;
+            let _ = view.update(cx, |this, cx| {
                 match chosen {
-                    Ok(Ok(Some(path)))=>{
-                        let workspace=this.controller.workspace.clone();
-                        this.job(async move {Ok(Update::RichMedia(Box::new(Reply::Exported(
-                            workspace.export_transcript_image(task,id,path).await.map_err(|e|e.to_string())))))});
+                    Ok(Ok(Some(path))) => {
+                        if !selection.matches(
+                            this.close,
+                            this.selected,
+                            this.project,
+                            this.selection_revision,
+                            this.thread.as_ref(),
+                        ) {
+                            this.media.saving = false;
+                            this.notice = Some(
+                                "Image export cancelled because its source selection changed or the application is closing.".into(),
+                            );
+                            cx.notify();
+                            return;
+                        }
+                        let workspace = this.controller.workspace.clone();
+                        this.job(async move {
+                            Ok(Update::RichMedia(Box::new(Reply::Exported(
+                                workspace
+                                    .export_transcript_image(task, id, path)
+                                    .await
+                                    .map_err(|e| e.to_string()),
+                            ))))
+                        });
                     }
-                    Ok(Ok(None))=>this.media.saving=false,
-                    _=>{this.media.saving=false;this.error=Some("The system save dialog is unavailable. The original image remains in this transcript.".into());},
+                    Ok(Ok(None)) => this.media.saving = false,
+                    _ => {
+                        this.media.saving = false;
+                        this.error = Some("The system save dialog is unavailable. The original image remains in this transcript.".into());
+                    }
                 }
                 cx.notify();
             });
-        }).detach();
+        })
+        .detach();
         cx.notify();
     }
     pub(super) fn message_media(
@@ -271,5 +329,75 @@ impl Shell {
             }
         }
         root.into_any_element()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn export_selection() -> (ImageExportSelection, Thread) {
+        let mut thread = Thread::new(ThreadId::new());
+        let image = EventId::new();
+        thread.images.push(MessageImage {
+            id: image,
+            message_id: "image".into(),
+            role: Role::Assistant,
+            image: TranscriptImage {
+                source: ImageSource::AgentReturned,
+                mime_type: "image/png".into(),
+                base64: "AAAA".into(),
+            },
+        });
+        let selection = ImageExportSelection {
+            task: TaskId::new(),
+            project: Some(ProjectId::new()),
+            revision: 7,
+            thread: thread.id,
+            image,
+        };
+        (selection, thread)
+    }
+
+    #[test]
+    fn image_save_picker_rejects_navigation_including_away_and_back() {
+        let (selection, thread) = export_selection();
+        let matches = |close, task, project, revision| {
+            selection.matches(close, task, project, revision, Some(&thread))
+        };
+        let task = Some(selection.task);
+        let project = selection.project;
+        assert!(matches(CloseState::Open, task, project, 7));
+        assert!(!matches(CloseState::Review, task, project, 7));
+        assert!(!matches(CloseState::WaitingForSave, task, project, 7));
+        assert!(!matches(CloseState::Open, None, project, 7));
+        assert!(!matches(CloseState::Open, Some(TaskId::new()), project, 7));
+        assert!(!matches(CloseState::Open, task, None, 7));
+        assert!(!matches(CloseState::Open, task, Some(ProjectId::new()), 7));
+        // Returning to the original task must not revive the pending picker.
+        assert!(!matches(CloseState::Open, task, project, 9));
+    }
+
+    #[test]
+    fn image_save_picker_requires_the_original_thread_and_image() {
+        let (selection, mut thread) = export_selection();
+        let matches = |thread: Option<&Thread>| {
+            selection.matches(
+                CloseState::Open,
+                Some(selection.task),
+                selection.project,
+                selection.revision,
+                thread,
+            )
+        };
+        assert!(!matches(None));
+        assert!(matches(Some(&thread)));
+        thread.id = ThreadId::new();
+        assert!(!matches(Some(&thread)));
+        thread.id = selection.thread;
+        thread.images[0].id = EventId::new();
+        assert!(!matches(Some(&thread)));
+        thread.images.clear();
+        assert!(!matches(Some(&thread)));
     }
 }

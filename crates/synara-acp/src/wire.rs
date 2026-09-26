@@ -453,6 +453,84 @@ pub(crate) fn update(
     }
     Ok(events)
 }
+fn reviewed_tool_input(value: &Value) -> ToolInput {
+    use sha2::{Digest, Sha256};
+    fn project(value: &Value, depth: usize, budget: &mut usize, clipped: &mut bool) -> Value {
+        if depth > 8 || *budget == 0 {
+            *clipped = true;
+            return Value::String("[omitted]".into());
+        }
+        *budget -= 1;
+        match value {
+            Value::Object(fields) => {
+                let mut result = serde_json::Map::new();
+                for (key, value) in fields.iter().take(32) {
+                    let name = key.to_ascii_lowercase();
+                    let sensitive = [
+                        "secret",
+                        "password",
+                        "token",
+                        "authorization",
+                        "cookie",
+                        "api_key",
+                        "apikey",
+                        "credential",
+                    ]
+                    .iter()
+                    .any(|part| name.contains(part))
+                        || matches!(name.as_str(), "env" | "environment" | "headers");
+                    if sensitive {
+                        result.insert(
+                            key.chars().take(128).collect(),
+                            Value::String("[redacted]".into()),
+                        );
+                        *clipped = true;
+                    } else {
+                        result.insert(
+                            key.chars().take(128).collect(),
+                            project(value, depth + 1, budget, clipped),
+                        );
+                    }
+                    *clipped |= key.chars().count() > 128;
+                }
+                *clipped |= fields.len() > 32;
+                Value::Object(result)
+            }
+            Value::Array(values) => {
+                *clipped |= values.len() > 32;
+                Value::Array(
+                    values
+                        .iter()
+                        .take(32)
+                        .map(|value| project(value, depth + 1, budget, clipped))
+                        .collect(),
+                )
+            }
+            Value::String(text) => {
+                *clipped |= text.chars().count() > 4096;
+                Value::String(text.chars().take(4096).collect())
+            }
+            value => value.clone(),
+        }
+    }
+    let mut truncated = false;
+    let projected = project(value, 0, &mut 256, &mut truncated);
+    let text = serde_json::to_string_pretty(&projected).unwrap_or_default();
+    let mut boundary = text.len().min(8192);
+    while !text.is_char_boundary(boundary) {
+        boundary -= 1;
+    }
+    truncated |= boundary < text.len();
+    ToolInput {
+        text: text[..boundary].to_owned(),
+        truncated,
+        digest: format!(
+            "{:x}",
+            Sha256::digest(serde_json::to_vec(value).unwrap_or_default())
+        ),
+    }
+}
+
 pub(crate) fn tool_patch(value: &Value) -> AgentResult<ToolPatch> {
     let status = value
         .get("status")
@@ -512,6 +590,7 @@ pub(crate) fn tool_patch(value: &Value) -> AgentResult<ToolPatch> {
         title: optional_string(value, "title"),
         status,
         kind: optional_string(value, "kind"),
+        input: value.get("rawInput").map(reviewed_tool_input),
         output,
     })
 }

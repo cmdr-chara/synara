@@ -34,6 +34,10 @@ async fn main() -> Result<()> {
         None => default_database_path()?,
     };
     let config = ServerConfig::new(options.bind, options.port, database_path, token);
+    let config = match options.public_origin.as_deref() {
+        Some(origin) => config.with_public_origin(origin)?,
+        None => config,
+    };
     let config = if private_database_directory {
         config.with_private_database_directory()
     } else {
@@ -53,7 +57,7 @@ async fn main() -> Result<()> {
     );
     let ready = tokio::select! {
         result = server.wait_ready() => Some(result),
-        signal = tokio::signal::ctrl_c() => {
+        signal = shutdown_signal() => {
             signal.context("could not listen for shutdown signal")?;
             None
         }
@@ -72,11 +76,29 @@ async fn main() -> Result<()> {
             return Ok(());
         }
     }
-    tracing::info!("Synara workspace recovery completed; read-only task browser is ready");
-    tokio::signal::ctrl_c()
+    tracing::info!("Synara workspace recovery completed; web workspace is ready");
+    shutdown_signal()
         .await
         .context("could not listen for shutdown signal")?;
     server.shutdown().await
+}
+
+async fn shutdown_signal() -> Result<()> {
+    #[cfg(unix)]
+    {
+        let mut terminate =
+            tokio::signal::unix::signal(tokio::signal::unix::SignalKind::terminate())?;
+        tokio::select! {
+            result = tokio::signal::ctrl_c() => result?,
+            _ = terminate.recv() => {},
+        }
+        Ok(())
+    }
+    #[cfg(not(unix))]
+    {
+        tokio::signal::ctrl_c().await?;
+        Ok(())
+    }
 }
 
 struct Options {
@@ -84,6 +106,7 @@ struct Options {
     port: u16,
     database_path: Option<PathBuf>,
     token_file: Option<PathBuf>,
+    public_origin: Option<String>,
     automations: bool,
     help: bool,
 }
@@ -102,6 +125,7 @@ where
         port: DEFAULT_PORT,
         database_path: None,
         token_file: None,
+        public_origin: None,
         automations: false,
         help: false,
     };
@@ -119,7 +143,10 @@ where
             .split_once('=')
             .map(|(flag, value)| (flag.to_owned(), Some(value.to_owned())))
             .unwrap_or_else(|| (arg, None));
-        if !matches!(flag.as_str(), "--bind" | "--port" | "--db" | "--token-file") {
+        if !matches!(
+            flag.as_str(),
+            "--bind" | "--port" | "--db" | "--token-file" | "--public-origin"
+        ) {
             bail!("unknown argument: {flag}");
         }
         let value = match inline_value {
@@ -133,6 +160,7 @@ where
             "--port" => options.port = parse_port(&value)?,
             "--db" => options.database_path = Some(PathBuf::from(value)),
             "--token-file" => options.token_file = Some(PathBuf::from(value)),
+            "--public-origin" => options.public_origin = Some(value),
             _ => bail!("unknown argument: {flag}"),
         }
     }
@@ -158,7 +186,7 @@ fn parse_port(value: &str) -> Result<u16> {
 fn print_usage() {
     println!(
         "Synara native headless workspace server\n\
-         Usage: synara-server [--bind 127.0.0.1] [--port 17341] [--db PATH] [--token-file PATH] [--automations]\n\
+         Usage: synara-server [--bind 127.0.0.1] [--port 17341] [--db PATH] [--token-file PATH] [--public-origin https://HOST] [--automations]\n\
          The server only binds loopback addresses. Set SYNARA_SERVER_TOKEN or provide a\n\
          private token file with 32 or more printable ASCII characters. The token is never\n\
          printed or logged. A token file must not be accessible by group or other users.\n\
@@ -167,6 +195,8 @@ fn print_usage() {
          in the desktop app; startup fails while another process owns it. Its parent\n\
          directory permissions are your responsibility.\n\
          SYNARA_SERVER_DB can set the database path when --db is omitted.\n\
+         --public-origin permits exactly that HTTPS Host/Origin through a local TLS proxy.\n\
+         The backend remains loopback-only. Forwarded headers never grant authority.\n\
          --automations explicitly arms enabled saved automations in this server process.\n\
          Without it, saved schedules remain disarmed. The workspace owner lock prevents\n\
          desktop and headless processes from scheduling the same database concurrently.\n\

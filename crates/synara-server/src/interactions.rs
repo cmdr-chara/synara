@@ -1,12 +1,13 @@
 //! Ephemeral, task-scoped web presentation of the existing agent interaction broker.
-//! No remembered approvals, provider login links, or connection-scoped authority.
+//! Login requests retain the exact active web authentication connection owner.
 use super::*;
 use std::collections::VecDeque;
 use synara_agent::{
     InteractionBroker, InteractionScope, UiInteraction, validate_input, validate_input_request,
 };
 use synara_core::{
-    EventId, PermissionKind, TaskId, Thread, ThreadId, Tool, ToolOutput, UserInputResponse,
+    ConnectionId, EventId, PermissionKind, TaskId, Thread, ThreadId, Tool, ToolOutput,
+    UserInputResponse,
 };
 use tokio::sync::{Mutex, mpsc};
 
@@ -101,7 +102,13 @@ fn tool_context(tool: &Tool, thread: &Thread) -> serde_json::Value {
     serde_json::json!({
         "title": tool.title.chars().take(2000).collect::<String>(),
         "kind": tool.kind.as_deref().map(|value| value.chars().take(100).collect::<String>()),
+        "status": tool.status,
+        "input": tool.input.as_ref().map(|input| serde_json::json!({
+            "text":input.text.chars().take(3000).collect::<String>(),
+            "truncated":input.truncated || input.text.chars().count() > 3000,
+        })),
         "diffs": diffs,
+        "diffs_omitted": tool.output.iter().filter(|output| matches!(output, ToolOutput::Diff { .. })).count().saturating_sub(2),
         "details": details,
     })
 }
@@ -111,11 +118,11 @@ fn public_view(
     tool: Option<&Tool>,
     thread: Option<&Thread>,
 ) -> Option<serde_json::Value> {
-    if interaction.context().scope != InteractionScope::Session {
-        return None;
-    }
     let value = match interaction {
         UiInteraction::Permission { request, .. } => {
+            if interaction.context().scope != InteractionScope::Session {
+                return None;
+            }
             if request.choices.len() > 64 || request.title.is_empty() || request.title.len() > 8192
             {
                 return None;
@@ -149,18 +156,48 @@ fn public_view(
             if unique.len() != request.choices.len() {
                 return None;
             }
+            let context = tool
+                .zip(thread)
+                .map(|(tool, thread)| tool_context(tool, thread));
+            let exact = tool.map(|tool| serde_json::json!({"tool":tool,"shown":context}));
+            let review = format!("{:x}", Sha256::digest(serde_json::to_vec(&exact).ok()?));
             serde_json::json!({"id":id,"kind":"permission","title":request.title,"choices":choices,
-                "tool":tool.zip(thread).map(|(tool, thread)| tool_context(tool, thread)),"tool_id":request.tool_id.as_deref().map(|value| value.chars().take(128).collect::<String>())})
+                "tool":context,"review":review,"tool_id":request.tool_id.as_deref().map(|value| value.chars().take(128).collect::<String>())})
         }
         UiInteraction::Input { request, .. } => {
-            // Website/connection authentication is a separate product trust boundary.
-            if request.url.is_some() || validate_input_request(request).is_err() {
+            if validate_input_request(request).is_err() {
                 return None;
             }
-            serde_json::json!({"id":id,"kind":"input","title":request.message,"fields":request.fields})
+            let connection = matches!(interaction.context().scope, InteractionScope::Connection(_));
+            serde_json::json!({"id":id,"kind":if request.url.is_some() {"url"} else {"input"},
+                "title":request.message,"fields":request.fields,"url":request.url,
+                "connection_scoped":connection,"persist_draft":!connection && request.url.is_none()})
         }
     };
     (serde_json::to_vec(&value).ok()?.len() <= MAX_ITEM_BYTES).then_some(value)
+}
+fn belongs(
+    interaction: &UiInteraction,
+    thread: ThreadId,
+    connection: Option<ConnectionId>,
+) -> bool {
+    match interaction.context().scope {
+        InteractionScope::Session => interaction.context().thread_id == thread,
+        InteractionScope::Connection(id) => {
+            connection == Some(id) && matches!(interaction, UiInteraction::Input { .. })
+        }
+    }
+}
+async fn active_connection(
+    state: &AppState,
+    runtime: &RuntimeServices,
+    task: TaskId,
+) -> Option<ConnectionId> {
+    let current = runtime.controller.details(task).await.ok()??;
+    state
+        .providers
+        .connection(task, current.connection.id)
+        .await
 }
 fn task_id(path: &str) -> Option<TaskId> {
     let id = path
@@ -188,12 +225,13 @@ pub(super) async fn get(path: &str, state: &AppState) -> Response {
     let Ok(thread) = runtime.workspace.thread(task.thread_id).await else {
         return error(503, "interactions_unavailable");
     };
+    let connection = active_connection(state, runtime, task.id).await;
     let mut inbox = state.interactions.inbox.lock().await;
     inbox.refresh();
     let pending: Vec<_> = inbox
         .pending
         .iter()
-        .filter(|(_, interaction)| interaction.context().thread_id == task.thread_id)
+        .filter(|(_, interaction)| belongs(interaction, task.thread_id, connection))
         .collect();
     let items: Vec<_> = pending
         .iter()
@@ -222,6 +260,8 @@ enum Reply {
     Permission {
         id: String,
         choice: Option<String>,
+        #[serde(default)]
+        review: Option<String>,
     },
     Input {
         id: String,
@@ -235,10 +275,19 @@ impl Reply {
         }
     }
 }
+#[cfg(test)]
 fn answer(inbox: &mut Inbox, thread: ThreadId, reply: Reply) -> Response {
+    answer_owned(inbox, thread, None, reply)
+}
+fn answer_owned(
+    inbox: &mut Inbox,
+    thread: ThreadId,
+    connection: Option<ConnectionId>,
+    reply: Reply,
+) -> Response {
     inbox.refresh();
     let Some(index) = inbox.pending.iter().position(|(id, interaction)| {
-        id == reply.id() && interaction.context().thread_id == thread && interaction.is_active()
+        id == reply.id() && belongs(interaction, thread, connection) && interaction.is_active()
     }) else {
         return error(409, "interaction_expired");
     };
@@ -303,8 +352,34 @@ pub(super) async fn post(
     let Ok(task) = runtime.workspace.task(id).await else {
         return error(404, "not_found");
     };
+    let connection = active_connection(state, runtime, task.id).await;
+    let thread = match runtime.workspace.thread(task.thread_id).await {
+        Ok(thread) => thread,
+        Err(_) => return error(503, "interactions_unavailable"),
+    };
     let mut inbox = state.interactions.inbox.lock().await;
-    answer(&mut inbox, task.thread_id, reply)
+    inbox.refresh();
+    if let Reply::Permission {
+        id,
+        choice: Some(choice),
+        review,
+    } = &reply
+        && let Some((_, interaction @ UiInteraction::Permission { request, .. })) = inbox
+            .pending
+            .iter()
+            .find(|(receipt, item)| receipt == id && belongs(item, task.thread_id, connection))
+        && request
+            .choices
+            .iter()
+            .any(|option| option.id == *choice && option.kind == PermissionKind::AllowOnce)
+    {
+        let tool = request.tool_id.as_ref().and_then(|id| thread.tools.get(id));
+        let view = public_view(id, interaction, tool, Some(&thread));
+        if view.as_ref().and_then(|value| value["review"].as_str()) != review.as_deref() {
+            return error(409, "tool_context_changed");
+        }
+    }
+    answer_owned(&mut inbox, task.thread_id, connection, reply)
 }
 #[cfg(test)]
 mod tests;

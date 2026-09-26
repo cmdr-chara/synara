@@ -67,6 +67,7 @@ async fn approvals_are_one_shot_thread_scoped_and_never_persistent() {
             &mut inbox,
             ThreadId::new(),
             Reply::Permission {
+                review: None,
                 id: id.clone(),
                 choice: Some("once".into())
             }
@@ -79,6 +80,7 @@ async fn approvals_are_one_shot_thread_scoped_and_never_persistent() {
             &mut inbox,
             thread,
             Reply::Permission {
+                review: None,
                 id: id.clone(),
                 choice: Some("always".into())
             }
@@ -91,6 +93,7 @@ async fn approvals_are_one_shot_thread_scoped_and_never_persistent() {
             &mut inbox,
             thread,
             Reply::Permission {
+                review: None,
                 id: id.clone(),
                 choice: Some("once".into())
             }
@@ -104,6 +107,7 @@ async fn approvals_are_one_shot_thread_scoped_and_never_persistent() {
             &mut inbox,
             thread,
             Reply::Permission {
+                review: None,
                 id,
                 choice: Some("once".into())
             }
@@ -127,6 +131,7 @@ async fn cancelled_closed_connection_and_oversized_requests_never_gain_authority
             &mut inbox,
             thread,
             Reply::Permission {
+                review: None,
                 id,
                 choice: Some("once".into())
             }
@@ -168,8 +173,13 @@ async fn cancelled_closed_connection_and_oversized_requests_never_gain_authority
         .ok()
         .unwrap();
     inbox.refresh();
+    assert_eq!(inbox.pending.len(), 1);
+    assert_eq!(
+        public_view(&inbox.pending[0].0, &inbox.pending[0].1, None, None).unwrap()["kind"],
+        "url"
+    );
+    inbox.pending.clear();
     assert!(rx.await.is_err());
-    assert!(inbox.pending.is_empty());
 }
 #[tokio::test]
 async fn questions_keep_invalid_answers_pending_and_validate_original_schema() {
@@ -310,7 +320,7 @@ async fn api_keeps_auth_origin_task_and_receipt_boundaries() {
         .await
         .unwrap();
     let state = AppState::new("only-a-local-fixture-token-at-least-32-bytes").unwrap();
-    state.install_runtime(workspace, None).await;
+    state.install_runtime(workspace, None, false).await;
     let path = format!("/api/tasks/{}/interactions", task.id);
     let mut request = Request {
         method: "GET".into(),
@@ -361,7 +371,7 @@ async fn api_keeps_auth_origin_task_and_receipt_boundaries() {
     .unwrap();
     request.method = "POST".into();
     request.body =
-        serde_json::to_vec(&serde_json::json!({"action":"permission","id":id,"choice":"once"}))
+        serde_json::to_vec(&serde_json::json!({"action":"permission","id":id,"choice":"once","review":format!("{:x}", Sha256::digest(b"null"))}))
             .unwrap();
     request
         .headers

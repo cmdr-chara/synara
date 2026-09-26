@@ -1,5 +1,7 @@
+mod deployment;
 mod execution;
 mod interactions;
+mod providers;
 use anyhow::{Context, Result, bail, ensure};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
@@ -47,6 +49,7 @@ pub struct ServerConfig {
     pub bind: IpAddr,
     pub port: u16,
     pub database_path: PathBuf,
+    public_origin: Option<deployment::PublicOrigin>,
     private_database_directory: bool,
     run_automations: bool,
     token: String,
@@ -58,6 +61,7 @@ impl ServerConfig {
             bind,
             port,
             database_path,
+            public_origin: None,
             private_database_directory: false,
             run_automations: false,
             token,
@@ -153,12 +157,14 @@ struct RuntimeServices {
 }
 
 struct AppState {
+    public_origin: Option<deployment::PublicOrigin>,
     lifecycle: StdMutex<Lifecycle>,
     lifecycle_tx: watch::Sender<Lifecycle>,
     token_digest: [u8; 32],
     runtime: RwLock<Option<RuntimeServices>>,
     execution: execution::ExecutionOwner,
     interactions: interactions::Owner,
+    providers: providers::Owner,
 }
 
 impl AppState {
@@ -167,12 +173,14 @@ impl AppState {
         let digest: [u8; 32] = Sha256::digest(token.as_bytes()).into();
         let (lifecycle_tx, _) = watch::channel(Lifecycle::Starting);
         Ok(Self {
+            public_origin: None,
             lifecycle: StdMutex::new(Lifecycle::Starting),
             lifecycle_tx,
             token_digest: digest,
             runtime: RwLock::new(None),
             execution: execution::ExecutionOwner::default(),
             interactions: interactions::Owner::default(),
+            providers: providers::Owner::default(),
         })
     }
 
@@ -224,10 +232,11 @@ impl AppState {
         if *lifecycle != Lifecycle::Starting {
             return;
         }
-        let controller = Arc::new(Controller::new(
+        let controller = Arc::new(Controller::with_secret_store(
             workspace.clone(),
             Arc::new(AcpBackend::default()),
             self.interactions.broker.clone(),
+            Arc::new(synara_runtime::NativeSecretStore::new()),
         ));
         let automation = run_automations.then(|| AutomationOwner::start(controller.clone()));
         *runtime = Some(RuntimeServices {
@@ -262,7 +271,9 @@ impl RunningServer {
         let address = listener
             .local_addr()
             .context("could not read bound address")?;
-        let state = Arc::new(AppState::new(&config.token)?);
+        let mut app_state = AppState::new(&config.token)?;
+        app_state.public_origin = config.public_origin.clone();
+        let state = Arc::new(app_state);
         let lifecycle = state.subscribe();
         let stop = CancellationToken::new();
         let listener_task = tokio::spawn(serve(listener, state.clone(), stop.clone()));
@@ -554,6 +565,7 @@ async fn serve(listener: TcpListener, state: Arc<AppState>, stop: CancellationTo
     connections.abort_all();
     while connections.join_next().await.is_some() {}
     state.interactions.close().await;
+    state.providers.shutdown().await;
     let controller_result = if let Some(mut runtime) = state.runtime.write().await.take() {
         if let Some(automation) = runtime.automation.take() {
             automation.shutdown().await;
@@ -713,19 +725,13 @@ async fn dispatch(request: &Request, state: &AppState, local_port: u16) -> Respo
     {
         return bad_request();
     }
-    let Some(host) = request.header("host").and_then(parse_authority) else {
-        return Response::json(421, br#"{"error":"invalid_host"}"#.to_vec());
-    };
-    if host.port != local_port || !is_loopback_name(&host.host) {
-        return Response::json(421, br#"{"error":"invalid_host"}"#.to_vec());
-    }
-    if let Some(origin) = request.header("origin") {
-        let Some(origin) = parse_origin(origin) else {
-            return Response::json(421, br#"{"error":"invalid_origin"}"#.to_vec());
-        };
-        if origin.port != host.port || origin.host != host.host {
-            return Response::json(421, br#"{"error":"invalid_origin"}"#.to_vec());
-        }
+    if let Err(error) =
+        deployment::check_authority(request, state.public_origin.as_ref(), local_port)
+    {
+        return Response::json(
+            421,
+            serde_json::to_vec(&serde_json::json!({"error":error})).unwrap(),
+        );
     }
     if request
         .headers
@@ -807,7 +813,9 @@ async fn dispatch(request: &Request, state: &AppState, local_port: u16) -> Respo
             }
         }
         _ if path.starts_with("/api/tasks/")
-            && (path.ends_with("/run") || path.ends_with("/interactions")) =>
+            && (path.ends_with("/run")
+                || path.ends_with("/interactions")
+                || path.ends_with("/provider")) =>
         {
             if !state.authorized(request.header("authorization")) {
                 return unauthorized();
@@ -818,7 +826,9 @@ async fn dispatch(request: &Request, state: &AppState, local_port: u16) -> Respo
             if request.target != path {
                 return bad_request();
             }
-            if path.ends_with("/interactions") {
+            if path.ends_with("/provider") {
+                providers::get(path, state).await
+            } else if path.ends_with("/interactions") {
                 interactions::get(path, state).await
             } else {
                 execution::dispatch_get(path, state).await
@@ -958,6 +968,9 @@ async fn dispatch_post(path: &str, request: &Request, state: &AppState) -> Respo
         return health_response(Lifecycle::Starting);
     };
     match path {
+        _ if path.starts_with("/api/tasks/") && path.ends_with("/provider") => {
+            providers::post(path, request, state, runtime).await
+        }
         _ if path.starts_with("/api/tasks/") && path.ends_with("/interactions") => {
             interactions::post(path, request, state, runtime).await
         }

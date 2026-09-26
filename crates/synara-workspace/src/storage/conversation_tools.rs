@@ -720,6 +720,7 @@ mod tests {
                     timestamp_ms: 6,
                     event: ThreadEvent::ToolChanged {
                         patch: ToolPatch {
+                            input: None,
                             id: "tool".into(),
                             title: Some("tool title".into()),
                             status: Some(ToolStatus::Completed),

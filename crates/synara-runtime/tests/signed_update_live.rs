@@ -2,6 +2,7 @@
 use sha2::{Digest, Sha256};
 use std::{
     fs,
+    io::{Read, Seek, SeekFrom, Write},
     path::{Path, PathBuf},
     process::Command,
 };
@@ -48,7 +49,17 @@ fn required(name: &str) -> String {
 }
 
 fn sha256(path: &Path) -> String {
-    hex::encode(Sha256::digest(fs::read(path).unwrap()))
+    let mut source = fs::File::open(path).unwrap();
+    let mut digest = Sha256::new();
+    let mut buffer = [0_u8; 64 * 1024];
+    loop {
+        let count = source.read(&mut buffer).unwrap();
+        if count == 0 {
+            break;
+        }
+        digest.update(&buffer[..count]);
+    }
+    hex::encode(digest.finalize())
 }
 
 #[test]
@@ -81,6 +92,19 @@ fn github_oidc_signed_update_installs_and_rolls_back() {
             .is_err()
     );
 
+    // A cryptographically valid bundle is insufficient without the exact
+    // reviewed workflow identity and issuer.
+    let wrong_identity = CosignBundleVerifier {
+        identity: format!("{}-untrusted", verifier.identity),
+        issuer: verifier.issuer.clone(),
+    };
+    assert!(wrong_identity.verify(&manifest, &bundle).is_err());
+    let wrong_issuer = CosignBundleVerifier {
+        identity: verifier.identity.clone(),
+        issuer: "https://untrusted.invalid".into(),
+    };
+    assert!(wrong_issuer.verify(&manifest, &bundle).is_err());
+
     let root = tempfile::tempdir().unwrap();
     let current = root.path().join("current-package");
     let rollback = root.path().join("rollback-package");
@@ -88,8 +112,40 @@ fn github_oidc_signed_update_installs_and_rolls_back() {
     let previous = b"previous signed release placeholder";
     fs::write(&current, previous).unwrap();
 
+    // Keep the signed byte length but corrupt the download. A failed stage
+    // must remove its partial destination and leave the installed bytes alone.
+    let mut source = fs::File::open(&artifact_path).unwrap();
+    let mut first = [0_u8; 1];
+    source.read_exact(&mut first).unwrap();
+    let corrupt = root.path().join("corrupt-package");
+    let changed_prefix = std::io::Cursor::new([first[0] ^ 1]);
+    assert!(
+        update
+            .stage(changed_prefix.chain(source), &corrupt)
+            .is_err()
+    );
+    assert!(!corrupt.exists());
+    assert_eq!(fs::read(&current).unwrap(), previous);
+
     let source = fs::File::open(&artifact_path).unwrap();
     update.stage(source, &staged).unwrap();
+
+    // Replacement must never be authorized from bytes that changed after
+    // staging, even if their path and size still match.
+    let mut staged_file = fs::OpenOptions::new().write(true).open(&staged).unwrap();
+    staged_file.write_all(&[first[0] ^ 1]).unwrap();
+    staged_file.sync_all().unwrap();
+    assert!(
+        update
+            .handoff(staged.clone(), current.clone(), rollback.clone())
+            .is_err()
+    );
+    assert_eq!(fs::read(&current).unwrap(), previous);
+    assert!(!rollback.exists());
+    staged_file.seek(SeekFrom::Start(0)).unwrap();
+    staged_file.write_all(&first).unwrap();
+    staged_file.sync_all().unwrap();
+    drop(staged_file);
     let handoff = update
         .handoff(staged.clone(), current.clone(), rollback.clone())
         .unwrap();
@@ -112,6 +168,8 @@ fn github_oidc_signed_update_installs_and_rolls_back() {
 
     if let Some(path) = std::env::var_os("SYNARA_RELEASE_EVIDENCE") {
         let document = serde_json::json!({
+            "scope": "signed-staging-and-handoff-with-test-directory-replacement",
+            "production_installer_accepted": false,
             "candidate_commit": std::env::var("GITHUB_SHA").ok(),
             "release_version": update.release_version(),
             "platform": update.platform(),
@@ -120,10 +178,14 @@ fn github_oidc_signed_update_installs_and_rolls_back() {
             "checks": [
                 "sigstore-github-oidc-manifest-verification",
                 "tampered-manifest-rejected",
+                "wrong-workflow-identity-rejected",
+                "wrong-oidc-issuer-rejected",
+                "corrupt-artifact-rejected-and-partial-stage-removed",
+                "staged-artifact-tampering-rejected-with-current-preserved",
                 "runtime-artifact-staging",
                 "runtime-handoff-reverification",
-                "install-replacement",
-                "rollback-restoration"
+                "test-directory-package-replacement",
+                "test-directory-rollback-restoration"
             ]
         });
         fs::write(path, serde_json::to_vec_pretty(&document).unwrap()).unwrap();

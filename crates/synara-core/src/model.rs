@@ -240,11 +240,23 @@ pub enum ToolOutput {
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+pub struct ToolInput {
+    /// Bounded agent-reported input for review, never an execution instruction.
+    pub text: String,
+    pub truncated: bool,
+    /// Binds review to the entire reported input, including omitted fields.
+    #[serde(default)]
+    pub digest: String,
+}
+
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 pub struct ToolPatch {
     pub id: String,
     pub title: Option<String>,
     pub status: Option<ToolStatus>,
     pub kind: Option<String>,
+    #[serde(default)]
+    pub input: Option<ToolInput>,
     pub output: Option<Vec<ToolOutput>>,
 }
 

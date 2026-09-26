@@ -197,7 +197,7 @@ fn validate_host(host: &str) -> Result<(), CookieImportError> {
 }
 
 fn valid_cookie_name_byte(byte: u8) -> bool {
-    byte.is_ascii_graphic() && !b"()<>@,;:\\"/[]?={} ".contains(&byte)
+    byte.is_ascii_graphic() && !b"()<>@,;:\\\"/[]?={} ".contains(&byte)
 }
 
 fn open_read_nofollow(path: &Path) -> Result<File, CookieImportError> {

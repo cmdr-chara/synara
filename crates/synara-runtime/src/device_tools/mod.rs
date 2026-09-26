@@ -4,6 +4,7 @@
 //! never grants input, and neither discovery nor a screenshot proves native
 //! input support. Physical Apple devices and Android cold boot are unsupported.
 mod apple;
+mod apple_helper;
 pub(crate) mod command;
 mod recording;
 mod tests;
@@ -12,6 +13,7 @@ use crate::{
     RuntimeError, validate_discovery,
 };
 use serde::{Deserialize, Serialize};
+use serde_json::json;
 use std::path::{Path, PathBuf};
 use tokio_util::sync::CancellationToken;
 pub use tokio_util::sync::CancellationToken as DeviceCancellation;
@@ -58,14 +60,245 @@ impl ToolDevice {
     }
 }
 
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct DeviceUiFrame {
+    pub x: f64,
+    pub y: f64,
+    pub width: f64,
+    pub height: f64,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct DeviceUiPoint {
+    pub x: f64,
+    pub y: f64,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct DeviceUiNode {
+    pub role: String,
+    #[serde(default)]
+    pub subrole: Option<String>,
+    #[serde(default)]
+    pub label: Option<String>,
+    #[serde(default)]
+    pub value: Option<String>,
+    #[serde(default)]
+    pub identifier: Option<String>,
+    #[serde(default)]
+    pub title: Option<String>,
+    pub frame: DeviceUiFrame,
+    #[serde(default)]
+    pub activation_point: Option<DeviceUiPoint>,
+    #[serde(default)]
+    pub enabled: Option<bool>,
+    #[serde(default)]
+    pub children: Vec<DeviceUiNode>,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub struct DeviceAccessibilityTree {
+    pub point_width: f64,
+    pub point_height: f64,
+    pub root: DeviceUiNode,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct DeviceAccessibilityTarget {
+    pub label: String,
+    pub role: String,
+    pub value: Option<String>,
+}
+
+impl DeviceAccessibilityTree {
+    pub fn validate(&self) -> Result<(), RuntimeError> {
+        if !self.point_width.is_finite()
+            || !self.point_height.is_finite()
+            || self.point_width <= 0.0
+            || self.point_height <= 0.0
+            || self.point_width > 20_000.0
+            || self.point_height > 20_000.0
+        {
+            return Err(RuntimeError::Invalid(
+                "invalid accessibility display geometry".into(),
+            ));
+        }
+        let mut count = 0usize;
+        validate_ui_node(&self.root, 0, &mut count)
+    }
+
+    pub fn targets(&self, limit: usize) -> Vec<DeviceAccessibilityTarget> {
+        let mut out = Vec::new();
+        collect_ui_targets(&self.root, limit.min(128), &mut out);
+        out
+    }
+
+    pub fn semantic_pixel_point(
+        &self,
+        label: &str,
+        role: Option<&str>,
+        pixel_width: u32,
+        pixel_height: u32,
+    ) -> Option<(u32, u32)> {
+        if pixel_width == 0 || pixel_height == 0 || label.trim().is_empty() {
+            return None;
+        }
+        let node = find_ui_node(&self.root, label.trim(), role.map(str::trim))?;
+        let point = node.activation_point.clone().unwrap_or(DeviceUiPoint {
+            x: node.frame.x + node.frame.width / 2.0,
+            y: node.frame.y + node.frame.height / 2.0,
+        });
+        if !point.x.is_finite()
+            || !point.y.is_finite()
+            || point.x < 0.0
+            || point.y < 0.0
+            || point.x > self.point_width
+            || point.y > self.point_height
+        {
+            return None;
+        }
+        let x = ((point.x / self.point_width) * f64::from(pixel_width))
+            .floor()
+            .clamp(0.0, f64::from(pixel_width.saturating_sub(1))) as u32;
+        let y = ((point.y / self.point_height) * f64::from(pixel_height))
+            .floor()
+            .clamp(0.0, f64::from(pixel_height.saturating_sub(1))) as u32;
+        Some((x, y))
+    }
+}
+
+fn bounded_ui_text(value: &str, max: usize) -> bool {
+    value.len() <= max && !value.chars().any(|character| character == '\0')
+}
+
+fn validate_ui_node(
+    node: &DeviceUiNode,
+    depth: usize,
+    count: &mut usize,
+) -> Result<(), RuntimeError> {
+    *count = count.checked_add(1).ok_or(RuntimeError::Limit)?;
+    if *count > 4096 || depth > 64 || !bounded_ui_text(&node.role, 128) {
+        return Err(RuntimeError::Limit);
+    }
+    for value in [
+        node.subrole.as_deref(),
+        node.label.as_deref(),
+        node.value.as_deref(),
+        node.identifier.as_deref(),
+        node.title.as_deref(),
+    ]
+    .into_iter()
+    .flatten()
+    {
+        if !bounded_ui_text(value, 1024) {
+            return Err(RuntimeError::Limit);
+        }
+    }
+    for number in [
+        node.frame.x,
+        node.frame.y,
+        node.frame.width,
+        node.frame.height,
+    ] {
+        if !number.is_finite() || number.abs() > 100_000.0 {
+            return Err(RuntimeError::Invalid(
+                "invalid accessibility frame".into(),
+            ));
+        }
+    }
+    if node.frame.width < 0.0 || node.frame.height < 0.0 || node.children.len() > 512 {
+        return Err(RuntimeError::Invalid(
+            "invalid accessibility node".into(),
+        ));
+    }
+    if let Some(point) = &node.activation_point
+        && (!point.x.is_finite()
+            || !point.y.is_finite()
+            || point.x.abs() > 100_000.0
+            || point.y.abs() > 100_000.0)
+    {
+        return Err(RuntimeError::Invalid(
+            "invalid accessibility activation point".into(),
+        ));
+    }
+    for child in &node.children {
+        validate_ui_node(child, depth + 1, count)?;
+    }
+    Ok(())
+}
+
+fn node_label(node: &DeviceUiNode) -> Option<&str> {
+    node.label
+        .as_deref()
+        .filter(|value| !value.trim().is_empty())
+        .or_else(|| node.title.as_deref().filter(|value| !value.trim().is_empty()))
+        .or_else(|| {
+            node.identifier
+                .as_deref()
+                .filter(|value| !value.trim().is_empty())
+        })
+}
+
+fn collect_ui_targets(
+    node: &DeviceUiNode,
+    limit: usize,
+    out: &mut Vec<DeviceAccessibilityTarget>,
+) {
+    if out.len() >= limit {
+        return;
+    }
+    if let Some(label) = node_label(node)
+        && node.enabled.unwrap_or(true)
+        && node.frame.width > 0.0
+        && node.frame.height > 0.0
+    {
+        out.push(DeviceAccessibilityTarget {
+            label: label.to_owned(),
+            role: node.role.clone(),
+            value: node.value.clone(),
+        });
+    }
+    for child in &node.children {
+        collect_ui_targets(child, limit, out);
+        if out.len() >= limit {
+            break;
+        }
+    }
+}
+
+fn find_ui_node<'a>(
+    node: &'a DeviceUiNode,
+    label: &str,
+    role: Option<&str>,
+) -> Option<&'a DeviceUiNode> {
+    let label_matches = node_label(node).is_some_and(|candidate| candidate.eq_ignore_ascii_case(label));
+    let role_matches = role
+        .filter(|value| !value.is_empty())
+        .is_none_or(|expected| node.role.eq_ignore_ascii_case(expected));
+    if label_matches && role_matches && node.enabled.unwrap_or(true) {
+        return Some(node);
+    }
+    node.children
+        .iter()
+        .find_map(|child| find_ui_node(child, label, role))
+}
+
 /// A user-configured executable, not a PATH lookup or downloaded helper.
 #[derive(Clone, Debug)]
 pub struct DeviceTools {
     pub backend: DeviceBackend,
     executable: PathBuf,
+    apple_helper: Option<PathBuf>,
 }
 impl DeviceTools {
-    pub fn new(backend: DeviceBackend, adb: Option<&Path>) -> Result<Self, RuntimeError> {
+    pub fn new(
+        backend: DeviceBackend,
+        adb: Option<&Path>,
+        apple_helper: Option<&Path>,
+    ) -> Result<Self, RuntimeError> {
         let executable = match backend {
             DeviceBackend::Android => adb
                 .ok_or_else(|| {
@@ -85,6 +318,7 @@ impl DeviceTools {
         Ok(Self {
             backend,
             executable,
+            apple_helper: apple_helper.map(Path::to_path_buf),
         })
     }
     pub async fn discover(

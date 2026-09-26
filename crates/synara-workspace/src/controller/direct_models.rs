@@ -160,6 +160,30 @@ impl Controller {
         }
         Ok(())
     }
+    pub async fn direct_provider_telemetry(
+        &self,
+        provider_id: String,
+        revision: u64,
+    ) -> WorkspaceResult<synara_model::ProviderTelemetry> {
+        let _gate = self.integrations_gate.read().await;
+        let settings = self.workspace.direct_model_settings().await?;
+        if settings.revision != revision {
+            return Err(WorkspaceError::Invalid(
+                "Provider settings changed. Reload before refreshing live account data.".into(),
+            ));
+        }
+        let profile = settings
+            .providers
+            .iter()
+            .find(|p| p.id == provider_id)
+            .ok_or(WorkspaceError::NotFound)?;
+        HttpModelProvider::new()
+            .map_err(model_error)?
+            .account_telemetry(profile, self.secrets.as_ref(), CancellationToken::new())
+            .await
+            .map_err(model_error)
+    }
+
     pub async fn discover_direct_models(
         &self,
         provider_id: String,

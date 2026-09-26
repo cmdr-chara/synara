@@ -123,6 +123,26 @@ pub struct ModelRequest {
     pub reasoning_effort: Option<String>,
     pub max_output_tokens: u32,
 }
+#[derive(Clone, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct RateLimitTelemetry {
+    pub limit: Option<u64>,
+    pub remaining: Option<u64>,
+    pub reset: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct ProviderTelemetry {
+    pub provider_id: String,
+    /// True only when this reviewed profile requires a credential and the
+    /// credentialed provider metadata request succeeded.
+    pub credentialed: bool,
+    pub requests: RateLimitTelemetry,
+    pub tokens: RateLimitTelemetry,
+    pub retry_after: Option<String>,
+}
+
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
 pub struct ModelUsage {
     /// Total input tokens, including cache reads and writes when reported.

@@ -91,6 +91,27 @@ Limits are 64 KiB of schema, 4096 schema nodes, depth 32 and 65,536 validation s
 Providers can reject otherwise locally supported schema combinations, in which
 case the HTTP error is reported without retry.
 
+## Live provider/account telemetry
+
+Each configured direct provider has an explicit **Refresh live account** action.
+It performs one credentialed provider metadata request against the exact reviewed
+endpoint. A successful response proves that the configured credential was
+accepted for that endpoint at refresh time. Profiles that explicitly require no
+key report endpoint reachability instead of claiming authentication.
+
+Synara reads only bounded provider response headers with documented/common
+rate-limit semantics. It shows request/token limit, remaining and reset values
+when they are actually returned, plus a bounded Retry-After value. Missing
+headers remain “not reported.” Billing, credits, subscription tier and account
+identity are never inferred from model names, local token history or credential
+store success; the UI explicitly reports billing/credits as unavailable from
+this metadata endpoint.
+
+The refresh is live and deliberately not persisted as durable account state, so
+restart cannot present stale quota data as current. Generic ACP coding-agent
+sessions still expose only the telemetry negotiated/reported by ACP; Synara does
+not invent a provider account API for agents whose protocol has none.
+
 ## Security and lifecycle
 
 Profiles and bindings persist references, never key material. `NativeSecretStore`

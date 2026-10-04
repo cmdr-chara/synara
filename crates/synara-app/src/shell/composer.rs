@@ -12,9 +12,11 @@ impl Shell {
     ) -> gpui::AnyElement {
         let busy = self.selected.is_some_and(|task| self.busy.contains(&task));
         let native_command = self.native_command_draft(cx);
+        // Upstream `showPlanFollowUpPrompt`: while the "Plan ready" banner is
+        // up, an empty draft still sends — it submits the implementation prompt.
+        let plan_follow_up = self.show_plan_follow_up();
         let disabled = !busy
-            && (self.direct_route_loading()
-                || self.loading_task.is_some()
+            && (self.loading_task.is_some()
                 || self
                     .selected
                     .is_some_and(|t| self.draft_state.loading.contains(&t))
@@ -22,7 +24,18 @@ impl Shell {
                 || (!native_command && self.controls_blocked())
                 || self.attachment_send_blocked()
                 || (!native_command && self.attachment_capability_error().is_some())
-                || self.composer.read(cx).text().trim().is_empty());
+                || (!plan_follow_up && self.composer.read(cx).text().trim().is_empty()));
+        // Upstream `shouldHandlePromptHistoryNavigationKey`: recall keys are
+        // inert while a send is in flight or the composer is gated on a
+        // pending approval/input — same sources that drive `disabled` above.
+        let history_enabled = self.selected.is_some_and(|task| {
+            !self.busy.contains(&task)
+                && !self.connecting.contains(&task)
+                && !self.controls.is_pending(task)
+        });
+        self.composer.update(cx, |entry, _| {
+            entry.set_prompt_history_enabled(history_enabled)
+        });
         let composer_bounds = self.controls.composer_bounds.clone();
         div()
             .relative()
@@ -121,6 +134,8 @@ impl Shell {
                             .child(self.appsnap_view(cx))
                             .child(self.followups_view(cx)),
                     )
+                    .children(self.plan_follow_up_banner())
+                    .children(self.active_task_list_card(cx))
                     .child(
                         div()
                             .relative()
@@ -145,49 +160,16 @@ impl Shell {
                             }))
                             .child(message.clone())
                     }))
-                    .child(
-                        div()
-                            .px_2()
-                            .text_xs()
-                            .text_color(rgb(palette().muted))
-                            .child("Voice clips upload to ChatGPT for transcription. The transcript stays an unsent draft until you choose Send."),
-                    )
                     .child(self.native_commands_view(cx))
-                    .child(self.context_usage_view(cx))
                     .child(
                         div()
                             .flex()
                             .items_end()
                             .justify_between()
                             .gap_1()
-                            .child(div().flex_1().min_w_0().child(
-                                if self.uses_direct_model() || self.direct_route_loading() {
-                                    self.direct_model_controls(cx)
-                                } else {
-                                    self.session_controls(cx)
-                                },
-                            ))
                             .child(
-                                ui::chrome_button(
-                                    "attach-files",
-                                    "Attach images or UTF-8 files",
-                                    Glyph::Attach,
-                                    self.attachment_send_blocked(),
-                                    cx.listener(|this, _: &(), _, cx| this.choose_attachments(cx)),
-                                )
-                                .size(px(28.)),
+                                div().flex_1().min_w_0().child(self.session_controls(cx)),
                             )
-                            .child(
-                                ui::chrome_button(
-                                    "appsnap-toggle",
-                                    "AppSnap: capture one application window",
-                                    Glyph::Capture,
-                                    self.selected.is_none(),
-                                    cx.listener(|this, _: &(), _, cx| this.toggle_appsnap(cx)),
-                                )
-                                .size(px(28.)),
-                            )
-                            .child(self.followup_toggle(cx))
                             .children(self.voice.recording_status().map(|(duration, level)| {
                                 div()
                                     .id("voice-recording-status")
@@ -261,27 +243,39 @@ impl Shell {
                                 )
                             }))
                             .child(
-                                ui::icon_button(
-                                    "composer-submit",
-                                    if busy {
-                                        "Stop response"
-                                    } else {
-                                        "Send message"
-                                    },
-                                    if busy { Glyph::Stop } else { Glyph::Send },
-                                    disabled,
-                                    cx.listener(|this, _: &(), _, cx| {
-                                        if this
-                                            .selected
-                                            .is_some_and(|task| this.busy.contains(&task))
-                                        {
-                                            this.cancel(cx);
+                                // Upstream plan-follow-up footer: a typed draft
+                                // submits "Refine"; an empty draft gets a split
+                                // "Implement" button plus a chevron menu with
+                                // "Implement in a new thread".
+                                if plan_follow_up && !busy {
+                                    self.plan_submit_buttons(disabled, cx)
+                                } else {
+                                    ui::icon_button(
+                                        "composer-submit",
+                                        if busy {
+                                            "Stop response"
                                         } else {
-                                            this.send_prompt(cx);
-                                        }
-                                    }),
-                                )
-                                .child(ui::layout_probe_enabled("composer-submit", !disabled)),
+                                            "Send message"
+                                        },
+                                        if busy { Glyph::Stop } else { Glyph::Send },
+                                        disabled,
+                                        cx.listener(|this, _: &(), _, cx| {
+                                            if this
+                                                .selected
+                                                .is_some_and(|task| this.busy.contains(&task))
+                                            {
+                                                this.cancel(cx);
+                                            } else {
+                                                this.send_prompt(cx);
+                                            }
+                                        }),
+                                    )
+                                    .child(ui::layout_probe_enabled(
+                                        "composer-submit",
+                                        !disabled,
+                                    ))
+                                    .into_any_element()
+                                },
                             ),
                     ),
             )
@@ -315,12 +309,6 @@ impl Shell {
                     .text_color(rgb(palette().text))
                     .child("What should we work on?"),
             )
-            .children(self.selected.is_none().then(|| {
-                div()
-                    .text_sm()
-                    .text_color(rgb(palette().muted))
-                    .child("Choose a project to get started.")
-            }))
             .into_any_element()
     }
 }

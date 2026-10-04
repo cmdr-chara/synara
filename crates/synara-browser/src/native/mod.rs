@@ -632,7 +632,7 @@ impl NativeHost {
                         events.emit(Event::ManualNavigation {
                             tab,
                             navigation,
-                            url: doc.canonical_url,
+                            url: doc.canonical_url.clone(),
                         });
                     }
                     if agent

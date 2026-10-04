@@ -29,16 +29,12 @@ def history(s, task):
 
 
 def notes(s, task):
-    return preference(s, 'task-context:' + task) or {'notes': '', 'checklist': [], 'revision': 0}
+    return preference(s, 'task-context:' + task) or {'notes': '', 'revision': 0}
 
 
-def edit_notes(s, task, value, add=False):
+def edit_notes(s, task, value):
     fresh_probe(s, 'context-notes-input', lambda: s.click_control('chat-notes'))
     text(s, 'context-notes-input', value)
-    if add:
-        text(s, 'context-item-input', 'Keep this checklist item')
-        s.click_control('context-item-add')
-        s.click_control('context-check', slot=0)
     s.click_control('context-save')
     wait_until(lambda: notes(s, task)['notes'] == value, 'saved notes')
     s.click_control('context-close')
@@ -51,7 +47,7 @@ def run(s):
     file.write_bytes(b'Workspace files are not in this checkpoint.\r\n')
     text(s, 'primary-composer-input', 'Original unsent draft')
     wait_until(lambda: draft(s, task) == 'Original unsent draft', 'original durable draft')
-    edit_notes(s, task, 'Original private notes', add=True)
+    edit_notes(s, task, 'Original private notes')
     original = notes(s, task)
     before = s.events()
     fresh_probe(s, 'checkpoint-history', lambda: s.click_control('checkpoint-open'))
@@ -81,7 +77,7 @@ def run(s):
     assert restored['items'][-1]['draft'] == 'Later unsent draft'
     assert restored['items'][-1]['context'] == later
     assert draft(s, task) == 'Original unsent draft'
-    assert notes(s, task)['notes'] == original['notes'] and notes(s, task)['checklist'] == original['checklist']
+    assert notes(s, task)['notes'] == original['notes']
     assert notes(s, task)['revision'] == later['revision'] + 1
     s.click_control('primary-composer-input')
     assert s.desktop.copy_input() == 'Original unsent draft'

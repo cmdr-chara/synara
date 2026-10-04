@@ -335,7 +335,11 @@ impl Shell {
             return;
         }
         self.remember_task_draft(task, text.clone(), cx);
-        self.draft_state.submitted(task, text.clone());
+        let echo = synara_workspace::with_interaction_prompt(
+            self.mode_tasks.get(&task).copied().unwrap_or_default(),
+            &text,
+        );
+        self.draft_state.submitted(task, text.clone(), echo);
         self.busy.insert(task);
         self.side_chats.error = None;
         let controller = self.controller.clone();
@@ -523,6 +527,7 @@ impl Shell {
                 match result {
                     Ok((task, thread, stored_draft, catalog)) => {
                         self.catalog = catalog;
+                        self.refresh_project_ui(cx);
                         if self.side_chats.parent != Some(parent)
                             || self.side_chats.generation != generation
                         {
@@ -708,6 +713,12 @@ impl Shell {
                     .into_any_element()
             }
             TranscriptItem::Input { id } => self.input_request((thread.id, id.clone()), cx),
+            TranscriptItem::Plan { index } => {
+                let Some(plan) = thread.proposed_plans.get(*index) else {
+                    return div().into_any_element();
+                };
+                self.plan_row(plan, cx)
+            }
             TranscriptItem::Notice { text, is_error } => div()
                 .w_full()
                 .py_2()

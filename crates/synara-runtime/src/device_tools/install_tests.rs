@@ -41,6 +41,7 @@ fn install_and_terminate_keep_exact_target_and_literal_arguments() {
     let tools = DeviceTools {
         backend: DeviceBackend::AppleSimulator,
         executable: PathBuf::from("/not-installed"),
+        apple_helper: None,
     };
     for value in [
         "relative.app",
@@ -64,6 +65,7 @@ fn install_and_terminate_keep_exact_target_and_literal_arguments() {
     let android = DeviceTools {
         backend: DeviceBackend::Android,
         executable: PathBuf::from("/not-installed"),
+        apple_helper: None,
     };
     assert!(
         android
@@ -103,13 +105,14 @@ async fn install_bundle_uses_owned_helper_and_rejects_symlinks_or_missing_plist(
         .await
         .unwrap();
     let args = std::fs::read_to_string(helper.with_extension("args")).unwrap();
+    let canonical_bundle = bundle.canonicalize().unwrap();
     assert_eq!(
         args.lines().collect::<Vec<_>>(),
         [
             "simctl",
             "install",
             target().descriptor.id.as_str(),
-            bundle.to_str().unwrap()
+            canonical_bundle.to_str().unwrap()
         ]
     );
     tools

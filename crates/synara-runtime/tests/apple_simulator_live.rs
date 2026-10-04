@@ -143,8 +143,8 @@ int main(int argc, char *argv[]) {
 #[ignore = "requires a real macOS CoreSimulator runtime"]
 async fn real_core_simulator_accepts_synara_lifecycle_and_app_operations() {
     let cancel = DeviceCancellation::new();
-    let tools =
-        DeviceTools::new(DeviceBackend::AppleSimulator, None).expect("Apple Simulator DeviceTools");
+    let tools = DeviceTools::new(DeviceBackend::AppleSimulator, None, None)
+        .expect("Apple Simulator DeviceTools");
 
     let devices = tools.discover(&cancel).await.expect("simulator discovery");
     let target = devices

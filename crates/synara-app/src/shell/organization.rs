@@ -38,7 +38,7 @@ impl OrganizationState {
         }
     }
 }
-fn symbol_glyph(symbol: SpaceSymbol) -> Glyph {
+pub(super) fn symbol_glyph(symbol: SpaceSymbol) -> Glyph {
     match symbol {
         SpaceSymbol::Folder => Glyph::Folder,
         SpaceSymbol::Star => Glyph::Star,
@@ -158,15 +158,28 @@ impl Shell {
         self.settings.popup = None;
         self.navigation.menu_open = false;
         self.focus_composer = false;
-        let projects = self
+        let projects: Vec<Project> = self
             .catalog
             .projects
             .iter()
             .filter(|project| !self.is_chat_workspace(project))
             .cloned()
             .collect();
-        let dialog =
-            cx.new(|cx| OrganizationDialog::new(self.organization.value.clone(), projects, cx));
+        let looks = projects
+            .iter()
+            .map(|project| {
+                (
+                    project.id,
+                    (
+                        self.project_ui.uis.get(&project.id).cloned(),
+                        self.project_ui.favicons.get(&project.id).cloned(),
+                    ),
+                )
+            })
+            .collect();
+        let dialog = cx.new(|cx| {
+            OrganizationDialog::new(self.organization.value.clone(), projects, looks, cx)
+        });
         self.organization.subscription = Some(cx.subscribe(&dialog, |this, _, event, cx| {
             match event {
                 DialogEvent::Edit(edit) => this.edit_organization(edit.clone(), cx),
@@ -199,7 +212,7 @@ impl Shell {
             window.focus(focus, cx);
         }
     }
-    fn select_space(&mut self, id: Option<String>, cx: &mut Context<Self>) {
+    pub(super) fn select_space(&mut self, id: Option<String>, cx: &mut Context<Self>) {
         if self.organization.saving || !self.organization.loaded {
             return;
         }
@@ -355,7 +368,11 @@ impl Shell {
         .items_center()
         .justify_center()
         .when(pinned, |el| el.text_color(rgb(palette().focus)))
-        .when(!pinned, |el| el.opacity(0.45))
+        .when(!pinned, |el| {
+            el.opacity(0.)
+                .group_hover("thread-row", |style| style.opacity(0.45))
+                .focus_visible(|style| style.opacity(1.))
+        })
         .when(disabled, |el| el.opacity(0.25))
         .child(ui::icon(Glyph::Pin).size(px(13.)))
         .on_click(cx.listener(move |this, _, _, cx| {

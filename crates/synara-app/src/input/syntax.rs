@@ -148,14 +148,15 @@ pub(super) fn highlight(text: &str, language: Language) -> Vec<HighlightSpan> {
             continue;
         }
 
-        if language == Language::Html && bytes[index] == b'<' {
-            if let Some((tag_spans, end)) = scan_html_tag(text, index) {
-                for (range, kind) in tag_spans {
-                    push_span(&mut spans, range, kind);
-                }
-                index = end;
-                continue;
+        if language == Language::Html
+            && bytes[index] == b'<'
+            && let Some((tag_spans, end)) = scan_html_tag(text, index)
+        {
+            for (range, kind) in tag_spans {
+                push_span(&mut spans, range, kind);
             }
+            index = end;
+            continue;
         }
 
         if language.supports_block_comments() && starts_with(bytes, index, b"/*") {
@@ -237,9 +238,8 @@ pub(super) fn highlight(text: &str, language: Language) -> Vec<HighlightSpan> {
             let identifier = &text[start..index];
             if is_keyword(language, identifier) {
                 push_span(&mut spans, start..index, TokenKind::Keyword);
-            } else if language == Language::Css && followed_by_colon(text, index) {
-                push_span(&mut spans, start..index, TokenKind::Property);
-            } else if (language == Language::Yaml && followed_by(text, index, b':'))
+            } else if (language == Language::Css && followed_by_colon(text, index))
+                || (language == Language::Yaml && followed_by(text, index, b':'))
                 || (language == Language::Toml && followed_by(text, index, b'='))
             {
                 push_span(&mut spans, start..index, TokenKind::Property);
@@ -286,11 +286,14 @@ fn highlight_markdown(text: &str) -> Vec<HighlightSpan> {
 
 fn markdown_heading_len(line: &str) -> Option<usize> {
     let hashes = line.bytes().take_while(|byte| *byte == b'#').count();
-    (1..=6).contains(&hashes).then(|| hashes).filter(|hashes| {
-        line.as_bytes()
-            .get(*hashes)
-            .is_some_and(|byte| byte.is_ascii_whitespace())
-    })
+    (1..=6)
+        .contains(&hashes)
+        .then_some(hashes)
+        .filter(|hashes| {
+            line.as_bytes()
+                .get(*hashes)
+                .is_some_and(|byte| byte.is_ascii_whitespace())
+        })
 }
 
 fn highlight_markdown_inline(line: &str, offset: usize, spans: &mut Vec<HighlightSpan>) {
@@ -314,7 +317,9 @@ fn highlight_markdown_inline(line: &str, offset: usize, spans: &mut Vec<Highligh
     }
 }
 
-fn scan_html_tag(text: &str, start: usize) -> Option<(Vec<(Range<usize>, TokenKind)>, usize)> {
+type HtmlTagScan = (Vec<(Range<usize>, TokenKind)>, usize);
+
+fn scan_html_tag(text: &str, start: usize) -> Option<HtmlTagScan> {
     let bytes = text.as_bytes();
     let mut index = start + 1;
     if bytes.get(index) == Some(&b'/') {
@@ -396,7 +401,7 @@ fn scan_quoted(text: &str, start: usize, quote: u8, allow_triple: bool) -> usize
     let triple = allow_triple
         && bytes
             .get(start..start + 3)
-            .is_some_and(|prefix| prefix == &[quote, quote, quote]);
+            .is_some_and(|prefix| prefix == [quote, quote, quote]);
     let delimiter_len = if triple { 3 } else { 1 };
     let mut index = start + delimiter_len;
     while index < bytes.len() {
@@ -407,7 +412,7 @@ fn scan_quoted(text: &str, start: usize, quote: u8, allow_triple: bool) -> usize
         if triple {
             if bytes
                 .get(index..index + 3)
-                .is_some_and(|candidate| candidate == &[quote, quote, quote])
+                .is_some_and(|candidate| candidate == [quote, quote, quote])
             {
                 return index + 3;
             }

@@ -76,8 +76,13 @@ fn captured_frame_dimensions_must_match_reviewed_window() {
 fn helper(dir: &Path, name: &str, body: &str) -> PathBuf {
     use std::os::unix::fs::PermissionsExt;
     let path = dir.join(name);
-    std::fs::write(&path, format!("#!/bin/sh\n{body}\n")).unwrap();
-    std::fs::set_permissions(&path, std::fs::Permissions::from_mode(0o700)).unwrap();
+    // Publish the executable atomically so a process launch cannot observe a
+    // helper while the test is still writing or chmod-ing it. This matters on
+    // Linux runners, where that race can surface as ETXTBSY ("Text file busy").
+    let staging = dir.join(format!(".{name}.staging"));
+    std::fs::write(&staging, format!("#!/bin/sh\n{body}\n")).unwrap();
+    std::fs::set_permissions(&staging, std::fs::Permissions::from_mode(0o700)).unwrap();
+    std::fs::rename(staging, &path).unwrap();
     path
 }
 #[cfg(unix)]

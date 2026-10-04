@@ -1,55 +1,95 @@
-//! Persistent manual follow-up drafts. This surface never sends or steers work.
+//! Queued follow-up turns — upstream `composerDraftStore.queuedTurns` +
+//! `ComposerQueuedHeader`/`QueuedComposerActions`/`queuedComposerDrain`.
+//!
+//! Submitting while a turn is in flight enqueues the draft instead of
+//! sending; when the turn settles and the gates clear, the queue head is
+//! auto-dispatched. Each row offers Steer (interrupt the running turn and
+//! dispatch now), Edit (restore the text into the composer draft), and Delete.
 use super::*;
 use crate::ui::{self, Glyph, palette};
+
 pub(super) enum Reply {
     Loaded(TaskId, Result<FollowupQueue, String>),
-    Saved(
-        TaskId,
-        Option<(u64, String)>,
-        Option<(String, String)>,
-        Result<FollowupQueue, String>,
-    ),
+    Saved(TaskId, Option<(u64, String)>, Result<FollowupQueue, String>),
 }
+
 pub(super) struct FollowupState {
-    task: Option<TaskId>,
+    pub task: Option<TaskId>,
     value: Option<FollowupQueue>,
-    loading: bool,
-    saving: bool,
-    open: bool,
-    input: Entity<TextEntry>,
-    editing: Option<(String, String)>,
-    error: Option<String>,
-    _subscription: Subscription,
+    pub loading: bool,
+    pub saving: bool,
+    pub error: Option<String>,
 }
+
 impl FollowupState {
-    pub fn new(cx: &mut Context<Shell>) -> Self {
-        let input = cx.new(|cx| TextEntry::new("Edit follow-up text", EntryMode::Editor, 120., cx));
-        let subscription = cx.subscribe(&input, |this, _, event, cx| {
-            if matches!(event, EntryEvent::Save) {
-                this.save_followup_edit(cx);
-            }
-            cx.notify();
-        });
+    pub fn new(_cx: &mut Context<Shell>) -> Self {
         Self {
             task: None,
             value: None,
             loading: false,
             saving: false,
-            open: false,
-            input,
-            editing: None,
             error: None,
-            _subscription: subscription,
         }
     }
-    pub fn pending(&self, cx: &App) -> bool {
+    pub fn items(&self) -> &[FollowupDraft] {
+        self.value
+            .as_ref()
+            .map_or(&[][..], |queue| queue.items.as_slice())
+    }
+    /// A queue write is in flight — used by the workspace/close guards so a
+    /// navigation does not race a pending save.
+    pub fn pending(&self, _cx: &App) -> bool {
         self.saving
-            || self.editing.as_ref().is_some_and(|(_, original)| {
-                self.input.read(cx).text() != original || self.input.read(cx).is_composing()
-            })
     }
 }
+
+/// Upstream `compactQueuedComposerPreviewMarkdown`: first non-empty trimmed
+/// line with heading/quote/checkbox/list/numbering prefixes stripped; fenced
+/// code previews collapse to "Code block", empty input to "Queued follow-up".
+fn compact_queued_preview(value: &str) -> String {
+    let first = value
+        .lines()
+        .map(str::trim)
+        .find(|line| !line.is_empty())
+        .unwrap_or_default();
+    if first.is_empty() {
+        return "Queued follow-up".into();
+    }
+    if first.starts_with("```") || first.starts_with("~~~") {
+        return "Code block".into();
+    }
+    let mut line = first;
+    if let Some(rest) = line
+        .strip_prefix('#')
+        .or_else(|| line.strip_prefix("##"))
+        .or_else(|| line.strip_prefix("###"))
+    {
+        line = rest.trim_start();
+    }
+    if let Some(rest) = line.strip_prefix('>') {
+        line = rest.trim_start();
+    }
+    for marker in ["- [ ] ", "- [x] ", "- [X] ", "- ", "* ", "+ "] {
+        if let Some(rest) = line.strip_prefix(marker) {
+            line = rest.trim_start();
+            break;
+        }
+    }
+    if let Some(rest) = line.strip_prefix(char::is_numeric)
+        && let Some(rest) = rest.strip_prefix(['.', ')'])
+    {
+        line = rest.trim_start();
+    }
+    if line.trim().is_empty() {
+        "Queued follow-up".into()
+    } else {
+        line.trim().chars().take(120).collect()
+    }
+}
+
 impl Shell {
+    /// Navigation gate: a pending reviewed recap request still blocks leaving
+    /// the conversation (the queued-turn surface itself holds no editor state).
     pub(super) fn followup_navigation_blocked(&mut self, cx: &mut Context<Self>) -> bool {
         if self.recap.pending() {
             self.error = Some(
@@ -59,29 +99,12 @@ impl Shell {
             cx.notify();
             return true;
         }
-        if self.debug_workflow.pending(cx) {
-            self.error = Some(
-                "Save or discard the Debug evidence edit before leaving this conversation.".into(),
-            );
-            cx.notify();
-            return true;
-        }
-        if self.followups.pending(cx) {
-            self.error = Some(
-                "Save or discard the follow-up editor before leaving this conversation.".into(),
-            );
-            cx.notify();
-            true
-        } else {
-            false
-        }
+        false
     }
     pub(super) fn load_followups(&mut self, task: TaskId) {
         self.followups.task = Some(task);
         self.followups.value = None;
         self.followups.loading = true;
-        self.followups.editing = None;
-        self.followups.open = false;
         self.followups.error = None;
         let workspace = self.controller.workspace.clone();
         self.job(async move {
@@ -98,7 +121,6 @@ impl Shell {
         &mut self,
         edit: FollowupEdit,
         clear: Option<(u64, String)>,
-        editing: Option<(String, String)>,
         cx: &mut Context<Self>,
     ) {
         let Some(task) = self.selected.filter(|t| Some(*t) == self.followups.task) else {
@@ -118,7 +140,6 @@ impl Shell {
             Ok(Update::Followups(Box::new(Reply::Saved(
                 task,
                 clear,
-                editing,
                 workspace
                     .edit_followups(task, revision, edit)
                     .await
@@ -127,19 +148,16 @@ impl Shell {
         });
         cx.notify();
     }
-    fn queue_current_draft(&mut self, cx: &mut Context<Self>) {
+    /// Upstream `enqueueQueuedTurn`: a submit while the turn is in flight
+    /// stores the draft as a queued turn instead of sending it.
+    pub(super) fn queue_current_draft(&mut self, cx: &mut Context<Self>) {
         let Some(task) = self.selected else { return };
-        if self.followups.editing.is_some()
-            || self.composer.read(cx).is_composing()
-            || self.loading_task.is_some()
-        {
+        if self.composer.read(cx).is_composing() || self.loading_task.is_some() {
             return;
         }
         if self.attachment_send_blocked() || self.attachments_have_pending() {
-            self.followups.error = Some(
-                "The follow-up queue stores text only. Send or remove attachments first.".into(),
-            );
-            self.followups.open = true;
+            self.followups.error =
+                Some("Queued follow-ups carry text only. Send or remove attachments first.".into());
             cx.notify();
             return;
         }
@@ -151,71 +169,84 @@ impl Shell {
         self.change_followup(
             FollowupEdit::Add(text.clone()),
             Some((self.draft_state.version(task), text)),
-            None,
-            cx,
-        );
-        self.followups.open = true;
-    }
-    fn save_followup_edit(&mut self, cx: &mut Context<Self>) {
-        let Some((id, _)) = self.followups.editing.clone() else {
-            return;
-        };
-        if self.followups.input.read(cx).is_composing() {
-            return;
-        }
-        let text = self.followups.input.read(cx).text().to_owned();
-        self.change_followup(
-            FollowupEdit::Edit {
-                id: id.clone(),
-                text: text.clone(),
-            },
-            None,
-            Some((id, text)),
             cx,
         );
     }
-    fn append_followup(&mut self, origin: Option<TaskId>, text: &str, cx: &mut Context<Self>) {
-        if self.selected != origin
-            || self.loading_task.is_some()
-            || self.composer.read(cx).is_composing()
-            || self.followups.pending(cx)
-        {
-            return;
-        }
-        let current = self.composer.read(cx).text();
-        let separator = if current.is_empty() { "" } else { "\n\n" };
-        if current
-            .len()
-            .saturating_add(separator.len())
-            .saturating_add(text.len())
-            > 1024 * 1024
-        {
-            self.followups.error =
-                Some("Combined draft exceeds 1 MiB. Nothing was changed.".into());
+    /// Upstream `onSteerQueuedComposerTurn` on a non-natively-steerable
+    /// provider: remove the item, interrupt the running turn, and dispatch the
+    /// text once the settle gates open (`queuedComposerDrain`).
+    fn steer_followup(&mut self, id: String, text: String, cx: &mut Context<Self>) {
+        let Some(task) = self.selected else { return };
+        self.change_followup(FollowupEdit::Remove(id), None, cx);
+        if self.busy.contains(&task) || self.connecting.contains(&task) {
+            self.pending_steer = Some((task, text));
+            self.cancel(cx);
         } else {
-            let value = format!("{current}{separator}{text}");
-            self.composer
-                .update(cx, |entry, cx| entry.set_text(value, cx));
-            self.remember_draft(cx);
-            self.focus_composer = true;
-            self.notice = Some(
-                "Follow-up appended without sending. The queued copy remains until you remove it."
-                    .into(),
-            );
+            self.dispatch_text = Some(text);
+            self.send_prompt(cx);
         }
+    }
+    /// Upstream `onEditQueuedComposerTurn`: remove the item and restore its
+    /// text into the composer draft.
+    fn edit_followup(&mut self, id: String, text: String, cx: &mut Context<Self>) {
+        self.change_followup(FollowupEdit::Remove(id), None, cx);
+        let value = text;
+        self.composer
+            .update(cx, |entry, cx| entry.set_text(value, cx));
+        self.remember_draft(cx);
+        self.focus_composer = true;
         cx.notify();
     }
+    /// Upstream `shouldAutoDispatchQueuedComposerTurn` + drain: once the turn
+    /// is fully settled (not busy/connecting, no pending inputs) dispatch the
+    /// queue head — or the pending steer — as a fresh prompt.
+    pub(super) fn maybe_drain_followups(&mut self, task: TaskId, cx: &mut Context<Self>) {
+        if self.selected != Some(task)
+            || self.busy.contains(&task)
+            || self.connecting.contains(&task)
+            || self.controls.is_pending(task)
+            || self.followups.saving
+            || self.followups.loading
+            || self.followups.task != Some(task)
+            || self.loading_task.is_some()
+        {
+            return;
+        }
+        if let Some((steered, text)) = self.pending_steer.take_if(|(steered, _)| *steered == task) {
+            let _ = steered;
+            self.dispatch_text = Some(text);
+            self.send_prompt(cx);
+            return;
+        }
+        let Some(queue) = &self.followups.value else {
+            return;
+        };
+        let Some(head) = queue.items.first() else {
+            return;
+        };
+        if self
+            .thread
+            .as_ref()
+            .is_some_and(|thread| !thread.inputs.is_empty())
+        {
+            return;
+        }
+        let head = head.clone();
+        self.change_followup(FollowupEdit::Remove(head.id), None, cx);
+        self.dispatch_text = Some(head.text);
+        self.send_prompt(cx);
+    }
     pub(super) fn followup_reply(&mut self, reply: Reply, cx: &mut Context<Self>) {
-        let (task, result, clear, edited) = match reply {
+        let (task, result, clear) = match reply {
             Reply::Loaded(task, result) => {
                 if self.followups.task == Some(task) {
                     self.followups.loading = false;
                 }
-                (task, result, None, None)
+                (task, result, None)
             }
-            Reply::Saved(task, clear, edited, result) => {
+            Reply::Saved(task, clear, result) => {
                 self.followups.saving = false;
-                (task, result, clear, edited)
+                (task, result, clear)
             }
         };
         if self.followups.task != Some(task) {
@@ -239,189 +270,148 @@ impl Shell {
                     self.composer.update(cx, |entry, cx| entry.clear(cx));
                     self.remember_draft(cx);
                 }
-                if let Some((id, text)) = edited
-                    && self
-                        .followups
-                        .editing
-                        .as_ref()
-                        .is_some_and(|(current, _)| *current == id)
-                {
-                    if self.followups.input.read(cx).text() == text {
-                        self.followups.editing = None;
-                    } else {
-                        self.followups.editing = Some((id, text));
-                    }
-                }
                 self.followups.error = None;
             }
             Err(error) => self.followups.error = Some(error),
         }
         cx.notify();
+        self.maybe_drain_followups(task, cx);
     }
-    pub(super) fn followup_toggle(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
-        let count = self
-            .followups
-            .value
-            .as_ref()
-            .map_or(0, |queue| queue.items.len());
-        ui::action(
-            "open-followups",
-            if count == 0 {
-                String::new()
-            } else {
-                count.to_string()
-            },
-            Some(Glyph::Clock),
-            self.followups.open,
-            cx.listener(|this, _: &(), _, cx| {
-                this.followups.open = !this.followups.open;
-                cx.notify();
-            }),
-        )
-        .aria_label(format!("Saved follow-up drafts: {count}"))
-        .text_size(px(11.))
-        .into_any_element()
-    }
+    /// Upstream `ComposerQueuedHeader`: queued rows in a stacked panel fused
+    /// to the top of the composer — always rendered while items exist, each
+    /// row showing the steer icon, a compact preview, and
+    /// Steer/Delete/Edit actions.
     pub(super) fn followups_view(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
         let state = &self.followups;
-        if !state.open && state.error.is_none() {
+        let items = state.items();
+        if items.is_empty() && !state.loading && state.error.is_none() {
             return div().into_any_element();
         }
-        let items = state.value.as_ref().map_or(&[][..], |q| q.items.as_slice());
-        let mut root = div()
-            .id("composer-followups")
-            .min_w_0()
-            .flex()
-            .flex_col()
-            .gap_1()
-            .child(
+        let mut root = div().id("composer-followups").min_w_0().flex().flex_col();
+        if let Some(error) = &state.error {
+            root = root.child(
                 div()
+                    .px_3()
+                    .py_2()
                     .flex()
-                    .flex_wrap()
                     .items_center()
                     .gap_2()
                     .child(
+                        div()
+                            .min_w_0()
+                            .flex_1()
+                            .text_size(px(12.))
+                            .text_color(rgb(palette().error))
+                            .child(error.clone()),
+                    )
+                    .child(
                         ui::action(
-                            "toggle-followups",
-                            format!("Follow-ups ({})", items.len()),
-                            Some(Glyph::Clock),
-                            state.open,
+                            "reload-followups",
+                            "Reload",
+                            Some(Glyph::Restore),
+                            false,
                             cx.listener(|this, _: &(), _, cx| {
-                                this.followups.open = !this.followups.open;
-                                cx.notify();
+                                if let Some(task) = this.selected {
+                                    this.load_followups(task);
+                                    cx.notify();
+                                }
                             }),
                         )
                         .text_size(px(12.)),
-                    )
-                    .child(
-                        ui::action(
-                            "queue-current-draft",
-                            if state.saving {
-                                "Saving..."
-                            } else {
-                                "Queue text draft"
-                            },
-                            Some(Glyph::Plus),
-                            false,
-                            cx.listener(|this, _: &(), _, cx| this.queue_current_draft(cx)),
-                        )
-                        .text_size(px(12.)),
                     ),
-            )
-            .children(state.error.as_ref().map(|error| {
-                div()
-                    .px_2()
-                    .text_size(px(12.))
-                    .text_color(rgb(palette().error))
-                    .child(error.clone())
-            }));
-        if state.open {
-            root=root.child(div().px_2().text_size(px(11.)).text_color(rgb(palette().muted)).child("Saved text drafts, not automatic sends. Append one when ready, then use Send."))
-                .children(state.loading.then(||div().px_2().text_size(px(12.)).child("Loading follow-ups...")));
-            if let Some((_, original)) = &state.editing {
-                root = root
-                    .child(
-                        div()
-                            .h(px(120.))
-                            .flex()
-                            .flex_col()
-                            .child(state.input.clone()),
-                    )
-                    .child(
-                        div()
-                            .flex()
-                            .gap_2()
-                            .child(ui::action(
-                                "save-followup-edit",
-                                "Save edit",
-                                Some(Glyph::Check),
-                                false,
-                                cx.listener(|this, _: &(), _, cx| this.save_followup_edit(cx)),
-                            ))
-                            .child(ui::action(
-                                "discard-followup-edit",
-                                "Discard edit",
-                                None,
-                                false,
-                                cx.listener(|this, _: &(), _, cx| {
-                                    if !this.followups.saving {
-                                        this.followups.editing = None;
-                                        cx.notify();
-                                    }
-                                }),
-                            ))
-                            .child(
-                                div()
-                                    .text_size(px(11.))
-                                    .text_color(rgb(palette().muted))
-                                    .child(if state.input.read(cx).text() == original {
-                                        "Saved text"
-                                    } else {
-                                        "Unsaved edit"
-                                    }),
-                            ),
-                    );
-            } else {
-                root=root.child(div().id("followup-list").max_h(px(180.)).overflow_y_scroll().flex().flex_col()
-                    .children(items.iter().enumerate().map(|(index,item)|{
-                        let origin=state.task;let edit=item.clone();let text=item.text.clone();let up=item.id.clone();let down=item.id.clone();let remove=item.id.clone();
-                        div().id(("followup-row",index)).min_w_0().flex().flex_wrap().items_center().gap_1().border_b_1().border_color(rgb(palette().border))
-                            .child(ui::action(("edit-followup",index),format!("{}. {}",index+1,item.text.split_whitespace().take(16).collect::<Vec<_>>().join(" ").chars().take(120).collect::<String>()),Some(Glyph::Compose),false,
-                                cx.listener(move |this,_:&(),window,cx|{
-                                    if this.selected == origin && !this.followups.saving {
-                                        this.followups.input.update(cx,|entry,cx|entry.set_text(edit.text.clone(),cx));
-                                        this.followups.editing=Some((edit.id.clone(),edit.text.clone()));
-                                        this.focus_composer=false;window.focus(&this.followups.input.read(cx).focus_handle(cx),cx);cx.notify();
-                                    }
-                                })).flex_1().min_w(px(130.)).text_size(px(12.)))
-                            .child(ui::action(("append-followup",index),"Append",None,false,cx.listener(move |this,_:&(),_,cx|this.append_followup(origin,&text,cx))).text_size(px(12.)))
-                            .child(ui::chrome_button("move-followup-up","Move earlier",Glyph::Back,index==0||state.saving,cx.listener(move|this,_:&(),_,cx|this.change_followup(FollowupEdit::Move{id:up.clone(),up:true},None,None,cx))).id(("followup-up",index)).size(px(23.)))
-                            .child(ui::chrome_button("move-followup-down","Move later",Glyph::Forward,index+1==items.len()||state.saving,cx.listener(move|this,_:&(),_,cx|this.change_followup(FollowupEdit::Move{id:down.clone(),up:false},None,None,cx))).id(("followup-down",index)).size(px(23.)))
-                            .child(ui::chrome_button("remove-followup","Remove saved follow-up",Glyph::Close,state.saving,cx.listener(move|this,_:&(),_,cx|this.change_followup(FollowupEdit::Remove(remove.clone()),None,None,cx))).id(("followup-remove",index)).size(px(23.)))
-                    }))
-                    .children((items.is_empty()&&!state.loading).then(||div().p_2().text_size(px(12.)).text_color(rgb(palette().muted)).child("No follow-ups. Queue a draft while the current response is running."))));
-            }
-        }
-        if state.error.is_some() || state.value.is_none() && !state.loading {
-            root = root.child(
-                ui::action(
-                    "reload-followups",
-                    "Reload follow-ups",
-                    Some(Glyph::Restore),
-                    false,
-                    cx.listener(|this, _: &(), _, cx| {
-                        if let Some(task) = this.selected
-                            && !this.followups.pending(cx)
-                        {
-                            this.load_followups(task);
-                            this.followups.open = true;
-                            cx.notify();
-                        }
-                    }),
-                )
-                .text_size(px(12.)),
             );
         }
-        root.into_any_element()
+        if state.loading && items.is_empty() {
+            return root
+                .child(
+                    div()
+                        .px_3()
+                        .py_2()
+                        .text_size(px(12.))
+                        .text_color(rgb(palette().muted))
+                        .child("Loading queued follow-ups..."),
+                )
+                .into_any_element();
+        }
+        root.children(items.iter().enumerate().map(|(index, item)| {
+            let steer_id = item.id.clone();
+            let steer_text = item.text.clone();
+            let edit_id = item.id.clone();
+            let edit_text = item.text.clone();
+            let remove_id = item.id.clone();
+            div()
+                .id(("queued-followup", index))
+                .min_w_0()
+                .flex()
+                .items_center()
+                .gap_2()
+                .px_3()
+                .py_2()
+                .border_t_1()
+                .border_color(rgb(palette().border))
+                .child(
+                    ui::icon(Glyph::Send)
+                        .size(px(12.))
+                        .text_color(rgb(palette().muted)),
+                )
+                .child(
+                    div()
+                        .min_w_0()
+                        .flex_1()
+                        .text_size(px(12.))
+                        .text_color(rgb(palette().text))
+                        .child(compact_queued_preview(&item.text)),
+                )
+                .child(
+                    div()
+                        .flex()
+                        .items_center()
+                        .flex_shrink_0()
+                        .gap_1()
+                        .child(
+                            ui::action(
+                                ("steer-followup", index),
+                                "Steer",
+                                Some(Glyph::Send),
+                                state.saving,
+                                cx.listener(move |this, _: &(), _, cx| {
+                                    this.steer_followup(steer_id.clone(), steer_text.clone(), cx)
+                                }),
+                            )
+                            .text_size(px(12.)),
+                        )
+                        .child(
+                            ui::chrome_button(
+                                "remove-followup",
+                                "Delete queued follow-up",
+                                Glyph::Close,
+                                state.saving,
+                                cx.listener(move |this, _: &(), _, cx| {
+                                    this.change_followup(
+                                        FollowupEdit::Remove(remove_id.clone()),
+                                        None,
+                                        cx,
+                                    )
+                                }),
+                            )
+                            .id(("followup-remove", index))
+                            .size(px(20.)),
+                        )
+                        .child(
+                            ui::chrome_button(
+                                "edit-followup",
+                                "Edit queued follow-up",
+                                Glyph::Compose,
+                                state.saving,
+                                cx.listener(move |this, _: &(), _, cx| {
+                                    this.edit_followup(edit_id.clone(), edit_text.clone(), cx)
+                                }),
+                            )
+                            .id(("followup-edit", index))
+                            .size(px(20.)),
+                        ),
+                )
+        }))
+        .into_any_element()
     }
 }

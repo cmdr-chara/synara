@@ -2,7 +2,7 @@
 use super::*;
 use crate::input::{EntryEvent, EntryMode, TextEntry};
 use gpui::{Entity, EntityInputHandler, EventEmitter, FocusHandle, Focusable, Subscription};
-use std::{cell::Cell, rc::Rc};
+use std::{cell::Cell, collections::HashMap, rc::Rc};
 use synara_core::ProjectId;
 
 pub struct NewTaskRequest {
@@ -40,6 +40,7 @@ pub struct TaskDialogConfig {
 pub struct TaskDialog {
     prompt: Entity<TextEntry>,
     projects: Vec<(ProjectId, String)>,
+    project_icons: HashMap<ProjectId, menu::ChoiceIcon>,
     agents: Vec<(String, String, Glyph)>,
     project: usize,
     agent: usize,
@@ -95,6 +96,7 @@ impl TaskDialog {
         Self {
             prompt,
             projects,
+            project_icons: HashMap::new(),
             agents,
             project,
             agent,
@@ -112,6 +114,13 @@ impl TaskDialog {
             restore_field: None,
             _prompt_subscription: subscription,
         }
+    }
+    pub fn with_project_icons(
+        mut self,
+        project_icons: HashMap<ProjectId, menu::ChoiceIcon>,
+    ) -> Self {
+        self.project_icons = project_icons;
+        self
     }
     pub fn failed(&mut self, error: String, cx: &mut Context<Self>) {
         self.busy = false;
@@ -231,11 +240,15 @@ impl TaskDialog {
                 .projects
                 .iter()
                 .enumerate()
-                .map(|(index, (_, name))| menu::Choice {
-                    label: name.clone(),
-                    selected: index == self.project,
-                    icon: Some(Glyph::Folder),
-                    ..Default::default()
+                .map(|(index, (id, name))| {
+                    let custom_icon = self.project_icons.get(id).cloned();
+                    menu::Choice {
+                        label: name.clone(),
+                        selected: index == self.project,
+                        icon: custom_icon.is_none().then_some(Glyph::Folder),
+                        custom_icon,
+                        ..Default::default()
+                    }
                 })
                 .collect(),
             Field::Agent => self

@@ -139,6 +139,10 @@ pub enum GitOperation {
     RemoveWorktree {
         path: PathBuf,
     },
+    /// Drops administrative `.git/worktrees` entries whose directories vanished
+    /// out of band. Runs after a confirmed removal so stale metadata cannot pin
+    /// branches or confuse later listings.
+    PruneWorktrees,
     SaveStash {
         message: String,
         include_untracked: bool,

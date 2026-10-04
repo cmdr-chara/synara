@@ -358,6 +358,7 @@ impl Shell {
                 match result {
                     Ok((task, catalog)) => {
                         self.catalog = catalog;
+                        self.refresh_project_ui(cx);
                         self.revisions.dialog = None;
                         self.revisions.visible = false;
                         if self.selected == Some(source)

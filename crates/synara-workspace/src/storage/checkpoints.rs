@@ -1,4 +1,4 @@
-//! Explicit rollback of app-owned draft/notes/checklist only. No file, Git,
+//! Explicit rollback of app-owned draft/notes only. No file, Git,
 //! transcript, session, approval, attachment or provider state is copied/restored.
 use super::*;
 use crate::{WorkspaceError, WorkspaceResult, WorkspaceService};

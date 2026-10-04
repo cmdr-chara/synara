@@ -57,8 +57,8 @@ restore, including receipts whose imported conversation was deleted. An imported
 history snapshot or a reviewed continuation does not acquire a provider session,
 permission decision or automatic send through restoration.
 
-See [Project Import](ui/project-import.md), [provider continuation](ui/provider-handoff.md)
-and [direct models](ui/direct-models.md) for their narrower contracts.
+See [Project Import](ui/project-import.md) and [provider continuation](ui/provider-handoff.md)
+for their narrower contracts.
 
 ## Limits and failure behavior
 

@@ -40,6 +40,7 @@ impl ProtectedCookieJar {
         self.count
     }
 
+    #[cfg(all(feature = "native-webview", target_os = "linux"))]
     pub(crate) fn bytes(&self) -> &[u8] {
         &self.bytes
     }
@@ -55,7 +56,7 @@ pub fn read_netscape_cookie_jar(
     path: &Path,
     now_unix_seconds: u64,
 ) -> Result<ProtectedCookieJar, CookieImportError> {
-    let mut file = open_read_nofollow(path)?;
+    let file = open_read_nofollow(path)?;
     let metadata = file.metadata().map_err(|_| CookieImportError::Storage)?;
     if !metadata.is_file() || metadata.len() > MAX_SOURCE_BYTES {
         return Err(CookieImportError::Limit);
@@ -214,7 +215,12 @@ fn open_read_nofollow(path: &Path) -> Result<File, CookieImportError> {
     #[cfg(target_os = "linux")]
     {
         use std::os::unix::fs::OpenOptionsExt;
-        options.custom_flags(0x2_0000);
+        options.custom_flags(0x2_0000); // O_NOFOLLOW
+    }
+    #[cfg(target_os = "macos")]
+    {
+        use std::os::unix::fs::OpenOptionsExt;
+        options.custom_flags(0x0000_0100); // O_NOFOLLOW
     }
     options.open(path).map_err(|_| CookieImportError::Storage)
 }

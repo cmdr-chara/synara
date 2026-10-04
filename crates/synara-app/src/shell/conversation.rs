@@ -45,7 +45,7 @@ impl Shell {
             strip = strip.child(el);
             any = true;
         }
-        if let Some(el) = self.debug_compact(cx) {
+        if let Some(el) = self.mode_compact(cx) {
             strip = strip.child(el);
             any = true;
         }
@@ -75,7 +75,6 @@ impl Shell {
         root = root.child(self.handoff_source_row(cx));
         root = root.child(self.workflow_strip(cx));
         root = root.child(self.goal_bar(cx));
-        root = root.child(self.debug_bar(cx));
         root = root.child(self.recap_bar(cx));
         root = root.child(self.checkpoint_panel(cx));
         if let Some(details) = &self.details {
@@ -112,16 +111,80 @@ impl Shell {
             self.virtual_transcript(cx)
         });
         root = root.child(self.composer_panel(window, cx));
-        if cx.reduce_motion() {
-            return root.into_any_element();
+        let content: gpui::AnyElement = if cx.reduce_motion() {
+            root.into_any_element()
+        } else {
+            root.with_animation(
+                SharedString::from(format!("conversation-entry-{}", thread.id)),
+                Animation::new(crate::ui::motion::pane_duration())
+                    .with_easing(crate::ui::motion::ease_out),
+                |el, progress| {
+                    tracing::debug!(target: "synara_ui_layout", surface = "conversation", progress, "motion-frame");
+                    el.opacity(progress)
+                },
+            )
+            .into_any_element()
+        };
+        // Upstream `PlanSidebar` mounts to the right of the conversation when
+        // `planSidebarOpen` holds.
+        if !self.plan_sidebar_open {
+            return content;
         }
-        root.with_animation(
-            SharedString::from(format!("conversation-entry-{}", thread.id)),
-            Animation::new(crate::ui::motion::pane_duration())
-                .with_easing(crate::ui::motion::ease_out),
+        div()
+            .flex()
+            .flex_row()
+            .flex_1()
+            .min_h_0()
+            .min_w_0()
+            .child(content)
+            .child(self.plan_sidebar(cx))
+            .into_any_element()
+    }
+    /// Upstream `resolveWorkingLabel`: connecting shows `Starting {agent}…`,
+    /// otherwise an in-flight turn reads `Thinking`.
+    pub(super) fn working_label(&self) -> Option<String> {
+        let task = self.task()?;
+        if self.connecting.contains(&task.id) {
+            let name = self
+                .profiles
+                .iter()
+                .find(|profile| profile.id == task.agent_id)
+                .map(|profile| profile.name.as_str())
+                .unwrap_or(task.agent_id.as_str());
+            Some(format!("Starting {name}…"))
+        } else if self.busy.contains(&task.id) {
+            Some("Thinking".into())
+        } else {
+            None
+        }
+    }
+    /// Re-project when the in-flight-turn tail row appears or disappears —
+    /// the `busy`/`connecting` sets are shell state, not thread events.
+    pub(super) fn sync_working_row(&mut self) {
+        let working = self.working_label().is_some();
+        if let Some(thread) = &self.thread {
+            self.transcript.sync(thread, None, working);
+        }
+    }
+    pub(super) fn working_row(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
+        let label = self.working_label().unwrap_or_else(|| "Thinking".into());
+        let row = div()
+            .pt(px(2.))
+            .text_color(rgb(crate::ui::palette().muted))
+            .child(label);
+        if cx.reduce_motion() {
+            return row.into_any_element();
+        }
+        row.with_animation(
+            "working-row-shimmer",
+            Animation::new(std::time::Duration::from_millis(1400)).repeat(),
             |el, progress| {
-                tracing::debug!(target: "synara_ui_layout", surface = "conversation", progress, "motion-frame");
-                el.opacity(progress)
+                let pulse = if progress < 0.5 {
+                    progress * 2.
+                } else {
+                    (1. - progress) * 2.
+                };
+                el.opacity(0.45 + 0.55 * pulse)
             },
         )
         .into_any_element()
@@ -135,6 +198,12 @@ impl Shell {
         match &thread.timeline[index] {
             TranscriptItem::Message { index: message } => {
                 self.message_row(&thread.messages[*message], index, cx)
+            }
+            TranscriptItem::Plan { index } => {
+                let Some(plan) = thread.proposed_plans.get(*index) else {
+                    return div().into_any_element();
+                };
+                self.plan_row(plan, cx)
             }
             TranscriptItem::Tool { id } => {
                 let Some(tool) = thread.tools.get(id) else {

@@ -107,13 +107,11 @@ the UI. Generic `ContextServer` debug output redacts the entire configuration.
 The desktop bootstrap now injects the shared `NativeSecretStore` adapter on
 supported platforms. It starts unverified and fails closed when the OS store is
 unavailable or locked. This replaces the earlier checkpoint's unavailable-store
-bootstrap, not its still-open production acceptance gate. Direct-model keys use
-the same owner with distinct endpoint/protocol-bound references. The MCP page
+bootstrap, not its still-open production acceptance gate. The MCP page
 continues to accept references only, not plaintext token fields. Tests use isolated
 synthetic stores or explicit unavailable-store refusal, not production credentials.
 There is no plaintext fallback, implicit environment lookup or simulated login.
-See [direct models](ui/direct-models.md) and the
-[accumulated receipt](verification/max-feature-sprint.md).
+See the [accumulated receipt](verification/max-feature-sprint.md).
 
 ## Explicit test and discovery
 

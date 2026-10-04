@@ -350,6 +350,41 @@ pub struct PlanEntry {
     pub priority: String,
 }
 
+/// Upstream `normalizePlanStepStatus` (`AcpRuntimeModel.ts`): task-list steps
+/// collapse onto three statuses; anything unrecognized is pending.
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub enum TaskStatus {
+    Pending,
+    InProgress,
+    Completed,
+}
+
+pub fn normalize_plan_step_status(raw: &str) -> TaskStatus {
+    match raw {
+        "completed" => TaskStatus::Completed,
+        "in_progress" | "inProgress" => TaskStatus::InProgress,
+        _ => TaskStatus::Pending,
+    }
+}
+
+/// Upstream `TaskListTaskSnapshot` (`workLog.ts`).
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct TaskListTask {
+    pub task: String,
+    pub status: TaskStatus,
+}
+
+/// Upstream `ActiveTaskListState` (`session-logic.ts`): the resolved task list
+/// driving the composer card and the sidebar "Steps" section.
+#[derive(Clone, Debug, PartialEq)]
+pub struct ActiveTaskList {
+    pub created_at_ms: i64,
+    pub turn_id: Option<String>,
+    pub explanation: Option<String>,
+    pub tasks: Vec<TaskListTask>,
+}
+
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 pub struct Usage {
     pub context_used: Option<u64>,
@@ -408,8 +443,32 @@ pub enum ThreadEvent {
     UserInputResolved {
         id: String,
     },
+    /// Upstream `turn.tasks.updated`: a provider task-list snapshot replaces
+    /// the thread's current list wholesale.
     PlanChanged {
         entries: Vec<PlanEntry>,
+        /// Upstream `payload.explanation` (optional on ACP plan updates).
+        #[serde(default)]
+        explanation: Option<String>,
+    },
+    /// Upstream `thread.proposed-plan.upsert`: a plan-mode turn produced a
+    /// `<proposed_plan>` block; record/replace the plan keyed by `plan.id`.
+    ProposedPlan {
+        plan: crate::ProposedPlan,
+    },
+    /// Upstream `thread.proposed-plan.implemented`: marks a proposed plan as
+    /// implemented by the turn that carried `sourceProposedPlan`.
+    ProposedPlanImplemented {
+        plan_id: String,
+        implementation_thread_id: crate::ThreadId,
+    },
+    /// Upstream `thread.turn.start`'s `sourceProposedPlan` param: recorded on
+    /// the implementation thread ahead of its first prompt; the next
+    /// `PromptStarted` consumes it onto the new turn (mirroring the turn-level
+    /// `SourceProposedPlanReference`).
+    ProposedPlanSource {
+        source_thread: crate::ThreadId,
+        plan_id: String,
     },
     UsageChanged {
         usage: Usage,

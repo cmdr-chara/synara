@@ -15,10 +15,7 @@ impl Shell {
             .hubs
             .rows
             .iter()
-            .filter(|hub| {
-                hub.profile.archived == self.hubs.show_archived
-                    && hub.profile.name.to_lowercase().contains(&query)
-            })
+            .filter(|hub| hub.profile.name.to_lowercase().contains(&query))
             .collect();
         div()
             .id("hub-navigation")
@@ -184,20 +181,6 @@ impl Shell {
                         cx.listener(|this, _: &(), window, cx| this.open_thread_finder(window, cx)),
                     ))
                     .child(ui::action(
-                        "hub-archive-filter",
-                        if self.hubs.show_archived {
-                            "Show active Hubs"
-                        } else {
-                            "Archived Hubs"
-                        },
-                        Some(Glyph::Archive),
-                        false,
-                        cx.listener(|this, _: &(), _, cx| {
-                            this.hubs.show_archived = !this.hubs.show_archived;
-                            cx.notify();
-                        }),
-                    ))
-                    .child(ui::action(
                         "hub-settings",
                         "Settings",
                         Some(Glyph::Settings),
@@ -217,10 +200,10 @@ impl Shell {
             .mx_auto();
         if self.hubs.editing {
             let creating = self.hubs.original.is_none();
-            page = page.child(div().text_size(px(24.)).child(if creating {"New Hub"} else {"Hub context"}))
+            page = page.child(div().text_size(px(24.)).child(if creating {"New Hub"} else {"Hub settings"}))
                 .child(div().text_size(px(13.)).text_color(rgb(palette().muted)).child(if creating {
                     "A place for related work. A repository is optional."
-                } else {"Shared instructions and knowledge seed new visible drafts. Conversations and approvals stay separate."}))
+                } else {"Project instructions are saved to each new thread's notes. Conversations and approvals stay separate."}))
                 .child(label("Name")).child(self.hubs.name.clone());
             if creating {
                 page =
@@ -257,12 +240,13 @@ impl Shell {
                                 )),
                         );
             } else {
-                page = page.child(label("Description")).child(self.hubs.description.clone())
-                    .child(label("Instructions")).child(div().h(px(160.)).flex().flex_col().child(self.hubs.instructions.clone()))
-                    .child(label("Shared knowledge")).child(div().h(px(180.)).flex().flex_col().child(self.hubs.memory.clone()))
-                    .child(ui::action("hub-context-default",if self.hubs.include {"Include context in new thread drafts: On"} else {"Include context in new thread drafts: Off"},None,self.hubs.include,
-                        cx.listener(|this, _: &(), _, cx| { this.hubs.include = !this.hubs.include; cx.notify(); })))
-                    .child(div().text_size(px(12.)).text_color(rgb(palette().muted)).child("This is curated knowledge, not automatic memory. Existing threads only receive updates when you explicitly add them to a draft."));
+                page = page.child(label("Instructions")).child(
+                    div()
+                        .h(px(160.))
+                        .flex()
+                        .flex_col()
+                        .child(self.hubs.instructions.clone()),
+                );
             }
             page = page.child(
                 div()
@@ -281,7 +265,7 @@ impl Shell {
                             } else if creating {
                                 "Create Hub"
                             } else {
-                                "Save context"
+                                "Save settings"
                             },
                             Some(Glyph::Check),
                             false,
@@ -312,9 +296,7 @@ impl Shell {
                         cx.listener(|this, _: &(), _, cx| {
                             let text = [
                                 this.hubs.name.read(cx).text(),
-                                this.hubs.description.read(cx).text(),
                                 this.hubs.instructions.read(cx).text(),
-                                this.hubs.memory.read(cx).text(),
                             ]
                             .join("\n\n");
                             cx.write_to_clipboard(gpui::ClipboardItem::new_string(text));
@@ -333,44 +315,128 @@ impl Shell {
                         && task.state != TaskState::Archived
                 })
                 .collect();
-            threads.sort_by_key(|task| {
-                (
-                    task.id != profile.main_task,
-                    std::cmp::Reverse(task.updated_at_ms),
-                )
-            });
+            threads.sort_by_key(|task| std::cmp::Reverse(task.updated_at_ms));
             let running = threads
                 .iter()
                 .filter(|task| self.busy.contains(&task.id) || self.connecting.contains(&task.id))
                 .count();
-            page = page.child(div().flex().flex_wrap().items_center().gap_3()
-                .child(div().flex_1().text_size(px(26.)).child(profile.name.clone()))
-                .child(div().text_size(px(12.)).text_color(rgb(palette().muted)).child(format!("{} threads · {running} active",threads.len()))))
-                .children((!profile.description.is_empty()).then(||div().text_color(rgb(palette().muted)).child(profile.description.clone())))
-                .child(div().mt_4().pb_3().border_b_1().border_color(rgb(palette().border)).flex().flex_wrap().gap_2()
-                    .child(ui::action("hub-new-thread","New thread",Some(Glyph::Compose),false,cx.listener(|this, _: &(), _, cx| this.new_hub_thread(cx))))
-                    .child(ui::action("hub-open-tasks", "Tasks", Some(Glyph::Kanban), false,
-                        cx.listener(move |this, _: &(), _, cx| this.open_hub_tasks(id, cx))))
-                    .child(ui::action("hub-open-library","Library",Some(Glyph::Files),false,cx.listener(|this, _: &(), _, cx| this.open_studio_outputs(cx))))
-                    .child(ui::action("hub-edit-context","Context",Some(Glyph::Notebook),false,cx.listener(|this, _: &(), _, cx| this.edit_hub(false,cx))))
-                    .child(ui::action("hub-refresh","Refresh",Some(Glyph::Restore),false,cx.listener(|this, _: &(), _, cx| {this.load_hubs();cx.notify();}))))
+            page = page
+                .child(
+                    div()
+                        .flex()
+                        .flex_wrap()
+                        .items_center()
+                        .gap_3()
+                        .child(
+                            div()
+                                .flex_1()
+                                .text_size(px(26.))
+                                .child(profile.name.clone()),
+                        )
+                        .child(
+                            div()
+                                .text_size(px(12.))
+                                .text_color(rgb(palette().muted))
+                                .child(format!("{} threads · {running} active", threads.len())),
+                        ),
+                )
+                .child(
+                    div()
+                        .mt_4()
+                        .pb_3()
+                        .border_b_1()
+                        .border_color(rgb(palette().border))
+                        .flex()
+                        .flex_wrap()
+                        .gap_2()
+                        .child(ui::action(
+                            "hub-new-thread",
+                            "New thread",
+                            Some(Glyph::Compose),
+                            false,
+                            cx.listener(|this, _: &(), _, cx| this.new_hub_thread(cx)),
+                        ))
+                        .child(ui::action(
+                            "hub-open-tasks",
+                            "Tasks",
+                            Some(Glyph::Kanban),
+                            false,
+                            cx.listener(move |this, _: &(), _, cx| this.open_hub_tasks(id, cx)),
+                        ))
+                        .child(ui::action(
+                            "hub-open-library",
+                            "Library",
+                            Some(Glyph::Files),
+                            false,
+                            cx.listener(|this, _: &(), _, cx| this.open_studio_outputs(cx)),
+                        ))
+                        .child(ui::action(
+                            "hub-edit-context",
+                            "Settings",
+                            Some(Glyph::Notebook),
+                            false,
+                            cx.listener(|this, _: &(), _, cx| this.edit_hub(false, cx)),
+                        ))
+                        .child(ui::action(
+                            "hub-refresh",
+                            "Refresh",
+                            Some(Glyph::Restore),
+                            false,
+                            cx.listener(|this, _: &(), _, cx| {
+                                this.load_hubs();
+                                cx.notify();
+                            }),
+                        )),
+                )
                 .child(label("Threads"))
-                .children(threads.iter().take(200).enumerate().map(|(index,task)| {
+                .children(threads.iter().take(200).enumerate().map(|(index, task)| {
                     let id = task.id;
-                    ui::action(("hub-home-thread",index),task.title.clone(),Some(self.agent_glyph(&task.agent_id)),false,
-                        cx.listener(move |this, _: &(), _, cx| { if this.select_task(id,cx) {this.show_conversation(cx);} }))
-                        .w_full().h(px(ui::row_height() + 6.)).rounded_none().bg(gpui::rgba(0)).border_b_1().border_color(rgb(palette().border))
-                        .relative().child(ui::layout_probe_slot("hub-home-thread", index))
-                        .child(div().text_size(px(12.)).text_color(rgb(palette().muted)).child(format!("{:?}",task.state)))
+                    ui::action(
+                        ("hub-home-thread", index),
+                        task.title.clone(),
+                        Some(self.agent_glyph(&task.agent_id)),
+                        false,
+                        cx.listener(move |this, _: &(), _, cx| {
+                            if this.select_task(id, cx) {
+                                this.show_conversation(cx);
+                            }
+                        }),
+                    )
+                    .w_full()
+                    .h(px(ui::row_height() + 6.))
+                    .rounded_none()
+                    .bg(gpui::rgba(0))
+                    .border_b_1()
+                    .border_color(rgb(palette().border))
+                    .relative()
+                    .child(ui::layout_probe_slot("hub-home-thread", index))
+                    .child(
+                        div()
+                            .text_size(px(12.))
+                            .text_color(rgb(palette().muted))
+                            .child(format!("{:?}", task.state)),
+                    )
                 }))
-                .children((threads.len() > 200).then(|| ui::action("hub-find-more","Find more threads",Some(Glyph::Search),false,
-                    cx.listener(|this, _: &(), window, cx| this.open_thread_finder(window,cx)))))
-                .child(label("Shared context"))
-                .child(div().text_size(px(13.)).text_color(rgb(palette().muted)).child(format!("Instructions: {} bytes · Knowledge: {} bytes · Revision {}",profile.instructions.len(),profile.memory.len(),profile.revision)))
-                .child(ui::action("hub-use-context","Add shared context to current draft",Some(Glyph::Compose),false,cx.listener(|this, _: &(), _, cx| this.use_hub_context(cx))))
-                .child(div().mt_6().pt_3().border_t_1().border_color(rgb(palette().border)).flex().flex_wrap().items_center().gap_2()
-                    .child(ui::action("hub-archive",if profile.archived {"Restore Hub"} else {"Archive Hub"},Some(Glyph::Archive),false,cx.listener(|this, _: &(), _, cx| this.archive_hub(cx))))
-                    .child(div().text_size(px(12.)).text_color(rgb(palette().muted)).child("Archiving keeps files, conversations and running work. It does not delete or stop anything.")));
+                .children((threads.len() > 200).then(|| {
+                    ui::action(
+                        "hub-find-more",
+                        "Find more threads",
+                        Some(Glyph::Search),
+                        false,
+                        cx.listener(|this, _: &(), window, cx| this.open_thread_finder(window, cx)),
+                    )
+                }))
+                .child(label("Instructions"))
+                .child(
+                    div()
+                        .text_size(px(13.))
+                        .text_color(rgb(palette().muted))
+                        .child(format!(
+                            "{} bytes · Revision {}",
+                            profile.instructions.len(),
+                            profile.revision
+                        )),
+                );
         } else {
             page = page.child(div().mt_6().text_size(px(26.)).child("Hubs"))
                 .child(div().text_color(rgb(palette().muted)).child("Optional shared context for related work. Your normal Synara chats stay as they are."))

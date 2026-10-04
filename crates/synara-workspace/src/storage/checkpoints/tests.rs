@@ -14,7 +14,6 @@ async fn state(service: &WorkspaceService, task: TaskId, draft: &str, notes: &st
     service.save_task_draft(task, draft.into()).await.unwrap();
     let mut context = service.task_context(task).await.unwrap();
     context.notes = notes.into();
-    context.checklist = vec![ChecklistItem::new(format!("Review {notes}"))];
     service
         .save_task_context(task, context.revision, context)
         .await
@@ -79,7 +78,6 @@ async fn checkpoint_restart_atomic_restore_preserves_files_events_sessions_and_o
         .unwrap();
     assert_eq!(result.draft, "Original 日本語\n  draft");
     assert_eq!(result.context.notes, before.notes);
-    assert_eq!(result.context.checklist, before.checklist);
     assert_eq!(result.context.revision, changed.revision + 1);
     assert!(
         service.restore_task_checkpoint(review).await.is_err(),

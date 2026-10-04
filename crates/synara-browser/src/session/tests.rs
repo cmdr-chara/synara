@@ -9,6 +9,7 @@ impl NativePort for Port {
             input: true,
             capture: true,
             downloads: true,
+            uploads: true,
         }
     }
     fn send(&mut self, c: Command) -> Result<()> {

@@ -1,11 +1,12 @@
 //! Native presentation primitives. Product state and operations stay in the controller.
 mod icons;
 pub mod markdown;
-pub use icons::{Glyph, icon, provider_glyph};
+pub use icons::{Glyph, central_fill_icon, central_icon, icon, provider_glyph};
 pub mod menu;
 pub mod metrics;
 pub mod motion;
 mod personalization;
+mod theme;
 pub use personalization::{
     canvas_background, chat_width, code_font_size, glass_edge, motion_multiplier, row_height,
     settings_row_padding, surface, terminal_font_size, ui_font_size,
@@ -44,6 +45,16 @@ pub struct Palette {
     pub error: u32,
     pub error_surface: u32,
     pub notice_surface: u32,
+    /// Pending-approval row badge (upstream text-amber-300/90 dark,
+    /// text-amber-600 light).
+    pub pending: u32,
+    /// Awaiting-input row dot (upstream indigo-300/90 dark,
+    /// indigo-500 light).
+    pub awaiting: u32,
+    /// Whether this palette is a dark theme — project accent colors pick
+    /// their dark variant from it (upstream `projectColorValue` uses the
+    /// light/dark Tailwind pair).
+    pub dark: bool,
 }
 pub const DARK: Palette = Palette {
     canvas: 0x272731,
@@ -58,6 +69,9 @@ pub const DARK: Palette = Palette {
     error: 0xffb9c0,
     error_surface: 0x432c35,
     notice_surface: 0x303a4a,
+    pending: 0xe7c24a,
+    awaiting: 0x98a6e8,
+    dark: true,
 };
 
 pub const LIGHT: Palette = Palette {
@@ -73,6 +87,9 @@ pub const LIGHT: Palette = Palette {
     error: 0x99283b,
     error_surface: 0xffe4e8,
     notice_surface: 0xe6edf7,
+    pending: 0xd97706,
+    awaiting: 0x6366f1,
+    dark: false,
 };
 // Synara currently owns one application window. All native views, including
 // menus and text entries, paint on the UI thread and share its current palette.
@@ -103,25 +120,30 @@ pub fn configure(
         ThemePreference::Light => false,
         ThemePreference::Dark => true,
     };
-    let palette = if !dark {
-        LIGHT
-    } else if appearance.dark_theme == DarkThemePreference::Dracula {
-        Palette {
-            canvas: 0x282a36,
-            sidebar: 0x252731,
-            overlay: 0x30323f,
-            hover: 0x30323c,
-            selected: 0x393b49,
-            border: 0x393b46,
-            text: 0xf8f8f2,
-            muted: 0xa4a3ae,
-            focus: 0xff79c6,
-            ..DARK
+    // Electron theme packs project onto the same semantic palette. `None`
+    // (legacy settings or an explicit clear) keeps the native palettes.
+    let palette = theme::configure(appearance, dark).unwrap_or_else(|| {
+        if !dark {
+            LIGHT
+        } else if appearance.dark_theme == DarkThemePreference::Dracula {
+            Palette {
+                canvas: 0x282a36,
+                sidebar: 0x252731,
+                overlay: 0x30323f,
+                hover: 0x30323c,
+                selected: 0x393b49,
+                border: 0x393b46,
+                text: 0xf8f8f2,
+                muted: 0xa4a3ae,
+                focus: 0xff79c6,
+                ..DARK
+            }
+        } else {
+            DARK
         }
-    } else {
-        DARK
-    };
+    });
     let mut palette = personalization::colorway(palette, appearance.personalization.colorway, dark);
+    palette.dark = dark;
     if let Some(accent) = appearance.personalization.accent {
         palette.focus = personalization::readable_accent(accent, palette.canvas);
     }
@@ -272,6 +294,49 @@ pub fn header_action(
             cx.stop_propagation();
         })
         .children(glyph.map(icon))
+        .child(div().flex_1().min_w_0().text_ellipsis().child(label))
+}
+
+/// `action` with a caller-provided leading element — project rows render a
+/// favicon or appearance glyph instead of a `Glyph`.
+pub fn action_icon(
+    id: impl Into<ElementId>,
+    label: impl Into<SharedString>,
+    icon: Option<gpui::AnyElement>,
+    selected: bool,
+    activate: impl Fn(&(), &mut Window, &mut gpui::App) + 'static,
+) -> Stateful<Div> {
+    let label = label.into();
+    div()
+        .id(id)
+        .role(gpui::Role::Button)
+        .aria_label(label.clone())
+        .tab_index(0)
+        .h(px(row_height()))
+        .min_w_0()
+        .px_2()
+        .flex()
+        .items_center()
+        .gap(px(6.))
+        .rounded_md()
+        .border_1()
+        .border_color(rgba(0x00000000))
+        .bg(rgba(if selected {
+            (palette().selected << 8) | 0xff
+        } else {
+            0
+        }))
+        .text_color(rgb(palette().text))
+        .text_size(px(ui_font_size()))
+        .cursor_pointer()
+        .hover(|style| style.bg(rgb(palette().hover)))
+        .active(|style| style.bg(rgb(palette().selected)))
+        .focus_visible(|style| style.border_color(rgb(palette().focus)))
+        .on_click(move |_, window, cx| {
+            activate(&(), window, cx);
+            cx.stop_propagation();
+        })
+        .children(icon)
         .child(div().flex_1().min_w_0().text_ellipsis().child(label))
 }
 

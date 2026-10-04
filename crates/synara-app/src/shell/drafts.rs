@@ -10,6 +10,7 @@ pub(super) struct DraftState {
     versions: HashMap<TaskId, u64>,
     sent: HashMap<TaskId, (u64, String)>,
     display: HashMap<TaskId, String>,
+    raw: HashMap<TaskId, String>,
     pub quitting: bool,
 }
 impl DraftState {
@@ -24,6 +25,7 @@ impl DraftState {
         self.versions.remove(&id);
         self.sent.remove(&id);
         self.display.remove(&id);
+        self.raw.remove(&id);
     }
 
     pub fn version(&self, id: TaskId) -> u64 {
@@ -35,13 +37,23 @@ impl DraftState {
         let version = self.versions.entry(id).or_default();
         *version = version.wrapping_add(1);
     }
-    pub fn submitted(&mut self, id: TaskId, text: String) {
+    /// `echo` is the exact transcript text the submitted prompt lands as (the
+    /// provider dispatch may prefix an interaction-mode shim); `draft` is the
+    /// composer text at send time, used to detect edits made since.
+    pub fn submitted(&mut self, id: TaskId, draft: String, echo: String) {
         self.display.remove(&id);
+        self.raw.insert(id, draft);
         self.sent
-            .insert(id, (self.versions.get(&id).copied().unwrap_or(0), text));
+            .insert(id, (self.versions.get(&id).copied().unwrap_or(0), echo));
     }
-    pub fn submitted_with_display(&mut self, id: TaskId, text: String, display: String) {
-        self.submitted(id, text);
+    pub fn submitted_with_display(
+        &mut self,
+        id: TaskId,
+        draft: String,
+        echo: String,
+        display: String,
+    ) {
+        self.submitted(id, draft, echo);
         self.display.insert(id, display);
     }
     fn accepted(&mut self, id: TaskId, text: &str) -> bool {
@@ -54,6 +66,7 @@ impl DraftState {
         let unchanged = *version == self.versions.get(&id).copied().unwrap_or(0);
         self.sent.remove(&id);
         self.display.remove(&id);
+        self.raw.remove(&id);
         unchanged
     }
     fn due(&mut self, force: bool) -> Vec<TaskId> {
@@ -217,7 +230,7 @@ impl Shell {
         else {
             return;
         };
-        let original = self.draft_state.sent.get(&id).map(|(_, text)| text.clone());
+        let original = self.draft_state.raw.get(&id).cloned();
         if self.draft_state.accepted(id, text)
             && self
                 .drafts
@@ -305,11 +318,12 @@ mod tests {
         state.submitted_with_display(
             id,
             "Review".into(),
+            "Review".into(),
             "Review\nAttached file: a.png\n[Image]".into(),
         );
         assert!(!state.accepted(id, "Review"));
         assert!(state.accepted(id, "Review\nAttached file: a.png\n[Image]"));
-        state.submitted_with_display(id, "Review".into(), "display".into());
+        state.submitted_with_display(id, "Review".into(), "Review".into(), "display".into());
         state.changed(id);
         assert!(!state.accepted(id, "display"));
     }
@@ -343,11 +357,11 @@ mod tests {
         let id = TaskId::new();
         let mut s = DraftState::default();
         s.changed(id);
-        s.submitted(id, "hello".into());
+        s.submitted(id, "hello".into(), "hello".into());
         s.changed(id);
         s.changed(id);
         assert!(!s.accepted(id, "hello"));
-        s.submitted(id, "hello".into());
+        s.submitted(id, "hello".into(), "hello".into());
         assert!(s.accepted(id, "hello"));
         assert!(!s.accepted(id, "hello"));
     }
@@ -355,7 +369,7 @@ mod tests {
     fn another_chat_or_text_cannot_acknowledge_a_pending_draft() {
         let id = TaskId::new();
         let mut s = DraftState::default();
-        s.submitted(id, "hello".into());
+        s.submitted(id, "hello".into(), "hello".into());
         assert!(!s.accepted(TaskId::new(), "hello"));
         assert!(!s.accepted(id, "other"));
         assert!(s.accepted(id, "hello"));

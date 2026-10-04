@@ -6,6 +6,20 @@ impl Shell {
             .child(card()
                 .child(row("Enter to send", "When off, Enter adds a new line. Ctrl+Enter or Command+Enter sends. Shift+Enter always adds a new line.",
                     self.toggle("chat-send-enter", "Enter to send", self.settings.value.chat.send_on_enter, |s| s.chat.send_on_enter = !s.chat.send_on_enter, cx)))
+                .child(row(
+                    "Enter while dictating",
+                    "Choose whether Enter only transcribes the recording into the draft or also sends it once transcription finishes.",
+                    self.choice_button(
+                        "chat-voice-enter",
+                        match self.settings.value.chat.voice_enter_behavior {
+                            VoiceEnterBehavior::Stop => "Stop and transcribe",
+                            VoiceEnterBehavior::Send => "Stop and send",
+                        }
+                        .into(),
+                        super::ChoiceKind::VoiceEnter,
+                        cx,
+                    ),
+                ))
                 .child(row("Message timestamps", "Show local timestamps alongside completed assistant responses.",
                     self.toggle("chat-timestamps", "Message timestamps", self.settings.value.chat.show_timestamps, |s| s.chat.show_timestamps = !s.chat.show_timestamps, cx))))
             .child(row("Recent attachments", "Show the explicit recent-file reuse list. Hiding it never removes pending attachments or changes what will be sent.",

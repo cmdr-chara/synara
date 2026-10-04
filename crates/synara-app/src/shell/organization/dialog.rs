@@ -20,6 +20,9 @@ struct Assignment {
 pub(in crate::shell) struct OrganizationDialog {
     value: WorkspaceOrganization,
     projects: Vec<Project>,
+    /// Per-project local look (name + appearance) and favicon the managed
+    /// rows render — compact rows use upstream's `Favicon` presentation.
+    looks: HashMap<ProjectId, (Option<ProjectUi>, Option<Arc<gpui::Image>>)>,
     name: Entity<TextEntry>,
     query: Entity<TextEntry>,
     focus: FocusHandle,
@@ -40,6 +43,7 @@ impl OrganizationDialog {
     pub fn new(
         value: WorkspaceOrganization,
         projects: Vec<Project>,
+        looks: HashMap<ProjectId, (Option<ProjectUi>, Option<Arc<gpui::Image>>)>,
         cx: &mut Context<Self>,
     ) -> Self {
         let name = cx.new(|cx| TextEntry::new("Space name", EntryMode::SingleLine, 36., cx));
@@ -62,6 +66,7 @@ impl OrganizationDialog {
         Self {
             value,
             projects,
+            looks,
             name,
             query,
             focus: cx.focus_handle(),
@@ -441,13 +446,27 @@ impl gpui::Render for OrganizationDialog {
                     .items_center()
                     .gap_2()
                     .h(px(38.))
-                    .child(ui::icon(Glyph::Folder))
+                    .child({
+                        let (appearance, favicon) = self
+                            .looks
+                            .get(&project.id)
+                            .map(|look| (look.0.as_ref(), look.1.as_ref()))
+                            .unwrap_or((None, None));
+                        crate::shell::project_ui::project_glyph(
+                            appearance.and_then(|ui| ui.appearance.as_ref()),
+                            favicon,
+                            false,
+                            crate::shell::project_ui::ProjectGlyphPresentation::Favicon,
+                        )
+                    })
                     .child(
-                        div()
-                            .flex_1()
-                            .min_w_0()
-                            .text_ellipsis()
-                            .child(project.name.clone()),
+                        div().flex_1().min_w_0().text_ellipsis().child(
+                            self.looks
+                                .get(&project.id)
+                                .and_then(|look| look.0.as_ref())
+                                .and_then(|ui| ui.name.clone())
+                                .unwrap_or_else(|| project.name.clone()),
+                        ),
                     )
                     .child(
                         ui::button("project-space", destination.to_owned(), false)

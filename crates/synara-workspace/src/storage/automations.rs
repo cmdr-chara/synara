@@ -1,13 +1,10 @@
 //! One versioned scheduler ledger in the existing SQLite store. Every mutation
 //! takes the database writer lock before reading. Transcript events never decide
 //! whether a scheduled slot has already been claimed.
-use super::organization::automation_hub_context;
+
 use super::*;
 use crate::automations::*;
-use crate::{
-    AgentProfile, DirectModelBinding, ProviderSettings, WorkspaceError, WorkspaceResult,
-    default_profiles,
-};
+use crate::{AgentProfile, WorkspaceError, WorkspaceResult, default_profiles};
 const KEY: &str = "automation-ledger-v1";
 fn read(connection: &Connection) -> WorkspaceResult<AutomationLedger> {
     let data: Option<String> = connection
@@ -58,56 +55,8 @@ fn context(
         [project.workspace_id.to_string()],
         |r| r.get(0),
     )?;
-    if definition.context == AutomationContextPolicy::Hub {
-        let _ = automation_hub_context(connection, project.id)?;
-    }
     Ok((project, decode(&workspace)?))
 }
-fn validate_completion_policy(
-    connection: &Connection,
-    definition: &AutomationDefinition,
-) -> WorkspaceResult<()> {
-    let AutomationCompletionPolicy::AiEvaluated { evaluator, .. } = &definition.completion_policy
-    else {
-        return Ok(());
-    };
-    let raw: Option<String> = connection
-        .query_row(
-            "SELECT data FROM preferences WHERE key='direct-model-providers-v1'",
-            [],
-            |row| row.get(0),
-        )
-        .optional()?;
-    let settings: ProviderSettings = raw.as_deref().map(decode).transpose()?.unwrap_or_default();
-    settings
-        .validate()
-        .map_err(|error| invalid(error.to_string()))?;
-    let profile = evaluator.profile(&settings)?;
-    let mut selection = evaluator.selection.clone();
-    selection.output = synara_model::OutputFormat::JsonSchema {
-        name: "automation_completion".into(),
-        schema: serde_json::json!({
-            "type":"object",
-            "additionalProperties":false,
-            "required":["stopMatched","confidence","reason"],
-            "properties":{
-                "stopMatched":{"type":"boolean"},
-                "confidence":{"type":"number"},
-                "reason":{"type":"string","maxLength":2000}
-            }
-        }),
-    };
-    selection.max_output_tokens = selection.max_output_tokens.min(512);
-    synara_model::validate_request(
-        profile,
-        &selection.request(vec![synara_model::Message::text(
-            synara_model::MessageRole::User,
-            "Validate automation completion evaluator".into(),
-        )]),
-    )
-    .map_err(|error| invalid(error.to_string()))
-}
-
 fn continuation_target_identity(
     connection: &Connection,
     definition: &AutomationDefinition,
@@ -129,23 +78,6 @@ fn continuation_target_identity(
     {
         return Err(invalid(
             "Automation continuation target must be unarchived, in the selected project, and use the selected ACP agent.",
-        ));
-    }
-    let raw_binding: Option<String> = connection
-        .query_row(
-            "SELECT data FROM preferences WHERE key=?1",
-            [format!("task-direct-model:{id}")],
-            |row| row.get(0),
-        )
-        .optional()?;
-    let binding = raw_binding
-        .as_deref()
-        .map(decode::<Option<DirectModelBinding>>)
-        .transpose()?
-        .flatten();
-    if binding.is_some() {
-        return Err(invalid(
-            "Automation continuation currently supports ACP-owned target conversations only.",
         ));
     }
     Ok(task)
@@ -217,7 +149,6 @@ impl Store {
         definition: &AutomationDefinition,
     ) -> WorkspaceResult<()> {
         context(&self.connection, definition)?;
-        validate_completion_policy(&self.connection, definition)?;
         match (definition.mode, definition.target_task_id) {
             (AutomationMode::Heartbeat, Some(target)) => {
                 continuation_target_identity(&self.connection, definition, target)?;
@@ -332,22 +263,9 @@ impl Store {
             }
         }
         let (project, workspace) = context(&tx, &definition)?;
-        let (new_scope, prompt, hub_revision) = match definition.context {
-            AutomationContextPolicy::Project => {
-                (TaskScope::Project, definition.instructions.clone(), None)
-            }
-            AutomationContextPolicy::Hub => {
-                let (revision, shared) = automation_hub_context(&tx, project.id)?;
-                let mut prompt = shared;
-                prompt.push_str(&definition.instructions);
-                if prompt.len() > MAX_AUTOMATION_PROMPT_BYTES || prompt.contains('\0') {
-                    return Err(invalid(
-                        "Combined Hub automation context exceeds the 128 KiB prompt limit.",
-                    ));
-                }
-                (TaskScope::Studio, prompt, Some(revision))
-            }
-        };
+        // Upstream has no automation context knob: the submitted prompt is the
+        // reviewed instructions verbatim, in the ordinary project scope.
+        let prompt = definition.instructions.clone();
 
         let mut created_task = false;
         let task = match definition.mode {
@@ -362,7 +280,7 @@ impl Store {
                     agent_id: definition.agent_id.clone(),
                     working_directory: crate::service::project_directory(&workspace, &project)?,
                     updated_at_ms: now,
-                    scope: new_scope,
+                    scope: TaskScope::Project,
                 }
             }
             AutomationMode::Heartbeat => match continuation_target_for_run(
@@ -401,7 +319,7 @@ impl Store {
                         agent_id: definition.agent_id.clone(),
                         working_directory: crate::service::project_directory(&workspace, &project)?,
                         updated_at_ms: now,
-                        scope: new_scope,
+                        scope: TaskScope::Project,
                     };
                     definition.target_task_id = Some(task.id);
                     ledger.definitions[index].target_task_id = Some(task.id);
@@ -420,7 +338,7 @@ impl Store {
             status: AutomationRunStatus::Running,
             task_id: Some(task.id),
             prompt,
-            hub_revision,
+            hub_revision: None,
             completion_evaluation: None,
             output: String::new(),
         };

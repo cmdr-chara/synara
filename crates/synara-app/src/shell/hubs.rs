@@ -20,14 +20,10 @@ pub(super) struct HubState {
     editing: bool,
     original: Option<HubProfile>,
     name: Entity<TextEntry>,
-    description: Entity<TextEntry>,
     instructions: Entity<TextEntry>,
-    memory: Entity<TextEntry>,
     query: Entity<TextEntry>,
-    include: bool,
     folder: Option<PathBuf>,
     picker: bool,
-    show_archived: bool,
     error: Option<String>,
     focus_form: bool,
     pending_selection: Option<(TaskId, u64, bool)>,
@@ -36,26 +32,16 @@ pub(super) struct HubState {
 impl HubState {
     pub fn new(cx: &mut Context<Shell>) -> Self {
         let name = cx.new(|cx| TextEntry::new("Hub name", EntryMode::SingleLine, 36., cx));
-        let description =
-            cx.new(|cx| TextEntry::new("What is this Hub for?", EntryMode::SingleLine, 36., cx));
         let instructions = cx.new(|cx| {
             TextEntry::new(
-                "How should agents approach this work?",
+                "Project instructions for new threads",
                 EntryMode::Editor,
                 140.,
                 cx,
             )
         });
-        let memory = cx.new(|cx| {
-            TextEntry::new(
-                "Shared decisions, facts and reference notes",
-                EntryMode::Editor,
-                160.,
-                cx,
-            )
-        });
         let query = cx.new(|cx| TextEntry::new("Find a Hub", EntryMode::SingleLine, 32., cx));
-        let subscriptions = [&name, &description, &instructions, &memory, &query]
+        let subscriptions = [&name, &instructions, &query]
             .into_iter()
             .map(|entry| cx.subscribe(entry, |_, _, _, cx| cx.notify()))
             .collect();
@@ -70,14 +56,10 @@ impl HubState {
             editing: false,
             original: None,
             name,
-            description,
             instructions,
-            memory,
             query,
-            include: true,
             folder: None,
             picker: false,
-            show_archived: false,
             error: None,
             focus_form: false,
             pending_selection: None,
@@ -93,36 +75,17 @@ impl HubState {
             || self.picker
             || self.dirty(cx)
             || self.editing
-                && [
-                    &self.name,
-                    &self.description,
-                    &self.instructions,
-                    &self.memory,
-                ]
-                .iter()
-                .any(|entry| entry.read(cx).is_composing())
+                && [&self.name, &self.instructions]
+                    .iter()
+                    .any(|entry| entry.read(cx).is_composing())
     }
     fn dirty(&self, cx: &App) -> bool {
         if !self.editing {
             return false;
         }
-        let fields = [
-            self.name.read(cx).text(),
-            self.description.read(cx).text(),
-            self.instructions.read(cx).text(),
-            self.memory.read(cx).text(),
-        ];
+        let fields = [self.name.read(cx).text(), self.instructions.read(cx).text()];
         match &self.original {
-            Some(profile) => {
-                fields
-                    != [
-                        profile.name.as_str(),
-                        profile.description.as_str(),
-                        profile.instructions.as_str(),
-                        profile.memory.as_str(),
-                    ]
-                    || self.include != profile.include_in_new_threads
-            }
+            Some(profile) => fields != [profile.name.as_str(), profile.instructions.as_str()],
             None => fields.iter().any(|value| !value.is_empty()) || self.folder.is_some(),
         }
     }
@@ -178,26 +141,19 @@ impl Shell {
         if self.hub_navigation_blocked(cx) {
             return;
         }
-        let Some(profile) = self
+        if !self
             .hubs
             .rows
             .iter()
-            .find(|hub| hub.profile.project == project)
-            .map(|hub| hub.profile.clone())
-        else {
+            .any(|hub| hub.profile.project == project)
+        {
             return;
-        };
+        }
         let task = self
             .catalog
             .tasks
             .iter()
-            .find(|task| task.id == profile.main_task)
-            .or_else(|| {
-                self.catalog
-                    .tasks
-                    .iter()
-                    .find(|task| task.project_id == project && task.scope == TaskScope::Studio)
-            });
+            .find(|task| task.project_id == project && task.scope == TaskScope::Studio);
         if let Some(task) = task {
             if !self.select_task(task.id, cx) {
                 return;
@@ -214,6 +170,7 @@ impl Shell {
             self.selected = None;
             self.loading_task = None;
             self.thread = None;
+            self.refresh_prompt_history(cx);
             self.details = None;
             self.project = Some(project);
             self.reset_editor_tabs();
@@ -261,27 +218,14 @@ impl Shell {
         }
         let values = profile
             .as_ref()
-            .map(|p| {
-                [
-                    p.name.clone(),
-                    p.description.clone(),
-                    p.instructions.clone(),
-                    p.memory.clone(),
-                ]
-            })
+            .map(|p| [p.name.clone(), p.instructions.clone()])
             .unwrap_or_default();
-        for (entry, text) in [
-            &self.hubs.name,
-            &self.hubs.description,
-            &self.hubs.instructions,
-            &self.hubs.memory,
-        ]
-        .into_iter()
-        .zip(values)
+        for (entry, text) in [&self.hubs.name, &self.hubs.instructions]
+            .into_iter()
+            .zip(values)
         {
             entry.update(cx, |entry, cx| entry.set_text(text, cx));
         }
-        self.hubs.include = profile.as_ref().is_none_or(|p| p.include_in_new_threads);
         self.hubs.original = profile;
         self.hubs.folder = None;
         self.hubs.editing = true;
@@ -304,10 +248,7 @@ impl Shell {
         let workspace = self.controller.workspace.clone();
         if let Some(mut profile) = self.hubs.original.clone() {
             profile.name = name;
-            profile.description = self.hubs.description.read(cx).text().to_owned();
             profile.instructions = self.hubs.instructions.read(cx).text().to_owned();
-            profile.memory = self.hubs.memory.read(cx).text().to_owned();
-            profile.include_in_new_threads = self.hubs.include;
             if let Err(error) = profile.validate() {
                 self.hubs.error = Some(error.to_string());
                 cx.notify();
@@ -392,11 +333,6 @@ impl Shell {
             self.edit_hub(true, cx);
             return;
         };
-        if profile.archived {
-            self.hubs.error = Some("Restore the Hub before creating a thread.".into());
-            cx.notify();
-            return;
-        }
         let Some(agent) = self
             .task()
             .filter(|t| t.project_id == profile.project)
@@ -426,115 +362,6 @@ impl Shell {
         });
         cx.notify();
     }
-    fn archive_hub(&mut self, cx: &mut Context<Self>) {
-        if self.hub_navigation_blocked(cx) {
-            return;
-        }
-        let Some(mut profile) = self.hub_profile().cloned() else {
-            return;
-        };
-        profile.archived = !profile.archived;
-        self.hubs.saving = true;
-        let workspace = self.controller.workspace.clone();
-        self.job(async move {
-            Ok(Update::Hubs(Box::new(Reply::Saved(
-                workspace
-                    .save_hub(profile.revision, profile)
-                    .await
-                    .map_err(|e| e.to_string()),
-            ))))
-        });
-        cx.notify();
-    }
-    fn use_hub_context(&mut self, cx: &mut Context<Self>) {
-        if self.hub_navigation_blocked(cx)
-            || self.loading_task.is_some()
-            || self.composer.read(cx).is_composing()
-        {
-            return;
-        }
-        let Some(profile) = self.hub_profile() else {
-            return;
-        };
-        if self.task().is_none_or(|task| {
-            task.project_id != profile.project || task.scope != TaskScope::Studio
-        }) {
-            return;
-        }
-        let context = profile.context_draft();
-        let text = self.composer.read(cx).text();
-        if context.is_empty() {
-            self.notice = Some("This Hub has no shared context yet.".into());
-        } else if context.len().saturating_add(text.len()) > 1024 * 1024 {
-            self.error = Some("Combined draft exceeds 1 MiB. Nothing was changed.".into());
-        } else {
-            let text = format!("{context}{text}");
-            self.composer
-                .update(cx, |entry, cx| entry.set_text(text, cx));
-            self.remember_draft(cx);
-            self.show_conversation(cx);
-            self.notice =
-                Some("Shared context added to the visible draft. Review it before sending.".into());
-        }
-        cx.notify();
-    }
-    pub(super) fn promote_hub_message(
-        &mut self,
-        task: TaskId,
-        anchor: MessageAnchor,
-        cx: &mut Context<Self>,
-    ) {
-        if self.selected != Some(task) || self.hub_navigation_blocked(cx) {
-            return;
-        }
-        let Some(profile) = self.hub_profile().cloned().filter(|profile| {
-            self.task().is_some_and(|task| {
-                task.project_id == profile.project && task.scope == TaskScope::Studio
-            })
-        }) else {
-            return;
-        };
-        let Some(message) = self.thread.as_ref().and_then(|thread| {
-            thread
-                .messages
-                .iter()
-                .find(|message| anchor.matches(message))
-        }) else {
-            return;
-        };
-        if message.text.len() > 64 * 1024 {
-            self.error = Some(
-                "This message is too large for shared knowledge. Copy a smaller selection instead."
-                    .into(),
-            );
-            cx.notify();
-            return;
-        }
-        let addition = format!(
-            "\n\nQuoted from thread {task}, message {}:\n{}",
-            anchor.id,
-            message
-                .text
-                .lines()
-                .map(|line| format!("> {line}"))
-                .collect::<Vec<_>>()
-                .join("\n")
-        );
-        if profile.memory.len().saturating_add(addition.len()) > 64 * 1024 {
-            self.error = Some(
-                "Shared knowledge would exceed 64 KiB. Copy a smaller selection instead.".into(),
-            );
-            cx.notify();
-            return;
-        }
-        let text = format!("{}{addition}", profile.memory);
-        self.edit_hub(false, cx);
-        self.hubs
-            .memory
-            .update(cx, |entry, cx| entry.set_text(text, cx));
-        self.notice = Some("Review this quoted message in shared knowledge, then Save context to share it with new threads.".into());
-        cx.notify();
-    }
     pub(super) fn hub_reply(&mut self, reply: Reply, cx: &mut Context<Self>) {
         match reply {
             Reply::Loaded(result) => {
@@ -544,6 +371,7 @@ impl Shell {
                         self.hubs.rows = rows;
                         self.hubs.loaded = true;
                         self.catalog = catalog;
+                        self.refresh_project_ui(cx);
                         self.hubs.error = None;
                         if self.hubs.reload {
                             self.hubs.reload = false;
@@ -552,6 +380,12 @@ impl Shell {
                             return;
                         }
                         if let Some((task, revision, home)) = self.hubs.pending_selection.take() {
+                            let pending_close = self.open_threads.pending_close;
+                            let close_after_selection = open_threads::pending_close_matches(
+                                pending_close,
+                                self.selected,
+                                revision,
+                            );
                             if revision == self.selection_revision && self.select_task(task, cx) {
                                 self.hubs.selected = self.task().map(|t| t.project_id);
                                 if home {
@@ -560,14 +394,24 @@ impl Shell {
                                 } else {
                                     self.show_conversation(cx);
                                 }
+                                if close_after_selection {
+                                    if let Some(pending) = pending_close {
+                                        self.close_open_thread_tab_identity(pending.task, cx);
+                                    }
+                                    self.open_threads.pending_close = None;
+                                }
                             } else {
+                                self.open_threads.pending_close = None;
                                 self.notice = Some(
                                     "Hub work was saved. Open it from Hubs when ready.".into(),
                                 );
                             }
                         }
                     }
-                    Err(error) => self.hubs.error = Some(error),
+                    Err(error) => {
+                        self.open_threads.pending_close = None;
+                        self.hubs.error = Some(error);
+                    }
                 }
             }
             Reply::Created(result, revision) => {
@@ -597,16 +441,16 @@ impl Shell {
                         }
                         self.load_hubs();
                     }
-                    Err(error) => self.hubs.error = Some(error),
+                    Err(error) => {
+                        self.open_threads.pending_close = None;
+                        self.hubs.error = Some(error);
+                    }
                 }
             }
             Reply::Saved(result) => {
                 self.hubs.saving = false;
                 match result {
                     Ok(profile) => {
-                        if !self.hubs.editing {
-                            self.hubs.show_archived = profile.archived;
-                        }
                         if self.hubs.editing {
                             if self.hubs.name.read(cx).text().trim() == profile.name {
                                 self.hubs.name.update(cx, |entry, cx| {
@@ -626,7 +470,7 @@ impl Shell {
                         }
                         self.hubs.error = None;
                         self.notice = Some(
-                            "Hub context saved. Existing transcripts and drafts were not changed."
+                            "Hub settings saved. New threads inherit the instructions in their notes."
                                 .into(),
                         );
                     }
@@ -643,7 +487,10 @@ impl Shell {
                         self.hubs.pending_selection = Some((task.id, revision, false));
                         self.load_hubs();
                     }
-                    Err(error) => self.hubs.error = Some(error),
+                    Err(error) => {
+                        self.open_threads.pending_close = None;
+                        self.hubs.error = Some(error);
+                    }
                 }
             }
         }

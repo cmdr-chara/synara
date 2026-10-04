@@ -96,11 +96,6 @@ pub(super) async fn get(path: &str, state: &AppState) -> Response {
     let Ok(task) = runtime.workspace.task(id).await else {
         return error(404, "not_found");
     };
-    match runtime.workspace.direct_model_binding(id).await {
-        Ok(Some(_)) => return Response::json(200, br#"{"direct":true,"busy":false}"#.to_vec()),
-        Ok(None) => {}
-        Err(_) => return error(503, "provider_unavailable"),
-    }
     let Some(stamp) = stamp(runtime, &task).await else {
         return error(503, "provider_unavailable");
     };
@@ -122,14 +117,18 @@ pub(super) async fn get(path: &str, state: &AppState) -> Response {
             "id": method.id, "name": method.name.chars().take(200).collect::<String>(),
             "description": method.description.as_deref().map(|value| value.chars().take(500).collect::<String>())
         })).collect()).unwrap_or_default();
-    Response::json(200, serde_json::to_vec(&serde_json::json!({
-        "agent_id": task.agent_id, "stamp":stamp, "direct":false, "busy":busy, "error":last_error,
-        "operation_id": operation.map(|op| op.id),
-        "connection_id": details.as_ref().map(|d| d.connection.id),
-        "state": details.as_ref().map_or(ConnectionState::Disconnected, |d| d.connection.state),
-        "session_ready": details.as_ref().is_some_and(|d| d.session_id.is_some()),
-        "methods": methods,
-    })).unwrap())
+    Response::json(
+        200,
+        serde_json::to_vec(&serde_json::json!({
+            "agent_id": task.agent_id, "stamp":stamp, "busy":busy, "error":last_error,
+            "operation_id": operation.map(|op| op.id),
+            "connection_id": details.as_ref().map(|d| d.connection.id),
+            "state": details.as_ref().map_or(ConnectionState::Disconnected, |d| d.connection.state),
+            "session_ready": details.as_ref().is_some_and(|d| d.session_id.is_some()),
+            "methods": methods,
+        }))
+        .unwrap(),
+    )
 }
 
 #[derive(Deserialize)]
@@ -191,10 +190,6 @@ pub(super) async fn post(
     ) || state.execution.active(id).await
     {
         return error(409, "task_unavailable");
-    }
-    match runtime.workspace.direct_model_binding(id).await {
-        Ok(None) => {}
-        _ => return error(409, "agent_route_required"),
     }
     let details = match runtime.controller.details(id).await {
         Ok(value) => value,

@@ -169,14 +169,6 @@ pub(super) const SECTIONS: &[SectionInfo] = &[
         "Discover and review local Codex or Claude histories. Import unsent standalone chats without changing source files.",
     ),
     item(
-        Section::DirectModels,
-        "direct-models",
-        "Integrations",
-        "Direct models",
-        Glyph::Brain,
-        "Direct provider endpoints, secure API keys and reviewed model selection. Separate from ACP coding agents.",
-    ),
-    item(
         Section::Device,
         "device",
         "Integrations",
@@ -214,7 +206,6 @@ pub(super) fn primary_section(section: Section) -> bool {
     !matches!(
         section,
         Section::ProjectImport
-            | Section::DirectModels
             | Section::Device
             | Section::Plugins
             | Section::Privacy
@@ -276,11 +267,10 @@ mod tests {
     fn native_extensions_and_stable_control_ids_are_preserved() {
         let ids: HashSet<_> = SECTIONS.iter().map(|item| item.id).collect();
         assert_eq!(ids.len(), SECTIONS.len());
-        assert_eq!(SECTIONS.len(), 23);
+        assert_eq!(SECTIONS.len(), 22);
         for id in [
             "workflows",
             "project-import",
-            "direct-models",
             "device",
             "privacy",
             "plugins",

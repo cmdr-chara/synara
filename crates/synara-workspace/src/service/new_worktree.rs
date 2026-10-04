@@ -2,6 +2,7 @@
 //! draft. An interrupted/failed checkout is never "repaired" by deleting files.
 use super::*;
 use crate::GitOperationPolicy;
+use std::time::Duration;
 use tokio_util::sync::CancellationToken;
 
 /// Not deserializable: only an explicit native review may authorize checkout.
@@ -302,8 +303,10 @@ impl WorkspaceService {
                 source.agent_id,
                 source.scope,
                 draft,
-                Some((directory, plan.destination.clone())),
-                Some((plan.branch.clone(), plan.remote)),
+                ScopedTaskPlacement {
+                    selected_directory: Some((directory, plan.destination.clone())),
+                    managed_branch: Some((plan.branch.clone(), plan.remote)),
+                },
             )
             .await
         }
@@ -444,14 +447,16 @@ impl WorkspaceService {
             current_source.agent_id,
             current_source.scope,
             draft,
-            Some((worktree.path, worktree.repository_path)),
-            Some((
-                worktree
-                    .branch
-                    .clone()
-                    .ok_or_else(|| invalid("the recovered worktree branch disappeared"))?,
-                matches!(current_workspace.location, WorkspaceLocation::Ssh { .. }),
-            )),
+            ScopedTaskPlacement {
+                selected_directory: Some((worktree.path, worktree.repository_path)),
+                managed_branch: Some((
+                    worktree
+                        .branch
+                        .clone()
+                        .ok_or_else(|| invalid("the recovered worktree branch disappeared"))?,
+                    matches!(current_workspace.location, WorkspaceLocation::Ssh { .. }),
+                )),
+            },
         )
         .await
     }
@@ -461,6 +466,26 @@ impl WorkspaceService {
     pub(super) async fn cleanup_deleted_managed_worktree(
         &self,
         managed: ManagedWorktreeOwnership,
+        cancel: CancellationToken,
+    ) -> WorkspaceResult<()> {
+        self.cleanup_managed_worktree(managed, false, cancel).await
+    }
+
+    /// Same revalidation as deletion cleanup, but the task being archived keeps
+    /// its durable marker and stays the worktree's expected sole owner; any other
+    /// task — including an archived sibling — still blocks removal.
+    pub(super) async fn cleanup_archived_managed_worktree(
+        &self,
+        managed: ManagedWorktreeOwnership,
+        cancel: CancellationToken,
+    ) -> WorkspaceResult<()> {
+        self.cleanup_managed_worktree(managed, true, cancel).await
+    }
+
+    async fn cleanup_managed_worktree(
+        &self,
+        managed: ManagedWorktreeOwnership,
+        archived_owner: bool,
         cancel: CancellationToken,
     ) -> WorkspaceResult<()> {
         managed.validate().map_err(WorkspaceError::Storage)?;
@@ -503,8 +528,9 @@ impl WorkspaceService {
             return Err(invalid("managed worktree ownership changed"));
         }
         if tasks.iter().any(|task| {
-            normalized_absolute(&task.working_directory)
-                .is_some_and(|path| path.starts_with(&managed.repository_path))
+            !(archived_owner && task.id == managed.task)
+                && normalized_absolute(&task.working_directory)
+                    .is_some_and(|path| path.starts_with(&managed.repository_path))
         }) {
             return Err(invalid("the managed worktree is still assigned to a task"));
         }
@@ -522,7 +548,9 @@ impl WorkspaceService {
                     && worktree.path == managed.task_path
             })
             .ok_or_else(|| invalid("managed worktree is no longer linked to its project"))?;
-        if worktree.assigned_task.is_some()
+        if worktree
+            .assigned_task
+            .is_some_and(|assigned| !archived_owner || assigned != managed.task)
             || worktree.bare
             || worktree.locked
             || worktree.prunable
@@ -597,6 +625,28 @@ impl WorkspaceService {
             return Err(invalid(
                 "Git still reports the managed worktree after cleanup",
             ));
+        }
+        // Drop administrative entries for worktrees whose directories vanished,
+        // so stale `.git/worktrees` metadata cannot pin branches or confuse later
+        // listings. The removal already succeeded; a prune failure is advisory.
+        if let Err(error) = git
+            .execute(
+                GitOperation::PruneWorktrees,
+                GitOperationOptions {
+                    timeout: Duration::from_secs(10),
+                    policy: GitOperationPolicy {
+                        allow_mutation: true,
+                        allow_repository_execution: true,
+                        ..Default::default()
+                    },
+                    ..Default::default()
+                },
+                CancellationToken::new(),
+                None,
+            )
+            .await
+        {
+            eprintln!("managed worktree cleanup could not prune stale metadata: {error}");
         }
         self.access(move |store| {
             store.forget_managed_worktree(&managed)?;
@@ -1000,6 +1050,7 @@ mod tests {
                 "HEAD",
             ],
         );
+        let manual = manual.canonicalize().unwrap();
         let manual_task = service
             .create_scoped_task_in_worktree(
                 project.id,
@@ -1043,6 +1094,179 @@ mod tests {
                 })
                 .await
                 .unwrap()
+        );
+    }
+
+    #[tokio::test]
+    async fn archived_managed_worktree_cleanup_is_opt_in_exact_and_keeps_dirty_checkouts() {
+        let dir = tempfile::tempdir().unwrap();
+        let repo = dir.path().join("repo");
+        let scratch = dir.path().join("scratch");
+        std::fs::create_dir(&scratch).unwrap();
+        let scratch = scratch.canonicalize().unwrap();
+        repository(&repo);
+        std::fs::write(repo.join("tracked.txt"), "tracked").unwrap();
+        git(&repo, &["add", "."]);
+        git(&repo, &["commit", "-qm", "tracked"]);
+
+        let service = WorkspaceService::memory().unwrap();
+        let project = service.add_local_workspace(repo.clone()).await.unwrap();
+        let agent = service.profiles().await.unwrap()[0].id.clone();
+        let source = service
+            .create_task(project.id, "source".into(), agent.clone())
+            .await
+            .unwrap();
+        let policy = GitOperationPolicy {
+            allow_mutation: true,
+            allow_repository_execution: true,
+            ..Default::default()
+        };
+
+        // Default opt-out: archiving leaves the managed checkout and marker.
+        let keep_plan = service
+            .prepare_new_worktree_fork(source.id, scratch.clone())
+            .await
+            .unwrap();
+        let keep_path = keep_plan.destination().to_path_buf();
+        let keep = service
+            .create_new_worktree_fork(
+                keep_plan,
+                "kept fork".into(),
+                "draft".into(),
+                policy,
+                CancellationToken::new(),
+            )
+            .await
+            .unwrap();
+        service.archive_task(keep.id).await.unwrap();
+        assert!(keep_path.exists());
+        assert!(
+            service
+                .access({
+                    let id = keep.id;
+                    move |store| Ok(store.managed_worktree(id)?.is_some())
+                })
+                .await
+                .unwrap()
+        );
+
+        let mut settings = service.settings().await.unwrap().settings;
+        settings.general.delete_worktree_on_archive = true;
+        service.save_settings(settings).await.unwrap();
+
+        // A second task inside the same worktree blocks cleanup entirely.
+        let shared_plan = service
+            .prepare_new_worktree_fork(source.id, scratch.clone())
+            .await
+            .unwrap();
+        let shared_path = shared_plan.destination().to_path_buf();
+        let shared = service
+            .create_new_worktree_fork(
+                shared_plan,
+                "shared fork".into(),
+                "draft".into(),
+                policy,
+                CancellationToken::new(),
+            )
+            .await
+            .unwrap();
+        // The public API never double-assigns a worktree, so the sibling shares
+        // the checkout only through a direct working-directory rewrite — the
+        // same durable shape a recovered or imported task could carry.
+        let mut sibling = service
+            .create_task(project.id, "sibling".into(), agent.clone())
+            .await
+            .unwrap();
+        sibling.working_directory = shared_path.clone();
+        let sibling_id = sibling.id;
+        service
+            .access(move |store| {
+                store.save_task(&sibling)?;
+                Ok(())
+            })
+            .await
+            .unwrap();
+        service.archive_task(shared.id).await.unwrap();
+        assert!(shared_path.exists());
+        assert!(
+            service
+                .access({
+                    let id = shared.id;
+                    move |store| Ok(store.managed_worktree(id)?.is_some())
+                })
+                .await
+                .unwrap()
+        );
+
+        // Removing the sibling unblocks the archived task's cleanup; the
+        // synara/* branch stays available for recovery.
+        service.archive_task(sibling_id).await.unwrap();
+        service.delete_task(sibling_id).await.unwrap();
+        assert!(shared_path.exists());
+        service.archive_task(shared.id).await.unwrap();
+        assert!(!shared_path.exists());
+        assert!(
+            !service
+                .access({
+                    let id = shared.id;
+                    move |store| Ok(store.managed_worktree(id)?.is_some())
+                })
+                .await
+                .unwrap()
+        );
+
+        let solo_plan = service
+            .prepare_new_worktree_fork(source.id, scratch.clone())
+            .await
+            .unwrap();
+        let solo_path = solo_plan.destination().to_path_buf();
+        let solo_branch = solo_plan.branch().to_owned();
+        let solo = service
+            .create_new_worktree_fork(
+                solo_plan,
+                "solo fork".into(),
+                "draft".into(),
+                policy,
+                CancellationToken::new(),
+            )
+            .await
+            .unwrap();
+        service.archive_task(solo.id).await.unwrap();
+        assert!(!solo_path.exists());
+        assert!(
+            !service
+                .access({
+                    let id = solo.id;
+                    move |store| Ok(store.managed_worktree(id)?.is_some())
+                })
+                .await
+                .unwrap()
+        );
+        let solo_ref = format!("refs/heads/{solo_branch}");
+        git(&repo, &["show-ref", "--verify", solo_ref.as_str()]);
+
+        // Dirty checkouts are always kept and archiving still succeeds.
+        let dirty_plan = service
+            .prepare_new_worktree_fork(source.id, scratch.clone())
+            .await
+            .unwrap();
+        let dirty_path = dirty_plan.destination().to_path_buf();
+        let dirty = service
+            .create_new_worktree_fork(
+                dirty_plan,
+                "dirty fork".into(),
+                "draft".into(),
+                policy,
+                CancellationToken::new(),
+            )
+            .await
+            .unwrap();
+        std::fs::write(dirty_path.join("keep.txt"), "do not remove").unwrap();
+        service.archive_task(dirty.id).await.unwrap();
+        assert!(dirty_path.exists());
+        assert_eq!(
+            std::fs::read_to_string(dirty_path.join("keep.txt")).unwrap(),
+            "do not remove"
         );
     }
 
@@ -1174,6 +1398,7 @@ mod tests {
         let repo = dir.path().join("repo");
         let scratch = dir.path().join("scratch");
         std::fs::create_dir(&scratch).unwrap();
+        let scratch = scratch.canonicalize().unwrap();
         repository(&repo);
         let service = WorkspaceService::memory().unwrap();
         let project = service.add_local_workspace(repo.clone()).await.unwrap();
@@ -1273,6 +1498,7 @@ mod tests {
         let repo = dir.path().join("repo");
         let scratch = dir.path().join("scratch");
         std::fs::create_dir(&scratch).unwrap();
+        let scratch = scratch.canonicalize().unwrap();
         repository(&repo);
         let service = WorkspaceService::memory().unwrap();
         let project = service.add_local_workspace(repo.clone()).await.unwrap();

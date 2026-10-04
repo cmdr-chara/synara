@@ -35,6 +35,54 @@ pub(super) fn answer_index(thread: &Thread, turn: &TurnSummary) -> Option<usize>
         .rev().find(|index| matches!(&thread.timeline[*index], TranscriptItem::Message { index } if thread.messages[*index].role == Role::Assistant))
 }
 
+/// Upstream `formatClockDuration` (session-logic.ts) — compact live units.
+fn format_clock_duration(ms: i64) -> String {
+    let s = ms.max(0) / 1000;
+    if s < 60 {
+        return format!("{s}s");
+    }
+    let days = s / 86_400;
+    let hours = (s % 86_400) / 3_600;
+    if days > 0 {
+        return if hours > 0 {
+            format!("{days}d {hours}h")
+        } else {
+            format!("{days}d")
+        };
+    }
+    let minutes = (s % 3_600) / 60;
+    let seconds = s % 60;
+    if hours > 0 {
+        return if minutes > 0 {
+            format!("{hours}h {minutes}m")
+        } else {
+            format!("{hours}h")
+        };
+    }
+    if seconds > 0 {
+        format!("{minutes}m {seconds}s")
+    } else {
+        format!("{minutes}m")
+    }
+}
+
+/// Upstream `formatDuration` (session-logic.ts) — settled-time precision.
+fn format_duration(ms: i64) -> String {
+    if ms < 0 {
+        return "0ms".into();
+    }
+    if ms < 1_000 {
+        return format!("{}ms", ms.max(1));
+    }
+    if ms < 10_000 {
+        return format!("{:.1}s", ms as f64 / 1_000.);
+    }
+    if ms < 60_000 {
+        return format!("{}s", (ms + 500) / 1_000);
+    }
+    format_clock_duration(ms / 1_000 * 1_000)
+}
+
 impl Shell {
     pub(super) fn activity_summary(
         &self,
@@ -46,15 +94,18 @@ impl Shell {
         let answer = answer_index(thread, turn);
         let key = (thread.id, turn.id.clone());
         let expanded = self.expanded_activity.contains(&key);
-        let seconds = turn
-            .finished_at_ms
-            .map(|end| end.saturating_sub(turn.started_at_ms) / 1000);
-        let label = match seconds {
-            Some(seconds) if seconds >= 60 => {
-                format!("Worked for {}m {}s", seconds / 60, seconds % 60)
-            }
-            Some(seconds) => format!("Worked for {seconds}s"),
-            None => "Working…".into(),
+        // Upstream session-logic `formatDuration` (settled) and
+        // `formatClockDuration` (live) — the "Worked for"/"Working for" rows
+        // share units but settled times keep sub-second precision.
+        let label = match turn.finished_at_ms {
+            Some(end) => format!(
+                "Worked for {}",
+                format_duration(end.saturating_sub(turn.started_at_ms))
+            ),
+            None => format!(
+                "Working for {}",
+                format_clock_duration(now_ms().saturating_sub(turn.started_at_ms))
+            ),
         };
         let telemetry = match (
             turn.direct_provider_id.as_deref(),

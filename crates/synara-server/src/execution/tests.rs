@@ -375,9 +375,13 @@ async fn failures_are_allowlisted_and_stopping_a_completed_run_is_idempotent() {
         PORT,
     )
     .await;
+    let mut run_view = view;
+    let object = run_view.as_object_mut().unwrap();
+    object.remove("route");
+    object.remove("remote");
     assert_eq!(
         serde_json::from_slice::<serde_json::Value>(&stop.body).unwrap(),
-        view
+        run_view
     );
     shutdown(&state).await;
 }
@@ -407,13 +411,14 @@ async fn execution_deadline_cancels_and_drains_the_native_owner() {
         run_task(
             controller,
             workspace,
-            task.id,
-            "deadline".into(),
-            None,
-            None,
-            CancellationToken::new(),
-            view.clone(),
-            Duration::from_millis(100),
+            RunTaskJob {
+                id: task.id,
+                text: "deadline".into(),
+                expected_remote: None,
+                cancellation: CancellationToken::new(),
+                view: view.clone(),
+                run_timeout: Duration::from_millis(100),
+            },
         ),
     )
     .await

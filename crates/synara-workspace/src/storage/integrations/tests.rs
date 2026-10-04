@@ -18,7 +18,8 @@ fn config(task: &Task) -> ManagedMcp {
 #[tokio::test]
 async fn integrations_skill_review_install_update_remove_preserves_origin_and_never_enables() {
     let dir = tempfile::tempdir().unwrap();
-    let path = dir.path().join("SKILL.md");
+    let root = dir.path().canonicalize().unwrap();
+    let path = root.join("SKILL.md");
     let service = WorkspaceService::memory().unwrap();
     std::fs::write(&path,"---\nname: Review changes\ndescription: Check the requested diff\nversion: '1.0'\n---\n# Review\nKeep the scope small.\n").unwrap();
     let review = service.review_skill(path.clone()).await.unwrap();
@@ -76,7 +77,7 @@ async fn integrations_skill_review_install_update_remove_preserves_origin_and_ne
 #[tokio::test]
 async fn integrations_duplicate_corrupt_future_and_checksum_failures_preserve_raw_settings() {
     let dir = tempfile::tempdir().unwrap();
-    let path = dir.path().join("SKILL.md");
+    let path = dir.path().canonicalize().unwrap().join("SKILL.md");
     std::fs::write(&path, "# Skill\nLiteral text, not a program.").unwrap();
     let service = WorkspaceService::memory().unwrap();
     let first = service
@@ -246,7 +247,8 @@ fn integrations_endpoint_validation_is_fail_closed() {
 #[test]
 fn integrations_skill_intake_rejects_nontext_oversize_and_symlinks() {
     let dir = tempfile::tempdir().unwrap();
-    let path = dir.path().join("SKILL.md");
+    let root = dir.path().canonicalize().unwrap();
+    let path = root.join("SKILL.md");
     for bytes in [
         vec![0xff],
         vec![b'a'; MAX_SKILL_BYTES + 1],
@@ -256,7 +258,7 @@ fn integrations_skill_intake_rejects_nontext_oversize_and_symlinks() {
         std::fs::write(&path, bytes).unwrap();
         assert!(SkillReview::inspect(path.clone()).is_err());
     }
-    assert!(SkillReview::inspect(dir.path().join("install.sh")).is_err());
+    assert!(SkillReview::inspect(root.join("install.sh")).is_err());
     std::fs::write(
         &path,
         "# Plain document\n```sh\ntouch /tmp/do-not-execute\n```\n",
@@ -265,7 +267,7 @@ fn integrations_skill_intake_rejects_nontext_oversize_and_symlinks() {
     assert!(SkillReview::inspect(path.clone()).is_ok());
     #[cfg(unix)]
     {
-        let link = dir.path().join("link.md");
+        let link = root.join("link.md");
         std::os::unix::fs::symlink(&path, &link).unwrap();
         assert!(SkillReview::inspect(link).is_err());
     }

@@ -12,9 +12,8 @@ mod command_palette;
 mod composer;
 mod controls;
 mod conversation;
-mod debug_workflow;
+mod debug_mode;
 mod device;
-mod direct_models;
 mod dock;
 mod drafts;
 mod editors;
@@ -30,11 +29,15 @@ mod kanban;
 mod messages;
 mod navigation;
 mod onboarding;
+mod open_threads;
 mod organization;
 mod overview;
 mod panels;
 mod project_import;
+mod project_ui;
+mod proposed_plan;
 mod pull_requests;
+mod rail;
 mod recap;
 mod registry;
 mod releases;
@@ -76,6 +79,7 @@ pub struct Bootstrap {
     pub catalog: Catalog,
     pub profiles: Vec<AgentProfile>,
     pub selection: Selection,
+    pub open_thread_tabs: LoadedOpenThreadTabs,
 }
 #[derive(Clone, Copy, PartialEq, Eq)]
 enum Panel {
@@ -117,18 +121,23 @@ struct FormState {
     error: Option<String>,
 }
 enum Update {
+    /// Fire-and-forget job result (e.g. persisting a visit stamp).
+    Noop,
     Releases(Result<NativeVersionHistory, String>),
     NativeBuildIntegrity(Result<NativeBuildIntegrity, String>),
     Goals(Box<goals::Reply>),
-    DebugWorkflow(Box<debug_workflow::Reply>),
+    InteractionMode {
+        task: TaskId,
+        mode: InteractionMode,
+    },
     Recap(Box<recap::Reply>),
     Checkpoints(Box<checkpoints::Reply>),
     InlineComments(Box<inline_comments::Reply>),
-    DirectModels(Box<direct_models::Reply>),
     Autonomy(Box<autonomy::Reply>),
     ProjectImport(Box<project_import::Reply>),
     Automations(Box<automations::Reply>),
     PullRequests(Box<pull_requests::Reply>),
+    ProjectUi(Box<project_ui::ProjectUiReply>),
     BrowserConfigured(TaskId, Result<(), String>),
     Integrations(Box<integrations::Reply>),
     Revision(Box<revisions::Reply>),
@@ -150,10 +159,12 @@ enum Update {
     Organization(Box<organization::OrganizationReply>),
     ChatTools(Box<chat_tools::Reply>),
     EnvironmentSaved(Option<String>),
+    OpenThreadTabsSaved(Option<String>),
     Kanban(Box<kanban::KanbanReply>),
     DraftLoaded(TaskId, Result<String, String>),
     DraftSaved(TaskId, Option<String>),
     Voice(Box<voice::Reply>),
+    SidebarSourcePlan(String, Option<ProposedPlan>),
     Registry(Box<registry::RegistryReply>),
     Catalog(Catalog),
     WorkspaceAdded(Project, Catalog),
@@ -215,7 +226,7 @@ enum Update {
 pub struct Shell {
     releases: releases::ReleasesState,
     goals: goals::GoalsState,
-    debug_workflow: debug_workflow::DebugState,
+    mode_tasks: HashMap<TaskId, InteractionMode>,
     recap: recap::RecapState,
     checkpoints: checkpoints::CheckpointState,
     inline_comments: inline_comments::InlineState,
@@ -241,12 +252,13 @@ pub struct Shell {
     organization: organization::OrganizationState,
     chat_tools: chat_tools::ChatTools,
     environment: environment::EnvironmentState,
+    open_threads: open_threads::OpenThreadState,
     kanban: kanban::KanbanState,
     controls: controls::ControlState,
     navigation: navigation::NavigationState,
+    rail: rail::RailState,
     settings: settings::SettingsState,
     integrations: integrations::IntegrationState,
-    direct_models: direct_models::DirectModelState,
     autonomy: autonomy::AutonomyView,
     project_import: project_import::ImportState,
     close: CloseState,
@@ -256,6 +268,7 @@ pub struct Shell {
     runtime: Handle,
     sender: async_channel::Sender<Update>,
     catalog: Catalog,
+    project_ui: project_ui::ProjectUiState,
     profiles: Vec<AgentProfile>,
     scratch_directory: PathBuf,
     creating_task: bool,
@@ -288,11 +301,37 @@ pub struct Shell {
     panel: Panel,
     dock_panel: Panel,
     dock_motion: crate::ui::motion::Drawer,
+    tasks_view_focus: [gpui::FocusHandle; 2],
     error: Option<String>,
     notice: Option<String>,
     focus_composer: bool,
     transcript: transcript::TranscriptState,
     expanded_activity: HashSet<(ThreadId, String)>,
+    /// Upstream `ProposedPlanCard` expanded state — plan ids showing the full
+    /// markdown body instead of the collapsed preview.
+    expanded_plans: HashSet<String>,
+    /// Upstream `planSidebarOpen` / `planSidebarOpenOnNextThreadRef`.
+    plan_sidebar_open: bool,
+    plan_sidebar_open_next: bool,
+    /// Upstream `PlanSidebar`'s `proposedPlanExpanded` local state.
+    plan_sidebar_expanded: bool,
+    /// Source-thread plan resolved for the sidebar while an implementation
+    /// turn is unsettled (upstream reads it off the source thread's
+    /// `proposedPlans` in the shared read model; here it is fetched lazily).
+    sidebar_source_plan: Option<ProposedPlan>,
+    sidebar_source_loading: Option<String>,
+    /// Upstream `activeTaskListCompact` (`ChatView`): collapse toggle on the
+    /// composer's task-list card, reset per thread.
+    active_task_list_compact: bool,
+    /// Upstream `planSidebarDismissedForTurnRef`: records the turn key when the
+    /// sidebar is closed so a later auto-open does not fight the dismissal.
+    plan_sidebar_dismissed_turn: Option<String>,
+    /// Upstream queued-turn dispatch: the text a drain/steer passes to the next
+    /// `send_prompt` instead of the live composer draft.
+    dispatch_text: Option<String>,
+    /// Upstream `QueuedSteerGate`: a Steer request waiting for the interrupted
+    /// turn to settle before its text dispatches.
+    pending_steer: Option<(TaskId, String)>,
     pending: HashMap<InteractionKey, UiInteraction>,
     forms: HashMap<InteractionKey, FormState>,
     files: Vec<FileEntry>,
@@ -473,6 +512,7 @@ impl Shell {
         );
         let show_onboarding =
             bootstrap.settings.onboarding.started && !bootstrap.settings.onboarding.completed;
+        let tasks_view_focus = std::array::from_fn(|_| cx.focus_handle());
         let mut this = Self {
             goals: goals::GoalsState::new(cx),
             releases: releases::ReleasesState::default(),
@@ -492,7 +532,7 @@ impl Shell {
             revisions: revisions::RevisionState::new(),
             handoff: handoff::HandoffState::default(),
             side_chats: side_chats::SideChatState::new(cx),
-            debug_workflow: debug_workflow::DebugState::new(cx),
+            mode_tasks: HashMap::new(),
             recap: recap::RecapState::new(cx),
             checkpoints: checkpoints::CheckpointState::default(),
             inline_comments: inline_comments::InlineState::new(cx),
@@ -510,12 +550,13 @@ impl Shell {
             organization: organization::OrganizationState::new(cx),
             chat_tools: chat_tools::ChatTools::new(cx),
             environment: environment::EnvironmentState::new(bootstrap.environment, cx),
+            open_threads: open_threads::OpenThreadState::new(bootstrap.open_thread_tabs, cx),
             kanban: kanban::KanbanState::default(),
             controls: controls::ControlState::new(cx),
             navigation: navigation::NavigationState::new(cx),
+            rail: rail::RailState::new(),
             settings: settings::SettingsState::new(bootstrap.settings, cx),
             integrations: integrations::IntegrationState::new(cx),
-            direct_models: direct_models::DirectModelState::new(cx),
             autonomy: autonomy::AutonomyView::new(cx),
             project_import: project_import::ImportState::new(cx),
             close: CloseState::Open,
@@ -525,6 +566,7 @@ impl Shell {
             runtime,
             sender,
             catalog: bootstrap.catalog,
+            project_ui: project_ui::ProjectUiState::new(),
             profiles: bootstrap.profiles,
             scratch_directory: bootstrap.scratch_directory,
             creating_task: false,
@@ -560,11 +602,22 @@ impl Shell {
             },
             dock_panel: Panel::Dock,
             dock_motion: crate::ui::motion::Drawer::new(false),
+            tasks_view_focus,
             error: None,
             notice: None,
             focus_composer: false,
             transcript: transcript::TranscriptState::new(),
             expanded_activity: HashSet::new(),
+            expanded_plans: HashSet::new(),
+            plan_sidebar_open: false,
+            plan_sidebar_open_next: false,
+            plan_sidebar_expanded: false,
+            sidebar_source_plan: None,
+            sidebar_source_loading: None,
+            active_task_list_compact: false,
+            plan_sidebar_dismissed_turn: None,
+            dispatch_text: None,
+            pending_steer: None,
             pending: HashMap::new(),
             forms: HashMap::new(),
             files: vec![],
@@ -578,8 +631,10 @@ impl Shell {
             _updates: updates,
             _subscriptions: subscriptions,
         };
+        this.reconcile_open_thread_tabs(cx);
         this.load_releases(cx);
         this.load_organization();
+        this.refresh_project_ui(cx);
         this.load_hubs();
         this.composer.update(cx, |entry, _| {
             entry.set_send_on_enter(this.settings.value.chat.send_on_enter);
@@ -632,10 +687,7 @@ impl Shell {
         if self.followup_navigation_blocked(cx) {
             return false;
         }
-        if self.integrations.pending()
-            || self.direct_models.pending()
-            || self.project_import.pending()
-        {
+        if self.integrations.pending() || self.project_import.pending() {
             self.notice=Some("Finish the integration operation or discard its open Settings form/review before closing.".into());
             cx.notify();
             return false;
@@ -656,9 +708,8 @@ impl Shell {
             return false;
         }
         if self.hubs.pending(cx) {
-            self.notice = Some(
-                "Finish Hub creation or save/discard the Hub context editor before closing.".into(),
-            );
+            self.notice =
+                Some("Finish Hub creation or save/discard the Hub editor before closing.".into());
             cx.notify();
             return false;
         }
@@ -709,6 +760,7 @@ impl Shell {
         if self.terminal_layout_quitting
             || self.terminal_closing
             || self.draft_state.quitting
+            || self.open_threads.quitting
             || self.environment.quitting
         {
             return false;
@@ -756,6 +808,9 @@ impl Shell {
             return;
         }
         if self.save_drafts_before_quit(cx) {
+            return;
+        }
+        if self.save_open_thread_tabs_before_quit() {
             return;
         }
         self.device.retire();
@@ -882,6 +937,18 @@ impl Shell {
             self.catalog.tasks.insert(0, task);
         }
     }
+    /// Upstream `updateComposerPromptHistory`: composer Up/Down recalls the
+    /// selected task's sent prompts (newest first, capped at 100). History is
+    /// task-scoped state inside the entry, like the undo stack.
+    fn refresh_prompt_history(&mut self, cx: &mut Context<Self>) {
+        let history = self
+            .thread
+            .as_ref()
+            .map(|thread| derive_prompt_history(&thread.messages))
+            .unwrap_or_default();
+        self.composer
+            .update(cx, |entry, _| entry.set_prompt_history(history));
+    }
     fn select_task(&mut self, id: TaskId, cx: &mut Context<Self>) -> bool {
         if self.autonomy_navigation_blocked(cx) {
             return false;
@@ -938,18 +1005,38 @@ impl Shell {
         }
         self.controls.retire();
         self.navigation.record_task(id);
+        self.record_open_thread_tab(id, cx);
         self.selected = Some(id);
+        self.reveal_selected_task(id, &task, cx);
+        // Upstream markThreadVisited — client-side stamp for the
+        // unread-completed badge on other rows.
+        let visited_at = now_ms();
+        self.catalog.visited.insert(id, visited_at);
+        let workspace = self.controller.workspace.clone();
+        self.job(async move {
+            let _ = workspace.save_task_visit(id, visited_at).await;
+            Ok(Update::Noop)
+        });
         self.loading_task = Some(id);
         self.chat_tools.reset_selection();
         self.studio.reset();
         self.explorer.reset_search();
-        self.load_direct_binding(id);
+        // Upstream: `planSidebarOpen` resets to `planSidebarOpenOnNextThreadRef`
+        // on thread change; the sidebar's expanded plan section remounts.
+        self.plan_sidebar_open = std::mem::take(&mut self.plan_sidebar_open_next);
+        self.plan_sidebar_expanded = false;
+        self.sidebar_source_plan = None;
+        self.sidebar_source_loading = None;
+        self.active_task_list_compact = false;
+        self.plan_sidebar_dismissed_turn = None;
+        self.dispatch_text = None;
+        self.pending_steer = None;
         self.load_handoff_origin(id);
         self.load_message_pins(id);
         self.load_attachments(id);
         self.load_followups(id);
         self.load_goals(id, cx);
-        self.load_debug(id, cx);
+        self.load_interaction_mode(id, cx);
         self.load_recap(id);
         self.load_inline_comments(id, cx);
         self.load_side_chats(id, cx);
@@ -957,6 +1044,7 @@ impl Shell {
         self.details = None;
         self.trace.clear();
         self.thread = Some(Thread::new(task.thread_id));
+        self.refresh_prompt_history(cx);
         self.sync_transcript_media(cx);
         self.error = None;
         self.composer.update(cx, |entry, cx| {
@@ -1029,7 +1117,7 @@ impl Shell {
             Ok(Update::WorkspaceAdded(project, workspace.catalog().await?))
         });
     }
-    fn browse_workspace(&mut self, cx: &mut Context<Self>) {
+    pub(super) fn browse_workspace(&mut self, cx: &mut Context<Self>) {
         let picker = cx.prompt_for_paths(gpui::PathPromptOptions {
             files: false,
             directories: true,
@@ -1218,6 +1306,7 @@ impl Shell {
             return;
         }
         self.connecting.insert(id);
+        self.sync_working_row();
         self.error = None;
         let controller = self.controller.clone();
         let operation = operation.to_owned();
@@ -1242,6 +1331,7 @@ impl Shell {
             return;
         }
         self.connecting.insert(id);
+        self.sync_working_row();
         let controller = self.controller.clone();
         self.error = None;
         self.job(async move {
@@ -1261,14 +1351,10 @@ impl Shell {
         }
         tracing::debug!(target: "synara_ui_layout",
             task_selected = self.selected.is_some(), loading_thread = self.loading_task.is_some(),
-            loading_route = self.direct_route_loading(),
             loading_draft = self.selected.is_some_and(|t| self.draft_state.loading.contains(&t)),
             attachment_pending = self.attachment_send_blocked(), goal_pending = self.goal_send_pending(cx),
             composing = self.composer.read(cx).is_composing(), controls_blocked = self.controls_blocked(),
             "composer-send-attempt");
-        if self.direct_route_loading() {
-            return;
-        }
         if self.close != CloseState::Open
             || self.terminal_closing
             || self.loading_task.is_some()
@@ -1302,14 +1388,48 @@ impl Shell {
             cx.notify();
             return;
         };
-        if self.busy.contains(&id) || self.connecting.contains(&id) || self.controls.is_pending(id)
-        {
+        if self.busy.contains(&id) || self.connecting.contains(&id) {
+            // Upstream `enqueueQueuedTurn` (`useChatTurnSubmission`): a submit
+            // while a turn is in flight stores the draft as a queued turn.
+            self.queue_current_draft(cx);
+            return;
+        }
+        if self.controls.is_pending(id) {
             return;
         }
         if self.consume_native_command(cx) {
             return;
         }
-        let text = self.composer.read(cx).text().to_owned();
+        let mut text = self
+            .dispatch_text
+            .take()
+            .unwrap_or_else(|| self.composer.read(cx).text().to_owned());
+        // Upstream `onSubmitPlanFollowUp` + `resolvePlanFollowUpSubmission`: when
+        // the plan-ready banner is showing, an empty draft sends the
+        // implementation prompt in default mode; any draft text stays a
+        // plan-mode refinement.
+        let mut plan_implemented: Option<String> = None;
+        let mut submit_mode = self.mode_tasks.get(&id).copied().unwrap_or_default();
+        if self.show_plan_follow_up()
+            && let Some(plan) = self.actionable_proposed_plan()
+        {
+            match synara_core::resolve_plan_follow_up_submission(&text, &plan.plan_markdown) {
+                synara_core::PlanFollowUpSubmission::Refine { text: refined } => {
+                    text = refined;
+                }
+                synara_core::PlanFollowUpSubmission::Implement { text: prompt } => {
+                    text = prompt;
+                    plan_implemented = Some(plan.id);
+                    submit_mode = InteractionMode::Default;
+                    self.mode_tasks.insert(id, InteractionMode::Default);
+                    // Upstream `useChatTurnFollowUps`: implementing (default
+                    // mode) opens the plan sidebar optimistically — the turn
+                    // produces the task steps it displays.
+                    self.plan_sidebar_open = true;
+                    self.plan_sidebar_dismissed_turn = None;
+                }
+            }
+        }
         if text.trim().is_empty() {
             return;
         }
@@ -1319,15 +1439,25 @@ impl Shell {
             cx.notify();
             return;
         }
-        let attachment_submission = self.attachment_submission(&text);
+        // `submit_prompt_owned` prefixes the interaction-mode shim before the
+        // user `TextDelta` lands; draft acknowledgement matches the echoed
+        // transcript text, so record the wire form here.
+        let draft_text = self.composer.read(cx).text().to_owned();
+        let wire_text = synara_workspace::with_interaction_prompt(submit_mode, &text);
+        let attachment_submission = self.attachment_submission(&wire_text);
         if let Some((_, display)) = &attachment_submission {
-            self.draft_state
-                .submitted_with_display(id, text.clone(), display.clone());
+            self.draft_state.submitted_with_display(
+                id,
+                draft_text,
+                wire_text.clone(),
+                display.clone(),
+            );
         } else {
-            self.draft_state.submitted(id, text.clone());
+            self.draft_state.submitted(id, draft_text, wire_text);
         }
         self.goal_manual_send(id, &text, cx);
         self.busy.insert(id);
+        self.sync_working_row();
         self.error = None;
         self.notice = None;
         self.transcript.follow();
@@ -1341,8 +1471,28 @@ impl Shell {
         let hub_thread = self
             .task()
             .is_some_and(|task| task.scope == TaskScope::Studio);
+        let implementing_thread = self.task().map(|task| task.thread_id);
         self.job(async move {
             let result = async {
+                // Upstream `markSourceProposedPlanImplemented`: the dispatch
+                // carries `sourceProposedPlan`, so the plan is marked when the
+                // implementing turn starts — before the prompt lands.
+                if let (Some(plan_id), Some(thread_id)) = (plan_implemented, implementing_thread) {
+                    controller
+                        .workspace
+                        .set_interaction_mode(id, InteractionMode::Default)
+                        .await?;
+                    controller
+                        .workspace
+                        .record(
+                            thread_id,
+                            ThreadEvent::ProposedPlanImplemented {
+                                plan_id,
+                                implementation_thread_id: thread_id,
+                            },
+                        )
+                        .await?;
+                }
                 if untitled {
                     let title_text = if hub_thread {
                         text.rsplit_once("\nTask:\n")
@@ -1530,7 +1680,7 @@ impl Shell {
     }
     fn receive(&mut self, update: Update, cx: &mut Context<Self>) {
         match update {
-            Update::DirectModels(reply) => self.direct_model_reply(*reply, cx),
+            Update::Noop => {}
             Update::Autonomy(reply) => self.autonomy_reply(*reply, cx),
             Update::ProjectImport(reply) => self.import_reply(*reply, cx),
             Update::Integrations(reply) => self.integration_reply(*reply, cx),
@@ -1553,7 +1703,7 @@ impl Shell {
             Update::AppSnap(reply) => self.appsnap_reply(*reply, cx),
             Update::Attachments(reply) => self.attachment_reply(*reply, cx),
             Update::RichMedia(reply) => self.media_reply(*reply, cx),
-            Update::DebugWorkflow(reply) => self.debug_reply(*reply, cx),
+            Update::InteractionMode { task, mode } => self.interaction_mode_reply(task, mode, cx),
             Update::Releases(result) => self.releases_reply(result, cx),
             Update::NativeBuildIntegrity(result) => self.native_build_integrity_reply(result, cx),
             Update::Recap(reply) => self.recap_reply(*reply, cx),
@@ -1570,12 +1720,14 @@ impl Shell {
             Update::Organization(reply) => self.organization_reply(*reply, cx),
             Update::ChatTools(reply) => self.chat_tools_reply(*reply, cx),
             Update::EnvironmentSaved(error) => self.environment_saved(error, cx),
+            Update::OpenThreadTabsSaved(error) => self.open_thread_tabs_saved(error, cx),
             Update::Kanban(reply) => self.kanban_reply(*reply, cx),
             Update::DraftLoaded(task, result) => self.restore_draft(task, result, cx),
             Update::DraftSaved(task, error) => self.draft_saved(task, error, cx),
             Update::Voice(reply) => self.apply_voice_reply(*reply, cx),
             Update::Registry(reply) => self.registry_reply(*reply, cx),
             Update::Automations(reply) => self.automation_reply(*reply, cx),
+            Update::ProjectUi(reply) => self.project_ui_reply(*reply, cx),
             Update::Goals(reply) => self.goals_reply(*reply, cx),
             Update::Tick => {
                 self.tick_voice(cx);
@@ -1585,6 +1737,15 @@ impl Shell {
                 if self.panel == Panel::Browser {
                     cx.notify();
                 }
+                // Upstream counts the in-flight turn's "Working for" header live.
+                if self.thread.as_ref().is_some_and(|thread| {
+                    thread
+                        .turns
+                        .last()
+                        .is_some_and(|turn| turn.finished_at_ms.is_none())
+                }) {
+                    cx.notify();
+                }
                 self.tick_devices(cx);
                 self.tick_terminals(cx);
                 self.tick_review(cx);
@@ -1592,6 +1753,7 @@ impl Shell {
                 self.poll_kanban();
                 self.flush_drafts(false);
                 self.flush_environment(false);
+                self.flush_open_thread_tabs(false);
                 let previous = self.pending.len();
                 self.pending.retain(|key, interaction| {
                     if !interaction.is_active() {
@@ -1606,9 +1768,15 @@ impl Shell {
                 self.poll();
                 return;
             }
-            Update::Catalog(catalog) => self.catalog = catalog,
+            Update::Catalog(catalog) => {
+                self.catalog = catalog;
+                self.reconcile_open_thread_tabs(cx);
+                self.refresh_project_ui(cx);
+            }
             Update::WorkspaceAdded(project, catalog) => {
                 self.catalog = catalog;
+                self.reconcile_open_thread_tabs(cx);
+                self.refresh_project_ui(cx);
                 if self.settings.value.onboarding.started
                     && !self.settings.value.onboarding.completed
                 {
@@ -1632,6 +1800,7 @@ impl Shell {
                 self.cancel_voice_operation(false);
                 self.selected = None;
                 self.thread = None;
+                self.refresh_prompt_history(cx);
                 self.reset_editor_tabs();
                 self.document = None;
                 self.files.clear();
@@ -1642,17 +1811,33 @@ impl Shell {
             Update::TaskCreated(task, catalog, revision) => {
                 self.creating_task = false;
                 self.catalog = catalog;
+                self.reconcile_open_thread_tabs(cx);
+                self.refresh_project_ui(cx);
                 if self.task_title.read(cx).text().trim() == task.title.trim() {
                     self.task_title.update(cx, |entry, cx| entry.clear(cx));
                 }
+                let pending_close = self.open_threads.pending_close;
+                let close_after_selection =
+                    open_threads::pending_close_matches(pending_close, self.selected, revision);
                 if revision == self.selection_revision && self.select_task(task.id, cx) {
                     self.set_panel(Panel::Conversation, cx);
+                    if close_after_selection {
+                        if let Some(pending) = pending_close {
+                            self.close_open_thread_tab_identity(pending.task, cx);
+                        }
+                        self.open_threads.pending_close = None;
+                    }
                 } else {
+                    // The creation result lost its navigation revision (or a
+                    // different task is now selected), so an active-tab close
+                    // must not be applied to a later, unrelated creation.
+                    self.open_threads.pending_close = None;
                     self.notice = Some("The new thread and its draft were saved. Open it from thread search when ready.".into());
                 }
             }
             Update::TaskCreationFailed(error) => {
                 self.creating_task = false;
+                self.open_threads.pending_close = None;
                 self.error = Some(error);
             }
             Update::ThreadLoadFailed(task, error) => {
@@ -1661,6 +1846,12 @@ impl Shell {
                 }
                 if self.selected == Some(task) {
                     self.error = Some(error);
+                }
+            }
+            Update::SidebarSourcePlan(plan_id, plan) => {
+                if self.sidebar_source_loading.as_deref() == Some(plan_id.as_str()) {
+                    self.sidebar_source_loading = None;
+                    self.sidebar_source_plan = plan;
                 }
             }
             Update::ThreadLoaded(task, thread) => {
@@ -1672,10 +1863,13 @@ impl Shell {
                         old.id != thread.id || old.last_sequence <= thread.last_sequence
                     })
                 {
-                    self.transcript.sync(&thread, None);
+                    let working = self.working_label().is_some();
+                    self.transcript.sync(&thread, None, working);
                     self.thread = Some(*thread);
+                    self.refresh_prompt_history(cx);
                     self.replace_task(task);
                     self.sync_transcript_media(cx);
+                    self.maybe_load_sidebar_source(cx);
                 }
             }
             Update::Event(envelope) => {
@@ -1713,8 +1907,22 @@ impl Shell {
                         }
                     }
                     if let Some(thread) = &self.thread {
-                        self.transcript.sync(thread, Some(&envelope.event));
+                        let working = self.working_label().is_some();
+                        self.transcript.sync(thread, Some(&envelope.event), working);
                     }
+                    if matches!(
+                        &envelope.event,
+                        ThreadEvent::TextDelta {
+                            role: Role::User,
+                            ..
+                        } | ThreadEvent::ImageMessage {
+                            role: Role::User,
+                            ..
+                        }
+                    ) {
+                        self.refresh_prompt_history(cx);
+                    }
+                    self.maybe_load_sidebar_source(cx);
                     if let Some(thread) = &self.thread
                         && let Some(task) = self
                             .catalog
@@ -1808,6 +2016,7 @@ impl Shell {
                 error,
             } => {
                 self.connecting.remove(&task);
+                self.sync_working_row();
                 if self.selected == Some(task) {
                     self.details = details;
                     self.error = error;
@@ -1827,6 +2036,8 @@ impl Shell {
                 self.goal_prompt_done(task, error.as_deref(), cx);
                 self.finish_attachment_submission(task, error.is_none());
                 self.busy.remove(&task);
+                self.sync_working_row();
+                self.maybe_drain_followups(task, cx);
                 if self.selected == Some(task) {
                     self.details = details;
                     self.error = error.clone();
@@ -1910,6 +2121,11 @@ impl Shell {
                         if let Some(changed) = changed {
                             self.replace_task(changed);
                         }
+                        if let Some((pending_task, mode)) = self.controls.pending_mode.take()
+                            && pending_task == task
+                        {
+                            self.catalog.runtime_modes.insert(task, mode);
+                        }
                         if self.selected == Some(task) {
                             self.details = details;
                             self.error = None;
@@ -1990,6 +2206,9 @@ impl Shell {
                 self.error = Some(error);
             }
         }
+        // The plan-ready banner and the follow-up placeholder follow thread,
+        // busy, and interaction-mode state — resync after every update.
+        self.sync_plan_composer(cx);
         cx.notify();
     }
     fn refresh_git_if_visible(&mut self, cx: &mut Context<Self>) {

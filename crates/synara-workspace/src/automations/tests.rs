@@ -1,5 +1,5 @@
 use super::*;
-use crate::{DirectModelBinding, ModelSelection, ProviderSettings, WorkspaceService};
+use crate::WorkspaceService;
 use std::sync::Arc;
 async fn setup(
     path: Option<std::path::PathBuf>,
@@ -28,7 +28,7 @@ async fn setup(
         mode: AutomationMode::Standalone,
         target_task_id: None,
         heartbeat_cooldown_seconds: DEFAULT_AUTOMATION_HEARTBEAT_COOLDOWN_SECONDS,
-        context: AutomationContextPolicy::Project,
+        context: None,
         completion_policy: AutomationCompletionPolicy::None,
         max_runs: None,
         stop_after_consecutive_failures: None,
@@ -228,7 +228,8 @@ async fn saving_pauses_and_conflicting_edits_are_rejected() {
     old_fields.remove("mode");
     old_fields.remove("target_task_id");
     old_fields.remove("heartbeat_cooldown_seconds");
-    old_fields.remove("context");
+    // Dropped hub-context policy: legacy rows carrying it must still decode.
+    old_fields.insert("context".into(), serde_json::json!("hub"));
     old_fields.remove("completion_policy");
     old_fields.remove("max_runs");
     old_fields.remove("stop_after_consecutive_failures");
@@ -242,7 +243,7 @@ async fn saving_pauses_and_conflicting_edits_are_rejected() {
         decoded.heartbeat_cooldown_seconds,
         DEFAULT_AUTOMATION_HEARTBEAT_COOLDOWN_SECONDS
     );
-    assert_eq!(decoded.context, AutomationContextPolicy::Project);
+    assert_eq!(decoded.context, Some(serde_json::json!("hub")));
     assert_eq!(decoded.completion_policy, AutomationCompletionPolicy::None);
     assert_eq!(decoded.max_runs, None);
     assert_eq!(decoded.stop_after_consecutive_failures, None);
@@ -789,7 +790,9 @@ async fn history_pruning_never_removes_live_definition_runs() {
 }
 
 #[tokio::test]
-async fn hub_context_is_opt_in_snapshotted_and_studio_scoped() {
+async fn legacy_hub_context_rows_decode_and_prompt_stays_verbatim() {
+    // Rows written before the upstream-shaped refactor still decode; the
+    // dropped context policy must not change what a claimed run submits.
     let root = tempfile::tempdir().unwrap();
     let service = WorkspaceService::memory().unwrap();
     let agent = service.profiles().await.unwrap()[0].id.clone();
@@ -801,11 +804,6 @@ async fn hub_context_is_opt_in_snapshotted_and_studio_scoped() {
         )
         .await
         .unwrap();
-    let mut hub = hub;
-    hub.instructions = "Use the reviewed Hub method.".into();
-    hub.memory = "Shared fact: release train 7.".into();
-    let hub = service.save_hub(hub.revision, hub).await.unwrap();
-
     let definition = AutomationDefinition {
         id: AutomationId::new_v4(),
         revision: 0,
@@ -821,7 +819,7 @@ async fn hub_context_is_opt_in_snapshotted_and_studio_scoped() {
         mode: AutomationMode::Standalone,
         target_task_id: None,
         heartbeat_cooldown_seconds: DEFAULT_AUTOMATION_HEARTBEAT_COOLDOWN_SECONDS,
-        context: AutomationContextPolicy::Hub,
+        context: None,
         completion_policy: AutomationCompletionPolicy::None,
         max_runs: None,
         stop_after_consecutive_failures: None,
@@ -829,32 +827,26 @@ async fn hub_context_is_opt_in_snapshotted_and_studio_scoped() {
         run_count: 0,
         max_runtime_seconds: DEFAULT_AUTOMATION_MAX_RUNTIME_SECONDS,
     };
-    service.save_automation(definition, None).await.unwrap();
+    let mut stored = serde_json::to_value(&definition).unwrap();
+    stored["context"] = serde_json::json!("hub");
+    let decoded: AutomationDefinition = serde_json::from_value(stored).unwrap();
+    assert_eq!(decoded.context, Some(serde_json::json!("hub")));
+    service.save_automation(decoded, None).await.unwrap();
     let current = service.automations().await.unwrap().definitions.remove(0);
     let run = service
         .claim_automation(current.id, AutomationId::new_v4(), false, now_ms())
         .await
         .unwrap()
         .unwrap();
-    assert_eq!(run.hub_revision, Some(hub.revision));
-    assert!(run.prompt.contains("## Hub instructions"));
-    assert!(run.prompt.contains("Use the reviewed Hub method."));
-    assert!(run.prompt.contains("Shared fact: release train 7."));
-    assert!(run.prompt.ends_with("Inspect the current release status."));
+    assert_eq!(run.prompt, "Inspect the current release status.");
+    assert_eq!(run.hub_revision, None);
     let task = service.task(run.task_id.unwrap()).await.unwrap();
-    assert_eq!(task.scope, synara_core::TaskScope::Studio);
+    assert_eq!(task.scope, synara_core::TaskScope::Project);
     assert_eq!(service.task_draft(task.id).await.unwrap(), run.prompt);
-
-    let mut changed = hub.clone();
-    changed.memory = "Newer shared fact".into();
-    service.save_hub(changed.revision, changed).await.unwrap();
-    let retained = service.automations().await.unwrap().runs.remove(0);
-    assert!(retained.prompt.contains("release train 7"));
-    assert!(!retained.prompt.contains("Newer shared fact"));
 }
 
 #[tokio::test]
-async fn project_context_never_harvests_existing_hub_context() {
+async fn automation_prompt_is_the_reviewed_instructions_verbatim() {
     let root = tempfile::tempdir().unwrap();
     let service = WorkspaceService::memory().unwrap();
     let agent = service.profiles().await.unwrap()[0].id.clone();
@@ -866,7 +858,7 @@ async fn project_context_never_harvests_existing_hub_context() {
         )
         .await
         .unwrap();
-    hub.memory = "Must not be injected".into();
+    hub.instructions = "Project-scoped instructions that seed thread notes.".into();
     let hub = service.save_hub(hub.revision, hub).await.unwrap();
     let definition = AutomationDefinition {
         id: AutomationId::new_v4(),
@@ -883,7 +875,7 @@ async fn project_context_never_harvests_existing_hub_context() {
         mode: AutomationMode::Standalone,
         target_task_id: None,
         heartbeat_cooldown_seconds: DEFAULT_AUTOMATION_HEARTBEAT_COOLDOWN_SECONDS,
-        context: AutomationContextPolicy::Project,
+        context: None,
         completion_policy: AutomationCompletionPolicy::None,
         max_runs: None,
         stop_after_consecutive_failures: None,
@@ -898,8 +890,8 @@ async fn project_context_never_harvests_existing_hub_context() {
         .await
         .unwrap()
         .unwrap();
-    assert_eq!(run.hub_revision, None);
     assert_eq!(run.prompt, "Only this instruction.");
+    assert_eq!(run.hub_revision, None);
     let task = service.task(run.task_id.unwrap()).await.unwrap();
     assert_eq!(task.scope, synara_core::TaskScope::Project);
 }
@@ -1225,35 +1217,13 @@ async fn live_history_pruning_preserves_cumulative_run_limit_and_conversations()
 }
 
 async fn reviewed_completion_policy(
-    service: &WorkspaceService,
+    _service: &WorkspaceService,
     stop_when: &str,
 ) -> AutomationCompletionPolicy {
-    let mut profile = synara_model::custom_profile_example();
-    profile.models[0].capabilities.structured_output = synara_model::Support::Supported;
-    profile.models[0].capabilities.max_output_tokens = Some(512);
-    let settings = service
-        .save_direct_model_settings(ProviderSettings {
-            revision: 0,
-            providers: vec![profile.clone()],
-        })
-        .await
-        .unwrap();
-    let evaluator = DirectModelBinding::reviewed(
-        &settings,
-        ModelSelection {
-            history_turns: Some(0),
-            provider_id: profile.id.clone(),
-            model_id: profile.models[0].id.clone(),
-            max_output_tokens: 128,
-            reasoning_effort: None,
-            output: synara_model::OutputFormat::Text,
-        },
-    )
-    .unwrap();
     AutomationCompletionPolicy::AiEvaluated {
         stop_when: stop_when.into(),
         confidence_threshold: 0.8,
-        evaluator,
+        evaluator: None,
     }
 }
 
@@ -1359,14 +1329,10 @@ async fn stale_completion_evaluation_cannot_disable_edited_policy() {
         .unwrap();
 
     let mut changed = service.automations().await.unwrap().definitions.remove(0);
-    let evaluator = match &changed.completion_policy {
-        AutomationCompletionPolicy::AiEvaluated { evaluator, .. } => evaluator.clone(),
-        AutomationCompletionPolicy::None => panic!("reviewed policy expected"),
-    };
     changed.completion_policy = AutomationCompletionPolicy::AiEvaluated {
         stop_when: "New stop condition".into(),
         confidence_threshold: 0.8,
-        evaluator,
+        evaluator: None,
     };
     service
         .save_automation(changed.clone(), Some(changed.revision))

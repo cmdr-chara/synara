@@ -72,7 +72,7 @@ jobs:
         run: |
           set -o pipefail
           failed=0
-          for journey in debug goals recap pr_fix inline_comments releases chat_behavior model_draft handoff project_import direct_models integrations browser_webview stacked_prs rich_media appsnap task_split checkpoints; do
+          for journey in goals recap pr_fix inline_comments releases chat_behavior model_draft handoff project_import integrations browser_webview stacked_prs rich_media appsnap task_split checkpoints; do
             if ! python3 "scripts/native_${journey}_smoke.py" --binary target/debug/synara-app --fixture target/debug/synara-acp-fixture --output "/tmp/native-conversation-evidence/$journey" 2>&1 | tee "/tmp/native-conversation-evidence/native-$journey.log"; then
               failed=1
             fi

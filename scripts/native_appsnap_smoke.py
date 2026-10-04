@@ -11,7 +11,12 @@ from PIL import Image
 from native_smoke import Scenario, wait_until
 from native_navigation_smoke import selection, task_count
 from native_model_draft_smoke import close, preference
-from native_integrations_smoke import click, fresh_probe
+from native_integrations_smoke import click, fresh_probe, page
+
+
+def open_appsnap(s):
+    page(s, 'appsnap')
+    click(s, 'settings-appsnap-open')
 
 
 class ClassHint(C.Structure):
@@ -51,7 +56,7 @@ def pending(s,task):return (preference(s,'task-attachments:'+task) or {}).get('p
 def run(s):
     s.launch();task=selection(s);events=s.events();target=OwnedWindow(s.desktop)
     try:
-        click(s,'appsnap-toggle');wait_until(lambda:s.control_bounds('appsnap-setup'),'explicit setup')
+        open_appsnap(s);wait_until(lambda:s.control_bounds('appsnap-setup'),'explicit setup')
         assert not s.control_bounds('appsnap-window') and not pending(s,task) and s.events()==events
         s.checks.append('open-does-not-discover-capture-or-assume-os-permission')
         click(s,'appsnap-setup');wait_until(lambda:s.control_bounds('appsnap-window',0),'real X11 window discovery',25)
@@ -74,14 +79,14 @@ def run(s):
         close(s);s.launch(preserve_selection=True)
         assert pending(s,task)==saved and s.events()==events
         assert not s.control_bounds('appsnap-panel')
-        click(s,'appsnap-toggle');assert not s.control_bounds('appsnap-window') and not s.control_bounds('appsnap-capture')
+        open_appsnap(s);assert not s.control_bounds('appsnap-window') and not s.control_bounds('appsnap-capture')
         s.checks.append('restart-preserves-pending-original-but-not-window-selection-or-capture-consent')
         click(s,'appsnap-setup');time.sleep(0.7);click(s,'appsnap-window',slot=0)
         click(s,'new-thread');wait_until(lambda:task_count(s)==2 and selection(s)!=task,'independent second task')
         assert not pending(s,selection(s)) and pending(s,task)==saved and s.events()==events
         # On re-opening in the replacement task, setup is required and no reviewed
         # window or bytes from the previous task can become its attachment.
-        fresh_probe(s,'appsnap-panel',lambda:click(s,'appsnap-toggle'))
+        fresh_probe(s,'appsnap-panel',lambda:open_appsnap(s))
         assert not pending(s,selection(s));s.desktop.screenshot('replacement-task-without-capture-consent',window_only=True)
         s.checks.append('task-replacement-revokes-window-review-and-does-not-cross-attach-or-send')
     finally:target.close()

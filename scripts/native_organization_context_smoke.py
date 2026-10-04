@@ -66,28 +66,16 @@ def run(s):
     wait_until(lambda: s.control_bounds('context-notes-input'), 'loaded notes editor')
     s.click_control('context-notes-input')
     ui.text('Private notes for this chat.\nKeep the original design.')
-    s.click_control('context-item-input')
-    ui.text('Review the sidebar')
-    s.click_control('context-item-add')
-    s.click_control('context-item-input')
-    ui.text('Check saved drafts')
-    s.click_control('context-item-add')
-    s.click_control('context-check', slot=0)
     s.click_control('context-save')
     key = 'task-context:' + task
-    saved = wait_until(lambda: preference(s, key), 'notes and checklist save')
+    saved = wait_until(lambda: preference(s, key), 'notes save')
     assert saved['notes'] == 'Private notes for this chat.\nKeep the original design.'
-    assert [item['text'] for item in saved['checklist']] == ['Review the sidebar', 'Check saved drafts']
-    assert [item['done'] for item in saved['checklist']] == [True, False]
-    ui.screenshot('chat-notes-checklist', window_only=True)
-    s.click_control('context-to-draft')
-    wait_until(lambda: '## My notes' in preference(s, 'task-draft:' + task)['text'], 'explicit insertion into draft')
+    ui.screenshot('chat-notes', window_only=True)
     draft = preference(s, 'task-draft:' + task)['text']
-    assert draft.startswith('Keep this unsent prompt.\n\n')
-    assert '- [x] Review the sidebar' in draft and '- [ ] Check saved drafts' in draft
+    assert draft == 'Keep this unsent prompt.'
     assert s.events() == events
     s.click_control('context-close')
-    s.checks.append('saved-notes-checklist-and-explicit-draft-insertion-never-send-a-prompt')
+    s.checks.append('saved-notes-persist-without-touching-the-draft-or-sending-a-prompt')
 
     s.click_control('chat-notes')
     wait_until(lambda: s.control_bounds('context-notes-input'), 'reopened notes')

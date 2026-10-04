@@ -68,12 +68,14 @@ pub enum Glyph {
     User,
     Star,
     StarFilled,
+    Pencil,
 }
 impl Glyph {
     fn path(self) -> &'static str {
         match self {
             Self::Star => "icons/tabler/star.svg",
             Self::StarFilled => "icons/tabler/star-filled.svg",
+            Self::Pencil => "icons/central/pencil.svg",
             Self::Back => "icons/tabler/arrow-left.svg",
             Self::Forward => "icons/tabler/arrow-right.svg",
             Self::Send => "icons/synara/arrow-up.svg",
@@ -142,6 +144,27 @@ impl Glyph {
 pub fn icon(glyph: Glyph) -> Svg {
     svg()
         .path(glyph.path())
+        .size(px(16.))
+        .flex_shrink_0()
+        .text_color(rgb(super::palette().muted))
+}
+
+/// A vendored upstream `central-icons-reversed` asset by name (the same set
+/// Edit-project pickers offer upstream).
+pub fn central_icon(name: &str) -> Svg {
+    central_icon_variant(name, false)
+}
+
+/// The solid `central-icons-fill` counterpart of `central_icon` — the rail's
+/// active tab uses it just as upstream's `variant="fill"` assets do.
+pub fn central_fill_icon(name: &str) -> Svg {
+    central_icon_variant(name, true)
+}
+
+fn central_icon_variant(name: &str, fill: bool) -> Svg {
+    let dir = if fill { "central-fill" } else { "central" };
+    svg()
+        .path(format!("icons/{dir}/{name}.svg"))
         .size(px(16.))
         .flex_shrink_0()
         .text_color(rgb(super::palette().muted))
@@ -251,6 +274,207 @@ pub(super) fn load(path: &str) -> Option<Cow<'static, [u8]>> {
             include_bytes!("../../assets/icons/synara/target-arrow.svg")
         }
         "icons/synara/window.svg" => include_bytes!("../../assets/icons/synara/window.svg"),
+        "icons/central/folder-2.svg" => {
+            include_bytes!("../../assets/icons/central/folder-2.svg")
+        }
+        "icons/central/folder-open-front.svg" => {
+            include_bytes!("../../assets/icons/central/folder-open-front.svg")
+        }
+        "icons/central/dollar.svg" => {
+            include_bytes!("../../assets/icons/central/dollar.svg")
+        }
+        "icons/central/book.svg" => {
+            include_bytes!("../../assets/icons/central/book.svg")
+        }
+        "icons/central/graduate-cap.svg" => {
+            include_bytes!("../../assets/icons/central/graduate-cap.svg")
+        }
+        "icons/central/pencil.svg" => {
+            include_bytes!("../../assets/icons/central/pencil.svg")
+        }
+        "icons/central/feather.svg" => {
+            include_bytes!("../../assets/icons/central/feather.svg")
+        }
+        "icons/central/brackets-2.svg" => {
+            include_bytes!("../../assets/icons/central/brackets-2.svg")
+        }
+        "icons/central/console.svg" => {
+            include_bytes!("../../assets/icons/central/console.svg")
+        }
+        "icons/central/audio.svg" => {
+            include_bytes!("../../assets/icons/central/audio.svg")
+        }
+        "icons/central/popcorn.svg" => {
+            include_bytes!("../../assets/icons/central/popcorn.svg")
+        }
+        "icons/central/ruler.svg" => {
+            include_bytes!("../../assets/icons/central/ruler.svg")
+        }
+        "icons/central/color-palette.svg" => {
+            include_bytes!("../../assets/icons/central/color-palette.svg")
+        }
+        "icons/central/heart-beat.svg" => {
+            include_bytes!("../../assets/icons/central/heart-beat.svg")
+        }
+        "icons/central/medicine-pill.svg" => {
+            include_bytes!("../../assets/icons/central/medicine-pill.svg")
+        }
+        "icons/central/form-flower.svg" => {
+            include_bytes!("../../assets/icons/central/form-flower.svg")
+        }
+        "icons/central/suitcase-work.svg" => {
+            include_bytes!("../../assets/icons/central/suitcase-work.svg")
+        }
+        "icons/central/chart-3.svg" => {
+            include_bytes!("../../assets/icons/central/chart-3.svg")
+        }
+        "icons/central/dumbell.svg" => {
+            include_bytes!("../../assets/icons/central/dumbell.svg")
+        }
+        "icons/central/notebook.svg" => {
+            include_bytes!("../../assets/icons/central/notebook.svg")
+        }
+        "icons/central/law.svg" => {
+            include_bytes!("../../assets/icons/central/law.svg")
+        }
+        "icons/central/globe.svg" => {
+            include_bytes!("../../assets/icons/central/globe.svg")
+        }
+        "icons/central/airplane.svg" => {
+            include_bytes!("../../assets/icons/central/airplane.svg")
+        }
+        "icons/central/earth.svg" => {
+            include_bytes!("../../assets/icons/central/earth.svg")
+        }
+        "icons/central/maintenance.svg" => {
+            include_bytes!("../../assets/icons/central/maintenance.svg")
+        }
+        "icons/central/pets.svg" => {
+            include_bytes!("../../assets/icons/central/pets.svg")
+        }
+        "icons/central/lab.svg" => {
+            include_bytes!("../../assets/icons/central/lab.svg")
+        }
+        "icons/central/brain.svg" => {
+            include_bytes!("../../assets/icons/central/brain.svg")
+        }
+        "icons/central/heart.svg" => {
+            include_bytes!("../../assets/icons/central/heart.svg")
+        }
+        "icons/central/tree.svg" => {
+            include_bytes!("../../assets/icons/central/tree.svg")
+        }
+        "icons/central/rocket.svg" => {
+            include_bytes!("../../assets/icons/central/rocket.svg")
+        }
+        "icons/central/light-bulb.svg" => {
+            include_bytes!("../../assets/icons/central/light-bulb.svg")
+        }
+        "icons/central/star.svg" => {
+            include_bytes!("../../assets/icons/central/star.svg")
+        }
+        "icons/central/camera-1.svg" => {
+            include_bytes!("../../assets/icons/central/camera-1.svg")
+        }
+        "icons/central/gamecontroller.svg" => {
+            include_bytes!("../../assets/icons/central/gamecontroller.svg")
+        }
+        "icons/central/home.svg" => {
+            include_bytes!("../../assets/icons/central/home.svg")
+        }
+        "icons/central/people.svg" => {
+            include_bytes!("../../assets/icons/central/people.svg")
+        }
+        "icons/central/robot.svg" => {
+            include_bytes!("../../assets/icons/central/robot.svg")
+        }
+        "icons/central/cup-hot.svg" => {
+            include_bytes!("../../assets/icons/central/cup-hot.svg")
+        }
+        "icons/central/shopping-bag-1.svg" => {
+            include_bytes!("../../assets/icons/central/shopping-bag-1.svg")
+        }
+        "icons/central/bug.svg" => {
+            include_bytes!("../../assets/icons/central/bug.svg")
+        }
+        "icons/central/server.svg" => {
+            include_bytes!("../../assets/icons/central/server.svg")
+        }
+        "icons/central/puzzle.svg" => {
+            include_bytes!("../../assets/icons/central/puzzle.svg")
+        }
+        "icons/central/trophy.svg" => {
+            include_bytes!("../../assets/icons/central/trophy.svg")
+        }
+        "icons/central/target.svg" => {
+            include_bytes!("../../assets/icons/central/target.svg")
+        }
+        "icons/central/map-pin.svg" => {
+            include_bytes!("../../assets/icons/central/map-pin.svg")
+        }
+        "icons/central/chat-bubbles.svg" => {
+            include_bytes!("../../assets/icons/central/chat-bubbles.svg")
+        }
+        "icons/central/calendar-1.svg" => {
+            include_bytes!("../../assets/icons/central/calendar-1.svg")
+        }
+        "icons/central/lightning.svg" => {
+            include_bytes!("../../assets/icons/central/lightning.svg")
+        }
+        "icons/central/home-roof-door.svg" => {
+            include_bytes!("../../assets/icons/central/home-roof-door.svg")
+        }
+        "icons/central/folders.svg" => {
+            include_bytes!("../../assets/icons/central/folders.svg")
+        }
+        "icons/central/columns-3-wide.svg" => {
+            include_bytes!("../../assets/icons/central/columns-3-wide.svg")
+        }
+        "icons/central/pull-request.svg" => {
+            include_bytes!("../../assets/icons/central/pull-request.svg")
+        }
+        "icons/central/clock.svg" => {
+            include_bytes!("../../assets/icons/central/clock.svg")
+        }
+        "icons/central/images-1.svg" => {
+            include_bytes!("../../assets/icons/central/images-1.svg")
+        }
+        "icons/central/settings-gear-4.svg" => {
+            include_bytes!("../../assets/icons/central/settings-gear-4.svg")
+        }
+        "icons/central/dot-grid-1x3-horizontal.svg" => {
+            include_bytes!("../../assets/icons/central/dot-grid-1x3-horizontal.svg")
+        }
+        "icons/central/black-hole.svg" => {
+            include_bytes!("../../assets/icons/central/black-hole.svg")
+        }
+        "icons/central-fill/home-roof-door.svg" => {
+            include_bytes!("../../assets/icons/central-fill/home-roof-door.svg")
+        }
+        "icons/central-fill/folders.svg" => {
+            include_bytes!("../../assets/icons/central-fill/folders.svg")
+        }
+        "icons/central-fill/columns-3-wide.svg" => {
+            include_bytes!("../../assets/icons/central-fill/columns-3-wide.svg")
+        }
+        "icons/central-fill/pull-request.svg" => {
+            include_bytes!("../../assets/icons/central-fill/pull-request.svg")
+        }
+        "icons/central-fill/clock.svg" => {
+            include_bytes!("../../assets/icons/central-fill/clock.svg")
+        }
+        "icons/central-fill/images-1.svg" => {
+            include_bytes!("../../assets/icons/central-fill/images-1.svg")
+        }
+        "icons/central-fill/settings-gear-4.svg" => {
+            include_bytes!("../../assets/icons/central-fill/settings-gear-4.svg")
+        }
+        "icons/central-fill/dot-grid-1x3-horizontal.svg" => {
+            include_bytes!("../../assets/icons/central-fill/dot-grid-1x3-horizontal.svg")
+        }
+        "icons/central-fill/black-hole.svg" => {
+            include_bytes!("../../assets/icons/central-fill/black-hole.svg")
+        }
         "icons/tabler/alert-circle.svg" => {
             include_bytes!("../../assets/icons/tabler/alert-circle.svg")
         }

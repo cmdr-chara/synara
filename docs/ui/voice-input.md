@@ -1,10 +1,13 @@
 # Native voice drafts
 
 In a conversation, choose the microphone button to record, choose Stop to
-transcribe, or Cancel to discard the recording. The composer explains before
-recording that the clip is uploaded to ChatGPT for transcription. A successful
-transcript is appended to the current unsent draft for review; it is never sent
-as a provider message automatically.
+transcribe, or Cancel to discard the recording. While recording, plain Enter
+stops the recording too; Chat behavior can choose whether that Enter action
+only transcribes into the draft (the default) or sends the unchanged draft
+after transcription. The composer explains before recording that the clip is
+uploaded to ChatGPT for transcription. Clicking Stop, automatic limit stops,
+and the default Enter behavior append a successful transcript to the current
+unsent draft for review; they never send it automatically.
 
 Recording requires a selected task, a working microphone and operating-system
 microphone permission. Transcription requires a ChatGPT-authenticated Codex

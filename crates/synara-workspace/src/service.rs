@@ -9,6 +9,7 @@ use async_trait::async_trait;
 pub use new_worktree::NewWorktreePlan;
 use serde::{Deserialize, Serialize};
 use std::{
+    collections::HashMap,
     path::{Path, PathBuf},
     sync::{Arc, Mutex},
     time::{SystemTime, UNIX_EPOCH},
@@ -48,6 +49,12 @@ pub struct Catalog {
     pub workspaces: Vec<Workspace>,
     pub projects: Vec<Project>,
     pub tasks: Vec<Task>,
+    /// TaskId → last visit stamp (upstream `lastVisitedAt`), for the
+    /// unread-completed sidebar badge.
+    pub visited: HashMap<TaskId, i64>,
+    /// TaskId → last chosen provider session mode (upstream `runtimeMode`),
+    /// for the composer access button's persisted label.
+    pub runtime_modes: HashMap<TaskId, String>,
 }
 /// A Git-linked worktree mapped to the registered project's directory within it.
 /// `path` is the directory Synara will use as this task's working directory.
@@ -76,6 +83,14 @@ pub struct WorkspaceService {
     store: Arc<Mutex<Store>>,
     events: broadcast::Sender<EventEnvelope>,
     worktree_lifecycle: Arc<tokio::sync::Mutex<()>>,
+}
+
+/// Where a scoped task is placed: an already-linked worktree directory and, for
+/// managed checkouts, the branch that owns it.
+#[derive(Default)]
+struct ScopedTaskPlacement {
+    selected_directory: Option<(PathBuf, PathBuf)>,
+    managed_branch: Option<(String, bool)>,
 }
 impl WorkspaceService {
     /// Explicitly requested backup. No automatic export, upload, or process launch.
@@ -254,8 +269,39 @@ impl WorkspaceService {
     }
 
     pub async fn archive_task(&self, id: TaskId) -> WorkspaceResult<Task> {
-        self.access(move |store| store.archive_task_with_workflow_guard(id, now_ms()))
-            .await
+        let task = self
+            .access(move |store| store.archive_task_with_workflow_guard(id, now_ms()))
+            .await?;
+        // Opt-in: release the archived task's managed worktree when nothing else
+        // uses it. The archive itself already succeeded; cleanup is best-effort
+        // and a recovered/missing setting stays off.
+        let cleanup = self
+            .access(move |store| {
+                let enabled = crate::settings::load(store)?
+                    .settings
+                    .general
+                    .delete_worktree_on_archive;
+                if enabled {
+                    Ok(store.managed_worktree(id)?)
+                } else {
+                    Ok(None)
+                }
+            })
+            .await?;
+        if let Some(managed) = cleanup
+            && let Err(error) = self
+                .cleanup_archived_managed_worktree(managed.clone(), CancellationToken::new())
+                .await
+        {
+            eprintln!(
+                "managed worktree retained after task archive: task={} branch={} repository={} error={}",
+                managed.task,
+                managed.branch,
+                managed.repository_path.display(),
+                error
+            );
+        }
+        Ok(task)
     }
 
     /// Restore the last durable conversation state without replaying any actions.
@@ -481,8 +527,15 @@ impl WorkspaceService {
         scope: TaskScope,
         draft: String,
     ) -> WorkspaceResult<Task> {
-        self.create_scoped_task_at(project, title, agent_id, scope, draft, None, None)
-            .await
+        self.create_scoped_task_at(
+            project,
+            title,
+            agent_id,
+            scope,
+            draft,
+            ScopedTaskPlacement::default(),
+        )
+        .await
     }
 
     /// Create a new unsent branch draft in an existing, unassigned linked
@@ -531,8 +584,10 @@ impl WorkspaceService {
             agent_id,
             scope,
             draft,
-            Some((worktree.path, worktree.repository_path)),
-            None,
+            ScopedTaskPlacement {
+                selected_directory: Some((worktree.path, worktree.repository_path)),
+                managed_branch: None,
+            },
         )
         .await
     }
@@ -551,9 +606,12 @@ impl WorkspaceService {
         agent_id: String,
         scope: TaskScope,
         draft: String,
-        selected_directory: Option<(PathBuf, PathBuf)>,
-        managed_branch: Option<(String, bool)>,
+        placement: ScopedTaskPlacement,
     ) -> WorkspaceResult<Task> {
+        let ScopedTaskPlacement {
+            selected_directory,
+            managed_branch,
+        } = placement;
         if draft.len() > 1024 * 1024 {
             return Err(WorkspaceError::Invalid("Task draft exceeds 1 MiB".into()));
         }
@@ -1297,7 +1355,7 @@ impl EventSink for WorkspaceService {
         result.map(|_| ()).map_err(|_| AgentError::EventDelivery)
     }
 }
-fn catalog(store: &Store) -> WorkspaceResult<Catalog> {
+pub(crate) fn catalog(store: &Store) -> WorkspaceResult<Catalog> {
     let workspaces = store.workspaces()?;
     let mut projects = vec![];
     let mut tasks = vec![];
@@ -1308,10 +1366,14 @@ fn catalog(store: &Store) -> WorkspaceResult<Catalog> {
         }
     }
     tasks.sort_by_key(|task| std::cmp::Reverse(task.updated_at_ms));
+    let visited = store.task_visits()?;
+    let runtime_modes = store.task_runtime_modes()?;
     Ok(Catalog {
         workspaces,
         projects,
         tasks,
+        visited,
+        runtime_modes,
     })
 }
 fn catalog_name(value: &str, kind: &str) -> WorkspaceResult<String> {
@@ -1346,7 +1408,8 @@ pub(crate) fn project_directory(
             if !project.relative_directory.as_os_str().is_empty() {
                 fs.entries(&project.relative_directory)?;
             }
-            Ok(path)
+            normalized_absolute(&path)
+                .ok_or_else(|| WorkspaceError::Invalid("invalid project directory".into()))
         }
         WorkspaceLocation::Ssh { root, .. } => {
             if !root.starts_with('/') || root.contains('\0') {
@@ -1421,8 +1484,9 @@ mod tests {
     #[tokio::test]
     async fn linked_worktree_branch_is_persisted_and_cannot_be_shared() {
         let directory = tempfile::tempdir().unwrap();
-        let repository_root = directory.path().join("repo");
-        let linked = directory.path().join("linked worktree");
+        let root = directory.path().canonicalize().unwrap();
+        let repository_root = root.join("repo");
+        let linked = root.join("linked worktree");
         repository(&repository_root);
         git(
             &repository_root,
@@ -1554,8 +1618,9 @@ mod tests {
     #[tokio::test]
     async fn linked_worktree_maps_nested_registered_project_directory() {
         let directory = tempfile::tempdir().unwrap();
-        let repository_root = directory.path().join("repo");
-        let linked = directory.path().join("linked");
+        let root = directory.path().canonicalize().unwrap();
+        let repository_root = root.join("repo");
+        let linked = root.join("linked");
         repository(&repository_root);
         std::fs::create_dir(repository_root.join("nested")).unwrap();
         std::fs::write(repository_root.join("nested/README.md"), "project").unwrap();

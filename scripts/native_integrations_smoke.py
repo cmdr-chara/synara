@@ -7,8 +7,10 @@ used. The catalog is mutated only through the native controls, never fixture SQL
 import argparse
 import hashlib
 import json
+import os
 import re
 import sqlite3
+import subprocess
 import threading
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -66,6 +68,33 @@ def page(s, name):
 def click(s, control, slot=None):
     reveal(s, control)
     s.click_control(control, slot=slot)
+
+
+def paste(s, control, text):
+    reveal(s, control)
+    s.click_control(control)
+    env = {k: os.environ[k] for k in ('PATH', 'LD_LIBRARY_PATH') if k in os.environ}
+    env['DISPLAY'] = s.desktop.name
+    clipboard = subprocess.Popen(['xclip', '-selection', 'clipboard', '-in', '-quiet'], env=env,
+                                 stdin=subprocess.PIPE, stdout=subprocess.DEVNULL,
+                                 stderr=subprocess.DEVNULL)
+    try:
+        clipboard.stdin.write(text.encode())
+        clipboard.stdin.close()
+        time.sleep(0.15)
+        s.desktop.focus()
+        s.desktop.key('a', ('Control_L',))
+        s.desktop.key('v', ('Control_L',))
+        time.sleep(0.3)
+        assert s.desktop.copy_input() == text, 'Native input must contain the reviewed JSON exactly'
+    finally:
+        if clipboard.poll() is None:
+            clipboard.terminate()
+        try:
+            clipboard.wait(timeout=2)
+        except subprocess.TimeoutExpired:
+            clipboard.kill()
+            clipboard.wait(timeout=2)
 
 
 def fresh_probe(s, control, operation):

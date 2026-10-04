@@ -2,11 +2,11 @@
 use super::*;
 
 pub(super) struct Flow {
-    key: InteractionKey,
+    pub(super) key: InteractionKey,
     scope: InteractionScope,
     session: String,
     cancelled: tokio_util::sync::CancellationToken,
-    url: String,
+    pub(super) url: String,
     initial: bool,
     expires: u64,
     label: String,
@@ -299,6 +299,7 @@ impl Shell {
                     .duration_since(std::time::UNIX_EPOCH)
                     .map(|duration| duration.as_secs())
                     .unwrap_or(0);
+                #[cfg_attr(not(target_os = "linux"), allow(unused_variables))]
                 let jar = match browser_domain::cookie_import::read_netscape_cookie_jar(&path, now) {
                     Ok(jar) => jar,
                     Err(error) => {

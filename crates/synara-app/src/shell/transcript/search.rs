@@ -74,7 +74,7 @@ mod tests {
                 event,
             };
             thread.apply(&envelope).unwrap();
-            state.sync(&thread, Some(&envelope.event));
+            state.sync(&thread, Some(&envelope.event), false);
         }
         assert!(state.jump_to_message(
             &thread,

@@ -5,11 +5,14 @@ use synara_runtime::{DeviceCancellation, SnapTools, SnapWindow};
 #[derive(Default)]
 pub(super) struct SnapView {
     open: bool,
+    /// Discovery/capture was launched from the extras menu's windows view —
+    /// the AppSnap card itself stays closed while the menu consumes results.
+    in_menu: bool,
     epoch: u64,
     cancel: DeviceCancellation,
-    busy: bool,
+    pub(super) busy: bool,
     tools: Option<SnapTools>,
-    windows: Vec<SnapWindow>,
+    pub(super) windows: Vec<SnapWindow>,
     selected: Option<usize>,
     error: Option<String>,
     message: String,
@@ -20,6 +23,7 @@ impl SnapView {
         self.cancel = DeviceCancellation::new();
         self.epoch = self.epoch.wrapping_add(1);
         self.open = false;
+        self.in_menu = false;
         self.busy = false;
         self.tools = None;
         self.windows.clear();
@@ -51,12 +55,6 @@ impl Shell {
         self.set_panel(Panel::Conversation, cx);
         self.appsnap.retire();
         self.appsnap.open = true;
-        cx.notify();
-    }
-    pub(super) fn toggle_appsnap(&mut self, cx: &mut Context<Self>) {
-        let open = !self.appsnap.open;
-        self.appsnap.retire();
-        self.appsnap.open = open;
         cx.notify();
     }
     fn appsnap_job(
@@ -98,6 +96,29 @@ impl Shell {
             cx,
         );
     }
+    /// "Attach window" row: swap the extras menu into its windows view and
+    /// populate it — discovery runs without opening the AppSnap card.
+    pub(super) fn discover_appsnap_menu(&mut self, cx: &mut Context<Self>) {
+        if self.close != CloseState::Open || self.appsnap.busy {
+            return;
+        }
+        self.appsnap.retire();
+        self.appsnap.in_menu = true;
+        let cancel = self.appsnap.cancel.clone();
+        self.appsnap_job(
+            async move {
+                let tools = SnapTools::setup().map_err(|e| e.to_string())?;
+                let windows = tools.discover(&cancel).await.map_err(|e| e.to_string())?;
+                Ok(Outcome::Discovery(tools, windows))
+            },
+            cx,
+        );
+    }
+    /// Extras windows-view row: capture the chosen window once.
+    pub(super) fn capture_appsnap_window(&mut self, index: usize, cx: &mut Context<Self>) {
+        self.appsnap.selected = Some(index);
+        self.capture_appsnap(cx);
+    }
     fn capture_appsnap(&mut self, cx: &mut Context<Self>) {
         if self.close != CloseState::Open || self.appsnap.busy || self.attachment_send_blocked() {
             return;
@@ -131,7 +152,7 @@ impl Shell {
         );
     }
     pub(super) fn appsnap_reply(&mut self, reply: Reply, cx: &mut Context<Self>) {
-        if !self.appsnap.open
+        if (!self.appsnap.open && !self.appsnap.in_menu)
             || self.appsnap.epoch != reply.epoch
             || self.selected != Some(reply.task)
             || self.selection_revision != reply.revision
@@ -153,6 +174,9 @@ impl Shell {
                 };
                 self.appsnap.tools = Some(tools);
                 self.appsnap.windows = windows;
+                if self.appsnap.in_menu {
+                    self.refresh_extras_menu(cx);
+                }
             }
             Ok(Outcome::Capture(window, png)) => {
                 let name = format!(
@@ -172,6 +196,10 @@ impl Shell {
                 self.appsnap.error = Some(format!(
                     "AppSnap stopped: {error}. OS permission status is not reported by X11. Nothing was attached. Refresh and reselect before retrying."
                 ));
+                if self.appsnap.in_menu {
+                    self.error = Some(format!("Attach window failed: {error}"));
+                    self.refresh_extras_menu(cx);
+                }
             }
         }
         cx.notify();

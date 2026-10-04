@@ -9,7 +9,7 @@ Detailed parity evidence lives in:
 
 ## Current status
 
-- Shipped feature slices: **98**
+- Shipped feature slices: **118**
 - Major remaining: **0**
 - Smaller remaining: **0**
 - Acceptance/integration remaining: **0**
@@ -21,7 +21,19 @@ The execution inventory is **complete**. The 19 open verification gates are
 larger evidence/acceptance buckets and are not a feature count or a reason to
 reopen implemented roadmap work.
 
-Current upstream reference: `Emanuele-web04/synara@eaa61eded31b6755d4f30ba8eabc5d905cf817cb`.
+Current upstream reference: `Emanuele-web04/synara@ec3b1f6ef9c2f656f26dd9711339fe1265d8cb5c`.
+The twenty-two commits that landed after the earlier `eaa61ed` pin were audited
+in batch 43: four product changes are ported (credential-redaction tables,
+opt-in worktree removal on Archive, persisted provider catalog, Oh My Pi
+profile) and the rest are confirmed equivalent or not applicable. Batches 44–64
+continued the audit through `a33435c18`; batch 65 audited the 33 commits in
+`a33435c18..ec3b1f6ef9` and ported prompt-history recall, middle-click tab
+close, and the project name/appearance + favicon set. Batch 66 ported the
+nine-commit rail-layout cluster: the alternate sidebar layout (icon rail +
+collapsible panel column) with ordered/hideable items, space + project
+shortcuts, the "…" and Customize popovers, rail panels for home/spaces/
+automations, and the "Sidebar layout" preference — all upstream-committed
+rail work is now ported.
 
 Current continuation status: A05 authenticated browser acceptance passed on exact
 candidate `163d59cf1eaba301e413f1d02848a4d4cb397f69`, and A09 provider
@@ -513,7 +525,8 @@ Verification receipts:
 [batch 39](docs/verification/parity-2026-09-26-batch39.md),
 [batch 40](docs/verification/parity-2026-09-26-batch40.md),
 [batch 41](docs/verification/parity-2026-09-26-batch41.md),
-[batch 42](docs/verification/parity-2026-09-26-batch42.md).
+[batch 42](docs/verification/parity-2026-09-26-batch42.md),
+[batch 43](docs/verification/parity-2026-09-26-batch43.md).
 
 - Batch 32: acceptance infrastructure now has a dedicated Linux/macOS/Windows
   native build and development-package matrix. macOS development packaging uses
@@ -613,6 +626,170 @@ Verification receipts:
   harnesses exist, so missing external account/hardware evidence no longer
   remains an execution blocker. See the
   [batch 42 receipt](docs/verification/parity-2026-09-26-batch42.md).
+- Batch 43 audits the 22 upstream commits after the `eaa61ed` pin and ports the
+  four with Rust product-code counterparts: exact credential-redaction tables in
+  `reviewed_tool_input`, opt-in managed-worktree removal on Archive plus
+  `git worktree prune`, a persisted models.dev catalog snapshot hydrated on the
+  direct-models surface, and the Oh My Pi `omp acp` default profile with an
+  onboarding sign-in guide. The remaining 18 are confirmed already-equivalent,
+  architectural non-issues, or upstream repo/CI work. See the
+  [batch 43 receipt](docs/verification/parity-2026-09-26-batch43.md).
+- Batch 44 replaces the invented debug evidence journal with upstream's real
+  Debug interaction mode: a persisted per-task `interactionMode` flag that
+  prepends the verbatim `<synara_debug_mode>` provider prompt block,
+  `/debug` + `/default` slash entries, a checked mode-menu row, and a badge
+  chip that toggles back to Default. The 400+-line journal surface (phases,
+  edit ledgers, accordion bar) had no upstream counterpart and is deleted.
+  See the [batch 44 receipt](docs/verification/parity-2026-09-26-batch44.md).
+- Batch 45 slims the invented Hub overlay down to upstream's studio-project
+  shape. `HubProfile` is now just `project + name + instructions`; the
+  description, curated "shared knowledge" memory, include-in-new-threads
+  composer injection, archived flag, promote-message-to-knowledge action, and
+  the automations context-policy/`hub_revision` machinery are all deleted.
+  Instructions now seed a new thread's saved notes (`task-context:`) exactly
+  like upstream's `mergeProjectInstructionsIntoThreadNotes`, and automation
+  run prompts are the instructions verbatim in ordinary project scope. Legacy
+  v1 hub rows fold `memory` into `instructions` on decode so no text is lost.
+  See the [batch 45 receipt](docs/verification/parity-2026-09-26-batch45.md).
+- Batch 46 normalizes the composer footer and sidebar to upstream's exact
+  shape. The footer now reads `+` extras → "Ask for approval" → context ring
+  meter (rendered only when the session reports usage) → model picker → mic →
+  circular send; the permanent voice disclaimer, in-box context text row,
+  standalone attach/AppSnap/follow-up buttons, model cycle arrows, and the
+  invented orange-shield access styling are gone. Extras rows are rewired to
+  real actions: "Files and folders" opens the native file picker, "Attach
+  window" opens AppSnap, "Goal" inserts `/synara/goal set <draft>`. The
+  sidebar gains upstream's flat Pinned section, and pinned threads no longer
+  appear inside their project group or Chats. See the
+  [batch 46 receipt](docs/verification/parity-2026-09-26-batch46.md).
+- Batch 47 fixes multi-line `EntryMode::Editor` fields (Notes dialog,
+  automation/hub instructions) painting as empty rectangles — `h_full()`
+  collapsed inside auto-height parents, so a `min_h(visible_height())` floor
+  now keeps the configured height. See the
+  [batch 47 receipt](docs/verification/parity-2026-09-26-batch47.md).
+- Batch 48 turns the composer access trigger into upstream's real picker:
+  the ⌄ lists the provider's advertised session modes relabeled with
+  upstream's "Ask for approval / Approve for me / Full access" copy where
+  ids match, and the trigger shows the current mode. See the
+  [batch 48 receipt](docs/verification/parity-2026-09-26-batch48.md).
+- Batch 49 makes the extras menu two-view like upstream's
+  `ComposerExtrasPanel`: "Attach window" swaps the menu to a windows view
+  (`Back` + one row per discovered `SnapWindow`, populated live by a
+  menu-mode AppSnap discovery), and picking a row captures that window as a
+  draft attachment — instead of jumping to the standalone AppSnap card. See
+  the [batch 49 receipt](docs/verification/parity-2026-09-26-batch49.md).
+- Batch 50 surfaces upstream's sidebar "Pending" approval badge: a thread row
+  with an unanswered permission prompt shows a medium-weight amber "Pending"
+  at the title's right end, driven by the existing per-task pending map. See
+  the [batch 50 receipt](docs/verification/parity-2026-09-26-batch50.md).
+- Batch 51 ranks the thread-row trailing dot in upstream's status order —
+  pending approval (amber) → awaiting input (indigo) → working/connecting
+  (focus dot) — off the same pending map; Completed/Plan Ready legs remain
+  open pending `lastVisitedAt`/`proposedPlans` on `Task`. See the
+  [batch 51 receipt](docs/verification/parity-2026-09-26-batch51.md).
+- Batch 52 lands `lastVisitedAt` parity: visit stamps persist as
+  `task-visited:{id}` preference keys, ride `Catalog.visited`, and stamp on
+  `select_task` — so an unread `Completed` row now gets the accent dot until
+  revisited (the status-dot ladder's lowest leg). See the
+  [batch 52 receipt](docs/verification/parity-2026-09-26-batch52.md).
+- Batch 53 reshapes per-task notes to upstream's `ThreadNotes`: `TaskContext`
+  is notes-only (checklist and saved folder references — both invented —
+  deleted), capped at `THREAD_NOTES_MAX_CHARS = 16_384`, and the notes dialog
+  drops the checklist editor, folder picker, and prompt-insert buttons. See
+  the [batch 53 receipt](docs/verification/parity-2026-09-26-batch53.md).
+- Batch 54 lands per-task runtime-mode persistence (upstream
+  `thread.runtimeMode`): the Access picker lists the three canonical modes
+  pre-session, picks persist to `task-runtime-mode:{id}` preferences and are
+  re-applied to (re)created sessions, and the composer button shows the stored
+  or `full-access` default label. See the
+  [batch 54 receipt](docs/verification/parity-2026-09-26-batch54.md).
+- Batch 55 lands upstream's in-flight-turn transcript affordances: the live
+  "Working for {elapsed}" activity row (with upstream `formatClockDuration` /
+  `formatDuration` verbatim) and the tail working row (`Starting {agent}…` while
+  connecting, `Thinking` while busy) with a reduce-motion-gated pulse.
+  See the [batch 55 receipt](docs/verification/parity-2026-09-26-batch55.md).
+- Batch 56 lands upstream's Plan interaction mode: `InteractionMode::Plan`
+  (upstream `ProviderInteractionMode = ["default","plan","debug"]`), the
+  verbatim `PROVIDER_PLAN_MODE_PROMPT_PREFIX` prompt shim
+  (`{prefix}\n\nUser request:\n{text}`) applied to provider-bound sends, the
+  `/synara/plan` command rewired from the divergent ACP session-mode pick to
+  upstream's interaction-mode semantics, the extras "Plan mode" toggle row
+  ("Turn plan mode on/off"), and the click-to-clear mode badge generalized to
+  show `Plan`/`Debug`. See the
+  [batch 56 receipt](docs/verification/parity-2026-09-26-batch56.md).
+- Batch 57 lands upstream's Plan Ready follow-up: `<proposed_plan>` blocks
+  extracted from settled plan-mode turns into per-thread `ProposedPlan`
+  records (`plan:{threadId}:turn:{turnId}`), a composer "Plan ready" banner
+  (empty submit → `PLEASE IMPLEMENT THIS PLAN:` + markdown in Default mode;
+  non-empty → plan-mode refinement), the `ProposedPlanImplemented` event, and
+  the transcript plan card (badge, title, collapsible markdown, copy/download).
+  Fixes a batch-56 defect where mode-shim'd sends never cleared the composer
+  draft (draft-ack now matches the transcript echo, not the raw draft). See
+  the [batch 57 receipt](docs/verification/parity-2026-09-26-batch57.md).
+- Batch 58 lands upstream's "Implement in a new thread" follow-up: the
+  plan-ready footer swaps the send icon for a "Refine" pill when a draft is
+  typed and a split "Implement" + chevron menu when empty; the menu's
+  "Implement in a new thread" creates a same-project thread titled
+  `Implement {plan title}`, sends the verbatim `PLEASE IMPLEMENT THIS PLAN:`
+  prompt in Default mode, and records `ProposedPlanImplemented` on the source
+  thread (upstream `sourceProposedPlan`). See the
+  [batch 58 receipt](docs/verification/parity-2026-09-26-batch58.md).
+- Batch 59 lands upstream's plan sidebar (`PlanSidebar` +
+  `findSidebarProposedPlan`): the implementing turn carries
+  `source_proposed_plan` (new `ProposedPlanSource` thread event, consumed by
+  `PromptStarted`), the composer gains the "Plan details"/"Tasks" sidebar
+  toggle, and a `w-[340px]` right panel shows the accent "Plan" badge,
+  copy/download actions, and a collapsible "Full Plan" markdown section with
+  the upstream empty state. "Implement in a new thread" now navigates before
+  the prompt dispatch completes, so the sidebar auto-opens on the source plan
+  mid-turn (upstream `planSidebarOpenOnNextThreadRef` ordering). See the
+  [batch 59 receipt](docs/verification/parity-2026-09-26-batch59.md).
+- Batch 60 ports upstream turn task lists (`turn.tasks.updated`): ACP
+  `session/plan` updates now carry `explanation` and tag the owning turn,
+  `Thread::active_task_list` mirrors `deriveActiveTaskListState` visibility
+  rules, the composer gains the upstream "N out of M tasks completed" card
+  (open-sidebar + collapse, hidden while the sidebar is open), the plan
+  sidebar gains the timestamp + explanation + "Steps" status rows, Implement
+  sends open the sidebar optimistically, and the transcript renders the
+  upstream keep-latest summary row. See the
+  [batch 60 receipt](docs/verification/parity-2026-09-26-batch60.md).
+- Batch 61 replaces the manual follow-ups draft shelf with upstream's queued
+  turns (`composerDraftStore.queuedTurns` + `ComposerQueuedHeader` +
+  `queuedComposerDrain`): a send while a turn is in flight enqueues the
+  draft, stacked preview rows sit above the composer with Steer/Delete/Edit
+  (Steer maps to upstream's non-steerable-provider interrupt→redispatch),
+  and the head auto-dispatches on settle — still sqlite-persisted. See the
+  [batch 61 receipt](docs/verification/parity-2026-09-26-batch61.md).
+- Batch 62 is a review, not a slice: the `direct_models` subsystem (~3.5k
+  lines across app/workspace/server — bindings, API keys, models.dev
+  catalog, direct prompt route) has NO upstream counterpart; upstream routes
+  all text generation and automation `ai-evaluated` completion through
+  `textGenerationModelSelection` on agent providers. Excision is staged:
+  (1) drop `evaluator: DirectModelBinding` from `AiEvaluated` + migration,
+  (2) reroute text generation through the agent provider, (3) remove the
+  direct chat route + composer controls + `uses_direct_model` gates,
+  (4) remove the settings section + catalog, (5) drop storage tables. See the
+  [batch 62 review](docs/verification/parity-2026-09-26-batch62.md).
+- Batch 63 lands stage 1 of the `direct_models` excision: `AiEvaluated`
+  drops the Rust-only `evaluator: DirectModelBinding` (upstream shape is
+  `{type, stopWhen, confidenceThreshold}`); stored rows still decode via a
+  `#[serde(default, skip_serializing)]` shim (the `hub_revision`
+  precedent). Evaluation now runs on a throwaway ACP session owned by the
+  run's agent profile — matching upstream's separate
+  `ProviderTextGeneration` call — with reply text captured from
+  `TextDelta` events on a sink that keeps the transcript clean. The
+  editor's completion section is now a plain toggle, no model picker. See
+  the [batch 63 receipt](docs/verification/parity-2026-09-26-batch63.md).
+- Batch 64 completes the `direct_models` excision (stages 2–5 wholesale):
+  the direct chat route, composer route controls and `uses_direct_model`
+  gates, `HandoffTarget::Direct`, the settings section + `/synara/settings
+  direct-models` alias, server direct dispatch, the `task-direct-model:`
+  producer reads, and the `synara-model` crate itself are all deleted —
+  upstream has no direct-provider surface (`ProviderKind` is agent CLIs
+  only). Decode-compat shims stay (`ThreadEvent::DirectModelRoute`, the
+  turn fields, the three pref keys as `serde_json::Value`) so old
+  databases and backups still open. See the
+  [batch 64 receipt](docs/verification/parity-2026-09-27-batch64.md).
 
 
 ## How to update this roadmap

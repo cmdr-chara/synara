@@ -64,6 +64,7 @@ impl Shell {
             cx.notify();
         }
     }
+    #[cfg(target_os = "linux")]
     fn native_browser_visible(&self) -> bool {
         self.panel == Panel::Browser
             && !self.zen_active()

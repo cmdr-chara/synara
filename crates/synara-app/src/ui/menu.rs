@@ -7,7 +7,13 @@ use gpui::{
     ScrollStrategy, Subscription, UniformListScrollHandle, uniform_list,
 };
 pub use models::{ModelRow, ModelSource};
+use std::rc::Rc;
 use synara_workspace::SessionModelPreset;
+
+/// An owned render recipe for a choice's leading element. The recipe keeps
+/// choice state data (rather than a borrowed or already-consumed AnyElement)
+/// and builds the element when the virtualized row is rendered.
+pub type ChoiceIcon = Rc<dyn Fn() -> gpui::AnyElement + 'static>;
 
 #[derive(Default)]
 pub struct Choice {
@@ -15,6 +21,7 @@ pub struct Choice {
     pub detail: String,
     pub selected: bool,
     pub icon: Option<Glyph>,
+    pub custom_icon: Option<ChoiceIcon>,
     pub unavailable: Option<String>,
 }
 #[derive(Clone)]
@@ -158,6 +165,22 @@ impl ChoiceMenu {
         self.add_bounds = Some(bounds);
         self.searchable = false;
         self
+    }
+    /// Swap the whole choice list in place (e.g. extras menu changing views).
+    /// Resets the query and moves the highlight to the selected row or row 0.
+    pub fn set_choices(&mut self, choices: Vec<Choice>, cx: &mut Context<Self>) {
+        let active = choices
+            .iter()
+            .position(|choice| choice.selected)
+            .unwrap_or(0);
+        self.choices = choices;
+        self.visible = (0..self.choices.len()).collect();
+        self.searchable = self.add_bounds.is_none() && self.choices.len() > 1;
+        self.query.clear();
+        self.navigation.move_to(active, self.visible.len());
+        self.scroll.scroll_to_item(active, ScrollStrategy::Center);
+        self.unavailable_reason = None;
+        cx.notify();
     }
     fn filter(&mut self, query: String, cx: &mut Context<Self>) {
         let previous = self.visible.get(self.navigation.active).copied();
@@ -429,18 +452,25 @@ impl Render for ChoiceMenu {
                                             }))
                                             .cursor_pointer()
                                             .hover(|style| style.bg(rgb(palette().hover)))
-                                            .child(if let Some(glyph) = choice.icon {
-                                                super::icon(glyph)
-                                                    .size(scaled(14.))
-                                                    .into_any_element()
-                                            } else {
-                                                div()
-                                                    .w(scaled(14.))
-                                                    .children(choice.selected.then(|| {
-                                                        super::icon(Glyph::Check).size(scaled(14.))
-                                                    }))
-                                                    .into_any_element()
-                                            })
+                                            .child(
+                                                if let Some(render_icon) =
+                                                    choice.custom_icon.as_ref()
+                                                {
+                                                    render_icon()
+                                                } else if let Some(glyph) = choice.icon {
+                                                    super::icon(glyph)
+                                                        .size(scaled(14.))
+                                                        .into_any_element()
+                                                } else {
+                                                    div()
+                                                        .w(scaled(14.))
+                                                        .children(choice.selected.then(|| {
+                                                            super::icon(Glyph::Check)
+                                                                .size(scaled(14.))
+                                                        }))
+                                                        .into_any_element()
+                                                },
+                                            )
                                             .child(
                                                 div()
                                                     .flex_1()
@@ -478,9 +508,12 @@ impl Render for ChoiceMenu {
                                                     ),
                                             )
                                             .children(
-                                                (choice.selected && choice.icon.is_some()).then(
-                                                    || super::icon(Glyph::Check).size(scaled(14.)),
-                                                ),
+                                                (choice.selected
+                                                    && (choice.icon.is_some()
+                                                        || choice.custom_icon.is_some()))
+                                                .then(|| {
+                                                    super::icon(Glyph::Check).size(scaled(14.))
+                                                }),
                                             )
                                             .when_some(choice.unavailable.clone(), |el, reason| {
                                                 el.tooltip(move |_, cx| {

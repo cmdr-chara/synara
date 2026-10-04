@@ -73,6 +73,39 @@ fn title(text: &str) -> String {
         .take(64)
         .collect()
 }
+
+/// The shared Tasks projection. Both presentations read this ordered view of
+/// the catalog; neither owns task state or invents a second task model.
+fn task_projection(tasks: &[Task], project: Option<ProjectId>) -> Vec<&Task> {
+    let mut tasks: Vec<_> = tasks
+        .iter()
+        .filter(|task| {
+            column(task, false).is_some() && project.is_none_or(|id| id == task.project_id)
+        })
+        .collect();
+    tasks.sort_by(|a, b| {
+        b.updated_at_ms
+            .cmp(&a.updated_at_ms)
+            .then_with(|| a.id.to_string().cmp(&b.id.to_string()))
+    });
+    tasks
+}
+
+fn normal_task_status(task: &Task, starting: bool, stopping: bool) -> &'static str {
+    if stopping {
+        "Stopping..."
+    } else if starting && task.state == TaskState::Ready {
+        "Starting..."
+    } else {
+        match task.state {
+            TaskState::Waiting => "Needs input",
+            TaskState::Failed => "Failed",
+            TaskState::Running => "Running",
+            TaskState::Ready => "Draft",
+            _ => "Done",
+        }
+    }
+}
 impl Shell {
     pub(super) fn open_task_dialog(&mut self, draft: bool, cx: &mut Context<Self>) {
         if self.hub_navigation_blocked(cx)
@@ -86,10 +119,13 @@ impl Shell {
         // Capture the origin when the dialog opens. Later navigation must not
         // change whether a request creates a normal task or a Hub task.
         let hub = if self.navigation.studio {
-            let Some(hub) = self.hubs.rows.iter().find(|hub| {
-                Some(hub.profile.project) == self.hubs.selected && !hub.profile.archived
-            }) else {
-                self.error = Some("Select an active Hub before creating a task.".into());
+            let Some(hub) = self
+                .hubs
+                .rows
+                .iter()
+                .find(|hub| Some(hub.profile.project) == self.hubs.selected)
+            else {
+                self.error = Some("Select a Hub before creating a task.".into());
                 cx.notify();
                 return;
             };
@@ -109,8 +145,21 @@ impl Shell {
                         .rows
                         .iter()
                         .find(|h| Some(h.profile.project) == hub)
-                        .map_or_else(|| p.name.clone(), |h| h.profile.name.clone()),
+                        .map_or_else(
+                            || self.project_name(p).to_string(),
+                            |h| h.profile.name.clone(),
+                        ),
                 )
+            })
+            .collect();
+        let project_icons = projects
+            .iter()
+            .filter_map(|(id, _)| {
+                self.catalog
+                    .projects
+                    .iter()
+                    .find(|project| project.id == *id)
+                    .map(|project| (*id, self.project_choice_icon(project)))
             })
             .collect();
         if projects.is_empty() {
@@ -142,6 +191,7 @@ impl Shell {
                 },
                 cx,
             )
+            .with_project_icons(project_icons)
         });
         self.kanban.dialog_hub = hub;
         self.kanban.subscription = Some(cx.subscribe(&dialog, |this, _, event, cx| {
@@ -252,17 +302,7 @@ impl Shell {
     }
     fn submit_kanban_text(&mut self, id: TaskId, text: String, cx: &mut Context<Self>) {
         self.kanban.launching.remove(&id);
-        let context_only = self
-            .catalog
-            .tasks
-            .iter()
-            .any(|task| task.id == id && task.scope == TaskScope::Studio)
-            && (text.starts_with("## Hub instructions\n")
-                || text.starts_with("## Shared Hub knowledge\n"))
-            && text
-                .rsplit_once("\nTask:\n")
-                .is_some_and(|(_, task)| task.trim().is_empty());
-        if text.trim().is_empty() || context_only {
+        if text.trim().is_empty() {
             self.notice = Some("Open this task and write a prompt before running it.".into());
             return;
         }
@@ -281,7 +321,11 @@ impl Shell {
             return;
         }
         self.drafts.insert(id, text.clone());
-        self.draft_state.submitted(id, text.clone());
+        let echo = synara_workspace::with_interaction_prompt(
+            self.mode_tasks.get(&id).copied().unwrap_or_default(),
+            &text,
+        );
+        self.draft_state.submitted(id, text.clone(), echo);
         self.busy.insert(id);
         self.error = None;
         self.notice = None;
@@ -408,6 +452,7 @@ impl Shell {
                         self.error = Some(format!("Could not refresh Kanban: {error}"));
                     }
                 }
+                self.reconcile_hub_task_inspection();
             }
         }
         cx.notify();
@@ -427,7 +472,7 @@ impl Shell {
         self.kanban
             .project
             .and_then(|id| self.catalog.projects.iter().find(|p| p.id == id))
-            .map_or_else(|| "Kanban".into(), |p| p.name.clone())
+            .map_or_else(|| "Tasks".into(), |p| p.name.clone())
     }
     pub(super) fn kanban_count(&self) -> usize {
         if self.navigation.studio {
@@ -438,17 +483,11 @@ impl Shell {
                 .filter(|task| self.in_hub_board(task))
                 .count();
         }
-        self.catalog
-            .tasks
-            .iter()
-            .filter(|t| {
-                column(t, false).is_some()
-                    && self.kanban.project.is_none_or(|id| t.project_id == id)
-            })
-            .count()
+        task_projection(&self.catalog.tasks, self.kanban.project).len()
     }
     pub(super) fn kanban_back(&mut self, cx: &mut Context<Self>) {
         if self.navigation.studio {
+            self.clear_hub_task_inspection();
             self.set_panel(Panel::Hubs, cx);
             return;
         }
@@ -461,6 +500,27 @@ impl Shell {
         self.kanban.limits = [0; 3];
         cx.notify();
     }
+
+    pub(super) fn set_tasks_view_mode(
+        &mut self,
+        mode: TasksViewMode,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
+        let index = match mode {
+            TasksViewMode::List => 0,
+            TasksViewMode::Kanban => 1,
+        };
+        window.focus(&self.tasks_view_focus[index], cx);
+        if self.settings.saving || self.settings.value.general.tasks_view_mode.mode == mode {
+            return;
+        }
+        self.save_setting(
+            move |settings| settings.general.tasks_view_mode.mode = mode,
+            cx,
+        );
+    }
+
     fn kanban_card(
         &self,
         task: &Task,
@@ -474,21 +534,12 @@ impl Shell {
             self.busy.contains(&id) || self.kanban.launching.contains_key(&id),
         )
         .unwrap_or(2);
-        let state = if self.kanban.stopping.contains(&id) {
-            "Stopping..."
-        } else if self.kanban.launching.contains_key(&id)
-            || (self.busy.contains(&id) && task.state == TaskState::Ready)
-        {
-            "Starting..."
-        } else {
-            match task.state {
-                TaskState::Waiting => "Needs input",
-                TaskState::Failed => "Failed",
-                TaskState::Running => "Running",
-                TaskState::Ready => "Draft",
-                _ => "Done",
-            }
-        };
+        let state = normal_task_status(
+            task,
+            self.kanban.launching.contains_key(&id)
+                || (self.busy.contains(&id) && task.state == TaskState::Ready),
+            self.kanban.stopping.contains(&id),
+        );
         let agent = self
             .profiles
             .iter()
@@ -589,25 +640,281 @@ impl Shell {
             }))
             .into_any_element()
     }
+
+    fn task_list_row(
+        &self,
+        task: &Task,
+        project_label: SharedString,
+        slot: usize,
+        cx: &mut Context<Self>,
+    ) -> gpui::AnyElement {
+        let id = task.id;
+        let starting = self.busy.contains(&id) || self.kanban.launching.contains_key(&id);
+        let group = execution_column(task, starting).unwrap_or(2);
+        let status = normal_task_status(
+            task,
+            self.kanban.launching.contains_key(&id)
+                || (self.busy.contains(&id) && task.state == TaskState::Ready),
+            self.kanban.stopping.contains(&id),
+        );
+        let status_color = match task.state {
+            TaskState::Waiting => palette().awaiting,
+            TaskState::Failed => palette().error,
+            TaskState::Running => palette().focus,
+            _ => palette().muted,
+        };
+        let agent = self
+            .profiles
+            .iter()
+            .find(|profile| profile.id == task.agent_id)
+            .map_or(task.agent_id.as_str(), |profile| profile.name.as_str())
+            .to_owned();
+        let stopping = self.kanban.stopping.contains(&id);
+        div()
+            .id(SharedString::from(format!("tasks-list-row-{id}")))
+            .role(gpui::Role::Group)
+            .aria_label(format!("{} · {status}", task.title))
+            .py_2()
+            .px_2()
+            .flex()
+            .items_center()
+            .gap_3()
+            .border_b_1()
+            .border_color(rgb(palette().border))
+            .child(
+                ui::button_shell(
+                    SharedString::from(format!("tasks-list-task-{id}")),
+                    task.title.clone(),
+                    self.selected == Some(id),
+                )
+                .flex_1()
+                .min_w_0()
+                .h_auto()
+                .px_2()
+                .py_1()
+                .bg(gpui::rgba(0))
+                .flex()
+                .flex_col()
+                .items_start()
+                .gap(px(2.))
+                .aria_description(format!("{project_label} · {agent}"))
+                .child(
+                    div()
+                        .w_full()
+                        .text_size(px(14.))
+                        .text_ellipsis()
+                        .child(task.title.clone()),
+                )
+                .child(
+                    div()
+                        .w_full()
+                        .text_size(px(11.))
+                        .text_color(rgb(palette().muted))
+                        .text_ellipsis()
+                        .child(format!("{project_label} · {agent}")),
+                )
+                .on_click(cx.listener(move |this, _, _, cx| {
+                    if this.select_task(id, cx) {
+                        this.show_conversation(cx);
+                    }
+                })),
+            )
+            .child(
+                div()
+                    .w(px(92.))
+                    .flex_shrink_0()
+                    .text_size(px(12.))
+                    .text_color(rgb(status_color))
+                    .child(status),
+            )
+            .children((group < 2).then(|| {
+                let label = if group == 0 { "Run draft" } else { "Stop" };
+                ui::button_shell(
+                    SharedString::from(format!("tasks-list-command-{id}")),
+                    label,
+                    stopping,
+                )
+                .size(px(30.))
+                .p_0()
+                .flex_shrink_0()
+                .flex()
+                .items_center()
+                .justify_center()
+                .when(stopping, |button| button.opacity(0.4).cursor_default())
+                .child(ui::icon(if group == 0 { Glyph::Send } else { Glyph::Stop }).size(px(14.)))
+                .child(ui::layout_probe_slot("tasks-list-action", slot))
+                .on_click(cx.listener(move |this, _, _, cx| {
+                    if stopping {
+                        return;
+                    }
+                    if group == 0 {
+                        this.run_kanban_draft(id, cx);
+                    } else {
+                        this.stop_kanban_task(id, cx);
+                    }
+                    cx.stop_propagation();
+                }))
+            }))
+            .into_any_element()
+    }
+
+    fn task_list_panel(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
+        let project = self
+            .kanban
+            .project
+            .filter(|id| self.catalog.projects.iter().any(|p| p.id == *id));
+        let tasks = task_projection(&self.catalog.tasks, project);
+        if tasks.is_empty() {
+            return div()
+                .size_full()
+                .flex()
+                .items_center()
+                .justify_center()
+                .child(
+                    div()
+                        .max_w(px(400.))
+                        .text_center()
+                        .flex()
+                        .flex_col()
+                        .gap_1()
+                        .child("Nothing on the list yet")
+                        .child(
+                            div()
+                                .text_size(px(13.))
+                                .text_color(rgb(palette().muted))
+                                .child("Drafted prompts, running turns, and completed chats will show up here automatically."),
+                        ),
+                )
+                .into_any_element();
+        }
+
+        // Keep the same project ordering and project-board entry point as the
+        // Kanban overview. A selected project narrows the list without
+        // changing the underlying catalog projection.
+        let mut project_ids = Vec::new();
+        if let Some(project) = project {
+            project_ids.push(project);
+        } else {
+            project_ids.extend(
+                self.catalog
+                    .projects
+                    .iter()
+                    .filter(|project| tasks.iter().any(|task| task.project_id == project.id))
+                    .map(|project| project.id),
+            );
+            for task in &tasks {
+                if !project_ids.contains(&task.project_id) {
+                    project_ids.push(task.project_id);
+                }
+            }
+        }
+
+        div()
+            .id("tasks-list")
+            .size_full()
+            .min_h_0()
+            .overflow_y_scroll()
+            .flex()
+            .flex_col()
+            .gap_3()
+            .children(
+                project_ids
+                    .into_iter()
+                    .enumerate()
+                    .map(|(project_slot, project_id)| {
+                        let label = self
+                            .catalog
+                            .projects
+                            .iter()
+                            .find(|project| project.id == project_id)
+                            .map(|project| {
+                                if self.is_chat_workspace(project) {
+                                    "Chats".into()
+                                } else {
+                                    self.project_name(project)
+                                }
+                            })
+                            .unwrap_or_else(|| "Unavailable project".into());
+                        let rows: Vec<_> = tasks
+                            .iter()
+                            .copied()
+                            .filter(|task| task.project_id == project_id)
+                            .collect();
+                        let count = rows.len();
+                        let open_project = project.is_none();
+                        div()
+                            .id(SharedString::from(format!(
+                                "tasks-list-project-{project_id}"
+                            )))
+                            .flex()
+                            .flex_col()
+                            .rounded(px(10.))
+                            .border_1()
+                            .border_color(rgb(palette().border))
+                            .child(
+                                div()
+                                    .px_2()
+                                    .py_1()
+                                    .flex()
+                                    .items_center()
+                                    .gap_2()
+                                    .child(
+                                        ui::button_shell(
+                                            SharedString::from(format!(
+                                                "tasks-list-project-title-{project_id}"
+                                            )),
+                                            label.clone(),
+                                            false,
+                                        )
+                                        .flex_1()
+                                        .min_w_0()
+                                        .h(px(30.))
+                                        .px_1()
+                                        .py_0()
+                                        .bg(gpui::rgba(0))
+                                        .text_size(px(13.))
+                                        .text_ellipsis()
+                                        .children(open_project.then(|| {
+                                            div()
+                                                .text_size(px(11.))
+                                                .text_color(rgb(palette().muted))
+                                                .child(count.to_string())
+                                        }))
+                                        .on_click(
+                                            cx.listener(move |this, _, _, cx| {
+                                                if open_project {
+                                                    this.kanban_open_project(project_id, cx);
+                                                }
+                                            }),
+                                        ),
+                                    )
+                                    .children(open_project.then(|| {
+                                        ui::layout_probe_slot(
+                                            "tasks-list-open-project",
+                                            project_slot,
+                                        )
+                                    })),
+                            )
+                            .children(rows.iter().enumerate().map(|(slot, task)| {
+                                self.task_list_row(task, label.clone(), slot, cx)
+                            }))
+                    }),
+            )
+            .into_any_element()
+    }
+
     pub(super) fn kanban_panel(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
         if self.navigation.studio {
             return self.hub_task_board(cx);
+        }
+        if self.settings.value.general.tasks_view_mode.mode == TasksViewMode::List {
+            return self.task_list_panel(cx);
         }
         let project = self
             .kanban
             .project
             .filter(|id| self.catalog.projects.iter().any(|p| p.id == *id));
-        let mut tasks: Vec<_> = self
-            .catalog
-            .tasks
-            .iter()
-            .filter(|t| column(t, false).is_some() && project.is_none_or(|id| id == t.project_id))
-            .collect();
-        tasks.sort_by(|a, b| {
-            b.updated_at_ms
-                .cmp(&a.updated_at_ms)
-                .then_with(|| a.id.to_string().cmp(&b.id.to_string()))
-        });
+        let tasks = task_projection(&self.catalog.tasks, project);
         let content = if project.is_some() {
             div()
                 .id("kanban-columns")
@@ -946,6 +1253,56 @@ mod tests {
             column(&task(TaskState::Ready, TaskScope::Chat), true),
             Some(1)
         );
+    }
+    #[test]
+    fn task_projection_uses_the_catalog_for_both_views() {
+        let project = ProjectId::new();
+        let mut newest = task(TaskState::Running, TaskScope::Project);
+        newest.project_id = project;
+        newest.updated_at_ms = 20;
+        let mut older = task(TaskState::Ready, TaskScope::Project);
+        older.project_id = project;
+        older.updated_at_ms = 10;
+        let mut other_project = task(TaskState::Completed, TaskScope::Project);
+        other_project.updated_at_ms = 30;
+        let other_project_id = other_project.id;
+        let tasks = vec![
+            older.clone(),
+            task(TaskState::Archived, TaskScope::Project),
+            task(TaskState::Ready, TaskScope::Studio),
+            newest.clone(),
+            other_project,
+        ];
+
+        let projected = task_projection(&tasks, Some(project));
+        assert_eq!(
+            projected.iter().map(|task| task.id).collect::<Vec<_>>(),
+            vec![newest.id, older.id]
+        );
+        assert_eq!(
+            task_projection(&tasks, None)
+                .iter()
+                .map(|task| task.id)
+                .collect::<Vec<_>>(),
+            vec![other_project_id, newest.id, older.id]
+        );
+    }
+    #[test]
+    fn task_status_uses_the_same_runtime_state_as_the_board_column() {
+        for (state, expected) in [
+            (TaskState::Ready, "Draft"),
+            (TaskState::Running, "Running"),
+            (TaskState::Waiting, "Needs input"),
+            (TaskState::Completed, "Done"),
+            (TaskState::Failed, "Failed"),
+        ] {
+            let task = task(state, TaskScope::Project);
+            assert_eq!(normal_task_status(&task, false, false), expected);
+            assert!(column(&task, false).is_some());
+        }
+        let ready = task(TaskState::Ready, TaskScope::Project);
+        assert_eq!(normal_task_status(&ready, true, false), "Starting...");
+        assert_eq!(normal_task_status(&ready, false, true), "Stopping...");
     }
     #[test]
     fn cancelled_load_cannot_consume_a_later_launch_or_start_twice() {

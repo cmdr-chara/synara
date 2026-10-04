@@ -35,7 +35,7 @@ provider-owned. Native commands do not change their interpretation.
 
 Settings section IDs: `onboarding`, `device`, `privacy`, `general`, `profile`,
 `appearance`, `notifications`, `behavior`, `keybindings`, `usage`, `appsnap`,
-`computer`, `plugins`, `mcp`, `providers`, `models`, `direct-models`,
+`computer`, `plugins`, `mcp`, `providers`, `models`,
 `project-import`, `skills`, `worktrees`, `system`, `archived`, `workflows`.
 
 The normal Send entry point applies task, loading, busy, connection, IME, pending

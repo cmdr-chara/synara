@@ -20,8 +20,7 @@ from native_smoke import Scenario, wait_until
 from native_appsnap_smoke import OwnedWindow
 from native_navigation_smoke import selection, task_count
 from native_model_draft_smoke import preference, close
-from native_integrations_smoke import click, fill, fresh_probe
-from native_direct_models_smoke import paste
+from native_integrations_smoke import click, fill, fresh_probe, paste
 
 
 class KeyEvent(C.Structure):

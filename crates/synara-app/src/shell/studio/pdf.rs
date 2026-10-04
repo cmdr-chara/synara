@@ -627,7 +627,7 @@ impl Shell {
                 };
                 let mut next = PdfView::new(doc, page);
                 next.form_editor = retained_form;
-                self.studio.preview = Some(Preview::Pdf(next));
+                self.studio.preview = Some(Preview::Pdf(Box::new(next)));
             }
             Err(error) => self.studio.error = Some(error),
         }

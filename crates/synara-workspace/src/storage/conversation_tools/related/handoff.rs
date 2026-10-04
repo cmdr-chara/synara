@@ -1,8 +1,7 @@
-//! Reviewed continuation, never a provider-session transfer. The relationship,
-//! unsent draft and optional direct binding commit together under the existing
-//! conversation/storage owner. Reviews are deliberately not serializable.
+//! Reviewed continuation, never a provider-session transfer. The relationship
+//! and unsent draft commit together under the existing conversation/storage
+//! owner. Reviews are deliberately not serializable.
 use super::*;
-use crate::{DirectModelBinding, ModelSelection, ProviderSettings};
 use sha2::{Digest, Sha256};
 
 const MAX_HANDOFF_CONTEXT: usize = 256 * 1024;
@@ -11,7 +10,6 @@ const MAX_HANDOFF_MESSAGES: usize = 128;
 #[derive(Clone, Debug)]
 pub enum HandoffTarget {
     Agent(String),
-    Direct(ModelSelection),
 }
 
 #[derive(Clone, Debug)]
@@ -85,30 +83,11 @@ fn authority(db: &Connection, source: &Task) -> WorkspaceResult<String> {
     // root. Never recompute it from the project or materialize it locally.
     digest(&(project, workspace, &source.working_directory, source.scope))
 }
-fn source_binding(db: &Connection, source: &Task) -> WorkspaceResult<Option<DirectModelBinding>> {
-    let raw: Option<String> = db
-        .query_row(
-            "SELECT data FROM preferences WHERE key=?1",
-            [format!("task-direct-model:{}", source.id)],
-            |row| row.get(0),
-        )
-        .optional()?;
-    Ok(raw
-        .as_deref()
-        .map(decode::<Option<DirectModelBinding>>)
-        .transpose()?
-        .flatten())
+fn source_route_identity(source: &Task) -> WorkspaceResult<String> {
+    digest(&source.agent_id)
 }
 
-fn source_route_identity(db: &Connection, source: &Task) -> WorkspaceResult<String> {
-    digest(&(source.agent_id.clone(), source_binding(db, source)?))
-}
-
-fn target(
-    db: &Connection,
-    source: &Task,
-    choice: &HandoffTarget,
-) -> WorkspaceResult<(String, String, String, Option<DirectModelBinding>)> {
+fn target(db: &Connection, choice: &HandoffTarget) -> WorkspaceResult<(String, String, String)> {
     let raw: Option<String> = db
         .query_row(
             "SELECT data FROM preferences WHERE key='agent_profiles'",
@@ -122,52 +101,12 @@ fn target(
         .transpose()?
         .unwrap_or_else(default_profiles);
     crate::validate_profiles(&profiles)?;
-    let agent_id = match choice {
-        HandoffTarget::Agent(id) => id,
-        HandoffTarget::Direct(_) => &source.agent_id,
-    };
+    let HandoffTarget::Agent(agent_id) = choice;
     let agent = profiles
         .iter()
         .find(|profile| &profile.id == agent_id)
         .ok_or_else(|| invalid("The selected agent profile no longer exists."))?;
-    match choice {
-        HandoffTarget::Agent(_) => Ok((digest(agent)?, agent.name.clone(), agent.id.clone(), None)),
-        HandoffTarget::Direct(selection) => {
-            let raw: Option<String> = db
-                .query_row(
-                    "SELECT data FROM preferences WHERE key='direct-model-providers-v1'",
-                    [],
-                    |r| r.get(0),
-                )
-                .optional()?;
-            let settings: ProviderSettings =
-                raw.as_deref().map(decode).transpose()?.unwrap_or_default();
-            settings.validate().map_err(|e| invalid(&e.to_string()))?;
-            let profile = settings
-                .providers
-                .iter()
-                .find(|p| p.id == selection.provider_id)
-                .ok_or(WorkspaceError::NotFound)?;
-            synara_model::validate_request(
-                profile,
-                &selection.request(vec![synara_model::Message::text(
-                    synara_model::MessageRole::User,
-                    "Validate reviewed continuation options".into(),
-                )]),
-            )
-            .map_err(|e| invalid(&e.to_string()))?;
-            let binding = DirectModelBinding {
-                selection: selection.clone(),
-                reviewed_profile_sha256: crate::direct_models::profile_digest(profile)?,
-            };
-            Ok((
-                digest(&(settings.revision, &binding, agent))?,
-                format!("{} / {}", profile.name, selection.model_id),
-                agent.id.clone(),
-                Some(binding),
-            ))
-        }
-    }
+    Ok((digest(agent)?, agent.name.clone(), agent.id.clone()))
 }
 fn context(source: &Task, thread: &Thread) -> WorkspaceResult<(String, usize, usize)> {
     let visible: Vec<_> = thread
@@ -222,12 +161,12 @@ impl WorkspaceService {
                 .transaction_with_behavior(TransactionBehavior::Deferred)?;
             let (source, thread) = read_conversation(&tx, id)?;
             idle(&source, &thread)?;
-            let (target_identity, target_label, _, _) = target(&tx, &source, &choice)?;
+            let (target_identity, target_label, _) = target(&tx, &choice)?;
             let (context, included, omitted) = context(&source, &thread)?;
             let review = HandoffReview {
                 recap: false,
                 source_identity: digest(&source)?,
-                source_route_identity: source_route_identity(&tx, &source)?,
+                source_route_identity: source_route_identity(&source)?,
                 authority: authority(&tx, &source)?,
                 source,
                 sequence: thread.last_sequence,
@@ -248,11 +187,9 @@ impl WorkspaceService {
     /// Creating it never submits a prompt or copies session/approval authority.
     pub async fn review_recap(&self, id: TaskId) -> WorkspaceResult<HandoffReview> {
         let source = self.task(id).await?;
-        let choice = match self.direct_model_binding(id).await? {
-            Some(binding) => HandoffTarget::Direct(binding.selection),
-            None => HandoffTarget::Agent(source.agent_id),
-        };
-        let mut review = self.review_handoff(id, choice).await?;
+        let mut review = self
+            .review_handoff(id, HandoffTarget::Agent(source.agent_id.clone()))
+            .await?;
         if review.included == 0 {
             return Err(invalid("There are no visible messages to recap."));
         }
@@ -283,7 +220,7 @@ impl WorkspaceService {
             let (mut source, thread) = read_conversation(&tx, review.source.id)?;
             idle(&source, &thread)?;
             if digest(&source)? != review.source_identity
-                || source_route_identity(&tx, &source)? != review.source_route_identity
+                || source_route_identity(&source)? != review.source_route_identity
                 || thread.last_sequence != review.sequence
                 || authority(&tx, &source)? != review.authority
             {
@@ -305,20 +242,12 @@ impl WorkspaceService {
                 ));
             }
 
-            let current_binding = source_binding(&tx, &source)?;
-            match (&review.target, &current_binding) {
-                (HandoffTarget::Agent(agent), None) if agent == &source.agent_id => {
-                    return Err(invalid("Choose a different provider for an in-place handoff."));
-                }
-                (HandoffTarget::Direct(selection), Some(binding))
-                    if &binding.selection == selection =>
-                {
-                    return Err(invalid("Choose a different provider or model for an in-place handoff."));
-                }
-                _ => {}
+            let HandoffTarget::Agent(agent) = &review.target;
+            if agent == &source.agent_id {
+                return Err(invalid("Choose a different provider for an in-place handoff."));
             }
 
-            let (identity, _, agent, binding) = target(&tx, &source, &review.target)?;
+            let (identity, _, agent) = target(&tx, &review.target)?;
             if identity != review.target_identity {
                 return Err(invalid(
                     "The selected provider or agent changed. Review the handoff again. Your existing draft was preserved.",
@@ -340,13 +269,6 @@ impl WorkspaceService {
             if changed != 1 {
                 return Err(StorageError::Identity.into());
             }
-            tx.execute(
-                "INSERT INTO preferences(key,data) VALUES(?1,?2) ON CONFLICT(key) DO UPDATE SET data=excluded.data",
-                params![
-                    format!("task-direct-model:{}", source.id),
-                    encode(&binding)?
-                ],
-            )?;
             tx.execute(
                 "DELETE FROM sessions WHERE thread_id=?1",
                 [source.thread_id.to_string()],
@@ -383,19 +305,16 @@ impl WorkspaceService {
             let (source, thread) = read_conversation(&tx, review.source.id)?;
             idle(&source, &thread)?;
             if digest(&source)? != review.source_identity
-                || source_route_identity(&tx, &source)? != review.source_route_identity
+                || source_route_identity(&source)? != review.source_route_identity
                 || thread.last_sequence != review.sequence
                 || authority(&tx, &source)? != review.authority
             { return Err(invalid("The source conversation, route, or workspace changed. Review the continuation again. Your draft is retained.")); }
-            let (identity, _, agent, binding) = target(&tx, &source, &review.target)?;
+            let (identity, _, agent) = target(&tx, &review.target)?;
             if identity != review.target_identity { return Err(invalid("The selected provider or agent changed. Review the continuation again. Your draft is retained.")); }
             let title = format!("{}: {}", if review.recap { "Recap" } else { "Continue" }, source.title.chars().take(80).collect::<String>());
             let child = insert_related(&tx, &source, review.child, title, agent, draft, ThreadOrigin {
                 version: 1, parent: source.id, kind: if review.recap { RelatedThreadKind::Recap } else { RelatedThreadKind::Handoff }, message: None, sequence: review.sequence,
             })?;
-            if let Some(binding) = binding {
-                tx.execute("INSERT INTO preferences(key,data) VALUES(?1,?2)", params![format!("task-direct-model:{}",child.id), encode(&Some(binding))?])?;
-            }
             tx.commit()?;
             Ok(child)
         }).await

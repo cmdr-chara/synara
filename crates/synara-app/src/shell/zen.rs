@@ -114,7 +114,10 @@ impl Shell {
                     .projects
                     .iter()
                     .find(|project| project.id == task.project_id)
-                    .map_or("Standalone", |project| project.name.as_str());
+                    .map_or_else(
+                        || "Standalone".to_owned(),
+                        |project| self.project_name(project).to_string(),
+                    );
                 let state = if requests > 0 {
                     format!("{requests} pending decision(s)")
                 } else if self.connecting.contains(&task.id) {

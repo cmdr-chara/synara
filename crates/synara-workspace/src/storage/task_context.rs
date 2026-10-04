@@ -1,42 +1,18 @@
-//! Per-task notes and checklists are user metadata, never agent instructions
-//! unless explicitly inserted into a prompt by the user.
+//! Per-task notes are user metadata — a freeform scratchpad, never agent
+//! instructions (upstream `ThreadNotes`: a single notes string per thread).
 use super::*;
 use crate::{WorkspaceError, WorkspaceResult, WorkspaceService};
 use serde::{Deserialize, Serialize};
-use std::collections::HashSet;
-use std::path::Path;
 
 const MAX_CONTEXT_BYTES: usize = 256 * 1024;
-pub const MAX_NOTE_BYTES: usize = 128 * 1024;
-pub const MAX_CHECKLIST_ITEMS: usize = 128;
-pub const MAX_CHECKLIST_TEXT: usize = 512;
+/// Upstream `THREAD_NOTES_MAX_CHARS` (packages/contracts `orchestration.ts`).
+pub const MAX_NOTE_CHARS: usize = 16_384;
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
-pub struct ChecklistItem {
-    pub id: String,
-    pub text: String,
-    pub done: bool,
-}
-impl ChecklistItem {
-    pub fn new(text: String) -> Self {
-        Self {
-            id: uuid::Uuid::new_v4().to_string(),
-            text,
-            done: false,
-        }
-    }
-}
-#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct TaskContext {
     pub version: u32,
     pub revision: u64,
     pub notes: String,
-    pub checklist: Vec<ChecklistItem>,
-    /// Absolute paths selected by the user. Paths are stored as text only.
-    #[serde(default)]
-    pub folder_references: Vec<String>,
 }
 impl Default for TaskContext {
     fn default() -> Self {
@@ -44,116 +20,24 @@ impl Default for TaskContext {
             version: Self::CURRENT_VERSION,
             revision: 0,
             notes: String::new(),
-            checklist: Vec::new(),
-            folder_references: Vec::new(),
         }
     }
 }
 impl TaskContext {
-    pub const CURRENT_VERSION: u32 = 2;
-    pub const MAX_FOLDER_REFERENCES: usize = 32;
-    pub const MAX_FOLDER_REFERENCE_BYTES: usize = 4096;
-
-    /// Validate a selected folder path without opening it or inspecting its contents.
-    pub fn validate_folder_reference(path: &str) -> WorkspaceResult<()> {
-        let value = Path::new(path);
-        if path.is_empty()
-            || path.len() > Self::MAX_FOLDER_REFERENCE_BYTES
-            || !value.is_absolute()
-            || path.starts_with("//")
-            || path.starts_with("\\\\")
-            || path.chars().any(char::is_control)
-        {
-            return Err(WorkspaceError::Invalid(
-                "Choose an absolute local folder path within 4096 bytes. Network shares and control characters are not supported.".into(),
-            ));
-        }
-        Ok(())
-    }
+    pub const CURRENT_VERSION: u32 = 3;
 
     pub fn validate(&self) -> WorkspaceResult<()> {
-        let ids = self
-            .checklist
-            .iter()
-            .map(|item| &item.id)
-            .collect::<HashSet<_>>();
-        let folders = self.folder_references.iter().collect::<HashSet<_>>();
-        if !(self.version == 1 || self.version == Self::CURRENT_VERSION)
-            || self.notes.len() > MAX_NOTE_BYTES
-            || self.notes.contains('\0')
-            || self.checklist.len() > MAX_CHECKLIST_ITEMS
-            || ids.len() != self.checklist.len()
-            || self.folder_references.len() > Self::MAX_FOLDER_REFERENCES
-            || folders.len() != self.folder_references.len()
-            || self
-                .folder_references
-                .iter()
-                .any(|path| Self::validate_folder_reference(path).is_err())
-            || self.checklist.iter().any(|item| {
-                uuid::Uuid::parse_str(&item.id).is_err()
-                    || item.text.trim().is_empty()
-                    || item.text.len() > MAX_CHECKLIST_TEXT
-                    || item.text.chars().any(char::is_control)
-            })
+        if !(1..=Self::CURRENT_VERSION).contains(&self.version)
+            || self.notes.chars().count() > MAX_NOTE_CHARS
         {
             return Err(WorkspaceError::Invalid(
-                "Saved context or folder references are invalid or exceed their size limits."
-                    .into(),
+                "Saved notes are invalid or exceed their size limit.".into(),
             ));
         }
         Ok(())
     }
-    pub fn as_prompt_context(&self) -> String {
-        let mut text = String::new();
-        if !self.notes.trim().is_empty() {
-            text.push_str("## My notes\n\n");
-            text.push_str(&self.notes);
-        }
-        if !self.checklist.is_empty() {
-            if !text.is_empty() {
-                text.push_str("\n\n");
-            }
-            text.push_str("## My checklist\n\n");
-            for item in &self.checklist {
-                text.push_str(if item.done { "- [x] " } else { "- [ ] " });
-                text.push_str(&item.text);
-                text.push('\n');
-            }
-        }
-        if !self.folder_references.is_empty() {
-            if !text.is_empty() {
-                text.push_str("\n\n");
-            }
-            text.push_str("## Saved folder path references\n\n");
-            text.push_str("These are user-selected path strings only. Folder contents were not read, and no filesystem access or permissions were granted.\n");
-            for path in &self.folder_references {
-                let escaped: String = path
-                    .chars()
-                    .map(|character| {
-                        if is_bidi_control(character) {
-                            format!("\\u{{{:04X}}}", character as u32)
-                        } else {
-                            character.to_string()
-                        }
-                    })
-                    .collect();
-                let quoted = serde_json::to_string(&escaped)
-                    .unwrap_or_else(|_| "\"<invalid folder path>\"".into());
-                text.push_str("- ");
-                text.push_str(&quoted);
-                text.push('\n');
-            }
-        }
-        text
-    }
 }
 
-fn is_bidi_control(character: char) -> bool {
-    matches!(
-        character as u32,
-        0x061c | 0x200e..=0x200f | 0x202a..=0x202e | 0x2066..=0x2069
-    )
-}
 fn context_key(task: TaskId) -> String {
     format!("task-context:{task}")
 }
@@ -178,6 +62,8 @@ pub(super) fn read_context(connection: &Connection, task: TaskId) -> WorkspaceRe
         .map_err(StorageError::from)?;
     let context = match raw {
         Some(raw) if raw.len() > MAX_CONTEXT_BYTES => return Err(StorageError::Limit.into()),
+        // Pre-v3 blobs may carry the removed checklist/folder_references keys;
+        // unknown fields are ignored on decode and dropped on the next save.
         Some(raw) => decode::<TaskContext>(&raw)?,
         None => TaskContext::default(),
     };
@@ -212,10 +98,7 @@ impl WorkspaceService {
             if current.revision != expected_revision || value.revision != expected_revision {
                 return Err(WorkspaceError::Invalid("These notes changed in another window. Copy your edits, then reload the saved version before retrying.".into()));
             }
-            if value.notes == current.notes
-                && value.checklist == current.checklist
-                && value.folder_references == current.folder_references
-            {
+            if value.notes == current.notes {
                 tx.commit().map_err(StorageError::from)?;
                 return Ok(current);
             }
@@ -233,6 +116,7 @@ impl WorkspaceService {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::path::Path;
     async fn seed(service: &WorkspaceService, path: &Path) -> Task {
         let project = service.add_local_workspace(path.into()).await.unwrap();
         let agent = service.profiles().await.unwrap()[0].id.clone();
@@ -242,7 +126,7 @@ mod tests {
             .unwrap()
     }
     #[tokio::test]
-    async fn notes_and_ordered_checklist_survive_restart_without_sending_or_changing_drafts() {
+    async fn notes_survive_restart_without_sending_or_changing_drafts() {
         let dir = tempfile::tempdir().unwrap();
         let path = dir.path().join("data.db");
         let service = WorkspaceService::open(path.clone()).await.unwrap();
@@ -251,29 +135,19 @@ mod tests {
             .save_task_draft(task.id, "Unsent prompt".into())
             .await
             .unwrap();
-        let mut value = TaskContext {
-            notes: "Caffè 日本語\nKeep exact spacing  ".into(),
-            ..Default::default()
-        };
-        value
-            .folder_references
-            .push(dir.path().to_string_lossy().into_owned());
-        value.checklist.push(ChecklistItem::new("Review UI".into()));
-        let mut done = ChecklistItem::new("Read source".into());
-        done.done = true;
-        value.checklist.insert(0, done);
-        let value = service.save_task_context(task.id, 0, value).await.unwrap();
+        let value = service
+            .save_task_context(
+                task.id,
+                0,
+                TaskContext {
+                    notes: "Caffè 日本語\nKeep exact spacing  ".into(),
+                    ..Default::default()
+                },
+            )
+            .await
+            .unwrap();
         assert_eq!(value.version, TaskContext::CURRENT_VERSION);
         assert_eq!(value.revision, 1);
-        assert!(
-            value
-                .as_prompt_context()
-                .contains("- [x] Read source\n- [ ] Review UI")
-        );
-        let prompt = value.as_prompt_context();
-        assert!(prompt.contains("## Saved folder path references"));
-        assert!(prompt.contains("Folder contents were not read"));
-        assert!(prompt.contains(&dir.path().to_string_lossy().to_string()));
         drop(service);
         let reopened = WorkspaceService::open(path).await.unwrap();
         assert_eq!(reopened.task_context(task.id).await.unwrap(), value);
@@ -289,7 +163,7 @@ mod tests {
         assert!(reopened.session(task.thread_id).await.unwrap().is_none());
     }
     #[tokio::test]
-    async fn stale_invalid_and_future_edits_preserve_saved_notes() {
+    async fn stale_invalid_and_oversized_edits_preserve_saved_notes() {
         let dir = tempfile::tempdir().unwrap();
         let path = dir.path().join("data.db");
         let a = WorkspaceService::open(path.clone()).await.unwrap();
@@ -324,7 +198,7 @@ mod tests {
                 task.id,
                 1,
                 TaskContext {
-                    notes: "x".repeat(MAX_NOTE_BYTES + 1),
+                    notes: "x".repeat(MAX_NOTE_CHARS + 1),
                     ..saved.clone()
                 }
             )
@@ -368,7 +242,6 @@ mod tests {
                 0,
                 TaskContext {
                     notes: "Only this chat".into(),
-                    folder_references: vec![dir.path().to_string_lossy().into_owned()],
                     ..Default::default()
                 },
             )
@@ -397,103 +270,22 @@ mod tests {
     }
 
     #[test]
-    fn legacy_contexts_migrate_with_no_references_and_path_validation_is_bounded() {
-        let legacy: TaskContext = serde_json::from_value(serde_json::json!({
-            "version": 1,
-            "revision": 7,
-            "notes": "Existing notes",
-            "checklist": []
-        }))
-        .unwrap();
-        assert_eq!(legacy.folder_references, Vec::<String>::new());
-        assert_eq!(legacy.version, 1);
-        legacy.validate().unwrap();
-
-        let root = tempfile::tempdir().unwrap();
-        let valid = root.path().to_string_lossy().into_owned();
-        TaskContext::validate_folder_reference(&valid).unwrap();
-        for invalid in [
-            "relative/path",
-            "//server/share",
-            "\\\\server\\share",
-            "bad\0path",
+    fn legacy_blobs_decode_with_removed_fields_dropped() {
+        // v1/v2 blobs carried `checklist` and `folder_references` keys; both
+        // decode with the fields ignored and the next save writes the v3 shape.
+        for legacy in [
+            serde_json::json!({"version":1,"revision":7,"notes":"Existing notes","checklist":[]}),
+            serde_json::json!({"version":2,"revision":2,"notes":"V2","checklist":[{"id":"x","text":"t","done":false}],"folder_references":["/tmp/x"]}),
         ] {
-            assert!(TaskContext::validate_folder_reference(invalid).is_err());
+            let decoded: TaskContext = serde_json::from_value(legacy).unwrap();
+            assert!(!decoded.notes.is_empty());
+            decoded.validate().unwrap();
+            let reencoded: serde_json::Value =
+                serde_json::from_str(&serde_json::to_string(&decoded).unwrap()).unwrap();
+            assert_eq!(
+                reencoded,
+                serde_json::json!({"version": decoded.version, "revision": decoded.revision, "notes": decoded.notes})
+            );
         }
-        assert!(
-            TaskContext::validate_folder_reference(
-                &"/".repeat(TaskContext::MAX_FOLDER_REFERENCE_BYTES + 1)
-            )
-            .is_err()
-        );
-
-        let duplicate = TaskContext {
-            folder_references: vec![valid.clone(), valid.clone()],
-            ..Default::default()
-        };
-        assert!(duplicate.validate().is_err());
-        let too_many = TaskContext {
-            folder_references: (0..=TaskContext::MAX_FOLDER_REFERENCES)
-                .map(|index| {
-                    Path::new(valid.as_str())
-                        .join(format!("folder-{index}"))
-                        .to_string_lossy()
-                        .into_owned()
-                })
-                .collect(),
-            ..Default::default()
-        };
-        assert!(too_many.validate().is_err());
-    }
-
-    #[tokio::test]
-    async fn saving_a_legacy_context_upgrades_version_and_persists_folder_paths() {
-        let dir = tempfile::tempdir().unwrap();
-        let database = dir.path().join("data.db");
-        let service = WorkspaceService::open(database.clone()).await.unwrap();
-        let task = seed(&service, dir.path()).await;
-        let key = context_key(task.id);
-        service
-            .access(move |store| {
-                store.set_preference(
-                    &key,
-                    &serde_json::json!({
-                        "version": 1,
-                        "revision": 0,
-                        "notes": "Legacy notes",
-                        "checklist": []
-                    }),
-                )?;
-                Ok(())
-            })
-            .await
-            .unwrap();
-
-        let legacy = service.task_context(task.id).await.unwrap();
-        assert_eq!(legacy.version, 1);
-        assert!(legacy.folder_references.is_empty());
-        let folder = dir
-            .path()
-            .join("chosen-folder")
-            .to_string_lossy()
-            .into_owned();
-        let upgraded = service
-            .save_task_context(
-                task.id,
-                legacy.revision,
-                TaskContext {
-                    folder_references: vec![folder],
-                    ..legacy
-                },
-            )
-            .await
-            .unwrap();
-        assert_eq!(upgraded.version, TaskContext::CURRENT_VERSION);
-        assert_eq!(upgraded.revision, 1);
-        assert_eq!(upgraded.notes, "Legacy notes");
-        drop(service);
-
-        let reopened = WorkspaceService::open(database).await.unwrap();
-        assert_eq!(reopened.task_context(task.id).await.unwrap(), upgraded);
     }
 }

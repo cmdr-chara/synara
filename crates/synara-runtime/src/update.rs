@@ -330,11 +330,7 @@ impl UpdateHandoff {
     pub fn install(&self) -> Result<UpdateInstallReceipt, RuntimeError> {
         self.validate_paths()?;
         let digest = self.expected_digest()?;
-        verify_artifact_file(
-            &self.staged_artifact,
-            self.expected_byte_length,
-            &digest,
-        )?;
+        verify_artifact_file(&self.staged_artifact, self.expected_byte_length, &digest)?;
 
         let current_metadata = fs::symlink_metadata(&self.current_executable)?;
         if !current_metadata.is_file() || current_metadata.file_type().is_symlink() {
@@ -351,14 +347,9 @@ impl UpdateHandoff {
         // A staged file is created private. Before it becomes executable, copy
         // the currently installed permission bits/ACL-facing mode through the
         // portable permissions object.
-        fs::set_permissions(
-            &self.staged_artifact,
-            current_metadata.permissions(),
-        )?;
+        fs::set_permissions(&self.staged_artifact, current_metadata.permissions())?;
 
-        fs::rename(&self.current_executable, &self.rollback_copy).map_err(|error| {
-            RuntimeError::Io(error)
-        })?;
+        fs::rename(&self.current_executable, &self.rollback_copy).map_err(RuntimeError::Io)?;
 
         if let Err(error) = fs::rename(&self.staged_artifact, &self.current_executable) {
             if fs::rename(&self.rollback_copy, &self.current_executable).is_err() {
@@ -367,11 +358,9 @@ impl UpdateHandoff {
             return Err(RuntimeError::Io(error));
         }
 
-        if let Err(error) = verify_artifact_file(
-            &self.current_executable,
-            self.expected_byte_length,
-            &digest,
-        ) {
+        if let Err(error) =
+            verify_artifact_file(&self.current_executable, self.expected_byte_length, &digest)
+        {
             let _ = fs::remove_file(&self.current_executable);
             if fs::rename(&self.rollback_copy, &self.current_executable).is_err() {
                 return Err(RuntimeError::WriteOutcomeUnknown);

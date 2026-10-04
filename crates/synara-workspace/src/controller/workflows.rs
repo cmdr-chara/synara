@@ -242,7 +242,6 @@ impl Controller {
             .setup_cancel
             .lock()
             .map_err(|_| WorkspaceError::Worker)? = Some(cancellation.clone());
-        self.require_agent_route(id).await?;
         let task = self.workspace.task(id).await?;
         let spec = &value.spec.steps[index];
         let step = &value.steps[index];

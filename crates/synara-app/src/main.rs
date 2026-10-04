@@ -155,6 +155,7 @@ fn run() -> Result<()> {
             catalog,
             profiles: workspace.profiles().await?,
             selection: workspace.selection().await?,
+            open_thread_tabs: workspace.open_thread_tabs().await?,
         })
     })?;
     let (broker, interactions) = InteractionBroker::new();

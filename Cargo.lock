@@ -7133,7 +7133,6 @@ dependencies = [
  "synara-agent",
  "synara-browser",
  "synara-core",
- "synara-model",
  "synara-registry",
  "synara-runtime",
  "synara-workspace",
@@ -7169,26 +7168,8 @@ dependencies = [
  "serde",
  "serde_json",
  "thiserror 2.0.20",
+ "unicode-segmentation",
  "uuid",
-]
-
-[[package]]
-name = "synara-model"
-version = "0.1.0"
-dependencies = [
- "async-trait",
- "futures",
- "hex",
- "reqwest",
- "serde",
- "serde_json",
- "sha2",
- "synara-runtime",
- "tempfile",
- "thiserror 2.0.20",
- "tokio",
- "tokio-util",
- "url",
 ]
 
 [[package]]
@@ -7277,7 +7258,6 @@ dependencies = [
  "synara-agent",
  "synara-browser",
  "synara-core",
- "synara-model",
  "synara-registry",
  "synara-runtime",
  "tempfile",

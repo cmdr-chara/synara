@@ -96,13 +96,6 @@ async fn handoff_is_unsent_atomic_related_and_restart_inert() {
             .remote_id,
         "not-transferable"
     );
-    assert!(
-        service
-            .direct_model_binding(child.id)
-            .await
-            .unwrap()
-            .is_none()
-    );
     assert_eq!(
         service.thread_origin(child.id).await.unwrap().unwrap().kind,
         RelatedThreadKind::Handoff
@@ -122,32 +115,17 @@ async fn same_task_handoff_is_atomic_route_safe_and_preserves_user_owned_state()
     let service = WorkspaceService::memory().unwrap();
     let task = seed(&service, root.path().into()).await;
     let before = service.thread(task.thread_id).await.unwrap();
-
-    let settings = service
-        .save_direct_model_settings(ProviderSettings {
-            revision: 0,
-            providers: vec![synara_model::custom_profile_example()],
-        })
-        .await
-        .unwrap();
-    let profile = &settings.providers[0];
-    let selection = ModelSelection {
-        history_turns: None,
-        provider_id: profile.id.clone(),
-        model_id: profile.models[0].id.clone(),
-        max_output_tokens: 32,
-        reasoning_effort: None,
-        output: Default::default(),
-    };
+    let other_agent = service.profiles().await.unwrap()[1].id.clone();
+    assert_ne!(other_agent, task.agent_id);
 
     // The existing user draft belongs to the source composer and is never overwritten.
     let review = service
-        .review_handoff(task.id, HandoffTarget::Direct(selection.clone()))
+        .review_handoff(task.id, HandoffTarget::Agent(other_agent.clone()))
         .await
         .unwrap();
     assert!(
         service
-            .continue_handoff_in_place(review, "reviewed direct continuation".into())
+            .continue_handoff_in_place(review, "reviewed continuation".into())
             .await
             .is_err()
     );
@@ -173,12 +151,12 @@ async fn same_task_handoff_is_atomic_route_safe_and_preserves_user_owned_state()
         .await
         .unwrap();
     let review = service
-        .review_handoff(task.id, HandoffTarget::Direct(selection.clone()))
+        .review_handoff(task.id, HandoffTarget::Agent(other_agent.clone()))
         .await
         .unwrap();
     assert!(
         service
-            .continue_handoff_in_place(review, "reviewed direct continuation".into())
+            .continue_handoff_in_place(review, "reviewed continuation".into())
             .await
             .is_err()
     );
@@ -206,38 +184,30 @@ async fn same_task_handoff_is_atomic_route_safe_and_preserves_user_owned_state()
         .unwrap();
 
     let review = service
-        .review_handoff(task.id, HandoffTarget::Direct(selection.clone()))
+        .review_handoff(task.id, HandoffTarget::Agent(other_agent.clone()))
         .await
         .unwrap();
     let switched = service
-        .continue_handoff_in_place(review, "reviewed direct continuation".into())
+        .continue_handoff_in_place(review, "reviewed continuation".into())
         .await
         .unwrap();
     assert_eq!(switched.id, task.id);
     assert_eq!(switched.thread_id, task.thread_id);
     assert_eq!(switched.working_directory, task.working_directory);
     assert_eq!(switched.scope, task.scope);
+    assert_eq!(switched.agent_id, other_agent);
     assert_eq!(service.catalog().await.unwrap().tasks.len(), 1);
     assert_eq!(
         service.task_draft(task.id).await.unwrap(),
-        "reviewed direct continuation"
+        "reviewed continuation"
     );
     assert!(service.session(task.thread_id).await.unwrap().is_none());
-    assert_eq!(
-        service
-            .direct_model_binding(task.id)
-            .await
-            .unwrap()
-            .unwrap()
-            .selection,
-        selection
-    );
     assert_eq!(
         service.thread(task.thread_id).await.unwrap().messages,
         before.messages
     );
 
-    // Switching back to ACP keeps the task/thread but clears the direct binding.
+    // Switching back to the original agent keeps the same task and thread.
     service
         .save_task_draft(task.id, String::new())
         .await
@@ -251,35 +221,7 @@ async fn same_task_handoff_is_atomic_route_safe_and_preserves_user_owned_state()
         .await
         .unwrap();
     assert_eq!(switched.id, task.id);
-    assert!(
-        service
-            .direct_model_binding(task.id)
-            .await
-            .unwrap()
-            .is_none()
-    );
-
-    // Route changes after review invalidate the single-use handoff review.
-    service
-        .save_task_draft(task.id, String::new())
-        .await
-        .unwrap();
-    let review = service
-        .review_handoff(task.id, HandoffTarget::Direct(selection.clone()))
-        .await
-        .unwrap();
-    let sequence = service.thread(task.thread_id).await.unwrap().last_sequence;
-    service
-        .bind_direct_model(task.id, Some(selection), settings.revision, sequence)
-        .await
-        .unwrap();
-    assert!(
-        service
-            .continue_handoff_in_place(review, "stale review".into())
-            .await
-            .is_err()
-    );
-    assert_eq!(service.task_draft(task.id).await.unwrap(), "");
+    assert_eq!(switched.agent_id, task.agent_id);
 }
 
 #[tokio::test]
@@ -326,82 +268,20 @@ async fn handoff_refuses_stale_source_and_agent_configuration() {
     assert_eq!(service.catalog().await.unwrap().tasks.len(), 1);
 }
 #[tokio::test]
-async fn handoff_does_not_copy_source_route_and_explicit_direct_target_is_bound() {
+async fn handoff_recap_uses_the_source_agent() {
     let root = tempfile::tempdir().unwrap();
     let service = WorkspaceService::memory().unwrap();
     let task = seed(&service, root.path().into()).await;
-    let settings = service
-        .save_direct_model_settings(ProviderSettings {
-            revision: 0,
-            providers: vec![synara_model::custom_profile_example()],
-        })
-        .await
-        .unwrap();
-    let profile = &settings.providers[0];
-    let selection = ModelSelection {
-        history_turns: None,
-        provider_id: profile.id.clone(),
-        model_id: profile.models[0].id.clone(),
-        max_output_tokens: 32,
-        reasoning_effort: None,
-        output: Default::default(),
-    };
-    let seq = service.thread(task.thread_id).await.unwrap().last_sequence;
-    service
-        .bind_direct_model(task.id, Some(selection.clone()), settings.revision, seq)
-        .await
-        .unwrap();
-    let review = service
-        .review_handoff(task.id, HandoffTarget::Agent(task.agent_id.clone()))
-        .await
-        .unwrap();
-    let agent = service
-        .create_handoff(review, "agent draft".into())
-        .await
-        .unwrap();
-    assert!(
-        service
-            .direct_model_binding(agent.id)
-            .await
-            .unwrap()
-            .is_none()
-    );
-    let review = service
-        .review_handoff(task.id, HandoffTarget::Direct(selection.clone()))
-        .await
-        .unwrap();
+    let review = service.review_recap(task.id).await.unwrap();
+    assert_eq!(review.included_messages(), 2);
     let child = service
-        .create_handoff(review, "direct draft".into())
+        .create_handoff(review, "recap request".into())
         .await
         .unwrap();
+    assert_eq!(child.agent_id, task.agent_id);
     assert_eq!(
-        service
-            .direct_model_binding(child.id)
-            .await
-            .unwrap()
-            .unwrap()
-            .selection,
-        selection
-    );
-    assert!(
-        service
-            .direct_model_binding(task.id)
-            .await
-            .unwrap()
-            .is_some()
-    );
-    let review = service
-        .review_handoff(task.id, HandoffTarget::Direct(selection))
-        .await
-        .unwrap();
-    let mut settings = settings;
-    settings.providers[0].endpoint = "http://127.0.0.1:12345/v1".into();
-    service.save_direct_model_settings(settings).await.unwrap();
-    assert!(
-        service
-            .create_handoff(review, "never retarget".into())
-            .await
-            .is_err()
+        service.thread_origin(child.id).await.unwrap().unwrap().kind,
+        RelatedThreadKind::Recap
     );
 }
 #[tokio::test]

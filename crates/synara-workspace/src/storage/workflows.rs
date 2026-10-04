@@ -190,9 +190,6 @@ impl WorkspaceService {
                 || sequence != value.steps[index].sequence
                 || fingerprint(&profile)? != value.steps[index].profile_fingerprint
                 || draft["text"].as_str() != Some(spec.instruction.as_str())
-                || raw(&tx, &format!("task-direct-model:{}", child.id))?
-                    .as_deref()
-                    .is_some_and(|v| v != "null")
                 || raw(&tx, &parent_key(child.id))? != Some(encode(&parent)?)
             {
                 return Err(invalid(

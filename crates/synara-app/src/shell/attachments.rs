@@ -88,14 +88,6 @@ impl Shell {
         })
     }
     pub(super) fn attachment_capability_error(&self) -> Option<&'static str> {
-        if self.uses_direct_model() {
-            return self.direct_attachment_error(
-                self.attachments
-                    .value
-                    .as_ref()
-                    .is_some_and(|v| v.pending.iter().any(|a| a.kind.is_image())),
-            );
-        }
         self.details.as_ref().and_then(|details| {
             self.attachments
                 .value

@@ -165,10 +165,14 @@ def run(s):
     s.checks.append('pins-and-combined-draft-survive-restart-without-new-agent-events')
     resize(ui, 1280, 1000, s.scale)
     # Native commands use the normal Send entry point, not an injected RPC.
+    # /synara/debug switches the task into the upstream Debug interaction mode:
+    # a persisted preference plus a composer badge, never a provider prompt.
     fill(s, 'composer-input', '/synara/debug')
     s.click_control('composer-submit', enabled=True)
-    wait_until(lambda: s.control_bounds('debug-close'), 'native debug command')
-    s.click_control('debug-close')
+    wait_until(lambda: preference(s, 'task-interaction-mode:' + task) == 'debug', 'debug interaction mode persisted')
+    wait_until(lambda: s.control_bounds('interaction-mode-off'), 'debug mode badge')
+    s.click_control('interaction-mode-off')
+    wait_until(lambda: preference(s, 'task-interaction-mode:' + task) == 'default', 'badge returns to default mode')
     assert s.events() == baseline
     fill(s, 'composer-input', '/synara/goal')
     s.click_control('composer-submit', enabled=True)

@@ -9,9 +9,12 @@ pub use keybindings::*;
 mod device;
 pub use device::DeviceSettings;
 mod chat;
-pub use chat::ChatSettings;
+pub use chat::{ChatSettings, VoiceEnterBehavior};
+mod theme;
+pub use theme::*;
 
 pub const SETTINGS_VERSION: u32 = 1;
+pub const TASKS_VIEW_MODE_VERSION: u32 = 1;
 const MAX_FONT_FAMILY_BYTES: usize = 256;
 const MAX_KEYBINDINGS: usize = 256;
 const MAX_BINDING_BYTES: usize = 128;
@@ -54,7 +57,11 @@ pub enum DarkThemePreference {
     Dracula,
 }
 
-#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+fn default_electron_theme() -> Option<ThemePreferences> {
+    Some(ThemePreferences::default())
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct AppearanceSettings {
     #[serde(default)]
@@ -69,6 +76,25 @@ pub struct AppearanceSettings {
     pub reduced_motion: bool,
     #[serde(default)]
     pub high_contrast: bool,
+    /// Electron-parity theme packs (upstream `synara:theme` localStorage).
+    /// `None` keeps the legacy native palette: files written before the field
+    /// existed stay on the palette they rendered with.
+    #[serde(default)]
+    pub electron_theme: Option<ThemePreferences>,
+}
+
+impl Default for AppearanceSettings {
+    fn default() -> Self {
+        Self {
+            personalization: Personalization::default(),
+            dark_theme: DarkThemePreference::default(),
+            theme: ThemePreference::default(),
+            fonts: FontPreferences::default(),
+            reduced_motion: false,
+            high_contrast: false,
+            electron_theme: default_electron_theme(),
+        }
+    }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -76,6 +102,31 @@ pub struct AppearanceSettings {
 pub struct KeyBinding {
     pub command: String,
     pub shortcut: String,
+}
+
+#[derive(Clone, Copy, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum TasksViewMode {
+    #[default]
+    Kanban,
+    List,
+}
+
+/// The Tasks route's presentation preference has its own version so a future
+/// view migration can recover this small value without changing task state.
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(default, deny_unknown_fields)]
+pub struct TasksViewPreference {
+    pub version: u32,
+    pub mode: TasksViewMode,
+}
+impl Default for TasksViewPreference {
+    fn default() -> Self {
+        Self {
+            version: TASKS_VIEW_MODE_VERSION,
+            mode: TasksViewMode::Kanban,
+        }
+    }
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -121,6 +172,22 @@ pub struct GeneralSettings {
     pub alphabetical_projects: bool,
     pub oldest_threads_first: bool,
     pub restore_last_chat: bool,
+    /// Off by default: archiving a task keeps its managed worktree for recovery.
+    pub delete_worktree_on_archive: bool,
+    /// `classic` keeps the single sidebar column; `rail` shows the fixed icon
+    /// strip plus a collapsible panel column (upstream `sidebarLayout`).
+    pub sidebar_layout: synara_core::SidebarLayout,
+    /// Space/project keys pinned under the rail's section items.
+    pub rail_shortcuts: Vec<String>,
+    /// User ordering for the rail's section items; missing ids keep the
+    /// default trailing order.
+    pub rail_item_order: Vec<String>,
+    /// Rail items the user hides from Customize. Studio ships hidden since the
+    /// section is also reachable from the rail's "…" menu.
+    pub hidden_rail_items: Vec<String>,
+    /// The Tasks route keeps the existing Kanban presentation unless the user
+    /// explicitly chooses the list projection.
+    pub tasks_view_mode: TasksViewPreference,
 }
 impl Default for GeneralSettings {
     fn default() -> Self {
@@ -132,6 +199,12 @@ impl Default for GeneralSettings {
             alphabetical_projects: false,
             oldest_threads_first: false,
             restore_last_chat: true,
+            delete_worktree_on_archive: false,
+            sidebar_layout: synara_core::SidebarLayout::Classic,
+            rail_shortcuts: Vec::new(),
+            rail_item_order: Vec::new(),
+            hidden_rail_items: vec!["studio".to_owned()],
+            tasks_view_mode: TasksViewPreference::default(),
         }
     }
 }
@@ -171,6 +244,11 @@ impl AppSettings {
         if self.version != SETTINGS_VERSION {
             return Err(WorkspaceError::Invalid(
                 "unsupported settings schema version".into(),
+            ));
+        }
+        if self.general.tasks_view_mode.version != TASKS_VIEW_MODE_VERSION {
+            return Err(WorkspaceError::Invalid(
+                "unsupported Tasks view preference version".into(),
             ));
         }
         if self
@@ -308,7 +386,7 @@ impl LoadedSettings {
     }
 }
 
-fn load(store: &Store) -> StorageResult<LoadedSettings> {
+pub(crate) fn load(store: &Store) -> StorageResult<LoadedSettings> {
     let Some(raw) = store.preference_raw("settings")? else {
         return Ok(LoadedSettings {
             settings: AppSettings::default(),
@@ -395,6 +473,7 @@ mod tests {
         changed.general.alphabetical_projects = true;
         changed.general.show_studio = false;
         changed.general.provider_order = vec!["claude".into(), "codex".into()];
+        changed.general.tasks_view_mode.mode = TasksViewMode::List;
         changed.profile = ProfileSettings {
             name: "Native user".into(),
             username: "native".into(),
@@ -407,6 +486,39 @@ mod tests {
         service.save_settings(changed.clone()).await.unwrap();
         assert_eq!(service.settings().await.unwrap().settings, changed);
         assert!(service.settings().await.unwrap().existed);
+    }
+
+    #[test]
+    fn task_view_preference_defaults_for_legacy_settings_and_recovers_invalid_versions() {
+        let legacy: AppSettings =
+            serde_json::from_value(serde_json::json!({"version": 1})).unwrap();
+        assert_eq!(
+            legacy.general.tasks_view_mode,
+            TasksViewPreference::default()
+        );
+        legacy.validate().unwrap();
+
+        let store = Store::memory().unwrap();
+        store
+            .set_preference(
+                "settings",
+                &serde_json::json!({
+                    "version": 1,
+                    "general": {
+                        "tasks_view_mode": {"version": 99, "mode": "list"}
+                    }
+                }),
+            )
+            .unwrap();
+        let recovered = load(&store).unwrap();
+        assert_eq!(
+            recovered.recovery,
+            Some(SettingsRecovery::InvalidCurrentVersion)
+        );
+        assert_eq!(
+            recovered.settings.general.tasks_view_mode,
+            TasksViewPreference::default()
+        );
     }
 
     #[tokio::test]

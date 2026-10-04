@@ -169,6 +169,15 @@ pub fn default_profiles() -> Vec<AgentProfile> {
             inherit_env: vec![],
             secret_env: BTreeMap::new(),
         },
+        AgentProfile {
+            registry: None,
+            id: "omp".into(),
+            name: "Oh My Pi".into(),
+            command: "omp".into(),
+            args: vec!["acp".into()],
+            inherit_env: vec![],
+            secret_env: BTreeMap::new(),
+        },
     ]
 }
 pub fn parse_profiles(text: &str) -> AgentResult<Vec<AgentProfile>> {
@@ -238,6 +247,17 @@ mod tests {
         assert!(!format!("{:?}", spec.launch).contains("secret"));
         assert!(!serde_json::to_string(&profiles).unwrap().contains("secret"));
     }
+    #[test]
+    fn default_profiles_launch_acp_and_validate() {
+        let profiles = default_profiles();
+        let omp = profiles.iter().find(|p| p.id == "omp").unwrap();
+        assert_eq!(omp.command, PathBuf::from("omp"));
+        assert_eq!(omp.args, vec!["acp"]);
+        for profile in &profiles {
+            profile.validate().unwrap();
+        }
+    }
+
     #[test]
     fn duplicate_ids_invalid_env_and_unknown_plaintext_fields_are_rejected() {
         let mut profiles = default_profiles();

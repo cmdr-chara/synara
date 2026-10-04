@@ -38,7 +38,6 @@ PAGES = [
 ]
 EXTENSIONS = [
     ('ProjectImport', 'Project import', 'project-import'),
-    ('DirectModels', 'Direct models', 'direct-models'),
     ('Device', 'Device / capture', 'device'),
     ('Plugins', 'Plugins', 'plugins'),
     ('Privacy', 'Privacy', 'privacy'),

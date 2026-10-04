@@ -53,7 +53,6 @@ impl Controller {
             }
             let _ownership = PromptOwnership(slot.clone());
             let _creation = slot.creation.lock().await;
-            self.require_agent_route(parent).await?;
             let connection = slot.connection()?.ok_or_else(|| {
                 invalid("Connect the selected local agent explicitly before enabling Agent Gateway")
             })?;

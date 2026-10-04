@@ -101,7 +101,6 @@ impl Shell {
             self.show_conversation(cx);
             // Accordion: one workflow expanded at a time (see open_goals).
             self.goals.open = false;
-            self.debug_workflow.open = false;
             self.recap.open = true;
             cx.notify();
         }

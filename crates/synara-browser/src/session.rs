@@ -29,7 +29,7 @@ impl NativePort for UnavailablePort {
         Err(BrowserError::Unavailable)
     }
 }
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize)]
 pub struct UploadPayload {
     pub name: String,
     pub bytes: Vec<u8>,
@@ -855,13 +855,16 @@ impl Session {
     }
     /// Trusted native UI only. Deliberately absent from agent RPC.
     pub fn decide(&mut self, request: HostRequestId, allow: bool, now: u64) -> Result<()> {
-        let view = self
-            .requests
-            .get(&request)
-            .ok_or(BrowserError::MissingRequest)?;
-        if !matches!(view.state, RequestState::AwaitingConsent) {
-            return Err(BrowserError::Invalid);
-        }
+        let task = {
+            let view = self
+                .requests
+                .get(&request)
+                .ok_or(BrowserError::MissingRequest)?;
+            if !matches!(view.state, RequestState::AwaitingConsent) {
+                return Err(BrowserError::Invalid);
+            }
+            view.task
+        };
         let result = (|| {
             let Some(grant) = self.host.resolve_agent_operation(request, allow, now)? else {
                 self.requests.get_mut(&request).unwrap().state = RequestState::Denied;
@@ -885,7 +888,7 @@ impl Session {
                     BrowserOperation::Upload { file_token, .. } => {
                         let file = self
                             .files
-                            .get(&(view.task, file_token.clone()))
+                            .get(&(task, file_token.clone()))
                             .ok_or(BrowserError::Invalid)?;
                         Some(UploadPayload {
                             name: file.name.clone(),
@@ -1312,23 +1315,25 @@ impl Session {
                 name,
                 bytes,
             } => {
-                let r = self
-                    .requests
-                    .get(&request)
-                    .ok_or(BrowserError::MissingRequest)?;
-                if !matches!(r.state, RequestState::Running)
-                    || !matches!(r.operation, BrowserOperation::Download { .. })
-                {
-                    return Err(BrowserError::Invalid);
-                }
-                let task = r.task;
+                let (task, operation) = {
+                    let r = self
+                        .requests
+                        .get(&request)
+                        .ok_or(BrowserError::MissingRequest)?;
+                    if !matches!(r.state, RequestState::Running)
+                        || !matches!(r.operation, BrowserOperation::Download { .. })
+                    {
+                        return Err(BrowserError::Invalid);
+                    }
+                    (r.task, r.operation.clone())
+                };
                 let byte_length = bytes.len();
                 self.register_file(task, token.clone(), name, bytes)?;
                 let output = Output::Download {
                     token,
                     bytes: byte_length,
                 };
-                output.validate(&r.operation)?;
+                output.validate(&operation)?;
                 self.requests.get_mut(&request).unwrap().state = RequestState::Complete(output);
             }
         }

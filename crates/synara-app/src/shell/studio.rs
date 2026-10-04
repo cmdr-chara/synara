@@ -106,7 +106,7 @@ pub(super) enum StudioReply {
     },
 }
 enum Preview {
-    Pdf(pdf::PdfView),
+    Pdf(Box<pdf::PdfView>),
     Text {
         text: String,
         markdown: bool,

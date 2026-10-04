@@ -3,7 +3,7 @@
 use super::super::*;
 use crate::{
     AgentProfile, HubProfile, HubSummary, WorkspaceError, WorkspaceResult, WorkspaceService,
-    default_profiles, now_ms,
+    decode_hub_profile, default_profiles, now_ms,
 };
 use std::path::PathBuf;
 
@@ -27,7 +27,7 @@ fn read(connection: &Connection, project: ProjectId) -> WorkspaceResult<Option<H
     if raw.len() > MAX_HUB_BYTES {
         return Err(StorageError::Limit.into());
     }
-    let profile: HubProfile = decode(&raw)?;
+    let profile: HubProfile = decode_hub_profile(&raw)?;
     profile.validate()?;
     if profile.project != project {
         return Err(StorageError::Identity.into());
@@ -78,7 +78,6 @@ fn resolved(connection: &Connection, project: &Project) -> WorkspaceResult<Optio
         let name: String = name.chars().filter(|ch| !ch.is_control()).collect();
         HubProfile::new(
             project.id,
-            first.id,
             if name.trim().is_empty() {
                 "Imported work".into()
             } else {
@@ -94,25 +93,6 @@ fn resolved(connection: &Connection, project: &Project) -> WorkspaceResult<Optio
             .filter(|task| task.state != TaskState::Archived)
             .count(),
     }))
-}
-pub(crate) fn automation_hub_context(
-    connection: &Connection,
-    project_id: ProjectId,
-) -> WorkspaceResult<(u64, String)> {
-    let project = project(connection, project_id)?;
-    let profile = resolved(connection, &project)?
-        .ok_or_else(|| {
-            WorkspaceError::Invalid(
-                "Select a project with a Hub before using Hub automation context.".into(),
-            )
-        })?
-        .profile;
-    if profile.archived {
-        return Err(WorkspaceError::Invalid(
-            "Restore this Hub before using it as automation context.".into(),
-        ));
-    }
-    Ok((profile.revision, profile.context_draft()))
 }
 
 fn project(connection: &Connection, id: ProjectId) -> WorkspaceResult<Project> {
@@ -184,7 +164,7 @@ impl WorkspaceService {
             let tx = store.connection.transaction_with_behavior(TransactionBehavior::Immediate).map_err(sql)?;
             let project = project(&tx, value.project)?;
             let current = resolved(&tx, &project)?.ok_or(WorkspaceError::NotFound)?.profile;
-            if current.revision != expected || value.revision != expected || value.main_task != current.main_task {
+            if current.revision != expected || value.revision != expected {
                 return Err(WorkspaceError::Invalid("Hub context changed elsewhere. Copy your edits, then reload before saving.".into()));
             }
             value.revision = expected.checked_add(1).ok_or(StorageError::Limit)?;
@@ -259,7 +239,7 @@ impl WorkspaceService {
                 updated_at_ms: now_ms(),
                 scope: TaskScope::Studio,
             };
-            let profile = HubProfile::new(project.id, task.id, name.trim().into());
+            let profile = HubProfile::new(project.id, name.trim().into());
             profile.validate()?;
             tx.execute(
                 "INSERT INTO tasks(id,project_id,thread_id,updated_ms,data) VALUES(?1,?2,?3,?4,?5)",
@@ -296,10 +276,10 @@ impl WorkspaceService {
         title: String,
         agent: String,
     ) -> WorkspaceResult<Task> {
-        self.insert_hub_task(project, title, agent, None).await
+        self.insert_hub_task(project, title, agent, String::new())
+            .await
     }
-    /// Dedicated task composers already contain the user's reviewed prompt.
-    /// Do not prepend hidden Hub context to Create-and-run requests.
+    /// Create a Hub thread carrying the user's own reviewed draft text.
     pub async fn create_hub_task(
         &self,
         project: ProjectId,
@@ -307,26 +287,22 @@ impl WorkspaceService {
         agent: String,
         draft: String,
     ) -> WorkspaceResult<Task> {
-        self.insert_hub_task(project, title, agent, Some(draft))
-            .await
+        if draft.is_empty() || draft.len() > 1024 * 1024 || draft.contains('\0') {
+            return Err(WorkspaceError::Invalid("Invalid task draft.".into()));
+        }
+        self.insert_hub_task(project, title, agent, draft).await
     }
+    /// Project instructions seed the new thread's saved notes, matching the
+    /// upstream instructions→thread-notes merge. They never land in the draft.
     async fn insert_hub_task(
         &self,
         id: ProjectId,
         title: String,
         agent: String,
-        draft: Option<String>,
+        draft: String,
     ) -> WorkspaceResult<Task> {
-        if title.trim().is_empty()
-            || title.len() > 400
-            || title.contains('\0')
-            || draft
-                .as_ref()
-                .is_some_and(|draft| draft.len() > 1024 * 1024)
-        {
-            return Err(WorkspaceError::Invalid(
-                "Invalid Hub task title or draft size.".into(),
-            ));
+        if title.trim().is_empty() || title.len() > 400 || title.contains('\0') {
+            return Err(WorkspaceError::Invalid("Invalid Hub task title.".into()));
         }
         self.access(move |store| {
             let tx = store
@@ -337,11 +313,6 @@ impl WorkspaceService {
             let hub = resolved(&tx, &project)?
                 .ok_or(WorkspaceError::NotFound)?
                 .profile;
-            if hub.archived {
-                return Err(WorkspaceError::Invalid(
-                    "Restore this Hub before starting a thread.".into(),
-                ));
-            }
             let profiles: Option<String> = tx
                 .query_row(
                     "SELECT data FROM preferences WHERE key='agent_profiles'",
@@ -390,13 +361,6 @@ impl WorkspaceService {
                     PathBuf::from(root).join(&project.relative_directory)
                 }
             };
-            let text = draft.unwrap_or_else(|| {
-                if hub.include_in_new_threads {
-                    hub.context_draft()
-                } else {
-                    String::new()
-                }
-            });
             let task = Task {
                 id: TaskId::new(),
                 project_id: id,
@@ -423,10 +387,22 @@ impl WorkspaceService {
                 "INSERT INTO preferences(key,data) VALUES(?1,?2)",
                 params![
                     format!("task-draft:{}", task.id),
-                    encode(&serde_json::json!({"version":1,"text":text}))?
+                    encode(&serde_json::json!({"version":1,"text":draft}))?
                 ],
             )
             .map_err(sql)?;
+            let instructions = hub.instructions.trim();
+            if !instructions.is_empty() {
+                let notes = TaskContext {
+                    notes: instructions.to_owned(),
+                    ..Default::default()
+                };
+                tx.execute(
+                    "INSERT INTO preferences(key,data) VALUES(?1,?2)",
+                    params![format!("task-context:{}", task.id), encode(&notes)?],
+                )
+                .map_err(sql)?;
+            }
             tx.commit().map_err(sql)?;
             Ok(task)
         })

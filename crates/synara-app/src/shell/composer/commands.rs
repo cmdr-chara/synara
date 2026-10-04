@@ -8,6 +8,7 @@ enum Command {
     ModelNext,
     ModelPrevious,
     Debug,
+    Default,
     Goal,
     GoalPause,
     GoalResume,
@@ -56,7 +57,6 @@ const SETTINGS_SECTIONS: &[(&str, &str)] = &[
     ("mcp", "MCP connections"),
     ("providers", "Agent providers"),
     ("models", "Models and writing"),
-    ("direct-models", "Direct model providers"),
     ("project-import", "Project import"),
     ("skills", "Agent skills"),
     ("worktrees", "Managed worktrees"),
@@ -65,7 +65,7 @@ const SETTINGS_SECTIONS: &[(&str, &str)] = &[
     ("workflows", "Subagents and workflows"),
 ];
 const COMMANDS: &[(&str, &str, Command)] = &[
-    ("plan", "Select the advertised ACP Plan mode", Command::Plan),
+    ("plan", "Switch this thread into plan mode", Command::Plan),
     (
         "model next",
         "Select the next advertised ACP model (Alt+])",
@@ -78,8 +78,13 @@ const COMMANDS: &[(&str, &str, Command)] = &[
     ),
     (
         "debug",
-        "Open the evidence-first Debug workflow",
+        "Switch this thread into evidence-first debug mode",
         Command::Debug,
+    ),
+    (
+        "default",
+        "Switch this thread back to normal chat mode",
+        Command::Default,
     ),
     (
         "goal",
@@ -299,7 +304,6 @@ fn settings_section(name: &str) -> Option<settings::Section> {
         "mcp" => settings::Section::Mcp,
         "providers" => settings::Section::Providers,
         "models" => settings::Section::Models,
-        "direct-models" => settings::Section::DirectModels,
         "project-import" => settings::Section::ProjectImport,
         "skills" => settings::Section::Skills,
         "worktrees" => settings::Section::Worktrees,
@@ -357,13 +361,11 @@ impl Shell {
                 }
             },
             ParsedCommand::Native(command) => match command {
-                Command::Plan => self.native_plan_mode(cx),
+                Command::Plan => self.plan_mode_command(cx),
                 Command::ModelNext => self.cycle_session_model(true, cx),
                 Command::ModelPrevious => self.cycle_session_model(false, cx),
-                Command::Debug => {
-                    self.open_debug(cx);
-                    self.debug_workflow.open
-                }
+                Command::Debug => self.debug_mode_command(cx),
+                Command::Default => self.default_mode_command(cx),
                 Command::Goal => {
                     self.open_goals(cx);
                     self.goals.open
@@ -736,8 +738,8 @@ mod tests {
             );
         }
         assert_eq!(
-            parse("/synara/settings   direct-models  "),
-            Some(Ok(ParsedCommand::SettingsSection("direct-models")))
+            parse("/synara/settings   usage  "),
+            Some(Ok(ParsedCommand::SettingsSection("usage")))
         );
         for text in [
             "/synara/settings unknown",

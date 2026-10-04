@@ -371,6 +371,7 @@ pub(super) fn build(
                 false,
             )
         }
+        PruneWorktrees => (args(&["worktree", "prune"]), true, true, false),
         SaveStash {
             message: text,
             include_untracked,

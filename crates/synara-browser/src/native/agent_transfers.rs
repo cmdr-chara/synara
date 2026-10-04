@@ -5,6 +5,7 @@ use crate::{
     session::{Event, Output, UploadPayload},
 };
 use gtk::{gio, glib, prelude::*};
+use javascriptcore::ValueExt;
 use std::{
     cell::{Cell, RefCell},
     fs,

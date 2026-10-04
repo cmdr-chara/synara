@@ -255,7 +255,13 @@ fn open_no_follow_flag() -> i32 {
     0x2_0000
 }
 
-#[cfg(all(unix, not(target_os = "linux")))]
+#[cfg(target_os = "macos")]
+fn open_no_follow_flag() -> i32 {
+    // macOS O_NOFOLLOW.
+    0x0000_0100
+}
+
+#[cfg(all(unix, not(any(target_os = "linux", target_os = "macos"))))]
 fn open_no_follow_flag() -> i32 {
     0
 }

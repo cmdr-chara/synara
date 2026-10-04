@@ -1,6 +1,6 @@
 mod browser;
 mod checkpoints;
-mod direct_models;
+mod evaluation;
 mod gateway;
 mod handoff;
 mod integrations;
@@ -215,7 +215,6 @@ impl Controller {
         let _integrations = self.integrations_gate.read().await;
         let slot = self.slot(id).await?;
         let _gate = slot.creation.lock().await;
-        self.require_agent_route(id).await?;
         let task = self.workspace.task(id).await?;
         let profile = self.profile(&task.agent_id).await?;
         {
@@ -280,6 +279,27 @@ impl Controller {
         {
             let _ = session.close().await;
             return Err(error);
+        }
+        // Upstream `thread.runtimeMode`: the last chosen provider session mode
+        // rides the thread and is re-applied to each (re)created session. Only
+        // modes the provider still advertises are applied.
+        if let Some(mode) = self.workspace.task_runtime_mode(id).await? {
+            let config = session.configuration();
+            if config.modes.iter().any(|m| m.id == mode)
+                && config.current_mode.as_deref() != Some(mode.as_str())
+                && session.set_mode(&mode).await.is_err()
+            {
+                self.workspace
+                    .record(
+                        task.thread_id,
+                        ThreadEvent::Notice {
+                            message: format!(
+                                "The saved session mode '{mode}' could not be applied to this session."
+                            ),
+                        },
+                    )
+                    .await?;
+            }
         }
         *slot.live.lock().map_err(|_| WorkspaceError::Worker)? = Some(LiveSession {
             profile,
@@ -360,6 +380,10 @@ impl Controller {
                 "prompt must contain text and fit within 1 MiB".into(),
             ));
         }
+        // Upstream parity: the per-task interaction mode prefixes the
+        // provider-bound prompt; the stored/transcript text stays the user's own.
+        let interaction_mode = self.workspace.interaction_mode(id).await?;
+        let text = crate::storage::with_interaction_prompt(interaction_mode, &text);
         let slot = self.slot(id).await?;
         if slot.active.swap(true, Ordering::AcqRel) {
             return Err(AgentError::Busy.into());
@@ -380,9 +404,6 @@ impl Controller {
         } else {
             Prompt::text(text)
         };
-        if let Some(binding) = self.workspace.direct_model_binding(id).await? {
-            return self.submit_direct(id, binding, prompt, cancellation).await;
-        }
         let session = tokio::select! {
             biased;
             () = cancellation.cancelled() => return Err(AgentError::Cancelled.into()),
@@ -410,6 +431,44 @@ impl Controller {
                 },
             )
             .await;
+        // Upstream `turn.proposed.completed` → `thread.proposed-plan.upsert`:
+        // OpenCodeAdapter extracts `<proposed_plan>` from the finished turn's
+        // text only when `activeInteractionMode === "plan"`. The turn id comes
+        // from `thread.turns` (`session.prompt()` resolves with the stopReason,
+        // not a turn id); upstream ids are `plan:{threadId}:turn:{turnId}`.
+        if interaction_mode == crate::storage::InteractionMode::Plan
+            && let Some(thread) = self.workspace.thread(thread_id).await.ok().as_ref()
+            && let Some(plan_markdown) = thread
+                .messages
+                .iter()
+                .rev()
+                .find(|message| message.role == Role::Assistant)
+                .and_then(|message| extract_proposed_plan_markdown(&message.text))
+        {
+            let turn_id = thread
+                .turns
+                .last()
+                .map(|finished| finished.id.clone())
+                .unwrap_or_else(|| turn.clone());
+            let now = crate::now_ms();
+            let _ = self
+                .workspace
+                .record(
+                    thread_id,
+                    ThreadEvent::ProposedPlan {
+                        plan: ProposedPlan {
+                            id: format!("plan:{thread_id}:turn:{turn_id}"),
+                            turn_id: Some(turn_id),
+                            plan_markdown,
+                            implemented_at_ms: None,
+                            implementation_thread_id: None,
+                            created_at_ms: now,
+                            updated_at_ms: now,
+                        },
+                    },
+                )
+                .await;
+        }
         Ok(turn)
     }
 
@@ -442,7 +501,6 @@ impl Controller {
         let _ownership = PromptOwnership(slot.clone());
         {
             let _creation = slot.creation.lock().await;
-            self.require_agent_route(id).await?;
             let task = self.workspace.task(id).await?;
             let profile = self.profile(&task.agent_id).await?;
             let connection = self.connection_for(&task, &slot, &profile, false).await?;
@@ -514,7 +572,6 @@ impl Controller {
         }
         let _ownership = PromptOwnership(slot.clone());
         let _gate = slot.creation.lock().await;
-        self.require_agent_route(id).await?;
         let old = slot.live.lock().map_err(|_| WorkspaceError::Worker)?.take();
         if let Some(old) = old {
             old.session.close().await?;
@@ -532,7 +589,6 @@ impl Controller {
         let _ownership = PromptOwnership(slot.clone());
         {
             let _gate = slot.creation.lock().await;
-            self.require_agent_route(id).await?;
             let task = self.workspace.task(id).await?;
             let profile = self.profile(&task.agent_id).await?;
             slot.live.lock().map_err(|_| WorkspaceError::Worker)?.take();
@@ -549,7 +605,6 @@ impl Controller {
         let _ownership = PromptOwnership(slot.clone());
         {
             let _gate = slot.creation.lock().await;
-            self.require_agent_route(id).await?;
             let old = slot.live.lock().map_err(|_| WorkspaceError::Worker)?.take();
             if let Some(old) = old {
                 old.session.close().await?;

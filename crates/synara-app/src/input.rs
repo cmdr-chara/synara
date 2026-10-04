@@ -5,7 +5,9 @@ use gpui::{
     prelude::*, px, rgb, size,
 };
 use std::{ops::Range, rc::Rc};
-use synara_core::TextBuffer;
+use synara_core::{
+    PromptHistoryDirection, PromptHistoryState, TextBuffer, resolve_prompt_history_navigation,
+};
 use synara_workspace::{
     KeyBinding, KeybindingContext, KeybindingStroke, contextual_command_for_key,
     has_contextual_override,
@@ -98,6 +100,11 @@ pub struct TextEntry {
     syntax: Option<syntax::Language>,
     syntax_spans: Vec<syntax::HighlightSpan>,
     syntax_dirty: bool,
+    /// Task-scoped sent-prompt history (newest first) for Up/Down recall.
+    prompt_history: Vec<String>,
+    /// The shell disables recall while a turn is running or input is pending.
+    prompt_history_enabled: bool,
+    history_state: Option<PromptHistoryState>,
     pub error: Option<String>,
 }
 impl EventEmitter<EntryEvent> for TextEntry {}
@@ -124,6 +131,12 @@ impl TextEntry {
         (font * 1.5).max(18.)
     }
 
+    pub fn placeholder(&self) -> &str {
+        &self.placeholder
+    }
+    pub fn set_placeholder(&mut self, placeholder: &str) {
+        self.placeholder = placeholder.into();
+    }
     pub fn new(placeholder: &str, mode: EntryMode, height: f32, cx: &mut Context<Self>) -> Self {
         Self {
             buffer: TextBuffer::default(),
@@ -151,6 +164,9 @@ impl TextEntry {
             syntax: None,
             syntax_spans: Vec::new(),
             syntax_dirty: true,
+            prompt_history: Vec::new(),
+            prompt_history_enabled: false,
+            history_state: None,
             error: None,
         }
     }
@@ -173,6 +189,20 @@ impl TextEntry {
 
     pub fn set_send_on_enter(&mut self, enabled: bool) {
         self.send_on_enter = enabled;
+    }
+
+    /// Replace the recallable sent-prompt history (newest first). Recall state
+    /// is per-entry like the undo stack: switching tasks swaps both history and
+    /// browse state.
+    pub fn set_prompt_history(&mut self, history: Vec<String>) {
+        if self.prompt_history != history {
+            self.prompt_history = history;
+            self.history_state = None;
+        }
+    }
+
+    pub fn set_prompt_history_enabled(&mut self, enabled: bool) {
+        self.prompt_history_enabled = enabled;
     }
 
     /// Install app-level keybindings for this input's focus context. Other
@@ -554,6 +584,34 @@ impl TextEntry {
                 self.select_to(next, shift, cx);
             }
             (_, "up") | (_, "down") => {
+                if !command
+                    && !shift
+                    && !modifiers.alt
+                    && self.mode == EntryMode::Composer
+                    && self.prompt_history_enabled
+                    && !self.prompt_history.is_empty()
+                {
+                    let direction = if key == "up" {
+                        PromptHistoryDirection::Older
+                    } else {
+                        PromptHistoryDirection::Newer
+                    };
+                    let result = resolve_prompt_history_navigation(
+                        direction,
+                        &self.prompt_history,
+                        self.buffer.text(),
+                        self.caret(),
+                        self.buffer.selection().is_empty(),
+                        self.history_state.as_ref(),
+                    );
+                    self.history_state = result.state;
+                    if result.handled {
+                        self.edit(0..self.buffer.text().len(), &result.prompt, cx);
+                        self.select_to(result.expanded_cursor, false, cx);
+                        cx.stop_propagation();
+                        return;
+                    }
+                }
                 let mut position = self.position(self.caret());
                 position.y += px(if key == "up" {
                     -self.line_height()
@@ -745,7 +803,12 @@ impl Render for TextEntry {
             .when(self.mode == EntryMode::Composer, |el| el
                 .bg(gpui::rgba(0)).border_0().rounded_none().font_family(crate::ui::ui_font()))
             .when_some(self.leading_icon, |el, icon| el.pl(px(32.)).child(div().absolute().left(px(10.)).top(px(7.)).child(crate::ui::icon(icon))))
-            .when(self.mode == EntryMode::Editor, |el| el.font_family(crate::ui::code_font()).flex_1().min_h_0().h_full())
+            .when(self.mode == EntryMode::Editor, |el| {
+                el.font_family(crate::ui::code_font())
+                    .flex_1()
+                    .min_h(px(self.visible_height()))
+                    .h_full()
+            })
             .when(self.picker_chrome, |el| el.bg(gpui::rgba(0)).border_0().rounded_none())
             .cursor_text()
             .when(self.mode == EntryMode::Composer, |el| el.child(crate::ui::layout_probe("composer-input")))

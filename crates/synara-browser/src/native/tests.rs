@@ -40,6 +40,7 @@ fn cancellation_reaches_queued_actions_without_a_ui_pump() {
             partition: StoragePartition::AgentTask(1),
             operation: BrowserOperation::ReadDocument,
         },
+        upload: None,
         max_output_bytes: 1024,
     })
     .unwrap();
@@ -457,6 +458,7 @@ fn cancelled_queued_requests_release_capacity() {
                 partition: StoragePartition::AgentTask(1),
                 operation: BrowserOperation::ReadDocument,
             },
+            upload: None,
             max_output_bytes: 1024,
         })
         .unwrap();

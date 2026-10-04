@@ -1,0 +1,149 @@
+{
+  "version": 1,
+  "theme": "dark",
+  "open_thread": "fix-login-redirect",
+  "repos": {
+    "atlas-web": {
+      "commits": [
+        {
+          "message": "Initial commit",
+          "files": {
+            "package.json": "{\n  \"name\": \"atlas-web\",\n  \"private\": true,\n  \"version\": \"0.1.0\",\n  \"scripts\": {\n    \"dev\": \"vite\",\n    \"build\": \"vite build\"\n  }\n}\n",
+            "index.html": "<!doctype html>\n<html>\n  <body>\n    <div id=\"root\"></div>\n    <script type=\"module\" src=\"/src/main.tsx\"></script>\n  </body>\n</html>\n",
+            "src/main.tsx": "import React from \"react\";\nimport { createRoot } from \"react-dom/client\";\nimport { App } from \"./App\";\n\ncreateRoot(document.getElementById(\"root\")!).render(<App />);\n",
+            "src/App.tsx": "import { LoginPage } from \"./pages/LoginPage\";\n\nexport function App() {\n  return <LoginPage />;\n}\n"
+          }
+        },
+        {
+          "message": "Add login page and session store",
+          "files": {
+            "src/pages/LoginPage.tsx": "export function LoginPage() {\n  return (\n    <main>\n      <h1>Sign in</h1>\n      <form method=\"post\" action=\"/auth/login\">\n        <input name=\"email\" type=\"email\" />\n        <button type=\"submit\">Continue</button>\n      </form>\n    </main>\n  );\n}\n",
+            "src/auth/session.ts": "export function isAuthenticated(): boolean {\n  return document.cookie.includes(\"atlas_session=\");\n}\n"
+          }
+        },
+        {
+          "message": "Route dashboard behind auth guard",
+          "files": {
+            "src/routes.tsx": "import { isAuthenticated } from \"./auth/session\";\n\nexport function resolveRoute(path: string): string {\n  if (path === \"/dashboard\" && !isAuthenticated()) return \"/login\";\n  return path;\n}\n"
+          }
+        }
+      ]
+    },
+    "orbit-api": {
+      "commits": [
+        {
+          "message": "Initial commit",
+          "files": {
+            "go.mod": "module github.com/example/orbit-api\n\ngo 1.22\n",
+            "cmd/server/main.go": "package main\n\nimport \"net/http\"\n\nfunc main() {\n\thttp.ListenAndServe(\":8080\", nil)\n}\n",
+            "internal/payments/payments.go": "package payments\n\nfunc Charge(amount int64) bool {\n\treturn amount > 0\n}\n"
+          }
+        },
+        {
+          "message": "Add payments test",
+          "files": {
+            "internal/payments/payments_test.go": "package payments\n\nimport \"testing\"\n\nfunc TestCharge(t *testing.T) {\n\tif !Charge(100) {\n\t\tt.Fatal(\"expected charge to succeed\")\n\t}\n}\n"
+          }
+        }
+      ]
+    }
+  },
+  "projects": [
+    {
+      "key": "atlas-web",
+      "title": "atlas-web",
+      "repo": "atlas-web",
+      "created_offset_s": -172800
+    },
+    {
+      "key": "orbit-api",
+      "title": "orbit-api",
+      "repo": "orbit-api",
+      "created_offset_s": -172800
+    }
+  ],
+  "threads": [
+    {
+      "key": "fix-login-redirect",
+      "project": "atlas-web",
+      "title": "Fix login redirect loop",
+      "created_offset_s": -86400,
+      "messages": [
+        {
+          "role": "user",
+          "offset_s": -86400,
+          "text": "The app keeps bouncing between /login and /dashboard after I sign in. Can you look at the redirect logic?"
+        },
+        {
+          "role": "assistant",
+          "offset_s": -86340,
+          "text": "### Root cause\n\nThe loop comes from two guards disagreeing about the session cookie:\n\n- `resolveRoute` redirects `/dashboard` to `/login` when `isAuthenticated()` is false\n- the login handler then sends you back to `/dashboard` because the cookie write raced the next navigation\n- the cookie is scoped `SameSite=Lax`, so the first redirect never carries it\n\nFix by awaiting the cookie write before navigating:\n\n```ts\nawait session.commit();\nnavigate(\"/dashboard\");\n```\n\nAfter that the guard sees `atlas_session` on the first pass and the loop stops."
+        },
+        {
+          "role": "user",
+          "offset_s": -82800,
+          "text": "That makes sense. Can you also check whether the auth middleware runs on the OAuth callback route?"
+        },
+        {
+          "role": "assistant",
+          "offset_s": -82740,
+          "text": "Yes — `/auth/callback` was inside the guarded group, so a fresh login bounced to `/login` before the callback could set the cookie. I moved the callback route outside the guard; the middleware now only wraps `/dashboard` and the other authenticated pages."
+        }
+      ]
+    },
+    {
+      "key": "dark-mode-toggle",
+      "project": "atlas-web",
+      "title": "Add dark mode toggle",
+      "created_offset_s": -10800,
+      "messages": [
+        {
+          "role": "user",
+          "offset_s": -10800,
+          "text": "Add a dark mode toggle in the header that persists the choice to localStorage."
+        },
+        {
+          "role": "assistant",
+          "offset_s": -10740,
+          "text": "Done. The header now has a toggle that writes `atlas-theme` to localStorage, and `App.tsx` reads it on mount so the choice survives reloads. The default still follows `prefers-color-scheme` when nothing is stored."
+        }
+      ]
+    },
+    {
+      "key": "flaky-payments",
+      "project": "orbit-api",
+      "title": "Investigate flaky payments test",
+      "created_offset_s": -18000,
+      "messages": [
+        {
+          "role": "user",
+          "offset_s": -18000,
+          "text": "TestCharge fails about one run in five in CI but never locally. What's going on?"
+        },
+        {
+          "role": "assistant",
+          "offset_s": -17940,
+          "text": "The test shares a package-level RNG seed with the retry helper, so it depends on test order under `go test -shuffle=on` (CI enables it). I gave the test its own seeded source and the flakes stopped in a 200-run stress loop."
+        }
+      ]
+    },
+    {
+      "key": "launch-names",
+      "project": null,
+      "title": "Brainstorm launch names",
+      "created_offset_s": -1800,
+      "messages": [
+        {
+          "role": "user",
+          "offset_s": -1800,
+          "text": "Help me brainstorm launch names for the release next week."
+        },
+        {
+          "role": "assistant",
+          "offset_s": -1740,
+          "text": "A few directions: Daybreak (fresh start), Perihelion (closest approach, big energy), and Greenlight (obvious ship metaphor). Daybreak pairs nicely with the new light theme announcement."
+        }
+      ]
+    }
+  ]
+}

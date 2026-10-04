@@ -160,7 +160,7 @@ enum Outcome {
     Capture(DeviceCapture),
     InputApproved(DeviceInputGrant),
     InputSent,
-    Accessibility(DeviceAccessibilityTree),
+    Accessibility(Box<DeviceAccessibilityTree>),
     Lifecycle,
     UrlOpened,
     AppLaunched,
@@ -821,7 +821,7 @@ impl Shell {
             tools
                 .describe_ui(&device, &cancel)
                 .await
-                .map(Outcome::Accessibility)
+                .map(|tree| Outcome::Accessibility(Box::new(tree)))
                 .map_err(|error| error.to_string())
         });
         cx.notify();
@@ -878,7 +878,7 @@ impl Shell {
             Ok(Outcome::InputSent) => self.capture_device(cx),
             Ok(Outcome::Accessibility(tree)) => {
                 let count = tree.targets(128).len();
-                self.device.accessibility = Some(tree);
+                self.device.accessibility = Some(*tree);
                 self.device.message = format!(
                     "Accessibility tree inspected. {count} labelled target{} available.",
                     if count == 1 { "" } else { "s" }

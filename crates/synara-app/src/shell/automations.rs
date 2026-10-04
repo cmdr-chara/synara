@@ -6,7 +6,6 @@ use std::time::{Duration, Instant};
 
 pub(super) struct AutomationsView {
     ledger: AutomationLedger,
-    direct_models: ProviderSettings,
     scheduler: Arc<AutomationScheduler>,
     loaded: bool,
     loading: bool,
@@ -43,8 +42,7 @@ struct Editor {
     missed: MissedRunPolicy,
     mode: AutomationMode,
     target_task: Option<TaskId>,
-    context: AutomationContextPolicy,
-    completion_selection: Option<ModelSelection>,
+    completion_evaluated: bool,
 }
 #[derive(Clone)]
 enum Pending {
@@ -52,7 +50,7 @@ enum Pending {
     Run(AutomationDefinition),
     Enable(AutomationDefinition, bool),
     Delete(AutomationDefinition),
-    Recover(AutomationRun),
+    Recover(Box<AutomationRun>),
     PruneHistory(usize),
     PruneDefinitionHistory(AutomationDefinition, usize),
 }
@@ -128,7 +126,7 @@ impl AutomationsView {
         .collect();
         Self {
             ledger: AutomationLedger::default(),
-            direct_models: ProviderSettings::default(),
+
             scheduler: Arc::new(AutomationScheduler::new(controller)),
             loaded: false,
             loading: false,
@@ -156,6 +154,13 @@ impl AutomationsView {
             _subscriptions: subscriptions,
         }
     }
+    /// Rail panel reads the same ledger the manager edits.
+    pub(super) fn ledger(&self) -> &AutomationLedger {
+        &self.ledger
+    }
+    pub(super) fn loaded(&self) -> bool {
+        self.loaded
+    }
     pub(super) fn retire(&self) {
         self.scheduler.arm(false);
         self.scheduler.stop();
@@ -169,15 +174,7 @@ impl Drop for AutomationsView {
 pub(super) enum Reply {
     Loaded {
         generation: u64,
-        result: Result<
-            (
-                AutomationLedger,
-                Catalog,
-                Vec<AgentProfile>,
-                ProviderSettings,
-            ),
-            String,
-        >,
+        result: Result<Box<(AutomationLedger, Catalog, Vec<AgentProfile>)>, String>,
     },
     Changed(Result<(), String>),
     Finished(Result<(), String>),
@@ -216,11 +213,11 @@ impl Shell {
                     workspace.automations().await?,
                     workspace.catalog().await?,
                     workspace.profiles().await?,
-                    workspace.direct_model_settings().await?,
                 ))
             }
             .await
-            .map_err(|e| e.to_string());
+            .map_err(|e| e.to_string())
+            .map(Box::new);
             Ok(Update::Automations(Box::new(Reply::Loaded {
                 generation,
                 result,
@@ -263,11 +260,12 @@ impl Shell {
                     return;
                 }
                 match result {
-                    Ok((ledger, catalog, profiles, direct_models)) => {
+                    Ok(loaded) => {
+                        let (ledger, catalog, profiles) = *loaded;
                         self.automations.ledger = ledger;
-                        self.automations.direct_models = direct_models;
                         self.automations.loaded = true;
                         self.catalog = catalog;
+                        self.refresh_project_ui(cx);
                         self.profiles = profiles;
                     }
                     Err(error) => {
@@ -350,18 +348,14 @@ impl Shell {
             completion_threshold,
         ) = match definition {
             Some(d) => {
-                let (completion_selection, completion_stop_when, completion_threshold) =
+                let (completion_evaluated, completion_stop_when, completion_threshold) =
                     match &d.completion_policy {
-                        AutomationCompletionPolicy::None => (None, String::new(), "0.8".into()),
+                        AutomationCompletionPolicy::None => (false, String::new(), "0.8".into()),
                         AutomationCompletionPolicy::AiEvaluated {
                             stop_when,
                             confidence_threshold,
-                            evaluator,
-                        } => (
-                            Some(evaluator.selection.clone()),
-                            stop_when.clone(),
-                            confidence_threshold.to_string(),
-                        ),
+                            ..
+                        } => (true, stop_when.clone(), confidence_threshold.to_string()),
                     };
                 (
                     Editor {
@@ -373,8 +367,7 @@ impl Shell {
                         missed: d.missed,
                         mode: d.mode,
                         target_task: d.target_task_id,
-                        context: d.context,
-                        completion_selection,
+                        completion_evaluated,
                     },
                     d.title,
                     d.instructions,
@@ -400,8 +393,7 @@ impl Shell {
                     missed: MissedRunPolicy::Skip,
                     mode: AutomationMode::Standalone,
                     target_task: None,
-                    context: AutomationContextPolicy::Project,
-                    completion_selection: None,
+                    completion_evaluated: false,
                 },
                 String::new(),
                 String::new(),
@@ -516,7 +508,7 @@ impl Shell {
             return;
         };
         let result = (|| -> WorkspaceResult<_> {
-            let completion_policy = if let Some(selection) = editor.completion_selection.clone() {
+            let completion_policy = if editor.completion_evaluated {
                 let stop_when = self
                     .automations
                     .completion_stop_when
@@ -532,12 +524,10 @@ impl Shell {
                 let confidence_threshold = parse_completion_threshold(
                     self.automations.completion_threshold.read(cx).text(),
                 )?;
-                let evaluator =
-                    DirectModelBinding::reviewed(&self.automations.direct_models, selection)?;
                 AutomationCompletionPolicy::AiEvaluated {
                     stop_when,
                     confidence_threshold,
-                    evaluator,
+                    evaluator: None,
                 }
             } else {
                 AutomationCompletionPolicy::None
@@ -560,7 +550,7 @@ impl Shell {
                 missed: editor.missed,
                 mode: editor.mode,
                 target_task_id: editor.target_task,
-                context: editor.context,
+                context: None,
                 completion_policy,
                 heartbeat_cooldown_seconds: parse_cooldown_seconds(
                     self.automations.heartbeat_cooldown.read(cx).text(),
@@ -683,6 +673,7 @@ impl Shell {
                             workspace.delete_automation(d.id, d.revision, true).await
                         }
                         Pending::Recover(run) => {
+                            let run = *run;
                             workspace
                                 .resolve_interrupted_automation(run.id, owner, true)
                                 .await

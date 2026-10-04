@@ -1,10 +1,10 @@
-//! Bounded, explicit rollback of app-owned draft and saved notes/checklist only.
+//! Bounded, explicit rollback of app-owned draft and saved notes only.
 //! The Controller reserves the existing task. A single SQLite transaction owns
 //! recovery + restoration. The view never rewinds a provider or workspace files.
 use super::*;
 use crate::ui::{self, palette};
 
-const BOUNDARY: &str = "Draft + saved notes/checklist only. Files, Git, transcript, attachments and provider sessions are NOT restored.";
+const BOUNDARY: &str = "Draft + saved notes only. Files, Git, transcript, attachments and provider sessions are NOT restored.";
 #[derive(Default)]
 pub(super) struct CheckpointState {
     task: Option<TaskId>,
@@ -110,7 +110,6 @@ impl Shell {
             && !self.handoff.open()
             && !self.recap.pending()
             && !self.followups.pending(cx)
-            && !self.debug_workflow.pending(cx)
             && !self.hubs.pending(cx)
             && !self.controls.is_pending(task.id)
             && !self.goal_send_pending(cx)
@@ -240,7 +239,7 @@ impl Shell {
                     .update(cx, |e, cx| e.set_text(value.draft, cx));
                 self.checkpoints.history = Some(value.history);
                 self.checkpoints.review = None;
-                self.notice = Some("Draft and saved notes/checklist restored. Pre-revert recovery saved. Nothing sent, no files or sessions changed.".into());
+                self.notice = Some("Draft and saved notes restored. Pre-revert recovery saved. Nothing sent, no files or sessions changed.".into());
             }
             Err(error) => {
                 self.checkpoints.error = Some(error);
@@ -307,8 +306,8 @@ impl Shell {
         if let Some(review) = &state.review {
             let saved = review.checkpoint();
             panel = panel.child(div().relative().flex().flex_col().gap_1()
-                .child(format!("Restore {} ({})? Current draft: {} bytes; saved draft: {} bytes; saved notes: {} bytes; checklist: {} items.",
-                    saved.label, time(saved.created_at_ms), review.current_draft().len(), saved.draft.len(), saved.context.notes.len(), saved.context.checklist.len()))
+                .child(format!("Restore {} ({})? Current draft: {} bytes; saved draft: {} bytes; saved notes: {} bytes.",
+                    saved.label, time(saved.created_at_ms), review.current_draft().len(), saved.draft.len(), saved.context.notes.len()))
                 .child(format!("Saved draft preview (first 600 characters): {}", excerpt(&saved.draft)))
                 .child(format!("Saved notes preview (first 600 characters): {}", excerpt(&saved.context.notes)))
                 .child("A recovery snapshot of the current draft and notes is saved atomically. This review expires after five minutes and refuses intervening changes.")
@@ -332,11 +331,11 @@ impl Shell {
                         .items_center()
                         .gap_2()
                         .child(div().flex_1().min_w_0().child(format!(
-                            "{} · {} · {} draft bytes, {} checklist items",
+                            "{} · {} · {} draft bytes, {} notes bytes",
                             time(checkpoint.created_at_ms),
                             checkpoint.label,
                             checkpoint.draft.len(),
-                            checkpoint.context.checklist.len()
+                            checkpoint.context.notes.len()
                         )))
                         .child(
                             ui::action(

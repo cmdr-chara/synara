@@ -26,6 +26,9 @@ pub struct TurnSummary {
     pub acp_model_id: Option<String>,
     /// Latest usage reported while this turn was active.
     pub usage: Option<Usage>,
+    /// Upstream `OrchestrationLatestTurn.sourceProposedPlan`: set only on the
+    /// turn that implements a proposed plan, pointing at the source plan.
+    pub source_proposed_plan: Option<crate::SourceProposedPlan>,
 }
 
 /// Metadata of the latest durable replacement of a tool's output, not authorship.
@@ -53,6 +56,7 @@ pub enum TranscriptItem {
     Tool { id: String },
     Permission { id: String },
     Input { id: String },
+    Plan { index: usize },
     Notice { text: String, is_error: bool },
 }
 
@@ -85,6 +89,16 @@ pub struct Thread {
     pub inputs: BTreeMap<String, UserInputRequest>,
     pub timeline: Vec<TranscriptItem>,
     pub plan: Vec<PlanEntry>,
+    /// Turn that produced the latest task-list snapshot — the `turnId` on
+    /// upstream `turn.tasks.updated` activities.
+    pub plan_turn_id: Option<String>,
+    /// Upstream `ActiveTaskListState.createdAt`.
+    pub plan_created_at_ms: Option<i64>,
+    /// Upstream `ActiveTaskListState.explanation`.
+    pub plan_explanation: Option<String>,
+    /// Upstream `OrchestrationThread.proposedPlans`: proposed-plan records
+    /// extracted from plan-mode turns (`turn.proposed.completed` events).
+    pub proposed_plans: Vec<ProposedPlan>,
     pub usage: Usage,
     pub configuration: SessionConfiguration,
     pub commands: Vec<SlashCommand>,
@@ -95,6 +109,7 @@ pub struct Thread {
     max_events: usize,
     activity: ThreadActivity,
     pending_acp_routes: HashMap<String, (String, Option<String>)>,
+    pending_source_plan: Option<crate::SourceProposedPlan>,
     replay_backup: Option<Box<Thread>>,
 }
 
@@ -115,6 +130,10 @@ impl Thread {
             inputs: BTreeMap::new(),
             timeline: vec![],
             plan: vec![],
+            plan_turn_id: None,
+            plan_created_at_ms: None,
+            plan_explanation: None,
+            proposed_plans: vec![],
             usage: Usage::default(),
             configuration: SessionConfiguration::default(),
             commands: vec![],
@@ -125,8 +144,43 @@ impl Thread {
             max_events: 200_000,
             activity: ThreadActivity::new("New task".into()),
             pending_acp_routes: HashMap::new(),
+            pending_source_plan: None,
             replay_backup: None,
         }
+    }
+
+    /// Upstream `deriveActiveTaskListState`: the latest non-empty task list
+    /// for the latest turn is shown even once every task completes; a list
+    /// left by an earlier turn remains visible only while some task is
+    /// unfinished, and an explicit empty snapshot clears the list.
+    pub fn active_task_list(&self) -> Option<ActiveTaskList> {
+        if self.plan.is_empty() {
+            return None;
+        }
+        let tasks = self
+            .plan
+            .iter()
+            .map(|entry| TaskListTask {
+                task: entry.text.clone(),
+                status: normalize_plan_step_status(&entry.status),
+            })
+            .collect::<Vec<_>>();
+        let latest_turn_id = self.turns.last().map(|turn| turn.id.as_str());
+        let from_latest_turn =
+            self.plan_turn_id.is_some() && self.plan_turn_id.as_deref() == latest_turn_id;
+        if !from_latest_turn
+            && !tasks
+                .iter()
+                .any(|task| task.status != TaskStatus::Completed)
+        {
+            return None;
+        }
+        Some(ActiveTaskList {
+            created_at_ms: self.plan_created_at_ms.unwrap_or_default(),
+            turn_id: self.plan_turn_id.clone(),
+            explanation: self.plan_explanation.clone(),
+            tasks,
+        })
     }
 
     pub fn apply(&mut self, envelope: &EventEnvelope) -> Result<bool, ReplayError> {
@@ -177,6 +231,7 @@ impl Thread {
                 self.permissions.clear();
                 self.inputs.clear();
                 self.plan.clear();
+                self.proposed_plans.clear();
                 self.commands.clear();
                 self.pending_acp_routes.clear();
                 self.text_bytes = 0;
@@ -225,6 +280,18 @@ impl Thread {
                     acp_agent_id,
                     acp_model_id,
                     usage: None,
+                    // Upstream: the implementing turn carries
+                    // `sourceProposedPlan` from its `turn.start` params.
+                    source_proposed_plan: self.pending_source_plan.take(),
+                });
+            }
+            ThreadEvent::ProposedPlanSource {
+                source_thread,
+                plan_id,
+            } => {
+                self.pending_source_plan = Some(crate::SourceProposedPlan {
+                    thread_id: *source_thread,
+                    plan_id: plan_id.clone(),
                 });
             }
             ThreadEvent::TextDelta {
@@ -338,7 +405,52 @@ impl Thread {
             ThreadEvent::UserInputResolved { id } => {
                 self.inputs.remove(id);
             }
-            ThreadEvent::PlanChanged { entries } => self.plan.clone_from(entries),
+            ThreadEvent::PlanChanged {
+                entries,
+                explanation,
+            } => {
+                self.plan.clone_from(entries);
+                self.plan_turn_id = self.turns.last().map(|turn| turn.id.clone());
+                self.plan_created_at_ms = Some(envelope.timestamp_ms);
+                self.plan_explanation.clone_from(explanation);
+            }
+            ThreadEvent::ProposedPlan { plan } => {
+                // Upstream `thread.proposed-plan.upsert`: keyed by plan id, the
+                // timeline row appears once on first upsert.
+                if let Some(existing) = self
+                    .proposed_plans
+                    .iter_mut()
+                    .find(|existing| existing.id == plan.id)
+                {
+                    *existing = plan.clone();
+                } else {
+                    let index = self.proposed_plans.len();
+                    self.proposed_plans.push(plan.clone());
+                    self.timeline.push(TranscriptItem::Plan { index });
+                }
+                if let Some(message) = self
+                    .messages
+                    .iter_mut()
+                    .rev()
+                    .find(|message| message.role == Role::Assistant)
+                {
+                    message.text = strip_proposed_plan_blocks_from_text(&message.text);
+                }
+            }
+            ThreadEvent::ProposedPlanImplemented {
+                plan_id,
+                implementation_thread_id,
+            } => {
+                if let Some(plan) = self
+                    .proposed_plans
+                    .iter_mut()
+                    .find(|plan| plan.id == *plan_id)
+                {
+                    plan.implemented_at_ms = Some(envelope.timestamp_ms);
+                    plan.implementation_thread_id = Some(*implementation_thread_id);
+                    plan.updated_at_ms = envelope.timestamp_ms;
+                }
+            }
             ThreadEvent::UsageChanged { usage } => {
                 self.usage = usage.clone();
                 if let Some(turn) = self
@@ -1054,5 +1166,111 @@ mod tests {
         apply(&mut reopened, ThreadEvent::HistoryStarted);
         apply(&mut reopened, ThreadEvent::HistoryCompleted);
         assert!(reopened.tool_output_origins.is_empty());
+    }
+
+    #[test]
+    fn active_task_list_follows_upstream_visibility_rules() {
+        fn entries(statuses: &[&str]) -> Vec<PlanEntry> {
+            statuses
+                .iter()
+                .map(|status| PlanEntry {
+                    text: format!("step {status}"),
+                    status: (*status).into(),
+                    priority: "medium".into(),
+                })
+                .collect()
+        }
+        let mut thread = Thread::new(ThreadId::new());
+        assert!(thread.active_task_list().is_none());
+        apply(
+            &mut thread,
+            ThreadEvent::PromptStarted {
+                turn: "turn-a".into(),
+            },
+        );
+        apply(
+            &mut thread,
+            ThreadEvent::PlanChanged {
+                entries: entries(&["completed", "in_progress", "pending"]),
+                explanation: None,
+            },
+        );
+        // Current-turn list shows regardless of completion.
+        let list = thread.active_task_list().expect("current-turn list");
+        assert_eq!(list.turn_id.as_deref(), Some("turn-a"));
+        assert_eq!(list.tasks[1].status, TaskStatus::InProgress);
+        apply(
+            &mut thread,
+            ThreadEvent::PlanChanged {
+                entries: entries(&["completed", "completed", "completed"]),
+                explanation: Some("done".into()),
+            },
+        );
+        let list = thread
+            .active_task_list()
+            .expect("all-complete current-turn list");
+        assert_eq!(list.explanation.as_deref(), Some("done"));
+        // An explicit empty snapshot clears the list.
+        apply(
+            &mut thread,
+            ThreadEvent::PlanChanged {
+                entries: vec![],
+                explanation: None,
+            },
+        );
+        assert!(thread.active_task_list().is_none());
+        // A prior turn's list persists only while some task is unfinished.
+        apply(
+            &mut thread,
+            ThreadEvent::PlanChanged {
+                entries: entries(&["completed", "in_progress"]),
+                explanation: None,
+            },
+        );
+        apply(
+            &mut thread,
+            ThreadEvent::PromptFinished {
+                reason: "end_turn".into(),
+            },
+        );
+        apply(
+            &mut thread,
+            ThreadEvent::PromptStarted {
+                turn: "turn-b".into(),
+            },
+        );
+        assert!(thread.active_task_list().is_some());
+        apply(
+            &mut thread,
+            ThreadEvent::PromptFinished {
+                reason: "end_turn".into(),
+            },
+        );
+        apply(
+            &mut thread,
+            ThreadEvent::PromptStarted {
+                turn: "turn-c".into(),
+            },
+        );
+        apply(
+            &mut thread,
+            ThreadEvent::PlanChanged {
+                entries: entries(&["completed", "completed"]),
+                explanation: None,
+            },
+        );
+        apply(
+            &mut thread,
+            ThreadEvent::PromptFinished {
+                reason: "end_turn".into(),
+            },
+        );
+        apply(
+            &mut thread,
+            ThreadEvent::PromptStarted {
+                turn: "turn-d".into(),
+            },
+        );
+        assert!(thread.active_task_list().is_none());
     }
 }

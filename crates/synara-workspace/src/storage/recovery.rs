@@ -377,14 +377,10 @@ fn validate_data(connection: &Connection, budget: &Budget<'_>) -> StorageResult<
                         let ledger: crate::imports::HistoryImportLedger = decode(&data)?;
                         ledger.validate().map_err(|_| StorageError::InvalidBackup)?;
                     }
-                    if id == "direct-model-providers-v1" {
-                        let settings: synara_model::ProviderSettings = decode(&data)?;
-                        settings
-                            .validate()
-                            .map_err(|_| StorageError::InvalidBackup)?;
-                    }
-                    if id.starts_with("task-direct-model:") {
-                        let _: Option<crate::DirectModelBinding> = decode(&data)?;
+                    if id == "direct-model-providers-v1" || id.starts_with("task-direct-model:") {
+                        // Legacy direct-model preferences: retained only so old
+                        // backups restore; the feature was removed.
+                        let _: serde_json::Value = decode(&data)?;
                     }
                     valid_preference_key(&id)
                 }

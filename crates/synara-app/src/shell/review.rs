@@ -150,18 +150,34 @@ impl Shell {
             panel.update(cx, |panel, cx| panel.show_worktrees(cx));
         }
     }
-    pub(super) fn worktree_settings_view(&self, _: &mut Context<Self>) -> gpui::AnyElement {
+    pub(super) fn worktree_settings_view(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
         let scope = self.review_scope();
         let panel = scope
             .as_ref()
             .and_then(|scope| self.review.repositories.get(scope));
+        let cleanup = settings::card().child(settings::row(
+            "Delete worktree on archive",
+            "After Archive, remove a clean managed worktree only if the task has stopped and no other task uses it. Its branch remains available for recovery.",
+            self.toggle(
+                "archive-delete-worktree",
+                "Delete worktree on archive",
+                self.settings.value.general.delete_worktree_on_archive,
+                |settings| {
+                    settings.general.delete_worktree_on_archive =
+                        !settings.general.delete_worktree_on_archive;
+                },
+                cx,
+            ),
+        ));
         match panel {
             Some(panel) => div().w_full().flex().flex_col().gap_3()
+                .child(cleanup)
                 .child("Worktrees in the selected repository. Existing execution and removal confirmations still apply.")
                 .child(div().h(px(520.)).min_h(px(300.)).w_full().border_1().border_color(rgb(palette().border)).rounded_xl().overflow_hidden().child(panel.clone()))
                 .into_any_element(),
-            None => div().p_6().text_color(rgb(palette().muted))
-                .child("Select a project before managing its worktrees. This page does not create a workspace or start a tool implicitly.")
+            None => div().p_6().flex().flex_col().gap_3()
+                .child(cleanup)
+                .child(div().text_color(rgb(palette().muted)).child("Select a project before managing its worktrees. This page does not create a workspace or start a tool implicitly."))
                 .into_any_element(),
         }
     }

@@ -17,6 +17,7 @@ pub(super) enum ControlKind {
     Options,
     Extras,
     Access,
+    PlanImplement,
 }
 impl ControlKind {
     fn index(self) -> usize {
@@ -28,6 +29,7 @@ impl ControlKind {
             Self::Options => 3,
             Self::Extras => 5,
             Self::Access => 6,
+            Self::PlanImplement => 7,
         }
     }
     fn title(self) -> &'static str {
@@ -39,6 +41,7 @@ impl ControlKind {
             Self::Options => "Session options",
             Self::Extras => "Add",
             Self::Access => "Agent permissions",
+            Self::PlanImplement => "Implement",
         }
     }
     fn id(self) -> &'static str {
@@ -50,15 +53,22 @@ impl ControlKind {
             Self::Options => "options-picker",
             Self::Extras => "composer-extras",
             Self::Access => "access-picker",
+            Self::PlanImplement => "plan-implement-menu",
         }
     }
 }
 #[derive(Clone, Debug, PartialEq)]
-enum ControlAction {
-    DebugWorkflow,
+pub(in crate::shell) enum ControlAction {
+    PlanMode,
+    DebugMode,
     Project(ProjectId),
     BrowseWorkspace,
-    AddReferences,
+    AttachFiles,
+    AttachWindow,
+    AttachWindowIndex(usize),
+    ExtrasBack,
+    ImplementPlanNewThread,
+    Goal,
     Unavailable,
     AccessInfo,
     Connect,
@@ -83,9 +93,13 @@ struct OpenControl {
 }
 pub(super) struct ControlState {
     open: Option<OpenControl>,
-    triggers: [Trigger; 7],
+    triggers: [Trigger; 8],
     pub composer_bounds: Rc<Cell<Bounds<Pixels>>>,
     pending: HashSet<TaskId>,
+    extras_windows: bool,
+    /// Mode id waiting on a successful dispatch; folded into
+    /// `catalog.runtime_modes` when ControlFinished lands.
+    pub pending_mode: Option<(TaskId, String)>,
 }
 impl ControlState {
     pub fn new(cx: &mut Context<Shell>) -> Self {
@@ -97,6 +111,8 @@ impl ControlState {
                 bounds: Rc::new(Cell::new(Bounds::default())),
             }),
             pending: HashSet::new(),
+            extras_windows: false,
+            pending_mode: None,
         }
     }
     pub fn is_open(&self) -> bool {
@@ -107,9 +123,30 @@ impl ControlState {
     }
     pub fn retire(&mut self) {
         self.open = None;
+        self.extras_windows = false;
     }
     pub fn completed(&mut self, task: TaskId) {
         self.pending.remove(&task);
+    }
+}
+
+/// Upstream `RUNTIME_MODE_PRESENTATION` copy for provider session modes whose
+/// ids map onto the three runtime modes (verbatim labels/descriptions).
+fn access_mode_copy(mode_id: &str) -> Option<(&'static str, &'static str)> {
+    match mode_id {
+        "approval-required" => Some((
+            "Ask for approval",
+            "Always ask to edit external files and use the internet",
+        )),
+        "auto" => Some((
+            "Approve for me",
+            "Only ask for actions detected as potentially unsafe",
+        )),
+        "full-access" => Some((
+            "Full access",
+            "Unrestricted access to the internet and any file on your computer",
+        )),
+        _ => None,
     }
 }
 
@@ -362,7 +399,7 @@ fn cycle_model_action(choices: &[(Choice, ControlAction)], forward: bool) -> Opt
 
 impl Shell {
     pub(super) fn cycle_session_model(&mut self, forward: bool, cx: &mut Context<Self>) -> bool {
-        if self.controls_blocked() || self.uses_direct_model() || self.loading_task.is_some() {
+        if self.controls_blocked() || self.loading_task.is_some() {
             return false;
         }
         let models = self.control_choices(ControlKind::Model);
@@ -412,75 +449,159 @@ impl Shell {
             Some("model.previous") => false,
             _ => return false,
         };
-        if self.uses_direct_model() {
-            self.cycle_direct_model_for_shortcut(forward, cx)
-        } else {
-            self.cycle_session_model(forward, cx)
-        }
+        self.cycle_session_model(forward, cx)
     }
 
-    fn control_choices(&self, kind: ControlKind) -> Vec<(Choice, ControlAction)> {
+    pub(in crate::shell) fn control_choices(
+        &self,
+        kind: ControlKind,
+    ) -> Vec<(Choice, ControlAction)> {
         if kind == ControlKind::Access {
-            return vec![(
-                Choice {
-                    label: "Ask permission".into(),
-                    detail: "Agent approval requests require your confirmation.".into(),
-                    selected: true,
-                    ..Default::default()
-                },
-                ControlAction::AccessInfo,
-            )];
+            let modes = self.control_choices(ControlKind::Mode);
+            if modes.is_empty() {
+                // Upstream's access picker lists the three runtime modes even
+                // before a session exists — the choice is draft state, applied
+                // when the session starts (DEFAULT_RUNTIME_MODE = full-access).
+                let Some(task) = self.task() else {
+                    return vec![(
+                        Choice {
+                            label: "Ask for approval".into(),
+                            detail: "Always ask to edit external files and use the internet".into(),
+                            selected: true,
+                            ..Default::default()
+                        },
+                        ControlAction::AccessInfo,
+                    )];
+                };
+                let stored = self.catalog.runtime_modes.get(&task.id).cloned();
+                return ["approval-required", "auto", "full-access"]
+                    .into_iter()
+                    .map(|id| {
+                        let (label, detail) = access_mode_copy(id).unwrap_or((id, ""));
+                        (
+                            Choice {
+                                label: label.into(),
+                                detail: detail.into(),
+                                selected: stored.as_deref().unwrap_or("full-access") == id,
+                                ..Default::default()
+                            },
+                            ControlAction::Mode(id.into()),
+                        )
+                    })
+                    .collect();
+            }
+            return modes
+                .into_iter()
+                .map(|(mut choice, action)| {
+                    if let ControlAction::Mode(id) = &action
+                        && let Some((label, detail)) = access_mode_copy(id)
+                    {
+                        choice.label = label.into();
+                        if choice.detail.is_empty() {
+                            choice.detail = detail.into();
+                        }
+                    }
+                    (choice, action)
+                })
+                .collect();
         }
         if kind == ControlKind::Extras {
-            let modes = self.control_choices(ControlKind::Mode);
-            let plan = modes
-                .iter()
-                .find(|(choice, _)| choice.label.eq_ignore_ascii_case("plan"));
-            let in_plan = plan.is_some_and(|(choice, _)| choice.selected);
-            let target = if in_plan {
-                modes
-                    .iter()
-                    .find(|(choice, _)| !choice.label.eq_ignore_ascii_case("plan"))
-            } else {
-                plan
-            };
+            if self.controls.extras_windows {
+                let mut rows = vec![(
+                    Choice {
+                        label: "Back".into(),
+                        icon: Some(ui::Glyph::Back),
+                        ..Default::default()
+                    },
+                    ControlAction::ExtrasBack,
+                )];
+                if self.appsnap.busy {
+                    rows.push((
+                        Choice {
+                            label: "Finding windows…".into(),
+                            unavailable: Some("Window discovery is still running.".into()),
+                            ..Default::default()
+                        },
+                        ControlAction::Unavailable,
+                    ));
+                } else if self.appsnap.windows.is_empty() {
+                    rows.push((
+                        Choice {
+                            label: "No capturable windows".into(),
+                            detail: "No supported visible application windows were found.".into(),
+                            unavailable: Some("Nothing to capture.".into()),
+                            ..Default::default()
+                        },
+                        ControlAction::Unavailable,
+                    ));
+                } else {
+                    rows.extend(
+                        self.appsnap
+                            .windows
+                            .iter()
+                            .enumerate()
+                            .map(|(index, window)| {
+                                (
+                                    Choice {
+                                        label: if window.title.is_empty() {
+                                            window.class.clone()
+                                        } else {
+                                            window.title.clone()
+                                        },
+                                        detail: format!(
+                                            "{} · {}×{}",
+                                            window.class, window.width, window.height
+                                        ),
+                                        icon: Some(ui::Glyph::Window),
+                                        ..Default::default()
+                                    },
+                                    ControlAction::AttachWindowIndex(index),
+                                )
+                            }),
+                    );
+                }
+                return rows;
+            }
+            let in_plan = self
+                .selected
+                .is_some_and(|task| self.mode_tasks.get(&task) == Some(&InteractionMode::Plan));
+            let in_debug = self
+                .selected
+                .is_some_and(|task| self.mode_tasks.get(&task) == Some(&InteractionMode::Debug));
             let mut rows = vec![
                 (
                     Choice {
                         label: "Files and folders".into(),
                         icon: Some(ui::Glyph::Attach),
-                        unavailable: (!matches!(
-                            self.workspace_target(),
-                            Some(WorkspaceTarget::Local { .. })
-                        ))
-                        .then(|| "Choose a local project to add file references.".into()),
                         ..Default::default()
                     },
-                    ControlAction::AddReferences,
+                    ControlAction::AttachFiles,
                 ),
                 (
                     Choice {
                         label: "Attach window".into(),
                         detail: "Capture an open app window".into(),
                         icon: Some(ui::Glyph::Window),
-                        unavailable: Some(
-                            "Window capture is not available in this native build yet.".into(),
-                        ),
+                        unavailable: self
+                            .selected
+                            .is_none()
+                            .then(|| "Select a task first.".into()),
                         ..Default::default()
                     },
-                    ControlAction::Unavailable,
+                    ControlAction::AttachWindow,
                 ),
                 (
                     Choice {
                         label: "Goal".into(),
                         detail: "Set a goal to keep pursuing".into(),
                         icon: Some(ui::Glyph::Goal),
-                        unavailable: Some(
-                            "Goals are not available in this native build yet.".into(),
-                        ),
+                        unavailable: self
+                            .selected
+                            .is_none()
+                            .then(|| "Select a task first.".into()),
                         ..Default::default()
                     },
-                    ControlAction::Unavailable,
+                    ControlAction::Goal,
                 ),
             ];
             rows.push((
@@ -488,24 +609,41 @@ impl Shell {
                     label: "Plan mode".into(),
                     detail: format!("Turn plan mode {}", if in_plan { "off" } else { "on" }),
                     icon: Some(ui::Glyph::Plan),
-                    unavailable: target
+                    selected: in_plan,
+                    unavailable: self
+                        .selected
                         .is_none()
-                        .then(|| "Connect an agent that advertises a plan mode.".into()),
+                        .then(|| "Select a task first.".into()),
                     ..Default::default()
                 },
-                target.map_or(ControlAction::Unavailable, |(_, action)| action.clone()),
+                ControlAction::PlanMode,
             ));
             rows.push((
                 Choice {
                     label: "Debug mode".into(),
-                    detail: "Observe, reproduce, investigate, fix and verify with saved evidence"
-                        .into(),
+                    detail: format!("Turn debug mode {}", if in_debug { "off" } else { "on" }),
                     icon: Some(ui::Glyph::Debug),
+                    selected: in_debug,
+                    unavailable: self
+                        .selected
+                        .is_none()
+                        .then(|| "Select a task first.".into()),
                     ..Default::default()
                 },
-                ControlAction::DebugWorkflow,
+                ControlAction::DebugMode,
             ));
             return rows;
+        }
+        // Upstream: the empty-draft plan follow-up submit is a split button
+        // whose chevron menu carries "Implement in a new thread".
+        if kind == ControlKind::PlanImplement {
+            return vec![(
+                Choice {
+                    label: "Implement in a new thread".into(),
+                    ..Default::default()
+                },
+                ControlAction::ImplementPlanNewThread,
+            )];
         }
         if kind == ControlKind::Project {
             let mut choices: Vec<_> = self
@@ -516,9 +654,10 @@ impl Shell {
                 .map(|project| {
                     (
                         Choice {
-                            label: project.name.clone(),
+                            label: self.project_name(project).to_string(),
                             detail: String::new(),
                             selected: self.project == Some(project.id),
+                            custom_icon: Some(self.project_choice_icon(project)),
                             ..Default::default()
                         },
                         ControlAction::Project(project.id),
@@ -607,13 +746,40 @@ impl Shell {
                 || self.controls.is_pending(task)
         })
     }
+    /// AppSnap discovery/capture finished while the extras menu sat in its
+    /// windows view — repopulate the open menu in place.
+    pub(super) fn refresh_extras_menu(&mut self, cx: &mut Context<Self>) {
+        if !self.controls.extras_windows
+            || !self
+                .controls
+                .open
+                .as_ref()
+                .is_some_and(|open| open.kind == ControlKind::Extras)
+        {
+            return;
+        }
+        let (items, choices): (Vec<_>, Vec<_>) = self
+            .control_choices(ControlKind::Extras)
+            .into_iter()
+            .unzip();
+        if let Some(open) = self.controls.open.as_mut() {
+            open.choices = choices;
+            open.view.update(cx, |menu, cx| menu.set_choices(items, cx));
+        }
+    }
     pub(super) fn dismiss_control(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        self.controls.extras_windows = false;
         if let Some(open) = self.controls.open.take() {
             window.focus(&self.controls.triggers[open.kind.index()].focus, cx);
             cx.notify();
         }
     }
-    fn open_control(&mut self, kind: ControlKind, window: &mut Window, cx: &mut Context<Self>) {
+    pub(super) fn open_control(
+        &mut self,
+        kind: ControlKind,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
         if kind != ControlKind::Project && self.controls_blocked() {
             return;
         }
@@ -634,7 +800,7 @@ impl Shell {
         self.navigation.menu_open = false;
         let view = cx.new(|cx| {
             let view = ChoiceMenu::new(kind.title().into(), items, cx);
-            if kind == ControlKind::Extras {
+            if matches!(kind, ControlKind::Extras | ControlKind::PlanImplement) {
                 view.add_layout(self.controls.composer_bounds.clone())
             } else if kind == ControlKind::Agent {
                 let profiles =
@@ -803,8 +969,36 @@ impl Shell {
             return;
         }
         match action {
-            ControlAction::DebugWorkflow => {
-                self.open_debug(cx);
+            ControlAction::PlanMode => {
+                let Some(task) = self.selected else {
+                    return;
+                };
+                let on = self.mode_tasks.get(&task) != Some(&InteractionMode::Plan);
+                self.set_interaction_mode(
+                    task,
+                    if on {
+                        InteractionMode::Plan
+                    } else {
+                        InteractionMode::Default
+                    },
+                    cx,
+                );
+                return;
+            }
+            ControlAction::DebugMode => {
+                let Some(task) = self.selected else {
+                    return;
+                };
+                let on = self.mode_tasks.get(&task) != Some(&InteractionMode::Debug);
+                self.set_interaction_mode(
+                    task,
+                    if on {
+                        InteractionMode::Debug
+                    } else {
+                        InteractionMode::Default
+                    },
+                    cx,
+                );
                 return;
             }
             ControlAction::Project(id) => {
@@ -815,10 +1009,42 @@ impl Shell {
                 self.browse_workspace(cx);
                 return;
             }
-            ControlAction::AddReferences => {
-                self.add_file_references(cx);
+            ControlAction::AttachFiles => {
+                self.choose_attachments(cx);
                 return;
             }
+            ControlAction::Goal => {
+                self.composer.update(cx, |entry, cx| {
+                    let text = entry.text().to_owned();
+                    let objective = text
+                        .strip_prefix("/synara/goal set")
+                        .map(str::trim_start)
+                        .unwrap_or(&text);
+                    entry.set_text(format!("/synara/goal set {objective}"), cx);
+                });
+                self.focus_composer = true;
+                cx.notify();
+                return;
+            }
+            ControlAction::AttachWindow => {
+                self.controls.extras_windows = true;
+                self.discover_appsnap_menu(cx);
+                self.open_control(ControlKind::Extras, window, cx);
+                return;
+            }
+            ControlAction::AttachWindowIndex(index) => {
+                self.capture_appsnap_window(index, cx);
+                return;
+            }
+            ControlAction::ExtrasBack => {
+                self.open_control(ControlKind::Extras, window, cx);
+                return;
+            }
+            ControlAction::ImplementPlanNewThread => {
+                self.implement_plan_in_new_thread(cx);
+                return;
+            }
+
             ControlAction::Connect => {
                 self.connect("connect", cx);
                 return;
@@ -831,37 +1057,7 @@ impl Shell {
         };
         self.apply_session_control(task, action, cx);
     }
-    pub(in crate::shell) fn native_plan_mode(&mut self, cx: &mut Context<Self>) -> bool {
-        let Some(task) = self.selected else {
-            return false;
-        };
-        if self.controls_blocked() || self.uses_direct_model() {
-            self.error = Some(
-                "Plan mode requires an idle connected ACP session advertising that mode.".into(),
-            );
-            return false;
-        }
-        let Some((choice, action)) = self
-            .control_choices(ControlKind::Mode)
-            .into_iter()
-            .find(|(choice, _)| choice.label.eq_ignore_ascii_case("plan"))
-        else {
-            self.error = Some(
-                "This session does not advertise a Plan mode. No mode or prompt was changed."
-                    .into(),
-            );
-            return false;
-        };
-        if let Some(reason) = choice.unavailable {
-            self.error = Some(reason);
-            return false;
-        }
-        if !choice.selected {
-            self.apply_session_control(task, action, cx);
-        }
-        true
-    }
-    fn apply_session_control(
+    pub(in crate::shell) fn apply_session_control(
         &mut self,
         task: TaskId,
         action: ControlAction,
@@ -869,20 +1065,47 @@ impl Shell {
     ) {
         self.controls.pending.insert(task);
         self.error = None;
+        if let ControlAction::Mode(mode) = &action {
+            self.controls.pending_mode = Some((task, mode.clone()));
+        }
         let controller = self.controller.clone();
         self.job(async move {
             let result = match action {
                 ControlAction::Project(_)
-                | ControlAction::DebugWorkflow
+                | ControlAction::PlanMode
+                | ControlAction::DebugMode
                 | ControlAction::BrowseWorkspace
-                | ControlAction::AddReferences
+                | ControlAction::AttachFiles
+                | ControlAction::AttachWindow
+                | ControlAction::AttachWindowIndex(_)
+                | ControlAction::ExtrasBack
+                | ControlAction::ImplementPlanNewThread
+                | ControlAction::Goal
                 | ControlAction::Unavailable
                 | ControlAction::AccessInfo
                 | ControlAction::Connect => {
                     unreachable!("project controls are handled before session dispatch")
                 }
                 ControlAction::Agent(agent) => controller.switch_agent(task, agent).await.map(Some),
-                ControlAction::Mode(mode) => controller.set_mode(task, mode).await.map(|_| None),
+                ControlAction::Mode(mode) => {
+                    // Apply to a live session only when it advertises the mode;
+                    // the choice itself is per-thread state that persists and
+                    // re-applies on session creation (upstream `runtimeMode`).
+                    let advertised = controller
+                        .details(task)
+                        .await
+                        .ok()
+                        .flatten()
+                        .is_some_and(|d| d.configuration.modes.iter().any(|m| m.id == mode));
+                    if advertised {
+                        controller.set_mode(task, mode.clone()).await?;
+                    }
+                    controller
+                        .workspace
+                        .save_task_runtime_mode(task, mode)
+                        .await
+                        .map(|_| None)
+                }
                 ControlAction::Model(model) => {
                     controller.set_model(task, model).await.map(|_| None)
                 }
@@ -970,13 +1193,11 @@ impl Shell {
             .aria_label(kind.title()).accessibility_id(kind.id()).when(disabled, |el| el.aria_description("Unavailable while the session is busy, or when no choices are advertised"))
             .text_size(px(14.)).max_w(px(320.)).min_w_0().text_ellipsis().px_2().py_1()
             .bg(gpui::rgba(0)).when(disabled, |el| el.opacity(0.5).cursor_default())
-            .when(kind == ControlKind::Access, |el| el.text_color(rgb(0xf0844b)))
             .when(kind == ControlKind::Extras, |el| el.size(px(30.)).p_0().justify_center())
             .on_click(cx.listener(move |this, _, window, cx| this.open_control(kind, window, cx)))
             .children(match kind {
                 ControlKind::Project => Some(ui::icon(ui::Glyph::Folder)),
                 ControlKind::Agent => Some(ui::icon(self.selected_agent_glyph())),
-                ControlKind::Access => Some(ui::icon(ui::Glyph::Shield).text_color(rgb(0xf0844b))),
                 ControlKind::Extras => Some(ui::icon(ui::Glyph::Plus).size(px(17.))),
                 _ => None,
             })
@@ -1016,55 +1237,8 @@ impl Shell {
             .into_any_element()
     }
 
-    // The ACP text prompt supports workspace references; a picker never sends
-    // content or starts a turn. Recheck task/root after the asynchronous dialog.
-    fn add_file_references(&mut self, cx: &mut Context<Self>) {
-        let Some(WorkspaceTarget::Local { root }) = self.workspace_target() else {
-            return;
-        };
-        let selected = self.selected;
-        let picker = cx.prompt_for_paths(gpui::PathPromptOptions {
-            files: true,
-            directories: true,
-            multiple: true,
-            prompt: Some("Add workspace references".into()),
-        });
-        cx.spawn(async move |view, cx| {
-            let result = picker.await;
-            let _ = view.update(cx, |this, cx| {
-                if this.selected != selected || !matches!(this.workspace_target(), Some(WorkspaceTarget::Local { root: current }) if current == root) { return; }
-                match result {
-                    Ok(Ok(Some(paths))) => {
-                        let root = root.canonicalize();
-                        let references: Result<Vec<_>, _> = paths.into_iter().map(|path| {
-                            let path = path.canonicalize().map_err(|_| ())?;
-                            let relative = path.strip_prefix(root.as_ref().map_err(|_| ())?).map_err(|_| ())?;
-                            Ok::<_, ()>(format!("@{}", relative.display()))
-                        }).collect();
-                        match references {
-                            Ok(references) => this.composer.update(cx, |entry, cx| {
-                                let mut text = entry.text().to_owned();
-                                if !text.is_empty() && !text.ends_with(char::is_whitespace) { text.push(' '); }
-                                text.push_str(&references.join(" "));
-                                entry.set_text(text, cx);
-                            }),
-                            Err(()) => this.error = Some("Choose files or folders inside the current project.".into()),
-                        }
-                    }
-                    Ok(Ok(None)) => {},
-                    _ => this.error = Some("The system file picker could not open. Type a workspace path in the message instead.".into()),
-                }
-                this.snapshot_draft(cx);
-                cx.notify();
-            });
-        }).detach();
-    }
-
     pub(super) fn session_controls(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
         let models = self.control_choices(ControlKind::Model);
-        let can_cycle_models =
-            !self.uses_direct_model() && cycle_model_action(&models, true).is_some();
-        let cycle_disabled = self.controls_blocked();
         let label = models
             .iter()
             .find(|(choice, _)| choice.selected)
@@ -1083,37 +1257,36 @@ impl Shell {
             .gap_1()
             .min_w_0()
             .child(self.control_trigger(ControlKind::Extras, String::new(), true, cx))
-            .child(self.control_trigger(ControlKind::Access, "Ask permission".into(), true, cx))
+            .child(self.control_trigger(
+                ControlKind::Access,
+                // Upstream shows the thread's persisted `runtimeMode` label on
+                // the composer button even before a session exists.
+                if self.control_choices(ControlKind::Mode).is_empty() {
+                    self.task()
+                        .and_then(|task| self.catalog.runtime_modes.get(&task.id))
+                        .map(|mode| {
+                            access_mode_copy(mode)
+                                .map(|(label, _)| label.to_owned())
+                                .unwrap_or_else(|| mode.clone())
+                        })
+                        .unwrap_or_else(|| "Ask for approval".into())
+                } else {
+                    self.control_choices(ControlKind::Access)
+                        .iter()
+                        .find(|(choice, _)| choice.selected)
+                        .map_or_else(
+                            || "Ask for approval".into(),
+                            |(choice, _)| choice.label.clone(),
+                        )
+                },
+                true,
+                cx,
+            ))
+            .children(self.context_meter(cx))
+            // Upstream `sidebarAction`: "Plan details"/"Tasks" sidebar toggle.
+            .children(self.plan_sidebar_toggle(cx))
             .child(div().flex_1())
             .child(self.control_trigger(ControlKind::Agent, label, !self.profiles.is_empty(), cx))
-            .children(can_cycle_models.then(|| {
-                div()
-                    .flex()
-                    .items_center()
-                    .gap_1()
-                    .child(
-                        ui::button_shell("previous-session-model", "Previous model", false)
-                            .size(px(28.))
-                            .p_0()
-                            .relative()
-                            .when(cycle_disabled, |el| el.opacity(0.5).cursor_default())
-                            .child(ui::icon(ui::Glyph::Back).size(px(13.)))
-                            .on_click(cx.listener(|this, _, _, cx| {
-                                this.cycle_session_model(false, cx);
-                            })),
-                    )
-                    .child(
-                        ui::button_shell("next-session-model", "Next model", false)
-                            .size(px(28.))
-                            .p_0()
-                            .relative()
-                            .when(cycle_disabled, |el| el.opacity(0.5).cursor_default())
-                            .child(ui::icon(ui::Glyph::Forward).size(px(13.)))
-                            .on_click(cx.listener(|this, _, _, cx| {
-                                this.cycle_session_model(true, cx);
-                            })),
-                    )
-            }))
             .into_any_element()
     }
 
@@ -1131,7 +1304,7 @@ impl Shell {
                 .find(|project| Some(project.id) == self.project)
                 .map_or_else(
                     || "Work in a project".to_owned(),
-                    |project| project.name.clone(),
+                    |project| self.project_name(project).to_string(),
                 )
         };
         self.control_trigger(ControlKind::Project, label, true, cx)
@@ -1141,7 +1314,7 @@ impl Shell {
         let Some(open) = &self.controls.open else {
             return div().into_any_element();
         };
-        let is_add = open.kind == ControlKind::Extras;
+        let is_add = matches!(open.kind, ControlKind::Extras | ControlKind::PlanImplement);
         let bounds = if is_add {
             self.controls.composer_bounds.get()
         } else {

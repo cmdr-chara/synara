@@ -174,7 +174,6 @@ impl Shell {
         }
         // Accordion: one workflow expanded at a time. Inputs persist in
         // their editors, so collapsing never discards edits.
-        self.debug_workflow.open = false;
         self.recap.open = false;
         self.goals.open = true;
         cx.notify();

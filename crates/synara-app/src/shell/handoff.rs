@@ -9,7 +9,7 @@ struct Target {
     choice: HandoffTarget,
 }
 pub(super) enum Reply {
-    Targets(u64, Result<(Vec<AgentProfile>, ProviderSettings), String>),
+    Targets(u64, Result<Vec<AgentProfile>, String>),
     Reviewed(u64, Result<Box<HandoffReview>, String>),
     Created(u64, Result<Task, String>),
     Forked(u64, Result<(Task, bool, Option<String>), String>),
@@ -65,14 +65,7 @@ impl Shell {
         {
             return;
         }
-        let query = cx.new(|cx| {
-            TextEntry::new(
-                "Find an agent or saved direct model...",
-                EntryMode::SingleLine,
-                32.,
-                cx,
-            )
-        });
+        let query = cx.new(|cx| TextEntry::new("Find an agent...", EntryMode::SingleLine, 32., cx));
         let editor = cx.new(|cx| {
             TextEntry::new(
                 "Review the continuation request",
@@ -106,13 +99,7 @@ impl Shell {
         window.focus(&query.read(cx).focus_handle(cx), cx);
         let workspace = self.controller.workspace.clone();
         self.job(async move {
-            let result = async {
-                Ok((
-                    workspace.profiles().await?,
-                    workspace.direct_model_settings().await?,
-                ))
-            }
-            .await;
+            let result = workspace.profiles().await;
             Ok(Update::Handoff(Box::new(Reply::Targets(
                 generation,
                 result.map_err(|e: WorkspaceError| e.to_string()),
@@ -143,14 +130,7 @@ impl Shell {
         {
             return;
         }
-        let query = cx.new(|cx| {
-            TextEntry::new(
-                "Find an agent or saved direct model...",
-                EntryMode::SingleLine,
-                32.,
-                cx,
-            )
-        });
+        let query = cx.new(|cx| TextEntry::new("Find an agent...", EntryMode::SingleLine, 32., cx));
         let editor = cx.new(|cx| {
             TextEntry::new(
                 "Review the continuation request",
@@ -184,13 +164,7 @@ impl Shell {
         window.focus(&query.read(cx).focus_handle(cx), cx);
         let workspace = self.controller.workspace.clone();
         self.job(async move {
-            let result = async {
-                Ok((
-                    workspace.profiles().await?,
-                    workspace.direct_model_settings().await?,
-                ))
-            }
-            .await;
+            let result = workspace.profiles().await;
             Ok(Update::Handoff(Box::new(Reply::Targets(
                 generation,
                 result.map_err(|e: WorkspaceError| e.to_string()),
@@ -442,7 +416,7 @@ impl Shell {
             Reply::Targets(_, result) => {
                 let dialog = self.handoff.dialog.as_mut().unwrap();
                 match result {
-                    Ok((agents, settings)) => {
+                    Ok(agents) => {
                         dialog.targets = agents
                             .into_iter()
                             .map(|agent| Target {
@@ -450,31 +424,6 @@ impl Shell {
                                 choice: HandoffTarget::Agent(agent.id),
                             })
                             .collect();
-                        // Bound the rendered candidate inventory. The settings
-                        // validator already bounds saved providers/model metadata.
-                        for profile in settings.providers {
-                            for model in profile.models {
-                                if dialog.targets.len() >= 4096 {
-                                    break;
-                                }
-                                let limit = model
-                                    .capabilities
-                                    .max_output_tokens
-                                    .unwrap_or(1024)
-                                    .min(1024) as u32;
-                                dialog.targets.push(Target {
-                                    label: format!("Direct: {} / {}", profile.name, model.id),
-                                    choice: HandoffTarget::Direct(ModelSelection {
-                                        history_turns: None,
-                                        provider_id: profile.id.clone(),
-                                        model_id: model.id,
-                                        max_output_tokens: limit.max(1),
-                                        reasoning_effort: None,
-                                        output: Default::default(),
-                                    }),
-                                });
-                            }
-                        }
                     }
                     Err(error) => dialog.error = Some(error),
                 }
@@ -690,16 +639,47 @@ impl Shell {
                 .iter()
                 .filter(|target| target.label.to_lowercase().contains(&query))
                 .collect();
-            page = page.child(div().relative().child(dialog.query.clone()).child(ui::layout_probe("handoff-query")))
-                .child(div().id("handoff-targets").h(px(300.)).min_h(px(200.)).overflow_y_scroll()
-                    .children(matches.iter().take(50).enumerate().map(|(index, target)| {
-                        let choice = target.choice.clone();
-                        ui::action(("handoff-target", index), target.label.clone(), None, false,
-                            cx.listener(move |this, _: &(), _, cx| this.review_handoff_target(choice.clone(), cx)))
-                            .w_full().rounded_none().border_b_1().border_color(rgb(palette().border))
-                            .relative().child(ui::layout_probe_slot("handoff-target", index))
-                    })))
-                .child(div().text_size(px(12.)).text_color(rgb(palette().muted)).child(format!("{} matching targets. Showing at most 50 of the first 4096 saved targets; narrow the search. Configure additional models in Direct models settings.", matches.len())));
+            page = page
+                .child(
+                    div()
+                        .relative()
+                        .child(dialog.query.clone())
+                        .child(ui::layout_probe("handoff-query")),
+                )
+                .child(
+                    div()
+                        .id("handoff-targets")
+                        .h(px(300.))
+                        .min_h(px(200.))
+                        .overflow_y_scroll()
+                        .children(matches.iter().take(50).enumerate().map(|(index, target)| {
+                            let choice = target.choice.clone();
+                            ui::action(
+                                ("handoff-target", index),
+                                target.label.clone(),
+                                None,
+                                false,
+                                cx.listener(move |this, _: &(), _, cx| {
+                                    this.review_handoff_target(choice.clone(), cx)
+                                }),
+                            )
+                            .w_full()
+                            .rounded_none()
+                            .border_b_1()
+                            .border_color(rgb(palette().border))
+                            .relative()
+                            .child(ui::layout_probe_slot("handoff-target", index))
+                        })),
+                )
+                .child(
+                    div()
+                        .text_size(px(12.))
+                        .text_color(rgb(palette().muted))
+                        .child(format!(
+                            "{} matching targets. Showing at most 50; narrow the search.",
+                            matches.len()
+                        )),
+                );
         }
         page = page
             .children(dialog.error.as_ref().map(|error| {
@@ -811,14 +791,10 @@ impl Shell {
             .filter(|(_, target)| target.label.to_lowercase().contains(&query))
             .take(50)
             .map(|(index, target)| {
-                let icon = match target.choice {
-                    HandoffTarget::Agent(_) => Glyph::Agent,
-                    HandoffTarget::Direct(_) => Glyph::Brain,
-                };
                 (
                     index,
                     format!("Handoff to {}", Self::handoff_short_label(&target.label)),
-                    icon,
+                    Glyph::Agent,
                     target.choice.clone(),
                 )
             })

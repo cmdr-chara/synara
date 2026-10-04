@@ -18,14 +18,25 @@ thread_local! {
     static EXACT_ROLES: Cell<bool> = const { Cell::new(false) };
 }
 
-pub fn active_variant() -> ThemeVariant { VARIANT.get() }
+// Role-level accessors are exercised by the native theme editor round; keep
+// them compiled so the paint path stays honest. Tests cover them today.
+#[allow(dead_code)]
+pub fn active_variant() -> ThemeVariant {
+    VARIANT.get()
+}
 
 pub fn configure(appearance: &AppearanceSettings, dark: bool) -> Option<Palette> {
-    let variant = if dark { ThemeVariant::Dark } else { ThemeVariant::Light };
+    let variant = if dark {
+        ThemeVariant::Dark
+    } else {
+        ThemeVariant::Light
+    };
     VARIANT.set(variant);
-    EXACT_ROLES.set(!appearance.high_contrast
-        && appearance.personalization.colorway == Colorway::Original
-        && appearance.personalization.accent.is_none());
+    EXACT_ROLES.set(
+        !appearance.high_contrast
+            && appearance.personalization.colorway == Colorway::Original
+            && appearance.personalization.accent.is_none(),
+    );
     let Some(preferences) = &appearance.electron_theme else {
         ACTIVE.with(|active| *active.borrow_mut() = None);
         return None;
@@ -33,15 +44,25 @@ pub fn configure(appearance: &AppearanceSettings, dark: bool) -> Option<Palette>
     let pack = preferences.pack(variant);
     ACTIVE.with(|active| {
         let mut active = active.borrow_mut();
-        if !active.as_ref().is_some_and(|cached| cached.variant == variant && cached.pack == *pack) {
-            *active = Some(CachedTheme { variant, pack: pack.clone(), tokens: ThemeTokens::derive(&pack.theme, variant) });
+        if !active
+            .as_ref()
+            .is_some_and(|cached| cached.variant == variant && cached.pack == *pack)
+        {
+            *active = Some(CachedTheme {
+                variant,
+                pack: pack.clone(),
+                tokens: ThemeTokens::derive(&pack.theme, variant),
+            });
         }
-        active.as_ref().map(|cached| project_palette(&cached.tokens))
+        active
+            .as_ref()
+            .map(|cached| project_palette(&cached.tokens, cached.variant))
     })
 }
 
-fn project_palette(tokens: &ThemeTokens) -> Palette {
+fn project_palette(tokens: &ThemeTokens, variant: ThemeVariant) -> Palette {
     let color = |name| tokens.color_on_surface(name).unwrap_or(tokens.surface);
+    let dark = variant == ThemeVariant::Dark;
     Palette {
         canvas: tokens.surface,
         sidebar: tokens.surface,
@@ -55,15 +76,35 @@ fn project_palette(tokens: &ThemeTokens) -> Palette {
         error: color("diffRemoved"),
         error_surface: color("editorRemoved"),
         notice_surface: color("accentBackground"),
+        pending: if dark {
+            super::DARK.pending
+        } else {
+            super::LIGHT.pending
+        },
+        awaiting: if dark {
+            super::DARK.awaiting
+        } else {
+            super::LIGHT.awaiting
+        },
+        dark,
     }
 }
 
 /// Alpha is retained until native compositing rather than flattened twice.
 /// Explicit high-contrast/colorway overrides continue to use their own palette.
+#[allow(dead_code)]
 pub fn paint(role: &str, fallback: u32) -> Rgba {
-    let found = EXACT_ROLES.get().then(|| ACTIVE.with(|active| {
-        active.borrow().as_ref().and_then(|cached| cached.tokens.paint(role))
-    })).flatten();
+    let found = EXACT_ROLES
+        .get()
+        .then(|| {
+            ACTIVE.with(|active| {
+                active
+                    .borrow()
+                    .as_ref()
+                    .and_then(|cached| cached.tokens.paint(role))
+            })
+        })
+        .flatten();
     if let Some(color) = found {
         Rgba {
             r: ((color.rgb >> 16) & 255) as f32 / 255.0,
@@ -71,34 +112,65 @@ pub fn paint(role: &str, fallback: u32) -> Rgba {
             b: (color.rgb & 255) as f32 / 255.0,
             a: color.alpha as f32,
         }
-    } else { gpui::rgb(fallback) }
+    } else {
+        gpui::rgb(fallback)
+    }
 }
 
+#[allow(dead_code)]
 pub fn composer_focus(fallback: u32) -> u32 {
-    ACTIVE.with(|active| active.borrow().as_ref().map_or(fallback, |cached| cached.tokens.composer_focus_border))
+    ACTIVE.with(|active| {
+        active
+            .borrow()
+            .as_ref()
+            .map_or(fallback, |cached| cached.tokens.composer_focus_border)
+    })
 }
 
 /// The native theme editor and imported packs name installed font families.
 /// CSS stacks are not executable native font expressions: use their first
 /// explicit family, with generic families resolved to the existing OS default.
+#[allow(dead_code)]
 pub fn family(value: &str, default: &str) -> String {
     let value = value.trim();
-    if value.is_empty() { return default.into(); }
+    if value.is_empty() {
+        return default.into();
+    }
     let mut quoted = None;
     let mut end = value.len();
     for (index, character) in value.char_indices() {
         if let Some(quote) = quoted {
-            if character == quote { quoted = None; }
+            if character == quote {
+                quoted = None;
+            }
         } else if character == '\'' || character == '"' {
             quoted = Some(character);
-        } else if character == ',' { end = index; break; }
+        } else if character == ',' {
+            end = index;
+            break;
+        }
     }
     let family = value[..end].trim().trim_matches(['\'', '"']).trim();
-    if family.is_empty() || family.contains('(') || matches!(family,
-        "inherit" | "initial" | "unset" | "revert" | "revert-layer" |
-        "system-ui" | "sans-serif" | "monospace" | "ui-monospace" | "ui-sans-serif") {
+    if family.is_empty()
+        || family.contains('(')
+        || matches!(
+            family,
+            "inherit"
+                | "initial"
+                | "unset"
+                | "revert"
+                | "revert-layer"
+                | "system-ui"
+                | "sans-serif"
+                | "monospace"
+                | "ui-monospace"
+                | "ui-sans-serif"
+        )
+    {
         default.into()
-    } else { family.into() }
+    } else {
+        family.into()
+    }
 }
 
 #[cfg(test)]
@@ -143,7 +215,10 @@ mod tests {
     #[test]
     fn css_font_stack_parsing_never_treats_expressions_as_native_families() {
         assert_eq!(family("\"My Font\", sans-serif", "System"), "My Font");
-        assert_eq!(family("'Font, With Comma', serif", "System"), "Font, With Comma");
+        assert_eq!(
+            family("'Font, With Comma', serif", "System"),
+            "Font, With Comma"
+        );
         assert_eq!(family("var(--font-family)", "System"), "System");
         assert_eq!(family("ui-monospace", "Mono"), "Mono");
     }

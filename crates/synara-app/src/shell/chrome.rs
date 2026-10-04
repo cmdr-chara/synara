@@ -9,6 +9,70 @@ impl Shell {
         cx.notify();
     }
 
+    fn tasks_view_switcher(&self, cx: &mut Context<Self>) -> gpui::AnyElement {
+        let selected = self.settings.value.general.tasks_view_mode.mode;
+        div()
+            .id("tasks-view-switcher")
+            .role(gpui::Role::TabList)
+            .aria_label("Tasks view")
+            .aria_description("Left and right select List or Kanban")
+            .tab_group()
+            .h(px(30.))
+            .p(px(2.))
+            .rounded_md()
+            .border_1()
+            .border_color(rgb(palette().border))
+            .bg(rgb(palette().canvas))
+            .flex()
+            .items_center()
+            .children(
+                [
+                    (TasksViewMode::List, "List", 0usize),
+                    (TasksViewMode::Kanban, "Kanban", 1usize),
+                ]
+                .into_iter()
+                .map(|(mode, label, index)| {
+                    let active = selected == mode;
+                    let id = if mode == TasksViewMode::List {
+                        "tasks-view-list"
+                    } else {
+                        "tasks-view-kanban"
+                    };
+                    ui::button_shell(id, label, active)
+                        .role(gpui::Role::Tab)
+                        .aria_label(label)
+                        .aria_selected(active)
+                        .aria_description("Use Left or Right to change the Tasks view")
+                        .track_focus(&self.tasks_view_focus[index])
+                        .tab_stop(active)
+                        .h(px(24.))
+                        .px_2()
+                        .py_0()
+                        .text_size(px(12.))
+                        .when(!active, |button| button.bg(gpui::rgba(0)))
+                        .on_key_down(cx.listener(
+                            move |this, event: &gpui::KeyDownEvent, window, cx| {
+                                let modifiers = event.keystroke.modifiers;
+                                if modifiers.alt || modifiers.control || modifiers.platform {
+                                    return;
+                                }
+                                let mode = match event.keystroke.key.as_str() {
+                                    "left" if index > 0 => TasksViewMode::List,
+                                    "right" if index == 0 => TasksViewMode::Kanban,
+                                    _ => return,
+                                };
+                                this.set_tasks_view_mode(mode, window, cx);
+                                cx.stop_propagation();
+                            },
+                        ))
+                        .on_click(cx.listener(move |this, _, window, cx| {
+                            this.set_tasks_view_mode(mode, window, cx);
+                        }))
+                }),
+            )
+            .into_any_element()
+    }
+
     fn toolbar(
         &self,
         sidebar_fraction: f32,
@@ -24,10 +88,8 @@ impl Shell {
         let navigation_width = (ui::SIDEBAR_WIDTH * sidebar_fraction).max(208.);
         let has_chat = !self.environment.maximized
             && (self.panel == Panel::Conversation || docked)
-            && self
-                .thread
-                .as_ref()
-                .is_some_and(|thread| !thread.timeline.is_empty());
+            && self.task().is_some();
+        let has_thread_tabs = has_chat && self.open_thread_tab_count() > 0;
         let title = self
             .task()
             .map_or("New thread", |task| task.title.as_str())
@@ -120,7 +182,7 @@ impl Shell {
                             )
                         }),
                     )
-                    .child(
+                    .children((!has_thread_tabs).then(|| {
                         div()
                             .id("window-drag-region")
                             .h_full()
@@ -150,14 +212,40 @@ impl Shell {
                                             .child(format!("{} tasks", self.kanban_count())),
                                     )
                             }))
-                            .children(has_chat.then(|| ui::icon(self.selected_agent_glyph())))
-                            .children(has_chat.then(|| {
+                            .children(
+                                (has_chat && !has_thread_tabs)
+                                    .then(|| ui::icon(self.selected_agent_glyph())),
+                            )
+                            .children((has_chat && !has_thread_tabs).then(|| {
                                 div()
                                     .min_w_0()
                                     .text_ellipsis()
                                     .text_size(px(15.))
                                     .child(title)
-                            })),
+                            }))
+                    }))
+                    .children(has_thread_tabs.then(|| self.open_thread_tabs_strip(cx)))
+                    .children(has_thread_tabs.then(|| {
+                        // Keep a small client-decoration drag handle after the
+                        // scrollable strip. Tab chips own their pointer input;
+                        // the handle preserves window movement without making
+                        // a tab click ambiguous.
+                        div()
+                            .id("window-drag-region-tabs")
+                            .h_full()
+                            .w(px(24.))
+                            .flex_shrink_0()
+                            .on_mouse_down(gpui::MouseButton::Left, |event, window, _| {
+                                if event.click_count == 2 {
+                                    window.zoom_window();
+                                } else {
+                                    window.start_window_move();
+                                }
+                            })
+                    }))
+                    .children(
+                        (self.panel == Panel::Kanban && !self.navigation.studio)
+                            .then(|| self.tasks_view_switcher(cx)),
                     )
                     .children((self.panel == Panel::Kanban).then(|| {
                         ui::action(
@@ -446,6 +534,7 @@ impl Render for Shell {
             && !self.controls.is_open()
             && self.kanban.dialog.is_none()
             && self.organization.dialog.is_none()
+            && self.project_ui.dialog.is_none()
             && self.saved_context.dialog.is_none()
             && !self.explorer.modal_open()
             && !self.environment.menu_open()
@@ -467,6 +556,7 @@ impl Render for Shell {
             self.restore_environment_focus(window, cx);
         }
         self.restore_organization_focus(window, cx);
+        self.restore_project_ui_focus(window, cx);
         self.restore_saved_context_focus(window, cx);
         self.restore_hub_focus(window, cx);
         self.restore_revision_focus(window, cx);
@@ -479,8 +569,13 @@ impl Render for Shell {
         if !cx.reduce_motion() && self.transcript.advance_animations(now) {
             window.request_animation_frame();
         }
+        // Upstream `railShellStore.reconcile` runs as a passive effect on every
+        // commit; the Rust shell does the same each render while rail is on.
+        if self.rail_enabled() {
+            self.reconcile_rail(cx);
+        }
         let sidebar_fraction = if cx.reduce_motion() {
-            if self.navigation.visible { 1.0 } else { 0.0 }
+            if self.rail_drawer_open() { 1.0 } else { 0.0 }
         } else {
             if self.navigation.drawer.running(now) {
                 window.request_animation_frame();
@@ -541,12 +636,31 @@ impl Render for Shell {
                 let key = event.keystroke.key.as_str();
                 if this.kanban.dialog.is_some()
                     || this.organization.dialog.is_some()
+                    || this.project_ui.dialog.is_some()
                     || this.saved_context.dialog.is_some()
                     || this.revisions.open()
                     || this.handoff.open()
                     || this.settings.personalization.attention_open
                     || this.explorer.modal_open()
                 {
+                    return;
+                }
+                if this.composer.read(cx).focus_handle(cx).is_focused(window)
+                    && voice::recording_enter_should_stop(
+                        key,
+                        voice::EnterStopProbe {
+                            recording: this.voice.recording(),
+                            is_held: event.is_held,
+                            prefer_character_input: event.prefer_character_input,
+                            is_composing: this.composer.read(cx).is_composing(),
+                            command: modifiers.control || modifiers.platform,
+                            shift: modifiers.shift,
+                            alt: modifiers.alt,
+                        },
+                    )
+                {
+                    this.voice_enter(cx);
+                    cx.stop_propagation();
                     return;
                 }
                 if !this
@@ -672,6 +786,7 @@ impl Render for Shell {
                     .flex()
                     .flex_1()
                     .min_h_0()
+                    .children(self.rail_enabled().then(|| self.rail_strip(cx)))
                     .children((sidebar_fraction > 0.0).then(|| {
                         div()
                             .id("sidebar-drawer")
@@ -688,7 +803,9 @@ impl Render for Shell {
                                     .bottom_0()
                                     .left(px(ui::SIDEBAR_WIDTH * (sidebar_fraction - 1.0)))
                                     .w(px(ui::SIDEBAR_WIDTH))
-                                    .child(if self.panel == Panel::Settings {
+                                    .child(if self.rail_enabled() {
+                                        self.rail_panel_content(cx)
+                                    } else if self.panel == Panel::Settings {
                                         self.settings_sidebar(cx)
                                     } else {
                                         self.sidebar(cx)
@@ -763,10 +880,17 @@ impl Render for Shell {
             )
             .children(self.kanban.dialog.clone())
             .children(self.organization.dialog.clone())
+            .children(self.project_ui.dialog.clone())
             .children(self.saved_context.dialog.clone())
             .when(self.explorer.modal_open(), |el| {
                 el.child(self.file_action_overlay(cx))
             })
+            .children(self.rail.more_open.then(|| self.rail_more_overlay(cx)))
+            .children(
+                self.rail
+                    .customize_open
+                    .then(|| self.rail_customize_overlay(cx)),
+            )
             .children(self.navigation.menu_open.then(|| self.tools_overlay(cx)))
             .children(self.controls.is_open().then(|| self.control_overlay(cx)))
             .children(self.revisions.open().then(|| self.revision_overlay(cx)))

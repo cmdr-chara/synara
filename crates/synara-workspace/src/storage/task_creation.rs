@@ -73,10 +73,7 @@ impl Store {
         }
         let data = encode(task)?;
         let draft = encode(&serde_json::json!({"version": 1, "text": text}))?;
-        let managed = managed
-            .as_ref()
-            .map(|managed| encode(managed))
-            .transpose()?;
+        let managed = managed.as_ref().map(encode).transpose()?;
         let tx = self
             .connection
             .transaction_with_behavior(TransactionBehavior::Immediate)?;

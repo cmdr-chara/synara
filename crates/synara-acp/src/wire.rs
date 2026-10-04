@@ -408,7 +408,14 @@ pub(crate) fn update(
                     })
                 })
                 .collect::<AgentResult<_>>()?;
-            events.push(ThreadEvent::PlanChanged { entries });
+            let explanation = value
+                .get("explanation")
+                .and_then(Value::as_str)
+                .map(str::to_owned);
+            events.push(ThreadEvent::PlanChanged {
+                entries,
+                explanation,
+            });
         }
         "usage_update" => {
             let usage = Usage {
@@ -453,9 +460,140 @@ pub(crate) fn update(
     }
     Ok(events)
 }
+// Credential-named environment variables forwarded to provider children upstream.
+const PROVIDER_CREDENTIAL_KEYS: &[&str] = &[
+    "ANTHROPIC_API_KEY",
+    "ANTHROPIC_AUTH_TOKEN",
+    "CLAUDE_CODE_OAUTH_TOKEN",
+    "AWS_ACCESS_KEY_ID",
+    "AWS_SECRET_ACCESS_KEY",
+    "AWS_SESSION_TOKEN",
+    "GEMINI_API_KEY",
+    "GOOGLE_API_KEY",
+    "GOOGLE_APPLICATION_CREDENTIALS",
+    "OPENAI_API_KEY",
+    "XAI_API_KEY",
+    "GROK_CODE_XAI_API_KEY",
+    "FACTORY_API_KEY",
+    "CURSOR_API_KEY",
+    "DEVIN_API_KEY",
+    "WINDSURF_API_KEY",
+    "DOCKER_AUTH_CONFIG",
+];
+const EXACT_SENSITIVE_KEYS: &[&str] = &[
+    "accesskey",
+    "accesskeyid",
+    "apikey",
+    "authtoken",
+    "authorization",
+    "clientsecret",
+    "cookie",
+    "cookies",
+    "credential",
+    "credentials",
+    "idtoken",
+    "passphrase",
+    "passwd",
+    "password",
+    "privatekey",
+    "proxyauthorization",
+    "pwd",
+    "refreshtoken",
+    "secret",
+    "secretkey",
+    "sessiontoken",
+    "setcookie",
+    "token",
+];
+const SECRET_TERMINAL_WORDS: &[&str] = &[
+    "authorization",
+    "cookie",
+    "cookies",
+    "credential",
+    "credentials",
+    "passphrase",
+    "passwd",
+    "password",
+    "pwd",
+    "secret",
+    "secrets",
+];
+const TOKEN_TERMINAL_WORDS: &[&str] = &["token", "tokens"];
+const SECRET_TOKEN_QUALIFIERS: &[&str] = &[
+    "access", "api", "auth", "bearer", "bot", "client", "gateway", "id", "jwt", "machine", "oauth",
+    "personal", "refresh", "secret", "service", "session", "sso", "user", "webhook",
+];
+// Splits a JSON key into word tokens using upstream's camel/acronym boundaries,
+// then lowercase alphanumeric runs: "HTTPSProxyAuthorization" -> https proxy authorization.
+fn key_tokens(key: &str) -> Vec<String> {
+    let chars: Vec<char> = key.chars().collect();
+    let mut tokens = Vec::new();
+    let mut current = String::new();
+    for (index, &c) in chars.iter().enumerate() {
+        let boundary = c.is_ascii_uppercase()
+            && index > 0
+            && (chars[index - 1].is_ascii_lowercase()
+                || chars[index - 1].is_ascii_digit()
+                || (chars[index - 1].is_ascii_uppercase()
+                    && index + 1 < chars.len()
+                    && chars[index + 1].is_ascii_lowercase()));
+        if boundary && !current.is_empty() {
+            tokens.push(std::mem::take(&mut current));
+        }
+        if c.is_ascii_alphanumeric() {
+            current.extend(c.to_lowercase());
+        } else if !current.is_empty() {
+            tokens.push(std::mem::take(&mut current));
+        }
+    }
+    if !current.is_empty() {
+        tokens.push(current);
+    }
+    tokens
+}
+fn is_provider_credential_key(key: &str) -> bool {
+    PROVIDER_CREDENTIAL_KEYS.contains(&key.trim().to_uppercase().as_str())
+}
+/// True when a JSON object key names a credential rather than benign metadata.
+/// Mirrors upstream `isSensitiveKey`: `prompt_tokens`/`total_tokens` stay visible.
+fn is_sensitive_key(key: &str) -> bool {
+    if is_provider_credential_key(key) {
+        return true;
+    }
+    let normalized: String = key
+        .chars()
+        .filter(|c| c.is_ascii_alphanumeric())
+        .flat_map(char::to_lowercase)
+        .collect();
+    if EXACT_SENSITIVE_KEYS.contains(&normalized.as_str()) {
+        return true;
+    }
+    let tokens = key_tokens(key);
+    let Some(terminal) = tokens.last() else {
+        return false;
+    };
+    if SECRET_TERMINAL_WORDS.contains(&terminal.as_str()) {
+        return true;
+    }
+    if TOKEN_TERMINAL_WORDS.contains(&terminal.as_str()) {
+        // Usage counters like `prompt_tokens` are not secrets; a bare `token` is.
+        return tokens.len() < 2
+            || SECRET_TOKEN_QUALIFIERS.contains(&tokens[tokens.len() - 2].as_str());
+    }
+    terminal == "key"
+        && tokens[..tokens.len() - 1]
+            .iter()
+            .any(|token| ["api", "private", "proxy", "secret"].contains(&token.as_str()))
+}
 fn reviewed_tool_input(value: &Value) -> ToolInput {
     use sha2::{Digest, Sha256};
-    fn project(value: &Value, depth: usize, budget: &mut usize, clipped: &mut bool) -> Value {
+    fn project(
+        value: &Value,
+        depth: usize,
+        budget: &mut usize,
+        clipped: &mut bool,
+        redacted: &mut bool,
+    ) -> Value {
         if depth > 8 || *budget == 0 {
             *clipped = true;
             return Value::String("[omitted]".into());
@@ -465,30 +603,23 @@ fn reviewed_tool_input(value: &Value) -> ToolInput {
             Value::Object(fields) => {
                 let mut result = serde_json::Map::new();
                 for (key, value) in fields.iter().take(32) {
-                    let name = key.to_ascii_lowercase();
-                    let sensitive = [
-                        "secret",
-                        "password",
-                        "token",
-                        "authorization",
-                        "cookie",
-                        "api_key",
-                        "apikey",
-                        "credential",
-                    ]
-                    .iter()
-                    .any(|part| name.contains(part))
-                        || matches!(name.as_str(), "env" | "environment" | "headers");
+                    // `env`/`headers` maps carry arbitrary named secrets that the
+                    // tables cannot enumerate, so they stay whole-field redacted.
+                    let sensitive = is_sensitive_key(key)
+                        || matches!(
+                            key.to_ascii_lowercase().as_str(),
+                            "env" | "environment" | "headers"
+                        );
                     if sensitive {
                         result.insert(
                             key.chars().take(128).collect(),
                             Value::String("[redacted]".into()),
                         );
-                        *clipped = true;
+                        *redacted = true;
                     } else {
                         result.insert(
                             key.chars().take(128).collect(),
-                            project(value, depth + 1, budget, clipped),
+                            project(value, depth + 1, budget, clipped, redacted),
                         );
                     }
                     *clipped |= key.chars().count() > 128;
@@ -502,11 +633,29 @@ fn reviewed_tool_input(value: &Value) -> ToolInput {
                     values
                         .iter()
                         .take(32)
-                        .map(|value| project(value, depth + 1, budget, clipped))
+                        .map(|value| project(value, depth + 1, budget, clipped, redacted))
                         .collect(),
                 )
             }
             Value::String(text) => {
+                // Agents can pass a complete JSON object or array as a parameter
+                // string; credentials inside it get the same field-level redaction.
+                let trimmed = text.trim();
+                if (trimmed.starts_with('{') || trimmed.starts_with('['))
+                    && let Ok(parsed) = serde_json::from_str::<Value>(trimmed)
+                    && (parsed.is_object() || parsed.is_array())
+                {
+                    let mut inner_redacted = false;
+                    let projected =
+                        project(&parsed, depth + 1, budget, clipped, &mut inner_redacted);
+                    if inner_redacted {
+                        *redacted = true;
+                        return Value::String(
+                            serde_json::to_string(&projected)
+                                .unwrap_or_else(|_| "[redacted]".into()),
+                        );
+                    }
+                }
                 *clipped |= text.chars().count() > 4096;
                 Value::String(text.chars().take(4096).collect())
             }
@@ -514,7 +663,8 @@ fn reviewed_tool_input(value: &Value) -> ToolInput {
         }
     }
     let mut truncated = false;
-    let projected = project(value, 0, &mut 256, &mut truncated);
+    let mut redacted = false;
+    let projected = project(value, 0, &mut 256, &mut truncated, &mut redacted);
     let text = serde_json::to_string_pretty(&projected).unwrap_or_default();
     let mut boundary = text.len().min(8192);
     while !text.is_char_boundary(boundary) {
@@ -787,6 +937,73 @@ mod tests {
         };
         assert_eq!(commands[0].name, "review");
         assert_eq!(commands[0].argument_hint.as_deref(), Some("path"));
+    }
+
+    #[test]
+    fn sensitive_key_detection_matches_upstream_tables() {
+        for key in [
+            "passwd",
+            "privateKey",
+            "clientSecret",
+            "proxyAuthorization",
+            "setCookie",
+            "refreshToken",
+            "idToken",
+            "sessionToken",
+            "accessKeyId",
+            "aws_secret_access_key",
+            "X-API-KEY",
+            "OPENAI_API_KEY",
+            "myPassword",
+            "HTTPSProxyAuthorization",
+        ] {
+            assert!(is_sensitive_key(key), "not redacted: {key}");
+        }
+        for key in [
+            "prompt_tokens",
+            "total_tokens",
+            "completion_tokens",
+            "csrf_token",
+            "repository",
+            "keyboard",
+            "mykey",
+            "path",
+        ] {
+            assert!(!is_sensitive_key(key), "over-redacted: {key}");
+        }
+    }
+    #[test]
+    fn tool_input_redacts_credentials_in_nested_and_structured_fields() {
+        let patch = tool_patch(&json!({
+            "toolCallId":"a",
+            "status":"in_progress",
+            "title":"call",
+            "rawInput":{
+                "repo":"synara",
+                "token":"ghp_live_secret",
+                "prompt_tokens":5,
+                "options":{"clientSecret":"live-secret","dryRun":true},
+                "headers":{"Authorization":"Bearer live-secret","Accept":"application/json"},
+                "config":"{\"api_key\":\"live-secret\",\"safe\":1}",
+                "plain":"{ not json {"
+            }
+        }))
+        .unwrap();
+        let input = patch.input.unwrap();
+        assert!(!input.text.contains("live-secret"), "{}", input.text);
+        assert!(input.text.contains("\"synara\""));
+        assert!(input.text.contains("[redacted]"));
+        assert!(input.text.contains("prompt_tokens"));
+        assert!(input.text.contains("\"dryRun\": true"));
+        assert!(input.text.contains("{ not json {"));
+        // env-style maps stay whole-field redacted even for unlisted key names.
+        let patch = tool_patch(&json!({
+            "toolCallId":"a","status":"in_progress","title":"call",
+            "rawInput":{"env":{"MY_CUSTOM_TOKEN":"live-secret","PATH":"/bin"}}
+        }))
+        .unwrap();
+        let text = patch.input.unwrap().text;
+        assert!(!text.contains("live-secret"), "{text}");
     }
 
     #[test]

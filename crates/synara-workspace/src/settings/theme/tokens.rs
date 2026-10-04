@@ -1,6 +1,6 @@
 //! Electron's sRGB theme derivation, including its zero-contrast curve.
 //! Adapted from the pinned theme.logic.ts under the retained MIT license.
-use super::{ChromeTheme, ThemeHex, ThemeVariant};
+use super::{ChromeTheme, ThemeVariant};
 use serde::Serialize;
 use std::collections::BTreeMap;
 
@@ -10,12 +10,19 @@ pub struct ThemePaint {
     pub alpha: f64,
 }
 impl ThemePaint {
-    pub fn opaque(rgb: u32) -> Self { Self { rgb, alpha: 1.0 } }
+    pub fn opaque(rgb: u32) -> Self {
+        Self { rgb, alpha: 1.0 }
+    }
     pub fn rgba(rgb: u32, alpha: f64) -> Self {
         // The Electron CSS formatter rounds alpha to three decimal places.
-        Self { rgb, alpha: (alpha.clamp(0.0, 1.0) * 1000.0).round() / 1000.0 }
+        Self {
+            rgb,
+            alpha: (alpha.clamp(0.0, 1.0) * 1000.0).round() / 1000.0,
+        }
     }
-    pub fn over(self, background: u32) -> u32 { mix(background, self.rgb, self.alpha) }
+    pub fn over(self, background: u32) -> u32 {
+        mix(background, self.rgb, self.alpha)
+    }
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize)]
@@ -34,17 +41,48 @@ impl ThemeTokens {
         let baseline = if dark { 60.0 } else { 45.0 };
         let value = f64::from(theme.contrast.min(100));
         let curved = value / 100.0 + ((value - baseline) / 60.0) * 0.7;
-        let c = if value <= baseline { curved } else { baseline / 100.0 + (curved - baseline / 100.0) * 2.0 };
+        let c = if value <= baseline {
+            curved
+        } else {
+            baseline / 100.0 + (curved - baseline / 100.0) * 2.0
+        };
         let surface = theme.surface.value();
         let ink = theme.ink.value();
         let accent = theme.accent.value();
         let white = 0xffffff;
         let black = 0;
-        let surface_under = mix(surface, if dark { black } else { ink },
-            if dark { 0.16 + (value - baseline) * 0.0015 } else { 0.04 + (value - baseline) * 0.0012 });
-        let panel = mix(surface, if dark { ink } else { white }, if dark { 0.03 + c * 0.03 } else { 0.18 + c * 0.008 });
-        let editor_background = mix(surface, if dark { ink } else { white }, if dark { 0.07 } else { 0.12 });
-        let composer_focus_border = mix(panel, if dark { white } else { ink }, if dark { 0.12 + c * 0.06 } else { 0.1 + c * 0.05 });
+        let surface_under = mix(
+            surface,
+            if dark { black } else { ink },
+            if dark {
+                0.16 + (value - baseline) * 0.0015
+            } else {
+                0.04 + (value - baseline) * 0.0012
+            },
+        );
+        let panel = mix(
+            surface,
+            if dark { ink } else { white },
+            if dark {
+                0.03 + c * 0.03
+            } else {
+                0.18 + c * 0.008
+            },
+        );
+        let editor_background = mix(
+            surface,
+            if dark { ink } else { white },
+            if dark { 0.07 } else { 0.12 },
+        );
+        let composer_focus_border = mix(
+            panel,
+            if dark { white } else { ink },
+            if dark {
+                0.12 + c * 0.06
+            } else {
+                0.1 + c * 0.05
+            },
+        );
         let mut colors = BTreeMap::new();
         let opaque = ThemePaint::opaque;
         let alpha = ThemePaint::rgba;
@@ -53,9 +91,18 @@ impl ThemeTokens {
             let focus = mix(accent, white, 0.3 + c * 0.15);
             let elevated = mix(surface, ink, 0.08 + c * 0.08);
             colors.extend([
-                ("accentBackground", opaque(mix(black, accent, 0.2 + c * 0.08))),
-                ("accentBackgroundActive", opaque(mix(black, accent, 0.22 + c * 0.12))),
-                ("accentBackgroundHover", opaque(mix(black, accent, 0.21 + c * 0.1))),
+                (
+                    "accentBackground",
+                    opaque(mix(black, accent, 0.2 + c * 0.08)),
+                ),
+                (
+                    "accentBackgroundActive",
+                    opaque(mix(black, accent, 0.22 + c * 0.12)),
+                ),
+                (
+                    "accentBackgroundHover",
+                    opaque(mix(black, accent, 0.21 + c * 0.1)),
+                ),
                 ("border", alpha(ink, 0.1 + c * 0.04)),
                 ("borderFocus", alpha(focus, 0.7 + c * 0.1)),
                 ("borderHeavy", alpha(ink, 0.16 + c * 0.06)),
@@ -63,20 +110,38 @@ impl ThemeTokens {
                 ("buttonPrimaryBackground", opaque(ink)),
                 ("buttonPrimaryBackgroundActive", alpha(ink, 0.07 + c * 0.05)),
                 ("buttonPrimaryBackgroundHover", alpha(ink, 0.04 + c * 0.03)),
-                ("buttonPrimaryBackgroundInactive", alpha(ink, 0.02 + c * 0.02)),
+                (
+                    "buttonPrimaryBackgroundInactive",
+                    alpha(ink, 0.02 + c * 0.02),
+                ),
                 ("buttonSecondaryBackground", alpha(ink, 0.04 + c * 0.02)),
-                ("buttonSecondaryBackgroundActive", alpha(ink, 0.09 + c * 0.05)),
-                ("buttonSecondaryBackgroundHover", alpha(ink, 0.06 + c * 0.03)),
-                ("buttonSecondaryBackgroundInactive", alpha(ink, 0.02 + c * 0.03)),
+                (
+                    "buttonSecondaryBackgroundActive",
+                    alpha(ink, 0.09 + c * 0.05),
+                ),
+                (
+                    "buttonSecondaryBackgroundHover",
+                    alpha(ink, 0.06 + c * 0.03),
+                ),
+                (
+                    "buttonSecondaryBackgroundInactive",
+                    alpha(ink, 0.02 + c * 0.03),
+                ),
                 ("buttonTertiaryBackground", alpha(ink, 0.02 + c * 0.015)),
-                ("buttonTertiaryBackgroundActive", alpha(ink, 0.07 + c * 0.05)),
+                (
+                    "buttonTertiaryBackgroundActive",
+                    alpha(ink, 0.07 + c * 0.05),
+                ),
                 ("buttonTertiaryBackgroundHover", alpha(ink, 0.05 + c * 0.03)),
                 ("controlBackground", alpha(control, 0.96)),
                 ("controlBackgroundOpaque", opaque(control)),
                 ("elevatedPrimary", alpha(elevated, 0.96)),
                 ("elevatedPrimaryOpaque", opaque(elevated)),
                 ("elevatedSecondary", alpha(ink, 0.02 + c * 0.02)),
-                ("elevatedSecondaryOpaque", opaque(mix(surface, ink, 0.04 + c * 0.05))),
+                (
+                    "elevatedSecondaryOpaque",
+                    opaque(mix(surface, ink, 0.04 + c * 0.05)),
+                ),
                 ("iconAccent", opaque(focus)),
                 ("iconPrimary", alpha(ink, 0.82 + c * 0.14)),
                 ("iconSecondary", alpha(ink, 0.65 + c * 0.1)),
@@ -84,7 +149,10 @@ impl ThemeTokens {
                 ("simpleScrim", alpha(ink, 0.08 + c * 0.04)),
                 ("textAccent", opaque(focus)),
                 ("textButtonPrimary", opaque(surface)),
-                ("textButtonSecondary", opaque(mix(ink, surface, 0.7 + c * 0.1))),
+                (
+                    "textButtonSecondary",
+                    opaque(mix(ink, surface, 0.7 + c * 0.1)),
+                ),
                 ("textButtonTertiary", alpha(ink, 0.45 + c * 0.1)),
                 ("textForeground", opaque(ink)),
                 ("textForegroundSecondary", alpha(ink, 0.65 + c * 0.1)),
@@ -95,9 +163,18 @@ impl ThemeTokens {
             let secondary = mix(surface, white, 0.08 + c * 0.08);
             let primary = mix(surface, white, 0.16 + c * 0.12);
             colors.extend([
-                ("accentBackground", opaque(mix(surface, accent, 0.11 + c * 0.04))),
-                ("accentBackgroundActive", opaque(mix(surface, accent, 0.13 + c * 0.05))),
-                ("accentBackgroundHover", opaque(mix(surface, accent, 0.12 + c * 0.045))),
+                (
+                    "accentBackground",
+                    opaque(mix(surface, accent, 0.11 + c * 0.04)),
+                ),
+                (
+                    "accentBackgroundActive",
+                    opaque(mix(surface, accent, 0.13 + c * 0.05)),
+                ),
+                (
+                    "accentBackgroundHover",
+                    opaque(mix(surface, accent, 0.12 + c * 0.045)),
+                ),
                 ("border", alpha(ink, 0.09 + c * 0.04)),
                 ("borderFocus", opaque(accent)),
                 ("borderHeavy", alpha(ink, 0.09 + c * 0.06)),
@@ -105,13 +182,25 @@ impl ThemeTokens {
                 ("buttonPrimaryBackground", opaque(ink)),
                 ("buttonPrimaryBackgroundActive", alpha(ink, 0.1 + c * 0.12)),
                 ("buttonPrimaryBackgroundHover", alpha(ink, 0.05 + c * 0.06)),
-                ("buttonPrimaryBackgroundInactive", alpha(ink, 0.18 + c * 0.14)),
+                (
+                    "buttonPrimaryBackgroundInactive",
+                    alpha(ink, 0.18 + c * 0.14),
+                ),
                 ("buttonSecondaryBackground", alpha(ink, 0.03)),
-                ("buttonSecondaryBackgroundActive", alpha(ink, 0.03 + c * 0.02)),
+                (
+                    "buttonSecondaryBackgroundActive",
+                    alpha(ink, 0.03 + c * 0.02),
+                ),
                 ("buttonSecondaryBackgroundHover", alpha(ink, 0.03)),
-                ("buttonSecondaryBackgroundInactive", alpha(ink, 0.01 + c * 0.02)),
+                (
+                    "buttonSecondaryBackgroundInactive",
+                    alpha(ink, 0.01 + c * 0.02),
+                ),
                 ("buttonTertiaryBackground", alpha(ink, 0.0)),
-                ("buttonTertiaryBackgroundActive", alpha(ink, 0.16 + c * 0.08)),
+                (
+                    "buttonTertiaryBackgroundActive",
+                    alpha(ink, 0.16 + c * 0.08),
+                ),
                 ("buttonTertiaryBackgroundHover", alpha(ink, 0.08 + c * 0.04)),
                 ("controlBackground", alpha(control, 0.96)),
                 ("controlBackgroundOpaque", opaque(control)),
@@ -134,16 +223,46 @@ impl ThemeTokens {
             ]);
         }
         colors.extend([
-            ("diffAdded", opaque(theme.semantic_colors.diff_added.value())),
-            ("diffRemoved", opaque(theme.semantic_colors.diff_removed.value())),
+            (
+                "diffAdded",
+                opaque(theme.semantic_colors.diff_added.value()),
+            ),
+            (
+                "diffRemoved",
+                opaque(theme.semantic_colors.diff_removed.value()),
+            ),
             ("skill", opaque(theme.semantic_colors.skill.value())),
-            ("editorAdded", alpha(theme.semantic_colors.diff_added.value(), if dark { 0.23 } else { 0.15 })),
-            ("editorRemoved", alpha(theme.semantic_colors.diff_removed.value(), if dark { 0.23 } else { 0.15 })),
+            (
+                "editorAdded",
+                alpha(
+                    theme.semantic_colors.diff_added.value(),
+                    if dark { 0.23 } else { 0.15 },
+                ),
+            ),
+            (
+                "editorRemoved",
+                alpha(
+                    theme.semantic_colors.diff_removed.value(),
+                    if dark { 0.23 } else { 0.15 },
+                ),
+            ),
         ]);
-        Self { contrast: c, surface, surface_under, panel, editor_background, composer_focus_border, colors }
+        Self {
+            contrast: c,
+            surface,
+            surface_under,
+            panel,
+            editor_background,
+            composer_focus_border,
+            colors,
+        }
     }
-    pub fn paint(&self, role: &str) -> Option<ThemePaint> { self.colors.get(role).copied() }
-    pub fn color_on_surface(&self, role: &str) -> Option<u32> { self.paint(role).map(|paint| paint.over(self.surface)) }
+    pub fn paint(&self, role: &str) -> Option<ThemePaint> {
+        self.colors.get(role).copied()
+    }
+    pub fn color_on_surface(&self, role: &str) -> Option<u32> {
+        self.paint(role).map(|paint| paint.over(self.surface))
+    }
 }
 
 pub fn mix(from: u32, to: u32, amount: f64) -> u32 {
@@ -159,12 +278,18 @@ pub fn mix(from: u32, to: u32, amount: f64) -> u32 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{ThemePack, theme_catalog};
+    use crate::{ThemeHex, ThemePack, theme_catalog};
 
     #[test]
     fn zero_contrast_is_not_the_curve_baseline() {
-        let light = ThemeTokens::derive(&ThemePack::codex(ThemeVariant::Light).theme, ThemeVariant::Light);
-        let dark = ThemeTokens::derive(&ThemePack::codex(ThemeVariant::Dark).theme, ThemeVariant::Dark);
+        let light = ThemeTokens::derive(
+            &ThemePack::codex(ThemeVariant::Light).theme,
+            ThemeVariant::Light,
+        );
+        let dark = ThemeTokens::derive(
+            &ThemePack::codex(ThemeVariant::Dark).theme,
+            ThemeVariant::Dark,
+        );
         assert!((light.contrast + 0.525).abs() < 1e-10);
         assert!((dark.contrast + 0.7).abs() < 1e-10);
         assert_eq!(light.surface, 0xffffff);
@@ -186,8 +311,11 @@ mod tests {
                     theme.contrast = contrast;
                     let tokens = ThemeTokens::derive(&theme, variant);
                     let keys: Vec<_> = tokens.colors.keys().copied().collect();
-                    if let Some(expected) = &expected { assert_eq!(&keys, expected); }
-                    else { expected = Some(keys); }
+                    if let Some(expected) = &expected {
+                        assert_eq!(&keys, expected);
+                    } else {
+                        expected = Some(keys);
+                    }
                     assert_eq!(tokens.colors.len(), 41);
                     for paint in tokens.colors.values() {
                         assert!(paint.rgb <= 0xffffff);
@@ -207,6 +335,9 @@ mod tests {
         assert_eq!(ThemePaint::rgba(0xff0000, 0.5).over(0xffffff), 0xff8080);
         let mut theme = ThemePack::codex(ThemeVariant::Dark).theme;
         theme.surface = ThemeHex::rgb(0x262626);
-        assert_eq!(ThemeTokens::derive(&theme, ThemeVariant::Dark).surface, 0x262626);
+        assert_eq!(
+            ThemeTokens::derive(&theme, ThemeVariant::Dark).surface,
+            0x262626
+        );
     }
 }

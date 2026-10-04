@@ -443,12 +443,11 @@ pub(crate) fn odt_text(bytes: &[u8]) -> WorkspaceResult<String> {
         } else if tag == "/office:text" {
             in_document = false;
         } else if in_document
-            && (xml_tag(tag, "text:p") || xml_tag(tag, "text:h"))
-            && !output.is_empty()
-            && !output.ends_with('\n')
+            && ((xml_tag(tag, "text:p") || xml_tag(tag, "text:h"))
+                && !output.is_empty()
+                && !output.ends_with('\n')
+                || xml_tag(tag, "text:line-break"))
         {
-            output.push('\n');
-        } else if in_document && xml_tag(tag, "text:line-break") {
             output.push('\n');
         } else if in_document && xml_tag(tag, "text:tab") {
             output.push('\t');

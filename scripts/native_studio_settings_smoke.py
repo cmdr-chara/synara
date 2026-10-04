@@ -98,14 +98,21 @@ def run(scenario):
     scenario.click_control('composer-input')
     ui.text('unsent chat draft')
     mode(scenario, True)
-    wait_until(lambda: task_count(scenario) == 4 and tasks(scenario)[selection(scenario)]['scope'] == 'studio', 'Studio draft')
+    # Hubs are optional. Entering the Hubs surface must not implicitly create
+    # or select a Studio conversation; create the Hub explicitly first.
+    assert task_count(scenario) == 3 and selection(scenario) == draft
+    scenario.click_control('hub-create')
+    ui.text('Studio settings Hub')
+    scenario.click_control('hub-save')
+    wait_until(lambda: task_count(scenario) == 4 and tasks(scenario)[selection(scenario)]['scope'] == 'studio', 'explicit Hub creation')
+    scenario.click_control('hub-home-thread', slot=0)
     studio = selection(scenario)
     for _ in range(3):
         scenario.click_control('new-thread', settle=0.1)
     assert task_count(scenario) == 4 and selection(scenario) == studio
     all_tasks = tasks(scenario)
     assert all_tasks[studio]['working_directory'] != all_tasks[standalone]['working_directory']
-    assert Path(all_tasks[studio]['working_directory']).is_relative_to(scenario.data / 'chats')
+    assert Path(all_tasks[studio]['working_directory']).is_relative_to(scenario.data / 'chats' / 'hubs')
     ui.screenshot('studio', window_only=True)
     scenario.click_control('workspace-tools')
     ui.screenshot('studio-switcher', window_only=True)
@@ -118,6 +125,7 @@ def run(scenario):
     scenario.click_control('composer-input')
     assert ui.copy_input() == 'unsent chat draft'
     mode(scenario, True)
+    scenario.click_control('hub-row', slot=0)
     wait_until(lambda: selection(scenario) == studio, 'restore Studio conversation')
     assert task_count(scenario) == 4
     scenario.checks.append('Studio-has-independent-working-directory-conversation-and-restored-drafts')

@@ -22,9 +22,9 @@ EXPECTED_IDS = {"M": 30, "S": 18, "A": 10}
 BASELINE_SHIPPED = 40
 REQUIRED_SECTIONS = (
     "## Current status",
-    "## Major features remaining",
-    "## Smaller features remaining",
-    "## Acceptance/integration remaining",
+    "## Major features",
+    "## Smaller features",
+    "## Acceptance/integration",
     "## Next execution queue",
     "## Shipped",
     "## How to update this roadmap",
@@ -89,8 +89,12 @@ def inspect(roadmap: str, readme: str) -> tuple[list[str], dict[str, int]]:
     expected_remaining = sum(remaining.values())
     if total is not None and total != expected_remaining:
         errors.append("Total remaining does not match unchecked roadmap items")
-    if shipped is not None and shipped != BASELINE_SHIPPED + checked:
-        errors.append("Shipped count must equal baseline 40 plus checked roadmap items")
+    # Parity batches also ship slices that never had a roadmap checkbox, so
+    # the count is a floor rather than an exact equality.
+    if shipped is not None and shipped < BASELINE_SHIPPED + checked:
+        errors.append(
+            "Shipped count must be at least baseline 40 plus checked roadmap items"
+        )
 
     for section in REQUIRED_SECTIONS:
         if section not in roadmap:

@@ -42,12 +42,13 @@ async fn fixture() -> (
     Vec<u8>,
 ) {
     let dir = tempfile::tempdir().unwrap();
-    fs::create_dir(dir.path().join("source")).unwrap();
-    fs::create_dir(dir.path().join("destination")).unwrap();
-    let path = write_rows(&dir.path().join("source"), "rollout.jsonl", &codex_rows());
+    let root = dir.path().canonicalize().unwrap();
+    fs::create_dir(root.join("source")).unwrap();
+    fs::create_dir(root.join("destination")).unwrap();
+    let path = write_rows(&root.join("source"), "rollout.jsonl", &codex_rows());
     let original = fs::read(path).unwrap();
     let scan = HistorySource::discover(
-        dir.path().join("source"),
+        root.join("source"),
         HistoryProvider::Codex,
         Default::default(),
     )
@@ -58,11 +59,11 @@ async fn fixture() -> (
         .preview(scan.files[0].clone(), None, Default::default())
         .await
         .unwrap();
-    let service = WorkspaceService::open(dir.path().join("store.sqlite3"))
+    let service = WorkspaceService::open(root.join("store.sqlite3"))
         .await
         .unwrap();
     let project = service
-        .add_local_workspace(dir.path().join("destination"))
+        .add_local_workspace(root.join("destination"))
         .await
         .unwrap();
     (dir, service, project, preview, original)
@@ -195,7 +196,10 @@ async fn history_import_is_atomic_inert_scoped_and_duplicate_safe_across_restart
     };
     assert_eq!(task.scope, TaskScope::Chat);
     assert_eq!(task.state, TaskState::Ready);
-    assert_eq!(task.working_directory, dir.path().join("destination"));
+    assert_eq!(
+        task.working_directory,
+        dir.path().canonicalize().unwrap().join("destination")
+    );
     let thread = service.thread(task.thread_id).await.unwrap();
     assert_eq!(thread.messages.len(), 2);
     assert!(

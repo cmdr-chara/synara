@@ -4,7 +4,7 @@ use super::*;
 use sha2::{Digest, Sha256};
 use std::collections::HashMap;
 use synara_core::{TaskId, TaskState, Workspace, WorkspaceLocation};
-use synara_workspace::{DirectModelBinding, WorkspaceError, WorkspaceService};
+use synara_workspace::{WorkspaceError, WorkspaceService};
 use tokio::sync::Mutex;
 
 const MAX_ACTIVE_RUNS: usize = 8;
@@ -59,8 +59,6 @@ struct StartRequest {
     text: String,
     expected_draft: String,
     #[serde(default)]
-    expected_route: Option<String>,
-    #[serde(default)]
     expected_remote: Option<String>,
 }
 #[derive(Clone, Serialize)]
@@ -81,19 +79,6 @@ fn error(status: u16, message: &'static str) -> Response {
         status,
         serde_json::to_vec(&serde_json::json!({"error": message})).unwrap(),
     )
-}
-fn route_stamp(binding: &DirectModelBinding) -> String {
-    format!(
-        "{:x}",
-        Sha256::digest(serde_json::to_vec(binding).expect("valid route"))
-    )
-}
-fn route_view(binding: &DirectModelBinding) -> serde_json::Value {
-    serde_json::json!({
-        "provider_id": binding.selection.provider_id,
-        "model_id": binding.selection.model_id,
-        "stamp": route_stamp(binding),
-    })
 }
 async fn remote_route(
     service: &WorkspaceService,
@@ -140,16 +125,12 @@ pub(super) async fn dispatch_get(path: &str, state: &AppState) -> Response {
         Ok(remote) => remote,
         Err(_) => return error(503, "workspace_unavailable"),
     };
-    let route = match runtime.workspace.direct_model_binding(id).await {
-        Ok(route) => route,
-        Err(_) => return error(503, "route_unavailable"),
-    };
     let runs = state.execution.runs.lock().await;
     let view = runs.get(&id).map_or(RunView::new("idle"), Run::view);
     Response::json(
         200,
         serde_json::to_vec(&serde_json::json!({
-            "state": view.state, "error": view.error, "route": route.as_ref().map(route_view), "remote": remote,
+            "state": view.state, "error": view.error, "remote": remote,
         }))
         .expect("bounded route status"),
     )
@@ -234,13 +215,6 @@ pub(super) async fn dispatch_post(
     if remote.as_ref().map(|remote| &remote.stamp) != payload.expected_remote.as_ref() {
         return error(409, "workspace_changed");
     }
-    let route = match runtime.workspace.direct_model_binding(id).await {
-        Ok(route) => route,
-        Err(_) => return error(503, "route_unavailable"),
-    };
-    if route.as_ref().map(route_stamp) != payload.expected_route {
-        return error(409, "route_changed");
-    }
     match runtime.workspace.task_draft(id).await {
         Ok(draft) if draft == payload.expected_draft => {}
         Ok(_) => return error(409, "draft_changed"),
@@ -273,13 +247,14 @@ pub(super) async fn dispatch_post(
     let worker = tokio::spawn(run_task(
         runtime.controller.clone(),
         runtime.workspace.clone(),
-        id,
-        payload.text,
-        route,
-        payload.expected_remote,
-        cancellation.clone(),
-        view.clone(),
-        RUN_TIMEOUT,
+        RunTaskJob {
+            id,
+            text: payload.text,
+            expected_remote: payload.expected_remote,
+            cancellation: cancellation.clone(),
+            view: view.clone(),
+            run_timeout: RUN_TIMEOUT,
+        },
     ));
     runs.insert(
         id,
@@ -292,17 +267,25 @@ pub(super) async fn dispatch_post(
     RunView::new("running").response(202)
 }
 
-async fn run_task(
-    controller: Arc<Controller>,
-    workspace: WorkspaceService,
+/// One agent run's inputs: what was submitted and how the observer reports back.
+struct RunTaskJob {
     id: TaskId,
     text: String,
-    expected_route: Option<DirectModelBinding>,
     expected_remote: Option<String>,
     cancellation: CancellationToken,
     view: Arc<StdMutex<RunView>>,
     run_timeout: Duration,
-) {
+}
+
+async fn run_task(controller: Arc<Controller>, workspace: WorkspaceService, job: RunTaskJob) {
+    let RunTaskJob {
+        id,
+        text,
+        expected_remote,
+        cancellation,
+        view,
+        run_timeout,
+    } = job;
     let current_remote = async {
         let task = workspace.task(id).await?;
         let location = workspace.workspace_for_task(&task).await?;
@@ -319,15 +302,6 @@ async fn run_task(
             .unwrap_or_else(std::sync::PoisonError::into_inner) = RunView {
             state: "failed",
             error: Some("workspace_changed"),
-        };
-        return;
-    }
-    if workspace.direct_model_binding(id).await.ok() != Some(expected_route) {
-        *view
-            .lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner) = RunView {
-            state: "failed",
-            error: Some("route_changed"),
         };
         return;
     }

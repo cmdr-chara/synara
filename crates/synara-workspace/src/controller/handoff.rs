@@ -55,7 +55,6 @@ impl Controller {
         if self.closing.load(Ordering::Acquire) {
             return Err(AgentError::Busy.into());
         }
-        self.require_agent_route(id).await?;
         let source = self.workspace.task(id).await?;
         let review = self
             .workspace

@@ -1,0 +1,234 @@
+{"fn":"dispatchThreadGoal","args":[null,"{name} has {count} items",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[true,"😀",{"$undefined":true}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[[],"日本語のテキスト",true],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":["x","",0],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{},"",{"a":"b"}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[[],"straße","traß"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":["x","key_name-1é",[]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[[],"İstanbulHELLO"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"İstanbul",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[[],"a:b:c",{}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[true,"é"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"İstanbul",{"a":"b"}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{"a":"b"},".leading",{"a":{"b":"c"}}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"abemoji 👍🏽 mix",{}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{"a":{"b":"c"}},"hello world",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[true,"HELLO","x"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[[],"key_name-1",{"a":{"b":"c"}}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[true,"straße",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[["a",1],"",{"$undefined":true}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[[],"abé",[]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[["a",1],"HELLO",{}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{"a":{"b":"c"}},"./x/**/*.json",true],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":["x","a..b",[]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{},"a.b.c",[]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{},"hello world",["a",1]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":["name","key_name-1",true],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{},"trailing.",["a",1]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[["a",1],"Hello World",{"$undefined":true}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[[],"./x/**/*.json",true],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[true,"a..b",{"a":"b"}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[true,"😀",0],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[true,"trailing.",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"İstanbulabc",{"$undefined":true}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"  padded  ","x"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":["c","abc",true],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":["x","./x/**/*.json",{"$undefined":true}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[["a",1],"日本語のテキスト",{}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{"a":{"b":"c"}},"﻿bom",0],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[["a",1],"ns:key.path"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[["a",1],"src/a/b.tsstraße",{"a":"b"}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[["a",1],"key_name-1abc",{"a":"b"}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"hello",{"a":{"b":"c"}}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{"a":{"b":"c"}},"ns:key.path",{}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[[],"ab",[]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":["日本語のテキ","日本語のテキストsrc/a/b.ts",{}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{"a":"b"},"hello",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{"a":"b"},"ns:key.path",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[[],"key_name-1",{}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[[],"tab\tseparated",true],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{},"{name} has {count} items",{"a":"b"}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{"a":"b"},"a😀b😀c",{"a":{"b":"c"}}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[0,"Hello World"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[[],"key_name-1"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[0,"日本語のテキスト"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{"a":{"b":"c"}},"./x/**/*.json",0],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[true,"HELLO",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[["a",1],"hello😀",{"$undefined":true}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[0,"emoji 👍🏽 mix",[]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[0,"emoji 👍🏽 mix",{"a":{"b":"c"}}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[true,"a",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[true,"İstanbul",[]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{"a":{"b":"c"}},"key_name-1",[]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"src/a/b.ts",{"$undefined":true}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[["a",1],"trailing.",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[true,":",{"$undefined":true}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{"a":"b"},"﻿bom",["a",1]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[["a",1],"é",{"a":{"b":"c"}}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[["a",1],"trailing.",["a",1]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{},"a"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{"a":"b"},"ünïcödé","x"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[0,"ünïcödé",0],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":["x","ab",true],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[[],"a",{"$undefined":true}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[["a",1],"a:b:c",{}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"src/a/b.ts",{"a":"b"}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[true,"日本語のテキスト",0],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[[],"abchello world",{"a":"b"}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,".leading",{"$undefined":true}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{},"Hello World",0],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[[],"a","x"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"hello world"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[[],"a.b.c",{"$undefined":true}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{},"日本語のテキスト","x"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{"a":{"b":"c"}},"Hello World",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":["x","x",{"$undefined":true}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"é",{"a":"b"}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":["x","{name} has {count} itemsa",[]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"emoji 👍🏽 mix",{}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{"a":"b"},"straße",{"$undefined":true}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[[],"key_name-1Hello World","x"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[0,"line1\nline2",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{"a":{"b":"c"}},":ünïcödé",true],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{"a":"b"},"",[]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":["x","é",[]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[[],"./x/**/*.json",{"a":"b"}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":["ΊΣΥΦΟΣ","ΣΊΣΥΦΟΣ",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[[],"emoji 👍🏽 mix./x/**/*.json"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{"a":{"b":"c"}},"Hello World","W"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":["x","tab\tseparated",{"$undefined":true}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[0,"src/a/b.ts./x/**/*.json",0],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":["x","x",{"a":{"b":"c"}}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":["x","x",["a",1]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{},"😀",[]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[true,"key_name-1"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[[],"é","x"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":["x",":ab",{"a":{"b":"c"}}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[["a",1],"emoji 👍🏽 mix",["a",1]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{"a":"b"},"hello world",{"a":"b"}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[true,"a:b:c",[]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[true,"trailing..leading",["a",1]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"日本語のテキスト",{}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{},"./x/**/*.json",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{},"a..b",{"a":"b"}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[0,".leading",{}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[true,"ΣΊΣΥΦΟΣ",{"a":"b"}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{},"{name} has {count} items",{"a":{"b":"c"}}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{"a":"b"},"a.b.c",true],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[true,":",{"a":{"b":"c"}}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[0,"abc","x"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[0,"emoji 👍🏽 mix","emoji "],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{},"tab\tseparated",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{},":",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"a😀b😀cünïcödé",0],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{"a":{"b":"c"}},"./x/**/*.json","x"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{"a":"b"},"ab","b"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[[],"a😀b😀c",true],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[0,".leading",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[true,"a",[]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{"a":{"b":"c"}},"ns:key.path","x"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{"a":{"b":"c"}},"HELLO",["a",1]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[[],"ns:key.path",{"a":"b"}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[["a",1],"  padded  😀",["a",1]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[[],"src/a/b.ts",["a",1]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[0,"hello world",{}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[["a",1],"{name} has {count} items",["a",1]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{},"{name} has {count} items",{}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{"a":{"b":"c"}},"tab\tseparated",{"a":"b"}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{"a":"b"},"hello world",{"$undefined":true}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{"a":{"b":"c"}},"a.b.c😀",{}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{"a":"b"},"Hello World","x"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{},"ab",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"ns:key.path",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{"a":"b"},"ab"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,":",[]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"{name} has {count} items","x"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[[],"src/a/b.ts",{"$undefined":true}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":["x","a😀b😀cünïcödé",0],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"hello world",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"./x/**/*.json",true],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[true,"日本語のテキスト",{"a":{"b":"c"}}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[[],"abé","x"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{"a":{"b":"c"}},"tab\tseparated",["a",1]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{},"key_name-1ab",["a",1]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"abc",{"a":{"b":"c"}}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[[],"straße",true],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[[],"a😀b😀c",["a",1]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{"a":"b"},"a.b.c",0],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"Hello Worldhello",0],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[["a",1],"straße"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[0,"é",["a",1]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"straße",{"$undefined":true}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[0,":",0],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[0,"﻿bomline1\nline2",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[true,"ΣΊΣΥΦΟΣ",["a",1]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[0,"a😀b😀c",{}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":["x","a:b:c"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":["x","éa😀b😀c",{"$undefined":true}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[["a",1],"ab",["a",1]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[["a",1],"key_name-1trailing.",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"日本語のテキスト",true],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":["x","{name} has {count} items",{}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{"a":{"b":"c"}},"a:b:c",{"a":{"b":"c"}}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[[],"﻿bom./x/**/*.json",true],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[["a",1],"HELLOemoji 👍🏽 mix",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{},"﻿bom","x"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[0,"{name} has {count} items",0],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[[],"HELLO",["a",1]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[true,"hello world",{"$undefined":true}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[true,"HELLO",{"a":"b"}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[["a",1],"{name} has {count} items",{"$undefined":true}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{"a":{"b":"c"}},"a.b.c","x"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{},"ΣΊΣΥΦΟΣ","x"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[["a",1],".leading",0],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{"a":"b"},"ns:key.path","x"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":["x","x","x"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[[],"hello",{"a":"b"}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[0,"aba",[]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[true,"trailing.",true],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[true,"a..bünïcödé","x"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":["x","tab\tseparated",[]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[["a",1],"trailing.","x"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"ΣΊΣΥΦΟΣa..b",[]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[["a",1],""],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[[],"line1\nline2",0],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[{"a":"b"},"a..bİstanbul","x"],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[true,"ünïcödé",{}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"😀",{"a":{"b":"c"}}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":["x","emoji 👍🏽 mix",0],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[[],"a.b.c😀",["a",1]],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"key_name-1",{"a":"b"}],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"héllo wörld",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"👍🏽 thumbs",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"日本語",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"é",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"straße",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"ılık ırmak",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"👨‍👩‍👧 family",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"a b",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"ΣΊΣΥΦΟΣ",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"a😀b",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"﻿bom",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"a²b x½ y①",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"aⅠb Ⅻ",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"a𐐀b 𝐀bc",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoal","args":[null,"कि ٣٤",null],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoalPaused","args":[null,false],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoalPaused","args":[[],true],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoalPaused","args":[{"a":"b"},true],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoalPaused","args":[null,true],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoalPaused","args":[{"a":{"b":"c"}},true],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoalPaused","args":[["a",1],true],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoalPaused","args":[true,true],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoalPaused","args":[true,false],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoalPaused","args":[["a",1],false],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoalPaused","args":[{"a":{"b":"c"}},false],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoalPaused","args":[0,false],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoalPaused","args":["x",true],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoalPaused","args":[[],false],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoalPaused","args":[{},true],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoalPaused","args":[{},false],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoalPaused","args":["x",false],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoalPaused","args":[0,true],"error":"Synara API is unavailable."}
+{"fn":"dispatchThreadGoalPaused","args":[{"a":"b"},false],"error":"Synara API is unavailable."}

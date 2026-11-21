@@ -1,0 +1,66 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/threadGoal.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "threadgoal-rs",
+  "exports": [
+    {
+      "name": "dispatchThreadGoal",
+      "file": "apps/web/src/threadGoal.ts",
+      "line": 6,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "goal",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "{ readonly startBehavior?: typeof typeof typeof typeof ThreadGoalStartBehavior.Type.Type.Type.Type }",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<void>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "dispatchThreadGoalPaused",
+      "file": "apps/web/src/threadGoal.ts",
+      "line": 24,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "paused",
+          "ts_type": "boolean",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<void>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

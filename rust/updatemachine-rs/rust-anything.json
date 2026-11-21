@@ -1,0 +1,318 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/updateMachine.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "updatemachine-rs",
+  "exports": [
+    {
+      "name": "createInitialDesktopUpdateState",
+      "file": "apps/desktop/src/updateMachine.ts",
+      "line": 12,
+      "params": [
+        {
+          "name": "currentVersion",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "runtimeInfo",
+          "ts_type": "DesktopRuntimeInfo",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "flavor",
+          "ts_type": "DesktopUpdateState[\"flavor\"]",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "DesktopUpdateState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "reduceDesktopUpdateStateOnCheckStart",
+      "file": "apps/desktop/src/updateMachine.ts",
+      "line": 37,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "DesktopUpdateState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "checkedAt",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "DesktopUpdateState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "reduceDesktopUpdateStateOnCheckFailure",
+      "file": "apps/desktop/src/updateMachine.ts",
+      "line": 52,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "DesktopUpdateState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "message",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "checkedAt",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "DesktopUpdateState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "reduceDesktopUpdateStateOnUpdateAvailable",
+      "file": "apps/desktop/src/updateMachine.ts",
+      "line": 68,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "DesktopUpdateState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "version",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "checkedAt",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "DesktopUpdateState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "reduceDesktopUpdateStateOnNoUpdate",
+      "file": "apps/desktop/src/updateMachine.ts",
+      "line": 98,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "DesktopUpdateState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "checkedAt",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "DesktopUpdateState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "reduceDesktopUpdateStateOnDownloadStart",
+      "file": "apps/desktop/src/updateMachine.ts",
+      "line": 132,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "DesktopUpdateState",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "DesktopUpdateState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "reduceDesktopUpdateStateOnDownloadFailure",
+      "file": "apps/desktop/src/updateMachine.ts",
+      "line": 145,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "DesktopUpdateState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "message",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "DesktopUpdateState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "reduceDesktopUpdateStateOnDownloadProgress",
+      "file": "apps/desktop/src/updateMachine.ts",
+      "line": 160,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "DesktopUpdateState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "percent",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "DesktopUpdateState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "reduceDesktopUpdateStateOnDownloadComplete",
+      "file": "apps/desktop/src/updateMachine.ts",
+      "line": 174,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "DesktopUpdateState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "version",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "DesktopUpdateState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "reduceDesktopUpdateStateOnInstallStart",
+      "file": "apps/desktop/src/updateMachine.ts",
+      "line": 193,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "DesktopUpdateState",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "DesktopUpdateState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "reduceDesktopUpdateStateOnInstallFailure",
+      "file": "apps/desktop/src/updateMachine.ts",
+      "line": 199,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "DesktopUpdateState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "message",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "DesktopUpdateState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "reduceDesktopUpdateStateOnInstallRestartFailure",
+      "file": "apps/desktop/src/updateMachine.ts",
+      "line": 212,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "DesktopUpdateState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "toVersion",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "consecutiveFailures",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "message",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "DesktopUpdateState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

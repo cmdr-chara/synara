@@ -1,0 +1,54 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/computerControlMode.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "computercontrolmode-rs",
+  "exports": [
+    {
+      "name": "resolveComputerControlMode",
+      "file": "apps/web/src/computerControlMode.ts",
+      "line": 5,
+      "params": [
+        {
+          "name": "mode",
+          "ts_type": "(\"off\" | \"request\" | \"chat\") | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "legacyEnabled",
+          "ts_type": "boolean",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "(\"off\" | \"request\" | \"chat\")",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveComputerControlDefault",
+      "file": "apps/web/src/computerControlMode.ts",
+      "line": 16,
+      "params": [
+        {
+          "name": "settingEnabled",
+          "ts_type": "boolean",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

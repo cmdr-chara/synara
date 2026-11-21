@@ -1,0 +1,23 @@
+{
+  "unit": "apps/web/src/computerControlMode.ts",
+  "files": 1,
+  "fingerprint": "ed250e69b38d1082",
+  "coverage": {
+    "lines": 50,
+    "reached": 30,
+    "files": [
+      {
+        "file": "apps/web/src/computerControlMode.ts",
+        "lines": 16,
+        "reached": 16,
+        "missed": ""
+      },
+      {
+        "file": "apps/web/src/lib/hosts/executionContext.ts",
+        "lines": 34,
+        "reached": 14,
+        "missed": "11-13, 18-31, 33-35"
+      }
+    ]
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/fixedShortcuts.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "fixedshortcuts-rs",
+  "exports": [
+    {
+      "name": "fixedShortcutsForPlatform",
+      "file": "apps/web/src/fixedShortcuts.ts",
+      "line": 104,
+      "params": [
+        {
+          "name": "platform",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "FixedShortcut[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "matchesFixedShortcut",
+      "file": "apps/web/src/fixedShortcuts.ts",
+      "line": 112,
+      "params": [
+        {
+          "name": "event",
+          "ts_type": "ShortcutEventLike",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "id",
+          "ts_type": "(\"navigation.back\" | \"navigation.forward\" | \"terminal.search\")",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "platform",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "context",
+          "ts_type": "Partial<ShortcutMatchContext>",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

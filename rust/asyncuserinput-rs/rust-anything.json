@@ -1,0 +1,90 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/asyncUserInput.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "asyncuserinput-rs",
+  "exports": [
+    {
+      "name": "mergeAsyncUserInput",
+      "file": "packages/shared/src/asyncUserInput.ts",
+      "line": 14,
+      "params": [
+        {
+          "name": "previous",
+          "ts_type": "typeof typeof typeof typeof AsyncUserInput.Type.Type.Type.Type | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "incoming",
+          "ts_type": "typeof typeof typeof typeof AsyncUserInput.Type.Type.Type.Type | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof AsyncUserInput.Type.Type.Type.Type | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "clearRemovedAsyncUserInputResponses",
+      "file": "packages/shared/src/asyncUserInput.ts",
+      "line": 29,
+      "params": [
+        {
+          "name": "messages",
+          "ts_type": "ReadonlyArray<({ readonly asyncUserInput?: typeof typeof typeof typeof AsyncUserInput.Type.Type.Type.Type | undefined })>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "retainedMessageIds",
+          "ts_type": "ReadonlySet<string>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "sequence",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "({ readonly asyncUserInput?: typeof typeof typeof typeof AsyncUserInput.Type.Type.Type.Type | undefined })[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "formatAsyncUserInputResponse",
+      "file": "packages/shared/src/asyncUserInput.ts",
+      "line": 42,
+      "params": [
+        {
+          "name": "questions",
+          "ts_type": "typeof typeof typeof typeof AsyncUserInputQuestions.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "answers",
+          "ts_type": "readonly string[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

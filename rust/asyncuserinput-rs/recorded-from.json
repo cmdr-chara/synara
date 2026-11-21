@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/asyncUserInput.ts",
+  "files": 1,
+  "fingerprint": "27a891da5bfccb6e",
+  "coverage": {
+    "lines": 45,
+    "reached": 45,
+    "files": [
+      {
+        "file": "packages/shared/src/asyncUserInput.ts",
+        "lines": 45,
+        "reached": 45,
+        "missed": ""
+      }
+    ]
+  }
+}

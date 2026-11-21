@@ -1,0 +1,506 @@
+{"fn":"mergeAsyncUserInput","args":[null,true],"ok":true}
+{"fn":"mergeAsyncUserInput","args":[true,null],"ok":true}
+{"fn":"mergeAsyncUserInput","args":[true,{"a":{"b":"c"}}],"ok":{"a":{"b":"c"}}}
+{"fn":"mergeAsyncUserInput","args":[{"a":{"b":"c"}},null],"ok":{"a":{"b":"c"}}}
+{"fn":"mergeAsyncUserInput","args":[null,0],"ok":0}
+{"fn":"mergeAsyncUserInput","args":[{},"x"],"ok":"x"}
+{"fn":"mergeAsyncUserInput","args":[0,0],"ok":0}
+{"fn":"mergeAsyncUserInput","args":[["a",1],{"a":"b"}],"ok":{"a":"b"}}
+{"fn":"mergeAsyncUserInput","args":[["a",1],{}],"ok":{}}
+{"fn":"mergeAsyncUserInput","args":[{"a":{"b":"c"}},[]],"ok":[]}
+{"fn":"mergeAsyncUserInput","args":[{"a":"b"},{"a":"b"}],"ok":{"a":"b"}}
+{"fn":"mergeAsyncUserInput","args":[[],null],"ok":[]}
+{"fn":"mergeAsyncUserInput","args":["x",{"a":{"b":"c"}}],"ok":{"a":{"b":"c"}}}
+{"fn":"mergeAsyncUserInput","args":[true,"x"],"ok":"x"}
+{"fn":"mergeAsyncUserInput","args":[null,{"a":{"b":"c"}}],"ok":{"a":{"b":"c"}}}
+{"fn":"mergeAsyncUserInput","args":[true,true],"ok":true}
+{"fn":"mergeAsyncUserInput","args":["x",["a",1]],"ok":["a",1]}
+{"fn":"mergeAsyncUserInput","args":[{"a":{"b":"c"}},["a",1]],"ok":["a",1]}
+{"fn":"mergeAsyncUserInput","args":[["a",1],{"a":{"b":"c"}}],"ok":{"a":{"b":"c"}}}
+{"fn":"mergeAsyncUserInput","args":[null,{"a":"b"}],"ok":{"a":"b"}}
+{"fn":"mergeAsyncUserInput","args":[[],{"a":"b"}],"ok":{"a":"b"}}
+{"fn":"mergeAsyncUserInput","args":[{},{}],"ok":{}}
+{"fn":"mergeAsyncUserInput","args":[[],{}],"ok":{}}
+{"fn":"mergeAsyncUserInput","args":[{"a":{"b":"c"}},{"a":{"b":"c"}}],"ok":{"a":{"b":"c"}}}
+{"fn":"mergeAsyncUserInput","args":[{},0],"ok":{}}
+{"fn":"mergeAsyncUserInput","args":["x",[]],"ok":[]}
+{"fn":"mergeAsyncUserInput","args":[[],["a",1]],"ok":["a",1]}
+{"fn":"mergeAsyncUserInput","args":["x","x"],"ok":"x"}
+{"fn":"mergeAsyncUserInput","args":[null,{}],"ok":{}}
+{"fn":"mergeAsyncUserInput","args":[0,null],"ok":null}
+{"fn":"mergeAsyncUserInput","args":[{},{"a":{"b":"c"}}],"ok":{"a":{"b":"c"}}}
+{"fn":"mergeAsyncUserInput","args":[0,true],"ok":true}
+{"fn":"mergeAsyncUserInput","args":[{"a":{"b":"c"}},{"a":"b"}],"ok":{"a":"b"}}
+{"fn":"mergeAsyncUserInput","args":[true,{"a":"b"}],"ok":{"a":"b"}}
+{"fn":"mergeAsyncUserInput","args":[[],[]],"ok":[]}
+{"fn":"mergeAsyncUserInput","args":[null,"x"],"ok":"x"}
+{"fn":"mergeAsyncUserInput","args":[{"a":{"b":"c"}},"x"],"ok":"x"}
+{"fn":"mergeAsyncUserInput","args":[{"a":"b"},null],"ok":{"a":"b"}}
+{"fn":"mergeAsyncUserInput","args":[{"a":{"b":"c"}},true],"ok":true}
+{"fn":"mergeAsyncUserInput","args":[[],true],"ok":true}
+{"fn":"mergeAsyncUserInput","args":[0,{"a":{"b":"c"}}],"ok":{"a":{"b":"c"}}}
+{"fn":"mergeAsyncUserInput","args":[{},{"a":"b"}],"ok":{"a":"b"}}
+{"fn":"mergeAsyncUserInput","args":[["a",1],["a",1]],"ok":["a",1]}
+{"fn":"mergeAsyncUserInput","args":[null,["a",1]],"ok":["a",1]}
+{"fn":"mergeAsyncUserInput","args":[0,[]],"ok":[]}
+{"fn":"mergeAsyncUserInput","args":["x",null],"ok":"x"}
+{"fn":"mergeAsyncUserInput","args":[[],{"a":{"b":"c"}}],"ok":{"a":{"b":"c"}}}
+{"fn":"mergeAsyncUserInput","args":[{},["a",1]],"ok":["a",1]}
+{"fn":"mergeAsyncUserInput","args":[0,{}],"ok":{}}
+{"fn":"mergeAsyncUserInput","args":[[],0],"ok":[]}
+{"fn":"mergeAsyncUserInput","args":["x",{}],"ok":{}}
+{"fn":"mergeAsyncUserInput","args":[0,["a",1]],"ok":["a",1]}
+{"fn":"mergeAsyncUserInput","args":["x",0],"ok":"x"}
+{"fn":"mergeAsyncUserInput","args":[true,["a",1]],"ok":["a",1]}
+{"fn":"mergeAsyncUserInput","args":[{"a":"b"},"x"],"ok":"x"}
+{"fn":"mergeAsyncUserInput","args":[{"a":"b"},true],"ok":true}
+{"fn":"mergeAsyncUserInput","args":[0,{"a":"b"}],"ok":{"a":"b"}}
+{"fn":"mergeAsyncUserInput","args":[{"a":"b"},{}],"ok":{}}
+{"fn":"mergeAsyncUserInput","args":[true,{}],"ok":{}}
+{"fn":"mergeAsyncUserInput","args":[[],"x"],"ok":"x"}
+{"fn":"mergeAsyncUserInput","args":[{"a":{"b":"c"}},{}],"ok":{}}
+{"fn":"mergeAsyncUserInput","args":[{},null],"ok":{}}
+{"fn":"mergeAsyncUserInput","args":[{},true],"ok":true}
+{"fn":"mergeAsyncUserInput","args":[0,"x"],"ok":"x"}
+{"fn":"mergeAsyncUserInput","args":[{"a":"b"},0],"ok":{"a":"b"}}
+{"fn":"mergeAsyncUserInput","args":[["a",1],"x"],"ok":"x"}
+{"fn":"mergeAsyncUserInput","args":[["a",1],0],"ok":["a",1]}
+{"fn":"mergeAsyncUserInput","args":[null,null],"ok":null}
+{"fn":"mergeAsyncUserInput","args":["x",{"a":"b"}],"ok":{"a":"b"}}
+{"fn":"mergeAsyncUserInput","args":[{"a":{"b":"c"}},0],"ok":{"a":{"b":"c"}}}
+{"fn":"mergeAsyncUserInput","args":[true,0],"ok":true}
+{"fn":"mergeAsyncUserInput","args":[["a",1],true],"ok":true}
+{"fn":"mergeAsyncUserInput","args":[["a",1],[]],"ok":[]}
+{"fn":"mergeAsyncUserInput","args":["x",true],"ok":true}
+{"fn":"mergeAsyncUserInput","args":[{},[]],"ok":[]}
+{"fn":"mergeAsyncUserInput","args":[{"a":"b"},[]],"ok":[]}
+{"fn":"mergeAsyncUserInput","args":[["a",1],null],"ok":["a",1]}
+{"fn":"mergeAsyncUserInput","args":[null,[]],"ok":[]}
+{"fn":"mergeAsyncUserInput","args":[true,[]],"ok":[]}
+{"fn":"mergeAsyncUserInput","args":[{"a":"b"},{"a":{"b":"c"}}],"ok":{"a":{"b":"c"}}}
+{"fn":"mergeAsyncUserInput","args":[{"a":"b"},["a",1]],"ok":["a",1]}
+{"fn":"mergeAsyncUserInput","args":["x","X"],"ok":"X"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,{"a":"b"},2],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[["a",1],["src/a/b.ts"],-1],"ok":["a",1]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,["straße:"],{"$num":"-0"}],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":{"b":"c"}},[".leading"],-1],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":["x",[],10],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":{"b":"c"}},["日本語のテキストline1\nline2","HELLO","hello world"],{"$num":"NaN"}],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,["abc",".leading","日本語のテキスト"],42],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{},[],0],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":["x",["","ΣΊΣΥΦΟΣ"],1000],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":{"b":"c"}},[],1000000],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[["a",1],[],3],"ok":["a",1]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":"b"},["emoji 👍🏽 mix","ΣΊΣΥΦΟΣ","tab\tseparated"],1],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[[],[],10],"ok":[]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[["a",1],[],9007199254740992],"ok":["a",1]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[[],["﻿bom"],-2.5],"ok":[]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":{"b":"c"}},[],{"$num":"-Infinity"}],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[0,"x",-2.5],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[true,["emoji 👍🏽 mix","Hello World","line1\nline2"],0],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{},["﻿bomHello World","abc","é"],0.5],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[[],["line1\nline2./x/**/*.json","hello world","tab\tseparated"],{"$num":"NaN"}],"ok":[]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":"b"},["hello"],100],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":{"b":"c"}},["ΣΊΣΥΦΟΣ","İstanbulns:key.path"],10],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[0,["😀key_name-1","😀","src/a/b.ts"],{"$num":"-0"}],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[true,["a","hello world"],3],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{},["éstraße","İstanbul","a..b"],1],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":"b"},["emoji 👍🏽 mix:","helloa:b:c","{name} has {count} items"],1000],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":{"b":"c"}},["src/a/b.ts😀"],0.5],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[true,["key_name-1","日本語のテキスト"],9007199254740992],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":"b"},["a..ba","hello world","ns:key.path"],{"$num":"Infinity"}],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{},["line1\nline2","a..b","日本語のテキスト"],0.5],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[[],["  padded  ","ΣΊΣΥΦΟΣ","ab"],0.5],"ok":[]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[true,["a.b.c","İstanbulHello World"],0],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{},[],2147483648],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{},["a😀b😀c","a.b.c"],{"$num":"-0"}],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":"b"},["key_name-1","Hello WorldHELLO","ns:key.path"],1],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":["x",["😀","ns:key.path","key_name-1"],{"$num":"Infinity"}],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":"b"},["hello","emoji 👍🏽 mix","ns:key.path"],1000000],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":"b"},["ünïcödéstraße","a"],2],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":"b"},[],{"$num":"Infinity"}],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,["  padded  straße"],-2.5],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,["","日本語のテキスト","﻿bom"],{"$num":"-Infinity"}],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,[],2147483648],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[["a",1],["./x/**/*.json","./x/**/*.json","hello"],0],"ok":["a",1]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":["x",["line1\nline2","emoji 👍🏽 mix","ab"],{"$num":"-0"}],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[["a",1],["hello world","ΣΊΣΥΦΟΣ","HELLO"],100],"ok":["a",1]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[true,["ns:key.path","trailing.","﻿bom"],{"$num":"-0"}],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[true,[],{"$num":"-0"}],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{},[],9007199254740992],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[true,["日本語のテキストns:key.path"],1000],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":["x",[],{"$num":"Infinity"}],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[["a",1],["src/a/b.ts",".leading"],1000000],"ok":["a",1]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":["x",["ünïcödé","abcabc","ab"],10],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[[],null,10],"ok":[]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{},["a.b.c","日本語のテキスト"],1000],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,["a:b:c","日本語のテキストstraße"],1000000],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,[],1000],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[0,["{name} has {count} items","﻿bom","{name} has {count} items"],2],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[0,[],100],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":["x",["hello","{name} has {count} items","日本語のテキスト"],{"$num":"-Infinity"}],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[0,["İstanbul","a.b.c"],-1],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[0,["ünïcödé","ünïcödé"],0.5],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[[],{},1000],"ok":[]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[["a",1],["./x/**/*.json","ns:key.path","İstanbul"],10],"ok":["a",1]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,["./x/**/*.jsona..b","tab\tseparated","src/a/b.ts"],42],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{},[""],-2.5],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[0,["key_name-1","hello worldünïcödé"],1],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{},["straße","./x/**/*.json"],{"$num":"-Infinity"}],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":"b"},["ünïcödé","trailing.","a.b.ctab\tseparated"],10],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[0,["é","a:b:c"],2],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":"b"},["😀"],2147483648],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[["a",1],["ns:key.path","😀"],1000000],"ok":["a",1]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[true,[],0.5],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[true,["./x/**/*.json","hello world","a.b.cstraße"],0],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[[],{},2],"ok":[]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[[],[],2],"ok":[]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":"b"},["  padded  "],{"$num":"-0"}],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,true,9007199254740992],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[0,[],{"$num":"NaN"}],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[true,["tab\tseparated﻿bom","hello worldHELLO"],1000000],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":{"b":"c"}},["line1\nline2:"],9007199254740992],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[true,["trailing.","abc"],0],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":["x",["a"],0.5],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{},["src/a/b.tsstraße",""],2],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[[],["😀",":"],1000],"ok":[]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[true,["﻿bom"],{"$num":"-Infinity"}],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{},["Hello World","a..b"],3],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,["./x/**/*.json"],0.5],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,["HELLO"],0.5],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[true,["a😀b😀c","hello","emoji 👍🏽 mix"],{"$num":"-Infinity"}],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":{"b":"c"}},["key_name-1😀"],1],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":{"b":"c"}},[],2147483648],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[[],["","a:b:c"],1],"ok":[]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[["a",1],"x",42],"ok":["a",1]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,["{name} has {count} items","ns:key.path","straße"],42],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":{"b":"c"}},[""],100],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[true,[".leading","HELLO","a😀b😀c"],0],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[true,[],0],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[[],["hello world"],1000000],"ok":[]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[true,[":","ünïcödéemoji 👍🏽 mix","ns:key.path"],42],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[[],[],1000],"ok":[]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[true,true,0],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":{"b":"c"}},[],9007199254740992],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":"b"},[],42],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[["a",1],{"a":{"b":"c"}},{"$num":"NaN"}],"ok":["a",1]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":"b"},[],-1],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":["x",["﻿bom","ΣΊΣΥΦΟΣ",":"],100],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[[],["line1\nline2","é"],2147483648],"ok":[]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[true,{"a":{"b":"c"}},3],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,["line1\nline2"],-1],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,["a.b.c"],{"$num":"-0"}],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[[],[],0.5],"ok":[]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[0,["abc","ΣΊΣΥΦΟΣ"],1],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":"b"},null,42],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,["İstanbulline1\nline2","a.b.c"],-1],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":{"b":"c"}},["ab","hello world","Hello World"],1000],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,["é"],10],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":"b"},[],-2.5],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,["trailing."],{"$num":"Infinity"}],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[[],["{name} has {count} items","İstanbul"],0],"ok":[]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[["a",1],["emoji 👍🏽 mix:","trailing.","{name} has {count} itemsstraße"],2],"ok":["a",1]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":{"b":"c"}},["﻿bom"],100],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,["😀"],0.5],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":["x",["ΣΊΣΥΦΟΣ","😀"],100],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":{"b":"c"}},["a","Hello World","straße"],0],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":"b"},["hello",":.leading","tab\tseparated"],{"$num":"-Infinity"}],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":["x",{"a":"b"},100],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[true,["HELLO","Hello World","日本語のテキストa.b.c"],1000000],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[0,["straße","ns:key.path","a.b.c"],42],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[["a",1],["helloHELLO"],{"$num":"Infinity"}],"ok":["a",1]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[0,["tab\tseparated","tab\tseparated","a.b.c"],{"$num":"-Infinity"}],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[0,["src/a/b.ts"],42],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,["a:b:c"],1],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[0,["İstanbul","ünïcödé","a😀b😀c  padded  "],10],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,[],10],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[0,["Hello World:","HELLO","  padded  "],-2.5],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[true,[],{"$num":"Infinity"}],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,[],0.5],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":{"b":"c"}},["ünïcödé","  padded  ","./x/**/*.json"],2],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,["ünïcödé.leading"],9007199254740992],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,["a",1],3],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{},["HELLO","line1\nline2","tab\tseparated"],1],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":{"b":"c"}},[],0.5],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{},[],{"$num":"NaN"}],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":["x",["{name} has {count} itemsline1\nline2","tab\tseparated"],-1],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[["a",1],["hello world","日本語のテキストstraße"],{"$num":"-Infinity"}],"ok":["a",1]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[0,["hello world","ab"],{"$num":"-Infinity"}],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,["trailing.","hello world"],{"$num":"NaN"}],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":"b"},["tab\tseparated","hello","tab\tseparated"],9007199254740992],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":"b"},["","hello worldhello"],-1],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":{"b":"c"}},["./x/**/*.json"],1],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":"b"},["src/a/b.ts",".leading"],9007199254740992],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[[],[":a..b","tab\tseparated"],3],"ok":[]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[[],[],-2.5],"ok":[]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{},["﻿bom"],2],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[true,["😀","trailing.line1\nline2"],2147483648],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{},null,3],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[["a",1],["emoji 👍🏽 mix"],{"$num":"NaN"}],"ok":["a",1]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[[],["trailing.",":","./x/**/*.jsonünïcödé"],2147483648],"ok":[]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[[],["{name} has {count} items","ünïcödé"],1000],"ok":[]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{},["{name} has {count} items"],0],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[0,["tab\tseparated"],2],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[0,{"a":"b"},{"$num":"-Infinity"}],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{},{"a":{"b":"c"}},100],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[["a",1],[],-2.5],"ok":["a",1]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{},["a.b.c"],{"$num":"-0"}],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":"b"},[],1000000],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,["abc","hello world","a😀b😀c"],2],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[true,["{name} has {count} items","Hello Worlda😀b😀c",""],1],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":{"b":"c"}},0,{"$num":"NaN"}],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,[],{"$num":"-0"}],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[[],[],42],"ok":[]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":{"b":"c"}},["日本語のテキスト"],1],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":{"b":"c"}},[],1000],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[[],["  padded  ","hello"],0.5],"ok":[]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[["a",1],[":","straße"],-1],"ok":["a",1]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{},[],1],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,["a","HELLOHELLO","line1\nline2"],{"$num":"-0"}],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":["x",["emoji 👍🏽 mix","ab"],-2.5],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":["x",0,1000000],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{},["straße","src/a/b.ts","aünïcödé"],1000],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[0,[],1],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":{"b":"c"}},"x",1000000],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,["ab","straße"],0.5],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,["line1\nline2"],100],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,[".leading","ab"],2147483648],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":{"b":"c"}},[],{"$num":"-0"}],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[true,["hello world",":","a..b"],100],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,["HELLO"],3],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[[],["tab\tseparated"],0.5],"ok":[]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[0,["helloa..b","  padded  ünïcödé","  padded  "],{"$num":"-Infinity"}],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[["a",1],["trailing.😀",".leading"],0.5],"ok":["a",1]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,["./x/**/*.json","src/a/b.tstrailing."],10],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[true,["a",1],{"$num":"-Infinity"}],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[0,["hello world","é"],2],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[true,null,2147483648],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,["trailing.","abc","tab\tseparated"],10],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[[],["src/a/b.ts",".leading"],42],"ok":[]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[{"a":"b"},["",".leading","ns:key.path"],10],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[0,["line1\nline2","straße"],1],"error":"messages.map is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[[],["  padded  ","trailing.","tab\tseparated"],1],"ok":[]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,{"a":"b"},-7.5],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,{"a":"b"},0.1],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,{"a":"b"},0.30000000000000004],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,{"a":"b"},1e+21],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,{"a":"b"},1e-7],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,{"a":"b"},5e-324],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,{"a":"b"},1.7976931348623157e+308],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,{"a":"b"},9007199254740992],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[null,{"a":"b"},{"$num":"-0"}],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"formatAsyncUserInputResponse","args":[null,["a..bHello World","./x/**/*.json","ab"]],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"formatAsyncUserInputResponse","args":["x",[]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[true,["ΣΊΣΥΦΟΣ","Hello World"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[["a",1],["helloab",""]],"ok":"undefined\nhelloab\n\nundefined\n"}
+{"fn":"formatAsyncUserInputResponse","args":[true,["abctab\tseparated"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{},[]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[[],[]],"ok":""}
+{"fn":"formatAsyncUserInputResponse","args":[true,["src/a/b.ts"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[true,["tab\tseparatedHELLO"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[["a",1],["","tab\tseparated","line1\nline2"]],"ok":"undefined\n\n\nundefined\ntab\tseparated"}
+{"fn":"formatAsyncUserInputResponse","args":[["a",1],["é","emoji 👍🏽 mix","tab\tseparated"]],"ok":"undefined\né\n\nundefined\nemoji 👍🏽 mix"}
+{"fn":"formatAsyncUserInputResponse","args":[null,["ns:key.path","  padded  "]],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"formatAsyncUserInputResponse","args":[true,["ünïcödé","ab",":"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[["a",1],["a.b.c","  padded  line1\nline2"]],"ok":"undefined\na.b.c\n\nundefined\n  padded  line1\nline2"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":{"b":"c"}},["é","./x/**/*.json","a:b:c"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":"b"},["é"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[true,[]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[null,[]],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"formatAsyncUserInputResponse","args":[0,["line1\nline2","tab\tseparated","HELLO"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[0,[]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":"b"},["a😀b😀c","abc"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":["x",["tab\tseparated"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":{"b":"c"}},["a:b:c"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[["a",1],["a..b","İstanbul","a😀b😀cé"]],"ok":"undefined\na..b\n\nundefined\nİstanbul"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":"b"},["a.b.c"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[[],["tab\tseparated"]],"ok":""}
+{"fn":"formatAsyncUserInputResponse","args":[{},["a.b.c"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":{"b":"c"}},["ns:key.path","😀","ns:key.path"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[["a",1],[]],"ok":"undefined\n\n\nundefined\n"}
+{"fn":"formatAsyncUserInputResponse","args":["x",["emoji 👍🏽 mix","src/a/b.ts"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[[],["İstanbul"]],"ok":""}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":{"b":"c"}},["{name} has {count} items","a.b.c","ns:key.path"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[true,["a😀b😀chello world"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[["a",1],["İstanbul","abcİstanbul"]],"ok":"undefined\nİstanbul\n\nundefined\nabcİstanbul"}
+{"fn":"formatAsyncUserInputResponse","args":[["a",1],["Hello World"]],"ok":"undefined\nHello World\n\nundefined\n"}
+{"fn":"formatAsyncUserInputResponse","args":[{},["hello world","ΣΊΣΥΦΟΣ"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[[],["hello world","a:b:c","trailing."]],"ok":""}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":{"b":"c"}},["tab\tseparated日本語のテキスト"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[null,["😀﻿bom","hello"]],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":{"b":"c"}},[]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{},["src/a/b.ts"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[null,["İstanbulns:key.path"]],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"formatAsyncUserInputResponse","args":[{},["a..b","{name} has {count} items","a😀b😀c"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[[],["abc","ab","trailing."]],"ok":""}
+{"fn":"formatAsyncUserInputResponse","args":[["a",1],["tab\tseparated","Hello World","a😀b😀c"]],"ok":"undefined\ntab\tseparated\n\nundefined\nHello World"}
+{"fn":"formatAsyncUserInputResponse","args":[[],["{name} has {count} items"]],"ok":""}
+{"fn":"formatAsyncUserInputResponse","args":[{},["日本語のテキスト","key_name-1Hello World","line1\nline2key_name-1"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[0,["a..b","a😀b😀c"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":{"b":"c"}},["a","straße"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":{"b":"c"}},["a..b","a😀b😀c",""]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[null,["abc"]],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":"b"},["helloé","a..b",":"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[0,["a","a..b"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[null,["hello","src/a/b.ts😀","a"]],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"formatAsyncUserInputResponse","args":[[],["Hello World"]],"ok":""}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":"b"},[]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{},["hello worldHELLO","abc./x/**/*.json"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[[],["ab","emoji 👍🏽 mix"]],"ok":""}
+{"fn":"formatAsyncUserInputResponse","args":[0,["line1\nline2"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[true,[".leading","İstanbulΣΊΣΥΦΟΣ","İstanbul"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":["x",["abcünïcödé","😀a😀b😀c"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[null,["Hello World"]],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"formatAsyncUserInputResponse","args":[{},["hello world","ns:key.path","a"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[true,["./x/**/*.jsonstraße","aünïcödé"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{},["HELLO"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[true,["src/a/b.tshello","ns:key.path"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[true,[":"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":"b"},["emoji 👍🏽 mix"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":"b"},["hello worldé","﻿bom","ΣΊΣΥΦΟΣhello"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":{"b":"c"}},["{name} has {count} items"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":"b"},["ns:key.path","﻿bom","İstanbul"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[["a",1],["emoji 👍🏽 mixemoji 👍🏽 mix","ΣΊΣΥΦΟΣ","  padded  "]],"ok":"undefined\nemoji 👍🏽 mixemoji 👍🏽 mix\n\nundefined\nΣΊΣΥΦΟΣ"}
+{"fn":"formatAsyncUserInputResponse","args":[{},["straße"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[[],["ab","é","  padded  "]],"ok":""}
+{"fn":"formatAsyncUserInputResponse","args":["x",["emoji 👍🏽 mix","tab\tseparatedünïcödé"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[0,["ns:key.path"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[true,["a😀b😀c","ΣΊΣΥΦΟΣ  padded  "]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":{"b":"c"}},["a😀b😀c",":","a:b:c"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":{"b":"c"}},["😀a😀b😀c",":","﻿bomHello World"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":"b"},["src/a/b.ts","HELLOHELLO"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{},["tab\tseparated","Hello Worldkey_name-1","日本語のテキスト"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[true,["straße","hello"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[true,["emoji 👍🏽 mix"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[true,["{name} has {count} items./x/**/*.json","İstanbul"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":{"b":"c"}},["trailing.","a😀b😀c","  padded  "]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[null,["İstanbulHELLO","key_name-1","ab"]],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":"b"},[".leading"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":{"b":"c"}},["😀","a..b","emoji 👍🏽 mixé"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[null,["hello world"]],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"formatAsyncUserInputResponse","args":[["a",1],["src/a/b.ts"]],"ok":"undefined\nsrc/a/b.ts\n\nundefined\n"}
+{"fn":"formatAsyncUserInputResponse","args":[["a",1],["line1\nline2  padded  ","ünïcödé"]],"ok":"undefined\nline1\nline2  padded  \n\nundefined\nünïcödé"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":"b"},["line1\nline2","日本語のテキスト"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[["a",1],["İstanbul"]],"ok":"undefined\nİstanbul\n\nundefined\n"}
+{"fn":"formatAsyncUserInputResponse","args":[null,["emoji 👍🏽 mix","ΣΊΣΥΦΟΣ"]],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"formatAsyncUserInputResponse","args":[true,["  padded  ","日本語のテキスト",":"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[0,["trailing."]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":{"b":"c"}},["ab",""]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":{"b":"c"}},["hello","ΣΊΣΥΦΟΣ"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[null,["a.b.c"]],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"formatAsyncUserInputResponse","args":[true,["line1\nline2","emoji 👍🏽 mix"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[0,["a:b:c","日本語のテキスト"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":{"b":"c"}},["  padded  ","a.b.c"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":"b"},["hello world"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[0,["Hello World","😀","日本語のテキスト"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[true,["a:b:c","﻿bomsrc/a/b.ts"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{},["é","ΣΊΣΥΦΟΣ"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[0,["ΣΊΣΥΦΟΣ","hello","{name} has {count} items"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[[],["a","src/a/b.ts","  padded  "]],"ok":""}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":{"b":"c"}},["hello","İstanbulline1\nline2","İstanbul"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[[],["ns:key.path","ΣΊΣΥΦΟΣ"]],"ok":""}
+{"fn":"formatAsyncUserInputResponse","args":[0,["é",":ünïcödé"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":"b"},["😀.leading","{name} has {count} items","ns:key.path"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":{"b":"c"}},["日本語のテキスト","key_name-1"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":"b"},["tab\tseparated"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[0,["src/a/b.tshello","a:b:c","key_name-1﻿bom"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[[],["line1\nline2","ns:key.path","日本語のテキスト"]],"ok":""}
+{"fn":"formatAsyncUserInputResponse","args":[true,["ab","ab","line1\nline2"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[[],["trailing."]],"ok":""}
+{"fn":"formatAsyncUserInputResponse","args":[0,["","ab","😀"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[["a",1],["tab\tseparatedtrailing.","a"]],"ok":"undefined\ntab\tseparatedtrailing.\n\nundefined\na"}
+{"fn":"formatAsyncUserInputResponse","args":[[],["a..ba😀b😀c","a:b:c"]],"ok":""}
+{"fn":"formatAsyncUserInputResponse","args":[null,["a.b.cé","a"]],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":{"b":"c"}},["tab\tseparated"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":"b"},["emoji 👍🏽 mix",""]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":["x",["a😀b😀c","abc","Hello World"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":["x",["hello:","a.b.cstraße"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{},["﻿bom","HELLO﻿bom"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[null,["ns:key.path","﻿boma😀b😀c"]],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"formatAsyncUserInputResponse","args":[0,["src/a/b.ts","İstanbul"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":"b"},[":a..b"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{},["trailing."]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":["x",["emoji 👍🏽 mix","hello world","  padded  "]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[[],["straßea..b","日本語のテキスト./x/**/*.json","éns:key.path"]],"ok":""}
+{"fn":"formatAsyncUserInputResponse","args":["x",["a:b:c","İstanbul"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[0,["straße","ns:key.path","trailing.a.b.c"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[["a",1],["hello world"]],"ok":"undefined\nhello world\n\nundefined\n"}
+{"fn":"formatAsyncUserInputResponse","args":[0,[":"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":"b"},["ab","./x/**/*.json","é"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":["x",["hello","a"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":{"b":"c"}},["tab\tseparated","a..b"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[true,["hello worldünïcödé","key_name-1","a:b:c"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[0,["a.b.c"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[0,["ΣΊΣΥΦΟΣabc",":","emoji 👍🏽 mix"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":["x",["key_name-1"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[["a",1],["a😀b😀c","ns:key.path","line1\nline2"]],"ok":"undefined\na😀b😀c\n\nundefined\nns:key.path"}
+{"fn":"formatAsyncUserInputResponse","args":[{},["ünïcödé","","İstanbul"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[null,["ünïcödé","./x/**/*.json","  padded  "]],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"formatAsyncUserInputResponse","args":[["a",1],["ab","ns:key.path"]],"ok":"undefined\nab\n\nundefined\nns:key.path"}
+{"fn":"formatAsyncUserInputResponse","args":["x",["a.b.ctab\tseparated","hello world"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[["a",1],["trailing.","ünïcödé","straße{name} has {count} items"]],"ok":"undefined\ntrailing.\n\nundefined\nünïcödé"}
+{"fn":"formatAsyncUserInputResponse","args":["x",["hello worldline1\nline2","İstanbul","😀"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[null,["HELLOİstanbul","abc"]],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"formatAsyncUserInputResponse","args":[null,["日本語のテキスト","a😀b😀c","日本語のテキスト"]],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"formatAsyncUserInputResponse","args":[true,["hello","aa.b.c","İstanbul"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[true,["a.b.c","emoji 👍🏽 mix","hello"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[true,["İstanbul","İstanbul"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":"b"},["a..b"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":{"b":"c"}},["﻿bom",".leading"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":["x",["ΣΊΣΥΦΟΣ","Hello World"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":{"b":"c"}},[":a.b.c"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[0,["ns:key.pathünïcödé","  padded    padded  ","Hello World😀"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{},["ns:key.path"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[null,["ns:key.patha.b.c","HELLO","a😀b😀c"]],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"formatAsyncUserInputResponse","args":[null,[":","trailing.emoji 👍🏽 mix"]],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"formatAsyncUserInputResponse","args":[0,["hello world","src/a/b.ts","﻿bom"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[["a",1],["emoji 👍🏽 mix:","😀"]],"ok":"undefined\nemoji 👍🏽 mix:\n\nundefined\n😀"}
+{"fn":"formatAsyncUserInputResponse","args":[0,["a.b.c","hello world",""]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":["x",["","é"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[["a",1],["a.b.c",":","a..b"]],"ok":"undefined\na.b.c\n\nundefined\n:"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":"b"},[":straße",".leading","a:b:c"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[true,["HELLO","日本語のテキストkey_name-1","hello"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":["x",["😀","./x/**/*.json","helloHELLO"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":"b"},["ns:key.path","a..b"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[null,["src/a/b.ts","trailing."]],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"formatAsyncUserInputResponse","args":[["a",1],[".leading"]],"ok":"undefined\n.leading\n\nundefined\n"}
+{"fn":"formatAsyncUserInputResponse","args":[true,["é","  padded  "]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[["a",1],["a:b:c"]],"ok":"undefined\na:b:c\n\nundefined\n"}
+{"fn":"formatAsyncUserInputResponse","args":[{},["a"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[null,["İstanbul","a:b:c","abkey_name-1"]],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":{"b":"c"}},["./x/**/*.json","ΣΊΣΥΦΟΣ","a..ba😀b😀c"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[[],["trailing.","a.b.cstraße"]],"ok":""}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":{"b":"c"}},["hello","emoji 👍🏽 mix","{name} has {count} items"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":"b"},["hello","",":"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":"b"},["Hello World","a😀b😀c"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":["x",["emoji 👍🏽 mix","trailing."]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[null,[".leading","hello world","helloé"]],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"formatAsyncUserInputResponse","args":[true,["","tab\tseparated"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":{"b":"c"}},["ünïcödé",".leading",""]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[true,["a.b.c","ΣΊΣΥΦΟΣ"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":["x",["straße😀"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":"b"},["İstanbul"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":["x",["abstraße","line1\nline2"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":"b"},["ns:key.patha.b.c","İstanbul","ünïcödéΣΊΣΥΦΟΣ"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[0,["","hello"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":{"b":"c"}},["emoji 👍🏽 mix","a😀b😀c","abchello"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[[],["  padded  ","","a..b"]],"ok":""}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":{"b":"c"}},["﻿bom","日本語のテキスト"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[{"a":{"b":"c"}},["emoji 👍🏽 mix","ns:key.path"]],"error":"questions.map is not a function"}
+{"fn":"formatAsyncUserInputResponse","args":[[],["ΣΊΣΥΦΟΣ"]],"ok":""}
+{"fn":"formatAsyncUserInputResponse","args":[["a",1],["a..b:"]],"ok":"undefined\na..b:\n\nundefined\n"}
+{"fn":"formatAsyncUserInputResponse","args":[null,["b","a","B","é","10","9","a"]],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[[{"id":"m1","asyncUserInput":{"questions":[{"title":"Q"}],"response":{"messageId":"m9","answers":["a"]},"extra":"keep?"}}],{"$set":["x"]},7],"ok":[{"id":"m1","asyncUserInput":{"questions":[{"title":"Q"}],"responseSequence":7}}]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[[{"id":"m1","asyncUserInput":{"response":{"messageId":"m9","answers":["a"]},"responseSequence":2,"z":[1]}}],{"$set":["x"]},7],"ok":[{"id":"m1","asyncUserInput":{"questions":{"$undefined":true},"responseSequence":7}}]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[[{"id":"m1","asyncUserInput":{"questions":[{"title":"Q"}],"response":null,"responseSequence":2}}],{"$set":["x"]},7],"ok":[{"id":"m1","asyncUserInput":{"questions":[{"title":"Q"}],"response":null,"responseSequence":2}}]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[[{"id":"m1","asyncUserInput":{"questions":[{"title":"Q"}],"response":{"answers":["a"]},"responseSequence":2}}],{"$set":["x"]},7],"ok":[{"id":"m1","asyncUserInput":{"questions":[{"title":"Q"}],"responseSequence":7}}]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[[{"id":"m1","asyncUserInput":{"questions":[{"title":"Q"}],"response":{"messageId":"m9","answers":["a"]},"responseSequence":2}}],["m9"],7],"error":"retainedMessageIds.has is not a function"}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[[{"id":"m1","asyncUserInput":{"questions":[{"title":"Q"}],"response":{"messageId":5,"answers":["a"]},"responseSequence":2}}],{"$set":[5]},7],"ok":[{"id":"m1","asyncUserInput":{"questions":[{"title":"Q"}],"response":{"messageId":5,"answers":["a"]},"responseSequence":2}}]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[[{"id":"m1","asyncUserInput":{"questions":[{"title":"Q"}],"response":{"messageId":{"$undefined":true},"answers":["a"]},"responseSequence":2}}],{"$set":[]},7],"ok":[{"id":"m1","asyncUserInput":{"questions":[{"title":"Q"}],"responseSequence":7}}]}
+{"fn":"clearRemovedAsyncUserInputResponses","args":[[null,"x",{"id":"m1"}],["r1"],1],"error":"Cannot read properties of null (reading 'asyncUserInput')"}
+{"fn":"formatAsyncUserInputResponse","args":[[null],["x"]],"error":"Cannot read properties of null (reading 'title')"}
+{"fn":"formatAsyncUserInputResponse","args":[[{"$undefined":true}],["x"]],"error":"Cannot read properties of undefined (reading 'title')"}
+{"fn":"formatAsyncUserInputResponse","args":[[{"title":"T"}],"ab"],"ok":"T\na"}
+{"fn":"formatAsyncUserInputResponse","args":[[{"title":"T"}],null],"error":"Cannot read properties of null (reading '0')"}
+{"fn":"mergeAsyncUserInput","args":[{"a":1},""],"ok":{"a":1}}
+{"fn":"mergeAsyncUserInput","args":[{"$undefined":true},{"$undefined":true}],"ok":{"$undefined":true}}

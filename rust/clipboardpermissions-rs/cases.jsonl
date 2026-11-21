@@ -1,0 +1,235 @@
+{"fn":"isClipboardWritePermission","args":[true,"日本語のテキスト",{"isMainFrame":false,"requestingUrl":"abc日本語のテキスト","embeddingOrigin":"tab\tseparated"},":日本語のテキスト"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"É",{"isMainFrame":true,"requestingUrl":"key_name-1","embeddingOrigin":"key_name-1"},"é"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{"a":{"b":"c"}},"e1\nli",{"isMainFrame":true,"requestingUrl":"  padded  ","embeddingOrigin":"key_name-1"},"line1\nline2"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"ab.leading",{"isMainFrame":true,"requestingUrl":"a","embeddingOrigin":".leading"},{"$undefined":true}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"abc",{"isMainFrame":false,"requestingUrl":"é","embeddingOrigin":".leading"}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"hello world",{"isMainFrame":true,"requestingUrl":"ΣΊΣΥΦΟΣ","embeddingOrigin":":"}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"  padded  ",{"a":"b"},"Hello World"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"a",{"requestingUrl":"line1\nline2  padded  ","embeddingOrigin":"ns:key.path"},""],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{"a":{"b":"c"}},"src/a/b.ts",{"isMainFrame":true,"embeddingOrigin":"  padded  key_name-1"},"  padded  "],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{"a":"b"},"E",{"isMainFrame":true,"requestingUrl":"a","embeddingOrigin":"tab\tseparated"},"HELLO"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[0,".leading",{"requestingUrl":"abc","embeddingOrigin":"ünïcödé"},"ünïcödéé"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"EADING",{"requestingUrl":"  padded  ","embeddingOrigin":"tab\tseparated"},".leading"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"Hello World",{"isMainFrame":true,"requestingUrl":"abc","embeddingOrigin":"tab\tseparated"},"ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[["a",1],"ul",{"isMainFrame":false,"requestingUrl":"ünïcödé","embeddingOrigin":"emoji 👍🏽 mixtab\tseparated"},"İstanbul"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"a😀b😀c",{"isMainFrame":false,"requestingUrl":"hello","embeddingOrigin":"日本語のテキスト"},"Hello Worldab"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[[],"ΣΊΣΥΦΟΣ",{"isMainFrame":true},{"$undefined":true}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"trailing.",{"isMainFrame":true,"embeddingOrigin":"İstanbulHello World"},"G"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"😀Hello World",{"isMainFrame":true,"requestingUrl":"straße  padded  ","embeddingOrigin":"  padded  "}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[0,"  padded  ns:key.path",{"isMainFrame":false,"embeddingOrigin":"😀"},{"$undefined":true}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{"a":{"b":"c"}},"./x/**/*.json",["a",1]],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"emoji 👍🏽 mixa..b",{"requestingUrl":"hello world","embeddingOrigin":"abΣΊΣΥΦΟΣ"},"abc"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"a.b.c",[],{"$undefined":true}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"aba",{"isMainFrame":true,"requestingUrl":"tab\tseparatedabc","embeddingOrigin":"trailing."}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[0,":",["a",1]],"ok":false}
+{"fn":"isClipboardWritePermission","args":[[],"./x/**/*.json",{"isMainFrame":false,"embeddingOrigin":"ünïcödéemoji 👍🏽 mix"},"n"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{},"é",{"requestingUrl":"a..b","embeddingOrigin":"ab"},"akey_name-1"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"key_name-1a..b",{"isMainFrame":true,"requestingUrl":"İstanbulHELLO","embeddingOrigin":"key_name-1"},"a😀b😀c"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{"a":{"b":"c"}},"hello",{"requestingUrl":"ünïcödé"},"😀"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[0,"ΣΊΣΥΦΟΣé",{"isMainFrame":true,"embeddingOrigin":"éabc"},"straße"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{"a":"b"},"line1\nline2","x"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[[],"ns:key.path",{"isMainFrame":true,"embeddingOrigin":"日本語のテキスト"}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[[],"a:b:c",{"isMainFrame":false,"requestingUrl":"a"},"Hello World"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"a😀b😀c",{"isMainFrame":true,"requestingUrl":"é","embeddingOrigin":"ΣΊΣΥΦΟΣ"},"😀"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"HELLO",0,"  padded  "],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"ab",{"isMainFrame":false,"requestingUrl":"İstanbul{name} has {count} items","embeddingOrigin":"a:b:c"},"b"],"ok":false}
+{"fn":"isClipboardWritePermission","args":["x","﻿bom",{"isMainFrame":false,"requestingUrl":"a..b","embeddingOrigin":"line1\nline2"},{"$undefined":true}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,":",{"isMainFrame":false,"requestingUrl":":","embeddingOrigin":"HELLO"},"İstanbul  padded  "],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"ΣΊΣΥΦΟΣ",{"requestingUrl":"ns:key.path.leading"},"﻿bomHELLO"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"😀",{"requestingUrl":"trailing.","embeddingOrigin":"﻿bom"},"﻿bom"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{},"  padded  ",{"isMainFrame":true,"requestingUrl":"key_name-1HELLO"},{"$undefined":true}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"é",{},"trailing."],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"line1\nline2",{"embeddingOrigin":"éemoji 👍🏽 mix"}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"hello",{"isMainFrame":false,"requestingUrl":"key_name-1"},"﻿bom"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[["a",1],"İstanbul",{"isMainFrame":true,"requestingUrl":"a","embeddingOrigin":""},"﻿bom"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"ns:key.path",{"isMainFrame":false,"requestingUrl":"line1\nline2","embeddingOrigin":"﻿bom"}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[["a",1],"😀",{"requestingUrl":"HELLO","embeddingOrigin":"Hello World"},{"$undefined":true}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{},"ns:key.path",{"isMainFrame":true,"requestingUrl":":"},"abc"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[[],"./x/**/*.json",{"requestingUrl":"tab\tseparated","embeddingOrigin":"abΣΊΣΥΦΟΣ"},"key_name-1"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{"a":"b"},"",{},"ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isClipboardWritePermission","args":["x","unt} ite",{"embeddingOrigin":":"},"{name} has {count} items﻿bom"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{},"a",[],{"$undefined":true}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"ïcödé",{"isMainFrame":true,"requestingUrl":"日本語のテキスト","embeddingOrigin":"İstanbulsrc/a/b.ts"},"ünïcödé"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"abc",{"isMainFrame":true,"requestingUrl":"","embeddingOrigin":"İstanbula:b:c"},"Hello Worldns:key.path"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"./x/**/*.json",{"embeddingOrigin":"ns:key.path"}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"straße",{"requestingUrl":"😀","embeddingOrigin":"a.b.c"}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"straße",{"isMainFrame":true,"requestingUrl":"ΣΊΣΥΦΟΣHELLO","embeddingOrigin":""},{"$undefined":true}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[["a",1],"ns:key.path",{"isMainFrame":false,"embeddingOrigin":"./x/**/*.jsonhello"},""],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{},"key_name-1é",{"isMainFrame":false,"embeddingOrigin":"hello world"},"_name"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"./x/**/*.json",{"requestingUrl":"é","embeddingOrigin":"é"},"abstraße"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"日本語のテキスト",{"isMainFrame":true,"requestingUrl":"Hello World","embeddingOrigin":"a😀b😀c:"},"line1\nline2"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[[],".leading",{"isMainFrame":true,"requestingUrl":"İstanbul","embeddingOrigin":"é"},"di"],"ok":false}
+{"fn":"isClipboardWritePermission","args":["x","aa..b",{},"ünïcödé"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[[],"ünïcödé",{"isMainFrame":true,"requestingUrl":"HELLO","embeddingOrigin":"tab\tseparated日本語のテキスト"},"n"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{"a":"b"},"ab",{"isMainFrame":false,"requestingUrl":""},{"$undefined":true}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{"a":"b"},"line1\nline2ΣΊΣΥΦΟΣ",{"isMainFrame":false},"a😀b😀chello"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"",{"isMainFrame":false,"requestingUrl":"HELLO","embeddingOrigin":"ΣΊΣΥΦΟΣ"},{"$undefined":true}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"m",{"isMainFrame":true,"requestingUrl":"﻿bomkey_name-1","embeddingOrigin":"emoji 👍🏽 mix"},"﻿bom"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"日本語のテキスト",{"isMainFrame":false,"requestingUrl":"Hello World","embeddingOrigin":"straßesrc/a/b.ts"},"日本語のテキスト"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,":",{"isMainFrame":false,"requestingUrl":"İstanbul","embeddingOrigin":"İstanbul"},"src/a/b.ts"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"a😀b😀c",{"isMainFrame":false,"embeddingOrigin":"hello world"},"a😀b😀c"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[["a",1],"ns:key.pathab",{"requestingUrl":"hello","embeddingOrigin":"a😀b😀c"},"ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"ΣΊΣΥΦΟΣ",{"isMainFrame":true,"requestingUrl":"atab\tseparated","embeddingOrigin":"ns:key.pathhello world"},"a..babc"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"😀",{"embeddingOrigin":"  padded  "}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"key_name-1",{"isMainFrame":true,"requestingUrl":"HELLO","embeddingOrigin":"straße"},"./x/**/*.json"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"i",{"isMainFrame":false,"requestingUrl":"a:b:c","embeddingOrigin":"ab"},"emoji 👍🏽 mix"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{"a":{"b":"c"}},"a😀b😀cHELLO",{"isMainFrame":false},"HELL"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{},"HELLO",{"isMainFrame":false,"requestingUrl":":","embeddingOrigin":"./x/**/*.json"},{"$undefined":true}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"a:b:c",{},"a:b:c"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[[],"ΣΊΣΥΦΟΣ",{"isMainFrame":true,"requestingUrl":"{name} has {count} items","embeddingOrigin":"key_name-1"},"tab\tseparatedab"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[[],"./x/**/*.json",{"requestingUrl":"hello world","embeddingOrigin":"atab\tseparated"}],"ok":false}
+{"fn":"isClipboardWritePermission","args":["HE","HELLO",{"a":{"b":"c"}},"a"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"tab\tseparateda",{"isMainFrame":false,"requestingUrl":"hello"}],"ok":false}
+{"fn":"isClipboardWritePermission","args":["x","{name} has {count} items.leading",{"isMainFrame":true,"embeddingOrigin":"a"},{"$undefined":true}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[0,"  padded  ",{"isMainFrame":true,"requestingUrl":"日本語のテキスト"},"ns:key.path"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{},"tab\tseparated",{},"ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"emoji 👍🏽 mix",{"isMainFrame":false,"requestingUrl":"straße","embeddingOrigin":"emoji 👍🏽 mixstraße"},"ab"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"ΣΊΣΥΦΟΣ",{"isMainFrame":true,"requestingUrl":"HELLOtrailing.","embeddingOrigin":"emoji 👍🏽 mix"},"ünïcödé"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{},":",{"isMainFrame":false,"requestingUrl":"ünïcödé"},"a😀b😀cé"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"key_name-1",{"isMainFrame":true,"requestingUrl":"{name} has {count} itemsa😀b😀c","embeddingOrigin":"a"},"line1\nline2"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{"a":{"b":"c"}},"a😀",["a",1],{"$undefined":true}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"tab\tseparated",[]],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"Hello World",{"requestingUrl":"ns:key.path","embeddingOrigin":"Hello Worlda..b"},"tab\tseparated"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[["a",1],"straßeHELLO",{},":"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"anbu",{"isMainFrame":false,"requestingUrl":"trailing.","embeddingOrigin":"ünïcödé"},"İstanbul"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"{name} has {count} itemsab",{"isMainFrame":true,"embeddingOrigin":"﻿bomé"},"ünïcödé"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{"a":{"b":"c"}},"key_name-1",{"isMainFrame":true,"requestingUrl":"a.b.cΣΊΣΥΦΟΣ"},"😀"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"NG.",{"isMainFrame":false,"embeddingOrigin":"emoji 👍🏽 mix"},"trailing."],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,".leading",{"isMainFrame":true,"requestingUrl":"{name} has {count} items"},{"$undefined":true}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"ns:key.path",{"isMainFrame":true,"embeddingOrigin":"a"}],"ok":false}
+{"fn":"isClipboardWritePermission","args":["x","X",0,{"$undefined":true}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,".b",{"isMainFrame":true,"embeddingOrigin":"{name} has {count} items"},"a.b.c:"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{"a":"b"},"﻿bom{name} has {count} items",{"isMainFrame":false,"requestingUrl":"src/a/b.ts"},"hello"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"tab\tseparateda",{"isMainFrame":false,"requestingUrl":"{name} has {count} items","embeddingOrigin":"abctab\tseparated"}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"abc",{"isMainFrame":true},"abc"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"straße",{"requestingUrl":"{name} has {count} items","embeddingOrigin":"HELLO"},"emoji 👍🏽 mix"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"﻿bom",{"isMainFrame":false,"requestingUrl":"{name} has {count} items","embeddingOrigin":"a.b.c"},"emoji 👍🏽 mix"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"",{"isMainFrame":true,"requestingUrl":"straße./x/**/*.json"}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"HELLO",{"requestingUrl":"straße","embeddingOrigin":"日本語のテキスト"},":"],"ok":false}
+{"fn":"isClipboardWritePermission","args":["x","ΣΊΣΥΦΟΣtrailing.",{"a":"b"},"ng"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,":ab",{"isMainFrame":true,"requestingUrl":"trailing.src/a/b.ts"},"emoji 👍🏽 mix"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"straße",{"isMainFrame":true,"embeddingOrigin":"ab"},"straße"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[["a",1],"ns:key.pathtab\tseparated",["a",1],"trailing.HELLO"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"  pad",{"embeddingOrigin":"İstanbul"},"  padded  "],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"a",{},"a"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{"a":{"b":"c"}},"ünïcödé",{"isMainFrame":true,"embeddingOrigin":""},"./x/**/*.json"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"ünïcödé",{"isMainFrame":false,"requestingUrl":"  padded  ","embeddingOrigin":"日本語のテキスト"},"hello world"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{"a":{"b":"c"}},"ΣΊΣΥΦΟΣ",{"a":{"b":"c"}}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[["a",1],".",{"requestingUrl":"line1\nline2","embeddingOrigin":"emoji 👍🏽 mixHELLO"},"a..b"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"﻿bom",{"isMainFrame":true,"requestingUrl":"line1\nline2","embeddingOrigin":"HELLO"}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"a..b",{"isMainFrame":true,"requestingUrl":":","embeddingOrigin":"tab\tseparated"},"a..b"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{"a":"b"},"éHello World",{"embeddingOrigin":"İstanbul﻿bom"}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"Hello World",{"isMainFrame":true,"requestingUrl":".leading","embeddingOrigin":"Hello Worlda😀b😀c"},":"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"tab\tseparated",{"isMainFrame":false,"requestingUrl":".leading","embeddingOrigin":"key_name-1a😀b😀c"},"line1\nline2日本語のテキスト"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{"a":{"b":"c"}},"ΣΊΣΥΦΟΣ",{"requestingUrl":"hello world","embeddingOrigin":"éa.b.c"},"HELLO"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"emoji 👍🏽 mix",{"isMainFrame":true,"requestingUrl":"./x/**/*.json","embeddingOrigin":"./x/**/*.json"},{"$undefined":true}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[[],":",{"isMainFrame":true,"requestingUrl":"key_name-1","embeddingOrigin":""},"hello world"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"İstanbul",["a",1],{"$undefined":true}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{},"語のテキス",{"isMainFrame":true,"requestingUrl":"tab\tseparated","embeddingOrigin":"a.b.c"},"日本語のテキスト"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"src/a/b.ts",{"a":{"b":"c"}},".leading"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"straße",{"a":"b"},"a"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"ΣΊΣΥΦΟΣ",{"isMainFrame":false,"requestingUrl":"abcab","embeddingOrigin":"ns:key.path"},""],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"line1\nline2",{"isMainFrame":false}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"  padded  ",{"isMainFrame":true,"requestingUrl":"ünïcödéa:b:c","embeddingOrigin":"hello world"},"é"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[[],"a.b.c",{"isMainFrame":true,"requestingUrl":":ns:key.path","embeddingOrigin":"日本語のテキスト"},"emoji 👍🏽 mix"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"r",{"isMainFrame":false,"requestingUrl":"a","embeddingOrigin":"HELLO"},"tab\tseparated"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"a.b.ctab\tseparated",{"isMainFrame":false,"requestingUrl":".leading"}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[":",":",{"isMainFrame":true},{"$undefined":true}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{},"HELLO",{"embeddingOrigin":"trailing."},"trailing."],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"line1\nline2",{"isMainFrame":true},"src/a/b.ts"],"ok":false}
+{"fn":"isClipboardWritePermission","args":["x","emoji 👍🏽 mix",{"isMainFrame":true,"requestingUrl":"emoji 👍🏽 mix","embeddingOrigin":"a😀b😀c"},"x"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{"a":{"b":"c"}},"./x/**/*.json",{"isMainFrame":false,"requestingUrl":"abc","embeddingOrigin":"é"},{"$undefined":true}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"ünïcödé",{"isMainFrame":false,"requestingUrl":"é","embeddingOrigin":"src/a/b.ts"},"a😀b😀c"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"..b",{"requestingUrl":"hello world","embeddingOrigin":"a"},"a..b"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"日本語のテキストünïcödé",{"requestingUrl":"é","embeddingOrigin":"line1\nline2emoji 👍🏽 mix"},"tab\tseparated"],"ok":false}
+{"fn":"isClipboardWritePermission","args":["x","hello",{"isMainFrame":false,"requestingUrl":"emoji 👍🏽 mix","embeddingOrigin":"日本語のテキスト"},"HELLO"],"ok":false}
+{"fn":"isClipboardWritePermission","args":["A😀B","src/a/b.tsa😀b😀c",{"isMainFrame":false,"requestingUrl":"ΣΊΣΥΦΟΣ"},{"$undefined":true}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"a..b",{},"  padded  tab\tseparated"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"straße",{"requestingUrl":"ab","embeddingOrigin":"hello world"},"e"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[0,"😀",{"isMainFrame":true,"requestingUrl":"HELLO","embeddingOrigin":"trailing.Hello World"},"ab"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[["a",1],"straße",{"isMainFrame":false,"requestingUrl":"ΣΊΣΥΦΟΣ","embeddingOrigin":"HELLO"},"﻿bom"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"key_name-1",[],"İstanbul"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[[],"a😀b😀ca..b",{"requestingUrl":"trailing."},"key_name-1"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"hello",{"isMainFrame":true,"requestingUrl":"a","embeddingOrigin":"hello world"}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"ΣΊΣΥΦΟΣ",{"isMainFrame":false,"requestingUrl":"a😀b😀c","embeddingOrigin":"ns:key.path"},"key_name-1.leading"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[["a",1],"é",{"isMainFrame":true,"requestingUrl":"line1\nline2","embeddingOrigin":"ns:key.path"}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"ΣΊΣΥΦΟΣ",{"isMainFrame":false,"embeddingOrigin":"éhello"},"straße"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[["a",1],"ünïcödé",{"isMainFrame":true,"embeddingOrigin":"straße"},"{name} has {count} items"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[0,"./x/**/*.jsonline1\nline2",{"isMainFrame":true,"requestingUrl":"  padded  ","embeddingOrigin":"é"},"./x/**/*.jsonHELLO"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{"a":{"b":"c"}},"src/a/b.ts",{"isMainFrame":false,"requestingUrl":"aa.b.c","embeddingOrigin":"ns:key.path"},{"$undefined":true}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{},":",{"isMainFrame":false,"embeddingOrigin":"line1\nline2"},"ΣΊΣΥΦΟΣünïcödé"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[[],"日本語のテキスト",{"isMainFrame":false,"requestingUrl":"hello","embeddingOrigin":"ns:key.path"}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{"a":{"b":"c"}},":",{"isMainFrame":true,"requestingUrl":""},"ab"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[[],"日本語のテキスト",{"isMainFrame":false,"embeddingOrigin":"a:b:c"},"line1\nline2"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"﻿bom",{"isMainFrame":true,"requestingUrl":"a..b"},"src/a/b.ts"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,".leading",{"isMainFrame":false,"requestingUrl":"İstanbulhello world","embeddingOrigin":"ns:key.path"},"😀"],"ok":false}
+{"fn":"isClipboardWritePermission","args":["x","  padded  ",{"isMainFrame":false,"requestingUrl":"trailing.","embeddingOrigin":"a.b.c"},"😀"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{"a":"b"},"trailing.",{"embeddingOrigin":"ΣΊΣΥΦΟΣ"}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"日本語のテキスト",{"isMainFrame":true,"requestingUrl":"tab\tseparated","embeddingOrigin":"a..b"}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,".leadingemoji 👍🏽 mix",{"isMainFrame":false,"requestingUrl":"abc","embeddingOrigin":"a"},"tab\tseparated"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"ünïcödé",{"isMainFrame":false,"requestingUrl":"  padded  .leading","embeddingOrigin":"﻿bom"},"abc"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{"a":"b"},"İstanbul",{"isMainFrame":true,"embeddingOrigin":"./x/**/*.json"},{"$undefined":true}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{"a":{"b":"c"}},"a😀b😀c",{"isMainFrame":true,"requestingUrl":"abHello World","embeddingOrigin":"﻿bom"},"hello world"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"ünïcödé",{"isMainFrame":true,"requestingUrl":"HELLO","embeddingOrigin":".leadingHELLO"},"Hello World"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"a",{"isMainFrame":false,"embeddingOrigin":"a"}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"é日本語のテキスト",{"isMainFrame":false,"requestingUrl":"ünïcödé","embeddingOrigin":""},"trailing."],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"src/a/b.tstrailing.",{"requestingUrl":"Hello World"},".leadinghello"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"src/a/b.ts  padded  ",{"isMainFrame":false,"requestingUrl":"abc"},"ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[[],"straße",{"isMainFrame":true,"embeddingOrigin":"a..b"},"line1\nline2"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[0,"a😀b😀c",[],"😀"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[0,"src/a/b.ts",{"isMainFrame":false,"requestingUrl":"a","embeddingOrigin":"abc"},"emoji 👍🏽 mix"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{"a":"b"},"a😀b😀c",{"isMainFrame":true,"requestingUrl":"﻿bom"},"A"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[["a",1],"abc",{"isMainFrame":false,"requestingUrl":"a😀b😀ctab\tseparated"},"a"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"",{"a":"b"},"  padded  :"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{"a":"b"},"a:b:c",{"isMainFrame":false,"requestingUrl":"line1\nline2","embeddingOrigin":"日本語のテキスト"},"﻿bom"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"b",{"isMainFrame":false,"requestingUrl":"a..b","embeddingOrigin":"HELLO"},"ab"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"",{"isMainFrame":false,"requestingUrl":"﻿bom","embeddingOrigin":"emoji 👍🏽 mix"},"tab\tseparated"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"./x/**/*.json",{"isMainFrame":false,"requestingUrl":"src/a/b.ts","embeddingOrigin":"hello world"},"ünïcödé"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[0,"a😀b😀c",[],"{name} has {count} items"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"hello",{"isMainFrame":true,"requestingUrl":"src/a/b.ts"},"./x/**/*.jsontrailing."],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"trailing.",{"isMainFrame":true,"requestingUrl":"😀","embeddingOrigin":"Hello World"},"a:b:c"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{"a":{"b":"c"}},"tab\tseparated",{"isMainFrame":false},"arate"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"İstanbul",{"isMainFrame":false,"requestingUrl":"é","embeddingOrigin":"a😀b😀c"},".leading"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{},"straße",{"isMainFrame":false,"embeddingOrigin":"key_name-1"},"HELLO"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"",{"isMainFrame":false,"requestingUrl":"key_name-1","embeddingOrigin":"a:b:c"},{"$undefined":true}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"ΣΊΣΥΦΟΣ",{"isMainFrame":false,"embeddingOrigin":"straße"},"tab\tseparated"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{"a":{"b":"c"}},"src/a/b.tsa:b:c",{"isMainFrame":false,"requestingUrl":"tab\tseparated","embeddingOrigin":"Hello Worldstraße"},"HELLO"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[null,"hello worldhello",{"a":{"b":"c"}},"ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{"a":{"b":"c"}},"tab\tseparatedİstanbul",{}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[{"a":"b"},"😀",{"isMainFrame":false,"requestingUrl":"ΣΊΣΥΦΟΣ","embeddingOrigin":"Hello World"},{"$undefined":true}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[0,"﻿bom",{"isMainFrame":false,"requestingUrl":".leading"},"ab"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"héllo wörld",{"isMainFrame":false,"requestingUrl":"abc日本語のテキスト","embeddingOrigin":"tab\tseparated"},":日本語のテキスト"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"👍🏽 thumbs",{"isMainFrame":false,"requestingUrl":"abc日本語のテキスト","embeddingOrigin":"tab\tseparated"},":日本語のテキスト"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"日本語",{"isMainFrame":false,"requestingUrl":"abc日本語のテキスト","embeddingOrigin":"tab\tseparated"},":日本語のテキスト"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"",{"isMainFrame":false,"requestingUrl":"abc日本語のテキスト","embeddingOrigin":"tab\tseparated"},":日本語のテキスト"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"é",{"isMainFrame":false,"requestingUrl":"abc日本語のテキスト","embeddingOrigin":"tab\tseparated"},":日本語のテキスト"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"İstanbul",{"isMainFrame":false,"requestingUrl":"abc日本語のテキスト","embeddingOrigin":"tab\tseparated"},":日本語のテキスト"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"straße",{"isMainFrame":false,"requestingUrl":"abc日本語のテキスト","embeddingOrigin":"tab\tseparated"},":日本語のテキスト"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"ılık ırmak",{"isMainFrame":false,"requestingUrl":"abc日本語のテキスト","embeddingOrigin":"tab\tseparated"},":日本語のテキスト"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"👨‍👩‍👧 family",{"isMainFrame":false,"requestingUrl":"abc日本語のテキスト","embeddingOrigin":"tab\tseparated"},":日本語のテキスト"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"a b",{"isMainFrame":false,"requestingUrl":"abc日本語のテキスト","embeddingOrigin":"tab\tseparated"},":日本語のテキスト"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"ΣΊΣΥΦΟΣ",{"isMainFrame":false,"requestingUrl":"abc日本語のテキスト","embeddingOrigin":"tab\tseparated"},":日本語のテキスト"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"a😀b",{"isMainFrame":false,"requestingUrl":"abc日本語のテキスト","embeddingOrigin":"tab\tseparated"},":日本語のテキスト"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"﻿bom",{"isMainFrame":false,"requestingUrl":"abc日本語のテキスト","embeddingOrigin":"tab\tseparated"},":日本語のテキスト"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"a²b x½ y①",{"isMainFrame":false,"requestingUrl":"abc日本語のテキスト","embeddingOrigin":"tab\tseparated"},":日本語のテキスト"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"aⅠb Ⅻ",{"isMainFrame":false,"requestingUrl":"abc日本語のテキスト","embeddingOrigin":"tab\tseparated"},":日本語のテキスト"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"a𐐀b 𝐀bc",{"isMainFrame":false,"requestingUrl":"abc日本語のテキスト","embeddingOrigin":"tab\tseparated"},":日本語のテキスト"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"कि ٣٤",{"isMainFrame":false,"requestingUrl":"abc日本語のテキスト","embeddingOrigin":"tab\tseparated"},":日本語のテキスト"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"日本語のテキスト",{"isMainFrame":false,"requestingUrl":"abc日本語のテキスト","embeddingOrigin":"tab\tseparated"},{"$undefined":true}],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"日本語のテキスト",{"isMainFrame":false,"requestingUrl":"abc日本語のテキスト","embeddingOrigin":"tab\tseparated"},"héllo wörld"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"日本語のテキスト",{"isMainFrame":false,"requestingUrl":"abc日本語のテキスト","embeddingOrigin":"tab\tseparated"},"👍🏽 thumbs"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"日本語のテキスト",{"isMainFrame":false,"requestingUrl":"abc日本語のテキスト","embeddingOrigin":"tab\tseparated"},"日本語"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"日本語のテキスト",{"isMainFrame":false,"requestingUrl":"abc日本語のテキスト","embeddingOrigin":"tab\tseparated"},""],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"日本語のテキスト",{"isMainFrame":false,"requestingUrl":"abc日本語のテキスト","embeddingOrigin":"tab\tseparated"},"é"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"日本語のテキスト",{"isMainFrame":false,"requestingUrl":"abc日本語のテキスト","embeddingOrigin":"tab\tseparated"},"İstanbul"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"日本語のテキスト",{"isMainFrame":false,"requestingUrl":"abc日本語のテキスト","embeddingOrigin":"tab\tseparated"},"straße"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"日本語のテキスト",{"isMainFrame":false,"requestingUrl":"abc日本語のテキスト","embeddingOrigin":"tab\tseparated"},"ılık ırmak"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"日本語のテキスト",{"isMainFrame":false,"requestingUrl":"abc日本語のテキスト","embeddingOrigin":"tab\tseparated"},"👨‍👩‍👧 family"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"日本語のテキスト",{"isMainFrame":false,"requestingUrl":"abc日本語のテキスト","embeddingOrigin":"tab\tseparated"},"a b"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"日本語のテキスト",{"isMainFrame":false,"requestingUrl":"abc日本語のテキスト","embeddingOrigin":"tab\tseparated"},"ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"日本語のテキスト",{"isMainFrame":false,"requestingUrl":"abc日本語のテキスト","embeddingOrigin":"tab\tseparated"},"a😀b"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"日本語のテキスト",{"isMainFrame":false,"requestingUrl":"abc日本語のテキスト","embeddingOrigin":"tab\tseparated"},"﻿bom"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"日本語のテキスト",{"isMainFrame":false,"requestingUrl":"abc日本語のテキスト","embeddingOrigin":"tab\tseparated"},"a²b x½ y①"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"日本語のテキスト",{"isMainFrame":false,"requestingUrl":"abc日本語のテキスト","embeddingOrigin":"tab\tseparated"},"aⅠb Ⅻ"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"日本語のテキスト",{"isMainFrame":false,"requestingUrl":"abc日本語のテキスト","embeddingOrigin":"tab\tseparated"},"a𐐀b 𝐀bc"],"ok":false}
+{"fn":"isClipboardWritePermission","args":[true,"日本語のテキスト",{"isMainFrame":false,"requestingUrl":"abc日本語のテキスト","embeddingOrigin":"tab\tseparated"},"कि ٣٤"],"ok":false}

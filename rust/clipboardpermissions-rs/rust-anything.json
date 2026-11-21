@@ -1,0 +1,48 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/clipboardPermissions.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "clipboardpermissions-rs",
+  "exports": [
+    {
+      "name": "isClipboardWritePermission",
+      "file": "apps/desktop/src/clipboardPermissions.ts",
+      "line": 11,
+      "params": [
+        {
+          "name": "requester",
+          "ts_type": "Pick<WebContents, \"isDestroyed\" | \"getURL\"> | null",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "permission",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "details",
+          "ts_type": "{ isMainFrame?: boolean; requestingUrl?: string; embeddingOrigin?: string }",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "requestingOrigin",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

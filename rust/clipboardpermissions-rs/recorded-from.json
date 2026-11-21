@@ -1,0 +1,17 @@
+{
+  "unit": "apps/desktop/src/clipboardPermissions.ts",
+  "files": 1,
+  "fingerprint": "10bc0843477bf873",
+  "coverage": {
+    "lines": 54,
+    "reached": 23,
+    "files": [
+      {
+        "file": "apps/desktop/src/clipboardPermissions.ts",
+        "lines": 54,
+        "reached": 23,
+        "missed": "19-21, 24-32, 35-38, 40-54"
+      }
+    ]
+  }
+}

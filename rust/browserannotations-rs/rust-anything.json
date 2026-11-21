@@ -1,0 +1,66 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/browserAnnotations.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "browserannotations-rs",
+  "exports": [
+    {
+      "name": "sanitizeBrowserAnnotationPageTitle",
+      "file": "packages/shared/src/browserAnnotations.ts",
+      "line": 237,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "sanitizeBrowserAnnotationUrl",
+      "file": "packages/shared/src/browserAnnotations.ts",
+      "line": 333,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "browserAnnotationDocumentIdentityUrl",
+      "file": "packages/shared/src/browserAnnotations.ts",
+      "line": 357,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

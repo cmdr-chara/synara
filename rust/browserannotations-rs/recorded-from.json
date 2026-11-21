@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/browserAnnotations.ts",
+  "files": 1,
+  "fingerprint": "038a0e35effb3f71",
+  "coverage": {
+    "lines": 348,
+    "reached": 244,
+    "files": [
+      {
+        "file": "packages/shared/src/browserAnnotations.ts",
+        "lines": 348,
+        "reached": 244,
+        "missed": "185-191, 193-214, 249-250, 255-271, 273-278, 280-284, 286-299, 301-309, 311-324, 339-344, 361-362"
+      }
+    ]
+  }
+}

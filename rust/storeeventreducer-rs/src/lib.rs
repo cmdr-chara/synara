@@ -4,10 +4,7 @@
 use napi_derive::napi;
 
 pub mod js;
-pub(crate) mod jsv;
 pub mod port;
-pub(crate) mod shared;
-pub(crate) mod store;
 pub mod wire;
 
 #[allow(unused_imports)]

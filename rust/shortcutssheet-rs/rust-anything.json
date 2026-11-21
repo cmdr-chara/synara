@@ -1,0 +1,83 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/shortcutsSheet.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "shortcutssheet-rs",
+  "exports": [
+    {
+      "name": "listShortcutEditorDefinitions",
+      "file": "apps/web/src/shortcutsSheet.ts",
+      "line": 464,
+      "params": [],
+      "returns": "ShortcutEditorDefinition[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "shortcutSheetCommandLabel",
+      "file": "apps/web/src/shortcutsSheet.ts",
+      "line": 519,
+      "params": [
+        {
+          "name": "command",
+          "ts_type": "typeof typeof typeof typeof KeybindingCommand.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildShortcutSheetSections",
+      "file": "apps/web/src/shortcutsSheet.ts",
+      "line": 571,
+      "params": [
+        {
+          "name": "options",
+          "ts_type": "BuildShortcutSheetSectionsOptions",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ShortcutSheetSection[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "filterShortcutSheetSections",
+      "file": "apps/web/src/shortcutsSheet.ts",
+      "line": 736,
+      "params": [
+        {
+          "name": "sections",
+          "ts_type": "ShortcutSheetSection[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "query",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ShortcutSheetSection[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

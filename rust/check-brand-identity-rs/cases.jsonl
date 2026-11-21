@@ -1,0 +1,411 @@
+{"fn":"findBrandIdentityViolations","args":[[{"path":"a","contents":"src/a/b.tsa..b"},{"path":"  padded  {name} has {count} items","contents":"key_name-1"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"ab:","contents":"ns:key.path"},{"path":"﻿bom","contents":"a:b:c"},{"path":"a..b","contents":"src/a/b.ts"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"abc","contents":"src/a/b.tsHELLO"},{"path":".leading","contents":"abİstanbul"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"﻿bomΣΊΣΥΦΟΣ","contents":"ünïcödé"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"{name} has {count} items","contents":"Hello World"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"./x/**/*.json","contents":"./x/**/*.json"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'split')"}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"straße","contents":"HELLO"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[{}],"error":"files is not iterable"}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"﻿bom","contents":"ans:key.path"},{"path":".leading","contents":"{name} has {count} itemsabc"},{"path":"","contents":"ünïcödé"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"étab\tseparated","contents":"./x/**/*.jsonhello world"},{"path":"HELLO﻿bom","contents":"ΣΊΣΥΦΟΣa..b"},{"path":"straße","contents":"日本語のテキスト"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"emoji 👍🏽 mix","contents":"a😀b😀c"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"a:b:c","contents":"{name} has {count} itemsünïcödé"},{"path":"","contents":"straße"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"İstanbul","contents":"é"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"  padded  ","contents":"a.b.c"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"a.b.c","contents":"hello"},{"path":"a","contents":"src/a/b.ts"},{"path":"tab\tseparated","contents":"😀"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"hello","contents":"ΣΊΣΥΦΟΣ"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"{name} has {count} items","contents":"  padded  "},{"path":"😀","contents":"line1\nline2Hello World"},{"path":"﻿bom","contents":"straßea.b.c"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":":","contents":"a:b:c"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"a:b:c","contents":""}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"hello","contents":"﻿bom"},{"path":"a..b","contents":"./x/**/*.json  padded  "}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":".leading","contents":"abc"},{"path":"straße","contents":"ΣΊΣΥΦΟΣ"},{"path":"hello world","contents":"hello"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"hello world","contents":"{name} has {count} items"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"  padded  {name} has {count} items","contents":"İstanbul"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"😀abc","contents":"😀"},{"path":".leading","contents":"a..b"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"﻿boma:b:c","contents":"Hello World"},{"path":"","contents":".leading"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"é","contents":"é"},{"path":".leading","contents":"日本語のテキスト"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":["x"],"error":"Cannot read properties of undefined (reading 'split')"}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"ünïcödéa.b.c","contents":"ΣΊΣΥΦΟΣ"},{"path":"HELLO","contents":"a.b.c"},{"path":"hello world","contents":"  padded  "}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"./x/**/*.json","contents":"abkey_name-1"},{"path":"tab\tseparated","contents":"hello"},{"path":"  padded  ","contents":"  padded  "}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"  padded  ","contents":"emoji 👍🏽 mix"},{"path":"ΣΊΣΥΦΟΣ","contents":"ns:key.path"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"hello","contents":":"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":":","contents":"a:b:c"},{"path":"ΣΊΣΥΦΟΣ","contents":"﻿bom"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"ab","contents":"﻿bomline1\nline2"},{"path":"src/a/b.ts","contents":"src/a/b.ts"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"ns:key.path","contents":"a😀b😀ca.b.c"},{"path":"./x/**/*.json","contents":":"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"straße","contents":"emoji 👍🏽 mix"},{"path":"src/a/b.ts","contents":"ns:key.path"},{"path":"ünïcödé","contents":"😀"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[{"a":"b"}],"error":"files is not iterable"}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"","contents":"ünïcödé"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":".leading","contents":"HELLO"},{"path":"日本語のテキスト","contents":"a.b.c"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"ns:key.path","contents":"日本語のテキストHello World"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"Hello World","contents":"key_name-1"},{"path":"﻿bom","contents":"tab\tseparated"},{"path":"  padded  :","contents":"{name} has {count} items"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[0],"error":"files is not iterable"}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"helloemoji 👍🏽 mix","contents":"tab\tseparatedtab\tseparated"},{"path":"","contents":"hello world"},{"path":".leading","contents":"abc"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"hello","contents":"a😀b😀cab"},{"path":"ΣΊΣΥΦΟΣ","contents":"ns:key.pathHello World"},{"path":"emoji 👍🏽 mix","contents":"  padded  "}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"{name} has {count} items","contents":"trailing."},{"path":"hello","contents":"a"},{"path":"{name} has {count} items","contents":"src/a/b.ts"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"ünïcödé","contents":"é"},{"path":"a😀b😀c","contents":"trailing."},{"path":"a..b","contents":"Hello World"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"hello world","contents":"﻿bom"},{"path":"hello world{name} has {count} items","contents":"ab"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"Hello World","contents":"src/a/b.ts"},{"path":"Hello World","contents":"trailing."}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"a..b","contents":"hello world./x/**/*.json"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"日本語のテキスト","contents":"key_name-1"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"hello","contents":"😀./x/**/*.json"},{"path":"  padded  ","contents":"key_name-1"},{"path":"hello world","contents":"{name} has {count} items"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[null],"error":"files is not iterable"}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"İstanbul","contents":"😀é"},{"path":"a","contents":"﻿bom./x/**/*.json"},{"path":"ΣΊΣΥΦΟΣ","contents":"a"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[true],"error":"files is not iterable"}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"tab\tseparated","contents":"😀"},{"path":"src/a/b.ts","contents":"trailing.日本語のテキスト"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"emoji 👍🏽 mixa😀b😀c","contents":"a😀b😀c"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"","contents":"ΣΊΣΥΦΟΣsrc/a/b.ts"},{"path":"{name} has {count} items","contents":"hello world"},{"path":"a😀b😀chello world","contents":"ab"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"line1\nline2","contents":":"},{"path":"src/a/b.ts","contents":"HELLO"},{"path":"﻿bom","contents":"trailing.trailing."}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"{name} has {count} items","contents":"ünïcödé"},{"path":"ünïcödé","contents":"日本語のテキストa:b:c"},{"path":"ünïcödé","contents":"a"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"a:b:cline1\nline2","contents":".leading"},{"path":"hello world./x/**/*.json","contents":"HELLO"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"a","contents":"a..b"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"helloünïcödé","contents":"  padded  "},{"path":".leading","contents":"abc"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"a😀b😀c","contents":"key_name-1ΣΊΣΥΦΟΣ"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"  padded  ","contents":"src/a/b.ts"},{"path":"a.b.c","contents":"line1\nline2"},{"path":"a.b.c","contents":"straße"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"a😀b😀cHello World","contents":"a..b"},{"path":"ab","contents":"key_name-1"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"ab","contents":"emoji 👍🏽 mix"},{"path":"{name} has {count} items","contents":"a"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"ΣΊΣΥΦΟΣline1\nline2","contents":"src/a/b.ts"},{"path":":","contents":"trailing."}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":":","contents":"{name} has {count} items"},{"path":":","contents":"é"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":".leadingemoji 👍🏽 mix","contents":"a😀b😀c"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"a.b.cns:key.path","contents":"hello world"},{"path":"trailing.","contents":"{name} has {count} items"},{"path":"a😀b😀c","contents":"hello﻿bom"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"ab","contents":"{name} has {count} items"},{"path":"line1\nline2","contents":"a😀b😀c"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":".leading","contents":"Hello World"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"","contents":"hello"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":":tab\tseparated","contents":"日本語のテキスト"},{"path":"trailing.","contents":"😀hello world"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"hello world","contents":"😀"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"emoji 👍🏽 mix😀","contents":"trailing."},{"path":".leading","contents":"hello world"},{"path":"","contents":"a..b"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"{name} has {count} items","contents":"a.b.c"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[{"a":{"b":"c"}}],"error":"files is not iterable"}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"ΣΊΣΥΦΟΣ.leading","contents":"{name} has {count} itemsab"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"a..b","contents":"a.b.c./x/**/*.json"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"hello world","contents":".leading😀"},{"path":"{name} has {count} items","contents":"ab"},{"path":"tab\tseparatedtrailing.","contents":"ΣΊΣΥΦΟΣ"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"é","contents":"ΣΊΣΥΦΟΣHello World"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"a","contents":"ünïcödé"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"line1\nline2","contents":"ns:key.pathHELLO"},{"path":"ab","contents":"ns:key.path"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"İstanbulline1\nline2","contents":"tab\tseparated"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"emoji 👍🏽 mix","contents":"  padded  "}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"Hello World","contents":"tab\tseparated"},{"path":"ns:key.path","contents":"emoji 👍🏽 mixkey_name-1"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"tab\tseparated","contents":"./x/**/*.json"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"Hello World","contents":"  padded  .leading"},{"path":"{name} has {count} items","contents":"line1\nline2"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"  padded  ","contents":"ünïcödé"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"HELLOHELLO","contents":"a"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"","contents":":"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"😀","contents":"emoji 👍🏽 mix"},{"path":"  padded  ","contents":"﻿bomHELLO"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"﻿bom","contents":"ns:key.pathhello world"},{"path":"a.b.c","contents":"{name} has {count} items"},{"path":"a:b:c","contents":"日本語のテキスト"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"  padded  ","contents":"src/a/b.ts"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":":﻿bom","contents":"a:b:c"},{"path":"hello","contents":"a:b:c"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"trailing.","contents":"  padded  "},{"path":"İstanbul","contents":"abc"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"😀","contents":"a.b.c"},{"path":"straße","contents":"./x/**/*.json"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"a:b:c","contents":"ns:key.path"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"  padded  ","contents":"a"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":":","contents":"a.b.c"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"é","contents":"a:b:c"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"ünïcödé","contents":"a..b"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"abc","contents":":"},{"path":"HELLO","contents":".leading"},{"path":"src/a/b.ts","contents":"ns:key.path"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"tab\tseparated😀","contents":"a..b"},{"path":"emoji 👍🏽 mix","contents":"日本語のテキスト"},{"path":"ab","contents":"trailing.a:b:c"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"key_name-1","contents":"src/a/b.ts"},{"path":"tab\tseparated","contents":":"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"emoji 👍🏽 mix","contents":"😀"},{"path":"straße","contents":"a"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"{name} has {count} itemsns:key.path","contents":"ns:key.path"},{"path":"Hello World","contents":"trailing."}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"a:b:ctab\tseparated","contents":"a..b"},{"path":"./x/**/*.jsontrailing.","contents":"emoji 👍🏽 mix"},{"path":"a..b","contents":"﻿boma😀b😀c"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":".leading","contents":"a.b.c"},{"path":"a😀b😀c","contents":"emoji 👍🏽 mix"},{"path":"hello","contents":"./x/**/*.json"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"HELLO","contents":"hello world"},{"path":"trailing.","contents":"a:b:c"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"ünïcödé","contents":".leading😀"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"a😀b😀c","contents":"emoji 👍🏽 mix"},{"path":"é","contents":"aa..b"},{"path":"./x/**/*.json","contents":"emoji 👍🏽 mix"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"{name} has {count} items","contents":":ns:key.path"},{"path":"emoji 👍🏽 mix","contents":"./x/**/*.json"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"﻿bom","contents":"﻿bom"},{"path":"a.b.c","contents":"ab"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"😀","contents":"key_name-1"},{"path":"trailing.","contents":"hello"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"helloa:b:c","contents":"straßesrc/a/b.ts"},{"path":"ns:key.path","contents":"ünïcödé"},{"path":"a.b.c","contents":"ünïcödé"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"./x/**/*.json","contents":"a:b:c"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"emoji 👍🏽 mix","contents":".leading"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"﻿bom","contents":"./x/**/*.json"},{"path":"a","contents":"a😀b😀c"},{"path":"hello worldstraße","contents":"key_name-1"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"","contents":"a"},{"path":"line1\nline2","contents":"a..btab\tseparated"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"ünïcödé","contents":"line1\nline2"},{"path":"emoji 👍🏽 mix","contents":".leading"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"日本語のテキスト","contents":"Hello World./x/**/*.json"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"a","contents":"HELLOab"},{"path":"a..b  padded  ","contents":"ns:key.path"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"tab\tseparated","contents":"a:b:c"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"a..bab","contents":"{name} has {count} items"},{"path":"Hello WorldHello World","contents":":a😀b😀c"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"😀straße","contents":"HELLO"},{"path":"Hello World","contents":"İstanbula.b.c"},{"path":"﻿bom","contents":"日本語のテキスト"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":".leading","contents":"HELLO"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"﻿bom","contents":"line1\nline2"},{"path":"Hello World","contents":"Hello World"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"a😀b😀c","contents":"hello"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"﻿bom","contents":"ünïcödé"},{"path":"a..b","contents":"  padded  "},{"path":"  padded  ","contents":"emoji 👍🏽 mix"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"é","contents":"ab"},{"path":"hello","contents":".leading"},{"path":"src/a/b.ts","contents":"a"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"a","contents":"Hello World"},{"path":"emoji 👍🏽 mix","contents":"key_name-1"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"a😀b😀c","contents":"a"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"😀","contents":"a:b:c"},{"path":"{name} has {count} itemshello world","contents":"aünïcödé"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"straße","contents":"İstanbul"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"ünïcödé","contents":"hello world"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"","contents":".leading"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"emoji 👍🏽 mix","contents":"{name} has {count} items"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"é","contents":"Hello World"},{"path":"a","contents":"src/a/b.ts"},{"path":"😀","contents":"./x/**/*.json"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"İstanbul","contents":"tab\tseparated"},{"path":"ns:key.path","contents":"ns:key.path"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"ab","contents":"hello world"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"a","contents":"a:b:c"},{"path":".leading","contents":"ΣΊΣΥΦΟΣ"},{"path":":Hello World","contents":"HELLOa😀b😀c"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"Hello World","contents":"src/a/b.tsünïcödé"},{"path":"  padded  ","contents":"a😀b😀c"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"tab\tseparated","contents":"abc"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"tab\tseparated","contents":"ünïcödé"},{"path":"akey_name-1","contents":"emoji 👍🏽 mix"},{"path":"{name} has {count} items","contents":"hello world😀"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"a😀b😀c","contents":"😀"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"ünïcödé","contents":"key_name-1"},{"path":"a😀b😀cab","contents":"aa:b:c"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"tab\tseparatedİstanbul","contents":"a.b.c"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"trailing.","contents":"line1\nline2"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"./x/**/*.json","contents":"a"},{"path":".leading","contents":"a😀b😀c"},{"path":"é","contents":"HELLO"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"hello","contents":"İstanbul😀"},{"path":"","contents":"key_name-1"},{"path":"a😀b😀c","contents":"{name} has {count} items"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"İstanbul","contents":"helloΣΊΣΥΦΟΣ"},{"path":"a","contents":"  padded  日本語のテキスト"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"éstraße","contents":".leading"},{"path":"{name} has {count} items","contents":"key_name-1"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":":a","contents":"a:b:c"},{"path":"hello","contents":"emoji 👍🏽 mix"},{"path":"trailing.","contents":"a😀b😀ckey_name-1"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"a.b.c","contents":"日本語のテキスト"},{"path":"ΣΊΣΥΦΟΣ","contents":"abc"},{"path":"trailing.","contents":"src/a/b.ts:"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"日本語のテキスト","contents":"ΣΊΣΥΦΟΣ"},{"path":"a😀b😀c","contents":"line1\nline2"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"ab","contents":"a"},{"path":"éabc","contents":"ünïcödé"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"src/a/b.tsa.b.c","contents":"{name} has {count} items"},{"path":"İstanbul","contents":"src/a/b.ts"},{"path":"😀","contents":":"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"a{name} has {count} items","contents":".leading"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"a..b","contents":"  padded  "}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":".leading","contents":"ünïcödé"},{"path":"hello","contents":"hello world"},{"path":"{name} has {count} items","contents":".leading"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"a😀b😀c","contents":"trailing."},{"path":"a.b.chello","contents":"hello"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"hello world","contents":"src/a/b.ts"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"ünïcödé","contents":"emoji 👍🏽 mix"},{"path":"😀","contents":"ΣΊΣΥΦΟΣ"},{"path":"﻿bom😀","contents":"  padded  "}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"😀","contents":"Hello World"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"a","contents":"  padded  "}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"ns:key.path","contents":""}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"tab\tseparated","contents":"é"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"a:b:c","contents":"src/a/b.ts"},{"path":"hello","contents":"hello world"},{"path":"😀","contents":"ns:key.patha..b"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"line1\nline2","contents":"ab"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"é:","contents":"./x/**/*.json"},{"path":"a..bΣΊΣΥΦΟΣ","contents":"hello world"},{"path":"a.b.c","contents":"ΣΊΣΥΦΟΣ"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"Hello World","contents":".leading"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"a..b","contents":"Hello World"},{"path":".leading","contents":"Hello World"},{"path":"hello world","contents":"ab  padded  "}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"line1\nline2","contents":"key_name-1"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"line1\nline2","contents":"Hello World"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"src/a/b.ts","contents":"﻿bom"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"","contents":"é"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"ns:key.path","contents":"trailing."},{"path":"abc","contents":"é"},{"path":"ns:key.path","contents":"😀"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"ns:key.path","contents":"a:b:c"},{"path":"a..bé","contents":"abc./x/**/*.json"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"abünïcödé","contents":"src/a/b.ts"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"hello","contents":""},{"path":"  padded  ","contents":"é"},{"path":"src/a/b.ts","contents":"line1\nline2"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"trailing.","contents":"日本語のテキスト"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"line1\nline2","contents":"key_name-1"},{"path":"tab\tseparated","contents":"key_name-1"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"emoji 👍🏽 mix","contents":"emoji 👍🏽 mix"},{"path":"﻿bom","contents":"a:b:c"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"./x/**/*.json","contents":"./x/**/*.json"},{"path":".leading","contents":"İstanbul"},{"path":"straße","contents":"trailing."}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"😀","contents":"ΣΊΣΥΦΟΣ"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"ns:key.path","contents":"  padded  "}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"a😀b😀c","contents":"emoji 👍🏽 mix"},{"path":"Hello World","contents":"a:b:c"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"ünïcödé","contents":"hello"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"{name} has {count} items  padded  ","contents":"hello world"},{"path":"a:b:c","contents":"tab\tseparated"},{"path":"a","contents":"a..bhello"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"ünïcödé","contents":"emoji 👍🏽 mix"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"a..b","contents":"straße"},{"path":"hello.leading","contents":"日本語のテキスト"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"straße","contents":"  padded  "}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"emoji 👍🏽 mix","contents":"éa😀b😀c"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"﻿bom","contents":"  padded  Hello World"},{"path":"hello","contents":"./x/**/*.json"},{"path":"ab","contents":"straße"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"Hello Worldtrailing.","contents":"HELLO"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"./x/**/*.json","contents":"{name} has {count} items  padded  "},{"path":"a..b","contents":"src/a/b.tsns:key.path"},{"path":"straßea:b:c","contents":":"}]],"ok":[]}
+{"fn":"findBrandIdentityViolations","args":[[{"path":"abc","contents":"ns:key.path"},{"path":"a","contents":"ab"}]],"ok":[]}
+{"fn":"findVisualBrandAssetViolations","args":[[],["a",1]],"error":".for is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[{"a":"b"},0],"error":"files.map is not a function"}
+{"fn":"findVisualBrandAssetViolations","args":[[],{"a":"b"}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"hello world","contents":{}},{"path":"a..b","contents":[]}],null],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[{"a":{"b":"c"}},{"$undefined":true}],"error":"files.map is not a function"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"a:b:c","contents":true},{"path":"日本語のテキスト","contents":true}],[]],"ok":[]}
+{"fn":"findVisualBrandAssetViolations","args":[true,0],"error":"files.map is not a function"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"﻿bom","contents":{}}]],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"line1\nline2","contents":[]},{"path":"a","contents":{"a":{"b":"c"}}},{"path":"emoji 👍🏽 mix","contents":{}}],"x"],"ok":[{"path":"x","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"  padded  ","contents":[]},{"path":".leading","contents":{"a":{"b":"c"}}},{"path":".leading","contents":["a",1]}],0],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[],true],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"日本語のテキスト","contents":{"a":{"b":"c"}}},{"path":"ns:key.path","contents":{"a":{"b":"c"}}}],[]],"ok":[]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"HELLO","contents":{"a":{"b":"c"}}},{"path":"a..b","contents":{}}],{"$undefined":true}],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":["x",{}],"error":"files.map is not a function"}
+{"fn":"findVisualBrandAssetViolations","args":[[],null],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"line1\nline2","contents":[]},{"path":":","contents":"x"}],{}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[{"a":"b"},true],"error":"files.map is not a function"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":":","contents":["a",1]},{"path":".leadingtab\tseparated","contents":0}],[]],"ok":[]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"éé","contents":["a",1]},{"path":"abİstanbul","contents":[]}],{"$undefined":true}],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"helloa😀b😀c","contents":{"a":"b"}},{"path":"straßea😀b😀c","contents":null}],["a",1]],"error":".for is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"tab\tseparated","contents":null},{"path":"a.b.c","contents":{"a":"b"}}],{"a":"b"}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"ns:key.path","contents":0},{"path":"abc","contents":{}},{"path":"abünïcödé","contents":{}}]],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"a😀","contents":0}]],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"a:b:cHello World","contents":{}},{"path":"straße","contents":null}],[]],"ok":[]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"HELLO","contents":{"a":"b"}},{"path":"a..b","contents":{}},{"path":"a","contents":["a",1]}]],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"src/a/b.ts","contents":null},{"path":"","contents":"x"},{"path":"日本語のテキストline1\nline2","contents":["a",1]}],{"a":"b"}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[{"a":"b"},{"$undefined":true}],"error":"files.map is not a function"}
+{"fn":"findVisualBrandAssetViolations","args":["x",{"$undefined":true}],"error":"files.map is not a function"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":":","contents":true},{"path":"a:b:c","contents":true},{"path":"{name} has {count} items","contents":["a",1]}]],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"abc","contents":true},{"path":"﻿bomΣΊΣΥΦΟΣ","contents":{"a":{"b":"c"}}},{"path":"é","contents":null}],"x"],"ok":[{"path":"x","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"abc","contents":null}],{"a":"b"}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"ünïcödé﻿bom","contents":{"a":{"b":"c"}}},{"path":"Hello World","contents":["a",1]}]],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[],{}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"😀","contents":[]},{"path":"./x/**/*.jsonab","contents":{"a":"b"}},{"path":"😀","contents":{}}],{}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[]],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"abc","contents":{"a":{"b":"c"}}}],true],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"﻿bom","contents":"x"}],{}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"src/a/b.tskey_name-1","contents":{}},{"path":"a..ba😀b😀c","contents":"x"},{"path":"é","contents":{"a":{"b":"c"}}}],{}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":["x",0],"error":"files.map is not a function"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"İstanbul","contents":{"a":{"b":"c"}}},{"path":"","contents":0},{"path":"aa","contents":{}}],0],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"{name} has {count} items","contents":{"a":"b"}},{"path":"a..b","contents":{"a":"b"}},{"path":"tab\tseparated","contents":["a",1]}],"x"],"ok":[{"path":"x","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"","contents":0},{"path":"😀src/a/b.ts","contents":"x"},{"path":"a.b.cünïcödé","contents":"x"}],{}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"İstanbul","contents":0},{"path":"abc","contents":[]}],true],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"tab\tseparated","contents":true},{"path":"﻿bom","contents":{"a":{"b":"c"}}}],[]],"ok":[]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"trailing.","contents":0},{"path":"a..b","contents":null}],true],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"abc","contents":"x"},{"path":"ns:key.pathΣΊΣΥΦΟΣ","contents":[]}],{"a":"b"}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"日本語のテキスト","contents":[]}],{"$undefined":true}],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"./x/**/*.json","contents":0},{"path":"😀","contents":{"a":{"b":"c"}}},{"path":"ünïcödé","contents":{"a":{"b":"c"}}}],["a",1]],"error":".for is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[0,true],"error":"files.map is not a function"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"{name} has {count} items:","contents":{"a":"b"}}],{"$undefined":true}],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":["x","x"],"error":"files.map is not a function"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"a..b","contents":[]},{"path":"  padded  :","contents":"x"},{"path":"a","contents":{"a":{"b":"c"}}}],"x"],"ok":[{"path":"x","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"﻿bom","contents":{"a":{"b":"c"}}},{"path":"é","contents":["a",1]}]],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[["a",1],null],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[],{"$undefined":true}],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[],0],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[true,["a",1]],"error":"files.map is not a function"}
+{"fn":"findVisualBrandAssetViolations","args":[true],"error":"files.map is not a function"}
+{"fn":"findVisualBrandAssetViolations","args":[[],[]],"ok":[]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"line1\nline2","contents":"x"},{"path":"","contents":true}],{"$undefined":true}],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"a","contents":{}}],{"$undefined":true}],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"﻿bom","contents":{"a":{"b":"c"}}},{"path":"tab\tseparatedkey_name-1","contents":true}],[]],"ok":[]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"İstanbul","contents":{"a":{"b":"c"}}},{"path":"ΣΊΣΥΦΟΣ","contents":true}],null],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"straße","contents":{}}],{"a":"b"}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"a.b.c","contents":0}],true],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"ab","contents":true},{"path":"src/a/b.ts.leading","contents":{"a":{"b":"c"}}}],["a",1]],"error":".for is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":["x",["a",1]],"error":"files.map is not a function"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"İstanbul","contents":[]}],null],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"{name} has {count} items","contents":["a",1]},{"path":".leading","contents":["a",1]}],{"a":"b"}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"","contents":{"a":"b"}}],{"a":"b"}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[],"x"],"ok":[{"path":"x","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"ΣΊΣΥΦΟΣ","contents":{"a":{"b":"c"}}}],0],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"a:b:c","contents":[]}],{"a":{"b":"c"}}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"ünïcödé","contents":[]},{"path":"ΣΊΣΥΦΟΣ","contents":"x"}],{"a":"b"}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[["a",1],{"a":"b"}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"key_name-1","contents":0}],{"$undefined":true}],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"hello world:","contents":null},{"path":"tab\tseparated","contents":null},{"path":"./x/**/*.json","contents":null}],{"$undefined":true}],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"  padded  ","contents":{}}],{}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"ΣΊΣΥΦΟΣ","contents":0}]],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[0,"x"],"error":"files.map is not a function"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"a:b:c","contents":["a",1]},{"path":"a:b:c","contents":{"a":{"b":"c"}}},{"path":":","contents":[]}],["a",1]],"error":".for is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"hello world😀","contents":0},{"path":"İstanbultrailing.","contents":0},{"path":"İstanbul","contents":true}],{"a":"b"}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"./x/**/*.json","contents":{"a":{"b":"c"}}},{"path":":","contents":{"a":"b"}},{"path":"  padded  ","contents":[]}],0],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"a.b.c","contents":"x"},{"path":"﻿bom","contents":["a",1]},{"path":"{name} has {count} items","contents":true}],{"$undefined":true}],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"Hello World","contents":0},{"path":"./x/**/*.json","contents":{"a":{"b":"c"}}}],{"$undefined":true}],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"日本語のテキスト","contents":["a",1]},{"path":"ab","contents":"x"},{"path":"a:b:c","contents":{}}],{"a":"b"}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[true,{"a":{"b":"c"}}],"error":"files.map is not a function"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"hello world","contents":[]}],true],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[true,{"a":"b"}],"error":"files.map is not a function"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"Hello World","contents":"x"},{"path":"key_name-1","contents":true},{"path":"a😀b😀c","contents":true}],[]],"ok":[]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"ns:key.path","contents":true},{"path":":","contents":[]},{"path":"éhello","contents":{"a":"b"}}],["a",1]],"error":".for is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"日本語のテキスト","contents":true},{"path":"src/a/b.ts","contents":"x"},{"path":"HELLO","contents":["a",1]}],["a",1]],"error":".for is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"ns:key.path","contents":true},{"path":"tab\tseparatedtab\tseparated","contents":null},{"path":"trailing.","contents":{"a":{"b":"c"}}}],["a",1]],"error":".for is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":":straße","contents":{"a":{"b":"c"}}}],{"a":"b"}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[null],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"  padded  ","contents":null},{"path":"ab","contents":null}],null],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"日本語のテキスト","contents":{"a":{"b":"c"}}},{"path":"","contents":{"a":"b"}},{"path":"a.b.c{name} has {count} items","contents":{}}],{"$undefined":true}],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"ünïcödé","contents":{"a":{"b":"c"}}}],0],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"{name} has {count} items","contents":null},{"path":"ünïcödé","contents":[]}],{"$undefined":true}],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"﻿bom","contents":["a",1]},{"path":"{name} has {count} items","contents":{"a":"b"}},{"path":"line1\nline2","contents":{"a":"b"}}]],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"é","contents":{"a":"b"}},{"path":"HELLO","contents":[]}],{"a":"b"}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[{"a":{"b":"c"}},{}],"error":"files.map is not a function"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"a","contents":[]},{"path":"  padded  ","contents":{}}],["a",1]],"error":"The \"data\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Array"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"./x/**/*.json","contents":{"a":{"b":"c"}}},{"path":"a..b","contents":{"a":"b"}},{"path":"src/a/b.ts","contents":["a",1]}],{"$undefined":true}],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":":","contents":{"a":"b"}},{"path":"HELLO","contents":[]},{"path":"src/a/b.ts","contents":null}],{"$undefined":true}],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"hello","contents":{}},{"path":"ns:key.path","contents":{}},{"path":"a😀b😀c","contents":null}],true],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"é","contents":"x"},{"path":"a.b.c","contents":true},{"path":"","contents":0}],{"$undefined":true}],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"ab","contents":{"a":{"b":"c"}}},{"path":"日本語のテキストİstanbul","contents":"x"},{"path":"Hello Worldstraße","contents":null}]],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"","contents":["a",1]},{"path":"src/a/b.ts","contents":["a",1]},{"path":"line1\nline2","contents":{"a":"b"}}],true],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[{"a":"b"},{}],"error":"files.map is not a function"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"ns:key.patha.b.c","contents":{"a":{"b":"c"}}},{"path":"straße","contents":"x"}],null],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":":","contents":["a",1]},{"path":"HELLO","contents":{"a":"b"}}],{"$undefined":true}],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"hello worlda","contents":"x"}],["a",1]],"error":".for is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"ab","contents":0},{"path":"日本語のテキスト","contents":true}],0],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"﻿bom","contents":["a",1]},{"path":"a..b","contents":{"a":{"b":"c"}}}],true],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"tab\tseparated","contents":{}},{"path":"ΣΊΣΥΦΟΣ","contents":true},{"path":"﻿bom","contents":{"a":"b"}}]],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[],{"a":{"b":"c"}}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"ΣΊΣΥΦΟΣ","contents":null},{"path":"HELLO","contents":null},{"path":"emoji 👍🏽 mix","contents":{"a":{"b":"c"}}}],["a",1]],"error":".for is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"key_name-1","contents":["a",1]}],{"a":"b"}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"","contents":{}}],{"a":{"b":"c"}}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":["x",{"a":"b"}],"error":"files.map is not a function"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"a","contents":true},{"path":"ünïcödékey_name-1","contents":{"a":"b"}},{"path":"é","contents":true}],{"a":"b"}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"ΣΊΣΥΦΟΣ","contents":0},{"path":"a..b","contents":"x"},{"path":"line1\nline2","contents":{"a":"b"}}],[]],"ok":[]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"line1\nline2","contents":"x"}],{}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"hello","contents":{"a":"b"}}],null],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"é","contents":{"a":{"b":"c"}}},{"path":"😀","contents":true}],"x"],"ok":[{"path":"x","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"straßeline1\nline2","contents":["a",1]}],0],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"a..b","contents":{}},{"path":"é","contents":0},{"path":"src/a/b.ts","contents":[]}],{"a":{"b":"c"}}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"HELLO{name} has {count} items","contents":"x"},{"path":"line1\nline2abc","contents":{"a":{"b":"c"}}}],0],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"hello world","contents":["a",1]},{"path":"a😀b😀c","contents":{}},{"path":"ünïcödé","contents":{"a":"b"}}],["a",1]],"error":".for is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"éİstanbul","contents":true}],{"a":"b"}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"😀","contents":null}],"x"],"ok":[{"path":"x","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"HELLOhello world","contents":["a",1]},{"path":"a.b.c","contents":{"a":"b"}},{"path":"key_name-1😀","contents":{"a":{"b":"c"}}}],[]],"ok":[]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"Hello World","contents":"x"}]],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"İstanbul","contents":true},{"path":"ünïcödéline1\nline2","contents":["a",1]}],{"a":"b"}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"line1\nline2","contents":{}},{"path":"  padded  ","contents":true},{"path":"straße","contents":true}],{"a":"b"}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"","contents":0}],{"$undefined":true}],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"  padded  trailing.","contents":null},{"path":".leading","contents":"x"},{"path":"a..b","contents":["a",1]}],{"$undefined":true}],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[{},"x"],"error":"files.map is not a function"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"line1\nline2","contents":"x"}],["a",1]],"error":".for is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"{name} has {count} itemssrc/a/b.ts","contents":0},{"path":"{name} has {count} items","contents":["a",1]}],"x"],"ok":[{"path":"x","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"  padded  ","contents":{"a":"b"}}]],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"😀","contents":{}},{"path":"hellosrc/a/b.ts","contents":["a",1]},{"path":"HELLO","contents":"x"}],true],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"straße","contents":"x"},{"path":"ΣΊΣΥΦΟΣ  padded  ","contents":"x"}],{"a":{"b":"c"}}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"a:b:c","contents":["a",1]}],["a",1]],"error":".for is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"a..b","contents":{"a":{"b":"c"}}},{"path":"a:b:cHELLO","contents":{"a":"b"}},{"path":"a:b:c","contents":"x"}]],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"﻿bom","contents":{"a":{"b":"c"}}},{"path":"ns:key.path","contents":{}},{"path":"hello world","contents":{"a":{"b":"c"}}}],{"a":{"b":"c"}}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"","contents":[]}],{}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[{},{}],"error":"files.map is not a function"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"﻿bomHELLO","contents":[]},{"path":"emoji 👍🏽 mix","contents":{"a":{"b":"c"}}},{"path":"ab","contents":{"a":"b"}}]],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"a:b:c:","contents":"x"}],["a",1]],"error":".for is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"  padded  ","contents":{}},{"path":"a😀b😀c","contents":null}],{"a":"b"}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"a..b","contents":0}],{}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"  padded  ","contents":null},{"path":"a","contents":{}},{"path":"key_name-1","contents":[]}],{"$undefined":true}],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":".leading","contents":[]},{"path":"ab","contents":true}],{"a":{"b":"c"}}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"tab\tseparated","contents":{}},{"path":"ab","contents":[]},{"path":"absrc/a/b.ts","contents":true}],{"a":{"b":"c"}}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"HELLO","contents":{"a":"b"}},{"path":"ab","contents":"x"}],true],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"HELLO","contents":["a",1]},{"path":"straße","contents":true}],{"a":"b"}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"﻿bom","contents":null},{"path":"日本語のテキストtrailing.","contents":null}]],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"a:b:cstraße","contents":null},{"path":"ΣΊΣΥΦΟΣ","contents":{"a":"b"}}],{"a":{"b":"c"}}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"emoji 👍🏽 mix","contents":{"a":{"b":"c"}}}],{"a":{"b":"c"}}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"é","contents":{}},{"path":"a.b.cab","contents":null},{"path":"Hello World","contents":{}}],{"a":{"b":"c"}}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"é","contents":{}},{"path":"hello","contents":{"a":{"b":"c"}}},{"path":"a😀b😀c","contents":[]}],"x"],"ok":[{"path":"x","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"trailing.","contents":["a",1]},{"path":"İstanbulΣΊΣΥΦΟΣ","contents":{}}]],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"","contents":{"a":{"b":"c"}}},{"path":"ünïcödé","contents":["a",1]},{"path":"key_name-1","contents":{"a":"b"}}],{"a":"b"}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[null,null],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"a","contents":0},{"path":"emoji 👍🏽 mix.leading","contents":"x"},{"path":"straße","contents":true}],{"a":{"b":"c"}}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"trailing.","contents":null},{"path":"ünïcödé","contents":{}}],null],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"line1\nline2","contents":[]}],null],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"straße","contents":true},{"path":"ns:key.pathns:key.path","contents":{"a":"b"}},{"path":"a..b","contents":{"a":"b"}}],["a",1]],"error":".for is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":["x",null],"error":"files.map is not a function"}
+{"fn":"findVisualBrandAssetViolations","args":[0,{"a":"b"}],"error":"files.map is not a function"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"line1\nline2ünïcödé","contents":[]},{"path":"ΣΊΣΥΦΟΣ","contents":"x"},{"path":"key_name-1","contents":{"a":"b"}}]],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"{name} has {count} items","contents":{}},{"path":"  padded  ","contents":null},{"path":"İstanbul","contents":{"a":"b"}}],[]],"ok":[]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"日本語のテキスト","contents":{"a":{"b":"c"}}},{"path":"src/a/b.ts","contents":{}},{"path":"😀","contents":{"a":"b"}}],"x"],"ok":[{"path":"x","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"ΣΊΣΥΦΟΣ","contents":{"a":"b"}}],null],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"key_name-1","contents":{}},{"path":"a","contents":{}}],{"a":{"b":"c"}}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"a..b","contents":[]}],{"a":{"b":"c"}}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"key_name-1","contents":{"a":"b"}},{"path":"abtab\tseparated","contents":null},{"path":"{name} has {count} items","contents":0}],true],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"😀","contents":{"a":"b"}}],true],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"hello","contents":["a",1]},{"path":"﻿bom","contents":0}],{"a":{"b":"c"}}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"a..b","contents":{}},{"path":"hello world  padded  ","contents":{"a":{"b":"c"}}}],{"$undefined":true}],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"HELLO","contents":["a",1]},{"path":"straße","contents":{"a":{"b":"c"}}}],"x"],"ok":[{"path":"x","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"a:b:c","contents":["a",1]},{"path":"abc","contents":{"a":{"b":"c"}}},{"path":"a😀b😀c","contents":{}}],0],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"Hello World","contents":{"a":"b"}}],{"a":{"b":"c"}}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[true,null],"error":"files.map is not a function"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"Hello World","contents":{"a":{"b":"c"}}},{"path":"ns:key.path","contents":[]}],{"a":{"b":"c"}}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"ünïcödé","contents":true},{"path":"","contents":true},{"path":":é","contents":[]}],true],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"straße","contents":{}},{"path":"  padded  ","contents":{"a":"b"}}],[]],"ok":[]}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"a😀b😀c","contents":{"a":"b"}},{"path":"abc","contents":"x"}],["a",1]],"error":".for is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"ΣΊΣΥΦΟΣ","contents":0},{"path":"straßea..b","contents":"x"},{"path":"﻿bom","contents":{"a":{"b":"c"}}}],{"a":"b"}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"trailing.","contents":{"a":{"b":"c"}}}],"x"],"ok":[{"path":"x","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[{"a":{"b":"c"}}],"error":"files.map is not a function"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"😀","contents":{"a":{"b":"c"}}}],{"a":{"b":"c"}}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"ünïcödé","contents":{"a":"b"}},{"path":"Hello World  padded  ","contents":{}},{"path":"a.b.c{name} has {count} items","contents":true}],{"a":"b"}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"ns:key.path  padded  ","contents":{"a":{"b":"c"}}}],{}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"emoji 👍🏽 mix","contents":[]},{"path":"é","contents":["a",1]}],{}],"error":"approvedDigests is not iterable"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"a.b.c","contents":true},{"path":"hello world.leading","contents":["a",1]},{"path":"a.b.c","contents":0}]],"ok":[{"path":"apps/marketing/public/screenshot.jpeg","line":null,"text":"Required visual brand asset is missing."},{"path":"assets/prod/synara-hero.jpeg","line":null,"text":"Required visual brand asset is missing."}]}
+{"fn":"findVisualBrandAssetViolations","args":[null,{"$undefined":true}],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"findVisualBrandAssetViolations","args":[[{"path":"日本語のテキスト","contents":[]},{"path":"key_name-1","contents":0},{"path":"ΣΊΣΥΦΟΣ","contents":0}],{}],"error":"approvedDigests is not iterable"}
+{"fn":"readTrackedFiles","args":[{"$undefined":true}],"error":"Command failed: git ls-files --stage -z\nfatal: not a git repository (or any of the parent directories): .git\n"}
+{"fn":"readTrackedFiles","args":[{"a":{"b":"c"}}],"error":"The \"options.cwd\" property must be of type string or an instance of Buffer or URL. Received an instance of Object"}
+{"fn":"readTrackedFiles","args":[true],"error":"The \"options.cwd\" property must be of type string or an instance of Buffer or URL. Received type boolean (true)"}
+{"fn":"readTrackedFiles","args":[[]],"error":"The \"options.cwd\" property must be of type string or an instance of Buffer or URL. Received an instance of Array"}
+{"fn":"readTrackedFiles","args":[0],"error":"The \"options.cwd\" property must be of type string or an instance of Buffer or URL. Received type number (0)"}
+{"fn":"readTrackedFiles","args":[null],"error":"Command failed: git ls-files --stage -z\nfatal: not a git repository (or any of the parent directories): .git\n"}
+{"fn":"readTrackedFiles","args":["x"],"error":"spawnSync git ENOENT"}
+{"fn":"readTrackedFiles","args":[{}],"error":"The \"options.cwd\" property must be of type string or an instance of Buffer or URL. Received an instance of Object"}
+{"fn":"readTrackedFiles","args":[{"a":"b"}],"error":"The \"options.cwd\" property must be of type string or an instance of Buffer or URL. Received an instance of Object"}
+{"fn":"readTrackedFiles","args":[],"error":"Command failed: git ls-files --stage -z\nfatal: not a git repository (or any of the parent directories): .git\n"}
+{"fn":"readTrackedFiles","args":[["a",1]],"error":"The \"options.cwd\" property must be of type string or an instance of Buffer or URL. Received an instance of Array"}

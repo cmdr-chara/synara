@@ -1,0 +1,17 @@
+{
+  "unit": "scripts/check-brand-identity.ts",
+  "files": 1,
+  "fingerprint": "2be52c0eee96111f",
+  "coverage": {
+    "lines": 334,
+    "reached": 276,
+    "files": [
+      {
+        "file": "scripts/check-brand-identity.ts",
+        "lines": 334,
+        "reached": 276,
+        "missed": "240-254, 262-263, 270, 273-284, 307-312, 329-342, 344-351"
+      }
+    ]
+  }
+}

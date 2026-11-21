@@ -1,0 +1,72 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "scripts/check-brand-identity.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "check-brand-identity-rs",
+  "exports": [
+    {
+      "name": "findBrandIdentityViolations",
+      "file": "scripts/check-brand-identity.ts",
+      "line": 256,
+      "params": [
+        {
+          "name": "files",
+          "ts_type": "readonly BrandIdentityFile[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "BrandIdentityViolation[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "findVisualBrandAssetViolations",
+      "file": "scripts/check-brand-identity.ts",
+      "line": 289,
+      "params": [
+        {
+          "name": "files",
+          "ts_type": "readonly BrandIdentityBinaryFile[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "approvedDigests",
+          "ts_type": "ReadonlyMap<string, string>",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "BrandIdentityViolation[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readTrackedFiles",
+      "file": "scripts/check-brand-identity.ts",
+      "line": 317,
+      "params": [
+        {
+          "name": "cwd",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "BrandIdentityBinaryFile[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

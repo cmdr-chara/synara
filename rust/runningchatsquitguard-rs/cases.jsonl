@@ -1,0 +1,236 @@
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["a😀b😀c"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["İstanbul"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["./x/**/*.json"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["hello world"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["a..btrailing."],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["  padded  "],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["key_name-1{name} has {count} items"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["abchello world"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["hello"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["Hello World"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["ns:key.path"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":[".leading"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["key_name-1"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["a..b😀"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["ab"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["a..b"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["😀"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["emoji 👍🏽 mix"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["a:b:c😀"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["{name} has {count} itemsns:key.path"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["HELLOline1\nline2"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":[":"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["HELLO"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":[""],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["tab\tseparated"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["a..bé"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["﻿bom﻿bom"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["hello worldhello"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["abckey_name-1"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["aa😀b😀c"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["日本語のテキスト"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["line1\nline2"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["ünïcödé"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["abc"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["a..ba😀b😀c"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["a.b.c"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["emoji 👍🏽 mixkey_name-1"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["trailing.Hello World"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["ns:key.pathabc"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["a"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["é"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["a:b:c"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["src/a/b.ts"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["{name} has {count} itemshello world"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["a  padded  "],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["Hello World﻿bom"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["line1\nline2{name} has {count} items"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["key_name-1ns:key.path"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["helloabc"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["éa😀b😀c"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["src/a/b.tstab\tseparated"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["a..bHELLO"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["./x/**/*.jsonΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["./x/**/*.jsona"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["a:b:cabc"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["ünïcödéa..b"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["﻿bom"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["emoji 👍🏽 mixtrailing."],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["HELLO  padded  "],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["emoji 👍🏽 mix.leading"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["hello worldtab\tseparated"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["line1\nline2hello world"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["éabc"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["a:b:cstraße"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["a😀b😀cabc"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["straße"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["trailing."],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["helloa..b"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["éhello world"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["trailing.😀"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["﻿boma😀b😀c"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["İstanbula:b:c"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["straße  padded  "],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["{name} has {count} itemsΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["a:b:c  padded  "],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["a..bstraße"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["emoji 👍🏽 mixline1\nline2"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["./x/**/*.jsonİstanbul"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["😀HELLO"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["{name} has {count} items"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["a..babc"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["😀src/a/b.ts"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["  padded  trailing."],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["aemoji 👍🏽 mix"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["tab\tseparatedİstanbul"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["  padded  src/a/b.ts"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["éhello"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["abcabc"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["line1\nline2日本語のテキスト"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["é﻿bom"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["src/a/b.tssrc/a/b.ts"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["  padded  Hello World"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["tab\tseparatedtrailing."],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["tab\tseparatedHello World"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":[".leadingab"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["key_name-1a..b"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["é./x/**/*.json"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["😀ns:key.path"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["hello worldline1\nline2"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":[".leading日本語のテキスト"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["ünïcödékey_name-1"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["tab\tseparatedhello world"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["ünïcödéa😀b😀c"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["key_name-1ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["😀tab\tseparated"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["src/a/b.ts😀"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["a:b:ca😀b😀c"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["{name} has {count} itemssrc/a/b.ts"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["./x/**/*.jsontab\tseparated"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["😀﻿bom"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["emoji 👍🏽 mixünïcödé"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["İstanbul{name} has {count} items"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["﻿boma"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["tab\tseparated./x/**/*.json"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["a..b./x/**/*.json"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["😀İstanbul"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["a:b:ca"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["a:b:ca.b.c"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["./x/**/*.jsoné"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["{name} has {count} items:"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["abc./x/**/*.json"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["İstanbulemoji 👍🏽 mix"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["ünïcödéa"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["hello worldkey_name-1"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["abcHELLO"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["﻿bomünïcödé"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["日本語のテキストemoji 👍🏽 mix"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["line1\nline2ns:key.path"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":[":straße"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["HELLOΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["helloemoji 👍🏽 mix"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["aHello World"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["absrc/a/b.ts"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["ns:key.pathemoji 👍🏽 mix"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["trailing.{name} has {count} items"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["a😀b😀cab"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["::"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["a.b.c:"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["é😀"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["HELLOHELLO"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["src/a/b.tshello"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["HELLO.leading"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["straßea.b.c"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["abc﻿bom"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["line1\nline2straße"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["src/a/b.ts:"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["ünïcödé{name} has {count} items"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["﻿bomsrc/a/b.ts"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["tab\tseparatedé"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["ΣΊΣΥΦΟΣns:key.path"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["trailing.İstanbul"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["ΣΊΣΥΦΟΣHello World"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["src/a/b.tsab"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["a.b.c😀"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["line1\nline2Hello World"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["a😀b😀cline1\nline2"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["trailing.ab"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["hello😀"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["key_name-1hello world"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["a😀b😀cİstanbul"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["éa"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["étab\tseparated"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["abcns:key.path"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["ΣΊΣΥΦΟΣ.leading"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["hello worlda"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["abhello"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["{name} has {count} items😀"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["日本語のテキスト日本語のテキスト"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["日本語のテキスト:"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["İstanbul.leading"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":[".leading﻿bom"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["﻿boma..b"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["😀./x/**/*.json"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["./x/**/*.json😀"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["./x/**/*.json{name} has {count} items"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["  padded  😀"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["src/a/b.tsa.b.c"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["hello world.leading"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["key_name-1a.b.c"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["ünïcödéé"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["ΣΊΣΥΦΟΣ./x/**/*.json"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["line1\nline2emoji 👍🏽 mix"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["key_name-1a😀b😀c"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["tab\tseparated{name} has {count} items"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":[":ab"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["src/a/b.tstrailing."],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["a:b:cline1\nline2"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":[".leadinga😀b😀c"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["éa:b:c"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["key_name-1abc"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["trailing.:"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["emoji 👍🏽 mixa..b"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["a.b.ctab\tseparated"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["key_name-1  padded  "],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["a..bünïcödé"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["😀é"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["Hello Worldab"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":[".leadingHello World"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["ünïcödé日本語のテキスト"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["héllo wörld"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["👍🏽 thumbs"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["日本語"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["ılık ırmak"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["👨‍👩‍👧 family"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["a b"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["a😀b"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["a²b x½ y①"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["aⅠb Ⅻ"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["a𐐀b 𝐀bc"],"ok":false}
+{"fn":"shouldPromptForRunningChatsBeforeQuit","args":["कि ٣٤"],"ok":false}
+{"fn":"quitConfirmationPresentationForPlatform","args":[],"ok":"in-app"}
+{"fn":"parseQuitConfirmationRequest","args":[{}],"ok":null}
+{"fn":"parseQuitConfirmationRequest","args":["x"],"ok":null}
+{"fn":"parseQuitConfirmationRequest","args":[{"a":"b"}],"ok":null}
+{"fn":"parseQuitConfirmationRequest","args":[[]],"ok":null}
+{"fn":"parseQuitConfirmationRequest","args":[{"a":{"b":"c"}}],"ok":null}
+{"fn":"parseQuitConfirmationRequest","args":[0],"ok":null}
+{"fn":"parseQuitConfirmationRequest","args":[["a",1]],"ok":null}
+{"fn":"parseQuitConfirmationRequest","args":[null],"ok":null}
+{"fn":"parseQuitConfirmationRequest","args":[true],"ok":null}
+{"fn":"parseQuitConfirmationRequest","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":null}
+{"fn":"parseQuitConfirmationRequest","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":null}
+{"fn":"parseQuitConfirmationRequest","args":[[3,1,2]],"ok":null}
+{"fn":"parseQuitConfirmationResponse","args":[[]],"ok":null}
+{"fn":"parseQuitConfirmationResponse","args":[{"a":"b"}],"ok":null}
+{"fn":"parseQuitConfirmationResponse","args":[null],"ok":null}
+{"fn":"parseQuitConfirmationResponse","args":[{}],"ok":null}
+{"fn":"parseQuitConfirmationResponse","args":[true],"ok":null}
+{"fn":"parseQuitConfirmationResponse","args":["x"],"ok":null}
+{"fn":"parseQuitConfirmationResponse","args":[{"a":{"b":"c"}}],"ok":null}
+{"fn":"parseQuitConfirmationResponse","args":[0],"ok":null}
+{"fn":"parseQuitConfirmationResponse","args":[["a",1]],"ok":null}
+{"fn":"parseQuitConfirmationResponse","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":null}
+{"fn":"parseQuitConfirmationResponse","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":null}
+{"fn":"parseQuitConfirmationResponse","args":[[3,1,2]],"ok":null}

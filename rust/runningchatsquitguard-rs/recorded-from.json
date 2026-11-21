@@ -1,0 +1,17 @@
+{
+  "unit": "apps/desktop/src/runningChatsQuitGuard.ts",
+  "files": 1,
+  "fingerprint": "c14831cb13bd48cb",
+  "coverage": {
+    "lines": 237,
+    "reached": 80,
+    "files": [
+      {
+        "file": "apps/desktop/src/runningChatsQuitGuard.ts",
+        "lines": 237,
+        "reached": 80,
+        "missed": "33-35, 40-60, 78-88, 90-96, 133-137, 139-149, 151-175, 177-222, 224-251"
+      }
+    ]
+  }
+}

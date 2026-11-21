@@ -1,0 +1,84 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/runningChatsQuitGuard.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "runningchatsquitguard-rs",
+  "exports": [
+    {
+      "name": "shouldPromptForRunningChatsBeforeQuit",
+      "file": "apps/desktop/src/runningChatsQuitGuard.ts",
+      "line": 15,
+      "params": [
+        {
+          "name": "reason",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "quitConfirmationPresentationForPlatform",
+      "file": "apps/desktop/src/runningChatsQuitGuard.ts",
+      "line": 19,
+      "params": [],
+      "returns": "(\"native\" | \"in-app\")",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseQuitConfirmationRequest",
+      "file": "apps/desktop/src/runningChatsQuitGuard.ts",
+      "line": 23,
+      "params": [
+        {
+          "name": "payload",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "DesktopQuitConfirmationRequest | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseQuitConfirmationResponse",
+      "file": "apps/desktop/src/runningChatsQuitGuard.ts",
+      "line": 62,
+      "params": [
+        {
+          "name": "payload",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| {\n      readonly requestId: string;\n      readonly phase: \"ready\";\n      readonly runningCount: number;\n      readonly chats: ReadonlyArray<DesktopQuitConfirmationChat>;\n    }\n  | {\n      readonly requestId: string;\n      readonly phase: \"decision\";\n      readonly allow: boolean;\n    }) | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "makeRunningChatsQuitGuard",
+      "file": "apps/desktop/src/runningChatsQuitGuard.ts",
+      "line": 132,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

@@ -1,0 +1,211 @@
+{"fn":"createLogger","args":["ΣΊΣΥΦΟΣ"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["emoji 👍🏽 mix"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["😀"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["./x/**/*.json"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["key_name-1"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":[""],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["{name} has {count} items"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["ΣΊΣΥΦΟΣ😀"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":[".leading"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["é"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a..ba😀b😀c"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["Hello World"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["ab"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a..bstraße"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a😀b😀c"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["İstanbul"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["straße"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["  padded  "],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["line1\nline2"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["﻿bom{name} has {count} items"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["trailing."],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["ns:key.pathabc"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":[":"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["ns:key.path./x/**/*.json"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["日本語のテキスト"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a.b.c"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["hello world"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["line1\nline2:"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a:b:c"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a..b"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["Hello Worlda..b"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a😀b😀cünïcödé"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a  padded  "],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["tab\tseparated"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["ns:key.patha..b"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["src/a/b.ts"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["ns:key.pathkey_name-1"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["Hello Worldsrc/a/b.ts"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["ns:key.path"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["abc"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["ns:key.path😀"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["éa😀b😀c"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["HELLO"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["abcemoji 👍🏽 mix"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["﻿bom"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["😀Hello World"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a😀"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["hello"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["abline1\nline2"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":[".leadingHELLO"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["HELLOΣΊΣΥΦΟΣ"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["ünïcödé😀"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["ünïcödé"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a😀b😀ctab\tseparated"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":[":src/a/b.ts"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["ns:key.pathhello"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["key_name-1a:b:c"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["tab\tseparated.leading"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["﻿bom:"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a:b:c﻿bom"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a..bline1\nline2"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":[".leading😀"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["😀a😀b😀c"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a..bHELLO"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a.b.ca😀b😀c"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a﻿bom"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["﻿bomΣΊΣΥΦΟΣ"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a😀b😀ca😀b😀c"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["abΣΊΣΥΦΟΣ"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["ns:key.path:"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a.b.c./x/**/*.json"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["aba:b:c"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["😀İstanbul"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["ΣΊΣΥΦΟΣ日本語のテキスト"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a😀b😀cHello World"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["src/a/b.tsemoji 👍🏽 mix"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["日本語のテキストline1\nline2"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["ab{name} has {count} items"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["éHELLO"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["./x/**/*.json.leading"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["hello worldsrc/a/b.ts"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["😀key_name-1"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["İstanbul:"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["éa..b"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["emoji 👍🏽 mixa😀b😀c"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["src/a/b.tsline1\nline2"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["Hello Worldab"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["straßetrailing."],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["ns:key.path  padded  "],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["key_name-1hello world"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["ΣΊΣΥΦΟΣabc"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["ns:key.pathünïcödé"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["key_name-1﻿bom"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["  padded  a:b:c"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["ünïcödéns:key.path"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":[":a😀b😀c"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["./x/**/*.jsonstraße"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["abc日本語のテキスト"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a😀b😀cns:key.path"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["trailing.日本語のテキスト"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a😀b😀ca:b:c"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["straßeline1\nline2"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["Hello World{name} has {count} items"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a.b.ca.b.c"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["straßetab\tseparated"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["﻿boma:b:c"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["hello worldabc"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["trailing.HELLO"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a..bsrc/a/b.ts"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["abcab"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["key_name-1ΣΊΣΥΦΟΣ"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["HELLOHELLO"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["éline1\nline2"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["İstanbulünïcödé"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["straßestraße"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["src/a/b.ts﻿bom"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["key_name-1a..b"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["trailing.😀"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["trailing.İstanbul"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["日本語のテキストtab\tseparated"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["İstanbulHELLO"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["ΣΊΣΥΦΟΣa.b.c"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["trailing..leading"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a.b.c😀"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["éstraße"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["tab\tseparated./x/**/*.json"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["{name} has {count} itemsemoji 👍🏽 mix"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["ns:key.pathemoji 👍🏽 mix"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["tab\tseparated  padded  "],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a.b.c  padded  "],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a..b./x/**/*.json"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["aba"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["Hello World./x/**/*.json"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["İstanbulİstanbul"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":[":İstanbul"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["  padded  tab\tseparated"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["hello worlda"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["éhello"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["hello./x/**/*.json"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["ns:key.pathé"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["line1\nline2hello world"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["aemoji 👍🏽 mix"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["﻿bomab"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":[":ünïcödé"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a.b.cabc"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a😀b😀ckey_name-1"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a..bhello"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["abc:"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["{name} has {count} itemsΣΊΣΥΦΟΣ"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["😀src/a/b.ts"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["Hello WorldHELLO"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["ΣΊΣΥΦΟΣ  padded  "],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["tab\tseparatedtrailing."],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["trailing.abc"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":[".leadinga.b.c"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["日本語のテキストHello World"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a.b.c日本語のテキスト"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["hello world./x/**/*.json"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a..bΣΊΣΥΦΟΣ"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["straße😀"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["abc{name} has {count} items"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["日本語のテキストΣΊΣΥΦΟΣ"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["emoji 👍🏽 mixstraße"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["İstanbulHello World"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["helloemoji 👍🏽 mix"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["hello worldHello World"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a:"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["src/a/b.tsa😀b😀c"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["ns:key.patha:b:c"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["hellosrc/a/b.ts"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":[":é"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["İstanbul.leading"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a😀b😀cline1\nline2"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["line1\nline2key_name-1"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["trailing.ünïcödé"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["straße﻿bom"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["aba.b.c"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a..bemoji 👍🏽 mix"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["tab\tseparateda:b:c"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["trailing.src/a/b.ts"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["line1\nline2日本語のテキスト"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["İstanbulΣΊΣΥΦΟΣ"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["{name} has {count} itemsünïcödé"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["tab\tseparated{name} has {count} items"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["emoji 👍🏽 mix:"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["hello  padded  "],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["src/a/b.tstrailing."],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["{name} has {count} items😀"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["{name} has {count} items./x/**/*.json"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["İstanbul  padded  "],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["HELLOa..b"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["line1\nline2tab\tseparated"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":[":.leading"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a:b:ca.b.c"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["ΣΊΣΥΦΟΣa"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":[".leadingab"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["straßekey_name-1"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["İstanbul﻿bom"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["﻿bomtab\tseparated"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["héllo wörld"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["👍🏽 thumbs"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["日本語"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["ılık ırmak"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["👨‍👩‍👧 family"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a b"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a😀b"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a²b x½ y①"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["aⅠb Ⅻ"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["a𐐀b 𝐀bc"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}
+{"fn":"createLogger","args":["कि ٣٤"],"ok":{"info":{"$function":"info"},"warn":{"$function":"warn"},"error":{"$function":"error"},"event":{"$function":"event"}}}

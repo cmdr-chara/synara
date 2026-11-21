@@ -1,0 +1,13 @@
+{"fn":"findAsarArchivePath","args":["/Applications/Synara.app/Contents/Resources/app.asar/apps/server/dist/client"]}
+{"fn":"findAsarArchivePath","args":["/tmp/app.asar"]}
+{"fn":"findAsarArchivePath","args":["/Users/me/dev/synara/apps/web/dist"]}
+{"fn":"snapshotDirectoryName","args":["194884627-1767900000000.123-42"]}
+{"fn":"snapshotDirectoryName","args":["a/b\\c:d e"]}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/static-snapshot-e0OfMt/source","cacheRoot":"/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/static-snapshot-e0OfMt/cache","signature":"sig-1"}]}
+{"fn":"snapshotDirectoryName","args":["sig-1"]}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/static-snapshot-81rJ5r/source","cacheRoot":"/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/static-snapshot-81rJ5r/cache","signature":"sig-1"}]}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/static-snapshot-kzJndG/source","cacheRoot":"/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/static-snapshot-kzJndG/cache","signature":"sig-1"}]}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/static-snapshot-kzJndG/source","cacheRoot":"/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/static-snapshot-kzJndG/cache","signature":"sig-2"}]}
+{"fn":"snapshotDirectoryName","args":["sig-2"]}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/static-snapshot-jgoAEf/source","cacheRoot":"/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/static-snapshot-jgoAEf/cache","signature":"sig-1"}]}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/static-snapshot-APhaMK/source","cacheRoot":"/var/folders/jj/fwmm45ns4dz80954vdr61l2w0000gn/T/static-snapshot-APhaMK/cache","signature":"sig-1"}]}

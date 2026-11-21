@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/staticSnapshot.ts",
+  "files": 1,
+  "fingerprint": "6db8bd3fd744f109",
+  "coverage": {
+    "lines": 120,
+    "reached": 106,
+    "files": [
+      {
+        "file": "packages/shared/src/staticSnapshot.ts",
+        "lines": 120,
+        "reached": 106,
+        "missed": "35, 80-81, 84-89, 107-109, 126-127"
+      }
+    ]
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/staticSnapshot.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "staticsnapshot-rs",
+  "exports": [
+    {
+      "name": "findAsarArchivePath",
+      "file": "packages/shared/src/staticSnapshot.ts",
+      "line": 29,
+      "params": [
+        {
+          "name": "candidatePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "snapshotDirectoryName",
+      "file": "packages/shared/src/staticSnapshot.ts",
+      "line": 39,
+      "params": [
+        {
+          "name": "signature",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "ensureStaticSnapshot",
+      "file": "packages/shared/src/staticSnapshot.ts",
+      "line": 101,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "StaticSnapshotInput",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "StaticSnapshotResult",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

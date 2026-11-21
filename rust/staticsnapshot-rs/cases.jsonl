@@ -1,0 +1,649 @@
+{"fn":"findAsarArchivePath","args":["src/a/b.ts"],"ok":null}
+{"fn":"findAsarArchivePath","args":["é"],"ok":null}
+{"fn":"findAsarArchivePath","args":["src/a/b.tsΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"findAsarArchivePath","args":["﻿bom"],"ok":null}
+{"fn":"findAsarArchivePath","args":["abc"],"ok":null}
+{"fn":"findAsarArchivePath","args":["ab"],"ok":null}
+{"fn":"findAsarArchivePath","args":["日本語のテキスト"],"ok":null}
+{"fn":"findAsarArchivePath","args":["{name} has {count} items"],"ok":null}
+{"fn":"findAsarArchivePath","args":["ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"findAsarArchivePath","args":["a..b{name} has {count} items"],"ok":null}
+{"fn":"findAsarArchivePath","args":["ünïcödé"],"ok":null}
+{"fn":"findAsarArchivePath","args":["tab\tseparated"],"ok":null}
+{"fn":"findAsarArchivePath","args":["a😀b😀c"],"ok":null}
+{"fn":"findAsarArchivePath","args":["a.b.c"],"ok":null}
+{"fn":"findAsarArchivePath","args":["😀"],"ok":null}
+{"fn":"findAsarArchivePath","args":["ns:key.path"],"ok":null}
+{"fn":"findAsarArchivePath","args":["hello world"],"ok":null}
+{"fn":"findAsarArchivePath","args":["Hello Worlda..b"],"ok":null}
+{"fn":"findAsarArchivePath","args":["a"],"ok":null}
+{"fn":"findAsarArchivePath","args":["line1\nline2"],"ok":null}
+{"fn":"findAsarArchivePath","args":[":"],"ok":null}
+{"fn":"findAsarArchivePath","args":["line1\nline2ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"findAsarArchivePath","args":["emoji 👍🏽 mix"],"ok":null}
+{"fn":"findAsarArchivePath","args":["HELLO"],"ok":null}
+{"fn":"findAsarArchivePath","args":["İstanbul"],"ok":null}
+{"fn":"findAsarArchivePath","args":["a.b.cabc"],"ok":null}
+{"fn":"findAsarArchivePath","args":[":line1\nline2"],"ok":null}
+{"fn":"findAsarArchivePath","args":["a:b:c"],"ok":null}
+{"fn":"findAsarArchivePath","args":[".leading"],"ok":null}
+{"fn":"findAsarArchivePath","args":["a😀b😀ca..b"],"ok":null}
+{"fn":"findAsarArchivePath","args":[".leadinga:b:c"],"ok":null}
+{"fn":"findAsarArchivePath","args":["./x/**/*.jsonemoji 👍🏽 mix"],"ok":null}
+{"fn":"findAsarArchivePath","args":["éhello"],"ok":null}
+{"fn":"findAsarArchivePath","args":["./x/**/*.jsontab\tseparated"],"ok":null}
+{"fn":"findAsarArchivePath","args":["src/a/b.tsé"],"ok":null}
+{"fn":"findAsarArchivePath","args":["straßens:key.path"],"ok":null}
+{"fn":"findAsarArchivePath","args":["hello"],"ok":null}
+{"fn":"findAsarArchivePath","args":["abcstraße"],"ok":null}
+{"fn":"findAsarArchivePath","args":["a..b"],"ok":null}
+{"fn":"findAsarArchivePath","args":["straße"],"ok":null}
+{"fn":"findAsarArchivePath","args":["trailing."],"ok":null}
+{"fn":"findAsarArchivePath","args":["Hello World"],"ok":null}
+{"fn":"findAsarArchivePath","args":[""],"ok":null}
+{"fn":"findAsarArchivePath","args":[".leadinga..b"],"ok":null}
+{"fn":"findAsarArchivePath","args":["trailing.src/a/b.ts"],"ok":null}
+{"fn":"findAsarArchivePath","args":["  padded  ./x/**/*.json"],"ok":null}
+{"fn":"findAsarArchivePath","args":["İstanbul:"],"ok":null}
+{"fn":"findAsarArchivePath","args":["./x/**/*.jsonstraße"],"ok":null}
+{"fn":"findAsarArchivePath","args":["😀straße"],"ok":null}
+{"fn":"findAsarArchivePath","args":["{name} has {count} itemstab\tseparated"],"ok":null}
+{"fn":"findAsarArchivePath","args":["hellokey_name-1"],"ok":null}
+{"fn":"findAsarArchivePath","args":["emoji 👍🏽 mixhello world"],"ok":null}
+{"fn":"findAsarArchivePath","args":["./x/**/*.json"],"ok":null}
+{"fn":"findAsarArchivePath","args":["  padded  "],"ok":null}
+{"fn":"findAsarArchivePath","args":["abhello"],"ok":null}
+{"fn":"findAsarArchivePath","args":["İstanbulİstanbul"],"ok":null}
+{"fn":"findAsarArchivePath","args":["line1\nline2key_name-1"],"ok":null}
+{"fn":"findAsarArchivePath","args":["key_name-1"],"ok":null}
+{"fn":"findAsarArchivePath","args":["İstanbulline1\nline2"],"ok":null}
+{"fn":"findAsarArchivePath","args":["a😀b😀c😀"],"ok":null}
+{"fn":"findAsarArchivePath","args":["{name} has {count} itemsİstanbul"],"ok":null}
+{"fn":"findAsarArchivePath","args":["a..bsrc/a/b.ts"],"ok":null}
+{"fn":"findAsarArchivePath","args":["line1\nline2ünïcödé"],"ok":null}
+{"fn":"findAsarArchivePath","args":["tab\tseparated﻿bom"],"ok":null}
+{"fn":"findAsarArchivePath","args":["helloabc"],"ok":null}
+{"fn":"findAsarArchivePath","args":["abca:b:c"],"ok":null}
+{"fn":"findAsarArchivePath","args":["a..ba😀b😀c"],"ok":null}
+{"fn":"findAsarArchivePath","args":["  padded  key_name-1"],"ok":null}
+{"fn":"findAsarArchivePath","args":["helloé"],"ok":null}
+{"fn":"findAsarArchivePath","args":["İstanbulhello"],"ok":null}
+{"fn":"findAsarArchivePath","args":["src/a/b.ts.leading"],"ok":null}
+{"fn":"findAsarArchivePath","args":["hello worldstraße"],"ok":null}
+{"fn":"findAsarArchivePath","args":["😀ünïcödé"],"ok":null}
+{"fn":"findAsarArchivePath","args":["日本語のテキストé"],"ok":null}
+{"fn":"findAsarArchivePath","args":["ns:key.path.leading"],"ok":null}
+{"fn":"findAsarArchivePath","args":["  padded  a..b"],"ok":null}
+{"fn":"findAsarArchivePath","args":["a.b.cİstanbul"],"ok":null}
+{"fn":"findAsarArchivePath","args":["abctrailing."],"ok":null}
+{"fn":"findAsarArchivePath","args":["src/a/b.ts  padded  "],"ok":null}
+{"fn":"findAsarArchivePath","args":["a:b:ca😀b😀c"],"ok":null}
+{"fn":"findAsarArchivePath","args":["hellohello"],"ok":null}
+{"fn":"findAsarArchivePath","args":["straßeemoji 👍🏽 mix"],"ok":null}
+{"fn":"findAsarArchivePath","args":["./x/**/*.jsonline1\nline2"],"ok":null}
+{"fn":"findAsarArchivePath","args":[".leading:"],"ok":null}
+{"fn":"findAsarArchivePath","args":["straße./x/**/*.json"],"ok":null}
+{"fn":"findAsarArchivePath","args":["straßeé"],"ok":null}
+{"fn":"findAsarArchivePath","args":["tab\tseparatedns:key.path"],"ok":null}
+{"fn":"findAsarArchivePath","args":["日本語のテキストkey_name-1"],"ok":null}
+{"fn":"findAsarArchivePath","args":["aünïcödé"],"ok":null}
+{"fn":"findAsarArchivePath","args":["  padded  tab\tseparated"],"ok":null}
+{"fn":"findAsarArchivePath","args":["a.b.csrc/a/b.ts"],"ok":null}
+{"fn":"findAsarArchivePath","args":["helloHello World"],"ok":null}
+{"fn":"findAsarArchivePath","args":["日本語のテキストHELLO"],"ok":null}
+{"fn":"findAsarArchivePath","args":["abca.b.c"],"ok":null}
+{"fn":"findAsarArchivePath","args":["日本語のテキスト😀"],"ok":null}
+{"fn":"findAsarArchivePath","args":["{name} has {count} items  padded  "],"ok":null}
+{"fn":"findAsarArchivePath","args":["İstanbul.leading"],"ok":null}
+{"fn":"findAsarArchivePath","args":["ns:key.pathabc"],"ok":null}
+{"fn":"findAsarArchivePath","args":["ΣΊΣΥΦΟΣa:b:c"],"ok":null}
+{"fn":"findAsarArchivePath","args":["tab\tseparated{name} has {count} items"],"ok":null}
+{"fn":"findAsarArchivePath","args":["😀é"],"ok":null}
+{"fn":"findAsarArchivePath","args":["a😀b😀ctrailing."],"ok":null}
+{"fn":"findAsarArchivePath","args":["ns:key.path😀"],"ok":null}
+{"fn":"findAsarArchivePath","args":["a.b.chello"],"ok":null}
+{"fn":"findAsarArchivePath","args":["abé"],"ok":null}
+{"fn":"findAsarArchivePath","args":["İstanbulkey_name-1"],"ok":null}
+{"fn":"findAsarArchivePath","args":["İstanbul日本語のテキスト"],"ok":null}
+{"fn":"findAsarArchivePath","args":["straßeünïcödé"],"ok":null}
+{"fn":"findAsarArchivePath","args":["日本語のテキストstraße"],"ok":null}
+{"fn":"findAsarArchivePath","args":["tab\tseparated.leading"],"ok":null}
+{"fn":"findAsarArchivePath","args":["{name} has {count} itemsab"],"ok":null}
+{"fn":"findAsarArchivePath","args":["ünïcödé./x/**/*.json"],"ok":null}
+{"fn":"findAsarArchivePath","args":["ans:key.path"],"ok":null}
+{"fn":"findAsarArchivePath","args":["tab\tseparatedtab\tseparated"],"ok":null}
+{"fn":"findAsarArchivePath","args":["😀trailing."],"ok":null}
+{"fn":"findAsarArchivePath","args":["﻿bomabc"],"ok":null}
+{"fn":"findAsarArchivePath","args":["a:b:c./x/**/*.json"],"ok":null}
+{"fn":"findAsarArchivePath","args":["trailing.straße"],"ok":null}
+{"fn":"findAsarArchivePath","args":["trailing.Hello World"],"ok":null}
+{"fn":"findAsarArchivePath","args":["straßea:b:c"],"ok":null}
+{"fn":"findAsarArchivePath","args":["étab\tseparated"],"ok":null}
+{"fn":"findAsarArchivePath","args":["tab\tseparatedstraße"],"ok":null}
+{"fn":"findAsarArchivePath","args":["aba..b"],"ok":null}
+{"fn":"findAsarArchivePath","args":["a﻿bom"],"ok":null}
+{"fn":"findAsarArchivePath","args":["trailing.HELLO"],"ok":null}
+{"fn":"findAsarArchivePath","args":["./x/**/*.json./x/**/*.json"],"ok":null}
+{"fn":"findAsarArchivePath","args":["tab\tseparateda"],"ok":null}
+{"fn":"findAsarArchivePath","args":["éHELLO"],"ok":null}
+{"fn":"findAsarArchivePath","args":["{name} has {count} itemsa..b"],"ok":null}
+{"fn":"findAsarArchivePath","args":["éa"],"ok":null}
+{"fn":"findAsarArchivePath","args":[":ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"findAsarArchivePath","args":["emoji 👍🏽 mixa"],"ok":null}
+{"fn":"findAsarArchivePath","args":["a:b:cünïcödé"],"ok":null}
+{"fn":"findAsarArchivePath","args":["İstanbulünïcödé"],"ok":null}
+{"fn":"findAsarArchivePath","args":["ünïcödéa😀b😀c"],"ok":null}
+{"fn":"findAsarArchivePath","args":["a..btab\tseparated"],"ok":null}
+{"fn":"findAsarArchivePath","args":["tab\tseparatedHELLO"],"ok":null}
+{"fn":"findAsarArchivePath","args":["tab\tseparatedkey_name-1"],"ok":null}
+{"fn":"findAsarArchivePath","args":["😀ns:key.path"],"ok":null}
+{"fn":"findAsarArchivePath","args":["asrc/a/b.ts"],"ok":null}
+{"fn":"findAsarArchivePath","args":["Hello World.leading"],"ok":null}
+{"fn":"findAsarArchivePath","args":[".leadingab"],"ok":null}
+{"fn":"findAsarArchivePath","args":[":.leading"],"ok":null}
+{"fn":"findAsarArchivePath","args":["😀abc"],"ok":null}
+{"fn":"findAsarArchivePath","args":["Hello World./x/**/*.json"],"ok":null}
+{"fn":"findAsarArchivePath","args":["ünïcödétrailing."],"ok":null}
+{"fn":"findAsarArchivePath","args":["😀./x/**/*.json"],"ok":null}
+{"fn":"findAsarArchivePath","args":["Hello Worldkey_name-1"],"ok":null}
+{"fn":"findAsarArchivePath","args":["İstanbula..b"],"ok":null}
+{"fn":"findAsarArchivePath","args":["ünïcödéa.b.c"],"ok":null}
+{"fn":"findAsarArchivePath","args":["abc{name} has {count} items"],"ok":null}
+{"fn":"findAsarArchivePath","args":["src/a/b.tsa:b:c"],"ok":null}
+{"fn":"findAsarArchivePath","args":["ns:key.patha..b"],"ok":null}
+{"fn":"findAsarArchivePath","args":["﻿bomns:key.path"],"ok":null}
+{"fn":"findAsarArchivePath","args":["a.b.cHELLO"],"ok":null}
+{"fn":"findAsarArchivePath","args":["hello  padded  "],"ok":null}
+{"fn":"findAsarArchivePath","args":["straßea.b.c"],"ok":null}
+{"fn":"findAsarArchivePath","args":["aHELLO"],"ok":null}
+{"fn":"findAsarArchivePath","args":["ünïcödé.leading"],"ok":null}
+{"fn":"findAsarArchivePath","args":["abcline1\nline2"],"ok":null}
+{"fn":"findAsarArchivePath","args":["aemoji 👍🏽 mix"],"ok":null}
+{"fn":"findAsarArchivePath","args":["abİstanbul"],"ok":null}
+{"fn":"findAsarArchivePath","args":["{name} has {count} itemsstraße"],"ok":null}
+{"fn":"findAsarArchivePath","args":["hello worldline1\nline2"],"ok":null}
+{"fn":"findAsarArchivePath","args":[".leadingHELLO"],"ok":null}
+{"fn":"findAsarArchivePath","args":["﻿boma.b.c"],"ok":null}
+{"fn":"findAsarArchivePath","args":["😀.leading"],"ok":null}
+{"fn":"findAsarArchivePath","args":["line1\nline2é"],"ok":null}
+{"fn":"findAsarArchivePath","args":["日本語のテキストline1\nline2"],"ok":null}
+{"fn":"findAsarArchivePath","args":["tab\tseparatedemoji 👍🏽 mix"],"ok":null}
+{"fn":"findAsarArchivePath","args":["ünïcödéünïcödé"],"ok":null}
+{"fn":"findAsarArchivePath","args":["abcünïcödé"],"ok":null}
+{"fn":"findAsarArchivePath","args":["😀src/a/b.ts"],"ok":null}
+{"fn":"findAsarArchivePath","args":["Hello Worldns:key.path"],"ok":null}
+{"fn":"findAsarArchivePath","args":["﻿bomsrc/a/b.ts"],"ok":null}
+{"fn":"findAsarArchivePath","args":["abca..b"],"ok":null}
+{"fn":"findAsarArchivePath","args":["ΣΊΣΥΦΟΣ日本語のテキスト"],"ok":null}
+{"fn":"findAsarArchivePath","args":["./x/**/*.jsona😀b😀c"],"ok":null}
+{"fn":"findAsarArchivePath","args":["abΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"findAsarArchivePath","args":["./x/**/*.json😀"],"ok":null}
+{"fn":"findAsarArchivePath","args":["ΣΊΣΥΦΟΣa..b"],"ok":null}
+{"fn":"findAsarArchivePath","args":["abcsrc/a/b.ts"],"ok":null}
+{"fn":"findAsarArchivePath","args":["Hello WorldHello World"],"ok":null}
+{"fn":"findAsarArchivePath","args":[".leading{name} has {count} items"],"ok":null}
+{"fn":"findAsarArchivePath","args":["src/a/b.tstrailing."],"ok":null}
+{"fn":"findAsarArchivePath","args":[".leadingline1\nline2"],"ok":null}
+{"fn":"findAsarArchivePath","args":["😀{name} has {count} items"],"ok":null}
+{"fn":"findAsarArchivePath","args":[".leadingΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"findAsarArchivePath","args":["日本語のテキスト.leading"],"ok":null}
+{"fn":"findAsarArchivePath","args":["日本語のテキストa"],"ok":null}
+{"fn":"findAsarArchivePath","args":["日本語のテキスト./x/**/*.json"],"ok":null}
+{"fn":"findAsarArchivePath","args":["ΣΊΣΥΦΟΣ.leading"],"ok":null}
+{"fn":"findAsarArchivePath","args":["日本語のテキストΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"findAsarArchivePath","args":["ünïcödé:"],"ok":null}
+{"fn":"findAsarArchivePath","args":["hello日本語のテキスト"],"ok":null}
+{"fn":"findAsarArchivePath","args":["﻿bomHELLO"],"ok":null}
+{"fn":"findAsarArchivePath","args":["a.b.cΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"findAsarArchivePath","args":["abcns:key.path"],"ok":null}
+{"fn":"findAsarArchivePath","args":["ns:key.pathHello World"],"ok":null}
+{"fn":"findAsarArchivePath","args":["日本語のテキストns:key.path"],"ok":null}
+{"fn":"findAsarArchivePath","args":["héllo wörld"],"ok":null}
+{"fn":"findAsarArchivePath","args":["👍🏽 thumbs"],"ok":null}
+{"fn":"findAsarArchivePath","args":["日本語"],"ok":null}
+{"fn":"findAsarArchivePath","args":["ılık ırmak"],"ok":null}
+{"fn":"findAsarArchivePath","args":["👨‍👩‍👧 family"],"ok":null}
+{"fn":"findAsarArchivePath","args":["a b"],"ok":null}
+{"fn":"findAsarArchivePath","args":["a😀b"],"ok":null}
+{"fn":"findAsarArchivePath","args":["a²b x½ y①"],"ok":null}
+{"fn":"findAsarArchivePath","args":["aⅠb Ⅻ"],"ok":null}
+{"fn":"findAsarArchivePath","args":["a𐐀b 𝐀bc"],"ok":null}
+{"fn":"findAsarArchivePath","args":["कि ٣٤"],"ok":null}
+{"fn":"findAsarArchivePath","args":["Iı İi"],"ok":null}
+{"fn":"findAsarArchivePath","args":["K K k"],"ok":null}
+{"fn":"findAsarArchivePath","args":["ſ s S"],"ok":null}
+{"fn":"findAsarArchivePath","args":["x‍y 👨‍👩‍👧"],"ok":null}
+{"fn":"findAsarArchivePath","args":["a b c　d"],"ok":null}
+{"fn":"findAsarArchivePath","args":["١٢٣ ٤٥"],"ok":null}
+{"fn":"findAsarArchivePath","args":["𝟘𝟙 ²³"],"ok":null}
+{"fn":"findAsarArchivePath","args":["snake_case foo-bar o'neil"],"ok":null}
+{"fn":"findAsarArchivePath","args":["ǅungla Ǆ"],"ok":null}
+{"fn":"findAsarArchivePath","args":["one\r\ntwo threefour"],"ok":null}
+{"fn":"findAsarArchivePath","args":["café café"],"ok":null}
+{"fn":"findAsarArchivePath","args":["ΣΑΣ σας ς"],"ok":null}
+{"fn":"snapshotDirectoryName","args":[":"],"ok":"_"}
+{"fn":"snapshotDirectoryName","args":["line1\nline2"],"ok":"line1_line2"}
+{"fn":"snapshotDirectoryName","args":["a😀b😀c"],"ok":"a__b__c"}
+{"fn":"snapshotDirectoryName","args":["a"],"ok":"a"}
+{"fn":"snapshotDirectoryName","args":["key_name-1"],"ok":"key_name-1"}
+{"fn":"snapshotDirectoryName","args":["ab"],"ok":"ab"}
+{"fn":"snapshotDirectoryName","args":["hello"],"ok":"hello"}
+{"fn":"snapshotDirectoryName","args":["a:b:c"],"ok":"a_b_c"}
+{"fn":"snapshotDirectoryName","args":["a:"],"ok":"a_"}
+{"fn":"snapshotDirectoryName","args":["emoji 👍🏽 mix"],"ok":"emoji______mix"}
+{"fn":"snapshotDirectoryName","args":["a..b"],"ok":"a..b"}
+{"fn":"snapshotDirectoryName","args":["ünïcödésrc/a/b.ts"],"ok":"_n_c_d_src_a_b.ts"}
+{"fn":"snapshotDirectoryName","args":["key_name-1日本語のテキスト"],"ok":"key_name-1________"}
+{"fn":"snapshotDirectoryName","args":["a.b.c"],"ok":"a.b.c"}
+{"fn":"snapshotDirectoryName","args":["﻿bom"],"ok":"_bom"}
+{"fn":"snapshotDirectoryName","args":["ΣΊΣΥΦΟΣ"],"ok":"_______"}
+{"fn":"snapshotDirectoryName","args":["hello world"],"ok":"hello_world"}
+{"fn":"snapshotDirectoryName","args":["trailing."],"ok":"trailing."}
+{"fn":"snapshotDirectoryName","args":[""],"ok":""}
+{"fn":"snapshotDirectoryName","args":["tab\tseparated"],"ok":"tab_separated"}
+{"fn":"snapshotDirectoryName","args":["日本語のテキスト"],"ok":"________"}
+{"fn":"snapshotDirectoryName","args":["./x/**/*.json"],"ok":"._x_____.json"}
+{"fn":"snapshotDirectoryName","args":["helloa:b:c"],"ok":"helloa_b_c"}
+{"fn":"snapshotDirectoryName","args":["ünïcödé"],"ok":"_n_c_d_"}
+{"fn":"snapshotDirectoryName","args":["helloΣΊΣΥΦΟΣ"],"ok":"hello_______"}
+{"fn":"snapshotDirectoryName","args":["Hello World"],"ok":"Hello_World"}
+{"fn":"snapshotDirectoryName","args":["é"],"ok":"e_"}
+{"fn":"snapshotDirectoryName","args":["  padded  emoji 👍🏽 mix"],"ok":"__padded__emoji______mix"}
+{"fn":"snapshotDirectoryName","args":["😀tab\tseparated"],"ok":"__tab_separated"}
+{"fn":"snapshotDirectoryName","args":["a.b.ca:b:c"],"ok":"a.b.ca_b_c"}
+{"fn":"snapshotDirectoryName","args":[":a:b:c"],"ok":"_a_b_c"}
+{"fn":"snapshotDirectoryName","args":["a:b:ca.b.c"],"ok":"a_b_ca.b.c"}
+{"fn":"snapshotDirectoryName","args":["😀"],"ok":"__"}
+{"fn":"snapshotDirectoryName","args":["straßens:key.path"],"ok":"stra_ens_key.path"}
+{"fn":"snapshotDirectoryName","args":["abc"],"ok":"abc"}
+{"fn":"snapshotDirectoryName","args":["ns:key.path"],"ok":"ns_key.path"}
+{"fn":"snapshotDirectoryName","args":["a.b.c日本語のテキスト"],"ok":"a.b.c________"}
+{"fn":"snapshotDirectoryName","args":["İstanbulHello World"],"ok":"_stanbulHello_World"}
+{"fn":"snapshotDirectoryName","args":["{name} has {count} items"],"ok":"_name__has__count__items"}
+{"fn":"snapshotDirectoryName","args":[".leading"],"ok":".leading"}
+{"fn":"snapshotDirectoryName","args":["line1\nline2  padded  "],"ok":"line1_line2__padded__"}
+{"fn":"snapshotDirectoryName","args":["straße"],"ok":"stra_e"}
+{"fn":"snapshotDirectoryName","args":["a:b:c﻿bom"],"ok":"a_b_c_bom"}
+{"fn":"snapshotDirectoryName","args":["abcünïcödé"],"ok":"abc_n_c_d_"}
+{"fn":"snapshotDirectoryName","args":["HELLO"],"ok":"HELLO"}
+{"fn":"snapshotDirectoryName","args":["::"],"ok":"__"}
+{"fn":"snapshotDirectoryName","args":["abc:"],"ok":"abc_"}
+{"fn":"snapshotDirectoryName","args":["ans:key.path"],"ok":"ans_key.path"}
+{"fn":"snapshotDirectoryName","args":["abcline1\nline2"],"ok":"abcline1_line2"}
+{"fn":"snapshotDirectoryName","args":["﻿bomemoji 👍🏽 mix"],"ok":"_bomemoji______mix"}
+{"fn":"snapshotDirectoryName","args":["ΣΊΣΥΦΟΣ😀"],"ok":"_________"}
+{"fn":"snapshotDirectoryName","args":["src/a/b.ts"],"ok":"src_a_b.ts"}
+{"fn":"snapshotDirectoryName","args":["İstanbul"],"ok":"_stanbul"}
+{"fn":"snapshotDirectoryName","args":["abcİstanbul"],"ok":"abc_stanbul"}
+{"fn":"snapshotDirectoryName","args":["aHello World"],"ok":"aHello_World"}
+{"fn":"snapshotDirectoryName","args":["  padded  "],"ok":"__padded__"}
+{"fn":"snapshotDirectoryName","args":["HELLO:"],"ok":"HELLO_"}
+{"fn":"snapshotDirectoryName","args":["a.b.cline1\nline2"],"ok":"a.b.cline1_line2"}
+{"fn":"snapshotDirectoryName","args":["é﻿bom"],"ok":"e__bom"}
+{"fn":"snapshotDirectoryName","args":["key_name-1a"],"ok":"key_name-1a"}
+{"fn":"snapshotDirectoryName","args":["😀﻿bom"],"ok":"___bom"}
+{"fn":"snapshotDirectoryName","args":["aabc"],"ok":"aabc"}
+{"fn":"snapshotDirectoryName","args":["hellokey_name-1"],"ok":"hellokey_name-1"}
+{"fn":"snapshotDirectoryName","args":["key_name-1:"],"ok":"key_name-1_"}
+{"fn":"snapshotDirectoryName","args":["ns:key.pathemoji 👍🏽 mix"],"ok":"ns_key.pathemoji______mix"}
+{"fn":"snapshotDirectoryName","args":["a😀b😀ckey_name-1"],"ok":"a__b__ckey_name-1"}
+{"fn":"snapshotDirectoryName","args":["é:"],"ok":"e__"}
+{"fn":"snapshotDirectoryName","args":["é😀"],"ok":"e___"}
+{"fn":"snapshotDirectoryName","args":[".leading./x/**/*.json"],"ok":".leading._x_____.json"}
+{"fn":"snapshotDirectoryName","args":["straßetrailing."],"ok":"stra_etrailing."}
+{"fn":"snapshotDirectoryName","args":[".leadingab"],"ok":".leadingab"}
+{"fn":"snapshotDirectoryName","args":["  padded  trailing."],"ok":"__padded__trailing."}
+{"fn":"snapshotDirectoryName","args":["a:b:cünïcödé"],"ok":"a_b_c_n_c_d_"}
+{"fn":"snapshotDirectoryName","args":["İstanbul😀"],"ok":"_stanbul__"}
+{"fn":"snapshotDirectoryName","args":["straße./x/**/*.json"],"ok":"stra_e._x_____.json"}
+{"fn":"snapshotDirectoryName","args":["ünïcödéhello world"],"ok":"_n_c_d_hello_world"}
+{"fn":"snapshotDirectoryName","args":["Hello Worldline1\nline2"],"ok":"Hello_Worldline1_line2"}
+{"fn":"snapshotDirectoryName","args":["😀trailing."],"ok":"__trailing."}
+{"fn":"snapshotDirectoryName","args":["ns:key.patha😀b😀c"],"ok":"ns_key.patha__b__c"}
+{"fn":"snapshotDirectoryName","args":["Hello Worldünïcödé"],"ok":"Hello_World_n_c_d_"}
+{"fn":"snapshotDirectoryName","args":[":hello"],"ok":"_hello"}
+{"fn":"snapshotDirectoryName","args":[".leading日本語のテキスト"],"ok":".leading________"}
+{"fn":"snapshotDirectoryName","args":["  padded  hello"],"ok":"__padded__hello"}
+{"fn":"snapshotDirectoryName","args":["ΣΊΣΥΦΟΣHELLO"],"ok":"_______HELLO"}
+{"fn":"snapshotDirectoryName","args":["straßea..b"],"ok":"stra_ea..b"}
+{"fn":"snapshotDirectoryName","args":["😀ns:key.path"],"ok":"__ns_key.path"}
+{"fn":"snapshotDirectoryName","args":["a:b:cé"],"ok":"a_b_ce_"}
+{"fn":"snapshotDirectoryName","args":["abca😀b😀c"],"ok":"abca__b__c"}
+{"fn":"snapshotDirectoryName","args":["aline1\nline2"],"ok":"aline1_line2"}
+{"fn":"snapshotDirectoryName","args":["ünïcödéİstanbul"],"ok":"_n_c_d__stanbul"}
+{"fn":"snapshotDirectoryName","args":[":日本語のテキスト"],"ok":"_________"}
+{"fn":"snapshotDirectoryName","args":["tab\tseparated﻿bom"],"ok":"tab_separated_bom"}
+{"fn":"snapshotDirectoryName","args":["{name} has {count} itemstrailing."],"ok":"_name__has__count__itemstrailing."}
+{"fn":"snapshotDirectoryName","args":["日本語のテキストns:key.path"],"ok":"________ns_key.path"}
+{"fn":"snapshotDirectoryName","args":["hello😀"],"ok":"hello__"}
+{"fn":"snapshotDirectoryName","args":["﻿bomHELLO"],"ok":"_bomHELLO"}
+{"fn":"snapshotDirectoryName","args":["a:b:cstraße"],"ok":"a_b_cstra_e"}
+{"fn":"snapshotDirectoryName","args":["é  padded  "],"ok":"e___padded__"}
+{"fn":"snapshotDirectoryName","args":["a:b:cHELLO"],"ok":"a_b_cHELLO"}
+{"fn":"snapshotDirectoryName","args":[":line1\nline2"],"ok":"_line1_line2"}
+{"fn":"snapshotDirectoryName","args":["﻿bomab"],"ok":"_bomab"}
+{"fn":"snapshotDirectoryName","args":["HELLO./x/**/*.json"],"ok":"HELLO._x_____.json"}
+{"fn":"snapshotDirectoryName","args":["emoji 👍🏽 mix日本語のテキスト"],"ok":"emoji______mix________"}
+{"fn":"snapshotDirectoryName","args":["İstanbula"],"ok":"_stanbula"}
+{"fn":"snapshotDirectoryName","args":["key_name-1a😀b😀c"],"ok":"key_name-1a__b__c"}
+{"fn":"snapshotDirectoryName","args":["﻿bom  padded  "],"ok":"_bom__padded__"}
+{"fn":"snapshotDirectoryName","args":["a:b:ctrailing."],"ok":"a_b_ctrailing."}
+{"fn":"snapshotDirectoryName","args":["ünïcödé./x/**/*.json"],"ok":"_n_c_d_._x_____.json"}
+{"fn":"snapshotDirectoryName","args":["key_name-1emoji 👍🏽 mix"],"ok":"key_name-1emoji______mix"}
+{"fn":"snapshotDirectoryName","args":["  padded  {name} has {count} items"],"ok":"__padded___name__has__count__items"}
+{"fn":"snapshotDirectoryName","args":["./x/**/*.json./x/**/*.json"],"ok":"._x_____.json._x_____.json"}
+{"fn":"snapshotDirectoryName","args":["a😀b😀ctab\tseparated"],"ok":"a__b__ctab_separated"}
+{"fn":"snapshotDirectoryName","args":["trailing.a😀b😀c"],"ok":"trailing.a__b__c"}
+{"fn":"snapshotDirectoryName","args":["日本語のテキスト:"],"ok":"_________"}
+{"fn":"snapshotDirectoryName","args":["ünïcödéa:b:c"],"ok":"_n_c_d_a_b_c"}
+{"fn":"snapshotDirectoryName","args":["a😀b😀cünïcödé"],"ok":"a__b__c_n_c_d_"}
+{"fn":"snapshotDirectoryName","args":["a:b:ca😀b😀c"],"ok":"a_b_ca__b__c"}
+{"fn":"snapshotDirectoryName","args":["a:b:cline1\nline2"],"ok":"a_b_cline1_line2"}
+{"fn":"snapshotDirectoryName","args":["ΣΊΣΥΦΟΣns:key.path"],"ok":"_______ns_key.path"}
+{"fn":"snapshotDirectoryName","args":["a..bHELLO"],"ok":"a..bHELLO"}
+{"fn":"snapshotDirectoryName","args":["emoji 👍🏽 mixab"],"ok":"emoji______mixab"}
+{"fn":"snapshotDirectoryName","args":["./x/**/*.jsona"],"ok":"._x_____.jsona"}
+{"fn":"snapshotDirectoryName","args":["hello world日本語のテキスト"],"ok":"hello_world________"}
+{"fn":"snapshotDirectoryName","args":["İstanbulΣΊΣΥΦΟΣ"],"ok":"_stanbul_______"}
+{"fn":"snapshotDirectoryName","args":[":emoji 👍🏽 mix"],"ok":"_emoji______mix"}
+{"fn":"snapshotDirectoryName","args":["a😀b😀c😀"],"ok":"a__b__c__"}
+{"fn":"snapshotDirectoryName","args":["./x/**/*.jsonsrc/a/b.ts"],"ok":"._x_____.jsonsrc_a_b.ts"}
+{"fn":"snapshotDirectoryName","args":["trailing.a..b"],"ok":"trailing.a..b"}
+{"fn":"snapshotDirectoryName","args":["{name} has {count} itemshello"],"ok":"_name__has__count__itemshello"}
+{"fn":"snapshotDirectoryName","args":["line1\nline2ünïcödé"],"ok":"line1_line2_n_c_d_"}
+{"fn":"snapshotDirectoryName","args":["ünïcödéabc"],"ok":"_n_c_d_abc"}
+{"fn":"snapshotDirectoryName","args":["a..bline1\nline2"],"ok":"a..bline1_line2"}
+{"fn":"snapshotDirectoryName","args":["line1\nline2emoji 👍🏽 mix"],"ok":"line1_line2emoji______mix"}
+{"fn":"snapshotDirectoryName","args":["tab\tseparated{name} has {count} items"],"ok":"tab_separated_name__has__count__items"}
+{"fn":"snapshotDirectoryName","args":["日本語のテキストsrc/a/b.ts"],"ok":"________src_a_b.ts"}
+{"fn":"snapshotDirectoryName","args":["{name} has {count} itemsab"],"ok":"_name__has__count__itemsab"}
+{"fn":"snapshotDirectoryName","args":["line1\nline2line1\nline2"],"ok":"line1_line2line1_line2"}
+{"fn":"snapshotDirectoryName","args":["trailing.😀"],"ok":"trailing.__"}
+{"fn":"snapshotDirectoryName","args":["HELLOkey_name-1"],"ok":"HELLOkey_name-1"}
+{"fn":"snapshotDirectoryName","args":["emoji 👍🏽 mixns:key.path"],"ok":"emoji______mixns_key.path"}
+{"fn":"snapshotDirectoryName","args":["hello world:"],"ok":"hello_world_"}
+{"fn":"snapshotDirectoryName","args":["tab\tseparatedline1\nline2"],"ok":"tab_separatedline1_line2"}
+{"fn":"snapshotDirectoryName","args":["éa"],"ok":"e_a"}
+{"fn":"snapshotDirectoryName","args":["a..b.leading"],"ok":"a..b.leading"}
+{"fn":"snapshotDirectoryName","args":["Hello Worlda:b:c"],"ok":"Hello_Worlda_b_c"}
+{"fn":"snapshotDirectoryName","args":["日本語のテキストΣΊΣΥΦΟΣ"],"ok":"_______________"}
+{"fn":"snapshotDirectoryName","args":["Hello Worldstraße"],"ok":"Hello_Worldstra_e"}
+{"fn":"snapshotDirectoryName","args":["a😀b😀ca:b:c"],"ok":"a__b__ca_b_c"}
+{"fn":"snapshotDirectoryName","args":["HELLOstraße"],"ok":"HELLOstra_e"}
+{"fn":"snapshotDirectoryName","args":["  padded  ﻿bom"],"ok":"__padded___bom"}
+{"fn":"snapshotDirectoryName","args":["atab\tseparated"],"ok":"atab_separated"}
+{"fn":"snapshotDirectoryName","args":["a.b.cemoji 👍🏽 mix"],"ok":"a.b.cemoji______mix"}
+{"fn":"snapshotDirectoryName","args":["./x/**/*.jsona.b.c"],"ok":"._x_____.jsona.b.c"}
+{"fn":"snapshotDirectoryName","args":["a..ba.b.c"],"ok":"a..ba.b.c"}
+{"fn":"snapshotDirectoryName","args":["emoji 👍🏽 mixΣΊΣΥΦΟΣ"],"ok":"emoji______mix_______"}
+{"fn":"snapshotDirectoryName","args":["ünïcödé﻿bom"],"ok":"_n_c_d__bom"}
+{"fn":"snapshotDirectoryName","args":["emoji 👍🏽 mixstraße"],"ok":"emoji______mixstra_e"}
+{"fn":"snapshotDirectoryName","args":["﻿bomé"],"ok":"_bome_"}
+{"fn":"snapshotDirectoryName","args":["  padded  a..b"],"ok":"__padded__a..b"}
+{"fn":"snapshotDirectoryName","args":["﻿bom日本語のテキスト"],"ok":"_bom________"}
+{"fn":"snapshotDirectoryName","args":["a😀b😀ca.b.c"],"ok":"a__b__ca.b.c"}
+{"fn":"snapshotDirectoryName","args":["line1\nline2a..b"],"ok":"line1_line2a..b"}
+{"fn":"snapshotDirectoryName","args":["emoji 👍🏽 mixemoji 👍🏽 mix"],"ok":"emoji______mixemoji______mix"}
+{"fn":"snapshotDirectoryName","args":["日本語のテキストa😀b😀c"],"ok":"________a__b__c"}
+{"fn":"snapshotDirectoryName","args":["key_name-1tab\tseparated"],"ok":"key_name-1tab_separated"}
+{"fn":"snapshotDirectoryName","args":["abcns:key.path"],"ok":"abcns_key.path"}
+{"fn":"snapshotDirectoryName","args":["abtab\tseparated"],"ok":"abtab_separated"}
+{"fn":"snapshotDirectoryName","args":["helloabc"],"ok":"helloabc"}
+{"fn":"snapshotDirectoryName","args":["{name} has {count} itemsa..b"],"ok":"_name__has__count__itemsa..b"}
+{"fn":"snapshotDirectoryName","args":["trailing.ns:key.path"],"ok":"trailing.ns_key.path"}
+{"fn":"snapshotDirectoryName","args":[":hello world"],"ok":"_hello_world"}
+{"fn":"snapshotDirectoryName","args":["éemoji 👍🏽 mix"],"ok":"e_emoji______mix"}
+{"fn":"snapshotDirectoryName","args":["straße.leading"],"ok":"stra_e.leading"}
+{"fn":"snapshotDirectoryName","args":["./x/**/*.jsonns:key.path"],"ok":"._x_____.jsonns_key.path"}
+{"fn":"snapshotDirectoryName","args":["😀a:b:c"],"ok":"__a_b_c"}
+{"fn":"snapshotDirectoryName","args":["a😀b😀chello"],"ok":"a__b__chello"}
+{"fn":"snapshotDirectoryName","args":["ünïcödéa"],"ok":"_n_c_d_a"}
+{"fn":"snapshotDirectoryName","args":["emoji 👍🏽 mixünïcödé"],"ok":"emoji______mix_n_c_d_"}
+{"fn":"snapshotDirectoryName","args":["./x/**/*.jsonab"],"ok":"._x_____.jsonab"}
+{"fn":"snapshotDirectoryName","args":[".leadinga"],"ok":".leadinga"}
+{"fn":"snapshotDirectoryName","args":["src/a/b.ts{name} has {count} items"],"ok":"src_a_b.ts_name__has__count__items"}
+{"fn":"snapshotDirectoryName","args":["ΣΊΣΥΦΟΣ.leading"],"ok":"_______.leading"}
+{"fn":"snapshotDirectoryName","args":["{name} has {count} itemsline1\nline2"],"ok":"_name__has__count__itemsline1_line2"}
+{"fn":"snapshotDirectoryName","args":["﻿bomns:key.path"],"ok":"_bomns_key.path"}
+{"fn":"snapshotDirectoryName","args":["日本語のテキストünïcödé"],"ok":"_________n_c_d_"}
+{"fn":"snapshotDirectoryName","args":["﻿bom:"],"ok":"_bom_"}
+{"fn":"snapshotDirectoryName","args":["a:b:cemoji 👍🏽 mix"],"ok":"a_b_cemoji______mix"}
+{"fn":"snapshotDirectoryName","args":["aemoji 👍🏽 mix"],"ok":"aemoji______mix"}
+{"fn":"snapshotDirectoryName","args":[".leadingHELLO"],"ok":".leadingHELLO"}
+{"fn":"snapshotDirectoryName","args":["tab\tseparatedünïcödé"],"ok":"tab_separated_n_c_d_"}
+{"fn":"snapshotDirectoryName","args":["aé"],"ok":"ae_"}
+{"fn":"snapshotDirectoryName","args":["a.b.c{name} has {count} items"],"ok":"a.b.c_name__has__count__items"}
+{"fn":"snapshotDirectoryName","args":["emoji 👍🏽 mix﻿bom"],"ok":"emoji______mix_bom"}
+{"fn":"snapshotDirectoryName","args":["hello worldemoji 👍🏽 mix"],"ok":"hello_worldemoji______mix"}
+{"fn":"snapshotDirectoryName","args":["İstanbultrailing."],"ok":"_stanbultrailing."}
+{"fn":"snapshotDirectoryName","args":["Hello Worlda"],"ok":"Hello_Worlda"}
+{"fn":"snapshotDirectoryName","args":["src/a/b.ts:"],"ok":"src_a_b.ts_"}
+{"fn":"snapshotDirectoryName","args":["Hello Worldsrc/a/b.ts"],"ok":"Hello_Worldsrc_a_b.ts"}
+{"fn":"snapshotDirectoryName","args":["ab:"],"ok":"ab_"}
+{"fn":"snapshotDirectoryName","args":["ns:key.pathtrailing."],"ok":"ns_key.pathtrailing."}
+{"fn":"snapshotDirectoryName","args":["héllo wörld"],"ok":"h_llo_w_rld"}
+{"fn":"snapshotDirectoryName","args":["👍🏽 thumbs"],"ok":"_____thumbs"}
+{"fn":"snapshotDirectoryName","args":["日本語"],"ok":"___"}
+{"fn":"snapshotDirectoryName","args":["ılık ırmak"],"ok":"_l_k__rmak"}
+{"fn":"snapshotDirectoryName","args":["👨‍👩‍👧 family"],"ok":"_________family"}
+{"fn":"snapshotDirectoryName","args":["a b"],"ok":"a_b"}
+{"fn":"snapshotDirectoryName","args":["a😀b"],"ok":"a__b"}
+{"fn":"snapshotDirectoryName","args":["a²b x½ y①"],"ok":"a_b_x__y_"}
+{"fn":"snapshotDirectoryName","args":["aⅠb Ⅻ"],"ok":"a_b__"}
+{"fn":"snapshotDirectoryName","args":["a𐐀b 𝐀bc"],"ok":"a__b___bc"}
+{"fn":"snapshotDirectoryName","args":["कि ٣٤"],"ok":"_____"}
+{"fn":"snapshotDirectoryName","args":["Iı İi"],"ok":"I___i"}
+{"fn":"snapshotDirectoryName","args":["K K k"],"ok":"K___k"}
+{"fn":"snapshotDirectoryName","args":["ſ s S"],"ok":"__s_S"}
+{"fn":"snapshotDirectoryName","args":["x‍y 👨‍👩‍👧"],"ok":"x_y_________"}
+{"fn":"snapshotDirectoryName","args":["a b c　d"],"ok":"a_b_c_d"}
+{"fn":"snapshotDirectoryName","args":["١٢٣ ٤٥"],"ok":"______"}
+{"fn":"snapshotDirectoryName","args":["𝟘𝟙 ²³"],"ok":"_______"}
+{"fn":"snapshotDirectoryName","args":["snake_case foo-bar o'neil"],"ok":"snake_case_foo-bar_o_neil"}
+{"fn":"snapshotDirectoryName","args":["ǅungla Ǆ"],"ok":"_ungla__"}
+{"fn":"snapshotDirectoryName","args":["one\r\ntwo threefour"],"ok":"one__two_three_four"}
+{"fn":"snapshotDirectoryName","args":["café café"],"ok":"cafe__caf_"}
+{"fn":"snapshotDirectoryName","args":["ΣΑΣ σας ς"],"ok":"_________"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"﻿boma..b","cacheRoot":":","signature":"{name} has {count} items"}],"error":"Static snapshot source is missing index.html: ﻿boma..b"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"hello world","cacheRoot":"Hello WorldHello World","signature":"trailing.","sentinelFile":"﻿bom"}],"error":"Static snapshot source is missing ﻿bom: hello world"}
+{"fn":"ensureStaticSnapshot","args":[true],"error":"Cannot read properties of undefined (reading 'replace')"}
+{"fn":"ensureStaticSnapshot","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'replace')"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a😀b😀c","cacheRoot":"emoji 👍🏽 mix","signature":"./x/**/*.json","sentinelFile":"ünïcödé"}],"error":"Static snapshot source is missing ünïcödé: a😀b😀c"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a..btrailing.","cacheRoot":"a..b","signature":"emoji 👍🏽 mix","sentinelFile":"ab"}],"error":"Static snapshot source is missing ab: a..btrailing."}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"ünïcödé","cacheRoot":"emoji 👍🏽 mix","signature":"trailing.","sentinelFile":"  padded  "}],"error":"Static snapshot source is missing   padded  : ünïcödé"}
+{"fn":"ensureStaticSnapshot","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'replace')"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a:b:c","cacheRoot":"line1\nline2","signature":"ns:key.path","sentinelFile":"İstanbul"}],"error":"Static snapshot source is missing İstanbul: a:b:c"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"﻿bom﻿bom","cacheRoot":"ünïcödé","signature":"a😀b😀c"}],"error":"Static snapshot source is missing index.html: ﻿bom﻿bom"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a","cacheRoot":"hello world","signature":"src/a/b.ts","sentinelFile":"ns:key.path"}],"error":"Static snapshot source is missing ns:key.path: a"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"ab日本語のテキスト","cacheRoot":".leading","signature":"İstanbul"}],"error":"Static snapshot source is missing index.html: ab日本語のテキスト"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":".leadingİstanbul","cacheRoot":"src/a/b.ts","signature":"./x/**/*.json","sentinelFile":"ab"}],"error":"Static snapshot source is missing ab: .leadingİstanbul"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"key_name-1","cacheRoot":"","signature":"a.b.c{name} has {count} items","sentinelFile":"ab"}],"error":"Static snapshot source is missing ab: key_name-1"}
+{"fn":"ensureStaticSnapshot","args":[[]],"error":"Cannot read properties of undefined (reading 'replace')"}
+{"fn":"ensureStaticSnapshot","args":[null],"error":"Cannot read properties of null (reading 'sentinelFile')"}
+{"fn":"ensureStaticSnapshot","args":["x"],"error":"Cannot read properties of undefined (reading 'replace')"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"ns:key.pathemoji 👍🏽 mix","cacheRoot":"straße","signature":"a..b","sentinelFile":"ünïcödéİstanbul"}],"error":"Static snapshot source is missing ünïcödéİstanbul: ns:key.pathemoji 👍🏽 mix"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"./x/**/*.json","cacheRoot":"a..bkey_name-1","signature":"ab","sentinelFile":"ΣΊΣΥΦΟΣ"}],"error":"Static snapshot source is missing ΣΊΣΥΦΟΣ: ./x/**/*.json"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"ünïcödéa..b","cacheRoot":"trailing.a😀b😀c","signature":"a.b.c"}],"error":"Static snapshot source is missing index.html: ünïcödéa..b"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"HELLO","cacheRoot":"HELLO","signature":"trailing.","sentinelFile":"日本語のテキスト"}],"error":"Static snapshot source is missing 日本語のテキスト: HELLO"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"./x/**/*.json","cacheRoot":"HELLO","signature":""}],"error":"Static snapshot source is missing index.html: ./x/**/*.json"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a.b.cünïcödé","cacheRoot":"Hello Worldhello","signature":"😀"}],"error":"Static snapshot source is missing index.html: a.b.cünïcödé"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"HELLO","cacheRoot":"  padded  ","signature":"ab"}],"error":"Static snapshot source is missing index.html: HELLO"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"ünïcödé","cacheRoot":"ΣΊΣΥΦΟΣ","signature":"a:b:c","sentinelFile":"ns:key.path"}],"error":"Static snapshot source is missing ns:key.path: ünïcödé"}
+{"fn":"ensureStaticSnapshot","args":[{}],"error":"Cannot read properties of undefined (reading 'replace')"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"﻿bom","cacheRoot":"line1\nline2","signature":"😀"}],"error":"Static snapshot source is missing index.html: ﻿bom"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"./x/**/*.json","cacheRoot":"a:b:c","signature":"line1\nline2","sentinelFile":"﻿bom"}],"error":"Static snapshot source is missing ﻿bom: ./x/**/*.json"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"trailing.straße","cacheRoot":"a","signature":"src/a/b.ts","sentinelFile":"İstanbul"}],"error":"Static snapshot source is missing İstanbul: trailing.straße"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"emoji 👍🏽 mix","cacheRoot":"{name} has {count} items","signature":"tab\tseparated","sentinelFile":"HELLO"}],"error":"Static snapshot source is missing HELLO: emoji 👍🏽 mix"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":":","cacheRoot":"abchello world","signature":"line1\nline2","sentinelFile":".leading"}],"error":"Static snapshot source is missing .leading: :"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"./x/**/*.json","cacheRoot":"é","signature":"é","sentinelFile":""}],"error":"Static snapshot source is missing : ./x/**/*.json"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"trailing.","cacheRoot":"é","signature":"line1\nline2","sentinelFile":"ünïcödé"}],"error":"Static snapshot source is missing ünïcödé: trailing."}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"Hello World","cacheRoot":"{name} has {count} items","signature":".leading","sentinelFile":"HELLO"}],"error":"Static snapshot source is missing HELLO: Hello World"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"key_name-1","cacheRoot":"Hello World","signature":"hello","sentinelFile":"a😀b😀c"}],"error":"Static snapshot source is missing a😀b😀c: key_name-1"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a..b","cacheRoot":"  padded  ","signature":"","sentinelFile":"hello world"}],"error":"Static snapshot source is missing hello world: a..b"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":".leading","cacheRoot":"﻿bom","signature":"ΣΊΣΥΦΟΣ","sentinelFile":"emoji 👍🏽 mix"}],"error":"Static snapshot source is missing emoji 👍🏽 mix: .leading"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"","cacheRoot":"tab\tseparated","signature":"trailing.ünïcödé","sentinelFile":"a.b.c"}],"error":"Static snapshot source is missing a.b.c: "}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"","cacheRoot":"trailing.","signature":"trailing.","sentinelFile":"  padded  "}],"error":"Static snapshot source is missing   padded  : "}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"日本語のテキスト","cacheRoot":"key_name-1","signature":"tab\tseparated","sentinelFile":"tab\tseparatedİstanbul"}],"error":"Static snapshot source is missing tab\tseparatedİstanbul: 日本語のテキスト"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"日本語のテキスト","cacheRoot":"emoji 👍🏽 mix","signature":"line1\nline2.leading","sentinelFile":"a.b.c"}],"error":"Static snapshot source is missing a.b.c: 日本語のテキスト"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"Hello World","cacheRoot":"hello world","signature":"ns:key.path","sentinelFile":"a😀b😀c"}],"error":"Static snapshot source is missing a😀b😀c: Hello World"}
+{"fn":"ensureStaticSnapshot","args":[0],"error":"Cannot read properties of undefined (reading 'replace')"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"emoji 👍🏽 mixİstanbul","cacheRoot":"trailing.İstanbul","signature":"a😀b😀c","sentinelFile":"straße"}],"error":"Static snapshot source is missing straße: emoji 👍🏽 mixİstanbul"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"HELLO","cacheRoot":"ΣΊΣΥΦΟΣ","signature":"emoji 👍🏽 mix"}],"error":"Static snapshot source is missing index.html: HELLO"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"ns:key.patha:b:c","cacheRoot":"key_name-1","signature":"","sentinelFile":"ΣΊΣΥΦΟΣünïcödé"}],"error":"Static snapshot source is missing ΣΊΣΥΦΟΣünïcödé: ns:key.patha:b:c"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a..b","cacheRoot":"HELLO","signature":"key_name-1","sentinelFile":"ΣΊΣΥΦΟΣ"}],"error":"Static snapshot source is missing ΣΊΣΥΦΟΣ: a..b"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"key_name-1","cacheRoot":"a..bsrc/a/b.ts","signature":"ΣΊΣΥΦΟΣ😀","sentinelFile":".leading"}],"error":"Static snapshot source is missing .leading: key_name-1"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"{name} has {count} items  padded  ","cacheRoot":"日本語のテキスト","signature":"hello","sentinelFile":".leading"}],"error":"Static snapshot source is missing .leading: {name} has {count} items  padded  "}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"trailing.","cacheRoot":"İstanbul","signature":"a😀b😀c"}],"error":"Static snapshot source is missing index.html: trailing."}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"{name} has {count} itemsa:b:c","cacheRoot":"src/a/b.ts","signature":"ünïcödé","sentinelFile":"hello"}],"error":"Static snapshot source is missing hello: {name} has {count} itemsa:b:c"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":".leading./x/**/*.json","cacheRoot":"a..b.leading","signature":"HELLO","sentinelFile":"hello"}],"error":"Static snapshot source is missing hello: .leading./x/**/*.json"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"line1\nline2","cacheRoot":":","signature":"abc","sentinelFile":"  padded  "}],"error":"Static snapshot source is missing   padded  : line1\nline2"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a","cacheRoot":"trailing.","signature":"a","sentinelFile":"./x/**/*.json"}],"error":"Static snapshot source is missing ./x/**/*.json: a"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a","cacheRoot":"emoji 👍🏽 mix:","signature":"{name} has {count} items"}],"error":"Static snapshot source is missing index.html: a"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a..b","cacheRoot":"ΣΊΣΥΦΟΣ","signature":"﻿bom","sentinelFile":"key_name-1"}],"error":"Static snapshot source is missing key_name-1: a..b"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"line1\nline2","cacheRoot":"a:b:ca","signature":":  padded  ","sentinelFile":"ns:key.path"}],"error":"Static snapshot source is missing ns:key.path: line1\nline2"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"ab","cacheRoot":"ab","signature":"hello","sentinelFile":"key_name-1"}],"error":"Static snapshot source is missing key_name-1: ab"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"./x/**/*.json","cacheRoot":"line1\nline2","signature":"a.b.c"}],"error":"Static snapshot source is missing index.html: ./x/**/*.json"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"日本語のテキスト","cacheRoot":"éa:b:c","signature":"emoji 👍🏽 mix","sentinelFile":"trailing."}],"error":"Static snapshot source is missing trailing.: 日本語のテキスト"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a","cacheRoot":"{name} has {count} itemsa😀b😀c","signature":"src/a/b.ts","sentinelFile":"ns:key.path"}],"error":"Static snapshot source is missing ns:key.path: a"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"é","cacheRoot":":é","signature":"ns:key.path","sentinelFile":"HELLOab"}],"error":"Static snapshot source is missing HELLOab: é"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"{name} has {count} items./x/**/*.json","cacheRoot":".leading","signature":"tab\tseparated","sentinelFile":"./x/**/*.json"}],"error":"Static snapshot source is missing ./x/**/*.json: {name} has {count} items./x/**/*.json"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"straße","cacheRoot":"./x/**/*.json","signature":"ab","sentinelFile":"./x/**/*.json"}],"error":"Static snapshot source is missing ./x/**/*.json: straße"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"é","cacheRoot":".leadingstraße","signature":"a..b  padded  ","sentinelFile":"😀"}],"error":"Static snapshot source is missing 😀: é"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a","cacheRoot":"hello","signature":"{name} has {count} items","sentinelFile":"straße"}],"error":"Static snapshot source is missing straße: a"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"trailing.","cacheRoot":"src/a/b.ts.leading","signature":"Hello World","sentinelFile":"HELLO"}],"error":"Static snapshot source is missing HELLO: trailing."}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"line1\nline2","cacheRoot":"ΣΊΣΥΦΟΣ","signature":"","sentinelFile":"{name} has {count} items"}],"error":"Static snapshot source is missing {name} has {count} items: line1\nline2"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":".leading","cacheRoot":"ΣΊΣΥΦΟΣ","signature":"a:b:c","sentinelFile":"abc"}],"error":"Static snapshot source is missing abc: .leading"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"hello","cacheRoot":"hello","signature":"hello"}],"error":"Static snapshot source is missing index.html: hello"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":".leading","cacheRoot":"Hello World","signature":"ünïcödé","sentinelFile":"emoji 👍🏽 mix"}],"error":"Static snapshot source is missing emoji 👍🏽 mix: .leading"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"","cacheRoot":"日本語のテキスト","signature":"src/a/b.tsa.b.c","sentinelFile":"src/a/b.ts"}],"error":"Static snapshot source is missing src/a/b.ts: "}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"key_name-1","cacheRoot":".leading","signature":"ΣΊΣΥΦΟΣ","sentinelFile":".leading"}],"error":"Static snapshot source is missing .leading: key_name-1"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"ab","cacheRoot":"tab\tseparated","signature":"hello","sentinelFile":"Hello World"}],"error":"Static snapshot source is missing Hello World: ab"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"{name} has {count} items","cacheRoot":"a","signature":"ünïcödésrc/a/b.ts","sentinelFile":"abc"}],"error":"Static snapshot source is missing abc: {name} has {count} items"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"{name} has {count} items","cacheRoot":"﻿bomünïcödé","signature":"a..b","sentinelFile":"tab\tseparated"}],"error":"Static snapshot source is missing tab\tseparated: {name} has {count} items"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"{name} has {count} items","cacheRoot":"a..b﻿bom","signature":"straße","sentinelFile":"a:b:c"}],"error":"Static snapshot source is missing a:b:c: {name} has {count} items"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":".leading","cacheRoot":"line1\nline2./x/**/*.json","signature":"日本語のテキストtab\tseparated"}],"error":"Static snapshot source is missing index.html: .leading"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"key_name-1","cacheRoot":"é","signature":"tab\tseparated","sentinelFile":"src/a/b.ts.leading"}],"error":"Static snapshot source is missing src/a/b.ts.leading: key_name-1"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a..b","cacheRoot":"İstanbul  padded  ","signature":"emoji 👍🏽 mix😀","sentinelFile":"tab\tseparated"}],"error":"Static snapshot source is missing tab\tseparated: a..b"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"Hello World","cacheRoot":"HELLO","signature":"src/a/b.ts","sentinelFile":"tab\tseparated"}],"error":"Static snapshot source is missing tab\tseparated: Hello World"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"./x/**/*.jsonkey_name-1","cacheRoot":"ΣΊΣΥΦΟΣ","signature":"","sentinelFile":"a.b.c"}],"error":"Static snapshot source is missing a.b.c: ./x/**/*.jsonkey_name-1"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"ΣΊΣΥΦΟΣé","cacheRoot":"line1\nline2","signature":"./x/**/*.jsonhello world"}],"error":"Static snapshot source is missing index.html: ΣΊΣΥΦΟΣé"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"key_name-1","cacheRoot":"a.b.c","signature":"","sentinelFile":"hello worldtab\tseparated"}],"error":"Static snapshot source is missing hello worldtab\tseparated: key_name-1"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"😀","cacheRoot":"😀","signature":"tab\tseparated"}],"error":"Static snapshot source is missing index.html: 😀"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"Hello World","cacheRoot":"tab\tseparated","signature":"{name} has {count} items","sentinelFile":":"}],"error":"Static snapshot source is missing :: Hello World"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"  padded  ","cacheRoot":"emoji 👍🏽 mix","signature":"hello","sentinelFile":"a.b.cab"}],"error":"Static snapshot source is missing a.b.cab:   padded  "}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"Hello World","cacheRoot":"straße","signature":"tab\tseparated","sentinelFile":"key_name-1abc"}],"error":"Static snapshot source is missing key_name-1abc: Hello World"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a.b.c","cacheRoot":"hello world","signature":"trailing.src/a/b.ts","sentinelFile":"日本語のテキスト"}],"error":"Static snapshot source is missing 日本語のテキスト: a.b.c"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":".leading","cacheRoot":"Hello World","signature":"日本語のテキスト","sentinelFile":"{name} has {count} items"}],"error":"Static snapshot source is missing {name} has {count} items: .leading"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"é","cacheRoot":"a😀b😀c","signature":"line1\nline2ab"}],"error":"Static snapshot source is missing index.html: é"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"HELLO﻿bom","cacheRoot":"ab","signature":"ab","sentinelFile":""}],"error":"Static snapshot source is missing : HELLO﻿bom"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a:b:c","cacheRoot":"ünïcödé","signature":"a.b.c","sentinelFile":"a"}],"error":"Static snapshot source is missing a: a:b:c"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a.b.c","cacheRoot":"﻿bom","signature":"","sentinelFile":"a.b.c"}],"error":"Static snapshot source is missing a.b.c: a.b.c"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a..b","cacheRoot":"😀","signature":"é"}],"error":"Static snapshot source is missing index.html: a..b"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a:b:c","cacheRoot":"Hello World","signature":"","sentinelFile":"src/a/b.ts"}],"error":"Static snapshot source is missing src/a/b.ts: a:b:c"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":".leading","cacheRoot":"Hello World","signature":"hello world"}],"error":"Static snapshot source is missing index.html: .leading"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a😀b😀c","cacheRoot":"","signature":"a😀b😀c","sentinelFile":"éa😀b😀c"}],"error":"Static snapshot source is missing éa😀b😀c: a😀b😀c"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a.leading","cacheRoot":"src/a/b.ts","signature":"a..b"}],"error":"Static snapshot source is missing index.html: a.leading"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"Hello World","cacheRoot":"ΣΊΣΥΦΟΣ","signature":":","sentinelFile":"HELLO"}],"error":"Static snapshot source is missing HELLO: Hello World"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"hello","cacheRoot":"ns:key.pathsrc/a/b.ts","signature":"İstanbul","sentinelFile":"é"}],"error":"Static snapshot source is missing é: hello"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"abc","cacheRoot":"ΣΊΣΥΦΟΣ{name} has {count} items","signature":"./x/**/*.json","sentinelFile":"key_name-1"}],"error":"Static snapshot source is missing key_name-1: abc"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"abc","cacheRoot":"a.b.c","signature":"hello world","sentinelFile":"tab\tseparated"}],"error":"Static snapshot source is missing tab\tseparated: abc"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"Hello World","cacheRoot":"a😀b😀c","signature":"ΣΊΣΥΦΟΣ","sentinelFile":"hello"}],"error":"Static snapshot source is missing hello: Hello World"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"abc{name} has {count} items","cacheRoot":":","signature":"a.b.cline1\nline2","sentinelFile":"hello world"}],"error":"Static snapshot source is missing hello world: abc{name} has {count} items"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"line1\nline2","cacheRoot":".leading","signature":"a.b.c","sentinelFile":"日本語のテキスト"}],"error":"Static snapshot source is missing 日本語のテキスト: line1\nline2"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a😀b😀c","cacheRoot":"😀tab\tseparated","signature":"HELLO","sentinelFile":"😀emoji 👍🏽 mix"}],"error":"Static snapshot source is missing 😀emoji 👍🏽 mix: a😀b😀c"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"straße","cacheRoot":"hello","signature":"a.b.chello","sentinelFile":"ns:key.path"}],"error":"Static snapshot source is missing ns:key.path: straße"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"straße","cacheRoot":"{name} has {count} items","signature":"é","sentinelFile":"a.b.c"}],"error":"Static snapshot source is missing a.b.c: straße"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"straßehello world","cacheRoot":"é","signature":"éa..b"}],"error":"Static snapshot source is missing index.html: straßehello world"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"{name} has {count} items","cacheRoot":"日本語のテキスト","signature":"ünïcödé","sentinelFile":"line1\nline2"}],"error":"Static snapshot source is missing line1\nline2: {name} has {count} items"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"line1\nline2","cacheRoot":"trailing.","signature":"emoji 👍🏽 mix","sentinelFile":""}],"error":"Static snapshot source is missing : line1\nline2"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"{name} has {count} items","cacheRoot":"helloa😀b😀c","signature":"abcsrc/a/b.ts","sentinelFile":"a"}],"error":"Static snapshot source is missing a: {name} has {count} items"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a.b.c","cacheRoot":"ab","signature":"a:b:c","sentinelFile":".leading"}],"error":"Static snapshot source is missing .leading: a.b.c"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a..b","cacheRoot":"Hello World","signature":"a:b:c"}],"error":"Static snapshot source is missing index.html: a..b"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"HELLO","cacheRoot":"line1\nline2İstanbul","signature":"日本語のテキストa.b.c","sentinelFile":"😀trailing."}],"error":"Static snapshot source is missing 😀trailing.: HELLO"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"straße","cacheRoot":"日本語のテキスト./x/**/*.json","signature":"  padded  ","sentinelFile":"trailing."}],"error":"Static snapshot source is missing trailing.: straße"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"ünïcödé","cacheRoot":"trailing.","signature":"a:b:ca..b","sentinelFile":"helloa😀b😀c"}],"error":"Static snapshot source is missing helloa😀b😀c: ünïcödé"}
+{"fn":"ensureStaticSnapshot","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'replace')"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"﻿bom","cacheRoot":"İstanbul","signature":"ns:key.path","sentinelFile":"{name} has {count} items"}],"error":"Static snapshot source is missing {name} has {count} items: ﻿bom"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"src/a/b.ts","cacheRoot":"a..b","signature":"a","sentinelFile":"./x/**/*.json"}],"error":"Static snapshot source is missing ./x/**/*.json: src/a/b.ts"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"  padded  ","cacheRoot":"emoji 👍🏽 mix","signature":"ΣΊΣΥΦΟΣ","sentinelFile":""}],"error":"Static snapshot source is missing :   padded  "}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"日本語のテキストa","cacheRoot":"a:b:c","signature":".leading","sentinelFile":"line1\nline2"}],"error":"Static snapshot source is missing line1\nline2: 日本語のテキストa"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a..b","cacheRoot":"./x/**/*.json","signature":"İstanbulsrc/a/b.ts","sentinelFile":"a😀b😀c{name} has {count} items"}],"error":"Static snapshot source is missing a😀b😀c{name} has {count} items: a..b"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"tab\tseparated","cacheRoot":".leadingns:key.path","signature":"a.b.c","sentinelFile":"abc"}],"error":"Static snapshot source is missing abc: tab\tseparated"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"😀","cacheRoot":"line1\nline2src/a/b.ts","signature":":straße","sentinelFile":"a"}],"error":"Static snapshot source is missing a: 😀"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"hello worldns:key.path","cacheRoot":"ΣΊΣΥΦΟΣ","signature":"﻿bom","sentinelFile":"trailing."}],"error":"Static snapshot source is missing trailing.: hello worldns:key.path"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"abc","cacheRoot":"a😀b😀c","signature":"ΣΊΣΥΦΟΣ","sentinelFile":"a.b.c"}],"error":"Static snapshot source is missing a.b.c: abc"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"tab\tseparated","cacheRoot":"a:b:chello","signature":"ΣΊΣΥΦΟΣ","sentinelFile":"ab"}],"error":"Static snapshot source is missing ab: tab\tseparated"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"hello😀","cacheRoot":"a:b:c","signature":"ΣΊΣΥΦΟΣ","sentinelFile":"Hello World"}],"error":"Static snapshot source is missing Hello World: hello😀"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"﻿bom","cacheRoot":"line1\nline2HELLO","signature":"./x/**/*.json","sentinelFile":"abc"}],"error":"Static snapshot source is missing abc: ﻿bom"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"Hello World","cacheRoot":"😀","signature":"😀ns:key.path","sentinelFile":"a:b:c"}],"error":"Static snapshot source is missing a:b:c: Hello World"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"ns:key.path","cacheRoot":"Hello World","signature":"Hello World","sentinelFile":"ab"}],"error":"Static snapshot source is missing ab: ns:key.path"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a","cacheRoot":"tab\tseparated","signature":"tab\tseparated","sentinelFile":"key_name-1"}],"error":"Static snapshot source is missing key_name-1: a"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"ns:key.path","cacheRoot":"{name} has {count} items","signature":"a:b:c","sentinelFile":"abkey_name-1"}],"error":"Static snapshot source is missing abkey_name-1: ns:key.path"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"tab\tseparated","cacheRoot":"./x/**/*.json","signature":"﻿bom","sentinelFile":"Hello World"}],"error":"Static snapshot source is missing Hello World: tab\tseparated"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"﻿bom","cacheRoot":"ns:key.pathkey_name-1","signature":"{name} has {count} items","sentinelFile":"a.b.c"}],"error":"Static snapshot source is missing a.b.c: ﻿bom"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a.b.c","cacheRoot":"  padded  ","signature":"tab\tseparated"}],"error":"Static snapshot source is missing index.html: a.b.c"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a.b.c","cacheRoot":"a.b.c","signature":"src/a/b.tsİstanbul","sentinelFile":"Hello World"}],"error":"Static snapshot source is missing Hello World: a.b.c"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"{name} has {count} items","cacheRoot":"a😀b😀c","signature":"a:b:c","sentinelFile":"﻿bom"}],"error":"Static snapshot source is missing ﻿bom: {name} has {count} items"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"./x/**/*.jsona","cacheRoot":"a","signature":"  padded  ","sentinelFile":".leading"}],"error":"Static snapshot source is missing .leading: ./x/**/*.jsona"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"abline1\nline2","cacheRoot":"Hello World","signature":"line1\nline2","sentinelFile":"hellosrc/a/b.ts"}],"error":"Static snapshot source is missing hellosrc/a/b.ts: abline1\nline2"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"  padded  ","cacheRoot":"İstanbula:b:c","signature":"ab","sentinelFile":"  padded  "}],"error":"Static snapshot source is missing   padded  :   padded  "}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a:b:c","cacheRoot":"ab","signature":"﻿bom","sentinelFile":"key_name-1"}],"error":"Static snapshot source is missing key_name-1: a:b:c"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"key_name-1","cacheRoot":"{name} has {count} items","signature":"{name} has {count} items"}],"error":"Static snapshot source is missing index.html: key_name-1"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"{name} has {count} itemssrc/a/b.ts","cacheRoot":"ΣΊΣΥΦΟΣ","signature":"a😀b😀ca.b.c"}],"error":"Static snapshot source is missing index.html: {name} has {count} itemssrc/a/b.ts"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"abc","cacheRoot":"./x/**/*.jsonHELLO","signature":"src/a/b.ts"}],"error":"Static snapshot source is missing index.html: abc"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"straße","cacheRoot":"a..b","signature":"😀","sentinelFile":"HELLO"}],"error":"Static snapshot source is missing HELLO: straße"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"key_name-1","cacheRoot":"ΣΊΣΥΦΟΣ","signature":"{name} has {count} itemsns:key.path","sentinelFile":"Hello Worlda:b:c"}],"error":"Static snapshot source is missing Hello Worlda:b:c: key_name-1"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"","cacheRoot":"ns:key.pathhello","signature":"é","sentinelFile":"emoji 👍🏽 mix"}],"error":"Static snapshot source is missing emoji 👍🏽 mix: "}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"hello worlda","cacheRoot":"straße","signature":"日本語のテキスト","sentinelFile":"src/a/b.ts"}],"error":"Static snapshot source is missing src/a/b.ts: hello worlda"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"ünïcödéstraße","cacheRoot":"key_name-1","signature":"./x/**/*.json","sentinelFile":""}],"error":"Static snapshot source is missing : ünïcödéstraße"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"HELLO","cacheRoot":"hello","signature":"src/a/b.ts"}],"error":"Static snapshot source is missing index.html: HELLO"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"日本語のテキスト","cacheRoot":"ünïcödé","signature":"ns:key.path","sentinelFile":"a😀b😀c"}],"error":"Static snapshot source is missing a😀b😀c: 日本語のテキスト"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a..b","cacheRoot":"ns:key.path","signature":"Hello World"}],"error":"Static snapshot source is missing index.html: a..b"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"ΣΊΣΥΦΟΣ","cacheRoot":"abc","signature":"é"}],"error":"Static snapshot source is missing index.html: ΣΊΣΥΦΟΣ"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"emoji 👍🏽 mix","cacheRoot":"a:b:c","signature":"İstanbul","sentinelFile":"hello"}],"error":"Static snapshot source is missing hello: emoji 👍🏽 mix"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"emoji 👍🏽 mixtab\tseparated","cacheRoot":"﻿bom","signature":"ΣΊΣΥΦΟΣ","sentinelFile":"HELLO"}],"error":"Static snapshot source is missing HELLO: emoji 👍🏽 mixtab\tseparated"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"Hello World","cacheRoot":"  padded  ","signature":"﻿bom","sentinelFile":"Hello World"}],"error":"Static snapshot source is missing Hello World: Hello World"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"HELLO","cacheRoot":"İstanbultab\tseparated","signature":"a.b.ca.b.c"}],"error":"Static snapshot source is missing index.html: HELLO"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"ab","cacheRoot":"a:b:ca","signature":"hello worldhello","sentinelFile":"abcabc"}],"error":"Static snapshot source is missing abcabc: ab"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"日本語のテキスト","cacheRoot":"key_name-1","signature":"trailing."}],"error":"Static snapshot source is missing index.html: 日本語のテキスト"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a.b.cHello World","cacheRoot":"😀","signature":"  padded  ","sentinelFile":"key_name-1ns:key.path"}],"error":"Static snapshot source is missing key_name-1ns:key.path: a.b.cHello World"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":".leading","cacheRoot":"a😀b😀c{name} has {count} items","signature":"hello world","sentinelFile":""}],"error":"Static snapshot source is missing : .leading"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"hello","cacheRoot":"","signature":"emoji 👍🏽 mix","sentinelFile":"a😀b😀c"}],"error":"Static snapshot source is missing a😀b😀c: hello"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"trailing.","cacheRoot":"Hello World","signature":"./x/**/*.json","sentinelFile":"tab\tseparated"}],"error":"Static snapshot source is missing tab\tseparated: trailing."}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"Hello World","cacheRoot":"tab\tseparatedhello world","signature":"İstanbultab\tseparated"}],"error":"Static snapshot source is missing index.html: Hello World"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"İstanbul","cacheRoot":"ΣΊΣΥΦΟΣ","signature":"a.b.c","sentinelFile":"line1\nline2"}],"error":"Static snapshot source is missing line1\nline2: İstanbul"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"hello world","cacheRoot":"emoji 👍🏽 mix","signature":"a.b.c","sentinelFile":"hello worldkey_name-1"}],"error":"Static snapshot source is missing hello worldkey_name-1: hello world"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"ab","cacheRoot":"straße","signature":"./x/**/*.json","sentinelFile":"﻿bom"}],"error":"Static snapshot source is missing ﻿bom: ab"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a","cacheRoot":"{name} has {count} items","signature":"src/a/b.ts"}],"error":"Static snapshot source is missing index.html: a"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"emoji 👍🏽 mix","cacheRoot":"a:b:c","signature":"ab","sentinelFile":"line1\nline2"}],"error":"Static snapshot source is missing line1\nline2: emoji 👍🏽 mix"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":":","cacheRoot":"Hello World","signature":":","sentinelFile":"ns:key.path"}],"error":"Static snapshot source is missing ns:key.path: :"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a..b","cacheRoot":"a.b.cΣΊΣΥΦΟΣ","signature":"straße"}],"error":"Static snapshot source is missing index.html: a..b"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"hello","cacheRoot":"hello world","signature":"﻿bom","sentinelFile":"tab\tseparated"}],"error":"Static snapshot source is missing tab\tseparated: hello"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"é","cacheRoot":"  padded  line1\nline2","signature":"é:","sentinelFile":"key_name-1"}],"error":"Static snapshot source is missing key_name-1: é"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"😀tab\tseparated","cacheRoot":"emoji 👍🏽 mix","signature":"emoji 👍🏽 mix","sentinelFile":"ΣΊΣΥΦΟΣ"}],"error":"Static snapshot source is missing ΣΊΣΥΦΟΣ: 😀tab\tseparated"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a..b","cacheRoot":"é  padded  ","signature":"abc","sentinelFile":"hello world"}],"error":"Static snapshot source is missing hello world: a..b"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"{name} has {count} items","cacheRoot":"straße","signature":":  padded  ","sentinelFile":".leading"}],"error":"Static snapshot source is missing .leading: {name} has {count} items"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a:b:c","cacheRoot":"hello world","signature":"İstanbul","sentinelFile":"  padded  "}],"error":"Static snapshot source is missing   padded  : a:b:c"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"hello world","cacheRoot":"hello world","signature":"ünïcödé"}],"error":"Static snapshot source is missing index.html: hello world"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"trailing.","cacheRoot":"a..b","signature":"ΣΊΣΥΦΟΣ","sentinelFile":"key_name-1"}],"error":"Static snapshot source is missing key_name-1: trailing."}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"abc","cacheRoot":"hello world","signature":"line1\nline2","sentinelFile":"hello{name} has {count} items"}],"error":"Static snapshot source is missing hello{name} has {count} items: abc"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"emoji 👍🏽 mix","cacheRoot":"emoji 👍🏽 mix","signature":"﻿bom","sentinelFile":"Hello World  padded  "}],"error":"Static snapshot source is missing Hello World  padded  : emoji 👍🏽 mix"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"./x/**/*.json","cacheRoot":"hello","signature":"hello world","sentinelFile":"./x/**/*.jsonns:key.path"}],"error":"Static snapshot source is missing ./x/**/*.jsonns:key.path: ./x/**/*.json"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"","cacheRoot":"﻿bomhello","signature":"abc","sentinelFile":"HELLO"}],"error":"Static snapshot source is missing HELLO: "}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a😀b😀c日本語のテキスト","cacheRoot":"key_name-1","signature":"﻿bom","sentinelFile":"{name} has {count} items"}],"error":"Static snapshot source is missing {name} has {count} items: a😀b😀c日本語のテキスト"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"  padded  ","cacheRoot":"ns:key.path日本語のテキスト","signature":"a..b","sentinelFile":"hello world"}],"error":"Static snapshot source is missing hello world:   padded  "}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"  padded  ","cacheRoot":"line1\nline2ΣΊΣΥΦΟΣ","signature":"é","sentinelFile":"﻿bom"}],"error":"Static snapshot source is missing ﻿bom:   padded  "}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"trailing.","cacheRoot":"straße","signature":""}],"error":"Static snapshot source is missing index.html: trailing."}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":".leading","cacheRoot":"hello world","signature":"tab\tseparated"}],"error":"Static snapshot source is missing index.html: .leading"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"ΣΊΣΥΦΟΣ","cacheRoot":"","signature":"key_name-1","sentinelFile":"日本語のテキストΣΊΣΥΦΟΣ"}],"error":"Static snapshot source is missing 日本語のテキストΣΊΣΥΦΟΣ: ΣΊΣΥΦΟΣ"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"İstanbul","cacheRoot":"straße","signature":"  padded  HELLO","sentinelFile":"key_name-1.leading"}],"error":"Static snapshot source is missing key_name-1.leading: İstanbul"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"hello world","cacheRoot":":","signature":":","sentinelFile":"abab"}],"error":"Static snapshot source is missing abab: hello world"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a.b.c","cacheRoot":"./x/**/*.json","signature":"ns:key.path","sentinelFile":"😀"}],"error":"Static snapshot source is missing 😀: a.b.c"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"a.b.c","cacheRoot":":","signature":".leading","sentinelFile":"src/a/b.ts"}],"error":"Static snapshot source is missing src/a/b.ts: a.b.c"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"tab\tseparated","cacheRoot":"a.b.c","signature":"trailing.","sentinelFile":"Hello World"}],"error":"Static snapshot source is missing Hello World: tab\tseparated"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"{name} has {count} items","cacheRoot":"a:b:c","signature":"line1\nline2"}],"error":"Static snapshot source is missing index.html: {name} has {count} items"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"ab","cacheRoot":"日本語のテキスト","signature":"key_name-1tab\tseparated","sentinelFile":""}],"error":"Static snapshot source is missing : ab"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"İstanbul","cacheRoot":"src/a/b.ts","signature":"日本語のテキスト","sentinelFile":"HELLO"}],"error":"Static snapshot source is missing HELLO: İstanbul"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"/tmp/ss_src","cacheRoot":"/tmp/ss_cache9","signature":"withlinks","sentinelFile":"sent.txt"}],"ok":{"dir":"/tmp/ss_cache9/withlinks","reused":false}}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"/tmp/ss_src","cacheRoot":"/tmp/ss_cache9","signature":"withlinks","sentinelFile":"link.txt"}],"error":"ENOTEMPTY: directory not empty, rename '/tmp/ss_cache9/.staging-withlinks-88963' -> '/tmp/ss_cache9/withlinks'"}
+{"fn":"ensureStaticSnapshot","args":[{"sourceDir":"/tmp/ss_src","cacheRoot":"/tmp/ss_cache9","signature":"dangle","sentinelFile":"dangling"}],"error":"Static snapshot source is missing dangling: /tmp/ss_src"}

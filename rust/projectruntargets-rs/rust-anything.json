@@ -1,0 +1,48 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/projectRunTargets.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "projectruntargets-rs",
+  "exports": [
+    {
+      "name": "selectPrimaryProjectRunCommand",
+      "file": "apps/web/src/projectRunTargets.ts",
+      "line": 39,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  project: { cwd: string; scripts: typeof typeof typeof typeof ProjectScript.Type.Type.Type.Type[] };\n  discoveredTargets?: readonly typeof typeof typeof typeof ProjectDiscoveredScriptTarget.Type.Type.Type.Type[];\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| {\n      source: \"saved\";\n      label: string;\n      command: string;\n      cwd: string;\n      script: typeof typeof typeof ProjectScript.Type.Type.Type;\n    }\n  | {\n      source: \"discovered\";\n      label: string;\n      command: string;\n      cwd: string;\n      packageRelativePath: string;\n      scriptName: string;\n    }) | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "upsertProjectRunCommandScripts",
+      "file": "apps/web/src/projectRunTargets.ts",
+      "line": 79,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  scripts: typeof typeof typeof typeof ProjectScript.Type.Type.Type.Type[];\n  command: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ProjectScript.Type.Type.Type.Type[] | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

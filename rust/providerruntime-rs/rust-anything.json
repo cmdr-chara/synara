@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/contracts/src/providerRuntime.ts",
+  "language": "ts",
+  "kind": "wasm",
+  "crate_name": "providerruntime-rs",
+  "exports": [
+    {
+      "name": "isToolLifecycleItemType",
+      "file": "packages/contracts/src/providerRuntime.ts",
+      "line": 127,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "value is typeof typeof typeof typeof ToolLifecycleItemType.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

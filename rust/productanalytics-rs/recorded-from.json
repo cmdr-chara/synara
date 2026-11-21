@@ -1,0 +1,41 @@
+{
+  "unit": "packages/contracts/src/productAnalytics.ts",
+  "files": 1,
+  "fingerprint": "ff14604cc16d2f7d",
+  "coverage": {
+    "lines": 583,
+    "reached": 579,
+    "files": [
+      {
+        "file": "packages/contracts/src/baseSchemas.ts",
+        "lines": 84,
+        "reached": 84,
+        "missed": ""
+      },
+      {
+        "file": "packages/contracts/src/composerSlashCommands.ts",
+        "lines": 23,
+        "reached": 23,
+        "missed": ""
+      },
+      {
+        "file": "packages/contracts/src/keybindings.ts",
+        "lines": 214,
+        "reached": 214,
+        "missed": ""
+      },
+      {
+        "file": "packages/contracts/src/productAnalytics.ts",
+        "lines": 191,
+        "reached": 189,
+        "missed": "125-126"
+      },
+      {
+        "file": "packages/contracts/src/reliability.ts",
+        "lines": 71,
+        "reached": 69,
+        "missed": "43-44"
+      }
+    ]
+  }
+}

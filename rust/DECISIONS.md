@@ -16,3 +16,16 @@ Decision: The Rust port is written **only from behavioral recordings (`cases.jso
 - `gate` still applies to every unit; the equivalence bar comes from recordings, not code parity.
 
 Consequences: Porting is slower and edge cases must be discovered through recording coverage rather than source reading. `record --inputs` and `--from-tests` become the primary tools for coverage. Any unit where recordings can't reach the needed behavior must be flagged for more recording inputs, not for reading the original.
+
+## ADR-002: T3-derived units are (re)written cases-only
+
+Status: accepted (2026-11-21)
+Context: A provenance audit against `pingdotgg/t3code` @ `d15210cd` (the upstream Synara itself pins) found ~73 files ≥50% derived; only a few plan units touch them. The derived-file list lives at `t3code-derived-files.txt` in the repo root.
+Decision: Any unit whose TS source appears on the derived list at ≥50% gets the strictest form of ADR-001: `port.rs` is written **solely from `cases.jsonl`** (enriched via `record --from-tests` and targeted `record --inputs` black-box probes), without ever opening the TS file. Applied so far:
+
+- `worktreecleanup-rs` — rewritten cases-only (gate: 651/651)
+- `proposedplan-rs` — ported cases-only, 2094 cases incl. JS TypeError fidelity (gate: 1997/1997)
+- `providerruntime-rs`, `providerinstance-rs` — audited, already spec-derived; unchanged
+- `terminal-links` (derived 62%) — will get the same treatment when bridged
+
+Consequences: Every future unit is checked against the derived list before porting; derived ones get extra probe rounds until their spec is complete enough to pass `gate`.

@@ -1,0 +1,17 @@
+{
+  "unit": "scripts/typecheck.ts",
+  "files": 1,
+  "fingerprint": "d05c69b91945d454",
+  "coverage": {
+    "lines": 105,
+    "reached": 33,
+    "files": [
+      {
+        "file": "scripts/typecheck.ts",
+        "lines": 105,
+        "reached": 33,
+        "missed": "38-50, 53-65, 68-96, 98-114"
+      }
+    ]
+  }
+}

@@ -1,0 +1,11 @@
+{"fn":"effectProjects","args":[{"$undefined":true}],"ok":["apps/web","packages/contracts","scripts"]}
+{"fn":"effectProjects","args":[[]],"error":"read is not a function"}
+{"fn":"effectProjects","args":[0],"error":"read is not a function"}
+{"fn":"effectProjects","args":[{}],"error":"read is not a function"}
+{"fn":"effectProjects","args":[{"a":{"b":"c"}}],"error":"read is not a function"}
+{"fn":"effectProjects","args":[true],"error":"read is not a function"}
+{"fn":"effectProjects","args":["x"],"error":"read is not a function"}
+{"fn":"effectProjects","args":[{"a":"b"}],"error":"read is not a function"}
+{"fn":"effectProjects","args":[["a",1]],"error":"read is not a function"}
+{"fn":"effectProjects","args":[null],"error":"read is not a function"}
+{"fn":"effectProjects","args":[],"ok":["apps/web","packages/contracts","scripts"]}

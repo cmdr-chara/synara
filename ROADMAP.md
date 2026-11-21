@@ -2,6 +2,8 @@
 
 Port Synara (TypeScript monorepo) to a pure Rust application using [rust-anything](https://github.com/erkamyaman/rust-anything), one unit at a time, proven against the original's recorded behavior.
 
+**Clean-room rule (ADR-001):** Synara's TS code is MIT-licensed to T3 Tools Inc / Emanuele Di Pietro, so the Rust port must contain no T3-authored code. Ports are written only from recorded behavior (`cases.jsonl`), exported signatures and contract types — never by reading or translating the original source bodies. See [rust/DECISIONS.md](rust/DECISIONS.md).
+
 Full generated plan with every unit, wave, readiness score and risk: [rust/plan.md](rust/plan.md) (`rust-anything analyze --whole-app`, 2026-11-20).
 
 ## Analysis snapshot (phase 0 done)

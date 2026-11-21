@@ -1,0 +1,66 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/desktopUserDataProfile.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "desktopuserdataprofile-rs",
+  "exports": [
+    {
+      "name": "resolveDesktopAppDataBase",
+      "file": "apps/desktop/src/desktopUserDataProfile.ts",
+      "line": 34,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly platform?: NodeJS.Platform;\n  readonly env?: NodeJS.ProcessEnv;\n  readonly homeDir?: string;\n}",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveDesktopUserDataPath",
+      "file": "apps/desktop/src/desktopUserDataProfile.ts",
+      "line": 52,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly appDataBase: string;\n  readonly userDataDirectoryName: string;\n  readonly testOverridePath?: string | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "repairBrowserProfileFromBridgeManifest",
+      "file": "apps/desktop/src/desktopUserDataProfile.ts",
+      "line": 251,
+      "params": [
+        {
+          "name": "targetPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "BrowserProfileBridgeRepairResult",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

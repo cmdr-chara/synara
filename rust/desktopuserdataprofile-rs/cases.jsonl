@@ -1,0 +1,535 @@
+{"fn":"resolveDesktopAppDataBase","args":[{"a":{"b":"c"}}],"ok":"/Users/devin/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":true,"env":{"a":{"b":"c"}},"homeDir":"hello"}],"ok":"hello/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"a":"b"}],"ok":"/Users/devin/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":true,"env":0}],"ok":"/Users/devin/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"$undefined":true}],"ok":"/Users/devin/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":["a",1],"env":true,"homeDir":"a:b:c"}],"ok":"a:b:c/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":null,"homeDir":"é"}],"ok":"é/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":true,"env":true,"homeDir":"tab\tseparated"}],"ok":"tab\tseparated/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{"a":"b"},"homeDir":"😀"}],"ok":"😀/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":["a",1],"env":0,"homeDir":"a😀b😀c"}],"ok":"a😀b😀c/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":[],"homeDir":".leading"}],"ok":".leading/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"env":true,"homeDir":"ΣΊΣΥΦΟΣ./x/**/*.json"}],"ok":"ΣΊΣΥΦΟΣ./x/**/*.json/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":"x","env":"x","homeDir":"tab\tseparateda"}],"ok":"tab\tseparateda/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[null],"ok":"/Users/devin/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[[]],"ok":"/Users/devin/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{"a":{"b":"c"}}}],"ok":"/Users/devin/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":["a",1],"homeDir":"Hello World"}],"ok":"Hello World/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{},"env":null,"homeDir":"a😀b😀c"}],"ok":"a😀b😀c/.config"}
+{"fn":"resolveDesktopAppDataBase","args":["x"],"ok":"/Users/devin/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":[],"homeDir":"emoji 👍🏽 mix"}],"ok":"emoji 👍🏽 mix/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":["a",1],"env":{"a":{"b":"c"}}}],"ok":"/Users/devin/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"env":null}],"ok":"/Users/devin/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":["a",1],"homeDir":"HELLO"}],"ok":"HELLO/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"env":null,"homeDir":"ünïcödé"}],"ok":"ünïcödé/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"env":{"a":"b"}}],"ok":"/Users/devin/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[],"ok":"/Users/devin/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"homeDir":".leadinghello"}],"ok":".leadinghello/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[true],"ok":"/Users/devin/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":null,"env":0}],"ok":"/Users/devin/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{},"env":{"a":{"b":"c"}},"homeDir":"ab"}],"ok":"ab/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":[],"env":{},"homeDir":"İstanbul"}],"ok":"İstanbul/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"homeDir":"﻿bom"}],"ok":"﻿bom/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":0}],"ok":"/Users/devin/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":0,"env":null,"homeDir":"a..b"}],"ok":"a..b/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"env":[]}],"ok":"/Users/devin/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":[],"homeDir":"  padded  "}],"ok":"  padded  /.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":"x","env":[],"homeDir":""}],"ok":".config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{"a":{"b":"c"}},"homeDir":"日本語のテキスト:"}],"ok":"日本語のテキスト:/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{"a":{"b":"c"}},"env":["a",1]}],"ok":"/Users/devin/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"homeDir":".leading"}],"ok":".leading/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[0],"ok":"/Users/devin/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{"a":{"b":"c"}},"env":null,"homeDir":"﻿bom"}],"ok":"﻿bom/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"env":"x","homeDir":""}],"ok":"Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":"x"}],"ok":"/Users/devin/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":null,"env":{}}],"ok":"/Users/devin/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[["a",1]],"ok":"/Users/devin/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":true,"env":["a",1],"homeDir":"﻿bom"}],"ok":"﻿bom/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{"a":"b"},"env":0}],"ok":"/Users/devin/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":["a",1],"env":true,"homeDir":"é"}],"ok":"é/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"env":{"a":{"b":"c"}},"homeDir":"Hello World"}],"ok":"Hello World/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":[],"env":["a",1],"homeDir":"hello worldtab\tseparated"}],"ok":"hello worldtab\tseparated/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":0,"env":{"a":"b"}}],"ok":"/Users/devin/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{"a":{"b":"c"}},"env":{"a":{"b":"c"}},"homeDir":".leading"}],"ok":".leading/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":0,"env":"x","homeDir":"straße"}],"ok":"straße/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{}],"ok":"/Users/devin/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":["a",1],"homeDir":"hello"}],"ok":"hello/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{"a":"b"},"env":{"a":"b"},"homeDir":"a:b:c"}],"ok":"a:b:c/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"env":[],"homeDir":"é"}],"ok":"é/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"env":[],"homeDir":"a..b"}],"ok":"a..b/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"env":0}],"ok":"/Users/devin/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":[],"env":{"a":{"b":"c"}}}],"ok":"/Users/devin/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{"a":{"b":"c"}},"env":[],"homeDir":"﻿bom"}],"ok":"﻿bom/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"env":{"a":{"b":"c"}}}],"ok":"/Users/devin/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{"a":"b"},"env":[],"homeDir":"ünïcödé"}],"ok":"ünïcödé/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":null,"env":{"a":"b"}}],"ok":"/Users/devin/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{"a":"b"},"env":{"a":"b"},"homeDir":"key_name-1"}],"ok":"key_name-1/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":0,"env":{"a":{"b":"c"}},"homeDir":"  padded  a.b.c"}],"ok":"  padded  a.b.c/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{"a":{"b":"c"}},"env":[],"homeDir":"src/a/b.ts"}],"ok":"src/a/b.ts/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{},"homeDir":"é"}],"ok":"é/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":true,"env":[]}],"ok":"/Users/devin/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{"a":{"b":"c"}},"env":null,"homeDir":"ΣΊΣΥΦΟΣ"}],"ok":"ΣΊΣΥΦΟΣ/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"env":{},"homeDir":"key_name-1"}],"ok":"key_name-1/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":true,"env":{}}],"ok":"/Users/devin/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":["a",1],"env":["a",1],"homeDir":"﻿bom"}],"ok":"﻿bom/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":true,"env":{"a":{"b":"c"}}}],"ok":"/Users/devin/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":null,"homeDir":"hello"}],"ok":"hello/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":null,"env":null,"homeDir":"ΣΊΣΥΦΟΣ"}],"ok":"ΣΊΣΥΦΟΣ/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":["a",1],"env":["a",1],"homeDir":"  padded  "}],"ok":"  padded  /.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{"a":"b"},"env":"x"}],"ok":"/Users/devin/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":0,"env":0,"homeDir":"helloΣΊΣΥΦΟΣ"}],"ok":"helloΣΊΣΥΦΟΣ/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":["a",1],"env":{"a":"b"},"homeDir":"helloa..b"}],"ok":"helloa..b/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{},"env":"x","homeDir":"﻿bom"}],"ok":"﻿bom/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{"a":"b"},"env":["a",1],"homeDir":"ünïcödéhello"}],"ok":"ünïcödéhello/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{"a":"b"},"env":true,"homeDir":"a..b"}],"ok":"a..b/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{},"env":0}],"ok":"/Users/devin/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{"a":{"b":"c"}},"env":0,"homeDir":"İstanbul"}],"ok":"İstanbul/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{"a":"b"}}],"ok":"/Users/devin/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":["a",1],"env":"x","homeDir":"a..b"}],"ok":"a..b/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"env":{"a":"b"},"homeDir":"é"}],"ok":"é/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":["a",1],"env":true}],"ok":"/Users/devin/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":null,"env":"x","homeDir":"Hello World"}],"ok":"Hello World/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"homeDir":"{name} has {count} items"}],"ok":"{name} has {count} items/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":0,"env":null}],"ok":"/Users/devin/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":["a",1],"env":["a",1]}],"ok":"/Users/devin/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":[],"homeDir":"ünïcödéa.b.c"}],"ok":"ünïcödéa.b.c/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":"x","homeDir":":tab\tseparated"}],"ok":":tab\tseparated/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":true,"env":true}],"ok":"/Users/devin/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":[],"env":true,"homeDir":"😀"}],"ok":"😀/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{"a":{"b":"c"}},"homeDir":"key_name-1"}],"ok":"key_name-1/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":null,"env":{},"homeDir":"a:b:c"}],"ok":"a:b:c/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"env":"x","homeDir":"é﻿bom"}],"ok":"é﻿bom/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"env":0,"homeDir":"ΣΊΣΥΦΟΣ"}],"ok":"ΣΊΣΥΦΟΣ/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{"a":"b"},"env":{"a":{"b":"c"}},"homeDir":":"}],"ok":":/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{"a":"b"},"homeDir":"key_name-1"}],"ok":"key_name-1/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":true}],"ok":"/Users/devin/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"env":"x","homeDir":"trailing."}],"ok":"trailing./Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":null,"env":true,"homeDir":"tab\tseparated"}],"ok":"tab\tseparated/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":0,"env":{"a":{"b":"c"}},"homeDir":"abc"}],"ok":"abc/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":true,"env":"x","homeDir":"hello world"}],"ok":"hello world/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":null,"env":[],"homeDir":"straße"}],"ok":"straße/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"env":[],"homeDir":"日本語のテキスト"}],"ok":"日本語のテキスト/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{},"homeDir":"a.b.c{name} has {count} items"}],"ok":"a.b.c{name} has {count} items/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":[],"homeDir":"line1\nline2é"}],"ok":"line1\nline2é/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":"x","env":"x","homeDir":"{name} has {count} items"}],"ok":"{name} has {count} items/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":["a",1],"env":[],"homeDir":"😀"}],"ok":"😀/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":[]}],"ok":"/Users/devin/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":true,"env":["a",1],"homeDir":"key_name-1"}],"ok":"key_name-1/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":null,"env":["a",1],"homeDir":"a"}],"ok":"a/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"env":[],"homeDir":"{name} has {count} items"}],"ok":"{name} has {count} items/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":[],"env":"x","homeDir":"abcemoji 👍🏽 mix"}],"ok":"abcemoji 👍🏽 mix/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"env":true,"homeDir":"abtrailing."}],"ok":"abtrailing./Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{},"env":{"a":{"b":"c"}}}],"ok":"/Users/devin/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{},"env":{"a":"b"},"homeDir":"hello world"}],"ok":"hello world/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"env":0,"homeDir":"İstanbul"}],"ok":"İstanbul/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":null,"homeDir":"trailing."}],"ok":"trailing./Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"env":[],"homeDir":"./x/**/*.json"}],"ok":"x/**/*.json/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"env":true,"homeDir":"😀"}],"ok":"😀/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"env":true,"homeDir":"a:b:c:"}],"ok":"a:b:c:/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":true,"env":0,"homeDir":"  padded  "}],"ok":"  padded  /.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":["a",1],"env":0,"homeDir":"ns:key.path"}],"ok":"ns:key.path/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"env":{"a":{"b":"c"}},"homeDir":"a"}],"ok":"a/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":[],"env":0,"homeDir":"Hello Worldhello world"}],"ok":"Hello Worldhello world/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":null,"env":[],"homeDir":"İstanbul"}],"ok":"İstanbul/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"homeDir":"key_name-1abc"}],"ok":"key_name-1abc/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{},"env":[],"homeDir":"abc"}],"ok":"abc/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":0,"env":{"a":{"b":"c"}}}],"ok":"/Users/devin/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"env":{"a":"b"},"homeDir":"😀a:b:c"}],"ok":"😀a:b:c/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":"x","env":["a",1],"homeDir":"a..b"}],"ok":"a..b/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{},"env":[],"homeDir":"hello"}],"ok":"hello/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":null,"env":"x"}],"ok":"/Users/devin/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":0,"env":[],"homeDir":"{name} has {count} items"}],"ok":"{name} has {count} items/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{},"env":[],"homeDir":"{name} has {count} items"}],"ok":"{name} has {count} items/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":0,"env":[],"homeDir":"abc"}],"ok":"abc/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"env":"x"}],"ok":"/Users/devin/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":[],"env":["a",1],"homeDir":"Hello World"}],"ok":"Hello World/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":0,"env":["a",1]}],"ok":"/Users/devin/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":"x","homeDir":"İstanbul"}],"ok":"İstanbul/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":["a",1],"env":{},"homeDir":"ΣΊΣΥΦΟΣ"}],"ok":"ΣΊΣΥΦΟΣ/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{"a":"b"},"homeDir":"a😀b😀c"}],"ok":"a😀b😀c/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":0,"env":null,"homeDir":"line1\nline2"}],"ok":"line1\nline2/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":0,"env":{"a":{"b":"c"}},"homeDir":".leading"}],"ok":".leading/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":"x","env":true,"homeDir":"trailing."}],"ok":"trailing./.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":[],"env":null,"homeDir":"ns:key.path"}],"ok":"ns:key.path/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"homeDir":"line1\nline2"}],"ok":"line1\nline2/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":[],"env":"x","homeDir":""}],"ok":".config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":null,"env":true,"homeDir":""}],"ok":"Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"env":"x","homeDir":"a"}],"ok":"a/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":true,"env":true,"homeDir":"İstanbul"}],"ok":"İstanbul/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":true,"env":null,"homeDir":"😀a"}],"ok":"😀a/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"env":[],"homeDir":"tab\tseparated"}],"ok":"tab\tseparated/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":0,"env":["a",1],"homeDir":"trailing.HELLO"}],"ok":"trailing.HELLO/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{"a":"b"},"env":{},"homeDir":"  padded  hello world"}],"ok":"  padded  hello world/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":["a",1],"env":[],"homeDir":"ns:key.path"}],"ok":"ns:key.path/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":0,"env":[],"homeDir":"straße"}],"ok":"straße/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":["a",1],"env":[]}],"ok":"/Users/devin/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":true,"env":{"a":{"b":"c"}},"homeDir":"line1\nline2.leading"}],"ok":"line1\nline2.leading/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{},"env":[],"homeDir":"ΣΊΣΥΦΟΣ"}],"ok":"ΣΊΣΥΦΟΣ/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":[],"env":true}],"ok":"/Users/devin/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{"a":"b"},"homeDir":"ns:key.path"}],"ok":"ns:key.path/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"homeDir":""}],"ok":"Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"env":"x","homeDir":"./x/**/*.json"}],"ok":"x/**/*.json/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"env":{"a":"b"},"homeDir":"./x/**/*.json"}],"ok":"x/**/*.json/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":[],"env":null,"homeDir":"é"}],"ok":"é/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":0,"env":0,"homeDir":":"}],"ok":":/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":["a",1],"homeDir":"key_name-1"}],"ok":"key_name-1/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":[],"env":{"a":"b"}}],"ok":"/Users/devin/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"env":["a",1],"homeDir":"ünïcödé"}],"ok":"ünïcödé/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":["a",1],"env":{},"homeDir":"  padded  "}],"ok":"  padded  /.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":null,"env":"x","homeDir":"{name} has {count} items"}],"ok":"{name} has {count} items/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":null,"env":{"a":{"b":"c"}}}],"ok":"/Users/devin/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":null,"env":{"a":"b"},"homeDir":"😀"}],"ok":"😀/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":null,"env":{"a":{"b":"c"}},"homeDir":"İstanbul"}],"ok":"İstanbul/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":"x","env":["a",1],"homeDir":"tab\tseparated"}],"ok":"tab\tseparated/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"homeDir":"ΣΊΣΥΦΟΣ"}],"ok":"ΣΊΣΥΦΟΣ/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"homeDir":"trailing."}],"ok":"trailing./Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":[],"env":{"a":"b"},"homeDir":"Hello World"}],"ok":"Hello World/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":[],"env":{"a":"b"},"homeDir":"abc😀"}],"ok":"abc😀/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"env":{"a":"b"},"homeDir":"abc"}],"ok":"abc/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{},"env":0,"homeDir":"ünïcödé"}],"ok":"ünïcödé/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":null,"env":null,"homeDir":"tab\tseparated日本語のテキスト"}],"ok":"tab\tseparated日本語のテキスト/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":true,"env":["a",1],"homeDir":"Hello World"}],"ok":"Hello World/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":0,"env":true,"homeDir":"😀"}],"ok":"😀/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{},"env":{"a":{"b":"c"}},"homeDir":"line1\nline2ns:key.path"}],"ok":"line1\nline2ns:key.path/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{"a":{"b":"c"}},"env":["a",1],"homeDir":"a😀b😀c"}],"ok":"a😀b😀c/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":"x","env":0}],"ok":"/Users/devin/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{},"env":[],"homeDir":"a:b:c"}],"ok":"a:b:c/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"env":{},"homeDir":"tab\tseparated"}],"ok":"tab\tseparated/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"env":{"a":"b"},"homeDir":":"}],"ok":":/Library/Application Support"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":true,"env":{"a":"b"},"homeDir":"abc"}],"ok":"abc/.config"}
+{"fn":"resolveDesktopAppDataBase","args":[{"platform":{"a":"b"},"homeDir":"  padded  "}],"ok":"  padded  /.config"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"./x/**/*.json","userDataDirectoryName":"  padded  src/a/b.ts","testOverridePath":{"$undefined":true}}],"ok":"x/**/*.json/  padded  src/a/b.ts"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"ünïcödé","userDataDirectoryName":"a..b","testOverridePath":{"$undefined":true}}],"ok":"ünïcödé/a..b"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"emoji 👍🏽 mix","userDataDirectoryName":"İstanbul","testOverridePath":{"$undefined":true}}],"ok":"emoji 👍🏽 mix/İstanbul"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"ab","userDataDirectoryName":"tab\tseparated","testOverridePath":{"$undefined":true}}],"ok":"ab/tab\tseparated"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":":src/a/b.ts","userDataDirectoryName":"a..b","testOverridePath":{"$undefined":true}}],"ok":":src/a/b.ts/a..b"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"a..b","userDataDirectoryName":"hello","testOverridePath":{"$undefined":true}}],"ok":"a..b/hello"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"ΣΊΣΥΦΟΣ","userDataDirectoryName":"Hello World","testOverridePath":{"$undefined":true}}],"ok":"ΣΊΣΥΦΟΣ/Hello World"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"a","userDataDirectoryName":"abc"}],"ok":"a/abc"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"abc","userDataDirectoryName":"line1\nline2","testOverridePath":{"$undefined":true}}],"ok":"abc/line1\nline2"}
+{"fn":"resolveDesktopUserDataPath","args":[{}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"resolveDesktopUserDataPath","args":[{"a":"b"}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"resolveDesktopUserDataPath","args":[["a",1]],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":":","userDataDirectoryName":"hello world😀"}],"ok":":/hello world😀"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"straße","userDataDirectoryName":"trailing."}],"ok":"straße/trailing."}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"abc","userDataDirectoryName":"","testOverridePath":{"$undefined":true}}],"ok":"abc"}
+{"fn":"resolveDesktopUserDataPath","args":[{"a":{"b":"c"}}],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"é{name} has {count} items","userDataDirectoryName":"hello","testOverridePath":{"$undefined":true}}],"ok":"é{name} has {count} items/hello"}
+{"fn":"resolveDesktopUserDataPath","args":[0],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"tab\tseparated","userDataDirectoryName":"hello worldsrc/a/b.ts"}],"ok":"tab\tseparated/hello worldsrc/a/b.ts"}
+{"fn":"resolveDesktopUserDataPath","args":[true],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"key_name-1","userDataDirectoryName":""}],"ok":"key_name-1"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"a😀b😀c","userDataDirectoryName":":ünïcödé","testOverridePath":{"$undefined":true}}],"ok":"a😀b😀c/:ünïcödé"}
+{"fn":"resolveDesktopUserDataPath","args":[null],"error":"Cannot read properties of null (reading 'testOverridePath')"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"﻿bomİstanbul","userDataDirectoryName":"ΣΊΣΥΦΟΣ","testOverridePath":{"$undefined":true}}],"ok":"﻿bomİstanbul/ΣΊΣΥΦΟΣ"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"😀","userDataDirectoryName":"a..bab","testOverridePath":{"$undefined":true}}],"ok":"😀/a..bab"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"a..b","userDataDirectoryName":"ünïcödé"}],"ok":"a..b/ünïcödé"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"hello","userDataDirectoryName":"Hello World","testOverridePath":{"$undefined":true}}],"ok":"hello/Hello World"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":".leading","userDataDirectoryName":"a:b:c","testOverridePath":{"$undefined":true}}],"ok":".leading/a:b:c"}
+{"fn":"resolveDesktopUserDataPath","args":["x"],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"ab","userDataDirectoryName":"😀","testOverridePath":{"$undefined":true}}],"ok":"ab/😀"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"hello","userDataDirectoryName":"é","testOverridePath":{"$undefined":true}}],"ok":"hello/é"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"straße","userDataDirectoryName":"straße","testOverridePath":{"$undefined":true}}],"ok":"straße/straße"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"a..bhello world","userDataDirectoryName":"trailing."}],"ok":"a..bhello world/trailing."}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"a..b","userDataDirectoryName":"key_name-1","testOverridePath":{"$undefined":true}}],"ok":"a..b/key_name-1"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"ünïcödé","userDataDirectoryName":"﻿bom{name} has {count} items","testOverridePath":{"$undefined":true}}],"ok":"ünïcödé/﻿bom{name} has {count} items"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"a😀b😀ctrailing.","userDataDirectoryName":"straße","testOverridePath":{"$undefined":true}}],"ok":"a😀b😀ctrailing./straße"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"a:b:c日本語のテキスト","userDataDirectoryName":"  padded  HELLO","testOverridePath":{"$undefined":true}}],"ok":"a:b:c日本語のテキスト/  padded  HELLO"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"a😀b😀c😀","userDataDirectoryName":".leading","testOverridePath":{"$undefined":true}}],"ok":"a😀b😀c😀/.leading"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"ΣΊΣΥΦΟΣstraße","userDataDirectoryName":"straße"}],"ok":"ΣΊΣΥΦΟΣstraße/straße"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"tab\tseparatedns:key.path","userDataDirectoryName":"hello  padded  ","testOverridePath":{"$undefined":true}}],"ok":"tab\tseparatedns:key.path/hello  padded  "}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"tab\tseparated","userDataDirectoryName":"emoji 👍🏽 mix:"}],"ok":"tab\tseparated/emoji 👍🏽 mix:"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"a","userDataDirectoryName":"a..b","testOverridePath":{"$undefined":true}}],"ok":"a/a..b"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"hello","userDataDirectoryName":"😀"}],"ok":"hello/😀"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"{name} has {count} items","userDataDirectoryName":"src/a/b.ts","testOverridePath":{"$undefined":true}}],"ok":"{name} has {count} items/src/a/b.ts"}
+{"fn":"resolveDesktopUserDataPath","args":[[]],"error":"The \"path\" argument must be of type string. Received undefined"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"ns:key.path","userDataDirectoryName":"ab"}],"ok":"ns:key.path/ab"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"hello","userDataDirectoryName":"a","testOverridePath":{"$undefined":true}}],"ok":"hello/a"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"abc","userDataDirectoryName":"İstanbul"}],"ok":"abc/İstanbul"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"key_name-1","userDataDirectoryName":":","testOverridePath":{"$undefined":true}}],"ok":"key_name-1/:"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"hello","userDataDirectoryName":".leading","testOverridePath":{"$undefined":true}}],"ok":"hello/.leading"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"src/a/b.ts","userDataDirectoryName":"ünïcödé","testOverridePath":{"$undefined":true}}],"ok":"src/a/b.ts/ünïcödé"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"Hello World","userDataDirectoryName":"tab\tseparated"}],"ok":"Hello World/tab\tseparated"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"😀","userDataDirectoryName":"trailing.","testOverridePath":{"$undefined":true}}],"ok":"😀/trailing."}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"é","userDataDirectoryName":"a:b:c","testOverridePath":{"$undefined":true}}],"ok":"é/a:b:c"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"emoji 👍🏽 mix","userDataDirectoryName":"a:b:cns:key.path"}],"ok":"emoji 👍🏽 mix/a:b:cns:key.path"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":".leading","userDataDirectoryName":"HELLOa😀b😀c"}],"ok":".leading/HELLOa😀b😀c"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"﻿bom","userDataDirectoryName":"ünïcödé","testOverridePath":{"$undefined":true}}],"ok":"﻿bom/ünïcödé"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":".leading","userDataDirectoryName":"tab\tseparated"}],"ok":".leading/tab\tseparated"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"Hello World","userDataDirectoryName":"abc日本語のテキスト","testOverridePath":{"$undefined":true}}],"ok":"Hello World/abc日本語のテキスト"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"src/a/b.ts","userDataDirectoryName":"","testOverridePath":{"$undefined":true}}],"ok":"src/a/b.ts"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"ab","userDataDirectoryName":"é日本語のテキスト","testOverridePath":{"$undefined":true}}],"ok":"ab/é日本語のテキスト"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"ünïcödé","userDataDirectoryName":"ünïcödé","testOverridePath":{"$undefined":true}}],"ok":"ünïcödé/ünïcödé"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"hello world","userDataDirectoryName":"😀","testOverridePath":{"$undefined":true}}],"ok":"hello world/😀"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"a:b:c","userDataDirectoryName":"hello","testOverridePath":{"$undefined":true}}],"ok":"a:b:c/hello"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"trailing.","userDataDirectoryName":"😀","testOverridePath":{"$undefined":true}}],"ok":"trailing./😀"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"./x/**/*.json日本語のテキスト","userDataDirectoryName":"﻿bom","testOverridePath":{"$undefined":true}}],"ok":"x/**/*.json日本語のテキスト/﻿bom"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"ns:key.path","userDataDirectoryName":".leading","testOverridePath":{"$undefined":true}}],"ok":"ns:key.path/.leading"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"日本語のテキスト","userDataDirectoryName":"﻿bom","testOverridePath":{"$undefined":true}}],"ok":"日本語のテキスト/﻿bom"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"a","userDataDirectoryName":".leading","testOverridePath":{"$undefined":true}}],"ok":"a/.leading"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"ab","userDataDirectoryName":"a:b:c","testOverridePath":{"$undefined":true}}],"ok":"ab/a:b:c"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"ΣΊΣΥΦΟΣ","userDataDirectoryName":"./x/**/*.json"}],"ok":"ΣΊΣΥΦΟΣ/x/**/*.json"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"hello","userDataDirectoryName":"a.b.c"}],"ok":"hello/a.b.c"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"a..b","userDataDirectoryName":"src/a/b.ts","testOverridePath":{"$undefined":true}}],"ok":"a..b/src/a/b.ts"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"  padded  ","userDataDirectoryName":"İstanbul"}],"ok":"  padded  /İstanbul"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"ns:key.path","userDataDirectoryName":"İstanbul","testOverridePath":{"$undefined":true}}],"ok":"ns:key.path/İstanbul"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"hello","userDataDirectoryName":"😀a😀b😀c","testOverridePath":{"$undefined":true}}],"ok":"hello/😀a😀b😀c"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"hello","userDataDirectoryName":"日本語のテキスト","testOverridePath":{"$undefined":true}}],"ok":"hello/日本語のテキスト"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"😀","userDataDirectoryName":"日本語のテキスト","testOverridePath":{"$undefined":true}}],"ok":"😀/日本語のテキスト"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"  padded  ","userDataDirectoryName":"HELLO"}],"ok":"  padded  /HELLO"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"abc","userDataDirectoryName":"a😀b😀c","testOverridePath":{"$undefined":true}}],"ok":"abc/a😀b😀c"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"./x/**/*.json","userDataDirectoryName":"Hello World"}],"ok":"x/**/*.json/Hello World"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"./x/**/*.json","userDataDirectoryName":"line1\nline2"}],"ok":"x/**/*.json/line1\nline2"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"é","userDataDirectoryName":"abc","testOverridePath":{"$undefined":true}}],"ok":"é/abc"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"ΣΊΣΥΦΟΣ","userDataDirectoryName":"a😀b😀c","testOverridePath":{"$undefined":true}}],"ok":"ΣΊΣΥΦΟΣ/a😀b😀c"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"日本語のテキスト","userDataDirectoryName":"Hello World"}],"ok":"日本語のテキスト/Hello World"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"tab\tseparated","userDataDirectoryName":"./x/**/*.json","testOverridePath":{"$undefined":true}}],"ok":"tab\tseparated/x/**/*.json"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":".leading","userDataDirectoryName":"éline1\nline2","testOverridePath":{"$undefined":true}}],"ok":".leading/éline1\nline2"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"  padded  ","userDataDirectoryName":"ab"}],"ok":"  padded  /ab"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"a..b","userDataDirectoryName":"trailing.","testOverridePath":{"$undefined":true}}],"ok":"a..b/trailing."}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"straße","userDataDirectoryName":"{name} has {count} items"}],"ok":"straße/{name} has {count} items"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"straße","userDataDirectoryName":"src/a/b.ts"}],"ok":"straße/src/a/b.ts"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"  padded  ","userDataDirectoryName":"İstanbul","testOverridePath":{"$undefined":true}}],"ok":"  padded  /İstanbul"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"İstanbul","userDataDirectoryName":"ab","testOverridePath":{"$undefined":true}}],"ok":"İstanbul/ab"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"a:b:c","userDataDirectoryName":"a:b:c"}],"ok":"a:b:c/a:b:c"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"é","userDataDirectoryName":"src/a/b.ts"}],"ok":"é/src/a/b.ts"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"./x/**/*.json","userDataDirectoryName":"a.b.ca..b","testOverridePath":{"$undefined":true}}],"ok":"x/**/*.json/a.b.ca..b"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":":","userDataDirectoryName":".leading","testOverridePath":{"$undefined":true}}],"ok":":/.leading"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"emoji 👍🏽 mixsrc/a/b.ts","userDataDirectoryName":"a😀b😀c"}],"ok":"emoji 👍🏽 mixsrc/a/b.ts/a😀b😀c"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"{name} has {count} items","userDataDirectoryName":"a:b:c"}],"ok":"{name} has {count} items/a:b:c"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"ünïcödé","userDataDirectoryName":"ΣΊΣΥΦΟΣa😀b😀c","testOverridePath":{"$undefined":true}}],"ok":"ünïcödé/ΣΊΣΥΦΟΣa😀b😀c"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":":a😀b😀c","userDataDirectoryName":"  padded  ","testOverridePath":{"$undefined":true}}],"ok":":a😀b😀c/  padded  "}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"absrc/a/b.ts","userDataDirectoryName":"é"}],"ok":"absrc/a/b.ts/é"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"ékey_name-1","userDataDirectoryName":"{name} has {count} items","testOverridePath":{"$undefined":true}}],"ok":"ékey_name-1/{name} has {count} items"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"a..b","userDataDirectoryName":"  padded  ","testOverridePath":{"$undefined":true}}],"ok":"a..b/  padded  "}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"Hello World","userDataDirectoryName":"a😀b😀c:","testOverridePath":{"$undefined":true}}],"ok":"Hello World/a😀b😀c:"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"abc","userDataDirectoryName":"a..b","testOverridePath":{"$undefined":true}}],"ok":"abc/a..b"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"a😀b😀c","userDataDirectoryName":"İstanbul","testOverridePath":{"$undefined":true}}],"ok":"a😀b😀c/İstanbul"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"😀","userDataDirectoryName":"a..b"}],"ok":"😀/a..b"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"a.b.c","userDataDirectoryName":"ünïcödé","testOverridePath":{"$undefined":true}}],"ok":"a.b.c/ünïcödé"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"Hello World","userDataDirectoryName":"ns:key.path","testOverridePath":{"$undefined":true}}],"ok":"Hello World/ns:key.path"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"a😀b😀c","userDataDirectoryName":"ns:key.path","testOverridePath":{"$undefined":true}}],"ok":"a😀b😀c/ns:key.path"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"  padded  Hello World","userDataDirectoryName":"emoji 👍🏽 mix","testOverridePath":{"$undefined":true}}],"ok":"  padded  Hello World/emoji 👍🏽 mix"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"ab","userDataDirectoryName":"é"}],"ok":"ab/é"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"hello","userDataDirectoryName":"./x/**/*.json"}],"ok":"hello/x/**/*.json"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"hello worldİstanbul","userDataDirectoryName":":"}],"ok":"hello worldİstanbul/:"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"straßeab","userDataDirectoryName":"hello"}],"ok":"straßeab/hello"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"a..b","userDataDirectoryName":"hello world","testOverridePath":{"$undefined":true}}],"ok":"a..b/hello world"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"ünïcödé","userDataDirectoryName":"é"}],"ok":"ünïcödé/é"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"a😀b😀c","userDataDirectoryName":"a{name} has {count} items","testOverridePath":{"$undefined":true}}],"ok":"a😀b😀c/a{name} has {count} items"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"ab","userDataDirectoryName":".leadingİstanbul"}],"ok":"ab/.leadingİstanbul"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"ab","userDataDirectoryName":"  padded  ","testOverridePath":{"$undefined":true}}],"ok":"ab/  padded  "}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"İstanbul","userDataDirectoryName":"tab\tseparated","testOverridePath":{"$undefined":true}}],"ok":"İstanbul/tab\tseparated"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"./x/**/*.json","userDataDirectoryName":"line1\nline2./x/**/*.json","testOverridePath":{"$undefined":true}}],"ok":"x/**/*.json/line1\nline2./x/**/*.json"}
+{"fn":"resolveDesktopUserDataPath","args":[{"appDataBase":"a😀b😀ca:b:c","userDataDirectoryName":"emoji 👍🏽 mix"}],"ok":"a😀b😀ca:b:c/emoji 👍🏽 mix"}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":[":"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":":","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["./x/**/*.json"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"./x/**/*.json","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["{name} has {count} items"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"{name} has {count} items","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["😀ünïcödé"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"😀ünïcödé","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["hello world"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"hello world","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["a:b:c"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"a:b:c","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["HELLO"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"HELLO","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["tab\tseparatedHELLO"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"tab\tseparatedHELLO","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["ΣΊΣΥΦΟΣtrailing."],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"ΣΊΣΥΦΟΣtrailing.","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["é"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"é","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["emoji 👍🏽 mix"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"emoji 👍🏽 mix","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["  padded  "],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"  padded  ","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["./x/**/*.jsonhello"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"./x/**/*.jsonhello","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["a..b"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"a..b","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["﻿bom"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"﻿bom","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["a"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"a","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["key_name-1"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"key_name-1","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["line1\nline2"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"line1\nline2","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["Hello Worldhello world"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"Hello Worldhello world","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["trailing."],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"trailing.","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["Hello World"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"Hello World","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["a😀b😀c"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"a😀b😀c","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["﻿bomns:key.path"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"﻿bomns:key.path","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":[".leading"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":".leading","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["İstanbul"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"İstanbul","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["日本語のテキスト"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"日本語のテキスト","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["Hello World./x/**/*.json"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"Hello World./x/**/*.json","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["trailing.line1\nline2"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"trailing.line1\nline2","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["helloİstanbul"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"helloİstanbul","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["src/a/b.ts"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"src/a/b.ts","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["{name} has {count} items:"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"{name} has {count} items:","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":[".leadingns:key.path"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":".leadingns:key.path","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["éab"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"éab","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["a..bemoji 👍🏽 mix"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"a..bemoji 👍🏽 mix","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["hello"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"hello","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["a:b:ca.b.c"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"a:b:ca.b.c","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["ΣΊΣΥΦΟΣ"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"ΣΊΣΥΦΟΣ","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["﻿bomtrailing."],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"﻿bomtrailing.","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["😀"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"😀","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["ab"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"ab","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["ns:key.path"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"ns:key.path","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["straße"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"straße","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["abc"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"abc","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["a:b:chello world"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"a:b:chello world","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["a..ba.b.c"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"a..ba.b.c","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["./x/**/*.jsontrailing."],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"./x/**/*.jsontrailing.","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["line1\nline2ab"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"line1\nline2ab","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":[":./x/**/*.json"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":":./x/**/*.json","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["line1\nline2./x/**/*.json"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"line1\nline2./x/**/*.json","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["HELLOstraße"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"HELLOstraße","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["日本語のテキストHELLO"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"日本語のテキストHELLO","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["a.b.c"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"a.b.c","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["straße{name} has {count} items"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"straße{name} has {count} items","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["line1\nline2.leading"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"line1\nline2.leading","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["ünïcödé"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"ünïcödé","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["emoji 👍🏽 mixstraße"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"emoji 👍🏽 mixstraße","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":[""],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["abctab\tseparated"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"abctab\tseparated","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["hello world{name} has {count} items"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"hello world{name} has {count} items","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["a:b:ca"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"a:b:ca","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["helloΣΊΣΥΦΟΣ"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"helloΣΊΣΥΦΟΣ","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["hello worlda"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"hello worlda","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["😀emoji 👍🏽 mix"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"😀emoji 👍🏽 mix","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["İstanbultrailing."],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"İstanbultrailing.","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["tab\tseparated"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"tab\tseparated","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["straßeHello World"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"straßeHello World","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["日本語のテキスト{name} has {count} items"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"日本語のテキスト{name} has {count} items","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["key_name-1trailing."],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"key_name-1trailing.","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["hellokey_name-1"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"hellokey_name-1","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["helloab"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"helloab","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["HELLOé"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"HELLOé","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["src/a/b.tsHello World"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"src/a/b.tsHello World","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["İstanbulstraße"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"İstanbulstraße","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["emoji 👍🏽 mixtrailing."],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"emoji 👍🏽 mixtrailing.","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["./x/**/*.jsonns:key.path"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"./x/**/*.jsonns:key.path","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["HELLOİstanbul"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"HELLOİstanbul","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["a.b.cHello World"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"a.b.cHello World","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["tab\tseparatedstraße"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"tab\tseparatedstraße","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["abkey_name-1"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"abkey_name-1","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["Hello Worlda:b:c"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"Hello Worlda:b:c","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["a😀b😀cline1\nline2"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"a😀b😀cline1\nline2","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["tab\tseparated.leading"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"tab\tseparated.leading","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["HELLO:"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"HELLO:","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["ünïcödé﻿bom"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"ünïcödé﻿bom","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["abab"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"abab","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["İstanbulsrc/a/b.ts"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"İstanbulsrc/a/b.ts","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["😀./x/**/*.json"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"😀./x/**/*.json","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["ns:key.pathhello"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"ns:key.pathhello","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["a.b.csrc/a/b.ts"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"a.b.csrc/a/b.ts","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["emoji 👍🏽 mixa:b:c"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"emoji 👍🏽 mixa:b:c","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["😀line1\nline2"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"😀line1\nline2","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["emoji 👍🏽 mixns:key.path"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"emoji 👍🏽 mixns:key.path","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["  padded  hello"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"  padded  hello","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["a😀b😀cHello World"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"a😀b😀cHello World","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["日本語のテキストa"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"日本語のテキストa","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["a😀b😀ca..b"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"a😀b😀ca..b","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["tab\tseparatedsrc/a/b.ts"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"tab\tseparatedsrc/a/b.ts","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["a:b:cstraße"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"a:b:cstraße","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["a:b:cabc"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"a:b:cabc","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["line1\nline2a😀b😀c"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"line1\nline2a😀b😀c","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["./x/**/*.jsonline1\nline2"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"./x/**/*.jsonline1\nline2","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["a:b:c  padded  "],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"a:b:c  padded  ","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["ünïcödé日本語のテキスト"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"ünïcödé日本語のテキスト","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["HELLO.leading"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"HELLO.leading","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["emoji 👍🏽 mix:"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"emoji 👍🏽 mix:","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["ns:key.pathhello world"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"ns:key.pathhello world","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["tab\tseparateda"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"tab\tseparateda","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":[".leading.leading"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":".leading.leading","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["aa😀b😀c"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"aa😀b😀c","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["trailing.ab"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"trailing.ab","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["Hello World😀"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"Hello World😀","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["src/a/b.ts日本語のテキスト"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"src/a/b.ts日本語のテキスト","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["a..bline1\nline2"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"a..bline1\nline2","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["trailing.a:b:c"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"trailing.a:b:c","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["ababc"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"ababc","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["hello日本語のテキスト"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"hello日本語のテキスト","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["helloa"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"helloa","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["😀日本語のテキスト"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"😀日本語のテキスト","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["straßea😀b😀c"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"straßea😀b😀c","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["a:b:ca:b:c"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"a:b:ca:b:c","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["straßeHELLO"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"straßeHELLO","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["a:b:cHELLO"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"a:b:cHELLO","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["key_name-1straße"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"key_name-1straße","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["ΣΊΣΥΦΟΣa:b:c"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"ΣΊΣΥΦΟΣa:b:c","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["abline1\nline2"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"abline1\nline2","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["éHELLO"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"éHELLO","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["  padded  a😀b😀c"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"  padded  a😀b😀c","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":[":HELLO"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":":HELLO","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["HELLOns:key.path"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"HELLOns:key.path","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["a..bstraße"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"a..bstraße","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["日本語のテキスト  padded  "],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"日本語のテキスト  padded  ","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["emoji 👍🏽 mixünïcödé"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"emoji 👍🏽 mixünïcödé","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["line1\nline2日本語のテキスト"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"line1\nline2日本語のテキスト","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["  padded  straße"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"  padded  straße","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["trailing.ΣΊΣΥΦΟΣ"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"trailing.ΣΊΣΥΦΟΣ","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":[".leadingemoji 👍🏽 mix"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":".leadingemoji 👍🏽 mix","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["abünïcödé"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"abünïcödé","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["日本語のテキスト:"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"日本語のテキスト:","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["  padded  tab\tseparated"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"  padded  tab\tseparated","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["é😀"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"é😀","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["trailing.:"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"trailing.:","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":[":straße"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":":straße","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["src/a/b.tsünïcödé"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"src/a/b.tsünïcödé","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["日本語のテキストabc"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"日本語のテキストabc","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":[".leadinga:b:c"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":".leadinga:b:c","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["日本語のテキスト./x/**/*.json"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"日本語のテキスト./x/**/*.json","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["😀a"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"😀a","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["  padded  {name} has {count} items"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"  padded  {name} has {count} items","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["abca"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"abca","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["absrc/a/b.ts"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"absrc/a/b.ts","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":[":é"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":":é","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["a..b日本語のテキスト"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"a..b日本語のテキスト","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["abc日本語のテキスト"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"abc日本語のテキスト","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["straßea:b:c"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"straßea:b:c","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["a.b.chello world"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"a.b.chello world","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["key_name-1hello world"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"key_name-1hello world","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["./x/**/*.jsonİstanbul"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"./x/**/*.jsonİstanbul","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":[":line1\nline2"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":":line1\nline2","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["hello worldstraße"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"hello worldstraße","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["emoji 👍🏽 mixa..b"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"emoji 👍🏽 mixa..b","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["a./x/**/*.json"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"a./x/**/*.json","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["asrc/a/b.ts"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"asrc/a/b.ts","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":[":{name} has {count} items"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":":{name} has {count} items","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["hello worldHELLO"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"hello worldHELLO","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["trailing..leading"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"trailing..leading","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["{name} has {count} itemsns:key.path"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"{name} has {count} itemsns:key.path","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["./x/**/*.jsonünïcödé"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"./x/**/*.jsonünïcödé","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["{name} has {count} itemsünïcödé"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"{name} has {count} itemsünïcödé","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["hello worldhello world"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"hello worldhello world","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["helloé"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"helloé","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["Hello World.leading"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"Hello World.leading","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["Hello Worldhello"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"Hello Worldhello","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["ab  padded  "],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"ab  padded  ","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["ünïcödéhello"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"ünïcödéhello","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["a:b:c﻿bom"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"a:b:c﻿bom","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["key_name-1Hello World"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"key_name-1Hello World","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["a😀b😀ca"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"a😀b😀ca","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["HELLOHELLO"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"HELLOHELLO","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["trailing.trailing."],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"trailing.trailing.","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["src/a/b.tssrc/a/b.ts"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"src/a/b.tssrc/a/b.ts","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["a😀b😀ctab\tseparated"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"a😀b😀ctab\tseparated","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["a:b:c.leading"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"a:b:c.leading","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["éa😀b😀c"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"éa😀b😀c","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["a.b.cünïcödé"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"a.b.cünïcödé","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["src/a/b.ts{name} has {count} items"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"src/a/b.ts{name} has {count} items","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["a..bhello"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"a..bhello","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["hello worldé"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"hello worldé","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":[":a..b"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":":a..b","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["﻿bom.leading"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"﻿bom.leading","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["ns:key.pathΣΊΣΥΦΟΣ"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"ns:key.pathΣΊΣΥΦΟΣ","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["hello  padded  "],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"hello  padded  ","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["a:"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"a:","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["ns:key.patha"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"ns:key.patha","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["tab\tseparateda😀b😀c"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"tab\tseparateda😀b😀c","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["straßeemoji 👍🏽 mix"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"straßeemoji 👍🏽 mix","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["key_name-1日本語のテキスト"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"key_name-1日本語のテキスト","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["atab\tseparated"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"atab\tseparated","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["emoji 👍🏽 mixΣΊΣΥΦΟΣ"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"emoji 👍🏽 mixΣΊΣΥΦΟΣ","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["hello world😀"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"hello world😀","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["ns:key.pathHello World"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"ns:key.pathHello World","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["héllo wörld"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"héllo wörld","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["👍🏽 thumbs"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"👍🏽 thumbs","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["日本語"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"日本語","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["ılık ırmak"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"ılık ırmak","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["👨‍👩‍👧 family"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"👨‍👩‍👧 family","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["a b"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"a b","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["a😀b"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"a😀b","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["a²b x½ y①"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"a²b x½ y①","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["aⅠb Ⅻ"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"aⅠb Ⅻ","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["a𐐀b 𝐀bc"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"a𐐀b 𝐀bc","copiedEntries":[]}}
+{"fn":"repairBrowserProfileFromBridgeManifest","args":["कि ٣٤"],"ok":{"status":"bridge-unavailable","sourcePath":null,"targetPath":"कि ٣٤","copiedEntries":[]}}

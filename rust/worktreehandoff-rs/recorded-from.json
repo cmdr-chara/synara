@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/worktreeHandoff.ts",
+  "files": 1,
+  "fingerprint": "960a9fccf74f38b9",
+  "coverage": {
+    "lines": 77,
+    "reached": 77,
+    "files": [
+      {
+        "file": "packages/shared/src/worktreeHandoff.ts",
+        "lines": 77,
+        "reached": 77,
+        "missed": ""
+      }
+    ]
+  }
+}

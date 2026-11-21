@@ -1,0 +1,66 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/worktreeHandoff.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "worktreehandoff-rs",
+  "exports": [
+    {
+      "name": "resolveWorktreeHandoffWorkspaceMetadata",
+      "file": "packages/shared/src/worktreeHandoff.ts",
+      "line": 25,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly targetMode: \"local\" | \"worktree\";\n  readonly branch: string | null;\n  readonly worktreePath: string | null;\n  readonly associatedWorktreePath: string | null;\n  readonly associatedWorktreeBranch: string | null;\n  readonly associatedWorktreeRef: string | null;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "WorktreeHandoffWorkspaceMetadata",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "hasAssociatedWorktree",
+      "file": "packages/shared/src/worktreeHandoff.ts",
+      "line": 44,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  associatedWorktreePath?: string | null;\n  associatedWorktreeBranch?: string | null;\n  associatedWorktreeRef?: string | null;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveWorktreeHandoffIntent",
+      "file": "packages/shared/src/worktreeHandoff.ts",
+      "line": 54,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  preferredNewWorktreeName?: string | null;\n  associatedWorktreePath?: string | null;\n  associatedWorktreeBranch?: string | null;\n  associatedWorktreeRef?: string | null;\n  preferredWorktreeBaseBranch?: string | null;\n  currentBranch?: string | null;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| {\n      kind: \"create-new\";\n      worktreeName: string;\n      baseBranch: string | null;\n    }\n  | {\n      kind: \"reuse-associated\";\n      associatedWorktreePath: string | null;\n      associatedWorktreeBranch: string | null;\n      associatedWorktreeRef: string | null;\n      baseBranch: string | null;\n    }) | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

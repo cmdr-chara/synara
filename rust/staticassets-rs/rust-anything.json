@@ -1,0 +1,120 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/staticAssets.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "staticassets-rs",
+  "exports": [
+    {
+      "name": "staticCacheControl",
+      "file": "apps/server/src/staticAssets.ts",
+      "line": 19,
+      "params": [
+        {
+          "name": "relativePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "negotiateStaticEncodingPreference",
+      "file": "apps/server/src/staticAssets.ts",
+      "line": 84,
+      "params": [
+        {
+          "name": "acceptEncoding",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "StaticEncodingPreference",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isSidecarRequestPath",
+      "file": "apps/server/src/staticAssets.ts",
+      "line": 129,
+      "params": [
+        {
+          "name": "relativePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "ifNoneMatchSatisfies",
+      "file": "apps/server/src/staticAssets.ts",
+      "line": 143,
+      "params": [
+        {
+          "name": "headerValue",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "etag",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "staticEtag",
+      "file": "apps/server/src/staticAssets.ts",
+      "line": 154,
+      "params": [
+        {
+          "name": "size",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "mtimeMs",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "encoding",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

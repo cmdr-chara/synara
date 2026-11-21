@@ -1,0 +1,17 @@
+{
+  "unit": "apps/server/src/staticAssets.ts",
+  "files": 1,
+  "fingerprint": "230219f7d3355ffc",
+  "coverage": {
+    "lines": 142,
+    "reached": 127,
+    "files": [
+      {
+        "file": "apps/server/src/staticAssets.ts",
+        "lines": 142,
+        "reached": 127,
+        "missed": "23-24, 50-62"
+      }
+    ]
+  }
+}

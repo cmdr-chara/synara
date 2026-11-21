@@ -1,0 +1,48 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/migrationBundleIdentity.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "migrationbundleidentity-rs",
+  "exports": [
+    {
+      "name": "embeddedMigrationRuntimeSourceDigest",
+      "file": "apps/server/src/migrationBundleIdentity.ts",
+      "line": 35,
+      "params": [],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "verifyMigrationRuntimeIdentity",
+      "file": "apps/server/src/migrationBundleIdentity.ts",
+      "line": 41,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly cwd: string;\n  readonly embeddedDigest: string | null;\n  readonly launcherDigest?: string | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "MigrationRuntimeIdentityMismatchError",
+      "file": "apps/server/src/migrationBundleIdentity.ts",
+      "line": 12,
+      "reason": "class: extends another class, public field `_tag`, public parameter properties"
+    }
+  ]
+}

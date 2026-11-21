@@ -1,0 +1,436 @@
+{"fn":"recentViewKey","args":["x"],"ok":{"$undefined":true}}
+{"fn":"recentViewKey","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"recentViewKey","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"recentViewKey","args":[{}],"ok":{"$undefined":true}}
+{"fn":"recentViewKey","args":[null],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"recentViewKey","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"recentViewKey","args":[[]],"ok":{"$undefined":true}}
+{"fn":"recentViewKey","args":[true],"ok":{"$undefined":true}}
+{"fn":"recentViewKey","args":[0],"ok":{"$undefined":true}}
+{"fn":"deriveCurrentRecentView","args":[null],"error":"Cannot read properties of null (reading 'splitViewId')"}
+{"fn":"deriveCurrentRecentView","args":[0],"ok":null}
+{"fn":"deriveCurrentRecentView","args":[{}],"ok":null}
+{"fn":"deriveCurrentRecentView","args":[true],"ok":null}
+{"fn":"deriveCurrentRecentView","args":[{"a":{"b":"c"}}],"ok":null}
+{"fn":"deriveCurrentRecentView","args":[["a",1]],"ok":null}
+{"fn":"deriveCurrentRecentView","args":[{"a":"b"}],"ok":null}
+{"fn":"deriveCurrentRecentView","args":[[]],"ok":null}
+{"fn":"deriveCurrentRecentView","args":["x"],"ok":null}
+{"fn":"upsertRecentView","args":[[],0,null],"ok":[]}
+{"fn":"upsertRecentView","args":[0,"x",{}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":["x",{"a":"b"},null],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":["x",{"a":{"b":"c"}},"x"],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{},"x",0],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{"a":"b"},{"a":"b"},{"a":{"b":"c"}}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{},true,{"a":{"b":"c"}}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{"a":"b"},0,{"a":"b"}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[["a",1],null,null],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"upsertRecentView","args":[null,0,{"a":{"b":"c"}}],"error":"Cannot read properties of null (reading 'filter')"}
+{"fn":"upsertRecentView","args":[true,true,{"$undefined":true}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{"a":{"b":"c"}},"x",true],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[["a",1],true,null],"ok":[]}
+{"fn":"upsertRecentView","args":[null,{}],"error":"Cannot read properties of null (reading 'filter')"}
+{"fn":"upsertRecentView","args":[{},{"a":"b"},{"a":"b"}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[true,{}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[true,true,true],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{"a":"b"},"x","x"],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[["a",1],[],"x"],"ok":[]}
+{"fn":"upsertRecentView","args":[true,{"a":{"b":"c"}},{"$undefined":true}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[["a",1],{},0],"ok":[]}
+{"fn":"upsertRecentView","args":[{},{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[0,null,{"$undefined":true}],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"upsertRecentView","args":[0,true,{"a":{"b":"c"}}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[[],["a",1],{"$undefined":true}],"ok":[["a",1]]}
+{"fn":"upsertRecentView","args":[{"a":{"b":"c"}},"X","x"],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[0,0],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{"a":"b"},[],[]],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":["x",0,null],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[0,["a",1],0],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":["x","x",0],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[true,"x"],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[null,"x",null],"error":"Cannot read properties of null (reading 'filter')"}
+{"fn":"upsertRecentView","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},0],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[0,0,{}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{"a":"b"},true,{"a":{"b":"c"}}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[0,{},[]],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[0,null,[]],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"upsertRecentView","args":[true,"x",null],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":["x",0,{}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[0,{"a":"b"},["a",1]],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[null,null,{"a":"b"}],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"upsertRecentView","args":["x",{},"x"],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[null,[]],"error":"Cannot read properties of null (reading 'filter')"}
+{"fn":"upsertRecentView","args":[{"a":"b"},null,null],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"upsertRecentView","args":[{},["a",1],{"a":"b"}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[0,["a",1],{}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[true,[],{"a":"b"}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{"a":"b"},null,{"$undefined":true}],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"upsertRecentView","args":[null,null,null],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"upsertRecentView","args":[{},[],{"a":{"b":"c"}}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[null,[],null],"error":"Cannot read properties of null (reading 'filter')"}
+{"fn":"upsertRecentView","args":[{"a":{"b":"c"}},true,0],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[0,{"a":"b"},{"a":"b"}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[["a",1],0],"ok":[0]}
+{"fn":"upsertRecentView","args":[{"a":{"b":"c"}},0,{"a":{"b":"c"}}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[null,["a",1],{"$undefined":true}],"error":"Cannot read properties of null (reading 'filter')"}
+{"fn":"upsertRecentView","args":[{},[],[]],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[0,null,{"a":{"b":"c"}}],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"upsertRecentView","args":[{"a":"b"},true,null],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{"a":{"b":"c"}},true,["a",1]],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[0,{},{"a":{"b":"c"}}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{},[]],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[["a",1],[],{"$undefined":true}],"ok":[[]]}
+{"fn":"upsertRecentView","args":[0,["a",1]],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[true,null,{}],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"upsertRecentView","args":[true,["a",1],{"$undefined":true}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{"a":"b"},{},["a",1]],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[[],true,{"$undefined":true}],"ok":[true]}
+{"fn":"upsertRecentView","args":[true,0],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[0,[],[]],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[[],{},[]],"ok":[]}
+{"fn":"upsertRecentView","args":[["a",1],[],[]],"ok":[]}
+{"fn":"upsertRecentView","args":[0,true,{}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{"a":"b"},0,["a",1]],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":["x",null,{}],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"upsertRecentView","args":["x",true,{}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},{"$undefined":true}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[true,{},{"$undefined":true}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{"a":"b"},[],["a",1]],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[0,["a",1],true],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{"a":"b"},null,{}],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"upsertRecentView","args":["x","x",null],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[["a",1],0,{"a":{"b":"c"}}],"ok":[]}
+{"fn":"upsertRecentView","args":[{"a":{"b":"c"}},[],{}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":["x",0,true],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{"a":"b"},0],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[["a",1],["a",1],0],"ok":[]}
+{"fn":"upsertRecentView","args":[[],{},{"$undefined":true}],"ok":[{}]}
+{"fn":"upsertRecentView","args":[{"a":{"b":"c"}},0,null],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[[],{"a":"b"},{}],"ok":[]}
+{"fn":"upsertRecentView","args":[{},"x",true],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{},{}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{},true,["a",1]],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[null,["a",1]],"error":"Cannot read properties of null (reading 'filter')"}
+{"fn":"upsertRecentView","args":[{"a":"b"},{"a":"b"},{}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[[],null,"x"],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"upsertRecentView","args":[{"a":{"b":"c"}},[],[]],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[["a",1],0,"x"],"ok":[]}
+{"fn":"upsertRecentView","args":["x",null,{"a":"b"}],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"upsertRecentView","args":[{"a":"b"},[],null],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{},"x",[]],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[[],null],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"upsertRecentView","args":["x",["a",1],{"a":{"b":"c"}}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[[],[]],"ok":[[]]}
+{"fn":"upsertRecentView","args":[0,"x","x"],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[true,0,["a",1]],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{"a":{"b":"c"}},[],null],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[0,["a",1],["a",1]],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{"a":"b"},{},[]],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{"a":{"b":"c"}},true,{"$undefined":true}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{"a":"b"},[],{"a":"b"}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[["a",1],{"a":"b"}],"ok":[{"a":"b"}]}
+{"fn":"upsertRecentView","args":[{},null,{"a":{"b":"c"}}],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"upsertRecentView","args":[["a",1],null,{}],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"upsertRecentView","args":[{},null,{}],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"upsertRecentView","args":["x",true,{"a":"b"}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{"a":{"b":"c"}},["a",1],{"$undefined":true}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{"a":{"b":"c"}},{},["a",1]],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[[],[],{"a":{"b":"c"}}],"ok":[]}
+{"fn":"upsertRecentView","args":[null,true,null],"error":"Cannot read properties of null (reading 'filter')"}
+{"fn":"upsertRecentView","args":[0,true,["a",1]],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[["a",1],true,0],"ok":[]}
+{"fn":"upsertRecentView","args":[["a",1],{},[]],"ok":[]}
+{"fn":"upsertRecentView","args":[{"a":{"b":"c"}},[],["a",1]],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},true],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[[],0,[]],"ok":[]}
+{"fn":"upsertRecentView","args":[[],null,0],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"upsertRecentView","args":[[],"x"],"ok":["x"]}
+{"fn":"upsertRecentView","args":[0,"x",{"a":"b"}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{},[],["a",1]],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[true,0,{"$undefined":true}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{"a":{"b":"c"}},{"a":"b"},null],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[[],"x",null],"ok":[]}
+{"fn":"upsertRecentView","args":[0,["a",1],null],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[true,0,[]],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[null,"x",0],"error":"Cannot read properties of null (reading 'filter')"}
+{"fn":"upsertRecentView","args":[{},null,[]],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"upsertRecentView","args":[null,{},[]],"error":"Cannot read properties of null (reading 'filter')"}
+{"fn":"upsertRecentView","args":[{"a":{"b":"c"}},0,{"$undefined":true}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{"a":{"b":"c"}},0,[]],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[["a",1],[],{"a":"b"}],"ok":[]}
+{"fn":"upsertRecentView","args":[["a",1],true,[]],"ok":[]}
+{"fn":"upsertRecentView","args":["x","x",["a",1]],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},{"a":"b"}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[["a",1],["a",1],["a",1]],"ok":[]}
+{"fn":"upsertRecentView","args":[{},null,null],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"upsertRecentView","args":["x",true,{"a":{"b":"c"}}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[true,{"a":"b"},"x"],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[null,null,"x"],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"upsertRecentView","args":[["a",1],"x",{"$undefined":true}],"ok":["x"]}
+{"fn":"upsertRecentView","args":[0,{},"x"],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[["a",1],{"a":"b"},{"a":{"b":"c"}}],"ok":[]}
+{"fn":"upsertRecentView","args":[{"a":{"b":"c"}},null,{"a":"b"}],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"upsertRecentView","args":[0,true,{"$undefined":true}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[null,"x","x"],"error":"Cannot read properties of null (reading 'filter')"}
+{"fn":"upsertRecentView","args":[true,{"a":"b"},{}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{"a":{"b":"c"}},{},{"$undefined":true}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{},["a",1],0],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[true,true,["a",1]],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{},{"a":"b"},["a",1]],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[["a",1],["a",1],true],"ok":[["a",1]]}
+{"fn":"upsertRecentView","args":[true,{"a":"b"},["a",1]],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{"a":{"b":"c"}},null,{}],"error":"Cannot read properties of null (reading 'kind')"}
+{"fn":"upsertRecentView","args":[true,true],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[[],[],true],"ok":[[]]}
+{"fn":"upsertRecentView","args":[true,"x",{}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{"a":"b"},{"a":{"b":"c"}},["a",1]],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[true,"x",{"a":{"b":"c"}}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":["x",{"a":{"b":"c"}},{"a":"b"}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{"a":"b"},["a",1],"x"],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":["x",{"a":"b"}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":["x",{},{"$undefined":true}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{"a":{"b":"c"}},true],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{"a":"b"},0,0],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{"a":"b"},true,"x"],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{"a":"b"},["a",1]],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[["a",1],"x",[]],"ok":[]}
+{"fn":"upsertRecentView","args":[0,[],{"a":{"b":"c"}}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[[],0,{"a":"b"}],"ok":[]}
+{"fn":"upsertRecentView","args":[null,0,["a",1]],"error":"Cannot read properties of null (reading 'filter')"}
+{"fn":"upsertRecentView","args":[{},{},{"a":"b"}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{"a":"b"},0,{}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[[],["a",1],"x"],"ok":[]}
+{"fn":"upsertRecentView","args":[{},"x",null],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":["x",{"a":{"b":"c"}},{}],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{},[],true],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[true,{"a":{"b":"c"}},[]],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[null,{},{"$undefined":true}],"error":"Cannot read properties of null (reading 'filter')"}
+{"fn":"upsertRecentView","args":[true,{},["a",1]],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[null,true,"x"],"error":"Cannot read properties of null (reading 'filter')"}
+{"fn":"upsertRecentView","args":[{"a":{"b":"c"}},"x"],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{},["a",1]],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[true,0,"x"],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[["a",1],["a",1]],"ok":[["a",1]]}
+{"fn":"upsertRecentView","args":[null,0,0],"error":"Cannot read properties of null (reading 'filter')"}
+{"fn":"upsertRecentView","args":[null,{},{}],"error":"Cannot read properties of null (reading 'filter')"}
+{"fn":"upsertRecentView","args":[{"a":{"b":"c"}},true,null],"error":"recentViews.filter is not a function"}
+{"fn":"upsertRecentView","args":[{"a":"b"},["a",1],["a",1]],"error":"recentViews.filter is not a function"}
+{"fn":"pruneRecentViews","args":[{},{"availableThreadIds":[{"a":"b"},["a",1]],"availableSplitViewIds":["  padded  "],"threadIdsBySplitViewId":["a",1]},{"a":{"b":"c"}}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[[],{"availableThreadIds":[{"a":{"b":"c"}}],"availableSplitViewIds":[],"threadIdsBySplitViewId":{"$undefined":true}},{"a":{"b":"c"}}],"ok":[]}
+{"fn":"pruneRecentViews","args":[true,null,["a",1]],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{},{"availableThreadIds":[{},["a",1],["a",1]],"availableSplitViewIds":["a.b.cΣΊΣΥΦΟΣ","hellotab\tseparated","tab\tseparated"],"threadIdsBySplitViewId":{"a":"b"}},{}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[["a",1],{"availableThreadIds":[0,[]],"availableSplitViewIds":["ns:key.path","tab\tseparated","hello world"],"threadIdsBySplitViewId":{"$undefined":true}},"x"],"ok":[]}
+{"fn":"pruneRecentViews","args":[null,"x",{"a":"b"}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[null,{"availableThreadIds":["x"],"availableSplitViewIds":["./x/**/*.jsonkey_name-1"],"threadIdsBySplitViewId":{"a":{"b":"c"}}},0],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{},{"availableThreadIds":[{"a":"b"},{},["a",1]],"availableSplitViewIds":[]},true],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{"a":"b"},["a",1],{"$undefined":true}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{},{"availableThreadIds":[],"availableSplitViewIds":[],"threadIdsBySplitViewId":null},true],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{},{"availableThreadIds":[0,[]],"availableSplitViewIds":["straße","HELLO"],"threadIdsBySplitViewId":{}},{"a":{"b":"c"}}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[0,{"availableThreadIds":[],"availableSplitViewIds":[]},{}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[["a",1],{"availableThreadIds":[],"availableSplitViewIds":["abc","key_name-1"],"threadIdsBySplitViewId":true},0],"ok":[]}
+{"fn":"pruneRecentViews","args":[{"a":{"b":"c"}},{"availableThreadIds":[],"availableSplitViewIds":["trailing.a.b.c","ΣΊΣΥΦΟΣ","a😀b😀c"],"threadIdsBySplitViewId":{"$undefined":true}},{"a":{"b":"c"}}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[true,{"availableThreadIds":[],"availableSplitViewIds":["HELLO","日本語のテキスト"],"threadIdsBySplitViewId":[]},[]],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{"a":{"b":"c"}},true,{"a":{"b":"c"}}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[0,{"availableThreadIds":[{"a":"b"},{}],"availableSplitViewIds":["hello world","{name} has {count} items"]},{"a":{"b":"c"}}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{"a":{"b":"c"}},{"availableThreadIds":[0],"availableSplitViewIds":[],"threadIdsBySplitViewId":[]},0],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{"a":"b"},{"availableThreadIds":[0,[]],"availableSplitViewIds":[]}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":["x",{"availableThreadIds":["x"],"availableSplitViewIds":[]},0],"ok":[]}
+{"fn":"pruneRecentViews","args":["x",{"availableThreadIds":[true,true],"availableSplitViewIds":[":","src/a/b.ts"]},{}],"ok":[]}
+{"fn":"pruneRecentViews","args":[null,{"availableThreadIds":[0],"availableSplitViewIds":["abc"],"threadIdsBySplitViewId":{"a":"b"}},[]],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{"a":"b"},{"availableThreadIds":[["a",1]],"availableSplitViewIds":[]}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[true,{"availableThreadIds":[],"availableSplitViewIds":[],"threadIdsBySplitViewId":null},true],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{"a":{"b":"c"}},{"availableThreadIds":[true,{"a":"b"},[]],"availableSplitViewIds":["./x/**/*.json","key_name-1line1\nline2"]},0],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[true,{"availableThreadIds":[["a",1],0],"availableSplitViewIds":["İstanbul","emoji 👍🏽 mixa.b.c","ns:key.path"],"threadIdsBySplitViewId":{"$undefined":true}},null],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{"a":"b"},{"availableThreadIds":["x"],"availableSplitViewIds":[]}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[[],{"availableThreadIds":[],"availableSplitViewIds":[],"threadIdsBySplitViewId":{}},true],"ok":[]}
+{"fn":"pruneRecentViews","args":[0,{"availableThreadIds":[["a",1],null],"availableSplitViewIds":[],"threadIdsBySplitViewId":{"$undefined":true}},0],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":["x",{"availableThreadIds":[],"availableSplitViewIds":["{name} has {count} items"],"threadIdsBySplitViewId":{"$undefined":true}},{"$undefined":true}],"ok":[]}
+{"fn":"pruneRecentViews","args":[{},{"availableThreadIds":[[],0,"x"],"availableSplitViewIds":["HELLO"]}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{},{"availableThreadIds":[[],["a",1]],"availableSplitViewIds":[],"threadIdsBySplitViewId":{"$undefined":true}}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[true,{"availableThreadIds":[{"a":{"b":"c"}},["a",1]],"availableSplitViewIds":["Hello Worldhello world","emoji 👍🏽 mix"],"threadIdsBySplitViewId":{"$undefined":true}},[]],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[0,{"availableThreadIds":[{}],"availableSplitViewIds":["HELLOhello world"],"threadIdsBySplitViewId":{"$undefined":true}},true],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[true,["a",1],{"a":{"b":"c"}}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[null,{"availableThreadIds":["x"],"availableSplitViewIds":["İstanbul"]},true],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":["x",{},true],"ok":[]}
+{"fn":"pruneRecentViews","args":[{"a":"b"},{"availableThreadIds":[["a",1],0,0],"availableSplitViewIds":[],"threadIdsBySplitViewId":{"$undefined":true}},{"$undefined":true}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{"a":"b"},{"availableThreadIds":[{"a":"b"},0,["a",1]],"availableSplitViewIds":["{name} has {count} items","a:b:c","trailing."]},"x"],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":["x",{"availableThreadIds":[],"availableSplitViewIds":[]},{"$undefined":true}],"ok":[]}
+{"fn":"pruneRecentViews","args":[true,{"availableThreadIds":[],"availableSplitViewIds":[""],"threadIdsBySplitViewId":[]},["a",1]],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[null,0,true],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{"a":"b"},{"availableThreadIds":[[],{"a":"b"}],"availableSplitViewIds":["a","a..b"],"threadIdsBySplitViewId":{"$undefined":true}},{"a":"b"}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[null,{"availableThreadIds":[{},{"a":{"b":"c"}},["a",1]],"availableSplitViewIds":[],"threadIdsBySplitViewId":"x"},{"$undefined":true}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{},{"availableThreadIds":["x",["a",1]],"availableSplitViewIds":[],"threadIdsBySplitViewId":{"$undefined":true}},{"a":"b"}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":["x",{"availableThreadIds":[true,[]],"availableSplitViewIds":[],"threadIdsBySplitViewId":{"$undefined":true}},["a",1]],"ok":[]}
+{"fn":"pruneRecentViews","args":[{},{"availableThreadIds":[null],"availableSplitViewIds":[".leading","a.b.c"],"threadIdsBySplitViewId":{}},"x"],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{},{"availableThreadIds":[[]],"availableSplitViewIds":["helloé",".leading","aab"],"threadIdsBySplitViewId":0},null],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{"a":"b"},{"availableThreadIds":[{"a":{"b":"c"}},"x",null],"availableSplitViewIds":["a😀b😀c","  padded  ","{name} has {count} itemsİstanbul"],"threadIdsBySplitViewId":{"$undefined":true}},{"a":"b"}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":["x",true,[]],"ok":[]}
+{"fn":"pruneRecentViews","args":[[],{"availableThreadIds":[0,0,[]],"availableSplitViewIds":["😀"],"threadIdsBySplitViewId":{"$undefined":true}},{"a":{"b":"c"}}],"ok":[]}
+{"fn":"pruneRecentViews","args":["x",{"availableThreadIds":[],"availableSplitViewIds":["./x/**/*.json"],"threadIdsBySplitViewId":0},{"a":"b"}],"ok":[]}
+{"fn":"pruneRecentViews","args":[{"a":"b"},{"availableThreadIds":[0,[],{"a":{"b":"c"}}],"availableSplitViewIds":[],"threadIdsBySplitViewId":{"$undefined":true}},{"$undefined":true}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[null,null,[]],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[null,{"availableThreadIds":[0],"availableSplitViewIds":["a😀b😀c"]},{"a":"b"}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[0,{"availableThreadIds":[],"availableSplitViewIds":["a","hello world"],"threadIdsBySplitViewId":{"$undefined":true}},{}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[true,{"availableThreadIds":[true,{"a":"b"},0],"availableSplitViewIds":[],"threadIdsBySplitViewId":{"a":{"b":"c"}}}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[[],null,{"a":{"b":"c"}}],"ok":[]}
+{"fn":"pruneRecentViews","args":[null,{"availableThreadIds":[0],"availableSplitViewIds":["a","tab\tseparateda😀b😀c","abcé"]},{"$undefined":true}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{"a":"b"},{"availableThreadIds":[],"availableSplitViewIds":["ünïcödé"]},null],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[0,{"availableThreadIds":[{"a":"b"},"x"],"availableSplitViewIds":["﻿bom"]},[]],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{"a":{"b":"c"}},{"availableThreadIds":[[],{"a":{"b":"c"}}],"availableSplitViewIds":["emoji 👍🏽 mix",""],"threadIdsBySplitViewId":{"a":"b"}},true],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[["a",1],0,"x"],"ok":[]}
+{"fn":"pruneRecentViews","args":[["a",1],{"availableThreadIds":[{"a":"b"}],"availableSplitViewIds":["tab\tseparated"],"threadIdsBySplitViewId":true},{"$undefined":true}],"ok":[]}
+{"fn":"pruneRecentViews","args":[null,{"availableThreadIds":[true,["a",1],true],"availableSplitViewIds":["straße","ab","tab\tseparated"],"threadIdsBySplitViewId":{}},{"$undefined":true}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[0,{"availableThreadIds":[],"availableSplitViewIds":[":","日本語のテキスト"]},null],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{"a":{"b":"c"}},{"availableThreadIds":[{"a":"b"}],"availableSplitViewIds":["a😀b😀cİstanbul"],"threadIdsBySplitViewId":["a",1]},[]],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{"a":{"b":"c"}},{"a":"b"},["a",1]],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":["x",{"availableThreadIds":[],"availableSplitViewIds":["emoji 👍🏽 mix","  padded  "],"threadIdsBySplitViewId":true},{}],"ok":[]}
+{"fn":"pruneRecentViews","args":[{},{"availableThreadIds":[{"a":"b"},true,0],"availableSplitViewIds":["ΣΊΣΥΦΟΣ"],"threadIdsBySplitViewId":{"$undefined":true}},null],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[null,{"availableThreadIds":[[],{}],"availableSplitViewIds":["hello","src/a/b.ts","trailing."],"threadIdsBySplitViewId":null}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[null,{"availableThreadIds":[{"a":{"b":"c"}},["a",1]],"availableSplitViewIds":["tab\tseparated",":"],"threadIdsBySplitViewId":[]}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{"a":"b"},{"availableThreadIds":[],"availableSplitViewIds":[],"threadIdsBySplitViewId":{"$undefined":true}},true],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[[],{"availableThreadIds":[],"availableSplitViewIds":["{name} has {count} items","line1\nline2"]},{"a":"b"}],"ok":[]}
+{"fn":"pruneRecentViews","args":[true,{"availableThreadIds":[[],"x"],"availableSplitViewIds":["{name} has {count} items"],"threadIdsBySplitViewId":[]},{"$undefined":true}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[["a",1],{"availableThreadIds":[],"availableSplitViewIds":[],"threadIdsBySplitViewId":{"$undefined":true}},{}],"ok":[]}
+{"fn":"pruneRecentViews","args":[null,{"availableThreadIds":[{},"x"],"availableSplitViewIds":["ΣΊΣΥΦΟΣ"],"threadIdsBySplitViewId":{"$undefined":true}},"x"],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[["a",1],{"availableThreadIds":[],"availableSplitViewIds":["","ünïcödé","Hello Worldhello world"]},["a",1]],"ok":[]}
+{"fn":"pruneRecentViews","args":[true,{"availableThreadIds":[true,{"a":"b"}],"availableSplitViewIds":["İstanbul","trailing.İstanbul","tab\tseparated"],"threadIdsBySplitViewId":0},true],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[null,{"availableThreadIds":[[],[],0],"availableSplitViewIds":[],"threadIdsBySplitViewId":{"$undefined":true}},0],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{},{"availableThreadIds":[],"availableSplitViewIds":["ΣΊΣΥΦΟΣ﻿bom","{name} has {count} items",":a..b"],"threadIdsBySplitViewId":{"$undefined":true}},[]],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[null,{"availableThreadIds":[0],"availableSplitViewIds":[],"threadIdsBySplitViewId":"x"},{"a":"b"}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[["a",1],"x",0],"ok":[]}
+{"fn":"pruneRecentViews","args":[null,{"availableThreadIds":[true,0],"availableSplitViewIds":["src/a/b.tsa:b:c","HELLO"]},0],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{"a":"b"},{"availableThreadIds":[{},true],"availableSplitViewIds":["key_name-1"],"threadIdsBySplitViewId":{"$undefined":true}},null],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[true,{"availableThreadIds":[["a",1],true],"availableSplitViewIds":[],"threadIdsBySplitViewId":"x"},0],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{},{"availableThreadIds":[],"availableSplitViewIds":["line1\nline2"],"threadIdsBySplitViewId":"x"},true],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[null,["a",1],{"a":{"b":"c"}}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[0,[],true],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{"a":"b"},{"availableThreadIds":[["a",1],null],"availableSplitViewIds":["abc","éa😀b😀c","abca:b:c"]},"x"],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{},{},{"a":{"b":"c"}}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{"a":{"b":"c"}},{"availableThreadIds":[{"a":"b"},0,0],"availableSplitViewIds":["key_name-1"],"threadIdsBySplitViewId":{"$undefined":true}},["a",1]],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[true,{"availableThreadIds":[{"a":{"b":"c"}},[],{}],"availableSplitViewIds":["line1\nline2"],"threadIdsBySplitViewId":{"$undefined":true}},null],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[true,{"availableThreadIds":[],"availableSplitViewIds":["ab"]},null],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[true,{"availableThreadIds":[],"availableSplitViewIds":[]},0],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{"a":"b"},true,0],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{"a":"b"},{"availableThreadIds":[],"availableSplitViewIds":[],"threadIdsBySplitViewId":{"a":"b"}},true],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{"a":{"b":"c"}},{"availableThreadIds":[],"availableSplitViewIds":[],"threadIdsBySplitViewId":{}}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":["x",{"availableThreadIds":[[],true,{}],"availableSplitViewIds":[],"threadIdsBySplitViewId":{"$undefined":true}},"x"],"ok":[]}
+{"fn":"pruneRecentViews","args":[["a",1],{"availableThreadIds":[{"a":{"b":"c"}},null],"availableSplitViewIds":[],"threadIdsBySplitViewId":{"$undefined":true}},"x"],"ok":[]}
+{"fn":"pruneRecentViews","args":[0,{"availableThreadIds":[],"availableSplitViewIds":["İstanbul"],"threadIdsBySplitViewId":{"a":{"b":"c"}}},["a",1]],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{},{"availableThreadIds":[true,"x",{"a":"b"}],"availableSplitViewIds":[],"threadIdsBySplitViewId":["a",1]},"x"],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{"a":{"b":"c"}},{"availableThreadIds":[[],{"a":{"b":"c"}},0],"availableSplitViewIds":["İstanbul",":","./x/**/*.json"],"threadIdsBySplitViewId":{"$undefined":true}},{"a":"b"}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[0,{"availableThreadIds":[{}],"availableSplitViewIds":[]},{"$undefined":true}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{"a":"b"},{"availableThreadIds":[0],"availableSplitViewIds":["{name} has {count} items","aHELLO"],"threadIdsBySplitViewId":{"$undefined":true}},"x"],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":["x",0,null],"ok":[]}
+{"fn":"pruneRecentViews","args":["x",{"availableThreadIds":[["a",1],"x"],"availableSplitViewIds":[]},[]],"ok":[]}
+{"fn":"pruneRecentViews","args":[[],{"availableThreadIds":[{"a":"b"},{"a":"b"}],"availableSplitViewIds":["日本語のテキストünïcödé","ab","straße"],"threadIdsBySplitViewId":true},{}],"ok":[]}
+{"fn":"pruneRecentViews","args":[["a",1],{"availableThreadIds":[{"a":{"b":"c"}},true],"availableSplitViewIds":[".leading"],"threadIdsBySplitViewId":true},{"a":"b"}],"ok":[]}
+{"fn":"pruneRecentViews","args":[["a",1],{"availableThreadIds":[0],"availableSplitViewIds":[".leading"],"threadIdsBySplitViewId":{"a":"b"}},"x"],"ok":[]}
+{"fn":"pruneRecentViews","args":[{},{"availableThreadIds":[{"a":"b"},true],"availableSplitViewIds":["./x/**/*.jsonsrc/a/b.ts","HELLO"],"threadIdsBySplitViewId":null},"x"],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[true,{"availableThreadIds":[{},[]],"availableSplitViewIds":["Hello World","ΣΊΣΥΦΟΣtrailing.","日本語のテキスト"],"threadIdsBySplitViewId":0},["a",1]],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[true,{"availableThreadIds":[{"a":{"b":"c"}}],"availableSplitViewIds":["ünïcödéab","😀","a..b"],"threadIdsBySplitViewId":{"$undefined":true}},{}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[["a",1],{"a":"b"}],"ok":[]}
+{"fn":"pruneRecentViews","args":[{},{"a":{"b":"c"}},null],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{},null,{"a":"b"}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{},{"availableThreadIds":[["a",1],true],"availableSplitViewIds":["hello","atrailing.","日本語のテキスト"]},"x"],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[true,{"availableThreadIds":[null,[]],"availableSplitViewIds":["a.b.c",":"],"threadIdsBySplitViewId":{"$undefined":true}},{"a":{"b":"c"}}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":["x",{"availableThreadIds":[["a",1],0,{}],"availableSplitViewIds":["tab\tseparated","a..b"]},{"a":{"b":"c"}}],"ok":[]}
+{"fn":"pruneRecentViews","args":[true,{"availableThreadIds":[[],null,{}],"availableSplitViewIds":["key_name-1","src/a/b.ts.leading",".leading"],"threadIdsBySplitViewId":true},"x"],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{"a":{"b":"c"}},{"availableThreadIds":[],"availableSplitViewIds":["tab\tseparated","日本語のテキスト","a"],"threadIdsBySplitViewId":{}},"x"],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{"a":{"b":"c"}},["a",1],null],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[0,{"availableThreadIds":[0,[],0],"availableSplitViewIds":["é"]},[]],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[[],{"availableThreadIds":[null,true],"availableSplitViewIds":["a﻿bom","abc"],"threadIdsBySplitViewId":{"$undefined":true}},true],"ok":[]}
+{"fn":"pruneRecentViews","args":[true,{"availableThreadIds":[],"availableSplitViewIds":["abc","a","abc"],"threadIdsBySplitViewId":[]},0],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[true,{"availableThreadIds":[["a",1]],"availableSplitViewIds":["a..b  padded  ",":","Hello World"],"threadIdsBySplitViewId":{"$undefined":true}},{"a":"b"}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{"a":{"b":"c"}},["a",1],{"$undefined":true}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[["a",1],{"availableThreadIds":[],"availableSplitViewIds":["{name} has {count} items","a..b"],"threadIdsBySplitViewId":{"$undefined":true}},null],"ok":[]}
+{"fn":"pruneRecentViews","args":[["a",1],{"availableThreadIds":[{"a":"b"}],"availableSplitViewIds":["ΣΊΣΥΦΟΣ"],"threadIdsBySplitViewId":{"$undefined":true}},[]],"ok":[]}
+{"fn":"pruneRecentViews","args":[["a",1],"x"],"ok":[]}
+{"fn":"pruneRecentViews","args":[null,{"availableThreadIds":[{},{"a":{"b":"c"}}],"availableSplitViewIds":[],"threadIdsBySplitViewId":{"$undefined":true}},0],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{},{"availableThreadIds":[],"availableSplitViewIds":[],"threadIdsBySplitViewId":null},{"a":"b"}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{},{"availableThreadIds":[{"a":"b"}],"availableSplitViewIds":["trailing.","{name} has {count} items{name} has {count} items"],"threadIdsBySplitViewId":{"$undefined":true}},true],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[["a",1],{"availableThreadIds":[[]],"availableSplitViewIds":["{name} has {count} items","日本語のテキスト"],"threadIdsBySplitViewId":null},{"$undefined":true}],"ok":[]}
+{"fn":"pruneRecentViews","args":[true,0,true],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[["a",1],{"availableThreadIds":[],"availableSplitViewIds":["﻿boma😀b😀c","Hello World"],"threadIdsBySplitViewId":{"$undefined":true}},0],"ok":[]}
+{"fn":"pruneRecentViews","args":[["a",1],{"availableThreadIds":["x"],"availableSplitViewIds":["Hello World","./x/**/*.json","hello"]},[]],"ok":[]}
+{"fn":"pruneRecentViews","args":[{"a":"b"},{"availableThreadIds":[null,[],["a",1]],"availableSplitViewIds":[""],"threadIdsBySplitViewId":{"$undefined":true}},{"a":{"b":"c"}}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{"a":"b"},{"availableThreadIds":[{"a":{"b":"c"}},null],"availableSplitViewIds":[]},{}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[["a",1],{"availableThreadIds":[null,true],"availableSplitViewIds":["key_name-1","Hello World",".leading"],"threadIdsBySplitViewId":{"$undefined":true}},{}],"ok":[]}
+{"fn":"pruneRecentViews","args":[["a",1],{"availableThreadIds":[0],"availableSplitViewIds":["ab","trailing.","tab\tseparated"],"threadIdsBySplitViewId":["a",1]},[]],"ok":[]}
+{"fn":"pruneRecentViews","args":[0,null,{"$undefined":true}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{"a":{"b":"c"}},{"availableThreadIds":[true],"availableSplitViewIds":["hello world"],"threadIdsBySplitViewId":{"$undefined":true}},true],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[["a",1],{"availableThreadIds":[{"a":"b"},"x",{"a":"b"}],"availableSplitViewIds":["  padded  ","é","ab"],"threadIdsBySplitViewId":{"$undefined":true}},{"a":"b"}],"ok":[]}
+{"fn":"pruneRecentViews","args":[0,{},{"a":"b"}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[["a",1],{"availableThreadIds":[],"availableSplitViewIds":[".leading",":"],"threadIdsBySplitViewId":{"$undefined":true}},0],"ok":[]}
+{"fn":"pruneRecentViews","args":[{},{"availableThreadIds":["x",null],"availableSplitViewIds":["{name} has {count} items"],"threadIdsBySplitViewId":{"a":{"b":"c"}}}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[null,{"availableThreadIds":[0],"availableSplitViewIds":["İstanbul","","😀"],"threadIdsBySplitViewId":{"a":{"b":"c"}}}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{"a":"b"},{"availableThreadIds":[{"a":"b"},["a",1],[]],"availableSplitViewIds":["a","İstanbul","日本語のテキスト"],"threadIdsBySplitViewId":null},{"$undefined":true}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{},{"availableThreadIds":[null,{},["a",1]],"availableSplitViewIds":["HELLO","﻿bom","./x/**/*.json"],"threadIdsBySplitViewId":{}}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[null,{"a":"b"},"x"],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[["a",1],{"availableThreadIds":[[]],"availableSplitViewIds":[],"threadIdsBySplitViewId":{"$undefined":true}},{}],"ok":[]}
+{"fn":"pruneRecentViews","args":[null,{"availableThreadIds":[0,{"a":{"b":"c"}}],"availableSplitViewIds":["ab","a","a😀b😀c"],"threadIdsBySplitViewId":{"$undefined":true}},"x"],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[null,{"availableThreadIds":[],"availableSplitViewIds":[],"threadIdsBySplitViewId":{"$undefined":true}},null],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{},{"availableThreadIds":[],"availableSplitViewIds":["hello","a:b:c"],"threadIdsBySplitViewId":{"$undefined":true}},true],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{"a":"b"},0,{"a":"b"}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[["a",1],{"availableThreadIds":[true,"x"],"availableSplitViewIds":["{name} has {count} items","ns:key.path","HELLO"],"threadIdsBySplitViewId":"x"},{}],"ok":[]}
+{"fn":"pruneRecentViews","args":[0,{"availableThreadIds":[[]],"availableSplitViewIds":["abc"],"threadIdsBySplitViewId":null},{"a":{"b":"c"}}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[[],{"availableThreadIds":[[],0,{"a":{"b":"c"}}],"availableSplitViewIds":[]},null],"ok":[]}
+{"fn":"pruneRecentViews","args":[["a",1],{"availableThreadIds":[0],"availableSplitViewIds":["﻿bom{name} has {count} items"]},{}],"ok":[]}
+{"fn":"pruneRecentViews","args":[true,{"availableThreadIds":[{"a":"b"},{"a":{"b":"c"}},{"a":{"b":"c"}}],"availableSplitViewIds":[],"threadIdsBySplitViewId":{"$undefined":true}},{}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[["a",1],{"availableThreadIds":[{"a":"b"},"x"],"availableSplitViewIds":["hello","line1\nline2","İstanbulhello world"],"threadIdsBySplitViewId":{"$undefined":true}},null],"ok":[]}
+{"fn":"pruneRecentViews","args":[{"a":"b"},{"a":"b"}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{"a":"b"},{"availableThreadIds":[true],"availableSplitViewIds":["ünïcödé﻿bom"]},0],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[[],[],null],"ok":[]}
+{"fn":"pruneRecentViews","args":[true,{"availableThreadIds":[{},{"a":"b"}],"availableSplitViewIds":["a:b:c"],"threadIdsBySplitViewId":{"$undefined":true}},{"a":"b"}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[null,{"availableThreadIds":[{"a":"b"},true],"availableSplitViewIds":[],"threadIdsBySplitViewId":["a",1]},[]],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{"a":{"b":"c"}},{"availableThreadIds":[{"a":{"b":"c"}},{"a":{"b":"c"}}],"availableSplitViewIds":[],"threadIdsBySplitViewId":"x"},true],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[null,{"availableThreadIds":[true],"availableSplitViewIds":["日本語のテキスト","tab\tseparated","tab\tseparated"]},0],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[true,{"availableThreadIds":[[],["a",1],null],"availableSplitViewIds":["﻿bom"]},{"a":{"b":"c"}}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[0,{"availableThreadIds":["x"],"availableSplitViewIds":[],"threadIdsBySplitViewId":{"$undefined":true}},{"a":"b"}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":["x",{"availableThreadIds":[{"a":"b"},{"a":"b"},["a",1]],"availableSplitViewIds":["a..b","ünïcödé","é"],"threadIdsBySplitViewId":"x"},["a",1]],"ok":[]}
+{"fn":"pruneRecentViews","args":[{"a":{"b":"c"}},{"availableThreadIds":[{"a":{"b":"c"}},null,"x"],"availableSplitViewIds":[".leading","Hello World",".leading"],"threadIdsBySplitViewId":{"$undefined":true}}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[true,{"availableThreadIds":[{"a":{"b":"c"}},{}],"availableSplitViewIds":["İstanbul"],"threadIdsBySplitViewId":{"$undefined":true}},{}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{"a":"b"},{"availableThreadIds":[0,[],{"a":{"b":"c"}}],"availableSplitViewIds":["hello","src/a/b.ts",""],"threadIdsBySplitViewId":{"$undefined":true}},"x"],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[0,{"availableThreadIds":[{"a":{"b":"c"}}],"availableSplitViewIds":[],"threadIdsBySplitViewId":{"a":"b"}},null],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{"a":{"b":"c"}},{"availableThreadIds":[],"availableSplitViewIds":["./x/**/*.json","abc","﻿bom"],"threadIdsBySplitViewId":"x"},{"a":"b"}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[0,{"availableThreadIds":[{"a":"b"}],"availableSplitViewIds":["a.b.c"]},["a",1]],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{"a":"b"},{"availableThreadIds":[0],"availableSplitViewIds":["hello world"],"threadIdsBySplitViewId":{"$undefined":true}},{}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[0,{"availableThreadIds":[{},{"a":"b"},"x"],"availableSplitViewIds":["trailing.","ab","a:b:c"],"threadIdsBySplitViewId":"x"}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[0,{"availableThreadIds":[],"availableSplitViewIds":[":a..b"],"threadIdsBySplitViewId":null},0],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[null,{"availableThreadIds":[null,{}],"availableSplitViewIds":["HELLO","a😀b😀c",""],"threadIdsBySplitViewId":0}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[true,{"availableThreadIds":[0,"x",[]],"availableSplitViewIds":["tab\tseparatedünïcödé","Hello World","hello😀"]},[]],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[true,{"availableThreadIds":[null],"availableSplitViewIds":["a"],"threadIdsBySplitViewId":{"a":"b"}},{"$undefined":true}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[true,{"availableThreadIds":[],"availableSplitViewIds":["é","straße","  padded  "],"threadIdsBySplitViewId":{"a":{"b":"c"}}},{"a":"b"}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{"a":"b"},{"availableThreadIds":["x",{"a":"b"}],"availableSplitViewIds":["ns:key.pathHELLO"]},0],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[[],{"availableThreadIds":[true,"x",null],"availableSplitViewIds":["src/a/b.ts"],"threadIdsBySplitViewId":{}},"x"],"ok":[]}
+{"fn":"pruneRecentViews","args":[true,{"availableThreadIds":[["a",1]],"availableSplitViewIds":["line1\nline2"],"threadIdsBySplitViewId":{}},true],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[["a",1],{"availableThreadIds":[0,[],[]],"availableSplitViewIds":[]},{}],"ok":[]}
+{"fn":"pruneRecentViews","args":[0,{"availableThreadIds":[null],"availableSplitViewIds":["日本語のテキスト","ns:key.path"]},"x"],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[0,{"availableThreadIds":["x"],"availableSplitViewIds":["src/a/b.ts","İstanbul","straße"],"threadIdsBySplitViewId":{"$undefined":true}},null],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[["a",1],{"availableThreadIds":[["a",1]],"availableSplitViewIds":[],"threadIdsBySplitViewId":{}},true],"ok":[]}
+{"fn":"pruneRecentViews","args":[null,{"availableThreadIds":[null,{"a":{"b":"c"}},0],"availableSplitViewIds":["İstanbul","Hello World","HELLO"],"threadIdsBySplitViewId":{"a":"b"}},{"a":{"b":"c"}}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[true,{"availableThreadIds":["x"],"availableSplitViewIds":["src/a/b.ts","ΣΊΣΥΦΟΣ"],"threadIdsBySplitViewId":{}}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[0,{"a":{"b":"c"}}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[{},{"availableThreadIds":[[]],"availableSplitViewIds":["a.b.c"]},{}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[0,{"availableThreadIds":[[],{"a":"b"},true],"availableSplitViewIds":["İstanbul","straße","ns:key.path"],"threadIdsBySplitViewId":{"a":"b"}},null],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[null,{"availableThreadIds":[["a",1]],"availableSplitViewIds":["./x/**/*.json"],"threadIdsBySplitViewId":0},true],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[0,{"availableThreadIds":[["a",1],{"a":{"b":"c"}},{}],"availableSplitViewIds":["{name} has {count} items","ünïcödé"],"threadIdsBySplitViewId":0},{"$undefined":true}],"error":"recentViews is not iterable"}
+{"fn":"pruneRecentViews","args":[true,"x",{"$undefined":true}],"error":"recentViews is not iterable"}
+{"fn":"resolveRecentViewNavigationIndex","args":[{}],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveRecentViewNavigationIndex","args":[0],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveRecentViewNavigationIndex","args":[[]],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveRecentViewNavigationIndex","args":["x"],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveRecentViewNavigationIndex","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveRecentViewNavigationIndex","args":[true],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveRecentViewNavigationIndex","args":[null],"error":"Cannot destructure property 'recentViews' of 'input' as it is null."}
+{"fn":"resolveRecentViewNavigationIndex","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveRecentViewNavigationIndex","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"buildRecentViewDisplayEntries","args":[[]],"error":"Cannot read properties of undefined (reading 'map')"}
+{"fn":"buildRecentViewDisplayEntries","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'map')"}
+{"fn":"buildRecentViewDisplayEntries","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'map')"}
+{"fn":"buildRecentViewDisplayEntries","args":[true],"error":"Cannot read properties of undefined (reading 'map')"}
+{"fn":"buildRecentViewDisplayEntries","args":[0],"error":"Cannot read properties of undefined (reading 'map')"}
+{"fn":"buildRecentViewDisplayEntries","args":[{}],"error":"Cannot read properties of undefined (reading 'map')"}
+{"fn":"buildRecentViewDisplayEntries","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'map')"}
+{"fn":"buildRecentViewDisplayEntries","args":["x"],"error":"Cannot read properties of undefined (reading 'map')"}
+{"fn":"buildRecentViewDisplayEntries","args":[null],"error":"Cannot read properties of null (reading 'currentView')"}

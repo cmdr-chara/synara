@@ -1,0 +1,144 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/recentViews.logic.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "recentviews-rs",
+  "exports": [
+    {
+      "name": "recentViewKey",
+      "file": "apps/web/src/recentViews.logic.ts",
+      "line": 77,
+      "params": [
+        {
+          "name": "view",
+          "ts_type": "(| {\n      kind: \"thread\";\n      threadId: typeof typeof typeof ThreadId.Type.Type.Type;\n      splitViewId?: string | undefined;\n    }\n  | {\n      kind: \"settings\";\n      section?: string | undefined;\n    }\n  | {\n      kind: \"plugins\";\n    })",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deriveCurrentRecentView",
+      "file": "apps/web/src/recentViews.logic.ts",
+      "line": 90,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  pathname: string;\n  routeThreadId: typeof typeof typeof typeof ThreadId.Type.Type.Type.Type | null;\n  activeThreadId: typeof typeof typeof typeof ThreadId.Type.Type.Type.Type | null;\n  splitViewId?: string | undefined;\n  settingsSection?: string | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| {\n      kind: \"thread\";\n      threadId: typeof typeof typeof ThreadId.Type.Type.Type;\n      splitViewId?: string | undefined;\n    }\n  | {\n      kind: \"settings\";\n      section?: string | undefined;\n    }\n  | {\n      kind: \"plugins\";\n    }) | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "upsertRecentView",
+      "file": "apps/web/src/recentViews.logic.ts",
+      "line": 122,
+      "params": [
+        {
+          "name": "recentViews",
+          "ts_type": "readonly (| {\n      kind: \"thread\";\n      threadId: typeof typeof typeof ThreadId.Type.Type.Type;\n      splitViewId?: string | undefined;\n    }\n  | {\n      kind: \"settings\";\n      section?: string | undefined;\n    }\n  | {\n      kind: \"plugins\";\n    })[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "view",
+          "ts_type": "(| {\n      kind: \"thread\";\n      threadId: typeof typeof typeof ThreadId.Type.Type.Type;\n      splitViewId?: string | undefined;\n    }\n  | {\n      kind: \"settings\";\n      section?: string | undefined;\n    }\n  | {\n      kind: \"plugins\";\n    })",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "limit",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "(| {\n      kind: \"thread\";\n      threadId: typeof typeof typeof ThreadId.Type.Type.Type;\n      splitViewId?: string | undefined;\n    }\n  | {\n      kind: \"settings\";\n      section?: string | undefined;\n    }\n  | {\n      kind: \"plugins\";\n    })[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "pruneRecentViews",
+      "file": "apps/web/src/recentViews.logic.ts",
+      "line": 132,
+      "params": [
+        {
+          "name": "recentViews",
+          "ts_type": "readonly (| {\n      kind: \"thread\";\n      threadId: typeof typeof typeof ThreadId.Type.Type.Type;\n      splitViewId?: string | undefined;\n    }\n  | {\n      kind: \"settings\";\n      section?: string | undefined;\n    }\n  | {\n      kind: \"plugins\";\n    })[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "availability",
+          "ts_type": "RecentViewAvailability",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "limit",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "(| {\n      kind: \"thread\";\n      threadId: typeof typeof typeof ThreadId.Type.Type.Type;\n      splitViewId?: string | undefined;\n    }\n  | {\n      kind: \"settings\";\n      section?: string | undefined;\n    }\n  | {\n      kind: \"plugins\";\n    })[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveRecentViewNavigationIndex",
+      "file": "apps/web/src/recentViews.logic.ts",
+      "line": 195,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  recentViews: readonly (| {\n      kind: \"thread\";\n      threadId: typeof typeof typeof ThreadId.Type.Type.Type;\n      splitViewId?: string | undefined;\n    }\n  | {\n      kind: \"settings\";\n      section?: string | undefined;\n    }\n  | {\n      kind: \"plugins\";\n    })[];\n  currentView: (| {\n      kind: \"thread\";\n      threadId: typeof typeof typeof ThreadId.Type.Type.Type;\n      splitViewId?: string | undefined;\n    }\n  | {\n      kind: \"settings\";\n      section?: string | undefined;\n    }\n  | {\n      kind: \"plugins\";\n    }) | null;\n  selectedKey?: string | null | undefined;\n  direction: \"next\" | \"previous\";\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildRecentViewDisplayEntries",
+      "file": "apps/web/src/recentViews.logic.ts",
+      "line": 216,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  recentViews: readonly (| {\n      kind: \"thread\";\n      threadId: typeof typeof typeof ThreadId.Type.Type.Type;\n      splitViewId?: string | undefined;\n    }\n  | {\n      kind: \"settings\";\n      section?: string | undefined;\n    }\n  | {\n      kind: \"plugins\";\n    })[];\n  currentView: (| {\n      kind: \"thread\";\n      threadId: typeof typeof typeof ThreadId.Type.Type.Type;\n      splitViewId?: string | undefined;\n    }\n  | {\n      kind: \"settings\";\n      section?: string | undefined;\n    }\n  | {\n      kind: \"plugins\";\n    }) | null;\n  threadsById: Readonly<Record<string, SidebarThreadSummary | undefined>>;\n  draftThreadsById?: Readonly<Record<string, RecentViewThreadDraftSummary | undefined>>;\n  projects: readonly Project[];\n  pinnedThreadIds: readonly typeof typeof typeof typeof ThreadId.Type.Type.Type.Type[];\n  terminalVisualIdentityByThreadId?: ReadonlyMap<typeof typeof typeof typeof ThreadId.Type.Type.Type.Type, ResolvedTerminalVisualIdentity>;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "RecentViewDisplayEntry[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

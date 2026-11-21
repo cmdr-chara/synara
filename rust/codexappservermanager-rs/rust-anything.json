@@ -1,0 +1,241 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/codexAppServerManager.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "codexappservermanager-rs",
+  "exports": [
+    {
+      "name": "readCodexAccountSnapshot",
+      "file": "apps/server/src/codexAppServerManager.ts",
+      "line": 498,
+      "params": [
+        {
+          "name": "response",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "CodexAccountSnapshot",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildCodexThreadOpenRequest",
+      "file": "apps/server/src/codexAppServerManager.ts",
+      "line": 734,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly forkSourceThreadId?: string;\n  readonly resumeThreadId?: string;\n  readonly sessionOverrides: CodexThreadSessionOverrides;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| {\n      readonly method: \"thread/start\";\n      readonly params: CodexThreadSessionOverrides & { readonly experimentalRawEvents: false };\n    }\n  | {\n      readonly method: \"thread/resume\" | \"thread/fork\";\n      readonly params: CodexThreadSessionOverrides & {\n        readonly threadId: string;\n        readonly excludeTurns: true;\n      };\n    })",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveCodexThreadOpenMinimumVersion",
+      "file": "apps/server/src/codexAppServerManager.ts",
+      "line": 764,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly runtimeMode: typeof typeof typeof typeof RuntimeMode.Type.Type.Type.Type;\n  readonly threadOpenMethod: (| {\n      readonly method: \"thread/start\";\n      readonly params: CodexThreadSessionOverrides & { readonly experimentalRawEvents: false };\n    }\n  | {\n      readonly method: \"thread/resume\" | \"thread/fork\";\n      readonly params: CodexThreadSessionOverrides & {\n        readonly threadId: string;\n        readonly excludeTurns: true;\n      };\n    })[\"method\"];\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "shouldWarnCodexFreshStartWithoutResume",
+      "file": "apps/server/src/codexAppServerManager.ts",
+      "line": 781,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly threadOpenMethod: string;\n  readonly previouslyBound: boolean;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveCodexModelForAccount",
+      "file": "apps/server/src/codexAppServerManager.ts",
+      "line": 844,
+      "params": [
+        {
+          "name": "model",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "account",
+          "ts_type": "CodexAccountSnapshot",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeCodexModelSlug",
+      "file": "apps/server/src/codexAppServerManager.ts",
+      "line": 878,
+      "params": [
+        {
+          "name": "model",
+          "ts_type": "string | undefined | null",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "preferredId",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildCodexCollaborationMode",
+      "file": "apps/server/src/codexAppServerManager.ts",
+      "line": 907,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly enableComputerControl?: boolean;\n  readonly interactionMode?: typeof typeof typeof typeof ProviderInteractionMode.Type.Type.Type.Type;\n  readonly model?: string;\n  readonly effort?: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "| {\n      mode: \"default\" | \"plan\";\n      settings: {\n        model: string;\n        reasoning_effort: string;\n        developer_instructions: string;\n      };\n    }\n  | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseCodexUserInputQuestions",
+      "file": "apps/server/src/codexAppServerManager.ts",
+      "line": 993,
+      "params": [
+        {
+          "name": "payload",
+          "ts_type": "Record<string, unknown> | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof UserInputQuestion.Type.Type.Type.Type[] | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "classifyCodexStderrLine",
+      "file": "apps/server/src/codexAppServerManager.ts",
+      "line": 1038,
+      "params": [
+        {
+          "name": "rawLine",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "mirroredUserConfigPath",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "{ message: string; configWarning?: true; mcpSubscriptionError?: string } | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readResumeCursorThreadId",
+      "file": "apps/server/src/codexAppServerManager.ts",
+      "line": 5995,
+      "params": [
+        {
+          "name": "resumeCursor",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "CodexSessionAuthInvalidatedError",
+      "file": "apps/server/src/codexAppServerManager.ts",
+      "line": 216,
+      "reason": "class: extends another class"
+    },
+    {
+      "name": "CodexAppServerManager",
+      "file": "apps/server/src/codexAppServerManager.ts",
+      "line": 1215,
+      "reason": "class: extends another class, async or generator method `startSession`, async or generator method `sendTurn`, async or generator method `steerTurn`, async or generator method `startReview`, async or generator method `interruptTurn`, async or generator method `abandonTurn`, async or generator method `readThread`, async or generator method `readExternalThread`, async or generator method `readExternalThreadPage`, async or generator method `forkThread`, async or generator method `rollbackThread`, async or generator method `compactThread`, async or generator method `respondToRequest`, async or generator method `respondToUserInput`, async or generator method `stopSession`, async or generator method `renewAgentGatewayCredential`, async or generator method `inspectSessionAsync`, async or generator method `stopAll`, async or generator method `listSkills`, async or generator method `listPlugins`, async or generator method `readPlugin`, async or generator method `listModels`, async or generator method `transcribeVoice`, async or generator method `prewarmVoice`"
+    },
+    {
+      "name": "isUnsupportedCodexMethodError",
+      "file": "apps/server/src/codexAppServerManager.ts",
+      "line": 329,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "isRecoverableThreadResumeError",
+      "file": "apps/server/src/codexAppServerManager.ts",
+      "line": 1065,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "formatCodexThreadResumeError",
+      "file": "apps/server/src/codexAppServerManager.ts",
+      "line": 1074,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    }
+  ]
+}

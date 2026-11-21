@@ -1,0 +1,1332 @@
+{"fn":"readCodexAccountSnapshot","args":[{}],"ok":{"type":"unknown","planType":null,"sparkEnabled":true}}
+{"fn":"readCodexAccountSnapshot","args":[[]],"ok":{"type":"unknown","planType":null,"sparkEnabled":true}}
+{"fn":"readCodexAccountSnapshot","args":[0],"ok":{"type":"unknown","planType":null,"sparkEnabled":true}}
+{"fn":"readCodexAccountSnapshot","args":[null],"ok":{"type":"unknown","planType":null,"sparkEnabled":true}}
+{"fn":"readCodexAccountSnapshot","args":["x"],"ok":{"type":"unknown","planType":null,"sparkEnabled":true}}
+{"fn":"readCodexAccountSnapshot","args":[{"a":{"b":"c"}}],"ok":{"type":"unknown","planType":null,"sparkEnabled":true}}
+{"fn":"readCodexAccountSnapshot","args":[true],"ok":{"type":"unknown","planType":null,"sparkEnabled":true}}
+{"fn":"readCodexAccountSnapshot","args":[["a",1]],"ok":{"type":"unknown","planType":null,"sparkEnabled":true}}
+{"fn":"readCodexAccountSnapshot","args":[{"a":"b"}],"ok":{"type":"unknown","planType":null,"sparkEnabled":true}}
+{"fn":"readCodexAccountSnapshot","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":{"type":"unknown","planType":null,"sparkEnabled":true}}
+{"fn":"readCodexAccountSnapshot","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":{"type":"unknown","planType":null,"sparkEnabled":true}}
+{"fn":"readCodexAccountSnapshot","args":[[3,1,2]],"ok":{"type":"unknown","planType":null,"sparkEnabled":true}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":".leading","resumeThreadId":"  padded  ","sessionOverrides":{"config":"x","model":"ΣΊΣΥΦΟΣ","cwd":"straße","approvalPolicy":"never","approvalsReviewer":"user","sandbox":"read-only"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"emoji 👍🏽 mix","resumeThreadId":":","sessionOverrides":{"config":true,"model":null,"serviceTier":"line1\nline2","cwd":"ns:key.path","approvalPolicy":"never","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"İstanbul","resumeThreadId":"Hello World","sessionOverrides":{"config":{"a":{"b":"c"}},"model":":","serviceTier":"ΣΊΣΥΦΟΣ","cwd":"./x/**/*.json{name} has {count} items","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"a:b:c","resumeThreadId":"a","sessionOverrides":{"config":"x","model":"trailing.trailing.","serviceTier":"","cwd":".leading","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[["a",1]],"ok":{"method":"thread/start","params":{"experimentalRawEvents":false}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"resumeThreadId":".leading","sessionOverrides":{"model":null,"serviceTier":"  padded  ","cwd":"key_name-1","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"ok":{"method":"thread/resume","params":{"model":null,"serviceTier":"  padded  ","cwd":"key_name-1","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"danger-full-access","threadId":".leading","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"sessionOverrides":{"config":{},"model":null,"serviceTier":"a","cwd":"ns:key.path","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"ok":{"method":"thread/start","params":{"config":{},"model":null,"serviceTier":"a","cwd":"ns:key.path","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"read-only","experimentalRawEvents":false}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"tab\tseparated","sessionOverrides":{"model":"İstanbul","cwd":"ab","approvalPolicy":"untrusted","approvalsReviewer":"user","sandbox":"danger-full-access"}}],"ok":{"method":"thread/fork","params":{"model":"İstanbul","cwd":"ab","approvalPolicy":"untrusted","approvalsReviewer":"user","sandbox":"danger-full-access","threadId":"tab\tseparated","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":":","sessionOverrides":{"config":true,"model":null,"serviceTier":"{name} has {count} itemsabc","cwd":"a..b","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"ok":{"method":"thread/fork","params":{"config":true,"model":null,"serviceTier":"{name} has {count} itemsabc","cwd":"a..b","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"workspace-write","threadId":":","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"a😀b😀c{name} has {count} items","sessionOverrides":{"config":{},"model":null,"serviceTier":"","cwd":"ab","approvalPolicy":"on-failure","approvalsReviewer":"user","sandbox":"workspace-write"}}],"ok":{"method":"thread/fork","params":{"config":{},"model":null,"serviceTier":"","cwd":"ab","approvalPolicy":"on-failure","approvalsReviewer":"user","sandbox":"workspace-write","threadId":"a😀b😀c{name} has {count} items","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"é","resumeThreadId":"é","sessionOverrides":{"model":"a😀b😀c﻿bom","serviceTier":"straße","cwd":"","approvalPolicy":"never","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"resumeThreadId":"hello","sessionOverrides":{"config":["a",1],"model":"a..b","serviceTier":"emoji 👍🏽 mix","cwd":"ünïcödé","approvalPolicy":"on-request","approvalsReviewer":"user","sandbox":"danger-full-access"}}],"ok":{"method":"thread/resume","params":{"config":["a",1],"model":"a..b","serviceTier":"emoji 👍🏽 mix","cwd":"ünïcödé","approvalPolicy":"on-request","approvalsReviewer":"user","sandbox":"danger-full-access","threadId":"hello","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"a.b.c","resumeThreadId":"abc","sessionOverrides":{"config":["a",1],"model":"a:b:c","serviceTier":"İstanbul","cwd":"key_name-1","approvalPolicy":"on-request","approvalsReviewer":"user","sandbox":"read-only"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"","sessionOverrides":{"model":null,"cwd":":line1\nline2","approvalPolicy":"untrusted","approvalsReviewer":"user","sandbox":"read-only"}}],"ok":{"method":"thread/start","params":{"model":null,"cwd":":line1\nline2","approvalPolicy":"untrusted","approvalsReviewer":"user","sandbox":"read-only","experimentalRawEvents":false}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"  padded  ","resumeThreadId":"hello","sessionOverrides":{"model":"key_name-1é","serviceTier":"ns:key.path","cwd":"src/a/b.ts","approvalPolicy":"on-request","approvalsReviewer":"user","sandbox":"danger-full-access"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"resumeThreadId":"{name} has {count} items","sessionOverrides":{"config":[],"model":"abc","serviceTier":"日本語のテキストünïcödé","cwd":".leading","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"ok":{"method":"thread/resume","params":{"config":[],"model":"abc","serviceTier":"日本語のテキストünïcödé","cwd":".leading","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"read-only","threadId":"{name} has {count} items","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"resumeThreadId":"{name} has {count} items","sessionOverrides":{"config":{"a":{"b":"c"}},"model":"ab","cwd":"{name} has {count} items","approvalPolicy":"untrusted","approvalsReviewer":"user","sandbox":"workspace-write"}}],"ok":{"method":"thread/resume","params":{"config":{"a":{"b":"c"}},"model":"ab","cwd":"{name} has {count} items","approvalPolicy":"untrusted","approvalsReviewer":"user","sandbox":"workspace-write","threadId":"{name} has {count} items","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"{name} has {count} itemsa","resumeThreadId":"","sessionOverrides":{"config":null,"model":"src/a/b.ts","serviceTier":"src/a/b.ts","cwd":"😀","approvalPolicy":"never","approvalsReviewer":"user","sandbox":"read-only"}}],"ok":{"method":"thread/fork","params":{"config":null,"model":"src/a/b.ts","serviceTier":"src/a/b.ts","cwd":"😀","approvalPolicy":"never","approvalsReviewer":"user","sandbox":"read-only","threadId":"{name} has {count} itemsa","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"tab\tseparated","resumeThreadId":"tab\tseparated","sessionOverrides":{"config":{},"model":"a😀b😀c","serviceTier":"😀hello world","cwd":".leadinga","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"İstanbul","sessionOverrides":{"model":"ünïcödé","serviceTier":"a😀b😀c","cwd":"hello world{name} has {count} items","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"ok":{"method":"thread/fork","params":{"model":"ünïcödé","serviceTier":"a😀b😀c","cwd":"hello world{name} has {count} items","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"workspace-write","threadId":"İstanbul","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"a😀b😀c","resumeThreadId":"Hello World","sessionOverrides":{"config":["a",1],"model":"日本語のテキスト","serviceTier":"ünïcödé","cwd":"ünïcödé","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"straße","resumeThreadId":"a..b","sessionOverrides":{"config":"x","model":null,"serviceTier":"😀","cwd":"ΣΊΣΥΦΟΣ","approvalPolicy":"untrusted","approvalsReviewer":"user","sandbox":"danger-full-access"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"hello","resumeThreadId":"line1\nline2key_name-1","sessionOverrides":{"config":[],"model":"  padded  ","cwd":"a:b:c","approvalPolicy":"on-failure","approvalsReviewer":"user","sandbox":"danger-full-access"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"emoji 👍🏽 mix","resumeThreadId":"a.b.c","sessionOverrides":{"config":null,"model":"a..b","serviceTier":"tab\tseparated","cwd":"😀","approvalPolicy":"untrusted","approvalsReviewer":"user","sandbox":"read-only"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"tab\tseparated","sessionOverrides":{"model":null,"serviceTier":"  padded  ΣΊΣΥΦΟΣ","cwd":"a😀b😀c","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"ok":{"method":"thread/fork","params":{"model":null,"serviceTier":"  padded  ΣΊΣΥΦΟΣ","cwd":"a😀b😀c","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"read-only","threadId":"tab\tseparated","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"{name} has {count} items","resumeThreadId":"﻿bom","sessionOverrides":{"config":"x","model":null,"serviceTier":"key_name-1","cwd":"abcé","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"resumeThreadId":":{name} has {count} items","sessionOverrides":{"config":0,"model":null,"serviceTier":"a.b.c","cwd":".leading","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"ok":{"method":"thread/resume","params":{"config":0,"model":null,"serviceTier":"a.b.c","cwd":".leading","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"danger-full-access","threadId":":{name} has {count} items","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"aba:b:c","resumeThreadId":"日本語のテキスト","sessionOverrides":{"model":"ns:key.path","serviceTier":"a","cwd":"straße","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{}],"ok":{"method":"thread/start","params":{"experimentalRawEvents":false}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"straße","sessionOverrides":{"config":[],"model":null,"serviceTier":"  padded  ","cwd":"日本語のテキスト","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"ok":{"method":"thread/fork","params":{"config":[],"model":null,"serviceTier":"  padded  ","cwd":"日本語のテキスト","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"read-only","threadId":"straße","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"﻿bom","sessionOverrides":{"config":[],"model":"ünïcödé","serviceTier":"hello","cwd":"src/a/b.ts","approvalPolicy":"on-request","approvalsReviewer":"user","sandbox":"danger-full-access"}}],"ok":{"method":"thread/fork","params":{"config":[],"model":"ünïcödé","serviceTier":"hello","cwd":"src/a/b.ts","approvalPolicy":"on-request","approvalsReviewer":"user","sandbox":"danger-full-access","threadId":"﻿bom","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"😀","resumeThreadId":"trailing.","sessionOverrides":{"config":{},"model":null,"serviceTier":"a:b:c","cwd":"a.b.c","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"ünïcödé","resumeThreadId":"","sessionOverrides":{"config":{"a":"b"},"model":"é","cwd":"ns:key.path","approvalPolicy":"never","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"ok":{"method":"thread/fork","params":{"config":{"a":"b"},"model":"é","cwd":"ns:key.path","approvalPolicy":"never","approvalsReviewer":"auto_review","sandbox":"danger-full-access","threadId":"ünïcödé","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":":","resumeThreadId":"a😀b😀c","sessionOverrides":{"config":["a",1],"model":"ΣΊΣΥΦΟΣline1\nline2","cwd":"","approvalPolicy":"never","approvalsReviewer":"user","sandbox":"read-only"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"straße","resumeThreadId":"key_name-1","sessionOverrides":{"config":"x","model":null,"cwd":"src/a/b.ts","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"sessionOverrides":{"model":"ünïcödé","serviceTier":"hello world","cwd":"tab\tseparateda:b:c","approvalPolicy":"never","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"ok":{"method":"thread/start","params":{"model":"ünïcödé","serviceTier":"hello world","cwd":"tab\tseparateda:b:c","approvalPolicy":"never","approvalsReviewer":"auto_review","sandbox":"workspace-write","experimentalRawEvents":false}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"a😀b😀c","sessionOverrides":{"config":true,"model":null,"cwd":"a:b:c","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"ok":{"method":"thread/fork","params":{"config":true,"model":null,"cwd":"a:b:c","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"danger-full-access","threadId":"a😀b😀c","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"a..b","sessionOverrides":{"config":{"a":"b"},"model":null,"cwd":"trailing.","approvalPolicy":"on-request","approvalsReviewer":"user","sandbox":"danger-full-access"}}],"ok":{"method":"thread/fork","params":{"config":{"a":"b"},"model":null,"cwd":"trailing.","approvalPolicy":"on-request","approvalsReviewer":"user","sandbox":"danger-full-access","threadId":"a..b","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"日本語のテキスト","sessionOverrides":{"config":[],"model":"hello","serviceTier":"ΣΊΣΥΦΟΣHello World","cwd":"  padded  ","approvalPolicy":"untrusted","approvalsReviewer":"user","sandbox":"workspace-write"}}],"ok":{"method":"thread/fork","params":{"config":[],"model":"hello","serviceTier":"ΣΊΣΥΦΟΣHello World","cwd":"  padded  ","approvalPolicy":"untrusted","approvalsReviewer":"user","sandbox":"workspace-write","threadId":"日本語のテキスト","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"emoji 👍🏽 mix","resumeThreadId":"{name} has {count} items","sessionOverrides":{"config":0,"model":null,"cwd":"aa..b","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"a:b:c","resumeThreadId":"a.b.c","sessionOverrides":{"config":{},"model":"hello","serviceTier":"hello world","cwd":"ünïcödé","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"a":"b"}],"ok":{"method":"thread/start","params":{"experimentalRawEvents":false}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"ns:key.path","resumeThreadId":"ünïcödé","sessionOverrides":{"config":true,"model":"src/a/b.ts","cwd":"a","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":["x"],"ok":{"method":"thread/start","params":{"experimentalRawEvents":false}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"ns:key.path","resumeThreadId":"ünïcödé","sessionOverrides":{"config":"x","model":null,"serviceTier":"abc","cwd":"﻿bom","approvalPolicy":"on-request","approvalsReviewer":"user","sandbox":"read-only"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[[]],"ok":{"method":"thread/start","params":{"experimentalRawEvents":false}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"ΣΊΣΥΦΟΣ","sessionOverrides":{"model":"ünïcödé","serviceTier":"","cwd":"src/a/b.ts","approvalPolicy":"untrusted","approvalsReviewer":"user","sandbox":"workspace-write"}}],"ok":{"method":"thread/fork","params":{"model":"ünïcödé","serviceTier":"","cwd":"src/a/b.ts","approvalPolicy":"untrusted","approvalsReviewer":"user","sandbox":"workspace-write","threadId":"ΣΊΣΥΦΟΣ","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"a:b:c","sessionOverrides":{"config":{"a":{"b":"c"}},"model":"ΣΊΣΥΦΟΣ","serviceTier":"trailing.","cwd":"a.b.c","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"ok":{"method":"thread/fork","params":{"config":{"a":{"b":"c"}},"model":"ΣΊΣΥΦΟΣ","serviceTier":"trailing.","cwd":"a.b.c","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"danger-full-access","threadId":"a:b:c","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"﻿bom","resumeThreadId":"hello world","sessionOverrides":{"model":null,"serviceTier":"😀","cwd":"line1\nline2","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"./x/**/*.json","resumeThreadId":"straße","sessionOverrides":{"config":"x","model":null,"serviceTier":"a","cwd":"a😀b😀c","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"emoji 👍🏽 mix","resumeThreadId":"a./x/**/*.json","sessionOverrides":{"model":null,"serviceTier":"","cwd":"straße","approvalPolicy":"never","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"trailing.ΣΊΣΥΦΟΣ","resumeThreadId":"abcstraße","sessionOverrides":{"config":null,"model":null,"serviceTier":"{name} has {count} items","cwd":"straße","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"hello worldHello World","resumeThreadId":"trailing.","sessionOverrides":{"model":null,"serviceTier":"hello","cwd":"ns:key.path","approvalPolicy":"untrusted","approvalsReviewer":"user","sandbox":"danger-full-access"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"  padded  ","resumeThreadId":"trailing.","sessionOverrides":{"config":"x","model":"Hello World","serviceTier":"😀","cwd":"ΣΊΣΥΦΟΣ","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"sessionOverrides":{"config":[],"model":null,"cwd":"日本語のテキスト😀","approvalPolicy":"on-request","approvalsReviewer":"user","sandbox":"danger-full-access"}}],"ok":{"method":"thread/start","params":{"config":[],"model":null,"cwd":"日本語のテキスト😀","approvalPolicy":"on-request","approvalsReviewer":"user","sandbox":"danger-full-access","experimentalRawEvents":false}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":".leading","resumeThreadId":"ns:key.path","sessionOverrides":{"model":".leading","serviceTier":"ns:key.path","cwd":"tab\tseparated","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"Hello World","resumeThreadId":"hello world","sessionOverrides":{"model":"abc","serviceTier":"ns:key.path","cwd":"trailing.Hello World","approvalPolicy":"untrusted","approvalsReviewer":"user","sandbox":"workspace-write"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"sessionOverrides":{"model":"Hello World","cwd":"a.b.c","approvalPolicy":"on-failure","approvalsReviewer":"user","sandbox":"workspace-write"}}],"ok":{"method":"thread/start","params":{"model":"Hello World","cwd":"a.b.c","approvalPolicy":"on-failure","approvalsReviewer":"user","sandbox":"workspace-write","experimentalRawEvents":false}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"  padded  ","sessionOverrides":{"model":"src/a/b.ts","serviceTier":"straße","cwd":".leading","approvalPolicy":"on-request","approvalsReviewer":"user","sandbox":"read-only"}}],"ok":{"method":"thread/fork","params":{"model":"src/a/b.ts","serviceTier":"straße","cwd":".leading","approvalPolicy":"on-request","approvalsReviewer":"user","sandbox":"read-only","threadId":"  padded  ","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"key_name-1","sessionOverrides":{"config":[],"model":null,"cwd":"abc","approvalPolicy":"on-request","approvalsReviewer":"user","sandbox":"workspace-write"}}],"ok":{"method":"thread/fork","params":{"config":[],"model":null,"cwd":"abc","approvalPolicy":"on-request","approvalsReviewer":"user","sandbox":"workspace-write","threadId":"key_name-1","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"resumeThreadId":"Hello World","sessionOverrides":{"config":["a",1],"model":"emoji 👍🏽 mix","cwd":"HELLO","approvalPolicy":"on-request","approvalsReviewer":"user","sandbox":"read-only"}}],"ok":{"method":"thread/resume","params":{"config":["a",1],"model":"emoji 👍🏽 mix","cwd":"HELLO","approvalPolicy":"on-request","approvalsReviewer":"user","sandbox":"read-only","threadId":"Hello World","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[0],"ok":{"method":"thread/start","params":{"experimentalRawEvents":false}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"./x/**/*.json","sessionOverrides":{"config":{"a":{"b":"c"}},"model":null,"serviceTier":"a:b:c","cwd":"ab","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"ok":{"method":"thread/fork","params":{"config":{"a":{"b":"c"}},"model":null,"serviceTier":"a:b:c","cwd":"ab","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"danger-full-access","threadId":"./x/**/*.json","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"a":{"b":"c"}}],"ok":{"method":"thread/start","params":{"experimentalRawEvents":false}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"HELLO","resumeThreadId":"é","sessionOverrides":{"config":null,"model":"﻿bom","serviceTier":"  padded  ","cwd":"src/a/b.tsemoji 👍🏽 mix","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"a.b.c","resumeThreadId":"line1\nline2","sessionOverrides":{"config":0,"model":"straße","serviceTier":"hello world","cwd":"😀","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"straße{name} has {count} items","sessionOverrides":{"config":[],"model":"a😀b😀c😀","serviceTier":"İstanbul","cwd":"hello","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"ok":{"method":"thread/fork","params":{"config":[],"model":"a😀b😀c😀","serviceTier":"İstanbul","cwd":"hello","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"danger-full-access","threadId":"straße{name} has {count} items","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"resumeThreadId":"a","sessionOverrides":{"config":true,"model":null,"serviceTier":".leading","cwd":"Hello Worldtrailing.","approvalPolicy":"never","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"ok":{"method":"thread/resume","params":{"config":true,"model":null,"serviceTier":".leading","cwd":"Hello Worldtrailing.","approvalPolicy":"never","approvalsReviewer":"auto_review","sandbox":"read-only","threadId":"a","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"sessionOverrides":{"config":{},"model":"a","cwd":"straße","approvalPolicy":"never","approvalsReviewer":"user","sandbox":"danger-full-access"}}],"ok":{"method":"thread/start","params":{"config":{},"model":"a","cwd":"straße","approvalPolicy":"never","approvalsReviewer":"user","sandbox":"danger-full-access","experimentalRawEvents":false}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"resumeThreadId":"a:b:ca.b.c","sessionOverrides":{"config":true,"model":"key_name-1","serviceTier":":","cwd":"key_name-1","approvalPolicy":"never","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"ok":{"method":"thread/resume","params":{"config":true,"model":"key_name-1","serviceTier":":","cwd":"key_name-1","approvalPolicy":"never","approvalsReviewer":"auto_review","sandbox":"read-only","threadId":"a:b:ca.b.c","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"hello","sessionOverrides":{"config":null,"model":null,"serviceTier":"a.b.ca","cwd":"abc","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"ok":{"method":"thread/fork","params":{"config":null,"model":null,"serviceTier":"a.b.ca","cwd":"abc","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"read-only","threadId":"hello","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"resumeThreadId":"é","sessionOverrides":{"config":true,"model":"é","serviceTier":"trailing.","cwd":"trailing.","approvalPolicy":"never","approvalsReviewer":"user","sandbox":"danger-full-access"}}],"ok":{"method":"thread/resume","params":{"config":true,"model":"é","serviceTier":"trailing.","cwd":"trailing.","approvalPolicy":"never","approvalsReviewer":"user","sandbox":"danger-full-access","threadId":"é","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"sessionOverrides":{"config":{},"model":".leading","serviceTier":"trailing.","cwd":"tab\tseparated","approvalPolicy":"on-failure","approvalsReviewer":"user","sandbox":"danger-full-access"}}],"ok":{"method":"thread/start","params":{"config":{},"model":".leading","serviceTier":"trailing.","cwd":"tab\tseparated","approvalPolicy":"on-failure","approvalsReviewer":"user","sandbox":"danger-full-access","experimentalRawEvents":false}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"HELLO","resumeThreadId":"ns:key.path","sessionOverrides":{"config":"x","model":"a😀b😀c","cwd":"İstanbul","approvalPolicy":"never","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"resumeThreadId":"{name} has {count} items","sessionOverrides":{"model":"﻿bom","serviceTier":"日本語のテキスト","cwd":"a.b.c","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"ok":{"method":"thread/resume","params":{"model":"﻿bom","serviceTier":"日本語のテキスト","cwd":"a.b.c","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"read-only","threadId":"{name} has {count} items","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"resumeThreadId":"emoji 👍🏽 mix","sessionOverrides":{"config":{"a":{"b":"c"}},"model":null,"serviceTier":"straße😀","cwd":"Hello World","approvalPolicy":"never","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"ok":{"method":"thread/resume","params":{"config":{"a":{"b":"c"}},"model":null,"serviceTier":"straße😀","cwd":"Hello World","approvalPolicy":"never","approvalsReviewer":"auto_review","sandbox":"workspace-write","threadId":"emoji 👍🏽 mix","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"resumeThreadId":"emoji 👍🏽 mixhello","sessionOverrides":{"config":{},"model":null,"serviceTier":"a:b:c","cwd":"key_name-1","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"ok":{"method":"thread/resume","params":{"config":{},"model":null,"serviceTier":"a:b:c","cwd":"key_name-1","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"workspace-write","threadId":"emoji 👍🏽 mixhello","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"Hello World","sessionOverrides":{"config":0,"model":"  padded  ","serviceTier":"a😀b😀c","cwd":".leading","approvalPolicy":"never","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"ok":{"method":"thread/fork","params":{"config":0,"model":"  padded  ","serviceTier":"a😀b😀c","cwd":".leading","approvalPolicy":"never","approvalsReviewer":"auto_review","sandbox":"workspace-write","threadId":"Hello World","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":".leading","resumeThreadId":"日本語のテキスト","sessionOverrides":{"config":{},"model":"src/a/b.ts","serviceTier":"straße","cwd":"{name} has {count} items","approvalPolicy":"never","approvalsReviewer":"user","sandbox":"danger-full-access"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"line1\nline2straße","resumeThreadId":"a:b:cΣΊΣΥΦΟΣ","sessionOverrides":{"config":[],"model":"Hello Worldab","cwd":"a.b.c","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"emoji 👍🏽 mix","resumeThreadId":"HELLO","sessionOverrides":{"config":[],"model":"emoji 👍🏽 mix","serviceTier":"a","cwd":"😀","approvalPolicy":"untrusted","approvalsReviewer":"user","sandbox":"danger-full-access"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"a😀b😀c","sessionOverrides":{"config":0,"model":null,"serviceTier":"Hello World","cwd":".leading","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"ok":{"method":"thread/fork","params":{"config":0,"model":null,"serviceTier":"Hello World","cwd":".leading","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"danger-full-access","threadId":"a😀b😀c","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[true],"ok":{"method":"thread/start","params":{"experimentalRawEvents":false}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"hello world","sessionOverrides":{"config":null,"model":null,"cwd":"line1\nline2","approvalPolicy":"never","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"ok":{"method":"thread/fork","params":{"config":null,"model":null,"cwd":"line1\nline2","approvalPolicy":"never","approvalsReviewer":"auto_review","sandbox":"danger-full-access","threadId":"hello world","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"ünïcödé","resumeThreadId":"{name} has {count} items","sessionOverrides":{"config":0,"model":"straßea:b:c","cwd":"😀","approvalPolicy":"never","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":":","sessionOverrides":{"config":"x","model":"hello","serviceTier":"tab\tseparated","cwd":"😀","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"ok":{"method":"thread/fork","params":{"config":"x","model":"hello","serviceTier":"tab\tseparated","cwd":"😀","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"read-only","threadId":":","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"Hello World﻿bom","resumeThreadId":"a","sessionOverrides":{"config":{"a":"b"},"model":"  padded  a","serviceTier":"./x/**/*.json","cwd":"Hello World./x/**/*.json","approvalPolicy":"untrusted","approvalsReviewer":"user","sandbox":"read-only"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"sessionOverrides":{"model":"straße","cwd":"ns:key.pathHELLO","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"ok":{"method":"thread/start","params":{"model":"straße","cwd":"ns:key.pathHELLO","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"read-only","experimentalRawEvents":false}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"resumeThreadId":"emoji 👍🏽 mixab","sessionOverrides":{"model":null,"cwd":"hello","approvalPolicy":"on-request","approvalsReviewer":"user","sandbox":"danger-full-access"}}],"ok":{"method":"thread/resume","params":{"model":null,"cwd":"hello","approvalPolicy":"on-request","approvalsReviewer":"user","sandbox":"danger-full-access","threadId":"emoji 👍🏽 mixab","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[null],"error":"Cannot read properties of null (reading 'forkSourceThreadId')"}
+{"fn":"buildCodexThreadOpenRequest","args":[{"sessionOverrides":{"model":"key_name-1","serviceTier":"é日本語のテキスト","cwd":"./x/**/*.json","approvalPolicy":"on-request","approvalsReviewer":"user","sandbox":"workspace-write"}}],"ok":{"method":"thread/start","params":{"model":"key_name-1","serviceTier":"é日本語のテキスト","cwd":"./x/**/*.json","approvalPolicy":"on-request","approvalsReviewer":"user","sandbox":"workspace-write","experimentalRawEvents":false}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"resumeThreadId":"a:b:c","sessionOverrides":{"config":[],"model":null,"cwd":"key_name-1","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"ok":{"method":"thread/resume","params":{"config":[],"model":null,"cwd":"key_name-1","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"workspace-write","threadId":"a:b:c","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"tab\tseparated","resumeThreadId":"key_name-1","sessionOverrides":{"config":0,"model":null,"serviceTier":"ünïcödé","cwd":"line1\nline2","approvalPolicy":"untrusted","approvalsReviewer":"user","sandbox":"read-only"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":".leading","resumeThreadId":".leading😀","sessionOverrides":{"config":0,"model":null,"serviceTier":"src/a/b.ts","cwd":"hello","approvalPolicy":"never","approvalsReviewer":"user","sandbox":"workspace-write"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"sessionOverrides":{"model":null,"serviceTier":"é{name} has {count} items","cwd":".leading","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"ok":{"method":"thread/start","params":{"model":null,"serviceTier":"é{name} has {count} items","cwd":".leading","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"danger-full-access","experimentalRawEvents":false}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"src/a/b.ts","resumeThreadId":"emoji 👍🏽 mixünïcödé","sessionOverrides":{"config":["a",1],"model":null,"serviceTier":"abca.b.c","cwd":"ΣΊΣΥΦΟΣ","approvalPolicy":"never","approvalsReviewer":"user","sandbox":"read-only"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"resumeThreadId":"","sessionOverrides":{"config":[],"model":null,"serviceTier":".leading","cwd":"hello","approvalPolicy":"on-failure","approvalsReviewer":"user","sandbox":"workspace-write"}}],"ok":{"method":"thread/start","params":{"config":[],"model":null,"serviceTier":".leading","cwd":"hello","approvalPolicy":"on-failure","approvalsReviewer":"user","sandbox":"workspace-write","experimentalRawEvents":false}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"tab\tseparated","resumeThreadId":"trailing.","sessionOverrides":{"config":true,"model":null,"cwd":"  padded  ","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"src/a/b.ts","sessionOverrides":{"config":["a",1],"model":null,"cwd":"ns:key.pathtrailing.","approvalPolicy":"untrusted","approvalsReviewer":"user","sandbox":"read-only"}}],"ok":{"method":"thread/fork","params":{"config":["a",1],"model":null,"cwd":"ns:key.pathtrailing.","approvalPolicy":"untrusted","approvalsReviewer":"user","sandbox":"read-only","threadId":"src/a/b.ts","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"  padded  abc","resumeThreadId":"abc","sessionOverrides":{"config":[],"model":null,"serviceTier":"ΣΊΣΥΦΟΣ","cwd":"key_name-1emoji 👍🏽 mix","approvalPolicy":"never","approvalsReviewer":"user","sandbox":"workspace-write"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"sessionOverrides":{"config":"x","model":"ab:","serviceTier":".leading:","cwd":"key_name-1","approvalPolicy":"never","approvalsReviewer":"user","sandbox":"workspace-write"}}],"ok":{"method":"thread/start","params":{"config":"x","model":"ab:","serviceTier":".leading:","cwd":"key_name-1","approvalPolicy":"never","approvalsReviewer":"user","sandbox":"workspace-write","experimentalRawEvents":false}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"a:b:c","resumeThreadId":"İstanbulns:key.path","sessionOverrides":{"config":true,"model":null,"cwd":"a.b.c","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"src/a/b.ts","resumeThreadId":"","sessionOverrides":{"config":"x","model":"./x/**/*.json","serviceTier":"ns:key.path","cwd":"HELLO","approvalPolicy":"on-failure","approvalsReviewer":"user","sandbox":"read-only"}}],"ok":{"method":"thread/fork","params":{"config":"x","model":"./x/**/*.json","serviceTier":"ns:key.path","cwd":"HELLO","approvalPolicy":"on-failure","approvalsReviewer":"user","sandbox":"read-only","threadId":"src/a/b.ts","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"a😀b😀c","sessionOverrides":{"config":{"a":"b"},"model":"emoji 👍🏽 mix","cwd":"a:b:c","approvalPolicy":"on-failure","approvalsReviewer":"user","sandbox":"danger-full-access"}}],"ok":{"method":"thread/fork","params":{"config":{"a":"b"},"model":"emoji 👍🏽 mix","cwd":"a:b:c","approvalPolicy":"on-failure","approvalsReviewer":"user","sandbox":"danger-full-access","threadId":"a😀b😀c","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"resumeThreadId":"abc{name} has {count} items","sessionOverrides":{"config":["a",1],"model":"straße","serviceTier":"a😀b😀c","cwd":"straße","approvalPolicy":"never","approvalsReviewer":"user","sandbox":"danger-full-access"}}],"ok":{"method":"thread/resume","params":{"config":["a",1],"model":"straße","serviceTier":"a😀b😀c","cwd":"straße","approvalPolicy":"never","approvalsReviewer":"user","sandbox":"danger-full-access","threadId":"abc{name} has {count} items","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"resumeThreadId":"ab","sessionOverrides":{"model":null,"serviceTier":"straße","cwd":"日本語のテキスト","approvalPolicy":"never","approvalsReviewer":"user","sandbox":"workspace-write"}}],"ok":{"method":"thread/resume","params":{"model":null,"serviceTier":"straße","cwd":"日本語のテキスト","approvalPolicy":"never","approvalsReviewer":"user","sandbox":"workspace-write","threadId":"ab","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"日本語のテキスト","resumeThreadId":"./x/**/*.json","sessionOverrides":{"config":0,"model":null,"serviceTier":"ünïcödé","cwd":"a.b.c","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"","sessionOverrides":{"config":{"a":{"b":"c"}},"model":"a.b.c","serviceTier":"﻿bom","cwd":"  padded  ","approvalPolicy":"untrusted","approvalsReviewer":"user","sandbox":"danger-full-access"}}],"ok":{"method":"thread/start","params":{"config":{"a":{"b":"c"}},"model":"a.b.c","serviceTier":"﻿bom","cwd":"  padded  ","approvalPolicy":"untrusted","approvalsReviewer":"user","sandbox":"danger-full-access","experimentalRawEvents":false}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"hello world","sessionOverrides":{"config":null,"model":"HELLO","serviceTier":"a😀b😀ckey_name-1","cwd":"abHello World","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"ok":{"method":"thread/fork","params":{"config":null,"model":"HELLO","serviceTier":"a😀b😀ckey_name-1","cwd":"abHello World","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"danger-full-access","threadId":"hello world","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"  padded  ","resumeThreadId":"key_name-1","sessionOverrides":{"config":["a",1],"model":null,"cwd":"straße","approvalPolicy":"untrusted","approvalsReviewer":"user","sandbox":"danger-full-access"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"emoji 👍🏽 mix","resumeThreadId":"","sessionOverrides":{"config":0,"model":null,"serviceTier":"ab","cwd":"{name} has {count} items","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"ok":{"method":"thread/fork","params":{"config":0,"model":null,"serviceTier":"ab","cwd":"{name} has {count} items","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"workspace-write","threadId":"emoji 👍🏽 mix","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"a","sessionOverrides":{"config":{},"model":"日本語のテキスト","serviceTier":"ab","cwd":"﻿bom","approvalPolicy":"never","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"ok":{"method":"thread/fork","params":{"config":{},"model":"日本語のテキスト","serviceTier":"ab","cwd":"﻿bom","approvalPolicy":"never","approvalsReviewer":"auto_review","sandbox":"danger-full-access","threadId":"a","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"ab","resumeThreadId":"a:b:c{name} has {count} items","sessionOverrides":{"config":null,"model":null,"serviceTier":"tab\tseparated😀","cwd":"é","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"","resumeThreadId":"HELLO","sessionOverrides":{"config":[],"model":"emoji 👍🏽 mixab","serviceTier":"","cwd":"straße","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"ok":{"method":"thread/resume","params":{"config":[],"model":"emoji 👍🏽 mixab","serviceTier":"","cwd":"straße","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"danger-full-access","threadId":"HELLO","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":":","resumeThreadId":"hello.leading","sessionOverrides":{"config":{"a":"b"},"model":null,"serviceTier":"ΣΊΣΥΦΟΣ","cwd":"HELLO","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"HELLO","resumeThreadId":"trailing.","sessionOverrides":{"model":null,"cwd":"emoji 👍🏽 mix","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"{name} has {count} items","resumeThreadId":"abc","sessionOverrides":{"config":{},"model":null,"cwd":"﻿bomab","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"abcemoji 👍🏽 mix","resumeThreadId":"ΣΊΣΥΦΟΣline1\nline2","sessionOverrides":{"config":true,"model":null,"serviceTier":"é","cwd":"HELLO","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"hello","resumeThreadId":"ünïcödé","sessionOverrides":{"model":"a..b","cwd":"{name} has {count} items","approvalPolicy":"on-request","approvalsReviewer":"user","sandbox":"workspace-write"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"resumeThreadId":"src/a/b.ts","sessionOverrides":{"config":0,"model":"é","cwd":"﻿bom","approvalPolicy":"never","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"ok":{"method":"thread/resume","params":{"config":0,"model":"é","cwd":"﻿bom","approvalPolicy":"never","approvalsReviewer":"auto_review","sandbox":"danger-full-access","threadId":"src/a/b.ts","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"  padded  ","resumeThreadId":"key_name-1","sessionOverrides":{"config":[],"model":null,"serviceTier":"a","cwd":"a..bstraße","approvalPolicy":"untrusted","approvalsReviewer":"user","sandbox":"danger-full-access"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"HELLO","resumeThreadId":"a.b.c","sessionOverrides":{"config":{},"model":null,"cwd":"ns:key.path","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"{name} has {count} items","resumeThreadId":"tab\tseparated","sessionOverrides":{"config":[],"model":"{name} has {count} items","serviceTier":"  padded  tab\tseparated","cwd":"é","approvalPolicy":"never","approvalsReviewer":"user","sandbox":"workspace-write"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"a..b","resumeThreadId":"﻿bom","sessionOverrides":{"config":{},"model":null,"serviceTier":"HELLO","cwd":"日本語のテキスト","approvalPolicy":"on-request","approvalsReviewer":"user","sandbox":"danger-full-access"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"  padded  ","resumeThreadId":"{name} has {count} items日本語のテキスト","sessionOverrides":{"config":["a",1],"model":null,"serviceTier":"emoji 👍🏽 mix","cwd":".leadingstraße","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"é","resumeThreadId":"a😀b😀cemoji 👍🏽 mix","sessionOverrides":{"model":"  padded  ","serviceTier":"straße","cwd":"  padded    padded  ","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"﻿bomkey_name-1","resumeThreadId":"  padded  ","sessionOverrides":{"config":true,"model":"a.b.cHello World","cwd":"日本語のテキスト","approvalPolicy":"on-request","approvalsReviewer":"user","sandbox":"danger-full-access"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"HELLO","resumeThreadId":"hello world","sessionOverrides":{"model":"  padded  ","serviceTier":"tab\tseparated","cwd":"./x/**/*.json","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"resumeThreadId":"emoji 👍🏽 mix","sessionOverrides":{"config":["a",1],"model":null,"cwd":"a.b.c","approvalPolicy":"untrusted","approvalsReviewer":"user","sandbox":"read-only"}}],"ok":{"method":"thread/resume","params":{"config":["a",1],"model":null,"cwd":"a.b.c","approvalPolicy":"untrusted","approvalsReviewer":"user","sandbox":"read-only","threadId":"emoji 👍🏽 mix","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"é","resumeThreadId":"ΣΊΣΥΦΟΣé","sessionOverrides":{"config":"x","model":"emoji 👍🏽 mix","serviceTier":"abc","cwd":"./x/**/*.json","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"ns:key.path","resumeThreadId":"tab\tseparatedhello","sessionOverrides":{"config":"x","model":"a.b.c","cwd":"{name} has {count} items","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"resumeThreadId":"abc","sessionOverrides":{"model":null,"serviceTier":"trailing.","cwd":"abc","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"ok":{"method":"thread/resume","params":{"model":null,"serviceTier":"trailing.","cwd":"abc","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"danger-full-access","threadId":"abc","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"resumeThreadId":"éİstanbul","sessionOverrides":{"model":"emoji 👍🏽 mix","serviceTier":"Hello Worldsrc/a/b.ts","cwd":"straße","approvalPolicy":"never","approvalsReviewer":"user","sandbox":"workspace-write"}}],"ok":{"method":"thread/resume","params":{"model":"emoji 👍🏽 mix","serviceTier":"Hello Worldsrc/a/b.ts","cwd":"straße","approvalPolicy":"never","approvalsReviewer":"user","sandbox":"workspace-write","threadId":"éİstanbul","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"resumeThreadId":".leading","sessionOverrides":{"model":null,"cwd":"hello","approvalPolicy":"on-failure","approvalsReviewer":"user","sandbox":"danger-full-access"}}],"ok":{"method":"thread/resume","params":{"model":null,"cwd":"hello","approvalPolicy":"on-failure","approvalsReviewer":"user","sandbox":"danger-full-access","threadId":".leading","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"./x/**/*.json","sessionOverrides":{"model":null,"serviceTier":"trailing.","cwd":"{name} has {count} items","approvalPolicy":"never","approvalsReviewer":"user","sandbox":"read-only"}}],"ok":{"method":"thread/fork","params":{"model":null,"serviceTier":"trailing.","cwd":"{name} has {count} items","approvalPolicy":"never","approvalsReviewer":"user","sandbox":"read-only","threadId":"./x/**/*.json","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"line1\nline2","resumeThreadId":"😀line1\nline2","sessionOverrides":{"config":{},"model":null,"serviceTier":"src/a/b.ts","cwd":"ünïcödé","approvalPolicy":"never","approvalsReviewer":"user","sandbox":"workspace-write"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"ab","resumeThreadId":"  padded  ","sessionOverrides":{"config":null,"model":null,"serviceTier":"abc","cwd":"emoji 👍🏽 mix","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"😀","resumeThreadId":"a","sessionOverrides":{"config":[],"model":null,"serviceTier":"日本語のテキスト","cwd":"a.b.c","approvalPolicy":"never","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"resumeThreadId":"a","sessionOverrides":{"config":{},"model":"ns:key.path","cwd":"a:b:c","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"ok":{"method":"thread/resume","params":{"config":{},"model":"ns:key.path","cwd":"a:b:c","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"danger-full-access","threadId":"a","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"hello","resumeThreadId":"a..b","sessionOverrides":{"config":[],"model":"  padded  ","serviceTier":"line1\nline2","cwd":"Hello Worldé","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"  padded  ","resumeThreadId":"a..b","sessionOverrides":{"config":["a",1],"model":"trailing.","serviceTier":"ab","cwd":"  padded  key_name-1","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"İstanbul","resumeThreadId":"HELLO","sessionOverrides":{"config":{"a":{"b":"c"}},"model":"ns:key.path","serviceTier":"hello world","cwd":"key_name-1","approvalPolicy":"on-failure","approvalsReviewer":"user","sandbox":"read-only"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"İstanbul","resumeThreadId":"hello world","sessionOverrides":{"config":null,"model":"ns:key.patha😀b😀c","serviceTier":"İstanbul","cwd":"ΣΊΣΥΦΟΣ","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"sessionOverrides":{"config":[],"model":"a😀b😀c","serviceTier":"日本語のテキスト","cwd":"日本語のテキスト","approvalPolicy":"on-request","approvalsReviewer":"user","sandbox":"read-only"}}],"ok":{"method":"thread/start","params":{"config":[],"model":"a😀b😀c","serviceTier":"日本語のテキスト","cwd":"日本語のテキスト","approvalPolicy":"on-request","approvalsReviewer":"user","sandbox":"read-only","experimentalRawEvents":false}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"sessionOverrides":{"config":true,"model":"key_name-1","serviceTier":"a","cwd":".leading","approvalPolicy":"never","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"ok":{"method":"thread/start","params":{"config":true,"model":"key_name-1","serviceTier":"a","cwd":".leading","approvalPolicy":"never","approvalsReviewer":"auto_review","sandbox":"workspace-write","experimentalRawEvents":false}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"  padded  ","resumeThreadId":"😀","sessionOverrides":{"config":true,"model":"./x/**/*.json","cwd":"tab\tseparated😀","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"ab","resumeThreadId":"İstanbul","sessionOverrides":{"config":null,"model":"","cwd":"ΣΊΣΥΦΟΣ","approvalPolicy":"untrusted","approvalsReviewer":"user","sandbox":"danger-full-access"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"abc","resumeThreadId":"﻿bom","sessionOverrides":{"model":"ΣΊΣΥΦΟΣ","cwd":"😀","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"hello world","resumeThreadId":"İstanbul","sessionOverrides":{"config":[],"model":"a😀b😀c","serviceTier":"a.b.c","cwd":"straße﻿bom","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"resumeThreadId":"﻿bom","sessionOverrides":{"config":true,"model":null,"serviceTier":":a.b.c","cwd":"trailing.","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"ok":{"method":"thread/resume","params":{"config":true,"model":null,"serviceTier":":a.b.c","cwd":"trailing.","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"danger-full-access","threadId":"﻿bom","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"ns:key.path","sessionOverrides":{"config":"x","model":null,"serviceTier":"😀","cwd":"﻿bom","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"ok":{"method":"thread/fork","params":{"config":"x","model":null,"serviceTier":"😀","cwd":"﻿bom","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"read-only","threadId":"ns:key.path","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":":","resumeThreadId":"tab\tseparated","sessionOverrides":{"config":{"a":"b"},"model":null,"cwd":"é","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"tab\tseparated","resumeThreadId":"ünïcödé","sessionOverrides":{"config":0,"model":"","serviceTier":"a.b.c日本語のテキスト","cwd":".leadingtab\tseparated","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"ab","sessionOverrides":{"model":"a","serviceTier":"line1\nline2","cwd":"😀","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"ok":{"method":"thread/fork","params":{"model":"a","serviceTier":"line1\nline2","cwd":"😀","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"workspace-write","threadId":"ab","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"😀","resumeThreadId":"hello","sessionOverrides":{"config":0,"model":null,"serviceTier":"😀.leading","cwd":"{name} has {count} items","approvalPolicy":"never","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"a..b","resumeThreadId":"😀😀","sessionOverrides":{"config":{"a":"b"},"model":".leading","serviceTier":"hello","cwd":"hello world","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"resumeThreadId":"a","sessionOverrides":{"config":["a",1],"model":null,"serviceTier":"abc","cwd":"trailing.","approvalPolicy":"untrusted","approvalsReviewer":"user","sandbox":"read-only"}}],"ok":{"method":"thread/resume","params":{"config":["a",1],"model":null,"serviceTier":"abc","cwd":"trailing.","approvalPolicy":"untrusted","approvalsReviewer":"user","sandbox":"read-only","threadId":"a","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"resumeThreadId":"src/a/b.ts","sessionOverrides":{"config":null,"model":"straße","cwd":"line1\nline2emoji 👍🏽 mix","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"ok":{"method":"thread/resume","params":{"config":null,"model":"straße","cwd":"line1\nline2emoji 👍🏽 mix","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"workspace-write","threadId":"src/a/b.ts","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"😀","resumeThreadId":"a:b:c","sessionOverrides":{"config":{},"model":":line1\nline2","cwd":"﻿bom","approvalPolicy":"on-request","approvalsReviewer":"user","sandbox":"read-only"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"ΣΊΣΥΦΟΣ","resumeThreadId":"ΣΊΣΥΦΟΣ","sessionOverrides":{"config":true,"model":null,"serviceTier":"﻿bom","cwd":"{name} has {count} items{name} has {count} items","approvalPolicy":"on-failure","approvalsReviewer":"user","sandbox":"danger-full-access"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"Hello World","resumeThreadId":"straße","sessionOverrides":{"config":"x","model":null,"serviceTier":"a😀b😀c","cwd":"emoji 👍🏽 mix","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"resumeThreadId":"HELLOtab\tseparated","sessionOverrides":{"model":"a.b.c","serviceTier":"src/a/b.ts","cwd":"src/a/b.ts","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"ok":{"method":"thread/resume","params":{"model":"a.b.c","serviceTier":"src/a/b.ts","cwd":"src/a/b.ts","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"danger-full-access","threadId":"HELLOtab\tseparated","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"a:b:cünïcödé","resumeThreadId":":","sessionOverrides":{"model":"ab","serviceTier":"﻿bom","cwd":"straße","approvalPolicy":"never","approvalsReviewer":"user","sandbox":"workspace-write"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"straße","resumeThreadId":"a","sessionOverrides":{"config":["a",1],"model":null,"cwd":".leadinga.b.c","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"İstanbul","resumeThreadId":"src/a/b.ts","sessionOverrides":{"model":null,"serviceTier":"","cwd":"tab\tseparated","approvalPolicy":"on-request","approvalsReviewer":"user","sandbox":"workspace-write"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"a..b","resumeThreadId":"emoji 👍🏽 mixns:key.path","sessionOverrides":{"model":null,"serviceTier":"emoji 👍🏽 mix","cwd":"{name} has {count} items","approvalPolicy":"never","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":":","resumeThreadId":"  padded  ","sessionOverrides":{"model":null,"serviceTier":"straße😀","cwd":"ns:key.path","approvalPolicy":"on-request","approvalsReviewer":"user","sandbox":"read-only"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"sessionOverrides":{"config":{"a":"b"},"model":null,"serviceTier":"key_name-1","cwd":"asrc/a/b.ts","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"ok":{"method":"thread/start","params":{"config":{"a":"b"},"model":null,"serviceTier":"key_name-1","cwd":"asrc/a/b.ts","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"workspace-write","experimentalRawEvents":false}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"😀","resumeThreadId":"./x/**/*.jsona😀b😀c","sessionOverrides":{"config":{},"model":null,"serviceTier":"tab\tseparated","cwd":"ns:key.path","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"hello world","resumeThreadId":"","sessionOverrides":{"model":null,"serviceTier":"İstanbul","cwd":"trailing.","approvalPolicy":"never","approvalsReviewer":"user","sandbox":"danger-full-access"}}],"ok":{"method":"thread/fork","params":{"model":null,"serviceTier":"İstanbul","cwd":"trailing.","approvalPolicy":"never","approvalsReviewer":"user","sandbox":"danger-full-access","threadId":"hello world","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"HELLO","resumeThreadId":"ΣΊΣΥΦΟΣ","sessionOverrides":{"config":null,"model":"./x/**/*.json","serviceTier":"Hello World","cwd":"﻿bom","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"sessionOverrides":{"config":null,"model":"Hello World","cwd":":","approvalPolicy":"on-failure","approvalsReviewer":"user","sandbox":"danger-full-access"}}],"ok":{"method":"thread/start","params":{"config":null,"model":"Hello World","cwd":":","approvalPolicy":"on-failure","approvalsReviewer":"user","sandbox":"danger-full-access","experimentalRawEvents":false}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"ΣΊΣΥΦΟΣ","resumeThreadId":"abns:key.path","sessionOverrides":{"config":null,"model":null,"serviceTier":"./x/**/*.json","cwd":"emoji 👍🏽 mix","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"{name} has {count} items:","sessionOverrides":{"config":null,"model":null,"serviceTier":"ns:key.path","cwd":"straße","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"ok":{"method":"thread/fork","params":{"config":null,"model":null,"serviceTier":"ns:key.path","cwd":"straße","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"read-only","threadId":"{name} has {count} items:","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"abc","sessionOverrides":{"model":null,"cwd":"a.b.c","approvalPolicy":"on-failure","approvalsReviewer":"user","sandbox":"read-only"}}],"ok":{"method":"thread/fork","params":{"model":null,"cwd":"a.b.c","approvalPolicy":"on-failure","approvalsReviewer":"user","sandbox":"read-only","threadId":"abc","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"a..btrailing.","resumeThreadId":"trailing.","sessionOverrides":{"config":{"a":{"b":"c"}},"model":null,"serviceTier":"tab\tseparated","cwd":"hello world","approvalPolicy":"on-failure","approvalsReviewer":"user","sandbox":"read-only"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"a😀b😀cHello World","resumeThreadId":"emoji 👍🏽 mix","sessionOverrides":{"config":["a",1],"model":null,"serviceTier":"😀ns:key.path","cwd":"ns:key.path","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"a","resumeThreadId":"{name} has {count} items","sessionOverrides":{"config":true,"model":null,"serviceTier":"a.b.c","cwd":"a:b:c","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"resumeThreadId":"tab\tseparated","sessionOverrides":{"config":["a",1],"model":null,"cwd":"ΣΊΣΥΦΟΣHELLO","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"ok":{"method":"thread/resume","params":{"config":["a",1],"model":null,"cwd":"ΣΊΣΥΦΟΣHELLO","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"danger-full-access","threadId":"tab\tseparated","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"a.b.c","resumeThreadId":"emoji 👍🏽 mix","sessionOverrides":{"model":null,"serviceTier":"a:b:c","cwd":"{name} has {count} items","approvalPolicy":"on-request","approvalsReviewer":"user","sandbox":"workspace-write"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"src/a/b.ts","sessionOverrides":{"config":"x","model":null,"serviceTier":"Hello Worlda","cwd":"ns:key.path","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"ok":{"method":"thread/fork","params":{"config":"x","model":null,"serviceTier":"Hello Worlda","cwd":"ns:key.path","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"danger-full-access","threadId":"src/a/b.ts","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"﻿bom","sessionOverrides":{"config":"x","model":"ab","cwd":"","approvalPolicy":"never","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"ok":{"method":"thread/fork","params":{"config":"x","model":"ab","cwd":"","approvalPolicy":"never","approvalsReviewer":"auto_review","sandbox":"workspace-write","threadId":"﻿bom","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"{name} has {count} items","resumeThreadId":"a..b","sessionOverrides":{"config":["a",1],"model":null,"cwd":"straße","approvalPolicy":"untrusted","approvalsReviewer":"user","sandbox":"danger-full-access"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":".leading","resumeThreadId":"  padded  ","sessionOverrides":{"config":["a",1],"model":null,"cwd":"a","approvalPolicy":"untrusted","approvalsReviewer":"user","sandbox":"workspace-write"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"a..ba😀b😀c","resumeThreadId":"😀","sessionOverrides":{"config":"x","model":null,"serviceTier":"Hello World","cwd":"","approvalPolicy":"on-failure","approvalsReviewer":"user","sandbox":"read-only"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"  padded  Hello World","sessionOverrides":{"config":0,"model":null,"cwd":"😀","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"danger-full-access"}}],"ok":{"method":"thread/fork","params":{"config":0,"model":null,"cwd":"😀","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"danger-full-access","threadId":"  padded  Hello World","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"a.b.c","resumeThreadId":"ünïcödé","sessionOverrides":{"config":0,"model":"tab\tseparated﻿bom","serviceTier":"a","cwd":"hello worldtrailing.","approvalPolicy":"never","approvalsReviewer":"user","sandbox":"workspace-write"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"abc","resumeThreadId":"Hello World","sessionOverrides":{"config":{},"model":"ns:key.path:","serviceTier":"{name} has {count} items","cwd":"ünïcödé","approvalPolicy":"never","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"😀ünïcödé","resumeThreadId":"ns:key.path","sessionOverrides":{"config":[],"model":null,"serviceTier":"emoji 👍🏽 mix","cwd":"a.b.chello","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"a","sessionOverrides":{"config":[],"model":"emoji 👍🏽 mix","serviceTier":"日本語のテキスト","cwd":"😀","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"ok":{"method":"thread/fork","params":{"config":[],"model":"emoji 👍🏽 mix","serviceTier":"日本語のテキスト","cwd":"😀","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"workspace-write","threadId":"a","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"resumeThreadId":"a.b.c","sessionOverrides":{"model":"ab{name} has {count} items","serviceTier":"hello world","cwd":"","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"ok":{"method":"thread/resume","params":{"model":"ab{name} has {count} items","serviceTier":"hello world","cwd":"","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"read-only","threadId":"a.b.c","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"line1\nline2","sessionOverrides":{"config":"x","model":"😀","serviceTier":"a:b:c","cwd":"hello world","approvalPolicy":"never","approvalsReviewer":"user","sandbox":"workspace-write"}}],"ok":{"method":"thread/fork","params":{"config":"x","model":"😀","serviceTier":"a:b:c","cwd":"hello world","approvalPolicy":"never","approvalsReviewer":"user","sandbox":"workspace-write","threadId":"line1\nline2","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"  padded  ","resumeThreadId":"","sessionOverrides":{"config":["a",1],"model":"key_name-1HELLO","serviceTier":"abc","cwd":"a.b.c","approvalPolicy":"never","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"ok":{"method":"thread/fork","params":{"config":["a",1],"model":"key_name-1HELLO","serviceTier":"abc","cwd":"a.b.c","approvalPolicy":"never","approvalsReviewer":"auto_review","sandbox":"read-only","threadId":"  padded  ","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"ab","resumeThreadId":"trailing.","sessionOverrides":{"config":{"a":"b"},"model":null,"serviceTier":"İstanbul","cwd":"{name} has {count} items","approvalPolicy":"on-failure","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"resumeThreadId":"HELLO","sessionOverrides":{"config":"x","model":"key_name-1","cwd":"trailing.trailing.","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"read-only"}}],"ok":{"method":"thread/resume","params":{"config":"x","model":"key_name-1","cwd":"trailing.trailing.","approvalPolicy":"untrusted","approvalsReviewer":"auto_review","sandbox":"read-only","threadId":"HELLO","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"resumeThreadId":"  padded  ","sessionOverrides":{"model":"日本語のテキスト","serviceTier":"ünïcödé","cwd":"a:b:c","approvalPolicy":"on-request","approvalsReviewer":"user","sandbox":"danger-full-access"}}],"ok":{"method":"thread/resume","params":{"model":"日本語のテキスト","serviceTier":"ünïcödé","cwd":"a:b:c","approvalPolicy":"on-request","approvalsReviewer":"user","sandbox":"danger-full-access","threadId":"  padded  ","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"resumeThreadId":"a😀b😀c{name} has {count} items","sessionOverrides":{"model":null,"serviceTier":"hello world﻿bom","cwd":"abc","approvalPolicy":"untrusted","approvalsReviewer":"user","sandbox":"danger-full-access"}}],"ok":{"method":"thread/resume","params":{"model":null,"serviceTier":"hello world﻿bom","cwd":"abc","approvalPolicy":"untrusted","approvalsReviewer":"user","sandbox":"danger-full-access","threadId":"a😀b😀c{name} has {count} items","excludeTurns":true}}}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":".leading","resumeThreadId":"a..b","sessionOverrides":{"config":{},"model":"a..b","cwd":"日本語のテキストhello world","approvalPolicy":"on-request","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"hello world","resumeThreadId":"a😀b😀csrc/a/b.ts","sessionOverrides":{"config":true,"model":"hello","cwd":"ünïcödé","approvalPolicy":"never","approvalsReviewer":"auto_review","sandbox":"workspace-write"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"buildCodexThreadOpenRequest","args":[{"forkSourceThreadId":"a..b","resumeThreadId":"ns:key.path","sessionOverrides":{"config":{"a":{"b":"c"}},"model":null,"cwd":"a..b","approvalPolicy":"never","approvalsReviewer":"user","sandbox":"danger-full-access"}}],"error":"A Codex session cannot resume and fork at the same time."}
+{"fn":"resolveCodexThreadOpenMinimumVersion","args":[null],"error":"Cannot read properties of null (reading 'runtimeMode')"}
+{"fn":"resolveCodexThreadOpenMinimumVersion","args":[{}],"ok":"0.125.0"}
+{"fn":"resolveCodexThreadOpenMinimumVersion","args":[["a",1]],"ok":"0.125.0"}
+{"fn":"resolveCodexThreadOpenMinimumVersion","args":["x"],"ok":"0.125.0"}
+{"fn":"resolveCodexThreadOpenMinimumVersion","args":[{"a":{"b":"c"}}],"ok":"0.125.0"}
+{"fn":"resolveCodexThreadOpenMinimumVersion","args":[[]],"ok":"0.125.0"}
+{"fn":"resolveCodexThreadOpenMinimumVersion","args":[true],"ok":"0.125.0"}
+{"fn":"resolveCodexThreadOpenMinimumVersion","args":[0],"ok":"0.125.0"}
+{"fn":"resolveCodexThreadOpenMinimumVersion","args":[{"a":"b"}],"ok":"0.125.0"}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"a:b:c","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[null],"error":"Cannot read properties of null (reading 'threadOpenMethod')"}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[["a",1]],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"İstanbul","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"tab\tseparatedstraße","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"日本語のテキスト","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"﻿bom","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"é","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"line1\nline2line1\nline2","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"straße","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"a😀b😀c","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"{name} has {count} items","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"İstanbul  padded  ","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"ünïcödé","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"key_name-1","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":":","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"hello","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"a.b.c","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"a..b","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"{name} has {count} items{name} has {count} items","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"a","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":["x"],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"a","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"a:b:c","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"ΣΊΣΥΦΟΣ","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"src/a/b.ts","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"trailing.","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"HELLO","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"aünïcödé","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"日本語のテキスト","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"tab\tseparatedHELLO","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"ns:key.path","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"hello world","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"./x/**/*.jsonΣΊΣΥΦΟΣ","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[0],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"trailing.","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":":","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"hello:","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[true],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"abc","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"abc","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"﻿bom","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"abc{name} has {count} items","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"a":{"b":"c"}}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"Hello World","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"line1\nline2straße","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"hello","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":".leading","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"{name} has {count} items","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"ünïcödé","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"ΣΊΣΥΦΟΣsrc/a/b.ts","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"Hello World","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"straße","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":".leading","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"line1\nline2.leading","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[[]],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"a😀b😀c","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":".leadingkey_name-1","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"İstanbultab\tseparated","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"emoji 👍🏽 mix","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"ab","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"a..bé","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"a.b.c","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"abckey_name-1","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"./x/**/*.json","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"emoji 👍🏽 mix","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"key_name-1a.b.c","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"key_name-1","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"😀","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"line1\nline2","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"ΣΊΣΥΦΟΣ","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"İstanbul","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"﻿bomhello world","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"./x/**/*.json﻿bom","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"hello world","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"abckey_name-1","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"key_name-1日本語のテキスト","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"trailing.hello world","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"straßens:key.path","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"line1\nline2ns:key.path","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"éa.b.c","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"HELLO","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"aİstanbul","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":":./x/**/*.json","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"emoji 👍🏽 mixline1\nline2","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"tab\tseparated","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"line1\nline2","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"{name} has {count} itemsa.b.c","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"{name} has {count} itemstrailing.","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"a..b{name} has {count} items","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"{name} has {count} items:","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"hello worldé","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"atab\tseparated","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"ünïcödéΣΊΣΥΦΟΣ","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"İstanbula..b","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":":hello","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"{name} has {count} itemskey_name-1","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":".leadinghello world","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"helloemoji 👍🏽 mix","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"﻿bom:","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"a":"b"}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"ab","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"straßehello world","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":".leading{name} has {count} items","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"hello worlda","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"ns:key.pathtrailing.","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"é","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"  padded  ","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"hello日本語のテキスト","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"src/a/b.ts","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"hello worldab","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"ns:key.path","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"a😀b😀cemoji 👍🏽 mix","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"./x/**/*.json","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"HELLOhello","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"a:b:ca.b.c","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"a..b","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"./x/**/*.jsona..b","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"tab\tseparated","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"line1\nline2trailing.","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"ünïcödéemoji 👍🏽 mix","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"./x/**/*.jsonhello world","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"HELLOabc","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"src/a/b.tsé","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"HELLO😀","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"src/a/b.tsns:key.path","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"éabc","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"😀","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"ΣΊΣΥΦΟΣtab\tseparated","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"abc.leading","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"a😀b😀ckey_name-1","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"日本語のテキスト:","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"HELLOns:key.path","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"key_name-1日本語のテキスト","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"é﻿bom","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"./x/**/*.jsontab\tseparated","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"😀hello world","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"ns:key.path日本語のテキスト","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"a😀b😀ca","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"Hello Worldns:key.path","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"日本語のテキスト日本語のテキスト","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"日本語のテキストa","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"tab\tseparatedhello world","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"hello worldabc","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"helloemoji 👍🏽 mix","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"ab{name} has {count} items","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"a:b:cé","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"ΣΊΣΥΦΟΣİstanbul","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"ΣΊΣΥΦΟΣ😀","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"straßea..b","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"ünïcödétab\tseparated","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"  padded  emoji 👍🏽 mix","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"ns:key.pathkey_name-1","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"a.b.c😀","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"./x/**/*.json  padded  ","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"trailing.hello","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"HELLO  padded  ","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"{name} has {count} itemsé","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"İstanbulline1\nline2","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"  padded  ns:key.path","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"Hello World😀","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"tab\tseparated日本語のテキスト","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"  padded  ","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"{name} has {count} itemsHello World","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"ns:key.path﻿bom","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"ünïcödéhello world","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"key_name-1  padded  ","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"{name} has {count} itemsa😀b😀c","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"hellosrc/a/b.ts","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"{name} has {count} itemstab\tseparated","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"hello  padded  ","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"./x/**/*.jsonline1\nline2","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"hello world./x/**/*.json","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"{name} has {count} items.leading","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"hello worldünïcödé","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"tab\tseparatedemoji 👍🏽 mix","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"😀{name} has {count} items","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"abcline1\nline2","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":":src/a/b.ts","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"a.b.c日本語のテキスト","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"ünïcödé  padded  ","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"abemoji 👍🏽 mix","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"trailing.a..b","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"a.b.csrc/a/b.ts","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"a.b.cstraße","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"日本語のテキストHello World","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"tab\tseparatedstraße","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"straßesrc/a/b.ts","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"日本語のテキスト  padded  ","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"abca.b.c","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"ns:key.pathΣΊΣΥΦΟΣ","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"﻿boma.b.c","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"日本語のテキストtab\tseparated","previouslyBound":true}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"abcé","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"trailing.  padded  ","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"a.b.chello","previouslyBound":false}],"ok":false}
+{"fn":"shouldWarnCodexFreshStartWithoutResume","args":[{"threadOpenMethod":"key_name-1hello","previouslyBound":false}],"ok":false}
+{"fn":"resolveCodexModelForAccount","args":["  padded  İstanbul",{"type":"unknown","planType":null,"sparkEnabled":false}],"ok":"  padded  İstanbul"}
+{"fn":"resolveCodexModelForAccount","args":[{"$undefined":true},{"type":"unknown","planType":null,"sparkEnabled":true}],"ok":{"$undefined":true}}
+{"fn":"resolveCodexModelForAccount","args":["ab",null],"ok":"ab"}
+{"fn":"resolveCodexModelForAccount","args":["ΣΊΣΥΦΟΣ",{"type":"chatgpt","planType":"edu","sparkEnabled":true}],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"resolveCodexModelForAccount","args":[{"$undefined":true},{"type":"chatgpt","planType":null,"sparkEnabled":false}],"ok":{"$undefined":true}}
+{"fn":"resolveCodexModelForAccount","args":["ns:key.path",{"type":"unknown","planType":null,"sparkEnabled":false}],"ok":"ns:key.path"}
+{"fn":"resolveCodexModelForAccount","args":["trailing.",{"type":"chatgpt","planType":"business","sparkEnabled":false}],"ok":"trailing."}
+{"fn":"resolveCodexModelForAccount","args":["hello",{"type":"chatgpt","planType":"go","sparkEnabled":false}],"ok":"hello"}
+{"fn":"resolveCodexModelForAccount","args":["a",{"type":"apiKey","planType":null,"sparkEnabled":true}],"ok":"a"}
+{"fn":"resolveCodexModelForAccount","args":[{"$undefined":true},{"type":"apiKey","planType":"free","sparkEnabled":true}],"ok":{"$undefined":true}}
+{"fn":"resolveCodexModelForAccount","args":[{"$undefined":true},{"type":"chatgpt","planType":null,"sparkEnabled":true}],"ok":{"$undefined":true}}
+{"fn":"resolveCodexModelForAccount","args":["./x/**/*.jsona😀b😀c",{"type":"unknown","planType":"unknown","sparkEnabled":false}],"ok":"./x/**/*.jsona😀b😀c"}
+{"fn":"resolveCodexModelForAccount","args":["日本語のテキスト",{"type":"apiKey","planType":null,"sparkEnabled":false}],"ok":"日本語のテキスト"}
+{"fn":"resolveCodexModelForAccount","args":["ünïcödé",{"type":"unknown","planType":"free","sparkEnabled":false}],"ok":"ünïcödé"}
+{"fn":"resolveCodexModelForAccount","args":["  padded  ",{"type":"unknown","planType":null,"sparkEnabled":false}],"ok":"  padded  "}
+{"fn":"resolveCodexModelForAccount","args":["line1\nline2é",{"type":"apiKey","planType":"plus","sparkEnabled":true}],"ok":"line1\nline2é"}
+{"fn":"resolveCodexModelForAccount","args":["ünïcödé",{"type":"unknown","planType":null,"sparkEnabled":false}],"ok":"ünïcödé"}
+{"fn":"resolveCodexModelForAccount","args":[".leading",{"type":"unknown","planType":"pro","sparkEnabled":false}],"ok":".leading"}
+{"fn":"resolveCodexModelForAccount","args":["ns:key.path",0],"ok":"ns:key.path"}
+{"fn":"resolveCodexModelForAccount","args":["ab",{"type":"chatgpt","planType":"enterprise","sparkEnabled":false}],"ok":"ab"}
+{"fn":"resolveCodexModelForAccount","args":["日本語のテキスト{name} has {count} items",{"type":"chatgpt","planType":null,"sparkEnabled":false}],"ok":"日本語のテキスト{name} has {count} items"}
+{"fn":"resolveCodexModelForAccount","args":["ünïcödé﻿bom",{"type":"apiKey","planType":null,"sparkEnabled":false}],"ok":"ünïcödé﻿bom"}
+{"fn":"resolveCodexModelForAccount","args":[":",{"type":"apiKey","planType":null,"sparkEnabled":false}],"ok":":"}
+{"fn":"resolveCodexModelForAccount","args":["hello",{"type":"unknown","planType":null,"sparkEnabled":false}],"ok":"hello"}
+{"fn":"resolveCodexModelForAccount","args":[{"$undefined":true},{"type":"apiKey","planType":null,"sparkEnabled":false}],"ok":{"$undefined":true}}
+{"fn":"resolveCodexModelForAccount","args":["﻿bom",{"type":"unknown","planType":null,"sparkEnabled":true}],"ok":"﻿bom"}
+{"fn":"resolveCodexModelForAccount","args":["line1\nline2",{"type":"apiKey","planType":"pro","sparkEnabled":true}],"ok":"line1\nline2"}
+{"fn":"resolveCodexModelForAccount","args":["abc",{"type":"chatgpt","planType":null,"sparkEnabled":true}],"ok":"abc"}
+{"fn":"resolveCodexModelForAccount","args":["a😀b😀c",{"type":"apiKey","planType":null,"sparkEnabled":true}],"ok":"a😀b😀c"}
+{"fn":"resolveCodexModelForAccount","args":[".leading",{"type":"unknown","planType":"enterprise","sparkEnabled":false}],"ok":".leading"}
+{"fn":"resolveCodexModelForAccount","args":["hello",{"type":"apiKey","planType":"pro","sparkEnabled":true}],"ok":"hello"}
+{"fn":"resolveCodexModelForAccount","args":["hello",{"type":"apiKey","planType":"business","sparkEnabled":true}],"ok":"hello"}
+{"fn":"resolveCodexModelForAccount","args":["line1\nline2",{"type":"unknown","planType":"unknown","sparkEnabled":false}],"ok":"line1\nline2"}
+{"fn":"resolveCodexModelForAccount","args":["a..b",{"type":"unknown","planType":"business","sparkEnabled":true}],"ok":"a..b"}
+{"fn":"resolveCodexModelForAccount","args":["",{"type":"chatgpt","planType":"go","sparkEnabled":true}],"ok":""}
+{"fn":"resolveCodexModelForAccount","args":["ns:key.path",{"type":"chatgpt","planType":"free","sparkEnabled":true}],"ok":"ns:key.path"}
+{"fn":"resolveCodexModelForAccount","args":["tab\tseparated",{"type":"chatgpt","planType":null,"sparkEnabled":false}],"ok":"tab\tseparated"}
+{"fn":"resolveCodexModelForAccount","args":["  padded  key_name-1",{"type":"chatgpt","planType":null,"sparkEnabled":false}],"ok":"  padded  key_name-1"}
+{"fn":"resolveCodexModelForAccount","args":[":",{"type":"chatgpt","planType":null,"sparkEnabled":true}],"ok":":"}
+{"fn":"resolveCodexModelForAccount","args":["Hello World",{"type":"apiKey","planType":"unknown","sparkEnabled":false}],"ok":"Hello World"}
+{"fn":"resolveCodexModelForAccount","args":["a😀b😀c{name} has {count} items",{"type":"apiKey","planType":"unknown","sparkEnabled":true}],"ok":"a😀b😀c{name} has {count} items"}
+{"fn":"resolveCodexModelForAccount","args":["é",{"type":"chatgpt","planType":null,"sparkEnabled":true}],"ok":"é"}
+{"fn":"resolveCodexModelForAccount","args":["line1\nline2",{"type":"apiKey","planType":null,"sparkEnabled":true}],"ok":"line1\nline2"}
+{"fn":"resolveCodexModelForAccount","args":["a..b",{"type":"chatgpt","planType":null,"sparkEnabled":true}],"ok":"a..b"}
+{"fn":"resolveCodexModelForAccount","args":["",{"type":"apiKey","planType":null,"sparkEnabled":false}],"ok":""}
+{"fn":"resolveCodexModelForAccount","args":["HELLO",{"type":"apiKey","planType":"plus","sparkEnabled":false}],"ok":"HELLO"}
+{"fn":"resolveCodexModelForAccount","args":["helloab",{"type":"unknown","planType":"team","sparkEnabled":false}],"ok":"helloab"}
+{"fn":"resolveCodexModelForAccount","args":[{"$undefined":true},{"type":"unknown","planType":"team","sparkEnabled":true}],"ok":{"$undefined":true}}
+{"fn":"resolveCodexModelForAccount","args":["a.b.c",{"type":"chatgpt","planType":null,"sparkEnabled":false}],"ok":"a.b.c"}
+{"fn":"resolveCodexModelForAccount","args":[".leading",{"type":"apiKey","planType":null,"sparkEnabled":false}],"ok":".leading"}
+{"fn":"resolveCodexModelForAccount","args":["./x/**/*.json",{"type":"chatgpt","planType":"pro","sparkEnabled":true}],"ok":"./x/**/*.json"}
+{"fn":"resolveCodexModelForAccount","args":["éab",{"type":"chatgpt","planType":null,"sparkEnabled":false}],"ok":"éab"}
+{"fn":"resolveCodexModelForAccount","args":["{name} has {count} items",{"type":"chatgpt","planType":null,"sparkEnabled":true}],"ok":"{name} has {count} items"}
+{"fn":"resolveCodexModelForAccount","args":["./x/**/*.json",{"type":"apiKey","planType":"unknown","sparkEnabled":false}],"ok":"./x/**/*.json"}
+{"fn":"resolveCodexModelForAccount","args":[".leading",{"type":"chatgpt","planType":null,"sparkEnabled":false}],"ok":".leading"}
+{"fn":"resolveCodexModelForAccount","args":["a😀b😀c",{"type":"unknown","planType":"free","sparkEnabled":true}],"ok":"a😀b😀c"}
+{"fn":"resolveCodexModelForAccount","args":[{"$undefined":true},[]],"ok":{"$undefined":true}}
+{"fn":"resolveCodexModelForAccount","args":[":",{"type":"unknown","planType":null,"sparkEnabled":false}],"ok":":"}
+{"fn":"resolveCodexModelForAccount","args":["",{"type":"unknown","planType":null,"sparkEnabled":true}],"ok":""}
+{"fn":"resolveCodexModelForAccount","args":["key_name-1é",{"type":"chatgpt","planType":null,"sparkEnabled":false}],"ok":"key_name-1é"}
+{"fn":"resolveCodexModelForAccount","args":["﻿bom./x/**/*.json",[]],"ok":"﻿bom./x/**/*.json"}
+{"fn":"resolveCodexModelForAccount","args":["emoji 👍🏽 mix",{"type":"chatgpt","planType":null,"sparkEnabled":true}],"ok":"emoji 👍🏽 mix"}
+{"fn":"resolveCodexModelForAccount","args":[".leading",{"type":"unknown","planType":"team","sparkEnabled":false}],"ok":".leading"}
+{"fn":"resolveCodexModelForAccount","args":["ab",{"type":"unknown","planType":null,"sparkEnabled":false}],"ok":"ab"}
+{"fn":"resolveCodexModelForAccount","args":[{"$undefined":true},0],"ok":{"$undefined":true}}
+{"fn":"resolveCodexModelForAccount","args":["hello",{"type":"apiKey","planType":"business","sparkEnabled":false}],"ok":"hello"}
+{"fn":"resolveCodexModelForAccount","args":["ab","x"],"ok":"ab"}
+{"fn":"resolveCodexModelForAccount","args":["abstraße",{"type":"apiKey","planType":null,"sparkEnabled":true}],"ok":"abstraße"}
+{"fn":"resolveCodexModelForAccount","args":[{"$undefined":true},{"type":"apiKey","planType":"go","sparkEnabled":true}],"ok":{"$undefined":true}}
+{"fn":"resolveCodexModelForAccount","args":["😀",{"type":"unknown","planType":"edu","sparkEnabled":false}],"ok":"😀"}
+{"fn":"resolveCodexModelForAccount","args":["﻿bom",{"type":"apiKey","planType":"go","sparkEnabled":false}],"ok":"﻿bom"}
+{"fn":"resolveCodexModelForAccount","args":[{"$undefined":true},{"type":"unknown","planType":"plus","sparkEnabled":true}],"ok":{"$undefined":true}}
+{"fn":"resolveCodexModelForAccount","args":["a:b:c",{}],"ok":"a:b:c"}
+{"fn":"resolveCodexModelForAccount","args":[{"$undefined":true},{"type":"chatgpt","planType":"team","sparkEnabled":true}],"ok":{"$undefined":true}}
+{"fn":"resolveCodexModelForAccount","args":["./x/**/*.jsonns:key.path",{"type":"chatgpt","planType":null,"sparkEnabled":true}],"ok":"./x/**/*.jsonns:key.path"}
+{"fn":"resolveCodexModelForAccount","args":["hello world",{"type":"chatgpt","planType":null,"sparkEnabled":false}],"ok":"hello world"}
+{"fn":"resolveCodexModelForAccount","args":["a😀b😀c",{"type":"unknown","planType":"edu","sparkEnabled":true}],"ok":"a😀b😀c"}
+{"fn":"resolveCodexModelForAccount","args":["﻿bom",[]],"ok":"﻿bom"}
+{"fn":"resolveCodexModelForAccount","args":[{"$undefined":true},"x"],"ok":{"$undefined":true}}
+{"fn":"resolveCodexModelForAccount","args":["a:b:c",{"type":"apiKey","planType":null,"sparkEnabled":true}],"ok":"a:b:c"}
+{"fn":"resolveCodexModelForAccount","args":[{"$undefined":true},{"type":"apiKey","planType":"free","sparkEnabled":false}],"ok":{"$undefined":true}}
+{"fn":"resolveCodexModelForAccount","args":["straße",{"type":"unknown","planType":"team","sparkEnabled":true}],"ok":"straße"}
+{"fn":"resolveCodexModelForAccount","args":["a:b:ca:b:c",{"a":{"b":"c"}}],"ok":"a:b:ca:b:c"}
+{"fn":"resolveCodexModelForAccount","args":["a..b",["a",1]],"ok":"a..b"}
+{"fn":"resolveCodexModelForAccount","args":["ünïcödé",{"type":"unknown","planType":"team","sparkEnabled":true}],"ok":"ünïcödé"}
+{"fn":"resolveCodexModelForAccount","args":["a:b:cabc",{"type":"chatgpt","planType":"go","sparkEnabled":true}],"ok":"a:b:cabc"}
+{"fn":"resolveCodexModelForAccount","args":["hello",{"type":"apiKey","planType":"free","sparkEnabled":true}],"ok":"hello"}
+{"fn":"resolveCodexModelForAccount","args":["a:b:csrc/a/b.ts",{"type":"unknown","planType":null,"sparkEnabled":false}],"ok":"a:b:csrc/a/b.ts"}
+{"fn":"resolveCodexModelForAccount","args":[{"$undefined":true},{"type":"unknown","planType":null,"sparkEnabled":false}],"ok":{"$undefined":true}}
+{"fn":"resolveCodexModelForAccount","args":["ab",{"type":"apiKey","planType":"go","sparkEnabled":false}],"ok":"ab"}
+{"fn":"resolveCodexModelForAccount","args":["trailing.a:b:c",{"type":"chatgpt","planType":null,"sparkEnabled":true}],"ok":"trailing.a:b:c"}
+{"fn":"resolveCodexModelForAccount","args":[{"$undefined":true},{"type":"apiKey","planType":"pro","sparkEnabled":false}],"ok":{"$undefined":true}}
+{"fn":"resolveCodexModelForAccount","args":["line1\nline2",{"type":"apiKey","planType":null,"sparkEnabled":false}],"ok":"line1\nline2"}
+{"fn":"resolveCodexModelForAccount","args":[{"$undefined":true},{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"resolveCodexModelForAccount","args":["Hello World",{"type":"chatgpt","planType":"unknown","sparkEnabled":false}],"ok":"Hello World"}
+{"fn":"resolveCodexModelForAccount","args":["hello",{"a":{"b":"c"}}],"ok":"hello"}
+{"fn":"resolveCodexModelForAccount","args":[{"$undefined":true},{}],"ok":{"$undefined":true}}
+{"fn":"resolveCodexModelForAccount","args":["😀./x/**/*.json",{"type":"apiKey","planType":null,"sparkEnabled":true}],"ok":"😀./x/**/*.json"}
+{"fn":"resolveCodexModelForAccount","args":[{"$undefined":true},true],"ok":{"$undefined":true}}
+{"fn":"resolveCodexModelForAccount","args":["a😀b😀c",{"type":"unknown","planType":null,"sparkEnabled":true}],"ok":"a😀b😀c"}
+{"fn":"resolveCodexModelForAccount","args":["a..b",{"type":"apiKey","planType":"team","sparkEnabled":false}],"ok":"a..b"}
+{"fn":"resolveCodexModelForAccount","args":["./x/**/*.json",{"type":"chatgpt","planType":"enterprise","sparkEnabled":false}],"ok":"./x/**/*.json"}
+{"fn":"resolveCodexModelForAccount","args":["ΣΊΣΥΦΟΣtrailing.",{"a":{"b":"c"}}],"ok":"ΣΊΣΥΦΟΣtrailing."}
+{"fn":"resolveCodexModelForAccount","args":["😀",0],"ok":"😀"}
+{"fn":"resolveCodexModelForAccount","args":["abc",{"type":"chatgpt","planType":"edu","sparkEnabled":false}],"ok":"abc"}
+{"fn":"resolveCodexModelForAccount","args":["Hello World",{"type":"chatgpt","planType":"team","sparkEnabled":true}],"ok":"Hello World"}
+{"fn":"resolveCodexModelForAccount","args":["tab\tseparatedhello",{"type":"apiKey","planType":null,"sparkEnabled":true}],"ok":"tab\tseparatedhello"}
+{"fn":"resolveCodexModelForAccount","args":["😀","x"],"ok":"😀"}
+{"fn":"resolveCodexModelForAccount","args":["hello",{"type":"chatgpt","planType":null,"sparkEnabled":true}],"ok":"hello"}
+{"fn":"resolveCodexModelForAccount","args":["ns:key.path",{"type":"chatgpt","planType":null,"sparkEnabled":false}],"ok":"ns:key.path"}
+{"fn":"resolveCodexModelForAccount","args":["a",{"type":"apiKey","planType":null,"sparkEnabled":false}],"ok":"a"}
+{"fn":"resolveCodexModelForAccount","args":[{"$undefined":true},{"type":"unknown","planType":"enterprise","sparkEnabled":false}],"ok":{"$undefined":true}}
+{"fn":"resolveCodexModelForAccount","args":["src/a/b.ts",{"type":"chatgpt","planType":"pro","sparkEnabled":false}],"ok":"src/a/b.ts"}
+{"fn":"resolveCodexModelForAccount","args":[{"$undefined":true},{"type":"apiKey","planType":"plus","sparkEnabled":true}],"ok":{"$undefined":true}}
+{"fn":"resolveCodexModelForAccount","args":["src/a/b.ts",{"type":"apiKey","planType":null,"sparkEnabled":false}],"ok":"src/a/b.ts"}
+{"fn":"resolveCodexModelForAccount","args":["😀",{"type":"apiKey","planType":"unknown","sparkEnabled":true}],"ok":"😀"}
+{"fn":"resolveCodexModelForAccount","args":["ns:key.path",{"type":"apiKey","planType":null,"sparkEnabled":false}],"ok":"ns:key.path"}
+{"fn":"resolveCodexModelForAccount","args":["  padded  é",{"type":"unknown","planType":null,"sparkEnabled":false}],"ok":"  padded  é"}
+{"fn":"resolveCodexModelForAccount","args":[":",{"type":"apiKey","planType":null,"sparkEnabled":true}],"ok":":"}
+{"fn":"resolveCodexModelForAccount","args":["hello world",{"type":"apiKey","planType":"enterprise","sparkEnabled":false}],"ok":"hello world"}
+{"fn":"resolveCodexModelForAccount","args":["emoji 👍🏽 mix😀",null],"ok":"emoji 👍🏽 mix😀"}
+{"fn":"resolveCodexModelForAccount","args":["a..b",{"type":"chatgpt","planType":"enterprise","sparkEnabled":false}],"ok":"a..b"}
+{"fn":"resolveCodexModelForAccount","args":["Hello Worlda..b",{"type":"chatgpt","planType":null,"sparkEnabled":true}],"ok":"Hello Worlda..b"}
+{"fn":"resolveCodexModelForAccount","args":["a",{}],"ok":"a"}
+{"fn":"resolveCodexModelForAccount","args":[{"$undefined":true},{"type":"apiKey","planType":"go","sparkEnabled":false}],"ok":{"$undefined":true}}
+{"fn":"resolveCodexModelForAccount","args":[{"$undefined":true},{"type":"chatgpt","planType":"plus","sparkEnabled":true}],"ok":{"$undefined":true}}
+{"fn":"resolveCodexModelForAccount","args":["  padded  ",{"type":"chatgpt","planType":"pro","sparkEnabled":false}],"ok":"  padded  "}
+{"fn":"resolveCodexModelForAccount","args":["straße",{"type":"chatgpt","planType":null,"sparkEnabled":true}],"ok":"straße"}
+{"fn":"resolveCodexModelForAccount","args":["Hello World",{"type":"apiKey","planType":null,"sparkEnabled":true}],"ok":"Hello World"}
+{"fn":"resolveCodexModelForAccount","args":["﻿bom",{"type":"unknown","planType":"unknown","sparkEnabled":false}],"ok":"﻿bom"}
+{"fn":"resolveCodexModelForAccount","args":["./x/**/*.json",{"type":"chatgpt","planType":null,"sparkEnabled":true}],"ok":"./x/**/*.json"}
+{"fn":"resolveCodexModelForAccount","args":["{name} has {count} items",{"type":"apiKey","planType":null,"sparkEnabled":false}],"ok":"{name} has {count} items"}
+{"fn":"resolveCodexModelForAccount","args":["😀",{"type":"unknown","planType":"edu","sparkEnabled":true}],"ok":"😀"}
+{"fn":"resolveCodexModelForAccount","args":["a.b.c",{"type":"unknown","planType":"plus","sparkEnabled":false}],"ok":"a.b.c"}
+{"fn":"resolveCodexModelForAccount","args":["ns:key.path",{"type":"chatgpt","planType":"plus","sparkEnabled":true}],"ok":"ns:key.path"}
+{"fn":"resolveCodexModelForAccount","args":["😀src/a/b.ts",{"type":"apiKey","planType":"pro","sparkEnabled":true}],"ok":"😀src/a/b.ts"}
+{"fn":"resolveCodexModelForAccount","args":["a..b",{"type":"apiKey","planType":"plus","sparkEnabled":true}],"ok":"a..b"}
+{"fn":"resolveCodexModelForAccount","args":["line1\nline2",{"type":"unknown","planType":"edu","sparkEnabled":false}],"ok":"line1\nline2"}
+{"fn":"resolveCodexModelForAccount","args":["é",["a",1]],"ok":"é"}
+{"fn":"resolveCodexModelForAccount","args":["trailing.",{"type":"unknown","planType":null,"sparkEnabled":true}],"ok":"trailing."}
+{"fn":"resolveCodexModelForAccount","args":[{"$undefined":true},{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"resolveCodexModelForAccount","args":["  padded  ",{"type":"chatgpt","planType":null,"sparkEnabled":true}],"ok":"  padded  "}
+{"fn":"resolveCodexModelForAccount","args":[{"$undefined":true},["a",1]],"ok":{"$undefined":true}}
+{"fn":"resolveCodexModelForAccount","args":["ns:key.path",{"type":"apiKey","planType":"edu","sparkEnabled":true}],"ok":"ns:key.path"}
+{"fn":"resolveCodexModelForAccount","args":["{name} has {count} items",{"type":"unknown","planType":"business","sparkEnabled":false}],"ok":"{name} has {count} items"}
+{"fn":"resolveCodexModelForAccount","args":[":",{"type":"apiKey","planType":"free","sparkEnabled":true}],"ok":":"}
+{"fn":"resolveCodexModelForAccount","args":["HELLO",{"type":"chatgpt","planType":"go","sparkEnabled":true}],"ok":"HELLO"}
+{"fn":"resolveCodexModelForAccount","args":["tab\tseparated",[]],"ok":"tab\tseparated"}
+{"fn":"resolveCodexModelForAccount","args":["key_name-1",{"type":"apiKey","planType":null,"sparkEnabled":false}],"ok":"key_name-1"}
+{"fn":"resolveCodexModelForAccount","args":["{name} has {count} items",{"type":"chatgpt","planType":"edu","sparkEnabled":false}],"ok":"{name} has {count} items"}
+{"fn":"resolveCodexModelForAccount","args":["src/a/b.ts",0],"ok":"src/a/b.ts"}
+{"fn":"resolveCodexModelForAccount","args":[{"$undefined":true},{"type":"chatgpt","planType":"edu","sparkEnabled":true}],"ok":{"$undefined":true}}
+{"fn":"resolveCodexModelForAccount","args":["trailing.",{"type":"apiKey","planType":null,"sparkEnabled":true}],"ok":"trailing."}
+{"fn":"resolveCodexModelForAccount","args":["é",{"type":"apiKey","planType":null,"sparkEnabled":true}],"ok":"é"}
+{"fn":"resolveCodexModelForAccount","args":[{"$undefined":true},{"type":"apiKey","planType":null,"sparkEnabled":true}],"ok":{"$undefined":true}}
+{"fn":"resolveCodexModelForAccount","args":["trailing.",{"type":"chatgpt","planType":null,"sparkEnabled":true}],"ok":"trailing."}
+{"fn":"resolveCodexModelForAccount","args":["ab",{}],"ok":"ab"}
+{"fn":"resolveCodexModelForAccount","args":["abchello world",{"type":"chatgpt","planType":"free","sparkEnabled":false}],"ok":"abchello world"}
+{"fn":"resolveCodexModelForAccount","args":[{"$undefined":true},{"type":"unknown","planType":"free","sparkEnabled":false}],"ok":{"$undefined":true}}
+{"fn":"resolveCodexModelForAccount","args":["HELLOkey_name-1",{"type":"apiKey","planType":null,"sparkEnabled":true}],"ok":"HELLOkey_name-1"}
+{"fn":"resolveCodexModelForAccount","args":["ünïcödé",{"type":"chatgpt","planType":"plus","sparkEnabled":true}],"ok":"ünïcödé"}
+{"fn":"resolveCodexModelForAccount","args":["trailing.",{"type":"chatgpt","planType":"plus","sparkEnabled":true}],"ok":"trailing."}
+{"fn":"resolveCodexModelForAccount","args":[{"$undefined":true},{"type":"unknown","planType":"business","sparkEnabled":true}],"ok":{"$undefined":true}}
+{"fn":"resolveCodexModelForAccount","args":["src/a/b.ts",{"type":"chatgpt","planType":"team","sparkEnabled":false}],"ok":"src/a/b.ts"}
+{"fn":"resolveCodexModelForAccount","args":["HELLO",{"type":"unknown","planType":"plus","sparkEnabled":true}],"ok":"HELLO"}
+{"fn":"resolveCodexModelForAccount","args":["a",{"type":"unknown","planType":null,"sparkEnabled":true}],"ok":"a"}
+{"fn":"resolveCodexModelForAccount","args":["key_name-1",{"a":{"b":"c"}}],"ok":"key_name-1"}
+{"fn":"resolveCodexModelForAccount","args":["ab",0],"ok":"ab"}
+{"fn":"resolveCodexModelForAccount","args":["İstanbul",{"type":"chatgpt","planType":null,"sparkEnabled":true}],"ok":"İstanbul"}
+{"fn":"resolveCodexModelForAccount","args":["hello",{"type":"apiKey","planType":"unknown","sparkEnabled":false}],"ok":"hello"}
+{"fn":"resolveCodexModelForAccount","args":["hello world",{"type":"unknown","planType":"unknown","sparkEnabled":false}],"ok":"hello world"}
+{"fn":"resolveCodexModelForAccount","args":["tab\tseparatedemoji 👍🏽 mix",{"type":"chatgpt","planType":"go","sparkEnabled":false}],"ok":"tab\tseparatedemoji 👍🏽 mix"}
+{"fn":"resolveCodexModelForAccount","args":[{"$undefined":true},{"type":"apiKey","planType":"team","sparkEnabled":false}],"ok":{"$undefined":true}}
+{"fn":"resolveCodexModelForAccount","args":["  padded  {name} has {count} items",{"type":"chatgpt","planType":null,"sparkEnabled":true}],"ok":"  padded  {name} has {count} items"}
+{"fn":"resolveCodexModelForAccount","args":["abc",{"type":"apiKey","planType":null,"sparkEnabled":false}],"ok":"abc"}
+{"fn":"resolveCodexModelForAccount","args":["trailing.",{"type":"unknown","planType":"unknown","sparkEnabled":false}],"ok":"trailing."}
+{"fn":"resolveCodexModelForAccount","args":["ns:key.path",{"type":"apiKey","planType":"plus","sparkEnabled":true}],"ok":"ns:key.path"}
+{"fn":"resolveCodexModelForAccount","args":["a:b:c",{"type":"unknown","planType":null,"sparkEnabled":true}],"ok":"a:b:c"}
+{"fn":"resolveCodexModelForAccount","args":["日本語のテキストa",{"type":"apiKey","planType":"free","sparkEnabled":false}],"ok":"日本語のテキストa"}
+{"fn":"resolveCodexModelForAccount","args":["hello world",{"type":"unknown","planType":"plus","sparkEnabled":true}],"ok":"hello world"}
+{"fn":"resolveCodexModelForAccount","args":["Hello World",{"type":"unknown","planType":null,"sparkEnabled":true}],"ok":"Hello World"}
+{"fn":"resolveCodexModelForAccount","args":["a😀b😀c",{"type":"chatgpt","planType":"enterprise","sparkEnabled":true}],"ok":"a😀b😀c"}
+{"fn":"resolveCodexModelForAccount","args":[":",{"type":"chatgpt","planType":null,"sparkEnabled":false}],"ok":":"}
+{"fn":"resolveCodexModelForAccount","args":["emoji 👍🏽 mix",{"type":"unknown","planType":null,"sparkEnabled":false}],"ok":"emoji 👍🏽 mix"}
+{"fn":"resolveCodexModelForAccount","args":["ahello",{"type":"chatgpt","planType":null,"sparkEnabled":false}],"ok":"ahello"}
+{"fn":"resolveCodexModelForAccount","args":["./x/**/*.json",{"type":"chatgpt","planType":"team","sparkEnabled":true}],"ok":"./x/**/*.json"}
+{"fn":"resolveCodexModelForAccount","args":["a:b:c",["a",1]],"ok":"a:b:c"}
+{"fn":"resolveCodexModelForAccount","args":["ΣΊΣΥΦΟΣ",{"type":"apiKey","planType":null,"sparkEnabled":true}],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"resolveCodexModelForAccount","args":["Hello World",{"a":{"b":"c"}}],"ok":"Hello World"}
+{"fn":"resolveCodexModelForAccount","args":["helloHELLO",{"type":"chatgpt","planType":null,"sparkEnabled":false}],"ok":"helloHELLO"}
+{"fn":"resolveCodexModelForAccount","args":["ünïcödé",{"type":"chatgpt","planType":"free","sparkEnabled":false}],"ok":"ünïcödé"}
+{"fn":"resolveCodexModelForAccount","args":["İstanbul",{"type":"apiKey","planType":null,"sparkEnabled":false}],"ok":"İstanbul"}
+{"fn":"resolveCodexModelForAccount","args":[{"$undefined":true},{"type":"apiKey","planType":"unknown","sparkEnabled":false}],"ok":{"$undefined":true}}
+{"fn":"resolveCodexModelForAccount","args":["emoji 👍🏽 mix",{"type":"unknown","planType":"go","sparkEnabled":false}],"ok":"emoji 👍🏽 mix"}
+{"fn":"resolveCodexModelForAccount","args":["HELLO",{"type":"chatgpt","planType":null,"sparkEnabled":false}],"ok":"HELLO"}
+{"fn":"resolveCodexModelForAccount","args":["é",{"type":"chatgpt","planType":"enterprise","sparkEnabled":true}],"ok":"é"}
+{"fn":"resolveCodexModelForAccount","args":["{name} has {count} items",{"type":"chatgpt","planType":null,"sparkEnabled":false}],"ok":"{name} has {count} items"}
+{"fn":"resolveCodexModelForAccount","args":["ΣΊΣΥΦΟΣ",{"type":"apiKey","planType":null,"sparkEnabled":false}],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"resolveCodexModelForAccount","args":["abc",{}],"ok":"abc"}
+{"fn":"resolveCodexModelForAccount","args":["src/a/b.ts",{"type":"chatgpt","planType":"enterprise","sparkEnabled":false}],"ok":"src/a/b.ts"}
+{"fn":"resolveCodexModelForAccount","args":["héllo wörld",{"type":"unknown","planType":null,"sparkEnabled":false}],"ok":"héllo wörld"}
+{"fn":"resolveCodexModelForAccount","args":["👍🏽 thumbs",{"type":"unknown","planType":null,"sparkEnabled":false}],"ok":"👍🏽 thumbs"}
+{"fn":"resolveCodexModelForAccount","args":["日本語",{"type":"unknown","planType":null,"sparkEnabled":false}],"ok":"日本語"}
+{"fn":"resolveCodexModelForAccount","args":["",{"type":"unknown","planType":null,"sparkEnabled":false}],"ok":""}
+{"fn":"resolveCodexModelForAccount","args":["é",{"type":"unknown","planType":null,"sparkEnabled":false}],"ok":"é"}
+{"fn":"resolveCodexModelForAccount","args":["İstanbul",{"type":"unknown","planType":null,"sparkEnabled":false}],"ok":"İstanbul"}
+{"fn":"resolveCodexModelForAccount","args":["straße",{"type":"unknown","planType":null,"sparkEnabled":false}],"ok":"straße"}
+{"fn":"resolveCodexModelForAccount","args":["ılık ırmak",{"type":"unknown","planType":null,"sparkEnabled":false}],"ok":"ılık ırmak"}
+{"fn":"resolveCodexModelForAccount","args":["👨‍👩‍👧 family",{"type":"unknown","planType":null,"sparkEnabled":false}],"ok":"👨‍👩‍👧 family"}
+{"fn":"resolveCodexModelForAccount","args":["a b",{"type":"unknown","planType":null,"sparkEnabled":false}],"ok":"a b"}
+{"fn":"resolveCodexModelForAccount","args":["ΣΊΣΥΦΟΣ",{"type":"unknown","planType":null,"sparkEnabled":false}],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"resolveCodexModelForAccount","args":["a😀b",{"type":"unknown","planType":null,"sparkEnabled":false}],"ok":"a😀b"}
+{"fn":"resolveCodexModelForAccount","args":["﻿bom",{"type":"unknown","planType":null,"sparkEnabled":false}],"ok":"﻿bom"}
+{"fn":"resolveCodexModelForAccount","args":["a²b x½ y①",{"type":"unknown","planType":null,"sparkEnabled":false}],"ok":"a²b x½ y①"}
+{"fn":"resolveCodexModelForAccount","args":["aⅠb Ⅻ",{"type":"unknown","planType":null,"sparkEnabled":false}],"ok":"aⅠb Ⅻ"}
+{"fn":"resolveCodexModelForAccount","args":["a𐐀b 𝐀bc",{"type":"unknown","planType":null,"sparkEnabled":false}],"ok":"a𐐀b 𝐀bc"}
+{"fn":"resolveCodexModelForAccount","args":["कि ٣٤",{"type":"unknown","planType":null,"sparkEnabled":false}],"ok":"कि ٣٤"}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"ΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":["Hello World",{"$undefined":true}],"ok":"Hello World"}
+{"fn":"normalizeCodexModelSlug","args":["a😀b😀c","a😀b😀c"],"ok":"a😀b😀c"}
+{"fn":"normalizeCodexModelSlug","args":["L","a:b:chello"],"ok":"L"}
+{"fn":"normalizeCodexModelSlug","args":["a:b:c","abc"],"ok":"a:b:c"}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"Hello World"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"tab\tseparated"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":["a:b:c","  padded  a.b.c"],"ok":"a:b:c"}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"hello world"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":["emoji 👍🏽 mix","emoji 👍🏽 mix"],"ok":"emoji 👍🏽 mix"}
+{"fn":"normalizeCodexModelSlug","args":["","日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"ns:key.path"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":["é","é"],"ok":"é"}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"hello"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":[":",".leading"],"ok":":"}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"line1\nline2"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":["a:b:c",{"$undefined":true}],"ok":"a:b:c"}
+{"fn":"normalizeCodexModelSlug","args":["  padded  ",""],"ok":"padded"}
+{"fn":"normalizeCodexModelSlug","args":["src/a/b.tssrc/a/b.ts","ssrc/a/b"],"ok":"src/a/b.tssrc/a/b.ts"}
+{"fn":"normalizeCodexModelSlug","args":["Hello World","O WORLD"],"ok":"Hello World"}
+{"fn":"normalizeCodexModelSlug","args":["src/a/b.ts"],"ok":"src/a/b.ts"}
+{"fn":"normalizeCodexModelSlug","args":["a..b","a{name} has {count} items"],"ok":"a..b"}
+{"fn":"normalizeCodexModelSlug","args":["emoji 👍🏽 mix","mo"],"ok":"emoji 👍🏽 mix"}
+{"fn":"normalizeCodexModelSlug","args":["{name} has {count} items","ünïcödé"],"ok":"{name} has {count} items"}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"﻿bom"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":["abc","./x/**/*.json"],"ok":"abc"}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},":"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"{name} has {count} items.leading"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":["😀","😀"],"ok":"😀"}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"İstanbul"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"a😀b😀c"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":[":","abc日本語のテキスト"],"ok":":"}
+{"fn":"normalizeCodexModelSlug","args":["Hello Worldhello","😀"],"ok":"Hello Worldhello"}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"éab"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":["./x/**/*.json","s"],"ok":"./x/**/*.json"}
+{"fn":"normalizeCodexModelSlug","args":["src/a/b.ts",".leading"],"ok":"src/a/b.ts"}
+{"fn":"normalizeCodexModelSlug","args":["ns:key.path"],"ok":"ns:key.path"}
+{"fn":"normalizeCodexModelSlug","args":["日本語のテキスト"],"ok":"日本語のテキスト"}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},".leading"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":["ΣΊΣΥΦΟΣ","ékey_name-1"],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"normalizeCodexModelSlug","args":["hello world","Hello World"],"ok":"hello world"}
+{"fn":"normalizeCodexModelSlug","args":["﻿bom:",".leading"],"ok":"bom:"}
+{"fn":"normalizeCodexModelSlug","args":[".leading","é"],"ok":".leading"}
+{"fn":"normalizeCodexModelSlug","args":["a:b:c","trailing."],"ok":"a:b:c"}
+{"fn":"normalizeCodexModelSlug","args":["OR","Hello World"],"ok":"OR"}
+{"fn":"normalizeCodexModelSlug","args":["a",":"],"ok":"a"}
+{"fn":"normalizeCodexModelSlug","args":["abc","ΣΊΣΥΦΟΣ"],"ok":"abc"}
+{"fn":"normalizeCodexModelSlug","args":["bc","abc"],"ok":"bc"}
+{"fn":"normalizeCodexModelSlug","args":["src/a/b.ts","﻿bom"],"ok":"src/a/b.ts"}
+{"fn":"normalizeCodexModelSlug","args":["{name} has {count} items","trailing.İstanbul"],"ok":"{name} has {count} items"}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"a.b.c"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":["tab\tseparateda..b","hello world"],"ok":"tab\tseparateda..b"}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"abc日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"a..b"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":["é","abca"],"ok":"é"}
+{"fn":"normalizeCodexModelSlug","args":["﻿bom","./x/**/*.jsonhello world"],"ok":"bom"}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"abc"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":["ab","A"],"ok":"ab"}
+{"fn":"normalizeCodexModelSlug","args":["emoji 👍🏽 mix","a.b.c"],"ok":"emoji 👍🏽 mix"}
+{"fn":"normalizeCodexModelSlug","args":["éns:key.path","  padded  "],"ok":"éns:key.path"}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"a:b:c"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"./x/**/*.json"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":["İstanbul","abé"],"ok":"İstanbul"}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"ünïcödé"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":["HELLO","éHELLO"],"ok":"HELLO"}
+{"fn":"normalizeCodexModelSlug","args":["emoji 👍🏽 mix",{"$undefined":true}],"ok":"emoji 👍🏽 mix"}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"ab"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":["a.b.c",".b"],"ok":"a.b.c"}
+{"fn":"normalizeCodexModelSlug","args":["Hello World","日本語のテキスト"],"ok":"Hello World"}
+{"fn":"normalizeCodexModelSlug","args":["a..b","straßeabc"],"ok":"a..b"}
+{"fn":"normalizeCodexModelSlug","args":["a..b"],"ok":"a..b"}
+{"fn":"normalizeCodexModelSlug","args":["src/a/b.ts","a:b:c"],"ok":"src/a/b.ts"}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"straße"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},""],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":["hello world",{"$undefined":true}],"ok":"hello world"}
+{"fn":"normalizeCodexModelSlug","args":["ns:key.pathemoji 👍🏽 mix","a😀b😀cemoji 👍🏽 mix"],"ok":"ns:key.pathemoji 👍🏽 mix"}
+{"fn":"normalizeCodexModelSlug","args":["{name} has {count} items","tab\tseparated"],"ok":"{name} has {count} items"}
+{"fn":"normalizeCodexModelSlug","args":["a..bünïcödé"],"ok":"a..bünïcödé"}
+{"fn":"normalizeCodexModelSlug","args":["ΣΊΣΥΦΟΣ日本語のテキスト","hello"],"ok":"ΣΊΣΥΦΟΣ日本語のテキスト"}
+{"fn":"normalizeCodexModelSlug","args":["hello worlda:b:c",{"$undefined":true}],"ok":"hello worlda:b:c"}
+{"fn":"normalizeCodexModelSlug","args":["a.b.cHello World","﻿bom"],"ok":"a.b.cHello World"}
+{"fn":"normalizeCodexModelSlug","args":["ΣΊΣΥΦΟΣa.b.c","helloa😀b😀c"],"ok":"ΣΊΣΥΦΟΣa.b.c"}
+{"fn":"normalizeCodexModelSlug","args":["a..b","hellostraße"],"ok":"a..b"}
+{"fn":"normalizeCodexModelSlug","args":["emoji 👍🏽 mix","a"],"ok":"emoji 👍🏽 mix"}
+{"fn":"normalizeCodexModelSlug","args":["﻿bom","a..b"],"ok":"bom"}
+{"fn":"normalizeCodexModelSlug","args":["abé","emoji 👍🏽 mix"],"ok":"abé"}
+{"fn":"normalizeCodexModelSlug","args":["éa:b:c","{name} has {count} items"],"ok":"éa:b:c"}
+{"fn":"normalizeCodexModelSlug","args":["İstanbul","日本語のテキスト"],"ok":"İstanbul"}
+{"fn":"normalizeCodexModelSlug","args":["hello worldabc",{"$undefined":true}],"ok":"hello worldabc"}
+{"fn":"normalizeCodexModelSlug","args":["﻿bom","hello"],"ok":"bom"}
+{"fn":"normalizeCodexModelSlug","args":["İstanbul"],"ok":"İstanbul"}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":["Hello World","ünïcödé"],"ok":"Hello World"}
+{"fn":"normalizeCodexModelSlug","args":["line1\nline2","./x/**/*.json"],"ok":"line1\nline2"}
+{"fn":"normalizeCodexModelSlug","args":["HELLO",""],"ok":"HELLO"}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"日本語のテキスト"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":["straße"],"ok":"straße"}
+{"fn":"normalizeCodexModelSlug","args":[""],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":["ns:key.path","src/a/b.ts"],"ok":"ns:key.path"}
+{"fn":"normalizeCodexModelSlug","args":["a..b","key_name-1"],"ok":"a..b"}
+{"fn":"normalizeCodexModelSlug","args":["emoji 👍🏽 mix","日本語のテキスト"],"ok":"emoji 👍🏽 mix"}
+{"fn":"normalizeCodexModelSlug","args":[":"],"ok":":"}
+{"fn":"normalizeCodexModelSlug","args":["hello world","  padded  "],"ok":"hello world"}
+{"fn":"normalizeCodexModelSlug","args":["","trailing."],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":[":",":"],"ok":":"}
+{"fn":"normalizeCodexModelSlug","args":["hello"],"ok":"hello"}
+{"fn":"normalizeCodexModelSlug","args":["trailing."],"ok":"trailing."}
+{"fn":"normalizeCodexModelSlug","args":["ΣΊΣΥΦΟΣtrailing."],"ok":"ΣΊΣΥΦΟΣtrailing."}
+{"fn":"normalizeCodexModelSlug","args":["hello world","tab\tseparated"],"ok":"hello world"}
+{"fn":"normalizeCodexModelSlug","args":["tab\tseparated","a"],"ok":"tab\tseparated"}
+{"fn":"normalizeCodexModelSlug","args":["ΣΊΣΥΦΟΣ"],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"normalizeCodexModelSlug","args":["src/a/b.ts./x/**/*.json"],"ok":"src/a/b.ts./x/**/*.json"}
+{"fn":"normalizeCodexModelSlug","args":["ns:key.path","ünïcödé"],"ok":"ns:key.path"}
+{"fn":"normalizeCodexModelSlug","args":[".leadingstraße",{"$undefined":true}],"ok":".leadingstraße"}
+{"fn":"normalizeCodexModelSlug","args":["tanb","İstanbul"],"ok":"tanb"}
+{"fn":"normalizeCodexModelSlug","args":["key_name-1"],"ok":"key_name-1"}
+{"fn":"normalizeCodexModelSlug","args":["😀","  padded  "],"ok":"😀"}
+{"fn":"normalizeCodexModelSlug","args":["line1\nline2","ΣΊΣΥΦΟΣİstanbul"],"ok":"line1\nline2"}
+{"fn":"normalizeCodexModelSlug","args":["日本語のテキストline1\nline2",{"$undefined":true}],"ok":"日本語のテキストline1\nline2"}
+{"fn":"normalizeCodexModelSlug","args":[":",{"$undefined":true}],"ok":":"}
+{"fn":"normalizeCodexModelSlug","args":["  padded  ",".leading"],"ok":"padded"}
+{"fn":"normalizeCodexModelSlug","args":["a..b","line1\nline2"],"ok":"a..b"}
+{"fn":"normalizeCodexModelSlug","args":["emoji 👍🏽 mix","é"],"ok":"emoji 👍🏽 mix"}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"  padded  "],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":["a","tab\tseparated"],"ok":"a"}
+{"fn":"normalizeCodexModelSlug","args":["a","😀./x/**/*.json"],"ok":"a"}
+{"fn":"normalizeCodexModelSlug","args":["tab\tseparated","İstanbul"],"ok":"tab\tseparated"}
+{"fn":"normalizeCodexModelSlug","args":["ns:key.path","a"],"ok":"ns:key.path"}
+{"fn":"normalizeCodexModelSlug","args":["HELLOa","a"],"ok":"HELLOa"}
+{"fn":"normalizeCodexModelSlug","args":["ΣΊΣΥΦΟΣemoji 👍🏽 mix",":  padded  "],"ok":"ΣΊΣΥΦΟΣemoji 👍🏽 mix"}
+{"fn":"normalizeCodexModelSlug","args":["ab","日本語のテキスト"],"ok":"ab"}
+{"fn":"normalizeCodexModelSlug","args":[],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"é"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":["ab{name} has {count} items","a😀b😀cΣΊΣΥΦΟΣ"],"ok":"ab{name} has {count} items"}
+{"fn":"normalizeCodexModelSlug","args":["日本語のテキスト{name} has {count} items","ünïcödé"],"ok":"日本語のテキスト{name} has {count} items"}
+{"fn":"normalizeCodexModelSlug","args":["Hello World","RLD"],"ok":"Hello World"}
+{"fn":"normalizeCodexModelSlug","args":["hello",{"$undefined":true}],"ok":"hello"}
+{"fn":"normalizeCodexModelSlug","args":["HELLO","  padded  "],"ok":"HELLO"}
+{"fn":"normalizeCodexModelSlug","args":["😀","hello worldsrc/a/b.ts"],"ok":"😀"}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"éemoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":["abc﻿bom"],"ok":"abc﻿bom"}
+{"fn":"normalizeCodexModelSlug","args":["./x/**/*.json","tab\tseparated:"],"ok":"./x/**/*.json"}
+{"fn":"normalizeCodexModelSlug","args":["line1\nline2",""],"ok":"line1\nline2"}
+{"fn":"normalizeCodexModelSlug","args":["a..b{name} has {count} items","ns:key.path﻿bom"],"ok":"a..b{name} has {count} items"}
+{"fn":"normalizeCodexModelSlug","args":["ns:key.path",""],"ok":"ns:key.path"}
+{"fn":"normalizeCodexModelSlug","args":["a..b",{"$undefined":true}],"ok":"a..b"}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"😀emoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":[".leading","line1\nline2"],"ok":".leading"}
+{"fn":"normalizeCodexModelSlug","args":["İstanbul","Hello World"],"ok":"İstanbul"}
+{"fn":"normalizeCodexModelSlug","args":["abc"],"ok":"abc"}
+{"fn":"normalizeCodexModelSlug","args":["./x/**/*.json","日本語のテキスト"],"ok":"./x/**/*.json"}
+{"fn":"normalizeCodexModelSlug","args":[".leading","straße﻿bom"],"ok":".leading"}
+{"fn":"normalizeCodexModelSlug","args":["a:b:cİstanbul","a.b.c"],"ok":"a:b:cİstanbul"}
+{"fn":"normalizeCodexModelSlug","args":["﻿bom","{name} has {count} items"],"ok":"bom"}
+{"fn":"normalizeCodexModelSlug","args":["./x/**/*.json  padded  ",{"$undefined":true}],"ok":"./x/**/*.json  padded"}
+{"fn":"normalizeCodexModelSlug","args":["a:b:c","./x/**/*.json"],"ok":"a:b:c"}
+{"fn":"normalizeCodexModelSlug","args":["a😀b😀c","ns:key.path"],"ok":"a😀b😀c"}
+{"fn":"normalizeCodexModelSlug","args":["hello",""],"ok":"hello"}
+{"fn":"normalizeCodexModelSlug","args":["é",{"$undefined":true}],"ok":"é"}
+{"fn":"normalizeCodexModelSlug","args":["é","İstanbul"],"ok":"é"}
+{"fn":"normalizeCodexModelSlug","args":["tab\tseparated",{"$undefined":true}],"ok":"tab\tseparated"}
+{"fn":"normalizeCodexModelSlug","args":["ns:key.path",{"$undefined":true}],"ok":"ns:key.path"}
+{"fn":"normalizeCodexModelSlug","args":["LLO ","Hello World"],"ok":"LLO"}
+{"fn":"normalizeCodexModelSlug","args":["hello","hello"],"ok":"hello"}
+{"fn":"normalizeCodexModelSlug","args":["{name} has {count} items"],"ok":"{name} has {count} items"}
+{"fn":"normalizeCodexModelSlug","args":["de","  padded  "],"ok":"de"}
+{"fn":"normalizeCodexModelSlug","args":["a:b:c","a.b.c"],"ok":"a:b:c"}
+{"fn":"normalizeCodexModelSlug","args":["a","key_name-1"],"ok":"a"}
+{"fn":"normalizeCodexModelSlug","args":["hello worldtab\tseparated"],"ok":"hello worldtab\tseparated"}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"emoji 👍🏽 mix"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":["line1\nline2","ünïcödé"],"ok":"line1\nline2"}
+{"fn":"normalizeCodexModelSlug","args":["abc",".leading"],"ok":"abc"}
+{"fn":"normalizeCodexModelSlug","args":["src/a/b.ts","emoji 👍🏽 mix﻿bom"],"ok":"src/a/b.ts"}
+{"fn":"normalizeCodexModelSlug","args":["Hello World","  padded  "],"ok":"Hello World"}
+{"fn":"normalizeCodexModelSlug","args":["key_name-1",""],"ok":"key_name-1"}
+{"fn":"normalizeCodexModelSlug","args":["",{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":["a..b","ünïcödé"],"ok":"a..b"}
+{"fn":"normalizeCodexModelSlug","args":["Hello Worldns:key.path","ab"],"ok":"Hello Worldns:key.path"}
+{"fn":"normalizeCodexModelSlug","args":["a:b:c","a..b"],"ok":"a:b:c"}
+{"fn":"normalizeCodexModelSlug","args":["﻿bom"],"ok":"bom"}
+{"fn":"normalizeCodexModelSlug","args":["a.b.c","  padded  "],"ok":"a.b.c"}
+{"fn":"normalizeCodexModelSlug","args":["aa..b","a..b"],"ok":"aa..b"}
+{"fn":"normalizeCodexModelSlug","args":["a😀b😀c"],"ok":"a😀b😀c"}
+{"fn":"normalizeCodexModelSlug","args":["ab","a"],"ok":"ab"}
+{"fn":"normalizeCodexModelSlug","args":["ab",{"$undefined":true}],"ok":"ab"}
+{"fn":"normalizeCodexModelSlug","args":["H","ns:key.path"],"ok":"H"}
+{"fn":"normalizeCodexModelSlug","args":["./x/**/*.json","{name} has {count} items:"],"ok":"./x/**/*.json"}
+{"fn":"normalizeCodexModelSlug","args":["trailing.",".leading日本語のテキスト"],"ok":"trailing."}
+{"fn":"normalizeCodexModelSlug","args":["ünïcödétrailing.","ΣΊΣΥΦΟΣ"],"ok":"ünïcödétrailing."}
+{"fn":"normalizeCodexModelSlug","args":["b","﻿bom"],"ok":"b"}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"emoji 👍🏽 mixsrc/a/b.ts"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":[" mi","emoji 👍🏽 mix"],"ok":"mi"}
+{"fn":"normalizeCodexModelSlug","args":["ΣΊΣΥΦΟΣ","{name} has {count} items"],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"normalizeCodexModelSlug","args":["key_name-1","emoji 👍🏽 mix"],"ok":"key_name-1"}
+{"fn":"normalizeCodexModelSlug","args":["straße","a..b日本語のテキスト"],"ok":"straße"}
+{"fn":"normalizeCodexModelSlug","args":["hello","ns:key.path:"],"ok":"hello"}
+{"fn":"normalizeCodexModelSlug","args":[":","abc"],"ok":":"}
+{"fn":"normalizeCodexModelSlug","args":["hello","abcab"],"ok":"hello"}
+{"fn":"normalizeCodexModelSlug","args":["a😀b😀ca","tab\tseparated"],"ok":"a😀b😀ca"}
+{"fn":"normalizeCodexModelSlug","args":["héllo wörld","ΣΊΣΥΦΟΣ"],"ok":"héllo wörld"}
+{"fn":"normalizeCodexModelSlug","args":["👍🏽 thumbs","ΣΊΣΥΦΟΣ"],"ok":"👍🏽 thumbs"}
+{"fn":"normalizeCodexModelSlug","args":["日本語","ΣΊΣΥΦΟΣ"],"ok":"日本語"}
+{"fn":"normalizeCodexModelSlug","args":["","ΣΊΣΥΦΟΣ"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":["é","ΣΊΣΥΦΟΣ"],"ok":"é"}
+{"fn":"normalizeCodexModelSlug","args":["İstanbul","ΣΊΣΥΦΟΣ"],"ok":"İstanbul"}
+{"fn":"normalizeCodexModelSlug","args":["straße","ΣΊΣΥΦΟΣ"],"ok":"straße"}
+{"fn":"normalizeCodexModelSlug","args":["ılık ırmak","ΣΊΣΥΦΟΣ"],"ok":"ılık ırmak"}
+{"fn":"normalizeCodexModelSlug","args":["👨‍👩‍👧 family","ΣΊΣΥΦΟΣ"],"ok":"👨‍👩‍👧 family"}
+{"fn":"normalizeCodexModelSlug","args":["a b","ΣΊΣΥΦΟΣ"],"ok":"a b"}
+{"fn":"normalizeCodexModelSlug","args":["ΣΊΣΥΦΟΣ","ΣΊΣΥΦΟΣ"],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"normalizeCodexModelSlug","args":["a😀b","ΣΊΣΥΦΟΣ"],"ok":"a😀b"}
+{"fn":"normalizeCodexModelSlug","args":["﻿bom","ΣΊΣΥΦΟΣ"],"ok":"bom"}
+{"fn":"normalizeCodexModelSlug","args":["a²b x½ y①","ΣΊΣΥΦΟΣ"],"ok":"a²b x½ y①"}
+{"fn":"normalizeCodexModelSlug","args":["aⅠb Ⅻ","ΣΊΣΥΦΟΣ"],"ok":"aⅠb Ⅻ"}
+{"fn":"normalizeCodexModelSlug","args":["a𐐀b 𝐀bc","ΣΊΣΥΦΟΣ"],"ok":"a𐐀b 𝐀bc"}
+{"fn":"normalizeCodexModelSlug","args":["कि ٣٤","ΣΊΣΥΦΟΣ"],"ok":"कि ٣٤"}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"héllo wörld"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"👍🏽 thumbs"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"日本語"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"ılık ırmak"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"👨‍👩‍👧 family"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"a b"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"a😀b"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"a²b x½ y①"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"aⅠb Ⅻ"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"a𐐀b 𝐀bc"],"ok":{"$undefined":true}}
+{"fn":"normalizeCodexModelSlug","args":[{"$undefined":true},"कि ٣٤"],"ok":{"$undefined":true}}
+{"fn":"buildCodexCollaborationMode","args":[null],"error":"Cannot read properties of null (reading 'interactionMode')"}
+{"fn":"buildCodexCollaborationMode","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"buildCodexCollaborationMode","args":[{}],"ok":{"$undefined":true}}
+{"fn":"buildCodexCollaborationMode","args":[0],"ok":{"$undefined":true}}
+{"fn":"buildCodexCollaborationMode","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"buildCodexCollaborationMode","args":[true],"ok":{"$undefined":true}}
+{"fn":"buildCodexCollaborationMode","args":[[]],"ok":{"$undefined":true}}
+{"fn":"buildCodexCollaborationMode","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"buildCodexCollaborationMode","args":["x"],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"$undefined":true}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"a":{"a":"b"},"home":0,"b":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"ünï":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[true],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"10":[]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"nav":null}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"a":["a",1]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"a.b":0,"home":[]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"b":["a",1]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"nav":"x","b":[]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"b":["a",1],"a.b":null}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":[],"home":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"ünï":{"a":"b"}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"ünï":[]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"b":{"a":"b"},"title":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"a":[],"a.b":{"a":"b"}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"a":{},"b":{"a":"b"}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":["a",1]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":["x"],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"home":{"a":"b"}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":"x","10":0,"home":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"a":{}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"title":{}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"10":null,"home":null}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":{"a":"b"}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":true,"10":["a",1],"😀":null}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"title":{"a":{"b":"c"}},"b":[]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":"x","title":{"a":"b"}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"10":0,"b":[]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"😀":{},"title":{},"b":null}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"a":{"a":{"b":"c"}},"😀":[]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"title":{"a":{"b":"c"}},"a":{"a":"b"},"home":null}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"10":["a",1],"nav":{"a":{"b":"c"}},"a":[]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"10":"x","title":0,"home":null}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[0],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"title":true,"nav":null}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"b":[]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[[]],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":[],"nav":null,"😀":["a",1]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":{"a":"b"},"10":"x","a.b":null}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"10":{},"a":{"a":"b"},"home":0}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[null],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"title":"x","home":[]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"a.b":true,"ünï":[]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":[],"b":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"ünï":[],"home":{"a":{"b":"c"}},"nav":{}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"b":0}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"ünï":{}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"😀":null}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"10":null,"title":null,"home":{}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":true,"10":null}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"ünï":null,"a.b":true}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"ünï":{},"a.b":"x"}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"a.b":null}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"nav":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"10":{"a":"b"},"a.b":[]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"b":{"a":"b"}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"😀":{"a":"b"},"home":[]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"a":"x"}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"a.b":"x","ünï":"x"}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":null,"ünï":"x"}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"10":true}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"nav":0,"😀":null}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":null,"b":[],"ünï":"x"}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"b":"x"}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"home":null,"nav":"x"}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"title":{"a":{"b":"c"}},"a.b":null}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"nav":true,"b":["a",1]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"😀":{"a":{"b":"c"}},"ünï":{}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"b":0,"😀":true}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":["a",1],"ünï":0}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":0,"a":[]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":{},"a.b":"x","title":[]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"b":{}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"a":{"a":"b"},"title":null}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"b":"x","home":null}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"nav":[]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"10":0,"nav":{"a":"b"}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"a.b":["a",1]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"10":{},"home":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"a":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"title":[],"a":{}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"a.b":true}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"title":true}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"10":{},"title":{"a":"b"}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"home":0,"ünï":["a",1]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"a":null}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":null,"😀":"x","ünï":0}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"nav":null,"😀":{"a":{"b":"c"}},"b":{}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"a":[]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"a":true}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"b":true}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"ünï":[],"b":[]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"nav":true,"a":null}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"b":[],"a.b":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"home":true,"nav":"x","b":0}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":"x","a":true}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"ünï":["a",1]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"a":"x","nav":true}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"title":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"10":["a",1],"b":0}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":true,"ünï":{"a":"b"},"b":true}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"a.b":{},"😀":0}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"a":["a",1],"b":true,"ünï":0}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"10":true,"ünï":["a",1],"a":{"a":"b"}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"home":{"a":{"b":"c"}},"title":true,"ünï":{}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"a":{"a":{"b":"c"}},"😀":{}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"title":[],"a":"x"}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"b":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"10":0}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"a":{"a":"b"},"a.b":["a",1]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"b":{},"home":{"a":{"b":"c"}},"nav":null}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":"x","😀":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":[],"a.b":0}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":null,"😀":true}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":{},"a.b":{}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"a":{},"a.b":0}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"10":null,"a":0}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":null,"nav":true,"😀":["a",1]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"nav":null,"home":0}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"b":{},"home":null,"nav":0}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"title":{"a":"b"}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"10":{},"title":null}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"10":{"a":{"b":"c"}},"😀":true}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"a.b":{"a":"b"}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"title":0,"home":{},"nav":null}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":"x","b":{"a":"b"},"ünï":["a",1]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":{},"a.b":{},"ünï":true}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"ünï":{"a":"b"},"a":0}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"a.b":["a",1],"title":"x"}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"a.b":"x"}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"a":"x","home":null,"title":[]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"home":0}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"😀":[],"b":{},"a":["a",1]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"10":true,"b":[]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"😀":"x","home":true,"ünï":["a",1]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"10":{"a":"b"}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"10":["a",1],"home":[]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"10":{},"nav":true}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"a":null,"ünï":["a",1],"title":0}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"home":"x","a.b":["a",1]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"nav":{},"ünï":{"a":{"b":"c"}},"home":["a",1]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"a":[],"title":{"a":"b"}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":{},"b":null,"😀":{}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":["a",1],"title":0}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"ünï":null,"b":["a",1],"a.b":null}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"nav":{"a":"b"}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"😀":"x"}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":true,"b":["a",1]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":[],"home":null}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"nav":["a",1],"a.b":null}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":{}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"b":"x","a":{"a":"b"},"a.b":true}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"ünï":["a",1],"a.b":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"nav":0}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"title":"x"}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"b":{},"😀":"x","ünï":{"a":"b"}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"10":null,"😀":{}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"home":["a",1],"a":[],"a.b":[]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"a":"x","title":0}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"10":true,"home":0}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"ünï":{},"a":["a",1]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"nav":true}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"home":[],"ünï":{}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"home":{"a":"b"},"😀":"x","a":{"a":"b"}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"😀":{"a":"b"},"home":true}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":{},"nav":null}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"10":{"a":"b"},"😀":0,"a":"x"}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":true,"a":null,"b":["a",1]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"a":null,"b":"x","ünï":[]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"10":{"a":{"b":"c"}},"ünï":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":[],"a":{},"ünï":[]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"nav":["a",1],"b":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"nav":"x"}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"a":"x","b":{}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"nav":null,"title":"x"}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":[],"10":{}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"title":["a",1]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"a":{"a":{"b":"c"}},"a.b":0}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"10":["a",1],"😀":true}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"ünï":[],"a":["a",1]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":"x","ünï":0}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"nav":{"a":{"b":"c"}},"😀":[]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"b":true,"a":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"title":"x","😀":"x"}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"ünï":{"a":"b"},"a":true,"nav":"x"}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"title":true,"a":true}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":[],"nav":{"a":{"b":"c"}},"ünï":["a",1]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":null,"title":{}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"ünï":true,"a":[]}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"home":{"a":{"b":"c"}}}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"10":{"a":{"b":"c"}},"home":0,"a.b":true}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"2":true,"a":"x","nav":0}],"ok":{"$undefined":true}}
+{"fn":"parseCodexUserInputQuestions","args":[{"10":{"a":"b"},"home":"x","a":{"a":"b"}}],"ok":{"$undefined":true}}
+{"fn":"classifyCodexStderrLine","args":["Hello World",""],"ok":null}
+{"fn":"classifyCodexStderrLine","args":[".leading",{"$undefined":true}],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["﻿bom:",{"$undefined":true}],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["İstanbul","ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["ab"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["ünïcödé","tab\tseparated"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":[":","line1\nline2"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["﻿bom","{name} has {count} items"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["Hello World","日本語のテキスト"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["abc","b"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["﻿bom",{"$undefined":true}],"ok":null}
+{"fn":"classifyCodexStderrLine","args":[".leading",".leading"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["a.b.c"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["ab","日本語のテキスト"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["o world","hello world"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["😀","{name} has {count} itemstrailing."],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["straße",".leading"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["Hello World","HELLOhello world"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":[" ","  padded  "],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["tab\tseparated","key_name-1"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["😀",".leading"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["A..B","😀a..b"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["HELLO﻿bom","a.b.c"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["a:b:c","a.b.c"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["ünïcödé","a.b.c"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["日本語のテキストkey_name-1"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["hello{name} has {count} items","😀"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["ünïcödé","key_name-1hello"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["src/a/b.tsemoji 👍🏽 mix","﻿bom"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["./x/**/*.json","abckey_name-1"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["a","a"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["line1\nline2"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["anb","İstanbul"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["é",{"$undefined":true}],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["a:b:c","ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["Hello Worldtrailing.","İstanbul"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["","é"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["のテキスト","日本語のテキスト"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["./x/**/*.json","abc  padded  "],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["étrailing.",{"$undefined":true}],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["😀","straße"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["abc{name} has {count} items",{"$undefined":true}],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["line1\nline2","tab\tseparated"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["line1\nline2",{"$undefined":true}],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["trailing.","﻿bom"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["a.b.c","{name} has {count} items"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["-","a:b:ckey_name-1"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":[":","key_name-1"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["a.b.c","hello world"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["","a😀b😀c.leading"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["has {c","{name} has {count} items"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":[":","é"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["a:b:c","C"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["ΣΊΣΥΦΟΣ","Σ"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["src/a/b.ts","ünïcödé"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["a😀b😀c","key_name-1"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["a","ünïcödéa..b"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["a😀b😀c"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["hello world","﻿bom"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["  padded  ","a:b:c"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["日本語のテキスト","a:b:c"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["﻿bom"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["ab日本語のテキスト",{"$undefined":true}],"ok":null}
+{"fn":"classifyCodexStderrLine","args":[".leading","{name} has {count} items"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["ünïcödé"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["hello worldΣΊΣΥΦΟΣ",{"$undefined":true}],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["é","é"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["  padded  "],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["hello","  padded  "],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["B","ab"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["a:b:c"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["","hellokey_name-1"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["{name} has {count} items","./x/**/*.json"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["straße日本語のテキスト","İstanbul"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["İstanbul","BUL"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":[":","  padded  "],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["{name} has {count} items"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["emoji 👍🏽 mixtrailing.","{name} has {count} items"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["İstanbulemoji 👍🏽 mix",":"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["ΣΥ","ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["  padded  ΣΊΣΥΦΟΣ",":"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["İstanbul","line1\nline2"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["a.b.c","straße"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["line1\nline2","line1\nline2ab"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["src/a/b.ts","tab\tseparated"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["{name} has {count} items",".leading"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["Hello Worlda..b","HELLO"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["trailing.","a😀b😀c"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["abc","a..b"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["./x/**/*.json","ünïcödé"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["straße😀"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["Hello World","  padded  "],"ok":null}
+{"fn":"classifyCodexStderrLine","args":[".leadingab","İstanbul"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["日本語のテキストline1\nline2"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["{name} has {count} items","日本語のテキスト"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["  padded  ","key_name-1"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["é","́"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["a😀b😀c","C"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["a..b","trailing."],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["hello world"," worl"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["tab\tseparated"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["a",{"$undefined":true}],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["","😀ünïcödé"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["  padded  hello world","HELLO"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["key_name-1","trailing."],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["line1\nline2",":"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["ΣΊΣΥΦΟΣ","hello"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["a","a:b:cab"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["HELLO","é"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["a😀b😀","😀a😀b😀c"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["é","e"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["a.b.c﻿bom","a😀b😀cHELLO"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["  padded  :"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["é","a😀b😀c"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["abc","trailing."],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["a"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":[":tab\tseparated","a"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["abc"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["hello","tab\tseparated"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["emoji 👍🏽 mixhello world","straße"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["trailing.:","ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["ns:key.path","tab\tseparated"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["{name} has {count} items",{"$undefined":true}],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["😀","日本語のテキスト"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["key_name-1a:b:c","a"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["{name} has {count} items","src/a/b.tssrc/a/b.ts"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["hello world","hello"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["ame} has {count} item","{name} has {count} items"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["./x/**/*.json","straßehello"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["hello world.leading","trailing."],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["HELLO",":"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["😀HELLO"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["﻿bom","ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["a😀b😀c","straße"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["ünïcödé",{"$undefined":true}],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["éstraße","tab\tseparateda😀b😀c"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":[".leadingns:key.path"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["a.b.c",".b."],"ok":null}
+{"fn":"classifyCodexStderrLine","args":[".leading","line1\nline2İstanbul"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["İstanbulns:key.path","  padded  abc"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["hello",{"$undefined":true}],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["trailing."],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["emoji 👍🏽 mix","Hello World"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["İstanbul","emoji 👍🏽 mix"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["helloHello World","loHel"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["tab\tseparated","é"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["a{name} has {count} items","line1\nline2"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["ΣΊΣΥΦΟΣ",":ab"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["a..b",{"$undefined":true}],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["line1\nline2","hello world"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["a.b.c",{"$undefined":true}],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["","key_name-1trailing."],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["Ί","ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["﻿bom","key_name-1"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["  padded  ./x/**/*.json","  padded  "],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["a..b日本語のテキスト"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["😀","😀"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["ns:key.path","a.b.cline1\nline2"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":[" ","hello world"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["é","ünïcödé"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["tab\tseparated","ab\tseparated"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["Hello World"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["line1\nline2","😀"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["İstanbul","İstanbulé"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["ünïcödéns:key.path","ΣΊΣΥΦΟΣns:key.path"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["ab",{"$undefined":true}],"ok":null}
+{"fn":"classifyCodexStderrLine","args":[".leadingline1\nline2"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["tab\tseparated","hello"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":[".leading","a..b"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["","a"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["a.b.c","é"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["İstanbul","src/a/b.ts"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["éns:key.path","emoji 👍🏽 mix"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":[":","a😀b😀c"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["",""],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["a:b:c","ns:key.pathline1\nline2"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["😀","ünïcödé"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":[":","line1\nline2emoji 👍🏽 mix"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["﻿bom😀","line1\nline2"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["abc","key_name-1"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["hello world","key_name-1"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["a..b","a.."],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["abcİstanbul"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["Hello World","ünïcödé./x/**/*.json"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["abc./x/**/*.json","ab"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["hello","{name} has {count} items"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["ns:key.pathkey_name-1","./x/**/*.jsonHELLO"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["a..b","hello world"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["ns:key.pathtrailing.","ra"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["ünïcödé","emoji 👍🏽 mix"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":[":"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["Hello World","a.b.c"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["./x/**/*.jsontrailing.",":"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["key_name-1","ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["line1\nline2","é"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["HELLO","ünïcödé"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["é","trailing."],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["emoji 👍🏽 mix",{"$undefined":true}],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["é","﻿bom"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["ΣΊΣΥΦΟΣ","ns:key.pathemoji 👍🏽 mix"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["héllo wörld",""],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["👍🏽 thumbs",""],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["日本語",""],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["é",""],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["İstanbul",""],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["straße",""],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["ılık ırmak",""],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["👨‍👩‍👧 family",""],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["a b",""],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["ΣΊΣΥΦΟΣ",""],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["a😀b",""],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["﻿bom",""],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["a²b x½ y①",""],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["aⅠb Ⅻ",""],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["a𐐀b 𝐀bc",""],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["कि ٣٤",""],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["Iı İi",""],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["K K k",""],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["ſ s S",""],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["x‍y 👨‍👩‍👧",""],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["a b c　d",""],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["١٢٣ ٤٥",""],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["𝟘𝟙 ²³",""],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["snake_case foo-bar o'neil",""],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["ǅungla Ǆ",""],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["one\r\ntwo threefour",""],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["café café",""],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["ΣΑΣ σας ς",""],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["Hello World",{"$undefined":true}],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["Hello World","héllo wörld"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["Hello World","👍🏽 thumbs"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["Hello World","日本語"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["Hello World","é"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["Hello World","İstanbul"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["Hello World","straße"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["Hello World","ılık ırmak"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["Hello World","👨‍👩‍👧 family"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["Hello World","a b"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["Hello World","ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["Hello World","a😀b"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["Hello World","﻿bom"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["Hello World","a²b x½ y①"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["Hello World","aⅠb Ⅻ"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["Hello World","a𐐀b 𝐀bc"],"ok":null}
+{"fn":"classifyCodexStderrLine","args":["Hello World","कि ٣٤"],"ok":null}
+{"fn":"readResumeCursorThreadId","args":[null],"ok":{"$undefined":true}}
+{"fn":"readResumeCursorThreadId","args":["x"],"ok":{"$undefined":true}}
+{"fn":"readResumeCursorThreadId","args":[[]],"ok":{"$undefined":true}}
+{"fn":"readResumeCursorThreadId","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"readResumeCursorThreadId","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"readResumeCursorThreadId","args":[{}],"ok":{"$undefined":true}}
+{"fn":"readResumeCursorThreadId","args":[0],"ok":{"$undefined":true}}
+{"fn":"readResumeCursorThreadId","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"readResumeCursorThreadId","args":[true],"ok":{"$undefined":true}}
+{"fn":"readResumeCursorThreadId","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":{"$undefined":true}}
+{"fn":"readResumeCursorThreadId","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":{"$undefined":true}}
+{"fn":"readResumeCursorThreadId","args":[[3,1,2]],"ok":{"$undefined":true}}

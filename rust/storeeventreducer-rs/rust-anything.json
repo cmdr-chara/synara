@@ -1,0 +1,66 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/storeEventReducer.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "storeeventreducer-rs",
+  "exports": [
+    {
+      "name": "applyOrchestrationEvents",
+      "file": "apps/web/src/storeEventReducer.ts",
+      "line": 1984,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "AppState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "events",
+          "ts_type": "ReadonlyArray<typeof typeof typeof typeof OrchestrationEvent.Type.Type.Type.Type>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "AppState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "applyOrchestrationEventsHotPath",
+      "file": "apps/web/src/storeEventReducer.ts",
+      "line": 1993,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "AppState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "events",
+          "ts_type": "ReadonlyArray<typeof typeof typeof typeof OrchestrationEvent.Type.Type.Type.Type>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "{\n  updateSidebarSummary?: boolean;\n}",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "AppState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

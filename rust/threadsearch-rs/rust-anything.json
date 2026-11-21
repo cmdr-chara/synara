@@ -1,0 +1,67 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/threadSearch.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "threadsearch-rs",
+  "exports": [
+    {
+      "name": "tokenizeThreadSearchQuery",
+      "file": "apps/server/src/threadSearch.ts",
+      "line": 35,
+      "params": [
+        {
+          "name": "query",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildThreadSearchExcerpt",
+      "file": "apps/server/src/threadSearch.ts",
+      "line": 44,
+      "params": [
+        {
+          "name": "text",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "query",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "tokens",
+          "ts_type": "readonly string[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "ThreadSearchQuery",
+      "file": "apps/server/src/threadSearch.ts",
+      "line": 76,
+      "reason": "class: extends another class"
+    }
+  ]
+}

@@ -138,6 +138,8 @@ pub fn ensure_private_file_sync(
         PRIVATE_FILE_MODE
     };
     if !supports_posix(platform.as_ref()) {
+        // O_WRONLY|O_CREAT without truncation
+        #[allow(clippy::suspicious_open_options)]
         let _ = std::fs::OpenOptions::new()
             .write(true)
             .create(true)
@@ -146,7 +148,6 @@ pub fn ensure_private_file_sync(
         return Ok(());
     }
     let file = std::fs::OpenOptions::new()
-        .write(true)
         .create(true)
         .append(true)
         .open(&file_path)

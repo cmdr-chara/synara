@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/threadSummary.ts",
+  "files": 1,
+  "fingerprint": "d3a0748b9017fdf1",
+  "coverage": {
+    "lines": 383,
+    "reached": 347,
+    "files": [
+      {
+        "file": "packages/shared/src/threadSummary.ts",
+        "lines": 383,
+        "reached": 347,
+        "missed": "49-50, 78-79, 96-105, 112-113, 148-150, 175-176, 179-180, 190-191, 211, 223, 315-317, 319-322, 324-325"
+      }
+    ]
+  }
+}

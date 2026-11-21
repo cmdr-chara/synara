@@ -1,0 +1,744 @@
+{"fn":"pendingRequestInstanceKey","args":["lo","hello"],"ok":"lo\u0000hello"}
+{"fn":"pendingRequestInstanceKey","args":["ΣΊΣΥΦΟΣ",{"$undefined":true}],"ok":"ΣΊΣΥΦΟΣ\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":[".","a..b"],"ok":".\u0000a..b"}
+{"fn":"pendingRequestInstanceKey","args":["ns:key.path","ns:ke"],"ok":"ns:key.path\u0000ns:ke"}
+{"fn":"pendingRequestInstanceKey","args":["a..b","key_name-1"],"ok":"a..b\u0000key_name-1"}
+{"fn":"pendingRequestInstanceKey","args":[".","a.b.c"],"ok":".\u0000a.b.c"}
+{"fn":"pendingRequestInstanceKey","args":["a.b.chello","ns:key.path  padded  "],"ok":"a.b.chello\u0000ns:key.path  padded  "}
+{"fn":"pendingRequestInstanceKey","args":["tab\tseparated","tab\tseparatedsrc/a/b.ts"],"ok":"tab\tseparated\u0000tab\tseparatedsrc/a/b.ts"}
+{"fn":"pendingRequestInstanceKey","args":["key_name-1","😀ns:key.path"],"ok":"key_name-1\u0000😀ns:key.path"}
+{"fn":"pendingRequestInstanceKey","args":["aba:b:c","İstanbul"],"ok":"aba:b:c\u0000İstanbul"}
+{"fn":"pendingRequestInstanceKey","args":[":","a"],"ok":":\u0000a"}
+{"fn":"pendingRequestInstanceKey","args":[":"],"ok":":\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["😀","line1\nline2src/a/b.ts"],"ok":"😀\u0000line1\nline2src/a/b.ts"}
+{"fn":"pendingRequestInstanceKey","args":["﻿bom",""],"ok":"﻿bom\u0000"}
+{"fn":"pendingRequestInstanceKey","args":["  padded  ",{"$undefined":true}],"ok":"  padded  \u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["hello world"],"ok":"hello world\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["src/a/b.ts./x/**/*.json"],"ok":"src/a/b.ts./x/**/*.json\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["",{"$undefined":true}],"ok":"\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["straßea:b:c","ST"],"ok":"straßea:b:c\u0000ST"}
+{"fn":"pendingRequestInstanceKey","args":["{name} has {count} items"],"ok":"{name} has {count} items\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["日本語のテキスト","a.b.c"],"ok":"日本語のテキスト\u0000a.b.c"}
+{"fn":"pendingRequestInstanceKey","args":["emoji 👍🏽 mix"],"ok":"emoji 👍🏽 mix\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["src/a/b.tsa😀b😀c","hello"],"ok":"src/a/b.tsa😀b😀c\u0000hello"}
+{"fn":"pendingRequestInstanceKey","args":["a..bhello world","😀"],"ok":"a..bhello world\u0000😀"}
+{"fn":"pendingRequestInstanceKey","args":["a","emoji 👍🏽 mix"],"ok":"a\u0000emoji 👍🏽 mix"}
+{"fn":"pendingRequestInstanceKey","args":["a.b.c"],"ok":"a.b.c\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["Hello World","line1\nline2line1\nline2"],"ok":"Hello World\u0000line1\nline2line1\nline2"}
+{"fn":"pendingRequestInstanceKey","args":["","a:"],"ok":"\u0000a:"}
+{"fn":"pendingRequestInstanceKey","args":["日本語のテキストemoji 👍🏽 mix","ns:key.path"],"ok":"日本語のテキストemoji 👍🏽 mix\u0000ns:key.path"}
+{"fn":"pendingRequestInstanceKey","args":["key_name-1a😀b😀c","a.b.c"],"ok":"key_name-1a😀b😀c\u0000a.b.c"}
+{"fn":"pendingRequestInstanceKey","args":[".path","ns:key.path"],"ok":".path\u0000ns:key.path"}
+{"fn":"pendingRequestInstanceKey","args":["😀",":"],"ok":"😀\u0000:"}
+{"fn":"pendingRequestInstanceKey","args":["a😀b😀c"],"ok":"a😀b😀c\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["abc",{"$undefined":true}],"ok":"abc\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["straße",""],"ok":"straße\u0000"}
+{"fn":"pendingRequestInstanceKey","args":["line1\nline2","emoji 👍🏽 mix"],"ok":"line1\nline2\u0000emoji 👍🏽 mix"}
+{"fn":"pendingRequestInstanceKey","args":["a.b.c","HELLO"],"ok":"a.b.c\u0000HELLO"}
+{"fn":"pendingRequestInstanceKey","args":["hello world","abc"],"ok":"hello world\u0000abc"}
+{"fn":"pendingRequestInstanceKey","args":["e-","akey_name-1"],"ok":"e-\u0000akey_name-1"}
+{"fn":"pendingRequestInstanceKey","args":["😀","abc"],"ok":"😀\u0000abc"}
+{"fn":"pendingRequestInstanceKey","args":["ab","﻿bom"],"ok":"ab\u0000﻿bom"}
+{"fn":"pendingRequestInstanceKey","args":["Hello World","é"],"ok":"Hello World\u0000é"}
+{"fn":"pendingRequestInstanceKey","args":["a..b",{"$undefined":true}],"ok":"a..b\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["emoji 👍🏽 mix",":﻿bom"],"ok":"emoji 👍🏽 mix\u0000:﻿bom"}
+{"fn":"pendingRequestInstanceKey","args":["a:b:cstraße","Hello World"],"ok":"a:b:cstraße\u0000Hello World"}
+{"fn":"pendingRequestInstanceKey","args":["straße",":ΣΊΣΥΦΟΣ"],"ok":"straße\u0000:ΣΊΣΥΦΟΣ"}
+{"fn":"pendingRequestInstanceKey","args":["a.b.c","ns:key.path"],"ok":"a.b.c\u0000ns:key.path"}
+{"fn":"pendingRequestInstanceKey","args":["a","straße"],"ok":"a\u0000straße"}
+{"fn":"pendingRequestInstanceKey","args":["ab"],"ok":"ab\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["abca..b","abca..b"],"ok":"abca..b\u0000abca..b"}
+{"fn":"pendingRequestInstanceKey","args":["a.b.c",""],"ok":"a.b.c\u0000"}
+{"fn":"pendingRequestInstanceKey","args":["a",{"$undefined":true}],"ok":"a\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["😀","😀"],"ok":"😀\u0000😀"}
+{"fn":"pendingRequestInstanceKey","args":["emoji 👍🏽 mix",{"$undefined":true}],"ok":"emoji 👍🏽 mix\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["HELLOab",{"$undefined":true}],"ok":"HELLOab\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["日本語のテキスト",{"$undefined":true}],"ok":"日本語のテキスト\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["İstanbul",":trailing."],"ok":"İstanbul\u0000:trailing."}
+{"fn":"pendingRequestInstanceKey","args":["","straße"],"ok":"\u0000straße"}
+{"fn":"pendingRequestInstanceKey","args":["src/a/b.ts",{"$undefined":true}],"ok":"src/a/b.ts\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["",""],"ok":"\u0000"}
+{"fn":"pendingRequestInstanceKey","args":["src/a/b.ts","./x/**/*.json"],"ok":"src/a/b.ts\u0000./x/**/*.json"}
+{"fn":"pendingRequestInstanceKey","args":["key_name-1","ame-"],"ok":"key_name-1\u0000ame-"}
+{"fn":"pendingRequestInstanceKey","args":[":","é:"],"ok":":\u0000é:"}
+{"fn":"pendingRequestInstanceKey","args":["{name} has {count} items",{"$undefined":true}],"ok":"{name} has {count} items\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["src/a/b.ts"],"ok":"src/a/b.ts\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["hello","HEL"],"ok":"hello\u0000HEL"}
+{"fn":"pendingRequestInstanceKey","args":["TAB\tSEPARATE","tab\tseparated"],"ok":"TAB\tSEPARATE\u0000tab\tseparated"}
+{"fn":"pendingRequestInstanceKey","args":["HELLO","hello world"],"ok":"HELLO\u0000hello world"}
+{"fn":"pendingRequestInstanceKey","args":["Hello World"],"ok":"Hello World\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":[":","a:b:c"],"ok":":\u0000a:b:c"}
+{"fn":"pendingRequestInstanceKey","args":[".leading","a"],"ok":".leading\u0000a"}
+{"fn":"pendingRequestInstanceKey","args":["HELLO","ΣΊΣΥΦΟΣ"],"ok":"HELLO\u0000ΣΊΣΥΦΟΣ"}
+{"fn":"pendingRequestInstanceKey","args":["ns:key.path","ünïcödé.leading"],"ok":"ns:key.path\u0000ünïcödé.leading"}
+{"fn":"pendingRequestInstanceKey","args":["line1\nline2","  padded  "],"ok":"line1\nline2\u0000  padded  "}
+{"fn":"pendingRequestInstanceKey","args":["a","{name} has {count} itemssrc/a/b.ts"],"ok":"a\u0000{name} has {count} itemssrc/a/b.ts"}
+{"fn":"pendingRequestInstanceKey","args":["ünïcödé","trailing.{name} has {count} items"],"ok":"ünïcödé\u0000trailing.{name} has {count} items"}
+{"fn":"pendingRequestInstanceKey","args":[":","  padded  "],"ok":":\u0000  padded  "}
+{"fn":"pendingRequestInstanceKey","args":["﻿bom"],"ok":"﻿bom\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["ünïcödé","ünïcödé"],"ok":"ünïcödé\u0000ünïcödé"}
+{"fn":"pendingRequestInstanceKey","args":["a:b:c",{"$undefined":true}],"ok":"a:b:c\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["straße",".leading"],"ok":"straße\u0000.leading"}
+{"fn":"pendingRequestInstanceKey","args":["straße.leading","a.b.c"],"ok":"straße.leading\u0000a.b.c"}
+{"fn":"pendingRequestInstanceKey","args":["😀","日本語のテキスト"],"ok":"😀\u0000日本語のテキスト"}
+{"fn":"pendingRequestInstanceKey","args":[".leadingünïcödé","d"],"ok":".leadingünïcödé\u0000d"}
+{"fn":"pendingRequestInstanceKey","args":["a.b.c","﻿bom"],"ok":"a.b.c\u0000﻿bom"}
+{"fn":"pendingRequestInstanceKey","args":["a😀b😀c","é"],"ok":"a😀b😀c\u0000é"}
+{"fn":"pendingRequestInstanceKey","args":["trailing.","hello world"],"ok":"trailing.\u0000hello world"}
+{"fn":"pendingRequestInstanceKey","args":["key_name-1","line1\nline2"],"ok":"key_name-1\u0000line1\nline2"}
+{"fn":"pendingRequestInstanceKey","args":["tab\tseparated","ünïcödé"],"ok":"tab\tseparated\u0000ünïcödé"}
+{"fn":"pendingRequestInstanceKey","args":["é","hello world"],"ok":"é\u0000hello world"}
+{"fn":"pendingRequestInstanceKey","args":[""],"ok":"\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["straßeünïcödé","a.b.c"],"ok":"straßeünïcödé\u0000a.b.c"}
+{"fn":"pendingRequestInstanceKey","args":["  padded  ","HELLO"],"ok":"  padded  \u0000HELLO"}
+{"fn":"pendingRequestInstanceKey","args":["straße","a:b:c"],"ok":"straße\u0000a:b:c"}
+{"fn":"pendingRequestInstanceKey","args":["a:b:ca.b.c","src/a/b.tsa:b:c"],"ok":"a:b:ca.b.c\u0000src/a/b.tsa:b:c"}
+{"fn":"pendingRequestInstanceKey","args":["trailing.",{"$undefined":true}],"ok":"trailing.\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["  padded  ","trailing."],"ok":"  padded  \u0000trailing."}
+{"fn":"pendingRequestInstanceKey","args":["Hello World:"],"ok":"Hello World:\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["ünïcödé"],"ok":"ünïcödé\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["İstanbul","straße"],"ok":"İstanbul\u0000straße"}
+{"fn":"pendingRequestInstanceKey","args":["straße","HELLO"],"ok":"straße\u0000HELLO"}
+{"fn":"pendingRequestInstanceKey","args":["a.","a.b.c"],"ok":"a.\u0000a.b.c"}
+{"fn":"pendingRequestInstanceKey","args":["a😀b😀c","abc"],"ok":"a😀b😀c\u0000abc"}
+{"fn":"pendingRequestInstanceKey","args":["abc","./x/**/*.json"],"ok":"abc\u0000./x/**/*.json"}
+{"fn":"pendingRequestInstanceKey","args":[":","é"],"ok":":\u0000é"}
+{"fn":"pendingRequestInstanceKey","args":["trailing."],"ok":"trailing.\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["l","hello"],"ok":"l\u0000hello"}
+{"fn":"pendingRequestInstanceKey","args":["é","straße"],"ok":"é\u0000straße"}
+{"fn":"pendingRequestInstanceKey","args":[".leading","key_name-1"],"ok":".leading\u0000key_name-1"}
+{"fn":"pendingRequestInstanceKey","args":["Hello World","😀"],"ok":"Hello World\u0000😀"}
+{"fn":"pendingRequestInstanceKey","args":["﻿bom",{"$undefined":true}],"ok":"﻿bom\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["ns:key.path",".leading"],"ok":"ns:key.path\u0000.leading"}
+{"fn":"pendingRequestInstanceKey","args":["emoji 👍🏽 mix","abc"],"ok":"emoji 👍🏽 mix\u0000abc"}
+{"fn":"pendingRequestInstanceKey","args":["ab","b"],"ok":"ab\u0000b"}
+{"fn":"pendingRequestInstanceKey","args":["日本語のテキストkey_name-1","日本語のテキスト"],"ok":"日本語のテキストkey_name-1\u0000日本語のテキスト"}
+{"fn":"pendingRequestInstanceKey","args":["./x/**/*.jsona.b.c"],"ok":"./x/**/*.jsona.b.c\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["﻿bom","HELLO"],"ok":"﻿bom\u0000HELLO"}
+{"fn":"pendingRequestInstanceKey","args":["HELLOa..b","ns:key.path"],"ok":"HELLOa..b\u0000ns:key.path"}
+{"fn":"pendingRequestInstanceKey","args":["key_name-1ns:key.path","ünïcödé"],"ok":"key_name-1ns:key.path\u0000ünïcödé"}
+{"fn":"pendingRequestInstanceKey","args":["trailing.HELLO","é﻿bom"],"ok":"trailing.HELLO\u0000é﻿bom"}
+{"fn":"pendingRequestInstanceKey","args":["a..b"],"ok":"a..b\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["straßestraße","HELLO"],"ok":"straßestraße\u0000HELLO"}
+{"fn":"pendingRequestInstanceKey","args":["./x/**/*.json",":"],"ok":"./x/**/*.json\u0000:"}
+{"fn":"pendingRequestInstanceKey","args":["HELLO","  padded  İstanbul"],"ok":"HELLO\u0000  padded  İstanbul"}
+{"fn":"pendingRequestInstanceKey","args":["line1\nline2","ab"],"ok":"line1\nline2\u0000ab"}
+{"fn":"pendingRequestInstanceKey","args":["HELLO","LO"],"ok":"HELLO\u0000LO"}
+{"fn":"pendingRequestInstanceKey","args":["a😀b😀cns:key.path","HELLO"],"ok":"a😀b😀cns:key.path\u0000HELLO"}
+{"fn":"pendingRequestInstanceKey","args":["İstanbul",{"$undefined":true}],"ok":"İstanbul\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["straße",{"$undefined":true}],"ok":"straße\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["a..b./x/**/*.json","A."],"ok":"a..b./x/**/*.json\u0000A."}
+{"fn":"pendingRequestInstanceKey","args":["h","ns:key.path"],"ok":"h\u0000ns:key.path"}
+{"fn":"pendingRequestInstanceKey","args":["ey","ns:key.path"],"ok":"ey\u0000ns:key.path"}
+{"fn":"pendingRequestInstanceKey","args":["./x/**/*.json","😀"],"ok":"./x/**/*.json\u0000😀"}
+{"fn":"pendingRequestInstanceKey","args":["  padded  ","﻿bomHELLO"],"ok":"  padded  \u0000﻿bomHELLO"}
+{"fn":"pendingRequestInstanceKey","args":[" Worl","Hello World"],"ok":" Worl\u0000Hello World"}
+{"fn":"pendingRequestInstanceKey","args":["﻿bom","o"],"ok":"﻿bom\u0000o"}
+{"fn":"pendingRequestInstanceKey","args":["trailing.","  padded  日本語のテキスト"],"ok":"trailing.\u0000  padded  日本語のテキスト"}
+{"fn":"pendingRequestInstanceKey","args":["a","tab\tseparated"],"ok":"a\u0000tab\tseparated"}
+{"fn":"pendingRequestInstanceKey","args":["hello",{"$undefined":true}],"ok":"hello\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["a😀",{"$undefined":true}],"ok":"a😀\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["ünïcödé😀",{"$undefined":true}],"ok":"ünïcödé😀\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["tab\tseparated","a😀b😀c"],"ok":"tab\tseparated\u0000a😀b😀c"}
+{"fn":"pendingRequestInstanceKey","args":["t","trailing."],"ok":"t\u0000trailing."}
+{"fn":"pendingRequestInstanceKey","args":["","trailing."],"ok":"\u0000trailing."}
+{"fn":"pendingRequestInstanceKey","args":["straße","trailing."],"ok":"straße\u0000trailing."}
+{"fn":"pendingRequestInstanceKey","args":["﻿bom","tab\tseparated"],"ok":"﻿bom\u0000tab\tseparated"}
+{"fn":"pendingRequestInstanceKey","args":["pathhe","ns:key.pathhello world"],"ok":"pathhe\u0000ns:key.pathhello world"}
+{"fn":"pendingRequestInstanceKey","args":["emoji 👍🏽 mix","key_name-1"],"ok":"emoji 👍🏽 mix\u0000key_name-1"}
+{"fn":"pendingRequestInstanceKey","args":["trailing.","./x/**/*.json.leading"],"ok":"trailing.\u0000./x/**/*.json.leading"}
+{"fn":"pendingRequestInstanceKey","args":["key_name-1","trailing.é"],"ok":"key_name-1\u0000trailing.é"}
+{"fn":"pendingRequestInstanceKey","args":["trailing.日本語のテキスト","a😀b😀c"],"ok":"trailing.日本語のテキスト\u0000a😀b😀c"}
+{"fn":"pendingRequestInstanceKey","args":[".leading"],"ok":".leading\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["a..b","..b"],"ok":"a..b\u0000..b"}
+{"fn":"pendingRequestInstanceKey","args":["ab","a😀b😀c"],"ok":"ab\u0000a😀b😀c"}
+{"fn":"pendingRequestInstanceKey","args":["key_name-1",{"$undefined":true}],"ok":"key_name-1\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":[":","tab\tseparated"],"ok":":\u0000tab\tseparated"}
+{"fn":"pendingRequestInstanceKey","args":["a:b:c","emoji 👍🏽 mix"],"ok":"a:b:c\u0000emoji 👍🏽 mix"}
+{"fn":"pendingRequestInstanceKey","args":["straße","src/a/b.ts"],"ok":"straße\u0000src/a/b.ts"}
+{"fn":"pendingRequestInstanceKey","args":["hello","日本語のテキスト"],"ok":"hello\u0000日本語のテキスト"}
+{"fn":"pendingRequestInstanceKey","args":["./x/**/*.json"],"ok":"./x/**/*.json\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["😀",{"$undefined":true}],"ok":"😀\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":[".leading","g"],"ok":".leading\u0000g"}
+{"fn":"pendingRequestInstanceKey","args":["ab","ns:key.path﻿bom"],"ok":"ab\u0000ns:key.path﻿bom"}
+{"fn":"pendingRequestInstanceKey","args":["ns:","ns:key.path"],"ok":"ns:\u0000ns:key.path"}
+{"fn":"pendingRequestInstanceKey","args":["key_name-1","  padded  "],"ok":"key_name-1\u0000  padded  "}
+{"fn":"pendingRequestInstanceKey","args":["i 👍🏽 ","emoji 👍🏽 mix"],"ok":"i 👍🏽 \u0000emoji 👍🏽 mix"}
+{"fn":"pendingRequestInstanceKey","args":["Hello World","Hello World"],"ok":"Hello World\u0000Hello World"}
+{"fn":"pendingRequestInstanceKey","args":["./x/**/*.json﻿bom","tab\tseparated"],"ok":"./x/**/*.json﻿bom\u0000tab\tseparated"}
+{"fn":"pendingRequestInstanceKey","args":["./x/**/*.jsonHello World","ns:key.path"],"ok":"./x/**/*.jsonHello World\u0000ns:key.path"}
+{"fn":"pendingRequestInstanceKey","args":[".leadingHELLO","a..b"],"ok":".leadingHELLO\u0000a..b"}
+{"fn":"pendingRequestInstanceKey","args":["hello world","é"],"ok":"hello world\u0000é"}
+{"fn":"pendingRequestInstanceKey","args":["ünïcödé","a"],"ok":"ünïcödé\u0000a"}
+{"fn":"pendingRequestInstanceKey","args":["hellotab\tseparated","emoji 👍🏽 mix"],"ok":"hellotab\tseparated\u0000emoji 👍🏽 mix"}
+{"fn":"pendingRequestInstanceKey","args":["oji 👍🏽 mix","emoji 👍🏽 mix"],"ok":"oji 👍🏽 mix\u0000emoji 👍🏽 mix"}
+{"fn":"pendingRequestInstanceKey","args":["  padded  ","a.b.c"],"ok":"  padded  \u0000a.b.c"}
+{"fn":"pendingRequestInstanceKey","args":["é"],"ok":"é\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["trailing.Hello World"],"ok":"trailing.Hello World\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["ΣΊΣΥΦΟΣ日本語のテキスト",":"],"ok":"ΣΊΣΥΦΟΣ日本語のテキスト\u0000:"}
+{"fn":"pendingRequestInstanceKey","args":["a.b.c","éline1\nline2"],"ok":"a.b.c\u0000éline1\nline2"}
+{"fn":"pendingRequestInstanceKey","args":["́","é"],"ok":"́\u0000é"}
+{"fn":"pendingRequestInstanceKey","args":["ab",{"$undefined":true}],"ok":"ab\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["  padded  Hello World",":"],"ok":"  padded  Hello World\u0000:"}
+{"fn":"pendingRequestInstanceKey","args":["hello worldabc","abc"],"ok":"hello worldabc\u0000abc"}
+{"fn":"pendingRequestInstanceKey","args":["a.b.c","."],"ok":"a.b.c\u0000."}
+{"fn":"pendingRequestInstanceKey","args":["Hello World",".leading"],"ok":"Hello World\u0000.leading"}
+{"fn":"pendingRequestInstanceKey","args":["trailing.","HELLO"],"ok":"trailing.\u0000HELLO"}
+{"fn":"pendingRequestInstanceKey","args":["hello world","a..b"],"ok":"hello world\u0000a..b"}
+{"fn":"pendingRequestInstanceKey","args":["ünïcödéstraße","ünïcödéstraße"],"ok":"ünïcödéstraße\u0000ünïcödéstraße"}
+{"fn":"pendingRequestInstanceKey","args":["Hello World:","﻿bom"],"ok":"Hello World:\u0000﻿bom"}
+{"fn":"pendingRequestInstanceKey","args":["nbul","İstanbul"],"ok":"nbul\u0000İstanbul"}
+{"fn":"pendingRequestInstanceKey","args":["﻿bom","./x/**/*.json"],"ok":"﻿bom\u0000./x/**/*.json"}
+{"fn":"pendingRequestInstanceKey","args":["é","ünïcödé"],"ok":"é\u0000ünïcödé"}
+{"fn":"pendingRequestInstanceKey","args":["b","﻿bom"],"ok":"b\u0000﻿bom"}
+{"fn":"pendingRequestInstanceKey","args":["tab\tseparated","ΣΊΣΥΦΟΣsrc/a/b.ts"],"ok":"tab\tseparated\u0000ΣΊΣΥΦΟΣsrc/a/b.ts"}
+{"fn":"pendingRequestInstanceKey","args":["abc","ns:key.path"],"ok":"abc\u0000ns:key.path"}
+{"fn":"pendingRequestInstanceKey","args":["a:b:c","ns:key.path"],"ok":"a:b:c\u0000ns:key.path"}
+{"fn":"pendingRequestInstanceKey","args":["src/a/b.ts",":"],"ok":"src/a/b.ts\u0000:"}
+{"fn":"pendingRequestInstanceKey","args":["İstanbul","a😀b😀c"],"ok":"İstanbul\u0000a😀b😀c"}
+{"fn":"pendingRequestInstanceKey","args":["hello world","ld"],"ok":"hello world\u0000ld"}
+{"fn":"pendingRequestInstanceKey","args":["😀","trailing."],"ok":"😀\u0000trailing."}
+{"fn":"pendingRequestInstanceKey","args":["héllo wörld","hello"],"ok":"héllo wörld\u0000hello"}
+{"fn":"pendingRequestInstanceKey","args":["👍🏽 thumbs","hello"],"ok":"👍🏽 thumbs\u0000hello"}
+{"fn":"pendingRequestInstanceKey","args":["日本語","hello"],"ok":"日本語\u0000hello"}
+{"fn":"pendingRequestInstanceKey","args":["","hello"],"ok":"\u0000hello"}
+{"fn":"pendingRequestInstanceKey","args":["é","hello"],"ok":"é\u0000hello"}
+{"fn":"pendingRequestInstanceKey","args":["İstanbul","hello"],"ok":"İstanbul\u0000hello"}
+{"fn":"pendingRequestInstanceKey","args":["straße","hello"],"ok":"straße\u0000hello"}
+{"fn":"pendingRequestInstanceKey","args":["ılık ırmak","hello"],"ok":"ılık ırmak\u0000hello"}
+{"fn":"pendingRequestInstanceKey","args":["👨‍👩‍👧 family","hello"],"ok":"👨‍👩‍👧 family\u0000hello"}
+{"fn":"pendingRequestInstanceKey","args":["a b","hello"],"ok":"a b\u0000hello"}
+{"fn":"pendingRequestInstanceKey","args":["ΣΊΣΥΦΟΣ","hello"],"ok":"ΣΊΣΥΦΟΣ\u0000hello"}
+{"fn":"pendingRequestInstanceKey","args":["a😀b","hello"],"ok":"a😀b\u0000hello"}
+{"fn":"pendingRequestInstanceKey","args":["﻿bom","hello"],"ok":"﻿bom\u0000hello"}
+{"fn":"pendingRequestInstanceKey","args":["a²b x½ y①","hello"],"ok":"a²b x½ y①\u0000hello"}
+{"fn":"pendingRequestInstanceKey","args":["aⅠb Ⅻ","hello"],"ok":"aⅠb Ⅻ\u0000hello"}
+{"fn":"pendingRequestInstanceKey","args":["a𐐀b 𝐀bc","hello"],"ok":"a𐐀b 𝐀bc\u0000hello"}
+{"fn":"pendingRequestInstanceKey","args":["कि ٣٤","hello"],"ok":"कि ٣٤\u0000hello"}
+{"fn":"pendingRequestInstanceKey","args":["lo",{"$undefined":true}],"ok":"lo\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["lo","héllo wörld"],"ok":"lo\u0000héllo wörld"}
+{"fn":"pendingRequestInstanceKey","args":["lo","👍🏽 thumbs"],"ok":"lo\u0000👍🏽 thumbs"}
+{"fn":"pendingRequestInstanceKey","args":["lo","日本語"],"ok":"lo\u0000日本語"}
+{"fn":"pendingRequestInstanceKey","args":["lo",""],"ok":"lo\u0000"}
+{"fn":"pendingRequestInstanceKey","args":["lo","é"],"ok":"lo\u0000é"}
+{"fn":"pendingRequestInstanceKey","args":["lo","İstanbul"],"ok":"lo\u0000İstanbul"}
+{"fn":"pendingRequestInstanceKey","args":["lo","straße"],"ok":"lo\u0000straße"}
+{"fn":"pendingRequestInstanceKey","args":["lo","ılık ırmak"],"ok":"lo\u0000ılık ırmak"}
+{"fn":"pendingRequestInstanceKey","args":["lo","👨‍👩‍👧 family"],"ok":"lo\u0000👨‍👩‍👧 family"}
+{"fn":"pendingRequestInstanceKey","args":["lo","a b"],"ok":"lo\u0000a b"}
+{"fn":"pendingRequestInstanceKey","args":["lo","ΣΊΣΥΦΟΣ"],"ok":"lo\u0000ΣΊΣΥΦΟΣ"}
+{"fn":"pendingRequestInstanceKey","args":["lo","a😀b"],"ok":"lo\u0000a😀b"}
+{"fn":"pendingRequestInstanceKey","args":["lo","﻿bom"],"ok":"lo\u0000﻿bom"}
+{"fn":"pendingRequestInstanceKey","args":["lo","a²b x½ y①"],"ok":"lo\u0000a²b x½ y①"}
+{"fn":"pendingRequestInstanceKey","args":["lo","aⅠb Ⅻ"],"ok":"lo\u0000aⅠb Ⅻ"}
+{"fn":"pendingRequestInstanceKey","args":["lo","a𐐀b 𝐀bc"],"ok":"lo\u0000a𐐀b 𝐀bc"}
+{"fn":"pendingRequestInstanceKey","args":["lo","कि ٣٤"],"ok":"lo\u0000कि ٣٤"}
+{"fn":"approvalRequestKindFromRequestType","args":[null],"ok":null}
+{"fn":"approvalRequestKindFromRequestType","args":[{}],"ok":null}
+{"fn":"approvalRequestKindFromRequestType","args":[["a",1]],"ok":null}
+{"fn":"approvalRequestKindFromRequestType","args":[[]],"ok":null}
+{"fn":"approvalRequestKindFromRequestType","args":[{"a":{"b":"c"}}],"ok":null}
+{"fn":"approvalRequestKindFromRequestType","args":["x"],"ok":null}
+{"fn":"approvalRequestKindFromRequestType","args":[true],"ok":null}
+{"fn":"approvalRequestKindFromRequestType","args":[0],"ok":null}
+{"fn":"approvalRequestKindFromRequestType","args":[{"a":"b"}],"ok":null}
+{"fn":"approvalRequestKindFromRequestType","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":null}
+{"fn":"approvalRequestKindFromRequestType","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":null}
+{"fn":"approvalRequestKindFromRequestType","args":[[3,1,2]],"ok":null}
+{"fn":"isStalePendingRequestFailureDetail","args":["tab\tseparated"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":[],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["{name} has {count} items"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["HELLOİstanbul"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["key_name-1"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["trailing.é"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["a😀b😀c"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":[{"$undefined":true}],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["tab\tseparatedhello"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["a.b.c"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["ünïcödé"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["src/a/b.ts"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["ns:key.path"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["abc"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["é"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["a:b:c"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["  padded  Hello World"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["  padded  "],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":[".leading.leading"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["ns:key.pathabc"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["ΣΊΣΥΦΟΣsrc/a/b.ts"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["ns:key.pathünïcödé"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["HELLO"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["😀"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["./x/**/*.json"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["src/a/b.tsa"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["ab"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["İstanbul😀"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["line1\nline2"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["日本語のテキスト"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["trailing."],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["emoji 👍🏽 mix"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["İstanbul"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["hello worldab"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["a:b:ctrailing."],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["a..b"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["hello.leading"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["﻿bom"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["Hello World"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["a"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["straße"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["{name} has {count} itemsa"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["İstanbulΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["hello"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":[".leading"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["﻿boma..b"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["src/a/b.ts  padded  "],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":[""],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["hello world"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["trailing.emoji 👍🏽 mix"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["{name} has {count} itemsé"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["a:b:cemoji 👍🏽 mix"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["a:b:c😀"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["a.b.cHello World"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["a.b.cline1\nline2"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["line1\nline2  padded  "],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["İstanbula😀b😀c"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["key_name-1é"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["hello worldé"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["aHello World"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":[".leadinga"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["日本語のテキスト日本語のテキスト"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["İstanbul:"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":[".leading  padded  "],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["a.b.c{name} has {count} items"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["straßestraße"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":[":"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["ΣΊΣΥΦΟΣünïcödé"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["ns:key.pathhello world"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["ünïcödéİstanbul"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["helloabc"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["{name} has {count} itemshello world"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["a..bsrc/a/b.ts"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["{name} has {count} itemsΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["a😀b😀cünïcödé"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["src/a/b.tsHello World"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["a:b:c./x/**/*.json"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":[":HELLO"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["hello world﻿bom"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["HELLO😀"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["straßeab"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["﻿bomİstanbul"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["日本語のテキストa😀b😀c"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["a..bünïcödé"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["ünïcödétrailing."],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["ahello"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["aa"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["src/a/b.ts./x/**/*.json"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["ΣΊΣΥΦΟΣİstanbul"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["  padded  trailing."],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":[".leading😀"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["ΣΊΣΥΦΟΣkey_name-1"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["😀tab\tseparated"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["trailing.:"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":[".leading:"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["aba:b:c"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["😀ünïcödé"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["./x/**/*.jsonHELLO"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["İstanbul  padded  "],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["日本語のテキストhello world"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["  padded  emoji 👍🏽 mix"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["ab😀"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["éİstanbul"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["a:b:cİstanbul"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["﻿bomline1\nline2"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["./x/**/*.jsona..b"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["éΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":[":./x/**/*.json"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["😀trailing."],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["hellons:key.path"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["line1\nline2hello world"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["﻿bomhello world"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["ab日本語のテキスト"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["abca:b:c"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["HELLOstraße"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":[":a:b:c"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["Hello Worldabc"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["emoji 👍🏽 mixemoji 👍🏽 mix"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["line1\nline2:"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["ΣΊΣΥΦΟΣhello world"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["﻿bomünïcödé"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["İstanbulé"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["line1\nline2Hello World"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["ünïcödé:"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["key_name-1key_name-1"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["line1\nline2abc"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["ΣΊΣΥΦΟΣa..b"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["abc{name} has {count} items"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["  padded  a:b:c"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["{name} has {count} itemsline1\nline2"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["ns:key.path😀"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["ns:key.patha.b.c"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["trailing.ab"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":[".leading﻿bom"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["tab\tseparatedhello world"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["src/a/b.tstab\tseparated"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["helloİstanbul"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["ns:key.path./x/**/*.json"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["😀a..b"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["ns:key.pathkey_name-1"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["emoji 👍🏽 mixHello World"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["a..bé"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["helloΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["﻿boma:b:c"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["a:b:cé"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["./x/**/*.json😀"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["emoji 👍🏽 mixé"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["aΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["abca"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["./x/**/*.jsona.b.c"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["ns:key.patha..b"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["aİstanbul"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["a.b.cstraße"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["./x/**/*.json.leading"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["é﻿bom"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["hello﻿bom"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["straßeHELLO"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":[".leading日本語のテキスト"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["HELLOabc"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["abtab\tseparated"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["Hello Worlda😀b😀c"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["a😀b😀chello"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["日本語のテキストünïcödé"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["line1\nline2emoji 👍🏽 mix"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["  padded  é"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["  padded  a.b.c"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["  padded  key_name-1"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["straßekey_name-1"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["ΣΊΣΥΦΟΣé"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["a..btrailing."],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["éa..b"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["{name} has {count} items日本語のテキスト"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["ns:key.pathHello World"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["hello:"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["😀a:b:c"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["a:b:c  padded  "],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["{name} has {count} items.leading"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["İstanbulİstanbul"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["ns:key.pathemoji 👍🏽 mix"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["hellostraße"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":[".leadingΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["😀{name} has {count} items"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["a..ba"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["hello world./x/**/*.json"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["a:b:cabc"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["{name} has {count} itemsHello World"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["helloHello World"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":[":a"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["ΣΊΣΥΦΟΣa.b.c"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["./x/**/*.jsonabc"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":[".leadingabc"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["  padded  src/a/b.ts"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["ns:key.pathsrc/a/b.ts"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["a:b:cns:key.path"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["emoji 👍🏽 mixsrc/a/b.ts"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":[".leadingtrailing."],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["line1\nline2﻿bom"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["a:b:c.leading"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["héllo wörld"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["👍🏽 thumbs"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["日本語"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["ılık ırmak"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["👨‍👩‍👧 family"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["a b"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["a😀b"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["a²b x½ y①"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["aⅠb Ⅻ"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["a𐐀b 𝐀bc"],"ok":false}
+{"fn":"isStalePendingRequestFailureDetail","args":["कि ٣٤"],"ok":false}
+{"fn":"buildStalePendingRequestFailureDetail","args":["HELLO","key_name-1"],"ok":"Stale pending HELLO request: key_name-1. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["ΣΊΣΥΦΟΣ","a..b"],"ok":"Stale pending ΣΊΣΥΦΟΣ request: a..b. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":[".","src/a/b.ts"],"ok":"Stale pending . request: src/a/b.ts. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["ey.path","ns:key.pathab"],"ok":"Stale pending ey.path request: ns:key.pathab. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["abc","src/a/b.ts"],"ok":"Stale pending abc request: src/a/b.ts. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["src/a/b.ts","hello"],"ok":"Stale pending src/a/b.ts request: hello. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["日本語のテキスト","ns:key.path"],"ok":"Stale pending 日本語のテキスト request: ns:key.path. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a","  padded  .leading"],"ok":"Stale pending a request:   padded  .leading. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":[":emoji 👍🏽 mix","x"],"ok":"Stale pending :emoji 👍🏽 mix request: x. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["straße","İstanbul"],"ok":"Stale pending straße request: İstanbul. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["  padded  src/a/b.ts","key_name-1"],"ok":"Stale pending   padded  src/a/b.ts request: key_name-1. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["O","HELLO"],"ok":"Stale pending O request: HELLO. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["ab",""],"ok":"Stale pending ab request: . Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["HELLO","emoji 👍🏽 mix"],"ok":"Stale pending HELLO request: emoji 👍🏽 mix. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["./x/**/*.json","İstanbul"],"ok":"Stale pending ./x/**/*.json request: İstanbul. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["hello world","a😀b😀c"],"ok":"Stale pending hello world request: a😀b😀c. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a.b.c","hello world"],"ok":"Stale pending a.b.c request: hello world. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["日本語のテキスト","a:b:c"],"ok":"Stale pending 日本語のテキスト request: a:b:c. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a:b:c","a:b:c"],"ok":"Stale pending a:b:c request: a:b:c. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["emoji 👍🏽 mix","日本語のテキスト"],"ok":"Stale pending emoji 👍🏽 mix request: 日本語のテキスト. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["TRAI","trailing."],"ok":"Stale pending TRAI request: trailing.. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["{name} has {count} items","abc"],"ok":"Stale pending {name} has {count} items request: abc. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["İstanbul","HELLOİstanbul"],"ok":"Stale pending İstanbul request: HELLOİstanbul. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["trailing.","hello"],"ok":"Stale pending trailing. request: hello. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["hello","é"],"ok":"Stale pending hello request: é. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["{name} has {count} items","ns:key.patha"],"ok":"Stale pending {name} has {count} items request: ns:key.patha. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["İstanbulemoji 👍🏽 mix",""],"ok":"Stale pending İstanbulemoji 👍🏽 mix request: . Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["straße日本語のテキスト","a..b"],"ok":"Stale pending straße日本語のテキスト request: a..b. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["﻿bom","straße"],"ok":"Stale pending ﻿bom request: straße. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["﻿bom","trailing."],"ok":"Stale pending ﻿bom request: trailing.. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["abc","./x/**/*.json"],"ok":"Stale pending abc request: ./x/**/*.json. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["HELLO",":ünïcödé"],"ok":"Stale pending HELLO request: :ünïcödé. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":[".leadinghello","日本語のテキスト"],"ok":"Stale pending .leadinghello request: 日本語のテキスト. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["ünïcödé","hello worldemoji 👍🏽 mix"],"ok":"Stale pending ünïcödé request: hello worldemoji 👍🏽 mix. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a😀b😀c","a:b:c"],"ok":"Stale pending a😀b😀c request: a:b:c. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["abc","ünïcödé"],"ok":"Stale pending abc request: ünïcödé. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["} i","{name} has {count} items"],"ok":"Stale pending } i request: {name} has {count} items. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a..b","日本語のテキスト"],"ok":"Stale pending a..b request: 日本語のテキスト. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["","İstanbul"],"ok":"Stale pending  request: İstanbul. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["ünïcödé","emoji 👍🏽 mixtrailing."],"ok":"Stale pending ünïcödé request: emoji 👍🏽 mixtrailing.. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["ünïcödé","{name} has {count} items"],"ok":"Stale pending ünïcödé request: {name} has {count} items. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["trailing.",""],"ok":"Stale pending trailing. request: . Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["  padded  ","abc"],"ok":"Stale pending   padded   request: abc. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["b日本語のテ","ab日本語のテキスト"],"ok":"Stale pending b日本語のテ request: ab日本語のテキスト. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["ab","abc"],"ok":"Stale pending ab request: abc. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["日本語のテキスト","éns:key.path"],"ok":"Stale pending 日本語のテキスト request: éns:key.path. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":[":","src/a/b.ts"],"ok":"Stale pending : request: src/a/b.ts. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["trailing.","ünïcödé"],"ok":"Stale pending trailing. request: ünïcödé. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a.b.c","tab\tseparated"],"ok":"Stale pending a.b.c request: tab\tseparated. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["ns:key.path","a:b:c"],"ok":"Stale pending ns:key.path request: a:b:c. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["hello worldsrc/a/b.ts","ello worldsrc/"],"ok":"Stale pending hello worldsrc/a/b.ts request: ello worldsrc/. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["ünïcödé","😀"],"ok":"Stale pending ünïcödé request: 😀. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["line1\nline2","emoji 👍🏽 mix"],"ok":"Stale pending line1\nline2 request: emoji 👍🏽 mix. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["ΣΊΣΥΦΟΣ","a"],"ok":"Stale pending ΣΊΣΥΦΟΣ request: a. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["ns:key.pathab","a"],"ok":"Stale pending ns:key.pathab request: a. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["","src/a/b.ts./x/**/*.json"],"ok":"Stale pending  request: src/a/b.ts./x/**/*.json. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["key_name-1","nam"],"ok":"Stale pending key_name-1 request: nam. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["b","ab"],"ok":"Stale pending b request: ab. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a😀b😀c","c"],"ok":"Stale pending a😀b😀c request: c. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["ünïcödé","a:b:c"],"ok":"Stale pending ünïcödé request: a:b:c. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a😀b😀c","ΣΊΣΥΦΟΣ"],"ok":"Stale pending a😀b😀c request: ΣΊΣΥΦΟΣ. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a","A"],"ok":"Stale pending a request: A. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":[".leading","  padded  "],"ok":"Stale pending .leading request:   padded  . Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["😀","İstanbultab\tseparated"],"ok":"Stale pending 😀 request: İstanbultab\tseparated. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a","straße"],"ok":"Stale pending a request: straße. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["hello","a😀b😀c"],"ok":"Stale pending hello request: a😀b😀c. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["́","é"],"ok":"Stale pending ́ request: é. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["pad","  padded  "],"ok":"Stale pending pad request:   padded  . Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["straße","ab"],"ok":"Stale pending straße request: ab. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["src/a/b.ts","ΣΊΣΥΦΟΣ"],"ok":"Stale pending src/a/b.ts request: ΣΊΣΥΦΟΣ. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["src/a/b.ts","abcsrc/a/b.ts"],"ok":"Stale pending src/a/b.ts request: abcsrc/a/b.ts. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["ΣΊ","ΣΊΣΥΦΟΣ"],"ok":"Stale pending ΣΊ request: ΣΊΣΥΦΟΣ. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["ünïcödé","key_name-1"],"ok":"Stale pending ünïcödé request: key_name-1. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["日本語のテキスト","a"],"ok":"Stale pending 日本語のテキスト request: a. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["key_name-1","HELLO"],"ok":"Stale pending key_name-1 request: HELLO. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["﻿bom😀","a.b.c"],"ok":"Stale pending ﻿bom😀 request: a.b.c. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["HELLO","{name} has {count} items.leading"],"ok":"Stale pending HELLO request: {name} has {count} items.leading. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["{name} has {count} items","a.b.c"],"ok":"Stale pending {name} has {count} items request: a.b.c. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["./x/**/*.json","on"],"ok":"Stale pending ./x/**/*.json request: on. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["src/a/b.tsΣΊΣΥΦΟΣ","ns:key.path"],"ok":"Stale pending src/a/b.tsΣΊΣΥΦΟΣ request: ns:key.path. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a","a"],"ok":"Stale pending a request: a. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["hello world","src/a/b.ts😀"],"ok":"Stale pending hello world request: src/a/b.ts😀. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["src/a/b.ts","a"],"ok":"Stale pending src/a/b.ts request: a. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":[":","emoji 👍🏽 mix"],"ok":"Stale pending : request: emoji 👍🏽 mix. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a..b","trailing."],"ok":"Stale pending a..b request: trailing.. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["key_name-1","abcHello World"],"ok":"Stale pending key_name-1 request: abcHello World. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["Hello World.leading","hello"],"ok":"Stale pending Hello World.leading request: hello. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["key_name-1","_NAM"],"ok":"Stale pending key_name-1 request: _NAM. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["日本語のテキスト{name} has {count} items",":"],"ok":"Stale pending 日本語のテキスト{name} has {count} items request: :. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a.b.c","a😀b😀c"],"ok":"Stale pending a.b.c request: a😀b😀c. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a😀b😀c日本語のテキスト","abc"],"ok":"Stale pending a😀b😀c日本語のテキスト request: abc. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["日本語のテキスト","hello world"],"ok":"Stale pending 日本語のテキスト request: hello world. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["éHELLO","a😀b😀c"],"ok":"Stale pending éHELLO request: a😀b😀c. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["﻿bom","emoji 👍🏽 mix"],"ok":"Stale pending ﻿bom request: emoji 👍🏽 mix. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["HELLOİstanbul","a..b"],"ok":"Stale pending HELLOİstanbul request: a..b. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a","trailing."],"ok":"Stale pending a request: trailing.. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["e","é"],"ok":"Stale pending e request: é. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["SRC/A/B","src/a/b.ts"],"ok":"Stale pending SRC/A/B request: src/a/b.ts. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["./x/**/*.json","**/*"],"ok":"Stale pending ./x/**/*.json request: **/*. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":[":","abc"],"ok":"Stale pending : request: abc. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["hello﻿bom","a"],"ok":"Stale pending hello﻿bom request: a. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["日本語のテキスト","a..b"],"ok":"Stale pending 日本語のテキスト request: a..b. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["abHELLO","é"],"ok":"Stale pending abHELLO request: é. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a.b.c","src/a/b.ts"],"ok":"Stale pending a.b.c request: src/a/b.ts. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["{name} has {count} itemsé","akey_name-1"],"ok":"Stale pending {name} has {count} itemsé request: akey_name-1. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["","hello world"],"ok":"Stale pending  request: hello world. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["tab\tseparated","  padded  "],"ok":"Stale pending tab\tseparated request:   padded  . Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["ab","b"],"ok":"Stale pending ab request: b. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a:b:c","{name} has {count} itemsa"],"ok":"Stale pending a:b:c request: {name} has {count} itemsa. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["Hello World","hello world"],"ok":"Stale pending Hello World request: hello world. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["./x/**/*.json","  padded  "],"ok":"Stale pending ./x/**/*.json request:   padded  . Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["on","./x/**/*.json"],"ok":"Stale pending on request: ./x/**/*.json. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["src/a/b.tsİstanbul","./x/**/*.json"],"ok":"Stale pending src/a/b.tsİstanbul request: ./x/**/*.json. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["😀","😀"],"ok":"Stale pending 😀 request: 😀. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a:b:c","b"],"ok":"Stale pending a:b:c request: b. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":[".","a..b"],"ok":"Stale pending . request: a..b. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a:b:c","ünïcödé"],"ok":"Stale pending a:b:c request: ünïcödé. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a😀b😀c","hello world"],"ok":"Stale pending a😀b😀c request: hello world. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["  padded  ",":"],"ok":"Stale pending   padded   request: :. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["abc","HELLOtrailing."],"ok":"Stale pending abc request: HELLOtrailing.. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["hello world","😀"],"ok":"Stale pending hello world request: 😀. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":[":","line1\nline2"],"ok":"Stale pending : request: line1\nline2. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["é﻿bom","a.b.c"],"ok":"Stale pending é﻿bom request: a.b.c. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a.b.cns:key.path","KEY"],"ok":"Stale pending a.b.cns:key.path request: KEY. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["日本語のテキスト","Hello World"],"ok":"Stale pending 日本語のテキスト request: Hello World. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["Hello World","hello"],"ok":"Stale pending Hello World request: hello. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["﻿bom","hello"],"ok":"Stale pending ﻿bom request: hello. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["😀b😀","a😀b😀c"],"ok":"Stale pending 😀b😀 request: a😀b😀c. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a..b","abc{name} has {count} items"],"ok":"Stale pending a..b request: abc{name} has {count} items. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":[".","trailing."],"ok":"Stale pending . request: trailing.. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["Hello Worldhello","😀"],"ok":"Stale pending Hello Worldhello request: 😀. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["{name} has {count} items","{name} has {count} ite"],"ok":"Stale pending {name} has {count} items request: {name} has {count} ite. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a:b:c","hello world"],"ok":"Stale pending a:b:c request: hello world. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["HELLO","hello world"],"ok":"Stale pending HELLO request: hello world. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["straße","  padded  "],"ok":"Stale pending straße request:   padded  . Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["src/a/b.ts",".leading"],"ok":"Stale pending src/a/b.ts request: .leading. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["Σ","ΣΊΣΥΦΟΣ"],"ok":"Stale pending Σ request: ΣΊΣΥΦΟΣ. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["ünïcödé",".leading"],"ok":"Stale pending ünïcödé request: .leading. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a","trailing.:"],"ok":"Stale pending a request: trailing.:. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a😀b😀c","a..b"],"ok":"Stale pending a😀b😀c request: a..b. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["ΣΊΣΥΦΟΣHello World","ΥΦΟ"],"ok":"Stale pending ΣΊΣΥΦΟΣHello World request: ΥΦΟ. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["y_name-1hell","key_name-1hello world"],"ok":"Stale pending y_name-1hell request: key_name-1hello world. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":[":",":"],"ok":"Stale pending : request: :. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["straße","a.b.c"],"ok":"Stale pending straße request: a.b.c. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["HELLO","LO"],"ok":"Stale pending HELLO request: LO. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["tab\tseparated","line1\nline2"],"ok":"Stale pending tab\tseparated request: line1\nline2. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["İstanbulkey_name-1","😀a😀b😀c"],"ok":"Stale pending İstanbulkey_name-1 request: 😀a😀b😀c. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["İstanbul","trailing."],"ok":"Stale pending İstanbul request: trailing.. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["hello world","HELLOa😀b😀c"],"ok":"Stale pending hello world request: HELLOa😀b😀c. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["İstanbulline1\nline2","a😀b😀c"],"ok":"Stale pending İstanbulline1\nline2 request: a😀b😀c. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["😀","İstanbul"],"ok":"Stale pending 😀 request: İstanbul. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["😀./x/**/*.json","/"],"ok":"Stale pending 😀./x/**/*.json request: /. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["hello world","日本語のテキスト"],"ok":"Stale pending hello world request: 日本語のテキスト. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["é","hello world"],"ok":"Stale pending é request: hello world. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a😀b😀c","a.b.c"],"ok":"Stale pending a😀b😀c request: a.b.c. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a😀b😀c","  padded  "],"ok":"Stale pending a😀b😀c request:   padded  . Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["tab\tseparated","ünïcödé"],"ok":"Stale pending tab\tseparated request: ünïcödé. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["  padded  ","a.b.c"],"ok":"Stale pending   padded   request: a.b.c. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["m","emoji 👍🏽 mix"],"ok":"Stale pending m request: emoji 👍🏽 mix. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["straßetab\tseparated","Hello Worldtrailing."],"ok":"Stale pending straßetab\tseparated request: Hello Worldtrailing.. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a.b.c","hello"],"ok":"Stale pending a.b.c request: hello. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["line1\nline2","﻿bom"],"ok":"Stale pending line1\nline2 request: ﻿bom. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["{name} has {count} items","HELLO"],"ok":"Stale pending {name} has {count} items request: HELLO. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["trailing.","line1\nline2"],"ok":"Stale pending trailing. request: line1\nline2. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a","a.b.c"],"ok":"Stale pending a request: a.b.c. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["é","Hello World"],"ok":"Stale pending é request: Hello World. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["hello world","﻿bom"],"ok":"Stale pending hello world request: ﻿bom. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["tab\tseparated","﻿bom"],"ok":"Stale pending tab\tseparated request: ﻿bom. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["éa..b","src/a/b.ts"],"ok":"Stale pending éa..b request: src/a/b.ts. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":[".b.","a.b.c"],"ok":"Stale pending .b. request: a.b.c. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a😀b😀c","{name} has {count} items"],"ok":"Stale pending a😀b😀c request: {name} has {count} items. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["  padded  ","😀"],"ok":"Stale pending   padded   request: 😀. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["ell","hello"],"ok":"Stale pending ell request: hello. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["key_name-1","tab\tseparated"],"ok":"Stale pending key_name-1 request: tab\tseparated. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["tab\tseparated","  padded  a😀b😀c"],"ok":"Stale pending tab\tseparated request:   padded  a😀b😀c. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["hello","L"],"ok":"Stale pending hello request: L. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["key_name-1","HELLOab"],"ok":"Stale pending key_name-1 request: HELLOab. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["emoji 👍🏽 mixé","Hello Worlda.b.c"],"ok":"Stale pending emoji 👍🏽 mixé request: Hello Worlda.b.c. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["HELLO","😀"],"ok":"Stale pending HELLO request: 😀. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["straßeline1\nline2","a:b:c"],"ok":"Stale pending straßeline1\nline2 request: a:b:c. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["{name} has {count} items日本語のテキスト","abc"],"ok":"Stale pending {name} has {count} items日本語のテキスト request: abc. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["ΟΣ","ΣΊΣΥΦΟΣ"],"ok":"Stale pending ΟΣ request: ΣΊΣΥΦΟΣ. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["abc","./x/**/*.jsonkey_name-1"],"ok":"Stale pending abc request: ./x/**/*.jsonkey_name-1. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["emoji 👍🏽 mix","ΣΊΣΥΦΟΣ"],"ok":"Stale pending emoji 👍🏽 mix request: ΣΊΣΥΦΟΣ. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["Hello World","src/a/b.ts"],"ok":"Stale pending Hello World request: src/a/b.ts. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["ab","ns:key.path"],"ok":"Stale pending ab request: ns:key.path. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["tab\tseparated","a..b"],"ok":"Stale pending tab\tseparated request: a..b. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a😀b😀c","a"],"ok":"Stale pending a😀b😀c request: a. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["{name} has {count} items","﻿bom"],"ok":"Stale pending {name} has {count} items request: ﻿bom. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["straße",".leading"],"ok":"Stale pending straße request: .leading. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a😀b😀c","a😀b😀c"],"ok":"Stale pending a😀b😀c request: a😀b😀c. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a.b.c","ab"],"ok":"Stale pending a.b.c request: ab. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["emoji 👍🏽 mix","emoji 👍🏽 mix"],"ok":"Stale pending emoji 👍🏽 mix request: emoji 👍🏽 mix. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["﻿bomstraße",".leadingHELLO"],"ok":"Stale pending ﻿bomstraße request: .leadingHELLO. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["line1\nline2","ine1\nl"],"ok":"Stale pending line1\nline2 request: ine1\nl. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["key_name-1",":key_name-1"],"ok":"Stale pending key_name-1 request: :key_name-1. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["me} has {count} it","{name} has {count} items"],"ok":"Stale pending me} has {count} it request: {name} has {count} items. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":[".leading","😀"],"ok":"Stale pending .leading request: 😀. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["é","trailing."],"ok":"Stale pending é request: trailing.. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["EMOJI 👍🏽 M","emoji 👍🏽 mix"],"ok":"Stale pending EMOJI 👍🏽 M request: emoji 👍🏽 mix. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["héllo wörld","key_name-1"],"ok":"Stale pending héllo wörld request: key_name-1. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["👍🏽 thumbs","key_name-1"],"ok":"Stale pending 👍🏽 thumbs request: key_name-1. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["日本語","key_name-1"],"ok":"Stale pending 日本語 request: key_name-1. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["","key_name-1"],"ok":"Stale pending  request: key_name-1. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["é","key_name-1"],"ok":"Stale pending é request: key_name-1. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["İstanbul","key_name-1"],"ok":"Stale pending İstanbul request: key_name-1. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["straße","key_name-1"],"ok":"Stale pending straße request: key_name-1. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["ılık ırmak","key_name-1"],"ok":"Stale pending ılık ırmak request: key_name-1. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["👨‍👩‍👧 family","key_name-1"],"ok":"Stale pending 👨‍👩‍👧 family request: key_name-1. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a b","key_name-1"],"ok":"Stale pending a b request: key_name-1. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["ΣΊΣΥΦΟΣ","key_name-1"],"ok":"Stale pending ΣΊΣΥΦΟΣ request: key_name-1. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a😀b","key_name-1"],"ok":"Stale pending a😀b request: key_name-1. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["﻿bom","key_name-1"],"ok":"Stale pending ﻿bom request: key_name-1. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a²b x½ y①","key_name-1"],"ok":"Stale pending a²b x½ y① request: key_name-1. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["aⅠb Ⅻ","key_name-1"],"ok":"Stale pending aⅠb Ⅻ request: key_name-1. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["a𐐀b 𝐀bc","key_name-1"],"ok":"Stale pending a𐐀b 𝐀bc request: key_name-1. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["कि ٣٤","key_name-1"],"ok":"Stale pending कि ٣٤ request: key_name-1. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["HELLO","héllo wörld"],"ok":"Stale pending HELLO request: héllo wörld. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["HELLO","👍🏽 thumbs"],"ok":"Stale pending HELLO request: 👍🏽 thumbs. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["HELLO","日本語"],"ok":"Stale pending HELLO request: 日本語. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["HELLO",""],"ok":"Stale pending HELLO request: . Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["HELLO","é"],"ok":"Stale pending HELLO request: é. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["HELLO","İstanbul"],"ok":"Stale pending HELLO request: İstanbul. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["HELLO","straße"],"ok":"Stale pending HELLO request: straße. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["HELLO","ılık ırmak"],"ok":"Stale pending HELLO request: ılık ırmak. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["HELLO","👨‍👩‍👧 family"],"ok":"Stale pending HELLO request: 👨‍👩‍👧 family. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["HELLO","a b"],"ok":"Stale pending HELLO request: a b. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["HELLO","ΣΊΣΥΦΟΣ"],"ok":"Stale pending HELLO request: ΣΊΣΥΦΟΣ. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["HELLO","a😀b"],"ok":"Stale pending HELLO request: a😀b. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["HELLO","﻿bom"],"ok":"Stale pending HELLO request: ﻿bom. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["HELLO","a²b x½ y①"],"ok":"Stale pending HELLO request: a²b x½ y①. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["HELLO","aⅠb Ⅻ"],"ok":"Stale pending HELLO request: aⅠb Ⅻ. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["HELLO","a𐐀b 𝐀bc"],"ok":"Stale pending HELLO request: a𐐀b 𝐀bc. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"buildStalePendingRequestFailureDetail","args":["HELLO","कि ٣٤"],"ok":"Stale pending HELLO request: कि ٣٤. Provider callback state does not survive app restarts or recovered sessions. Restart the turn to continue."}
+{"fn":"derivePendingThreadRequestIds","args":[0],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"derivePendingThreadRequestIds","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"derivePendingThreadRequestIds","args":[true],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"derivePendingThreadRequestIds","args":[[]],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"derivePendingThreadRequestIds","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"derivePendingThreadRequestIds","args":[null],"error":"Cannot read properties of null (reading 'pendingInteractions')"}
+{"fn":"derivePendingThreadRequestIds","args":["x"],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"derivePendingThreadRequestIds","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"derivePendingThreadRequestIds","args":[{}],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveHumanMessageAt","args":[["a",1]],"ok":null}
+{"fn":"resolveHumanMessageAt","args":[{}],"ok":null}
+{"fn":"resolveHumanMessageAt","args":[true],"ok":null}
+{"fn":"resolveHumanMessageAt","args":[null],"error":"Cannot read properties of null (reading 'role')"}
+{"fn":"resolveHumanMessageAt","args":[{"a":"b"}],"ok":null}
+{"fn":"resolveHumanMessageAt","args":[[]],"ok":null}
+{"fn":"resolveHumanMessageAt","args":[{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveHumanMessageAt","args":[0],"ok":null}
+{"fn":"resolveHumanMessageAt","args":["x"],"ok":null}
+{"fn":"deriveThreadSummaryState","args":[{}],"error":"input.messages is not iterable"}
+{"fn":"deriveThreadSummaryState","args":[[]],"error":"input.messages is not iterable"}
+{"fn":"deriveThreadSummaryState","args":[0],"error":"input.messages is not iterable"}
+{"fn":"deriveThreadSummaryState","args":[["a",1]],"error":"input.messages is not iterable"}
+{"fn":"deriveThreadSummaryState","args":[{"a":"b"}],"error":"input.messages is not iterable"}
+{"fn":"deriveThreadSummaryState","args":[{"a":{"b":"c"}}],"error":"input.messages is not iterable"}
+{"fn":"deriveThreadSummaryState","args":["x"],"error":"input.messages is not iterable"}
+{"fn":"deriveThreadSummaryState","args":[true],"error":"input.messages is not iterable"}
+{"fn":"deriveThreadSummaryState","args":[null],"error":"Cannot read properties of null (reading 'messages')"}
+{"fn":"deriveThreadSummaryMetadata","args":[[]],"error":"input.messages is not iterable"}
+{"fn":"deriveThreadSummaryMetadata","args":[{"a":"b"}],"error":"input.messages is not iterable"}
+{"fn":"deriveThreadSummaryMetadata","args":[0],"error":"input.messages is not iterable"}
+{"fn":"deriveThreadSummaryMetadata","args":["x"],"error":"input.messages is not iterable"}
+{"fn":"deriveThreadSummaryMetadata","args":[{}],"error":"input.messages is not iterable"}
+{"fn":"deriveThreadSummaryMetadata","args":[null],"error":"Cannot read properties of null (reading 'messages')"}
+{"fn":"deriveThreadSummaryMetadata","args":[true],"error":"input.messages is not iterable"}
+{"fn":"deriveThreadSummaryMetadata","args":[{"a":{"b":"c"}}],"error":"input.messages is not iterable"}
+{"fn":"deriveThreadSummaryMetadata","args":[["a",1]],"error":"input.messages is not iterable"}
+{"fn":"derivePendingThreadRequestIds","args":[{"activities":[{"kind":"approval.requested","payload":{"requestId":"r1","requestKind":"command"},"sequence":1,"createdAt":"a","id":"a"},{"kind":"approval.resolved","payload":{"requestId":"r1"},"sequence":2,"createdAt":"b","id":"b"},{"kind":"user-input.requested","payload":{"requestId":"u1","questions":[{"id":"q1","header":"h","question":"q","options":[{"label":"l","description":"d"}]}]},"sequence":3,"createdAt":"c","id":"c"}]}],"ok":{"approvalRequestIds":[],"userInputRequestIds":["u1"]}}
+{"fn":"derivePendingThreadRequestIds","args":[{"pendingInteractions":[{"interactionKind":"approval","status":"pending","requestId":"r1","lifecycleGeneration":"g1"},{"interactionKind":"user-input","status":"pending","requestId":"u1"},{"interactionKind":"approval","status":"pending","requestId":"r1","lifecycleGeneration":"g2"},{"interactionKind":"approval","status":"resolved","requestId":"x"}]}],"ok":{"approvalRequestIds":["r1","r1"],"userInputRequestIds":["u1"]}}
+{"fn":"derivePendingThreadRequestIds","args":[{"pendingInteractions":null}],"ok":{"approvalRequestIds":[],"userInputRequestIds":[]}}
+{"fn":"derivePendingThreadRequestIds","args":[{"activities":[{"kind":"approval.requested","payload":{"requestId":"r1","requestType":"tool_approval","lifecycleGeneration":"g"},"sequence":1,"createdAt":"a","id":"a"},{"kind":"provider.approval.respond.failed","payload":{"requestId":"r1","detail":"Stale pending approval request: r1."},"sequence":2,"createdAt":"b","id":"b"}]}],"ok":{"approvalRequestIds":[],"userInputRequestIds":[]}}
+{"fn":"derivePendingThreadRequestIds","args":[{"activities":[{"kind":"approval.requested","payload":{"requestId":"r2","requestKind":"bogus"},"sequence":1,"createdAt":"a","id":"a"},{"kind":"approval.requested","payload":{"requestId":"r3","requestKind":"permissions"},"sequence":0,"createdAt":"a","id":"b"}]}],"ok":{"approvalRequestIds":["r3"],"userInputRequestIds":[]}}
+{"fn":"deriveThreadSummaryState","args":[{"messages":[{"role":"user","createdAt":"2025-01-01T00:00:00Z","dispatchOrigin":"user"},{"role":"assistant","createdAt":"2025-01-02"},{"role":"user","createdAt":"2025-01-03","updatedAt":"2025-01-04","dispatchOrigin":"system"}],"activities":[],"proposedPlans":[{"id":"p1","turnId":"t1","updatedAt":"2025-01-05","implementedAt":null}],"latestTurn":{"turnId":"t1"}}],"ok":{"latestUserMessageAt":"2025-01-03","latestHumanMessageAt":"2025-01-01T00:00:00Z","pendingApprovalCount":0,"pendingUserInputCount":0,"hasPendingApprovals":false,"hasPendingUserInput":false,"hasActionableProposedPlan":true}}
+{"fn":"deriveThreadSummaryState","args":[{"messages":[{"role":"user","createdAt":"2025-01-01"}],"activities":[],"pendingInteractions":[{"interactionKind":"approval","status":"pending","requestId":"r1"}],"proposedPlans":[]}],"ok":{"latestUserMessageAt":"2025-01-01","latestHumanMessageAt":"2025-01-01","pendingApprovalCount":1,"pendingUserInputCount":0,"hasPendingApprovals":true,"hasPendingUserInput":false,"hasActionableProposedPlan":false}}
+{"fn":"deriveThreadSummaryMetadata","args":[{"messages":[{"role":"user","createdAt":"2025-01-01","dispatchOrigin":"user"}],"activities":[],"proposedPlans":[]}],"ok":{"latestUserMessageAt":"2025-01-01","latestHumanMessageAt":"2025-01-01","hasPendingApprovals":false,"hasPendingUserInput":false,"hasActionableProposedPlan":false}}
+{"fn":"resolveHumanMessageAt","args":[{"role":"user","createdAt":"2025-01-01","updatedAt":"2025-01-02","dispatchOrigin":"user"}],"ok":"2025-01-02"}
+{"fn":"resolveHumanMessageAt","args":[{"role":"user","createdAt":"2025-01-01","dispatchOrigin":"bot"}],"ok":null}
+{"fn":"resolveHumanMessageAt","args":[{"role":"assistant","createdAt":"2025-01-01"}],"ok":null}
+{"fn":"pendingRequestInstanceKey","args":["r1",null],"ok":"r1\u0000legacy"}
+{"fn":"pendingRequestInstanceKey","args":["r1","g1"],"ok":"r1\u0000g1"}
+{"fn":"isStalePendingRequestFailureDetail","args":["Unknown pending user-input request: x"],"ok":true}
+{"fn":"approvalRequestKindFromRequestType","args":["tool_approval"],"ok":"tool"}
+{"fn":"approvalRequestKindFromRequestType","args":[42],"ok":null}

@@ -1,0 +1,168 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/threadSummary.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "threadsummary-rs",
+  "exports": [
+    {
+      "name": "pendingRequestInstanceKey",
+      "file": "packages/shared/src/threadSummary.ts",
+      "line": 30,
+      "params": [
+        {
+          "name": "requestId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "lifecycleGeneration",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "approvalRequestKindFromRequestType",
+      "file": "packages/shared/src/threadSummary.ts",
+      "line": 92,
+      "params": [
+        {
+          "name": "requestType",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(\"command\" | \"file-read\" | \"file-change\" | \"permissions\" | \"tool\") | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isStalePendingRequestFailureDetail",
+      "file": "packages/shared/src/threadSummary.ts",
+      "line": 119,
+      "params": [
+        {
+          "name": "detail",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildStalePendingRequestFailureDetail",
+      "file": "packages/shared/src/threadSummary.ts",
+      "line": 165,
+      "params": [
+        {
+          "name": "requestKind",
+          "ts_type": "(\"approval\" | \"user-input\")",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "requestId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "derivePendingThreadRequestIds",
+      "file": "packages/shared/src/threadSummary.ts",
+      "line": 231,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly activities: ReadonlyArray<\n    Pick<typeof typeof typeof typeof OrchestrationThreadActivity.Type.Type.Type.Type, \"createdAt\" | \"id\" | \"kind\" | \"payload\" | \"sequence\">\n  >;\n  readonly pendingInteractions?: ReadonlyArray<\n    Pick<\n      typeof typeof typeof typeof OrchestrationPendingInteraction.Type.Type.Type.Type,\n      \"interactionKind\" | \"requestId\" | \"lifecycleGeneration\" | \"status\"\n    >\n  >;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "PendingThreadRequestIds",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveHumanMessageAt",
+      "file": "packages/shared/src/threadSummary.ts",
+      "line": 338,
+      "params": [
+        {
+          "name": "message",
+          "ts_type": "(Pick<typeof typeof typeof OrchestrationMessage.Type.Type.Type, \"role\" | \"createdAt\" | \"dispatchOrigin\"> &\n  Partial<Pick<typeof typeof typeof OrchestrationMessage.Type.Type.Type, \"updatedAt\">>)",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deriveThreadSummaryState",
+      "file": "packages/shared/src/threadSummary.ts",
+      "line": 347,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly messages: ReadonlyArray<(Pick<typeof typeof typeof OrchestrationMessage.Type.Type.Type, \"role\" | \"createdAt\" | \"dispatchOrigin\"> &\n  Partial<Pick<typeof typeof typeof OrchestrationMessage.Type.Type.Type, \"updatedAt\">>)>;\n  readonly activities: ReadonlyArray<\n    Pick<typeof typeof typeof typeof OrchestrationThreadActivity.Type.Type.Type.Type, \"createdAt\" | \"id\" | \"kind\" | \"payload\" | \"sequence\">\n  >;\n  readonly pendingInteractions?: ReadonlyArray<\n    Pick<\n      typeof typeof typeof typeof OrchestrationPendingInteraction.Type.Type.Type.Type,\n      \"interactionKind\" | \"requestId\" | \"lifecycleGeneration\" | \"status\"\n    >\n  >;\n  readonly proposedPlans: ReadonlyArray<\n    Pick<typeof typeof typeof typeof OrchestrationProposedPlan.Type.Type.Type.Type, \"id\" | \"turnId\" | \"updatedAt\" | \"implementedAt\">\n  >;\n  readonly latestTurn: Pick<typeof typeof typeof typeof OrchestrationLatestTurn.Type.Type.Type.Type, \"turnId\"> | null;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ThreadSummaryState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deriveThreadSummaryMetadata",
+      "file": "packages/shared/src/threadSummary.ts",
+      "line": 398,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly messages: ReadonlyArray<(Pick<typeof typeof typeof OrchestrationMessage.Type.Type.Type, \"role\" | \"createdAt\" | \"dispatchOrigin\"> &\n  Partial<Pick<typeof typeof typeof OrchestrationMessage.Type.Type.Type, \"updatedAt\">>)>;\n  readonly activities: ReadonlyArray<\n    Pick<typeof typeof typeof typeof OrchestrationThreadActivity.Type.Type.Type.Type, \"createdAt\" | \"id\" | \"kind\" | \"payload\" | \"sequence\">\n  >;\n  readonly pendingInteractions?: ReadonlyArray<\n    Pick<\n      typeof typeof typeof typeof OrchestrationPendingInteraction.Type.Type.Type.Type,\n      \"interactionKind\" | \"requestId\" | \"lifecycleGeneration\" | \"status\"\n    >\n  >;\n  readonly proposedPlans: ReadonlyArray<\n    Pick<typeof typeof typeof typeof OrchestrationProposedPlan.Type.Type.Type.Type, \"id\" | \"turnId\" | \"updatedAt\" | \"implementedAt\">\n  >;\n  readonly latestTurn: Pick<typeof typeof typeof typeof OrchestrationLatestTurn.Type.Type.Type.Type, \"turnId\"> | null;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ThreadSummaryMetadata",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

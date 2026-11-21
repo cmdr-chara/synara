@@ -1,0 +1,17 @@
+{
+  "unit": "apps/web/src/composerTriggerInsertion.ts",
+  "files": 1,
+  "fingerprint": "c2bb006c664a29ca",
+  "coverage": {
+    "lines": 34,
+    "reached": 34,
+    "files": [
+      {
+        "file": "apps/web/src/composerTriggerInsertion.ts",
+        "lines": 34,
+        "reached": 34,
+        "missed": ""
+      }
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "unit": "apps/web/src/file-icons.ts",
+  "files": 1,
+  "fingerprint": "3bd33146d5cdf570",
+  "coverage": {
+    "lines": 265,
+    "reached": 263,
+    "files": [
+      {
+        "file": "apps/web/src/file-icons.ts",
+        "lines": 265,
+        "reached": 263,
+        "missed": "173-174"
+      }
+    ]
+  }
+}

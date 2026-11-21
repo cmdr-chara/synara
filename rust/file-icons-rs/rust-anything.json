@@ -1,0 +1,102 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/file-icons.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "file-icons-rs",
+  "exports": [
+    {
+      "name": "basenameOfPath",
+      "file": "apps/web/src/file-icons.ts",
+      "line": 161,
+      "params": [
+        {
+          "name": "pathValue",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "pathLooksLikeKnownFile",
+      "file": "apps/web/src/file-icons.ts",
+      "line": 170,
+      "params": [
+        {
+          "name": "pathValue",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "inferEntryKindFromPath",
+      "file": "apps/web/src/file-icons.ts",
+      "line": 178,
+      "params": [
+        {
+          "name": "pathValue",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "\"file\" | \"directory\"",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "getFileIconName",
+      "file": "apps/web/src/file-icons.ts",
+      "line": 205,
+      "params": [
+        {
+          "name": "pathValue",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "getAttachmentIconName",
+      "file": "apps/web/src/file-icons.ts",
+      "line": 255,
+      "params": [
+        {
+          "name": "attachment",
+          "ts_type": "{\n  name: string;\n  mimeType?: string | null | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

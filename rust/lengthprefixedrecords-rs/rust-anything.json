@@ -1,0 +1,72 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/lengthPrefixedRecords.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "lengthprefixedrecords-rs",
+  "exports": [
+    {
+      "name": "encodeLengthPrefixedRecord",
+      "file": "packages/shared/src/lengthPrefixedRecords.ts",
+      "line": 62,
+      "params": [
+        {
+          "name": "payload",
+          "ts_type": "Uint8Array",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Buffer",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [
+    {
+      "name": "LengthPrefixedRecordParser",
+      "file": "packages/shared/src/lengthPrefixedRecords.ts",
+      "line": 38,
+      "constructor": [
+        {
+          "name": "maxRecordBytes",
+          "ts_type": "number",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "methods": [
+        {
+          "name": "push",
+          "file": "packages/shared/src/lengthPrefixedRecords.ts",
+          "line": 44,
+          "params": [
+            {
+              "name": "chunk",
+              "ts_type": "Uint8Array",
+              "optional": false,
+              "rest": false
+            }
+          ],
+          "returns": "readonly Uint8Array[]",
+          "is_async": false,
+          "is_generator": false,
+          "type_params": [],
+          "uses_instanceof": false
+        }
+      ],
+      "blocker": null
+    }
+  ],
+  "js_only": [
+    {
+      "name": "LengthPrefixedRecordError",
+      "file": "packages/shared/src/lengthPrefixedRecords.ts",
+      "line": 18,
+      "reason": "class: extends another class, public field `declaredBytes`, public field `maxBytes`"
+    }
+  ]
+}

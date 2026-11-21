@@ -1,0 +1,17 @@
+{
+  "unit": "packages/contracts/src/browserAutomationToolCommon.ts",
+  "files": 1,
+  "fingerprint": "1e7a9fc39c099595",
+  "coverage": {
+    "lines": 14,
+    "reached": 14,
+    "files": [
+      {
+        "file": "packages/contracts/src/browserAutomationToolCommon.ts",
+        "lines": 14,
+        "reached": 14,
+        "missed": ""
+      }
+    ]
+  }
+}

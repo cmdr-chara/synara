@@ -1,0 +1,54 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/contracts/src/browserAutomationToolCommon.ts",
+  "language": "ts",
+  "kind": "wasm",
+  "crate_name": "browserautomationtoolcommon-rs",
+  "exports": [
+    {
+      "name": "browserClosedStruct",
+      "file": "packages/contracts/src/browserAutomationToolCommon.ts",
+      "line": 3,
+      "params": [
+        {
+          "name": "fields",
+          "ts_type": "(Schema.Struct.Fields)",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "browserBoundedInt",
+      "file": "packages/contracts/src/browserAutomationToolCommon.ts",
+      "line": 7,
+      "params": [
+        {
+          "name": "minimum",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "maximum",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

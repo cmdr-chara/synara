@@ -1,0 +1,145 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/api/src/config.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "config-rs",
+  "exports": [
+    {
+      "name": "loadApnsConfig",
+      "file": "apps/api/src/config.ts",
+      "line": 53,
+      "params": [
+        {
+          "name": "env",
+          "ts_type": "(Record<string, string | undefined>)",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "({\n  privateKey: string;\n  keyId: string;\n  teamId: string;\n  bundleId: string;\n  environment: \"sandbox\" | \"production\" | \"both\";\n  /** Environment-restricted Apple keys need a separate Production signer. */\n  productionCredentials?: { privateKey: string; keyId: string };\n}) | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "assertPolarBillingConfig",
+      "file": "apps/api/src/config.ts",
+      "line": 172,
+      "params": [
+        {
+          "name": "config",
+          "ts_type": "{\n  environment: typeof typeof typeof AccountBillingEnvironment.Type.Type.Type;\n  productionPaymentsEnabled?: boolean;\n  /** Exact operator-owned HTTPS return origins; required in production. */\n  returnOrigins?: readonly string[];\n  expectedCatalog?: {\n    currency: string;\n    monthlyAmountMinor: number;\n    yearlyAmountMinor: number;\n    taxBehavior: \"exclusive\";\n  };\n  accessToken: string;\n  webhookSecret: string;\n  organizationId: string;\n  monthlyProductId: string;\n  yearlyProductId: string;\n  desktopBenefitId: string;\n  checkoutSuccessUrl: string;\n  portalReturnUrl: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "loadPolarBillingConfig",
+      "file": "apps/api/src/config.ts",
+      "line": 203,
+      "params": [
+        {
+          "name": "env",
+          "ts_type": "(Record<string, string | undefined>)",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{\n  environment: typeof typeof typeof AccountBillingEnvironment.Type.Type.Type;\n  productionPaymentsEnabled?: boolean;\n  /** Exact operator-owned HTTPS return origins; required in production. */\n  returnOrigins?: readonly string[];\n  expectedCatalog?: {\n    currency: string;\n    monthlyAmountMinor: number;\n    yearlyAmountMinor: number;\n    taxBehavior: \"exclusive\";\n  };\n  accessToken: string;\n  webhookSecret: string;\n  organizationId: string;\n  monthlyProductId: string;\n  yearlyProductId: string;\n  desktopBenefitId: string;\n  checkoutSuccessUrl: string;\n  portalReturnUrl: string;\n} | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "loadCloudflareTunnelConfig",
+      "file": "apps/api/src/config.ts",
+      "line": 413,
+      "params": [
+        {
+          "name": "env",
+          "ts_type": "(Record<string, string | undefined>)",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{\n  accountId: string;\n  zoneId: string;\n  apiToken: string;\n  domain: string;\n} | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "assertDevIdentityAllowed",
+      "file": "apps/api/src/config.ts",
+      "line": 467,
+      "params": [
+        {
+          "name": "env",
+          "ts_type": "(Record<string, string | undefined>)",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "loadAvatarStorageConfig",
+      "file": "apps/api/src/config.ts",
+      "line": 520,
+      "params": [
+        {
+          "name": "env",
+          "ts_type": "(Record<string, string | undefined>)",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{\n  /** S3 endpoint origin, e.g. https://<account>.r2.cloudflarestorage.com — no trailing slash. */\n  endpoint: string;\n  bucket: string;\n  accessKeyId: string;\n  secretAccessKey: string;\n  /** Public origin the bucket is served from (CDN/custom domain), no trailing slash. */\n  publicBaseUrl: string;\n  /**\n   * SigV4 signing region, from S3_REGION. Defaults to \"auto\" — the spelling\n   * R2 requires and MinIO accepts — but real AWS rejects it, so an AWS\n   * deployment sets its bucket's region (e.g. us-east-1) here.\n   */\n  region: string;\n} | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "loadApiConfig",
+      "file": "apps/api/src/config.ts",
+      "line": 542,
+      "params": [
+        {
+          "name": "env",
+          "ts_type": "(Record<string, string | undefined>)",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "({\n  polarBilling?: {\n  environment: AccountBillingEnvironment;\n  productionPaymentsEnabled?: boolean;\n  /** Exact operator-owned HTTPS return origins; required in production. */\n  returnOrigins?: readonly string[];\n  expectedCatalog?: {\n    currency: string;\n    monthlyAmountMinor: number;\n    yearlyAmountMinor: number;\n    taxBehavior: \"exclusive\";\n  };\n  accessToken: string;\n  webhookSecret: string;\n  organizationId: string;\n  monthlyProductId: string;\n  yearlyProductId: string;\n  desktopBenefitId: string;\n  checkoutSuccessUrl: string;\n  portalReturnUrl: string;\n};\n  /** Paid Remote access is opt-in and takes precedence over open-beta enrollment. */\n  remoteBillingEnforced?: boolean;\n  /** Paid public profiles are opt-in: when on, only Alto subscribers can publish or be viewed. */\n  profileBillingEnforced?: boolean;\n  apns?: ({\n  privateKey: string;\n  keyId: string;\n  teamId: string;\n  bundleId: string;\n  environment: \"sandbox\" | \"production\" | \"both\";\n  /** Environment-restricted Apple keys need a separate Production signer. */\n  productionCredentials?: { privateKey: string; keyId: string };\n});\n  cloudflareTunnel?: {\n  accountId: string;\n  zoneId: string;\n  apiToken: string;\n  domain: string;\n};\n  /** Explicit test enrollment only; this is not a paid-subscription entitlement. */\n  remoteTestUserIds?: readonly string[];\n  /** Open beta enrollment; authentication and host/device authorization still apply. */\n  remoteBetaAccessEnabled?: boolean;\n  databaseUrl: string;\n  baseUrl: string;\n  /** Exact JWT issuer and public origin for API-facing host auth. */\n  apiPublicUrl: string;\n  /** Base64url 32-byte Ed25519 seed used for API-signed grants. */\n  apiSigningKey: string;\n  /** Previous seed served through JWKS during rotation, verification-only. */\n  apiSigningKeyPrevious?: string;\n  port: number;\n  /**\n   * S3-compatible avatar storage, or undefined when the deployment has none\n   * configured (uploads answer 503; everything else works).\n   */\n  avatarStorage?: {\n  /** S3 endpoint origin, e.g. https://<account>.r2.cloudflarestorage.com — no trailing slash. */\n  endpoint: string;\n  bucket: string;\n  accessKeyId: string;\n  secretAccessKey: string;\n  /** Public origin the bucket is served from (CDN/custom domain), no trailing slash. */\n  publicBaseUrl: string;\n  /**\n   * SigV4 signing region, from S3_REGION. Defaults to \"auto\" — the spelling\n   * R2 requires and MinIO accepts — but real AWS rejects it, so an AWS\n   * deployment sets its bucket's region (e.g. us-east-1) here.\n   */\n  region: string;\n};\n  /**\n   * How many proxies in front of this service append to `x-forwarded-for`,\n   * from TRUSTED_PROXY_HOPS. The rate limiter keys on the address the\n   * outermost trusted proxy saw; 0 means \"no proxy — trust only the socket\".\n   * Defaults to 0, the direct/Docker self-host shape — any nonzero default\n   * would let a direct caller forge the header and rotate rate-limit\n   * buckets. Proxied deployments (Railway: one TLS-terminating hop) must\n   * set TRUSTED_PROXY_HOPS=1 explicitly.\n   */\n  trustedProxyHops: number;\n  /**\n   * Shared secret the profiles SSR deployment sends as\n   * `x-synara-proxy-secret`, from PROFILE_PROXY_SECRET. When set and matched,\n   * the public-profile rate limit keys on the forwarded viewer IP instead of\n   * the SSR deployment's egress IP. Undefined disables the channel — the\n   * viewer header is ignored entirely.\n   */\n  profileProxySecret?: string;\n} & {\n  identityProvider: \"workos\";\n  workosApiKey: string;\n  workosClientId: string;\n  /** Operator-approved old-to-current IDs; keeps existing Synara data ownership stable. */\n  workosIdentityMap?: typeof IdentityMap.Type;\n  /** WorkOS API origin, no trailing slash. Overridable so tests can point at a local server. */\n  workosApiUrl: string;\n  /**\n   * Full JWKS URL, from WORKOS_JWKS_URL. Undefined means \"discover it\": the\n   * OIDC metadata document is the single source of truth, and hand-deriving a\n   * second one here is how the two drift apart.\n   */\n  workosJwksUrl?: string;\n  /**\n   * Expected `iss` claim on access tokens, from WORKOS_ISSUER. Undefined means\n   * \"discover it\". There is no safe static default — WorkOS mints `iss` as\n   * `{apiUrl}/user_management/{environment client id}`, and that environment\n   * client id is not WORKOS_CLIENT_ID whenever the app is a non-default\n   * AuthKit application. Set this only for a custom auth domain or a stand-in.\n   */\n  workosIssuer?: string;\n  /**\n   * Per-attempt deadline on cheap/idempotent WorkOS calls, milliseconds.\n   * Test hook only — there is no env var for it; production uses the module\n   * default (15s).\n   */\n  workosRequestTimeoutMs?: number;\n  /**\n   * Per-attempt deadline on grant-consuming WorkOS calls (authenticates,\n   * token exchanges, refresh), milliseconds. Test hook only — production\n   * uses the module default (45s): a grant spends a single-use credential,\n   * so it gets far longer than a cheap lookup before we abandon it.\n   */\n  workosGrantTimeoutMs?: number;\n} | {\n  polarBilling?: {\n  environment: AccountBillingEnvironment;\n  productionPaymentsEnabled?: boolean;\n  /** Exact operator-owned HTTPS return origins; required in production. */\n  returnOrigins?: readonly string[];\n  expectedCatalog?: {\n    currency: string;\n    monthlyAmountMinor: number;\n    yearlyAmountMinor: number;\n    taxBehavior: \"exclusive\";\n  };\n  accessToken: string;\n  webhookSecret: string;\n  organizationId: string;\n  monthlyProductId: string;\n  yearlyProductId: string;\n  desktopBenefitId: string;\n  checkoutSuccessUrl: string;\n  portalReturnUrl: string;\n};\n  /** Paid Remote access is opt-in and takes precedence over open-beta enrollment. */\n  remoteBillingEnforced?: boolean;\n  /** Paid public profiles are opt-in: when on, only Alto subscribers can publish or be viewed. */\n  profileBillingEnforced?: boolean;\n  apns?: ({\n  privateKey: string;\n  keyId: string;\n  teamId: string;\n  bundleId: string;\n  environment: \"sandbox\" | \"production\" | \"both\";\n  /** Environment-restricted Apple keys need a separate Production signer. */\n  productionCredentials?: { privateKey: string; keyId: string };\n});\n  cloudflareTunnel?: {\n  accountId: string;\n  zoneId: string;\n  apiToken: string;\n  domain: string;\n};\n  /** Explicit test enrollment only; this is not a paid-subscription entitlement. */\n  remoteTestUserIds?: readonly string[];\n  /** Open beta enrollment; authentication and host/device authorization still apply. */\n  remoteBetaAccessEnabled?: boolean;\n  databaseUrl: string;\n  baseUrl: string;\n  /** Exact JWT issuer and public origin for API-facing host auth. */\n  apiPublicUrl: string;\n  /** Base64url 32-byte Ed25519 seed used for API-signed grants. */\n  apiSigningKey: string;\n  /** Previous seed served through JWKS during rotation, verification-only. */\n  apiSigningKeyPrevious?: string;\n  port: number;\n  /**\n   * S3-compatible avatar storage, or undefined when the deployment has none\n   * configured (uploads answer 503; everything else works).\n   */\n  avatarStorage?: {\n  /** S3 endpoint origin, e.g. https://<account>.r2.cloudflarestorage.com — no trailing slash. */\n  endpoint: string;\n  bucket: string;\n  accessKeyId: string;\n  secretAccessKey: string;\n  /** Public origin the bucket is served from (CDN/custom domain), no trailing slash. */\n  publicBaseUrl: string;\n  /**\n   * SigV4 signing region, from S3_REGION. Defaults to \"auto\" — the spelling\n   * R2 requires and MinIO accepts — but real AWS rejects it, so an AWS\n   * deployment sets its bucket's region (e.g. us-east-1) here.\n   */\n  region: string;\n};\n  /**\n   * How many proxies in front of this service append to `x-forwarded-for`,\n   * from TRUSTED_PROXY_HOPS. The rate limiter keys on the address the\n   * outermost trusted proxy saw; 0 means \"no proxy — trust only the socket\".\n   * Defaults to 0, the direct/Docker self-host shape — any nonzero default\n   * would let a direct caller forge the header and rotate rate-limit\n   * buckets. Proxied deployments (Railway: one TLS-terminating hop) must\n   * set TRUSTED_PROXY_HOPS=1 explicitly.\n   */\n  trustedProxyHops: number;\n  /**\n   * Shared secret the profiles SSR deployment sends as\n   * `x-synara-proxy-secret`, from PROFILE_PROXY_SECRET. When set and matched,\n   * the public-profile rate limit keys on the forwarded viewer IP instead of\n   * the SSR deployment's egress IP. Undefined disables the channel — the\n   * viewer header is ignored entirely.\n   */\n  profileProxySecret?: string;\n} & {\n  identityProvider: \"dev\";\n})",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "ApiConfigError",
+      "file": "apps/api/src/config.ts",
+      "line": 401,
+      "reason": "class: extends another class"
+    }
+  ]
+}

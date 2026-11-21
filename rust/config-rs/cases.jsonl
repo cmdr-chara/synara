@@ -1,0 +1,1209 @@
+{"fn":"loadApnsConfig","args":[{"home":"a..bline1\nline2"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":"﻿bom"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"10":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"b":{"$undefined":true},"ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"😀":{"$undefined":true},"a":"straße"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"title":"日本語のテキスト","😀":{"$undefined":true},"nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"a.b":"{name} has {count} items"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"a":"straße","home":"Hello World./x/**/*.json","a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"nav":"ns:key.path","title":{"$undefined":true},"😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"10":"./x/**/*.json","nav":"tab\tseparated","title":"日本語のテキスト"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":["x"],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"10":"ΣΊΣΥΦΟΣ﻿bom","b":{"$undefined":true},"a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":{"$undefined":true},"title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"title":"HELLO","ünï":"ΣΊΣΥΦΟΣ"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"b":"HELLO"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[true],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"a":"./x/**/*.json","a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"home":"  padded  "}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"10":"hello world","home":"日本語のテキスト","title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"a":"abc"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":"﻿bom","10":{"$undefined":true},"nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"a.b":"./x/**/*.jsoné"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":"key_name-1","a":"aba"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"10":{"$undefined":true},"a":"hello"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"b":"ns:key.path","😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"home":"","😀":"İstanbul"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"10":"😀","nav":"a"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":{"$undefined":true},"title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[0],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[[]],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"title":{"$undefined":true},"a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"home":{"$undefined":true},"a.b":"./x/**/*.json"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":{"$undefined":true},"10":{"$undefined":true},"title":"ünïcödé"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":"a:b:c","a.b":"tab\tseparated","b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"nav":{"$undefined":true},"title":"{name} has {count} items"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":{"$undefined":true},"b":{"$undefined":true},"ünï":"hello"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"10":{"$undefined":true},"a.b":"hello worldkey_name-1"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":"line1\nline2"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"a":{"$undefined":true},"b":"abcHELLO"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"a":{"$undefined":true},"a.b":{"$undefined":true},"home":"key_name-1"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"title":"hello world","😀":"éhello","a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":"{name} has {count} items","10":"tab\tseparated","home":"src/a/b.tsünïcödé"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"10":"😀","ünï":"😀","nav":"straße.leading"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"a.b":"a..b","nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[null],"error":"Cannot read properties of null (reading 'APNS_PRODUCTION_PRIVATE_KEY')"}
+{"fn":"loadApnsConfig","args":[{"2":{"$undefined":true},"home":"İstanbul","nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"10":{"$undefined":true},"a.b":{"$undefined":true},"a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"a":"HELLO","a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"b":"﻿bom"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"a":{"$undefined":true},"b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"10":"ns:key.path","title":{"$undefined":true},"😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"10":"HELLO","title":{"$undefined":true},"ünï":"abemoji 👍🏽 mix"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"a":".leading"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"home":"ünïcödéline1\nline2"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"10":{"$undefined":true},"a.b":"line1\nline2","nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"title":"./x/**/*.json","b":"a😀b😀c"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":{"$undefined":true},"a":"ns:key.path"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":{"$undefined":true},"10":{"$undefined":true},"nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"10":"ab","nav":{"$undefined":true},"b":"日本語のテキスト"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"b":"hello world"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":{"$undefined":true},"a":"a:b:cemoji 👍🏽 mix"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":{"$undefined":true},"a.b":"a"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"nav":"ünïcödé"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"b":"ab","nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"nav":"ab"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"nav":{"$undefined":true},"a":"line1\nline2tab\tseparated","a.b":"trailing."}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"home":"abc","a.b":"  padded  .leading"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"10":{"$undefined":true},"😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":"a.b.c","10":"İstanbul","😀":"src/a/b.tsa.b.c"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"10":"key_name-1","nav":{"$undefined":true},"😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"b":"emoji 👍🏽 mixa:b:c"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"ünï":"{name} has {count} items"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"b":"trailing.","title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"home":{"$undefined":true},"ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"nav":"Hello World"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":"line1\nline2a..b"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"ünï":{"$undefined":true},"b":{"$undefined":true},"😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":{"$undefined":true},"10":{"$undefined":true},"ünï":"line1\nline2HELLO"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":"ns:key.path","home":{"$undefined":true},"title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":{"$undefined":true},"ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"10":{"$undefined":true},"ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"nav":"HELLO"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":{"$undefined":true},"😀":"a..b"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"10":{"$undefined":true},"home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"ünï":{"$undefined":true},"a.b":".leading"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"a":"hello","😀":"./x/**/*.json日本語のテキスト"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"ünï":"ΣΊΣΥΦΟΣ"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"10":{"$undefined":true},"a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":"trailing.","10":"éünïcödé","a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"title":"line1\nline2"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"a.b":"日本語のテキスト","home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"10":{"$undefined":true},"😀":"hello world","a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"10":{"$undefined":true},"a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"😀":"./x/**/*.json","b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":"  padded  a😀b😀c","nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":"a","home":{"$undefined":true},"nav":"a😀b😀ctrailing."}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"home":{"$undefined":true},"a":{"$undefined":true},"b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"nav":"  padded  ","title":"key_name-1"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"home":{"$undefined":true},"a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"10":{"$undefined":true},"title":{"$undefined":true},"😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"title":"﻿bom"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":"emoji 👍🏽 mix","10":{"$undefined":true},"b":"straße"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"😀":"trailing."}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"home":"tab\tseparated"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"😀":"Hello World","b":"ΣΊΣΥΦΟΣemoji 👍🏽 mix"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"10":"akey_name-1","ünï":".leading","😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"😀":"a.b.c"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"a":"a..b","title":{"$undefined":true},"home":"trailing.a"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"a":"﻿bom","home":{"$undefined":true},"nav":"é"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":{"$undefined":true},"ünï":{"$undefined":true},"nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"10":{"$undefined":true},"title":"a..btab\tseparated","b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"a":"a😀b😀c","😀":"a..b"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"home":{"$undefined":true},"😀":"HELLO"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":{"$undefined":true},"a.b":"abcé","b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"a":"key_name-1","😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"ünï":{"$undefined":true},"title":"emoji 👍🏽 mix"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"a":"日本語のテキスト","ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":"😀","nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"ünï":{"$undefined":true},"b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":"İstanbul"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"a.b":{"$undefined":true},"a":"Hello World","home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"10":{"$undefined":true},"nav":{"$undefined":true},"home":"hello world"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":{"$undefined":true},"a":"ünïcödé"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"ünï":"a😀b😀c"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"title":{"$undefined":true},"b":{"$undefined":true},"home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"😀":"a:b:c","home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"ünï":"trailing.","title":".leading"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"home":"emoji 👍🏽 mix","😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"b":"emoji 👍🏽 mix"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"home":"HELLO","ünï":"a..bemoji 👍🏽 mix","title":"a"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"b":{"$undefined":true},"nav":"a"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"😀":"  padded  "}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":{"$undefined":true},"a.b":{"$undefined":true},"a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"ünï":"trailing.trailing."}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":"./x/**/*.json"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"home":"Hello World","title":"tab\tseparated","a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":{"$undefined":true},"b":":","ünï":"a😀b😀c"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":"İstanbultab\tseparated","a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":"a..b","10":"./x/**/*.json","ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"home":"😀","a.b":{"$undefined":true},"ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"10":"ns:key.path"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"title":{"$undefined":true},"home":"ns:key.pathΣΊΣΥΦΟΣ","a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"😀":"﻿bom"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"😀":{"$undefined":true},"b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"10":{"$undefined":true},"title":"ΣΊΣΥΦΟΣ","b":"ΣΊΣΥΦΟΣ"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":{"$undefined":true},"nav":"key_name-1"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"10":{"$undefined":true},"a":{"$undefined":true},"home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":"line1\nline2","a":{"$undefined":true},"nav":"src/a/b.ts"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"😀":"日本語のテキスト{name} has {count} items"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"a":"a","b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":"tab\tseparated"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"10":":","home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"title":{"$undefined":true},"a":"emoji 👍🏽 mix"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"ünï":{"$undefined":true},"home":"tab\tseparated"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"b":"ΣΊΣΥΦΟΣ日本語のテキスト","😀":"src/a/b.ts","nav":"tab\tseparated"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"😀":{"$undefined":true},"ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"nav":"hello world","home":"HELLO"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"😀":"abc","b":"a..b","ünï":"ns:key.path"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"10":{"$undefined":true},"b":{"$undefined":true},"a.b":"src/a/b.ts"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"a":"a:b:c","ünï":"HELLO","😀":"{name} has {count} items😀"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"10":{"$undefined":true},"title":{"$undefined":true},"😀":"emoji 👍🏽 mixkey_name-1"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"a.b":"ΣΊΣΥΦΟΣ","title":"{name} has {count} items","home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"a":"a:b:c日本語のテキスト","😀":"hello"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":{"$undefined":true},"home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"title":{"$undefined":true},"home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"😀":{"$undefined":true},"a.b":"İstanbul"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"a.b":{"$undefined":true},"title":"a.b.c"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":"a..bé"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"😀":"hello","nav":"hello","b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"title":{"$undefined":true},"a":"a😀b😀c"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"title":"ab","ünï":"a..b"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"b":":"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"nav":"straße"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"a.b":{"$undefined":true},"a":{"$undefined":true},"b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"nav":{"$undefined":true},"a.b":"trailing."}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"10":{"$undefined":true},"home":{"$undefined":true},"a":"a.b.c"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"nav":{"$undefined":true},"a":"İstanbul"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"b":"./x/**/*.json","home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"b":"ΣΊΣΥΦΟΣ"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"a":"ΣΊΣΥΦΟΣ","b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"2":{"$undefined":true},"10":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"a.b":"HELLO","a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"ünï":{"$undefined":true},"nav":":"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"a":"ns:key.pathns:key.path"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"😀":"ns:key.pathabc"}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"title":""}],"ok":{"$undefined":true}}
+{"fn":"loadApnsConfig","args":[{"😀":"ΣΊΣΥΦΟΣ","title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertPolarBillingConfig","args":[0],"error":"POLAR_ENVIRONMENT must be sandbox or production"}
+{"fn":"assertPolarBillingConfig","args":[true],"error":"POLAR_ENVIRONMENT must be sandbox or production"}
+{"fn":"assertPolarBillingConfig","args":["x"],"error":"POLAR_ENVIRONMENT must be sandbox or production"}
+{"fn":"assertPolarBillingConfig","args":[{"a":{"b":"c"}}],"error":"POLAR_ENVIRONMENT must be sandbox or production"}
+{"fn":"assertPolarBillingConfig","args":[[]],"error":"POLAR_ENVIRONMENT must be sandbox or production"}
+{"fn":"assertPolarBillingConfig","args":[null],"error":"Cannot read properties of null (reading 'environment')"}
+{"fn":"assertPolarBillingConfig","args":[["a",1]],"error":"POLAR_ENVIRONMENT must be sandbox or production"}
+{"fn":"assertPolarBillingConfig","args":[{}],"error":"POLAR_ENVIRONMENT must be sandbox or production"}
+{"fn":"assertPolarBillingConfig","args":[{"a":"b"}],"error":"POLAR_ENVIRONMENT must be sandbox or production"}
+{"fn":"loadPolarBillingConfig","args":[{"2":"﻿bom"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"a.b":"{name} has {count} items","b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"nav":"abc"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"home":"Hello World"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"a.b":"ns:key.pathabc"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":["x"],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"home":"src/a/b.tssrc/a/b.ts","a.b":"ΣΊΣΥΦΟΣ"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"a.b":".leadingns:key.path","b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"a.b":"key_name-1","ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":{"$undefined":true},"ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[null],"error":"Cannot read properties of null (reading 'POLAR_BILLING_ENABLED')"}
+{"fn":"loadPolarBillingConfig","args":[{"10":{"$undefined":true},"😀":"﻿bom"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[[]],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"title":"a:b:c{name} has {count} items"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":{"$undefined":true},"10":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":"trailing.:","a.b":"﻿bomabc"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"title":"﻿bom"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[0],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":{"$undefined":true},"ünï":{"$undefined":true},"title":"hello world"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":"src/a/b.ts","home":"é","a":"src/a/b.ts"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"b":{"$undefined":true},"ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"ünï":{"$undefined":true},"b":"😀"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":{"$undefined":true},"😀":{"$undefined":true},"home":"ünïcödéa..b"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"😀":{"$undefined":true},"a":"emoji 👍🏽 mix","a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"a":"日本語のテキストtrailing."}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"home":{"$undefined":true},"title":"a😀b😀c","a":"ünïcödé"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"home":"line1\nline2","b":{"$undefined":true},"ünï":"😀"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":{"$undefined":true},"😀":{"$undefined":true},"b":".leading"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"nav":{"$undefined":true},"a":".leading"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"a":{"$undefined":true},"ünï":"a:b:ca:b:c"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"a.b":{"$undefined":true},"a":"a.b.c"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":"hello world./x/**/*.json"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"nav":{"$undefined":true},"😀":"hello world"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"home":"é","😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":{"$undefined":true},"home":"hello world﻿bom","a.b":"HELLO"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":"é","😀":"HELLOa:b:c","a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"a":"ns:key.pathé","😀":"emoji 👍🏽 mixİstanbul","title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"😀":"trailing.","ünï":"😀","title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"b":{"$undefined":true},"home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"nav":{"$undefined":true},"😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"😀":{"$undefined":true},"home":"line1\nline2","ünï":"hello world"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":"./x/**/*.json","nav":".leading","a.b":""}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"home":"a..b"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":"a..b","title":"a..b","home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":"😀","10":"ΣΊΣΥΦΟΣ"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":"日本語のテキストline1\nline2"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"title":"😀","home":"  padded  ","nav":"abc"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":{"$undefined":true},"a.b":"a😀b😀c"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":":emoji 👍🏽 mix","nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"a":{"$undefined":true},"a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":"ab","a.b":{"$undefined":true},"nav":"İstanbul"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":"key_name-1","😀":"ab"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"a.b":"ns:key.path","a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"title":{"$undefined":true},"nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":{"$undefined":true},"title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":"a.b.c","title":"﻿bom"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"a.b":"./x/**/*.json"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":{"$undefined":true},"nav":"helloemoji 👍🏽 mix","ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"ünï":"é"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"nav":".leading"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"b":"HELLO:"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":{"$undefined":true},"10":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":{"$undefined":true},"a.b":{"$undefined":true},"title":"abc"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":"é","😀":"trailing."}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":"ns:key.path","title":"a:b:ca😀b😀c","a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"ünï":"a:b:c"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"ünï":"ab","a":"a.b.c./x/**/*.json"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[true],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":"ΣΊΣΥΦΟΣ","a":{"$undefined":true},"title":"hello worldabc"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"a.b":{"$undefined":true},"a":"HELLO"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":"a😀b😀c"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":"./x/**/*.json","title":"ns:key.path"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":"日本語のテキスト","nav":{"$undefined":true},"a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":"é","a.b":{"$undefined":true},"😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":{"$undefined":true},"😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"title":"ünïcödé"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"a.b":"straße"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":"😀","title":"line1\nline2","😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"ünï":"a😀b😀c"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":{"$undefined":true},"10":"./x/**/*.json","a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"title":"abca.b.c"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"a.b":"hello worldİstanbul"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"nav":{"$undefined":true},"ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"home":"日本語のテキスト","a":""}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"ünï":"line1\nline2","a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":"HELLO","b":{"$undefined":true},"a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"home":"a..ba"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"😀":"hello","home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"a":"tab\tseparated","nav":"straße"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"nav":"İstanbul","a.b":"HELLO"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"😀":"ab","a.b":":","title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":"{name} has {count} items","😀":{"$undefined":true},"a.b":""}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":{"$undefined":true},"10":"﻿bom","ünï":"日本語のテキスト﻿bom"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"b":{"$undefined":true},"😀":{"$undefined":true},"a.b":"  padded  "}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":{"$undefined":true},"b":"😀","home":"hello"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":".leading","home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"a.b":"日本語のテキストab"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":"ünïcödé"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":"src/a/b.ts﻿bom","ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":{"$undefined":true},"nav":"emoji 👍🏽 mix"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":{"$undefined":true},"10":"a.b.c","😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":{"$undefined":true},"a":"a"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":{"$undefined":true},"b":"a"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"nav":{"$undefined":true},"title":{"$undefined":true},"home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":{"$undefined":true},"ünï":"Hello World"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"😀":"  padded  İstanbul"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":"İstanbul","😀":{"$undefined":true},"title":"straße"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":"İstanbula.b.c","home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"a":{"$undefined":true},"😀":"a:b:c","home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"a":":"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":{"$undefined":true},"😀":"ns:key.path{name} has {count} items"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":"./x/**/*.json﻿bom","home":"﻿bom"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"home":"tab\tseparatedns:key.path","a.b":{"$undefined":true},"b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"😀":{"$undefined":true},"a.b":"./x/**/*.jsonİstanbul"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"a":"key_name-1"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"b":{"$undefined":true},"a":{"$undefined":true},"nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"home":{"$undefined":true},"😀":{"$undefined":true},"a":"a😀b😀c{name} has {count} items"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":"日本語のテキスト"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":{"$undefined":true},"title":"src/a/b.ts","ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"ünï":":"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"a":{"$undefined":true},"title":"Hello World","home":"ΣΊΣΥΦΟΣ"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":"src/a/b.ts","b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"😀":"a:b:c"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"😀":"a..b","ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":{"$undefined":true},"😀":":","a.b":"emoji 👍🏽 mixtab\tseparated"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":"abc","ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":{"$undefined":true},"home":{"$undefined":true},"nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"home":"日本語のテキスト"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":"ns:key.pathline1\nline2","a":"﻿bomé"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"home":{"$undefined":true},"a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"a":"😀日本語のテキスト","home":"日本語のテキスト"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"title":"tab\tseparatedtrailing."}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":"hello worlda:b:c"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":"ns:key.path"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":"a.b.c"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":{"$undefined":true},"ünï":{"$undefined":true},"title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":{"$undefined":true},"😀":"日本語のテキスト","a":"emoji 👍🏽 mix"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"ünï":{"$undefined":true},"nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"title":"İstanbul","nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"a.b":{"$undefined":true},"😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"nav":"a..b","b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":{"$undefined":true},"ünï":"straße","home":"ΣΊΣΥΦΟΣ日本語のテキスト"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"nav":"{name} has {count} itemsa","😀":"a.b.c","home":"😀"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"a.b":{"$undefined":true},"ünï":"ünïcödé"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"a.b":":"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"a":{"$undefined":true},"nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":"a.b.c","ünï":"﻿bom./x/**/*.json"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"ünï":{"$undefined":true},"a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":"./x/**/*.json","title":{"$undefined":true},"home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"title":"İstanbulHELLO","ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":{"$undefined":true},"ünï":{"$undefined":true},"title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":"a:b:ckey_name-1","a":{"$undefined":true},"home":"abc"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"a.b":"tab\tseparated","ünï":"a..bns:key.path"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"a.b":"emoji 👍🏽 mix","b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"ünï":"﻿bom"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"😀":"a:b:c","nav":""}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":{"$undefined":true},"b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"nav":{"$undefined":true},"😀":"abc"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"a":"  padded  ","title":"line1\nline2"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"a.b":"a😀b😀cline1\nline2","home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"b":"ns:key.path"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"ünï":"é","nav":"日本語のテキスト"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":"Hello World","b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"ünï":"😀"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"b":{"$undefined":true},"home":"HELLO","nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"a.b":{"$undefined":true},"nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":"hello worldsrc/a/b.ts"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"nav":"ΣΊΣΥΦΟΣ","a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"b":{"$undefined":true},"a":{"$undefined":true},"title":"line1\nline2"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"ünï":{"$undefined":true},"title":{"$undefined":true},"😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"b":"ns:key.path","nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":{"$undefined":true},"10":"Hello World"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"nav":"abc","ünï":{"$undefined":true},"a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"a.b":"HELLO"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"10":".leading"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":{"$undefined":true},"home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"nav":"﻿bom","b":"a","title":"tab\tseparated"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"nav":{"$undefined":true},"a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"😀":{"$undefined":true},"nav":"./x/**/*.json"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"b":{"$undefined":true},"a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"2":"a:","nav":":.leading","a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"home":"😀","😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"nav":{"$undefined":true},"a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"ünï":"emoji 👍🏽 mix"}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"home":{"$undefined":true},"a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadPolarBillingConfig","args":[{"ünï":{"$undefined":true},"nav":"line1\nline2"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[[]],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"nav":"hello world"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"home":{"$undefined":true},"nav":"日本語のテキスト"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"10":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"b":"ab","home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"home":{"$undefined":true},"nav":{"$undefined":true},"a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"2":"a","10":"ΣΊΣΥΦΟΣ","a":"line1\nline2"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"2":"a😀b😀cΣΊΣΥΦΟΣ","😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"a":{"$undefined":true},"home":""}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"😀":"line1\nline2","title":"﻿bom"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"2":"a"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"nav":{"$undefined":true},"ünï":{"$undefined":true},"title":"abc"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"ünï":"abc","nav":{"$undefined":true},"a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"10":{"$undefined":true},"nav":"tab\tseparated","b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":["x"],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"10":"HELLO","a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"10":{"$undefined":true},"title":":hello"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"a":{"$undefined":true},"b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"10":{"$undefined":true},"title":{"$undefined":true},"home":"é"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"2":"ΣΊΣΥΦΟΣ"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"2":{"$undefined":true},"nav":"a..b","title":"Hello Worldstraße"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"10":"a.b.c","home":{"$undefined":true},"nav":"HELLO./x/**/*.json"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"2":{"$undefined":true},"10":".leading"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"title":"é","a":{"$undefined":true},"😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"b":{"$undefined":true},"home":""}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"home":{"$undefined":true},"😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"10":"ab","nav":"./x/**/*.json","a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"b":"😀"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"2":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"title":{"$undefined":true},"home":".leading"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[null],"error":"Cannot read properties of null (reading 'CLOUDFLARE_ACCOUNT_ID')"}
+{"fn":"loadCloudflareTunnelConfig","args":[{"a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"home":"line1\nline2","ünï":"./x/**/*.json","a.b":"tab\tseparated"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"nav":"HELLO"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[true],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"a":"trailing.","😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"a":{"$undefined":true},"home":{"$undefined":true},"ünï":"hello world"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"10":{"$undefined":true},"home":"HELLO","nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"😀":".leadingab","home":{"$undefined":true},"nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"2":{"$undefined":true},"ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"2":"ns:key.path","ünï":"ab"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"nav":{"$undefined":true},"b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"10":{"$undefined":true},"😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"10":"İstanbul","title":"trailing."}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"2":{"$undefined":true},"home":"ns:key.path","a":":"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"ünï":":"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"😀":{"$undefined":true},"b":{"$undefined":true},"a":"ΣΊΣΥΦΟΣ"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"10":":","title":{"$undefined":true},"😀":"ΣΊΣΥΦΟΣ"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"ünï":"ΣΊΣΥΦΟΣ","nav":"{name} has {count} items"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"title":{"$undefined":true},"😀":"trailing."}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"😀":"a..b日本語のテキスト"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"2":{"$undefined":true},"nav":"emoji 👍🏽 mix","a":"trailing.a:b:c"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"a.b":":trailing.","title":"日本語のテキスト","b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"2":"😀","ünï":"a.b.c","home":"İstanbulΣΊΣΥΦΟΣ"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"😀":{"$undefined":true},"home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"2":{"$undefined":true},"title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"😀":"😀Hello World"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"10":{"$undefined":true},"home":"日本語のテキスト","nav":"straßetab\tseparated"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"a":"./x/**/*.json","home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"2":"ns:key.pathstraße","nav":"İstanbul"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"home":"key_name-1"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"a.b":{"$undefined":true},"😀":"a😀b😀c","nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"title":"ΣΊΣΥΦΟΣ"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"2":"a😀b😀ctab\tseparated","ünï":"a.b.c","a.b":":"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"nav":"😀./x/**/*.json","a":"ünïcödé"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"2":{"$undefined":true},"a.b":"日本語のテキスト","😀":"ünïcödé"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"10":"ns:key.path","b":"a😀b😀chello","ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"2":{"$undefined":true},"home":{"$undefined":true},"ünï":""}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"10":{"$undefined":true},"ünï":"a.b.c","😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"a.b":"straße","😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"ünï":"ünïcödé"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"a":"abc","title":"a..b"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"2":{"$undefined":true},"a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"10":"日本語のテキスト"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"a":"İstanbul"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"nav":":"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"10":".leading","b":"😀","ünï":"line1\nline2"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"😀":"hello","b":{"$undefined":true},"home":"./x/**/*.json"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"2":{"$undefined":true},"😀":{"$undefined":true},"a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"2":{"$undefined":true},"a":"src/a/b.ts","nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"10":"a:b:c"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"home":"ünïcödé","😀":"İstanbul"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"a.b":"emoji 👍🏽 mix"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"2":{"$undefined":true},"10":".leading"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[0],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"b":"straßekey_name-1"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"nav":{"$undefined":true},"title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"title":"emoji 👍🏽 mix"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"ünï":"src/a/b.ts","a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"10":{"$undefined":true},"home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"a.b":"  padded  ","nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"b":{"$undefined":true},"home":"Hello World"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"😀":"key_name-1ünïcödé"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"a.b":"tab\tseparatedİstanbul","b":""}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"title":"ns:key.path","😀":{"$undefined":true},"home":"src/a/b.ts"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"ünï":"a.b.c","title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"nav":"a.b.c","a.b":"line1\nline2","title":""}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"😀":"😀","b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"ünï":"abc","nav":{"$undefined":true},"home":"a"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"home":"straße"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"ünï":"ab","😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"10":{"$undefined":true},"ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"nav":"a.b.c"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"2":{"$undefined":true},"ünï":"{name} has {count} items","home":"hello world"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"2":{"$undefined":true},"a.b":{"$undefined":true},"😀":"ünïcödé"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"nav":"ab"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"2":"ns:key.path","b":"a"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"😀":"a😀b😀c"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"ünï":"a..b"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"10":"key_name-1"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"a.b":"","home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"2":"İstanbul","a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"a":"hello"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"a":{"$undefined":true},"title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"2":{"$undefined":true},"a":{"$undefined":true},"😀":"ab"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"a.b":{"$undefined":true},"nav":"HELLO"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"home":"😀","title":"日本語のテキスト","a.b":"a"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"title":{"$undefined":true},"😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"2":"﻿bom","title":{"$undefined":true},"ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"b":"a..b"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"10":"abc","nav":"hello world","ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"ünï":{"$undefined":true},"nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"2":{"$undefined":true},"😀":{"$undefined":true},"b":"é"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"nav":"tab\tseparated","home":"a..b"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"nav":{"$undefined":true},"ünï":{"$undefined":true},"a":"İstanbul"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"b":"ΣΊΣΥΦΟΣ","nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"nav":{"$undefined":true},"ünï":{"$undefined":true},"home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"a.b":"hello world"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"a.b":{"$undefined":true},"😀":"İstanbul:"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"10":{"$undefined":true},"nav":"hellotab\tseparated","home":"Hello World"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"home":"abctrailing."}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"2":"a","10":{"$undefined":true},"ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"😀":"ünïcödé","ünï":"  padded  "}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"10":{"$undefined":true},"a":{"$undefined":true},"nav":"Hello Worldkey_name-1"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"a.b":"﻿bom"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"2":"a:b:c","a":"ns:key.path"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"😀":"﻿bom"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"2":{"$undefined":true},"10":{"$undefined":true},"title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"title":"a.b.c"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"home":"ab","ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"10":"a:b:c","😀":"emoji 👍🏽 mix"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"10":{"$undefined":true},"😀":""}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"10":"","a":"ΣΊΣΥΦΟΣ","a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"ünï":{"$undefined":true},"nav":":"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"ünï":{"$undefined":true},"😀":{"$undefined":true},"a":"日本語のテキスト"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"b":"{name} has {count} itemsa.b.c","a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"2":"straße"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"title":"日本語のテキスト"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"title":"a.b.ca😀b😀c"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"b":{"$undefined":true},"home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"b":{"$undefined":true},"a.b":{"$undefined":true},"title":"a😀b😀c"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"home":{"$undefined":true},"😀":"  padded  "}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"nav":{"$undefined":true},"b":"日本語のテキスト","a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"home":{"$undefined":true},"nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"ünï":"abc"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"nav":"é","😀":{"$undefined":true},"home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"home":":"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"b":"key_name-1","title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"10":{"$undefined":true},"ünï":"a.b.c"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"home":{"$undefined":true},"title":{"$undefined":true},"ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"a.b":{"$undefined":true},"ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"ünï":{"$undefined":true},"home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"a.b":".leading"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"😀":"ΣΊΣΥΦΟΣ"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"😀":{"$undefined":true},"ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"nav":"ab日本語のテキスト"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"title":"./x/**/*.json"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"10":{"$undefined":true},"nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"nav":"ΣΊΣΥΦΟΣ","a.b":{"$undefined":true},"a":"﻿bom"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"ünï":"a:b:c"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"title":"İstanbul.leading"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"10":"HELLO","😀":{"$undefined":true},"nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"a":{"$undefined":true},"title":"ns:key.path"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"a":{"$undefined":true},"ünï":"key_name-1"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"nav":{"$undefined":true},"ünï":"straße"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"😀":"key_name-1"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"2":"﻿bom","ünï":"{name} has {count} items"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"10":"{name} has {count} itemsHello World","nav":"emoji 👍🏽 mix"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"nav":"a:b:c","b":{"$undefined":true},"a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"a.b":"İstanbul","a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"a":"é","title":":","ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"2":{"$undefined":true},"title":"helloa😀b😀c","home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"2":"😀","10":"é","😀":"tab\tseparated"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"ünï":"日本語のテキスト","nav":"a:b:c{name} has {count} items"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"title":".leading","nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"home":"tab\tseparated","ünï":".leading"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"title":"straßeİstanbul"}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"10":"a:b:c","a":"  padded  "}],"ok":{"$undefined":true}}
+{"fn":"loadCloudflareTunnelConfig","args":[{"😀":"HELLO","nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[true],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"😀":"trailing."}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"home":{"$undefined":true},"a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"ünï":"trailing.hello","a.b":{"$undefined":true},"😀":"Hello World"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"10":"src/a/b.ts","title":"abc"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":{"$undefined":true},"a.b":"日本語のテキスト"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"nav":"ΣΊΣΥΦΟΣ"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"nav":"","a.b":"hello world"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":":","a":"hello world"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"b":{"$undefined":true},"nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"home":"😀"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"a":{"$undefined":true},"title":"hello"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":{"$undefined":true},"home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[0],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"home":{"$undefined":true},"b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"10":"😀","a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"home":"ünïcödétab\tseparated","nav":"abc"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"a.b":"ns:key.path"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"10":"ΣΊΣΥΦΟΣa.b.c","😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"a":"straße"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"10":{"$undefined":true},"nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"home":"a:b:c","b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"title":{"$undefined":true},"ünï":{"$undefined":true},"home":"line1\nline2ünïcödé"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"ünï":"  padded  ","title":"ünïcödé"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":".leading","nav":{"$undefined":true},"😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"10":"ΣΊΣΥΦΟΣ","😀":"Hello Worldline1\nline2"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"10":"","ünï":".leading"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"10":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"title":"emoji 👍🏽 mix"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"title":"a.b.c","b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":"a:b:c","10":"straße","home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":{"$undefined":true},"a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"b":"ünïcödé"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"😀":"ns:key.path"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"10":{"$undefined":true},"a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"10":"a.b.c","home":{"$undefined":true},"title":"ünïcödé"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":{"$undefined":true},"b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"10":":","a":{"$undefined":true},"nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"b":"😀"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[null],"error":"Cannot read properties of null (reading 'NODE_ENV')"}
+{"fn":"assertDevIdentityAllowed","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"a":{"$undefined":true},"a.b":"a😀b😀c"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":{"$undefined":true},"b":"./x/**/*.json"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"10":{"$undefined":true},"😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"home":{"$undefined":true},"b":"ns:key.path"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"a":"key_name-1"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":{"$undefined":true},"title":{"$undefined":true},"a":"ns:key.path"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"home":{"$undefined":true},"title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"a":"./x/**/*.json.leading"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"😀":{"$undefined":true},"b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"home":"emoji 👍🏽 mix"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"😀":{"$undefined":true},"home":{"$undefined":true},"nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":"hello world","😀":{"$undefined":true},"home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":"emoji 👍🏽 mix","10":"tab\tseparated"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":"İstanbul"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"home":"HELLO","title":"İstanbul"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"10":"HELLO","ünï":{"$undefined":true},"nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"a":"line1\nline2"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":"straßea..b"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":{"$undefined":true},"😀":{"$undefined":true},"a":"src/a/b.ts"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":{"$undefined":true},"10":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"a.b":{"$undefined":true},"a":"ünïcödé"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"10":{"$undefined":true},"😀":"日本語のテキスト"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":"HELLO","home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"a.b":{"$undefined":true},"ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"title":"straßestraße"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"b":{"$undefined":true},"😀":"a.b.c"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"b":"a..b"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"10":{"$undefined":true},"a":"emoji 👍🏽 mixa..b"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"😀":"😀"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":"src/a/b.ts","😀":"hello"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"nav":":.leading","a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":{"$undefined":true},"😀":"trailing.","a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"nav":"line1\nline2"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":{"$undefined":true},"10":{"$undefined":true},"a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"ünï":"a..b","a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"ünï":{"$undefined":true},"a":{"$undefined":true},"😀":"İstanbul"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":"ΣΊΣΥΦΟΣ","a.b":"İstanbul"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":"😀","b":"a😀b😀c"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":["x"],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"😀":{"$undefined":true},"title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"😀":{"$undefined":true},"ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":"ns:key.path","b":{"$undefined":true},"ünï":"ns:key.path"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":"﻿bom","10":"straße","home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":"ab"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":{"$undefined":true},"10":{"$undefined":true},"a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":{"$undefined":true},"a.b":{"$undefined":true},"home":"İstanbul"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"b":":"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"title":"./x/**/*.json","ünï":{"$undefined":true},"a":":"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"b":"abHello World"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"😀":"  padded  ","a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"home":"日本語のテキスト"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"title":{"$undefined":true},"😀":"abc","b":"./x/**/*.json"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"10":{"$undefined":true},"nav":"  padded  "}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"title":{"$undefined":true},"nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"b":"HELLO"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"home":"line1\nline2"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"title":"a..b"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"10":":","a":"hello world"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"nav":"ns:key.path"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"a.b":"straße"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"title":{"$undefined":true},"a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"nav":"﻿bomns:key.path"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"10":{"$undefined":true},"a":"ünïcödé"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"home":"a"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"ünï":{"$undefined":true},"a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":{"$undefined":true},"b":"ab"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"10":"HELLOa"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"10":{"$undefined":true},"😀":"tab\tseparated"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":{"$undefined":true},"home":"hello","b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"😀":"  padded  ","ünï":"a😀b😀c"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":"straße","10":{"$undefined":true},"a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"home":"key_name-1"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"😀":"﻿bom"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":{"$undefined":true},"a.b":"日本語のテキスト{name} has {count} items"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"a.b":"ünïcödé"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"ünï":".leading","😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"home":{"$undefined":true},"nav":"日本語のテキスト","b":"hellostraße"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"home":"hello world"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"title":{"$undefined":true},"home":"😀"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"😀":".leadingİstanbul"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"10":"key_name-1"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":{"$undefined":true},"home":"src/a/b.ts"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"home":{"$undefined":true},"a":".leading"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"home":{"$undefined":true},"a.b":"ab"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"a":"hello worlda","nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"title":"😀"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"title":"a.b.c"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":"Hello World"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"nav":{"$undefined":true},"a.b":"line1\nline2","a":"a:b:chello"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":"hello world😀","home":"İstanbul"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"nav":"﻿bom"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":{"$undefined":true},"10":{"$undefined":true},"title":"key_name-1"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"a.b":"hello﻿bom"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"10":"trailing.{name} has {count} items","title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"10":"hello","home":"straße"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":".leading"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":{"$undefined":true},"10":{"$undefined":true},"ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"home":{"$undefined":true},"a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"10":{"$undefined":true},"ünï":"Hello World","a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"😀":"a..btab\tseparated"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":"İstanbulhello world"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"nav":{"$undefined":true},"title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"title":{"$undefined":true},"nav":"straße","b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"a.b":{"$undefined":true},"ünï":"a.b.c","home":"{name} has {count} items"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"a":"line1\nline2ab","ünï":{"$undefined":true},"title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"😀":"key_name-1","title":"line1\nline2"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"b":"emoji 👍🏽 mix","home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"10":{"$undefined":true},"a":"﻿boma..b","a.b":"a😀b😀c"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"b":"tab\tseparated./x/**/*.json","ünï":":"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"b":"./x/**/*.json","a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"b":{"$undefined":true},"a.b":"日本語のテキストns:key.path","home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"nav":"a","home":"key_name-1","😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"home":"a.b.c"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[[]],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"a":"a..b","title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"a.b":"Hello World","ünï":"hello world"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":"emoji 👍🏽 mix","a":"emoji 👍🏽 mix","home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"ünï":{"$undefined":true},"nav":"./x/**/*.jsona","title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"b":"tab\tseparateda.b.c"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"10":{"$undefined":true},"nav":"Hello World./x/**/*.json"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"title":"a.b.c","a":"key_name-1","😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"home":"a:b:c","😀":"a😀b😀c","a.b":"tab\tseparated"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"a.b":"ns:key.path.leading"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"title":{"$undefined":true},"ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":{"$undefined":true},"10":{"$undefined":true},"home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"a.b":"﻿bom"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":"","b":"a..b"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":{"$undefined":true},"ünï":{"$undefined":true},"a.b":"😀"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"ünï":"a:b:c"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"title":"a😀b😀c"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"10":{"$undefined":true},"nav":"hello world"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":"ns:key.path","10":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"a":"abc","home":"ab","b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"10":"abc","a.b":"emoji 👍🏽 mix","nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"nav":"é"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":"İstanbul","a":"emoji 👍🏽 mix"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"title":"﻿bom"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"😀":"hello","a.b":"./x/**/*.json"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"b":".leading"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"a":{"$undefined":true},"a.b":"a..b"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"a.b":{"$undefined":true},"home":"trailing.","a":"hello"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"2":"abns:key.path","ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"😀":"trailing.","a":"a:b:c","ünï":"line1\nline2emoji 👍🏽 mix"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"10":{"$undefined":true},"😀":"ΣΊΣΥΦΟΣ","b":"  padded  "}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"a":{"$undefined":true},"a.b":":"}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"10":{"$undefined":true},"home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"assertDevIdentityAllowed","args":[{"title":{"$undefined":true},"a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"a.b":"key_name-1","title":"a:b:c"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":{"$undefined":true},"home":".leading","😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"nav":":  padded  "}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"home":{"$undefined":true},"title":"./x/**/*.json","ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"title":{"$undefined":true},"ünï":"hello"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"nav":"  padded  ab"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"ünï":"﻿bom","home":{"$undefined":true},"title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"10":"","b":"","a.b":"Hello World"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":{"$undefined":true},"10":"{name} has {count} items"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":{"$undefined":true},"😀":"{name} has {count} items","a.b":"hello world"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"10":"é","a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":{"$undefined":true},"10":{"$undefined":true},"ünï":"key_name-1"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"10":"./x/**/*.json","a":"😀","nav":"﻿bom"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"10":{"$undefined":true},"nav":{"$undefined":true},"😀":"ns:key.pathline1\nline2"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"a.b":"é","home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"nav":{"$undefined":true},"a":"😀é"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"a.b":"src/a/b.ts"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"a.b":"hello","😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":"HELLO","b":"  padded  hello","a.b":"  padded  "}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"a.b":"ns:key.path","ünï":{"$undefined":true},"nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"ünï":"Hello Worldİstanbul","nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"ünï":"emoji 👍🏽 mix","a":"trailing."}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"😀":{"$undefined":true},"b":"ns:key.pathé","a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"title":"a","home":"ab","nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":["x"],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"a.b":"日本語のテキスト","a":{"$undefined":true},"ünï":"key_name-1"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"ünï":"abc"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":{"$undefined":true},"10":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"title":"😀日本語のテキスト"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[null],"error":"Cannot read properties of null (reading 'S3_ENDPOINT')"}
+{"fn":"loadAvatarStorageConfig","args":[{"10":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"😀":{"$undefined":true},"b":{"$undefined":true},"title":"key_name-1"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[true],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"😀":{"$undefined":true},"title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"😀":"éhello","nav":{"$undefined":true},"title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"ünï":"HELLOHello World","nav":"abc"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"10":"HELLO","b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"10":"straße","a":"aba😀b😀c"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"a.b":{"$undefined":true},"nav":{"$undefined":true},"title":"﻿bomns:key.path"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"home":"./x/**/*.jsonHello World"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"😀":{"$undefined":true},"b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"😀":{"$undefined":true},"title":"tab\tseparated","a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"title":"abc"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"title":"é","home":"abc","a":"HELLO./x/**/*.json"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"a.b":"abc"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[[]],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":"ΣΊΣΥΦΟΣ","10":"a","😀":"src/a/b.ts"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"😀":{"$undefined":true},"b":"./x/**/*.jsonstraße"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"title":"HELLO","home":{"$undefined":true},"nav":".leading"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"a.b":{"$undefined":true},"title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"title":{"$undefined":true},"nav":"HELLO"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":"line1\nline2","home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":"ünïcödéHello World","10":"😀"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"ünï":"line1\nline2"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"😀":""}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"title":{"$undefined":true},"home":"a😀b😀ca"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"nav":"é","ünï":{"$undefined":true},"home":"İstanbul"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"b":"日本語のテキスト","ünï":"key_name-1","a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"😀":"","a.b":{"$undefined":true},"b":"trailing."}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"b":{"$undefined":true},"title":"hello world"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"10":{"$undefined":true},"😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"home":{"$undefined":true},"title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":{"$undefined":true},"b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"b":"﻿bom","title":":","😀":"a😀b😀c"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[0],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":"abc","b":"a😀b😀c"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"home":"日本語のテキスト  padded  ","ünï":"ΣΊΣΥΦΟΣ"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":"","a.b":{"$undefined":true},"ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"b":"ns:key.path"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"home":{"$undefined":true},"ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"nav":"a.b.c"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"10":"abc","ünï":"a..b"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"a.b":{"$undefined":true},"nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"10":".leading","title":"é"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"ünï":{"$undefined":true},"nav":{"$undefined":true},"😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"b":{"$undefined":true},"a.b":"ΣΊΣΥΦΟΣ"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"a":"😀tab\tseparated","home":"key_name-1","😀":"﻿bom"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":"ns:key.pathtab\tseparated","ünï":{"$undefined":true},"a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"a":"  padded  "}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"a.b":"key_name-1"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"a.b":{"$undefined":true},"😀":"a😀b😀cé"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"title":"tab\tseparated"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"a.b":{"$undefined":true},"b":{"$undefined":true},"home":"é"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":"日本語のテキスト","title":"hello","a":"日本語のテキスト"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"a":"{name} has {count} items"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"a":"a"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":"hello😀"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"b":":a.b.c"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":"emoji 👍🏽 mix./x/**/*.json","a":"key_name-1","title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"a.b":"hello"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"a.b":"ΣΊΣΥΦΟΣ","ünï":"a..b  padded  "}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"a":"a:b:c","title":"emoji 👍🏽 mixabc","home":"abc"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":{"$undefined":true},"b":{"$undefined":true},"ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"b":"hello world","nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"title":{"$undefined":true},"ünï":"abc"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"10":{"$undefined":true},"nav":{"$undefined":true},"a":"ns:key.path"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"ünï":"./x/**/*.jsonabc","nav":"src/a/b.ts"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"10":{"$undefined":true},"😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"10":"{name} has {count} items"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"nav":"./x/**/*.jsoné"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"b":{"$undefined":true},"ünï":{"$undefined":true},"a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":"ns:key.path","b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"a":{"$undefined":true},"nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"home":"key_name-1","title":"aba😀b😀c"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"title":"{name} has {count} items","b":"src/a/b.ts"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"😀":"HELLO"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"b":"ab"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"a":"abcé"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":"abc","10":"ab","b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"10":{"$undefined":true},"ünï":"日本語のテキスト","😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"10":{"$undefined":true},"a":"ns:key.path"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":{"$undefined":true},"home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"b":"tab\tseparated","home":"ab"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"😀":{"$undefined":true},"home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"10":{"$undefined":true},"a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"😀":{"$undefined":true},"home":"ab"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"b":".leading","nav":{"$undefined":true},"ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":{"$undefined":true},"ünï":"src/a/b.ts","title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"home":"éns:key.path"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"10":"😀"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"10":"😀","title":"abc","a.b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"title":{"$undefined":true},"nav":{"$undefined":true},"home":"ab"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"a.b":{"$undefined":true},"home":{"$undefined":true},"nav":"HELLO"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"home":{"$undefined":true},"a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"home":{"$undefined":true},"a":"trailing."}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"nav":{"$undefined":true},"ünï":"src/a/b.ts"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":{"$undefined":true},"😀":{"$undefined":true},"nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"10":{"$undefined":true},"b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"a":"ns:key.path","home":"hello","nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":{"$undefined":true},"b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":{"$undefined":true},"10":"hello world"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":{"$undefined":true},"title":{"$undefined":true},"ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"title":"ab"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"home":"straßeHello World","nav":{"$undefined":true},"ünï":"trailing."}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"10":{"$undefined":true},"nav":"key_name-1","a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"b":"﻿bom"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"a.b":"﻿bom","😀":"key_name-1a"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"a.b":"","😀":{"$undefined":true},"nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":"abc","nav":"ΣΊΣΥΦΟΣ","ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"a.b":"éİstanbul"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"a":"ab","home":{"$undefined":true},"a.b":"Hello Worldab"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"home":"İstanbul日本語のテキスト"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":"hello worldabc","10":"a","b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"home":{"$undefined":true},"a.b":".leadingstraße","b":"hello"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":{"$undefined":true},"ünï":"ns:key.path"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"10":".leading"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"nav":"ns:key.path"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"b":{"$undefined":true},"a.b":{"$undefined":true},"title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"home":"line1\nline2","b":"é","ünï":"a😀b😀c"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"a":"{name} has {count} items","😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"😀":{"$undefined":true},"nav":{"$undefined":true},"ünï":":"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"10":{"$undefined":true},"ünï":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"10":"a..b","home":{"$undefined":true},"title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":{"$undefined":true},"10":"tab\tseparated","a":"a:b:ca:b:c"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"10":{"$undefined":true},"nav":{"$undefined":true},"😀":"é"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":{"$undefined":true},"10":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"title":":hello"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"10":{"$undefined":true},"nav":"hello world","a":"a:b:c"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"10":"a.b.c日本語のテキスト"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"10":"./x/**/*.json","😀":"a😀b😀c","ünï":"Hello World"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"10":"é","home":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":"src/a/b.ts"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"home":"key_name-1","a.b":"ab","ünï":"key_name-1"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"home":"a"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"10":"trailing.ΣΊΣΥΦΟΣ"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"nav":{"$undefined":true},"title":"src/a/b.ts"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"10":{"$undefined":true},"b":{"$undefined":true},"ünï":"emoji 👍🏽 mix"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"ünï":{"$undefined":true},"nav":"ünïcödé"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"10":{"$undefined":true},"nav":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"home":"hello world","title":"日本語のテキスト"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":".leading","10":"İstanbul","b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":"straße","10":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"10":"ab"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"😀":"İstanbulİstanbul","a":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"title":"日本語のテキスト"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":"ab","a":"a.b.c","nav":"straße"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":".leadingsrc/a/b.ts","b":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"nav":"hello"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"nav":"Hello World"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"2":{"$undefined":true},"😀":"a😀b😀c","title":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"nav":"{name} has {count} items","ünï":"line1\nline2","home":":"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"a":"tab\tseparatedHello World","home":"straße","nav":"ΣΊΣΥΦΟΣtrailing."}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"b":"hello","😀":{"$undefined":true}}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"a.b":{"$undefined":true},"a":"tab\tseparatedhello","nav":"src/a/b.ts"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"nav":"ünïcödé","b":"src/a/b.ts"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"a":"日本語のテキスト"}],"ok":{"$undefined":true}}
+{"fn":"loadAvatarStorageConfig","args":[{"10":"﻿boma😀b😀c","😀":"a.b.c"}],"ok":{"$undefined":true}}
+{"fn":"loadApiConfig","args":[{"ünï":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":{"$undefined":true},"b":"a.b.c"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"b":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"b":"straße","nav":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"nav":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"a.b":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"nav":"Hello World","a":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":".leading","ünï":"İstanbula😀b😀c"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"home":"HELLO"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"nav":"é"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"😀":"tab\tseparatedsrc/a/b.ts","b":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[0],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":"emoji 👍🏽 mix","home":"a.b.c","ünï":"abc"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"nav":"ns:key.pathtab\tseparated"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"b":{"$undefined":true},"😀":"abc"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"nav":"ünïcödé"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":"é"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"title":"hello world:"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[null],"error":"Cannot read properties of null (reading 'IDENTITY_PROVIDER')"}
+{"fn":"loadApiConfig","args":[{"b":".leadingsrc/a/b.ts"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[true],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"a":"b"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":"src/a/b.ts","10":{"$undefined":true},"ünï":"tab\tseparatedΣΊΣΥΦΟΣ"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[[]],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"b":{"$undefined":true},"nav":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"b":{"$undefined":true},"ünï":"trailing."}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[["a",1]],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"a":{"b":"c"}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":"key_name-1","title":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"a.b":"emoji 👍🏽 mix"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":"line1\nline2a:b:c","title":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":{"$undefined":true},"title":{"$undefined":true},"😀":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"a.b":{"$undefined":true},"nav":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"nav":"emoji 👍🏽 mix","ünï":"ünïcödé"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"home":"src/a/b.ts","a.b":"tab\tseparated"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"😀":"﻿bom"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"nav":"hello worlda:b:c","home":"a.b.c","ünï":"ΣΊΣΥΦΟΣ"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":{"$undefined":true},"home":"é"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"home":"","a.b":"é"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":{"$undefined":true},"title":"emoji 👍🏽 mix.leading"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"a":"a😀b😀c","nav":"abc"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":"﻿bom"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":{"$undefined":true},"a.b":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"b":{"$undefined":true},"😀":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":{"$undefined":true},"a":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":{"$undefined":true},"a.b":"./x/**/*.json"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"😀":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"😀":{"$undefined":true},"home":"ns:key.path"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":"a:b:c","10":"ΣΊΣΥΦΟΣ","a.b":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":{"$undefined":true},"b":"ab","title":"hello"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":{"$undefined":true},"title":"hello","😀":"éHello World"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"nav":"😀ünïcödé","😀":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"b":"İstanbulline1\nline2"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"home":"Hello World","a.b":"trailing."}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":{"$undefined":true},"title":"é日本語のテキスト","home":"ab"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":"tab\tseparated","😀":{"$undefined":true},"nav":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":"ékey_name-1","home":"key_name-1","a":"{name} has {count} items😀"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"ünï":{"$undefined":true},"b":""}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":"a:b:c","title":"{name} has {count} items","😀":"ns:key.path"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":"trailing."}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":"ns:key.path"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"a.b":{"$undefined":true},"b":{"$undefined":true},"nav":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":"a:b:c","a":"😀key_name-1","😀":""}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"ünï":"a.b.c"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":{"$undefined":true},"home":"é"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"home":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"title":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"😀":{"$undefined":true},"ünï":{"$undefined":true},"b":"trailing."}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":"trailing.ünïcödé","a":{"$undefined":true},"b":"trailing."}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"ünï":{"$undefined":true},"a":"ΣΊΣΥΦΟΣ","title":"hello"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":"abc"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":"","ünï":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":{"$undefined":true},"10":"HELLO","title":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":"{name} has {count} items"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"a":{"$undefined":true},"title":"😀","home":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"ünï":{"$undefined":true},"b":"hello"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":"  padded  "}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"title":"  padded  ","a.b":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":"日本語のテキストhello world","10":{"$undefined":true},"😀":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"a.b":{"$undefined":true},"ünï":"İstanbul"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"nav":{"$undefined":true},"ünï":{"$undefined":true},"a.b":"İstanbul"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":{"$undefined":true},"a.b":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"title":""}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":"straße"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":{"$undefined":true},"😀":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"😀":{"$undefined":true},"ünï":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"home":"a:b:c"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":"./x/**/*.json"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"title":{"$undefined":true},"nav":":"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"a":{"$undefined":true},"😀":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"ünï":"hello world"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":"tab\tseparated"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"title":{"$undefined":true},"b":"Hello World"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":{"$undefined":true},"nav":{"$undefined":true},"home":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"😀":"hello world","home":"a😀b😀c"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":"a😀b😀c","a.b":{"$undefined":true},"nav":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":{"$undefined":true},"😀":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":"ΣΊΣΥΦΟΣ","ünï":"trailing.","title":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"nav":"key_name-1","title":"key_name-1","ünï":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":{"$undefined":true},"a.b":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":{"$undefined":true},"a.b":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":{"$undefined":true},"title":"a😀b😀c","a.b":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":"ünïcödé","title":"日本語のテキスト"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"a":"line1\nline2"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":{"$undefined":true},"ünï":"key_name-1","😀":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":{"$undefined":true},"nav":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"home":"a😀b😀c"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"a":{"$undefined":true},"b":"line1\nline2hello","a.b":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"ünï":"line1\nline2","nav":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"nav":"Hello Worldabc"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":".leading"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"nav":"abcünïcödé","a":"a.b.c"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"ünï":{"$undefined":true},"home":{"$undefined":true},"b":"src/a/b.ts"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":"emoji 👍🏽 mix","ünï":{"$undefined":true},"a":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"b":{"$undefined":true},"home":{"$undefined":true},"😀":"abtab\tseparated"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"title":"a:b:c"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":"ns:key.path"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"a":"ns:key.path","😀":"hello world"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"a.b":"😀","b":""}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"title":{"$undefined":true},"b":"Hello World  padded  ","home":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"a":{"$undefined":true},"a.b":"hello world"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":"ns:key.path","home":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":"ns:key.path","b":"  padded  "}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":"ünïcödé.leading","title":{"$undefined":true},"ünï":"😀Hello World"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":{"$undefined":true},"a.b":"emoji 👍🏽 mix","title":"hello world"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"title":"straße"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"a.b":{"$undefined":true},"😀":"straße","a":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":{"$undefined":true},"a":"a..b","b":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"home":{"$undefined":true},"a":"İstanbul"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"ünï":"ΣΊΣΥΦΟΣhello world","home":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"home":"ünïcödéİstanbul","ünï":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":["x"],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":{"$undefined":true},"😀":"ΣΊΣΥΦΟΣ","nav":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"b":"src/a/b.ts"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"title":{"$undefined":true},"😀":{"$undefined":true},"b":"ns:key.path:"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":{"$undefined":true},"a":"a:b:c"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":{"$undefined":true},"nav":{"$undefined":true},"a.b":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"title":"日本語のテキスト","nav":"😀a"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"nav":"ΣΊΣΥΦΟΣ","😀":"src/a/b.tsünïcödé"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":"straße","b":"src/a/b.ts","a":"hello"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"nav":{"$undefined":true},"a":{"$undefined":true},"😀":"src/a/b.ts"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":"hello","a.b":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"b":"key_name-1"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":{"$undefined":true},"10":{"$undefined":true},"nav":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"b":"ns:key.patha:b:c"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"nav":{"$undefined":true},"home":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"😀":"./x/**/*.jsonsrc/a/b.ts","a.b":"key_name-1"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":"ns:key.pathsrc/a/b.ts","title":"ab"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"title":"ab😀","a":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":{"$undefined":true},"b":{"$undefined":true},"a.b":"ünïcödé"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"b":"straße"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"a":"HELLO"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"home":"ns:key.path"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"ünï":{"$undefined":true},"😀":"﻿bom"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"ünï":"trailing.","nav":{"$undefined":true},"a.b":"a:b:c"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":{"$undefined":true},"a.b":"straße","home":"{name} has {count} items"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"a":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"home":"Hello World"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"😀":"emoji 👍🏽 mix"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":":","😀":{"$undefined":true},"home":"a"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"home":{"$undefined":true},"ünï":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":"é","😀":{"$undefined":true},"a":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":"a","title":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"😀":"key_name-1","nav":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"nav":"trailing.ns:key.path","ünï":"emoji 👍🏽 mix","a":"abc"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":{"$undefined":true},"title":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"😀":{"$undefined":true},"nav":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":"﻿bom"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"nav":"İstanbul","a.b":{"$undefined":true},"😀":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"a":"tab\tseparated"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"b":{"$undefined":true},"a.b":"日本語のテキスト"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"nav":{"$undefined":true},"b":"a😀b😀c"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":"./x/**/*.json","title":{"$undefined":true},"b":"straße"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"b":"é","nav":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"b":"{name} has {count} items","a.b":{"$undefined":true},"home":":"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"home":"İstanbulünïcödé","title":{"$undefined":true},"ünï":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":"abc","a":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"a":"ünïcödé","b":"hello world"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"ünï":"Hello World","title":"a..bstraße"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"ünï":"HELLO","nav":{"$undefined":true},"a":"  padded  "}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"b":{"$undefined":true},"😀":"ab"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":{"$undefined":true},"ünï":"tab\tseparateda","nav":"ab"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"a":"HELLOsrc/a/b.ts","a.b":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"b":{"$undefined":true},"title":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":{"$undefined":true},"10":{"$undefined":true},"😀":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":{"$undefined":true},"a.b":"a:b:c"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":"İstanbul","10":"ünïcödé","nav":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":"ünïcödé","😀":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"b":"hello","a":{"$undefined":true},"nav":"ΣΊΣΥΦΟΣHello World"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":"./x/**/*.jsonsrc/a/b.ts","nav":"tab\tseparated"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"2":"./x/**/*.json","10":"line1\nline2","😀":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"ünï":{"$undefined":true},"title":"abcΣΊΣΥΦΟΣ","😀":"ab{name} has {count} items"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"😀":"ΣΊΣΥΦΟΣ","nav":"hello worldΣΊΣΥΦΟΣ","ünï":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"😀":"﻿bom","a":"éhello"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"title":{"$undefined":true},"😀":"😀"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"10":{"$undefined":true},"a.b":"日本語のテキスト.leading"}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}
+{"fn":"loadApiConfig","args":[{"title":{"$undefined":true},"b":{"$undefined":true}}],"error":"Missing required environment variables: DATABASE_URL, WORKOS_API_KEY, WORKOS_CLIENT_ID, ACCOUNT_BASE_URL, API_PUBLIC_URL, API_SIGNING_KEY"}

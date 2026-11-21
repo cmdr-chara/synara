@@ -1,10 +1,11 @@
-//! The Rust port of `apps/server/src/profileStats.ts`.
+use serde_json::{Value, json};
+use std::cmp::Ordering;
+use std::collections::{HashMap, HashSet};
+use std::sync::LazyLock;
 
-#![forbid(unsafe_code)]
+use regex::Regex;
 
-use serde_json::Value;
-
-const HEATMAP_LEVELS: f64 = 4.0;
+use crate::js::{as_number, is_undefined, number, number_to_string, sort as js_sort, string_units};
 
 const PROVIDER_KINDS: &[&str] = &[
     "codex",
@@ -19,7 +20,7 @@ const PROVIDER_KINDS: &[&str] = &[
     "omp",
 ];
 
-const BUILT_IN_SLASH_COMMANDS: &[&str] = &[
+const BUILT_IN_COMPOSER_SLASH_COMMANDS: &[&str] = &[
     "clear",
     "compact",
     "model",
@@ -40,282 +41,134 @@ const BUILT_IN_SLASH_COMMANDS: &[&str] = &[
     "automation",
 ];
 
-fn js_undefined(v: &Value) -> bool {
-    crate::js::is_undefined(v)
-}
-
-fn is_fn(v: &Value) -> bool {
-    v.get("$function").is_some()
-}
-
 fn js_trim(s: &str) -> &str {
     s.trim_matches(|c: char| c.is_whitespace() || c == '\u{feff}')
 }
 
-fn non_empty_str(v: &Value) -> Option<String> {
-    v.as_str()
-        .map(js_trim)
-        .filter(|t| !t.is_empty())
-        .map(str::to_string)
+fn is_js_space(c: char) -> bool {
+    c.is_whitespace() || c == '\u{feff}'
+}
+
+fn as_js_string(value: &Value) -> Option<String> {
+    match value {
+        Value::String(s) => Some(s.clone()),
+        _ => string_units(value).map(|units| String::from_utf16_lossy(&units)),
+    }
+}
+
+fn non_empty_str(value: &Value) -> Option<String> {
+    let s = as_js_string(value)?;
+    let trimmed = js_trim(&s);
+    (!trimmed.is_empty()).then(|| trimmed.to_string())
+}
+
+fn parse_number(s: &str) -> f64 {
+    let t = js_trim(s);
+    if t.is_empty() {
+        return 0.0;
+    }
+    match t {
+        "Infinity" | "+Infinity" | "infinity" | "+infinity" => return f64::INFINITY,
+        "-Infinity" | "-infinity" => return f64::NEG_INFINITY,
+        _ => {}
+    }
+    let (neg, body) = match t.strip_prefix('-') {
+        Some(b) => (true, b),
+        None => (false, t.strip_prefix('+').unwrap_or(t)),
+    };
+    let v = if let Some(h) = body.strip_prefix("0x").or_else(|| body.strip_prefix("0X")) {
+        u128::from_str_radix(h, 16)
+            .map(|v| v as f64)
+            .unwrap_or(f64::NAN)
+    } else if let Some(b) = body.strip_prefix("0b").or_else(|| body.strip_prefix("0B")) {
+        u128::from_str_radix(b, 2)
+            .map(|v| v as f64)
+            .unwrap_or(f64::NAN)
+    } else if let Some(o) = body.strip_prefix("0o").or_else(|| body.strip_prefix("0O")) {
+        u128::from_str_radix(o, 8)
+            .map(|v| v as f64)
+            .unwrap_or(f64::NAN)
+    } else {
+        t.parse::<f64>().unwrap_or(f64::NAN)
+    };
+    if neg { -v } else { v }
+}
+
+fn to_number(value: &Value) -> f64 {
+    match value {
+        Value::Null => 0.0,
+        Value::Bool(b) => u8::from(*b) as f64,
+        Value::Number(n) => n.as_f64().unwrap_or(f64::NAN),
+        Value::String(s) => parse_number(s),
+        Value::Array(a) => match a.as_slice() {
+            [] => 0.0,
+            [single] => to_number(single),
+            _ => f64::NAN,
+        },
+        Value::Object(_) => {
+            if is_undefined(value) {
+                return f64::NAN;
+            }
+            if let Some(n) = as_number(value) {
+                return n;
+            }
+            if let Some(s) = as_js_string(value) {
+                return parse_number(&s);
+            }
+            f64::NAN
+        }
+    }
 }
 
 fn js_truthy(v: &Value) -> bool {
     match v {
         Value::Null => false,
         Value::Bool(b) => *b,
-        Value::Number(n) => n.as_f64().is_some_and(|x| x != 0.0 && !x.is_nan()),
+        Value::Number(n) => n.as_f64() != Some(0.0),
         Value::String(s) => !s.is_empty(),
-        _ => !js_undefined(v),
-    }
-}
-
-/// JS `Number(value)` — object/array/null/string coercion.
-fn js_to_number(v: &Value) -> f64 {
-    match v {
-        Value::Null => 0.0,
-        Value::Bool(b) => {
-            if *b {
-                1.0
+        Value::Array(_) => true,
+        Value::Object(_) => {
+            if is_undefined(v) {
+                false
+            } else if let Some(x) = as_number(v) {
+                x != 0.0 && !x.is_nan()
+            } else if let Some(units) = string_units(v) {
+                !units.is_empty()
             } else {
-                0.0
+                true
             }
         }
-        Value::Number(n) => n.as_f64().unwrap_or(f64::NAN),
-        Value::String(s) => js_string_to_number(s),
-        Value::Array(a) => {
-            if a.is_empty() {
-                0.0
-            } else if a.len() == 1 {
-                js_to_number(&a[0])
-            } else {
-                f64::NAN
-            }
-        }
-        Value::Object(_) => f64::NAN,
     }
 }
 
-fn js_string_to_number(s: &str) -> f64 {
-    let t = js_trim(s);
-    if t.is_empty() {
-        return 0.0;
-    }
-    match t {
-        "Infinity" | "+Infinity" => return f64::INFINITY,
-        "-Infinity" => return f64::NEG_INFINITY,
-        _ => {}
-    }
-    if let Some(hex) = t.strip_prefix("0x").or_else(|| t.strip_prefix("0X")) {
-        return u64::from_str_radix(hex, 16)
-            .map(|u| u as f64)
-            .unwrap_or(f64::NAN);
-    }
-    t.parse::<f64>().unwrap_or(f64::NAN)
-}
-
-fn prop(v: &Value, key: &str) -> Value {
+fn js_display(v: &Value) -> String {
     match v {
-        Value::Object(o) => o.get(key).cloned().unwrap_or_else(crate::js::undefined),
-        _ => crate::js::undefined(),
+        Value::String(s) => s.clone(),
+        Value::Bool(b) => b.to_string(),
+        Value::Number(n) => number_to_string(n.as_f64().unwrap_or(f64::NAN)),
+        Value::Null => "null".to_string(),
+        Value::Array(_) => format!("{v:?}"),
+        Value::Object(_) => {
+            if let Some(x) = as_number(v) {
+                return number_to_string(x);
+            }
+            if let Some(units) = string_units(v) {
+                return String::from_utf16_lossy(&units);
+            }
+            format!("{v:?}")
+        }
     }
 }
 
-fn normalize_usage_name(v: &Value) -> Option<String> {
-    let name = non_empty_str(v)?;
-    let stripped = name.trim_start_matches(['$', '/', '@']);
-    let t = js_trim(stripped);
-    if t.is_empty() {
-        None
+// `String.prototype.padStart(2, "0")` — pads to a minimum length of 2.
+fn pad2(s: &str) -> String {
+    if s.chars().count() < 2 {
+        format!("0{s}")
     } else {
-        Some(t.to_string())
+        s.to_string()
     }
 }
 
-fn usage_key(kind: &str, name: &str) -> String {
-    format!("{kind}\u{0}{}", name.to_lowercase())
-}
-
-/// `parseReferenceNames` — JSON array of objects with a `name` prop.
-fn parse_reference_names(json: &Value) -> Vec<String> {
-    let Some(text) = non_empty_str(json) else {
-        return vec![];
-    };
-    let Ok(parsed) = serde_json::from_str::<Value>(&text) else {
-        return vec![];
-    };
-    let Value::Array(entries) = parsed else {
-        return vec![];
-    };
-    entries
-        .iter()
-        .filter_map(|e| {
-            if e.is_object() {
-                normalize_usage_name(&prop(e, "name"))
-            } else {
-                None
-            }
-        })
-        .collect()
-}
-
-fn is_builtin_slash_command(raw_name: &str) -> bool {
-    let normalized = js_trim(raw_name).trim_start_matches('/').to_lowercase();
-    BUILT_IN_SLASH_COMMANDS.iter().any(|c| *c == normalized)
-}
-
-fn is_obvious_non_skill_dollar_token(name: &str) -> bool {
-    let mut chars = name.chars();
-    if chars.next().is_some_and(|c| c.is_ascii_digit()) {
-        return true;
-    }
-    // /^[A-Z_][A-Z0-9_]*$/
-    let mut it = name.chars();
-    match it.next() {
-        Some(c) if c.is_ascii_uppercase() || c == '_' => {}
-        _ => return false,
-    }
-    it.all(|c| c.is_ascii_uppercase() || c.is_ascii_digit() || c == '_')
-}
-
-/// `(^|[\s([{<])([$/])(NAME)(?=$|[\s.,!?;)\]}>])` — implemented by manual scan
-/// so capture groups keep the JS semantics.
-fn extract_text_skill_names(text: &Value) -> Vec<String> {
-    let Some(prompt) = non_empty_str(text) else {
-        return vec![];
-    };
-    let visible = strip_trailing_prompt_blocks(&prompt);
-    if js_trim(&visible).is_empty() {
-        return vec![];
-    }
-    let mut names = Vec::new();
-    let chars: Vec<char> = visible.chars().collect();
-    let n = chars.len();
-    let is_boundary_before = |i: usize| -> bool {
-        if i == 0 {
-            return true;
-        }
-        let c = chars[i - 1];
-        c.is_whitespace() || matches!(c, '(' | '[' | '{' | '<')
-    };
-    let is_boundary_after = |i: usize| -> bool {
-        if i >= n {
-            return true;
-        }
-        let c = chars[i];
-        c.is_whitespace() || matches!(c, '.' | ',' | '!' | '?' | ';' | ')' | ']' | '}' | '>')
-    };
-    let mut i = 0;
-    while i < n {
-        let c = chars[i];
-        if (c == '$' || c == '/') && is_boundary_before(i) {
-            let mut j = i + 1;
-            let mut raw = String::new();
-            // NAME = seg ( ':' seg )* ; seg = alnum (alnum|-|_)* ending on alnum.
-            while j < n && chars[j].is_ascii_alphanumeric() {
-                let seg_start = j;
-                while j < n
-                    && (chars[j].is_ascii_alphanumeric() || chars[j] == '-' || chars[j] == '_')
-                {
-                    j += 1;
-                }
-                let mut seg_end = j;
-                while seg_end > seg_start + 1 && matches!(chars[seg_end - 1], '-' | '_') {
-                    seg_end -= 1;
-                }
-                j = seg_end;
-                raw.push_str(&chars[seg_start..seg_end].iter().collect::<String>());
-                if j < n && chars[j] == ':' && j + 1 < n && chars[j + 1].is_ascii_alphanumeric() {
-                    raw.push(':');
-                    j += 1;
-                    continue;
-                }
-                break;
-            }
-            let ok = !raw.is_empty();
-            if ok && is_boundary_after(j) {
-                let leading = if i == 0 { '\0' } else { chars[i - 1] };
-                if !(leading == '<' && c == '/') && (c != '/' || !is_builtin_slash_command(&raw)) {
-                    let has_skill_prefix = raw.to_lowercase().starts_with("skill:");
-                    let normalized = if has_skill_prefix {
-                        raw["skill:".len()..].to_string()
-                    } else {
-                        raw.clone()
-                    };
-                    if let Some(name) = normalize_usage_name(&Value::String(normalized))
-                        && !(c == '$'
-                            && !has_skill_prefix
-                            && is_obvious_non_skill_dollar_token(&name))
-                    {
-                        names.push(name);
-                    }
-                }
-            }
-        }
-        i += 1;
-    }
-    names
-}
-
-/// `stripProfileTrailingPromptBlocks` — repeatedly remove trailing
-/// `<pasted_text>`/`<file_comments>`/`<terminal_context>`/`<assistant_selection>` blocks.
-fn strip_trailing_prompt_blocks(prompt: &str) -> String {
-    const TAGS: &[&str] = &[
-        "pasted_text",
-        "file_comments",
-        "terminal_context",
-        "assistant_selection",
-    ];
-    let mut out = prompt.to_string();
-    loop {
-        let mut stripped = false;
-        for tag in TAGS {
-            let open = format!("<{tag}>\n");
-            let close = format!("\n</{tag}>");
-            let Some(open_idx) = find_trailing_block(&out, &open, &close) else {
-                continue;
-            };
-            let mut next = out[..open_idx].to_string();
-            // `.replace(pattern,"")` drops `\n*` before the tag too, then `\n+$` trailing.
-            let trimmed = next.trim_end_matches('\n');
-            next = trimmed.to_string();
-            if next != out {
-                out = next;
-                stripped = true;
-                break;
-            }
-        }
-        if !stripped {
-            return out;
-        }
-    }
-}
-
-/// Locate the last `...<tag>\n[anything]\n</tag>\s*$` block in `s`.
-fn find_trailing_block(s: &str, open: &str, close: &str) -> Option<usize> {
-    // Close tag must appear, followed only by whitespace, at the very end.
-    let trimmed_end = s.len()
-        - s.chars()
-            .rev()
-            .take_while(|c| c.is_whitespace())
-            .map(char::len_utf8)
-            .sum::<usize>();
-    let close_idx = s[..trimmed_end].rfind(close)?;
-    if close_idx + close.len() != trimmed_end {
-        return None;
-    }
-    // Open tag: the last `<tag>\n` before the close tag; `\n*` before it are part of the match.
-    let open_idx = s[..close_idx].rfind(open)?;
-    let mut start = open_idx;
-    let bytes = s.as_bytes();
-    while start > 0 && bytes[start - 1] == b'\n' {
-        start -= 1;
-    }
-    Some(start)
-}
-
-// ── Ported fns ──────────────────────────────────────────────────────────
-
-/// Port of `sqliteModifierFromUtcOffsetMinutes` (`apps/server/src/profileStats.ts:116`).
 pub fn sqlite_modifier_from_utc_offset_minutes(offset_minutes: f64) -> Result<String, String> {
     let safe = if offset_minutes.is_finite() {
         offset_minutes.trunc()
@@ -324,137 +177,378 @@ pub fn sqlite_modifier_from_utc_offset_minutes(offset_minutes: f64) -> Result<St
     };
     let sign = if safe < 0.0 { "-" } else { "+" };
     let abs = safe.abs();
-    let hh = crate::js::number_to_string((abs / 60.0).floor());
-    let mm = crate::js::number_to_string(abs % 60.0);
-    Ok(format!("{sign}{hh:0>2}:{mm:0>2}"))
+    let hh = pad2(&number_to_string((abs / 60.0).floor()));
+    let mm = pad2(&number_to_string(abs % 60.0));
+    Ok(format!("{sign}{hh}:{mm}"))
 }
 
-/// Port of `num` (`apps/server/src/profileStats.ts:129`).
-pub fn num(value: serde_json::Value) -> Result<f64, String> {
-    let n = match &value {
+pub fn num(value: Value) -> Result<f64, String> {
+    let parsed = match &value {
         Value::Number(n) => n.as_f64().unwrap_or(f64::NAN),
-        other => js_to_number(other),
+        _ => to_number(&value),
     };
-    Ok(if n.is_finite() { n } else { 0.0 })
+    Ok(if parsed.is_finite() { parsed } else { 0.0 })
 }
 
-/// Port of `nonEmptyString` (`apps/server/src/profileStats.ts:140`).
-pub fn non_empty_string(value: serde_json::Value) -> Result<Option<String>, String> {
+pub fn non_empty_string(value: Value) -> Result<Option<String>, String> {
     Ok(non_empty_str(&value))
 }
 
-/// Port of `aggregateProfileSkillUsageRows` (`apps/server/src/profileStats.ts:263`).
-pub fn aggregate_profile_skill_usage_rows(
-    rows: serde_json::Value,
-    archived_rows: serde_json::Value,
-) -> Result<Vec<serde_json::Value>, String> {
-    fn iterable(v: &Value) -> Vec<Value> {
-        match v {
-            Value::Array(a) => a.clone(),
-            Value::String(s) => s
-                .encode_utf16()
-                .map(|u| {
-                    Value::String(char::from_u32(u as u32).map_or(String::new(), |c| c.to_string()))
-                })
-                .collect(),
-            _ => vec![],
+fn normalize_usage_name(value: &Value) -> Option<String> {
+    let name = non_empty_str(value)?;
+    normalize_usage_name_str(&name)
+}
+
+fn normalize_usage_name_str(name: &str) -> Option<String> {
+    let rest = js_trim(name.trim_start_matches(['$', '/', '@']));
+    (!rest.is_empty()).then(|| rest.to_string())
+}
+
+fn usage_key(kind: &str, name: &str) -> String {
+    format!("{kind}\u{0}{}", name.to_lowercase())
+}
+
+fn usage_kind_sort_order(kind: &str) -> i64 {
+    if kind == "skill" { 0 } else { 1 }
+}
+
+fn is_obvious_non_skill_dollar_token(name: &str) -> bool {
+    match name.chars().next() {
+        Some(c) if c.is_ascii_digit() => true,
+        Some(c) if c == '_' || c.is_ascii_uppercase() => name
+            .chars()
+            .all(|c| c == '_' || c.is_ascii_uppercase() || c.is_ascii_digit()),
+        _ => false,
+    }
+}
+
+static TRAILING_BLOCK_PATTERNS: LazyLock<Vec<Regex>> = LazyLock::new(|| {
+    [
+        "pasted_text",
+        "file_comments",
+        "terminal_context",
+        "assistant_selection",
+    ]
+    .iter()
+    .map(|tag| Regex::new(&format!(r"\n*<{tag}>\n[\s\S]*?\n</{tag}>\s*$")).unwrap())
+    .collect()
+});
+static TRAILING_NEWLINES: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"\n+$").unwrap());
+
+fn strip_profile_trailing_prompt_blocks(prompt: &str) -> String {
+    let mut visible = prompt.to_string();
+    loop {
+        let mut stripped = false;
+        for pattern in TRAILING_BLOCK_PATTERNS.iter() {
+            let removed = pattern.replacen(&visible, 1, "");
+            let next = TRAILING_NEWLINES.replace(&removed, "").into_owned();
+            if next != visible {
+                visible = next;
+                stripped = true;
+                break;
+            }
+        }
+        if !stripped {
+            return visible;
         }
     }
-    if !matches!(rows, Value::Array(_) | Value::String(_)) {
-        return Err("rows is not iterable".to_string());
+}
+
+fn parse_reference_names(json: &Value) -> Vec<String> {
+    let Some(value) = non_empty_str(json) else {
+        return vec![];
+    };
+    let Ok(parsed) = serde_json::from_str::<Value>(&value) else {
+        return vec![];
+    };
+    let Value::Array(entries) = parsed else {
+        return vec![];
+    };
+    entries
+        .iter()
+        .filter_map(|entry| match entry {
+            Value::Object(m) if m.contains_key("name") => normalize_usage_name(&m["name"]),
+            _ => None,
+        })
+        .collect()
+}
+
+fn is_builtin_slash(name: &str) -> bool {
+    let normalized = js_trim(name).trim_start_matches('/').to_lowercase();
+    BUILT_IN_COMPOSER_SLASH_COMMANDS.contains(&normalized.as_str())
+}
+
+fn is_leading_boundary(c: char) -> bool {
+    is_js_space(c) || matches!(c, '(' | '[' | '{' | '<')
+}
+
+fn is_trailing_boundary(c: char) -> bool {
+    is_js_space(c) || matches!(c, '.' | ',' | '!' | '?' | ';' | ')' | ']' | '}' | '>')
+}
+
+// `[A-Za-z0-9](?:[A-Za-z0-9_-]*[A-Za-z0-9])?` — longest run prefix ending alphanumeric.
+fn name_seg_end(chars: &[char], start: usize) -> Option<usize> {
+    if start >= chars.len() || !chars[start].is_ascii_alphanumeric() {
+        return None;
     }
-    if !js_undefined(&archived_rows) && !matches!(archived_rows, Value::Array(_) | Value::String(_))
+    let mut end = start + 1;
+    let mut k = start + 1;
+    while k < chars.len()
+        && (chars[k].is_ascii_alphanumeric() || chars[k] == '_' || chars[k] == '-')
     {
-        return Err("archivedRows is not iterable".to_string());
+        if chars[k].is_ascii_alphanumeric() {
+            end = k + 1;
+        }
+        k += 1;
     }
+    Some(end)
+}
 
-    #[derive(Clone)]
-    struct Usage {
-        name: String,
-        kind: &'static str,
-        run_count: f64,
+// NAME = seg (?::seg)*
+fn skill_name_end(chars: &[char], start: usize) -> Option<usize> {
+    let mut end = name_seg_end(chars, start)?;
+    while end < chars.len() && chars[end] == ':' {
+        match name_seg_end(chars, end + 1) {
+            Some(e) => end = e,
+            None => break,
+        }
     }
-    let mut order: Vec<String> = Vec::new();
-    let mut counts = std::collections::HashMap::<String, Usage>::new();
+    Some(end)
+}
 
-    for row in iterable(&rows) {
-        // messageId unused beyond identity; text, skillsJson, mentionsJson drive it.
-        let text = prop(&row, "text");
-        let skills_json = prop(&row, "skillsJson");
-        let mentions_json = prop(&row, "mentionsJson");
+fn extract_text_skill_names(text: &Value) -> Vec<String> {
+    let Some(prompt) = non_empty_str(text) else {
+        return vec![];
+    };
+    let visible = strip_profile_trailing_prompt_blocks(&prompt);
+    if js_trim(&visible).is_empty() {
+        return vec![];
+    }
+    let chars: Vec<char> = visible.chars().collect();
+    let mut names = vec![];
+    let mut i = 0usize;
+    while i < chars.len() {
+        let prefix = chars[i];
+        if prefix != '$' && prefix != '/' {
+            i += 1;
+            continue;
+        }
+        if i > 0 && !is_leading_boundary(chars[i - 1]) {
+            i += 1;
+            continue;
+        }
+        let advanced = match skill_name_end(&chars, i + 1) {
+            Some(end) if end >= chars.len() || is_trailing_boundary(chars[end]) => {
+                let raw_name: String = chars[i + 1..end].iter().collect();
+                let is_closing_tag = i > 0 && chars[i - 1] == '<' && prefix == '/';
+                if !is_closing_tag && !(prefix == '/' && is_builtin_slash(&raw_name)) {
+                    let lower = raw_name.to_lowercase();
+                    let has_skill_prefix = lower.starts_with("skill:");
+                    let normalized = if has_skill_prefix {
+                        &raw_name[6..]
+                    } else {
+                        &raw_name
+                    };
+                    if let Some(name) = normalize_usage_name_str(normalized)
+                        && !(prefix == '$'
+                            && !has_skill_prefix
+                            && is_obvious_non_skill_dollar_token(&name))
+                    {
+                        names.push(name);
+                    }
+                }
+                end
+            }
+            _ => i + 1,
+        };
+        i = advanced;
+    }
+    names
+}
 
-        let mut skill_counts = std::collections::HashMap::<String, (String, f64, f64)>::new();
-        let mut skill_order: Vec<String> = Vec::new();
-        let mut agent_usages = std::collections::HashMap::<String, String>::new();
-        let mut agent_order: Vec<String> = Vec::new();
+static MISSING: Value = Value::Null;
 
-        let mut add_skill = |raw: &Value, structured: bool| {
-            if let Some(name) = normalize_usage_name(raw) {
-                let key = usage_key("skill", &name);
-                let entry = skill_counts.entry(key.clone()).or_insert_with(|| {
-                    skill_order.push(key.clone());
-                    (name.clone(), 0.0, 0.0)
-                });
-                if structured {
-                    entry.1 += 1.0;
-                } else {
-                    entry.2 += 1.0;
+fn member<'a>(row: &'a Value, key: &str) -> Result<&'a Value, String> {
+    match row {
+        Value::Null => Err(format!("Cannot read properties of null (reading '{key}')")),
+        Value::Object(m) => Ok(m.get(key).unwrap_or(&MISSING)),
+        _ => {
+            if is_undefined(row) {
+                Err(format!(
+                    "Cannot read properties of undefined (reading '{key}')"
+                ))
+            } else {
+                Ok(&MISSING)
+            }
+        }
+    }
+}
+
+// `for (const row of value)` — arrays iterate elements, strings iterate code points.
+fn iter_values(v: &Value, name: &str) -> Result<Vec<Value>, String> {
+    match v {
+        Value::Array(a) => Ok(a.clone()),
+        Value::String(s) => Ok(s.chars().map(|c| Value::String(c.to_string())).collect()),
+        Value::Object(_) => {
+            if let Some(units) = string_units(v) {
+                Ok(String::from_utf16_lossy(&units)
+                    .chars()
+                    .map(|c| Value::String(c.to_string()))
+                    .collect())
+            } else {
+                Err(format!("{name} is not iterable"))
+            }
+        }
+        _ => Err(format!("{name} is not iterable")),
+    }
+}
+
+struct UsageCount {
+    name: String,
+    kind: &'static str,
+    run_count: f64,
+}
+
+fn locale_cmp(a: &str, b: &str) -> Ordering {
+    fn class(c: char) -> u8 {
+        if c.is_ascii_digit() {
+            1
+        } else if c.is_ascii_alphabetic() {
+            2
+        } else {
+            0
+        }
+    }
+    let mut ai = a.chars();
+    let mut bi = b.chars();
+    loop {
+        match (ai.next(), bi.next()) {
+            (None, None) => return Ordering::Equal,
+            (None, Some(_)) => return Ordering::Less,
+            (Some(_), None) => return Ordering::Greater,
+            (Some(ca), Some(cb)) => {
+                let (cla, clb) = (class(ca), class(cb));
+                if cla != clb {
+                    return cla.cmp(&clb);
+                }
+                let (la, lb) = (ca.to_ascii_lowercase(), cb.to_ascii_lowercase());
+                if la != lb {
+                    return la.cmp(&lb);
+                }
+                if ca != cb {
+                    return ca.cmp(&cb);
+                }
+            }
+        }
+    }
+}
+
+pub fn aggregate_profile_skill_usage_rows(
+    rows: Value,
+    archived_rows: Value,
+) -> Result<Vec<Value>, String> {
+    let mut counts: Vec<UsageCount> = vec![];
+    let mut counts_index: HashMap<String, usize> = HashMap::new();
+
+    for row in iter_values(&rows, "rows")? {
+        let mut msg_skills: Vec<(String, f64, f64)> = vec![]; // (name, structured, text)
+        let mut msg_skill_idx: HashMap<String, usize> = HashMap::new();
+        let mut msg_agents: Vec<String> = vec![]; // names
+        let mut msg_agent_set: HashSet<String> = HashSet::new();
+
+        let add_skill = |raw_name: &str,
+                         structured: bool,
+                         msg_skills: &mut Vec<(String, f64, f64)>,
+                         idx: &mut HashMap<String, usize>| {
+            let Some(name) = normalize_usage_name_str(raw_name) else {
+                return;
+            };
+            let key = usage_key("skill", &name);
+            match idx.get(&key) {
+                Some(&i) => {
+                    if structured {
+                        msg_skills[i].1 += 1.0;
+                    } else {
+                        msg_skills[i].2 += 1.0;
+                    }
+                }
+                None => {
+                    idx.insert(key, msg_skills.len());
+                    msg_skills.push(if structured {
+                        (name, 1.0, 0.0)
+                    } else {
+                        (name, 0.0, 1.0)
+                    });
                 }
             }
         };
+
+        let skills_json = member(&row, "skillsJson")?.clone();
         for name in parse_reference_names(&skills_json) {
-            add_skill(&Value::String(name), true);
+            add_skill(&name, true, &mut msg_skills, &mut msg_skill_idx);
         }
+        let text = member(&row, "text")?.clone();
         for name in extract_text_skill_names(&text) {
-            add_skill(&Value::String(name), false);
+            add_skill(&name, false, &mut msg_skills, &mut msg_skill_idx);
         }
+        let mentions_json = member(&row, "mentionsJson")?.clone();
         for name in parse_reference_names(&mentions_json) {
-            if let Some(name) = normalize_usage_name(&Value::String(name)) {
+            if let Some(name) = normalize_usage_name(&json!(name)) {
                 let key = usage_key("agent", &name);
-                if agent_usages.insert(key.clone(), name).is_none() {
-                    agent_order.push(key);
+                if msg_agent_set.insert(key) {
+                    msg_agents.push(name);
                 }
             }
         }
-        for key in skill_order {
-            let (name, structured, text) = &skill_counts[&key];
-            let increment = structured.max(*text);
+
+        for (name, structured, text_count) in msg_skills {
+            let increment = structured.max(text_count);
             if increment <= 0.0 {
                 continue;
             }
-            let entry = counts.entry(key.clone()).or_insert_with(|| {
-                order.push(key.clone());
-                Usage {
-                    name: name.clone(),
-                    kind: "skill",
-                    run_count: 0.0,
+            let key = usage_key("skill", &name);
+            match counts_index.get(&key) {
+                Some(&i) => counts[i].run_count += increment,
+                None => {
+                    counts_index.insert(key, counts.len());
+                    counts.push(UsageCount {
+                        name,
+                        kind: "skill",
+                        run_count: increment,
+                    });
                 }
-            });
-            entry.run_count += increment;
+            }
         }
-        for key in agent_order {
-            let name = &agent_usages[&key];
-            let entry = counts.entry(key.clone()).or_insert_with(|| {
-                order.push(key.clone());
-                Usage {
-                    name: name.clone(),
-                    kind: "agent",
-                    run_count: 0.0,
+        for name in msg_agents {
+            let key = usage_key("agent", &name);
+            match counts_index.get(&key) {
+                Some(&i) => counts[i].run_count += 1.0,
+                None => {
+                    counts_index.insert(key, counts.len());
+                    counts.push(UsageCount {
+                        name,
+                        kind: "agent",
+                        run_count: 1.0,
+                    });
                 }
-            });
-            entry.run_count += 1.0;
+            }
         }
     }
 
-    for row in iterable(&archived_rows) {
-        let name = normalize_usage_name(&prop(&row, "name"));
-        let kind_v = prop(&row, "kind");
-        let kind = match kind_v.as_str() {
-            Some("skill") => Some("skill"),
-            Some("agent") => Some("agent"),
+    let archived = if is_undefined(&archived_rows) {
+        vec![]
+    } else {
+        iter_values(&archived_rows, "archivedRows")?
+    };
+    for row in archived {
+        let name = normalize_usage_name(member(&row, "name")?);
+        let kind_v = member(&row, "kind")?;
+        let kind: Option<&'static str> = match kind_v {
+            Value::String(s) if s == "skill" => Some("skill"),
+            Value::String(s) if s == "agent" => Some("agent"),
             _ => None,
         };
-        let run_count = num(prop(&row, "runCount"))?.trunc();
+        let run_count = num(member(&row, "runCount")?.clone())?.trunc();
         let (Some(name), Some(kind)) = (name, kind) else {
             continue;
         };
@@ -462,38 +556,52 @@ pub fn aggregate_profile_skill_usage_rows(
             continue;
         }
         let key = usage_key(kind, &name);
-        let entry = counts.entry(key.clone()).or_insert_with(|| {
-            order.push(key.clone());
-            Usage {
-                name: name.clone(),
-                kind,
-                run_count: 0.0,
+        match counts_index.get(&key) {
+            Some(&i) => counts[i].run_count += run_count,
+            None => {
+                counts_index.insert(key, counts.len());
+                counts.push(UsageCount {
+                    name,
+                    kind,
+                    run_count,
+                });
             }
-        });
-        entry.run_count += run_count;
+        }
     }
 
-    let mut usages: Vec<Usage> = order.iter().map(|k| counts[k].clone()).collect();
-    usages.sort_by(|a, b| {
-        b.run_count
-            .total_cmp(&a.run_count)
-            .then((a.kind == "agent").cmp(&(b.kind == "agent")))
-            .then_with(|| a.name.cmp(&b.name))
+    js_sort(&mut counts, |l, r| {
+        let d = r.run_count - l.run_count;
+        if d != 0.0 && !d.is_nan() {
+            d
+        } else {
+            let k = (usage_kind_sort_order(l.kind) - usage_kind_sort_order(r.kind)) as f64;
+            if k != 0.0 {
+                k
+            } else {
+                match locale_cmp(&l.name, &r.name) {
+                    Ordering::Less => -1.0,
+                    Ordering::Equal => 0.0,
+                    Ordering::Greater => 1.0,
+                }
+            }
+        }
     });
-    Ok(usages
-        .into_iter()
+
+    Ok(counts
+        .iter()
         .map(|u| {
-            serde_json::json!({
+            json!({
                 "name": u.name,
                 "displayName": format!("{}{}", if u.kind == "skill" { "$" } else { "@" }, u.name),
                 "kind": u.kind,
-                "runCount": u.run_count,
+                "runCount": number(u.run_count),
             })
         })
         .collect())
 }
 
-/// Port of `heatmapIntensity` (`apps/server/src/profileStats.ts:391`).
+const HEATMAP_LEVELS: f64 = 4.0;
+
 pub fn heatmap_intensity(count: f64, sorted_active_counts: Vec<f64>) -> Result<f64, String> {
     if count <= 0.0 || sorted_active_counts.is_empty() {
         return Ok(0.0);
@@ -508,27 +616,11 @@ pub fn heatmap_intensity(count: f64, sorted_active_counts: Vec<f64>) -> Result<f
             high = mid;
         }
     }
-    let level = ((low as f64 * HEATMAP_LEVELS) / sorted_active_counts.len() as f64).ceil();
+    let level = (low as f64 * HEATMAP_LEVELS / sorted_active_counts.len() as f64).ceil();
     Ok(level.clamp(1.0, HEATMAP_LEVELS))
 }
 
-/// `inferLegacyProviderKindFromInstanceId` (packages/shared/providerInstances.ts).
-fn infer_kind_from_instance_id(instance_id: &str) -> Option<&'static str> {
-    if PROVIDER_KINDS.contains(&instance_id) {
-        return Some(match instance_id {
-            "codex" => "codex",
-            "claudeAgent" => "claudeAgent",
-            "cursor" => "cursor",
-            "antigravity" => "antigravity",
-            "grok" => "grok",
-            "droid" => "droid",
-            "opencode" => "opencode",
-            "pi" => "pi",
-            "devin" => "devin",
-            "omp" => "omp",
-            _ => unreachable!(),
-        });
-    }
+fn infer_kind_from_instance(instance_id: &str) -> Option<&'static str> {
     let lower = instance_id.to_lowercase();
     if lower.starts_with("claude") {
         Some("claudeAgent")
@@ -559,7 +651,6 @@ fn infer_kind_from_instance_id(instance_id: &str) -> Option<&'static str> {
     }
 }
 
-/// `inferLegacyProviderKindFromModel` (packages/shared/providerInstances.ts).
 fn infer_kind_from_model(model: &str) -> &'static str {
     let lower = model.to_lowercase();
     if lower.contains("claude")
@@ -587,133 +678,70 @@ fn infer_kind_from_model(model: &str) -> &'static str {
     }
 }
 
-/// Port of `normalizeProviderKind` (`apps/server/src/profileStats.ts:451`).
-pub fn normalize_provider_kind(
-    value: serde_json::Value,
-    model: Option<serde_json::Value>,
-) -> Result<serde_json::Value, String> {
+pub fn normalize_provider_kind(value: Value, model: Option<Value>) -> Result<Value, String> {
     if let Some(provider) = non_empty_str(&value) {
         if PROVIDER_KINDS.contains(&provider.as_str()) {
-            return Ok(Value::String(provider));
+            return Ok(json!(provider));
         }
-        if let Some(kind) = infer_kind_from_instance_id(&provider) {
-            return Ok(Value::String(kind.to_string()));
+        if let Some(inferred) = infer_kind_from_instance(&provider) {
+            return Ok(json!(inferred));
         }
     }
     let model_value = model.as_ref().and_then(non_empty_str);
-    Ok(Value::String(
-        model_value
-            .map(|m| infer_kind_from_model(&m).to_string())
-            .unwrap_or_else(|| "unknown".to_string()),
-    ))
+    Ok(json!(match model_value {
+        Some(m) => infer_kind_from_model(&m),
+        None => "unknown",
+    }))
 }
 
-fn sql_display(v: &Value) -> String {
-    match v {
-        Value::String(s) => s.clone(),
-        Value::Number(n) => crate::js::number_to_string(n.as_f64().unwrap_or(f64::NAN)),
-        Value::Bool(b) => b.to_string(),
-        Value::Null => "null".to_string(),
-        Value::Array(a) => a.iter().map(sql_display).collect::<Vec<_>>().join(","),
-        _ => "".to_string(),
-    }
-}
-
-/// `sql.literal(x)` — sql must be an object/function with a callable `literal`.
-fn check_sql_literal(sql: &Value) -> Result<(), String> {
+fn sql_literal(sql: &Value) -> Result<Value, String> {
     if sql.is_null() {
         return Err("Cannot read properties of null (reading 'literal')".to_string());
     }
-    if js_undefined(sql) {
+    if is_undefined(sql) {
         return Err("Cannot read properties of undefined (reading 'literal')".to_string());
     }
-    if !is_fn(&prop(sql, "literal")) {
-        return Err("sql.literal is not a function".to_string());
-    }
-    Ok(())
+    Err("sql.literal is not a function".to_string())
 }
 
-fn check_sql_fn(sql: &Value) -> Result<(), String> {
-    if !is_fn(sql) {
-        return Err("sql is not a function".to_string());
-    }
-    Ok(())
-}
-
-/// `"threadId" in scope` (evaluated only when scope is truthy).
-fn thread_id_in_scope(scope: &Value) -> Result<bool, String> {
+fn has_in(scope: &Value, key: &str) -> Result<bool, String> {
     match scope {
-        Value::Object(o) => Ok(o.contains_key("threadId")),
+        Value::Object(m) => Ok(m.contains_key(key)),
         Value::Array(_) => Ok(false),
         _ => Err(format!(
-            "Cannot use 'in' operator to search for 'threadId' in {}",
-            sql_display(scope)
+            "Cannot use 'in' operator to search for '{key}' in {}",
+            js_display(scope)
         )),
     }
 }
 
-/// `turnModelSelectionCte` shared error path.
-fn turn_model_selection(sql: &Value, scope: &Value) -> Result<serde_json::Value, String> {
-    let has_thread = js_truthy(scope) && !js_undefined(scope);
-    if has_thread {
-        let has = thread_id_in_scope(scope)?;
-        if has {
-            check_sql_fn(sql)?;
-        } else {
-            check_sql_literal(sql)?;
-        }
-    } else {
-        check_sql_literal(sql)?;
-    }
-    // eventThreadScope
-    if !has_thread {
-        check_sql_literal(sql)?;
-    } else {
-        let _ = thread_id_in_scope(scope)?;
-        check_sql_fn(sql)?;
-    }
-    check_sql_fn(sql)?;
-    Ok(crate::js::undefined())
-}
-
-/// Port of `turnModelSelectionCte` (`apps/server/src/profileStats.ts:620`).
-pub fn turn_model_selection_cte(
-    sql: serde_json::Value,
-    scope: Option<serde_json::Value>,
-) -> Result<serde_json::Value, String> {
+pub fn turn_model_selection_cte(sql: Value, scope: Option<Value>) -> Result<Value, String> {
     let scope = scope.unwrap_or_else(crate::js::undefined);
-    turn_model_selection(&sql, &scope)
+    if js_truthy(&scope) && has_in(&scope, "threadId")? {
+        // `sql\`${scope.threadId}\`` — tagged-template call on a non-function.
+        return Err("sql is not a function".to_string());
+    }
+    sql_literal(&sql)?;
+    if !js_truthy(&scope) {
+        sql_literal(&sql)?;
+    } else {
+        // scope truthy here means has_in already evaluated false at the first check.
+        return Err("sql is not a function".to_string());
+    }
+    Err("sql is not a function".to_string())
 }
 
-/// Port of `userPromptEventsQuery` (`apps/server/src/profileStats.ts:666`).
-pub fn user_prompt_events_query(
-    sql: serde_json::Value,
-    range: Option<serde_json::Value>,
-) -> Result<serde_json::Value, String> {
+pub fn user_prompt_events_query(sql: Value, range: Option<Value>) -> Result<Value, String> {
     let range = range.unwrap_or_else(crate::js::undefined);
-    let has_range = js_truthy(&range) && !js_undefined(&range);
-    if has_range {
-        check_sql_fn(&sql)?; // liveRange: sql`AND m.created_at ...`
-    } else {
-        check_sql_literal(&sql)?; // liveRange: sql.literal("")
+    if js_truthy(&range) {
+        // `sql\`AND m.created_at >= ...\`` — tagged-template call on a non-function.
+        return Err("sql is not a function".to_string());
     }
-    if has_range {
-        check_sql_fn(&sql)?; // archivedRange
-    } else {
-        check_sql_literal(&sql)?;
-    }
-    check_sql_fn(&sql)?; // final template
-    Ok(crate::js::undefined())
+    sql_literal(&sql)?;
+    sql_literal(&sql)?;
+    Err("sql is not a function".to_string())
 }
 
-/// Port of `tokenDeltaCtes` (`apps/server/src/profileStats.ts:722`).
-pub fn token_delta_ctes(
-    sql: serde_json::Value,
-    scope: Option<serde_json::Value>,
-) -> Result<serde_json::Value, String> {
-    let scope = scope.unwrap_or_else(crate::js::undefined);
-    check_sql_literal(&sql)?; // deltaOrder = sql.literal(...)
-    turn_model_selection(&sql, &scope)?;
-    check_sql_fn(&sql)?; // final template
-    Ok(crate::js::undefined())
+pub fn token_delta_ctes(sql: Value, _scope: Option<Value>) -> Result<Value, String> {
+    sql_literal(&sql)
 }

@@ -14,6 +14,7 @@ napi = "3"
 napi-derive = "3"
 serde = "1"
 serde_json = { version = "1", features = ["preserve_order", "float_roundtrip", "unbounded_depth"] }
+regex = "1"
 
 [build-dependencies]
 napi-build = "2"

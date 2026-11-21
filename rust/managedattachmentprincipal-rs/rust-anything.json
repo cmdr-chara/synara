@@ -1,0 +1,37 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/managedAttachmentPrincipal.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "managedattachmentprincipal-rs",
+  "exports": [
+    {
+      "name": "attachmentPrincipalForSession",
+      "file": "apps/server/src/managedAttachmentPrincipal.ts",
+      "line": 24,
+      "params": [
+        {
+          "name": "sessionId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| { readonly ownerKind: \"session\"; readonly ownerId: string }\n  | { readonly ownerKind: \"local-loopback\"; readonly ownerId: \"local-loopback\" })",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "bindRemoteAttachmentSession",
+      "file": "apps/server/src/managedAttachmentPrincipal.ts",
+      "line": 31,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

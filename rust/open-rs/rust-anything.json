@@ -1,0 +1,67 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/open.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "open-rs",
+  "exports": [
+    {
+      "name": "resolveAvailableEditors",
+      "file": "apps/server/src/open.ts",
+      "line": 290,
+      "params": [
+        {
+          "name": "platform",
+          "ts_type": "NodeJS.Platform",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "env",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<typeof typeof typeof typeof EditorId.Type.Type.Type.Type>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "launchDetached",
+      "file": "apps/server/src/open.ts",
+      "line": 449,
+      "params": [
+        {
+          "name": "launch",
+          "ts_type": "EditorLaunch",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "OpenError",
+      "file": "apps/server/src/open.ts",
+      "line": 32,
+      "reason": "class: extends another class"
+    },
+    {
+      "name": "Open",
+      "file": "apps/server/src/open.ts",
+      "line": 353,
+      "reason": "class: extends another class"
+    }
+  ]
+}

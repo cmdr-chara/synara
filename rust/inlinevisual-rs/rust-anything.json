@@ -1,0 +1,144 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/inlineVisual.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "inlinevisual-rs",
+  "exports": [
+    {
+      "name": "clampInlineVisualHeight",
+      "file": "packages/shared/src/inlineVisual.ts",
+      "line": 65,
+      "params": [
+        {
+          "name": "height",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readInlineVisualFrameMessage",
+      "file": "packages/shared/src/inlineVisual.ts",
+      "line": 94,
+      "params": [
+        {
+          "name": "data",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| { readonly type: \"size\"; readonly height: number }\n  | { readonly type: \"open-link\"; readonly id: string | number; readonly url: string }\n  | { readonly type: \"scroll-intent\"; readonly upward: boolean }\n  | { readonly type: \"stopped\" }) | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "inlineVisualLinkResult",
+      "file": "packages/shared/src/inlineVisual.ts",
+      "line": 134,
+      "params": [
+        {
+          "name": "id",
+          "ts_type": "string | number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "inlineVisualThemeMessage",
+      "file": "packages/shared/src/inlineVisual.ts",
+      "line": 139,
+      "params": [
+        {
+          "name": "theme",
+          "ts_type": "InlineVisualTheme",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildInlineVisualDocument",
+      "file": "packages/shared/src/inlineVisual.ts",
+      "line": 219,
+      "params": [
+        {
+          "name": "html",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "theme",
+          "ts_type": "InlineVisualTheme",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readInlineVisualEmbedId",
+      "file": "packages/shared/src/inlineVisual.ts",
+      "line": 232,
+      "params": [
+        {
+          "name": "body",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readInlineVisualEmbedIds",
+      "file": "packages/shared/src/inlineVisual.ts",
+      "line": 245,
+      "params": [
+        {
+          "name": "text",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

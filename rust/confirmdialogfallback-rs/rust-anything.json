@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/confirmDialogFallback.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "confirmdialogfallback-rs",
+  "exports": [
+    {
+      "name": "showConfirmDialogFallback",
+      "file": "apps/web/src/confirmDialogFallback.ts",
+      "line": 9,
+      "params": [
+        {
+          "name": "message",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<boolean>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

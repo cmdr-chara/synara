@@ -1,0 +1,29 @@
+{
+  "unit": "apps/web/src/confirmDialogFallback.ts",
+  "files": 1,
+  "fingerprint": "a6abb6cdad546809",
+  "coverage": {
+    "lines": 185,
+    "reached": 115,
+    "files": [
+      {
+        "file": "apps/web/src/confirmDialogFallback.ts",
+        "lines": 91,
+        "reached": 40,
+        "missed": "47-51, 53, 55-57, 59-65, 67-75, 77-78, 80-87, 89-94, 96, 98-101, 103-105, 107-108"
+      },
+      {
+        "file": "apps/web/src/lib/nativeSurfaceOcclusion.ts",
+        "lines": 30,
+        "reached": 11,
+        "missed": "12-16, 20-33"
+      },
+      {
+        "file": "apps/web/src/surfaceStyles.ts",
+        "lines": 64,
+        "reached": 64,
+        "missed": ""
+      }
+    ]
+  }
+}

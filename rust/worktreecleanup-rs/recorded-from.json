@@ -1,0 +1,17 @@
+{
+  "unit": "apps/web/src/worktreeCleanup.ts",
+  "files": 1,
+  "fingerprint": "b536e2469af98c23",
+  "coverage": {
+    "lines": 52,
+    "reached": 45,
+    "files": [
+      {
+        "file": "apps/web/src/worktreeCleanup.ts",
+        "lines": 52,
+        "reached": 45,
+        "missed": "8, 25-30"
+      }
+    ]
+  }
+}

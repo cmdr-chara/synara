@@ -1,0 +1,78 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/worktreeCleanup.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "worktreecleanup-rs",
+  "exports": [
+    {
+      "name": "getOrphanedWorktreePathForThread",
+      "file": "apps/web/src/worktreeCleanup.ts",
+      "line": 11,
+      "params": [
+        {
+          "name": "threads",
+          "ts_type": "readonly Thread[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "threadId",
+          "ts_type": "Thread[\"id\"]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isThreadAssociatedWithWorktree",
+      "file": "apps/web/src/worktreeCleanup.ts",
+      "line": 41,
+      "params": [
+        {
+          "name": "thread",
+          "ts_type": "({\n  worktreePath?: string | null | undefined;\n  associatedWorktreePath?: string | null | undefined;\n})",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "worktreePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "formatWorktreePathForDisplay",
+      "file": "apps/web/src/worktreeCleanup.ts",
+      "line": 51,
+      "params": [
+        {
+          "name": "worktreePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

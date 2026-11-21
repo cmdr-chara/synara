@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/codexTurnInput.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "codexturninput-rs",
+  "exports": [
+    {
+      "name": "buildCodexTurnInput",
+      "file": "apps/server/src/codexTurnInput.ts",
+      "line": 13,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly input?: string;\n  readonly attachments?: ReadonlyArray<(| { readonly type: \"image\"; readonly url: string }\n  | { readonly type: \"localImage\"; readonly path: string })>;\n  readonly skills?: ReadonlyArray<typeof typeof typeof typeof ProviderSkillReference.Type.Type.Type.Type>;\n  readonly mentions?: ReadonlyArray<typeof typeof typeof typeof ProviderMentionReference.Type.Type.Type.Type>;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| { readonly type: \"text\"; readonly text: string; readonly text_elements: [] }\n  | (| { readonly type: \"image\"; readonly url: string }\n  | { readonly type: \"localImage\"; readonly path: string })\n  | { readonly type: \"skill\"; readonly name: string; readonly path: string }\n  | { readonly type: \"mention\"; readonly name: string; readonly path: string })[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

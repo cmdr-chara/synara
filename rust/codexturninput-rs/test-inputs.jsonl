@@ -1,0 +1,4 @@
+{"fn":"buildCodexTurnInput","args":[{"input":"Review this","attachments":[{"type":"image","url":"data:image/png;base64,abc"}],"skills":[{"name":"check-code","path":"/skills/check-code/SKILL.md"}],"mentions":[{"name":"AGENTS.md","path":"/repo/AGENTS.md"}]}]}
+{"fn":"buildCodexTurnInput","args":[{"input":"   "}]}
+{"fn":"buildCodexTurnInput","args":[{"input":""}]}
+{"fn":"buildCodexTurnInput","args":[{"attachments":[{"type":"localImage","path":"/tmp/screenshot.png"}]}]}

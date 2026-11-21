@@ -1,0 +1,17 @@
+{
+  "unit": "apps/server/src/codexTurnInput.ts",
+  "files": 1,
+  "fingerprint": "f9185a073927bde6",
+  "coverage": {
+    "lines": 42,
+    "reached": 42,
+    "files": [
+      {
+        "file": "apps/server/src/codexTurnInput.ts",
+        "lines": 42,
+        "reached": 42,
+        "missed": ""
+      }
+    ]
+  }
+}

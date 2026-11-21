@@ -1,0 +1,13 @@
+{"fn":"buildCodexTurnInput","args":[null],"error":"Cannot read properties of null (reading 'input')"}
+{"fn":"buildCodexTurnInput","args":[{"a":"b"}],"ok":[]}
+{"fn":"buildCodexTurnInput","args":["x"],"ok":[]}
+{"fn":"buildCodexTurnInput","args":[true],"ok":[]}
+{"fn":"buildCodexTurnInput","args":[{"a":{"b":"c"}}],"ok":[]}
+{"fn":"buildCodexTurnInput","args":[[]],"ok":[]}
+{"fn":"buildCodexTurnInput","args":[0],"ok":[]}
+{"fn":"buildCodexTurnInput","args":[["a",1]],"ok":[]}
+{"fn":"buildCodexTurnInput","args":[{}],"ok":[]}
+{"fn":"buildCodexTurnInput","args":[{"input":"Review this","attachments":[{"type":"image","url":"data:image/png;base64,abc"}],"skills":[{"name":"check-code","path":"/skills/check-code/SKILL.md"}],"mentions":[{"name":"AGENTS.md","path":"/repo/AGENTS.md"}]}],"ok":[{"type":"text","text":"Review this","text_elements":[]},{"type":"image","url":"data:image/png;base64,abc"},{"type":"skill","name":"check-code","path":"/skills/check-code/SKILL.md"},{"type":"mention","name":"AGENTS.md","path":"/repo/AGENTS.md"}]}
+{"fn":"buildCodexTurnInput","args":[{"input":"   "}],"ok":[{"type":"text","text":"   ","text_elements":[]}]}
+{"fn":"buildCodexTurnInput","args":[{"input":""}],"ok":[]}
+{"fn":"buildCodexTurnInput","args":[{"attachments":[{"type":"localImage","path":"/tmp/screenshot.png"}]}],"ok":[{"type":"localImage","path":"/tmp/screenshot.png"}]}

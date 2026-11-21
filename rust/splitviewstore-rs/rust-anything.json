@@ -1,0 +1,108 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/splitViewStore.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "splitviewstore-rs",
+  "exports": [
+    {
+      "name": "resolveSplitViewFocusedThreadId",
+      "file": "apps/web/src/splitViewStore.ts",
+      "line": 318,
+      "params": [
+        {
+          "name": "splitView",
+          "ts_type": "SplitView",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveSplitViewFocusedPaneThreadId",
+      "file": "apps/web/src/splitViewStore.ts",
+      "line": 330,
+      "params": [
+        {
+          "name": "splitView",
+          "ts_type": "SplitView",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveSplitViewThreadIds",
+      "file": "apps/web/src/splitViewStore.ts",
+      "line": 334,
+      "params": [
+        {
+          "name": "splitView",
+          "ts_type": "SplitView",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveSplitViewPaneIdForThread",
+      "file": "apps/web/src/splitViewStore.ts",
+      "line": 341,
+      "params": [
+        {
+          "name": "splitView",
+          "ts_type": "SplitView",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "selectSplitView",
+      "file": "apps/web/src/splitViewStore.ts",
+      "line": 352,
+      "params": [
+        {
+          "name": "splitViewId",
+          "ts_type": "string | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,178 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/windowsTaskbarIcon.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "windowstaskbaricon-rs",
+  "exports": [
+    {
+      "name": "windowsShellIconCachePath",
+      "file": "apps/desktop/src/windowsTaskbarIcon.ts",
+      "line": 34,
+      "params": [
+        {
+          "name": "cacheDirectory",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "iconKey",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "windowsShellIconContentKey",
+      "file": "apps/desktop/src/windowsTaskbarIcon.ts",
+      "line": 38,
+      "params": [
+        {
+          "name": "iconKey",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "ico",
+          "ts_type": "Buffer",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveWindowsShellIconCacheDirectory",
+      "file": "apps/desktop/src/windowsTaskbarIcon.ts",
+      "line": 43,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly executablePath: string;\n  readonly fallbackDirectory: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "nextWindowsShellIconCacheKey",
+      "file": "apps/desktop/src/windowsTaskbarIcon.ts",
+      "line": 59,
+      "params": [
+        {
+          "name": "iconKey",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resetWindowsShellIconGenerationForTests",
+      "file": "apps/desktop/src/windowsTaskbarIcon.ts",
+      "line": 67,
+      "params": [],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isWindowsTaskbarIconRefreshPending",
+      "file": "apps/desktop/src/windowsTaskbarIcon.ts",
+      "line": 72,
+      "params": [],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "clearWindowsTaskbarIconRefresh",
+      "file": "apps/desktop/src/windowsTaskbarIcon.ts",
+      "line": 154,
+      "params": [],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "windowsTaskbarIconPropertyUpdates",
+      "file": "apps/desktop/src/windowsTaskbarIcon.ts",
+      "line": 160,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly iconPath: string;\n  readonly identity: WindowsTaskbarIconIdentity;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{\n  readonly iconOnly: {\n    readonly appIconPath: string;\n    readonly appIconIndex: number;\n    readonly relaunchCommand: string;\n    readonly relaunchDisplayName: string;\n  };\n  readonly withAppId: {\n    readonly appId: string;\n    readonly appIconPath: string;\n    readonly appIconIndex: number;\n    readonly relaunchCommand: string;\n    readonly relaunchDisplayName: string;\n  };\n}",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "applyWindowsTaskbarIcon",
+      "file": "apps/desktop/src/windowsTaskbarIcon.ts",
+      "line": 193,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "ApplyWindowsTaskbarIconInput",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "collectWindowsShortcutPaths",
+      "file": "apps/desktop/src/windowsTaskbarIcon.ts",
+      "line": 83,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "syncWindowsShortcutIcons",
+      "file": "apps/desktop/src/windowsTaskbarIcon.ts",
+      "line": 119,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

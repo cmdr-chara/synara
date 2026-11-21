@@ -1,0 +1,17 @@
+{
+  "unit": "apps/desktop/src/windowsTaskbarIcon.ts",
+  "files": 1,
+  "fingerprint": "9a65d7d868ad6ae5",
+  "coverage": {
+    "lines": 217,
+    "reached": 106,
+    "files": [
+      {
+        "file": "apps/desktop/src/windowsTaskbarIcon.ts",
+        "lines": 217,
+        "reached": 106,
+        "missed": "51-52, 84-117, 120-152, 156-157, 197-199, 201, 204-221, 223-240"
+      }
+    ]
+  }
+}

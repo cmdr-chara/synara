@@ -1,0 +1,1424 @@
+{"fn":"matchesDesktopShutdownToken","args":["é","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":[".leading","  padded  "],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a😀b😀c","﻿bom"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ΣΊΣΥΦΟΣa:b:c","B:"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["abc  padded  ","a.b.c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["日本語のテキストline1\nline2","  padded  "],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":[".leading","ab"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["s","src/a/b.ts"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["bom","﻿bom"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["キスト","日本語のテキスト"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ünïcödéHELLO","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["😀","a.b.c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["key_name-1","ns:key.pathtab\tseparated"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["hello world","trailing."],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a..b","straße"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["straße","Hello World"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["  padded  ","abc"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a","a"],"ok":true}
+{"fn":"matchesDesktopShutdownToken","args":[":","HELLO"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["rc/a/b.ts","a:b:csrc/a/b.ts"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ΣΊΣΥΦΟΣ","İstanbul"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["hello world","HELLO"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["b:","a:b:c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ünïcödésrc/a/b.ts",".leading"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["trailing.","tab\tseparatedİstanbul"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a..b","."],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a.b.c","./x/**/*.jsonHELLO"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a","﻿bom"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a:b:c","key_name-1"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["  padded  ","a..b"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["{name} has {count} items","./x/**/*.json"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["  padded  ","ns:key.path"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ünïcödé","hello world:"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["b","a..b"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["S","src/a/b.ts😀"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["hello worlda:b:c","tab\tseparated"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ünïcödé","é"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["HELLO","line1\nline2"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ab","AB"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["./x/**/*.json","n"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["straßeabc","abc"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["﻿bom","tab\tseparated"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["x/**/*.json","﻿bom./x/**/*.json"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["日本語のテキスト","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["aemoji 👍🏽 mix","oji 👍"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["  padd","  padded  "],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["hello","ns:key.path"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["key_name-1","﻿bom"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["iling","trailing."],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["straße","emoji 👍🏽 mix"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ns:key.path","abc"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["😀","a..b"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":[".jso","./x/**/*.json"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a😀b😀c","straße"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["﻿bom",".leading:"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["lo Wor","Hello World"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["trailing.","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["l","Hello Worldhello"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["src/a/b.ts","a.b.c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a..b","abc"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["emoji 👍🏽 mix","tab\tseparated"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["src/a/b.ts","😀"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["","hello world"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":[".leading﻿bom","aİstanbul"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["emoji 👍🏽 mix","ns:key.path"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["straße","st"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["  padded  ",".leadingHello World"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a","abc"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["y.","ns:key.path"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a😀b😀c","c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ab","日本語のテキスト"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ab",":"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["Hello World","trailing."],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["tab\tseparated","hello world"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["﻿bom","a:b:c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a😀b😀c",":"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["trailing.hello world",":straße"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["tab\tseparated","b\tseparated"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["👍🏽 mix","emoji 👍🏽 mix"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["aΣΊΣΥΦΟΣ","😀"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a..bé","İstanbul"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["B","a.b.c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ünïcödéa..b","HELLO"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ΣΊΣΥΦΟΣemoji 👍🏽 mix",".leading"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a","  padded  "],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["Hello Worldtab\tseparated","hello"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["emoji 👍🏽 mix:",":"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["hel","hello"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a..b","HELLO"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["abc","c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a..b","a:b:c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["tab\tseparated","Hello World"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["tab\tseparated","  padded  "],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["{name} has {count} items","helloab"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ab","b"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["hello world","hello"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ünïcödé","src/a/b.ts"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["A","a.b.c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":[":",":"],"ok":true}
+{"fn":"matchesDesktopShutdownToken","args":["İstanbul﻿bom","ab"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":[".leading","a"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["l","  padded  hello world"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["./x/**/*.json","./x/**/*.jso"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ΣΊΣΥΦΟΣ",".leading"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["trailing.","tab\tseparated"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ns:key.path","😀"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a","key_name-1"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["line1\nline2","  padded  "],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["trailing.","tab\tseparateda"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ra","straße"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["Hello World","OR"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":[" padded ","  padded  "],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["İstanbulhello world","İstanbul"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["trailing.ünïcödé","trailing.﻿bom"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["hello","é"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["éabc",":"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["tab\tseparated","İstanbul"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":[":a","﻿bom"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["😀","trailing."],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ns:key.path","s"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["line1\nline2","Hello World"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["HELLO","ünïcödéé"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["straße","a.b.c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["emoji 👍🏽 mix",":"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["hello","a:b:c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ΊΣΥΦΟΣ","ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["emoji 👍🏽 mix","key_name-1"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ab","trailing."],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a","emoji 👍🏽 mix"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["_name","key_name-1"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ΣΊΣΥΦΟΣ","ΣΊΣΥΦΟ"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","a:b:c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["abc","tab\tseparated"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["key_name-1abc","abc"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["./x/**/*.json","HELLOa.b.c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["İstanbul","ns:key.path"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a..b","hello world"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["src/a/b.ts","ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["","straße"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["日本語のテキスト","﻿bom"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ns:key.path","tab\tseparatedstraße"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a..b","trailing."],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["emoji 👍🏽 mixtab\tseparated","src/a/b.ts"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ünï","ünïcödé"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["HELLO","é"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["  padded  ","hello world"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["のテ","😀日本語のテキスト"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["c","İstanbula😀b😀c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["  padded  ",":"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["","  padded  key_name-1"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["日本語のテキスト","é"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["́a","éa:b:c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["日本語のテキストé","  padded  "],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a.b.c","B.C"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["",".leadingns:key.path"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["hello","o"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a:b:c","日本語のテキスト"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ns:key.path","a:b:c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["straße.leading","straße"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["rc/a/","src/a/b.ts"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ab","Hello World"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["",".leading"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a","ab"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a😀b😀c","hello"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ab","﻿bomline1\nline2"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["trailing.","  padded  "],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ns:key.path","hello world"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":[":","a😀b😀c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a.b.c","İstanbul"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["./x/**/*.json","line1\nline2"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["İstanbulline1\nline2","ns:key.path"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["p","  padded  "],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["😀","line1\nline2"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a:b:c","a:b:c"],"ok":true}
+{"fn":"matchesDesktopShutdownToken","args":["Hello Worldtab\tseparated","a"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["  padded  ","hello"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["abc","ns:key.pathünïcödé"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","é"],"ok":true}
+{"fn":"matchesDesktopShutdownToken","args":["a..b","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["line1\nline2","line1\nline2"],"ok":true}
+{"fn":"matchesDesktopShutdownToken","args":["HELLO",".leading"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ékey_name-1","straße"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ÏCÖDÉ","ünïcödé"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a..b😀","﻿bom"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["trailing.hello world","  padded  src/a/b.ts"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ns:key.path:","straße"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["İstanbul",":"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":[":","trailing."],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["./x/**/*.json","日本語のテキスト"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["abc","emoji 👍🏽 mix"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a","日本語のテキストa.b.c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["éa😀b😀c","日本語のテキスト"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a😀b😀c","emoji 👍🏽 mix"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ünïcödé","n"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["hello world","  padded  "],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["json","./x/**/*.json"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":[".leading","n"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["straße","line1\nline2"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["日本語のテキスト","abctab\tseparated"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a:b:c","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["héllo wörld","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["👍🏽 thumbs","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["日本語","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["İstanbul","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["straße","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ılık ırmak","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["👨‍👩‍👧 family","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a b","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ΣΊΣΥΦΟΣ","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a😀b","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["﻿bom","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a²b x½ y①","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["aⅠb Ⅻ","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a𐐀b 𝐀bc","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["कि ٣٤","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["Iı İi","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["K K k","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ſ s S","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["x‍y 👨‍👩‍👧","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a b c　d","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["١٢٣ ٤٥","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["𝟘𝟙 ²³","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["snake_case foo-bar o'neil","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ǅungla Ǆ","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["one\r\ntwo threefour","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["café café","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ΣΑΣ σας ς","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","héllo wörld"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","👍🏽 thumbs"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","日本語"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é",""],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","İstanbul"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","straße"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","ılık ırmak"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","👨‍👩‍👧 family"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","a b"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","a😀b"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","﻿bom"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","a²b x½ y①"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","aⅠb Ⅻ"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","a𐐀b 𝐀bc"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","कि ٣٤"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","Iı İi"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","K K k"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","ſ s S"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","x‍y 👨‍👩‍👧"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","a b c　d"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","١٢٣ ٤٥"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","𝟘𝟙 ²³"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","snake_case foo-bar o'neil"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","ǅungla Ǆ"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","one\r\ntwo threefour"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","café café"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","ΣΑΣ σας ς"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["日本語のテキスト"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["hello"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["abc"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["hello worldhello world"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[{"$undefined":true}],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[".leading.leading"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[":"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ns:key.path"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["trailing.Hello World"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["é"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["line1\nline2"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ns:key.pathhello"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["hello world"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ab"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["tab\tseparated"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["emoji 👍🏽 mix"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["./x/**/*.jsonİstanbul"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a😀b😀c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["./x/**/*.json"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["src/a/b.ts"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["straße"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ns:key.pathtab\tseparated"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["  padded  "],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["HELLO"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["aa"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[".leading"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["éns:key.path"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["trailing."],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["éhello world"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a.b.c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["İstanbul"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["straßetrailing."],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ünïcödé"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a..b"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["emoji 👍🏽 mixhello world"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["Hello World"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[".leadinga"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["﻿bom"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["😀"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[""],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["key_name-1hello world"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a😀b😀csrc/a/b.ts"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ns:key.pathab"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["line1\nline2line1\nline2"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["Hello Worldab"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["{name} has {count} items"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["abc{name} has {count} items"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["aba..b"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a:b:c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["./x/**/*.json日本語のテキスト"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a:"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["key_name-1"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["😀ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a..bhello world"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["key_name-1src/a/b.ts"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ΣΊΣΥΦΟΣabc"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["aHELLO"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["日本語のテキストemoji 👍🏽 mix"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["﻿boma:b:c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[":İstanbul"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["src/a/b.tsa:b:c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["emoji 👍🏽 mixline1\nline2"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ünïcödéns:key.path"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["trailing.😀"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["日本語のテキストstraße"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["HELLOünïcödé"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["emoji 👍🏽 mixa"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["hello worldabc"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ns:key.pathstraße"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["﻿bom﻿bom"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["straßeİstanbul"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["﻿bom😀"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["abcemoji 👍🏽 mix"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["line1\nline2日本語のテキスト"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["hellohello"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["abctrailing."],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a..btrailing."],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["tab\tseparatedHELLO"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a.b.ctab\tseparated"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a./x/**/*.json"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[":key_name-1"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a:b:cHELLO"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["HELLOline1\nline2"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["line1\nline2abc"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["İstanbulstraße"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["{name} has {count} itemskey_name-1"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[".leadingé"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["日本語のテキストabc"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["trailing..leading"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["key_name-1:"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["étrailing."],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a:b:ca..b"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a:b:ca.b.c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["trailing.é"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a:b:c😀"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[".leading:"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["é{name} has {count} items"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ns:key.pathünïcödé"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["key_name-1ns:key.path"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["İstanbulhello world"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["  padded  line1\nline2"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["tab\tseparateda"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[".leadinga.b.c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["{name} has {count} itemshello world"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["helloab"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["  padded  a.b.c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["line1\nline2{name} has {count} items"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["line1\nline2Hello World"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[":./x/**/*.json"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[":a:b:c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[":Hello World"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["trailing.a:b:c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["{name} has {count} items😀"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["Hello Worldsrc/a/b.ts"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["Hello Worldkey_name-1"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["line1\nline2a:b:c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["straße./x/**/*.json"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["Hello Worldhello"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a:b:csrc/a/b.ts"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a﻿bom"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ns:key.patha😀b😀c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["trailing.a..b"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a:b:cİstanbul"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["hellotab\tseparated"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["./x/**/*.jsona.b.c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["😀tab\tseparated"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["line1\nline2emoji 👍🏽 mix"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["emoji 👍🏽 mixΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["hello worldİstanbul"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["key_name-1emoji 👍🏽 mix"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["tab\tseparatedns:key.path"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a:b:c  padded  "],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["HELLOns:key.path"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["İstanbulabc"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["hello world.leading"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["😀.leading"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a.b.cHello World"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["hellostraße"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["./x/**/*.jsonemoji 👍🏽 mix"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["abHello World"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["日本語のテキスト😀"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a.b.cHELLO"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ΣΊΣΥΦΟΣsrc/a/b.ts"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a😀b😀ca.b.c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["hello worldemoji 👍🏽 mix"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["tab\tseparatedsrc/a/b.ts"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a😀b😀c.leading"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[".leading日本語のテキスト"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["abc😀"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a.b.cé"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["aba"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["trailing.ab"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["﻿bomkey_name-1"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["emoji 👍🏽 mixa:b:c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["hello﻿bom"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["{name} has {count} itemsns:key.path"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["hello worldab"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["abc:"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a😀b😀ca..b"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["aé"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["abcline1\nline2"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["straße  padded  "],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["日本語のテキストkey_name-1"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["trailing.a.b.c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["abc  padded  "],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["İstanbul日本語のテキスト"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["aba.b.c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ns:key.pathkey_name-1"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["  padded  ﻿bom"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["  padded  a:b:c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a:b:chello world"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["  padded  straße"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["😀ns:key.path"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["é  padded  "],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["éΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["hello worldünïcödé"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ahello"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["trailing.line1\nline2"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["straße:"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ünïcödésrc/a/b.ts"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["key_name-1hello"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["HELLOé"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[".leadingsrc/a/b.ts"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ünïcödé😀"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["src/a/b.tsabc"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["tab\tseparated﻿bom"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ΣΊΣΥΦΟΣ./x/**/*.json"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a.b.c﻿bom"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["hello{name} has {count} items"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["emoji 👍🏽 mix﻿bom"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["helloünïcödé"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["hello worldsrc/a/b.ts"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["😀😀"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ünïcödéa:b:c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ünïcödé./x/**/*.json"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ns:key.pathtrailing."],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a:b:cns:key.path"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["héllo wörld"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["👍🏽 thumbs"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["日本語"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ılık ırmak"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["👨‍👩‍👧 family"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a b"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a😀b"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a²b x½ y①"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["aⅠb Ⅻ"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a𐐀b 𝐀bc"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["कि ٣٤"],"ok":false}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":"ünïcödé","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":".leading","authorization":"😀"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":":ünïcödé","authorization":"a.b.c"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":"﻿bom","authorization":"straße"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":["a",1],"remoteAddress":null,"authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":"a:b:c","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":null,"authorization":"abc"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":{"$undefined":true},"authorization":"日本語のテキスト"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[null],"error":"Cannot read properties of null (reading 'config')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":"ns:key.path","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":":","authorization":"line1\nline2"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":null,"authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":null,"authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":null,"authorization":{"$undefined":true}}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":"trailing.emoji 👍🏽 mix","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{}],"error":"Cannot read properties of undefined (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":{"$undefined":true},"authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":["x"],"error":"Cannot read properties of undefined (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":null,"authorization":"a.b.c"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":"trailing.","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":{"$undefined":true},"authorization":{"$undefined":true}}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[[]],"error":"Cannot read properties of undefined (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":":","authorization":"日本語のテキスト"}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":{"$undefined":true},"authorization":"src/a/b.ts"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":"emoji 👍🏽 mix","authorization":"ΣΊΣΥΦΟΣ"}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":{"$undefined":true},"authorization":"hello"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":null,"authorization":"ünïcödé"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":{"$undefined":true},"authorization":".leading"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":"ΣΊΣΥΦΟΣ","authorization":"atrailing."}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":null,"authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[0],"error":"Cannot read properties of undefined (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":{"$undefined":true},"authorization":"é"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":null,"authorization":"line1\nline2😀"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":{"$undefined":true},"authorization":"tab\tseparated"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":"ns:key.path","authorization":{"$undefined":true}}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":":é","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":["a",1],"remoteAddress":{"$undefined":true},"authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":"a😀b😀cİstanbul","authorization":":"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":null,"authorization":"  padded  "}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":null,"authorization":"😀"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":"日本語のテキスト  padded  ","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":{"$undefined":true},"authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":"hello","authorization":{"$undefined":true}}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":null,"authorization":"日本語のテキスト"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":null,"authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":null,"authorization":"日本語のテキスト"}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":"trailing.emoji 👍🏽 mix","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":{"$undefined":true},"authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":{"$undefined":true},"authorization":"aa.b.c"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":"a😀b😀c","authorization":"abcline1\nline2"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":null,"authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":{"$undefined":true},"authorization":"./x/**/*.jsonemoji 👍🏽 mix"}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":null,"authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":{"$undefined":true},"authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":["a",1],"remoteAddress":"hello world","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":"  padded  ","authorization":{"$undefined":true}}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":"","authorization":"hello world"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":["a",1],"remoteAddress":"ΣΊΣΥΦΟΣ","authorization":"tab\tseparated"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":{"$undefined":true},"authorization":"😀emoji 👍🏽 mix"}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":"line1\nline2","authorization":"hello world"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":"tab\tseparated","authorization":"ns:key.path"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":null,"authorization":"helloa😀b😀c"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":null,"authorization":":"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":["a",1],"remoteAddress":{"$undefined":true},"authorization":"a"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":{"$undefined":true},"authorization":"line1\nline2"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":null,"authorization":"straße"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":"ünïcödéa..b","authorization":"Hello Worldİstanbul"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":"  padded  ","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":null,"authorization":"key_name-1"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":"ab","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[true],"error":"Cannot read properties of undefined (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":null,"authorization":"abc"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":{"$undefined":true},"authorization":"line1\nline2"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":null,"authorization":"a..b"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":"😀","authorization":"tab\tseparatedİstanbul"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":{"$undefined":true},"authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":null,"authorization":":😀"}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":{"$undefined":true},"authorization":"ns:key.patha"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":{"$undefined":true},"authorization":"line1\nline2  padded  "}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":{"$undefined":true},"authorization":"😀"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":{"$undefined":true},"authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":{"$undefined":true},"authorization":"ns:key.path日本語のテキスト"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":"﻿bomtab\tseparated","authorization":"./x/**/*.json"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":{"$undefined":true},"authorization":"a"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":{"$undefined":true},"authorization":"./x/**/*.json"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":"hello world","authorization":"  padded  straße"}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":"abc","authorization":"HELLO"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":null,"authorization":"HELLO"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":"é","authorization":"hello"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":{"$undefined":true},"authorization":"emoji 👍🏽 mix"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":{"$undefined":true},"authorization":"line1\nline2"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":"hello","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":null,"authorization":"key_name-1"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":"{name} has {count} items","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":null,"authorization":"trailing."}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":null,"authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":"ΣΊΣΥΦΟΣ","authorization":"{name} has {count} items"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":{"$undefined":true},"authorization":"İstanbul"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":"﻿bom","authorization":"abc"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":{"$undefined":true},"authorization":"﻿bomtab\tseparated"}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":"Hello World./x/**/*.json","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":["a",1],"remoteAddress":{"$undefined":true},"authorization":"ns:key.path"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":"ünïcödé","authorization":{"$undefined":true}}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":"ns:key.path","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":":","authorization":".leading"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":{"$undefined":true},"authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":"ΣΊΣΥΦΟΣ","authorization":"HELLO"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":"hello world","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":"hello world","authorization":"Hello World"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":"ns:key.path","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":null,"authorization":""}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":{"$undefined":true},"authorization":"hello"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":"emoji 👍🏽 mix","authorization":"./x/**/*.jsona:b:c"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":null,"authorization":"﻿bom"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":"key_name-1","authorization":"abc"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":".leadingtab\tseparated","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":"😀","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":"ab","authorization":"a😀b😀c"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":"{name} has {count} items","authorization":".leading"}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":"Hello World","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":null,"authorization":"a"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":{"$undefined":true},"authorization":"./x/**/*.json﻿bom"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":"a.b.c./x/**/*.json","authorization":{"$undefined":true}}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":["a",1],"remoteAddress":null,"authorization":"trailing."}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":null,"authorization":"tab\tseparated"}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":null,"authorization":"./x/**/*.json"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":{"$undefined":true},"authorization":"./x/**/*.json"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":{"$undefined":true},"authorization":"ΣΊΣΥΦΟΣ"}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":{"$undefined":true},"authorization":"a😀b😀c"}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":"trailing.","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":"  padded  ","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":"İstanbul:","authorization":"hello world./x/**/*.json"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":{"$undefined":true},"authorization":"emoji 👍🏽 mixa.b.c"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":"line1\nline2","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":null,"authorization":"ns:key.path"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":null,"authorization":"emoji 👍🏽 mix"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":"key_name-1","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":"a:b:c","authorization":"😀"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":"key_name-1emoji 👍🏽 mix","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":null,"authorization":"é"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":"😀","authorization":"é"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":"😀key_name-1","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":"ünïcödé","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":null,"authorization":"ns:key.path"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":["a",1],"remoteAddress":"a:b:cHello World","authorization":"hello world"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":["a",1],"remoteAddress":"key_name-1","authorization":"a😀b😀c"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":"{name} has {count} items.leading","authorization":"abc"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":"日本語のテキスト","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":["a",1],"remoteAddress":null,"authorization":"line1\nline2"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":null,"authorization":"ab"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":{"$undefined":true},"authorization":"emoji 👍🏽 mix"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":"tab\tseparated","authorization":"a:b:c"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":null,"authorization":""}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":"a..b","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":["a",1],"remoteAddress":null,"authorization":"hello world"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":{"$undefined":true},"authorization":"hello world"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":"﻿boma.b.c","authorization":"tab\tseparated"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":["a",1],"remoteAddress":{"$undefined":true},"authorization":"{name} has {count} items"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":{"$undefined":true},"authorization":"key_name-1"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":null,"authorization":"{name} has {count} items"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":"tab\tseparated","authorization":"trailing."}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":"hello","authorization":"a.b.c"}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":{"$undefined":true},"authorization":":"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":["a",1],"remoteAddress":"abcİstanbul","authorization":"ab"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":{"$undefined":true},"authorization":"HELLO"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":["a",1],"remoteAddress":null,"authorization":"tab\tseparated"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":null,"authorization":"a😀b😀c"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":null,"authorization":"日本語のテキスト"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":"a.b.c","authorization":"﻿bom"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":{"$undefined":true},"authorization":"İstanbul"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":"ab","authorization":"abc"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":"a.b.c","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":"","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":{"$undefined":true},"authorization":"  padded  a..b"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":"tab\tseparated","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":["a",1],"remoteAddress":"straße","authorization":"é"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":null,"authorization":"emoji 👍🏽 mix"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":"line1\nline2","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":"ΣΊΣΥΦΟΣ","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":null,"authorization":"::"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":"./x/**/*.json","authorization":".leading"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":{"$undefined":true},"authorization":"a:b:c"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":"hello world","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":null,"authorization":"ΣΊΣΥΦΟΣ"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":"İstanbul","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":{"$undefined":true},"authorization":".leading"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":"emoji 👍🏽 mix","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":null,"authorization":"abc"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":"ab","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":"a:b:c","authorization":"a:b:c"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":"line1\nline2","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":["a",1],"remoteAddress":{"$undefined":true},"authorization":"éa.b.c"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":"src/a/b.ts","authorization":"line1\nline2"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":["a",1],"remoteAddress":null,"authorization":"Hello World😀"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":null,"authorization":"a..b"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":{"$undefined":true},"authorization":"key_name-1"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":"a😀b😀c","authorization":"ΣΊΣΥΦΟΣ"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"matchesDesktopShutdownToken","args":["é","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":[".leading","  padded  "],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a😀b😀c","﻿bom"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ΣΊΣΥΦΟΣa:b:c","B:"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["abc  padded  ","a.b.c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["日本語のテキストline1\nline2","  padded  "],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":[".leading","ab"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["s","src/a/b.ts"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["bom","﻿bom"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["キスト","日本語のテキスト"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ünïcödéHELLO","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["😀","a.b.c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["key_name-1","ns:key.pathtab\tseparated"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["hello world","trailing."],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a..b","straße"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["straße","Hello World"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["  padded  ","abc"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a","a"],"ok":true}
+{"fn":"matchesDesktopShutdownToken","args":[":","HELLO"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["rc/a/b.ts","a:b:csrc/a/b.ts"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ΣΊΣΥΦΟΣ","İstanbul"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["hello world","HELLO"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["b:","a:b:c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ünïcödésrc/a/b.ts",".leading"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["trailing.","tab\tseparatedİstanbul"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a..b","."],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a.b.c","./x/**/*.jsonHELLO"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a","﻿bom"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a:b:c","key_name-1"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["  padded  ","a..b"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["{name} has {count} items","./x/**/*.json"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["  padded  ","ns:key.path"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ünïcödé","hello world:"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["b","a..b"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["S","src/a/b.ts😀"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["hello worlda:b:c","tab\tseparated"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ünïcödé","é"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["HELLO","line1\nline2"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ab","AB"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["./x/**/*.json","n"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["straßeabc","abc"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["﻿bom","tab\tseparated"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["x/**/*.json","﻿bom./x/**/*.json"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["日本語のテキスト","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["aemoji 👍🏽 mix","oji 👍"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["  padd","  padded  "],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["hello","ns:key.path"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["key_name-1","﻿bom"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["iling","trailing."],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["straße","emoji 👍🏽 mix"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ns:key.path","abc"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["😀","a..b"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":[".jso","./x/**/*.json"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a😀b😀c","straße"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["﻿bom",".leading:"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["lo Wor","Hello World"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["trailing.","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["l","Hello Worldhello"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["src/a/b.ts","a.b.c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a..b","abc"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["emoji 👍🏽 mix","tab\tseparated"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["src/a/b.ts","😀"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["","hello world"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":[".leading﻿bom","aİstanbul"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["emoji 👍🏽 mix","ns:key.path"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["straße","st"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["  padded  ",".leadingHello World"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a","abc"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["y.","ns:key.path"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a😀b😀c","c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ab","日本語のテキスト"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ab",":"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["Hello World","trailing."],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["tab\tseparated","hello world"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["﻿bom","a:b:c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a😀b😀c",":"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["trailing.hello world",":straße"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["tab\tseparated","b\tseparated"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["👍🏽 mix","emoji 👍🏽 mix"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["aΣΊΣΥΦΟΣ","😀"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a..bé","İstanbul"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["B","a.b.c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ünïcödéa..b","HELLO"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ΣΊΣΥΦΟΣemoji 👍🏽 mix",".leading"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a","  padded  "],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["Hello Worldtab\tseparated","hello"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["emoji 👍🏽 mix:",":"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["hel","hello"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a..b","HELLO"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["abc","c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a..b","a:b:c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["tab\tseparated","Hello World"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["tab\tseparated","  padded  "],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["{name} has {count} items","helloab"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ab","b"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["hello world","hello"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ünïcödé","src/a/b.ts"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["A","a.b.c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":[":",":"],"ok":true}
+{"fn":"matchesDesktopShutdownToken","args":["İstanbul﻿bom","ab"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":[".leading","a"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["l","  padded  hello world"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["./x/**/*.json","./x/**/*.jso"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ΣΊΣΥΦΟΣ",".leading"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["trailing.","tab\tseparated"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ns:key.path","😀"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a","key_name-1"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["line1\nline2","  padded  "],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["trailing.","tab\tseparateda"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ra","straße"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["Hello World","OR"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":[" padded ","  padded  "],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["İstanbulhello world","İstanbul"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["trailing.ünïcödé","trailing.﻿bom"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["hello","é"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["éabc",":"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["tab\tseparated","İstanbul"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":[":a","﻿bom"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["😀","trailing."],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ns:key.path","s"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["line1\nline2","Hello World"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["HELLO","ünïcödéé"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["straße","a.b.c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["emoji 👍🏽 mix",":"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["hello","a:b:c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ΊΣΥΦΟΣ","ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["emoji 👍🏽 mix","key_name-1"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ab","trailing."],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a","emoji 👍🏽 mix"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["_name","key_name-1"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ΣΊΣΥΦΟΣ","ΣΊΣΥΦΟ"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","a:b:c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["abc","tab\tseparated"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["key_name-1abc","abc"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["./x/**/*.json","HELLOa.b.c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["İstanbul","ns:key.path"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a..b","hello world"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["src/a/b.ts","ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["","straße"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["日本語のテキスト","﻿bom"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ns:key.path","tab\tseparatedstraße"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a..b","trailing."],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["emoji 👍🏽 mixtab\tseparated","src/a/b.ts"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ünï","ünïcödé"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["HELLO","é"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["  padded  ","hello world"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["のテ","😀日本語のテキスト"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["c","İstanbula😀b😀c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["  padded  ",":"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["","  padded  key_name-1"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["日本語のテキスト","é"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["́a","éa:b:c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["日本語のテキストé","  padded  "],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a.b.c","B.C"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["",".leadingns:key.path"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["hello","o"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a:b:c","日本語のテキスト"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ns:key.path","a:b:c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["straße.leading","straße"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["rc/a/","src/a/b.ts"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ab","Hello World"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["",".leading"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a","ab"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a😀b😀c","hello"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ab","﻿bomline1\nline2"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["trailing.","  padded  "],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ns:key.path","hello world"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":[":","a😀b😀c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a.b.c","İstanbul"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["./x/**/*.json","line1\nline2"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["İstanbulline1\nline2","ns:key.path"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["p","  padded  "],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["😀","line1\nline2"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a:b:c","a:b:c"],"ok":true}
+{"fn":"matchesDesktopShutdownToken","args":["Hello Worldtab\tseparated","a"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["  padded  ","hello"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["abc","ns:key.pathünïcödé"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","é"],"ok":true}
+{"fn":"matchesDesktopShutdownToken","args":["a..b","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["line1\nline2","line1\nline2"],"ok":true}
+{"fn":"matchesDesktopShutdownToken","args":["HELLO",".leading"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ékey_name-1","straße"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ÏCÖDÉ","ünïcödé"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a..b😀","﻿bom"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["trailing.hello world","  padded  src/a/b.ts"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ns:key.path:","straße"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["İstanbul",":"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":[":","trailing."],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["./x/**/*.json","日本語のテキスト"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["abc","emoji 👍🏽 mix"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a","日本語のテキストa.b.c"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["éa😀b😀c","日本語のテキスト"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a😀b😀c","emoji 👍🏽 mix"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ünïcödé","n"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["hello world","  padded  "],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["json","./x/**/*.json"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":[".leading","n"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["straße","line1\nline2"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["日本語のテキスト","abctab\tseparated"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a:b:c","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["héllo wörld","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["👍🏽 thumbs","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["日本語","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["İstanbul","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["straße","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ılık ırmak","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["👨‍👩‍👧 family","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a b","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ΣΊΣΥΦΟΣ","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a😀b","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["﻿bom","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a²b x½ y①","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["aⅠb Ⅻ","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a𐐀b 𝐀bc","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["कि ٣٤","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["Iı İi","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["K K k","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ſ s S","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["x‍y 👨‍👩‍👧","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["a b c　d","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["١٢٣ ٤٥","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["𝟘𝟙 ²³","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["snake_case foo-bar o'neil","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ǅungla Ǆ","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["one\r\ntwo threefour","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["café café","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["ΣΑΣ σας ς","{name} has {count} items"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","héllo wörld"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","👍🏽 thumbs"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","日本語"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é",""],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","İstanbul"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","straße"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","ılık ırmak"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","👨‍👩‍👧 family"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","a b"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","a😀b"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","﻿bom"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","a²b x½ y①"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","aⅠb Ⅻ"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","a𐐀b 𝐀bc"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","कि ٣٤"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","Iı İi"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","K K k"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","ſ s S"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","x‍y 👨‍👩‍👧"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","a b c　d"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","١٢٣ ٤٥"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","𝟘𝟙 ²³"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","snake_case foo-bar o'neil"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","ǅungla Ǆ"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","one\r\ntwo threefour"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","café café"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["é","ΣΑΣ σας ς"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["日本語のテキスト"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["hello"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["abc"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["hello worldhello world"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[{"$undefined":true}],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[".leading.leading"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[":"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ns:key.path"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["trailing.Hello World"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["é"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["line1\nline2"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ns:key.pathhello"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["hello world"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ab"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["tab\tseparated"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["emoji 👍🏽 mix"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["./x/**/*.jsonİstanbul"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a😀b😀c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["./x/**/*.json"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["src/a/b.ts"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["straße"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ns:key.pathtab\tseparated"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["  padded  "],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["HELLO"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["aa"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[".leading"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["éns:key.path"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["trailing."],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["éhello world"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a.b.c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["İstanbul"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["straßetrailing."],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ünïcödé"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a..b"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["emoji 👍🏽 mixhello world"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["Hello World"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[".leadinga"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["﻿bom"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["😀"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[""],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["key_name-1hello world"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a😀b😀csrc/a/b.ts"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ns:key.pathab"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["line1\nline2line1\nline2"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["Hello Worldab"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["{name} has {count} items"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["abc{name} has {count} items"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["aba..b"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a:b:c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["./x/**/*.json日本語のテキスト"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a:"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["key_name-1"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["😀ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a..bhello world"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["key_name-1src/a/b.ts"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ΣΊΣΥΦΟΣabc"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["aHELLO"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["日本語のテキストemoji 👍🏽 mix"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["﻿boma:b:c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[":İstanbul"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["src/a/b.tsa:b:c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["emoji 👍🏽 mixline1\nline2"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ünïcödéns:key.path"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["trailing.😀"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["日本語のテキストstraße"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["HELLOünïcödé"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["emoji 👍🏽 mixa"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["hello worldabc"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ns:key.pathstraße"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["﻿bom﻿bom"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["straßeİstanbul"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["﻿bom😀"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["abcemoji 👍🏽 mix"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["line1\nline2日本語のテキスト"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["hellohello"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["abctrailing."],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a..btrailing."],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["tab\tseparatedHELLO"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a.b.ctab\tseparated"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a./x/**/*.json"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[":key_name-1"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a:b:cHELLO"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["HELLOline1\nline2"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["line1\nline2abc"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["İstanbulstraße"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["{name} has {count} itemskey_name-1"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[".leadingé"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["日本語のテキストabc"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["trailing..leading"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["key_name-1:"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["étrailing."],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a:b:ca..b"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a:b:ca.b.c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["trailing.é"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a:b:c😀"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[".leading:"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["é{name} has {count} items"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ns:key.pathünïcödé"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["key_name-1ns:key.path"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["İstanbulhello world"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["  padded  line1\nline2"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["tab\tseparateda"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[".leadinga.b.c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["{name} has {count} itemshello world"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["helloab"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["  padded  a.b.c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["line1\nline2{name} has {count} items"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["line1\nline2Hello World"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[":./x/**/*.json"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[":a:b:c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[":Hello World"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["trailing.a:b:c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["{name} has {count} items😀"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["Hello Worldsrc/a/b.ts"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["Hello Worldkey_name-1"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["line1\nline2a:b:c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["straße./x/**/*.json"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["Hello Worldhello"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a:b:csrc/a/b.ts"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a﻿bom"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ns:key.patha😀b😀c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["trailing.a..b"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a:b:cİstanbul"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["hellotab\tseparated"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["./x/**/*.jsona.b.c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["😀tab\tseparated"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["line1\nline2emoji 👍🏽 mix"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["emoji 👍🏽 mixΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["hello worldİstanbul"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["key_name-1emoji 👍🏽 mix"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["tab\tseparatedns:key.path"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a:b:c  padded  "],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["HELLOns:key.path"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["İstanbulabc"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["hello world.leading"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["😀.leading"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a.b.cHello World"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["hellostraße"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["./x/**/*.jsonemoji 👍🏽 mix"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["abHello World"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["日本語のテキスト😀"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a.b.cHELLO"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ΣΊΣΥΦΟΣsrc/a/b.ts"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a😀b😀ca.b.c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["hello worldemoji 👍🏽 mix"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["tab\tseparatedsrc/a/b.ts"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a😀b😀c.leading"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[".leading日本語のテキスト"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["abc😀"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a.b.cé"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["aba"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["trailing.ab"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["﻿bomkey_name-1"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["emoji 👍🏽 mixa:b:c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["hello﻿bom"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["{name} has {count} itemsns:key.path"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["hello worldab"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["abc:"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a😀b😀ca..b"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["aé"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["abcline1\nline2"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["straße  padded  "],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["日本語のテキストkey_name-1"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["trailing.a.b.c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["abc  padded  "],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["İstanbul日本語のテキスト"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["aba.b.c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ns:key.pathkey_name-1"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["  padded  ﻿bom"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["  padded  a:b:c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a:b:chello world"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["  padded  straße"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["😀ns:key.path"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["é  padded  "],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["éΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["hello worldünïcödé"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ahello"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["trailing.line1\nline2"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["straße:"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ünïcödésrc/a/b.ts"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["key_name-1hello"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["HELLOé"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[".leadingsrc/a/b.ts"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ünïcödé😀"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["src/a/b.tsabc"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["tab\tseparated﻿bom"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ΣΊΣΥΦΟΣ./x/**/*.json"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a.b.c﻿bom"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["hello{name} has {count} items"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["emoji 👍🏽 mix﻿bom"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["helloünïcödé"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["hello worldsrc/a/b.ts"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["😀😀"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ünïcödéa:b:c"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ünïcödé./x/**/*.json"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ns:key.pathtrailing."],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a:b:cns:key.path"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["héllo wörld"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["👍🏽 thumbs"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["日本語"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["ılık ırmak"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["👨‍👩‍👧 family"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a b"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a😀b"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a²b x½ y①"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["aⅠb Ⅻ"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["a𐐀b 𝐀bc"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["कि ٣٤"],"ok":false}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":"ünïcödé","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":".leading","authorization":"😀"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":":ünïcödé","authorization":"a.b.c"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":"﻿bom","authorization":"straße"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":["a",1],"remoteAddress":null,"authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":"a:b:c","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":null,"authorization":"abc"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":{"$undefined":true},"authorization":"日本語のテキスト"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[null],"error":"Cannot read properties of null (reading 'config')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":"ns:key.path","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":":","authorization":"line1\nline2"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":null,"authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":null,"authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":null,"authorization":{"$undefined":true}}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":"trailing.emoji 👍🏽 mix","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{}],"error":"Cannot read properties of undefined (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":{"$undefined":true},"authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":["x"],"error":"Cannot read properties of undefined (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":null,"authorization":"a.b.c"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":"trailing.","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":{"$undefined":true},"authorization":{"$undefined":true}}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[[]],"error":"Cannot read properties of undefined (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":":","authorization":"日本語のテキスト"}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":{"$undefined":true},"authorization":"src/a/b.ts"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":"emoji 👍🏽 mix","authorization":"ΣΊΣΥΦΟΣ"}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":{"$undefined":true},"authorization":"hello"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":null,"authorization":"ünïcödé"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":{"$undefined":true},"authorization":".leading"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":"ΣΊΣΥΦΟΣ","authorization":"atrailing."}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":null,"authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[0],"error":"Cannot read properties of undefined (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":{"$undefined":true},"authorization":"é"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":null,"authorization":"line1\nline2😀"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":{"$undefined":true},"authorization":"tab\tseparated"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":"ns:key.path","authorization":{"$undefined":true}}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":":é","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":["a",1],"remoteAddress":{"$undefined":true},"authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":"a😀b😀cİstanbul","authorization":":"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":null,"authorization":"  padded  "}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":null,"authorization":"😀"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":"日本語のテキスト  padded  ","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":{"$undefined":true},"authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":"hello","authorization":{"$undefined":true}}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":null,"authorization":"日本語のテキスト"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":null,"authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":null,"authorization":"日本語のテキスト"}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":"trailing.emoji 👍🏽 mix","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":{"$undefined":true},"authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":{"$undefined":true},"authorization":"aa.b.c"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":"a😀b😀c","authorization":"abcline1\nline2"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":null,"authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":{"$undefined":true},"authorization":"./x/**/*.jsonemoji 👍🏽 mix"}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":null,"authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":{"$undefined":true},"authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":["a",1],"remoteAddress":"hello world","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":"  padded  ","authorization":{"$undefined":true}}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":"","authorization":"hello world"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":["a",1],"remoteAddress":"ΣΊΣΥΦΟΣ","authorization":"tab\tseparated"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":{"$undefined":true},"authorization":"😀emoji 👍🏽 mix"}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":"line1\nline2","authorization":"hello world"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":"tab\tseparated","authorization":"ns:key.path"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":null,"authorization":"helloa😀b😀c"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":null,"authorization":":"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":["a",1],"remoteAddress":{"$undefined":true},"authorization":"a"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":{"$undefined":true},"authorization":"line1\nline2"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":null,"authorization":"straße"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":"ünïcödéa..b","authorization":"Hello Worldİstanbul"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":"  padded  ","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":null,"authorization":"key_name-1"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":"ab","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[true],"error":"Cannot read properties of undefined (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":null,"authorization":"abc"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":{"$undefined":true},"authorization":"line1\nline2"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":null,"authorization":"a..b"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":"😀","authorization":"tab\tseparatedİstanbul"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":{"$undefined":true},"authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":null,"authorization":":😀"}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":{"$undefined":true},"authorization":"ns:key.patha"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":{"$undefined":true},"authorization":"line1\nline2  padded  "}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":{"$undefined":true},"authorization":"😀"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":{"$undefined":true},"authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":{"$undefined":true},"authorization":"ns:key.path日本語のテキスト"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":"﻿bomtab\tseparated","authorization":"./x/**/*.json"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":{"$undefined":true},"authorization":"a"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":{"$undefined":true},"authorization":"./x/**/*.json"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":"hello world","authorization":"  padded  straße"}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":"abc","authorization":"HELLO"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":null,"authorization":"HELLO"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":"é","authorization":"hello"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":{"$undefined":true},"authorization":"emoji 👍🏽 mix"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":{"$undefined":true},"authorization":"line1\nline2"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":"hello","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":null,"authorization":"key_name-1"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":"{name} has {count} items","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":null,"authorization":"trailing."}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":null,"authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":"ΣΊΣΥΦΟΣ","authorization":"{name} has {count} items"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":{"$undefined":true},"authorization":"İstanbul"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":"﻿bom","authorization":"abc"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":{"$undefined":true},"authorization":"﻿bomtab\tseparated"}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":"Hello World./x/**/*.json","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":["a",1],"remoteAddress":{"$undefined":true},"authorization":"ns:key.path"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":"ünïcödé","authorization":{"$undefined":true}}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":"ns:key.path","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":":","authorization":".leading"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":{"$undefined":true},"authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":"ΣΊΣΥΦΟΣ","authorization":"HELLO"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":"hello world","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":"hello world","authorization":"Hello World"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":"ns:key.path","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":null,"authorization":""}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":{"$undefined":true},"authorization":"hello"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":"emoji 👍🏽 mix","authorization":"./x/**/*.jsona:b:c"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":null,"authorization":"﻿bom"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":"key_name-1","authorization":"abc"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":".leadingtab\tseparated","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":"😀","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":"ab","authorization":"a😀b😀c"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":"{name} has {count} items","authorization":".leading"}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":"Hello World","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":null,"authorization":"a"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":{"$undefined":true},"authorization":"./x/**/*.json﻿bom"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":"a.b.c./x/**/*.json","authorization":{"$undefined":true}}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":["a",1],"remoteAddress":null,"authorization":"trailing."}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":null,"authorization":"tab\tseparated"}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":null,"authorization":"./x/**/*.json"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":{"$undefined":true},"authorization":"./x/**/*.json"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":{"$undefined":true},"authorization":"ΣΊΣΥΦΟΣ"}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":{"$undefined":true},"authorization":"a😀b😀c"}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":"trailing.","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":"  padded  ","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":"İstanbul:","authorization":"hello world./x/**/*.json"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":{"$undefined":true},"authorization":"emoji 👍🏽 mixa.b.c"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":"line1\nline2","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":null,"authorization":"ns:key.path"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":null,"authorization":"emoji 👍🏽 mix"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":"key_name-1","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":"a:b:c","authorization":"😀"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":"key_name-1emoji 👍🏽 mix","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":null,"authorization":"é"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":"😀","authorization":"é"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":"😀key_name-1","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":"ünïcödé","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":null,"authorization":"ns:key.path"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":["a",1],"remoteAddress":"a:b:cHello World","authorization":"hello world"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":["a",1],"remoteAddress":"key_name-1","authorization":"a😀b😀c"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":"{name} has {count} items.leading","authorization":"abc"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":"日本語のテキスト","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":["a",1],"remoteAddress":null,"authorization":"line1\nline2"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":null,"authorization":"ab"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":{"$undefined":true},"authorization":"emoji 👍🏽 mix"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":"tab\tseparated","authorization":"a:b:c"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":null,"authorization":""}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":"a..b","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":["a",1],"remoteAddress":null,"authorization":"hello world"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":{"$undefined":true},"authorization":"hello world"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":"﻿boma.b.c","authorization":"tab\tseparated"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":["a",1],"remoteAddress":{"$undefined":true},"authorization":"{name} has {count} items"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":{"$undefined":true},"authorization":"key_name-1"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":null,"authorization":"{name} has {count} items"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":"b"},"remoteAddress":"tab\tseparated","authorization":"trailing."}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":null,"remoteAddress":"hello","authorization":"a.b.c"}],"error":"Cannot read properties of null (reading 'desktopShutdownToken')"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":{"$undefined":true},"authorization":":"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":["a",1],"remoteAddress":"abcİstanbul","authorization":"ab"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":{"$undefined":true},"authorization":"HELLO"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":["a",1],"remoteAddress":null,"authorization":"tab\tseparated"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":null,"authorization":"a😀b😀c"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":null,"authorization":"日本語のテキスト"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":"a.b.c","authorization":"﻿bom"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":{"$undefined":true},"authorization":"İstanbul"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":"ab","authorization":"abc"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":"a.b.c","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":"","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":{"$undefined":true},"authorization":"  padded  a..b"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":"tab\tseparated","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":["a",1],"remoteAddress":"straße","authorization":"é"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":null,"authorization":"emoji 👍🏽 mix"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":"line1\nline2","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":"ΣΊΣΥΦΟΣ","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":null,"authorization":"::"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":[],"remoteAddress":"./x/**/*.json","authorization":".leading"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":{"$undefined":true},"authorization":"a:b:c"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":"hello world","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{},"remoteAddress":null,"authorization":"ΣΊΣΥΦΟΣ"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":"İstanbul","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":{"$undefined":true},"authorization":".leading"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":0,"remoteAddress":"emoji 👍🏽 mix","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":null,"authorization":"abc"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":"ab","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":"a:b:c","authorization":"a:b:c"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":"line1\nline2","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":["a",1],"remoteAddress":{"$undefined":true},"authorization":"éa.b.c"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":"src/a/b.ts","authorization":"line1\nline2"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":["a",1],"remoteAddress":null,"authorization":"Hello World😀"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"a":{"b":"c"}},"remoteAddress":null,"authorization":"a..b"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":true,"remoteAddress":{"$undefined":true},"authorization":"key_name-1"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":"x","remoteAddress":"a😀b😀c","authorization":"ΣΊΣΥΦΟΣ"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["127.0.0.1"],"ok":true}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["::1"],"ok":true}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["::ffff:127.0.0.1"],"ok":true}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[" 127.0.0.1 "],"ok":true}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["\t::1\r\n"],"ok":true}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["::FFFF:127.0.0.1"],"ok":true}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["﻿127.0.0.1﻿"],"ok":true}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["127.0.0.2"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["localhost"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["::ffff:127.0.0.2"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["0:0:0:0:0:ffff:7f00:1"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[""],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[" "],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":[" 127.0.0.1"],"ok":true}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["127.0.0.1 "],"ok":true}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["::"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["[::1]"],"ok":false}
+{"fn":"isDesktopShutdownLoopbackPeer","args":["0.0.0.0"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["secret-token","secret-token"],"ok":true}
+{"fn":"matchesDesktopShutdownToken","args":["",""],"ok":true}
+{"fn":"matchesDesktopShutdownToken","args":["tok","tok "],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":["Bearer x","bearer x"],"ok":false}
+{"fn":"matchesDesktopShutdownToken","args":[" "," "],"ok":false}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":"Bearer tok"}],"ok":{"authorized":true}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"localhost","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":"Bearer tok"}],"ok":{"authorized":true}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"::1","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":"Bearer tok"}],"ok":{"authorized":true}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"[::1]","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":"Bearer tok"}],"ok":{"authorized":true}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":"Bearer tok"}],"ok":{"authorized":true}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":"Bearer tok"}],"ok":{"authorized":true}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":{"$undefined":true},"desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":"Bearer tok"}],"ok":{"authorized":true}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":"::1","authorization":"Bearer tok"}],"ok":{"authorized":true}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":"::ffff:127.0.0.1","authorization":"Bearer tok"}],"ok":{"authorized":true}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":" ::1 ","authorization":"Bearer tok"}],"ok":{"authorized":true}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":"bearer tok"}],"ok":{"authorized":true}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":"BEARER tok"}],"ok":{"authorized":true}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":["Bearer tok"]}],"ok":{"authorized":true}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"x y z"},"remoteAddress":"127.0.0.1","authorization":"Bearer x y z"}],"ok":{"authorized":false,"reason":"unauthorized","status":401}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok  "},"remoteAddress":"127.0.0.1","authorization":"Bearer tok  "}],"ok":{"authorized":false,"reason":"unauthorized","status":401}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"server","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":"Bearer tok"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"Desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":"Bearer tok"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":123,"host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":"Bearer tok"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"0.0.0.0","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":"Bearer tok"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"[::]","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":"Bearer tok"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"example.com","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":"Bearer tok"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.2","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":"Bearer tok"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok","publicUrl":"https://x.test"},"remoteAddress":"127.0.0.1","authorization":"Bearer tok"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok","publicUrl":null},"remoteAddress":"127.0.0.1","authorization":"Bearer tok"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok","publicUrl":""},"remoteAddress":"127.0.0.1","authorization":"Bearer tok"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":"1.2.3.4","authorization":"Bearer tok"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":"localhost","authorization":"Bearer tok"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":null,"authorization":"Bearer tok"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"authorization":"Bearer tok"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":{"$undefined":true},"authorization":"Bearer tok"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":""},"remoteAddress":"127.0.0.1","authorization":"Bearer tok"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"   "},"remoteAddress":"127.0.0.1","authorization":"Bearer tok"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":null},"remoteAddress":"127.0.0.1","authorization":"Bearer tok"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1"},"remoteAddress":"127.0.0.1","authorization":"Bearer tok"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":{"$undefined":true}},"remoteAddress":"127.0.0.1","authorization":"Bearer tok"}],"ok":{"authorized":false,"reason":"unavailable","status":404}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":"Bearer tok"}],"ok":{"authorized":true}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1"}],"ok":{"authorized":false,"reason":"unauthorized","status":401}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":""}],"ok":{"authorized":false,"reason":"unauthorized","status":401}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":"tok"}],"ok":{"authorized":false,"reason":"unauthorized","status":401}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":"Bearer"}],"ok":{"authorized":false,"reason":"unauthorized","status":401}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":"Bearer "}],"ok":{"authorized":false,"reason":"unauthorized","status":401}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":"Bearer wrong"}],"ok":{"authorized":false,"reason":"unauthorized","status":401}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":"Bearer tok "}],"ok":{"authorized":false,"reason":"unauthorized","status":401}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":"Bearer tok extra"}],"ok":{"authorized":false,"reason":"unauthorized","status":401}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":"Bearer\ttok"}],"ok":{"authorized":false,"reason":"unauthorized","status":401}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":" Bearer tok"}],"ok":{"authorized":false,"reason":"unauthorized","status":401}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":"Bearer  tok"}],"ok":{"authorized":false,"reason":"unauthorized","status":401}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":"Bearer\ntok"}],"ok":{"authorized":false,"reason":"unauthorized","status":401}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":"Bearer ﻿"}],"ok":{"authorized":false,"reason":"unauthorized","status":401}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":123}],"ok":{"authorized":false,"reason":"unauthorized","status":401}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":true}],"ok":{"authorized":false,"reason":"unauthorized","status":401}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":{}}],"ok":{"authorized":false,"reason":"unauthorized","status":401}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":[]}],"ok":{"authorized":false,"reason":"unauthorized","status":401}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":[null]}],"ok":{"authorized":false,"reason":"unauthorized","status":401}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":["Bearer","tok"]}],"ok":{"authorized":false,"reason":"unauthorized","status":401}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":["Bearer ","tok"]}],"ok":{"authorized":false,"reason":"unauthorized","status":401}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":{"$undefined":true}}],"ok":{"authorized":false,"reason":"unauthorized","status":401}}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":123,"desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":"Bearer tok"}],"error":"host.startsWith is not a function"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":true,"desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":"Bearer tok"}],"error":"host.startsWith is not a function"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":{},"desktopShutdownToken":"tok"},"remoteAddress":"127.0.0.1","authorization":"Bearer tok"}],"error":"host.startsWith is not a function"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":123,"authorization":"Bearer tok"}],"error":"remoteAddress?.trim is not a function"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":"tok"},"remoteAddress":{},"authorization":"Bearer tok"}],"error":"remoteAddress?.trim is not a function"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":123},"remoteAddress":"127.0.0.1","authorization":"Bearer tok"}],"error":"expectedToken?.trim is not a function"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":true},"remoteAddress":"127.0.0.1","authorization":"Bearer tok"}],"error":"expectedToken?.trim is not a function"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":{}},"remoteAddress":"127.0.0.1","authorization":"Bearer tok"}],"error":"expectedToken?.trim is not a function"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":123},"remoteAddress":"127.0.0.1","authorization":123}],"error":"expectedToken?.trim is not a function"}
+{"fn":"authorizeDesktopShutdown","args":[{"config":{"mode":"desktop","host":"127.0.0.1","desktopShutdownToken":123},"remoteAddress":123,"authorization":"Bearer tok"}],"error":"remoteAddress?.trim is not a function"}

@@ -1,0 +1,72 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/serverShutdown.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "servershutdown-rs",
+  "exports": [
+    {
+      "name": "matchesDesktopShutdownToken",
+      "file": "apps/server/src/serverShutdown.ts",
+      "line": 50,
+      "params": [
+        {
+          "name": "expected",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "presented",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isDesktopShutdownLoopbackPeer",
+      "file": "apps/server/src/serverShutdown.ts",
+      "line": 54,
+      "params": [
+        {
+          "name": "remoteAddress",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "authorizeDesktopShutdown",
+      "file": "apps/server/src/serverShutdown.ts",
+      "line": 70,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly config: Pick<ServerConfigShape, \"mode\" | \"host\" | \"publicUrl\" | \"desktopShutdownToken\">;\n  readonly remoteAddress: string | null | undefined;\n  readonly authorization: string | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| { readonly authorized: true }\n  | {\n      readonly authorized: false;\n      readonly reason: \"unavailable\" | \"unauthorized\";\n      readonly status: 404 | 401;\n    })",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

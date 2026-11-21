@@ -1,0 +1,23 @@
+{
+  "unit": "apps/server/src/serverShutdown.ts",
+  "files": 1,
+  "fingerprint": "9c2648b08b52d44e",
+  "coverage": {
+    "lines": 97,
+    "reached": 83,
+    "files": [
+      {
+        "file": "apps/server/src/serverShutdown.ts",
+        "lines": 77,
+        "reached": 72,
+        "missed": "26, 28-31"
+      },
+      {
+        "file": "apps/server/src/startupAccess.ts",
+        "lines": 20,
+        "reached": 11,
+        "missed": "14-22"
+      }
+    ]
+  }
+}

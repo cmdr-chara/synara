@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/errorMessages.ts",
+  "files": 1,
+  "fingerprint": "6f849275d4c2ceb8",
+  "coverage": {
+    "lines": 58,
+    "reached": 53,
+    "files": [
+      {
+        "file": "packages/shared/src/errorMessages.ts",
+        "lines": 58,
+        "reached": 53,
+        "missed": "42-46"
+      }
+    ]
+  }
+}

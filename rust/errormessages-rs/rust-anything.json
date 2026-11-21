@@ -1,0 +1,67 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/errorMessages.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "errormessages-rs",
+  "exports": [
+    {
+      "name": "sanitizeUserFacingErrorMessage",
+      "file": "packages/shared/src/errorMessages.ts",
+      "line": 18,
+      "params": [
+        {
+          "name": "message",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "fallback",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "describeErrorMessage",
+      "file": "packages/shared/src/errorMessages.ts",
+      "line": 60,
+      "params": [
+        {
+          "name": "error",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "fallbackMessage",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "collectErrorMessages",
+      "file": "packages/shared/src/errorMessages.ts",
+      "line": 27,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    }
+  ]
+}

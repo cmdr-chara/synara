@@ -1,0 +1,10 @@
+{"fn":"sanitizeUserFacingErrorMessage","args":["Error: quota exceeded\n    at send (/app/send.ts:2:1)","fallback"]}
+{"fn":"sanitizeUserFacingErrorMessage","args":["Connection refused at file:///app/send.ts:2:1","fallback"]}
+{"fn":"sanitizeUserFacingErrorMessage","args":["Request failed at send (/app/send.ts:2:1)","fallback"]}
+{"fn":"sanitizeUserFacingErrorMessage","args":["Request failed at async send (C:\\app\\send.ts:2:1)","fallback"]}
+{"fn":"sanitizeUserFacingErrorMessage","args":["Rate limit resets at noon","fallback"]}
+{"fn":"sanitizeUserFacingErrorMessage","args":[" \n ","fallback"]}
+{"fn":"describeErrorMessage","args":[{},"fallback"]}
+{"fn":"describeErrorMessage","args":[{"_tag":"WsRpcError","message":"Project directory does not exist"},"fallback"]}
+{"fn":"describeErrorMessage","args":[{"message":"Failed to load node-pty native module","cause":{"message":"Cannot find module 'pty.node'"}},"fallback"]}
+{"fn":"describeErrorMessage","args":[{"ok":false},"Failed to open terminal"]}

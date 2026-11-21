@@ -1,0 +1,43 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/desktopUpdateControl.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "desktopupdatecontrol-rs",
+  "exports": [
+    {
+      "name": "supportsDesktopUpdateControl",
+      "file": "apps/desktop/src/desktopUpdateControl.ts",
+      "line": 15,
+      "params": [
+        {
+          "name": "isPackaged",
+          "ts_type": "boolean",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "platform",
+          "ts_type": "NodeJS.Platform",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "attachDesktopUpdateControl",
+      "file": "apps/desktop/src/desktopUpdateControl.ts",
+      "line": 23,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

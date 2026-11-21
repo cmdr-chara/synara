@@ -1,0 +1,17 @@
+{
+  "unit": "apps/desktop/src/notificationRetention.ts",
+  "files": 1,
+  "fingerprint": "ed09e3f16399eac8",
+  "coverage": {
+    "lines": 46,
+    "reached": 29,
+    "files": [
+      {
+        "file": "apps/desktop/src/notificationRetention.ts",
+        "lines": 46,
+        "reached": 29,
+        "missed": "27, 31-46"
+      }
+    ]
+  }
+}

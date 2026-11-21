@@ -1,0 +1,32 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/notificationRetention.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "notificationretention-rs",
+  "exports": [
+    {
+      "name": "createDesktopNotificationRetainer",
+      "file": "apps/desktop/src/notificationRetention.ts",
+      "line": 21,
+      "params": [
+        {
+          "name": "limit",
+          "ts_type": "number",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [
+        "T"
+      ],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,17 @@
+{
+  "unit": "apps/server/src/studioOutputs.ts",
+  "files": 1,
+  "fingerprint": "8f6c5c6ebc09e448",
+  "coverage": {
+    "lines": 379,
+    "reached": 176,
+    "files": [
+      {
+        "file": "apps/server/src/studioOutputs.ts",
+        "lines": 379,
+        "reached": 176,
+        "missed": "83-84, 86-87, 89-90, 99-114, 133, 135-136, 140-144, 164-165, 168-169, 171-175, 197-200, 202-204, 206-218, 220-254, 256-276, 278-297, 299, 314-315, 348-353, 355-388, 390-404, 406-414, 416"
+      }
+    ]
+  }
+}

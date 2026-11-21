@@ -1,0 +1,114 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/studioOutputs.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "studiooutputs-rs",
+  "exports": [
+    {
+      "name": "isStudioOutputRelativePath",
+      "file": "apps/server/src/studioOutputs.ts",
+      "line": 79,
+      "params": [
+        {
+          "name": "relativePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "collectFileChangeActivityPathCandidates",
+      "file": "apps/server/src/studioOutputs.ts",
+      "line": 121,
+      "params": [
+        {
+          "name": "payloadsNewestFirst",
+          "ts_type": "ReadonlyArray<unknown>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "collectThreadOutputRelativePaths",
+      "file": "apps/server/src/studioOutputs.ts",
+      "line": 155,
+      "params": [
+        {
+          "name": "checkpoints",
+          "ts_type": "ReadonlyArray<CheckpointLike>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "diffStudioWorkspaceScans",
+      "file": "apps/server/src/studioOutputs.ts",
+      "line": 306,
+      "params": [
+        {
+          "name": "before",
+          "ts_type": "ReadonlyMap<string, StudioWorkspaceFileStat>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "after",
+          "ts_type": "ReadonlyMap<string, StudioWorkspaceFileStat>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "studioOutputsCapturedActivityPayload",
+      "file": "apps/server/src/studioOutputs.ts",
+      "line": 325,
+      "params": [
+        {
+          "name": "relativePaths",
+          "ts_type": "readonly string[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "{\n    readonly generatedImage?: {\n      readonly sourcePath: string;\n      readonly fullPath: string;\n    };\n  }",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

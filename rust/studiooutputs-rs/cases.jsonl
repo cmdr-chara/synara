@@ -1,0 +1,787 @@
+{"fn":"isStudioOutputRelativePath","args":["﻿bom"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["line1\nline2"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["é"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["abc"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["key_name-1HELLO"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["😀"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["./x/**/*.json"],"ok":false}
+{"fn":"isStudioOutputRelativePath","args":["trailing."],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["src/a/b.tsa:b:c"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["a.b.c"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["a😀b😀c"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["ΣΊΣΥΦΟΣ"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["ab"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["日本語のテキスト"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["a..b﻿bom"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["HELLO"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["ab  padded  "],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["ns:key.path"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["hello world"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["HELLO{name} has {count} items"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["éa"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["a..b"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["  padded  "],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":[":"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":[".leading"],"ok":false}
+{"fn":"isStudioOutputRelativePath","args":["ünïcödé"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["﻿bom﻿bom"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["a:b:c"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["src/a/b.ts"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["emoji 👍🏽 mix{name} has {count} items"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["日本語のテキストtab\tseparated"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["emoji 👍🏽 mix"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":[""],"ok":false}
+{"fn":"isStudioOutputRelativePath","args":["İstanbul"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["日本語のテキストünïcödé"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["tab\tseparated"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["Hello World"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["key_name-1"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["a.b.cünïcödé"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["İstanbultrailing."],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["ns:key.pathhello"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["a"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["日本語のテキストHello World"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["hello"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["a😀b😀c  padded  "],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["atab\tseparated"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["tab\tseparatedhello"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["{name} has {count} items"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["ns:key.pathHello World"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["ns:key.pathΣΊΣΥΦΟΣ"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["éHELLO"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["emoji 👍🏽 mix日本語のテキスト"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":[":hello world"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["key_name-1İstanbul"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":[".leading./x/**/*.json"],"ok":false}
+{"fn":"isStudioOutputRelativePath","args":["a.b.cé"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["straße"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["ünïcödé./x/**/*.json"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["İstanbula..b"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["HELLO日本語のテキスト"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["trailing.tab\tseparated"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["helloabc"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["HELLOsrc/a/b.ts"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["😀İstanbul"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["aa"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["ahello"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["helloa😀b😀c"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["line1\nline2Hello World"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["ΣΊΣΥΦΟΣab"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["﻿bomline1\nline2"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["aa..b"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["tab\tseparateda😀b😀c"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["hello worldtab\tseparated"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["ΣΊΣΥΦΟΣa:b:c"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["😀HELLO"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["  padded  é"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["a😀b😀c:"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":[".leading:"],"ok":false}
+{"fn":"isStudioOutputRelativePath","args":["﻿bom  padded  "],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":[":HELLO"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["ahello world"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["{name} has {count} items﻿bom"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["straße😀"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["src/a/b.ts.leading"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["emoji 👍🏽 mixa:b:c"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["HELLOab"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["emoji 👍🏽 mixa.b.c"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["key_name-1abc"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["a😀b😀cline1\nline2"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["tab\tseparateda.b.c"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["emoji 👍🏽 mix./x/**/*.json"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["HELLOΣΊΣΥΦΟΣ"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["abc日本語のテキスト"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["aba..b"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["abc﻿bom"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["aemoji 👍🏽 mix"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["a.b.ca😀b😀c"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":[".leadinga.b.c"],"ok":false}
+{"fn":"isStudioOutputRelativePath","args":["😀ünïcödé"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["a😀b😀c日本語のテキスト"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["src/a/b.tsline1\nline2"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["İstanbula"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["line1\nline2{name} has {count} items"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["a😀b😀ctab\tseparated"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["ésrc/a/b.ts"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["{name} has {count} itemssrc/a/b.ts"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["a..btrailing."],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":[":emoji 👍🏽 mix"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["emoji 👍🏽 mix  padded  "],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["  padded  ab"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["HELLO﻿bom"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["hello worlda😀b😀c"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["İstanbulİstanbul"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["ünïcödéns:key.path"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["a.b.c:"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["a.b.c﻿bom"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["a😀b😀cİstanbul"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["line1\nline2.leading"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["ünïcödéİstanbul"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["😀straße"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":[":a😀b😀c"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["Hello Worldns:key.path"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["ünïcödé.leading"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["trailing.abc"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["  padded  {name} has {count} items"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["line1\nline2hello"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["a..btab\tseparated"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["abca:b:c"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["日本語のテキストabc"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["ns:key.pathHELLO"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["﻿bomé"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["a😀b😀ca.b.c"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":[".leading  padded  "],"ok":false}
+{"fn":"isStudioOutputRelativePath","args":["😀.leading"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["hello worldemoji 👍🏽 mix"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["aünïcödé"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["HELLOtab\tseparated"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["ünïcödé日本語のテキスト"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["straße./x/**/*.json"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["tab\tseparated日本語のテキスト"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["hello worldstraße"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["tab\tseparatedstraße"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["a.b.c./x/**/*.json"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["straßeabc"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["{name} has {count} items  padded  "],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["a.b.cab"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["straßeünïcödé"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["ab😀"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["ünïcödékey_name-1"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["Hello WorldHELLO"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":[".leading﻿bom"],"ok":false}
+{"fn":"isStudioOutputRelativePath","args":["straßestraße"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":[":é"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["a..bns:key.path"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["abc{name} has {count} items"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["trailing.ab"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["tab\tseparated.leading"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["  padded  :"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["helloİstanbul"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["hello worldab"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["trailing.line1\nline2"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["a.b.ctrailing."],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["ababc"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["src/a/b.tsstraße"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["straßeHELLO"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["{name} has {count} itemsΣΊΣΥΦΟΣ"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["HELLOkey_name-1"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["ab./x/**/*.json"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["a:b:cİstanbul"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["trailing.{name} has {count} items"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["straßeline1\nline2"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["éİstanbul"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":[".leading{name} has {count} items"],"ok":false}
+{"fn":"isStudioOutputRelativePath","args":["😀hello"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["éabc"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["Hello Worlda😀b😀c"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["key_name-1a..b"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["Hello Worldé"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["a.b.csrc/a/b.ts"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["a..bİstanbul"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["src/a/b.ts:"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":[".leadingkey_name-1"],"ok":false}
+{"fn":"isStudioOutputRelativePath","args":["./x/**/*.jsonΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isStudioOutputRelativePath","args":["straßekey_name-1"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["aba.b.c"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["src/a/b.ts  padded  "],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["hellons:key.path"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["line1\nline2  padded  "],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["line1\nline2line1\nline2"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":[".leadingsrc/a/b.ts"],"ok":false}
+{"fn":"isStudioOutputRelativePath","args":["ns:key.path😀"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["abab"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["{name} has {count} itemshello world"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["tab\tseparatedİstanbul"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["😀./x/**/*.json"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["emoji 👍🏽 mixabc"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["a:b:cns:key.path"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["a:b:chello world"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["Hello Worldİstanbul"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["emoji 👍🏽 mixé"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["héllo wörld"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["👍🏽 thumbs"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["日本語"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["ılık ırmak"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["👨‍👩‍👧 family"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["a b"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["a😀b"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["a²b x½ y①"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["aⅠb Ⅻ"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["a𐐀b 𝐀bc"],"ok":true}
+{"fn":"isStudioOutputRelativePath","args":["कि ٣٤"],"ok":true}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":{"b":"c"}}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":"b"},0]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[true,["a",1]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[null],"error":"payloadsNewestFirst is not iterable"}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{},{"a":{"b":"c"}},"x"]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[[],[],["a",1]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[["a",1],["a",1],["a",1]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[0]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[[],{"a":"b"},["a",1]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[["x"]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[["x",[]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{},0]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[0,{"a":"b"}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[["a",1]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[[],{},[]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[["a",1]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":"b"},[]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":"b"},["a",1],{"a":"b"}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":"b"},[],["a",1]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":"b"},{"a":{"b":"c"}}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[null]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[true,["a",1],0]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":{"b":"c"}},[]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[null,["a",1],0]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{},["a",1]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[true],"error":"payloadsNewestFirst is not iterable"}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[true,null,"x"]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[[],0]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[true,{"a":"b"}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":{"b":"c"}},true,null]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[[]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[0],"error":"payloadsNewestFirst is not iterable"}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[true,"x",{"a":"b"}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":"b"}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[true,null]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":{"b":"c"}},"x",[]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[null,true,null]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":{"b":"c"}},null]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[{"a":"b"}],"error":"payloadsNewestFirst is not iterable"}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[["a",1],["a",1],"x"]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[null,[]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[["x",{"a":{"b":"c"}}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{},0,true]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[null,{}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{},{"a":{"b":"c"}}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[["x",{},{}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[["a",1],{"a":{"b":"c"}},{"a":{"b":"c"}}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[0,0,{"a":{"b":"c"}}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[["a",1],true,"x"]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":{"b":"c"}},{}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":"b"},["a",1],0]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{},{}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[true,"x"]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[["x",{"a":{"b":"c"}},{}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[["a",1],true,{"a":"b"}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[{}],"error":"payloadsNewestFirst is not iterable"}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":{"b":"c"}},[],{"a":{"b":"c"}}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[true]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[["a",1],true]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[0,0]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":"b"},true]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[["a",1],0]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":"b"},["a",1]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[[],true]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[[],{}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[[],"x",null]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[["a",1],"x"]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[["x","x"]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[["a",1],[]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[true,[]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[0,"x"]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":{"b":"c"}},{"a":{"b":"c"}},true]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[{"a":{"b":"c"}}],"error":"payloadsNewestFirst is not iterable"}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[null,null]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[["x",["a",1],{}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{},{"a":"b"}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[null,["a",1],{}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":"b"},{},{"a":{"b":"c"}}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[["x",["a",1]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":"b"},{"a":{"b":"c"}},{}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[[],null,null]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":"b"},{}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[0,["a",1]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{},[],{"a":{"b":"c"}}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":"b"},["a",1],{}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[["x",["a",1],"x"]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":{"b":"c"}},true]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[[],["a",1]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[0,{"a":"b"},["a",1]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[null,null,0]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[null,true]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{},0,"x"]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[true,"x",null]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{},"x"]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":["x"],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[true,0,{"a":{"b":"c"}}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{},[]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":{"b":"c"}},["a",1]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[true,true]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[["x",{"a":"b"}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[null,{"a":"b"}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":{"b":"c"}},[],null]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[[],"x",{"a":{"b":"c"}}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{},["a",1],["a",1]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[null,0,true]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":{"b":"c"}},{"a":{"b":"c"}}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[null,true,[]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":"b"},"x",null]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[0,null]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[["a",1],["a",1],null]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[[],{"a":{"b":"c"}},"x"]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":"b"},"x"]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":"b"},"x",{"a":{"b":"c"}}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[["x",{"a":"b"},["a",1]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[null,"x"]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":{"b":"c"}},true,{"a":"b"}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[true,{},null]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[0,null,["a",1]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":{"b":"c"}},{"a":{"b":"c"}},["a",1]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[["a",1],{},0]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":{"b":"c"}},0]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[null,null,null]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":{"b":"c"}},{},{}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[null,"x",{"a":"b"}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[0,{}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[["a",1],[],0]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{},null,{"a":"b"}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[0,["a",1],"x"]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":{"b":"c"}},"x"]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[["a",1],"x",["a",1]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[["a",1],{"a":{"b":"c"}},0]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[["a",1],{}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[true,{"a":"b"},null]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[0,{},"x"]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[true,[],{"a":"b"}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":"b"},null]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[true,[],{}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[["a",1],{"a":"b"},{"a":"b"}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[0,{"a":"b"},{"a":"b"}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[true,{},{"a":{"b":"c"}}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[true,{"a":{"b":"c"}}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[null,[],0]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[null,["a",1],["a",1]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[0,"x",{}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[[],null]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{},{"a":"b"},null]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[["x",{}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[true,["a",1],{}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[[],{"a":{"b":"c"}}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{},true,{"a":{"b":"c"}}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[0,[]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[[],"x",[]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[["a",1],0,{"a":"b"}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":{"b":"c"}},["a",1],{"a":{"b":"c"}}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[true,{},[]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[["x",true]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[null,true,"x"]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[null,[],{}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[true,0,0]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[0,[],true]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":{"b":"c"}},{"a":"b"},[]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{},0,{"a":{"b":"c"}}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{},["a",1],[]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[["a",1],{},["a",1]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[[],{"a":"b"}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[true,0]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[0,[],{"a":{"b":"c"}}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[["x",["a",1],true]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[true,["a",1],null]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[[],[]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[null,["a",1],true]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":"b"},0,{}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[["a",1],{"a":{"b":"c"}}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[["x",{"a":"b"},true]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":{"b":"c"}},{"a":"b"},true]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[["x",null,["a",1]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[null,[],"x"]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":"b"},0,["a",1]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[[],null,{}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[null,["a",1],"x"]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[["a",1],{"a":{"b":"c"}},{}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[["a",1],null,{"a":{"b":"c"}}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":"b"},"x",{}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[true,[],"x"]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[null,{"a":{"b":"c"}},{}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[true,{"a":{"b":"c"}},{}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":{"b":"c"}},["a",1],"x"]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[true,true,true]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[0,true,["a",1]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[null,0]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[["x",0]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[[],0,0]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[{"a":{"b":"c"}},{"a":"b"},{}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[0,[],{"a":"b"}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[["a",1],["a",1]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[[],["a",1],[]]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[null,{"a":{"b":"c"}}]],"ok":[]}
+{"fn":"collectFileChangeActivityPathCandidates","args":[[null,{"a":{"b":"c"}},"x"]],"ok":[]}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null]},{"files":[null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[]],"ok":[]}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null]},{"files":[null,null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[]},{"files":[null,null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[]}]],"ok":[]}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null]},{"files":[null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null,null]},{"files":[null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":["x"],"error":"checkpoint.files is not iterable"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null]},{"files":[null,null]},{"files":[null,null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[["a",1]],"error":"checkpoint.files is not iterable"}
+{"fn":"collectThreadOutputRelativePaths","args":[{"a":"b"}],"ok":[]}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null,null]},{"files":[]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[]},{"files":[null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[true],"ok":[]}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[]},{"files":[]},{"files":[null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null]},{"files":[]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[]},{"files":[null]},{"files":[]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[{}],"ok":[]}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null]},{"files":[null,null,null]},{"files":[]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null]},{"files":[null,null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[null],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[]},{"files":[null,null,null]},{"files":[null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null,null]},{"files":[]},{"files":[null,null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null]},{"files":[]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null]},{"files":[]},{"files":[null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null]},{"files":[]},{"files":[null,null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[]},{"files":[null]},{"files":[null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[{"a":{"b":"c"}}],"ok":[]}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null,null]},{"files":[null]},{"files":[]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[]},{"files":[]},{"files":[]}]],"ok":[]}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null]},{"files":[null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null]},{"files":[null]},{"files":[null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null]},{"files":[null,null,null]},{"files":[null,null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null,null]},{"files":[null,null,null]},{"files":[null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[]},{"files":[]},{"files":[null,null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null,null]},{"files":[null,null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null]},{"files":[null,null]},{"files":[null,null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[]},{"files":[null]},{"files":[null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null,null]},{"files":[null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null]},{"files":[null,null]},{"files":[null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null,null]},{"files":[null,null,null]},{"files":[null,null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null,null]},{"files":[null]},{"files":[null,null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null]},{"files":[]},{"files":[]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null,null]},{"files":[null]},{"files":[null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null]},{"files":[null,null,null]},{"files":[null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null,null]},{"files":[null]},{"files":[null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null,null]},{"files":[null,null,null]},{"files":[]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[]},{"files":[null,null,null]},{"files":[null,null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null]},{"files":[null,null]},{"files":[null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null,null]},{"files":[null,null]},{"files":[null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[]},{"files":[null,null]},{"files":[null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[]},{"files":[]}]],"ok":[]}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[]},{"files":[null,null]},{"files":[null,null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null]},{"files":[]},{"files":[null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[0],"ok":[]}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null]},{"files":[]},{"files":[null,null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null]},{"files":[]},{"files":[null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[]},{"files":[null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null]},{"files":[null]},{"files":[null,null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null,null]},{"files":[null,null]},{"files":[null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[]},{"files":[null,null,null]},{"files":[]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null]},{"files":[null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[]},{"files":[null,null]},{"files":[]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[]},{"files":[null,null]},{"files":[null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[]},{"files":[]},{"files":[null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null]},{"files":[null]},{"files":[null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null]},{"files":[null]},{"files":[]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null]},{"files":[null,null,null]},{"files":[]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null,null]},{"files":[]},{"files":[null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[]},{"files":[null]},{"files":[null,null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null]},{"files":[]},{"files":[]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null]},{"files":[null,null,null]},{"files":[null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null,null]},{"files":[]},{"files":[]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null]},{"files":[null,null]},{"files":[]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null]},{"files":[null,null,null]},{"files":[null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null,null]},{"files":[null,null]},{"files":[null,null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null,null]},{"files":[]},{"files":[null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null]},{"files":[null]},{"files":[]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null]},{"files":[null,null]},{"files":[]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null]},{"files":[null]},{"files":[null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null]},{"files":[null,null]},{"files":[null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null,null]},{"files":[null,null]},{"files":[]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null]},{"files":[null]},{"files":[null,null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null]},{"files":[null,null,null]},{"files":[null,null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null]},{"files":[null]},{"files":[null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null]},{"files":[null,null,null]},{"files":[null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null]},{"files":[]},{"files":[null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null,null]},{"files":[null,null,null]},{"files":[null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[null,null]},{"files":[null,null]},{"files":[null,null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"collectThreadOutputRelativePaths","args":[[{"files":[]},{"files":[null,null,null]},{"files":[null]}]],"error":"Cannot read properties of null (reading 'path')"}
+{"fn":"diffStudioWorkspaceScans","args":["x",{}],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[{},["a",1]],"error":"before.get is not a function"}
+{"fn":"diffStudioWorkspaceScans","args":[["a",1],{}],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[["a",1],"x"],"error":"before.get is not a function"}
+{"fn":"diffStudioWorkspaceScans","args":[{"a":{"b":"c"}},null],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[["a",1],["a",1]],"error":"before.get is not a function"}
+{"fn":"diffStudioWorkspaceScans","args":[[],[]],"ok":[]}
+{"fn":"diffStudioWorkspaceScans","args":[{"a":{"b":"c"}},[]],"ok":[]}
+{"fn":"diffStudioWorkspaceScans","args":["x",null],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[{"a":"b"},["a",1]],"error":"before.get is not a function"}
+{"fn":"diffStudioWorkspaceScans","args":[[],true],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[{"a":{"b":"c"}},["a",1]],"error":"before.get is not a function"}
+{"fn":"diffStudioWorkspaceScans","args":["x","x"],"error":"before.get is not a function"}
+{"fn":"diffStudioWorkspaceScans","args":[{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[{"a":"b"},true],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[[],{}],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[null,{}],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[{"a":"b"},{"a":"b"}],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[[],"x"],"error":"before.get is not a function"}
+{"fn":"diffStudioWorkspaceScans","args":[[],{"a":"b"}],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[true,null],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[0,[]],"ok":[]}
+{"fn":"diffStudioWorkspaceScans","args":[{"a":{"b":"c"}},{"a":"b"}],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":["x",{"a":"b"}],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[null,["a",1]],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"diffStudioWorkspaceScans","args":[true,"x"],"error":"before.get is not a function"}
+{"fn":"diffStudioWorkspaceScans","args":[0,true],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[{},[]],"ok":[]}
+{"fn":"diffStudioWorkspaceScans","args":["x",0],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[[],{"a":{"b":"c"}}],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[{},{}],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[{"a":"b"},{}],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":["x",true],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[0,null],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":["x",["a",1]],"error":"before.get is not a function"}
+{"fn":"diffStudioWorkspaceScans","args":[null,{"a":"b"}],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[[],0],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":["x",{"a":{"b":"c"}}],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[["a",1],0],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[true,[]],"ok":[]}
+{"fn":"diffStudioWorkspaceScans","args":[0,{"a":{"b":"c"}}],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[{"a":{"b":"c"}},"x"],"error":"before.get is not a function"}
+{"fn":"diffStudioWorkspaceScans","args":[{},"x"],"error":"before.get is not a function"}
+{"fn":"diffStudioWorkspaceScans","args":[["a",1],null],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[null,true],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[true,{"a":{"b":"c"}}],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[null,[]],"ok":[]}
+{"fn":"diffStudioWorkspaceScans","args":[null,null],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[0,"x"],"error":"before.get is not a function"}
+{"fn":"diffStudioWorkspaceScans","args":[null,"x"],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"diffStudioWorkspaceScans","args":[{"a":"b"},0],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":["x",[]],"ok":[]}
+{"fn":"diffStudioWorkspaceScans","args":[true,{}],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[0,{}],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[{"a":{"b":"c"}},true],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[0,{"a":"b"}],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[{"a":{"b":"c"}},{}],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[{"a":{"b":"c"}},0],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[{"a":"b"},"x"],"error":"before.get is not a function"}
+{"fn":"diffStudioWorkspaceScans","args":[[],["a",1]],"error":"before.get is not a function"}
+{"fn":"diffStudioWorkspaceScans","args":[0,["a",1]],"error":"before.get is not a function"}
+{"fn":"diffStudioWorkspaceScans","args":[{},{"a":{"b":"c"}}],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[null,0],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[{"a":"b"},{"a":{"b":"c"}}],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[{"a":"b"},[]],"ok":[]}
+{"fn":"diffStudioWorkspaceScans","args":[["a",1],true],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[{"a":"b"},null],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[true,0],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[{},0],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[null,{"a":{"b":"c"}}],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[{},true],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[["a",1],[]],"ok":[]}
+{"fn":"diffStudioWorkspaceScans","args":[["a",1],{"a":{"b":"c"}}],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[["a",1],{"a":"b"}],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[true,{"a":"b"}],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[0,0],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[true,true],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[{},null],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[[],null],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[{},{"a":"b"}],"error":"after is not iterable"}
+{"fn":"diffStudioWorkspaceScans","args":[true,["a",1]],"error":"before.get is not a function"}
+{"fn":"diffStudioWorkspaceScans","args":["x","X"],"error":"before.get is not a function"}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],[]],"ok":{"itemType":"studio_outputs","data":{"files":[]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["{name} has {count} itemsstraße","ΣΊΣΥΦΟΣ﻿bom"],{"generatedImage":{"sourcePath":"ab:","fullPath":"key_name-1"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"{name} has {count} itemsstraße"},{"path":"ΣΊΣΥΦΟΣ﻿bom"}],"generatedImage":{"sourcePath":"ab:","fullPath":"key_name-1"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["日本語のテキスト"],{"$undefined":true}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"日本語のテキスト"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["日本語のテキストa","ünïcödé"],{"generatedImage":{"sourcePath":"trailing.","fullPath":"ünïcödé"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"日本語のテキストa"},{"path":"ünïcödé"}],"generatedImage":{"sourcePath":"trailing.","fullPath":"ünïcödé"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["a.b.c"],{"generatedImage":{"sourcePath":"hellotab\tseparated","fullPath":"a😀b😀c"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"a.b.c"}],"generatedImage":{"sourcePath":"hellotab\tseparated","fullPath":"a😀b😀c"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["src/a/b.ts","ΣΊΣΥΦΟΣa"],{}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"src/a/b.ts"},{"path":"ΣΊΣΥΦΟΣa"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":"ΣΊΣΥΦΟΣ","fullPath":"  padded  :"}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":"ΣΊΣΥΦΟΣ","fullPath":"  padded  :"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["hello world"],{"$undefined":true}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"hello world"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],true],"ok":{"itemType":"studio_outputs","data":{"files":[]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["HELLO","aabc","hello world"],{"$undefined":true}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"HELLO"},{"path":"aabc"},{"path":"hello world"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["a.b.c","日本語のテキスト"],{"$undefined":true}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"a.b.c"},{"path":"日本語のテキスト"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["line1\nline2"],{"generatedImage":{"sourcePath":"emoji 👍🏽 mixabc","fullPath":"./x/**/*.json"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"line1\nline2"}],"generatedImage":{"sourcePath":"emoji 👍🏽 mixabc","fullPath":"./x/**/*.json"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["{name} has {count} items","HELLO"],{"generatedImage":{"sourcePath":"HELLO","fullPath":"./x/**/*.json"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"{name} has {count} items"},{"path":"HELLO"}],"generatedImage":{"sourcePath":"HELLO","fullPath":"./x/**/*.json"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["hello"],{"generatedImage":{"sourcePath":"hello","fullPath":"İstanbul"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"hello"}],"generatedImage":{"sourcePath":"hello","fullPath":"İstanbul"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":"line1\nline2","fullPath":"straße"}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":"line1\nline2","fullPath":"straße"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["ΣΊΣΥΦΟΣ","😀"],{"generatedImage":{"sourcePath":"  padded  ","fullPath":"日本語のテキスト"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"ΣΊΣΥΦΟΣ"},{"path":"😀"}],"generatedImage":{"sourcePath":"  padded  ","fullPath":"日本語のテキスト"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["日本語のテキスト","Hello World",":"],{}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"日本語のテキスト"},{"path":"Hello World"},{"path":":"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[":","line1\nline2key_name-1"],{"$undefined":true}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":":"},{"path":"line1\nline2key_name-1"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["  padded  ","a.b.c"],{"generatedImage":{"sourcePath":"é","fullPath":"a:b:c"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"  padded  "},{"path":"a.b.c"}],"generatedImage":{"sourcePath":"é","fullPath":"a:b:c"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["","./x/**/*.json"],{"generatedImage":{"sourcePath":"a.b.c","fullPath":"ns:key.path"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":""},{"path":"./x/**/*.json"}],"generatedImage":{"sourcePath":"a.b.c","fullPath":"ns:key.path"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":"emoji 👍🏽 mix","fullPath":"trailing."}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":"emoji 👍🏽 mix","fullPath":"trailing."}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[""],{}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":""}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":"a😀b😀c","fullPath":"a"}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":"a😀b😀c","fullPath":"a"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[".leading",":",""],{"$undefined":true}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":".leading"},{"path":":"},{"path":""}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["line1\nline2","./x/**/*.json","a😀b😀c"],{"generatedImage":{"sourcePath":"trailing.","fullPath":"a.b.c"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"line1\nline2"},{"path":"./x/**/*.json"},{"path":"a😀b😀c"}],"generatedImage":{"sourcePath":"trailing.","fullPath":"a.b.c"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{}],"ok":{"itemType":"studio_outputs","data":{"files":[]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["{name} has {count} items","aa😀b😀c",":"],{}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"{name} has {count} items"},{"path":"aa😀b😀c"},{"path":":"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":"日本語のテキスト","fullPath":"Hello World"}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":"日本語のテキスト","fullPath":"Hello World"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["a","straßehello world","./x/**/*.json"],{"a":"b"}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"a"},{"path":"straßehello world"},{"path":"./x/**/*.json"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":"﻿bom","fullPath":".leading"}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":"﻿bom","fullPath":".leading"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["src/a/b.ts"],{}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"src/a/b.ts"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[""]],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":""}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["trailing.key_name-1","tab\tseparated"],{"generatedImage":{"sourcePath":"HELLO","fullPath":"a:b:c"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"trailing.key_name-1"},{"path":"tab\tseparated"}],"generatedImage":{"sourcePath":"HELLO","fullPath":"a:b:c"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":"a","fullPath":"straße"}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":"a","fullPath":"straße"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["line1\nline2key_name-1",":"],{"$undefined":true}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"line1\nline2key_name-1"},{"path":":"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["日本語のテキスト"]],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"日本語のテキスト"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"$undefined":true}],"ok":{"itemType":"studio_outputs","data":{"files":[]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":"straße","fullPath":"straße"}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":"straße","fullPath":"straße"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["{name} has {count} itemsé","a😀b😀cns:key.path"],{"generatedImage":{"sourcePath":"İstanbul","fullPath":"trailing.trailing."}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"{name} has {count} itemsé"},{"path":"a😀b😀cns:key.path"}],"generatedImage":{"sourcePath":"İstanbul","fullPath":"trailing.trailing."}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["ünïcödé","","  padded  "]],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"ünïcödé"},{"path":""},{"path":"  padded  "}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["{name} has {count} items"],{}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"{name} has {count} items"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":"ΣΊΣΥΦΟΣ","fullPath":"{name} has {count} items"}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":"ΣΊΣΥΦΟΣ","fullPath":"{name} has {count} items"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":"ΣΊΣΥΦΟΣ","fullPath":"a..b"}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":"ΣΊΣΥΦΟΣ","fullPath":"a..b"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["ns:key.path","ns:key.pathline1\nline2","﻿bom"],{}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"ns:key.path"},{"path":"ns:key.pathline1\nline2"},{"path":"﻿bom"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["a😀b😀c","日本語のテキスト"],{"generatedImage":{"sourcePath":"a","fullPath":"ns:key.path"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"a😀b😀c"},{"path":"日本語のテキスト"}],"generatedImage":{"sourcePath":"a","fullPath":"ns:key.path"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["Hello World",".leading"],[]],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"Hello World"},{"path":".leading"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["ΣΊΣΥΦΟΣ.leading","{name} has {count} items",".leading"],{"generatedImage":{"sourcePath":"a😀b😀c","fullPath":"./x/**/*.json"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"ΣΊΣΥΦΟΣ.leading"},{"path":"{name} has {count} items"},{"path":".leading"}],"generatedImage":{"sourcePath":"a😀b😀c","fullPath":"./x/**/*.json"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["😀"]],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"😀"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["abc","a..b"],{}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"abc"},{"path":"a..b"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[":",":emoji 👍🏽 mix"],{"generatedImage":{"sourcePath":"abc","fullPath":".leading"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":":"},{"path":":emoji 👍🏽 mix"}],"generatedImage":{"sourcePath":"abc","fullPath":".leading"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["tab\tseparated","a😀b😀c","😀"],{"generatedImage":{"sourcePath":"ns:key.path:","fullPath":"emoji 👍🏽 mix"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"tab\tseparated"},{"path":"a😀b😀c"},{"path":"😀"}],"generatedImage":{"sourcePath":"ns:key.path:","fullPath":"emoji 👍🏽 mix"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["tab\tseparatedkey_name-1","src/a/b.ts"],["a",1]],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"tab\tseparatedkey_name-1"},{"path":"src/a/b.ts"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["İstanbul","emoji 👍🏽 mixünïcödé","ΣΊΣΥΦΟΣ"]],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"İstanbul"},{"path":"emoji 👍🏽 mixünïcödé"},{"path":"ΣΊΣΥΦΟΣ"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["a"],{}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"a"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":"emoji 👍🏽 mix","fullPath":"aünïcödé"}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":"emoji 👍🏽 mix","fullPath":"aünïcödé"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["trailing.",".leading","key_name-1"]],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"trailing."},{"path":".leading"},{"path":"key_name-1"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["line1\nline2","a..b"],{"generatedImage":{"sourcePath":"ΣΊΣΥΦΟΣ","fullPath":"日本語のテキスト"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"line1\nline2"},{"path":"a..b"}],"generatedImage":{"sourcePath":"ΣΊΣΥΦΟΣ","fullPath":"日本語のテキスト"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["src/a/b.ts","hello world","{name} has {count} items"],{"$undefined":true}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"src/a/b.ts"},{"path":"hello world"},{"path":"{name} has {count} items"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["line1\nline2",".leading","a  padded  "],{"generatedImage":{"sourcePath":"éab","fullPath":"hello"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"line1\nline2"},{"path":".leading"},{"path":"a  padded  "}],"generatedImage":{"sourcePath":"éab","fullPath":"hello"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["line1\nline2","a:b:cstraße"],{"generatedImage":{"sourcePath":"日本語のテキストtrailing.","fullPath":"İstanbulİstanbul"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"line1\nline2"},{"path":"a:b:cstraße"}],"generatedImage":{"sourcePath":"日本語のテキストtrailing.","fullPath":"İstanbulİstanbul"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["trailing.line1\nline2","HELLO"],true],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"trailing.line1\nline2"},{"path":"HELLO"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[]],"ok":{"itemType":"studio_outputs","data":{"files":[]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["emoji 👍🏽 mix"],{"generatedImage":{"sourcePath":"é","fullPath":"abcsrc/a/b.ts"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"emoji 👍🏽 mix"}],"generatedImage":{"sourcePath":"é","fullPath":"abcsrc/a/b.ts"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["ΣΊΣΥΦΟΣ﻿bom"],{"generatedImage":{"sourcePath":"a..b","fullPath":"Hello World"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"ΣΊΣΥΦΟΣ﻿bom"}],"generatedImage":{"sourcePath":"a..b","fullPath":"Hello World"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["a😀b😀c","{name} has {count} items","a..bΣΊΣΥΦΟΣ"],{"generatedImage":{"sourcePath":"./x/**/*.json","fullPath":"éabc"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"a😀b😀c"},{"path":"{name} has {count} items"},{"path":"a..bΣΊΣΥΦΟΣ"}],"generatedImage":{"sourcePath":"./x/**/*.json","fullPath":"éabc"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["é","hello worlda😀b😀c"],{"generatedImage":{"sourcePath":"ünïcödé","fullPath":"emoji 👍🏽 mix"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"é"},{"path":"hello worlda😀b😀c"}],"generatedImage":{"sourcePath":"ünïcödé","fullPath":"emoji 👍🏽 mix"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":"a:b:c","fullPath":"trailing."}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":"a:b:c","fullPath":"trailing."}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["é","line1\nline2"],{"$undefined":true}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"é"},{"path":"line1\nline2"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["a:b:c"]],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"a:b:c"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":"ünïcödéa😀b😀c","fullPath":"ns:key.path"}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":"ünïcödéa😀b😀c","fullPath":"ns:key.path"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["HELLO","ab","./x/**/*.json"],{"$undefined":true}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"HELLO"},{"path":"ab"},{"path":"./x/**/*.json"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":"emoji 👍🏽 mix","fullPath":"abcΣΊΣΥΦΟΣ"}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":"emoji 👍🏽 mix","fullPath":"abcΣΊΣΥΦΟΣ"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["trailing."],{"generatedImage":{"sourcePath":"  padded  ","fullPath":"emoji 👍🏽 mix"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"trailing."}],"generatedImage":{"sourcePath":"  padded  ","fullPath":"emoji 👍🏽 mix"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["hello world"],{}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"hello world"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["hello worldtab\tseparated","trailing."],{"generatedImage":{"sourcePath":"ΣΊΣΥΦΟΣ","fullPath":".leading"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"hello worldtab\tseparated"},{"path":"trailing."}],"generatedImage":{"sourcePath":"ΣΊΣΥΦΟΣ","fullPath":".leading"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":"日本語のテキスト","fullPath":"key_name-1"}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":"日本語のテキスト","fullPath":"key_name-1"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["HELLO","Hello World"],{"generatedImage":{"sourcePath":"HELLO","fullPath":"emoji 👍🏽 mix"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"HELLO"},{"path":"Hello World"}],"generatedImage":{"sourcePath":"HELLO","fullPath":"emoji 👍🏽 mix"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":"./x/**/*.json","fullPath":":"}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":"./x/**/*.json","fullPath":":"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["İstanbul","é"]],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"İstanbul"},{"path":"é"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["straße"],{"generatedImage":{"sourcePath":"hello world","fullPath":"emoji 👍🏽 mix"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"straße"}],"generatedImage":{"sourcePath":"hello world","fullPath":"emoji 👍🏽 mix"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["ns:key.path","a"],"x"],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"ns:key.path"},{"path":"a"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["a..b","trailing."],{"generatedImage":{"sourcePath":"ab","fullPath":"tab\tseparated"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"a..b"},{"path":"trailing."}],"generatedImage":{"sourcePath":"ab","fullPath":"tab\tseparated"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[".leading","hello","hello world"],{"generatedImage":{"sourcePath":"a:b:c","fullPath":"é"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":".leading"},{"path":"hello"},{"path":"hello world"}],"generatedImage":{"sourcePath":"a:b:c","fullPath":"é"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["line1\nline2"],{"generatedImage":{"sourcePath":"ünïcödé","fullPath":"Hello World./x/**/*.json"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"line1\nline2"}],"generatedImage":{"sourcePath":"ünïcödé","fullPath":"Hello World./x/**/*.json"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["ünïcödéHELLO","ünïcödé"],{"generatedImage":{"sourcePath":"a.b.c","fullPath":"ünïcödé"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"ünïcödéHELLO"},{"path":"ünïcödé"}],"generatedImage":{"sourcePath":"a.b.c","fullPath":"ünïcödé"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["  padded  src/a/b.ts"],{"generatedImage":{"sourcePath":"  padded  ","fullPath":"hellostraße"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"  padded  src/a/b.ts"}],"generatedImage":{"sourcePath":"  padded  ","fullPath":"hellostraße"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":"a","fullPath":"é"}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":"a","fullPath":"é"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[":"],{}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":":"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["é","trailing.","ns:key.path"],{"generatedImage":{"sourcePath":"a:b:c","fullPath":":"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"é"},{"path":"trailing."},{"path":"ns:key.path"}],"generatedImage":{"sourcePath":"a:b:c","fullPath":":"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["a:b:c",":"],{}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"a:b:c"},{"path":":"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["İstanbul"],{"generatedImage":{"sourcePath":"","fullPath":":"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"İstanbul"}],"generatedImage":{"sourcePath":"","fullPath":":"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["hello","a..b"],{"generatedImage":{"sourcePath":"straße","fullPath":"  padded  a..b"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"hello"},{"path":"a..b"}],"generatedImage":{"sourcePath":"straße","fullPath":"  padded  a..b"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["./x/**/*.json"],{"$undefined":true}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"./x/**/*.json"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["HELLO","a..b"],[]],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"HELLO"},{"path":"a..b"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["tab\tseparateda.b.c"],{"generatedImage":{"sourcePath":"emoji 👍🏽 mix","fullPath":"./x/**/*.json"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"tab\tseparateda.b.c"}],"generatedImage":{"sourcePath":"emoji 👍🏽 mix","fullPath":"./x/**/*.json"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["ΣΊΣΥΦΟΣ","日本語のテキスト"],{"generatedImage":{"sourcePath":":","fullPath":""}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"ΣΊΣΥΦΟΣ"},{"path":"日本語のテキスト"}],"generatedImage":{"sourcePath":":","fullPath":""}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["helloİstanbul","é"],{}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"helloİstanbul"},{"path":"é"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["HELLO","trailing."]],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"HELLO"},{"path":"trailing."}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":"a:b:c","fullPath":"hello world"}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":"a:b:c","fullPath":"hello world"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["hello"],{}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"hello"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["emoji 👍🏽 mix","a😀b😀c"],{}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"emoji 👍🏽 mix"},{"path":"a😀b😀c"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["trailing."],{"$undefined":true}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"trailing."}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[":﻿bom","a:b:c"],{"generatedImage":{"sourcePath":".leading","fullPath":".leadinga"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":":﻿bom"},{"path":"a:b:c"}],"generatedImage":{"sourcePath":".leading","fullPath":".leadinga"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["hello","a:b:c"],{"generatedImage":{"sourcePath":"./x/**/*.json","fullPath":"ab"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"hello"},{"path":"a:b:c"}],"generatedImage":{"sourcePath":"./x/**/*.json","fullPath":"ab"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["ns:key.path","é"]],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"ns:key.path"},{"path":"é"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["a😀b😀c","src/a/b.ts"],"x"],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"a😀b😀c"},{"path":"src/a/b.ts"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["😀","abc"],{"generatedImage":{"sourcePath":"{name} has {count} items","fullPath":"a😀b😀c"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"😀"},{"path":"abc"}],"generatedImage":{"sourcePath":"{name} has {count} items","fullPath":"a😀b😀c"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["İstanbul","./x/**/*.jsonemoji 👍🏽 mix"],null],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"İstanbul"},{"path":"./x/**/*.jsonemoji 👍🏽 mix"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["  padded  ","src/a/b.ts"],{"generatedImage":{"sourcePath":"line1\nline2","fullPath":"a😀b😀c"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"  padded  "},{"path":"src/a/b.ts"}],"generatedImage":{"sourcePath":"line1\nline2","fullPath":"a😀b😀c"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],"x"],"ok":{"itemType":"studio_outputs","data":{"files":[]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["trailing.","tab\tseparated",":"],{"generatedImage":{"sourcePath":"line1\nline2key_name-1","fullPath":"emoji 👍🏽 mix"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"trailing."},{"path":"tab\tseparated"},{"path":":"}],"generatedImage":{"sourcePath":"line1\nline2key_name-1","fullPath":"emoji 👍🏽 mix"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":"ab","fullPath":"İstanbul"}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":"ab","fullPath":"İstanbul"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":"a.b.c","fullPath":"ünïcödé"}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":"a.b.c","fullPath":"ünïcödé"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["  padded  ","ünïcödé"],{"generatedImage":{"sourcePath":"é","fullPath":"trailing."}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"  padded  "},{"path":"ünïcödé"}],"generatedImage":{"sourcePath":"é","fullPath":"trailing."}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["﻿bom","a.b.c"],{"generatedImage":{"sourcePath":"a:b:c","fullPath":"line1\nline2"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"﻿bom"},{"path":"a.b.c"}],"generatedImage":{"sourcePath":"a:b:c","fullPath":"line1\nline2"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["tab\tseparated","ΣΊΣΥΦΟΣ","é"],{}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"tab\tseparated"},{"path":"ΣΊΣΥΦΟΣ"},{"path":"é"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["é","./x/**/*.json"],{}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"é"},{"path":"./x/**/*.json"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["HELLO","İstanbul"],{"generatedImage":{"sourcePath":"emoji 👍🏽 mix","fullPath":"HELLO"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"HELLO"},{"path":"İstanbul"}],"generatedImage":{"sourcePath":"emoji 👍🏽 mix","fullPath":"HELLO"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[".leading"],{"generatedImage":{"sourcePath":"  padded  ","fullPath":"tab\tseparated"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":".leading"}],"generatedImage":{"sourcePath":"  padded  ","fullPath":"tab\tseparated"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["é","a😀b😀c","ΣΊΣΥΦΟΣ"],"x"],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"é"},{"path":"a😀b😀c"},{"path":"ΣΊΣΥΦΟΣ"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":":","fullPath":"a:b:c"}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":":","fullPath":"a:b:c"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["emoji 👍🏽 mix","a..b",""],{}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"emoji 👍🏽 mix"},{"path":"a..b"},{"path":""}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":"HELLO","fullPath":"  padded  "}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":"HELLO","fullPath":"  padded  "}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["straße","src/a/b.tsemoji 👍🏽 mix","😀"],null],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"straße"},{"path":"src/a/b.tsemoji 👍🏽 mix"},{"path":"😀"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["😀","{name} has {count} items"]],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"😀"},{"path":"{name} has {count} items"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],["a",1]],"ok":{"itemType":"studio_outputs","data":{"files":[]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["abHello World","Hello World"],{"generatedImage":{"sourcePath":"a..b","fullPath":"é"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"abHello World"},{"path":"Hello World"}],"generatedImage":{"sourcePath":"a..b","fullPath":"é"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["tab\tseparatedtrailing.","é"],{}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"tab\tseparatedtrailing."},{"path":"é"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["é"],{"generatedImage":{"sourcePath":"tab\tseparated","fullPath":"a.b.c"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"é"}],"generatedImage":{"sourcePath":"tab\tseparated","fullPath":"a.b.c"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["a"],{"generatedImage":{"sourcePath":"emoji 👍🏽 mix","fullPath":"hello world"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"a"}],"generatedImage":{"sourcePath":"emoji 👍🏽 mix","fullPath":"hello world"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["trailing.","ΣΊΣΥΦΟΣ"],{"generatedImage":{"sourcePath":"日本語のテキスト","fullPath":"İstanbul"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"trailing."},{"path":"ΣΊΣΥΦΟΣ"}],"generatedImage":{"sourcePath":"日本語のテキスト","fullPath":"İstanbul"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["trailing.a"],{}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"trailing.a"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["src/a/b.ts","a"],{}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"src/a/b.ts"},{"path":"a"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["a😀b😀c./x/**/*.json"],{"generatedImage":{"sourcePath":"Hello World","fullPath":"line1\nline2"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"a😀b😀c./x/**/*.json"}],"generatedImage":{"sourcePath":"Hello World","fullPath":"line1\nline2"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["trailing.ab","ΣΊΣΥΦΟΣ"],{"generatedImage":{"sourcePath":"a","fullPath":".leading"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"trailing.ab"},{"path":"ΣΊΣΥΦΟΣ"}],"generatedImage":{"sourcePath":"a","fullPath":".leading"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":"日本語のテキストhello world","fullPath":"trailing."}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":"日本語のテキストhello world","fullPath":"trailing."}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["a😀b😀c","ΣΊΣΥΦΟΣ"],{"generatedImage":{"sourcePath":"hello world","fullPath":"﻿bom"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"a😀b😀c"},{"path":"ΣΊΣΥΦΟΣ"}],"generatedImage":{"sourcePath":"hello world","fullPath":"﻿bom"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["a.b.c"],{"$undefined":true}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"a.b.c"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["İstanbul"],{"generatedImage":{"sourcePath":"","fullPath":"İstanbul"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"İstanbul"}],"generatedImage":{"sourcePath":"","fullPath":"İstanbul"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["line1\nline2","hello"],{"generatedImage":{"sourcePath":"HELLO","fullPath":"İstanbulstraße"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"line1\nline2"},{"path":"hello"}],"generatedImage":{"sourcePath":"HELLO","fullPath":"İstanbulstraße"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["日本語のテキストkey_name-1","key_name-1","trailing."],["a",1]],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"日本語のテキストkey_name-1"},{"path":"key_name-1"},{"path":"trailing."}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["é"],[]],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"é"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["a","a.b.c","a..b"],{}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"a"},{"path":"a.b.c"},{"path":"a..b"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["ünïcödéstraße"],{"generatedImage":{"sourcePath":":","fullPath":"key_name-1"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"ünïcödéstraße"}],"generatedImage":{"sourcePath":":","fullPath":"key_name-1"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["line1\nline2"],{"generatedImage":{"sourcePath":"HELLO","fullPath":"HELLO"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"line1\nline2"}],"generatedImage":{"sourcePath":"HELLO","fullPath":"HELLO"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":"abc","fullPath":"tab\tseparated日本語のテキスト"}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":"abc","fullPath":"tab\tseparated日本語のテキスト"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["emoji 👍🏽 mixtrailing.","a:b:c"],{}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"emoji 👍🏽 mixtrailing."},{"path":"a:b:c"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":"İstanbul","fullPath":"a:b:c"}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":"İstanbul","fullPath":"a:b:c"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["a:b:c","emoji 👍🏽 mix"],{}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"a:b:c"},{"path":"emoji 👍🏽 mix"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["ünïcödé","hello"],{"generatedImage":{"sourcePath":"a😀","fullPath":"./x/**/*.json"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"ünïcödé"},{"path":"hello"}],"generatedImage":{"sourcePath":"a😀","fullPath":"./x/**/*.json"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[".leading"],{"$undefined":true}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":".leading"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":"a","fullPath":".leading"}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":"a","fullPath":".leading"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":"hello","fullPath":"src/a/b.ts"}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":"hello","fullPath":"src/a/b.ts"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["ΣΊΣΥΦΟΣ","a","ünïcödé"],{}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"ΣΊΣΥΦΟΣ"},{"path":"a"},{"path":"ünïcödé"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["a😀b😀ca:b:c",".leading"]],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"a😀b😀ca:b:c"},{"path":".leading"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["{name} has {count} items","HELLO"],{"$undefined":true}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"{name} has {count} items"},{"path":"HELLO"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["İstanbul","{name} has {count} itemskey_name-1"],{}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"İstanbul"},{"path":"{name} has {count} itemskey_name-1"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["emoji 👍🏽 mix"],{"generatedImage":{"sourcePath":"./x/**/*.json","fullPath":"./x/**/*.json"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"emoji 👍🏽 mix"}],"generatedImage":{"sourcePath":"./x/**/*.json","fullPath":"./x/**/*.json"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["trailing.","ünïcödé","key_name-1"],{"generatedImage":{"sourcePath":"a.b.c","fullPath":"ünïcödé"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"trailing."},{"path":"ünïcödé"},{"path":"key_name-1"}],"generatedImage":{"sourcePath":"a.b.c","fullPath":"ünïcödé"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["key_name-1","tab\tseparated","日本語のテキストΣΊΣΥΦΟΣ"],{"generatedImage":{"sourcePath":"straße","fullPath":"key_name-1"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"key_name-1"},{"path":"tab\tseparated"},{"path":"日本語のテキストΣΊΣΥΦΟΣ"}],"generatedImage":{"sourcePath":"straße","fullPath":"key_name-1"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[".leading","hello world"],{"generatedImage":{"sourcePath":"line1\nline2straße","fullPath":"tab\tseparatedé"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":".leading"},{"path":"hello world"}],"generatedImage":{"sourcePath":"line1\nline2straße","fullPath":"tab\tseparatedé"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["line1\nline2","trailing."],{}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"line1\nline2"},{"path":"trailing."}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["line1\nline2"],{"generatedImage":{"sourcePath":"straße","fullPath":"a😀b😀c"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"line1\nline2"}],"generatedImage":{"sourcePath":"straße","fullPath":"a😀b😀c"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":"﻿bom","fullPath":":src/a/b.ts"}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":"﻿bom","fullPath":":src/a/b.ts"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["straße","tab\tseparated","ünïcödé"],{"generatedImage":{"sourcePath":"a..b","fullPath":"{name} has {count} items"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"straße"},{"path":"tab\tseparated"},{"path":"ünïcödé"}],"generatedImage":{"sourcePath":"a..b","fullPath":"{name} has {count} items"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["straße"],{"$undefined":true}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"straße"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["key_name-1","tab\tseparated"],{}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"key_name-1"},{"path":"tab\tseparated"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["  padded  HELLO","line1\nline2"],{"generatedImage":{"sourcePath":"HELLOkey_name-1","fullPath":"ΣΊΣΥΦΟΣ"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"  padded  HELLO"},{"path":"line1\nline2"}],"generatedImage":{"sourcePath":"HELLOkey_name-1","fullPath":"ΣΊΣΥΦΟΣ"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["abc:","straße"],{"generatedImage":{"sourcePath":"İstanbul","fullPath":"a😀b😀c"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"abc:"},{"path":"straße"}],"generatedImage":{"sourcePath":"İstanbul","fullPath":"a😀b😀c"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["ns:key.path","ab","a😀b😀c"],{"generatedImage":{"sourcePath":"ab","fullPath":".leadingHELLO"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"ns:key.path"},{"path":"ab"},{"path":"a😀b😀c"}],"generatedImage":{"sourcePath":"ab","fullPath":".leadingHELLO"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["ns:key.path","a.b.c","emoji 👍🏽 mix:"],{"generatedImage":{"sourcePath":"日本語のテキスト","fullPath":"hello world./x/**/*.json"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"ns:key.path"},{"path":"a.b.c"},{"path":"emoji 👍🏽 mix:"}],"generatedImage":{"sourcePath":"日本語のテキスト","fullPath":"hello world./x/**/*.json"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["tab\tseparated","emoji 👍🏽 mix"],{}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"tab\tseparated"},{"path":"emoji 👍🏽 mix"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["İstanbul","Hello Worldhello world"],{}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"İstanbul"},{"path":"Hello Worldhello world"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":"﻿bomhello world","fullPath":"a:b:cns:key.path"}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":"﻿bomhello world","fullPath":"a:b:cns:key.path"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["{name} has {count} items","hello worldHELLO","a..b"],{"generatedImage":{"sourcePath":"ünïcödé","fullPath":"src/a/b.ts"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"{name} has {count} items"},{"path":"hello worldHELLO"},{"path":"a..b"}],"generatedImage":{"sourcePath":"ünïcödé","fullPath":"src/a/b.ts"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":"key_name-1","fullPath":"src/a/b.ts"}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":"key_name-1","fullPath":"src/a/b.ts"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["﻿bom","tab\tseparated"],{"generatedImage":{"sourcePath":"😀a.b.c","fullPath":"emoji 👍🏽 mix"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"﻿bom"},{"path":"tab\tseparated"}],"generatedImage":{"sourcePath":"😀a.b.c","fullPath":"emoji 👍🏽 mix"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":"HELLO","fullPath":"Hello World"}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":"HELLO","fullPath":"Hello World"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["a😀b😀c",".leading"],{}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"a😀b😀c"},{"path":".leading"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":"ünïcödé","fullPath":".leading"}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":"ünïcödé","fullPath":".leading"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":"src/a/b.ts","fullPath":"ünïcödé"}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":"src/a/b.ts","fullPath":"ünïcödé"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["ΣΊΣΥΦΟΣ","HELLO"],{}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"ΣΊΣΥΦΟΣ"},{"path":"HELLO"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["Hello World"],{"generatedImage":{"sourcePath":"straße","fullPath":"😀"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"Hello World"}],"generatedImage":{"sourcePath":"straße","fullPath":"😀"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":"ünïcödé","fullPath":""}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":"ünïcödé","fullPath":""}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["a😀b😀c","a😀b😀c","a:b:c"],{}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"a😀b😀c"},{"path":"a😀b😀c"},{"path":"a:b:c"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["ΣΊΣΥΦΟΣünïcödé"]],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"ΣΊΣΥΦΟΣünïcödé"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["hello world","İstanbul  padded  ","emoji 👍🏽 mix"],{"generatedImage":{"sourcePath":"ünïcödé","fullPath":"{name} has {count} items./x/**/*.json"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"hello world"},{"path":"İstanbul  padded  "},{"path":"emoji 👍🏽 mix"}],"generatedImage":{"sourcePath":"ünïcödé","fullPath":"{name} has {count} items./x/**/*.json"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["hello","hello","ΣΊΣΥΦΟΣ"],{"generatedImage":{"sourcePath":"é","fullPath":"😀"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"hello"},{"path":"hello"},{"path":"ΣΊΣΥΦΟΣ"}],"generatedImage":{"sourcePath":"é","fullPath":"😀"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["abc","😀"],{"$undefined":true}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"abc"},{"path":"😀"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["abc","😀","straße"],{}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"abc"},{"path":"😀"},{"path":"straße"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"a":"b"}],"ok":{"itemType":"studio_outputs","data":{"files":[]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":"hello worldhello world","fullPath":"  padded  "}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":"hello worldhello world","fullPath":"  padded  "}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["hello","ünïcödé"]],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"hello"},{"path":"ünïcödé"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["key_name-1emoji 👍🏽 mix","  padded  ","Hello World"],{"generatedImage":{"sourcePath":"a..b","fullPath":"{name} has {count} itemsünïcödé"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"key_name-1emoji 👍🏽 mix"},{"path":"  padded  "},{"path":"Hello World"}],"generatedImage":{"sourcePath":"a..b","fullPath":"{name} has {count} itemsünïcödé"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":"a😀b😀c","fullPath":"ΣΊΣΥΦΟΣabc"}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":"a😀b😀c","fullPath":"ΣΊΣΥΦΟΣabc"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":"ab","fullPath":"key_name-1"}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":"ab","fullPath":"key_name-1"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[],{"generatedImage":{"sourcePath":".leading","fullPath":"a..ba:b:c"}}],"ok":{"itemType":"studio_outputs","data":{"files":[],"generatedImage":{"sourcePath":".leading","fullPath":"a..ba:b:c"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["a.b.c","emoji 👍🏽 mix"],{"a":"b"}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"a.b.c"},{"path":"emoji 👍🏽 mix"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[[".leading","straßestraße","key_name-1"]],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":".leading"},{"path":"straßestraße"},{"path":"key_name-1"}]}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["é","﻿bom","ΣΊΣΥΦΟΣns:key.path"],{"generatedImage":{"sourcePath":"a","fullPath":"Hello World"}}],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"é"},{"path":"﻿bom"},{"path":"ΣΊΣΥΦΟΣns:key.path"}],"generatedImage":{"sourcePath":"a","fullPath":"Hello World"}}}}
+{"fn":"studioOutputsCapturedActivityPayload","args":[["b","a","B","é","10","9","a"],[]],"ok":{"itemType":"studio_outputs","data":{"files":[{"path":"b"},{"path":"a"},{"path":"B"},{"path":"é"},{"path":"10"},{"path":"9"},{"path":"a"}]}}}

@@ -1,0 +1,49 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/accountRpcErrors.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "accountrpcerrors-rs",
+  "exports": [
+    {
+      "name": "unwrapTryPromiseError",
+      "file": "apps/server/src/accountRpcErrors.ts",
+      "line": 16,
+      "params": [
+        {
+          "name": "cause",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "toAccountWsRpcError",
+      "file": "apps/server/src/accountRpcErrors.ts",
+      "line": 25,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "toSensitiveWsRpcError",
+      "file": "apps/server/src/accountRpcErrors.ts",
+      "line": 49,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "toPairingVerificationWsRpcError",
+      "file": "apps/server/src/accountRpcErrors.ts",
+      "line": 68,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    }
+  ]
+}

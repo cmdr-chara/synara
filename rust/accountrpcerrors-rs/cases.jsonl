@@ -1,0 +1,12 @@
+{"fn":"unwrapTryPromiseError","args":[{}],"ok":{}}
+{"fn":"unwrapTryPromiseError","args":[[]],"ok":[]}
+{"fn":"unwrapTryPromiseError","args":[["a",1]],"ok":["a",1]}
+{"fn":"unwrapTryPromiseError","args":[null],"ok":null}
+{"fn":"unwrapTryPromiseError","args":[true],"ok":true}
+{"fn":"unwrapTryPromiseError","args":["x"],"ok":"x"}
+{"fn":"unwrapTryPromiseError","args":[{"a":{"b":"c"}}],"ok":{"a":{"b":"c"}}}
+{"fn":"unwrapTryPromiseError","args":[0],"ok":0}
+{"fn":"unwrapTryPromiseError","args":[{"a":"b"}],"ok":{"a":"b"}}
+{"fn":"unwrapTryPromiseError","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}}
+{"fn":"unwrapTryPromiseError","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}}
+{"fn":"unwrapTryPromiseError","args":[[3,1,2]],"ok":[3,1,2]}

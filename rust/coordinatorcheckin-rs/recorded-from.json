@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/coordinatorCheckin.ts",
+  "files": 1,
+  "fingerprint": "54af17e4da550271",
+  "coverage": {
+    "lines": 106,
+    "reached": 75,
+    "files": [
+      {
+        "file": "packages/shared/src/coordinatorCheckin.ts",
+        "lines": 106,
+        "reached": 75,
+        "missed": "50, 54-58, 82-88, 90-94, 96-108"
+      }
+    ]
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/coordinatorCheckin.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "coordinatorcheckin-rs",
+  "exports": [
+    {
+      "name": "isSilentCoordinatorCheckinReply",
+      "file": "packages/shared/src/coordinatorCheckin.ts",
+      "line": 13,
+      "params": [
+        {
+          "name": "text",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isCoordinatorCheckinUserMessage",
+      "file": "packages/shared/src/coordinatorCheckin.ts",
+      "line": 31,
+      "params": [
+        {
+          "name": "message",
+          "ts_type": "{\n  readonly role: string;\n  readonly dispatchOrigin?: string | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "coordinatorCheckinTurnReport",
+      "file": "packages/shared/src/coordinatorCheckin.ts",
+      "line": 43,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly messages: ReadonlyArray<CoordinatorCheckinMessage>;\n  readonly turnId: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{ readonly silent: boolean; readonly replyText: string | null } | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "suppressCoordinatorCheckinMessages",
+      "file": "packages/shared/src/coordinatorCheckin.ts",
+      "line": 73,
+      "params": [
+        {
+          "name": "messages",
+          "ts_type": "ReadonlyArray<(CoordinatorCheckinMessage)>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{ readonly messages: (CoordinatorCheckinMessage)[]; readonly checkinTurnIds: ReadonlySet<string> }",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

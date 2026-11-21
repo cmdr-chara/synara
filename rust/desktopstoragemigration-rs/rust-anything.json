@@ -1,0 +1,102 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/desktopStorageMigration.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "desktopstoragemigration-rs",
+  "exports": [
+    {
+      "name": "isSynaraStorageKey",
+      "file": "apps/desktop/src/desktopStorageMigration.ts",
+      "line": 24,
+      "params": [
+        {
+          "name": "key",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "validateSynaraStorageSnapshot",
+      "file": "apps/desktop/src/desktopStorageMigration.ts",
+      "line": 28,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "SynaraStorageSnapshot | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveSynaraStorageSnapshotPath",
+      "file": "apps/desktop/src/desktopStorageMigration.ts",
+      "line": 63,
+      "params": [
+        {
+          "name": "userDataPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readSynaraStorageSnapshot",
+      "file": "apps/desktop/src/desktopStorageMigration.ts",
+      "line": 67,
+      "params": [
+        {
+          "name": "snapshotPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "SynaraStorageSnapshot | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "acknowledgeSynaraStorageSnapshot",
+      "file": "apps/desktop/src/desktopStorageMigration.ts",
+      "line": 79,
+      "params": [
+        {
+          "name": "snapshotPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<void>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

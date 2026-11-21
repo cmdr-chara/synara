@@ -1,0 +1,150 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/threadWorkspace.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "threadworkspace-rs",
+  "exports": [
+    {
+      "name": "normalizeWorkspaceRootForComparison",
+      "file": "packages/shared/src/threadWorkspace.ts",
+      "line": 33,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "NormalizeWorkspaceRootForComparisonOptions",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "workspaceRootsEqual",
+      "file": "packages/shared/src/threadWorkspace.ts",
+      "line": 72,
+      "params": [
+        {
+          "name": "left",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "right",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "NormalizeWorkspaceRootForComparisonOptions",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isWorkspaceRootWithin",
+      "file": "packages/shared/src/threadWorkspace.ts",
+      "line": 87,
+      "params": [
+        {
+          "name": "candidate",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "ancestorRoot",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "NormalizeWorkspaceRootForComparisonOptions",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isScratchWorkspacePath",
+      "file": "packages/shared/src/threadWorkspace.ts",
+      "line": 113,
+      "params": [
+        {
+          "name": "filePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deriveAssociatedWorktreeMetadata",
+      "file": "packages/shared/src/threadWorkspace.ts",
+      "line": 119,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  branch?: string | null;\n  worktreePath?: string | null;\n  // Checked with `!== undefined` below to distinguish \"derive from worktreePath\"\n  // (undefined) from \"explicitly none\" (null). The thread schema marks these\n  // Schema.optional, so the param type must admit an explicit undefined under\n  // exactOptionalPropertyTypes.\n  associatedWorktreePath?: string | null | undefined;\n  associatedWorktreeBranch?: string | null | undefined;\n  associatedWorktreeRef?: string | null | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "AssociatedWorktreeMetadata",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deriveAssociatedWorktreeMetadataPatch",
+      "file": "packages/shared/src/threadWorkspace.ts",
+      "line": 152,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  branch?: string | null;\n  worktreePath?: string | null;\n  // Same undefined-aware semantics as deriveAssociatedWorktreeMetadata above.\n  associatedWorktreePath?: string | null | undefined;\n  associatedWorktreeBranch?: string | null | undefined;\n  associatedWorktreeRef?: string | null | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "AssociatedWorktreeMetadataPatch",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/threadWorkspace.ts",
+  "files": 1,
+  "fingerprint": "02e3ac07f3d8382c",
+  "coverage": {
+    "lines": 165,
+    "reached": 157,
+    "files": [
+      {
+        "file": "packages/shared/src/threadWorkspace.ts",
+        "lines": 165,
+        "reached": 157,
+        "missed": "24-25, 50, 61, 63-64, 67-68"
+      }
+    ]
+  }
+}

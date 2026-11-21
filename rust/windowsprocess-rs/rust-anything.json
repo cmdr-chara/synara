@@ -1,0 +1,126 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/windowsProcess.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "windowsprocess-rs",
+  "exports": [
+    {
+      "name": "parseWindowsWslUncPath",
+      "file": "packages/shared/src/windowsProcess.ts",
+      "line": 42,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "WindowsWslUncPath | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isWindowsBatchCommand",
+      "file": "packages/shared/src/windowsProcess.ts",
+      "line": 64,
+      "params": [
+        {
+          "name": "command",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildWindowsBatchCommandArgs",
+      "file": "packages/shared/src/windowsProcess.ts",
+      "line": 77,
+      "params": [
+        {
+          "name": "command",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "args",
+          "ts_type": "ReadonlyArray<string>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveWindowsCommandPath",
+      "file": "packages/shared/src/windowsProcess.ts",
+      "line": 100,
+      "params": [
+        {
+          "name": "command",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "input",
+          "ts_type": "WindowsSafeProcessInput",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "prepareWindowsSafeProcess",
+      "file": "packages/shared/src/windowsProcess.ts",
+      "line": 119,
+      "params": [
+        {
+          "name": "command",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "args",
+          "ts_type": "ReadonlyArray<string>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "input",
+          "ts_type": "WindowsSafeProcessInput",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "WindowsSafeProcessCommand",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

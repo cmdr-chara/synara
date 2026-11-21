@@ -1,0 +1,29 @@
+{
+  "unit": "packages/shared/src/windowsProcess.ts",
+  "files": 1,
+  "fingerprint": "5e725aa8cb3e1f62",
+  "coverage": {
+    "lines": 476,
+    "reached": 300,
+    "files": [
+      {
+        "file": "packages/shared/src/executable.ts",
+        "lines": 299,
+        "reached": 180,
+        "missed": "42-53, 64-68, 103-111, 121-126, 181-185, 196-204, 210-219, 226-227, 241-242, 251-258, 266-268, 278-291, 293-319, 323-329"
+      },
+      {
+        "file": "packages/shared/src/platformEnvironment.ts",
+        "lines": 33,
+        "reached": 9,
+        "missed": "7-10, 13-14, 17-21, 24-29, 32-33, 36-40"
+      },
+      {
+        "file": "packages/shared/src/windowsProcess.ts",
+        "lines": 144,
+        "reached": 111,
+        "missed": "50-51, 132-146, 148-156, 158-164"
+      }
+    ]
+  }
+}

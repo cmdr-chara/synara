@@ -1,0 +1,1134 @@
+{"fn":"parseWindowsWslUncPath","args":["  padded  "],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["Hello World"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["İstanbul"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":[""],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["hello world"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["a:b:cHELLO"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["﻿bom"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["a"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["trailing."],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["ns:key.path"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["tab\tseparatedab"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["﻿bomHello World"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["日本語のテキスト"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["abc"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["é"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["😀"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["./x/**/*.jsona.b.c"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["emoji 👍🏽 mix"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["helloa.b.c"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["ab"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["straße"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["a.b.c"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["HELLO"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["src/a/b.ts"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["﻿bomstraße"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["straße日本語のテキスト"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["ahello"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["İstanbulHello World"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["  padded  trailing."],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":[".leading"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["key_name-1"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["a:b:c"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["./x/**/*.json"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":[":"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["tab\tseparated"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["hello"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["emoji 👍🏽 mixsrc/a/b.ts"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["a..b日本語のテキスト"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["line1\nline2a😀b😀c"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["line1\nline2"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["日本語のテキストabc"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["﻿boma:b:c"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["trailing.Hello World"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["{name} has {count} itemsHELLO"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["éns:key.path"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["line1\nline2é"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["a😀b😀c"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["hello worlda..b"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["a..b"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["./x/**/*.jsonΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["ünïcödé"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["a:b:ctrailing."],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["﻿bomemoji 👍🏽 mix"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["{name} has {count} items"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["a..ba"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["a😀b😀ca"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":[".leadingHELLO"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["  padded  Hello World"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["a😀b😀cline1\nline2"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["tab\tseparatedabc"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["ΣΊΣΥΦΟΣtab\tseparated"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["abca:b:c"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["abcünïcödé"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["ΣΊΣΥΦΟΣ日本語のテキスト"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["日本語のテキストa"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["a..ba..b"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["./x/**/*.jsonsrc/a/b.ts"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["ΣΊΣΥΦΟΣhello"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["日本語のテキストns:key.path"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["straßehello"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["ΣΊΣΥΦΟΣkey_name-1"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["src/a/b.ts😀"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["a😀b😀cns:key.path"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["ΣΊΣΥΦΟΣa😀b😀c"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["trailing.abc"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["a:b:c日本語のテキスト"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["a:b:csrc/a/b.ts"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["trailing.trailing."],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["tab\tseparateda"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["日本語のテキストΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["😀trailing."],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["ünïcödésrc/a/b.ts"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["  padded  straße"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["a..bΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["{name} has {count} items:"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["HELLOabc"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["a  padded  "],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["😀:"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["key_name-1a.b.c"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["ünïcödéa😀b😀c"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["abca"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["İstanbula:b:c"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["aa"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["straße:"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["key_name-1straße"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["line1\nline2hello"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["src/a/b.ts﻿bom"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["Hello World😀"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["{name} has {count} itemstrailing."],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["a..bünïcödé"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["abhello world"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["straßea:b:c"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["hello world{name} has {count} items"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["😀é"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["  padded  a:b:c"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["  padded  hello world"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["straßetrailing."],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["a:b:cemoji 👍🏽 mix"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["hello worldHello World"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["a:b:ca😀b😀c"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["a..b{name} has {count} items"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["ΣΊΣΥΦΟΣstraße"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["src/a/b.tstab\tseparated"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["src/a/b.tsHELLO"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["İstanbul.leading"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["hello world  padded  "],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["HELLOİstanbul"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["abcabc"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["abcns:key.path"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["a😀b😀ctrailing."],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["a😀b😀ckey_name-1"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["abcHello World"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["HELLOünïcödé"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["ünïcödéünïcödé"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["abcé"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":[".leadingHello World"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["Hello Worldline1\nline2"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":[".leadingab"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["Hello Worldabc"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["İstanbulΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["  padded  a..b"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["straßea.b.c"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":[".leadinga.b.c"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["line1\nline2tab\tseparated"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["😀hello world"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["😀HELLO"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["ünïcödéΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["straßeab"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["ns:key.path﻿bom"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["abc.leading"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["  padded  ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["HELLOtrailing."],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["a..bHello World"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["a😀b😀cΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["./x/**/*.jsontab\tseparated"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["src/a/b.tsline1\nline2"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["aba..b"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["line1\nline2日本語のテキスト"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["Hello WorldHello World"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["😀emoji 👍🏽 mix"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["éab"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":[":a😀b😀c"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["src/a/b.tsΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["hello worldé"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["ns:key.pathab"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["aé"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":[".leadingé"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":[".leadinga..b"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["tab\tseparatedkey_name-1"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["abchello"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["trailing.hello"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":[".leading﻿bom"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["src/a/b.tsns:key.path"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["étrailing."],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["日本語のテキストé"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["aemoji 👍🏽 mix"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["trailing.a😀b😀c"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["hellons:key.path"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["ns:key.patha..b"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["HELLOstraße"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["aba😀b😀c"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["a:b:cstraße"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["straßeabc"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["key_name-1😀"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["HELLOkey_name-1"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["Hello Worlda..b"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["abab"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":[":  padded  "],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["key_name-1.leading"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["aba.b.c"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["éΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["😀ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["ns:key.pathHELLO"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["﻿bom日本語のテキスト"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["straßesrc/a/b.ts"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["tab\tseparateda..b"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["ünïcödéhello"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["emoji 👍🏽 mixa:b:c"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":[":{name} has {count} items"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["key_name-1a..b"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["key_name-1tab\tseparated"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["./x/**/*.jsonkey_name-1"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["İstanbulline1\nline2"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["HELLOa"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":[".leadingtab\tseparated"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["ünïcödéab"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["./x/**/*.jsonns:key.path"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["{name} has {count} itemsé"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["héllo wörld"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["👍🏽 thumbs"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["日本語"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["ılık ırmak"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["👨‍👩‍👧 family"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["a b"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["a😀b"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["a²b x½ y①"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["aⅠb Ⅻ"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["a𐐀b 𝐀bc"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["कि ٣٤"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["Iı İi"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["K K k"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["ſ s S"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["x‍y 👨‍👩‍👧"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["a b c　d"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["١٢٣ ٤٥"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["𝟘𝟙 ²³"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["snake_case foo-bar o'neil"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["ǅungla Ǆ"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["one\r\ntwo threefour"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["café café"],"ok":null}
+{"fn":"parseWindowsWslUncPath","args":["ΣΑΣ σας ς"],"ok":null}
+{"fn":"isWindowsBatchCommand","args":["﻿bom"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["  padded  İstanbul"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["a.b.c"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["straße"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["  padded  "],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["a😀b😀c"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["a..b"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["a./x/**/*.json"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["key_name-1"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":[":emoji 👍🏽 mix"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["line1\nline2"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":[""],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["İstanbul"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["emoji 👍🏽 mix"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["ünïcödé"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["😀"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["Hello World"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["a:b:c"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["abΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["key_name-1straße"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["hello"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["hello world"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["HELLO"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["a:b:c./x/**/*.json"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":[".leading"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["é"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["src/a/b.tsa..b"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["src/a/b.ts"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["日本語のテキスト"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["abc"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["ab.leading"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["ns:key.path"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["ünïcödé😀"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["tab\tseparated./x/**/*.json"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":[":"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["ab"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["./x/**/*.json﻿bom"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["a"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["{name} has {count} items./x/**/*.json"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["hello:"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["abca.b.c"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["é😀"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["trailing."],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["{name} has {count} itemsns:key.path"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["{name} has {count} items"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["abns:key.path"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["abcab"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["ns:key.path日本語のテキスト"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["emoji 👍🏽 mix:"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["İstanbulsrc/a/b.ts"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["a.b.c  padded  "],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["src/a/b.ts{name} has {count} items"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["﻿bom.leading"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["ns:key.path﻿bom"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["ns:key.pathkey_name-1"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["tab\tseparated"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["Hello Worldhello"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["a.b.ctrailing."],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["./x/**/*.json"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["  padded  ﻿bom"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["a:b:ca"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["hello worldİstanbul"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["﻿bomhello world"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["é./x/**/*.json"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["{name} has {count} itemstrailing."],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["line1\nline2hello world"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["trailing.emoji 👍🏽 mix"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["İstanbul:"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["asrc/a/b.ts"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["﻿bom:"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["ab日本語のテキスト"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["ünïcödé.leading"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["key_name-1a.b.c"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["aa😀b😀c"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["key_name-1tab\tseparated"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["日本語のテキストstraße"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["helloemoji 👍🏽 mix"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["a:b:ckey_name-1"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["a.b.c日本語のテキスト"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["a..babc"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["日本語のテキストHELLO"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["emoji 👍🏽 mixstraße"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["abtrailing."],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["ΣΊΣΥΦΟΣ:"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["hello worldkey_name-1"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["a..ba:b:c"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["a..btab\tseparated"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["src/a/b.ts.leading"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["ünïcödéline1\nline2"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["éhello"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["  padded  😀"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["hello{name} has {count} items"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["./x/**/*.jsonHello World"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["﻿boma.b.c"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["trailing.a"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["emoji 👍🏽 mixhello world"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["İstanbulHELLO"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["ns:key.pathsrc/a/b.ts"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["Hello Worldhello world"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["abkey_name-1"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["éns:key.path"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["key_name-1é"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["trailing.hello world"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["a:b:c{name} has {count} items"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["😀src/a/b.ts"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["a.b.chello"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["HELLOkey_name-1"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["日本語のテキストa:b:c"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["abca:b:c"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["a..bünïcödé"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["straße.leading"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["a😀b😀ctab\tseparated"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["straßea:b:c"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["aİstanbul"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["src/a/b.tsé"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["straßea..b"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":[":src/a/b.ts"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["ünïcödéHELLO"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["aab"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["ns:key.pathstraße"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["abcé"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["emoji 👍🏽 mix./x/**/*.json"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["😀a..b"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["ns:key.patha:b:c"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":[":./x/**/*.json"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["straßeHELLO"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["HELLOsrc/a/b.ts"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["key_name-1a:b:c"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":[".leadingé"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["ns:key.pathns:key.path"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["a.b.cünïcödé"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["hellohello world"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["HELLOİstanbul"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["a😀b😀ca:b:c"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["HELLOé"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["  padded  src/a/b.ts"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["HELLO  padded  "],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["﻿bomkey_name-1"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["a..bé"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["日本語のテキスト.leading"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["key_name-1  padded  "],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["İstanbula..b"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["Hello Worlda:b:c"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["src/a/b.tsHELLO"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["trailing.{name} has {count} items"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["line1\nline2a..b"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["tab\tseparated日本語のテキスト"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["ns:key.pathabc"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["ns:key.pathΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["a:b:c日本語のテキスト"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["a😀b😀c./x/**/*.json"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":[":hello"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":[":line1\nline2"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["src/a/b.tsab"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["{name} has {count} itemsstraße"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["😀a:b:c"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["HELLO{name} has {count} items"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["ΣΊΣΥΦΟΣ./x/**/*.json"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":[":ünïcödé"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["straßeΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["İstanbul日本語のテキスト"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["./x/**/*.jsonsrc/a/b.ts"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["emoji 👍🏽 mixtab\tseparated"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["./x/**/*.jsonHELLO"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["a😀b😀c﻿bom"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["{name} has {count} itemshello"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":[".leading{name} has {count} items"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["é{name} has {count} items"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["line1\nline2emoji 👍🏽 mix"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["  padded  key_name-1"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["trailing.é"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["a.b.ctab\tseparated"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["key_name-1.leading"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["key_name-1hello world"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["  padded  ./x/**/*.json"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["hello world﻿bom"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["abemoji 👍🏽 mix"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":[":ns:key.path"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["  padded  :"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["abcstraße"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["tab\tseparated:"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":[".leading﻿bom"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["line1\nline2straße"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["helloa.b.c"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["İstanbulns:key.path"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":[".leadinghello world"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["tab\tseparatedsrc/a/b.ts"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["ns:key.path  padded  "],"ok":false}
+{"fn":"isWindowsBatchCommand","args":[".leadingHello World"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["emoji 👍🏽 mixab"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["😀a.b.c"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["key_name-1ns:key.path"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["é﻿bom"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["line1\nline2Hello World"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["a..bhello world"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["line1\nline2HELLO"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["ns:key.path😀"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["hellotab\tseparated"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["helloHello World"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["héllo wörld"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["👍🏽 thumbs"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["日本語"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["ılık ırmak"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["👨‍👩‍👧 family"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["a b"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["a😀b"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["a²b x½ y①"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["aⅠb Ⅻ"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["a𐐀b 𝐀bc"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["कि ٣٤"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["Iı İi"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["K K k"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["ſ s S"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["x‍y 👨‍👩‍👧"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["a b c　d"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["١٢٣ ٤٥"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["𝟘𝟙 ²³"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["snake_case foo-bar o'neil"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["ǅungla Ǆ"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["one\r\ntwo threefour"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["café café"],"ok":false}
+{"fn":"isWindowsBatchCommand","args":["ΣΑΣ σας ς"],"ok":false}
+{"fn":"buildWindowsBatchCommandArgs","args":["",["a.b.c  padded  "]],"ok":["/d","/s","/v:off","/c","call \"\" \"a.b.c  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["straße",[]],"ok":["/d","/s","/v:off","/c","call \"straße\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["src/a/b.ts",["  padded  ","日本語のテキスト"]],"ok":["/d","/s","/v:off","/c","call \"src/a/b.ts\" \"  padded  \" \"日本語のテキスト\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["a..b",["😀"]],"ok":["/d","/s","/v:off","/c","call \"a..b\" \"😀\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["HELLO",["﻿bom{name} has {count} items","src/a/b.ts"]],"ok":["/d","/s","/v:off","/c","call \"HELLO\" \"﻿bom{name} has {count} items\" \"src/a/b.ts\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["İstanbul",["tab\tseparated"]],"ok":["/d","/s","/v:off","/c","call \"İstanbul\" \"tab\tseparated\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["abc",["ΣΊΣΥΦΟΣ","a..bns:key.path"]],"ok":["/d","/s","/v:off","/c","call \"abc\" \"ΣΊΣΥΦΟΣ\" \"a..bns:key.path\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["İstanbul",["trailing.","İstanbul","key_name-1"]],"ok":["/d","/s","/v:off","/c","call \"İstanbul\" \"trailing.\" \"İstanbul\" \"key_name-1\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["ΣΊΣΥΦΟΣ",["straße","ab","😀abc"]],"ok":["/d","/s","/v:off","/c","call \"ΣΊΣΥΦΟΣ\" \"straße\" \"ab\" \"😀abc\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["ab",["straße"]],"ok":["/d","/s","/v:off","/c","call \"ab\" \"straße\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["straßeab",["hello worldns:key.path","a😀b😀c","İstanbul"]],"ok":["/d","/s","/v:off","/c","call \"straßeab\" \"hello worldns:key.path\" \"a😀b😀c\" \"İstanbul\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["😀",["abctab\tseparated","ab  padded  "]],"ok":["/d","/s","/v:off","/c","call \"😀\" \"abctab\tseparated\" \"ab  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["tab\tseparated",["ΣΊΣΥΦΟΣ","abc","ns:key.path"]],"ok":["/d","/s","/v:off","/c","call \"tab\tseparated\" \"ΣΊΣΥΦΟΣ\" \"abc\" \"ns:key.path\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["é",["é","a..b","{name} has {count} items"]],"ok":["/d","/s","/v:off","/c","call \"é\" \"é\" \"a..b\" \"{name} has {count} items\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["HELLO",["a..b"]],"ok":["/d","/s","/v:off","/c","call \"HELLO\" \"a..b\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["Hello World",["日本語のテキスト",":"]],"ok":["/d","/s","/v:off","/c","call \"Hello World\" \"日本語のテキスト\" \":\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["a:b:c",["é","emoji 👍🏽 mix","a.b.c"]],"ok":["/d","/s","/v:off","/c","call \"a:b:c\" \"é\" \"emoji 👍🏽 mix\" \"a.b.c\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["日本語のテキストa:b:c",["./x/**/*.jsonstraße","﻿bom"]],"ok":["/d","/s","/v:off","/c","call \"日本語のテキストa:b:c\" \"./x/**/*.jsonstraße\" \"﻿bom\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["abemoji 👍🏽 mix",["helloa.b.c"]],"ok":["/d","/s","/v:off","/c","call \"abemoji 👍🏽 mix\" \"helloa.b.c\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":[":",[]],"ok":["/d","/s","/v:off","/c","call \":\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["ns:key.path",["a😀b😀c","İstanbulns:key.path","ΣΊΣΥΦΟΣ"]],"ok":["/d","/s","/v:off","/c","call \"ns:key.path\" \"a😀b😀c\" \"İstanbulns:key.path\" \"ΣΊΣΥΦΟΣ\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["abemoji 👍🏽 mix",["straße","straße","trailing."]],"ok":["/d","/s","/v:off","/c","call \"abemoji 👍🏽 mix\" \"straße\" \"straße\" \"trailing.\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["Hello Worldtab\tseparated",["straße",":"]],"ok":["/d","/s","/v:off","/c","call \"Hello Worldtab\tseparated\" \"straße\" \":\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["ab",["./x/**/*.json"]],"ok":["/d","/s","/v:off","/c","call \"ab\" \"./x/**/*.json\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["ab",["a.b.c","ünïcödé","a..b"]],"ok":["/d","/s","/v:off","/c","call \"ab\" \"a.b.c\" \"ünïcödé\" \"a..b\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["emoji 👍🏽 mix./x/**/*.json",[]],"ok":["/d","/s","/v:off","/c","call \"emoji 👍🏽 mix./x/**/*.json\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["tab\tseparated",["emoji 👍🏽 mix",".leadinga"]],"ok":["/d","/s","/v:off","/c","call \"tab\tseparated\" \"emoji 👍🏽 mix\" \".leadinga\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["line1\nline2",["HELLO"]],"error":"Cannot safely execute Windows batch command containing cmd.exe control characters."}
+{"fn":"buildWindowsBatchCommandArgs","args":["😀",["aΣΊΣΥΦΟΣ"]],"ok":["/d","/s","/v:off","/c","call \"😀\" \"aΣΊΣΥΦΟΣ\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["hello world",["İstanbul","ünïcödé"]],"ok":["/d","/s","/v:off","/c","call \"hello world\" \"İstanbul\" \"ünïcödé\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["ns:key.path",["a😀b😀c","İstanbul"]],"ok":["/d","/s","/v:off","/c","call \"ns:key.path\" \"a😀b😀c\" \"İstanbul\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["ΣΊΣΥΦΟΣ  padded  ",[]],"ok":["/d","/s","/v:off","/c","call \"ΣΊΣΥΦΟΣ  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["tab\tseparated",["hello😀","src/a/b.ts","a.b.c"]],"ok":["/d","/s","/v:off","/c","call \"tab\tseparated\" \"hello😀\" \"src/a/b.ts\" \"a.b.c\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["ünïcödé",[]],"ok":["/d","/s","/v:off","/c","call \"ünïcödé\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["line1\nline2",["a"]],"error":"Cannot safely execute Windows batch command containing cmd.exe control characters."}
+{"fn":"buildWindowsBatchCommandArgs","args":["a..bé",[]],"ok":["/d","/s","/v:off","/c","call \"a..bé\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["﻿bom",[]],"ok":["/d","/s","/v:off","/c","call \"﻿bom\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["{name} has {count} items",[]],"ok":["/d","/s","/v:off","/c","call \"{name} has {count} items\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["",["","İstanbul","./x/**/*.jsonstraße"]],"ok":["/d","/s","/v:off","/c","call \"\" \"\" \"İstanbul\" \"./x/**/*.jsonstraße\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["ΣΊΣΥΦΟΣ",["İstanbul"]],"ok":["/d","/s","/v:off","/c","call \"ΣΊΣΥΦΟΣ\" \"İstanbul\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["ns:key.path",[]],"ok":["/d","/s","/v:off","/c","call \"ns:key.path\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":[".leading",["a.b.c","./x/**/*.jsonünïcödé","{name} has {count} items"]],"ok":["/d","/s","/v:off","/c","call \".leading\" \"a.b.c\" \"./x/**/*.jsonünïcödé\" \"{name} has {count} items\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["ünïcödé",["./x/**/*.json"]],"ok":["/d","/s","/v:off","/c","call \"ünïcödé\" \"./x/**/*.json\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["İstanbul",[]],"ok":["/d","/s","/v:off","/c","call \"İstanbul\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["  padded  ",[":","﻿bom"]],"ok":["/d","/s","/v:off","/c","call \"  padded  \" \":\" \"﻿bom\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["  padded  ",[]],"ok":["/d","/s","/v:off","/c","call \"  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["ünïcödé",["a.b.c","","Hello World"]],"ok":["/d","/s","/v:off","/c","call \"ünïcödé\" \"a.b.c\" \"\" \"Hello World\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["HELLOtrailing.",[]],"ok":["/d","/s","/v:off","/c","call \"HELLOtrailing.\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["Hello World",["😀",".leading","hello worldΣΊΣΥΦΟΣ"]],"ok":["/d","/s","/v:off","/c","call \"Hello World\" \"😀\" \".leading\" \"hello worldΣΊΣΥΦΟΣ\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["日本語のテキスト",[".leading.leading"]],"ok":["/d","/s","/v:off","/c","call \"日本語のテキスト\" \".leading.leading\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["HELLO",[]],"ok":["/d","/s","/v:off","/c","call \"HELLO\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["a",[]],"ok":["/d","/s","/v:off","/c","call \"a\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["ab",["hello world","İstanbul","  padded  "]],"ok":["/d","/s","/v:off","/c","call \"ab\" \"hello world\" \"İstanbul\" \"  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["a:b:c",[]],"ok":["/d","/s","/v:off","/c","call \"a:b:c\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["Hello World",["İstanbul","line1\nline2  padded  "]],"error":"Cannot safely execute Windows batch argument containing cmd.exe control characters."}
+{"fn":"buildWindowsBatchCommandArgs","args":["é",["straße","﻿bom"]],"ok":["/d","/s","/v:off","/c","call \"é\" \"straße\" \"﻿bom\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["{name} has {count} items",[".leading","hello","a😀b😀c"]],"ok":["/d","/s","/v:off","/c","call \"{name} has {count} items\" \".leading\" \"hello\" \"a😀b😀c\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":[":",["ab","tab\tseparated"]],"ok":["/d","/s","/v:off","/c","call \":\" \"ab\" \"tab\tseparated\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["HELLO",["a.b.c","Hello World"]],"ok":["/d","/s","/v:off","/c","call \"HELLO\" \"a.b.c\" \"Hello World\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["éline1\nline2",["İstanbul"]],"error":"Cannot safely execute Windows batch command containing cmd.exe control characters."}
+{"fn":"buildWindowsBatchCommandArgs","args":["  padded  ",["İstanbulHello World","aba:b:c"]],"ok":["/d","/s","/v:off","/c","call \"  padded  \" \"İstanbulHello World\" \"aba:b:c\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["hello",["line1\nline2"]],"error":"Cannot safely execute Windows batch argument containing cmd.exe control characters."}
+{"fn":"buildWindowsBatchCommandArgs","args":[":é",[]],"ok":["/d","/s","/v:off","/c","call \":é\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["a.b.c",["ns:key.path"]],"ok":["/d","/s","/v:off","/c","call \"a.b.c\" \"ns:key.path\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["emoji 👍🏽 mix",["ünïcödéa:b:c","straße"]],"ok":["/d","/s","/v:off","/c","call \"emoji 👍🏽 mix\" \"ünïcödéa:b:c\" \"straße\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["a😀b😀c",[]],"ok":["/d","/s","/v:off","/c","call \"a😀b😀c\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["aline1\nline2",[".leading","a😀b😀c","hello"]],"error":"Cannot safely execute Windows batch command containing cmd.exe control characters."}
+{"fn":"buildWindowsBatchCommandArgs","args":["a😀b😀c",["a:b:c","key_name-1"]],"ok":["/d","/s","/v:off","/c","call \"a😀b😀c\" \"a:b:c\" \"key_name-1\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["a..ba..b",[]],"ok":["/d","/s","/v:off","/c","call \"a..ba..b\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["emoji 👍🏽 mix",[]],"ok":["/d","/s","/v:off","/c","call \"emoji 👍🏽 mix\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["HELLO",["HELLOab"]],"ok":["/d","/s","/v:off","/c","call \"HELLO\" \"HELLOab\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["hello worldabc",["HELLO"]],"ok":["/d","/s","/v:off","/c","call \"hello worldabc\" \"HELLO\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["trailing.",["emoji 👍🏽 mixa.b.c"]],"ok":["/d","/s","/v:off","/c","call \"trailing.\" \"emoji 👍🏽 mixa.b.c\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["abstraße",["absrc/a/b.ts","{name} has {count} items","HELLO"]],"ok":["/d","/s","/v:off","/c","call \"abstraße\" \"absrc/a/b.ts\" \"{name} has {count} items\" \"HELLO\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["  padded  Hello World",[]],"ok":["/d","/s","/v:off","/c","call \"  padded  Hello World\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["tab\tseparated",["src/a/b.ts","hello world"]],"ok":["/d","/s","/v:off","/c","call \"tab\tseparated\" \"src/a/b.ts\" \"hello world\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["astraße",["a😀b😀c","tab\tseparated","ΣΊΣΥΦΟΣ"]],"ok":["/d","/s","/v:off","/c","call \"astraße\" \"a😀b😀c\" \"tab\tseparated\" \"ΣΊΣΥΦΟΣ\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["straße",["é","ns:key.pathab","日本語のテキスト"]],"ok":["/d","/s","/v:off","/c","call \"straße\" \"é\" \"ns:key.pathab\" \"日本語のテキスト\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["a😀b😀c",["ab","﻿bomemoji 👍🏽 mix"]],"ok":["/d","/s","/v:off","/c","call \"a😀b😀c\" \"ab\" \"﻿bomemoji 👍🏽 mix\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["key_name-1",["a","İstanbul.leading","a.b.c"]],"ok":["/d","/s","/v:off","/c","call \"key_name-1\" \"a\" \"İstanbul.leading\" \"a.b.c\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["key_name-1",["","straße"]],"ok":["/d","/s","/v:off","/c","call \"key_name-1\" \"\" \"straße\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":[":",["İstanbul日本語のテキスト"]],"ok":["/d","/s","/v:off","/c","call \":\" \"İstanbul日本語のテキスト\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["trailing.line1\nline2",["ünïcödé","abc"]],"error":"Cannot safely execute Windows batch command containing cmd.exe control characters."}
+{"fn":"buildWindowsBatchCommandArgs","args":["日本語のテキスト",["tab\tseparated","straße"]],"ok":["/d","/s","/v:off","/c","call \"日本語のテキスト\" \"tab\tseparated\" \"straße\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["a.b.cHello World",["  padded  "]],"ok":["/d","/s","/v:off","/c","call \"a.b.cHello World\" \"  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["hello",["{name} has {count} items","trailing.﻿bom"]],"ok":["/d","/s","/v:off","/c","call \"hello\" \"{name} has {count} items\" \"trailing.﻿bom\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["İstanbul",["./x/**/*.json","Hello World","﻿bom"]],"ok":["/d","/s","/v:off","/c","call \"İstanbul\" \"./x/**/*.json\" \"Hello World\" \"﻿bom\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["hello",["a.b.c"]],"ok":["/d","/s","/v:off","/c","call \"hello\" \"a.b.c\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["straßea.b.c",["a:b:c","key_name-1"]],"ok":["/d","/s","/v:off","/c","call \"straßea.b.c\" \"a:b:c\" \"key_name-1\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["hello",["abc"]],"ok":["/d","/s","/v:off","/c","call \"hello\" \"abc\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["./x/**/*.json",["  padded  "]],"ok":["/d","/s","/v:off","/c","call \"./x/**/*.json\" \"  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["line1\nline2tab\tseparated",["straße"]],"error":"Cannot safely execute Windows batch command containing cmd.exe control characters."}
+{"fn":"buildWindowsBatchCommandArgs","args":["hello./x/**/*.json",["İstanbul"]],"ok":["/d","/s","/v:off","/c","call \"hello./x/**/*.json\" \"İstanbul\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["line1\nline2",["trailing.","HELLOab"]],"error":"Cannot safely execute Windows batch command containing cmd.exe control characters."}
+{"fn":"buildWindowsBatchCommandArgs","args":["ΣΊΣΥΦΟΣ",["./x/**/*.json","﻿bom"]],"ok":["/d","/s","/v:off","/c","call \"ΣΊΣΥΦΟΣ\" \"./x/**/*.json\" \"﻿bom\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["a..b",["a..b","hello"]],"ok":["/d","/s","/v:off","/c","call \"a..b\" \"a..b\" \"hello\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["a..bΣΊΣΥΦΟΣ",[]],"ok":["/d","/s","/v:off","/c","call \"a..bΣΊΣΥΦΟΣ\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["a:b:c",["ünïcödé","trailing.","a"]],"ok":["/d","/s","/v:off","/c","call \"a:b:c\" \"ünïcödé\" \"trailing.\" \"a\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":[".leading",["src/a/b.ts:"]],"ok":["/d","/s","/v:off","/c","call \".leading\" \"src/a/b.ts:\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["éHello World",["é","ünïcödé","😀"]],"ok":["/d","/s","/v:off","/c","call \"éHello World\" \"é\" \"ünïcödé\" \"😀\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["line1\nline2",["日本語のテキスト"]],"error":"Cannot safely execute Windows batch command containing cmd.exe control characters."}
+{"fn":"buildWindowsBatchCommandArgs","args":["Hello World",["😀"]],"ok":["/d","/s","/v:off","/c","call \"Hello World\" \"😀\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["日本語のテキスト",["a..b"]],"ok":["/d","/s","/v:off","/c","call \"日本語のテキスト\" \"a..b\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["tab\tseparated",[]],"ok":["/d","/s","/v:off","/c","call \"tab\tseparated\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["ab",["é"]],"ok":["/d","/s","/v:off","/c","call \"ab\" \"é\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":[":",["İstanbul",".leading"]],"ok":["/d","/s","/v:off","/c","call \":\" \"İstanbul\" \".leading\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["{name} has {count} items",["abc","line1\nline2"]],"error":"Cannot safely execute Windows batch argument containing cmd.exe control characters."}
+{"fn":"buildWindowsBatchCommandArgs","args":["emoji 👍🏽 mix",["a:b:c",":","line1\nline2"]],"error":"Cannot safely execute Windows batch argument containing cmd.exe control characters."}
+{"fn":"buildWindowsBatchCommandArgs","args":[".leading日本語のテキスト",["HELLO"]],"ok":["/d","/s","/v:off","/c","call \".leading日本語のテキスト\" \"HELLO\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["",[]],"ok":["/d","/s","/v:off","/c","call \"\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["é",["hello","tab\tseparated"]],"ok":["/d","/s","/v:off","/c","call \"é\" \"hello\" \"tab\tseparated\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["a.b.c",[]],"ok":["/d","/s","/v:off","/c","call \"a.b.c\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":[".leading",["Hello World"]],"ok":["/d","/s","/v:off","/c","call \".leading\" \"Hello World\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["{name} has {count} itemssrc/a/b.ts",[]],"ok":["/d","/s","/v:off","/c","call \"{name} has {count} itemssrc/a/b.ts\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["{name} has {count} items",["a:b:c"]],"ok":["/d","/s","/v:off","/c","call \"{name} has {count} items\" \"a:b:c\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["İstanbul",["a..b"]],"ok":["/d","/s","/v:off","/c","call \"İstanbul\" \"a..b\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["﻿bom",[".leadinga..b",".leading","a.b.c"]],"ok":["/d","/s","/v:off","/c","call \"﻿bom\" \".leadinga..b\" \".leading\" \"a.b.c\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["src/a/b.ts",["straße"]],"ok":["/d","/s","/v:off","/c","call \"src/a/b.ts\" \"straße\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["trailing.a.b.c",["","ünïcödéünïcödé"]],"ok":["/d","/s","/v:off","/c","call \"trailing.a.b.c\" \"\" \"ünïcödéünïcödé\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["a:b:c",["line1\nline2","trailing.","😀"]],"error":"Cannot safely execute Windows batch argument containing cmd.exe control characters."}
+{"fn":"buildWindowsBatchCommandArgs","args":["a😀b😀c",["hello world",".leading","😀ünïcödé"]],"ok":["/d","/s","/v:off","/c","call \"a😀b😀c\" \"hello world\" \".leading\" \"😀ünïcödé\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["a😀b😀cabc",["HELLO😀","a.b.c"]],"ok":["/d","/s","/v:off","/c","call \"a😀b😀cabc\" \"HELLO😀\" \"a.b.c\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["abc",["src/a/b.ts","{name} has {count} itemshello world"]],"ok":["/d","/s","/v:off","/c","call \"abc\" \"src/a/b.ts\" \"{name} has {count} itemshello world\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["hello world",[]],"ok":["/d","/s","/v:off","/c","call \"hello world\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["",["straße",".leading","a😀b😀c"]],"ok":["/d","/s","/v:off","/c","call \"\" \"straße\" \".leading\" \"a😀b😀c\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["key_name-1",["line1\nline2"]],"error":"Cannot safely execute Windows batch argument containing cmd.exe control characters."}
+{"fn":"buildWindowsBatchCommandArgs","args":["a.b.c",["ΣΊΣΥΦΟΣünïcödé"]],"ok":["/d","/s","/v:off","/c","call \"a.b.c\" \"ΣΊΣΥΦΟΣünïcödé\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":[".leadingline1\nline2",[]],"error":"Cannot safely execute Windows batch command containing cmd.exe control characters."}
+{"fn":"buildWindowsBatchCommandArgs","args":["abemoji 👍🏽 mix",[]],"ok":["/d","/s","/v:off","/c","call \"abemoji 👍🏽 mix\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["ünïcödéünïcödé",[]],"ok":["/d","/s","/v:off","/c","call \"ünïcödéünïcödé\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["ab",["😀","日本語のテキスト","﻿bom"]],"ok":["/d","/s","/v:off","/c","call \"ab\" \"😀\" \"日本語のテキスト\" \"﻿bom\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["key_name-1",["hello"]],"ok":["/d","/s","/v:off","/c","call \"key_name-1\" \"hello\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["key_name-1",[]],"ok":["/d","/s","/v:off","/c","call \"key_name-1\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["emoji 👍🏽 mix",["tab\tseparated","a","ΣΊΣΥΦΟΣ"]],"ok":["/d","/s","/v:off","/c","call \"emoji 👍🏽 mix\" \"tab\tseparated\" \"a\" \"ΣΊΣΥΦΟΣ\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":[":",["line1\nline2","a..b"]],"error":"Cannot safely execute Windows batch argument containing cmd.exe control characters."}
+{"fn":"buildWindowsBatchCommandArgs","args":["ünïcödé",["tab\tseparated","HELLO","ΣΊΣΥΦΟΣ"]],"ok":["/d","/s","/v:off","/c","call \"ünïcödé\" \"tab\tseparated\" \"HELLO\" \"ΣΊΣΥΦΟΣ\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["Hello World",["Hello Worldİstanbul","src/a/b.ts"]],"ok":["/d","/s","/v:off","/c","call \"Hello World\" \"Hello Worldİstanbul\" \"src/a/b.ts\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["hello",["./x/**/*.json./x/**/*.json","ab","a"]],"ok":["/d","/s","/v:off","/c","call \"hello\" \"./x/**/*.json./x/**/*.json\" \"ab\" \"a\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["",["tab\tseparated","trailing.","ab"]],"ok":["/d","/s","/v:off","/c","call \"\" \"tab\tseparated\" \"trailing.\" \"ab\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":[".leading",["  padded  "]],"ok":["/d","/s","/v:off","/c","call \".leading\" \"  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["ΣΊΣΥΦΟΣ😀",["😀"]],"ok":["/d","/s","/v:off","/c","call \"ΣΊΣΥΦΟΣ😀\" \"😀\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["tab\tseparated",["﻿bom","a:b:c"]],"ok":["/d","/s","/v:off","/c","call \"tab\tseparated\" \"﻿bom\" \"a:b:c\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["src/a/b.ts",["  padded  a"]],"ok":["/d","/s","/v:off","/c","call \"src/a/b.ts\" \"  padded  a\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["﻿bom",["﻿bom","İstanbul","abc"]],"ok":["/d","/s","/v:off","/c","call \"﻿bom\" \"﻿bom\" \"İstanbul\" \"abc\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["emoji 👍🏽 mix",["helloİstanbul"]],"ok":["/d","/s","/v:off","/c","call \"emoji 👍🏽 mix\" \"helloİstanbul\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["./x/**/*.json😀",["a:b:c","a.b.c","日本語のテキストé"]],"ok":["/d","/s","/v:off","/c","call \"./x/**/*.json😀\" \"a:b:c\" \"a.b.c\" \"日本語のテキストé\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["./x/**/*.json",["a﻿bom","key_name-1","a😀b😀c"]],"ok":["/d","/s","/v:off","/c","call \"./x/**/*.json\" \"a﻿bom\" \"key_name-1\" \"a😀b😀c\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":[":",["a","trailing.{name} has {count} items",".leading"]],"ok":["/d","/s","/v:off","/c","call \":\" \"a\" \"trailing.{name} has {count} items\" \".leading\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["a:b:chello world",[]],"ok":["/d","/s","/v:off","/c","call \"a:b:chello world\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["abc",[]],"ok":["/d","/s","/v:off","/c","call \"abc\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["日本語のテキスト",["İstanbul"]],"ok":["/d","/s","/v:off","/c","call \"日本語のテキスト\" \"İstanbul\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["src/a/b.ts",["tab\tseparated","./x/**/*.jsona:b:c","  padded  src/a/b.ts"]],"ok":["/d","/s","/v:off","/c","call \"src/a/b.ts\" \"tab\tseparated\" \"./x/**/*.jsona:b:c\" \"  padded  src/a/b.ts\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["ns:key.path",[".leading"]],"ok":["/d","/s","/v:off","/c","call \"ns:key.path\" \".leading\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["a😀b😀c",["trailing.","😀"]],"ok":["/d","/s","/v:off","/c","call \"a😀b😀c\" \"trailing.\" \"😀\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["./x/**/*.json",["tab\tseparated"]],"ok":["/d","/s","/v:off","/c","call \"./x/**/*.json\" \"tab\tseparated\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["line1\nline2",["","😀"]],"error":"Cannot safely execute Windows batch command containing cmd.exe control characters."}
+{"fn":"buildWindowsBatchCommandArgs","args":["a:b:c",["é","  padded  ","hello world"]],"ok":["/d","/s","/v:off","/c","call \"a:b:c\" \"é\" \"  padded  \" \"hello world\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["Hello Worlda..b",["a..b","a😀b😀c","abtrailing."]],"ok":["/d","/s","/v:off","/c","call \"Hello Worlda..b\" \"a..b\" \"a😀b😀c\" \"abtrailing.\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["😀",[]],"ok":["/d","/s","/v:off","/c","call \"😀\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["ns:key.pathİstanbul",["日本語のテキスト","﻿bom"]],"ok":["/d","/s","/v:off","/c","call \"ns:key.pathİstanbul\" \"日本語のテキスト\" \"﻿bom\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["",["hello world"]],"ok":["/d","/s","/v:off","/c","call \"\" \"hello world\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["line1\nline2😀",["  padded  ","a..b","﻿bom"]],"error":"Cannot safely execute Windows batch command containing cmd.exe control characters."}
+{"fn":"buildWindowsBatchCommandArgs","args":["ünïcödéa.b.c",["src/a/b.ts","line1\nline2ab",""]],"error":"Cannot safely execute Windows batch argument containing cmd.exe control characters."}
+{"fn":"buildWindowsBatchCommandArgs","args":[":",[".leading","emoji 👍🏽 mix"]],"ok":["/d","/s","/v:off","/c","call \":\" \".leading\" \"emoji 👍🏽 mix\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["ns:key.path",["trailing."]],"ok":["/d","/s","/v:off","/c","call \"ns:key.path\" \"trailing.\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["HELLO",[".leading","ΣΊΣΥΦΟΣa.b.c"]],"ok":["/d","/s","/v:off","/c","call \"HELLO\" \".leading\" \"ΣΊΣΥΦΟΣa.b.c\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["a:b:c",["ΣΊΣΥΦΟΣ﻿bom","emoji 👍🏽 mix","😀"]],"ok":["/d","/s","/v:off","/c","call \"a:b:c\" \"ΣΊΣΥΦΟΣ﻿bom\" \"emoji 👍🏽 mix\" \"😀\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["hello",["ns:key.path","a.b.c"]],"ok":["/d","/s","/v:off","/c","call \"hello\" \"ns:key.path\" \"a.b.c\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["ΣΊΣΥΦΟΣ",["trailing.emoji 👍🏽 mix","﻿bom","hello worldabc"]],"ok":["/d","/s","/v:off","/c","call \"ΣΊΣΥΦΟΣ\" \"trailing.emoji 👍🏽 mix\" \"﻿bom\" \"hello worldabc\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["ΣΊΣΥΦΟΣa:b:c",["a","﻿bomΣΊΣΥΦΟΣ","  padded  "]],"ok":["/d","/s","/v:off","/c","call \"ΣΊΣΥΦΟΣa:b:c\" \"a\" \"﻿bomΣΊΣΥΦΟΣ\" \"  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["a.b.cünïcödé",["😀abc","ΣΊΣΥΦΟΣ"]],"ok":["/d","/s","/v:off","/c","call \"a.b.cünïcödé\" \"😀abc\" \"ΣΊΣΥΦΟΣ\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["a:b:c﻿bom",["tab\tseparated","﻿bom","line1\nline2  padded  "]],"error":"Cannot safely execute Windows batch argument containing cmd.exe control characters."}
+{"fn":"buildWindowsBatchCommandArgs","args":["a:b:ca..b",[]],"ok":["/d","/s","/v:off","/c","call \"a:b:ca..b\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["a:b:c",["hello"]],"ok":["/d","/s","/v:off","/c","call \"a:b:c\" \"hello\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["line1\nline2",[]],"error":"Cannot safely execute Windows batch command containing cmd.exe control characters."}
+{"fn":"buildWindowsBatchCommandArgs","args":["Hello World",["日本語のテキスト"]],"ok":["/d","/s","/v:off","/c","call \"Hello World\" \"日本語のテキスト\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["é",[]],"ok":["/d","/s","/v:off","/c","call \"é\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["a",["ns:key.path","ab日本語のテキスト",""]],"ok":["/d","/s","/v:off","/c","call \"a\" \"ns:key.path\" \"ab日本語のテキスト\" \"\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["tab\tseparated",["{name} has {count} items","abctab\tseparated","ΣΊΣΥΦΟΣHello World"]],"ok":["/d","/s","/v:off","/c","call \"tab\tseparated\" \"{name} has {count} items\" \"abctab\tseparated\" \"ΣΊΣΥΦΟΣHello World\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["ΣΊΣΥΦΟΣa..b",[".leading"]],"ok":["/d","/s","/v:off","/c","call \"ΣΊΣΥΦΟΣa..b\" \".leading\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["a..bHELLO",["ab","﻿bom","a😀b😀c"]],"ok":["/d","/s","/v:off","/c","call \"a..bHELLO\" \"ab\" \"﻿bom\" \"a😀b😀c\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["trailing.",["a😀b😀c","😀"]],"ok":["/d","/s","/v:off","/c","call \"trailing.\" \"a😀b😀c\" \"😀\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["a😀b😀cünïcödé",["./x/**/*.json"]],"ok":["/d","/s","/v:off","/c","call \"a😀b😀cünïcödé\" \"./x/**/*.json\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["a:b:c",["emoji 👍🏽 mix"]],"ok":["/d","/s","/v:off","/c","call \"a:b:c\" \"emoji 👍🏽 mix\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["a😀b😀c",["ab"]],"ok":["/d","/s","/v:off","/c","call \"a😀b😀c\" \"ab\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["straße﻿bom",["éHello World",".leading","ünïcödé"]],"ok":["/d","/s","/v:off","/c","call \"straße﻿bom\" \"éHello World\" \".leading\" \"ünïcödé\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["{name} has {count} items",["abc"]],"ok":["/d","/s","/v:off","/c","call \"{name} has {count} items\" \"abc\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["key_name-1",[":","./x/**/*.jsona:b:c"]],"ok":["/d","/s","/v:off","/c","call \"key_name-1\" \":\" \"./x/**/*.jsona:b:c\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["İstanbul",["src/a/b.ts","ünïcödé"]],"ok":["/d","/s","/v:off","/c","call \"İstanbul\" \"src/a/b.ts\" \"ünïcödé\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["./x/**/*.json",[]],"ok":["/d","/s","/v:off","/c","call \"./x/**/*.json\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":[":",["./x/**/*.json日本語のテキスト","ns:key.path:","a:b:c"]],"ok":["/d","/s","/v:off","/c","call \":\" \"./x/**/*.json日本語のテキスト\" \"ns:key.path:\" \"a:b:c\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["﻿bom",["Hello World","İstanbul","  padded  "]],"ok":["/d","/s","/v:off","/c","call \"﻿bom\" \"Hello World\" \"İstanbul\" \"  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["  padded  ",["{name} has {count} items","line1\nline2","a:b:c"]],"error":"Cannot safely execute Windows batch argument containing cmd.exe control characters."}
+{"fn":"buildWindowsBatchCommandArgs","args":["éhello world",["﻿bom","😀","İstanbul"]],"ok":["/d","/s","/v:off","/c","call \"éhello world\" \"﻿bom\" \"😀\" \"İstanbul\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["a..b",["","ΣΊΣΥΦΟΣ"]],"ok":["/d","/s","/v:off","/c","call \"a..b\" \"\" \"ΣΊΣΥΦΟΣ\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["ns:key.path",["straße","éa😀b😀c","İstanbul"]],"ok":["/d","/s","/v:off","/c","call \"ns:key.path\" \"straße\" \"éa😀b😀c\" \"İstanbul\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["{name} has {count} items",["./x/**/*.json"]],"ok":["/d","/s","/v:off","/c","call \"{name} has {count} items\" \"./x/**/*.json\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["日本語のテキスト",[]],"ok":["/d","/s","/v:off","/c","call \"日本語のテキスト\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["straße",["﻿bom"]],"ok":["/d","/s","/v:off","/c","call \"straße\" \"﻿bom\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["  padded  ",["emoji 👍🏽 mix"]],"ok":["/d","/s","/v:off","/c","call \"  padded  \" \"emoji 👍🏽 mix\""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["héllo wörld",["a.b.c  padded  "]],"ok":["/d","/s","/v:off","/c","call \"héllo wörld\" \"a.b.c  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["👍🏽 thumbs",["a.b.c  padded  "]],"ok":["/d","/s","/v:off","/c","call \"👍🏽 thumbs\" \"a.b.c  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["日本語",["a.b.c  padded  "]],"ok":["/d","/s","/v:off","/c","call \"日本語\" \"a.b.c  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["é",["a.b.c  padded  "]],"ok":["/d","/s","/v:off","/c","call \"é\" \"a.b.c  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["İstanbul",["a.b.c  padded  "]],"ok":["/d","/s","/v:off","/c","call \"İstanbul\" \"a.b.c  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["straße",["a.b.c  padded  "]],"ok":["/d","/s","/v:off","/c","call \"straße\" \"a.b.c  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["ılık ırmak",["a.b.c  padded  "]],"ok":["/d","/s","/v:off","/c","call \"ılık ırmak\" \"a.b.c  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["👨‍👩‍👧 family",["a.b.c  padded  "]],"ok":["/d","/s","/v:off","/c","call \"👨‍👩‍👧 family\" \"a.b.c  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["a b",["a.b.c  padded  "]],"ok":["/d","/s","/v:off","/c","call \"a b\" \"a.b.c  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["ΣΊΣΥΦΟΣ",["a.b.c  padded  "]],"ok":["/d","/s","/v:off","/c","call \"ΣΊΣΥΦΟΣ\" \"a.b.c  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["a😀b",["a.b.c  padded  "]],"ok":["/d","/s","/v:off","/c","call \"a😀b\" \"a.b.c  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["﻿bom",["a.b.c  padded  "]],"ok":["/d","/s","/v:off","/c","call \"﻿bom\" \"a.b.c  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["a²b x½ y①",["a.b.c  padded  "]],"ok":["/d","/s","/v:off","/c","call \"a²b x½ y①\" \"a.b.c  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["aⅠb Ⅻ",["a.b.c  padded  "]],"ok":["/d","/s","/v:off","/c","call \"aⅠb Ⅻ\" \"a.b.c  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["a𐐀b 𝐀bc",["a.b.c  padded  "]],"ok":["/d","/s","/v:off","/c","call \"a𐐀b 𝐀bc\" \"a.b.c  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["कि ٣٤",["a.b.c  padded  "]],"ok":["/d","/s","/v:off","/c","call \"कि ٣٤\" \"a.b.c  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["Iı İi",["a.b.c  padded  "]],"ok":["/d","/s","/v:off","/c","call \"Iı İi\" \"a.b.c  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["K K k",["a.b.c  padded  "]],"ok":["/d","/s","/v:off","/c","call \"K K k\" \"a.b.c  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["ſ s S",["a.b.c  padded  "]],"ok":["/d","/s","/v:off","/c","call \"ſ s S\" \"a.b.c  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["x‍y 👨‍👩‍👧",["a.b.c  padded  "]],"ok":["/d","/s","/v:off","/c","call \"x‍y 👨‍👩‍👧\" \"a.b.c  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["a b c　d",["a.b.c  padded  "]],"ok":["/d","/s","/v:off","/c","call \"a b c　d\" \"a.b.c  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["١٢٣ ٤٥",["a.b.c  padded  "]],"ok":["/d","/s","/v:off","/c","call \"١٢٣ ٤٥\" \"a.b.c  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["𝟘𝟙 ²³",["a.b.c  padded  "]],"ok":["/d","/s","/v:off","/c","call \"𝟘𝟙 ²³\" \"a.b.c  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["snake_case foo-bar o'neil",["a.b.c  padded  "]],"ok":["/d","/s","/v:off","/c","call \"snake_case foo-bar o'neil\" \"a.b.c  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["ǅungla Ǆ",["a.b.c  padded  "]],"ok":["/d","/s","/v:off","/c","call \"ǅungla Ǆ\" \"a.b.c  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["one\r\ntwo threefour",["a.b.c  padded  "]],"error":"Cannot safely execute Windows batch command containing cmd.exe control characters."}
+{"fn":"buildWindowsBatchCommandArgs","args":["café café",["a.b.c  padded  "]],"ok":["/d","/s","/v:off","/c","call \"café café\" \"a.b.c  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["ΣΑΣ σας ς",["a.b.c  padded  "]],"ok":["/d","/s","/v:off","/c","call \"ΣΑΣ σας ς\" \"a.b.c  padded  \""]}
+{"fn":"buildWindowsBatchCommandArgs","args":["",["b","a","B","é","10","9","a"]],"ok":["/d","/s","/v:off","/c","call \"\" \"b\" \"a\" \"B\" \"é\" \"10\" \"9\" \"a\""]}
+{"fn":"resolveWindowsCommandPath","args":["  padded  ",{"platform":{"$undefined":true},"cwd":"hello","env":{"a":{"b":"c"}}}],"ok":"  padded  "}
+{"fn":"resolveWindowsCommandPath","args":["ünïcödéünïcödé",{"$undefined":true}],"ok":"ünïcödéünïcödé"}
+{"fn":"resolveWindowsCommandPath","args":["日本語のテキスト",{"platform":{"$undefined":true},"cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":"日本語のテキスト"}
+{"fn":"resolveWindowsCommandPath","args":["trailing.😀",[]],"ok":"trailing.😀"}
+{"fn":"resolveWindowsCommandPath","args":["﻿bom",{"platform":{"$undefined":true},"cwd":"a..b"}],"ok":"﻿bom"}
+{"fn":"resolveWindowsCommandPath","args":["",{"platform":{"a":{"b":"c"}},"cwd":{"$undefined":true}}],"ok":""}
+{"fn":"resolveWindowsCommandPath","args":["İstanbul",{"platform":null,"cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":"İstanbul"}
+{"fn":"resolveWindowsCommandPath","args":["a",{"cwd":{"$undefined":true},"env":null}],"ok":"a"}
+{"fn":"resolveWindowsCommandPath","args":["﻿bom",{"platform":{"$undefined":true},"cwd":{"$undefined":true},"env":null}],"ok":"﻿bom"}
+{"fn":"resolveWindowsCommandPath","args":["a.b.c",{}],"ok":"a.b.c"}
+{"fn":"resolveWindowsCommandPath","args":["﻿bom",{"env":"x"}],"ok":"﻿bom"}
+{"fn":"resolveWindowsCommandPath","args":["é",{"cwd":{"$undefined":true},"env":{}}],"ok":"é"}
+{"fn":"resolveWindowsCommandPath","args":["﻿bom",{"platform":{"$undefined":true},"env":{"$undefined":true}}],"ok":"﻿bom"}
+{"fn":"resolveWindowsCommandPath","args":["emoji 👍🏽 mix",{"platform":{"$undefined":true}}],"ok":"emoji 👍🏽 mix"}
+{"fn":"resolveWindowsCommandPath","args":["",{"platform":{"$undefined":true},"env":{"$undefined":true}}],"ok":""}
+{"fn":"resolveWindowsCommandPath","args":["HELLO",{"platform":{"a":{"b":"c"}},"cwd":{"$undefined":true},"env":0}],"ok":"HELLO"}
+{"fn":"resolveWindowsCommandPath","args":["é",{"platform":{"$undefined":true},"cwd":{"$undefined":true},"env":null}],"ok":"é"}
+{"fn":"resolveWindowsCommandPath","args":["a",{"platform":{"$undefined":true},"cwd":{"$undefined":true},"env":null}],"ok":"a"}
+{"fn":"resolveWindowsCommandPath","args":["line1\nline2",{"platform":{"$undefined":true},"cwd":"Hello World","env":{"$undefined":true}}],"ok":"line1\nline2"}
+{"fn":"resolveWindowsCommandPath","args":["HELLO",{"platform":{},"env":{"$undefined":true}}],"ok":"HELLO"}
+{"fn":"resolveWindowsCommandPath","args":["a😀b😀c",{"cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":"a😀b😀c"}
+{"fn":"resolveWindowsCommandPath","args":["ns:key.pathabc"],"ok":"ns:key.pathabc"}
+{"fn":"resolveWindowsCommandPath","args":["trailing."],"ok":"trailing."}
+{"fn":"resolveWindowsCommandPath","args":["a.b.c",{"platform":{"$undefined":true},"cwd":{"$undefined":true}}],"ok":"a.b.c"}
+{"fn":"resolveWindowsCommandPath","args":["é",{"platform":{"$undefined":true},"cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":"é"}
+{"fn":"resolveWindowsCommandPath","args":["a:b:chello world",{"cwd":"ns:key.path","env":["a",1]}],"ok":"a:b:chello world"}
+{"fn":"resolveWindowsCommandPath","args":["a..b",{"cwd":"éns:key.path"}],"ok":"a..b"}
+{"fn":"resolveWindowsCommandPath","args":["abc",{"platform":{"$undefined":true},"cwd":{"$undefined":true}}],"ok":"abc"}
+{"fn":"resolveWindowsCommandPath","args":[":",{"platform":"x","cwd":"hello world","env":{"$undefined":true}}],"ok":":"}
+{"fn":"resolveWindowsCommandPath","args":["abc",{"platform":{"$undefined":true},"cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":"abc"}
+{"fn":"resolveWindowsCommandPath","args":["a😀b😀c  padded  "],"ok":"a😀b😀c  padded  "}
+{"fn":"resolveWindowsCommandPath","args":["src/a/b.ts.leading",{"platform":["a",1],"cwd":"a.b.c"}],"ok":"src/a/b.ts.leading"}
+{"fn":"resolveWindowsCommandPath","args":[":",{"$undefined":true}],"ok":":"}
+{"fn":"resolveWindowsCommandPath","args":["tab\tseparated",{"$undefined":true}],"ok":"tab\tseparated"}
+{"fn":"resolveWindowsCommandPath","args":["İstanbul",{"platform":{"$undefined":true},"cwd":"./x/**/*.json  padded  ","env":"x"}],"ok":"İstanbul"}
+{"fn":"resolveWindowsCommandPath","args":["😀",{"platform":{"a":"b"},"cwd":":","env":{"$undefined":true}}],"ok":"😀"}
+{"fn":"resolveWindowsCommandPath","args":["  padded  ",{"platform":{"$undefined":true},"cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":"  padded  "}
+{"fn":"resolveWindowsCommandPath","args":["Hello World",{"platform":[],"cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":"Hello World"}
+{"fn":"resolveWindowsCommandPath","args":["﻿bom",{"platform":{"$undefined":true},"cwd":"a😀b😀c"}],"ok":"﻿bom"}
+{"fn":"resolveWindowsCommandPath","args":["😀",{"$undefined":true}],"ok":"😀"}
+{"fn":"resolveWindowsCommandPath","args":["straße",{"a":{"b":"c"}}],"ok":"straße"}
+{"fn":"resolveWindowsCommandPath","args":["key_name-1",{"cwd":"ΣΊΣΥΦΟΣ","env":null}],"ok":"key_name-1"}
+{"fn":"resolveWindowsCommandPath","args":["a..b",0],"ok":"a..b"}
+{"fn":"resolveWindowsCommandPath","args":["  padded  ",{"platform":{"$undefined":true},"cwd":{"$undefined":true},"env":0}],"ok":"  padded  "}
+{"fn":"resolveWindowsCommandPath","args":["abc",{"platform":0,"cwd":"hello world"}],"ok":"abc"}
+{"fn":"resolveWindowsCommandPath","args":["line1\nline2",{"platform":"x","env":{"$undefined":true}}],"ok":"line1\nline2"}
+{"fn":"resolveWindowsCommandPath","args":["😀ns:key.path",{"platform":["a",1],"cwd":{"$undefined":true},"env":{}}],"ok":"😀ns:key.path"}
+{"fn":"resolveWindowsCommandPath","args":["ΣΊΣΥΦΟΣ",{"platform":{"$undefined":true},"env":{"a":{"b":"c"}}}],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"resolveWindowsCommandPath","args":["src/a/b.ts",{"platform":null,"cwd":{"$undefined":true},"env":{"a":"b"}}],"ok":"src/a/b.ts"}
+{"fn":"resolveWindowsCommandPath","args":["straße",{}],"ok":"straße"}
+{"fn":"resolveWindowsCommandPath","args":["a..b"],"ok":"a..b"}
+{"fn":"resolveWindowsCommandPath","args":["src/a/b.tsstraße"],"ok":"src/a/b.tsstraße"}
+{"fn":"resolveWindowsCommandPath","args":["a😀b😀c",null],"error":"Cannot read properties of null (reading 'env')"}
+{"fn":"resolveWindowsCommandPath","args":["hello world","x"],"ok":"hello world"}
+{"fn":"resolveWindowsCommandPath","args":[".leading.leading",{"platform":0,"env":{"$undefined":true}}],"ok":".leading.leading"}
+{"fn":"resolveWindowsCommandPath","args":["abc",{}],"ok":"abc"}
+{"fn":"resolveWindowsCommandPath","args":["ΣΊΣΥΦΟΣ",{"$undefined":true}],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"resolveWindowsCommandPath","args":["line1\nline2",{"platform":0,"cwd":"src/a/b.ts{name} has {count} items","env":null}],"ok":"line1\nline2"}
+{"fn":"resolveWindowsCommandPath","args":[":",{"platform":{"a":"b"},"cwd":{"$undefined":true}}],"ok":":"}
+{"fn":"resolveWindowsCommandPath","args":["ns:key.path",{"platform":[],"cwd":"key_name-1","env":{}}],"ok":"ns:key.path"}
+{"fn":"resolveWindowsCommandPath","args":["abc",{"platform":{"$undefined":true},"cwd":"line1\nline2.leading","env":{"$undefined":true}}],"ok":"abc"}
+{"fn":"resolveWindowsCommandPath","args":["tab\tseparated",{"platform":{},"cwd":"src/a/b.tsΣΊΣΥΦΟΣ"}],"ok":"tab\tseparated"}
+{"fn":"resolveWindowsCommandPath","args":["hello",{"env":{"$undefined":true}}],"ok":"hello"}
+{"fn":"resolveWindowsCommandPath","args":["a",{"platform":{"a":{"b":"c"}},"cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":"a"}
+{"fn":"resolveWindowsCommandPath","args":["  padded  ",{"platform":{"$undefined":true},"env":{"$undefined":true}}],"ok":"  padded  "}
+{"fn":"resolveWindowsCommandPath","args":["line1\nline2"],"ok":"line1\nline2"}
+{"fn":"resolveWindowsCommandPath","args":["{name} has {count} itemstrailing.",{"platform":{"a":"b"},"cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":"{name} has {count} itemstrailing."}
+{"fn":"resolveWindowsCommandPath","args":["日本語のテキスト",{"cwd":"abc","env":null}],"ok":"日本語のテキスト"}
+{"fn":"resolveWindowsCommandPath","args":["ab",{"platform":{"$undefined":true},"cwd":"abhello world"}],"ok":"ab"}
+{"fn":"resolveWindowsCommandPath","args":["HELLOΣΊΣΥΦΟΣ",{"platform":true,"env":{}}],"ok":"HELLOΣΊΣΥΦΟΣ"}
+{"fn":"resolveWindowsCommandPath","args":["hello world",{"platform":{"$undefined":true},"cwd":"./x/**/*.json","env":{"$undefined":true}}],"ok":"hello world"}
+{"fn":"resolveWindowsCommandPath","args":["ns:key.path",{"platform":{"$undefined":true},"cwd":"line1\nline2","env":{"$undefined":true}}],"ok":"ns:key.path"}
+{"fn":"resolveWindowsCommandPath","args":[".leadinghello world",{"platform":["a",1],"cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":".leadinghello world"}
+{"fn":"resolveWindowsCommandPath","args":["İstanbul",{"platform":true,"cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":"İstanbul"}
+{"fn":"resolveWindowsCommandPath","args":["ab:",["a",1]],"ok":"ab:"}
+{"fn":"resolveWindowsCommandPath","args":["key_name-1",{"cwd":"ΣΊΣΥΦΟΣ","env":["a",1]}],"ok":"key_name-1"}
+{"fn":"resolveWindowsCommandPath","args":["a.b.c",{"cwd":{"$undefined":true},"env":null}],"ok":"a.b.c"}
+{"fn":"resolveWindowsCommandPath","args":[".leading",{"$undefined":true}],"ok":".leading"}
+{"fn":"resolveWindowsCommandPath","args":["helloabc",{"platform":{"a":{"b":"c"}},"cwd":{"$undefined":true},"env":true}],"ok":"helloabc"}
+{"fn":"resolveWindowsCommandPath","args":["ΣΊΣΥΦΟΣ",{"platform":{},"cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"resolveWindowsCommandPath","args":["line1\nline2a.b.c"],"ok":"line1\nline2a.b.c"}
+{"fn":"resolveWindowsCommandPath","args":["ab",{"platform":[],"cwd":"日本語のテキスト","env":[]}],"ok":"ab"}
+{"fn":"resolveWindowsCommandPath","args":[":",{"platform":{"$undefined":true},"cwd":{"$undefined":true},"env":null}],"ok":":"}
+{"fn":"resolveWindowsCommandPath","args":["  padded  ",{"platform":{"$undefined":true},"env":0}],"ok":"  padded  "}
+{"fn":"resolveWindowsCommandPath","args":["abc",{"platform":{"$undefined":true}}],"ok":"abc"}
+{"fn":"resolveWindowsCommandPath","args":["é",{"platform":{"$undefined":true}}],"ok":"é"}
+{"fn":"resolveWindowsCommandPath","args":["日本語のテキスト😀",{"platform":{"$undefined":true},"cwd":{"$undefined":true},"env":["a",1]}],"ok":"日本語のテキスト😀"}
+{"fn":"resolveWindowsCommandPath","args":["emoji 👍🏽 mix",{"a":{"b":"c"}}],"ok":"emoji 👍🏽 mix"}
+{"fn":"resolveWindowsCommandPath","args":["😀",{"platform":{"$undefined":true},"cwd":{"$undefined":true},"env":{}}],"ok":"😀"}
+{"fn":"resolveWindowsCommandPath","args":["hello world",{"platform":[],"cwd":{"$undefined":true},"env":[]}],"ok":"hello world"}
+{"fn":"resolveWindowsCommandPath","args":[":",{"a":{"b":"c"}}],"ok":":"}
+{"fn":"resolveWindowsCommandPath","args":["a😀b😀c",{"platform":{"a":{"b":"c"}},"cwd":"a:b:c"}],"ok":"a😀b😀c"}
+{"fn":"resolveWindowsCommandPath","args":["key_name-1",{"platform":{"$undefined":true},"cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":"key_name-1"}
+{"fn":"resolveWindowsCommandPath","args":["ΣΊΣΥΦΟΣ",{"platform":{"$undefined":true},"env":true}],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"resolveWindowsCommandPath","args":[".leading",{"platform":{},"env":{"$undefined":true}}],"ok":".leading"}
+{"fn":"resolveWindowsCommandPath","args":["a..b",{"platform":{"$undefined":true},"cwd":"ΣΊΣΥΦΟΣ","env":{"$undefined":true}}],"ok":"a..b"}
+{"fn":"resolveWindowsCommandPath","args":["x","x"],"ok":"x"}
+{"fn":"resolveWindowsCommandPath","args":["src/a/b.ts",{"platform":{"$undefined":true}}],"ok":"src/a/b.ts"}
+{"fn":"resolveWindowsCommandPath","args":["a:b:c",{"cwd":{"$undefined":true}}],"ok":"a:b:c"}
+{"fn":"resolveWindowsCommandPath","args":["HELLO"],"ok":"HELLO"}
+{"fn":"resolveWindowsCommandPath","args":["日本語のテキスト",{"$undefined":true}],"ok":"日本語のテキスト"}
+{"fn":"resolveWindowsCommandPath","args":["﻿bom",{"cwd":{"$undefined":true},"env":0}],"ok":"﻿bom"}
+{"fn":"resolveWindowsCommandPath","args":["src/a/b.ts",{"cwd":{"$undefined":true},"env":{}}],"ok":"src/a/b.ts"}
+{"fn":"resolveWindowsCommandPath","args":["  padded  key_name-1",{"$undefined":true}],"ok":"  padded  key_name-1"}
+{"fn":"resolveWindowsCommandPath","args":["emoji 👍🏽 mixa😀b😀c",{"platform":null,"cwd":"emoji 👍🏽 mix"}],"ok":"emoji 👍🏽 mixa😀b😀c"}
+{"fn":"resolveWindowsCommandPath","args":["ns:key.path",{"platform":{"$undefined":true},"cwd":"straße","env":[]}],"ok":"ns:key.path"}
+{"fn":"resolveWindowsCommandPath","args":["日本語のテキスト",{"cwd":"ns:key.path","env":[]}],"ok":"日本語のテキスト"}
+{"fn":"resolveWindowsCommandPath","args":["abchello world"],"ok":"abchello world"}
+{"fn":"resolveWindowsCommandPath","args":["hello"],"ok":"hello"}
+{"fn":"resolveWindowsCommandPath","args":["emoji 👍🏽 mixtrailing.",{"platform":{"$undefined":true},"cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":"emoji 👍🏽 mixtrailing."}
+{"fn":"resolveWindowsCommandPath","args":["emoji 👍🏽 mix",{"platform":{"$undefined":true},"cwd":{"$undefined":true},"env":["a",1]}],"ok":"emoji 👍🏽 mix"}
+{"fn":"resolveWindowsCommandPath","args":["abc",{"cwd":{"$undefined":true}}],"ok":"abc"}
+{"fn":"resolveWindowsCommandPath","args":["﻿bom",{"platform":{},"cwd":".leading","env":{"$undefined":true}}],"ok":"﻿bom"}
+{"fn":"resolveWindowsCommandPath","args":["trailing.",{"platform":{"$undefined":true},"cwd":"é","env":{"a":{"b":"c"}}}],"ok":"trailing."}
+{"fn":"resolveWindowsCommandPath","args":["key_name-1",{"platform":{"$undefined":true},"cwd":{"$undefined":true},"env":true}],"ok":"key_name-1"}
+{"fn":"resolveWindowsCommandPath","args":["ünïcödé",{"platform":["a",1],"cwd":{"$undefined":true},"env":["a",1]}],"ok":"ünïcödé"}
+{"fn":"resolveWindowsCommandPath","args":["HELLO",{"env":true}],"ok":"HELLO"}
+{"fn":"resolveWindowsCommandPath","args":["a😀b😀c",{"cwd":"a.b.c"}],"ok":"a😀b😀c"}
+{"fn":"resolveWindowsCommandPath","args":[":",{}],"ok":":"}
+{"fn":"resolveWindowsCommandPath","args":["abc",{"platform":{"$undefined":true},"env":{"$undefined":true}}],"ok":"abc"}
+{"fn":"resolveWindowsCommandPath","args":["😀a.b.c",{"env":{"$undefined":true}}],"ok":"😀a.b.c"}
+{"fn":"resolveWindowsCommandPath","args":["./x/**/*.json",[]],"ok":"./x/**/*.json"}
+{"fn":"resolveWindowsCommandPath","args":["a:b:c",{"$undefined":true}],"ok":"a:b:c"}
+{"fn":"resolveWindowsCommandPath","args":["emoji 👍🏽 mix",{"platform":"x","cwd":"{name} has {count} items","env":{"$undefined":true}}],"ok":"emoji 👍🏽 mix"}
+{"fn":"resolveWindowsCommandPath","args":["{name} has {count} items",{"platform":[],"cwd":{"$undefined":true},"env":0}],"ok":"{name} has {count} items"}
+{"fn":"resolveWindowsCommandPath","args":["ab",{"cwd":"ababc","env":{"a":{"b":"c"}}}],"ok":"ab"}
+{"fn":"resolveWindowsCommandPath","args":["./x/**/*.json"],"ok":"./x/**/*.json"}
+{"fn":"resolveWindowsCommandPath","args":["a.b.ca..b",{"cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":"a.b.ca..b"}
+{"fn":"resolveWindowsCommandPath","args":["hello  padded  ",{"platform":["a",1],"cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":"hello  padded  "}
+{"fn":"resolveWindowsCommandPath","args":["ΣΊΣΥΦΟΣ",{"platform":{"$undefined":true},"cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"resolveWindowsCommandPath","args":["src/a/b.ts",["a",1]],"ok":"src/a/b.ts"}
+{"fn":"resolveWindowsCommandPath","args":["",{"platform":{"a":"b"},"cwd":"straße日本語のテキスト","env":{"$undefined":true}}],"ok":""}
+{"fn":"resolveWindowsCommandPath","args":["ns:key.pathline1\nline2",{"platform":{"$undefined":true},"cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":"ns:key.pathline1\nline2"}
+{"fn":"resolveWindowsCommandPath","args":["{name} has {count} items",{"a":{"b":"c"}}],"ok":"{name} has {count} items"}
+{"fn":"resolveWindowsCommandPath","args":["  padded  ",{"env":{"a":{"b":"c"}}}],"ok":"  padded  "}
+{"fn":"resolveWindowsCommandPath","args":["éHello World",{"platform":{"a":"b"},"cwd":{"$undefined":true}}],"ok":"éHello World"}
+{"fn":"resolveWindowsCommandPath","args":["İstanbul",{"platform":true,"cwd":{"$undefined":true},"env":{"a":{"b":"c"}}}],"ok":"İstanbul"}
+{"fn":"resolveWindowsCommandPath","args":["helloΣΊΣΥΦΟΣ",{"platform":{"$undefined":true}}],"ok":"helloΣΊΣΥΦΟΣ"}
+{"fn":"resolveWindowsCommandPath","args":["😀",{"platform":null,"cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":"😀"}
+{"fn":"resolveWindowsCommandPath","args":["tab\tseparatedtrailing.",{"platform":{"a":"b"},"cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":"tab\tseparatedtrailing."}
+{"fn":"resolveWindowsCommandPath","args":["line1\nline2日本語のテキスト",{"a":{"b":"c"}}],"ok":"line1\nline2日本語のテキスト"}
+{"fn":"resolveWindowsCommandPath","args":["ΣΊΣΥΦΟΣa:b:c",{"platform":{},"cwd":"tab\tseparatedns:key.path"}],"ok":"ΣΊΣΥΦΟΣa:b:c"}
+{"fn":"resolveWindowsCommandPath","args":["é",{"cwd":"emoji 👍🏽 mix","env":{"$undefined":true}}],"ok":"é"}
+{"fn":"resolveWindowsCommandPath","args":["{name} has {count} items",{"env":{"$undefined":true}}],"ok":"{name} has {count} items"}
+{"fn":"resolveWindowsCommandPath","args":["hello world",{"platform":true,"cwd":"{name} has {count} items","env":[]}],"ok":"hello world"}
+{"fn":"resolveWindowsCommandPath","args":["İstanbul",{"platform":["a",1],"cwd":"﻿bom","env":{"$undefined":true}}],"ok":"İstanbul"}
+{"fn":"resolveWindowsCommandPath","args":["a.b.c",{"platform":{"$undefined":true},"cwd":{"$undefined":true},"env":true}],"ok":"a.b.c"}
+{"fn":"resolveWindowsCommandPath","args":["ΣΊΣΥΦΟΣ",{"platform":{},"env":{"$undefined":true}}],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"resolveWindowsCommandPath","args":["日本語のテキスト",{"platform":{"$undefined":true},"cwd":"ΣΊΣΥΦΟΣ","env":null}],"ok":"日本語のテキスト"}
+{"fn":"resolveWindowsCommandPath","args":["ΣΊΣΥΦΟΣ",{"a":"b"}],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"resolveWindowsCommandPath","args":["Hello World",{"cwd":"é","env":0}],"ok":"Hello World"}
+{"fn":"resolveWindowsCommandPath","args":["HELLO",{"platform":[]}],"ok":"HELLO"}
+{"fn":"resolveWindowsCommandPath","args":["日本語のテキストa.b.c",{"platform":["a",1],"cwd":{"$undefined":true}}],"ok":"日本語のテキストa.b.c"}
+{"fn":"resolveWindowsCommandPath","args":["a:b:c",{"platform":{},"cwd":"a..b","env":{"a":"b"}}],"ok":"a:b:c"}
+{"fn":"resolveWindowsCommandPath","args":["emoji 👍🏽 mix",{"$undefined":true}],"ok":"emoji 👍🏽 mix"}
+{"fn":"resolveWindowsCommandPath","args":["trailing.",{"platform":{"$undefined":true},"cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":"trailing."}
+{"fn":"resolveWindowsCommandPath","args":["ΣΊΣΥΦΟΣ"],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"resolveWindowsCommandPath","args":["ns:key.path",{"$undefined":true}],"ok":"ns:key.path"}
+{"fn":"resolveWindowsCommandPath","args":["hello world",{"platform":{"$undefined":true},"cwd":"Hello World","env":{"$undefined":true}}],"ok":"hello world"}
+{"fn":"resolveWindowsCommandPath","args":["﻿bom",{"platform":null,"cwd":{"$undefined":true},"env":true}],"ok":"﻿bom"}
+{"fn":"resolveWindowsCommandPath","args":["trailing.",{"platform":{"a":"b"},"env":{"$undefined":true}}],"ok":"trailing."}
+{"fn":"resolveWindowsCommandPath","args":["straße",{"cwd":{"$undefined":true}}],"ok":"straße"}
+{"fn":"resolveWindowsCommandPath","args":["",{"platform":{"$undefined":true},"cwd":"abc","env":"x"}],"ok":""}
+{"fn":"resolveWindowsCommandPath","args":["line1\nline2",{"platform":[],"env":"x"}],"ok":"line1\nline2"}
+{"fn":"resolveWindowsCommandPath","args":["a..b",{"platform":{"$undefined":true},"cwd":"{name} has {count} items{name} has {count} items","env":["a",1]}],"ok":"a..b"}
+{"fn":"resolveWindowsCommandPath","args":["ΣΊΣΥΦΟΣ",{"cwd":"line1\nline2","env":{"$undefined":true}}],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"resolveWindowsCommandPath","args":["Hello World",{"platform":"x","env":[]}],"ok":"Hello World"}
+{"fn":"resolveWindowsCommandPath","args":["İstanbul"],"ok":"İstanbul"}
+{"fn":"resolveWindowsCommandPath","args":["abca",{"platform":{"$undefined":true},"cwd":"trailing."}],"ok":"abca"}
+{"fn":"resolveWindowsCommandPath","args":["HELLO  padded  "],"ok":"HELLO  padded  "}
+{"fn":"resolveWindowsCommandPath","args":["src/a/b.ts",{"$undefined":true}],"ok":"src/a/b.ts"}
+{"fn":"resolveWindowsCommandPath","args":["﻿bomünïcödé",{"$undefined":true}],"ok":"﻿bomünïcödé"}
+{"fn":"resolveWindowsCommandPath","args":["ab"],"ok":"ab"}
+{"fn":"resolveWindowsCommandPath","args":["tab\tseparated",{"platform":{"$undefined":true},"cwd":{"$undefined":true},"env":[]}],"ok":"tab\tseparated"}
+{"fn":"resolveWindowsCommandPath","args":["",{"env":"x"}],"ok":""}
+{"fn":"resolveWindowsCommandPath","args":["HELLO",{"platform":{"$undefined":true},"cwd":"src/a/b.ts","env":{"$undefined":true}}],"ok":"HELLO"}
+{"fn":"resolveWindowsCommandPath","args":["",{"$undefined":true}],"ok":""}
+{"fn":"resolveWindowsCommandPath","args":["{name} has {count} items",{"platform":{"a":"b"},"cwd":"a.b.c","env":null}],"ok":"{name} has {count} items"}
+{"fn":"resolveWindowsCommandPath","args":["ΣΊΣΥΦΟΣ",{"platform":true,"cwd":{"$undefined":true}}],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"resolveWindowsCommandPath","args":["ab",{"cwd":"﻿bom","env":"x"}],"ok":"ab"}
+{"fn":"resolveWindowsCommandPath","args":["ab",{"$undefined":true}],"ok":"ab"}
+{"fn":"resolveWindowsCommandPath","args":["a..b",null],"error":"Cannot read properties of null (reading 'env')"}
+{"fn":"resolveWindowsCommandPath","args":["é",{"platform":{"$undefined":true},"env":{"a":"b"}}],"ok":"é"}
+{"fn":"resolveWindowsCommandPath","args":["src/a/b.ts"],"ok":"src/a/b.ts"}
+{"fn":"resolveWindowsCommandPath","args":["hello world./x/**/*.json",{"platform":[],"cwd":{"$undefined":true},"env":"x"}],"ok":"hello world./x/**/*.json"}
+{"fn":"resolveWindowsCommandPath","args":["hello world",null],"error":"Cannot read properties of null (reading 'env')"}
+{"fn":"resolveWindowsCommandPath","args":[".leading",{"platform":{"$undefined":true},"env":0}],"ok":".leading"}
+{"fn":"resolveWindowsCommandPath","args":["src/a/b.ts",{"cwd":{"$undefined":true}}],"ok":"src/a/b.ts"}
+{"fn":"resolveWindowsCommandPath","args":["",0],"ok":""}
+{"fn":"resolveWindowsCommandPath","args":["trailing.",{"platform":{"a":"b"},"cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":"trailing."}
+{"fn":"resolveWindowsCommandPath","args":["﻿bom",{"cwd":"﻿bom","env":{"$undefined":true}}],"ok":"﻿bom"}
+{"fn":"resolveWindowsCommandPath","args":["a"],"ok":"a"}
+{"fn":"resolveWindowsCommandPath","args":["Hello World",{"cwd":"straßehello world","env":null}],"ok":"Hello World"}
+{"fn":"resolveWindowsCommandPath","args":["😀  padded  ",{"cwd":"a😀b😀c","env":{"$undefined":true}}],"ok":"😀  padded  "}
+{"fn":"resolveWindowsCommandPath","args":["key_name-1emoji 👍🏽 mix",{"cwd":{"$undefined":true},"env":[]}],"ok":"key_name-1emoji 👍🏽 mix"}
+{"fn":"resolveWindowsCommandPath","args":["a..b",{"platform":true,"cwd":"  padded  ","env":{"$undefined":true}}],"ok":"a..b"}
+{"fn":"resolveWindowsCommandPath","args":["é"],"ok":"é"}
+{"fn":"resolveWindowsCommandPath","args":["İstanbul",{"cwd":{"$undefined":true}}],"ok":"İstanbul"}
+{"fn":"resolveWindowsCommandPath","args":["",{"platform":null,"cwd":{"$undefined":true},"env":0}],"ok":""}
+{"fn":"resolveWindowsCommandPath","args":["Hello World",{"platform":{"$undefined":true},"cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":"Hello World"}
+{"fn":"resolveWindowsCommandPath","args":["héllo wörld",{"platform":{"$undefined":true},"cwd":"hello","env":{"a":{"b":"c"}}}],"ok":"héllo wörld"}
+{"fn":"resolveWindowsCommandPath","args":["👍🏽 thumbs",{"platform":{"$undefined":true},"cwd":"hello","env":{"a":{"b":"c"}}}],"ok":"👍🏽 thumbs"}
+{"fn":"resolveWindowsCommandPath","args":["日本語",{"platform":{"$undefined":true},"cwd":"hello","env":{"a":{"b":"c"}}}],"ok":"日本語"}
+{"fn":"resolveWindowsCommandPath","args":["",{"platform":{"$undefined":true},"cwd":"hello","env":{"a":{"b":"c"}}}],"ok":""}
+{"fn":"resolveWindowsCommandPath","args":["é",{"platform":{"$undefined":true},"cwd":"hello","env":{"a":{"b":"c"}}}],"ok":"é"}
+{"fn":"resolveWindowsCommandPath","args":["İstanbul",{"platform":{"$undefined":true},"cwd":"hello","env":{"a":{"b":"c"}}}],"ok":"İstanbul"}
+{"fn":"resolveWindowsCommandPath","args":["straße",{"platform":{"$undefined":true},"cwd":"hello","env":{"a":{"b":"c"}}}],"ok":"straße"}
+{"fn":"resolveWindowsCommandPath","args":["ılık ırmak",{"platform":{"$undefined":true},"cwd":"hello","env":{"a":{"b":"c"}}}],"ok":"ılık ırmak"}
+{"fn":"resolveWindowsCommandPath","args":["👨‍👩‍👧 family",{"platform":{"$undefined":true},"cwd":"hello","env":{"a":{"b":"c"}}}],"ok":"👨‍👩‍👧 family"}
+{"fn":"resolveWindowsCommandPath","args":["a b",{"platform":{"$undefined":true},"cwd":"hello","env":{"a":{"b":"c"}}}],"ok":"a b"}
+{"fn":"resolveWindowsCommandPath","args":["ΣΊΣΥΦΟΣ",{"platform":{"$undefined":true},"cwd":"hello","env":{"a":{"b":"c"}}}],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"resolveWindowsCommandPath","args":["a😀b",{"platform":{"$undefined":true},"cwd":"hello","env":{"a":{"b":"c"}}}],"ok":"a😀b"}
+{"fn":"resolveWindowsCommandPath","args":["﻿bom",{"platform":{"$undefined":true},"cwd":"hello","env":{"a":{"b":"c"}}}],"ok":"﻿bom"}
+{"fn":"resolveWindowsCommandPath","args":["a²b x½ y①",{"platform":{"$undefined":true},"cwd":"hello","env":{"a":{"b":"c"}}}],"ok":"a²b x½ y①"}
+{"fn":"resolveWindowsCommandPath","args":["aⅠb Ⅻ",{"platform":{"$undefined":true},"cwd":"hello","env":{"a":{"b":"c"}}}],"ok":"aⅠb Ⅻ"}
+{"fn":"resolveWindowsCommandPath","args":["a𐐀b 𝐀bc",{"platform":{"$undefined":true},"cwd":"hello","env":{"a":{"b":"c"}}}],"ok":"a𐐀b 𝐀bc"}
+{"fn":"resolveWindowsCommandPath","args":["कि ٣٤",{"platform":{"$undefined":true},"cwd":"hello","env":{"a":{"b":"c"}}}],"ok":"कि ٣٤"}
+{"fn":"resolveWindowsCommandPath","args":["Iı İi",{"platform":{"$undefined":true},"cwd":"hello","env":{"a":{"b":"c"}}}],"ok":"Iı İi"}
+{"fn":"resolveWindowsCommandPath","args":["K K k",{"platform":{"$undefined":true},"cwd":"hello","env":{"a":{"b":"c"}}}],"ok":"K K k"}
+{"fn":"resolveWindowsCommandPath","args":["ſ s S",{"platform":{"$undefined":true},"cwd":"hello","env":{"a":{"b":"c"}}}],"ok":"ſ s S"}
+{"fn":"resolveWindowsCommandPath","args":["x‍y 👨‍👩‍👧",{"platform":{"$undefined":true},"cwd":"hello","env":{"a":{"b":"c"}}}],"ok":"x‍y 👨‍👩‍👧"}
+{"fn":"resolveWindowsCommandPath","args":["a b c　d",{"platform":{"$undefined":true},"cwd":"hello","env":{"a":{"b":"c"}}}],"ok":"a b c　d"}
+{"fn":"resolveWindowsCommandPath","args":["١٢٣ ٤٥",{"platform":{"$undefined":true},"cwd":"hello","env":{"a":{"b":"c"}}}],"ok":"١٢٣ ٤٥"}
+{"fn":"resolveWindowsCommandPath","args":["𝟘𝟙 ²³",{"platform":{"$undefined":true},"cwd":"hello","env":{"a":{"b":"c"}}}],"ok":"𝟘𝟙 ²³"}
+{"fn":"resolveWindowsCommandPath","args":["snake_case foo-bar o'neil",{"platform":{"$undefined":true},"cwd":"hello","env":{"a":{"b":"c"}}}],"ok":"snake_case foo-bar o'neil"}
+{"fn":"resolveWindowsCommandPath","args":["ǅungla Ǆ",{"platform":{"$undefined":true},"cwd":"hello","env":{"a":{"b":"c"}}}],"ok":"ǅungla Ǆ"}
+{"fn":"resolveWindowsCommandPath","args":["one\r\ntwo threefour",{"platform":{"$undefined":true},"cwd":"hello","env":{"a":{"b":"c"}}}],"ok":"one\r\ntwo threefour"}
+{"fn":"resolveWindowsCommandPath","args":["café café",{"platform":{"$undefined":true},"cwd":"hello","env":{"a":{"b":"c"}}}],"ok":"café café"}
+{"fn":"resolveWindowsCommandPath","args":["ΣΑΣ σας ς",{"platform":{"$undefined":true},"cwd":"hello","env":{"a":{"b":"c"}}}],"ok":"ΣΑΣ σας ς"}
+{"fn":"prepareWindowsSafeProcess","args":["İstanbul",["ns:key.pathsrc/a/b.ts"],{"platform":{"$undefined":true},"cwd":"./x/**/*.jsonünïcödé","env":{"$undefined":true}}],"ok":{"command":"İstanbul","args":["ns:key.pathsrc/a/b.ts"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a..b",["é"],{"platform":{"$undefined":true},"cwd":{"$undefined":true}}],"ok":{"command":"a..b","args":["é"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a.b.c",["HELLO"],{"platform":null,"env":{"$undefined":true}}],"ok":{"command":"a.b.c","args":["HELLO"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a..b",["hello","Hello World","a.b.c﻿bom"],{"platform":{"$undefined":true},"cwd":":","env":{"$undefined":true}}],"ok":{"command":"a..b","args":["hello","Hello World","a.b.c﻿bom"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":[".leading",["ΣΊΣΥΦΟΣ"],{"cwd":"a:b:c","env":true}],"ok":{"command":".leading","args":["ΣΊΣΥΦΟΣ"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["tab\tseparated",["abc"],{"cwd":{"$undefined":true}}],"ok":{"command":"tab\tseparated","args":["abc"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["abtab\tseparated",["a😀b😀cünïcödé","tab\tseparated","é"],{"$undefined":true}],"ok":{"command":"abtab\tseparated","args":["a😀b😀cünïcödé","tab\tseparated","é"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["ab",["ns:key.path","./x/**/*.jsonHELLO"],{"$undefined":true}],"ok":{"command":"ab","args":["ns:key.path","./x/**/*.jsonHELLO"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["straße:",["ΣΊΣΥΦΟΣ"],{"cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":{"command":"straße:","args":["ΣΊΣΥΦΟΣ"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["İstanbul",["trailing.","😀","😀"]],"ok":{"command":"İstanbul","args":["trailing.","😀","😀"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["key_name-1",["line1\nline2"],{"$undefined":true}],"ok":{"command":"key_name-1","args":["line1\nline2"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["é",["tab\tseparated","./x/**/*.json"],{}],"ok":{"command":"é","args":["tab\tseparated","./x/**/*.json"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["./x/**/*.jsona",["src/a/b.ts","hello worlda:b:c","emoji 👍🏽 mix"],{"$undefined":true}],"ok":{"command":"./x/**/*.jsona","args":["src/a/b.ts","hello worlda:b:c","emoji 👍🏽 mix"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["straße",["line1\nline2",".leading"],{"platform":["a",1],"cwd":"straßetrailing.","env":{"$undefined":true}}],"ok":{"command":"straße","args":["line1\nline2",".leading"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":[".leading",[],{"platform":{"$undefined":true},"cwd":{"$undefined":true},"env":0}],"ok":{"command":".leading","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["src/a/b.ts",[],{"platform":"x","cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":{"command":"src/a/b.ts","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a:b:c",["ab","😀"],{"$undefined":true}],"ok":{"command":"a:b:c","args":["ab","😀"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["src/a/b.ts",[],{"platform":["a",1],"cwd":{"$undefined":true},"env":["a",1]}],"ok":{"command":"src/a/b.ts","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a",["hello world","ab"],{"platform":null,"cwd":{"$undefined":true}}],"ok":{"command":"a","args":["hello world","ab"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["x",["Hello World","ab"],"x"],"ok":{"command":"x","args":["Hello World","ab"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["trailing.",[":HELLO"],{"platform":null,"cwd":"a.b.c","env":0}],"ok":{"command":"trailing.","args":[":HELLO"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["trailing.",["  padded  ","tab\tseparated"],["a",1]],"ok":{"command":"trailing.","args":["  padded  ","tab\tseparated"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["ΣΊΣΥΦΟΣ",["ΣΊΣΥΦΟΣ","{name} has {count} items","straße"],{"platform":{},"cwd":"a😀b😀cé","env":["a",1]}],"ok":{"command":"ΣΊΣΥΦΟΣ","args":["ΣΊΣΥΦΟΣ","{name} has {count} items","straße"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a:b:c",[],{"platform":null,"cwd":"line1\nline2line1\nline2","env":{"$undefined":true}}],"ok":{"command":"a:b:c","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["src/a/b.ts",["﻿bom","éHello World"]],"ok":{"command":"src/a/b.ts","args":["﻿bom","éHello World"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["HELLO",[]],"ok":{"command":"HELLO","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["日本語のテキスト",["Hello World"],{"cwd":{"$undefined":true}}],"ok":{"command":"日本語のテキスト","args":["Hello World"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["ab",["tab\tseparated","﻿boma.b.c","hello"]],"ok":{"command":"ab","args":["tab\tseparated","﻿boma.b.c","hello"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["hello",["tab\tseparated","hello world日本語のテキスト","key_name-1"],"x"],"ok":{"command":"hello","args":["tab\tseparated","hello world日本語のテキスト","key_name-1"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a😀b😀c",[]],"ok":{"command":"a😀b😀c","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a😀b😀c",[],"x"],"ok":{"command":"a😀b😀c","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["tab\tseparatedünïcödé",["a..b","İstanbulé"],{"a":"b"}],"ok":{"command":"tab\tseparatedünïcödé","args":["a..b","İstanbulé"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["é",["HELLO","ab"],{"cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":{"command":"é","args":["HELLO","ab"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["ab",["abc"],{"platform":{"$undefined":true}}],"ok":{"command":"ab","args":["abc"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["ünïcödé",["tab\tseparated","src/a/b.ts","a.b.c:"]],"ok":{"command":"ünïcödé","args":["tab\tseparated","src/a/b.ts","a.b.c:"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a:b:c",[],{"platform":0,"cwd":{"$undefined":true},"env":0}],"ok":{"command":"a:b:c","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["日本語のテキスト",["a:b:cé"],{"platform":{"$undefined":true},"env":0}],"ok":{"command":"日本語のテキスト","args":["a:b:cé"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["Hello World",["hello","line1\nline2"],{"platform":[],"cwd":{"$undefined":true}}],"ok":{"command":"Hello World","args":["hello","line1\nline2"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["  padded  ",["😀"],{"cwd":{"$undefined":true},"env":{}}],"ok":{"command":"  padded  ","args":["😀"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["",["HELLO"],true],"ok":{"command":"","args":["HELLO"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["日本語のテキスト",[],{"platform":{"$undefined":true},"cwd":"a:b:ctab\tseparated"}],"ok":{"command":"日本語のテキスト","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a..b",["é"],{"$undefined":true}],"ok":{"command":"a..b","args":["é"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a..b",["ab","  padded  ","src/a/b.ts"],null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"prepareWindowsSafeProcess","args":["ΣΊΣΥΦΟΣ",[]],"ok":{"command":"ΣΊΣΥΦΟΣ","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["é",["tab\tseparated","ab","straßetrailing."],{"cwd":{"$undefined":true},"env":0}],"ok":{"command":"é","args":["tab\tseparated","ab","straßetrailing."],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["﻿bom",["key_name-1"]],"ok":{"command":"﻿bom","args":["key_name-1"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["日本語のテキスト",["ab"],{"platform":{"$undefined":true}}],"ok":{"command":"日本語のテキスト","args":["ab"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["😀",["emoji 👍🏽 mix","ns:key.path","ünïcödé"],{"platform":{"$undefined":true},"cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":{"command":"😀","args":["emoji 👍🏽 mix","ns:key.path","ünïcödé"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["😀",["emoji 👍🏽 mix"],{"platform":0}],"ok":{"command":"😀","args":["emoji 👍🏽 mix"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["Hello World",[".leading","hello world  padded  ","a..b"],{"platform":{"$undefined":true},"cwd":"abcünïcödé"}],"ok":{"command":"Hello World","args":[".leading","hello world  padded  ","a..b"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["hello world",["日本語のテキスト"],{"$undefined":true}],"ok":{"command":"hello world","args":["日本語のテキスト"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["ns:key.path",["ns:key.path"],{"platform":null,"cwd":"ΣΊΣΥΦΟΣ"}],"ok":{"command":"ns:key.path","args":["ns:key.path"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a..b",["日本語のテキストkey_name-1","ΣΊΣΥΦΟΣ"],{"platform":[],"cwd":"hello","env":{"$undefined":true}}],"ok":{"command":"a..b","args":["日本語のテキストkey_name-1","ΣΊΣΥΦΟΣ"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["hello world",["a.b.c","straße","hello"],{"env":{"$undefined":true}}],"ok":{"command":"hello world","args":["a.b.c","straße","hello"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["line1\nline2",[],{"platform":["a",1],"cwd":{"$undefined":true},"env":null}],"ok":{"command":"line1\nline2","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a..b",[],{"platform":0,"cwd":{"$undefined":true},"env":{"a":"b"}}],"ok":{"command":"a..b","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a..b",["","HELLO","a..b"],{"$undefined":true}],"ok":{"command":"a..b","args":["","HELLO","a..b"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["ab",["İstanbul","key_name-1"],{"platform":{"$undefined":true},"cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":{"command":"ab","args":["İstanbul","key_name-1"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":[":",["﻿bom"],{"platform":{"$undefined":true},"cwd":{"$undefined":true}}],"ok":{"command":":","args":["﻿bom"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["﻿bom",["a.b.c",".leading"],{"cwd":"﻿bomhello","env":true}],"ok":{"command":"﻿bom","args":["a.b.c",".leading"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["é",["ns:key.path","İstanbul","{name} has {count} items"],{"platform":null,"env":{"a":"b"}}],"ok":{"command":"é","args":["ns:key.path","İstanbul","{name} has {count} items"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["ns:key.pathé",[],{"cwd":"key_name-1","env":{"a":{"b":"c"}}}],"ok":{"command":"ns:key.pathé","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["ns:key.path",["  padded  ","a.b.c"],{}],"ok":{"command":"ns:key.path","args":["  padded  ","a.b.c"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["Hello World.leading",["﻿bom{name} has {count} items"],{}],"ok":{"command":"Hello World.leading","args":["﻿bom{name} has {count} items"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["hello",[],{}],"ok":{"command":"hello","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["hello",["😀a:b:c","src/a/b.ts"],{"platform":{"$undefined":true},"env":{"a":"b"}}],"ok":{"command":"hello","args":["😀a:b:c","src/a/b.ts"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["hello",["a","  padded  ","src/a/b.ts"],{}],"ok":{"command":"hello","args":["a","  padded  ","src/a/b.ts"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["  padded  ",["ab","hello world"],{"platform":{"a":"b"},"cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":{"command":"  padded  ","args":["ab","hello world"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["emoji 👍🏽 mix",["trailing.","a"],0],"ok":{"command":"emoji 👍🏽 mix","args":["trailing.","a"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["{name} has {count} items",[],{"platform":0,"cwd":".leading","env":{"$undefined":true}}],"ok":{"command":"{name} has {count} items","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["hello world",[],{"platform":{"$undefined":true},"cwd":{"$undefined":true}}],"ok":{"command":"hello world","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["helloa.b.c",["a:b:c","ab","a😀b😀c"]],"ok":{"command":"helloa.b.c","args":["a:b:c","ab","a😀b😀c"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a:b:c",[],{"platform":{},"cwd":{"$undefined":true},"env":"x"}],"ok":{"command":"a:b:c","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["Hello World",["tab\tseparated"],{"platform":{"$undefined":true},"cwd":"ns:key.path","env":{"$undefined":true}}],"ok":{"command":"Hello World","args":["tab\tseparated"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["日本語のテキスト",["﻿bom","ab"],{"cwd":"a:b:c","env":true}],"ok":{"command":"日本語のテキスト","args":["﻿bom","ab"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a:b:c",[],{"platform":{},"cwd":"key_name-1","env":{"$undefined":true}}],"ok":{"command":"a:b:c","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["./x/**/*.json",["Hello World"],{"env":{"$undefined":true}}],"ok":{"command":"./x/**/*.json","args":["Hello World"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["﻿bom",[],{"platform":{"$undefined":true},"cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":{"command":"﻿bom","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["ünïcödé",[":line1\nline2","ünïcödé"],{"$undefined":true}],"ok":{"command":"ünïcödé","args":[":line1\nline2","ünïcödé"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["key_name-1é",["a:b:c😀","a:b:c","a😀b😀c"],{"env":{"$undefined":true}}],"ok":{"command":"key_name-1é","args":["a:b:c😀","a:b:c","a😀b😀c"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["key_name-1İstanbul",["İstanbul","HELLO﻿bom","{name} has {count} items"],{"platform":{"$undefined":true},"env":null}],"ok":{"command":"key_name-1İstanbul","args":["İstanbul","HELLO﻿bom","{name} has {count} items"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["emoji 👍🏽 mix",[],{"env":["a",1]}],"ok":{"command":"emoji 👍🏽 mix","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["hello world:",["./x/**/*.json","{name} has {count} items"],{"$undefined":true}],"ok":{"command":"hello world:","args":["./x/**/*.json","{name} has {count} items"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["Hello World",["a😀b😀cab"],{"platform":{"$undefined":true},"cwd":{"$undefined":true}}],"ok":{"command":"Hello World","args":["a😀b😀cab"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["./x/**/*.json",["ünïcödé日本語のテキスト"],{"a":"b"}],"ok":{"command":"./x/**/*.json","args":["ünïcödé日本語のテキスト"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["abc",["日本語のテキストhello"],{"cwd":"﻿bom","env":{"$undefined":true}}],"ok":{"command":"abc","args":["日本語のテキストhello"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":[":",[],{"platform":{"a":{"b":"c"}}}],"ok":{"command":":","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["",["abcHELLO","日本語のテキスト","hello"],{"platform":true}],"ok":{"command":"","args":["abcHELLO","日本語のテキスト","hello"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["ns:key.path",["é"],{"platform":0,"cwd":"a.b.c"}],"ok":{"command":"ns:key.path","args":["é"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["key_name-1",["İstanbulabc","key_name-1İstanbul",""],{"platform":{"$undefined":true},"cwd":"ΣΊΣΥΦΟΣHELLO"}],"ok":{"command":"key_name-1","args":["İstanbulabc","key_name-1İstanbul",""],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["﻿bom",[],{"platform":["a",1],"cwd":{"$undefined":true},"env":0}],"ok":{"command":"﻿bom","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["straße",["./x/**/*.json","emoji 👍🏽 mix"],{}],"ok":{"command":"straße","args":["./x/**/*.json","emoji 👍🏽 mix"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["trailing.",["日本語のテキスト"],true],"ok":{"command":"trailing.","args":["日本語のテキスト"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a😀b😀c",["a:b:c./x/**/*.json"],{"platform":{"$undefined":true},"env":{"$undefined":true}}],"ok":{"command":"a😀b😀c","args":["a:b:c./x/**/*.json"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["abc",[".leading","HELLO",":emoji 👍🏽 mix"],{"cwd":"./x/**/*.json"}],"ok":{"command":"abc","args":[".leading","HELLO",":emoji 👍🏽 mix"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["  padded  é",["abHello World","trailing.é","a:b:cİstanbul"],{"$undefined":true}],"ok":{"command":"  padded  é","args":["abHello World","trailing.é","a:b:cİstanbul"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["emoji 👍🏽 mix",[],{"platform":{"$undefined":true},"env":{}}],"ok":{"command":"emoji 👍🏽 mix","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a:b:c日本語のテキスト",["HELLO","😀"],{"cwd":{"$undefined":true},"env":0}],"ok":{"command":"a:b:c日本語のテキスト","args":["HELLO","😀"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a",["line1\nline2"],{"$undefined":true}],"ok":{"command":"a","args":["line1\nline2"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a😀b😀c",[],true],"ok":{"command":"a😀b😀c","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["ns:key.path",[],{"platform":null}],"ok":{"command":"ns:key.path","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["emoji 👍🏽 mix",["emoji 👍🏽 mix"]],"ok":{"command":"emoji 👍🏽 mix","args":["emoji 👍🏽 mix"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["ünïcödé",[],{"platform":{"$undefined":true},"env":{"$undefined":true}}],"ok":{"command":"ünïcödé","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a.b.c",[],{"platform":{"$undefined":true},"cwd":"key_name-1abc","env":{"$undefined":true}}],"ok":{"command":"a.b.c","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["hello",["a.b.c","hello worldline1\nline2"],{"cwd":{"$undefined":true},"env":{"a":"b"}}],"ok":{"command":"hello","args":["a.b.c","hello worldline1\nline2"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["é",["ab","ΣΊΣΥΦΟΣ","﻿bom.leading"],{"platform":{"$undefined":true},"cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":{"command":"é","args":["ab","ΣΊΣΥΦΟΣ","﻿bom.leading"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["hello",[],{"platform":[],"cwd":"HELLO","env":{"$undefined":true}}],"ok":{"command":"hello","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["﻿bom",["ünïcödé","é","abc"],{"cwd":"  padded  ","env":{"$undefined":true}}],"ok":{"command":"﻿bom","args":["ünïcödé","é","abc"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["😀",["straße","hello日本語のテキスト"]],"ok":{"command":"😀","args":["straße","hello日本語のテキスト"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["line1\nline2",["a.b.cünïcödé","key_name-1","abc"],{"platform":{"$undefined":true},"cwd":"hello worlda","env":{"$undefined":true}}],"ok":{"command":"line1\nline2","args":["a.b.cünïcödé","key_name-1","abc"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":[".leading",["tab\tseparated","Hello World"],{"platform":{"$undefined":true},"env":"x"}],"ok":{"command":".leading","args":["tab\tseparated","Hello World"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["ΣΊΣΥΦΟΣ",["{name} has {count} items"],{"platform":{"$undefined":true},"cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":{"command":"ΣΊΣΥΦΟΣ","args":["{name} has {count} items"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["😀",["ünïcödé","﻿bom","é"],{"platform":[],"cwd":":hello"}],"ok":{"command":"😀","args":["ünïcödé","﻿bom","é"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a.b.c./x/**/*.json",[],{"platform":0,"cwd":{"$undefined":true},"env":{}}],"ok":{"command":"a.b.c./x/**/*.json","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["",["ünïcödé","{name} has {count} items"],{"platform":{},"cwd":"a:b:c","env":{"a":"b"}}],"ok":{"command":"","args":["ünïcödé","{name} has {count} items"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["HELLO",["hello😀","  padded  ","hello world"]],"ok":{"command":"HELLO","args":["hello😀","  padded  ","hello world"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["hello world",[":","aba😀b😀c"],{"platform":["a",1],"cwd":"a😀b😀c"}],"ok":{"command":"hello world","args":[":","aba😀b😀c"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["tab\tseparated",["a😀b😀csrc/a/b.ts","İstanbulé","ΣΊΣΥΦΟΣ"],{"platform":{"$undefined":true},"cwd":"é","env":{"a":{"b":"c"}}}],"ok":{"command":"tab\tseparated","args":["a😀b😀csrc/a/b.ts","İstanbulé","ΣΊΣΥΦΟΣ"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["abünïcödé",[],{"platform":{"$undefined":true},"cwd":{"$undefined":true},"env":{"a":"b"}}],"ok":{"command":"abünïcödé","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["straße",["hello","hello world","日本語のテキスト"],{"platform":0,"cwd":{"$undefined":true},"env":{"a":{"b":"c"}}}],"ok":{"command":"straße","args":["hello","hello world","日本語のテキスト"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a",["src/a/b.ts"],{"platform":["a",1],"cwd":{"$undefined":true},"env":true}],"ok":{"command":"a","args":["src/a/b.ts"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["src/a/b.ts",["","ünïcödé😀","straße"]],"ok":{"command":"src/a/b.ts","args":["","ünïcödé😀","straße"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["abemoji 👍🏽 mix",["{name} has {count} items","Hello World","a:b:c"],{"platform":null,"cwd":{"$undefined":true},"env":["a",1]}],"ok":{"command":"abemoji 👍🏽 mix","args":["{name} has {count} items","Hello World","a:b:c"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["ab",[],{"env":[]}],"ok":{"command":"ab","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a..b",["straße"],{"platform":[],"cwd":"﻿bom","env":{"$undefined":true}}],"ok":{"command":"a..b","args":["straße"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["ünïcödé",["éa..b"]],"ok":{"command":"ünïcödé","args":["éa..b"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["  padded  a",["hello worlda..b","line1\nline2"],{"env":"x"}],"ok":{"command":"  padded  a","args":["hello worlda..b","line1\nline2"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["Hello World",[":","a..b"],{"env":{"$undefined":true}}],"ok":{"command":"Hello World","args":[":","a..b"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["é",["ΣΊΣΥΦΟΣ"],{"platform":{"$undefined":true},"cwd":{"$undefined":true},"env":{"a":{"b":"c"}}}],"ok":{"command":"é","args":["ΣΊΣΥΦΟΣ"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["straße",["emoji 👍🏽 mix",":"],{"platform":[],"env":0}],"ok":{"command":"straße","args":["emoji 👍🏽 mix",":"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a.b.c./x/**/*.json",["﻿bom"],null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"prepareWindowsSafeProcess","args":["ünïcödé{name} has {count} items",[],{"$undefined":true}],"ok":{"command":"ünïcödé{name} has {count} items","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":[":",["a😀b😀c"],{"cwd":"ns:key.path","env":{"$undefined":true}}],"ok":{"command":":","args":["a😀b😀c"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a..b{name} has {count} items",["ns:key.pathİstanbul","﻿boma"],{"$undefined":true}],"ok":{"command":"a..b{name} has {count} items","args":["ns:key.pathİstanbul","﻿boma"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["ΣΊΣΥΦΟΣ",["a"],{"env":true}],"ok":{"command":"ΣΊΣΥΦΟΣ","args":["a"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["﻿bomstraße",["HELLO"],true],"ok":{"command":"﻿bomstraße","args":["HELLO"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["  padded  ",["trailing.","ns:key.patha","a..b"],{"cwd":"a..b"}],"ok":{"command":"  padded  ","args":["trailing.","ns:key.patha","a..b"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["  padded  ",["line1\nline2.leading","a:b:c"]],"ok":{"command":"  padded  ","args":["line1\nline2.leading","a:b:c"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a",[],{"$undefined":true}],"ok":{"command":"a","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["",["src/a/b.ts  padded  "],{"platform":true,"cwd":{"$undefined":true}}],"ok":{"command":"","args":["src/a/b.ts  padded  "],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":[":ünïcödé",["straße","line1\nline2","a:b:cline1\nline2"],{"platform":{},"env":{"$undefined":true}}],"ok":{"command":":ünïcödé","args":["straße","line1\nline2","a:b:cline1\nline2"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a..bhello world",["hello","a..b"],{"platform":{"$undefined":true},"env":{"$undefined":true}}],"ok":{"command":"a..bhello world","args":["hello","a..b"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":[".leading",[],{"platform":{"$undefined":true},"cwd":{"$undefined":true}}],"ok":{"command":".leading","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["key_name-1",["ab"],{"platform":{},"cwd":"emoji 👍🏽 mix","env":{"$undefined":true}}],"ok":{"command":"key_name-1","args":["ab"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["absrc/a/b.ts",[],0],"ok":{"command":"absrc/a/b.ts","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["./x/**/*.json",["src/a/b.ts","ns:key.path"]],"ok":{"command":"./x/**/*.json","args":["src/a/b.ts","ns:key.path"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["ΣΊΣΥΦΟΣ",["日本語のテキスト","HELLO","a.b.c"],{"platform":{"$undefined":true},"env":{"$undefined":true}}],"ok":{"command":"ΣΊΣΥΦΟΣ","args":["日本語のテキスト","HELLO","a.b.c"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["abc",[],"x"],"ok":{"command":"abc","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["日本語のテキスト",[".leadingemoji 👍🏽 mix"],{"platform":null,"cwd":"😀"}],"ok":{"command":"日本語のテキスト","args":[".leadingemoji 👍🏽 mix"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["﻿bom",["ab","straße"],{"cwd":"abcİstanbul"}],"ok":{"command":"﻿bom","args":["ab","straße"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["key_name-1a:b:c",["a.b.c","a.b.c","a:b:c"],{"platform":["a",1],"cwd":"a:b:c","env":0}],"ok":{"command":"key_name-1a:b:c","args":["a.b.c","a.b.c","a:b:c"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["hello world",["straße"],{"cwd":"a.b.c"}],"ok":{"command":"hello world","args":["straße"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["日本語のテキスト",[],{"platform":0}],"ok":{"command":"日本語のテキスト","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["﻿bom",["a","  padded  "],{"platform":["a",1],"cwd":"trailing.日本語のテキスト"}],"ok":{"command":"﻿bom","args":["a","  padded  "],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["ΣΊΣΥΦΟΣ",[":HELLO","﻿bom","abcé"],{"cwd":"ns:key.path"}],"ok":{"command":"ΣΊΣΥΦΟΣ","args":[":HELLO","﻿bom","abcé"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["﻿bom",[".leading","tab\tseparated"],{"platform":{"$undefined":true},"cwd":{"$undefined":true}}],"ok":{"command":"﻿bom","args":[".leading","tab\tseparated"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["src/a/b.ts日本語のテキスト",["","a..b","ΣΊΣΥΦΟΣ"],{"platform":0,"cwd":{"$undefined":true},"env":true}],"ok":{"command":"src/a/b.ts日本語のテキスト","args":["","a..b","ΣΊΣΥΦΟΣ"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["tab\tseparated",[],{"platform":{"$undefined":true},"cwd":{"$undefined":true}}],"ok":{"command":"tab\tseparated","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a.b.c",[],{"platform":{"$undefined":true},"cwd":{"$undefined":true}}],"ok":{"command":"a.b.c","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["tab\tseparateda😀b😀c",[],{"platform":true,"cwd":{"$undefined":true},"env":{"a":"b"}}],"ok":{"command":"tab\tseparateda😀b😀c","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["src/a/b.ts",["日本語のテキスト","Hello World","  padded  ünïcödé"],{"platform":{"$undefined":true},"cwd":"./x/**/*.json","env":{}}],"ok":{"command":"src/a/b.ts","args":["日本語のテキスト","Hello World","  padded  ünïcödé"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["😀",[],{"platform":true,"cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":{"command":"😀","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["src/a/b.ts",["hello","HELLO日本語のテキスト"],{"platform":["a",1],"cwd":{"$undefined":true},"env":0}],"ok":{"command":"src/a/b.ts","args":["hello","HELLO日本語のテキスト"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a./x/**/*.json",["日本語のテキスト","a","a😀b😀csrc/a/b.ts"],true],"ok":{"command":"a./x/**/*.json","args":["日本語のテキスト","a","a😀b😀csrc/a/b.ts"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["{name} has {count} items",["emoji 👍🏽 mix"],{"platform":{"$undefined":true},"cwd":"İstanbul","env":{"$undefined":true}}],"ok":{"command":"{name} has {count} items","args":["emoji 👍🏽 mix"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["./x/**/*.json",["a😀b😀c","a😀b😀c","line1\nline2"],"x"],"ok":{"command":"./x/**/*.json","args":["a😀b😀c","a😀b😀c","line1\nline2"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["é",["😀","straße"]],"ok":{"command":"é","args":["😀","straße"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["😀",["./x/**/*.json",":a..b"],{"cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":{"command":"😀","args":["./x/**/*.json",":a..b"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["line1\nline2",["line1\nline2{name} has {count} items","emoji 👍🏽 mix"],{"platform":0,"cwd":{"$undefined":true},"env":null}],"ok":{"command":"line1\nline2","args":["line1\nline2{name} has {count} items","emoji 👍🏽 mix"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["HELLO",["line1\nline2"]],"ok":{"command":"HELLO","args":["line1\nline2"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a",[],{"platform":{"$undefined":true},"env":{"$undefined":true}}],"ok":{"command":"a","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["ns:key.path",["tab\tseparated","a😀b😀c"],{"platform":[],"cwd":"key_name-1abc","env":0}],"ok":{"command":"ns:key.path","args":["tab\tseparated","a😀b😀c"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a:b:ca:b:c",["ns:key.path",".leading"],{"platform":{"$undefined":true},"cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":{"command":"a:b:ca:b:c","args":["ns:key.path",".leading"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["hello world",[]],"ok":{"command":"hello world","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["é",["tab\tseparatedhello world","a.b.c","日本語のテキスト"]],"ok":{"command":"é","args":["tab\tseparatedhello world","a.b.c","日本語のテキスト"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["hello world",["src/a/b.ts"],null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"prepareWindowsSafeProcess","args":["ΣΊΣΥΦΟΣ",["HELLO","İstanbul","日本語のテキスト  padded  "],{"platform":[],"cwd":"./x/**/*.json","env":null}],"ok":{"command":"ΣΊΣΥΦΟΣ","args":["HELLO","İstanbul","日本語のテキスト  padded  "],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["astraße",["abc","ΣΊΣΥΦΟΣ"],{"platform":["a",1],"cwd":"a:b:c"}],"ok":{"command":"astraße","args":["abc","ΣΊΣΥΦΟΣ"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["src/a/b.tsstraße",["{name} has {count} items","trailing."],0],"ok":{"command":"src/a/b.tsstraße","args":["{name} has {count} items","trailing."],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["emoji 👍🏽 mix",["hello world",".leading","ns:key.pathline1\nline2"],"x"],"ok":{"command":"emoji 👍🏽 mix","args":["hello world",".leading","ns:key.pathline1\nline2"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["ab  padded  ",[":","ékey_name-1"],{"$undefined":true}],"ok":{"command":"ab  padded  ","args":[":","ékey_name-1"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":[".leading",[],{"$undefined":true}],"ok":{"command":".leading","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["﻿bom",[],{"a":"b"}],"ok":{"command":"﻿bom","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["abc",["{name} has {count} items"],{}],"ok":{"command":"abc","args":["{name} has {count} items"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["﻿bom",[],{"cwd":"","env":{}}],"ok":{"command":"﻿bom","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["trailing.",["hellotrailing.","ns:key.path"],{"platform":{"$undefined":true},"cwd":"hello world"}],"ok":{"command":"trailing.","args":["hellotrailing.","ns:key.path"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["﻿bomtrailing.",["tab\tseparatedhello"],{"$undefined":true}],"ok":{"command":"﻿bomtrailing.","args":["tab\tseparatedhello"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["日本語のテキスト",["😀","hello world",""],{"platform":{"$undefined":true},"cwd":{"$undefined":true},"env":{}}],"ok":{"command":"日本語のテキスト","args":["😀","hello world",""],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":[".leading",[],{"platform":{},"cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":{"command":".leading","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["Hello WorldΣΊΣΥΦΟΣ",["line1\nline2","a:b:c","  padded  "],{"platform":"x","cwd":"ns:key.path","env":{"a":{"b":"c"}}}],"ok":{"command":"Hello WorldΣΊΣΥΦΟΣ","args":["line1\nline2","a:b:c","  padded  "],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["ΣΊΣΥΦΟΣ",[],[]],"ok":{"command":"ΣΊΣΥΦΟΣ","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":[".leading",[":","asrc/a/b.ts","straße"],{"platform":{"$undefined":true},"cwd":"Hello Worldhello","env":"x"}],"ok":{"command":".leading","args":[":","asrc/a/b.ts","straße"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["ΣΊΣΥΦΟΣ",["a"],{"platform":{"$undefined":true},"cwd":{"$undefined":true},"env":null}],"ok":{"command":"ΣΊΣΥΦΟΣ","args":["a"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["abc",[],{"platform":{"$undefined":true},"cwd":"straße"}],"ok":{"command":"abc","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["hello",[],{"$undefined":true}],"ok":{"command":"hello","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["Hello World",["trailing."],0],"ok":{"command":"Hello World","args":["trailing."],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["ünïcödé",[],{"$undefined":true}],"ok":{"command":"ünïcödé","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["src/a/b.ts",["日本語のテキスト"],{"platform":{"a":"b"},"env":{"$undefined":true}}],"ok":{"command":"src/a/b.ts","args":["日本語のテキスト"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["emoji 👍🏽 mix",["hello world","key_name-1ΣΊΣΥΦΟΣ","line1\nline2"],{"cwd":{"$undefined":true},"env":{"a":"b"}}],"ok":{"command":"emoji 👍🏽 mix","args":["hello world","key_name-1ΣΊΣΥΦΟΣ","line1\nline2"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["  padded  ",["abtrailing."],{"platform":{"$undefined":true},"cwd":{"$undefined":true},"env":{"$undefined":true}}],"ok":{"command":"  padded  ","args":["abtrailing."],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["héllo wörld",["ns:key.pathsrc/a/b.ts"],{"platform":{"$undefined":true},"cwd":"./x/**/*.jsonünïcödé","env":{"$undefined":true}}],"ok":{"command":"héllo wörld","args":["ns:key.pathsrc/a/b.ts"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["👍🏽 thumbs",["ns:key.pathsrc/a/b.ts"],{"platform":{"$undefined":true},"cwd":"./x/**/*.jsonünïcödé","env":{"$undefined":true}}],"ok":{"command":"👍🏽 thumbs","args":["ns:key.pathsrc/a/b.ts"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["日本語",["ns:key.pathsrc/a/b.ts"],{"platform":{"$undefined":true},"cwd":"./x/**/*.jsonünïcödé","env":{"$undefined":true}}],"ok":{"command":"日本語","args":["ns:key.pathsrc/a/b.ts"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["",["ns:key.pathsrc/a/b.ts"],{"platform":{"$undefined":true},"cwd":"./x/**/*.jsonünïcödé","env":{"$undefined":true}}],"ok":{"command":"","args":["ns:key.pathsrc/a/b.ts"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["é",["ns:key.pathsrc/a/b.ts"],{"platform":{"$undefined":true},"cwd":"./x/**/*.jsonünïcödé","env":{"$undefined":true}}],"ok":{"command":"é","args":["ns:key.pathsrc/a/b.ts"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["straße",["ns:key.pathsrc/a/b.ts"],{"platform":{"$undefined":true},"cwd":"./x/**/*.jsonünïcödé","env":{"$undefined":true}}],"ok":{"command":"straße","args":["ns:key.pathsrc/a/b.ts"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["ılık ırmak",["ns:key.pathsrc/a/b.ts"],{"platform":{"$undefined":true},"cwd":"./x/**/*.jsonünïcödé","env":{"$undefined":true}}],"ok":{"command":"ılık ırmak","args":["ns:key.pathsrc/a/b.ts"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["👨‍👩‍👧 family",["ns:key.pathsrc/a/b.ts"],{"platform":{"$undefined":true},"cwd":"./x/**/*.jsonünïcödé","env":{"$undefined":true}}],"ok":{"command":"👨‍👩‍👧 family","args":["ns:key.pathsrc/a/b.ts"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a b",["ns:key.pathsrc/a/b.ts"],{"platform":{"$undefined":true},"cwd":"./x/**/*.jsonünïcödé","env":{"$undefined":true}}],"ok":{"command":"a b","args":["ns:key.pathsrc/a/b.ts"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["ΣΊΣΥΦΟΣ",["ns:key.pathsrc/a/b.ts"],{"platform":{"$undefined":true},"cwd":"./x/**/*.jsonünïcödé","env":{"$undefined":true}}],"ok":{"command":"ΣΊΣΥΦΟΣ","args":["ns:key.pathsrc/a/b.ts"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a😀b",["ns:key.pathsrc/a/b.ts"],{"platform":{"$undefined":true},"cwd":"./x/**/*.jsonünïcödé","env":{"$undefined":true}}],"ok":{"command":"a😀b","args":["ns:key.pathsrc/a/b.ts"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["﻿bom",["ns:key.pathsrc/a/b.ts"],{"platform":{"$undefined":true},"cwd":"./x/**/*.jsonünïcödé","env":{"$undefined":true}}],"ok":{"command":"﻿bom","args":["ns:key.pathsrc/a/b.ts"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a²b x½ y①",["ns:key.pathsrc/a/b.ts"],{"platform":{"$undefined":true},"cwd":"./x/**/*.jsonünïcödé","env":{"$undefined":true}}],"ok":{"command":"a²b x½ y①","args":["ns:key.pathsrc/a/b.ts"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["aⅠb Ⅻ",["ns:key.pathsrc/a/b.ts"],{"platform":{"$undefined":true},"cwd":"./x/**/*.jsonünïcödé","env":{"$undefined":true}}],"ok":{"command":"aⅠb Ⅻ","args":["ns:key.pathsrc/a/b.ts"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a𐐀b 𝐀bc",["ns:key.pathsrc/a/b.ts"],{"platform":{"$undefined":true},"cwd":"./x/**/*.jsonünïcödé","env":{"$undefined":true}}],"ok":{"command":"a𐐀b 𝐀bc","args":["ns:key.pathsrc/a/b.ts"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["कि ٣٤",["ns:key.pathsrc/a/b.ts"],{"platform":{"$undefined":true},"cwd":"./x/**/*.jsonünïcödé","env":{"$undefined":true}}],"ok":{"command":"कि ٣٤","args":["ns:key.pathsrc/a/b.ts"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["Iı İi",["ns:key.pathsrc/a/b.ts"],{"platform":{"$undefined":true},"cwd":"./x/**/*.jsonünïcödé","env":{"$undefined":true}}],"ok":{"command":"Iı İi","args":["ns:key.pathsrc/a/b.ts"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["K K k",["ns:key.pathsrc/a/b.ts"],{"platform":{"$undefined":true},"cwd":"./x/**/*.jsonünïcödé","env":{"$undefined":true}}],"ok":{"command":"K K k","args":["ns:key.pathsrc/a/b.ts"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["ſ s S",["ns:key.pathsrc/a/b.ts"],{"platform":{"$undefined":true},"cwd":"./x/**/*.jsonünïcödé","env":{"$undefined":true}}],"ok":{"command":"ſ s S","args":["ns:key.pathsrc/a/b.ts"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["x‍y 👨‍👩‍👧",["ns:key.pathsrc/a/b.ts"],{"platform":{"$undefined":true},"cwd":"./x/**/*.jsonünïcödé","env":{"$undefined":true}}],"ok":{"command":"x‍y 👨‍👩‍👧","args":["ns:key.pathsrc/a/b.ts"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["a b c　d",["ns:key.pathsrc/a/b.ts"],{"platform":{"$undefined":true},"cwd":"./x/**/*.jsonünïcödé","env":{"$undefined":true}}],"ok":{"command":"a b c　d","args":["ns:key.pathsrc/a/b.ts"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["١٢٣ ٤٥",["ns:key.pathsrc/a/b.ts"],{"platform":{"$undefined":true},"cwd":"./x/**/*.jsonünïcödé","env":{"$undefined":true}}],"ok":{"command":"١٢٣ ٤٥","args":["ns:key.pathsrc/a/b.ts"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["𝟘𝟙 ²³",["ns:key.pathsrc/a/b.ts"],{"platform":{"$undefined":true},"cwd":"./x/**/*.jsonünïcödé","env":{"$undefined":true}}],"ok":{"command":"𝟘𝟙 ²³","args":["ns:key.pathsrc/a/b.ts"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["snake_case foo-bar o'neil",["ns:key.pathsrc/a/b.ts"],{"platform":{"$undefined":true},"cwd":"./x/**/*.jsonünïcödé","env":{"$undefined":true}}],"ok":{"command":"snake_case foo-bar o'neil","args":["ns:key.pathsrc/a/b.ts"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["ǅungla Ǆ",["ns:key.pathsrc/a/b.ts"],{"platform":{"$undefined":true},"cwd":"./x/**/*.jsonünïcödé","env":{"$undefined":true}}],"ok":{"command":"ǅungla Ǆ","args":["ns:key.pathsrc/a/b.ts"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["one\r\ntwo threefour",["ns:key.pathsrc/a/b.ts"],{"platform":{"$undefined":true},"cwd":"./x/**/*.jsonünïcödé","env":{"$undefined":true}}],"ok":{"command":"one\r\ntwo threefour","args":["ns:key.pathsrc/a/b.ts"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["café café",["ns:key.pathsrc/a/b.ts"],{"platform":{"$undefined":true},"cwd":"./x/**/*.jsonünïcödé","env":{"$undefined":true}}],"ok":{"command":"café café","args":["ns:key.pathsrc/a/b.ts"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["ΣΑΣ σας ς",["ns:key.pathsrc/a/b.ts"],{"platform":{"$undefined":true},"cwd":"./x/**/*.jsonünïcödé","env":{"$undefined":true}}],"ok":{"command":"ΣΑΣ σας ς","args":["ns:key.pathsrc/a/b.ts"],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["İstanbul",[],{"platform":{"$undefined":true},"cwd":"./x/**/*.jsonünïcödé","env":{"$undefined":true}}],"ok":{"command":"İstanbul","args":[],"shell":false}}
+{"fn":"prepareWindowsSafeProcess","args":["İstanbul",["b","a","B","é","10","9","a"],{"platform":{"$undefined":true},"cwd":"./x/**/*.jsonünïcödé","env":{"$undefined":true}}],"ok":{"command":"İstanbul","args":["b","a","B","é","10","9","a"],"shell":false}}

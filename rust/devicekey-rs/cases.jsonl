@@ -1,0 +1,1264 @@
+{"fn":"hostAudience","args":["a"],"ok":"synara-host:a"}
+{"fn":"hostAudience","args":["ünïcödé"],"ok":"synara-host:ünïcödé"}
+{"fn":"hostAudience","args":["key_name-1"],"ok":"synara-host:key_name-1"}
+{"fn":"hostAudience","args":["abc"],"ok":"synara-host:abc"}
+{"fn":"hostAudience","args":["emoji 👍🏽 mix"],"ok":"synara-host:emoji 👍🏽 mix"}
+{"fn":"hostAudience","args":[":"],"ok":"synara-host::"}
+{"fn":"hostAudience","args":["straße"],"ok":"synara-host:straße"}
+{"fn":"hostAudience","args":["hello"],"ok":"synara-host:hello"}
+{"fn":"hostAudience","args":["abc日本語のテキスト"],"ok":"synara-host:abc日本語のテキスト"}
+{"fn":"hostAudience","args":["{name} has {count} items"],"ok":"synara-host:{name} has {count} items"}
+{"fn":"hostAudience","args":["ΣΊΣΥΦΟΣ"],"ok":"synara-host:ΣΊΣΥΦΟΣ"}
+{"fn":"hostAudience","args":["  padded  "],"ok":"synara-host:  padded  "}
+{"fn":"hostAudience","args":["line1\nline2"],"ok":"synara-host:line1\nline2"}
+{"fn":"hostAudience","args":["é"],"ok":"synara-host:é"}
+{"fn":"hostAudience","args":["İstanbula.b.c"],"ok":"synara-host:İstanbula.b.c"}
+{"fn":"hostAudience","args":["﻿bom日本語のテキスト"],"ok":"synara-host:﻿bom日本語のテキスト"}
+{"fn":"hostAudience","args":["./x/**/*.json"],"ok":"synara-host:./x/**/*.json"}
+{"fn":"hostAudience","args":[".leading"],"ok":"synara-host:.leading"}
+{"fn":"hostAudience","args":["src/a/b.ts"],"ok":"synara-host:src/a/b.ts"}
+{"fn":"hostAudience","args":["a..b"],"ok":"synara-host:a..b"}
+{"fn":"hostAudience","args":["straßeİstanbul"],"ok":"synara-host:straßeİstanbul"}
+{"fn":"hostAudience","args":["tab\tseparated"],"ok":"synara-host:tab\tseparated"}
+{"fn":"hostAudience","args":["😀  padded  "],"ok":"synara-host:😀  padded  "}
+{"fn":"hostAudience","args":["ab"],"ok":"synara-host:ab"}
+{"fn":"hostAudience","args":["﻿bom"],"ok":"synara-host:﻿bom"}
+{"fn":"hostAudience","args":["a.b.c"],"ok":"synara-host:a.b.c"}
+{"fn":"hostAudience","args":["straßehello world"],"ok":"synara-host:straßehello world"}
+{"fn":"hostAudience","args":["日本語のテキスト"],"ok":"synara-host:日本語のテキスト"}
+{"fn":"hostAudience","args":["ns:key.path"],"ok":"synara-host:ns:key.path"}
+{"fn":"hostAudience","args":["{name} has {count} itemsa😀b😀c"],"ok":"synara-host:{name} has {count} itemsa😀b😀c"}
+{"fn":"hostAudience","args":["ünïcödéHELLO"],"ok":"synara-host:ünïcödéHELLO"}
+{"fn":"hostAudience","args":[""],"ok":"synara-host:"}
+{"fn":"hostAudience","args":["trailing."],"ok":"synara-host:trailing."}
+{"fn":"hostAudience","args":["Hello Worldİstanbul"],"ok":"synara-host:Hello Worldİstanbul"}
+{"fn":"hostAudience","args":["abline1\nline2"],"ok":"synara-host:abline1\nline2"}
+{"fn":"hostAudience","args":["hellokey_name-1"],"ok":"synara-host:hellokey_name-1"}
+{"fn":"hostAudience","args":["a.b.c😀"],"ok":"synara-host:a.b.c😀"}
+{"fn":"hostAudience","args":["tab\tseparated{name} has {count} items"],"ok":"synara-host:tab\tseparated{name} has {count} items"}
+{"fn":"hostAudience","args":["İstanbul"],"ok":"synara-host:İstanbul"}
+{"fn":"hostAudience","args":["étab\tseparated"],"ok":"synara-host:étab\tseparated"}
+{"fn":"hostAudience","args":["HELLO"],"ok":"synara-host:HELLO"}
+{"fn":"hostAudience","args":["ab﻿bom"],"ok":"synara-host:ab﻿bom"}
+{"fn":"hostAudience","args":["abtab\tseparated"],"ok":"synara-host:abtab\tseparated"}
+{"fn":"hostAudience","args":["a.b.cünïcödé"],"ok":"synara-host:a.b.cünïcödé"}
+{"fn":"hostAudience","args":["line1\nline2ΣΊΣΥΦΟΣ"],"ok":"synara-host:line1\nline2ΣΊΣΥΦΟΣ"}
+{"fn":"hostAudience","args":["a:b:cab"],"ok":"synara-host:a:b:cab"}
+{"fn":"hostAudience","args":["a:b:cns:key.path"],"ok":"synara-host:a:b:cns:key.path"}
+{"fn":"hostAudience","args":["😀"],"ok":"synara-host:😀"}
+{"fn":"hostAudience","args":["aünïcödé"],"ok":"synara-host:aünïcödé"}
+{"fn":"hostAudience","args":["a:b:c"],"ok":"synara-host:a:b:c"}
+{"fn":"hostAudience","args":[".leadinghello"],"ok":"synara-host:.leadinghello"}
+{"fn":"hostAudience","args":["abc😀"],"ok":"synara-host:abc😀"}
+{"fn":"hostAudience","args":["a😀b😀c"],"ok":"synara-host:a😀b😀c"}
+{"fn":"hostAudience","args":["﻿bomhello"],"ok":"synara-host:﻿bomhello"}
+{"fn":"hostAudience","args":["tab\tseparated😀"],"ok":"synara-host:tab\tseparated😀"}
+{"fn":"hostAudience","args":["hello world"],"ok":"synara-host:hello world"}
+{"fn":"hostAudience","args":["hellons:key.path"],"ok":"synara-host:hellons:key.path"}
+{"fn":"hostAudience","args":["ünïcödéhello world"],"ok":"synara-host:ünïcödéhello world"}
+{"fn":"hostAudience","args":["Hello Worldkey_name-1"],"ok":"synara-host:Hello Worldkey_name-1"}
+{"fn":"hostAudience","args":["﻿bomtrailing."],"ok":"synara-host:﻿bomtrailing."}
+{"fn":"hostAudience","args":["日本語のテキストünïcödé"],"ok":"synara-host:日本語のテキストünïcödé"}
+{"fn":"hostAudience","args":["Hello World"],"ok":"synara-host:Hello World"}
+{"fn":"hostAudience","args":[":./x/**/*.json"],"ok":"synara-host::./x/**/*.json"}
+{"fn":"hostAudience","args":["ünïcödé日本語のテキスト"],"ok":"synara-host:ünïcödé日本語のテキスト"}
+{"fn":"hostAudience","args":["日本語のテキスト😀"],"ok":"synara-host:日本語のテキスト😀"}
+{"fn":"hostAudience","args":["./x/**/*.jsonstraße"],"ok":"synara-host:./x/**/*.jsonstraße"}
+{"fn":"hostAudience","args":["abc:"],"ok":"synara-host:abc:"}
+{"fn":"hostAudience","args":["日本語のテキストstraße"],"ok":"synara-host:日本語のテキストstraße"}
+{"fn":"hostAudience","args":["abc.leading"],"ok":"synara-host:abc.leading"}
+{"fn":"hostAudience","args":["tab\tseparated.leading"],"ok":"synara-host:tab\tseparated.leading"}
+{"fn":"hostAudience","args":["a😀b😀cab"],"ok":"synara-host:a😀b😀cab"}
+{"fn":"hostAudience","args":["abcé"],"ok":"synara-host:abcé"}
+{"fn":"hostAudience","args":["a.b.ca.b.c"],"ok":"synara-host:a.b.ca.b.c"}
+{"fn":"hostAudience","args":["straßea"],"ok":"synara-host:straßea"}
+{"fn":"hostAudience","args":["a..ba😀b😀c"],"ok":"synara-host:a..ba😀b😀c"}
+{"fn":"hostAudience","args":["abcemoji 👍🏽 mix"],"ok":"synara-host:abcemoji 👍🏽 mix"}
+{"fn":"hostAudience","args":[".leadinga.b.c"],"ok":"synara-host:.leadinga.b.c"}
+{"fn":"hostAudience","args":["straßens:key.path"],"ok":"synara-host:straßens:key.path"}
+{"fn":"hostAudience","args":["tab\tseparatedsrc/a/b.ts"],"ok":"synara-host:tab\tseparatedsrc/a/b.ts"}
+{"fn":"hostAudience","args":["Hello WorldHELLO"],"ok":"synara-host:Hello WorldHELLO"}
+{"fn":"hostAudience","args":["  padded  trailing."],"ok":"synara-host:  padded  trailing."}
+{"fn":"hostAudience","args":[".leadingab"],"ok":"synara-host:.leadingab"}
+{"fn":"hostAudience","args":["İstanbultrailing."],"ok":"synara-host:İstanbultrailing."}
+{"fn":"hostAudience","args":["Hello Worldhello world"],"ok":"synara-host:Hello Worldhello world"}
+{"fn":"hostAudience","args":["hellohello"],"ok":"synara-host:hellohello"}
+{"fn":"hostAudience","args":["😀é"],"ok":"synara-host:😀é"}
+{"fn":"hostAudience","args":["key_name-1.leading"],"ok":"synara-host:key_name-1.leading"}
+{"fn":"hostAudience","args":["line1\nline2tab\tseparated"],"ok":"synara-host:line1\nline2tab\tseparated"}
+{"fn":"hostAudience","args":["ΣΊΣΥΦΟΣ./x/**/*.json"],"ok":"synara-host:ΣΊΣΥΦΟΣ./x/**/*.json"}
+{"fn":"hostAudience","args":["ünïcödé  padded  "],"ok":"synara-host:ünïcödé  padded  "}
+{"fn":"hostAudience","args":["HELLOünïcödé"],"ok":"synara-host:HELLOünïcödé"}
+{"fn":"hostAudience","args":["HELLOsrc/a/b.ts"],"ok":"synara-host:HELLOsrc/a/b.ts"}
+{"fn":"hostAudience","args":["éa😀b😀c"],"ok":"synara-host:éa😀b😀c"}
+{"fn":"hostAudience","args":["helloa.b.c"],"ok":"synara-host:helloa.b.c"}
+{"fn":"hostAudience","args":["ΣΊΣΥΦΟΣ{name} has {count} items"],"ok":"synara-host:ΣΊΣΥΦΟΣ{name} has {count} items"}
+{"fn":"hostAudience","args":["hello worldtab\tseparated"],"ok":"synara-host:hello worldtab\tseparated"}
+{"fn":"hostAudience","args":["tab\tseparatedhello world"],"ok":"synara-host:tab\tseparatedhello world"}
+{"fn":"hostAudience","args":[".leading.leading"],"ok":"synara-host:.leading.leading"}
+{"fn":"hostAudience","args":[":straße"],"ok":"synara-host::straße"}
+{"fn":"hostAudience","args":["a:b:ctab\tseparated"],"ok":"synara-host:a:b:ctab\tseparated"}
+{"fn":"hostAudience","args":[":tab\tseparated"],"ok":"synara-host::tab\tseparated"}
+{"fn":"hostAudience","args":["trailing.key_name-1"],"ok":"synara-host:trailing.key_name-1"}
+{"fn":"hostAudience","args":["﻿bomHELLO"],"ok":"synara-host:﻿bomHELLO"}
+{"fn":"hostAudience","args":["éHELLO"],"ok":"synara-host:éHELLO"}
+{"fn":"hostAudience","args":["HELLO﻿bom"],"ok":"synara-host:HELLO﻿bom"}
+{"fn":"hostAudience","args":["abcİstanbul"],"ok":"synara-host:abcİstanbul"}
+{"fn":"hostAudience","args":[".leadingsrc/a/b.ts"],"ok":"synara-host:.leadingsrc/a/b.ts"}
+{"fn":"hostAudience","args":[":hello"],"ok":"synara-host::hello"}
+{"fn":"hostAudience","args":["straßeHELLO"],"ok":"synara-host:straßeHELLO"}
+{"fn":"hostAudience","args":["éns:key.path"],"ok":"synara-host:éns:key.path"}
+{"fn":"hostAudience","args":["hello worldstraße"],"ok":"synara-host:hello worldstraße"}
+{"fn":"hostAudience","args":["ns:key.pathab"],"ok":"synara-host:ns:key.pathab"}
+{"fn":"hostAudience","args":["a.b.c.leading"],"ok":"synara-host:a.b.c.leading"}
+{"fn":"hostAudience","args":["tab\tseparated./x/**/*.json"],"ok":"synara-host:tab\tseparated./x/**/*.json"}
+{"fn":"hostAudience","args":["日本語のテキストa"],"ok":"synara-host:日本語のテキストa"}
+{"fn":"hostAudience","args":["src/a/b.ts😀"],"ok":"synara-host:src/a/b.ts😀"}
+{"fn":"hostAudience","args":["﻿bomabc"],"ok":"synara-host:﻿bomabc"}
+{"fn":"hostAudience","args":["./x/**/*.json﻿bom"],"ok":"synara-host:./x/**/*.json﻿bom"}
+{"fn":"hostAudience","args":["hello worldé"],"ok":"synara-host:hello worldé"}
+{"fn":"hostAudience","args":["{name} has {count} itemsΣΊΣΥΦΟΣ"],"ok":"synara-host:{name} has {count} itemsΣΊΣΥΦΟΣ"}
+{"fn":"hostAudience","args":["é😀"],"ok":"synara-host:é😀"}
+{"fn":"hostAudience","args":["a..bHELLO"],"ok":"synara-host:a..bHELLO"}
+{"fn":"hostAudience","args":["line1\nline2straße"],"ok":"synara-host:line1\nline2straße"}
+{"fn":"hostAudience","args":["key_name-1日本語のテキスト"],"ok":"synara-host:key_name-1日本語のテキスト"}
+{"fn":"hostAudience","args":["key_name-1﻿bom"],"ok":"synara-host:key_name-1﻿bom"}
+{"fn":"hostAudience","args":["key_name-1hello world"],"ok":"synara-host:key_name-1hello world"}
+{"fn":"hostAudience","args":["tab\tseparateda.b.c"],"ok":"synara-host:tab\tseparateda.b.c"}
+{"fn":"hostAudience","args":["ns:key.pathabc"],"ok":"synara-host:ns:key.pathabc"}
+{"fn":"hostAudience","args":["a..bline1\nline2"],"ok":"synara-host:a..bline1\nline2"}
+{"fn":"hostAudience","args":["İstanbul  padded  "],"ok":"synara-host:İstanbul  padded  "}
+{"fn":"hostAudience","args":[":a😀b😀c"],"ok":"synara-host::a😀b😀c"}
+{"fn":"hostAudience","args":["trailing.﻿bom"],"ok":"synara-host:trailing.﻿bom"}
+{"fn":"hostAudience","args":["a😀b😀cHello World"],"ok":"synara-host:a😀b😀cHello World"}
+{"fn":"hostAudience","args":["a..bemoji 👍🏽 mix"],"ok":"synara-host:a..bemoji 👍🏽 mix"}
+{"fn":"hostAudience","args":["straßea😀b😀c"],"ok":"synara-host:straßea😀b😀c"}
+{"fn":"hostAudience","args":["Hello Worlda:b:c"],"ok":"synara-host:Hello Worlda:b:c"}
+{"fn":"hostAudience","args":["emoji 👍🏽 mixemoji 👍🏽 mix"],"ok":"synara-host:emoji 👍🏽 mixemoji 👍🏽 mix"}
+{"fn":"hostAudience","args":["HELLOHello World"],"ok":"synara-host:HELLOHello World"}
+{"fn":"hostAudience","args":["aa:b:c"],"ok":"synara-host:aa:b:c"}
+{"fn":"hostAudience","args":[":line1\nline2"],"ok":"synara-host::line1\nline2"}
+{"fn":"hostAudience","args":["hello worldhello"],"ok":"synara-host:hello worldhello"}
+{"fn":"hostAudience","args":["emoji 👍🏽 mixa.b.c"],"ok":"synara-host:emoji 👍🏽 mixa.b.c"}
+{"fn":"hostAudience","args":["./x/**/*.json  padded  "],"ok":"synara-host:./x/**/*.json  padded  "}
+{"fn":"hostAudience","args":["trailing.ΣΊΣΥΦΟΣ"],"ok":"synara-host:trailing.ΣΊΣΥΦΟΣ"}
+{"fn":"hostAudience","args":["helloabc"],"ok":"synara-host:helloabc"}
+{"fn":"hostAudience","args":["﻿bomünïcödé"],"ok":"synara-host:﻿bomünïcödé"}
+{"fn":"hostAudience","args":["İstanbul😀"],"ok":"synara-host:İstanbul😀"}
+{"fn":"hostAudience","args":["a日本語のテキスト"],"ok":"synara-host:a日本語のテキスト"}
+{"fn":"hostAudience","args":["tab\tseparatedab"],"ok":"synara-host:tab\tseparatedab"}
+{"fn":"hostAudience","args":[".leading日本語のテキスト"],"ok":"synara-host:.leading日本語のテキスト"}
+{"fn":"hostAudience","args":["abctrailing."],"ok":"synara-host:abctrailing."}
+{"fn":"hostAudience","args":[":key_name-1"],"ok":"synara-host::key_name-1"}
+{"fn":"hostAudience","args":["ésrc/a/b.ts"],"ok":"synara-host:ésrc/a/b.ts"}
+{"fn":"hostAudience","args":["ns:key.pathemoji 👍🏽 mix"],"ok":"synara-host:ns:key.pathemoji 👍🏽 mix"}
+{"fn":"hostAudience","args":["﻿bom:"],"ok":"synara-host:﻿bom:"}
+{"fn":"hostAudience","args":["a😀b😀ca:b:c"],"ok":"synara-host:a😀b😀ca:b:c"}
+{"fn":"hostAudience","args":[":日本語のテキスト"],"ok":"synara-host::日本語のテキスト"}
+{"fn":"hostAudience","args":["tab\tseparatedHELLO"],"ok":"synara-host:tab\tseparatedHELLO"}
+{"fn":"hostAudience","args":["ünïcödéline1\nline2"],"ok":"synara-host:ünïcödéline1\nline2"}
+{"fn":"hostAudience","args":["key_name-1./x/**/*.json"],"ok":"synara-host:key_name-1./x/**/*.json"}
+{"fn":"hostAudience","args":["key_name-1{name} has {count} items"],"ok":"synara-host:key_name-1{name} has {count} items"}
+{"fn":"hostAudience","args":["a.b.cline1\nline2"],"ok":"synara-host:a.b.cline1\nline2"}
+{"fn":"hostAudience","args":["hello﻿bom"],"ok":"synara-host:hello﻿bom"}
+{"fn":"hostAudience","args":["a😀b😀c./x/**/*.json"],"ok":"synara-host:a😀b😀c./x/**/*.json"}
+{"fn":"hostAudience","args":["emoji 👍🏽 mix.leading"],"ok":"synara-host:emoji 👍🏽 mix.leading"}
+{"fn":"hostAudience","args":["a.b.ca:b:c"],"ok":"synara-host:a.b.ca:b:c"}
+{"fn":"hostAudience","args":["a:b:c日本語のテキスト"],"ok":"synara-host:a:b:c日本語のテキスト"}
+{"fn":"hostAudience","args":["Hello World日本語のテキスト"],"ok":"synara-host:Hello World日本語のテキスト"}
+{"fn":"hostAudience","args":["ünïcödé{name} has {count} items"],"ok":"synara-host:ünïcödé{name} has {count} items"}
+{"fn":"hostAudience","args":["a:b:csrc/a/b.ts"],"ok":"synara-host:a:b:csrc/a/b.ts"}
+{"fn":"hostAudience","args":["İstanbulab"],"ok":"synara-host:İstanbulab"}
+{"fn":"hostAudience","args":["ab  padded  "],"ok":"synara-host:ab  padded  "}
+{"fn":"hostAudience","args":["helloHello World"],"ok":"synara-host:helloHello World"}
+{"fn":"hostAudience","args":[".leadinga:b:c"],"ok":"synara-host:.leadinga:b:c"}
+{"fn":"hostAudience","args":["./x/**/*.jsonab"],"ok":"synara-host:./x/**/*.jsonab"}
+{"fn":"hostAudience","args":["Hello World﻿bom"],"ok":"synara-host:Hello World﻿bom"}
+{"fn":"hostAudience","args":["./x/**/*.json{name} has {count} items"],"ok":"synara-host:./x/**/*.json{name} has {count} items"}
+{"fn":"hostAudience","args":["src/a/b.ts  padded  "],"ok":"synara-host:src/a/b.ts  padded  "}
+{"fn":"hostAudience","args":["line1\nline2src/a/b.ts"],"ok":"synara-host:line1\nline2src/a/b.ts"}
+{"fn":"hostAudience","args":["{name} has {count} itemskey_name-1"],"ok":"synara-host:{name} has {count} itemskey_name-1"}
+{"fn":"hostAudience","args":["key_name-1hello"],"ok":"synara-host:key_name-1hello"}
+{"fn":"hostAudience","args":[":a.b.c"],"ok":"synara-host::a.b.c"}
+{"fn":"hostAudience","args":["a:b:cΣΊΣΥΦΟΣ"],"ok":"synara-host:a:b:cΣΊΣΥΦΟΣ"}
+{"fn":"hostAudience","args":["a:b:ca"],"ok":"synara-host:a:b:ca"}
+{"fn":"hostAudience","args":["éabc"],"ok":"synara-host:éabc"}
+{"fn":"hostAudience","args":["ΣΊΣΥΦΟΣİstanbul"],"ok":"synara-host:ΣΊΣΥΦΟΣİstanbul"}
+{"fn":"hostAudience","args":["key_name-1ab"],"ok":"synara-host:key_name-1ab"}
+{"fn":"hostAudience","args":["emoji 👍🏽 mixé"],"ok":"synara-host:emoji 👍🏽 mixé"}
+{"fn":"hostAudience","args":["étrailing."],"ok":"synara-host:étrailing."}
+{"fn":"hostAudience","args":["Hello Worldtrailing."],"ok":"synara-host:Hello Worldtrailing."}
+{"fn":"hostAudience","args":["hello worldHello World"],"ok":"synara-host:hello worldHello World"}
+{"fn":"hostAudience","args":["absrc/a/b.ts"],"ok":"synara-host:absrc/a/b.ts"}
+{"fn":"hostAudience","args":["./x/**/*.jsonsrc/a/b.ts"],"ok":"synara-host:./x/**/*.jsonsrc/a/b.ts"}
+{"fn":"hostAudience","args":["a.b.csrc/a/b.ts"],"ok":"synara-host:a.b.csrc/a/b.ts"}
+{"fn":"hostAudience","args":["a.b.ctrailing."],"ok":"synara-host:a.b.ctrailing."}
+{"fn":"hostAudience","args":["a  padded  "],"ok":"synara-host:a  padded  "}
+{"fn":"hostAudience","args":["ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ"],"ok":"synara-host:ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ"}
+{"fn":"hostAudience","args":["ns:key.path./x/**/*.json"],"ok":"synara-host:ns:key.path./x/**/*.json"}
+{"fn":"hostAudience","args":["  padded  ﻿bom"],"ok":"synara-host:  padded  ﻿bom"}
+{"fn":"hostAudience","args":["ünïcödéünïcödé"],"ok":"synara-host:ünïcödéünïcödé"}
+{"fn":"hostAudience","args":["héllo wörld"],"ok":"synara-host:héllo wörld"}
+{"fn":"hostAudience","args":["👍🏽 thumbs"],"ok":"synara-host:👍🏽 thumbs"}
+{"fn":"hostAudience","args":["日本語"],"ok":"synara-host:日本語"}
+{"fn":"hostAudience","args":["ılık ırmak"],"ok":"synara-host:ılık ırmak"}
+{"fn":"hostAudience","args":["👨‍👩‍👧 family"],"ok":"synara-host:👨‍👩‍👧 family"}
+{"fn":"hostAudience","args":["a b"],"ok":"synara-host:a b"}
+{"fn":"hostAudience","args":["a😀b"],"ok":"synara-host:a😀b"}
+{"fn":"hostAudience","args":["a²b x½ y①"],"ok":"synara-host:a²b x½ y①"}
+{"fn":"hostAudience","args":["aⅠb Ⅻ"],"ok":"synara-host:aⅠb Ⅻ"}
+{"fn":"hostAudience","args":["a𐐀b 𝐀bc"],"ok":"synara-host:a𐐀b 𝐀bc"}
+{"fn":"hostAudience","args":["कि ٣٤"],"ok":"synara-host:कि ٣٤"}
+{"fn":"generateDeviceKey","args":[{"extractable":true}],"ok":{"publicKey":{},"privateKey":{}}}
+{"fn":"generateDeviceKey","args":[],"ok":{"publicKey":{},"privateKey":{}}}
+{"fn":"generateDeviceKey","args":[{"a":"b"}],"ok":{"publicKey":{},"privateKey":{}}}
+{"fn":"generateDeviceKey","args":[{}],"ok":{"publicKey":{},"privateKey":{}}}
+{"fn":"generateDeviceKey","args":[{"extractable":false}],"ok":{"publicKey":{},"privateKey":{}}}
+{"fn":"generateDeviceKey","args":[{"$undefined":true}],"ok":{"publicKey":{},"privateKey":{}}}
+{"fn":"generateDeviceKey","args":[null],"error":"Cannot read properties of null (reading 'extractable')"}
+{"fn":"generateDeviceKey","args":[[]],"ok":{"publicKey":{},"privateKey":{}}}
+{"fn":"generateDeviceKey","args":[{"a":{"b":"c"}}],"ok":{"publicKey":{},"privateKey":{}}}
+{"fn":"generateDeviceKey","args":[0],"ok":{"publicKey":{},"privateKey":{}}}
+{"fn":"generateDeviceKey","args":[["a",1]],"ok":{"publicKey":{},"privateKey":{}}}
+{"fn":"generateDeviceKey","args":[true],"ok":{"publicKey":{},"privateKey":{}}}
+{"fn":"generateDeviceKey","args":["x"],"ok":{"publicKey":{},"privateKey":{}}}
+{"fn":"exportPublicJwk","args":[["a",1]],"error":"Failed to execute 'exportKey' on 'SubtleCrypto': 2nd argument is not of type CryptoKey."}
+{"fn":"exportPublicJwk","args":[{"a":{"b":"c"}}],"error":"Failed to execute 'exportKey' on 'SubtleCrypto': 2nd argument is not of type CryptoKey."}
+{"fn":"exportPublicJwk","args":[null],"error":"Cannot use 'in' operator to search for 'publicKey' in null"}
+{"fn":"exportPublicJwk","args":["x"],"error":"Cannot use 'in' operator to search for 'publicKey' in x"}
+{"fn":"exportPublicJwk","args":[0],"error":"Cannot use 'in' operator to search for 'publicKey' in 0"}
+{"fn":"exportPublicJwk","args":[[]],"error":"Failed to execute 'exportKey' on 'SubtleCrypto': 2nd argument is not of type CryptoKey."}
+{"fn":"exportPublicJwk","args":[{"a":"b"}],"error":"Failed to execute 'exportKey' on 'SubtleCrypto': 2nd argument is not of type CryptoKey."}
+{"fn":"exportPublicJwk","args":[{}],"error":"Failed to execute 'exportKey' on 'SubtleCrypto': 2nd argument is not of type CryptoKey."}
+{"fn":"exportPublicJwk","args":[true],"error":"Cannot use 'in' operator to search for 'publicKey' in true"}
+{"fn":"deviceThumbprint","args":[{"a":"b"}],"error":"Key must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"deviceThumbprint","args":[{"a":{"b":"c"}}],"error":"Key must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"deviceThumbprint","args":[true],"error":"Key must be one of type CryptoKey, KeyObject, or JSON Web Key."}
+{"fn":"deviceThumbprint","args":[["a",1]],"error":"Key must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"deviceThumbprint","args":[[]],"error":"Key must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"deviceThumbprint","args":[null],"error":"Key must be one of type CryptoKey, KeyObject, or JSON Web Key. Received null"}
+{"fn":"deviceThumbprint","args":[{}],"error":"Key must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"deviceThumbprint","args":["x"],"error":"Key must be one of type CryptoKey, KeyObject, or JSON Web Key."}
+{"fn":"deviceThumbprint","args":[0],"error":"Key must be one of type CryptoKey, KeyObject, or JSON Web Key."}
+{"fn":"signDeviceRegistration","args":[{"key":"x","publicJwk":true,"userId":"trailing.","displayName":"  padded  ","platform":{"a":{"b":"c"}},"audience":"HELLO.leading"}],"error":"Cannot use 'in' operator to search for 'privateKey' in x"}
+{"fn":"signDeviceRegistration","args":[{"key":["a",1],"publicJwk":0,"userId":"tab\tseparatedsrc/a/b.ts","displayName":"line1\nline2","platform":0,"audience":"tab\tseparated"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":"x","publicJwk":[],"userId":"trailing.","displayName":"line1\nline2","platform":{"a":{"b":"c"}},"audience":"emoji 👍🏽 mix"}],"error":"Cannot use 'in' operator to search for 'privateKey' in x"}
+{"fn":"signDeviceRegistration","args":[{"key":true,"publicJwk":true,"userId":"key_name-1","displayName":".leading","platform":[],"audience":"abc"}],"error":"Cannot use 'in' operator to search for 'privateKey' in true"}
+{"fn":"signDeviceRegistration","args":[{"key":{},"publicJwk":["a",1],"userId":"ΣΊΣΥΦΟΣ","displayName":"{name} has {count} items","platform":["a",1],"audience":"{name} has {count} items"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{}],"error":"Cannot read properties of undefined (reading 'kty')"}
+{"fn":"signDeviceRegistration","args":[{"key":0,"publicJwk":true,"userId":"a😀b😀c","displayName":"ns:key.path","platform":null,"audience":"line1\nline2"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signDeviceRegistration","args":[{"key":{},"publicJwk":null,"userId":"hello world","displayName":"ünïcödé","platform":0,"audience":"a"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signDeviceRegistration","args":[{"key":0,"publicJwk":true,"userId":"😀","displayName":"a..b","platform":true,"audience":"straße"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signDeviceRegistration","args":[{"key":[],"publicJwk":[],"userId":"hello","displayName":"﻿bom","platform":{"a":"b"},"audience":"a..b{name} has {count} items"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":"b"},"publicJwk":["a",1],"userId":"ünïcödé","displayName":"日本語のテキストkey_name-1","platform":{"a":{"b":"c"}},"audience":"a"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":{"b":"c"}},"publicJwk":["a",1],"userId":"tab\tseparated","displayName":"abc","platform":[],"audience":"﻿bom"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":["a",1],"publicJwk":[],"userId":"helloHello World","displayName":"ns:key.path","platform":null,"audience":"ns:key.path"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":{},"publicJwk":"x","userId":"﻿bom","displayName":"abc","platform":"x","audience":"ab"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":{"b":"c"}},"publicJwk":null,"userId":"ünïcödé","displayName":"","platform":null,"audience":"😀"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signDeviceRegistration","args":[{"key":null,"publicJwk":null,"userId":"a😀b😀c","displayName":"HELLO","platform":{"a":{"b":"c"}},"audience":"a"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signDeviceRegistration","args":[{"key":{},"publicJwk":{"a":"b"},"userId":"src/a/b.ts﻿bom","displayName":":","platform":null,"audience":"  padded  "}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":[],"publicJwk":[],"userId":"{name} has {count} items","displayName":"a","platform":0,"audience":"HELLO"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":"b"},"publicJwk":null,"userId":"hello","displayName":"./x/**/*.json","platform":[],"audience":"a..b"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signDeviceRegistration","args":[{"key":["a",1],"publicJwk":"x","userId":"  padded  ","displayName":"HELLO","platform":[],"audience":"😀"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":{},"publicJwk":["a",1],"userId":"a.b.c","displayName":":","platform":{"a":{"b":"c"}},"audience":"ΣΊΣΥΦΟΣ"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[null],"error":"Cannot read properties of null (reading 'nowSeconds')"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":"b"},"publicJwk":[],"userId":"emoji 👍🏽 mix","displayName":"straße","platform":{"a":"b"},"audience":"😀"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":{"b":"c"}},"publicJwk":0,"userId":"ΣΊΣΥΦΟΣ","displayName":"  padded  ns:key.path","platform":"x","audience":"😀"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":0,"publicJwk":true,"userId":"  padded  ","displayName":"hello","platform":0,"audience":"./x/**/*.json"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signDeviceRegistration","args":[{"key":[],"publicJwk":null,"userId":"a..bİstanbul","displayName":"ab","platform":0,"audience":"./x/**/*.json"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signDeviceRegistration","args":[{"key":{},"publicJwk":true,"userId":"a😀b😀c","displayName":"😀","platform":"x","audience":"ΣΊΣΥΦΟΣ"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":0,"publicJwk":[],"userId":"﻿bom","displayName":".leading","platform":[],"audience":"ΣΊΣΥΦΟΣ"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signDeviceRegistration","args":[{"key":0,"publicJwk":null,"userId":"  padded  :","displayName":"ΣΊΣΥΦΟΣ","platform":{},"audience":"a.b.ca..b"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signDeviceRegistration","args":[{"key":null,"publicJwk":["a",1],"userId":"","displayName":"trailing.","platform":{"a":{"b":"c"}},"audience":"emoji 👍🏽 mixİstanbul"}],"error":"Cannot use 'in' operator to search for 'privateKey' in null"}
+{"fn":"signDeviceRegistration","args":[{"key":{},"publicJwk":null,"userId":"key_name-1","displayName":"ahello world","platform":{"a":{"b":"c"}},"audience":"😀"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signDeviceRegistration","args":[{"key":"x","publicJwk":"x","userId":"ΣΊΣΥΦΟΣ","displayName":"ab{name} has {count} items","platform":["a",1],"audience":"trailing.tab\tseparated"}],"error":"Cannot use 'in' operator to search for 'privateKey' in x"}
+{"fn":"signDeviceRegistration","args":[[]],"error":"Cannot read properties of undefined (reading 'kty')"}
+{"fn":"signDeviceRegistration","args":[{"key":{},"publicJwk":true,"userId":"HELLO","displayName":"tab\tseparated","platform":["a",1],"audience":"ns:key.path"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":true,"publicJwk":["a",1],"userId":":","displayName":"éline1\nline2","platform":"x","audience":"ΣΊΣΥΦΟΣ"}],"error":"Cannot use 'in' operator to search for 'privateKey' in true"}
+{"fn":"signDeviceRegistration","args":[{"key":[],"publicJwk":["a",1],"userId":"a:b:c","displayName":"a😀b😀cHello World","platform":{"a":"b"},"audience":"😀tab\tseparated"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":[],"publicJwk":{"a":{"b":"c"}},"userId":".leading","displayName":"a:b:c","platform":true,"audience":"trailing."}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":[],"publicJwk":{},"userId":"İstanbul","displayName":"İstanbul","platform":{"a":{"b":"c"}},"audience":"./x/**/*.jsonünïcödé"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":["a",1],"publicJwk":["a",1],"userId":":ab","displayName":"  padded  ","platform":true,"audience":"tab\tseparated"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":"b"},"publicJwk":true,"userId":"abc","displayName":"src/a/b.ts","platform":null,"audience":"日本語のテキスト"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":{},"publicJwk":"x","userId":"HELLO","displayName":"ns:key.path","platform":[],"audience":"  padded  hello"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":"b"},"publicJwk":[],"userId":"hello world","displayName":"key_name-1","platform":[],"audience":"﻿bom"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":{},"publicJwk":"x","userId":"İstanbul","displayName":"﻿bom","platform":"x","audience":"ab"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":"x","publicJwk":"x","userId":"key_name-1","displayName":"key_name-1","platform":"x","audience":"abcé"}],"error":"Cannot use 'in' operator to search for 'privateKey' in x"}
+{"fn":"signDeviceRegistration","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'kty')"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":"b"},"publicJwk":"x","userId":"﻿bom","displayName":"a😀b😀c","platform":{"a":"b"},"audience":"emoji 👍🏽 mix"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":null,"publicJwk":0,"userId":"straße  padded  ","displayName":"a..b","platform":0,"audience":"./x/**/*.json"}],"error":"Cannot use 'in' operator to search for 'privateKey' in null"}
+{"fn":"signDeviceRegistration","args":[{"key":["a",1],"publicJwk":{},"userId":"a.b.c","displayName":"😀","platform":[],"audience":"Hello World"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'kty')"}
+{"fn":"signDeviceRegistration","args":[{"key":{},"publicJwk":true,"userId":"ns:key.path","displayName":"İstanbul","platform":"x","audience":"abc"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[0],"error":"Cannot read properties of undefined (reading 'kty')"}
+{"fn":"signDeviceRegistration","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'kty')"}
+{"fn":"signDeviceRegistration","args":[{"key":[],"publicJwk":null,"userId":"HELLO","displayName":"a..b","platform":null,"audience":"日本語のテキスト"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signDeviceRegistration","args":[{"key":null,"publicJwk":["a",1],"userId":"tab\tseparated","displayName":"src/a/b.ts","platform":true,"audience":"hello"}],"error":"Cannot use 'in' operator to search for 'privateKey' in null"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":"b"},"publicJwk":{},"userId":"İstanbul","displayName":"İstanbul","platform":true,"audience":"trailing."}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":{},"publicJwk":"x","userId":"a","displayName":"HELLO","platform":{"a":{"b":"c"}},"audience":".leading"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":{"b":"c"}},"publicJwk":{"a":{"b":"c"}},"userId":"é","displayName":"hello world","platform":[],"audience":"ünïcödé"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":true,"publicJwk":{},"userId":".leading","displayName":"ΣΊΣΥΦΟΣ","platform":["a",1],"audience":"abca"}],"error":"Cannot use 'in' operator to search for 'privateKey' in true"}
+{"fn":"signDeviceRegistration","args":[{"key":{},"publicJwk":{"a":{"b":"c"}},"userId":"emoji 👍🏽 mixünïcödé","displayName":"Hello World","platform":{"a":"b"},"audience":"Hello World"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":true,"publicJwk":{"a":"b"},"userId":"ünïcödé","displayName":":","platform":null,"audience":""}],"error":"Cannot use 'in' operator to search for 'privateKey' in true"}
+{"fn":"signDeviceRegistration","args":[{"key":["a",1],"publicJwk":true,"userId":"ns:key.path","displayName":"hello","platform":{"a":{"b":"c"}},"audience":""}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":{},"publicJwk":["a",1],"userId":"hellohello world","displayName":"日本語のテキスト","platform":true,"audience":"src/a/b.ts"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":null,"publicJwk":0,"userId":"abc","displayName":"abc","platform":{"a":"b"},"audience":"emoji 👍🏽 mix"}],"error":"Cannot use 'in' operator to search for 'privateKey' in null"}
+{"fn":"signDeviceRegistration","args":[{"key":null,"publicJwk":{},"userId":"  padded  ","displayName":"a..b","platform":{"a":{"b":"c"}},"audience":"tab\tseparateda"}],"error":"Cannot use 'in' operator to search for 'privateKey' in null"}
+{"fn":"signDeviceRegistration","args":[{"key":null,"publicJwk":null,"userId":"key_name-1abc","displayName":"tab\tseparated","platform":{"a":"b"},"audience":"trailing."}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signDeviceRegistration","args":["x"],"error":"Cannot read properties of undefined (reading 'kty')"}
+{"fn":"signDeviceRegistration","args":[{"key":{},"publicJwk":null,"userId":"","displayName":"abcsrc/a/b.ts","platform":0,"audience":"straßetab\tseparated"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signDeviceRegistration","args":[{"key":[],"publicJwk":[],"userId":"emoji 👍🏽 mixünïcödé","displayName":"line1\nline2","platform":0,"audience":"a:b:c./x/**/*.json"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":["a",1],"publicJwk":{"a":"b"},"userId":"hello world","displayName":"Hello World","platform":0,"audience":"tab\tseparated"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":"x","publicJwk":0,"userId":"a","displayName":"İstanbul.leading","platform":0,"audience":"a.b.c"}],"error":"Cannot use 'in' operator to search for 'privateKey' in x"}
+{"fn":"signDeviceRegistration","args":[{"key":{},"publicJwk":null,"userId":"emoji 👍🏽 mix","displayName":":hello world","platform":[],"audience":"ab"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signDeviceRegistration","args":[{"key":null,"publicJwk":"x","userId":"a..ba.b.c","displayName":"hello world","platform":{},"audience":":"}],"error":"Cannot use 'in' operator to search for 'privateKey' in null"}
+{"fn":"signDeviceRegistration","args":[{"key":["a",1],"publicJwk":true,"userId":"emoji 👍🏽 mix","displayName":"ünïcödé","platform":["a",1],"audience":"trailing."}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":null,"publicJwk":"x","userId":"hello","displayName":"","platform":{"a":{"b":"c"}},"audience":"straße"}],"error":"Cannot use 'in' operator to search for 'privateKey' in null"}
+{"fn":"signDeviceRegistration","args":[{"key":true,"publicJwk":{"a":{"b":"c"}},"userId":"﻿bom","displayName":"ΣΊΣΥΦΟΣ","platform":{"a":"b"},"audience":"src/a/b.ts"}],"error":"Cannot use 'in' operator to search for 'privateKey' in true"}
+{"fn":"signDeviceRegistration","args":[{"key":{},"publicJwk":null,"userId":"straßeemoji 👍🏽 mix","displayName":"abc","platform":{},"audience":"a.b.c"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signDeviceRegistration","args":[{"key":null,"publicJwk":{},"userId":"ünïcödéhello world","displayName":".leading","platform":"x","audience":"./x/**/*.json"}],"error":"Cannot use 'in' operator to search for 'privateKey' in null"}
+{"fn":"signDeviceRegistration","args":[{"key":[],"publicJwk":[],"userId":"ΣΊΣΥΦΟΣ","displayName":"a..b","platform":null,"audience":"é"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":[],"publicJwk":0,"userId":"straße","displayName":"a","platform":true,"audience":"./x/**/*.json"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":["a",1],"publicJwk":["a",1],"userId":"trailing.","displayName":"HELLOtrailing.","platform":0,"audience":".leading"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":null,"publicJwk":null,"userId":"HELLO","displayName":"a😀b😀ca😀b😀c","platform":{"a":{"b":"c"}},"audience":"hello"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signDeviceRegistration","args":[{"key":null,"publicJwk":"x","userId":"{name} has {count} itemshello world","displayName":"ns:key.path","platform":["a",1],"audience":"Hello World"}],"error":"Cannot use 'in' operator to search for 'privateKey' in null"}
+{"fn":"signDeviceRegistration","args":[{"key":0,"publicJwk":{"a":"b"},"userId":"hello world","displayName":"./x/**/*.json:","platform":null,"audience":"tab\tseparated﻿bom"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signDeviceRegistration","args":[{"key":[],"publicJwk":0,"userId":"hello world","displayName":"ΣΊΣΥΦΟΣ","platform":["a",1],"audience":"Hello World"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":0,"publicJwk":0,"userId":".leading","displayName":"a😀b😀c","platform":[],"audience":"ünïcödé"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signDeviceRegistration","args":[{"key":{},"publicJwk":[],"userId":"{name} has {count} items","displayName":"./x/**/*.json","platform":0,"audience":":é"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":"b"},"publicJwk":{"a":"b"},"userId":"HELLO","displayName":"straße","platform":["a",1],"audience":"line1\nline2"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":true,"publicJwk":[],"userId":"Hello World","displayName":"","platform":["a",1],"audience":"src/a/b.ts"}],"error":"Cannot use 'in' operator to search for 'privateKey' in true"}
+{"fn":"signDeviceRegistration","args":[{"key":{},"publicJwk":"x","userId":"line1\nline2","displayName":"  padded  ","platform":{},"audience":"ünïcödé"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":0,"publicJwk":{"a":{"b":"c"}},"userId":"Hello World","displayName":"ΣΊΣΥΦΟΣ","platform":null,"audience":"abab"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signDeviceRegistration","args":[{"key":0,"publicJwk":["a",1],"userId":"a.b.c","displayName":"key_name-1","platform":{"a":"b"},"audience":"{name} has {count} items"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signDeviceRegistration","args":[{"key":[],"publicJwk":{},"userId":"İstanbul😀","displayName":"éline1\nline2","platform":[],"audience":"ns:key.path"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":{},"publicJwk":"x","userId":"a","displayName":"emoji 👍🏽 mix","platform":{"a":"b"},"audience":"é"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":["a",1],"publicJwk":true,"userId":"a😀b😀c","displayName":"trailing.HELLO","platform":{"a":{"b":"c"}},"audience":":"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":"b"},"publicJwk":{"a":"b"},"userId":"ΣΊΣΥΦΟΣ","displayName":"src/a/b.ts","platform":{"a":"b"},"audience":"key_name-1İstanbul"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":{},"publicJwk":[],"userId":"{name} has {count} items","displayName":":","platform":{"a":"b"},"audience":"src/a/b.ts"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":["a",1],"publicJwk":["a",1],"userId":"日本語のテキスト","displayName":"  padded  ","platform":true,"audience":"./x/**/*.json"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":null,"publicJwk":{"a":"b"},"userId":"ünïcödé","displayName":":","platform":0,"audience":".leading"}],"error":"Cannot use 'in' operator to search for 'privateKey' in null"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":{"b":"c"}},"publicJwk":{},"userId":"hello world","displayName":"a😀b😀c","platform":[],"audience":"emoji 👍🏽 mix"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":["a",1],"publicJwk":0,"userId":"abc","displayName":"a..b","platform":"x","audience":"ΣΊΣΥΦΟΣ"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":true,"publicJwk":true,"userId":"éemoji 👍🏽 mix","displayName":":hello world","platform":true,"audience":"hello"}],"error":"Cannot use 'in' operator to search for 'privateKey' in true"}
+{"fn":"signDeviceRegistration","args":[{"key":true,"publicJwk":true,"userId":"abc","displayName":"hello world","platform":true,"audience":"é"}],"error":"Cannot use 'in' operator to search for 'privateKey' in true"}
+{"fn":"signDeviceRegistration","args":[{"key":[],"publicJwk":0,"userId":"hello","displayName":"emoji 👍🏽 mix","platform":null,"audience":"abca..b"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":["a",1],"publicJwk":[],"userId":"Hello World","displayName":"src/a/b.ts{name} has {count} items","platform":{"a":"b"},"audience":":"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":0,"publicJwk":true,"userId":"hello","displayName":"","platform":["a",1],"audience":"abchello world"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signDeviceRegistration","args":[{"key":{},"publicJwk":"x","userId":"ünïcödé","displayName":"ns:key.path","platform":null,"audience":"😀"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":[],"publicJwk":"x","userId":"  padded  ","displayName":"a..b","platform":null,"audience":""}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":true,"publicJwk":0,"userId":"{name} has {count} itemssrc/a/b.ts","displayName":"ab","platform":0,"audience":"HELLO"}],"error":"Cannot use 'in' operator to search for 'privateKey' in true"}
+{"fn":"signDeviceRegistration","args":[{"key":"x","publicJwk":[],"userId":"src/a/b.ts./x/**/*.json","displayName":"ünïcödé","platform":{},"audience":"a:b:c"}],"error":"Cannot use 'in' operator to search for 'privateKey' in x"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":"b"},"publicJwk":[],"userId":"a😀b😀c","displayName":"ünïcödé","platform":{},"audience":"ΣΊΣΥΦΟΣa.b.c"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":"x","publicJwk":0,"userId":"é","displayName":"ünïcödé","platform":["a",1],"audience":"{name} has {count} items"}],"error":"Cannot use 'in' operator to search for 'privateKey' in x"}
+{"fn":"signDeviceRegistration","args":[{"key":["a",1],"publicJwk":["a",1],"userId":"abckey_name-1","displayName":"hello world","platform":{"a":"b"},"audience":"HELLOHELLO"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":"x","publicJwk":{"a":{"b":"c"}},"userId":"a..b","displayName":".leadingemoji 👍🏽 mix","platform":{"a":"b"},"audience":"a:b:c"}],"error":"Cannot use 'in' operator to search for 'privateKey' in x"}
+{"fn":"signDeviceRegistration","args":[{"key":null,"publicJwk":["a",1],"userId":"","displayName":":","platform":0,"audience":"日本語のテキストab"}],"error":"Cannot use 'in' operator to search for 'privateKey' in null"}
+{"fn":"signDeviceRegistration","args":[{"key":0,"publicJwk":{"a":{"b":"c"}},"userId":"./x/**/*.json","displayName":"key_name-1","platform":"x","audience":"line1\nline2"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signDeviceRegistration","args":[{"key":0,"publicJwk":0,"userId":"key_name-1","displayName":"","platform":{"a":"b"},"audience":""}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signDeviceRegistration","args":[{"key":["a",1],"publicJwk":"x","userId":"ΣΊΣΥΦΟΣ","displayName":"a😀b😀c","platform":"x","audience":"ΣΊΣΥΦΟΣ"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":["a",1],"publicJwk":{"a":"b"},"userId":"tab\tseparatedünïcödé","displayName":"HELLO","platform":0,"audience":"tab\tseparatedΣΊΣΥΦΟΣ"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":{},"publicJwk":{"a":{"b":"c"}},"userId":"src/a/b.ts","displayName":"trailing.","platform":[],"audience":"a😀b😀c"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":{},"publicJwk":{"a":"b"},"userId":"key_name-1","displayName":"﻿boma😀b😀c","platform":true,"audience":"src/a/b.ts"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":{"b":"c"}},"publicJwk":{"a":{"b":"c"}},"userId":"İstanbul","displayName":".leading﻿bom","platform":{"a":{"b":"c"}},"audience":"hello"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":"x","publicJwk":{"a":"b"},"userId":"hello world","displayName":"key_name-1a:b:c","platform":{},"audience":"emoji 👍🏽 mix"}],"error":"Cannot use 'in' operator to search for 'privateKey' in x"}
+{"fn":"signDeviceRegistration","args":[{"key":[],"publicJwk":"x","userId":"﻿bom","displayName":"a:b:c","platform":null,"audience":"hello world"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":"x","publicJwk":[],"userId":"key_name-1","displayName":"./x/**/*.json","platform":"x","audience":"ab"}],"error":"Cannot use 'in' operator to search for 'privateKey' in x"}
+{"fn":"signDeviceRegistration","args":[{"key":"x","publicJwk":0,"userId":"a..b","displayName":"ns:key.pathkey_name-1","platform":{"a":{"b":"c"}},"audience":"hello world"}],"error":"Cannot use 'in' operator to search for 'privateKey' in x"}
+{"fn":"signDeviceRegistration","args":[{"key":null,"publicJwk":0,"userId":"straße","displayName":":","platform":{},"audience":"ΣΊΣΥΦΟΣ"}],"error":"Cannot use 'in' operator to search for 'privateKey' in null"}
+{"fn":"signDeviceRegistration","args":[{"key":0,"publicJwk":0,"userId":"src/a/b.ts","displayName":":{name} has {count} items","platform":"x","audience":"a"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":"b"},"publicJwk":[],"userId":"","displayName":"trailing.","platform":{"a":"b"},"audience":"ns:key.pathabc"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":null,"publicJwk":["a",1],"userId":"a.b.c.leading","displayName":"ab","platform":null,"audience":"emoji 👍🏽 mix"}],"error":"Cannot use 'in' operator to search for 'privateKey' in null"}
+{"fn":"signDeviceRegistration","args":[{"key":{},"publicJwk":null,"userId":"a.b.c","displayName":"hello world","platform":{"a":{"b":"c"}},"audience":"line1\nline2"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signDeviceRegistration","args":[{"key":null,"publicJwk":{},"userId":":","displayName":"tab\tseparated","platform":true,"audience":"straße"}],"error":"Cannot use 'in' operator to search for 'privateKey' in null"}
+{"fn":"signDeviceRegistration","args":[{"key":true,"publicJwk":{"a":{"b":"c"}},"userId":"日本語のテキストHello World","displayName":"İstanbul","platform":"x","audience":"  padded  a:b:c"}],"error":"Cannot use 'in' operator to search for 'privateKey' in true"}
+{"fn":"signDeviceRegistration","args":[{"key":[],"publicJwk":true,"userId":"abc","displayName":"ΣΊΣΥΦΟΣ","platform":{"a":"b"},"audience":"key_name-1"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":null,"publicJwk":{"a":{"b":"c"}},"userId":"hello","displayName":"ns:key.path","platform":{"a":{"b":"c"}},"audience":"éé"}],"error":"Cannot use 'in' operator to search for 'privateKey' in null"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":"b"},"publicJwk":0,"userId":"hello","displayName":".leading","platform":[],"audience":"HELLOhello"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":0,"publicJwk":null,"userId":"ünïcödé","displayName":"hello./x/**/*.json","platform":{"a":{"b":"c"}},"audience":"ünïcödé"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signDeviceRegistration","args":[{"key":0,"publicJwk":0,"userId":"a:b:c","displayName":"ünïcödé﻿bom","platform":[],"audience":"a"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":"b"},"publicJwk":null,"userId":"  padded  ","displayName":"ünïcödé","platform":null,"audience":"ΣΊΣΥΦΟΣtab\tseparated"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signDeviceRegistration","args":[{"key":{},"publicJwk":"x","userId":"abcns:key.path","displayName":"./x/**/*.json","platform":"x","audience":"😀é"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":"b"},"publicJwk":{"a":"b"},"userId":"ΣΊΣΥΦΟΣ","displayName":"key_name-1","platform":0,"audience":"abc"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":"b"},"publicJwk":{"a":{"b":"c"}},"userId":"ünïcödé","displayName":":","platform":true,"audience":"trailing.{name} has {count} items"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":{},"publicJwk":{"a":{"b":"c"}},"userId":"hello","displayName":".leading","platform":"x","audience":"ünïcödé"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":{},"publicJwk":[],"userId":"hello worldé","displayName":"  padded  ","platform":["a",1],"audience":"  padded  "}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":"x","publicJwk":{},"userId":"HELLO","displayName":"日本語のテキスト","platform":true,"audience":"src/a/b.ts.leading"}],"error":"Cannot use 'in' operator to search for 'privateKey' in x"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":"b"},"publicJwk":0,"userId":"ns:key.pathns:key.path","displayName":":","platform":null,"audience":"a😀b😀c"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":"x","publicJwk":[],"userId":"HELLO","displayName":"emoji 👍🏽 mix","platform":{"a":"b"},"audience":"﻿bom"}],"error":"Cannot use 'in' operator to search for 'privateKey' in x"}
+{"fn":"signDeviceRegistration","args":[{"key":0,"publicJwk":0,"userId":"a","displayName":"straßeab","platform":{"a":"b"},"audience":"hello"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signDeviceRegistration","args":[{"key":0,"publicJwk":{"a":"b"},"userId":"./x/**/*.json","displayName":"Hello Worldline1\nline2","platform":{"a":{"b":"c"}},"audience":"ΣΊΣΥΦΟΣ"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signDeviceRegistration","args":[{"key":0,"publicJwk":"x","userId":"HELLO","displayName":"ns:key.path","platform":[],"audience":"ünïcödé"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signDeviceRegistration","args":[true],"error":"Cannot read properties of undefined (reading 'kty')"}
+{"fn":"signDeviceRegistration","args":[{"key":["a",1],"publicJwk":{"a":{"b":"c"}},"userId":"ns:key.path","displayName":"İstanbul","platform":true,"audience":"emoji 👍🏽 mix"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":{"b":"c"}},"publicJwk":{"a":"b"},"userId":"﻿bom","displayName":"hello worldé","platform":{"a":"b"},"audience":"abc"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":"b"},"publicJwk":0,"userId":"a.b.c","displayName":"abcİstanbul","platform":{"a":"b"},"audience":"line1\nline2"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":"b"},"publicJwk":null,"userId":".leadingünïcödé","displayName":"HELLO","platform":{"a":"b"},"audience":"HELLOa..b"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":{"b":"c"}},"publicJwk":true,"userId":"a😀b😀c","displayName":"aa","platform":{},"audience":"a😀b😀c"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":[],"publicJwk":0,"userId":"abc","displayName":"","platform":{},"audience":"日本語のテキスト"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":{"b":"c"}},"publicJwk":true,"userId":"a","displayName":"line1\nline2","platform":true,"audience":"key_name-1"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":[],"publicJwk":"x","userId":"hello world","displayName":"","platform":{"a":"b"},"audience":"a😀b😀c"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":{"b":"c"}},"publicJwk":true,"userId":"a.b.c","displayName":"İstanbul","platform":true,"audience":""}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":{"b":"c"}},"publicJwk":[],"userId":"a..b","displayName":"ünïcödé","platform":[],"audience":"abc"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":0,"publicJwk":[],"userId":"ünïcödé","displayName":"  padded  ","platform":["a",1],"audience":"line1\nline2"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signDeviceRegistration","args":[{"key":[],"publicJwk":[],"userId":"emoji 👍🏽 mix","displayName":".leading","platform":{"a":"b"},"audience":"abc"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":"b"},"publicJwk":null,"userId":"a😀b😀c","displayName":"a:b:chello world","platform":"x","audience":"{name} has {count} items"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signDeviceRegistration","args":[{"key":["a",1],"publicJwk":["a",1],"userId":"İstanbul","displayName":"ΣΊΣΥΦΟΣ","platform":null,"audience":"a.b.c"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":["a",1],"publicJwk":true,"userId":"﻿bom","displayName":"ns:key.path","platform":{"a":{"b":"c"}},"audience":"a😀b😀c"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":{"b":"c"}},"publicJwk":["a",1],"userId":"é","displayName":"é","platform":0,"audience":"﻿bomhello world"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":"b"},"publicJwk":{},"userId":"é","displayName":"  padded  ","platform":true,"audience":"Hello World"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":"b"},"publicJwk":0,"userId":"é","displayName":"abc","platform":0,"audience":"key_name-1"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":["a",1],"publicJwk":["a",1],"userId":".leading","displayName":"İstanbul","platform":"x","audience":"trailing."}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":{},"publicJwk":{},"userId":"./x/**/*.json日本語のテキスト","displayName":":","platform":{},"audience":"a"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":{"b":"c"}},"publicJwk":null,"userId":"HELLOa","displayName":"straße","platform":["a",1],"audience":"ünïcödé"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":"b"},"publicJwk":["a",1],"userId":"é","displayName":"ΣΊΣΥΦΟΣ","platform":{"a":"b"},"audience":"a..b"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":"b"},"publicJwk":[],"userId":"HELLO","displayName":"","platform":null,"audience":"a:b:c"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":true,"publicJwk":{"a":"b"},"userId":"ns:key.path","displayName":"key_name-1","platform":{},"audience":"tab\tseparated"}],"error":"Cannot use 'in' operator to search for 'privateKey' in true"}
+{"fn":"signDeviceRegistration","args":[{"key":{},"publicJwk":[],"userId":"Hello World","displayName":"line1\nline2","platform":{},"audience":"straße"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":true,"publicJwk":{"a":"b"},"userId":"ΣΊΣΥΦΟΣ","displayName":"emoji 👍🏽 mix","platform":{"a":"b"},"audience":"HELLO"}],"error":"Cannot use 'in' operator to search for 'privateKey' in true"}
+{"fn":"signDeviceRegistration","args":[{"key":null,"publicJwk":true,"userId":"abc","displayName":":","platform":{"a":"b"},"audience":""}],"error":"Cannot use 'in' operator to search for 'privateKey' in null"}
+{"fn":"signDeviceRegistration","args":[{"key":0,"publicJwk":"x","userId":"a","displayName":"a😀b😀c","platform":{},"audience":"  padded  "}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signDeviceRegistration","args":[{"key":"x","publicJwk":["a",1],"userId":"{name} has {count} items","displayName":"a.b.c","platform":"x","audience":"a..ba😀b😀c"}],"error":"Cannot use 'in' operator to search for 'privateKey' in x"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":"b"},"publicJwk":true,"userId":"tab\tseparated","displayName":":","platform":["a",1],"audience":"key_name-1tab\tseparated"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":{},"publicJwk":"x","userId":"a..b","displayName":"ünïcödé","platform":null,"audience":"ab"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":"x","publicJwk":[],"userId":"a.b.c","displayName":"","platform":{"a":"b"},"audience":"hellohello world"}],"error":"Cannot use 'in' operator to search for 'privateKey' in x"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":{"b":"c"}},"publicJwk":0,"userId":"ünïcödé","displayName":"a..b","platform":0,"audience":"ΣΊΣΥΦΟΣ"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":["a",1],"publicJwk":{},"userId":"a:b:cns:key.path","displayName":"src/a/b.ts","platform":true,"audience":"HELLO"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":0,"publicJwk":{"a":"b"},"userId":"﻿bom","displayName":"  padded  ","platform":null,"audience":"Hello World"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signDeviceRegistration","args":[{"key":{},"publicJwk":{"a":{"b":"c"}},"userId":"line1\nline2line1\nline2","displayName":"ünïcödé","platform":true,"audience":"key_name-1"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":["a",1],"publicJwk":[],"userId":"src/a/b.tsa..b","displayName":"abc","platform":{"a":"b"},"audience":"  padded  "}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":null,"publicJwk":{},"userId":"😀﻿bom","displayName":"HELLO","platform":true,"audience":"a😀b😀c"}],"error":"Cannot use 'in' operator to search for 'privateKey' in null"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":{"b":"c"}},"publicJwk":0,"userId":"é","displayName":"straßesrc/a/b.ts","platform":[],"audience":"emoji 👍🏽 mix"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":[],"publicJwk":{"a":"b"},"userId":"éünïcödé","displayName":"key_name-1","platform":null,"audience":"abc"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":{},"publicJwk":{},"userId":"abc","displayName":"hello world","platform":"x","audience":"﻿bom"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":0,"publicJwk":true,"userId":"abhello world","displayName":"ΣΊΣΥΦΟΣ","platform":0,"audience":"Hello World"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signDeviceRegistration","args":[{"key":null,"publicJwk":null,"userId":"日本語のテキスト","displayName":".leading","platform":true,"audience":"hello"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signDeviceRegistration","args":[{"key":"x","publicJwk":["a",1],"userId":":","displayName":"😀","platform":null,"audience":"line1\nline2"}],"error":"Cannot use 'in' operator to search for 'privateKey' in x"}
+{"fn":"signDeviceRegistration","args":[{"key":{},"publicJwk":"x","userId":"line1\nline2","displayName":"abc","platform":["a",1],"audience":""}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":{"b":"c"}},"publicJwk":true,"userId":"HELLO","displayName":"  padded  ","platform":null,"audience":"Hello World"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":{"a":{"b":"c"}},"publicJwk":[],"userId":"é","displayName":"ΣΊΣΥΦΟΣ","platform":"x","audience":"hello world"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDeviceRegistration","args":[{"key":"x","publicJwk":{"a":{"b":"c"}},"userId":":a..b","displayName":"ns:key.path","platform":{"a":"b"},"audience":"İstanbul"}],"error":"Cannot use 'in' operator to search for 'privateKey' in x"}
+{"fn":"signDeviceRegistration","args":[{"key":["a",1],"publicJwk":true,"userId":"key_name-1","displayName":":","platform":["a",1],"audience":"abc"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDeviceRegistration","args":[{"key":"x","publicJwk":[],"userId":"  padded  ","displayName":"straßetab\tseparated","platform":["a",1],"audience":"😀"}],"error":"Cannot use 'in' operator to search for 'privateKey' in x"}
+{"fn":"dpopHttpUri","args":[""],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["a:b:c"],"ok":"a://b:c"}
+{"fn":"dpopHttpUri","args":["{name} has {count} items"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["tab\tseparated"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["./x/**/*.json"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["hello world"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["ns:key.pathns:key.path"],"ok":"ns://key.pathns:key.path"}
+{"fn":"dpopHttpUri","args":["straße:"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["line1\nline2"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["﻿bom"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["trailing."],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["emoji 👍🏽 mix"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["abc"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["src/a/b.ts"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["ΣΊΣΥΦΟΣ😀"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["straße"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["a.b.c"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["hello"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["İstanbul"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["key_name-1:"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["HELLOa..b"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["ünïcödéa.b.c"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["a..bsrc/a/b.ts"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["Hello World"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["a..b"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["aa..b"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["日本語のテキスト"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["a"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["  padded  "],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["é"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":[":"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["﻿bomns:key.path"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["key_name-1"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["HELLO"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["abca.b.c"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":[".leading{name} has {count} items"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["日本語のテキストHELLO"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["a😀b😀cHELLO"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["ab"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["éa.b.c"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["ünïcödé"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["HELLOsrc/a/b.ts"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["😀"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":[".leading"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["é  padded  "],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["ns:key.path"],"ok":"ns://key.path"}
+{"fn":"dpopHttpUri","args":["ünïcödé  padded  "],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["a😀b😀c"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":[":a:b:c"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["helloa"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["emoji 👍🏽 mixabc"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["hello😀"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["😀İstanbul"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["ab{name} has {count} items"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["aΣΊΣΥΦΟΣ"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":[":a.b.c"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["hello worldünïcödé"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["hellosrc/a/b.ts"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["ΣΊΣΥΦΟΣ"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["ünïcödé😀"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["İstanbula"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["emoji 👍🏽 mixhello"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["{name} has {count} itemsΣΊΣΥΦΟΣ"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["emoji 👍🏽 mixİstanbul"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["abé"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["./x/**/*.jsonkey_name-1"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["ab.leading"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":[".leadingns:key.path"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["HELLO日本語のテキスト"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["hello world﻿bom"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["  padded  ünïcödé"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["./x/**/*.jsontab\tseparated"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["éhello world"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["é日本語のテキスト"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["line1\nline2trailing."],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["﻿bomHELLO"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["a:b:cΣΊΣΥΦΟΣ"],"ok":"a://b:c%CE%A3%CE%8A%CE%A3%CE%A5%CE%A6%CE%9F%CE%A3"}
+{"fn":"dpopHttpUri","args":["日本語のテキストstraße"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["﻿bom{name} has {count} items"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["日本語のテキストé"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["{name} has {count} itemsa.b.c"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["line1\nline2😀"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["{name} has {count} items./x/**/*.json"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["hello worldkey_name-1"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["{name} has {count} items﻿bom"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["atrailing."],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["{name} has {count} itemshello"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["ΣΊΣΥΦΟΣstraße"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":[":trailing."],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["éline1\nline2"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["a:b:cHello World"],"ok":"a://b:cHello World"}
+{"fn":"dpopHttpUri","args":["日本語のテキスト  padded  "],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["😀ΣΊΣΥΦΟΣ"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["İstanbulline1\nline2"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["tab\tseparated{name} has {count} items"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["straßeabc"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["日本語のテキストa😀b😀c"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["line1\nline2日本語のテキスト"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["tab\tseparateda"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["{name} has {count} itemsa:b:c"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["ΣΊΣΥΦΟΣsrc/a/b.ts"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["a:b:c日本語のテキスト"],"ok":"a://b:c%E6%97%A5%E6%9C%AC%E8%AA%9E%E3%81%AE%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88"}
+{"fn":"dpopHttpUri","args":["line1\nline2﻿bom"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["Hello Worldstraße"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["a..bΣΊΣΥΦΟΣ"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["src/a/b.tsa:b:c"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["{name} has {count} itemsa..b"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["hello world{name} has {count} items"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["İstanbula..b"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["straßeab"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["abchello"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["ns:key.pathstraße"],"ok":"ns://key.pathstra%C3%9Fe"}
+{"fn":"dpopHttpUri","args":["  padded  a:b:c"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["straßea"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["😀a.b.c"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["  padded  ns:key.path"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["日本語のテキストhello world"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["﻿bomab"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["tab\tseparatedHello World"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["HELLOünïcödé"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["./x/**/*.json.leading"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["emoji 👍🏽 mix  padded  "],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["a.b.cab"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["ünïcödéabc"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["ünïcödéa"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["a..b  padded  "],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["İstanbulΣΊΣΥΦΟΣ"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["key_name-1ΣΊΣΥΦΟΣ"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["key_name-1é"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["İstanbul  padded  "],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["line1\nline2a..b"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":[".leadinghello"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":[":tab\tseparated"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["trailing.key_name-1"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["HELLOhello world"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":[".leadingHello World"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["emoji 👍🏽 mix./x/**/*.json"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["ns:key.pathline1\nline2"],"ok":"ns://key.pathline1line2"}
+{"fn":"dpopHttpUri","args":["😀😀"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["﻿bomline1\nline2"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["hellostraße"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["İstanbulab"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["aa:b:c"],"ok":"aa://b:c"}
+{"fn":"dpopHttpUri","args":["Hello WorldHello World"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["hellotab\tseparated"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["key_name-1./x/**/*.json"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["Hello Worldİstanbul"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["emoji 👍🏽 mixstraße"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["﻿bomΣΊΣΥΦΟΣ"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["straßeemoji 👍🏽 mix"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["aab"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["éa:b:c"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["astraße"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["HELLOa"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["a日本語のテキスト"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["Hello Worldtab\tseparated"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["key_name-1日本語のテキスト"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["abctab\tseparated"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["hello world😀"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["tab\tseparateda:b:c"],"ok":"tabseparateda://b:c"}
+{"fn":"dpopHttpUri","args":["src/a/b.tsé"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["abhello"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["a😀b😀chello world"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["emoji 👍🏽 mixab"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["日本語のテキストhello"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["a😀b😀cns:key.path"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["ns:key.pathabc"],"ok":"ns://key.pathabc"}
+{"fn":"dpopHttpUri","args":["a.b.ca"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["😀é"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["日本語のテキスト﻿bom"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["a:b:cstraße"],"ok":"a://b:cstra%C3%9Fe"}
+{"fn":"dpopHttpUri","args":["helloHELLO"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["ünïcödéns:key.path"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["emoji 👍🏽 mixünïcödé"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["a.b.cHELLO"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["a:b:cé"],"ok":"a://b:ce%CC%81"}
+{"fn":"dpopHttpUri","args":["a😀b😀ca:b:c"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":[".leadingtab\tseparated"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["ns:key.path  padded  "],"ok":"ns://key.path  padded"}
+{"fn":"dpopHttpUri","args":["./x/**/*.jsonΣΊΣΥΦΟΣ"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["  padded  😀"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["日本語のテキストline1\nline2"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["straßens:key.path"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["a😀b😀c:"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["a:b:cünïcödé"],"ok":"a://b:c%C3%BCn%C3%AFc%C3%B6d%C3%A9"}
+{"fn":"dpopHttpUri","args":["ΣΊΣΥΦΟΣa😀b😀c"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["line1\nline2  padded  "],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["ékey_name-1"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["étrailing."],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["ΣΊΣΥΦΟΣ  padded  "],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["😀a😀b😀c"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["straßetab\tseparated"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["  padded  ﻿bom"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["trailing.😀"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["ΣΊΣΥΦΟΣab"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["é:"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["tab\tseparated😀"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["emoji 👍🏽 mixa:b:c"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["﻿bomhello"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["trailing.ns:key.path"],"ok":"trailing.ns://key.path"}
+{"fn":"dpopHttpUri","args":["héllo wörld"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["👍🏽 thumbs"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["日本語"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["ılık ırmak"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["👨‍👩‍👧 family"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["a b"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["a😀b"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["a²b x½ y①"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["aⅠb Ⅻ"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["a𐐀b 𝐀bc"],"error":"Invalid URL"}
+{"fn":"dpopHttpUri","args":["कि ٣٤"],"error":"Invalid URL"}
+{"fn":"credentialHash","args":["abc"],"ok":"ungWv48Bz-pBQUDeXa4iI7ADYaOWF3qctBD_YfIAFa0"}
+{"fn":"credentialHash","args":["ΣΊΣΥΦΟΣ"],"ok":"WwTGAh1JDHbpdrAfWZVgKT0gL0rsskF4steT87CKh0U"}
+{"fn":"credentialHash","args":["line1\nline2"],"ok":"aDN24pCCm0gsJlV0XK_6eh3M-hCvqmLawrQt1saND4M"}
+{"fn":"credentialHash","args":["{name} has {count} items"],"ok":"Qv8q0wnagf9sW6slOLNbXpVh1W-e6Tt-mlrx0DsoxAo"}
+{"fn":"credentialHash","args":["hello"],"ok":"LPJNul-wow4m6DsqxbninhsWHlwfp0JecwQzYpOLmCQ"}
+{"fn":"credentialHash","args":["trailing."],"ok":"RMEqTkMuuj9_pjT9EW7vOQCtkWZojLQMP0iO86UyAxY"}
+{"fn":"credentialHash","args":["  padded  "],"ok":"PUpVcZ0uvIng6Q1cbKZjukhxywqphgPPcWvzQ9sUlGU"}
+{"fn":"credentialHash","args":["hello worlda😀b😀c"],"ok":"WGrWwEL1gVaSrnu2HoVwdTMZqgBpBFQQJ0Bb40MZ59c"}
+{"fn":"credentialHash","args":["日本語のテキストHELLO"],"ok":"XZ3Ce9tsgan4b0MIYygnoJlw6OUmgg9Lh7C92u_RaYY"}
+{"fn":"credentialHash","args":["İstanbul"],"ok":"JOyPcrXqxFlM9EASNa8WORWRkhlOAlSV1KEFWrD23Js"}
+{"fn":"credentialHash","args":["./x/**/*.json"],"ok":"AYBxp3f8i1ZVz4U6JE-n4-QBbiWfNI1M1KJfMIMdxvA"}
+{"fn":"credentialHash","args":["emoji 👍🏽 mix"],"ok":"eDn9emWrbn0wTOIwI-JmFChOnHRcE5cYp9SsUOnbUzA"}
+{"fn":"credentialHash","args":["straße"],"ok":"eH9HcGE9OCTLyJttXakKEj5BsHuQtF6jc4whaxRhYUA"}
+{"fn":"credentialHash","args":[".leading"],"ok":"nHRJGiHo_HqbSNU9RDK-BYs66XcfDWzpKIGAXciUf-s"}
+{"fn":"credentialHash","args":["a"],"ok":"ypeBEsobvcr6wjGzmiPcTaeG7_gUfE5yuYB3ha_uSLs"}
+{"fn":"credentialHash","args":["trailing.日本語のテキスト"],"ok":"5u29ECxsBSoBs-03XPVUfUEoEYeQ54s9e8MW3ZKf4JI"}
+{"fn":"credentialHash","args":["key_name-1"],"ok":"QYTbVEffJ2Gv3QXJZHkaHoWUdEmwxgEbTAEyRbfwZbM"}
+{"fn":"credentialHash","args":["src/a/b.ts"],"ok":"63BBRoyzL-rbu8-Cts8FMmsmxxfTFfwqTO8-qhawqu0"}
+{"fn":"credentialHash","args":["ünïcödé"],"ok":"sJrT4njfs0FGg5SjL3MkZ-IkW0sodsPhXgqvGqWsJCo"}
+{"fn":"credentialHash","args":["a.b.c"],"ok":"hF4wRIgJ4ryJWOsCW_x5UjXROwd6U9DDq70jhRcNybg"}
+{"fn":"credentialHash","args":["HELLO"],"ok":"NzPNl3_46xi5hzV-Is7Zn0YJfzHssjnoeK5jdg6D5NU"}
+{"fn":"credentialHash","args":["a..b"],"ok":"9itCQUxRT6aJ0-CHujl8YCpLosiX8Kwssyz3cMNEK_I"}
+{"fn":"credentialHash","args":[":"],"ok":"56wHhmaOD_DwK2K9BPRf9jb9gttjsRBGAcl13ABfOmc"}
+{"fn":"credentialHash","args":["﻿bom  padded  "],"ok":"803Ckw_k0vVvsleQpu6OqeMZdr26QKMhupGAMHBRPqs"}
+{"fn":"credentialHash","args":["straßetab\tseparated"],"ok":"gQc8aGu0tQmwcdoCHAQmp0wk6YeQruZd_1BlWRV5O4I"}
+{"fn":"credentialHash","args":[".leadingns:key.path"],"ok":"RGlnntekirhtwr8pAwIDRCj4SwioHRNPkl-7n0Qi3Ro"}
+{"fn":"credentialHash","args":["ab"],"ok":"-44g_C5MPySMYMOb1lLzwTRymLuXe4tNWQO4UFViBgM"}
+{"fn":"credentialHash","args":[""],"ok":"47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU"}
+{"fn":"credentialHash","args":["./x/**/*.jsonΣΊΣΥΦΟΣ"],"ok":"hMw5D1tveJNIduLAfepG_zlbkSMwCjiHURnuMlIVd1Q"}
+{"fn":"credentialHash","args":["ns:key.path"],"ok":"CQ7UvIUTgcAfx32d8Xbf5RetsILEYB0eYkHQSSv3jYM"}
+{"fn":"credentialHash","args":["tab\tseparated"],"ok":"c3MEpyfgOLG3AGmVdxpgh2IVFtEzemKHfICnQGsdSxw"}
+{"fn":"credentialHash","args":["hello world"],"ok":"uU0nuZNNPgilLlLX2n2r-sSE7-N6U4DukIj3rOLvzek"}
+{"fn":"credentialHash","args":["a..bünïcödé"],"ok":"gOCb6DvcXSTSOeCW0cZZthN705zIPMjTKse-UL4rbRM"}
+{"fn":"credentialHash","args":["İstanbulΣΊΣΥΦΟΣ"],"ok":"6DQmeofQr9qEdvyQTpRk9FO9DeY_IwCrPuziOZmZDIE"}
+{"fn":"credentialHash","args":["日本語のテキスト"],"ok":"1BktOwHfqfWwg4jxPlx0kuPP3FYRv4x3eE3JdSPwPvs"}
+{"fn":"credentialHash","args":["aba"],"ok":"4SStzOH7L4jh6nmcPQgghF7TQ-bHOeVBMfyzpW5Lwb0"}
+{"fn":"credentialHash","args":["helloemoji 👍🏽 mix"],"ok":"osaQ0Piao1wTWxVpaQgtg4FaLokrQ1AuDC-fMm2GyXk"}
+{"fn":"credentialHash","args":["﻿bom"],"ok":"JiMUjw0Efvb-rmNCLA1gdBiIrn9F_ZebojLhyXXBRwI"}
+{"fn":"credentialHash","args":["ns:key.pathé"],"ok":"CrN2Md3YH6YcsofxWRJ8yBUO9ZJ7ou_-fjwSBXjrwUg"}
+{"fn":"credentialHash","args":["a:b:c"],"ok":"sO4E-IDE_0JhR54ueCK3QQruTHFZ9Bha1bDYijErSV4"}
+{"fn":"credentialHash","args":["Hello WorldHELLO"],"ok":"A6tuR6br_F5apraMFY5YMM-GzuObsOspqNW0oqGjA4k"}
+{"fn":"credentialHash","args":["src/a/b.tsa😀b😀c"],"ok":"YDRHe0HpkHIMGBkNNJ5uUOmi0hQOaXxw5r3xxfZinTI"}
+{"fn":"credentialHash","args":["abc﻿bom"],"ok":"csFq3w0QDD4RRnRmssIA0966920iS1ZYu9JAQ_9h3v8"}
+{"fn":"credentialHash","args":["  padded  abc"],"ok":"N_dHdfWn5hEVmN1FJMKrGHkUk-ifmSydZPo7jJectnQ"}
+{"fn":"credentialHash","args":["trailing.{name} has {count} items"],"ok":"ztBJ7-eJBdWTq9gHzeowBs0sE4lcyXwb633lGfjUO5E"}
+{"fn":"credentialHash","args":["😀"],"ok":"8EQ6NCxe9UeDoRG1G6Vsk45HTDIyTZDDpgycjjo34tk"}
+{"fn":"credentialHash","args":["a😀b😀c"],"ok":"Ow-p12O1yzjmzdbF2Vyl_qjPHV9UVwuHsG88jCL-R9E"}
+{"fn":"credentialHash","args":["abcé"],"ok":"Hun0P-QbQS3fUCoUA3B4SLPk0I_lWQUI4WjHMvcs4xs"}
+{"fn":"credentialHash","args":["  padded  ns:key.path"],"ok":"DdxIVvMgm0NK_ooUaYZsWZc7r2zlsh0rIHRQQpxWIzM"}
+{"fn":"credentialHash","args":["a.b.cHello World"],"ok":"ZTOCgKWPTIbZU_wQtjSrFTiJZ641gyGh1Te2DFSTe6Q"}
+{"fn":"credentialHash","args":["tab\tseparated  padded  "],"ok":"WGakV3IhAE6pjlqYIm1M47myecs8SFDiPVACBxmatzM"}
+{"fn":"credentialHash","args":["Hello World"],"ok":"pZGm1Av0IEBKARczz7exkNYsZb8LzaMrV7J32a2fFG4"}
+{"fn":"credentialHash","args":["aa:b:c"],"ok":"znF391OsEDfcRL2VPUzjoP5YwCHda0hSJ8jT0CULuwQ"}
+{"fn":"credentialHash","args":["日本語のテキストünïcödé"],"ok":"-q-UKObPNlHNBt-lwgn98HJROncwD5bLt32briFJquo"}
+{"fn":"credentialHash","args":["abctrailing."],"ok":"ZCZ_YfBhChj0egDYBTR_ag8L6rYl_Hb1zgb47LWKxMU"}
+{"fn":"credentialHash","args":["hello world./x/**/*.json"],"ok":"Nh0g4qt1CuZoXD3wIk-OD48WjfO4YqF8PrhPfe_noRE"}
+{"fn":"credentialHash","args":[".leadingstraße"],"ok":"c_bIiIVyXqlfule8YzzNFVq7_dfbttN0BtKdQxQvjV4"}
+{"fn":"credentialHash","args":["é"],"ok":"vxJ2ew8qVrIZAHW66BafZW486NY1fUr_GEvGx-pI-fY"}
+{"fn":"credentialHash","args":["a😀b😀cİstanbul"],"ok":"yMZdcYUQVI0UtTzSfE1VdHpjz8Jq1P8hpht4G2cEif0"}
+{"fn":"credentialHash","args":["hello worlda.b.c"],"ok":"_3MFW1-_uFti6AojxX5bOM1XevThnK1cVkRLmaO_sAs"}
+{"fn":"credentialHash","args":["日本語のテキストHello World"],"ok":"dzN9SyeqgxV9oqba1DE_Suz0kEjjUUR2o3_8vK4vxsQ"}
+{"fn":"credentialHash","args":["HELLOtrailing."],"ok":"WLQBJkPN5_uAGBRX7rEEb5Dq9OdBoqfo-4nrgMzpv3Y"}
+{"fn":"credentialHash","args":["İstanbulabc"],"ok":"CIaWPpmNezqwuAC9WjETSRYjJfdnQQ0ho3BWbQI88Ag"}
+{"fn":"credentialHash","args":["tab\tseparatedtrailing."],"ok":"2Rcfx64th23XDgeN_EWgqNkM0OFY2NyQNfSirRCt4m4"}
+{"fn":"credentialHash","args":["İstanbulİstanbul"],"ok":"uvg_cEsIpAUwQpXjOJ6kIjD8y8RVNX7K9AjGxCxjHDE"}
+{"fn":"credentialHash","args":["./x/**/*.jsontrailing."],"ok":"Zz2sHC8t0dy2mINi7ACd0T9zMGhU24Nkut9nH_WGg6Q"}
+{"fn":"credentialHash","args":[":a:b:c"],"ok":"2T-3R_HGoZTrkXG_0sxyOxXABag3E9NmP3Vfnh6x8_k"}
+{"fn":"credentialHash","args":["HELLOΣΊΣΥΦΟΣ"],"ok":"IiHoM-VcG7flQO3bRi39zl7SYfL_8FuyYDGpqYGAGyU"}
+{"fn":"credentialHash","args":["line1\nline2src/a/b.ts"],"ok":"u_Uqdswzfm230jTm-GLFpr6SJR31ZV1W5q1vJEW52Jk"}
+{"fn":"credentialHash","args":["ΣΊΣΥΦΟΣ:"],"ok":"rOREZGo57R-v_tbKKIpvknqSc5_hXCA16YDD4ES1c4c"}
+{"fn":"credentialHash","args":["src/a/b.tstrailing."],"ok":"rPxEL-CdotA6Zy2da78-uAg8wCyeYSTh6QeYcTCYUmk"}
+{"fn":"credentialHash","args":["😀ns:key.path"],"ok":"kYJkqY7-SkzGCNr2HcT8slF-h8fPq6ukAISSsW8gv_k"}
+{"fn":"credentialHash","args":["trailing.straße"],"ok":"hXFjBv9Fz9-vYw35vh0MqUODGYNI7J61Z59I-Se9qbs"}
+{"fn":"credentialHash","args":["abünïcödé"],"ok":"816QxtEJXtcaKhhPnKaz04oMeT5LONsf-l-aBS1KhgI"}
+{"fn":"credentialHash","args":["éns:key.path"],"ok":"LxgRREBSObyurtMffdSJSM4Lv2Yp0-G0c6gVd7OIfGI"}
+{"fn":"credentialHash","args":["abstraße"],"ok":"wT2mFfXKHsgiHM_t3Ylh1uCwiIhUdBjImQ5m4a4aiSY"}
+{"fn":"credentialHash","args":["line1\nline2:"],"ok":"4Bdsp8z1taFsrN9vxkEjbZ4xSEwud4M8kMU2943e0cU"}
+{"fn":"credentialHash","args":["aba😀b😀c"],"ok":"u2VwrehlzghMXKEelFMRt-fR7QVTcPQy6sLlfaK_4CQ"}
+{"fn":"credentialHash","args":["a😀b😀ctab\tseparated"],"ok":"OfQ_NOsyGRRiGbBxfVpdAUPCUoe4T9eSoQEeOBTM1O0"}
+{"fn":"credentialHash","args":["line1\nline2﻿bom"],"ok":"FSuJi1aYA0q-XzwibfldSVC4JQ7sEen6XOE7UKzivsU"}
+{"fn":"credentialHash","args":["日本語のテキストab"],"ok":"k2XMx1ygNjF13wkAmy4AZmnniLYogzRW2SMLbi3oUno"}
+{"fn":"credentialHash","args":["ns:key.path  padded  "],"ok":"MiHnZvFZwt_GI9Nagj60Th5ySssZ7ue5sBPzTuTl5o8"}
+{"fn":"credentialHash","args":["emoji 👍🏽 mixkey_name-1"],"ok":"77Iduv81hKpYlLgm4keBDsRfFbyXrfrKQn85rfZxeRU"}
+{"fn":"credentialHash","args":["src/a/b.tsé"],"ok":"4vXeCN1g2j46cQNMkayzaFSkkUwXrPEGEaEs7Mu6hvE"}
+{"fn":"credentialHash","args":["ünïcödéΣΊΣΥΦΟΣ"],"ok":"GPEudM2dAin3xkpU2_L27lp6sJbEyfKgb4ZTQg6ctWw"}
+{"fn":"credentialHash","args":["{name} has {count} items./x/**/*.json"],"ok":"5XbZNBFrRmc4amJR5Uyf3MSHHg-ZcVYtJHP_LFMCUJs"}
+{"fn":"credentialHash","args":["日本語のテキスト😀"],"ok":"WOED1VhZf44OCTTeykOB8ja1vJ2BCmzpvf6grFxUEH0"}
+{"fn":"credentialHash","args":["ns:key.pathtrailing."],"ok":"-EV01AMpX0b2BgY2RzqzmdUnMajVuN_j__Xm-J3sy3w"}
+{"fn":"credentialHash","args":["./x/**/*.json😀"],"ok":"W6Xr54OxgU4vbTDQ6NgURfsXnvuQe_6enpOWHtahNto"}
+{"fn":"credentialHash","args":["Hello Worldhello"],"ok":"3XDkSo6PHACwhF9Sd6TtCtVVugCc4IxezDh5ijdyV4A"}
+{"fn":"credentialHash","args":["日本語のテキストkey_name-1"],"ok":"k6i2eYTeWr0ZKOSSJyRkg88-A6odB69MQNLGN78cYTE"}
+{"fn":"credentialHash","args":["ab:"],"ok":"pkWdjEXXKKp9dqHBrrCUPeod665dwiWGjLm5VCbCoTc"}
+{"fn":"credentialHash","args":["HELLO.leading"],"ok":"eVM-o-YGsVYJLtWjLz2l_C9uStDDWrNnxZHPgVPBhis"}
+{"fn":"credentialHash","args":["a..bhello"],"ok":"MFu0cwc1d8V1t5BcDXdYis2otud0hlg8yPSS5hMW34M"}
+{"fn":"credentialHash","args":["ns:key.pathab"],"ok":"EPDhqZ6glcUGfqXalKV0heiDTck3inJZ_PKo6qpcuQg"}
+{"fn":"credentialHash","args":["  padded  a😀b😀c"],"ok":"qMFEdTVnmjw6ovkaSzesJ4a6sWLAf4EIX8gZqQkFuWw"}
+{"fn":"credentialHash","args":["HELLOa..b"],"ok":"aVVgX0bvZm5ezOcjtcFPCGS2ZjEczcBkvHSNn22T4tE"}
+{"fn":"credentialHash","args":["😀hello"],"ok":"fYcvvx3_tBrbjpV-TDauU5ZiH9QTGqxIUm8BuLvJu5g"}
+{"fn":"credentialHash","args":["a..bsrc/a/b.ts"],"ok":"d7wvgxyspOsPcN0iV5xT_q3G5x8jOEyMKk1gzHMsPnE"}
+{"fn":"credentialHash","args":["a😀b😀cünïcödé"],"ok":"3A9qpecJkooRoc9lJrc4dEkwPkCCO6n9s655r-qSG4s"}
+{"fn":"credentialHash","args":["日本語のテキストline1\nline2"],"ok":"rW-HSTIRz8u_0Wj_dse1ToOqj26wIsLtqvC2XpzuNTc"}
+{"fn":"credentialHash","args":["ünïcödéa:b:c"],"ok":"UHAOUAElSl7TY0cfNTpPoPFReGasZcl30xmw-UtWJyE"}
+{"fn":"credentialHash","args":["emoji 👍🏽 mixhello world"],"ok":"JZJodBR9fVHY-Jh2xbqW1McXJsUAmuBYH2BvWs8NB-U"}
+{"fn":"credentialHash","args":["hello😀"],"ok":"Q-CFwqEGyUHoswFnMEVwOC6cForuDWjriDKxO68zk6A"}
+{"fn":"credentialHash","args":["abctab\tseparated"],"ok":"Ywj2kE4LiRIN_xUEhy32mc_Iu7hjnQLyXl-laBVLdfA"}
+{"fn":"credentialHash","args":["tab\tseparatedİstanbul"],"ok":"Sg1DHOTvml47qkpE7bF8lkmuPwMKK3OoL98sFIN6GJc"}
+{"fn":"credentialHash","args":["  padded  é"],"ok":"aITVedVfirHkGwMKGyshljib3VYXoDsPUMPN22RcRkc"}
+{"fn":"credentialHash","args":["emoji 👍🏽 mixtab\tseparated"],"ok":"lEwRXekPJ8eVTS9Vifb1UaXnUz6JLHrOEzoMgKSVFsM"}
+{"fn":"credentialHash","args":["trailing.ab"],"ok":"0ybGAfJbBJ28vWBoYMz2ELULHdxZAtoZfMCLUhZqHfo"}
+{"fn":"credentialHash","args":["﻿bomhello"],"ok":"cMu-o4nZKe3lhjVYALsyqfuqCpKggwQZFQ4akiq5xpQ"}
+{"fn":"credentialHash","args":["ünïcödéline1\nline2"],"ok":"luIM0x3TL7rRP90wv4rnnpF_jyOsYOR1GNh9Pr2pYhE"}
+{"fn":"credentialHash","args":["./x/**/*.json{name} has {count} items"],"ok":"BjU5frXD_0ga0Uq_9nJLJJyKW8_NWCr9hI5LGRcLkKE"}
+{"fn":"credentialHash","args":["tab\tseparateda:b:c"],"ok":"09DRx1wkhfra1b5ayx6DewhLPbEowC3EabAxzDAVXtk"}
+{"fn":"credentialHash","args":["  padded  Hello World"],"ok":"QvlVydkZKkG98d3ZR3jHN3tZzS_Pz8nNCCxC8bZ40kQ"}
+{"fn":"credentialHash","args":["a😀b😀c😀"],"ok":"Lc5cAw-aUvB1xVEyLfZovNuaUKtQOBhyio1dRIOKr9k"}
+{"fn":"credentialHash","args":["hello./x/**/*.json"],"ok":"lWXRqGdtH5Wa5kQqXSAFDwRBK8kzIAX-Lb4tKlKZq7A"}
+{"fn":"credentialHash","args":["ns:key.pathabc"],"ok":"t5dGXyRFV-teDsSdDyqgFQSFceDrq9yHgYrwTNN4VwU"}
+{"fn":"credentialHash","args":["ns:key.pathtab\tseparated"],"ok":"6f4gsdJegkKDmcJqlQ_fVx3Oi8zQF2FxFC0WPfcw18A"}
+{"fn":"credentialHash","args":["  padded  :"],"ok":"jnJ_Vuw_HTDISmnccL6rq7CbPlMqMJ9Ogte3tNwp2YY"}
+{"fn":"credentialHash","args":["abcns:key.path"],"ok":"MCDep3p_8frjRMDrXb9p7Il8msHUiZOs4H-OnL4xlfc"}
+{"fn":"credentialHash","args":["{name} has {count} itemsline1\nline2"],"ok":"NawQmVM2LZta8OAUYwi-_HiY9YcDfUG4PvvewpOuCYw"}
+{"fn":"credentialHash","args":["a..bkey_name-1"],"ok":"DknQpOeTAd4MDRvCvlttWKlcczByzXrXLEKs0jKEL9Y"}
+{"fn":"credentialHash","args":[".leadinga:b:c"],"ok":"Wx6_EchFbOGgzn1MrhV6Eka8hPUo4tHhulFjxYbc7VA"}
+{"fn":"credentialHash","args":["{name} has {count} itemsünïcödé"],"ok":"DZ3zfvocRow8wBd7c80McklDHvkK36SaJIq-Qiuvh6k"}
+{"fn":"credentialHash","args":["akey_name-1"],"ok":"ddTPcmvj7XKdeK-P-6ADKCgQ_ijpXe94AOimDdU5rgU"}
+{"fn":"credentialHash","args":["ns:key.pathhello"],"ok":"RXg2bQbmOlMKXOBTb00IB_U2s8xzPe05iF_t8IYQIvo"}
+{"fn":"credentialHash","args":["{name} has {count} itemssrc/a/b.ts"],"ok":"UHwqOKGNVd3Z4Dlmc5HKxXljCxMSIqUm4YSj4UZt6F0"}
+{"fn":"credentialHash","args":["a:b:ctab\tseparated"],"ok":"_EM864YF9WaLQ33PnKy2E98uNTbYhaj3KEQ25hK81Js"}
+{"fn":"credentialHash","args":["./x/**/*.jsonstraße"],"ok":"4_xok7k4qgsX5m-tr578LqWOE7rvQGpJMhZAiAK73jQ"}
+{"fn":"credentialHash","args":["trailing.:"],"ok":"Uc-nkbhj_ve3a-40IYpvocASF_ZdUIB3qFPtFsn8hb4"}
+{"fn":"credentialHash","args":[".leadinga😀b😀c"],"ok":"ZafhVqfYO2sj8dvkud7YJiByWQkQotljeBXuukjqGvo"}
+{"fn":"credentialHash","args":["﻿boma:b:c"],"ok":"fRxbJ1ldsR-M1L7fGmbK6N5Npqi3gzncwQ4lHgbXsJ0"}
+{"fn":"credentialHash","args":["straßea:b:c"],"ok":"bfQ-JQ7ansLpm-KVI3I6EsTLokU4izC9kzdqOnP16Ps"}
+{"fn":"credentialHash","args":["tab\tseparatedsrc/a/b.ts"],"ok":"Lrc6-pabIVRhy27P7gm5fQ_gNdHNziLhNZUxPp0hSOM"}
+{"fn":"credentialHash","args":["é.leading"],"ok":"hfO1lQxkHY5flqmWF0XrnFsMAQgilAvyN_SfirK-KZ4"}
+{"fn":"credentialHash","args":["ünïcödéemoji 👍🏽 mix"],"ok":"0230WILi3R24xU_58X40qkEgr2pTWlk4dFMViqOzrNE"}
+{"fn":"credentialHash","args":["line1\nline2.leading"],"ok":"KNugIqlcdHe_sPGhJr-LNJsxuV4hJFd6xhodE_SStQE"}
+{"fn":"credentialHash","args":["a:b:c😀"],"ok":"B3m6ckCa1YPuEVBu2MBW7Taacwwd7cmVYvGTYyPJCww"}
+{"fn":"credentialHash","args":["éİstanbul"],"ok":"5HaSwNSc_sqX2qUHpvNSHt2V49bCDHjr5L17bwMtLzg"}
+{"fn":"credentialHash","args":["a..bab"],"ok":"zD-84RIGpAbJm0lNNnfcYuItTKntiriVWMpFiO7KXfM"}
+{"fn":"credentialHash","args":["İstanbulé"],"ok":"DqR1mGQp9z5WgEl--WU5CISiT3N79rRYmAnVMjJuHdk"}
+{"fn":"credentialHash","args":["aHELLO"],"ok":"fnjEQEPiRTy2JGdrslYAcflCp9htFhPP7k3942-GR18"}
+{"fn":"credentialHash","args":["tab\tseparated.leading"],"ok":"sWfLdNQncwMzmPpB_scsB4WDN1Doxn_i1QMNWfOX38Q"}
+{"fn":"credentialHash","args":["日本語のテキストa:b:c"],"ok":"wLaKUnbEccap1_aQki26_hBkHMLdDZ3lOnu0XXrsZ-c"}
+{"fn":"credentialHash","args":["😀ab"],"ok":"j2BgfLdYS2WZGGH2vFo-J4pZGOrwkWnpEaMrEpO-SJg"}
+{"fn":"credentialHash","args":["straßeabc"],"ok":"SDORbEBBiIKn6xPagO9zYElkDSGz_fa5vLcO3Xmjwso"}
+{"fn":"credentialHash","args":["hello﻿bom"],"ok":"fNtIxXWIkV8gNUc_Kr22pdp5o3jFAMqyF_PE0rw5AY4"}
+{"fn":"credentialHash","args":["Hello Worldab"],"ok":"uasag5Mk-4hadDowItPINbhDsnYLlSI-314ybr20Mts"}
+{"fn":"credentialHash","args":["key_name-1a😀b😀c"],"ok":"fUK30TGcVuYTr_2mdxFrc1ZtNiE355xLxkpLpcAMGH8"}
+{"fn":"credentialHash","args":["é./x/**/*.json"],"ok":"PzJrLwX29PAgd4LGkGEv2hFSza-AY5q_F9IL_uHyb0Y"}
+{"fn":"credentialHash","args":["a..ba"],"ok":"6wJENbUYcAnpxxI04n8UWTWK4u1g9CjhqGBwrUR4e0k"}
+{"fn":"credentialHash","args":["Hello Worldstraße"],"ok":"FvWQxGlGtbPI505Nm8Br23quwDGyYSxgi3TyYegJuCY"}
+{"fn":"credentialHash","args":["ΣΊΣΥΦΟΣline1\nline2"],"ok":"hN9lFrqBTkrHdgT9QY_oB0NZR8q_jpzrOLMHuJH3ghY"}
+{"fn":"credentialHash","args":["日本語のテキスト{name} has {count} items"],"ok":"qOaoO_04k4bBo6biBtKQwEXPq9jkz2gbH0QxqHP39Ro"}
+{"fn":"credentialHash","args":[".leadingemoji 👍🏽 mix"],"ok":"E1ome7O2subF0FREsRSQw7f-HQOq8Ot__vZn_m7p0eY"}
+{"fn":"credentialHash","args":["a./x/**/*.json"],"ok":"3v88dgIgXMErnH6W701Uw184wYNRn7YWXR-NstRZ-Mw"}
+{"fn":"credentialHash","args":[":abc"],"ok":"boUKDpHBTH3piwJmNiNix8Rlrv8d9cBz2JdvgaMzqHQ"}
+{"fn":"credentialHash","args":["trailing.a..b"],"ok":"n5ai4cOOQDGqW0odtf06VSasPVCoGWZAgnLHu4klyeA"}
+{"fn":"credentialHash","args":["a..bHELLO"],"ok":"5UgWvRMhy2Ps2wcdsUmJkzJ48WAdCH35_ZEhzOFCxoM"}
+{"fn":"credentialHash","args":["abcstraße"],"ok":"UdqHcPQoOPvMQ5UgMpEeYjGGRug5Rm4D6nhg2uqqUHM"}
+{"fn":"credentialHash","args":["ünïcödé:"],"ok":"Om9TPeQow13bnZvq1I1_pA6q9mQepFcbVrSqYKUwtfE"}
+{"fn":"credentialHash","args":["aΣΊΣΥΦΟΣ"],"ok":"FstB-910wOVpppraEiPfBFRtNrqMoulDuxhOX6h2tl0"}
+{"fn":"credentialHash","args":["İstanbulhello world"],"ok":"jNApOW0RD11PzaW-VShHvi2q2AKtYIvN_eQ55xujnOQ"}
+{"fn":"credentialHash","args":["a..ba..b"],"ok":"tIoEJFuuRmZQmiWKbwURu8XX94uMB3z1qr4VJXIDEHA"}
+{"fn":"credentialHash","args":["trailing.a😀b😀c"],"ok":"mD7brKf2ym-pQjOkmFRmt3-oTs_fiTK_H-6c6TMEvjE"}
+{"fn":"credentialHash","args":["abcHELLO"],"ok":"VHyrE-M3kpsw9-CTp-Vhwxe4y6tiQBt1DbS3Kpazags"}
+{"fn":"credentialHash","args":["key_name-1é"],"ok":"BUCbb5f6fPO8_eQP8-TJp2_G2So5Nno9ESsT6u-TPHQ"}
+{"fn":"credentialHash","args":[".leadingHELLO"],"ok":"MDHjjNJcn7JIKqqcIjN2Z56nStPTiJa9WS9dQgPRTQQ"}
+{"fn":"credentialHash","args":["éhello"],"ok":"zm4wUqj9f00h93BKBy0vti0ZffwQ3EBXoehe_H3oMug"}
+{"fn":"credentialHash","args":["ns:key.path😀"],"ok":"G0YYqtbzj_j1ME1rgHAvmCDGc2g95uLAqjjQ-C1PmAg"}
+{"fn":"credentialHash","args":["trailing.a"],"ok":"rkqNqaHrYEVUWxDxh91q5THcrBXJE9Q4ST1KyNRHtus"}
+{"fn":"credentialHash","args":["hello world😀"],"ok":"sNmoLbfiH_A8jY_Mkkcqa_zP7r2Rf0OkRgYYNlm-z3c"}
+{"fn":"credentialHash","args":["a😀b😀ca:b:c"],"ok":"SLYyL5bAfKJp0gPnwDHf-8Za-my3UIl-nLE_vUTijos"}
+{"fn":"credentialHash","args":["emoji 👍🏽 mixHELLO"],"ok":"Ce0efgSOBOiaDDhZcOZRKsTaXROxg_SBO1rVnQFAZqI"}
+{"fn":"credentialHash","args":["ΣΊΣΥΦΟΣünïcödé"],"ok":"6YvGmr7GBOmqbmOCq0t34X3JLb6DBiB8EuksqdnGPsI"}
+{"fn":"credentialHash","args":[".leadingab"],"ok":"223Rt_5ity-yhGidaeVNIqeQwX1dvux5gini1ZB9Sgo"}
+{"fn":"credentialHash","args":["ünïcödéhello"],"ok":"mSHbI8D0dXEk-42cbqi0PRwk2m0GuO_rRkfG-PiRkKQ"}
+{"fn":"credentialHash","args":["ΣΊΣΥΦΟΣhello"],"ok":"mO0ZHTnKSpUTEG9Ad2KVeD8Kha420EIxRCzRDzZn5Ys"}
+{"fn":"credentialHash","args":["ΣΊΣΥΦΟΣhello world"],"ok":"afXLNsAua_lSznuRu5GuZqihMN0G7bK6gdNUh_0Otw4"}
+{"fn":"credentialHash","args":["straßea😀b😀c"],"ok":"b07q9CTCj26agzphY4WoB5zp64qcd3s5-6G4MXvKY_0"}
+{"fn":"credentialHash","args":["abline1\nline2"],"ok":"6jiumGPFu02MOAdaRzdQU7KeIULengX5thtg0Mswrm8"}
+{"fn":"credentialHash","args":["﻿boma"],"ok":"9zs_wP2QmHZCViNsAEem8GTVcedqcQGW5zEexATRM-I"}
+{"fn":"credentialHash","args":["HELLOHELLO"],"ok":"-d2gE3dMrMaqZC0LhxBOKX3gk76m2eCAO5T4x4QoXHY"}
+{"fn":"credentialHash","args":["İstanbula:b:c"],"ok":"F3b3BjtQiqkCfaQ8X0RwmU5b9pGoqtjRz_ccqxMuAhs"}
+{"fn":"credentialHash","args":["ns:key.patha😀b😀c"],"ok":"aTv6meYFhjctpcVWZbmxy2KlV6MGlYEdtJXjNR2fqR4"}
+{"fn":"credentialHash","args":["aemoji 👍🏽 mix"],"ok":"soXz-jeb_AABX8iRcQEi2xy5tE4NddAGuM64lOUBJ_w"}
+{"fn":"credentialHash","args":["straßesrc/a/b.ts"],"ok":"O6A48kLBJuC280zeFq0ni4OtiGkN09eaX-X6A_fj9y4"}
+{"fn":"credentialHash","args":["src/a/b.ts😀"],"ok":"A_ofjGivBnwlVx7eicDwTQoVboTenWqoOGDXnVgxBgA"}
+{"fn":"credentialHash","args":["a.b.ckey_name-1"],"ok":"xCogYXfkMfNHF8eh77gz2As58HwgLkFrSgPYeT-ge6Y"}
+{"fn":"credentialHash","args":["abcünïcödé"],"ok":"2LONXKjOc-Dky1niUSYK6K6HFQ_AOsSVg80sM4Hj0PU"}
+{"fn":"credentialHash","args":["İstanbul﻿bom"],"ok":"ZL9rOJh8Yj20OSTj8WOJQ5B7OQc2v6eYmVKxtBPVt9Y"}
+{"fn":"credentialHash","args":["trailing..leading"],"ok":"1tDTvf9zDtXUxaMKMpVxp2T4x9R_n7tDKJ07uJmzHVQ"}
+{"fn":"credentialHash","args":["a:b:cabc"],"ok":"yoYR0OkWQ0IX_XqQCkiC2Eu39VufVudxSc0Lx4pyaFo"}
+{"fn":"credentialHash","args":["helloabc"],"ok":"9slzcBLSXEHfNfbV0D2NhJEnlTJv_V1CnOc5d1JsZ8Y"}
+{"fn":"credentialHash","args":[".leading.leading"],"ok":"7OsquuXW9OYDLTC8FwTZZLNlWlCE3d2bn1YfVFfFSOE"}
+{"fn":"credentialHash","args":["éHELLO"],"ok":"LrgwewGmrYcVy8cU6zxB8Suz1tcBVZa5D-n6VhTqCr4"}
+{"fn":"credentialHash","args":["{name} has {count} items日本語のテキスト"],"ok":"gqDBkqL6ye_fyElb0TW7QmViuIMBoF5bT_CmjRrxKOY"}
+{"fn":"credentialHash","args":["emoji 👍🏽 mixns:key.path"],"ok":"9Qmk9VnOu4l_XEGCiOvcabe0vOIbTCau3gjvhxNxCSg"}
+{"fn":"credentialHash","args":["line1\nline2  padded  "],"ok":"Qw6OY6uD49P22V2CbXzlQOrb4RN7sacSkU2Vgemi8lE"}
+{"fn":"credentialHash","args":["hello worldabc"],"ok":"HcciHAv5JvHZl3piMSmUFVXcY6BdoU1V6PU_fQph4ZM"}
+{"fn":"credentialHash","args":["héllo wörld"],"ok":"oQA_fQSkEVcR0LSKLq8TWc5WXS0qb9ZQmN_P-t7u9Z8"}
+{"fn":"credentialHash","args":["👍🏽 thumbs"],"ok":"J1LmXaz1BzIDRRnRttV0VF4CD9kRIgpAffJqck1LN0g"}
+{"fn":"credentialHash","args":["日本語"],"ok":"d3EK7cdOz6M2heM6bH31zIMATaG9zvf7KA9cKy6X4KU"}
+{"fn":"credentialHash","args":["ılık ırmak"],"ok":"YNwJ1WwrqSCx7MeZ5HwAyMSrvGcPhh4UELOVLELg9-g"}
+{"fn":"credentialHash","args":["👨‍👩‍👧 family"],"ok":"u183cKWBf9lVcGcNiVclbY7o7fPfX4DbqFRZXPFY47g"}
+{"fn":"credentialHash","args":["a b"],"ok":"lQcBfG2IdRGlpqwo6n46Q4iCV24b12_j3yejNvScJjs"}
+{"fn":"credentialHash","args":["a😀b"],"ok":"b7pbLqeD3tCW_CRE1UD_vfSRaN8wmTsVW377aDMT8RA"}
+{"fn":"credentialHash","args":["a²b x½ y①"],"ok":"qVDNvV7nFjJU9TYdmp7ZAXNeSxr-f5J55a93yPY4BRc"}
+{"fn":"credentialHash","args":["aⅠb Ⅻ"],"ok":"2pz4rgipBUZDxZD6WctxT4v956-NI95zNEtAAMfKx4s"}
+{"fn":"credentialHash","args":["a𐐀b 𝐀bc"],"ok":"q_Rtul2ui1BkR7IgZgByZpCqHMQbfisbKwfFxk9N-ww"}
+{"fn":"credentialHash","args":["कि ٣٤"],"ok":"ncF1nRTHf3QS-6bVuwZCVIpHyN_mbITviL9V_W4wEBs"}
+{"fn":"signDpopProof","args":[{"key":{},"publicJwk":true,"method":"key_name-1","url":"ns:key.path","accessToken":"{name} has {count} items"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDpopProof","args":[{"key":["a",1],"publicJwk":"x","method":"a:b:c","url":"ab","accessToken":"{name} has {count} items"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":true,"publicJwk":["a",1],"method":"ΣΊΣΥΦΟΣ","url":"HELLO","accessToken":"{name} has {count} items"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{},"publicJwk":0,"method":"line1\nline2","url":"a😀b😀cΣΊΣΥΦΟΣ"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"a":"b"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":0,"publicJwk":{"a":{"b":"c"}},"method":"日本語のテキスト","url":"ns:key.path","accessToken":"ab"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signDpopProof","args":[{"key":{"a":"b"},"publicJwk":"x","method":"a😀b😀c","url":"ΣΊΣΥΦΟΣ","accessToken":"İstanbul"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":0,"publicJwk":[],"method":"é","url":"ns:key.path","accessToken":"a😀b😀c"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signDpopProof","args":[{"key":{"a":{"b":"c"}},"publicJwk":{"a":"b"},"method":"😀","url":"ab","accessToken":"  padded  "}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":null,"publicJwk":{"a":{"b":"c"}},"method":"Hello World","url":"a","accessToken":"key_name-1ünïcödé"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":{"b":"c"}},"publicJwk":"x","method":"","url":"İstanbul","accessToken":"ns:key.pathline1\nline2"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":"b"},"publicJwk":true,"method":"straße","url":"ab","accessToken":"é"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":{"b":"c"}},"publicJwk":{"a":{"b":"c"}},"method":"{name} has {count} itemsabc","url":"  padded  ","accessToken":"key_name-1"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":0,"publicJwk":[],"method":"a.b.cΣΊΣΥΦΟΣ","url":"tab\tseparated"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":{"b":"c"}},"publicJwk":[],"method":"Hello World","url":"abc","accessToken":"src/a/b.ts"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":0,"publicJwk":{"a":{"b":"c"}},"method":"a😀b😀c","url":"a😀b😀c","accessToken":"./x/**/*.json"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[["a",1]],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":"x","publicJwk":0,"method":"ΣΊΣΥΦΟΣ","url":"line1\nline2"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":0,"publicJwk":{},"method":"src/a/b.ts","url":"a.b.c","accessToken":"ns:key.path"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":["a",1],"publicJwk":0,"method":"line1\nline2","url":":","accessToken":".leading"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":true,"publicJwk":null,"method":"ünïcödé  padded  ","url":"﻿bom"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":[],"publicJwk":"x","method":"a.b.c","url":"{name} has {count} itemstab\tseparated"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":{"b":"c"}},"publicJwk":"x","method":"","url":"a😀b😀c","accessToken":"a:b:c"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":{"b":"c"}},"publicJwk":{"a":{"b":"c"}},"method":"tab\tseparated","url":"straße","accessToken":"ns:key.path"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":["a",1],"publicJwk":"x","method":"  padded  :","url":"﻿bom"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":[],"publicJwk":"x","method":"HELLO","url":"  padded  Hello World","accessToken":"hello world"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{},"publicJwk":{},"method":"line1\nline2","url":"emoji 👍🏽 mix","accessToken":"a😀b😀c"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":"x","publicJwk":true,"method":"emoji 👍🏽 mix","url":"a:b:c","accessToken":"a.b.c"}],"error":"Cannot use 'in' operator to search for 'privateKey' in x"}
+{"fn":"signDpopProof","args":[{"key":null,"publicJwk":["a",1],"method":"a..b","url":"emoji 👍🏽 mix","accessToken":"a..b"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":true,"publicJwk":0,"method":"日本語のテキスト","url":"abcabc","accessToken":"key_name-1"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":true,"publicJwk":{},"method":"  padded  ünïcödé","url":"İstanbul"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":["a",1],"publicJwk":null,"method":"","url":"a","accessToken":"a.b.c"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":"x","publicJwk":"x","method":"ns:key.pathline1\nline2","url":"  padded  ","accessToken":"﻿bom"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":0,"publicJwk":true,"method":"abcHELLO","url":"a😀b😀c","accessToken":"./x/**/*.json"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":{"b":"c"}},"publicJwk":"x","method":"a..b","url":"straße","accessToken":"ünïcödé"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":["x"],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":[],"publicJwk":{},"method":"ns:key.path","url":"a..b","accessToken":"trailing."}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":true,"publicJwk":"x","method":"ab","url":"日本語のテキスト"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":["a",1],"publicJwk":true,"method":"./x/**/*.json","url":"a😀b😀c","accessToken":"HELLO"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":"b"},"publicJwk":{"a":"b"},"method":"./x/**/*.json","url":"a.b.c","accessToken":"é"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":"x","publicJwk":{},"method":"","url":":","accessToken":"hello"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":{"b":"c"}},"publicJwk":0,"method":"日本語のテキスト","url":"emoji 👍🏽 mix"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":["a",1],"publicJwk":{},"method":"hello","url":"tab\tseparated","accessToken":"line1\nline2"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{},"publicJwk":"x","method":"日本語のテキスト","url":"a:b:c","accessToken":"src/a/b.ts"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDpopProof","args":[{"key":true,"publicJwk":"x","method":":src/a/b.ts","url":"key_name-1","accessToken":"abc"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":null,"publicJwk":{},"method":"日本語のテキスト","url":"line1\nline2","accessToken":"Hello World"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":{"b":"c"}},"publicJwk":["a",1],"method":"a😀b😀c","url":"ab","accessToken":"./x/**/*.jsonünïcödé"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":0,"publicJwk":0,"method":"日本語のテキストns:key.path","url":"a:b:cstraße","accessToken":"helloline1\nline2"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signDpopProof","args":[{"key":{},"publicJwk":{"a":"b"},"method":"hello worldemoji 👍🏽 mix","url":"é","accessToken":"a.b.cab"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":"x","publicJwk":null,"method":"line1\nline2","url":"Hello World"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":0,"publicJwk":{"a":"b"},"method":"a:b:c","url":"{name} has {count} items😀"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"a":{"b":"c"}}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":[],"publicJwk":null,"method":"hello","url":"abc","accessToken":"key_name-1"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{},"publicJwk":{"a":"b"},"method":"ΣΊΣΥΦΟΣ","url":"","accessToken":"hellokey_name-1"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{},"publicJwk":{"a":{"b":"c"}},"method":"emoji 👍🏽 mix","url":"a:b:c","accessToken":""}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDpopProof","args":[{"key":{"a":"b"},"publicJwk":{"a":"b"},"method":"a","url":"  padded  ","accessToken":"src/a/b.ts"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":null,"publicJwk":0,"method":"./x/**/*.json","url":"a","accessToken":"HELLO"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[[]],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[true],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":"b"},"publicJwk":[],"method":"./x/**/*.json","url":"ΣΊΣΥΦΟΣ","accessToken":"  padded  :"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":"b"},"publicJwk":{},"method":"﻿bom","url":"src/a/b.ts"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":"b"},"publicJwk":null,"method":"İstanbul","url":"trailing."}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":"b"},"publicJwk":0,"method":"hello","url":"a😀b😀ca","accessToken":"é"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{},"publicJwk":[],"method":"ab","url":"key_name-1","accessToken":""}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{},"publicJwk":0,"method":"{name} has {count} items","url":"key_name-1a😀b😀c"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":[],"publicJwk":"x","method":"straße","url":"absrc/a/b.ts","accessToken":"key_name-1src/a/b.ts"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":null,"publicJwk":{"a":{"b":"c"}},"method":"日本語のテキスト","url":"straße","accessToken":"a"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{},"publicJwk":null,"method":"İstanbulstraße","url":"ns:key.path","accessToken":"  padded  "}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signDpopProof","args":[{"key":[],"publicJwk":null,"method":"","url":"hello world"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":"x","publicJwk":["a",1],"method":"é","url":"a:b:cé","accessToken":"helloünïcödé"}],"error":"Cannot use 'in' operator to search for 'privateKey' in x"}
+{"fn":"signDpopProof","args":[{"key":{"a":{"b":"c"}},"publicJwk":["a",1],"method":"trailing.","url":"a..b","accessToken":"İstanbul"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":true,"publicJwk":null,"method":"trailing.","url":"ab","accessToken":"./x/**/*.json"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":"b"},"publicJwk":"x","method":"line1\nline2","url":"hello","accessToken":"trailing.{name} has {count} items"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":null,"publicJwk":0,"method":"ab","url":"😀","accessToken":"absrc/a/b.ts"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":null,"publicJwk":["a",1],"method":"😀","url":"﻿bom","accessToken":""}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":["a",1],"publicJwk":{"a":{"b":"c"}},"method":".leading","url":"tab\tseparateda😀b😀c","accessToken":"  padded  "}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":{"b":"c"}},"publicJwk":0,"method":"😀hello","url":"ΣΊΣΥΦΟΣ","accessToken":"hello"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":null,"publicJwk":{"a":"b"},"method":"﻿bom","url":"é","accessToken":"éns:key.path"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":0,"publicJwk":{"a":{"b":"c"}},"method":"a..b","url":"a..b","accessToken":"a.b.c"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":0,"publicJwk":[],"method":"straßeünïcödé","url":"HELLO","accessToken":"Hello Worlda😀b😀c"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":0,"publicJwk":"x","method":"trailing.","url":"a:b:c","accessToken":"ΣΊΣΥΦΟΣ"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signDpopProof","args":[{"key":{},"publicJwk":0,"method":"日本語のテキスト","url":"a:b:c"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDpopProof","args":[{"key":0,"publicJwk":null,"method":"","url":"key_name-1","accessToken":"Hello World"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":"b"},"publicJwk":null,"method":":","url":"日本語のテキスト","accessToken":"src/a/b.ts"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":["a",1],"publicJwk":{},"method":"abc","url":"line1\nline2"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":"x","publicJwk":["a",1],"method":"emoji 👍🏽 mix","url":"😀","accessToken":"hello world"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":["a",1],"publicJwk":{},"method":"ns:key.path","url":"日本語のテキスト","accessToken":"emoji 👍🏽 mix"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":"x","publicJwk":true,"method":"line1\nline2","url":"ünïcödé","accessToken":":"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":{"b":"c"}},"publicJwk":["a",1],"method":"Hello World","url":"key_name-1ns:key.path"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":"b"},"publicJwk":"x","method":":","url":"ab","accessToken":"ns:key.path"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":true,"publicJwk":null,"method":"aa..b","url":"a:b:c","accessToken":"﻿bom"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signDpopProof","args":[{"key":"x","publicJwk":true,"method":"﻿bom","url":"a.b.c"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{},"publicJwk":"x","method":"Hello World","url":"a.b.c"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{},"publicJwk":0,"method":"a:b:c","url":"ns:key.path","accessToken":"  padded  ab"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDpopProof","args":[{"key":{"a":{"b":"c"}},"publicJwk":"x","method":"ΣΊΣΥΦΟΣ","url":"﻿bom"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":["a",1],"publicJwk":null,"method":"HELLOtrailing.","url":"a.b.c","accessToken":"日本語のテキストtab\tseparated"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":null,"publicJwk":["a",1],"method":"ΣΊΣΥΦΟΣ","url":"Hello World"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":null,"publicJwk":{},"method":"line1\nline2","url":"Hello World"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":[],"publicJwk":[],"method":"","url":"ΣΊΣΥΦΟΣ","accessToken":"a..b"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{},"publicJwk":{"a":{"b":"c"}},"method":"ΣΊΣΥΦΟΣ","url":"a😀b😀c","accessToken":"tab\tseparated"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":{"b":"c"}},"publicJwk":{"a":{"b":"c"}},"method":"{name} has {count} items","url":"hello world","accessToken":"a..b"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":true,"publicJwk":"x","method":"  padded  ","url":"Hello World"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":null,"publicJwk":"x","method":"trailing.","url":"hello"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":null,"publicJwk":true,"method":"a😀b😀c","url":"straße","accessToken":"é"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":[],"publicJwk":0,"method":"﻿bom","url":"a..b","accessToken":"ΣΊΣΥΦΟΣa:b:c"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[null],"error":"Cannot read properties of null (reading 'nowSeconds')"}
+{"fn":"signDpopProof","args":[{"key":[],"publicJwk":["a",1],"method":"ünïcödé","url":"key_name-1","accessToken":"hello worldünïcödé"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":"b"},"publicJwk":{"a":{"b":"c"}},"method":"","url":"key_name-1","accessToken":"line1\nline2"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":{"b":"c"}},"publicJwk":0,"method":"ΣΊΣΥΦΟΣ","url":"line1\nline2"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":null,"publicJwk":[],"method":"a:b:c","url":"tab\tseparated","accessToken":"😀"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":"b"},"publicJwk":"x","method":"é","url":"ünïcödé"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":"x","publicJwk":["a",1],"method":"line1\nline2","url":"Hello World","accessToken":"ns:key.path"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":null,"publicJwk":"x","method":"ns:key.path","url":""}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":[],"publicJwk":"x","method":"ΣΊΣΥΦΟΣ","url":"key_name-1a"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":{"b":"c"}},"publicJwk":{"a":{"b":"c"}},"method":"ΣΊΣΥΦΟΣemoji 👍🏽 mix","url":"abchello world"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":"x","publicJwk":0,"method":"trailing.","url":"日本語のテキスト","accessToken":"ab"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":{"b":"c"}},"publicJwk":[],"method":"./x/**/*.json","url":"ns:key.path","accessToken":"😀"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDpopProof","args":[{"key":0,"publicJwk":0,"method":"","url":"a:b:c"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signDpopProof","args":[{"key":"x","publicJwk":["a",1],"method":":","url":"trailing.","accessToken":"hello world"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":null,"publicJwk":null,"method":"İstanbul","url":"ünïcödé"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":["a",1],"publicJwk":true,"method":"","url":"﻿bom","accessToken":".leading"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":true,"publicJwk":["a",1],"method":"src/a/b.ts","url":"tab\tseparated"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":0,"publicJwk":{"a":"b"},"method":"","url":"﻿bomünïcödé","accessToken":"a"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":{"b":"c"}},"publicJwk":null,"method":"ns:key.path","url":"a.b.c","accessToken":"./x/**/*.json"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":null,"publicJwk":"x","method":".leading","url":"straße","accessToken":"hello world"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":{"b":"c"}},"publicJwk":"x","method":"line1\nline2line1\nline2","url":"  padded  hello world","accessToken":"😀"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":"b"},"publicJwk":0,"method":"ab","url":"HELLO","accessToken":"trailing."}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":[],"publicJwk":[],"method":".leading","url":"src/a/b.ts","accessToken":"ns:key.path"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":["a",1],"publicJwk":0,"method":"é:","url":""}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":0,"publicJwk":{},"method":"日本語のテキスト","url":"a.b.c","accessToken":"key_name-1"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":{"b":"c"}},"publicJwk":{"a":{"b":"c"}},"method":"hello world","url":"hello world","accessToken":"日本語のテキスト"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":"x","publicJwk":true,"method":"tab\tseparated","url":"emoji 👍🏽 mix"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":["a",1],"publicJwk":0,"method":"ab","url":"😀"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":["a",1],"publicJwk":null,"method":"a..b","url":"İstanbul:","accessToken":"a.b.c"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":"b"},"publicJwk":null,"method":"hello","url":"İstanbul","accessToken":"ΣΊΣΥΦΟΣ"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":"x","publicJwk":{"a":{"b":"c"}},"method":"{name} has {count} items","url":"","accessToken":"hello"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":"x","publicJwk":["a",1],"method":"a","url":".leading","accessToken":"😀straße"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":"b"},"publicJwk":[],"method":"ab","url":"HELLO","accessToken":"trailing.a.b.c"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":"b"},"publicJwk":{},"method":"hello world","url":"ünïcödé"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":"x","publicJwk":null,"method":"abca.b.c","url":"abcline1\nline2","accessToken":"src/a/b.ts"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":[],"publicJwk":true,"method":"  padded  ","url":"日本語のテキスト","accessToken":"﻿bomİstanbul"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{},"publicJwk":true,"method":"","url":"日本語のテキスト😀"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":true,"publicJwk":[],"method":"HELLO","url":"key_name-1","accessToken":"a.b.cHello World"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":"x","publicJwk":0,"method":"İstanbul","url":"a..b"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":null,"publicJwk":{},"method":":","url":"日本語のテキスト","accessToken":"emoji 👍🏽 mix"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":0,"publicJwk":{"a":"b"},"method":"src/a/b.ts","url":"﻿bom","accessToken":":"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":["a",1],"publicJwk":["a",1],"method":"Hello World","url":"HELLO{name} has {count} items","accessToken":""}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":null,"publicJwk":{"a":"b"},"method":"ΣΊΣΥΦΟΣa😀b😀c","url":"abc"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":true,"publicJwk":{"a":"b"},"method":"HELLOünïcödé","url":"trailing.Hello World","accessToken":"a"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":["a",1],"publicJwk":{"a":{"b":"c"}},"method":"Hello World","url":"﻿bomé","accessToken":"ab"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":"x","publicJwk":0,"method":"a.b.c.leading","url":"a:b:c"}],"error":"Cannot use 'in' operator to search for 'privateKey' in x"}
+{"fn":"signDpopProof","args":[{"key":true,"publicJwk":true,"method":"hello","url":"src/a/b.tskey_name-1"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":[],"publicJwk":{"a":"b"},"method":"src/a/b.tsab","url":"a..b","accessToken":"a:b:c"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":[],"publicJwk":{"a":"b"},"method":"line1\nline2","url":"straße","accessToken":"key_name-1"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":"x","publicJwk":"x","method":"ΣΊΣΥΦΟΣ","url":"ΣΊΣΥΦΟΣ","accessToken":"abc"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":"x","publicJwk":["a",1],"method":"ns:key.path","url":"hello"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{},"publicJwk":["a",1],"method":"./x/**/*.json","url":"é","accessToken":"HELLO"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":"b"},"publicJwk":"x","method":"﻿bom","url":"﻿bom","accessToken":"ns:key.path"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":null,"publicJwk":0,"method":"a.b.c","url":"a","accessToken":":"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":["a",1],"publicJwk":0,"method":"hello worldhello","url":"ab"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{},"publicJwk":["a",1],"method":"  padded  ","url":"emoji 👍🏽 mixa..b","accessToken":"key_name-1"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":"x","publicJwk":true,"method":"İstanbulemoji 👍🏽 mix","url":"a😀b😀c","accessToken":"hello"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":0,"publicJwk":"x","method":"  padded  ","url":"emoji 👍🏽 mix","accessToken":"line1\nline2"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":true,"publicJwk":0,"method":".leadinga..b","url":".leading","accessToken":"﻿bom"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":0,"publicJwk":{"a":{"b":"c"}},"method":":","url":"tab\tseparated","accessToken":"key_name-1src/a/b.ts"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":"b"},"publicJwk":null,"method":"é","url":":","accessToken":"﻿bom"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":[],"publicJwk":["a",1],"method":"Hello World","url":"﻿bom"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":"x","publicJwk":["a",1],"method":"😀","url":"ns:key.path","accessToken":"  padded  "}],"error":"Cannot use 'in' operator to search for 'privateKey' in x"}
+{"fn":"signDpopProof","args":[{"key":["a",1],"publicJwk":{},"method":"ns:key.path","url":""}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{},"publicJwk":{},"method":"HELLO","url":"{name} has {count} items.leading","accessToken":"HELLO"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":"b"},"publicJwk":true,"method":"😀","url":"  padded  ","accessToken":"line1\nline2"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":"x","publicJwk":null,"method":"{name} has {count} itemsé","url":"﻿bom","accessToken":"line1\nline2tab\tseparated"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[0],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":["a",1],"publicJwk":"x","method":"﻿bom","url":"é","accessToken":"line1\nline2"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":true,"publicJwk":{},"method":"tab\tseparated","url":"hello world"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":["a",1],"publicJwk":"x","method":"key_name-1","url":"  padded  ","accessToken":"Hello World"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":{"b":"c"}},"publicJwk":{"a":"b"},"method":"trailing.a.b.c","url":"ns:key.path","accessToken":"a.b.c"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signDpopProof","args":[{"key":"x","publicJwk":{"a":{"b":"c"}},"method":"hello  padded  ","url":"{name} has {count} items","accessToken":"line1\nline2"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":0,"publicJwk":{"a":"b"},"method":"é","url":"ΣΊΣΥΦΟΣa:b:c","accessToken":"a:"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":{"b":"c"}},"publicJwk":{"a":"b"},"method":"ns:key.path","url":"src/a/b.ts","accessToken":"ns:key.path"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":true,"publicJwk":{"a":"b"},"method":"straße","url":"Hello World"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":{"b":"c"}},"publicJwk":null,"method":"ab","url":"line1\nline2","accessToken":"ΣΊΣΥΦΟΣ"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{},"publicJwk":true,"method":"trailing.","url":"é"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":["a",1],"publicJwk":0,"method":"a😀b😀c","url":"é","accessToken":"hello"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":true,"publicJwk":{},"method":"ünïcödé","url":"ünïcödé"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":null,"publicJwk":{"a":{"b":"c"}},"method":"hello world","url":"./x/**/*.json","accessToken":"﻿bom"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":"x","publicJwk":["a",1],"method":"a","url":"{name} has {count} items","accessToken":"ünïcödé"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":null,"publicJwk":["a",1],"method":"ünïcödé","url":"  padded  "}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":null,"publicJwk":["a",1],"method":"tab\tseparated","url":"a","accessToken":"straße﻿bom"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":["a",1],"publicJwk":"x","method":"trailing.","url":"ns:key.path","accessToken":"abc"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signDpopProof","args":[{"key":["a",1],"publicJwk":true,"method":"  padded  ","url":"ΣΊΣΥΦΟΣ","accessToken":"Hello World"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":true,"publicJwk":null,"method":"😀","url":"emoji 👍🏽 mix","accessToken":":"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":"b"},"publicJwk":{"a":"b"},"method":"ΣΊΣΥΦΟΣ","url":"ab","accessToken":"a:b:c"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":{"b":"c"}},"publicJwk":["a",1],"method":"./x/**/*.json😀","url":"  padded  ","accessToken":"😀"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":true,"publicJwk":true,"method":"straße","url":"hello world","accessToken":"./x/**/*.json"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":"b"},"publicJwk":[],"method":"a😀b😀cabc","url":"﻿bom","accessToken":"{name} has {count} items"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":{"b":"c"}},"publicJwk":["a",1],"method":".leading","url":"trailing.","accessToken":"a:b:c"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":{"a":{"b":"c"}},"publicJwk":{},"method":"trailing.hello","url":"ΣΊΣΥΦΟΣ","accessToken":"é"}],"error":"Invalid URL"}
+{"fn":"signDpopProof","args":[{"key":true,"publicJwk":true,"method":"key_name-1","url":":","accessToken":"./x/**/*.json"}],"error":"Invalid URL"}
+{"fn":"signMintRequest","args":[{"key":0,"publicJwk":"x","userId":"abcHELLO","grant":":straße","environmentId":"a:b:c"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signMintRequest","args":[{"key":{"a":"b"},"publicJwk":[],"userId":"HELLO","grant":".leading","environmentId":"trailing."}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":{},"publicJwk":"x","userId":"{name} has {count} items","grant":"😀日本語のテキスト","environmentId":"a:b:c"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":["x"],"error":"Cannot read properties of undefined (reading 'kty')"}
+{"fn":"signMintRequest","args":[{"key":{"a":"b"},"publicJwk":{},"userId":"tab\tseparated","grant":"key_name-1","environmentId":"trailing."}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":[],"publicJwk":{},"userId":"abc","grant":"trailing.","environmentId":"hello world"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'kty')"}
+{"fn":"signMintRequest","args":[{"key":true,"publicJwk":0,"userId":"a..b","grant":"line1\nline2  padded  ","environmentId":"./x/**/*.json"}],"error":"Cannot use 'in' operator to search for 'privateKey' in true"}
+{"fn":"signMintRequest","args":[{"key":true,"publicJwk":["a",1],"userId":"straßea..b","grant":"ns:key.path","environmentId":"ünïcödé"}],"error":"Cannot use 'in' operator to search for 'privateKey' in true"}
+{"fn":"signMintRequest","args":[{"key":{"a":{"b":"c"}},"publicJwk":null,"userId":"abca..b","grant":"a.b.c","environmentId":"a.b.ckey_name-1"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signMintRequest","args":[{"key":"x","publicJwk":{"a":{"b":"c"}},"userId":"日本語のテキスト","grant":"a..b","environmentId":"﻿bom"}],"error":"Cannot use 'in' operator to search for 'privateKey' in x"}
+{"fn":"signMintRequest","args":[{"key":{"a":"b"},"publicJwk":{"a":{"b":"c"}},"userId":"😀","grant":"a:b:c","environmentId":"ΣΊΣΥΦΟΣ"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":"x","publicJwk":true,"userId":"  padded  ","grant":"straßeHello World","environmentId":".leadinga..b"}],"error":"Cannot use 'in' operator to search for 'privateKey' in x"}
+{"fn":"signMintRequest","args":[{"key":["a",1],"publicJwk":{"a":"b"},"userId":"HELLO","grant":"straße","environmentId":"😀"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":{"a":{"b":"c"}},"publicJwk":{"a":"b"},"userId":"key_name-1","grant":"hello","environmentId":"a.b.c"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":[],"publicJwk":true,"userId":"./x/**/*.json😀","grant":"a.b.c","environmentId":"é"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":{"a":"b"},"publicJwk":null,"userId":"a.b.c","grant":"  padded  line1\nline2","environmentId":"./x/**/*.json"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signMintRequest","args":[{"key":{"a":{"b":"c"}},"publicJwk":{"a":"b"},"userId":"emoji 👍🏽 mix","grant":"{name} has {count} itemsabc","environmentId":"a"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":null,"publicJwk":[],"userId":"","grant":"hello","environmentId":"İstanbul"}],"error":"Cannot use 'in' operator to search for 'privateKey' in null"}
+{"fn":"signMintRequest","args":[true],"error":"Cannot read properties of undefined (reading 'kty')"}
+{"fn":"signMintRequest","args":[{}],"error":"Cannot read properties of undefined (reading 'kty')"}
+{"fn":"signMintRequest","args":[{"key":{"a":"b"},"publicJwk":["a",1],"userId":"Hello WorldHello World","grant":"emoji 👍🏽 mix","environmentId":"hello worldkey_name-1"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[null],"error":"Cannot read properties of null (reading 'nowSeconds')"}
+{"fn":"signMintRequest","args":[{"key":{},"publicJwk":0,"userId":"a:b:c","grant":"tab\tseparated","environmentId":"a.b.c"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":["a",1],"publicJwk":"x","userId":"ns:key.pathline1\nline2","grant":"","environmentId":".leading"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":true,"publicJwk":{},"userId":".leading./x/**/*.json","grant":"helloİstanbul","environmentId":"ab"}],"error":"Cannot use 'in' operator to search for 'privateKey' in true"}
+{"fn":"signMintRequest","args":[{"key":{"a":"b"},"publicJwk":["a",1],"userId":":","grant":"","environmentId":"日本語のテキスト"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":true,"publicJwk":[],"userId":"ns:key.path","grant":"İstanbul","environmentId":"﻿bom"}],"error":"Cannot use 'in' operator to search for 'privateKey' in true"}
+{"fn":"signMintRequest","args":[{"key":{"a":{"b":"c"}},"publicJwk":[],"userId":"{name} has {count} items","grant":"abc","environmentId":"ab"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":{"a":{"b":"c"}},"publicJwk":null,"userId":"a..b","grant":"abemoji 👍🏽 mix","environmentId":"hello"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signMintRequest","args":[{"key":"x","publicJwk":true,"userId":".leadingns:key.path","grant":":","environmentId":"Hello World"}],"error":"Cannot use 'in' operator to search for 'privateKey' in x"}
+{"fn":"signMintRequest","args":[{"key":null,"publicJwk":"x","userId":".leading","grant":"ab","environmentId":"src/a/b.ts"}],"error":"Cannot use 'in' operator to search for 'privateKey' in null"}
+{"fn":"signMintRequest","args":[{"key":"x","publicJwk":{"a":"b"},"userId":"  padded  ","grant":"日本語のテキスト","environmentId":"a😀b😀c"}],"error":"Cannot use 'in' operator to search for 'privateKey' in x"}
+{"fn":"signMintRequest","args":[{"key":{},"publicJwk":true,"userId":"a..b","grant":"a.b.cns:key.path","environmentId":"日本語のテキスト"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":true,"publicJwk":true,"userId":"line1\nline2","grant":"hello","environmentId":"ab"}],"error":"Cannot use 'in' operator to search for 'privateKey' in true"}
+{"fn":"signMintRequest","args":[{"key":{"a":"b"},"publicJwk":null,"userId":"HELLO","grant":"a😀b😀c","environmentId":"key_name-1"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signMintRequest","args":[{"key":null,"publicJwk":"x","userId":"😀","grant":"hello world","environmentId":"a😀b😀c"}],"error":"Cannot use 'in' operator to search for 'privateKey' in null"}
+{"fn":"signMintRequest","args":[{"key":0,"publicJwk":null,"userId":"Hello World{name} has {count} items","grant":"tab\tseparated","environmentId":"straße"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signMintRequest","args":[{"key":{},"publicJwk":true,"userId":"日本語のテキスト.leading","grant":"src/a/b.tsΣΊΣΥΦΟΣ","environmentId":"trailing."}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":null,"publicJwk":["a",1],"userId":"  padded  ","grant":"tab\tseparated","environmentId":"tab\tseparated"}],"error":"Cannot use 'in' operator to search for 'privateKey' in null"}
+{"fn":"signMintRequest","args":[{"key":[],"publicJwk":true,"userId":"a","grant":"a:b:c","environmentId":"ab"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":[],"publicJwk":{},"userId":"ΣΊΣΥΦΟΣ","grant":"a😀b😀c","environmentId":"emoji 👍🏽 mix"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":{},"publicJwk":{},"userId":"  padded  ","grant":"a..ba.b.c","environmentId":"straße"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'kty')"}
+{"fn":"signMintRequest","args":[{"key":"x","publicJwk":null,"userId":"a..b","grant":"HELLO","environmentId":"hello world"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signMintRequest","args":[{"key":0,"publicJwk":{"a":"b"},"userId":"hello","grant":"ns:key.path","environmentId":"ab"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signMintRequest","args":[{"key":["a",1],"publicJwk":null,"userId":"tab\tseparated","grant":":ünïcödé","environmentId":"emoji 👍🏽 mix"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signMintRequest","args":[{"key":["a",1],"publicJwk":{"a":{"b":"c"}},"userId":"key_name-1","grant":"abc","environmentId":"hello"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":0,"publicJwk":null,"userId":"ns:key.pathhello world","grant":"emoji 👍🏽 mix","environmentId":"  padded  "}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signMintRequest","args":[{"key":{"a":"b"},"publicJwk":["a",1],"userId":"HELLO","grant":"tab\tseparated","environmentId":"emoji 👍🏽 mix"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":"x","publicJwk":null,"userId":".leading.leading","grant":"tab\tseparated","environmentId":"😀"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signMintRequest","args":[{"key":[],"publicJwk":["a",1],"userId":"abc","grant":"a.b.chello world","environmentId":"a.b.c"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":{"a":{"b":"c"}},"publicJwk":["a",1],"userId":"é","grant":"tab\tseparated","environmentId":"tab\tseparated"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":{"a":"b"},"publicJwk":"x","userId":"trailing.","grant":"emoji 👍🏽 mix","environmentId":"a😀b😀c"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":[],"publicJwk":true,"userId":".leading.leading","grant":"line1\nline2😀","environmentId":"ünïcödé"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'kty')"}
+{"fn":"signMintRequest","args":[{"key":{"a":"b"},"publicJwk":"x","userId":"trailing.","grant":"emoji 👍🏽 mixé","environmentId":"日本語のテキストİstanbul"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":true,"publicJwk":{"a":{"b":"c"}},"userId":"hello","grant":"","environmentId":"ns:key.path"}],"error":"Cannot use 'in' operator to search for 'privateKey' in true"}
+{"fn":"signMintRequest","args":[{"key":{"a":{"b":"c"}},"publicJwk":"x","userId":"  padded  ","grant":"ns:key.pathünïcödé","environmentId":"hello"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":["a",1],"publicJwk":{},"userId":"﻿bom","grant":"hello world","environmentId":"é"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":{"a":{"b":"c"}},"publicJwk":null,"userId":"./x/**/*.json","grant":"  padded  ","environmentId":"abc日本語のテキスト"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signMintRequest","args":[{"key":{},"publicJwk":["a",1],"userId":"İstanbula😀b😀c","grant":"Hello World","environmentId":":{name} has {count} items"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":null,"publicJwk":["a",1],"userId":"ns:key.path","grant":"a:b:c","environmentId":"a😀b😀c"}],"error":"Cannot use 'in' operator to search for 'privateKey' in null"}
+{"fn":"signMintRequest","args":[{"key":{},"publicJwk":{"a":"b"},"userId":"a:b:c","grant":"HELLO","environmentId":"ΣΊΣΥΦΟΣsrc/a/b.ts"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":0,"publicJwk":["a",1],"userId":"ünïcödé","grant":"hello worldhello","environmentId":"İstanbul"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signMintRequest","args":[{"key":["a",1],"publicJwk":true,"userId":"trailing.","grant":"{name} has {count} items","environmentId":"line1\nline2"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":0,"publicJwk":{"a":{"b":"c"}},"userId":"./x/**/*.json  padded  ","grant":"HELLO","environmentId":"😀"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signMintRequest","args":[0],"error":"Cannot read properties of undefined (reading 'kty')"}
+{"fn":"signMintRequest","args":[{"key":0,"publicJwk":true,"userId":"ΣΊΣΥΦΟΣ","grant":"ünïcödé","environmentId":"ΣΊΣΥΦΟΣ"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signMintRequest","args":[{"key":"x","publicJwk":["a",1],"userId":"é","grant":"ünïcödé","environmentId":"line1\nline2"}],"error":"Cannot use 'in' operator to search for 'privateKey' in x"}
+{"fn":"signMintRequest","args":[{"key":{},"publicJwk":{},"userId":"﻿bom","grant":"hello worldtrailing.","environmentId":"line1\nline2HELLO"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":null,"publicJwk":{"a":"b"},"userId":".leading","grant":"ns:key.path","environmentId":"tab\tseparatedns:key.path"}],"error":"Cannot use 'in' operator to search for 'privateKey' in null"}
+{"fn":"signMintRequest","args":[{"key":{"a":{"b":"c"}},"publicJwk":{},"userId":"ΣΊΣΥΦΟΣ","grant":"日本語のテキスト","environmentId":"﻿bom"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":["a",1],"publicJwk":{},"userId":"abtrailing.","grant":"hello world","environmentId":"hello"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":[],"publicJwk":{},"userId":"a..bHELLO","grant":"key_name-1","environmentId":"HELLO"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":true,"publicJwk":0,"userId":"a😀b😀c","grant":"tab\tseparatedtrailing.","environmentId":"a:b:c"}],"error":"Cannot use 'in' operator to search for 'privateKey' in true"}
+{"fn":"signMintRequest","args":[{"key":null,"publicJwk":0,"userId":"tab\tseparatedé","grant":"ünïcödé","environmentId":"﻿bom"}],"error":"Cannot use 'in' operator to search for 'privateKey' in null"}
+{"fn":"signMintRequest","args":[{"key":["a",1],"publicJwk":0,"userId":"src/a/b.ts","grant":"a😀b😀c","environmentId":"line1\nline2"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":["a",1],"publicJwk":{},"userId":"a:b:c","grant":"atab\tseparated","environmentId":"line1\nline2"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":{"a":{"b":"c"}},"publicJwk":true,"userId":"line1\nline2","grant":"src/a/b.ts","environmentId":"./x/**/*.json"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":{"a":{"b":"c"}},"publicJwk":"x","userId":"ab","grant":"line1\nline2İstanbul","environmentId":"HELLO"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":[],"publicJwk":["a",1],"userId":"﻿bom","grant":"ns:key.path","environmentId":"a.b.ca😀b😀c"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":["a",1],"publicJwk":true,"userId":"trailing.a.b.c","grant":"a😀b😀c","environmentId":":"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":[],"publicJwk":["a",1],"userId":"src/a/b.ts","grant":"./x/**/*.jsonab","environmentId":"a"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[[]],"error":"Cannot read properties of undefined (reading 'kty')"}
+{"fn":"signMintRequest","args":[{"key":{},"publicJwk":true,"userId":"😀","grant":"😀","environmentId":"hello"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":{"a":{"b":"c"}},"publicJwk":"x","userId":"helloa..b","grant":"日本語のテキストé","environmentId":"key_name-1"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":[],"publicJwk":0,"userId":"","grant":"src/a/b.ts","environmentId":"ab"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":[],"publicJwk":[],"userId":"a..b","grant":"ΣΊΣΥΦΟΣ","environmentId":"  padded  "}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":null,"publicJwk":{"a":{"b":"c"}},"userId":"trailing.a..b","grant":"./x/**/*.json","environmentId":"a"}],"error":"Cannot use 'in' operator to search for 'privateKey' in null"}
+{"fn":"signMintRequest","args":[{"key":null,"publicJwk":true,"userId":"日本語のテキスト","grant":"straße","environmentId":"é"}],"error":"Cannot use 'in' operator to search for 'privateKey' in null"}
+{"fn":"signMintRequest","args":[{"key":null,"publicJwk":[],"userId":"😀","grant":"a.b.c","environmentId":"a:b:c"}],"error":"Cannot use 'in' operator to search for 'privateKey' in null"}
+{"fn":"signMintRequest","args":[{"key":{"a":"b"},"publicJwk":{"a":"b"},"userId":"a.b.ca..b","grant":"﻿bom","environmentId":"line1\nline2"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":[],"publicJwk":null,"userId":"tab\tseparated","grant":"abc","environmentId":"aa.b.c"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signMintRequest","args":[{"key":"x","publicJwk":{"a":{"b":"c"}},"userId":"a.b.c","grant":":","environmentId":"{name} has {count} items"}],"error":"Cannot use 'in' operator to search for 'privateKey' in x"}
+{"fn":"signMintRequest","args":[{"key":0,"publicJwk":0,"userId":"key_name-1","grant":"hello","environmentId":"hello"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signMintRequest","args":[{"key":true,"publicJwk":0,"userId":"a..bİstanbul","grant":"abc","environmentId":"tab\tseparated{name} has {count} items"}],"error":"Cannot use 'in' operator to search for 'privateKey' in true"}
+{"fn":"signMintRequest","args":[{"key":[],"publicJwk":["a",1],"userId":"a😀b😀c","grant":"abc","environmentId":"ΣΊΣΥΦΟΣ"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":null,"publicJwk":{},"userId":"ΣΊΣΥΦΟΣ","grant":"Hello World","environmentId":":"}],"error":"Cannot use 'in' operator to search for 'privateKey' in null"}
+{"fn":"signMintRequest","args":[{"key":true,"publicJwk":{"a":"b"},"userId":"abc","grant":"﻿bom日本語のテキスト","environmentId":"ünïcödéünïcödé"}],"error":"Cannot use 'in' operator to search for 'privateKey' in true"}
+{"fn":"signMintRequest","args":[{"key":"x","publicJwk":{},"userId":"abc","grant":"{name} has {count} items./x/**/*.json","environmentId":"a.b.c"}],"error":"Cannot use 'in' operator to search for 'privateKey' in x"}
+{"fn":"signMintRequest","args":[{"key":true,"publicJwk":null,"userId":"emoji 👍🏽 mix","grant":".leading","environmentId":"hello world"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signMintRequest","args":[{"key":[],"publicJwk":0,"userId":"a😀b😀c","grant":"﻿bom","environmentId":"ns:key.patha😀b😀c"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":"x","publicJwk":true,"userId":"a:b:c","grant":"{name} has {count} itemsİstanbul","environmentId":".leading"}],"error":"Cannot use 'in' operator to search for 'privateKey' in x"}
+{"fn":"signMintRequest","args":[{"key":null,"publicJwk":null,"userId":"a:b:ca:b:c","grant":"😀é","environmentId":"trailing."}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signMintRequest","args":[{"key":{"a":"b"},"publicJwk":["a",1],"userId":"emoji 👍🏽 mix","grant":"a😀b😀c","environmentId":"ünïcödéünïcödé"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":null,"publicJwk":{"a":{"b":"c"}},"userId":"HELLOhello world","grant":"emoji 👍🏽 mix{name} has {count} items","environmentId":"ΣΊΣΥΦΟΣ"}],"error":"Cannot use 'in' operator to search for 'privateKey' in null"}
+{"fn":"signMintRequest","args":[{"key":[],"publicJwk":0,"userId":"line1\nline2","grant":"日本語のテキストa","environmentId":"a"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":true,"publicJwk":{"a":"b"},"userId":"tab\tseparated","grant":"a:b:c","environmentId":":abc"}],"error":"Cannot use 'in' operator to search for 'privateKey' in true"}
+{"fn":"signMintRequest","args":[{"key":true,"publicJwk":[],"userId":"trailing.","grant":"a..b","environmentId":"src/a/b.ts"}],"error":"Cannot use 'in' operator to search for 'privateKey' in true"}
+{"fn":"signMintRequest","args":[{"key":{"a":"b"},"publicJwk":null,"userId":"hello","grant":"ΣΊΣΥΦΟΣ","environmentId":"straße"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signMintRequest","args":[{"key":["a",1],"publicJwk":{"a":{"b":"c"}},"userId":"﻿bomemoji 👍🏽 mix","grant":"line1\nline2./x/**/*.json","environmentId":"  padded  "}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":{"a":"b"},"publicJwk":true,"userId":"a..bstraße","grant":"straßeline1\nline2","environmentId":"﻿bom"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":["a",1],"publicJwk":{"a":"b"},"userId":"a:b:chello world","grant":"hello world","environmentId":"trailing.a😀b😀c"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":"x","publicJwk":0,"userId":":","grant":"","environmentId":"ünïcödétrailing."}],"error":"Cannot use 'in' operator to search for 'privateKey' in x"}
+{"fn":"signMintRequest","args":[{"key":{"a":"b"},"publicJwk":[],"userId":"a:b:c","grant":"a.b.ca","environmentId":"😀"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":null,"publicJwk":{},"userId":"src/a/b.ts","grant":"a..b","environmentId":":"}],"error":"Cannot use 'in' operator to search for 'privateKey' in null"}
+{"fn":"signMintRequest","args":[{"key":null,"publicJwk":["a",1],"userId":"hello world","grant":"straße","environmentId":"ns:key.path"}],"error":"Cannot use 'in' operator to search for 'privateKey' in null"}
+{"fn":"signMintRequest","args":[{"key":["a",1],"publicJwk":["a",1],"userId":"  padded  emoji 👍🏽 mix","grant":"  padded  key_name-1","environmentId":"key_name-1😀"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":[],"publicJwk":[],"userId":"a..b","grant":"tab\tseparated","environmentId":".leadingns:key.path"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":[],"publicJwk":{"a":"b"},"userId":"a..b","grant":"aemoji 👍🏽 mix","environmentId":"HELLO"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":[],"publicJwk":{"a":{"b":"c"}},"userId":".leading","grant":"abc日本語のテキスト","environmentId":"straße"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":{"a":"b"},"publicJwk":{},"userId":"hello","grant":".leading","environmentId":"tab\tseparated"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":"x","publicJwk":null,"userId":"trailing.","grant":"Hello World","environmentId":"a..b"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signMintRequest","args":[{"key":0,"publicJwk":{"a":"b"},"userId":"","grant":"key_name-1ab","environmentId":"a"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signMintRequest","args":[{"key":["a",1],"publicJwk":"x","userId":"a:b:c","grant":"a","environmentId":"ns:key.pathab"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":true,"publicJwk":{"a":{"b":"c"}},"userId":"ΣΊΣΥΦΟΣ","grant":"src/a/b.ts","environmentId":"ΣΊΣΥΦΟΣ"}],"error":"Cannot use 'in' operator to search for 'privateKey' in true"}
+{"fn":"signMintRequest","args":[{"key":{"a":"b"},"publicJwk":[],"userId":"  padded  ","grant":"tab\tseparated","environmentId":"a😀b😀c"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":[],"publicJwk":0,"userId":"src/a/b.ts","grant":"  padded  ","environmentId":"😀"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":{"a":{"b":"c"}},"publicJwk":null,"userId":"a.b.c","grant":"é","environmentId":"trailing."}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signMintRequest","args":[{"key":{"a":{"b":"c"}},"publicJwk":true,"userId":"日本語のテキスト","grant":"a😀b😀c","environmentId":"tab\tseparated"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":["a",1],"publicJwk":true,"userId":"abc","grant":"a.b.c","environmentId":".leadinga:b:c"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":{"a":"b"},"publicJwk":true,"userId":"straße","grant":"ab","environmentId":"Hello World"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":[],"publicJwk":[],"userId":"key_name-1","grant":"a:b:c","environmentId":"trailing."}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":{"a":"b"},"publicJwk":{"a":"b"},"userId":"  padded  ","grant":"emoji 👍🏽 mix","environmentId":"Hello Worldab"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":["a",1],"publicJwk":["a",1],"userId":"﻿bom","grant":"straße","environmentId":"a😀b😀c"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":0,"publicJwk":true,"userId":"a","grant":"{name} has {count} items","environmentId":"é"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signMintRequest","args":[{"key":{"a":"b"},"publicJwk":"x","userId":"src/a/b.ts","grant":"﻿bom","environmentId":"  padded  "}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":["a",1],"publicJwk":["a",1],"userId":"straße","grant":":","environmentId":"a..b"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":"x","publicJwk":{"a":"b"},"userId":"😀","grant":"日本語のテキストİstanbul","environmentId":"  padded  "}],"error":"Cannot use 'in' operator to search for 'privateKey' in x"}
+{"fn":"signMintRequest","args":[{"key":null,"publicJwk":["a",1],"userId":"","grant":"a😀b😀c","environmentId":"emoji 👍🏽 mix"}],"error":"Cannot use 'in' operator to search for 'privateKey' in null"}
+{"fn":"signMintRequest","args":[{"key":"x","publicJwk":{"a":{"b":"c"}},"userId":"straße","grant":"éa..b","environmentId":"hello worlda:b:c"}],"error":"Cannot use 'in' operator to search for 'privateKey' in x"}
+{"fn":"signMintRequest","args":[{"key":0,"publicJwk":{},"userId":"{name} has {count} items","grant":"tab\tseparatedemoji 👍🏽 mix","environmentId":"  padded  "}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signMintRequest","args":[{"key":{"a":{"b":"c"}},"publicJwk":["a",1],"userId":"a..b","grant":"trailing.","environmentId":"abc"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":[],"publicJwk":{},"userId":"ns:key.path","grant":"a😀b😀c","environmentId":"😀😀"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":"x","publicJwk":null,"userId":".leading","grant":"./x/**/*.json","environmentId":"﻿bom"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signMintRequest","args":[{"key":[],"publicJwk":["a",1],"userId":"abc","grant":"src/a/b.ts","environmentId":"😀"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":0,"publicJwk":{"a":"b"},"userId":"é","grant":"😀","environmentId":"emoji 👍🏽 mixé"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signMintRequest","args":[{"key":{"a":"b"},"publicJwk":{"a":{"b":"c"}},"userId":"a","grant":".leading","environmentId":"src/a/b.ts"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":0,"publicJwk":{"a":"b"},"userId":"line1\nline2{name} has {count} items","grant":"日本語のテキスト","environmentId":"ab"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signMintRequest","args":[{"key":{"a":"b"},"publicJwk":[],"userId":"tab\tseparated./x/**/*.json","grant":"straßesrc/a/b.ts","environmentId":"hello world"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":[],"publicJwk":["a",1],"userId":"  padded  ","grant":"src/a/b.ts","environmentId":"ab"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":{},"publicJwk":"x","userId":":","grant":"src/a/b.ts","environmentId":"./x/**/*.json"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":{"a":"b"},"publicJwk":[],"userId":"./x/**/*.json","grant":"trailing.  padded  ","environmentId":"😀"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":{"a":{"b":"c"}},"publicJwk":{"a":{"b":"c"}},"userId":":","grant":"tab\tseparated","environmentId":"Hello World"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":0,"publicJwk":["a",1],"userId":":  padded  ","grant":"","environmentId":"HELLO"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signMintRequest","args":[{"key":null,"publicJwk":{"a":{"b":"c"}},"userId":"é","grant":"﻿bom","environmentId":":"}],"error":"Cannot use 'in' operator to search for 'privateKey' in null"}
+{"fn":"signMintRequest","args":[{"key":{"a":{"b":"c"}},"publicJwk":null,"userId":"key_name-1","grant":"line1\nline2","environmentId":"abc"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signMintRequest","args":[{"key":["a",1],"publicJwk":[],"userId":"straße","grant":"a..b","environmentId":"abc"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":{"a":"b"},"publicJwk":null,"userId":"é","grant":"ΣΊΣΥΦΟΣ","environmentId":"src/a/b.ts"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signMintRequest","args":[{"key":{"a":"b"},"publicJwk":{},"userId":"straße","grant":"a:b:c","environmentId":"İstanbul"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":true,"publicJwk":["a",1],"userId":"a.b.c","grant":":","environmentId":":"}],"error":"Cannot use 'in' operator to search for 'privateKey' in true"}
+{"fn":"signMintRequest","args":[{"key":null,"publicJwk":0,"userId":"😀a.b.c","grant":"﻿bom","environmentId":"{name} has {count} items"}],"error":"Cannot use 'in' operator to search for 'privateKey' in null"}
+{"fn":"signMintRequest","args":[{"key":null,"publicJwk":true,"userId":"😀","grant":"src/a/b.ts","environmentId":"straße"}],"error":"Cannot use 'in' operator to search for 'privateKey' in null"}
+{"fn":"signMintRequest","args":[{"key":0,"publicJwk":{"a":"b"},"userId":"","grant":"straße","environmentId":"ns:key.path"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signMintRequest","args":[{"key":{},"publicJwk":{"a":"b"},"userId":"","grant":"src/a/b.ts","environmentId":"  padded  "}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":0,"publicJwk":{"a":{"b":"c"}},"userId":"hello world","grant":"a","environmentId":"hello"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signMintRequest","args":[{"key":"x","publicJwk":{"a":{"b":"c"}},"userId":".leading","grant":"a:b:c","environmentId":"é"}],"error":"Cannot use 'in' operator to search for 'privateKey' in x"}
+{"fn":"signMintRequest","args":[{"key":[],"publicJwk":{},"userId":"  padded  ","grant":"😀","environmentId":"a.b.cHELLO"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":"x","publicJwk":["a",1],"userId":"tab\tseparated","grant":"  padded  ","environmentId":"./x/**/*.json"}],"error":"Cannot use 'in' operator to search for 'privateKey' in x"}
+{"fn":"signMintRequest","args":[{"key":true,"publicJwk":{"a":"b"},"userId":".leading","grant":"éab","environmentId":"ns:key.path"}],"error":"Cannot use 'in' operator to search for 'privateKey' in true"}
+{"fn":"signMintRequest","args":[{"key":{},"publicJwk":["a",1],"userId":"日本語のテキスト","grant":"","environmentId":"😀src/a/b.ts"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":true,"publicJwk":["a",1],"userId":"Hello World","grant":"İstanbul","environmentId":"Hello World"}],"error":"Cannot use 'in' operator to search for 'privateKey' in true"}
+{"fn":"signMintRequest","args":[{"key":0,"publicJwk":[],"userId":".leading","grant":"Hello World","environmentId":"é"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signMintRequest","args":[{"key":{},"publicJwk":{},"userId":"helloHello World","grant":"key_name-1","environmentId":"ΣΊΣΥΦΟΣa😀b😀c"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":{"a":{"b":"c"}},"publicJwk":{},"userId":"a.b.c{name} has {count} items","grant":"İstanbul.leading","environmentId":"{name} has {count} itemsHELLO"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":{"a":"b"},"publicJwk":true,"userId":"ΣΊΣΥΦΟΣ","grant":"a:b:c","environmentId":"﻿bom  padded  "}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":{},"publicJwk":["a",1],"userId":"a..b","grant":"hello world","environmentId":"é"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":{"a":{"b":"c"}},"publicJwk":["a",1],"userId":"a.b.c","grant":"日本語のテキスト","environmentId":"emoji 👍🏽 mix"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":0,"publicJwk":null,"userId":"a😀b😀c","grant":"a.b.chello world","environmentId":":ΣΊΣΥΦΟΣ"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signMintRequest","args":[{"key":{"a":{"b":"c"}},"publicJwk":"x","userId":"key_name-1","grant":"😀日本語のテキスト","environmentId":"İstanbul"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":[],"publicJwk":{},"userId":".leading","grant":":","environmentId":"tab\tseparated"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":true,"publicJwk":null,"userId":"a","grant":"a.b.c﻿bom","environmentId":"{name} has {count} items"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signMintRequest","args":[{"key":0,"publicJwk":{"a":"b"},"userId":"line1\nline2","grant":"./x/**/*.json","environmentId":"ΣΊΣΥΦΟΣ"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signMintRequest","args":[{"key":{"a":"b"},"publicJwk":{"a":"b"},"userId":"a..b","grant":"  padded  ","environmentId":"ab{name} has {count} items"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":true,"publicJwk":["a",1],"userId":"trailing.a:b:c","grant":"abc","environmentId":"😀"}],"error":"Cannot use 'in' operator to search for 'privateKey' in true"}
+{"fn":"signMintRequest","args":[{"key":0,"publicJwk":0,"userId":"ΣΊΣΥΦΟΣ","grant":"src/a/b.ts","environmentId":"line1\nline2"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signMintRequest","args":[{"key":0,"publicJwk":[],"userId":"ünïcödé","grant":"  padded  ","environmentId":"ünïcödéa..b"}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signMintRequest","args":[{"key":[],"publicJwk":["a",1],"userId":":","grant":"tab\tseparated","environmentId":"ünïcödé"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":[],"publicJwk":[],"userId":"key_name-1","grant":"tab\tseparated","environmentId":"./x/**/*.json"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":{},"publicJwk":0,"userId":"日本語のテキスト","grant":"./x/**/*.json","environmentId":"a.b.cab"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":null,"publicJwk":{"a":{"b":"c"}},"userId":".leading","grant":"a😀b😀c","environmentId":"😀"}],"error":"Cannot use 'in' operator to search for 'privateKey' in null"}
+{"fn":"signMintRequest","args":[{"key":["a",1],"publicJwk":"x","userId":"key_name-1","grant":".leading","environmentId":"ns:key.patha😀b😀c"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":["a",1],"publicJwk":[],"userId":"ns:key.path","grant":"ns:key.path","environmentId":"a"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Array"}
+{"fn":"signMintRequest","args":[{"key":{"a":{"b":"c"}},"publicJwk":["a",1],"userId":"./x/**/*.json","grant":"straße","environmentId":"hello world"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":["a",1],"publicJwk":null,"userId":"./x/**/*.json","grant":"Hello World","environmentId":"a😀b😀c"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signMintRequest","args":[{"key":{"a":{"b":"c"}},"publicJwk":null,"userId":"ab","grant":"","environmentId":"ünïcödé"}],"error":"Cannot read properties of null (reading 'kty')"}
+{"fn":"signMintRequest","args":[{"key":0,"publicJwk":{},"userId":"ünïcödé","grant":"line1\nline2","environmentId":""}],"error":"Cannot use 'in' operator to search for 'privateKey' in 0"}
+{"fn":"signMintRequest","args":[{"key":{"a":"b"},"publicJwk":[],"userId":"tab\tseparated","grant":"ns:key.path","environmentId":"hello"}],"error":"Key for the EdDSA algorithm must be one of type CryptoKey, KeyObject, or JSON Web Key. Received an instance of Object"}
+{"fn":"signMintRequest","args":[{"key":["a",1],"publicJwk":null,"userId":"key_name-1","grant":"ünïcödé","environmentId":"日本語のテキスト"}],"error":"Cannot read properties of null (reading 'kty')"}

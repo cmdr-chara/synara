@@ -1,0 +1,174 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/deviceKey.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "devicekey-rs",
+  "exports": [
+    {
+      "name": "hostAudience",
+      "file": "packages/shared/src/deviceKey.ts",
+      "line": 43,
+      "params": [
+        {
+          "name": "environmentId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "generateDeviceKey",
+      "file": "packages/shared/src/deviceKey.ts",
+      "line": 79,
+      "params": [
+        {
+          "name": "options",
+          "ts_type": "GenerateDeviceKeyOptions",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<CryptoKeyPair>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "exportPublicJwk",
+      "file": "packages/shared/src/deviceKey.ts",
+      "line": 98,
+      "params": [
+        {
+          "name": "key",
+          "ts_type": "CryptoKey | CryptoKeyPair",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<typeof typeof typeof typeof Es256PublicKeyJwk.Type.Type.Type.Type>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deviceThumbprint",
+      "file": "packages/shared/src/deviceKey.ts",
+      "line": 115,
+      "params": [
+        {
+          "name": "jwk",
+          "ts_type": "typeof typeof typeof typeof DevicePublicKeyJwk.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<string>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "signDeviceRegistration",
+      "file": "packages/shared/src/deviceKey.ts",
+      "line": 183,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "DeviceRegistrationInput",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<string>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "dpopHttpUri",
+      "file": "packages/shared/src/deviceKey.ts",
+      "line": 210,
+      "params": [
+        {
+          "name": "url",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "credentialHash",
+      "file": "packages/shared/src/deviceKey.ts",
+      "line": 216,
+      "params": [
+        {
+          "name": "credential",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<string>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "signDpopProof",
+      "file": "packages/shared/src/deviceKey.ts",
+      "line": 245,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "DpopProofInput",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<string>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "signMintRequest",
+      "file": "packages/shared/src/deviceKey.ts",
+      "line": 282,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "MintRequestInput",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<string>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

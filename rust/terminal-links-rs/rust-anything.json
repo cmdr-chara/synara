@@ -1,0 +1,133 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/terminal-links.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "terminal-links-rs",
+  "exports": [
+    {
+      "name": "extractTerminalLinks",
+      "file": "apps/web/src/terminal-links.ts",
+      "line": 170,
+      "params": [
+        {
+          "name": "line",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "TerminalLinkMatch[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveWrappedTerminalLinkRange",
+      "file": "apps/web/src/terminal-links.ts",
+      "line": 243,
+      "params": [
+        {
+          "name": "wrappedLine",
+          "ts_type": "WrappedTerminalLinkLine",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "match",
+          "ts_type": "Pick<TerminalLinkMatch, \"start\" | \"end\">",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "TerminalLinkBufferRange",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "wrappedTerminalLinkRangeIntersectsBufferLine",
+      "file": "apps/web/src/terminal-links.ts",
+      "line": 253,
+      "params": [
+        {
+          "name": "range",
+          "ts_type": "TerminalLinkBufferRange",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "bufferLineNumber",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isTerminalLinkActivation",
+      "file": "apps/web/src/terminal-links.ts",
+      "line": 260,
+      "params": [
+        {
+          "name": "event",
+          "ts_type": "Pick<MouseEvent, \"metaKey\" | \"ctrlKey\">",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "platform",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolvePathLinkTarget",
+      "file": "apps/web/src/terminal-links.ts",
+      "line": 270,
+      "params": [
+        {
+          "name": "rawPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "cwd",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "collectWrappedTerminalLinkLine",
+      "file": "apps/web/src/terminal-links.ts",
+      "line": 176,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

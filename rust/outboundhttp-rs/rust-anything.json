@@ -1,0 +1,97 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/outboundHttp.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "outboundhttp-rs",
+  "exports": [
+    {
+      "name": "encodeOutboundMultipart",
+      "file": "packages/shared/src/outboundHttp.ts",
+      "line": 112,
+      "params": [
+        {
+          "name": "parts",
+          "ts_type": "ReadonlyArray<OutboundMultipartPart>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "OutboundMultipartOptions",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{ readonly body: Uint8Array; readonly contentType: string }",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "decodeOutboundText",
+      "file": "packages/shared/src/outboundHttp.ts",
+      "line": 631,
+      "params": [
+        {
+          "name": "response",
+          "ts_type": "OutboundHttpResponse",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "decodeOutboundJson",
+      "file": "packages/shared/src/outboundHttp.ts",
+      "line": 635,
+      "params": [
+        {
+          "name": "response",
+          "ts_type": "OutboundHttpResponse",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "limits",
+          "ts_type": "{ readonly maxDepth: number; readonly maxNodes: number }",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "OutboundHttpError",
+      "file": "packages/shared/src/outboundHttp.ts",
+      "line": 34,
+      "reason": "class: extends another class, public field `code`, public field `cause`"
+    },
+    {
+      "name": "OutboundHttpClient",
+      "file": "packages/shared/src/outboundHttp.ts",
+      "line": 518,
+      "reason": "class: async or generator method `request`"
+    },
+    {
+      "name": "invokePinnedDnsLookup",
+      "file": "packages/shared/src/outboundHttp.ts",
+      "line": 343,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

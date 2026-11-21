@@ -38,8 +38,5 @@ pub fn stop_when_from_completion_policy(
     if policy.get("type") != Some(&Value::String("ai-evaluated".to_string())) {
         return Ok(Some(Value::String(String::new())));
     }
-    Ok(match policy.get("stopWhen") {
-        None => None,
-        Some(v) => Some(v.clone()),
-    })
+    Ok(policy.get("stopWhen").cloned())
 }

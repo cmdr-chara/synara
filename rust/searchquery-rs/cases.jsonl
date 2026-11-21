@@ -221,3 +221,152 @@
 {"fn":"normalizeWorkspaceEntrySearchQuery","args":["one\r\ntwo threefour"],"ok":"one\r\ntwo threefour"}
 {"fn":"normalizeWorkspaceEntrySearchQuery","args":["café café"],"ok":"café café"}
 {"fn":"normalizeWorkspaceEntrySearchQuery","args":["ΣΑΣ σας ς"],"ok":"σας σας ς"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":[""],"ok":""}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["a"],"ok":"a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["  a  "],"ok":"a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["  A B  "],"ok":"a b"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["A"],"ok":"a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["ABC"],"ok":"abc"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["a  b"],"ok":"a  b"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["a\tb"],"ok":"a\tb"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["a\nb"],"ok":"a\nb"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["a\rb"],"ok":"a\rb"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["  Multiple   Spaces  "],"ok":"multiple   spaces"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["UPPER lower"],"ok":"upper lower"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["MiXeD"],"ok":"mixed"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["a b"],"ok":"a b"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["　a　"],"ok":"a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["a b"],"ok":"a b"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["\ta\t"],"ok":"a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["a.b,c;d"],"ok":"a.b,c;d"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["a/b\\c"],"ok":"a/b\\c"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["a-b_c"],"ok":"a-b_c"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["á"],"ok":"á"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["Istanbul"],"ok":"istanbul"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["İstanbul"],"ok":"i̇stanbul"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["ΣΊΣΥΦΟΣ"],"ok":"σίσυφος"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["straße"],"ok":"straße"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["😀a😀"],"ok":"😀a😀"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["   "],"ok":""}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["\t\n "],"ok":""}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["a​b"],"ok":"a​b"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["a﻿b"],"ok":"a﻿b"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["\"quoted\""],"ok":"\"quoted\""}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["  a?b!c  "],"ok":"a?b!c"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["#tag"],"ok":"#tag"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["@user"],"ok":"user"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["*glob*"],"ok":"*glob*"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["a+b=c"],"ok":"a+b=c"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["a|b"],"ok":"a|b"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["a<b>c"],"ok":"a<b>c"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["a(b)c"],"ok":"a(b)c"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["a[b]c"],"ok":"a[b]c"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["a{b}c"],"ok":"a{b}c"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["100%"],"ok":"100%"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["café"],"ok":"café"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["CAFÉ"],"ok":"café"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["K K k"],"ok":"k k k"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["snake_case foo-bar o'neil"],"ok":"snake_case foo-bar o'neil"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["./x/**/*.json"],"ok":"x/**/*.json"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["./x/**/*.json.leading"],"ok":"x/**/*.json.leading"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":[".leading"],"ok":"leading"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":[".leadingab"],"ok":"leadingab"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":[":"],"ok":":"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":[":key_name-1"],"ok":":key_name-1"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["@a.b"],"ok":"a.b"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["ns:key.path"],"ok":"ns:key.path"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["Hello World"],"ok":"hello world"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["HELLO"],"ok":"hello"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["é"],"ok":"é"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["日本語のテキスト"],"ok":"日本語のテキスト"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["{name} has {count} items"],"ok":"{name} has {count} items"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["tab\tseparated"],"ok":"tab\tseparated"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["trailing."],"ok":"trailing."}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["a..b"],"ok":"a..b"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["line1\nline2"],"ok":"line1\nline2"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["emoji 👍🏽 mix"],"ok":"emoji 👍🏽 mix"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["ünïcödé"],"ok":"ünïcödé"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["key_name-1"],"ok":"key_name-1"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["﻿bom"],"ok":"bom"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["😀"],"ok":"😀"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["."],"ok":""}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["./"],"ok":""}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["../"],"ok":""}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":[".."],"ok":""}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["..a"],"ok":"a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["..\\"],"ok":"\\"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["@"],"ok":""}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["@@a"],"ok":"a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["a@b"],"ok":"a@b"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["a@"],"ok":"a@"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["@a@"],"ok":"a@"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["./a"],"ok":"a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["/.a"],"ok":"a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["a/"],"ok":"a/"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["a/ b"],"ok":"a/ b"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["/a"],"ok":"a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["//a"],"ok":"a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["\\a"],"ok":"\\a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["a\\"],"ok":"a\\"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["././a"],"ok":"a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["-a"],"ok":"-a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["--a"],"ok":"--a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["- a"],"ok":"- a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["*a"],"ok":"*a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["!a"],"ok":"!a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["?a"],"ok":"?a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["+a"],"ok":"+a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["|a"],"ok":"|a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":[":a"],"ok":":a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":[";a"],"ok":";a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":[",a"],"ok":",a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["~a"],"ok":"~a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["^a"],"ok":"^a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["%a"],"ok":"%a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["$a"],"ok":"$a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["(a"],"ok":"(a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["[a"],"ok":"[a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["{a"],"ok":"{a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["<a"],"ok":"<a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["\"a"],"ok":"\"a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["'a"],"ok":"'a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["`a"],"ok":"`a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["=a"],"ok":"=a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["a.b,"],"ok":"a.b,"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["a-b"],"ok":"a-b"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["a_b"],"ok":"a_b"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":[" /a"],"ok":"a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":[".@a"],"ok":"a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["@.a"],"ok":"a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["./@a"],"ok":"a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["@./a"],"ok":"a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["0.5"],"ok":"0.5"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["0.5.1"],"ok":"0.5.1"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["v1.2"],"ok":"v1.2"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":[".5"],"ok":"5"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["a."],"ok":"a."}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":[" a. "],"ok":"a."}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":[" . "],"ok":""}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["·a"],"ok":"·a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["ﻻa"],"ok":"ﻻa"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":[".a"],"ok":"a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["A.A"],"ok":"a.a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["@A"],"ok":"a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["/A"],"ok":"a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":[".A"],"ok":"a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["A@B"],"ok":"a@b"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["a/@b"],"ok":"a/@b"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["a@/b"],"ok":"a@/b"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":[".a."],"ok":"a."}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["/a/"],"ok":"a/"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["..a.."],"ok":"a.."}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":[" . a "],"ok":" a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":[". a"],"ok":" a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["@ a"],"ok":" a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["./ a"],"ok":" a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":[".  a"],"ok":"  a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["a ."],"ok":"a ."}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":["a . "],"ok":"a ."}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":[" a "],"ok":"a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":[". a"],"ok":" a"}
+{"fn":"normalizeWorkspaceEntrySearchQuery","args":[" .a"],"ok":"a"}

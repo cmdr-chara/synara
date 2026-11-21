@@ -1,7 +1,7 @@
 //! The Rust port of `packages/shared/src/searchQuery.ts`.
 //!
-//! Behavior inferred clean-room from recorded cases: JS-lowercase, trim,
-//! strip a leading run of `.`/`/` characters.
+//! Behavior inferred clean-room from recorded cases: JS-trim, strip a
+//! leading run of `.`/`/`/`@` characters (no re-trim), JS-lowercase.
 
 #![forbid(unsafe_code)]
 
@@ -41,5 +41,5 @@ fn js_to_lowercase(s: &str) -> String {
 pub fn normalize_workspace_entry_search_query(input: String) -> Result<String, String> {
     let lowered = js_to_lowercase(&input);
     let trimmed = js_trim(&lowered);
-    Ok(trimmed.trim_start_matches(['.', '/']).to_string())
+    Ok(trimmed.trim_start_matches(['.', '/', '@']).to_string())
 }

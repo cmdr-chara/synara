@@ -1,0 +1,17 @@
+{
+  "unit": "apps/web/src/pendingUserInput.ts",
+  "files": 1,
+  "fingerprint": "112d4ddfaa471014",
+  "coverage": {
+    "lines": 175,
+    "reached": 157,
+    "files": [
+      {
+        "file": "apps/web/src/pendingUserInput.ts",
+        "lines": 175,
+        "reached": 157,
+        "missed": "61-62, 89-92, 94-100, 119-120, 137-138, 203"
+      }
+    ]
+  }
+}

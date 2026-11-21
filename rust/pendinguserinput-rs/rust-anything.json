@@ -1,0 +1,198 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/pendingUserInput.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "pendinguserinput-rs",
+  "exports": [
+    {
+      "name": "resolvePendingUserInputAnswer",
+      "file": "apps/web/src/pendingUserInput.ts",
+      "line": 50,
+      "params": [
+        {
+          "name": "question",
+          "ts_type": "typeof typeof typeof typeof UserInputQuestion.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "draft",
+          "ts_type": "PendingUserInputDraftAnswer | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | string[] | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "setPendingUserInputCustomAnswer",
+      "file": "apps/web/src/pendingUserInput.ts",
+      "line": 67,
+      "params": [
+        {
+          "name": "draft",
+          "ts_type": "PendingUserInputDraftAnswer | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "customAnswer",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "PendingUserInputDraftAnswer",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "togglePendingUserInputOptionSelection",
+      "file": "apps/web/src/pendingUserInput.ts",
+      "line": 83,
+      "params": [
+        {
+          "name": "question",
+          "ts_type": "typeof typeof typeof typeof UserInputQuestion.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "draft",
+          "ts_type": "PendingUserInputDraftAnswer | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "optionLabel",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "PendingUserInputDraftAnswer",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildPendingUserInputAnswers",
+      "file": "apps/web/src/pendingUserInput.ts",
+      "line": 108,
+      "params": [
+        {
+          "name": "questions",
+          "ts_type": "ReadonlyArray<typeof typeof typeof typeof UserInputQuestion.Type.Type.Type.Type>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "draftAnswers",
+          "ts_type": "Record<string, PendingUserInputDraftAnswer>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Record<string, string | string[]> | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "hasCompletePendingUserInputAnswers",
+      "file": "apps/web/src/pendingUserInput.ts",
+      "line": 125,
+      "params": [
+        {
+          "name": "answers",
+          "ts_type": "typeof typeof typeof typeof ProviderUserInputAnswers.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "omitNullPendingUserInputAnswers",
+      "file": "apps/web/src/pendingUserInput.ts",
+      "line": 144,
+      "params": [
+        {
+          "name": "answers",
+          "ts_type": "typeof typeof typeof typeof ProviderUserInputAnswers.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ProviderUserInputAnswers.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "derivePendingUserInputProgress",
+      "file": "apps/web/src/pendingUserInput.ts",
+      "line": 161,
+      "params": [
+        {
+          "name": "questions",
+          "ts_type": "ReadonlyArray<typeof typeof typeof typeof UserInputQuestion.Type.Type.Type.Type>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "draftAnswers",
+          "ts_type": "Record<string, PendingUserInputDraftAnswer>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "questionIndex",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "PendingUserInputProgress",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "splitRecommendedOptionLabel",
+      "file": "apps/web/src/pendingUserInput.ts",
+      "line": 197,
+      "params": [
+        {
+          "name": "label",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{\n  label: string;\n  recommended: boolean;\n}",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

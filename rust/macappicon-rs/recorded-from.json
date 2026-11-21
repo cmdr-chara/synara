@@ -1,0 +1,23 @@
+{
+  "unit": "apps/desktop/src/macAppIcon.ts",
+  "files": 1,
+  "fingerprint": "89baf69f3e15ddca",
+  "coverage": {
+    "lines": 147,
+    "reached": 124,
+    "files": [
+      {
+        "file": "apps/desktop/src/bundleSwapDetection.ts",
+        "lines": 62,
+        "reached": 43,
+        "missed": "36-37, 46-57, 64-68"
+      },
+      {
+        "file": "apps/desktop/src/macAppIcon.ts",
+        "lines": 85,
+        "reached": 81,
+        "missed": "61, 63-64, 89"
+      }
+    ]
+  }
+}

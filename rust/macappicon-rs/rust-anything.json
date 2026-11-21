@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/macAppIcon.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "macappicon-rs",
+  "exports": [
+    {
+      "name": "persistMacAppIcon",
+      "file": "apps/desktop/src/macAppIcon.ts",
+      "line": 50,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly bundlePath: string;\n  readonly cacheDirectory: string;\n  readonly png: Buffer | null;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<void>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

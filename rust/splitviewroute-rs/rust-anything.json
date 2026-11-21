@@ -1,0 +1,48 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/splitViewRoute.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "splitviewroute-rs",
+  "exports": [
+    {
+      "name": "resolveActiveSplitView",
+      "file": "apps/web/src/splitViewRoute.ts",
+      "line": 15,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  splitView: SplitView | null;\n  routeThreadId: typeof typeof typeof typeof ThreadId.Type.Type.Type.Type | null;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{\n  splitView: SplitView | null;\n  focusedThreadId: typeof typeof typeof typeof ThreadId.Type.Type.Type.Type | null;\n  routePaneId: string | null;\n}",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isSplitRoute",
+      "file": "apps/web/src/splitViewRoute.ts",
+      "line": 39,
+      "params": [
+        {
+          "name": "search",
+          "ts_type": "DiffRouteSearch",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,23 @@
+{
+  "unit": "packages/shared/src/projectContainers.ts",
+  "files": 1,
+  "fingerprint": "d11b12c1237a08eb",
+  "coverage": {
+    "lines": 237,
+    "reached": 159,
+    "files": [
+      {
+        "file": "packages/shared/src/projectContainers.ts",
+        "lines": 72,
+        "reached": 72,
+        "missed": ""
+      },
+      {
+        "file": "packages/shared/src/threadWorkspace.ts",
+        "lines": 165,
+        "reached": 87,
+        "missed": "50, 88-102, 114-117, 120-150, 153-160, 162-166, 168-172, 174-180, 182-183"
+      }
+    ]
+  }
+}

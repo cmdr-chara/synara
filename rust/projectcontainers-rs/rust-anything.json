@@ -1,0 +1,114 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/projectContainers.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "projectcontainers-rs",
+  "exports": [
+    {
+      "name": "resolveChatContainerWorkspaceRoot",
+      "file": "packages/shared/src/projectContainers.ts",
+      "line": 22,
+      "params": [
+        {
+          "name": "paths",
+          "ts_type": "ProjectContainerWorkspacePaths",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "matchesLegacyHomeChatWorkspaceRoot",
+      "file": "packages/shared/src/projectContainers.ts",
+      "line": 32,
+      "params": [
+        {
+          "name": "workspaceRoot",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "paths",
+          "ts_type": "ProjectContainerWorkspacePaths",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "NormalizeWorkspaceRootForComparisonOptions",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isLegacyHomeChatContainerRow",
+      "file": "packages/shared/src/projectContainers.ts",
+      "line": 55,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "LegacyHomeChatContainerRowInput",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isGroupContainerKind",
+      "file": "packages/shared/src/projectContainers.ts",
+      "line": 71,
+      "params": [
+        {
+          "name": "kind",
+          "ts_type": "typeof typeof typeof typeof ProjectKind.Type.Type.Type.Type | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isOrdinaryProjectRow",
+      "file": "packages/shared/src/projectContainers.ts",
+      "line": 80,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "OrdinaryProjectRowInput",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,483 @@
+{"fn":"missingComputerAppSnapPermissions","args":[null],"error":"Cannot read properties of null (reading 'accessibilityPermission')"}
+{"fn":"missingComputerAppSnapPermissions","args":["x"],"ok":["accessibility","screenRecording","inputMonitoring"]}
+{"fn":"missingComputerAppSnapPermissions","args":[["a",1]],"ok":["accessibility","screenRecording","inputMonitoring"]}
+{"fn":"missingComputerAppSnapPermissions","args":[[]],"ok":["accessibility","screenRecording","inputMonitoring"]}
+{"fn":"missingComputerAppSnapPermissions","args":[{"a":{"b":"c"}}],"ok":["accessibility","screenRecording","inputMonitoring"]}
+{"fn":"missingComputerAppSnapPermissions","args":[0],"ok":["accessibility","screenRecording","inputMonitoring"]}
+{"fn":"missingComputerAppSnapPermissions","args":[true],"ok":["accessibility","screenRecording","inputMonitoring"]}
+{"fn":"missingComputerAppSnapPermissions","args":[{"a":"b"}],"ok":["accessibility","screenRecording","inputMonitoring"]}
+{"fn":"missingComputerAppSnapPermissions","args":[{}],"ok":["accessibility","screenRecording","inputMonitoring"]}
+{"fn":"computerGrantsBlockControl","args":[{"a":"b"}],"error":"permissions.includes is not a function"}
+{"fn":"computerGrantsBlockControl","args":[["a",1]],"ok":false}
+{"fn":"computerGrantsBlockControl","args":[true],"error":"permissions.includes is not a function"}
+{"fn":"computerGrantsBlockControl","args":[[]],"ok":false}
+{"fn":"computerGrantsBlockControl","args":[{}],"error":"permissions.includes is not a function"}
+{"fn":"computerGrantsBlockControl","args":[{"a":{"b":"c"}}],"error":"permissions.includes is not a function"}
+{"fn":"computerGrantsBlockControl","args":["x"],"ok":false}
+{"fn":"computerGrantsBlockControl","args":[0],"error":"permissions.includes is not a function"}
+{"fn":"computerGrantsBlockControl","args":[null],"error":"Cannot read properties of null (reading 'includes')"}
+{"fn":"sortComputerPermissions","args":[{"a":{"b":"c"}}],"error":"permissions.includes is not a function"}
+{"fn":"sortComputerPermissions","args":[true],"error":"permissions.includes is not a function"}
+{"fn":"sortComputerPermissions","args":[{}],"error":"permissions.includes is not a function"}
+{"fn":"sortComputerPermissions","args":[["a",1]],"ok":[]}
+{"fn":"sortComputerPermissions","args":[null],"error":"Cannot read properties of null (reading 'includes')"}
+{"fn":"sortComputerPermissions","args":[[]],"ok":[]}
+{"fn":"sortComputerPermissions","args":["x"],"ok":[]}
+{"fn":"sortComputerPermissions","args":[0],"error":"permissions.includes is not a function"}
+{"fn":"sortComputerPermissions","args":[{"a":"b"}],"error":"permissions.includes is not a function"}
+{"fn":"listComputerPermissions","args":[{"a":"b"}],"error":"permissions.includes is not a function"}
+{"fn":"listComputerPermissions","args":[null],"error":"Cannot read properties of null (reading 'includes')"}
+{"fn":"listComputerPermissions","args":[{"a":{"b":"c"}}],"error":"permissions.includes is not a function"}
+{"fn":"listComputerPermissions","args":[["a",1]],"ok":""}
+{"fn":"listComputerPermissions","args":[{}],"error":"permissions.includes is not a function"}
+{"fn":"listComputerPermissions","args":[[]],"ok":""}
+{"fn":"listComputerPermissions","args":[0],"error":"permissions.includes is not a function"}
+{"fn":"listComputerPermissions","args":["x"],"ok":""}
+{"fn":"listComputerPermissions","args":[true],"error":"permissions.includes is not a function"}
+{"fn":"computerStaleGrantAdvice","args":[[],["a",1]],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":"b"},true,""],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[0,{"a":"b"},"straße"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[true,[],"日本語のテキスト"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[true,"x","ns:key.path"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{},{"a":"b"},{"$undefined":true}],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":{"b":"c"}},{},"hello"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":{"b":"c"}},true,"é日本語のテキスト"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[[],0,"line1\nline2a:b:c"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":{"b":"c"}},"x","x"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[null,null,"a.b.c"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[null,"x","x"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[[],0,"emoji 👍🏽 mix"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":{"b":"c"}},0,"trailing."],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[null,null,"﻿bom"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[null,["a",1],"tab\tseparated"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":"b"},{"a":{"b":"c"}},""],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},"./x/**/*.json"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[true,true,"hello world"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[null,true],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[null,{},"ünïcödé"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":"b"},{}],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":{"b":"c"}},[]],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[null,["a",1],{"$undefined":true}],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[".lea",null,".leading"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[["a",1],{},{"$undefined":true}],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[["a",1],{},"hello worldabc"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[true,"x","src/a/b.ts"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":"b"},["a",1]],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[["a",1],{"a":"b"},".leading"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[true,{"a":"b"},"😀"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[true,["a",1],"a..b"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[null,null,"abc"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[[],0,{"$undefined":true}],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[["a",1],"x",""],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":{"b":"c"}},0,"﻿bom"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[true,["a",1],{"$undefined":true}],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[[],null,{"$undefined":true}],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":["x","x","a😀b😀c"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[true,{"a":"b"},"hello"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[null,{},"emoji 👍🏽 mix"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":"b"},{},"a😀b😀c"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},"{name} has {count} items"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[true,{},"a..b"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[0,null,{"$undefined":true}],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":{"b":"c"}},[],"  padded  "],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":"b"},[],"ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[null,"x",{"$undefined":true}],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":{"b":"c"}},"x"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[["a",1],[],"emoji 👍🏽 mix"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":{"b":"c"}},[],"hello"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[null,0,{"$undefined":true}],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[[],true,"ΣΊΣΥΦΟΣİstanbul"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[0,"x","hello worldé"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[["a",1],{},"emoji 👍🏽 mix"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{},true,"{name} has {count} items"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[["a",1],0,"hello"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":"b"},[]],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[true,null,"İstanbulhello world"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[["a",1],{"a":"b"},{"$undefined":true}],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":["x",true,"  padded  a:b:c"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{},{"a":{"b":"c"}},"日本語のテキスト"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[0,["a",1],{"$undefined":true}],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[["a",1],{},"a.b.c"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[0,{"a":"b"},"日本語のテキストtab\tseparated"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[true,true],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[true,null,{"$undefined":true}],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[[],true,"ns:key.path"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[[],{"a":{"b":"c"}},"line1\nline2"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":{"b":"c"}},"x","a"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{},{},"{name} has {count} items"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[[],["a",1],"é"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":["x",0,{"$undefined":true}],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":["x",["a",1],"日本語のテキスト"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":"b"},["a",1],"hello worlda😀b😀c"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{},0,{"$undefined":true}],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[["a",1],0,{"$undefined":true}],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":"b"},0,{"$undefined":true}],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[null,null,"hello"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{},["a",1],"a..b"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[["a",1],["a",1],"straße"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[null,[],"a.b.c"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":{"b":"c"}},{"a":"b"},{"$undefined":true}],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[["a",1],null,"😀"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[[],0,"a..b"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[null,"x"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":"b"},[],"日本語のテキスト"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[0,[]],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[0,{"a":{"b":"c"}},{"$undefined":true}],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[["a",1],[]],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":"b"},null,"日本語のテキスト"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[["a",1],null,"a:b:c"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":["x",{"a":"b"},"x"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[0," 👍🏽 mix","emoji 👍🏽 mix"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":"b"},["a",1],""],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[0,0,"  padded  "],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[0,{},"HELLO"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":"b"},{},"hello world"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[[],{},"key_name-1"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[0,["a",1],"./x/**/*.json"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[null,0,".leading"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[[],"x","abcünïcödé"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{},"x","é"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[0,[],"abc"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},"a..b"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[true,{"a":{"b":"c"}},"hello world"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[[],{},"straße"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[true,{"a":{"b":"c"}},{"$undefined":true}],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":"b"},"x","x"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[null,["a",1],"./x/**/*.json"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{},"x","x"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":["x",["a",1],"a..bstraße"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[0,"x"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[0,0],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[true,{},"hello world"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":{"b":"c"}},["a",1],"src/a/b.ts"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[true,0,".leading"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[["a",1],["a",1],"  padded  é"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[0,true,"HELLO"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[[],{},"aba:b:c"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[[],["a",1],{"$undefined":true}],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{},true,"İstanbul"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":"b"},0],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[null,{"a":{"b":"c"}},"abchello world"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[["a",1],null,":"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[null,"x","é"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":"b"},true],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":["x",["a",1],"straße"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":"b"},null,"src/a/b.tsa:b:c"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[true,{"a":"b"}],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":["x",true],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[["a",1],{"a":"b"},"İstanbul"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":"b"},0,"a.b.c"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[true,[],"a😀b😀c"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[[],"x","{name} has {count} items"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":["x",["a",1],{"$undefined":true}],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[true,[],"trailing."],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[null,{"a":"b"},"abca😀b😀c"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":{"b":"c"}},true,"./x/**/*.json"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[true,0,"abc"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[true,"x","tab\tseparated"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[null,{},{"$undefined":true}],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[[],{"a":{"b":"c"}},"abc"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[0,{"a":"b"},"日本語のテキスト"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":["x",{"a":"b"},"é"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{},0,"HELLO"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[[],{},"straßekey_name-1"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":["x",true,"x"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":"b"},null,"😀é"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[[],["a",1],"😀"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":"b"},"x"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[[],"x"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{},null,{"$undefined":true}],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[["a",1],{"a":"b"},"ΣΊΣΥΦΟΣ  padded  "],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":{"b":"c"}},[],"ünïcödé"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":"b"},[],"a"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[[],true],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":["x",{},"a"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{},[],"hello world"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":"b"},{"a":{"b":"c"}},{"$undefined":true}],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[["a",1],{},"  padded  {name} has {count} items"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[true,true,"abc"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":{"b":"c"}},{},"src/a/b.ts"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":{"b":"c"}},{},"a😀b😀c"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":["x","x","./x/**/*.json  padded  "],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[null,{"a":"b"}],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[["a",1],{"a":{"b":"c"}},"a﻿bom"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[["a",1],null,"İstanbul"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[null,[],"hello"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[["a",1],true],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},"a"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[0,["a",1],"  padded  "],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[0,0,{"$undefined":true}],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[0,{"a":"b"},"tab\tseparated"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[[],"x","x"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":{"b":"c"}},null,"emoji 👍🏽 mixns:key.path"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[[],{"a":"b"},"Hello World"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":["x",null,"x"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[[],0,"abc"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{},"x","ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[true,null,"HELLO"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":{"b":"c"}},["a",1],"{name} has {count} itemsΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{},"x","😀"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":{"b":"c"}},true,"ünïcödé"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":{"b":"c"}},{"a":"b"},"Hello World"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":"b"},null],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":"b"},"x","tab\tseparatedns:key.path"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[true,null,"hello"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":"b"},true,"Hello World"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[0,["a",1],"ns:key.path"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{},true],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":["x",["a",1],"Hello World"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{},{}],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[["a",1],{},"abc"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[true,{},".leading"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":["x",null],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},"emoji 👍🏽 mix"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[0,[],"src/a/b.ts"],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[["a",1],["a",1],"trailing."],"ok":null}
+{"fn":"computerStaleGrantAdvice","args":[["a",1],true,{"$undefined":true}],"ok":null}
+{"fn":"computerPermissionSetupMessage","args":[[],{"a":{"b":"c"}},"straßeab"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[{"a":{"b":"c"}},{}],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[0,["a",1],"key_name-1"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{},true,"😀"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[0,true,"a..b"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[true,"x",{"$undefined":true}],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{"a":{"b":"c"}},{"a":"b"},"hello"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":["x","x",""],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[true,{},"ns:key.path"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[0,"x",{"$undefined":true}],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[true,"x","日本語のテキスト"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{"a":{"b":"c"}},null,"key_name-1"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[0,{"a":"b"},"ns:key.path"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[true,"x","ab  padded  "],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":["x",{"a":{"b":"c"}},"hello world"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[null,true,"./x/**/*.json"],"error":"Cannot read properties of null (reading 'includes')"}
+{"fn":"computerPermissionSetupMessage","args":[{"a":"b"},["a",1],"日本語のテキスト"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{},0,"日本語のテキスト"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[0,{"a":{"b":"c"}},"İstanbul"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[0,true,".leadingabc"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[null,{"a":"b"},{"$undefined":true}],"error":"Cannot read properties of null (reading 'includes')"}
+{"fn":"computerPermissionSetupMessage","args":[{"a":{"b":"c"}},true],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[[],{"a":"b"},"emoji 👍🏽 mix"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[{"a":"b"},0,"ns:key.path"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{"a":"b"},{},{"$undefined":true}],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[["a",1],{"a":{"b":"c"}},"hello"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[{"a":"b"},0,"a.b.c"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[null,null,{"$undefined":true}],"error":"Cannot read properties of null (reading 'includes')"}
+{"fn":"computerPermissionSetupMessage","args":[[],{"a":{"b":"c"}}],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[{"a":"b"},{},"trailing."],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[[],["a",1],"ab:"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[[],{"a":{"b":"c"}},"  padded  "],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[{"a":{"b":"c"}},[],"é"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{"a":{"b":"c"}},0,{"$undefined":true}],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[null,"x","src/a/b.ts"],"error":"Cannot read properties of null (reading 'includes')"}
+{"fn":"computerPermissionSetupMessage","args":[{"a":"b"},true,{"$undefined":true}],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},"😀"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[["a",1],"x",":emoji 👍🏽 mix"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},{"$undefined":true}],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[0,{"a":{"b":"c"}}],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[["a",1],null,{"$undefined":true}],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[[],true,"😀"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[[],[],"a:"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[{"a":{"b":"c"}},{"a":"b"},"straßeé"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[[],null,"helloa.b.c"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[{},0,"é"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[null,true,"src/a/b.ts"],"error":"Cannot read properties of null (reading 'includes')"}
+{"fn":"computerPermissionSetupMessage","args":[0,"x","  padded  line1\nline2"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[[],true,"﻿bom"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[{},"x","ab"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{"a":"b"},{"a":{"b":"c"}},{"$undefined":true}],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[["a",1],[],"é"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[true,{},"./x/**/*.json"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[["a",1],{"a":"b"},"a"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[[],{},"emoji 👍🏽 mix"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[0,["a",1],"a"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{"a":{"b":"c"}},true,"HELLO"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{},["a",1],"﻿bom"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[[],[],{"$undefined":true}],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":["x",{"a":{"b":"c"}},"hello"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[["a",1],["a",1],"a"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[null,["a",1],"{name} has {count} items"],"error":"Cannot read properties of null (reading 'includes')"}
+{"fn":"computerPermissionSetupMessage","args":[{},null,"hello world"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{},null],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[[],{"a":"b"},"a:b:c  padded  "],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[["a",1],{},"key_name-1"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[{"a":{"b":"c"}},0,"ünïcödé.leading"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{"a":{"b":"c"}},{},{"$undefined":true}],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[["a",1],{},"HELLOemoji 👍🏽 mix"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[[],[],"ab"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[{"a":"b"},0,"src/a/b.ts"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[true,{"a":"b"},"straße"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{},{},"trailing.{name} has {count} items"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{},true,"Hello World"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[true,"x","HELLO"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{"a":{"b":"c"}},"x","tab\tseparated"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":["x",null,"HELLO"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[null,{"a":"b"}],"error":"Cannot read properties of null (reading 'includes')"}
+{"fn":"computerPermissionSetupMessage","args":[{"a":"b"},[],{"$undefined":true}],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[[],[],"tab\tseparated"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[{},{"a":{"b":"c"}},"src/a/b.ts"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{"a":"b"},{"a":"b"},{"$undefined":true}],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[[],null,"a"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[{"a":{"b":"c"}},null,"{name} has {count} items"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{"a":{"b":"c"}},{},"a😀b😀c"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[null,"x","a.b.c"],"error":"Cannot read properties of null (reading 'includes')"}
+{"fn":"computerPermissionSetupMessage","args":[{"a":"b"},{},"ünïcödé"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[true,{"a":"b"},"ünïcödé"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{"a":{"b":"c"}},{},"Hello World"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[[],{}],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":["x",{"a":{"b":"c"}},{"$undefined":true}],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[null,{},"emoji 👍🏽 mix"],"error":"Cannot read properties of null (reading 'includes')"}
+{"fn":"computerPermissionSetupMessage","args":[true,{},"tab\tseparatedkey_name-1"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{},{},"a:b:c"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{"a":"b"},true,"trailing."],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[null,0],"error":"Cannot read properties of null (reading 'includes')"}
+{"fn":"computerPermissionSetupMessage","args":[[],{"a":"b"},"İstanbul"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[{"a":"b"},0,"a"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[["a",1],["a",1]],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[{},null,""],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{},"x"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[[],"x","x"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[null,null,"key_name-1"],"error":"Cannot read properties of null (reading 'includes')"}
+{"fn":"computerPermissionSetupMessage","args":[true,["a",1],"abc"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[true,{"a":"b"}],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[null,null,"emoji 👍🏽 mix"],"error":"Cannot read properties of null (reading 'includes')"}
+{"fn":"computerPermissionSetupMessage","args":[[],{},{"$undefined":true}],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[["a",1],[],"src/a/b.ts"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[true,[],{"$undefined":true}],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{},{},"src/a/b.ts"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[0,{},"{name} has {count} items"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":["x",{},"line1\nline2"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[null,[],"{name} has {count} items"],"error":"Cannot read properties of null (reading 'includes')"}
+{"fn":"computerPermissionSetupMessage","args":[0,0,":"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{"a":"b"},true,"ünïcödé"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":["x",null,"x"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},"ΣΊΣΥΦΟΣ"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[null,{"a":"b"},"straße"],"error":"Cannot read properties of null (reading 'includes')"}
+{"fn":"computerPermissionSetupMessage","args":[{},["a",1],{"$undefined":true}],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[["a",1],{"a":{"b":"c"}},"HELLO"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[null,true,"ab"],"error":"Cannot read properties of null (reading 'includes')"}
+{"fn":"computerPermissionSetupMessage","args":["x",null,":a:b:c"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[{},"x","emoji 👍🏽 mixab"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{"a":{"b":"c"}},0,":"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[0,"x"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{"a":"b"},null,"line1\nline2"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{},{"a":{"b":"c"}}],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":["x",[],"Hello World"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[["a",1],null,"ΣΊΣΥΦΟΣa😀b😀c"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[{"a":{"b":"c"}},null,"a.b.c"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":["x",{"a":"b"},"straße"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[["a",1],null,"a:b:c"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":["x","X","日本語のテキスト"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[{},true,"é"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[0,["a",1],{"$undefined":true}],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[0,null],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":["x",0,"a😀b😀c"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":["x",{"a":"b"},"  padded  "],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[{"a":"b"},"x",""],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{},"x","a..b"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[[],{},"a..b"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[["a",1],["a",1],"ΣΊΣΥΦΟΣ"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[["a",1],[],"a"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[{"a":"b"},null,"  padded  "],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{},["a",1],"日本語のテキスト"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},"abc"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[null,{"a":"b"},""],"error":"Cannot read properties of null (reading 'includes')"}
+{"fn":"computerPermissionSetupMessage","args":[true,{},{"$undefined":true}],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{},["a",1],"hello world"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{"a":{"b":"c"}},0,"astraße"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{},{"a":"b"},"İstanbul"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{"a":"b"},0,"tab\tseparated"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[0,[],"line1\nline2"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":["😀",null,"😀"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[null,[],"aa"],"error":"Cannot read properties of null (reading 'includes')"}
+{"fn":"computerPermissionSetupMessage","args":[true,["a",1],"key_name-1"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[0,0],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[0,null,"ünïcödé"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[true,0,"  padded  "],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[true,null,"tab\tseparatedkey_name-1"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{"a":{"b":"c"}},{},"  padded  "],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[[],{"a":"b"},{"$undefined":true}],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[true,{}],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[["a",1],{},"Hello World"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[{"a":{"b":"c"}},0,"a..bkey_name-1"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[[],"x","abc"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":["x",null,"a:b:c"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":["A/B.","x","src/a/b.ts"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[[],0,"HELLO"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[{"a":{"b":"c"}},{},""],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[["a",1],[],"ΣΊΣΥΦΟΣ"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[["a",1],true],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[[],["a",1],"a😀b😀c"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[null,0,"key_name-1"],"error":"Cannot read properties of null (reading 'includes')"}
+{"fn":"computerPermissionSetupMessage","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},"HELLO"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":["x",["a",1],"a😀b😀c"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[[],true,"tab\tseparated"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[{"a":"b"},0,{"$undefined":true}],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{"a":"b"},{"a":"b"},"Hello World"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{},{"a":"b"},"hello"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[0,"x","Hello Worldstraße"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{"a":"b"},true,"Hello World"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{"a":"b"},[],"aba😀b😀c"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[true,["a",1],".leading"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[["a",1],{},"{name} has {count} items"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[["a",1],"x","./x/**/*.json"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[{},true,"trailing.a.b.c"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{"a":"b"},"x","a:b:c"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{"a":"b"},"/b.ts","abcsrc/a/b.ts"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[true,"x"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{"a":"b"},["a",1],"a😀b😀c"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[[],"ili","trailing."],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[0,[],"a:b:c"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{},true,":"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{},{}],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[0,{"a":{"b":"c"}},{"$undefined":true}],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[{"a":"b"},{"a":{"b":"c"}}],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[["a",1],["a",1],"tab\tseparated  padded  "],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":["x",{"a":"b"},"ns:key.path"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[0,["a",1],"a😀b😀c"],"error":"permissions.includes is not a function"}
+{"fn":"computerPermissionSetupMessage","args":[[],{"a":{"b":"c"}},{"$undefined":true}],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[[],{"a":{"b":"c"}},"héllo wörld"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[[],{"a":{"b":"c"}},"👍🏽 thumbs"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[[],{"a":{"b":"c"}},"日本語"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[[],{"a":{"b":"c"}},""],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[[],{"a":{"b":"c"}},"é"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[[],{"a":{"b":"c"}},"İstanbul"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[[],{"a":{"b":"c"}},"straße"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[[],{"a":{"b":"c"}},"ılık ırmak"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[[],{"a":{"b":"c"}},"👨‍👩‍👧 family"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[[],{"a":{"b":"c"}},"a b"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[[],{"a":{"b":"c"}},"ΣΊΣΥΦΟΣ"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[[],{"a":{"b":"c"}},"a😀b"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[[],{"a":{"b":"c"}},"﻿bom"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[[],{"a":{"b":"c"}},"a²b x½ y①"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[[],{"a":{"b":"c"}},"aⅠb Ⅻ"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[[],{"a":{"b":"c"}},"a𐐀b 𝐀bc"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[[],{"a":{"b":"c"}},"कि ٣٤"],"ok":"Synara needs a macOS privacy permission to control this Mac. Grant it in System Settings › Privacy & Security, then try again."}
+{"fn":"missingComputerAppSnapPermissions","args":[{"screenRecordingPermission":"denied","inputMonitoringPermission":"unknown"}],"ok":["accessibility","screenRecording","inputMonitoring"]}
+{"fn":"missingComputerAppSnapPermissions","args":[{"accessibilityPermission":"granted","screenRecordingPermission":"granted","inputMonitoringPermission":"denied"}],"ok":["inputMonitoring"]}
+{"fn":"missingComputerAppSnapPermissions","args":[{"accessibilityPermission":"granted","screenRecordingPermission":"granted","inputMonitoringPermission":"granted"}],"ok":[]}
+{"fn":"sortComputerPermissions","args":[["screenRecording","accessibility"]],"ok":["accessibility","screenRecording"]}
+{"fn":"listComputerPermissions","args":[["screenRecording","accessibility"]],"ok":"Accessibility and Screen Recording"}
+{"fn":"listComputerPermissions","args":[["screenRecording"]],"ok":"Screen Recording"}
+{"fn":"sortComputerPermissions","args":[["screenRecording"]],"ok":["screenRecording"]}
+{"fn":"listComputerPermissions","args":[[]],"ok":""}
+{"fn":"sortComputerPermissions","args":[[]],"ok":[]}
+{"fn":"listComputerPermissions","args":[["inputMonitoring","screenRecording","accessibility"]],"ok":"Accessibility, Screen Recording and Input Monitoring"}
+{"fn":"sortComputerPermissions","args":[["inputMonitoring","screenRecording","accessibility"]],"ok":["accessibility","screenRecording","inputMonitoring"]}
+{"fn":"computerStaleGrantAdvice","args":[["accessibility","screenRecording"],"adhoc","com.emanueledipietro.synara.dev"],"ok":"This is a locally built copy of Synara, so macOS may already list it with the switch on from an earlier build. Remove this app from the permission list, add the current build again, then fully quit and reopen it. To clear only this app's old grant, run `tccutil reset Accessibility com.emanueledipietro.synara.dev, then tccutil reset ScreenCapture com.emanueledipietro.synara.dev` in Terminal and grant access again."}
+{"fn":"sortComputerPermissions","args":[["accessibility","screenRecording"]],"ok":["accessibility","screenRecording"]}
+{"fn":"computerStaleGrantAdvice","args":[["accessibility"],"adhoc","com.example.synara.canary"],"ok":"This is a locally built copy of Synara, so macOS may already list it with the switch on from an earlier build. Remove this app from the permission list, add the current build again, then fully quit and reopen it. To clear only this app's old grant, run `tccutil reset Accessibility com.example.synara.canary` in Terminal and grant access again."}
+{"fn":"sortComputerPermissions","args":[["accessibility"]],"ok":["accessibility"]}
+{"fn":"computerStaleGrantAdvice","args":[["accessibility"],"adhoc",{"$undefined":true}],"ok":"This is a locally built copy of Synara, so macOS may already list it with the switch on from an earlier build. Remove this app from the permission list, add the current build again, then fully quit and reopen it."}
+{"fn":"computerStaleGrantAdvice","args":[["accessibility"],"adhoc",""],"ok":"This is a locally built copy of Synara, so macOS may already list it with the switch on from an earlier build. Remove this app from the permission list, add the current build again, then fully quit and reopen it."}
+{"fn":"computerStaleGrantAdvice","args":[["accessibility"],"adhoc","   "],"ok":"This is a locally built copy of Synara, so macOS may already list it with the switch on from an earlier build. Remove this app from the permission list, add the current build again, then fully quit and reopen it."}
+{"fn":"computerPermissionSetupMessage","args":[["accessibility"],"adhoc"],"ok":"Synara needs Accessibility to control this Mac. Turn Synara on in System Settings › Privacy & Security › Accessibility, then try again. This is a locally built copy of Synara, so macOS may already list it with the switch on from an earlier build. Remove this app from the permission list, add the current build again, then fully quit and reopen it."}
+{"fn":"listComputerPermissions","args":[["accessibility"]],"ok":"Accessibility"}
+{"fn":"computerStaleGrantAdvice","args":[["accessibility"],"signed","com.example.app"],"ok":null}
+{"fn":"computerPermissionSetupMessage","args":[["accessibility"],"signed","com.example.app"],"ok":"Synara needs Accessibility to control this Mac. Turn Synara on in System Settings › Privacy & Security › Accessibility, then try again."}
+{"fn":"computerPermissionSetupMessage","args":[["accessibility"],"adhoc","com.emanueledipietro.synara"],"ok":"Synara needs Accessibility to control this Mac. Turn Synara on in System Settings › Privacy & Security › Accessibility, then try again. This is a locally built copy of Synara, so macOS may already list it with the switch on from an earlier build. Remove this app from the permission list, add the current build again, then fully quit and reopen it. To clear only this app's old grant, run `tccutil reset Accessibility com.emanueledipietro.synara` in Terminal and grant access again."}
+{"fn":"computerStaleGrantAdvice","args":[["accessibility"],"adhoc","com.emanueledipietro.synara"],"ok":"This is a locally built copy of Synara, so macOS may already list it with the switch on from an earlier build. Remove this app from the permission list, add the current build again, then fully quit and reopen it. To clear only this app's old grant, run `tccutil reset Accessibility com.emanueledipietro.synara` in Terminal and grant access again."}
+{"fn":"computerGrantsBlockControl","args":[["accessibility"]],"ok":true}
+{"fn":"computerGrantsBlockControl","args":[["accessibility","screenRecording"]],"ok":true}
+{"fn":"computerGrantsBlockControl","args":[["screenRecording"]],"ok":false}
+{"fn":"computerGrantsBlockControl","args":[["inputMonitoring"]],"ok":true}
+{"fn":"computerGrantsBlockControl","args":[[]],"ok":false}

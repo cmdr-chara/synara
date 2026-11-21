@@ -1,0 +1,144 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/computerGrants.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "computergrants-rs",
+  "exports": [
+    {
+      "name": "missingComputerAppSnapPermissions",
+      "file": "packages/shared/src/computerGrants.ts",
+      "line": 43,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "Pick<\n    DesktopAppSnapState,\n    \"accessibilityPermission\" | \"screenRecordingPermission\" | \"inputMonitoringPermission\"\n  >",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "readonly typeof typeof typeof typeof ComputerPermission.Type.Type.Type.Type[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "computerGrantsBlockControl",
+      "file": "packages/shared/src/computerGrants.ts",
+      "line": 75,
+      "params": [
+        {
+          "name": "permissions",
+          "ts_type": "readonly typeof typeof typeof typeof ComputerPermission.Type.Type.Type.Type[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "sortComputerPermissions",
+      "file": "packages/shared/src/computerGrants.ts",
+      "line": 103,
+      "params": [
+        {
+          "name": "permissions",
+          "ts_type": "readonly typeof typeof typeof typeof ComputerPermission.Type.Type.Type.Type[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "readonly typeof typeof typeof typeof ComputerPermission.Type.Type.Type.Type[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "listComputerPermissions",
+      "file": "packages/shared/src/computerGrants.ts",
+      "line": 110,
+      "params": [
+        {
+          "name": "permissions",
+          "ts_type": "readonly typeof typeof typeof typeof ComputerPermission.Type.Type.Type.Type[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "computerStaleGrantAdvice",
+      "file": "packages/shared/src/computerGrants.ts",
+      "line": 145,
+      "params": [
+        {
+          "name": "permissions",
+          "ts_type": "readonly typeof typeof typeof typeof ComputerPermission.Type.Type.Type.Type[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "buildSignature",
+          "ts_type": "typeof typeof typeof typeof ComputerBuildSignature.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "bundleId",
+          "ts_type": "string | undefined",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "computerPermissionSetupMessage",
+      "file": "packages/shared/src/computerGrants.ts",
+      "line": 169,
+      "params": [
+        {
+          "name": "permissions",
+          "ts_type": "readonly typeof typeof typeof typeof ComputerPermission.Type.Type.Type.Type[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "buildSignature",
+          "ts_type": "typeof typeof typeof typeof ComputerBuildSignature.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "bundleId",
+          "ts_type": "string | undefined",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

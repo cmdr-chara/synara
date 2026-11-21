@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/computerGrants.ts",
+  "files": 1,
+  "fingerprint": "4ab67b2fdc3e0725",
+  "coverage": {
+    "lines": 170,
+    "reached": 170,
+    "files": [
+      {
+        "file": "packages/shared/src/computerGrants.ts",
+        "lines": 170,
+        "reached": 170,
+        "missed": ""
+      }
+    ]
+  }
+}

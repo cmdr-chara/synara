@@ -1,0 +1,66 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/localImageFiles.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "localimagefiles-rs",
+  "exports": [
+    {
+      "name": "resolveLocalPreviewGrantRealPath",
+      "file": "apps/server/src/localImageFiles.ts",
+      "line": 59,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly token: string | null | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveAllowedLocalPreviewFile",
+      "file": "apps/server/src/localImageFiles.ts",
+      "line": 133,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly requestedPath: string | null;\n  readonly cwd: string | null;\n  readonly codexHomePath?: (string | CodexGeneratedImageHomeContext);\n  /** Additional configured Codex homes (per-instance dedicated homes). */\n  readonly codexHomePaths?: readonly (string | CodexGeneratedImageHomeContext)[];\n  readonly scratchWorkspacesRoot?: string;\n  readonly allowAbsoluteLocalPreviewFile?: boolean;\n  readonly previewGrant?: string | null;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<ResolvedLocalPreviewFile | null>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "createLocalPreviewGrant",
+      "file": "apps/server/src/localImageFiles.ts",
+      "line": 244,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly requestedPath: string;\n  readonly cwd?: string;\n  readonly homeDir?: string;\n  /** Host-owned GitCore worktree-list output, never accepted from RPC clients. */\n  readonly worktreeRoots?: readonly string[];\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<LocalPreviewGrantResult>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

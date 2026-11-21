@@ -1,0 +1,600 @@
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":null}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"Hello World"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"a:b:c"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":{"$undefined":true}}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"abc"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"😀"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"key_name-1"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"  padded  "}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"ΣΊΣΥΦΟΣstraße"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"😀İstanbul"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[0],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"HELLO"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[true],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"{name} has {count} items日本語のテキスト"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"./x/**/*.json"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"ΣΊΣΥΦΟΣ"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"line1\nline2"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"a"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"a":"b"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"line1\nline2﻿bom"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[["a",1]],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"ünïcödéa😀b😀c"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"emoji 👍🏽 mix"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"日本語のテキストkey_name-1"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[[]],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"straße😀"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[null],"error":"Cannot read properties of null (reading 'token')"}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"trailing."}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"HELLOa😀b😀c"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"straße  padded  "}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"İstanbul"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"a.b.cabc"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"é"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"a.b.c:"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":["x"],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"ns:key.pathhello"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"tab\tseparated"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"hello world"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"{name} has {count} items"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"﻿bom"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":":"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"日本語のテキスト"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"é﻿bom"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"a..b"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"İstanbulHello World"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"a.b.c"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"a😀b😀c"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"hello"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"ns:key.pathünïcödé"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"ünïcödé"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"src/a/b.ts"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"ab"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":".leading"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":""}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"{name} has {count} itemstrailing."}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"src/a/b.tssrc/a/b.ts"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"﻿bomΣΊΣΥΦΟΣ"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"ns:key.path"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":".leading./x/**/*.json"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"  padded  key_name-1"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"straße"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"hello  padded  "}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"İstanbulkey_name-1"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"trailing.tab\tseparated"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"emoji 👍🏽 mixkey_name-1"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"日本語のテキストtab\tseparated"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"Hello Worldns:key.path"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"a..b:"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"a😀b😀chello world"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"日本語のテキストHello World"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"﻿bomabc"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"src/a/b.ts日本語のテキスト"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"straße﻿bom"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"a..b.leading"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"ΣΊΣΥΦΟΣünïcödé"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"hellotab\tseparated"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"a.b.ca..b"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"trailing.é"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"日本語のテキストstraße"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"tab\tseparateda.b.c"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"  padded  ab"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"hello worldΣΊΣΥΦΟΣ"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"a:b:cline1\nline2"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":":src/a/b.ts"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"line1\nline2日本語のテキスト"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"emoji 👍🏽 mix  padded  "}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"😀😀"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"日本語のテキストtrailing."}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"key_name-1src/a/b.ts"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"ünïcödéünïcödé"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"hello worlda:b:c"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"ünïcödéemoji 👍🏽 mix"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"trailing.ünïcödé"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"./x/**/*.jsonHello World"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"a:b:c:"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"a:b:ca"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":":key_name-1"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"abİstanbul"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"  padded  a😀b😀c"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"ünïcödéa..b"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"ünïcödé.leading"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"trailing.key_name-1"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"İstanbul:"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"aline1\nline2"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":":hello world"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"éa.b.c"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"a..bsrc/a/b.ts"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"abns:key.path"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"a:b:ca.b.c"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"./x/**/*.json./x/**/*.json"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"emoji 👍🏽 mixhello world"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"hello worlda.b.c"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":".leading😀"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"aHELLO"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"line1\nline2./x/**/*.json"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"ΣΊΣΥΦΟΣ.leading"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"./x/**/*.jsona.b.c"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"src/a/b.tsa"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"a..bünïcödé"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"HELLO😀"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"HELLOhello"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"line1\nline2ünïcödé"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"日本語のテキストΣΊΣΥΦΟΣ"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"HELLOhello world"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":".leadingHELLO"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"  padded  trailing."}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"straßeé"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"ünïcödé😀"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"line1\nline2line1\nline2"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"tab\tseparatedemoji 👍🏽 mix"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"ΣΊΣΥΦΟΣa😀b😀c"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"  padded  a"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"hello worldline1\nline2"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"ΣΊΣΥΦΟΣ日本語のテキスト"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"Hello Worlda"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"emoji 👍🏽 mixa😀b😀c"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"abca:b:c"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"﻿boma😀b😀c"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"a:"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"a..b﻿bom"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"trailing..leading"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"a😀b😀cline1\nline2"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"ns:key.path:"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"abhello world"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"a.b.cİstanbul"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"straße./x/**/*.json"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"a:b:ctrailing."}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"ns:key.pathline1\nline2"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"aHello World"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"abc日本語のテキスト"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"ünïcödéΣΊΣΥΦΟΣ"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"a:b:cΣΊΣΥΦΟΣ"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"trailing.line1\nline2"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"ans:key.path"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"emoji 👍🏽 mixa:b:c"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"HELLO{name} has {count} items"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"ünïcödéstraße"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"straßeabc"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"Hello Worldline1\nline2"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"hello😀"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"😀ünïcödé"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"a.b.ctab\tseparated"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"﻿bom.leading"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"  padded  hello"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"line1\nline2emoji 👍🏽 mix"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"{name} has {count} itemskey_name-1"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"atab\tseparated"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"éabc"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"line1\nline2a😀b😀c"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"./x/**/*.json{name} has {count} items"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"日本語のテキストé"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"﻿bomsrc/a/b.ts"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"abca😀b😀c"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"a:b:cabc"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"helloHELLO"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"emoji 👍🏽 mixtab\tseparated"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"ünïcödé:"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"HELLOkey_name-1"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"hello worldHELLO"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"src/a/b.tsa.b.c"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"ΣΊΣΥΦΟΣhello"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"  padded  İstanbul"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"é:"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"src/a/b.tsa..b"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":":Hello World"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"{name} has {count} itemsa.b.c"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"a.b.c.leading"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"éline1\nline2"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"  padded  tab\tseparated"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":".leadingtab\tseparated"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"src/a/b.tsabc"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"./x/**/*.jsontab\tseparated"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"emoji 👍🏽 mix﻿bom"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"key_name-1日本語のテキスト"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"ünïcödéns:key.path"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"😀:"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":"akey_name-1"}],"ok":null}
+{"fn":"resolveLocalPreviewGrantRealPath","args":[{"token":":.leading"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"{name} has {count} items","codexHomePath":{"homePath":"line1\nline2","shadowHomePath":{"$undefined":true},"environment":{}},"scratchWorkspacesRoot":"hello","previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":{"homePath":"emoji 👍🏽 mix","shadowHomePath":{"$undefined":true},"accountId":"abcline1\nline2","environment":{"title":":İstanbul","a.b":".leading"}},"codexHomePaths":[{"shadowHomePath":"abHello World","accountId":"{name} has {count} items","environment":{"$undefined":true}}],"scratchWorkspacesRoot":"﻿bom","allowAbsoluteLocalPreviewFile":true,"previewGrant":".leading"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"﻿bom😀","codexHomePaths":[],"allowAbsoluteLocalPreviewFile":false,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePaths":[{"homePath":"  padded  ","accountId":"trailing.","environment":null}],"scratchWorkspacesRoot":"line1\nline2","allowAbsoluteLocalPreviewFile":false,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"line1\nline2","cwd":null,"codexHomePaths":[],"scratchWorkspacesRoot":":a.b.c","allowAbsoluteLocalPreviewFile":true,"previewGrant":"tab\tseparatedab"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":{"homePath":{"$undefined":true},"shadowHomePath":{"$undefined":true}},"scratchWorkspacesRoot":"line1\nline2hello world","allowAbsoluteLocalPreviewFile":true,"previewGrant":"{name} has {count} items"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"","cwd":null,"codexHomePath":"ns:key.patha😀b😀c","codexHomePaths":["a",{"homePath":{"$undefined":true},"shadowHomePath":"é","environment":null}],"scratchWorkspacesRoot":"key_name-1","allowAbsoluteLocalPreviewFile":false,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"abc","codexHomePath":"a.b.c","codexHomePaths":[{"homePath":{"$undefined":true},"shadowHomePath":"straße","accountId":"日本語のテキスト","environment":{"$undefined":true}},"src/a/b.ts",{"environment":null}],"scratchWorkspacesRoot":"a.b.c","previewGrant":"a😀b😀ca:b:c"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"😀hello world","codexHomePath":"hello world","codexHomePaths":[{"homePath":{"$undefined":true},"shadowHomePath":"src/a/b.tsa.b.c","accountId":{"$undefined":true},"environment":{"$undefined":true}},{"homePath":{"$undefined":true},"shadowHomePath":{"$undefined":true},"accountId":"emoji 👍🏽 mix"}],"scratchWorkspacesRoot":"  padded  ","previewGrant":"hello world"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePaths":[{"homePath":"a..b","shadowHomePath":{"$undefined":true},"environment":{"$undefined":true}},{"homePath":".leading","shadowHomePath":{"$undefined":true},"accountId":"İstanbul","environment":null}],"allowAbsoluteLocalPreviewFile":true}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"a.b.c","codexHomePath":{"homePath":{"$undefined":true},"shadowHomePath":"trailing."},"scratchWorkspacesRoot":"日本語のテキスト","allowAbsoluteLocalPreviewFile":false,"previewGrant":":"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":{"shadowHomePath":{"$undefined":true},"accountId":"line1\nline2","environment":{"$undefined":true}},"codexHomePaths":[],"scratchWorkspacesRoot":"İstanbulİstanbul","allowAbsoluteLocalPreviewFile":true,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"./x/**/*.json","cwd":"a:b:c","codexHomePath":"hello","scratchWorkspacesRoot":"日本語のテキスト","previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"abc","cwd":"ns:key.path","scratchWorkspacesRoot":"line1\nline2HELLO","allowAbsoluteLocalPreviewFile":false,"previewGrant":"İstanbul"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePaths":[{"shadowHomePath":"line1\nline2","accountId":"abc.leading","environment":{"$undefined":true}},{"homePath":{"$undefined":true},"shadowHomePath":{"$undefined":true},"accountId":"trailing.a.b.c","environment":null}],"scratchWorkspacesRoot":"ns:key.path","allowAbsoluteLocalPreviewFile":false,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":":","cwd":null,"codexHomePath":"straße","allowAbsoluteLocalPreviewFile":true}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":"a😀b😀cabc","codexHomePaths":[{"shadowHomePath":"{name} has {count} items","accountId":"ab","environment":null}],"scratchWorkspacesRoot":"a","allowAbsoluteLocalPreviewFile":true,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[["a",1]],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"ünïcödé./x/**/*.json","cwd":"hello world","codexHomePath":{"homePath":"a😀b😀c","shadowHomePath":".leading"},"codexHomePaths":[],"allowAbsoluteLocalPreviewFile":false,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"hello","cwd":null,"codexHomePath":{"homePath":{"$undefined":true},"accountId":{"$undefined":true},"environment":{"$undefined":true}},"codexHomePaths":["a😀b😀c","a😀b😀cemoji 👍🏽 mix",{"homePath":{"$undefined":true},"shadowHomePath":"abc","accountId":"{name} has {count} items","environment":{"$undefined":true}}],"scratchWorkspacesRoot":"  padded  ","allowAbsoluteLocalPreviewFile":true,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"tab\tseparated","cwd":null,"codexHomePath":{"homePath":{"$undefined":true},"shadowHomePath":"😀","accountId":{"$undefined":true}},"scratchWorkspacesRoot":"a😀b😀c"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"é","codexHomePath":"./x/**/*.json","allowAbsoluteLocalPreviewFile":true}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"😀","codexHomePath":"{name} has {count} items","codexHomePaths":[{"homePath":"ns:key.path","shadowHomePath":"hello world","accountId":"﻿bom","environment":null},{"shadowHomePath":"key_name-1","accountId":"a😀b😀c","environment":null}],"allowAbsoluteLocalPreviewFile":true,"previewGrant":"ΣΊΣΥΦΟΣ"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[null],"error":"Cannot read properties of null (reading 'requestedPath')"}
+{"fn":"resolveAllowedLocalPreviewFile","args":[true],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"tab\tseparated","codexHomePath":{"homePath":"Hello World","shadowHomePath":"ns:key.path","environment":{"$undefined":true}},"codexHomePaths":[{"homePath":"Hello World","shadowHomePath":{"$undefined":true},"accountId":{"$undefined":true}}],"scratchWorkspacesRoot":"a..b","allowAbsoluteLocalPreviewFile":true,"previewGrant":"a😀b😀c"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"日本語のテキスト","cwd":"ns:key.path","codexHomePath":"hello world","codexHomePaths":["line1\nline2"],"allowAbsoluteLocalPreviewFile":true,"previewGrant":"ünïcödé"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"a","codexHomePath":{"homePath":"日本語のテキスト","shadowHomePath":{"$undefined":true},"accountId":{"$undefined":true}},"previewGrant":"  padded  "}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"tab\tseparated","codexHomePath":"hello","scratchWorkspacesRoot":"","allowAbsoluteLocalPreviewFile":false}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"ns:key.path","cwd":null,"codexHomePath":"hello worldemoji 👍🏽 mix","codexHomePaths":[{"homePath":"a😀b😀c.leading","shadowHomePath":{"$undefined":true},"accountId":"a😀b😀c","environment":{"$undefined":true}}],"scratchWorkspacesRoot":":"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"hello world","cwd":"line1\nline2","scratchWorkspacesRoot":"hello","allowAbsoluteLocalPreviewFile":false}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"a.b.c","codexHomePath":{"homePath":{"$undefined":true},"shadowHomePath":{"$undefined":true},"environment":{"2":".leading","a.b":"Hello Worldhello world","b":"trailing."}},"codexHomePaths":["","ab",{"homePath":{"$undefined":true},"shadowHomePath":{"$undefined":true},"accountId":"tab\tseparated"}],"scratchWorkspacesRoot":"{name} has {count} items","allowAbsoluteLocalPreviewFile":false}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":"{name} has {count} items","codexHomePaths":["trailing."],"scratchWorkspacesRoot":"hello","allowAbsoluteLocalPreviewFile":true}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"a:b:c","cwd":null,"codexHomePath":"😀","codexHomePaths":[{"homePath":"hello","shadowHomePath":"","accountId":"ns:key.pathHELLO","environment":null},"😀",{"shadowHomePath":{"$undefined":true},"accountId":"trailing.src/a/b.ts","environment":null}],"scratchWorkspacesRoot":".leadingHELLO","allowAbsoluteLocalPreviewFile":false,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"hello","cwd":null,"codexHomePath":"ünïcödé","codexHomePaths":[{"homePath":{"$undefined":true},"shadowHomePath":{"$undefined":true},"accountId":{"$undefined":true},"environment":{"$undefined":true}},{"homePath":"ab","shadowHomePath":{"$undefined":true},"accountId":{"$undefined":true},"environment":null}],"scratchWorkspacesRoot":"ab","previewGrant":"hello"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"ns:key.path","cwd":":","codexHomePath":"hello world","codexHomePaths":[{"homePath":"a","accountId":{"$undefined":true},"environment":null},{"homePath":"hello world","shadowHomePath":"Hello World","accountId":"{name} has {count} items"},{"homePath":"😀","accountId":"ns:key.path","environment":null}],"scratchWorkspacesRoot":"trailing.","allowAbsoluteLocalPreviewFile":false,"previewGrant":"é"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":{"homePath":"a..b","shadowHomePath":{"$undefined":true},"accountId":"  padded  ","environment":{"10":"  padded  ","title":"hello"}},"codexHomePaths":[{"homePath":"straßeHello World","shadowHomePath":{"$undefined":true}}],"scratchWorkspacesRoot":"tab\tseparated","previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"😀","cwd":"İstanbul","codexHomePath":"日本語のテキスト","codexHomePaths":[{"homePath":"😀","shadowHomePath":{"$undefined":true},"accountId":{"$undefined":true},"environment":null},{"homePath":"ab","shadowHomePath":"é","accountId":{"$undefined":true}},{"homePath":"./x/**/*.json  padded  ","shadowHomePath":"ünïcödéünïcödé","accountId":"./x/**/*.json","environment":null}],"scratchWorkspacesRoot":"a:b:c","allowAbsoluteLocalPreviewFile":true}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"./x/**/*.jsonsrc/a/b.ts","cwd":null,"codexHomePaths":["ahello world"],"scratchWorkspacesRoot":"ΣΊΣΥΦΟΣ","allowAbsoluteLocalPreviewFile":false,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":":ns:key.path","cwd":"日本語のテキスト","codexHomePath":"é","codexHomePaths":["hello world",{"homePath":{"$undefined":true},"environment":null},{"homePath":"","environment":null}],"allowAbsoluteLocalPreviewFile":false,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"./x/**/*.json","codexHomePaths":[{"homePath":{"$undefined":true},"environment":{"$undefined":true}}],"scratchWorkspacesRoot":"a..b","allowAbsoluteLocalPreviewFile":false,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"a","cwd":null,"codexHomePath":"HELLO","codexHomePaths":[{"homePath":"a:b:c","shadowHomePath":{"$undefined":true},"accountId":"é"},{"shadowHomePath":".leading"}],"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"a..b","cwd":null,"codexHomePath":"abc","codexHomePaths":["é"],"scratchWorkspacesRoot":"ns:key.pathabc","allowAbsoluteLocalPreviewFile":false,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"line1\nline2","cwd":null,"codexHomePath":"日本語のテキスト","codexHomePaths":[{"homePath":"","accountId":"abc","environment":{"$undefined":true}},"hello"],"allowAbsoluteLocalPreviewFile":false,"previewGrant":"straße"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":{"homePath":":","shadowHomePath":"Hello Worldhello world","environment":{"a.b":"ab"}},"codexHomePaths":[{"shadowHomePath":"src/a/b.ts","accountId":{"$undefined":true},"environment":null},"HELLO"],"scratchWorkspacesRoot":"ΣΊΣΥΦΟΣ","allowAbsoluteLocalPreviewFile":true,"previewGrant":"Hello World"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"hello","cwd":"abc","codexHomePath":{"homePath":"﻿bom","shadowHomePath":"abc","accountId":{"$undefined":true},"environment":{"10":"a..b","title":"aba😀b😀c","home":"src/a/b.ts"}},"scratchWorkspacesRoot":"./x/**/*.json","allowAbsoluteLocalPreviewFile":false,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"scratchWorkspacesRoot":"日本語のテキスト","allowAbsoluteLocalPreviewFile":true}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"ns:key.path","cwd":"HELLO","codexHomePaths":["trailing.trailing.","abcemoji 👍🏽 mix","emoji 👍🏽 mix"],"scratchWorkspacesRoot":"a.b.c","allowAbsoluteLocalPreviewFile":false,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"a😀b😀c","codexHomePath":{"homePath":"日本語のテキスト","shadowHomePath":"helloa.b.c","accountId":"key_name-1line1\nline2"},"codexHomePaths":[{},{"homePath":{"$undefined":true},"shadowHomePath":{"$undefined":true},"accountId":"trailing.","environment":null},{"homePath":"Hello World","accountId":{"$undefined":true},"environment":{"$undefined":true}}],"scratchWorkspacesRoot":"abc","allowAbsoluteLocalPreviewFile":true}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":":","codexHomePath":"./x/**/*.json","scratchWorkspacesRoot":"a:b:c./x/**/*.json","allowAbsoluteLocalPreviewFile":false,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":["x"],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"ünïcödé","cwd":null,"codexHomePath":{"homePath":"ab","accountId":{"$undefined":true}},"codexHomePaths":["line1\nline2",{"shadowHomePath":{"$undefined":true},"environment":null}],"scratchWorkspacesRoot":"hello","allowAbsoluteLocalPreviewFile":true,"previewGrant":"a.b.c"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"","cwd":"a😀b😀c","codexHomePath":{"shadowHomePath":"{name} has {count} itemssrc/a/b.ts","environment":{"$undefined":true}},"codexHomePaths":[],"scratchWorkspacesRoot":"tab\tseparated","previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"ns:key.path","codexHomePaths":[{"homePath":"src/a/b.ts","shadowHomePath":{"$undefined":true},"accountId":{"$undefined":true},"environment":null}],"scratchWorkspacesRoot":"İstanbula..b","allowAbsoluteLocalPreviewFile":false,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":"😀","scratchWorkspacesRoot":"hello world","allowAbsoluteLocalPreviewFile":true}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"{name} has {count} items","cwd":"a..b","codexHomePaths":[],"allowAbsoluteLocalPreviewFile":false}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"HELLO","cwd":"ΣΊΣΥΦΟΣ","codexHomePath":"ΣΊΣΥΦΟΣ","codexHomePaths":[{"shadowHomePath":"ab","accountId":{"$undefined":true},"environment":{"$undefined":true}},"ΣΊΣΥΦΟΣ",{"homePath":":","accountId":{"$undefined":true},"environment":null}],"scratchWorkspacesRoot":"a:b:c","previewGrant":"straße"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":{"shadowHomePath":"İstanbulünïcödé","accountId":{"$undefined":true},"environment":{"$undefined":true}},"codexHomePaths":[],"scratchWorkspacesRoot":"ab","previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[[]],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"é","codexHomePaths":["emoji 👍🏽 mix"],"scratchWorkspacesRoot":"tab\tseparated","allowAbsoluteLocalPreviewFile":true}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"  padded  ","cwd":null,"codexHomePaths":[{"homePath":"ΣΊΣΥΦΟΣ","shadowHomePath":"a..b","accountId":{"$undefined":true},"environment":{"$undefined":true}},{"homePath":{"$undefined":true},"shadowHomePath":"HELLO","accountId":{"$undefined":true},"environment":{"$undefined":true}},"a😀b😀c"]}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":"HELLOtrailing.","codexHomePaths":[],"scratchWorkspacesRoot":"é","allowAbsoluteLocalPreviewFile":false,"previewGrant":"line1\nline2"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"a":"b"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"hello","cwd":null,"codexHomePath":{"homePath":"{name} has {count} items","accountId":{"$undefined":true},"environment":{"10":"hello world"}},"scratchWorkspacesRoot":"hello","allowAbsoluteLocalPreviewFile":true}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"ns:key.path","cwd":"HELLO","codexHomePaths":["a",{"homePath":{"$undefined":true},"shadowHomePath":{"$undefined":true},"accountId":{"$undefined":true}},"hello"],"scratchWorkspacesRoot":"  padded  "}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":{"homePath":"日本語のテキスト","shadowHomePath":"ΣΊΣΥΦΟΣ","environment":{"$undefined":true}},"codexHomePaths":["trailing.",{"homePath":"{name} has {count} items","shadowHomePath":{"$undefined":true},"accountId":"éHELLO","environment":null},":"],"scratchWorkspacesRoot":":","previewGrant":"tab\tseparated"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"hello","cwd":"src/a/b.tstrailing.","allowAbsoluteLocalPreviewFile":false,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"hello","cwd":"a😀b😀c","codexHomePath":{"homePath":":","shadowHomePath":{"$undefined":true},"accountId":{"$undefined":true},"environment":{"$undefined":true}},"codexHomePaths":[],"allowAbsoluteLocalPreviewFile":true,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"İstanbul","cwd":"hello world","codexHomePaths":["Hello World",{"homePath":{"$undefined":true},"shadowHomePath":"a.b.c","accountId":{"$undefined":true},"environment":{"$undefined":true}},{"homePath":{"$undefined":true},"shadowHomePath":"Hello Worldünïcödé","accountId":{"$undefined":true},"environment":{"$undefined":true}}],"scratchWorkspacesRoot":"hello world","allowAbsoluteLocalPreviewFile":false,"previewGrant":"﻿bom"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"abé","codexHomePath":{"homePath":"ünïcödé","shadowHomePath":":","environment":{"nav":"line1\nline2tab\tseparated"}},"scratchWorkspacesRoot":"ns:key.path","previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":"straße","codexHomePaths":[".leadingkey_name-1"],"scratchWorkspacesRoot":".leading","allowAbsoluteLocalPreviewFile":false}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"./x/**/*.json","codexHomePath":{"homePath":{"$undefined":true},"shadowHomePath":"HELLO","accountId":"line1\nline2","environment":{"ünï":"é","b":"Hello World"}},"codexHomePaths":["  padded  trailing."],"scratchWorkspacesRoot":"a😀b😀c","allowAbsoluteLocalPreviewFile":true,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"abc","codexHomePath":"HELLO","codexHomePaths":[],"scratchWorkspacesRoot":"﻿bomsrc/a/b.ts","allowAbsoluteLocalPreviewFile":true,"previewGrant":"a:b:c"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":"ΣΊΣΥΦΟΣ","codexHomePaths":["  padded  ","a:b:c",":key_name-1"],"scratchWorkspacesRoot":"a.b.c","previewGrant":"é"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[0],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"ab","codexHomePath":"ünïcödé","previewGrant":"ünïcödé"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":{"shadowHomePath":{"$undefined":true},"accountId":{"$undefined":true}},"codexHomePaths":[],"scratchWorkspacesRoot":"a","previewGrant":"a..b"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"  padded  ","cwd":null,"codexHomePath":"abcHELLO","codexHomePaths":[{"homePath":"é","accountId":"key_name-1"},"key_name-1"],"scratchWorkspacesRoot":"emoji 👍🏽 mix","allowAbsoluteLocalPreviewFile":false,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"hello world","codexHomePaths":["ab"],"scratchWorkspacesRoot":"ns:key.path","previewGrant":"ab"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"HELLOa","cwd":"é","codexHomePath":{"homePath":"a😀b😀c","shadowHomePath":"abckey_name-1","accountId":"a:b:c"},"codexHomePaths":[],"scratchWorkspacesRoot":":","previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":"a:b:c","codexHomePaths":["ns:key.path"],"scratchWorkspacesRoot":"emoji 👍🏽 mix","allowAbsoluteLocalPreviewFile":false,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"日本語のテキスト","cwd":null,"codexHomePath":{"homePath":":","shadowHomePath":{"$undefined":true},"accountId":{"$undefined":true},"environment":{"$undefined":true}},"scratchWorkspacesRoot":"src/a/b.ts","allowAbsoluteLocalPreviewFile":true}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"ns:key.path","codexHomePath":{"homePath":{"$undefined":true},"shadowHomePath":{"$undefined":true},"accountId":{"$undefined":true},"environment":{"$undefined":true}},"previewGrant":"tab\tseparated"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"日本語のテキスト","allowAbsoluteLocalPreviewFile":true}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"key_name-1","cwd":null,"codexHomePath":{"homePath":"Hello World","accountId":"","environment":{"$undefined":true}},"codexHomePaths":[],"scratchWorkspacesRoot":"{name} has {count} items","allowAbsoluteLocalPreviewFile":false,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"İstanbul","cwd":null,"codexHomePath":{"homePath":{"$undefined":true},"accountId":{"$undefined":true},"environment":{"title":"a:b:c"}},"codexHomePaths":[{"homePath":"HELLO","shadowHomePath":{"$undefined":true},"environment":null},"abcé"]}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"Hello World","cwd":null,"codexHomePath":{"shadowHomePath":"./x/**/*.json","accountId":"HELLO","environment":{"$undefined":true}},"codexHomePaths":["HELLO"],"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"HELLO﻿bom","cwd":"😀ΣΊΣΥΦΟΣ","codexHomePath":{"accountId":{"$undefined":true},"environment":{"nav":"﻿bomhello world"}},"codexHomePaths":[{"shadowHomePath":{"$undefined":true},"accountId":"ns:key.patha😀b😀c"},"ΣΊΣΥΦΟΣa😀b😀c"],"scratchWorkspacesRoot":"straße","allowAbsoluteLocalPreviewFile":false,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"a😀b😀c","codexHomePath":"hellostraße","codexHomePaths":[{"homePath":{"$undefined":true},"shadowHomePath":"ΣΊΣΥΦΟΣ","accountId":"abc","environment":{"$undefined":true}},":"],"allowAbsoluteLocalPreviewFile":false}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"./x/**/*.json","codexHomePath":"","codexHomePaths":[{"homePath":{"$undefined":true},"shadowHomePath":"a😀b😀c","environment":{"$undefined":true}},"﻿bom","a"],"scratchWorkspacesRoot":"😀"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"tab\tseparated","cwd":"HELLO","codexHomePath":{"homePath":"a..b","shadowHomePath":"Hello World","environment":{"$undefined":true}},"codexHomePaths":["a😀b😀c",{"homePath":"a..b","shadowHomePath":"tab\tseparatedab","accountId":"key_name-1"}],"scratchWorkspacesRoot":"日本語のテキスト","allowAbsoluteLocalPreviewFile":false,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"abca.b.c","cwd":"line1\nline2","codexHomePaths":[],"scratchWorkspacesRoot":"","allowAbsoluteLocalPreviewFile":false,"previewGrant":":"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"line1\nline2","cwd":"a","codexHomePaths":["😀"],"scratchWorkspacesRoot":"line1\nline2src/a/b.ts","allowAbsoluteLocalPreviewFile":false,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":"hello","codexHomePaths":[],"scratchWorkspacesRoot":"Hello Worlda..b","previewGrant":"é"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":"abc","codexHomePaths":[{"shadowHomePath":"straße","accountId":"key_name-1"},"key_name-1abc"],"scratchWorkspacesRoot":"ns:key.path","allowAbsoluteLocalPreviewFile":false,"previewGrant":"aİstanbul"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"ünïcödé","cwd":null,"codexHomePaths":[],"scratchWorkspacesRoot":"emoji 👍🏽 mix","allowAbsoluteLocalPreviewFile":false,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"ΣΊΣΥΦΟΣ","cwd":"abc","codexHomePath":"ab","codexHomePaths":[],"scratchWorkspacesRoot":"日本語のテキストa.b.c","allowAbsoluteLocalPreviewFile":false,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"hello","codexHomePath":{"shadowHomePath":"ünïcödé","environment":{"$undefined":true}},"scratchWorkspacesRoot":"HELLO","allowAbsoluteLocalPreviewFile":true}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"a.b.ca:b:c","cwd":"hello","codexHomePaths":[{"accountId":".leading"},{"shadowHomePath":{"$undefined":true},"accountId":{"$undefined":true},"environment":null},{"shadowHomePath":"a.b.c","accountId":{"$undefined":true}}],"scratchWorkspacesRoot":"日本語のテキスト","allowAbsoluteLocalPreviewFile":true}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"  padded  ","cwd":null,"codexHomePath":{"shadowHomePath":{"$undefined":true},"accountId":{"$undefined":true}},"scratchWorkspacesRoot":"aünïcödé","allowAbsoluteLocalPreviewFile":true}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":"﻿bom  padded  ","scratchWorkspacesRoot":"straße","previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":{"homePath":"abc","shadowHomePath":{"$undefined":true},"accountId":"a..b","environment":{"ünï":"{name} has {count} items","a.b":"HELLO"}},"codexHomePaths":["src/a/b.ts","﻿bom"],"scratchWorkspacesRoot":"😀","allowAbsoluteLocalPreviewFile":true}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":":ab","codexHomePath":"","codexHomePaths":["😀","key_name-1"]}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"ünïcödé","cwd":null,"codexHomePath":"{name} has {count} items","previewGrant":"src/a/b.tshello world"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":":","codexHomePath":{"homePath":{"$undefined":true},"shadowHomePath":{"$undefined":true},"accountId":{"$undefined":true},"environment":{"$undefined":true}},"codexHomePaths":["ab"],"scratchWorkspacesRoot":"abc","allowAbsoluteLocalPreviewFile":true,"previewGrant":"😀"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePaths":[{"homePath":"hello","shadowHomePath":{"$undefined":true},"accountId":"straße","environment":null}],"scratchWorkspacesRoot":"日本語のテキスト./x/**/*.json","allowAbsoluteLocalPreviewFile":false}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"  padded  ","cwd":"hello","codexHomePath":"日本語のテキスト","codexHomePaths":["emoji 👍🏽 mix","line1\nline2"],"scratchWorkspacesRoot":"ab","previewGrant":"ns:key.path"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"ΣΊΣΥΦΟΣ","cwd":null,"codexHomePath":"Hello World","codexHomePaths":[],"allowAbsoluteLocalPreviewFile":true,"previewGrant":"tab\tseparated"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"  padded  ","cwd":"key_name-1","codexHomePath":{"accountId":"./x/**/*.json","environment":{}},"scratchWorkspacesRoot":"","allowAbsoluteLocalPreviewFile":true,"previewGrant":".leading"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":"😀","codexHomePaths":["emoji 👍🏽 mix","line1\nline2"],"scratchWorkspacesRoot":"  padded  ","allowAbsoluteLocalPreviewFile":true,"previewGrant":":"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"HELLO","cwd":"ab","codexHomePath":{"homePath":"key_name-1","shadowHomePath":{"$undefined":true},"environment":{"2":":","a":"hello world"}},"scratchWorkspacesRoot":"İstanbul","allowAbsoluteLocalPreviewFile":false,"previewGrant":"straße日本語のテキスト"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"Hello World","codexHomePath":"😀a","codexHomePaths":[{"homePath":"key_name-1","shadowHomePath":"a","accountId":":"},"a"],"allowAbsoluteLocalPreviewFile":false,"previewGrant":"a..b"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"﻿bom","codexHomePath":"é","codexHomePaths":["",{"homePath":"straße","shadowHomePath":"İstanbul","accountId":{"$undefined":true}}],"scratchWorkspacesRoot":"trailing.","allowAbsoluteLocalPreviewFile":true,"previewGrant":"{name} has {count} items"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"ΣΊΣΥΦΟΣns:key.path","codexHomePath":{"shadowHomePath":{"$undefined":true},"accountId":".leading","environment":{"$undefined":true}},"codexHomePaths":[{"homePath":"./x/**/*.json","shadowHomePath":{"$undefined":true},"accountId":{"$undefined":true}},"tab\tseparated","hello"],"scratchWorkspacesRoot":"key_name-1","allowAbsoluteLocalPreviewFile":true,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"﻿bom","cwd":"tab\tseparated","codexHomePaths":[{"homePath":{"$undefined":true},"shadowHomePath":{"$undefined":true},"accountId":"Hello World"},"Hello World"],"allowAbsoluteLocalPreviewFile":true,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"é","cwd":null,"codexHomePath":{"homePath":"./x/**/*.json","shadowHomePath":{"$undefined":true},"accountId":"ΣΊΣΥΦΟΣ"},"codexHomePaths":[{"homePath":"a:b:c","accountId":{"$undefined":true},"environment":{"$undefined":true}},{"homePath":"src/a/b.ts","accountId":{"$undefined":true},"environment":{"$undefined":true}}],"scratchWorkspacesRoot":"ünïcödé","allowAbsoluteLocalPreviewFile":false,"previewGrant":"hello world"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"ünïcödé","codexHomePath":{"shadowHomePath":"a😀b😀c","environment":{}},"scratchWorkspacesRoot":"a..b","allowAbsoluteLocalPreviewFile":true,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"😀","cwd":null,"codexHomePaths":[{"homePath":"trailing.","shadowHomePath":"a.b.c","accountId":{"$undefined":true},"environment":{"$undefined":true}},"ns:key.path"],"allowAbsoluteLocalPreviewFile":true,"previewGrant":"a.b.c"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"ns:key.path","codexHomePaths":["  padded  ","a.b.c","ΣΊΣΥΦΟΣ"],"scratchWorkspacesRoot":"hello","allowAbsoluteLocalPreviewFile":true,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"日本語のテキスト","codexHomePath":{"shadowHomePath":{"$undefined":true},"environment":{"ünï":"Hello World","home":"line1\nline2"}},"codexHomePaths":[{"homePath":"a:b:c","shadowHomePath":".leadingHELLO","accountId":"trailing.","environment":{"$undefined":true}}],"scratchWorkspacesRoot":"ab","allowAbsoluteLocalPreviewFile":false}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"emoji 👍🏽 mix","cwd":null,"codexHomePaths":[{"homePath":{"$undefined":true},"shadowHomePath":{"$undefined":true}},"Hello World",{"homePath":{"$undefined":true},"accountId":{"$undefined":true},"environment":null}],"allowAbsoluteLocalPreviewFile":false,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":"tab\tseparatedhello","scratchWorkspacesRoot":"日本語のテキスト","allowAbsoluteLocalPreviewFile":false,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"  padded  ","cwd":null,"codexHomePaths":[],"scratchWorkspacesRoot":"src/a/b.ts","allowAbsoluteLocalPreviewFile":false,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":"﻿bomab","codexHomePaths":["日本語のテキスト",{"homePath":{"$undefined":true},"shadowHomePath":"trailing.","accountId":"./x/**/*.json"}],"scratchWorkspacesRoot":"ab","allowAbsoluteLocalPreviewFile":true}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"a","codexHomePath":{"shadowHomePath":"abc"},"codexHomePaths":[{"homePath":"HELLO﻿bom"}],"allowAbsoluteLocalPreviewFile":true,"previewGrant":"src/a/b.ts"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"straße","cwd":null,"codexHomePaths":["ab","ab",{"accountId":"key_name-1./x/**/*.json","environment":null}],"allowAbsoluteLocalPreviewFile":true}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"é","cwd":null,"codexHomePath":{"homePath":":a.b.c","accountId":"﻿bom","environment":{"$undefined":true}},"codexHomePaths":[{"shadowHomePath":"Hello World","accountId":{"$undefined":true},"environment":null}],"scratchWorkspacesRoot":"HELLO","previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":"line1\nline2","codexHomePaths":["ünïcödé.leading"],"scratchWorkspacesRoot":"abc","allowAbsoluteLocalPreviewFile":true,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"tab\tseparated","cwd":null,"codexHomePaths":["a.b.c"],"scratchWorkspacesRoot":"a😀b😀cΣΊΣΥΦΟΣ","allowAbsoluteLocalPreviewFile":false,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":"straße","codexHomePaths":[],"scratchWorkspacesRoot":"😀","allowAbsoluteLocalPreviewFile":true,"previewGrant":"trailing."}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":":ΣΊΣΥΦΟΣ","cwd":null,"codexHomePath":{"homePath":{"$undefined":true},"shadowHomePath":"ünïcödé","accountId":{"$undefined":true},"environment":{"$undefined":true}},"scratchWorkspacesRoot":"é","allowAbsoluteLocalPreviewFile":true,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"tab\tseparated","cwd":null,"codexHomePath":"  padded  ","codexHomePaths":[{"shadowHomePath":{"$undefined":true},"environment":{"$undefined":true}}],"scratchWorkspacesRoot":"HELLO","allowAbsoluteLocalPreviewFile":true}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":"ab","codexHomePaths":[{"shadowHomePath":"src/a/b.ts","accountId":{"$undefined":true},"environment":null},{"shadowHomePath":{"$undefined":true},"accountId":{"$undefined":true},"environment":{"$undefined":true}},{"accountId":"ab","environment":null}],"scratchWorkspacesRoot":"hello","allowAbsoluteLocalPreviewFile":true,"previewGrant":"ΣΊΣΥΦΟΣ"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"abc","codexHomePath":"abc","codexHomePaths":["hello","HELLO﻿bom",{"shadowHomePath":"a:b:c","accountId":"😀","environment":null}],"allowAbsoluteLocalPreviewFile":false,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"  padded  ","codexHomePath":"ab","scratchWorkspacesRoot":"日本語のテキスト","allowAbsoluteLocalPreviewFile":true,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"{name} has {count} items","cwd":null,"codexHomePaths":["straße",{"homePath":"a..b","accountId":"Hello World","environment":{"$undefined":true}},{"homePath":"😀","shadowHomePath":"straße","accountId":"a😀b😀c"}],"allowAbsoluteLocalPreviewFile":false}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":"ab","codexHomePaths":[{"homePath":{"$undefined":true},"accountId":"a..b","environment":{"$undefined":true}},{"homePath":{"$undefined":true},"shadowHomePath":{"$undefined":true},"accountId":{"$undefined":true},"environment":{"$undefined":true}}],"scratchWorkspacesRoot":"a:b:c","previewGrant":"日本語のテキストabc"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"HELLO","cwd":null,"codexHomePaths":[],"scratchWorkspacesRoot":"key_name-1","allowAbsoluteLocalPreviewFile":false}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":{"homePath":"line1\nline2ΣΊΣΥΦΟΣ","shadowHomePath":{"$undefined":true},"accountId":{"$undefined":true}},"scratchWorkspacesRoot":"","allowAbsoluteLocalPreviewFile":false,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":"trailing.","codexHomePaths":[{"homePath":{"$undefined":true},"shadowHomePath":"﻿bom","accountId":{"$undefined":true}},"ΣΊΣΥΦΟΣé"],"scratchWorkspacesRoot":"a:b:c","previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":{"homePath":{"$undefined":true},"accountId":"ünïcödéünïcödé","environment":{"$undefined":true}},"codexHomePaths":[],"previewGrant":"HELLO"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"a..b","codexHomePath":"ab","codexHomePaths":["a😀b😀c"],"allowAbsoluteLocalPreviewFile":false,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"hello world","codexHomePath":{"homePath":{"$undefined":true},"shadowHomePath":"key_name-1","accountId":"hello world","environment":{"$undefined":true}},"codexHomePaths":[],"allowAbsoluteLocalPreviewFile":true,"previewGrant":"a😀b😀c"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"./x/**/*.json","codexHomePath":{"homePath":"hello world","shadowHomePath":{"$undefined":true},"accountId":{"$undefined":true},"environment":{"2":"😀","a":"line1\nline2"}},"codexHomePaths":[],"allowAbsoluteLocalPreviewFile":true}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"İstanbul","cwd":null,"codexHomePaths":[{"homePath":"ünïcödé","accountId":{"$undefined":true},"environment":{"$undefined":true}},{"shadowHomePath":"./x/**/*.json","accountId":"a😀b😀c日本語のテキスト"}],"scratchWorkspacesRoot":"é","allowAbsoluteLocalPreviewFile":false,"previewGrant":"emoji 👍🏽 mix"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"key_name-1","codexHomePath":"  padded  ","codexHomePaths":[{"homePath":{"$undefined":true},"environment":{"$undefined":true}},{"homePath":{"$undefined":true},"shadowHomePath":"{name} has {count} items","accountId":"ünïcödé","environment":{"$undefined":true}}],"allowAbsoluteLocalPreviewFile":true,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"abc","codexHomePaths":["ns:key.path"],"scratchWorkspacesRoot":"  padded  ","allowAbsoluteLocalPreviewFile":true,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"ns:key.path","cwd":null,"codexHomePaths":[],"scratchWorkspacesRoot":"{name} has {count} items","allowAbsoluteLocalPreviewFile":true}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":{"homePath":"İstanbul","shadowHomePath":{"$undefined":true},"accountId":"ab","environment":{"$undefined":true}},"codexHomePaths":[{"accountId":"emoji 👍🏽 mix","environment":null}],"scratchWorkspacesRoot":"İstanbul","allowAbsoluteLocalPreviewFile":false,"previewGrant":".leadinga.b.c"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"src/a/b.ts","cwd":"emoji 👍🏽 mix","codexHomePath":{"shadowHomePath":{"$undefined":true},"environment":{"a.b":"src/a/b.ts","title":"tab\tseparated"}},"codexHomePaths":[{"homePath":"a.b.c","shadowHomePath":"ns:key.path","accountId":{"$undefined":true}},{"homePath":"","shadowHomePath":{"$undefined":true},"environment":null}],"scratchWorkspacesRoot":"a😀b😀c","allowAbsoluteLocalPreviewFile":true,"previewGrant":"line1\nline2"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"日本語のテキスト","codexHomePath":"line1\nline2","codexHomePaths":["İstanbul","a",{"homePath":{"$undefined":true},"shadowHomePath":"src/a/b.ts","accountId":"a😀b😀cline1\nline2","environment":{"$undefined":true}}],"scratchWorkspacesRoot":"{name} has {count} items","allowAbsoluteLocalPreviewFile":false}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"./x/**/*.json","codexHomePath":{"homePath":"😀","shadowHomePath":{"$undefined":true},"accountId":"","environment":{"$undefined":true}},"codexHomePaths":[{"homePath":{"$undefined":true},"shadowHomePath":{"$undefined":true},"accountId":{"$undefined":true}},{"homePath":{"$undefined":true},"shadowHomePath":{"$undefined":true},"environment":{"$undefined":true}}],"scratchWorkspacesRoot":"key_name-1"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"日本語のテキスト","cwd":null,"codexHomePaths":["abc"],"scratchWorkspacesRoot":"日本語のテキスト","allowAbsoluteLocalPreviewFile":true}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"﻿bom😀","cwd":null,"codexHomePath":{"homePath":"hello world","accountId":{"$undefined":true},"environment":{"home":"a..b","ünï":"İstanbul"}},"scratchWorkspacesRoot":"﻿bom","allowAbsoluteLocalPreviewFile":false}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"😀","codexHomePath":"emoji 👍🏽 mix","codexHomePaths":[],"scratchWorkspacesRoot":"a.b.cstraße","previewGrant":"  padded  line1\nline2"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"emoji 👍🏽 mix","codexHomePath":{"homePath":{"$undefined":true},"shadowHomePath":{"$undefined":true},"accountId":"﻿bom"},"codexHomePaths":["{name} has {count} items","日本語のテキスト",{"homePath":".leading","shadowHomePath":{"$undefined":true},"accountId":"Hello World"}],"scratchWorkspacesRoot":"HELLO","allowAbsoluteLocalPreviewFile":true,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"key_name-1","cwd":null,"codexHomePath":{"shadowHomePath":"﻿bom","accountId":"İstanbul"},"codexHomePaths":[],"scratchWorkspacesRoot":"İstanbul","allowAbsoluteLocalPreviewFile":false,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"hello world","cwd":"./x/**/*.json","codexHomePath":{"homePath":"abc","shadowHomePath":"{name} has {count} items","environment":{"$undefined":true}},"codexHomePaths":["abΣΊΣΥΦΟΣ"],"scratchWorkspacesRoot":"ünïcödé","allowAbsoluteLocalPreviewFile":true,"previewGrant":"é"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"ab","codexHomePath":{"homePath":{"$undefined":true},"shadowHomePath":{"$undefined":true},"accountId":"key_name-1","environment":{"😀":"ünïcödéİstanbul","b":"a😀b😀c","home":"日本語のテキスト"}},"codexHomePaths":[],"previewGrant":"ns:key.patha😀b😀c"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"tab\tseparated😀","codexHomePath":{"accountId":{"$undefined":true}},"allowAbsoluteLocalPreviewFile":true,"previewGrant":"ab"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":{"shadowHomePath":"abemoji 👍🏽 mix","accountId":"emoji 👍🏽 mix"},"scratchWorkspacesRoot":"tab\tseparated","allowAbsoluteLocalPreviewFile":true,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":{"homePath":{"$undefined":true},"accountId":"ns:key.path","environment":{}},"codexHomePaths":[{"homePath":{"$undefined":true},"accountId":{"$undefined":true},"environment":{"$undefined":true}},{"homePath":"key_name-1","shadowHomePath":"ab","accountId":{"$undefined":true},"environment":{"$undefined":true}}],"scratchWorkspacesRoot":"straße"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":".leading","cwd":"Hello World","codexHomePath":":","scratchWorkspacesRoot":"trailing.","allowAbsoluteLocalPreviewFile":false,"previewGrant":"a"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePaths":[],"scratchWorkspacesRoot":"hello world","allowAbsoluteLocalPreviewFile":true,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"emoji 👍🏽 mix","codexHomePath":{"homePath":"﻿bom","shadowHomePath":"😀","accountId":"abtrailing.","environment":{"$undefined":true}},"previewGrant":"hello"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":{"homePath":{"$undefined":true},"shadowHomePath":"","environment":{"$undefined":true}},"codexHomePaths":["a",{"homePath":"","shadowHomePath":{"$undefined":true},"accountId":{"$undefined":true},"environment":{"$undefined":true}},{"homePath":"line1\nline2","environment":{"$undefined":true}}],"scratchWorkspacesRoot":"İstanbul","allowAbsoluteLocalPreviewFile":false,"previewGrant":"line1\nline2"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"hello world","cwd":null,"codexHomePath":"HELLOa:b:c","codexHomePaths":["﻿bom"],"scratchWorkspacesRoot":"日本語のテキスト","allowAbsoluteLocalPreviewFile":false,"previewGrant":"é"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"a..b","cwd":null,"codexHomePath":"a.b.c","codexHomePaths":["😀","a"],"scratchWorkspacesRoot":":ns:key.path","allowAbsoluteLocalPreviewFile":false,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":{"shadowHomePath":{"$undefined":true},"accountId":"helloİstanbul","environment":{"$undefined":true}},"codexHomePaths":[],"scratchWorkspacesRoot":"straße","allowAbsoluteLocalPreviewFile":false,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":{"homePath":"abc","shadowHomePath":{"$undefined":true},"accountId":{"$undefined":true},"environment":{"a":"./x/**/*.json","home":"tab\tseparated"}},"codexHomePaths":[],"allowAbsoluteLocalPreviewFile":false,"previewGrant":"abc"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"straße","cwd":null,"codexHomePaths":[],"scratchWorkspacesRoot":"a😀b😀c","allowAbsoluteLocalPreviewFile":false,"previewGrant":"é日本語のテキスト"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":{"homePath":"😀","shadowHomePath":"😀","accountId":{"$undefined":true},"environment":{"$undefined":true}},"scratchWorkspacesRoot":"tab\tseparated","allowAbsoluteLocalPreviewFile":true,"previewGrant":"helloline1\nline2"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"straßeab","codexHomePath":{"shadowHomePath":"日本語のテキスト","environment":{"a.b":":","title":"straße"}},"codexHomePaths":["ns:key.path",{"shadowHomePath":{"$undefined":true},"environment":null}],"scratchWorkspacesRoot":"hello","allowAbsoluteLocalPreviewFile":false,"previewGrant":"HELLO"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":{"homePath":"trailing.","shadowHomePath":"","accountId":{"$undefined":true}},"codexHomePaths":["日本語のテキスト"],"scratchWorkspacesRoot":"{name} has {count} items","allowAbsoluteLocalPreviewFile":true,"previewGrant":"é"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePaths":[],"scratchWorkspacesRoot":"","allowAbsoluteLocalPreviewFile":false,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"hello","cwd":null,"codexHomePath":"src/a/b.ts","scratchWorkspacesRoot":"日本語のテキスト","allowAbsoluteLocalPreviewFile":false,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"HELLO","cwd":null,"codexHomePaths":[{"shadowHomePath":"日本語のテキスト","accountId":{"$undefined":true},"environment":{"$undefined":true}},{"homePath":{"$undefined":true},"accountId":{"$undefined":true},"environment":{"$undefined":true}}],"scratchWorkspacesRoot":"hello","allowAbsoluteLocalPreviewFile":true}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":{"homePath":{"$undefined":true}},"scratchWorkspacesRoot":"HELLO","allowAbsoluteLocalPreviewFile":true,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"Hello World","cwd":"line1\nline2","codexHomePath":{"homePath":"straße"},"scratchWorkspacesRoot":"  padded  ﻿bom","allowAbsoluteLocalPreviewFile":true,"previewGrant":"Hello World"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"./x/**/*.json","cwd":"trailing.a","codexHomePath":{"environment":{"10":"ünïcödé","nav":"İstanbul","a":"a😀b😀ca:b:c"}},"codexHomePaths":["HELLO",":",{"homePath":{"$undefined":true},"shadowHomePath":"  padded  "}],"scratchWorkspacesRoot":"trailing.","allowAbsoluteLocalPreviewFile":true,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":"hello world","codexHomePaths":[{"homePath":"trailing.﻿bom","shadowHomePath":{"$undefined":true},"accountId":{"$undefined":true},"environment":{"$undefined":true}},{"shadowHomePath":{"$undefined":true},"environment":null},{"homePath":{"$undefined":true},"shadowHomePath":{"$undefined":true},"accountId":{"$undefined":true}}],"allowAbsoluteLocalPreviewFile":true,"previewGrant":""}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"trailing.","codexHomePath":{"homePath":{"$undefined":true},"shadowHomePath":{"$undefined":true},"accountId":"é","environment":{"a.b":"HELLO"}},"codexHomePaths":[],"scratchWorkspacesRoot":"ab","allowAbsoluteLocalPreviewFile":true,"previewGrant":"a😀b😀c"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":"emoji 👍🏽 mixab","codexHomePaths":[],"scratchWorkspacesRoot":"{name} has {count} items","allowAbsoluteLocalPreviewFile":true,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":{"homePath":{"$undefined":true},"accountId":{"$undefined":true},"environment":{"$undefined":true}},"codexHomePaths":[{}],"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"ab","cwd":null,"codexHomePath":"日本語のテキストab","codexHomePaths":[],"scratchWorkspacesRoot":"src/a/b.ts"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePaths":["İstanbul"],"scratchWorkspacesRoot":"tab\tseparated","allowAbsoluteLocalPreviewFile":false,"previewGrant":"src/a/b.ts"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"a:b:c","cwd":"  padded  ","codexHomePath":{"homePath":{"$undefined":true},"environment":{"$undefined":true}},"scratchWorkspacesRoot":"a..b","allowAbsoluteLocalPreviewFile":true}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"straße","cwd":null,"codexHomePath":{"homePath":"  padded  ns:key.path","shadowHomePath":"ünïcödé","environment":{"$undefined":true}},"scratchWorkspacesRoot":"trailing.","previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"İstanbul","cwd":"emoji 👍🏽 mixé","codexHomePath":"a..b","codexHomePaths":[],"scratchWorkspacesRoot":"{name} has {count} itemsa.b.c","allowAbsoluteLocalPreviewFile":false,"previewGrant":"src/a/b.ts"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"hello","cwd":null,"codexHomePath":"ünïcödésrc/a/b.ts","codexHomePaths":[{"homePath":{"$undefined":true},"shadowHomePath":{"$undefined":true},"environment":{"$undefined":true}}],"scratchWorkspacesRoot":"straße","allowAbsoluteLocalPreviewFile":false,"previewGrant":null}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"Hello World","cwd":".leading","codexHomePaths":[],"allowAbsoluteLocalPreviewFile":false}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"hello world","cwd":"ab","codexHomePath":"emoji 👍🏽 mixline1\nline2","scratchWorkspacesRoot":"./x/**/*.json","previewGrant":""}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"hello world","cwd":null,"codexHomePath":{"homePath":{"$undefined":true},"shadowHomePath":"  padded  é","environment":{"2":"abc","nav":"line1\nline2","a":"a😀b😀c"}},"codexHomePaths":[{"homePath":{"$undefined":true},"shadowHomePath":"﻿bom"},{"shadowHomePath":"line1\nline2","accountId":"ünïcödé","environment":{"$undefined":true}}],"scratchWorkspacesRoot":"abc","allowAbsoluteLocalPreviewFile":true,"previewGrant":"a..b"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":"ünïcödé","codexHomePath":".leading","allowAbsoluteLocalPreviewFile":true}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":null,"cwd":null,"codexHomePath":"a","scratchWorkspacesRoot":"tab\tseparated","allowAbsoluteLocalPreviewFile":false,"previewGrant":"éé"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"straße","cwd":"﻿bomabc","codexHomePath":{"shadowHomePath":{"$undefined":true},"accountId":{"$undefined":true},"environment":{"$undefined":true}},"codexHomePaths":[],"scratchWorkspacesRoot":"  padded  ","allowAbsoluteLocalPreviewFile":true,"previewGrant":"emoji 👍🏽 mix"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"😀","cwd":"","codexHomePath":{"environment":{}},"codexHomePaths":["a:b:c"],"scratchWorkspacesRoot":"a{name} has {count} items","allowAbsoluteLocalPreviewFile":false,"previewGrant":"emoji 👍🏽 mix"}],"ok":null}
+{"fn":"resolveAllowedLocalPreviewFile","args":[{"requestedPath":"﻿bomkey_name-1","cwd":null,"codexHomePath":"a","scratchWorkspacesRoot":"ΣΊΣΥΦΟΣ","previewGrant":"abc"}],"ok":null}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"ns:key.path","cwd":".leading","homeDir":"a😀b😀c"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"Hello World","cwd":"HELLO","homeDir":"ünïcödé","worktreeRoots":["日本語のテキスト","abc",".leading.leading"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[0],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"key_name-1","cwd":"hello worldemoji 👍🏽 mix","homeDir":":","worktreeRoots":["emoji 👍🏽 mix"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"tab\tseparated","cwd":"line1\nline2","homeDir":"abc"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"﻿bom","cwd":"line1\nline2","homeDir":"{name} has {count} itemsstraße","worktreeRoots":[]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"ΣΊΣΥΦΟΣ","cwd":"","worktreeRoots":["key_name-1","é"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":":","worktreeRoots":["","  padded  ","İstanbul"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"line1\nline2straße","cwd":":","worktreeRoots":["ns:key.path",":"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"  padded  ","cwd":"  padded  ","homeDir":"ns:key.path","worktreeRoots":["trailing.","hello world"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"emoji 👍🏽 mix","worktreeRoots":[".leading","Hello World"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"a😀b😀c","cwd":"trailing."}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"","homeDir":"😀","worktreeRoots":["😀ünïcödé","a.b.c",":"]}],"error":"Invalid local preview path."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"ünïcödé","homeDir":"./x/**/*.json","worktreeRoots":[]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"trailing.","homeDir":"﻿bom","worktreeRoots":[]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"ab","cwd":"﻿bom","homeDir":"straße"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"a..b","cwd":"a..b","homeDir":"straßehello","worktreeRoots":["hello world","src/a/b.tsstraße"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"a.b.c","cwd":"emoji 👍🏽 mixtab\tseparated","homeDir":"line1\nline2"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"abc","cwd":"a:b:ctab\tseparated","homeDir":"ünïcödé","worktreeRoots":[]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"trailing.","worktreeRoots":[]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"straße","cwd":"abc","homeDir":"ünïcödé"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"﻿bom","cwd":"﻿bom","homeDir":"a"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"src/a/b.tsa","cwd":":😀","homeDir":"","worktreeRoots":["a:b:c"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[null],"error":"Cannot read properties of null (reading 'requestedPath')"}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"😀","cwd":"aba..b","homeDir":":key_name-1","worktreeRoots":[]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":".leadinghello world","homeDir":"😀","worktreeRoots":[]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"straße","worktreeRoots":["ns:key.path"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"emoji 👍🏽 mix","cwd":"abc","homeDir":"é"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"line1\nline2日本語のテキスト","cwd":"a..b./x/**/*.json","homeDir":"a.b.c"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"{name} has {count} items","cwd":"straße","homeDir":"﻿bom","worktreeRoots":[]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"﻿bom","cwd":"ünïcödé","homeDir":"{name} has {count} items","worktreeRoots":[":a","a😀b😀c"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"abc","cwd":"ab","homeDir":"hello"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"line1\nline2","cwd":".leadinga","worktreeRoots":["tab\tseparated","line1\nline2","ΣΊΣΥΦΟΣ"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"a😀b😀c","cwd":"emoji 👍🏽 mix","homeDir":"﻿bom日本語のテキスト","worktreeRoots":["日本語のテキストab","﻿bom"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"abcab","cwd":"ns:key.pathhello world","homeDir":"😀","worktreeRoots":["","tab\tseparated","  padded  "]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"{name} has {count} items","cwd":"straße","homeDir":"line1\nline2","worktreeRoots":["ünïcödéline1\nline2"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"ünïcödé","cwd":"emoji 👍🏽 mixsrc/a/b.ts","homeDir":"key_name-1","worktreeRoots":["src/a/b.tsHELLO","{name} has {count} items",".leading"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"abc","cwd":".leading","worktreeRoots":["{name} has {count} items","😀","line1\nline2"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"src/a/b.tsHello World","cwd":"tab\tseparated","homeDir":"日本語のテキスト  padded  "}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"a.b.c","cwd":":"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"a.b.c","homeDir":"a:b:c","worktreeRoots":["","  padded  "]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"é","cwd":"hello"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"ΣΊΣΥΦΟΣ","cwd":"","homeDir":"İstanbul"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"key_name-1","cwd":"Hello World"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":["x"],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"Hello World","cwd":"ns:key.pathstraße","worktreeRoots":["HELLO","a","é"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"straße","cwd":"./x/**/*.json","homeDir":"Hello World","worktreeRoots":["ns:key.path","straße"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"line1\nline2trailing.","cwd":"./x/**/*.jsonline1\nline2","homeDir":"hello world"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"İstanbul","cwd":"aHello World","homeDir":"src/a/b.ts"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"a:b:c","cwd":"a.b.c","homeDir":"key_name-1﻿bom"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"ab","cwd":"trailing.a:b:c","worktreeRoots":[]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"abc","homeDir":"helloa:b:c"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"a:b:cstraße","cwd":"{name} has {count} items","worktreeRoots":[]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"abc","cwd":"İstanbul","homeDir":"src/a/b.ts"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"日本語のテキスト","homeDir":"a..b","worktreeRoots":["a.b.chello"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"Hello World","cwd":"a","homeDir":"hello world","worktreeRoots":["a..b"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"﻿bom","cwd":"a..b😀","worktreeRoots":["a.b.c","key_name-1","hello"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"a😀b😀c","cwd":"line1\nline2","homeDir":".leading","worktreeRoots":["İstanbul"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"emoji 👍🏽 mixa.b.c","cwd":"./x/**/*.jsona..b","worktreeRoots":["  padded  İstanbul","a😀b😀c"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"İstanbultrailing.","cwd":"ab","homeDir":"./x/**/*.json"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"src/a/b.tsa😀b😀c","worktreeRoots":["😀"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"a.b.c","cwd":"ns:key.path","homeDir":"Hello World","worktreeRoots":["é"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"ns:key.path","worktreeRoots":["﻿bom","ab","hello"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"abc","cwd":"Hello World","homeDir":"ab./x/**/*.json","worktreeRoots":["{name} has {count} itemsé","日本語のテキスト","a"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"a..b","cwd":"ab","homeDir":"a.b.c"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"日本語のテキスト","worktreeRoots":["ΣΊΣΥΦΟΣ",":","ab"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"ab","cwd":"tab\tseparated","homeDir":"ns:key.path"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"emoji 👍🏽 mixtab\tseparated","cwd":"emoji 👍🏽 mix","homeDir":"hello","worktreeRoots":["key_name-1"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"a😀b😀c","cwd":"Hello World{name} has {count} items","worktreeRoots":["line1\nline2./x/**/*.json","a:b:c"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"hello world","cwd":"abc","homeDir":"a.b.c","worktreeRoots":["ab",".leading"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"tab\tseparated","cwd":"{name} has {count} items"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"日本語のテキスト","homeDir":"İstanbul","worktreeRoots":["key_name-1","﻿bom","key_name-1straße"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"ünïcödé","cwd":"ns:key.path","homeDir":"hello","worktreeRoots":["a😀b😀c","ünïcödéé"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"hello","cwd":"{name} has {count} items","homeDir":"  padded  "}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"straße","cwd":"ns:key.path","homeDir":"Hello World","worktreeRoots":["abc","tab\tseparated",":"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"./x/**/*.json","cwd":"日本語のテキストkey_name-1","homeDir":"./x/**/*.json"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"ab","cwd":"é","homeDir":"😀","worktreeRoots":["ΣΊΣΥΦΟΣ"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"src/a/b.ts","cwd":"trailing.a😀b😀c","homeDir":":"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"tab\tseparated","cwd":"","worktreeRoots":["  padded  ","  padded  "]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"a..bsrc/a/b.ts","cwd":"a:b:c","worktreeRoots":[]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":".leading","cwd":"","homeDir":"tab\tseparated  padded  ","worktreeRoots":["emoji 👍🏽 mix","line1\nline2"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"ab","homeDir":"é"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"﻿bom","cwd":"line1\nline2","worktreeRoots":["HELLO","./x/**/*.json","日本語のテキストab"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"line1\nline2","worktreeRoots":["İstanbul"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"trailing.","cwd":"straße","homeDir":"a","worktreeRoots":["Hello Worldkey_name-1","emoji 👍🏽 mix"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"hello world","cwd":"日本語のテキスト","homeDir":"é","worktreeRoots":[]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"é","cwd":"tab\tseparated","homeDir":"😀","worktreeRoots":[".leading","a.b.c","src/a/b.ts./x/**/*.json"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"HELLOé","homeDir":"{name} has {count} items","worktreeRoots":["ns:key.path","straße  padded  ","é"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"Hello World","cwd":"a:b:c","homeDir":"","worktreeRoots":["Hello World","a:b:c","İstanbul"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"a{name} has {count} items","homeDir":"trailing."}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"😀","cwd":"hello world","homeDir":"a","worktreeRoots":["{name} has {count} items","{name} has {count} items"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"abc  padded  ","homeDir":"src/a/b.ts","worktreeRoots":["hello","a😀b😀c","line1\nline2"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"abc","cwd":".leading","homeDir":"ünïcödé","worktreeRoots":["hello world"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"tab\tseparated"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"hello world","homeDir":"hello world","worktreeRoots":["ΣΊΣΥΦΟΣ"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"hello world","cwd":".leading","homeDir":"ab","worktreeRoots":[]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"é","cwd":"hello","homeDir":"﻿bom","worktreeRoots":["line1\nline2","a.b.c"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"ab","cwd":"abc","homeDir":"a.b.cHELLO","worktreeRoots":["emoji 👍🏽 mix"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"line1\nline2","cwd":"éhello world","homeDir":"./x/**/*.jsonab","worktreeRoots":[]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"HELLOhello world","cwd":"tab\tseparated","homeDir":"a:b:c","worktreeRoots":["ünïcödé","a.b.c","{name} has {count} items"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"ab","cwd":"a..b","homeDir":"astraße","worktreeRoots":["ΣΊΣΥΦΟΣ","a:b:ca..b"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"a.b.c","homeDir":"emoji 👍🏽 mix","worktreeRoots":["日本語のテキスト","hello world"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"hello","homeDir":"a:b:c"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"  padded  ","cwd":".leading  padded  ","homeDir":"trailing.","worktreeRoots":["line1\nline2"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"ns:key.path","cwd":"key_name-1","homeDir":"a.b.c"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"日本語のテキスト","homeDir":"hello","worktreeRoots":[]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"Hello World","cwd":"emoji 👍🏽 mix","homeDir":"ns:key.path"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"a","cwd":"abc","homeDir":":.leading","worktreeRoots":["a.b.c","HELLO./x/**/*.json"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"abc","cwd":"line1\nline2","homeDir":"abc","worktreeRoots":[]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"ΣΊΣΥΦΟΣ","cwd":"﻿bom","homeDir":"key_name-1emoji 👍🏽 mix","worktreeRoots":[]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"é","homeDir":"line1\nline2","worktreeRoots":["a"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":":","homeDir":"src/a/b.ts","worktreeRoots":["a.b.c","😀"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"abc","cwd":"ns:key.pathhello","homeDir":"a..b","worktreeRoots":["日本語のテキスト"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"😀","cwd":".leading","homeDir":".leading","worktreeRoots":["abc","emoji 👍🏽 mixa:b:c","line1\nline2"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"日本語のテキストhello world","cwd":"astraße","homeDir":"hello","worktreeRoots":["İstanbul","key_name-1key_name-1"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"hello","homeDir":"src/a/b.ts","worktreeRoots":["ns:key.path","a.b.c","é"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"hello world","cwd":"Hello World","homeDir":"  padded  é","worktreeRoots":["key_name-1src/a/b.ts","{name} has {count} items"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"emoji 👍🏽 mix","cwd":"src/a/b.ts./x/**/*.json","homeDir":"a😀b😀c","worktreeRoots":["﻿bom","src/a/b.ts","a"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"a.b.c","cwd":"src/a/b.ts日本語のテキスト","homeDir":"a.b.c","worktreeRoots":["a.b.c","Hello World","HELLO"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"line1\nline2","homeDir":"Hello World","worktreeRoots":["{name} has {count} items","HELLO","abc"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"tab\tseparated","cwd":"a.b.c"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"","cwd":"a","homeDir":"tab\tseparated"}],"error":"Invalid local preview path."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"日本語のテキスト﻿bom","worktreeRoots":["日本語のテキスト","a😀b😀c"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"ünïcödé","cwd":"tab\tseparated","homeDir":"tab\tseparated","worktreeRoots":[]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"./x/**/*.json","cwd":"emoji 👍🏽 mix"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"./x/**/*.json","cwd":"a😀b😀c","homeDir":"😀","worktreeRoots":["a😀b😀c","日本語のテキスト","😀"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"a..bsrc/a/b.ts","cwd":"﻿bom","homeDir":"a..b","worktreeRoots":["a.b.c"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"src/a/b.ts","cwd":"emoji 👍🏽 mix","homeDir":"a:b:c"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"😀","cwd":"trailing.","homeDir":"a😀b😀c","worktreeRoots":[]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"é","cwd":"key_name-1abc","worktreeRoots":["./x/**/*.jsonhello world","a😀b😀c",""]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"ΣΊΣΥΦΟΣa","cwd":"a.b.c","homeDir":"","worktreeRoots":["straßehello","Hello World","ns:key.path"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"tab\tseparated","worktreeRoots":["HELLO","a","line1\nline2"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"emoji 👍🏽 mixa..b","homeDir":"hello world","worktreeRoots":["😀","hello worlda😀b😀c"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"éline1\nline2","homeDir":"ünïcödéemoji 👍🏽 mix","worktreeRoots":["emoji 👍🏽 mix","a😀b😀c"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"./x/**/*.json","homeDir":"hello","worktreeRoots":[]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"a.b.c","cwd":"./x/**/*.json","worktreeRoots":["😀","日本語のテキスト","hello"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"a.b.c","homeDir":"é./x/**/*.json","worktreeRoots":["﻿bom","﻿bom"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"abc","cwd":"a😀b😀cHELLO","homeDir":"😀"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"tab\tseparated","cwd":"😀trailing.","homeDir":"Hello World","worktreeRoots":["HELLOa😀b😀c","src/a/b.ts",":"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"src/a/b.ts","cwd":"日本語のテキスト","worktreeRoots":["日本語のテキスト:","ns:key.path"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"é","cwd":":tab\tseparated","worktreeRoots":["﻿bom"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"HELLO","cwd":"Hello Worldstraße","homeDir":"line1\nline2","worktreeRoots":["abc"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"abc","cwd":"a","homeDir":"ΣΊΣΥΦΟΣ"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":":src/a/b.ts","cwd":"﻿bom","homeDir":"日本語のテキスト","worktreeRoots":["a😀b😀csrc/a/b.ts","ab"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"src/a/b.ts","cwd":"key_name-1﻿bom","homeDir":"hello  padded  "}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"key_name-1","cwd":":","homeDir":"ns:key.path","worktreeRoots":["a:b:c","./x/**/*.json"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"./x/**/*.jsonkey_name-1","cwd":"a:b:c./x/**/*.json","homeDir":"line1\nline2"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"a.b.c","cwd":"line1\nline2ns:key.path","homeDir":"straße","worktreeRoots":["ΣΊΣΥΦΟΣ","😀"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"a:b:c","cwd":"key_name-1"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"a..b","cwd":"hello world","worktreeRoots":["{name} has {count} items","{name} has {count} items","line1\nline2"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"emoji 👍🏽 mix","cwd":"a😀b😀c","worktreeRoots":["ünïcödé"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"﻿bom","cwd":"ünïcödé","worktreeRoots":[".leading"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"emoji 👍🏽 mix","cwd":"aab","homeDir":"abc","worktreeRoots":[]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"﻿bom","cwd":"a..b","homeDir":"﻿bom","worktreeRoots":["tab\tseparatedsrc/a/b.ts"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"ab","cwd":"","homeDir":"{name} has {count} itemssrc/a/b.ts","worktreeRoots":["é"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"ΣΊΣΥΦΟΣHELLO","cwd":"hello","homeDir":".leading","worktreeRoots":["😀","  padded  "]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"  padded  ","cwd":"Hello World","homeDir":"ns:key.path","worktreeRoots":[".leading","a.b.c","a😀b😀c"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"trailing.Hello World","cwd":"  padded  emoji 👍🏽 mix","homeDir":"tab\tseparated  padded  "}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"a😀b😀c","cwd":"straße","homeDir":"a😀b😀cab","worktreeRoots":["trailing.  padded  "]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"hello","cwd":"hello","homeDir":"./x/**/*.jsonhello world","worktreeRoots":[]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"a😀b😀c","worktreeRoots":["line1\nline2"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"a😀b😀c","cwd":"ΣΊΣΥΦΟΣ","homeDir":"ünïcödé","worktreeRoots":["a","ab","a😀b😀c"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"trailing.","homeDir":"abc","worktreeRoots":["😀"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":".leading","cwd":"trailing.","homeDir":"ab","worktreeRoots":["trailing."]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"trailing.","cwd":"日本語のテキスト","homeDir":"Hello World","worktreeRoots":["abc",""]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":".leading","cwd":"","worktreeRoots":[".leading","a.b.c","😀a.b.c"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"a.b.cHello World","cwd":".leading","homeDir":"﻿bom","worktreeRoots":["{name} has {count} itemsHello World"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"trailing.","homeDir":"a😀b😀c"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[[]],"error":"Cannot read properties of undefined (reading 'trim')"}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"HELLO","worktreeRoots":["abc","﻿bom","src/a/b.ts"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"{name} has {count} items","homeDir":"Hello World"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"{name} has {count} itemsstraße","cwd":"","homeDir":"src/a/b.ts","worktreeRoots":["a😀b😀c","ab","日本語のテキスト"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"Hello Worldline1\nline2","cwd":"src/a/b.ts","homeDir":"straßeΣΊΣΥΦΟΣ","worktreeRoots":[]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"HELLO","cwd":"a","homeDir":"  padded  ","worktreeRoots":["HELLOa","tab\tseparated","a:b:cab"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"{name} has {count} items","cwd":"HELLO","worktreeRoots":[]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"./x/**/*.json","homeDir":"./x/**/*.json","worktreeRoots":["emoji 👍🏽 mix",".leading","ünïcödéline1\nline2"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"emoji 👍🏽 mix","cwd":"a:b:c","homeDir":"a"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"Hello World","cwd":"src/a/b.tsab","homeDir":"line1\nline2","worktreeRoots":[]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"日本語のテキスト","cwd":"src/a/b.tsé","homeDir":"straße","worktreeRoots":[]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"Hello World","homeDir":"src/a/b.ts","worktreeRoots":["emoji 👍🏽 mix","ns:key.pathtrailing.","  padded  "]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"hello","homeDir":"HELLO","worktreeRoots":[]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"ünïcödé","worktreeRoots":[]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"abc","cwd":"a.b.c","homeDir":"a"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"hello world","cwd":"ünïcödé","homeDir":"a.b.ctab\tseparated","worktreeRoots":[]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"hello world","cwd":"line1\nline2","worktreeRoots":[]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"  padded  ./x/**/*.json","cwd":"hello world","homeDir":"﻿bom"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"abc","cwd":":","homeDir":"ab😀","worktreeRoots":["ns:key.pathé"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"Hello World","homeDir":"emoji 👍🏽 mix"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"line1\nline2","homeDir":"a..b","worktreeRoots":[":","line1\nline2","abc"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"﻿bom","homeDir":"","worktreeRoots":["ΣΊΣΥΦΟΣ","line1\nline2"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"ns:key.path","homeDir":"日本語のテキスト","worktreeRoots":["ab./x/**/*.json"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"İstanbul","cwd":"ns:key.path😀","worktreeRoots":["HELLO","key_name-1"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"é","cwd":"a.b.c","homeDir":"a","worktreeRoots":["😀","tab\tseparated","./x/**/*.json"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"a:b:ca😀b😀c","homeDir":"tab\tseparated"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"abc","cwd":"tab\tseparated","worktreeRoots":["ns:key.path"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"日本語のテキスト","cwd":"abtab\tseparated","homeDir":"İstanbulline1\nline2"}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"😀a.b.c","cwd":"  padded  ","homeDir":"tab\tseparated","worktreeRoots":[".leading"]}],"error":"Relative local files need an available workspace."}
+{"fn":"createLocalPreviewGrant","args":[{"requestedPath":"ab","homeDir":"hello","worktreeRoots":[]}],"error":"Relative local files need an available workspace."}

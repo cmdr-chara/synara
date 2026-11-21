@@ -1,0 +1,133 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/settingsNavigation.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "settingsnavigation-rs",
+  "exports": [
+    {
+      "name": "settingRowAnchorId",
+      "file": "apps/web/src/settingsNavigation.ts",
+      "line": 295,
+      "params": [
+        {
+          "name": "title",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "providerAccountAnchorId",
+      "file": "apps/web/src/settingsNavigation.ts",
+      "line": 304,
+      "params": [
+        {
+          "name": "instanceId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "settingsPageSearch",
+      "file": "apps/web/src/settingsNavigation.ts",
+      "line": 313,
+      "params": [
+        {
+          "name": "section",
+          "ts_type": "(typeof SETTINGS_SECTION_IDS)[number] | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "target",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "providerAccountsSectionId",
+      "file": "apps/web/src/settingsNavigation.ts",
+      "line": 323,
+      "params": [
+        {
+          "name": "provider",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeSettingsSection",
+      "file": "apps/web/src/settingsNavigation.ts",
+      "line": 327,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(typeof SETTINGS_SECTION_IDS)[number]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isHostSettingsSection",
+      "file": "apps/web/src/settingsNavigation.ts",
+      "line": 351,
+      "params": [
+        {
+          "name": "section",
+          "ts_type": "(typeof SETTINGS_SECTION_IDS)[number]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "isSettingsSectionAvailable",
+      "file": "apps/web/src/settingsNavigation.ts",
+      "line": 95,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

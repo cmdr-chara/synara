@@ -1,0 +1,101 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/http.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "http-rs",
+  "exports": [
+    {
+      "name": "makeEffectHttpRouteLayer",
+      "file": "apps/server/src/http.ts",
+      "line": 234,
+      "params": [
+        {
+          "name": "readiness",
+          "ts_type": "ServerReadiness",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "shutdownController",
+          "ts_type": "ServerShutdownController",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeDesktopShutdownEffectRouteLayer",
+      "file": "apps/server/src/http.ts",
+      "line": 254,
+      "params": [
+        {
+          "name": "shutdownController",
+          "ts_type": "ServerShutdownController",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeDesktopComputerEmergencyStopRouteLayer",
+      "file": "apps/server/src/http.ts",
+      "line": 291,
+      "params": [],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeHealthEffectRouteLayer",
+      "file": "apps/server/src/http.ts",
+      "line": 331,
+      "params": [
+        {
+          "name": "readiness",
+          "ts_type": "ServerReadiness",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isLegacyTokenAuthorized",
+      "file": "apps/server/src/http.ts",
+      "line": 417,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly config: ServerConfigShape;\n  readonly url: URL;\n  readonly remoteBillingEnforced?: boolean;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

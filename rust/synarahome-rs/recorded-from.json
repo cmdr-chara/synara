@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/synaraHome.ts",
+  "files": 1,
+  "fingerprint": "d5247ec6a4a2d2b8",
+  "coverage": {
+    "lines": 44,
+    "reached": 44,
+    "files": [
+      {
+        "file": "packages/shared/src/synaraHome.ts",
+        "lines": 44,
+        "reached": 44,
+        "missed": ""
+      }
+    ]
+  }
+}

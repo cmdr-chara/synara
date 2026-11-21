@@ -1,0 +1,54 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/synaraHome.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "synarahome-rs",
+  "exports": [
+    {
+      "name": "expandHomePath",
+      "file": "packages/shared/src/synaraHome.ts",
+      "line": 13,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "homeDirectory",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveSynaraHomeDirectory",
+      "file": "packages/shared/src/synaraHome.ts",
+      "line": 30,
+      "params": [
+        {
+          "name": "options",
+          "ts_type": "{\n    /** Explicit override; falls back to `SYNARA_HOME` from `env`. */\n    readonly configuredHome?: string | undefined;\n    readonly env?: NodeJS.ProcessEnv;\n    readonly homeDirectory?: string;\n    /** Flavor-specific default (`.synara-canary`), used only when nothing is configured. */\n    readonly directoryName?: string;\n  }",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

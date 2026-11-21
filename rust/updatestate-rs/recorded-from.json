@@ -1,0 +1,17 @@
+{
+  "unit": "apps/desktop/src/updateState.ts",
+  "files": 1,
+  "fingerprint": "0851b481819b1d2f",
+  "coverage": {
+    "lines": 278,
+    "reached": 221,
+    "files": [
+      {
+        "file": "apps/desktop/src/updateState.ts",
+        "lines": 278,
+        "reached": 221,
+        "missed": "28, 98-101, 113-115, 117-118, 120-139, 141-142, 167-174, 214, 235-236, 264-266, 271-273, 277-284"
+      }
+    ]
+  }
+}

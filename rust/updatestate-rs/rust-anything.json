@@ -1,0 +1,282 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/updateState.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "updatestate-rs",
+  "exports": [
+    {
+      "name": "canCheckForDesktopUpdates",
+      "file": "apps/desktop/src/updateState.ts",
+      "line": 11,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "DesktopUpdateState",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "getDownloadStallTimeoutMessage",
+      "file": "apps/desktop/src/updateState.ts",
+      "line": 15,
+      "params": [
+        {
+          "name": "timeoutMs",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isExpectedStalledDownloadCancellationError",
+      "file": "apps/desktop/src/updateState.ts",
+      "line": 20,
+      "params": [
+        {
+          "name": "args",
+          "ts_type": "{\n  readonly suppressionArmed: boolean;\n  readonly errorContext: DesktopUpdateState[\"errorContext\"];\n  readonly message: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "hasDownloadProgressAdvanced",
+      "file": "apps/desktop/src/updateState.ts",
+      "line": 36,
+      "params": [
+        {
+          "name": "previous",
+          "ts_type": "({\n  readonly percent?: number | null;\n  readonly transferred?: number | null;\n}) | null",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "next",
+          "ts_type": "({\n  readonly percent?: number | null;\n  readonly transferred?: number | null;\n})",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "shouldBroadcastDownloadProgress",
+      "file": "apps/desktop/src/updateState.ts",
+      "line": 64,
+      "params": [
+        {
+          "name": "currentState",
+          "ts_type": "DesktopUpdateState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "nextPercent",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isUpdateVersionNewer",
+      "file": "apps/desktop/src/updateState.ts",
+      "line": 106,
+      "params": [
+        {
+          "name": "currentVersion",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "candidateVersion",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isUpdateVersionAllowedForFlavor",
+      "file": "apps/desktop/src/updateState.ts",
+      "line": 155,
+      "params": [
+        {
+          "name": "candidateVersion",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "flavor",
+          "ts_type": "(| \"production\"\n  | \"development\"\n  | \"canary\"\n  | \"cua\"\n  | \"beta\"\n  | \"remote\")",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "nextStatusAfterDownloadFailure",
+      "file": "apps/desktop/src/updateState.ts",
+      "line": 177,
+      "params": [
+        {
+          "name": "currentState",
+          "ts_type": "DesktopUpdateState",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "DesktopUpdateState[\"status\"]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "getCanRetryAfterDownloadFailure",
+      "file": "apps/desktop/src/updateState.ts",
+      "line": 183,
+      "params": [
+        {
+          "name": "currentState",
+          "ts_type": "DesktopUpdateState",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "shouldCheckForUpdatesOnForeground",
+      "file": "apps/desktop/src/updateState.ts",
+      "line": 187,
+      "params": [
+        {
+          "name": "args",
+          "ts_type": "{\n  checkedAt: string | null;\n  backgroundedAtMs: number | null;\n  foregroundedAtMs: number;\n  minBackgroundDurationMs: number;\n  minIntervalMs: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "getAutoUpdateDisabledReason",
+      "file": "apps/desktop/src/updateState.ts",
+      "line": 217,
+      "params": [
+        {
+          "name": "args",
+          "ts_type": "{\n  isDevelopment: boolean;\n  isPackaged: boolean;\n  platform: NodeJS.Platform;\n  appImage?: string | undefined;\n  disabledByEnv: boolean;\n  hasUpdateFeedConfig: boolean;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "updateFilesMatchRuntimeArch",
+      "file": "apps/desktop/src/updateState.ts",
+      "line": 253,
+      "params": [
+        {
+          "name": "info",
+          "ts_type": "{\n    readonly path?: string | undefined;\n    readonly files?: ReadonlyArray<{ readonly url?: string | undefined }> | undefined;\n  }",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "platform",
+          "ts_type": "NodeJS.Platform",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "arch",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "shouldAcceptAvailableUpdate",
+      "file": "apps/desktop/src/updateState.ts",
+      "line": 291,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly currentVersion: string;\n  readonly version: string | null | undefined;\n  readonly flavor: (| \"production\"\n  | \"development\"\n  | \"canary\"\n  | \"cua\"\n  | \"beta\"\n  | \"remote\");\n  readonly info: {\n    readonly path?: string | undefined;\n    readonly files?: ReadonlyArray<{ readonly url?: string | undefined }> | undefined;\n  };\n  readonly platform: NodeJS.Platform;\n  readonly arch: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

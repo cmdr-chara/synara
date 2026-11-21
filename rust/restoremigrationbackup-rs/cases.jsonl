@@ -1,0 +1,201 @@
+{"fn":"runRestoreMigrationBackupCli","args":[["hello worldΣΊΣΥΦΟΣ"],{"$undefined":true}],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["a..b"],["a",1]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[[],true],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["tab\tseparated"],{"$undefined":true}],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["key_name-1","./x/**/*.json{name} has {count} items","a:b:c"],0],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[[],["a",1]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["aa..b"],"x"],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["a:b:c","a😀b😀c"],[]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["﻿bom","emoji 👍🏽 mix"],{"$undefined":true}],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["emoji 👍🏽 mix😀","{name} has {count} items","﻿bom"],{"$undefined":true}],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["日本語のテキストtab\tseparated","﻿bom{name} has {count} items"],null],"error":"Cannot read properties of null (reading 'warn')"}
+{"fn":"runRestoreMigrationBackupCli","args":[["src/a/b.ts😀","./x/**/*.json"],{"a":{"b":"c"}}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["./x/**/*.json","trailing.","a.b.c"],[]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["emoji 👍🏽 mix","ns:key.path"]],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["trailing.","İstanbul","src/a/b.ts"],["a",1]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[[],{"a":{"b":"c"}}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[[],null],"error":"Cannot read properties of null (reading 'warn')"}
+{"fn":"runRestoreMigrationBackupCli","args":[["ns:key.path日本語のテキスト","a:b:c"],["a",1]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["ab","HELLO","﻿bom.leading"],["a",1]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[[],[]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["a.b.c","ΣΊΣΥΦΟΣ","a.b.c"],null],"error":"Cannot read properties of null (reading 'warn')"}
+{"fn":"runRestoreMigrationBackupCli","args":[["  padded  ","emoji 👍🏽 mix","İstanbul"],{"$undefined":true}],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["hello world","😀","é"],["a",1]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["hello world","  padded  ","src/a/b.ts"],true],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["emoji 👍🏽 mix﻿bom","  padded  ","HELLO"],["a",1]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[[],"x"],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[[":","a:b:c.leading"],0],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["  padded  a.b.c","src/a/b.ts"],[]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[[""],[]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[[],{}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["ünïcödé","a😀b😀c  padded  "],true],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["a.b.c"],true],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[[],{"$undefined":true}],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["  padded  ","a😀b😀c","line1\nline2"],{"a":"b"}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[[":key_name-1"],true],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[[":","trailing.a","helloHello World"],{"a":{"b":"c"}}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["hello","ünïcödé","😀"],{}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["  padded  ","a.b.c","a😀b😀c"],{"$undefined":true}],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[[]],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["日本語のテキスト"],{"a":{"b":"c"}}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["tab\tseparated","src/a/b.ts","ünïcödé"],["a",1]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["HELLOtrailing.","emoji 👍🏽 mix"],{"a":{"b":"c"}}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["😀","a😀b😀c"],{"$undefined":true}],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["./x/**/*.json","İstanbul日本語のテキスト","src/a/b.ts"],["a",1]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["a"],"x"],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["key_name-1"],["a",1]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["ünïcödé"],"x"],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["abc","src/a/b.ts","é"],["a",1]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["日本語のテキスト"],{"$undefined":true}],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["﻿bom","hello world"],[]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["ab","﻿bom",":"]],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["  padded  ","emoji 👍🏽 mix","a.b.c"],"x"],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["trailing.","ΣΊΣΥΦΟΣ"],{}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["a.b.c"],{"$undefined":true}],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["",""],{}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["trailing.","line1\nline2"],0],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["Hello Worldsrc/a/b.ts"],true],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["😀","line1\nline2","trailing."],{"a":{"b":"c"}}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["hello world"],{}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[[],{"a":"b"}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["tab\tseparateda..b","tab\tseparated","ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ"],{"$undefined":true}],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[[],0],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["a:b:c😀","é","Hello World"],"x"],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["﻿bom","trailing."],{"a":{"b":"c"}}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["ns:key.path","a.b.c"]],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["key_name-1"]],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["ünïcödé","  padded  "],{}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["key_name-1"],[]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["ns:key.path","Hello World"],"x"],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["ünïcödé"],true],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["a😀b😀c","a"],{"$undefined":true}],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["a..b  padded  "],{"a":"b"}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["trailing."],0],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["trailing."],"x"],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["ünïcödé","a..b.leading"],{"$undefined":true}],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["src/a/b.ts"],["a",1]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["straße😀","  padded  "],["a",1]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["./x/**/*.json"],true],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["İstanbul","😀","  padded  "],{"a":"b"}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["HELLO","a😀b😀c"],[]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["tab\tseparated","日本語のテキストa","a:b:c"],{}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["key_name-1","a😀b😀c"],{}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["./x/**/*.json"],0],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["ünïcödé"],[]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[[".leading","trailing.ab"],{"a":{"b":"c"}}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["a..b"]],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["","a😀b😀c","日本語のテキスト"],true],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["./x/**/*.jsonkey_name-1","./x/**/*.json","é"],null],"error":"Cannot read properties of null (reading 'warn')"}
+{"fn":"runRestoreMigrationBackupCli","args":[["ns:key.path",":"]],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["src/a/b.ts","ns:key.path"]],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["ΣΊΣΥΦΟΣ","line1\nline2"],"x"],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["a😀b😀cHello World","﻿bom","a😀b😀ctab\tseparated"],null],"error":"Cannot read properties of null (reading 'warn')"}
+{"fn":"runRestoreMigrationBackupCli","args":[["ns:key.path","{name} has {count} items"],{"a":{"b":"c"}}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["{name} has {count} itemsemoji 👍🏽 mix"],0],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["hello","./x/**/*.jsonabc"],[]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["ns:key.path","a:b:c","line1\nline2"],[]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["src/a/b.tsİstanbul","emoji 👍🏽 mix","a"],"x"],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["HELLOsrc/a/b.ts","﻿bomstraße","abc"],"x"],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["ünïcödéhello","日本語のテキスト  padded  ","trailing."],0],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["éa:b:c"],["a",1]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[[""],true],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[[":","a:b:c","a.b.c"],{}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["hello","hello world"],{"a":{"b":"c"}}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["emoji 👍🏽 mix","😀  padded  "],"x"],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["a.b.c","a"],true],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["hello"],[]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["tab\tseparated"],[]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[[".leading"],null],"error":"Cannot read properties of null (reading 'warn')"}
+{"fn":"runRestoreMigrationBackupCli","args":[["hello worldemoji 👍🏽 mix","日本語のテキスト"],[]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["  padded  日本語のテキスト"],[]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["Hello World:","a..b","{name} has {count} itemsa😀b😀c"],{"a":"b"}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[[""],null],"error":"Cannot read properties of null (reading 'warn')"}
+{"fn":"runRestoreMigrationBackupCli","args":[["  padded  日本語のテキスト","a..b"],{"a":{"b":"c"}}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["Hello World","İstanbulkey_name-1"],[]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["😀"],null],"error":"Cannot read properties of null (reading 'warn')"}
+{"fn":"runRestoreMigrationBackupCli","args":[["hello"],{"a":{"b":"c"}}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["ab"],0],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["abcHello World","trailing."]],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["","a.b.c","a.b.c"],0],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["a..b",".leading","line1\nline2"],[]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["key_name-1",".leadinga:b:c"],0],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["ab","﻿bom","tab\tseparatedhello world"],{}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["ns:key.pathemoji 👍🏽 mix","a..b"],{"$undefined":true}],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["tab\tseparated","étab\tseparated","İstanbul"],{"a":"b"}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["a","straße","abc"],{}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["ΣΊΣΥΦΟΣ"],{"a":{"b":"c"}}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["a😀b😀c"],[]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["key_name-1","key_name-1",""],{"$undefined":true}],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["HELLO"],{"$undefined":true}],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["./x/**/*.json"],{"$undefined":true}],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[[":","abc","ns:key.path"],0],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["","line1\nline2a","trailing.Hello World"],"x"],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[[":./x/**/*.json"],{}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["日本語のテキスト","ünïcödé"]],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[[":","hello"],{"a":{"b":"c"}}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["😀"],["a",1]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["a😀b😀c","é","ΣΊΣΥΦΟΣ"],{"$undefined":true}],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["a😀b😀c","tab\tseparated","ünïcödé"]],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["ΣΊΣΥΦΟΣ"],true],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["Hello World","./x/**/*.json","a"],["a",1]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["é","😀",""],{}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["a😀b😀c","HELLO"],[]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["İstanbul","trailing."],null],"error":"Cannot read properties of null (reading 'warn')"}
+{"fn":"runRestoreMigrationBackupCli","args":[["😀"],{"a":{"b":"c"}}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["a😀b😀c","ns:key.path.leading"],{"a":{"b":"c"}}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["😀","ΣΊΣΥΦΟΣ日本語のテキスト"],["a",1]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[[".leading","a😀b😀c"],{"$undefined":true}],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["src/a/b.ts./x/**/*.json","{name} has {count} itemstrailing.","😀"],{"a":"b"}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["ns:key.path","emoji 👍🏽 mix","ns:key.path"]],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["trailing.","İstanbul","a"],["a",1]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["key_name-1","İstanbul",":"],["a",1]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[[".leading","Hello World","Hello World"],{}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["İstanbul","straße","Hello World"],[]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["ΣΊΣΥΦΟΣ"]],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["hello world  padded  "],null],"error":"Cannot read properties of null (reading 'warn')"}
+{"fn":"runRestoreMigrationBackupCli","args":[["é","ünïcödé","HELLO"],{}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["./x/**/*.json","a.b.c","tab\tseparated"],null],"error":"Cannot read properties of null (reading 'warn')"}
+{"fn":"runRestoreMigrationBackupCli","args":[["hello world"],{"$undefined":true}],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[[":"],"x"],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["hello world","trailing.","HELLO"]],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[[".leading","trailing.","./x/**/*.json"],{"a":"b"}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["ünïcödéstraße","HELLO","a.b.c﻿bom"]],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["abc","emoji 👍🏽 mix"]],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["emoji 👍🏽 mix","ünïcödé","emoji 👍🏽 mix"],{"a":"b"}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["{name} has {count} items"]],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["ünïcödé"],{}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[[""],["a",1]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["a..b","hello","  padded  "],0],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["tab\tseparated","İstanbul","ünïcödé"],{"a":"b"}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["﻿bom",":","tab\tseparated"]],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["emoji 👍🏽 mix","😀","line1\nline2"],null],"error":"Cannot read properties of null (reading 'warn')"}
+{"fn":"runRestoreMigrationBackupCli","args":[["a..bünïcödé","ab","a😀b😀c"]],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["ns:key.path:","a😀b😀c"],true],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["ΣΊΣΥΦΟΣtrailing.","line1\nline2"],true],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["ΣΊΣΥΦΟΣ.leading"],{}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["a..b","İstanbul"],{"a":"b"}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["","src/a/b.ts"],{"a":"b"}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["tab\tseparated"],"x"],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["  padded  ","a:b:c","ns:key.path"],{"a":"b"}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["ΣΊΣΥΦΟΣ"],0],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["Hello World"],0],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["a..b"],0],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["line1\nline2"],{"$undefined":true}],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["日本語のテキスト"]],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["./x/**/*.json"],{"a":"b"}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["é","  padded  日本語のテキスト","a.b.c"],"x"],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["hello","hello world"],0],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["HELLO"],{"a":{"b":"c"}}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["src/a/b.ts"],[]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["a","line1\nline2","src/a/b.ts"],{"$undefined":true}],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["tab\tseparated","key_name-1","ab"],["a",1]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["{name} has {count} itemsstraße",":"],"x"],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["😀"],[]],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["ΣΊΣΥΦΟΣ","  padded  "],true],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["﻿bom"],{"a":"b"}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["a..b","hello"],"x"],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["{name} has {count} items"],{"a":{"b":"c"}}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["emoji 👍🏽 mixkey_name-1","a.b.c"],{"a":{"b":"c"}}],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["line1\nline2","日本語のテキストabc","a😀b😀c"]],"ok":2}
+{"fn":"runRestoreMigrationBackupCli","args":[["a.b.c","./x/**/*.json﻿bom"],true],"error":"output.warn is not a function"}
+{"fn":"runRestoreMigrationBackupCli","args":[["b","a","B","é","10","9","a"],{"$undefined":true}],"ok":2}

@@ -1,0 +1,36 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/restoreMigrationBackup.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "restoremigrationbackup-rs",
+  "exports": [
+    {
+      "name": "runRestoreMigrationBackupCli",
+      "file": "apps/server/src/restoreMigrationBackup.ts",
+      "line": 22,
+      "params": [
+        {
+          "name": "args",
+          "ts_type": "ReadonlyArray<string>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "output",
+          "ts_type": "(Pick<Console, \"error\" | \"log\" | \"warn\">)",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<number>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

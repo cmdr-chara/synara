@@ -1,0 +1,17 @@
+{
+  "unit": "apps/api/src/perf.ts",
+  "files": 1,
+  "fingerprint": "f65d8cacef536559",
+  "coverage": {
+    "lines": 335,
+    "reached": 87,
+    "files": [
+      {
+        "file": "apps/api/src/perf.ts",
+        "lines": 335,
+        "reached": 87,
+        "missed": "30-47, 58-60, 67-78, 98-113, 115-118, 158-160, 162-185, 187-214, 216-248, 250-273, 275-299, 301-309, 311-341, 343-346, 348-359, 361-362"
+      }
+    ]
+  }
+}

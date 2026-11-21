@@ -1,0 +1,37 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/api/src/perf.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "perf-rs",
+  "exports": [
+    {
+      "name": "isPerfEnabled",
+      "file": "apps/api/src/perf.ts",
+      "line": 18,
+      "params": [
+        {
+          "name": "env",
+          "ts_type": "Record<string, string | undefined>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "createPerfRecorder",
+      "file": "apps/api/src/perf.ts",
+      "line": 157,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

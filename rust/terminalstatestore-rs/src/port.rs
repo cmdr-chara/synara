@@ -61,7 +61,7 @@ fn dedup_strings(it: impl Iterator<Item = String>) -> Vec<String> {
     it.filter(|s| seen.insert(s.clone())).collect()
 }
 
-fn normalize_terminal_ids(ids: Option<&Value>) -> Result<Vec<String>, String> {
+fn sanitize_terminal_ids(ids: Option<&Value>) -> Result<Vec<String>, String> {
     match ids {
         Some(Value::Array(a)) => {
             let mut out = Vec::with_capacity(a.len());
@@ -273,7 +273,7 @@ fn state_equal(left: &Value, right: &Map<String, Value>) -> bool {
 /// `normalizeThreadTerminalState`. Returns the normalized record plus whether the input
 /// should be kept verbatim (`!hasLegacyLayout && state equal normalized`).
 fn normalize(state: &Value) -> Result<(Value, bool), String> {
-    let terminal_ids = normalize_terminal_ids(field(state, "terminalIds")?)?;
+    let terminal_ids = sanitize_terminal_ids(field(state, "terminalIds")?)?;
     let active_raw = field(state, "activeTerminalId")?;
     let active = match active_raw {
         Some(v) => js::string_units(v)

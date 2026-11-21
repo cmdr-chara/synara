@@ -26,7 +26,7 @@ fn truthy(v: Option<&Value>) -> bool {
     }
 }
 
-fn normalize_desktop_arch(arch: Option<&Value>) -> &'static str {
+fn canonical_desktop_arch(arch: Option<&Value>) -> &'static str {
     match arch.and_then(Value::as_str) {
         Some("arm64") => "arm64",
         Some("x64") => "x64",
@@ -42,7 +42,7 @@ pub fn resolve_desktop_runtime_info(input: Value) -> Result<Value, String> {
     if js::is_undefined(&input) {
         return Err("Cannot read properties of undefined (reading 'processArch')".to_string());
     }
-    let app_arch = normalize_desktop_arch(prop(&input, "processArch"));
+    let app_arch = canonical_desktop_arch(prop(&input, "processArch"));
     if prop(&input, "platform").and_then(Value::as_str) != Some("darwin") {
         return Ok(json!({
             "hostArch": app_arch,

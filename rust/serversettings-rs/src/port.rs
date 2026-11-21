@@ -379,7 +379,7 @@ fn derive_provider_instances(settings: &Value) -> Result<Vec<(String, String)>, 
 
 // ---- applyServerSettingsPatch -----------------------------------------------------------
 
-fn should_replace_text_generation_model_selection(patch: &Value) -> bool {
+fn text_gen_model_selection_needs_replace(patch: &Value) -> bool {
     truthy(patch)
         && patch.as_object().is_some_and(|o| {
             o.get("provider").is_some_and(is_not_undefined)
@@ -494,7 +494,7 @@ pub fn apply_server_settings_patch(current: Value, patch: Value) -> Result<Value
         get(&current_selection, "model")?.clone()
     };
 
-    let options = if should_replace_text_generation_model_selection(sp) {
+    let options = if text_gen_model_selection_needs_replace(sp) {
         sp_options.cloned().unwrap_or_else(js::undefined)
     } else {
         match sp_options {

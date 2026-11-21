@@ -528,7 +528,7 @@ pub fn get_model_selection_boolean_option_value(
 
 // ── Provider option descriptors ──────────────────────────────────────────────
 
-fn clone_descriptor(d: &Value) -> Value {
+fn copy_descriptor(d: &Value) -> Value {
     let Some(obj) = d.as_object() else {
         return d.clone();
     };
@@ -769,7 +769,7 @@ pub fn get_provider_option_descriptors(
         return Err(undef_err("optionDescriptors"));
     }
     let descriptors = match member(&caps, "optionDescriptors") {
-        Value::Array(list) => list.iter().map(clone_descriptor).collect::<Vec<_>>(),
+        Value::Array(list) => list.iter().map(copy_descriptor).collect::<Vec<_>>(),
         v if is_undef(&v) || v.is_null() => legacy_descriptors(
             input.get("provider").and_then(Value::as_str).unwrap_or(""),
             &caps,

@@ -42,7 +42,7 @@ fn utf16_slice(s: &str, n: usize) -> &str {
     &s[..end]
 }
 
-fn normalize_script_id(value: &str) -> String {
+fn sanitize_script_id(value: &str) -> String {
     let lower = js_trim(value).to_lowercase();
     let mut cleaned = String::with_capacity(lower.len());
     let mut in_dash = false;
@@ -156,7 +156,7 @@ pub fn next_project_script_id(
         .filter_map(Value::as_str)
         .map(str::to_string)
         .collect();
-    let base_id = normalize_script_id(&name);
+    let base_id = sanitize_script_id(&name);
     if !taken.contains(&base_id) {
         return Ok(base_id);
     }

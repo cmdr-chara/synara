@@ -2513,7 +2513,7 @@ fn pending_interaction_identity(activity: &Value) -> Result<Option<Value>, Strin
         return Ok(None);
     }
     let payload_v = prop(activity, "payload", "activity.payload")?;
-    let payload = as_record(payload_v.as_ref());
+    let payload = to_record(payload_v.as_ref());
     let request_id = match &payload {
         Some(p) => prop_opt(p, "requestId").into_owned(),
         None => Value::Null,
@@ -2643,7 +2643,7 @@ fn identity_obj(v: &Value) -> &Value {
 // Activities (dedupe, cap, normalize)
 // ---------------------------------------------------------------------------
 
-fn as_record(value: &Value) -> Option<&Value> {
+fn to_record(value: &Value) -> Option<&Value> {
     if truthy(value) && typeof_js(value) == "object" {
         Some(value)
     } else {
@@ -2685,11 +2685,11 @@ fn normalize_activity_command_value(value: &Value) -> Option<Vec<u16>> {
 
 fn activity_payload_detail_score(activity: &Value) -> Result<f64, String> {
     let payload_v = prop(activity, "payload", "activity.payload")?;
-    let payload = as_record(payload_v.as_ref());
+    let payload = to_record(payload_v.as_ref());
     let data_v = payload.map(|p| prop_opt(p, "data"));
-    let data = data_v.as_ref().and_then(|c| as_record(c.as_ref()));
+    let data = data_v.as_ref().and_then(|c| to_record(c.as_ref()));
     let item_v = data.map(|d| prop_opt(d, "item"));
-    let item = item_v.as_ref().and_then(|c| as_record(c.as_ref()));
+    let item = item_v.as_ref().and_then(|c| to_record(c.as_ref()));
     let command_actions = item
         .and_then(|i| {
             let v = prop_opt(i, "commandActions");
@@ -2856,7 +2856,7 @@ fn retain_task_activity_ids(activities: &Value, retained_ids: &mut JsSet) -> Res
             continue;
         }
         let payload_v = prop(activity.as_ref(), "payload", "activity.payload")?;
-        let payload = as_record(payload_v.as_ref());
+        let payload = to_record(payload_v.as_ref());
         if strict_eq(kind_v.as_ref(), &str_val("runtime.warning"))
             && payload.is_some_and(|p| {
                 strict_eq(
@@ -3062,7 +3062,7 @@ fn cap_thread_activities_vec<'a>(activities: &'a Value) -> Result<Vec<Cow<'a, Va
             retained_ids.add(id.as_ref().clone());
             continue;
         }
-        let detail = as_record(prop(activity.as_ref(), "payload", "activity.payload")?.as_ref())
+        let detail = to_record(prop(activity.as_ref(), "payload", "activity.payload")?.as_ref())
             .map(|p| prop_opt(p, "detail").into_owned());
         let detail_arg = detail.as_ref().filter(|d| kind(d) == K::Str);
         let stale = (strict_eq(
@@ -5834,7 +5834,7 @@ fn cap_activities_cows<'a>(items: &[Cow<'a, Value>]) -> Result<Vec<Cow<'a, Value
 // ---------------------------------------------------------------------------
 
 fn to_payload_record(payload: &Value) -> Option<&Value> {
-    as_record(payload)
+    to_record(payload)
 }
 
 fn lifecycle_generation_from_payload(payload: Option<&Value>) -> Option<Value> {
@@ -6187,7 +6187,7 @@ fn fold_active_tasks<'a>(
             continue;
         }
         let payload_v = prop(a, "payload", "activity.payload")?;
-        let payload = as_record(payload_v.as_ref());
+        let payload = to_record(payload_v.as_ref());
         let task_id = payload.and_then(|p| {
             let t = prop_opt(p, "taskId");
             if kind(t.as_ref()) == K::Str {
@@ -6415,7 +6415,7 @@ fn fold_outstanding_background_ids<'a>(
     for activity in activities {
         let a = activity.as_ref();
         let payload_v = prop(a, "payload", "activity.payload")?;
-        let payload = as_record(payload_v.as_ref());
+        let payload = to_record(payload_v.as_ref());
         let kind_v = prop(a, "kind", "activity.kind")?;
         if strict_eq(kind_v.as_ref(), &str_val("runtime.warning")) {
             if !payload.is_some_and(|p| {
@@ -6428,7 +6428,7 @@ fn fold_outstanding_background_ids<'a>(
             }
             let data = payload.and_then(|p| {
                 let d = prop_opt(p, "data");
-                if as_record(d.as_ref()).is_some() {
+                if to_record(d.as_ref()).is_some() {
                     Some(d.into_owned())
                 } else {
                     None
@@ -6440,7 +6440,7 @@ fn fold_outstanding_background_ids<'a>(
             }
             if let Some(Value::Array(task_list)) = tasks {
                 for task in &task_list {
-                    let tid = as_record(task)
+                    let tid = to_record(task)
                         .map(|t| prop_opt(t, "task_id").into_owned())
                         .filter(|t| kind(t) == K::Str);
                     if let Some(t) = tid {
@@ -7621,7 +7621,7 @@ pub fn cap_thread_activities(activities: Value) -> Result<Value, String> {
             retained_ids.add(id.as_ref().clone());
             continue;
         }
-        let detail = as_record(prop(activity.as_ref(), "payload", "activity.payload")?.as_ref())
+        let detail = to_record(prop(activity.as_ref(), "payload", "activity.payload")?.as_ref())
             .map(|p| prop_opt(p, "detail").into_owned());
         let detail_arg = detail.as_ref().filter(|d| kind(d) == K::Str);
         let stale = (strict_eq(
@@ -7730,7 +7730,7 @@ pub fn dedupe_activities_by_id(activities: Value) -> Result<Value, String> {
 
 /// Port of `asActivityRecord`.
 pub fn as_activity_record(value: Value) -> Result<Value, String> {
-    Ok(match as_record(&value) {
+    Ok(match to_record(&value) {
         Some(v) => v.clone(),
         None => Value::Null,
     })

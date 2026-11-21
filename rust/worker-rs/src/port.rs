@@ -113,7 +113,7 @@ fn js_to_num(v: &Value) -> f64 {
     }
 }
 
-fn is_record(v: &Value) -> bool {
+fn to_record_check(v: &Value) -> bool {
     matches!(v, Value::Object(_) | Value::Array(_)) && !is_undefined(v)
 }
 
@@ -987,7 +987,7 @@ pub fn normalize_event(
     now: Option<serde_json::Value>,
 ) -> Result<Option<serde_json::Value>, String> {
     let now = now_value(&now);
-    if !is_record(&raw) {
+    if !to_record_check(&raw) {
         return Ok(None);
     }
     let event = prop(&raw, "event")?.and_then(as_js_str);
@@ -1035,7 +1035,7 @@ pub fn normalize_event(
         .filter(|s| uuid_pattern().is_match(s));
 
     let payload = match prop(&raw, "payload")? {
-        Some(v) if is_record(v) => v.clone(),
+        Some(v) if to_record_check(v) => v.clone(),
         _ => Value::Object(Map::new()),
     };
     let Some(kind) = diagnostic_payload_kind(&event) else {

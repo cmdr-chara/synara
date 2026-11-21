@@ -290,7 +290,7 @@ impl BackendOutputTailDetector {
     }
 
     /// Port of `BackendOutputTailDetector.read` (`apps/desktop/src/backendSupervisionPolicy.ts:156`).
-    pub fn read(&mut self) -> Result<serde_json::Value, String> {
+    pub fn read_policy_field(&mut self) -> Result<serde_json::Value, String> {
         let tail: Vec<u16> = self.chunks[self.head..]
             .iter()
             .flat_map(|c| c.iter().copied())

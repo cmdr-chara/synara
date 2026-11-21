@@ -428,7 +428,7 @@ fn spread(v: &Value) -> Result<Vec<Value>, String> {
 
 const BACKGROUND_TASKS_CHANGED: &str = "background_tasks_changed";
 
-fn as_record(v: &Value) -> Option<&Map<String, Value>> {
+fn to_record(v: &Value) -> Option<&Map<String, Value>> {
     match v {
         Value::Object(o) => Some(o),
         _ => None,
@@ -438,7 +438,7 @@ fn as_record(v: &Value) -> Option<&Map<String, Value>> {
 fn fold_outstanding_background_task_ids(ordered: &[Value]) -> Vec<String> {
     let mut outstanding: Vec<String> = Vec::new();
     for activity in ordered {
-        let payload = get(activity, "payload").and_then(as_record);
+        let payload = get(activity, "payload").and_then(to_record);
         if get(activity, "kind").and_then(Value::as_str) == Some("runtime.warning") {
             if payload
                 .and_then(|p| p.get("nativeEventType"))
@@ -449,12 +449,12 @@ fn fold_outstanding_background_task_ids(ordered: &[Value]) -> Vec<String> {
             }
             let tasks = payload
                 .and_then(|p| p.get("data"))
-                .and_then(as_record)
+                .and_then(to_record)
                 .and_then(|d| d.get("tasks"))
                 .and_then(Value::as_array);
             let Some(tasks) = tasks else { continue };
             for task in tasks {
-                if let Some(id) = as_record(task)
+                if let Some(id) = to_record(task)
                     .and_then(|t| t.get("task_id"))
                     .and_then(Value::as_str)
                 {
@@ -591,7 +591,7 @@ fn fold_active_tasks(
         ) {
             continue;
         }
-        let payload = get(activity, "payload").and_then(as_record);
+        let payload = get(activity, "payload").and_then(to_record);
         let task_id = match payload
             .and_then(|p| p.get("taskId"))
             .and_then(Value::as_str)
@@ -949,11 +949,11 @@ pub fn derive_active_work_started_at(
 // ---------- task-list / background-task derivations ----------
 
 fn parse_task_list_tasks(payload: &Value) -> Option<Vec<Value>> {
-    let record = as_record(payload)?;
+    let record = to_record(payload)?;
     let raw = record.get("tasks")?.as_array()?;
     let mut tasks = Vec::new();
     for entry in raw {
-        let e = as_record(entry)?;
+        let e = to_record(entry)?;
         let task = e.get("task")?.as_str()?;
         let status = match e.get("status").and_then(Value::as_str) {
             Some("completed") => "completed",
@@ -974,7 +974,7 @@ fn parse_task_list_tasks(payload: &Value) -> Option<Vec<Value>> {
 fn to_active_task_list_state(activity: &Value) -> Option<Value> {
     let payload = get(activity, "payload")
         .filter(|p| truthy(p))
-        .and_then(as_record);
+        .and_then(to_record);
     let tasks = payload.and_then(|p| parse_task_list_tasks(&Value::Object(p.clone())))?;
     let mut out = Map::new();
     out.insert(
@@ -1181,7 +1181,7 @@ pub fn derive_running_subagent_tasks(
     let mut ended: HashSet<String> = HashSet::new();
     let mut resumed: HashSet<String> = HashSet::new();
     for activity in &items {
-        let payload = get(activity, "payload").and_then(as_record);
+        let payload = get(activity, "payload").and_then(to_record);
         let task_id = match payload
             .and_then(|p| p.get("taskId"))
             .and_then(Value::as_str)

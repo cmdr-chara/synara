@@ -79,7 +79,7 @@ impl BackendOutputTailDetector {
     pub fn read(&mut self) -> napi::Result<String> {
         let inner = &mut self.inner;
         run(move || {
-            let out = inner.read()?;
+            let out = inner.read_policy_field()?;
             crate::js::to_json(&out)
         })
     }

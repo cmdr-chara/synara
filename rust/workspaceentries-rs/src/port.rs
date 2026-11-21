@@ -307,7 +307,7 @@ fn js_trim(s: &str) -> String {
 
 // --- search scoring -----------------------------------------------------
 
-fn score_subsequence_match(value: &str, query: &str) -> Option<f64> {
+fn rank_subsequence_match(value: &str, query: &str) -> Option<f64> {
     if query.is_empty() {
         return Some(0.0);
     }
@@ -384,7 +384,7 @@ fn score_entry(entry: &Value, query: &str) -> Option<f64> {
     if normalized_name.contains(query) {
         return Some(3.0);
     }
-    if let Some(s) = score_subsequence_match(normalized_name, query) {
+    if let Some(s) = rank_subsequence_match(normalized_name, query) {
         return Some(100.0 + s);
     }
     if normalized_path.starts_with(query) {
@@ -396,7 +396,7 @@ fn score_entry(entry: &Value, query: &str) -> Option<f64> {
     if normalized_path.contains(query) {
         return Some(1002.0);
     }
-    if let Some(s) = score_subsequence_match(normalized_path, query) {
+    if let Some(s) = rank_subsequence_match(normalized_path, query) {
         return Some(1100.0 + s);
     }
     None
@@ -1239,7 +1239,7 @@ fn score_local_name(name: &str, query: &str) -> Option<f64> {
     if normalized.contains(query) {
         return Some(5.0);
     }
-    score_subsequence_match(&normalized, query).map(|s| 100.0 + s)
+    rank_subsequence_match(&normalized, query).map(|s| 100.0 + s)
 }
 
 fn insert_ranked_local(ranked: &mut Vec<(f64, Value)>, candidate: (f64, Value), limit: f64) {

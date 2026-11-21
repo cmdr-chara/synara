@@ -981,7 +981,7 @@ fn eval_when(node: &Value, context: &Map<String, Value>) -> bool {
     }
 }
 
-fn resolve_context(
+fn resolve_active_context(
     options: Option<&Value>,
     platform: &Value,
 ) -> Result<Map<String, Value>, String> {
@@ -1125,7 +1125,7 @@ fn resolve_keybinding_for_command(
     options: Option<&Value>,
     platform: &Value,
 ) -> Result<Option<Value>, String> {
-    let context = resolve_context(options, platform)?;
+    let context = resolve_active_context(options, platform)?;
     if let Some(b) = find_effective(keybindings, command, platform, &context)? {
         return Ok(Some(b));
     }
@@ -1158,7 +1158,7 @@ fn key_label(key: &str) -> String {
     }
 }
 
-fn format_shortcut_label(shortcut: &Value, platform: &Value) -> String {
+fn build_shortcut_text(shortcut: &Value, platform: &Value) -> String {
     let key = shortcut.get("key").and_then(|k| k.as_str()).unwrap_or("");
     let label = key_label(key);
     let use_meta_for_mod = is_mac(platform);
@@ -1311,7 +1311,7 @@ fn definition_to_entry(
     };
     let command = binding.get("command").cloned().unwrap_or(Value::Null);
     let shortcut_label =
-        format_shortcut_label(binding.get("shortcut").unwrap_or(&Value::Null), platform);
+        build_shortcut_text(binding.get("shortcut").unwrap_or(&Value::Null), platform);
     Ok(Some(json!({
         "id": command,
         "command": command,
@@ -1473,7 +1473,7 @@ pub fn build_shortcut_sheet_sections(options: Value) -> Result<Vec<Value>, Strin
                 } else {
                     "Run this project script without opening the scripts menu."
                 },
-                "shortcutLabel": format_shortcut_label(binding.get("shortcut").unwrap_or(&Value::Null), &platform),
+                "shortcutLabel": build_shortcut_text(binding.get("shortcut").unwrap_or(&Value::Null), &platform),
             }));
         }
     }

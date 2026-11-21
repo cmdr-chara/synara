@@ -464,7 +464,7 @@ fn collect_inline_token_matches(
     matches
 }
 
-fn push_text_segment(segments: &mut Vec<Value>, text: &str) {
+fn append_text_segment(segments: &mut Vec<Value>, text: &str) {
     if text.is_empty() {
         return;
     }
@@ -533,7 +533,7 @@ fn split_text_into_prompt_segments(
             continue;
         }
         if m.start > cursor {
-            push_text_segment(&mut segments, &u16_slice(text, cursor, m.start));
+            append_text_segment(&mut segments, &u16_slice(text, cursor, m.start));
         }
         match m.kind {
             "link" => segments.push(json!({"type": "link", "url": m.value})),
@@ -596,7 +596,7 @@ fn split_text_into_prompt_segments(
         cursor = m.end;
     }
     if cursor < utf16_len(text) {
-        push_text_segment(&mut segments, &u16_slice(text, cursor, utf16_len(text)));
+        append_text_segment(&mut segments, &u16_slice(text, cursor, utf16_len(text)));
     }
     Ok(segments)
 }

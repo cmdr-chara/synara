@@ -145,7 +145,7 @@ fn is_empty_string(v: &Value) -> bool {
 
 /// `normalizeDraftAnswer`: strings trim to null-or-trimmed; anything
 /// else is null.
-fn normalize_draft_answer(v: &Value) -> Option<Value> {
+fn sanitize_draft_answer(v: &Value) -> Option<Value> {
     let trimmed = trimmed_string(v)?;
     if is_empty_string(&trimmed) {
         None
@@ -178,7 +178,7 @@ pub fn resolve_pending_user_input_answer(
     question: serde_json::Value,
     draft: serde_json::Value,
 ) -> Result<serde_json::Value, String> {
-    if let Some(custom) = normalize_draft_answer(&opt_prop(&draft, "customAnswer")) {
+    if let Some(custom) = sanitize_draft_answer(&opt_prop(&draft, "customAnswer")) {
         return Ok(custom);
     }
     let selected = normalize_selected_labels(&opt_prop(&draft, "selectedOptionLabels"));

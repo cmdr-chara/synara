@@ -75,7 +75,7 @@ fn as_string(v: &Value) -> Option<String> {
 
 /// `Date.parse` for the ISO-8601 forms transcripts actually write; anything else
 /// is treated as unparseable (NaN), matching `Number.isFinite` failing.
-fn parse_timestamp_ms(v: &Value) -> Option<f64> {
+fn read_timestamp_ms(v: &Value) -> Option<f64> {
     let s = as_string(v)?;
     let (date, time) = s.split_once('T').map_or((s.as_str(), ""), |(d, t)| (d, t));
     let mut dp = date.split('-');
@@ -352,7 +352,7 @@ fn parse_codex_session_summary_line(line: &str) -> Option<Value> {
         let rec_ts = record.get("timestamp");
         let pay_ts = payload.get("timestamp");
         let chosen = if nullish(rec_ts) { pay_ts } else { rec_ts };
-        chosen.and_then(parse_timestamp_ms)?
+        chosen.and_then(read_timestamp_ms)?
     };
     let total_tokens = read_codex_total_tokens(payload);
     let rate_limits = {
@@ -520,7 +520,7 @@ fn scan_claude_file(f: &std::fs::File, path: &str, size: u64) -> (Vec<Value>, Ve
         {
             let usage = member(message, "usage").and_then(as_record);
             let total = read_claude_total_tokens(usage);
-            let ts = record.get("timestamp").and_then(parse_timestamp_ms);
+            let ts = record.get("timestamp").and_then(read_timestamp_ms);
             if let (Some(_), Some(ts)) = (usage, ts)
                 && total > 0.0
             {
@@ -549,7 +549,7 @@ fn scan_claude_file(f: &std::fs::File, path: &str, size: u64) -> (Vec<Value>, Ve
         if let Some(tur) = member(record, "toolUseResult").and_then(as_record) {
             let usage = member(tur, "usage").and_then(as_record);
             let total = read_claude_total_tokens(usage);
-            let ts = record.get("timestamp").and_then(parse_timestamp_ms);
+            let ts = record.get("timestamp").and_then(read_timestamp_ms);
             if let (Some(_), Some(ts)) = (usage, ts)
                 && total > 0.0
             {

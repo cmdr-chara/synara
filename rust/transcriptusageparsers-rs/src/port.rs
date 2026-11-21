@@ -524,7 +524,7 @@ fn state_member(state: &Value, key: &str) -> Value {
     member(state, key).unwrap_or_else(|_| crate::js::undefined())
 }
 
-fn is_forked_session_meta(payload: &Map<String, Value>) -> bool {
+fn check_forked_session_meta(payload: &Map<String, Value>) -> bool {
     if matches!(payload.get("forked_from_id"), Some(Value::String(_)))
         || matches!(payload.get("parent_thread_id"), Some(Value::String(_)))
     {
@@ -585,7 +585,7 @@ pub fn parse_codex_transcript_line(
                 .unwrap_or_else(crate::js::undefined);
             set_state("cwd", Value::String(text(&cwd)), &mut state);
         }
-        if timestamp_ms.is_some() && is_forked_session_meta(payload) {
+        if timestamp_ms.is_some() && check_forked_session_meta(payload) {
             set_state("suppressingForkCopies", Value::Bool(true), &mut state);
             set_state(
                 "forkCopyAnchorMs",

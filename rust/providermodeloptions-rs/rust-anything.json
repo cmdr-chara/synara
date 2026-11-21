@@ -1,0 +1,306 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/providerModelOptions.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "providermodeloptions-rs",
+  "exports": [
+    {
+      "name": "getOmpModelSelectionIssue",
+      "file": "apps/web/src/providerModelOptions.ts",
+      "line": 54,
+      "params": [
+        {
+          "name": "model",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "ReadonlyArray<{ slug: string; isCustom?: boolean }>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "providerModelOptionProvenanceLabel",
+      "file": "apps/web/src/providerModelOptions.ts",
+      "line": 84,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  provider: typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type;\n  option: ProviderModelOption;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "formatProviderModelOptionName",
+      "file": "apps/web/src/providerModelOptions.ts",
+      "line": 106,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  provider: typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type;\n  slug: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeClaudeModelOptionSlug",
+      "file": "apps/web/src/providerModelOptions.ts",
+      "line": 143,
+      "params": [
+        {
+          "name": "model",
+          "ts_type": "{\n  slug: string;\n  resolvedModel?: string | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "mergeDynamicModelOptions",
+      "file": "apps/web/src/providerModelOptions.ts",
+      "line": 193,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  provider: typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type;\n  staticOptions: ReadonlyArray<ProviderModelOption & { isCustom?: boolean }>;\n  dynamicModels: ReadonlyArray<{\n    slug: string;\n    resolvedModel?: string | undefined;\n    name?: string | null | undefined;\n    description?: string | null | undefined;\n    upstreamProviderId?: string | null | undefined;\n    upstreamProviderName?: string | null | undefined;\n  }>;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<ProviderModelOption & { isCustom?: boolean }>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "providerModelCostMultiplierLabel",
+      "file": "apps/web/src/providerModelOptions.ts",
+      "line": 323,
+      "params": [
+        {
+          "name": "description",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "groupProviderModelOptions",
+      "file": "apps/web/src/providerModelOptions.ts",
+      "line": 328,
+      "params": [
+        {
+          "name": "options",
+          "ts_type": "ReadonlyArray<ProviderModelOption>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ProviderModelOptionGroup[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "groupProviderModelOptionsWithFavorites",
+      "file": "apps/web/src/providerModelOptions.ts",
+      "line": 364,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  options: ReadonlyArray<ProviderModelOption>;\n  favoriteSlugs: ReadonlySet<string>;\n  favoriteLabel?: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ProviderModelOptionGroup[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "shouldUseCollapsibleModelGroups",
+      "file": "apps/web/src/providerModelOptions.ts",
+      "line": 394,
+      "params": [
+        {
+          "name": "groupCount",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "isSearching",
+          "ts_type": "boolean",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveModelGroupDefaultOpen",
+      "file": "apps/web/src/providerModelOptions.ts",
+      "line": 398,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  groupKey: string;\n  options: ReadonlyArray<ProviderModelOption>;\n  activeModel: string;\n  groupCount: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildNextProviderOptions",
+      "file": "apps/web/src/providerModelOptions.ts",
+      "line": 413,
+      "params": [
+        {
+          "name": "provider",
+          "ts_type": "typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "modelOptions",
+          "ts_type": "typeof typeof typeof ProviderModelOptions.Type.Type.Type[typeof typeof typeof ProviderKind.Type.Type.Type] | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "patch",
+          "ts_type": "Record<string, unknown>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof ProviderModelOptions.Type.Type.Type[typeof typeof typeof ProviderKind.Type.Type.Type]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildProviderOptionPatch",
+      "file": "apps/web/src/providerModelOptions.ts",
+      "line": 479,
+      "params": [
+        {
+          "name": "provider",
+          "ts_type": "typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "optionId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "value",
+          "ts_type": "string | boolean",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Record<string, unknown>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildModelSelection",
+      "file": "apps/web/src/providerModelOptions.ts",
+      "line": 555,
+      "params": [
+        {
+          "name": "provider",
+          "ts_type": "typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "model",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "typeof typeof typeof ProviderModelOptions.Type.Type.Type[typeof typeof typeof ProviderKind.Type.Type.Type] | null | undefined",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "supportsAutoModeOrMetadata",
+          "ts_type": "boolean | ModelSelectionBuildMetadata | undefined",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "explicitMetadata",
+          "ts_type": "ModelSelectionBuildMetadata",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ModelSelection.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

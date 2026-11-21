@@ -1,0 +1,55 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/accountRefusal.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "accountrefusal-rs",
+  "exports": [
+    {
+      "name": "isAccountRefusal",
+      "file": "apps/server/src/accountRefusal.ts",
+      "line": 18,
+      "params": [
+        {
+          "name": "error",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isRemoteAccessRefusal",
+      "file": "apps/server/src/accountRefusal.ts",
+      "line": 27,
+      "params": [
+        {
+          "name": "error",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "findAccountApiError",
+      "file": "apps/server/src/accountRefusal.ts",
+      "line": 9,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    }
+  ]
+}

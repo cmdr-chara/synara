@@ -1,0 +1,17 @@
+{
+  "unit": "apps/analytics/reliability.ts",
+  "files": 1,
+  "fingerprint": "f193ae847348d556",
+  "coverage": {
+    "lines": 90,
+    "reached": 53,
+    "files": [
+      {
+        "file": "apps/analytics/reliability.ts",
+        "lines": 90,
+        "reached": 53,
+        "missed": "39-40, 54-58, 63-65, 67-68, 70-94"
+      }
+    ]
+  }
+}

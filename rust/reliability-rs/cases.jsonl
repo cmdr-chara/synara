@@ -1,0 +1,300 @@
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},"😀"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[["a",1],null,"a:b:c"],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},[],"İstanbul"],"error":"db.batch is not a function"}
+{"fn":"storeReliabilityRecords","args":["x",["a",1],"éa😀b😀c"],"error":"db.prepare is not a function"}
+{"fn":"storeReliabilityRecords","args":[true,[],""],"error":"db.batch is not a function"}
+{"fn":"storeReliabilityRecords","args":[["a",1],true,"é"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":"b"},{},"﻿bomΣΊΣΥΦΟΣ"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[0,0,"trailing."],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":["x",{"a":{"b":"c"}},"x"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},{},"helloé"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[[],[],"abcé"],"error":"db.batch is not a function"}
+{"fn":"storeReliabilityRecords","args":[{},["a",1],"😀"],"error":"db.prepare is not a function"}
+{"fn":"storeReliabilityRecords","args":[["a",1],{"a":"b"},"ns:key.path"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},{"a":"b"},"line1\nline2"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":["x",["a",1],"./x/**/*.json"],"error":"db.prepare is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":"b"},0,"./x/**/*.json"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},{},"emoji 👍🏽 mix"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":["x",[],"./x/**/*.json"],"error":"db.batch is not a function"}
+{"fn":"storeReliabilityRecords","args":[{},{"a":"b"},".leadinga"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{},{"a":{"b":"c"}},"a"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[[],{},""],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},[],"😀"],"error":"db.batch is not a function"}
+{"fn":"storeReliabilityRecords","args":[["a",1],{},"😀"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":"b"},null,"{name} has {count} items"],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"storeReliabilityRecords","args":[null,{"a":"b"},"a..b./x/**/*.json"],"error":"Cannot read properties of null (reading 'batch')"}
+{"fn":"storeReliabilityRecords","args":[[],[],"Hello World"],"error":"db.batch is not a function"}
+{"fn":"storeReliabilityRecords","args":[true,0,"ab./x/**/*.json"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[true,{"a":{"b":"c"}},"😀"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},true,"ns:key.path"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[[],{},"ünïcödé"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},null,"src/a/b.ts"],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"storeReliabilityRecords","args":[{"a":"b"},null,"./x/**/*.jsontab\tseparated"],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"storeReliabilityRecords","args":[["a",1],null,"HELLO"],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"storeReliabilityRecords","args":["x",true,"ünïcödé"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{},true,"a:b:c"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[true,true,"hello world"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":["x","x","x"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[null,["a",1],"a..b"],"error":"Cannot read properties of null (reading 'batch')"}
+{"fn":"storeReliabilityRecords","args":[{"a":"b"},{},"a😀b😀c"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{},{"a":"b"},"日本語のテキスト"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},"HELLO"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{},"x","tab\tseparated"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[0,0,"a😀b😀c"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{},["a",1],"İstanbul"],"error":"db.prepare is not a function"}
+{"fn":"storeReliabilityRecords","args":[0,{},"ΣΊΣΥΦΟΣ"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":"b"},null,""],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"storeReliabilityRecords","args":[["a",1],{},"./x/**/*.jsonΣΊΣΥΦΟΣ"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":["ト",["a",1],"日本語のテキスト"],"error":"db.prepare is not a function"}
+{"fn":"storeReliabilityRecords","args":["x",{"a":{"b":"c"}},"İstanbul"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[["a",1],0,"é"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{},0,".leading"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[null,0,"straße"],"error":"Cannot read properties of null (reading 'batch')"}
+{"fn":"storeReliabilityRecords","args":[true,["a",1],":"],"error":"db.prepare is not a function"}
+{"fn":"storeReliabilityRecords","args":[{},"x","X"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},"x","😀"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{},{},"{name} has {count} items"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[true,[],"key_name-1"],"error":"db.batch is not a function"}
+{"fn":"storeReliabilityRecords","args":[{},{"a":{"b":"c"}},"key_name-1"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{},[],"ünïcödé"],"error":"db.batch is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":"b"},"x","a"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[null,{},"a..b"],"error":"Cannot read properties of null (reading 'batch')"}
+{"fn":"storeReliabilityRecords","args":[{"a":"b"},[],"a😀b😀c"],"error":"db.batch is not a function"}
+{"fn":"storeReliabilityRecords","args":[true,[],"aa"],"error":"db.batch is not a function"}
+{"fn":"storeReliabilityRecords","args":[true,{"a":{"b":"c"}},"  padded  "],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[[],null,"abc"],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},["a",1],"ns:key.pathkey_name-1"],"error":"db.prepare is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},null,"straße"],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"storeReliabilityRecords","args":["x","x","İstanbul"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[true,null,"emoji 👍🏽 mix.leading"],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"storeReliabilityRecords","args":[{},null,".leading"],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"storeReliabilityRecords","args":[[],{"a":{"b":"c"}},"line1\nline2"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":["x","x","{name} has {count} items"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[["a",1],{},"a"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":"b"},true,"{name} has {count} items"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[null,["a",1],"hello"],"error":"Cannot read properties of null (reading 'batch')"}
+{"fn":"storeReliabilityRecords","args":[{"a":"b"},{"a":"b"},"{name} has {count} items日本語のテキスト"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[[],{"a":"b"},"a..b"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":"b"},"x","tab\tseparated日本語のテキスト"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[["a",1],{},"{name} has {count} items"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{},null,"{name} has {count} items"],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"storeReliabilityRecords","args":[["a",1],true,"a😀b😀c"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[true,{"a":{"b":"c"}},"emoji 👍🏽 mix"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[true,0,""],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[true,[],"key_name-1a..b"],"error":"db.batch is not a function"}
+{"fn":"storeReliabilityRecords","args":[null,"x","hello"],"error":"Cannot read properties of null (reading 'batch')"}
+{"fn":"storeReliabilityRecords","args":[{},{"a":"b"},"abc"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[[],["a",1],"abc"],"error":"db.prepare is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},"./x/**/*.json"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[true,null,"😀"],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"storeReliabilityRecords","args":["x","E} HAS {COUNT} ","{name} has {count} items"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":"b"},{},"Hello World"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{},true,"a"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[0,null,"é"],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"storeReliabilityRecords","args":["x",0,"trailing."],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":["x",[],"Hello World"],"error":"db.batch is not a function"}
+{"fn":"storeReliabilityRecords","args":[{},["a",1],"{name} has {count} items"],"error":"db.prepare is not a function"}
+{"fn":"storeReliabilityRecords","args":[[],true,"ΣΊΣΥΦΟΣemoji 👍🏽 mix"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[[],"x",""],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":"b"},["a",1],"a..b"],"error":"db.prepare is not a function"}
+{"fn":"storeReliabilityRecords","args":[0,{},"trailing."],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[null,{"a":{"b":"c"}},"emoji 👍🏽 mix"],"error":"Cannot read properties of null (reading 'batch')"}
+{"fn":"storeReliabilityRecords","args":[true,[],"ab"],"error":"db.batch is not a function"}
+{"fn":"storeReliabilityRecords","args":[0,{"a":{"b":"c"}},"{name} has {count} items"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[[],null,"src/a/b.tsa😀b😀c"],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"storeReliabilityRecords","args":[["a",1],{"a":{"b":"c"}},"ab"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},null,"tab\tseparated"],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},["a",1],"hello world"],"error":"db.prepare is not a function"}
+{"fn":"storeReliabilityRecords","args":[[],["a",1],".leading"],"error":"db.prepare is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},{"a":"b"},"Hello World"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},"x","abc"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[["a",1],0,"a.b.c{name} has {count} items"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[true,true,":"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[[],0,"hello world"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":["x",{},"emoji 👍🏽 mix"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[["a",1],"x","a😀b😀c"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[0,true,"line1\nline2"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":"b"},[],"tab\tseparated"],"error":"db.batch is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":"b"},".PA","abns:key.path"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[true,"x","x"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{},null,"ab"],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"storeReliabilityRecords","args":[[],0,"éns:key.path"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[["a",1],{"a":"b"},"﻿boma:b:c"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[[],["a",1],"straße日本語のテキスト"],"error":"db.prepare is not a function"}
+{"fn":"storeReliabilityRecords","args":[0,[],"./x/**/*.json"],"error":"db.batch is not a function"}
+{"fn":"storeReliabilityRecords","args":[0,0,".leading"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":"b"},"x","ünïcödé"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":"b"},true,"./x/**/*.json"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[true,["a",1],"ns:key.path"],"error":"db.prepare is not a function"}
+{"fn":"storeReliabilityRecords","args":[0,true,"a😀b😀c"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[[],true,"emoji 👍🏽 mix"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[null,{},"./x/**/*.json"],"error":"Cannot read properties of null (reading 'batch')"}
+{"fn":"storeReliabilityRecords","args":[[],{},"abc"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[null,true,"abc"],"error":"Cannot read properties of null (reading 'batch')"}
+{"fn":"storeReliabilityRecords","args":[{},true,"a😀b😀c"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":"b"},{"a":"b"},"İstanbul"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":"b"},0,"{name} has {count} items"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":["x",[],"hello world"],"error":"db.batch is not a function"}
+{"fn":"storeReliabilityRecords","args":[[],{},"  padded  "],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{},["a",1],"😀abc"],"error":"db.prepare is not a function"}
+{"fn":"storeReliabilityRecords","args":["nbul",["a",1],"İstanbul"],"error":"db.prepare is not a function"}
+{"fn":"storeReliabilityRecords","args":[null,0,".leading"],"error":"Cannot read properties of null (reading 'batch')"}
+{"fn":"storeReliabilityRecords","args":[true,true,"tab\tseparated"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":"b"},[],".leading"],"error":"db.batch is not a function"}
+{"fn":"storeReliabilityRecords","args":[{},{"a":{"b":"c"}},"a.b.c"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[":",true,":"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":"b"},{"a":{"b":"c"}},"a..bns:key.path"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[true,{"a":"b"},"😀"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[true,[],":"],"error":"db.batch is not a function"}
+{"fn":"storeReliabilityRecords","args":[["a",1],{"a":{"b":"c"}},"HELLO"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[["a",1],["a",1],"a"],"error":"db.prepare is not a function"}
+{"fn":"storeReliabilityRecords","args":[{},{"a":{"b":"c"}},""],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[[],{"a":"b"},"a😀b😀c"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},true,"key_name-1"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[true,{"a":{"b":"c"}},"a:b:c"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[["a",1],{},"line1\nline2"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[true,{},"a:b:c  padded  "],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":["x",0,""],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},{},"İstanbul"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{},{"a":"b"},"key_name-1"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":["arat",{"a":"b"},"tab\tseparatedhello world"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":["x",{},"ab"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[true,{},"ünïcödé"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":"b"},{"a":{"b":"c"}},"line1\nline2"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[0,"c","a😀b😀c"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":["x",{},"  padded  "],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[0,[],"line1\nline2"],"error":"db.batch is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":"b"},0,"a..b"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[[],true,"hello world"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},0,"  padded  "],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":"b"},{"a":{"b":"c"}},"Hello Worldab"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":"b"},{},"hello"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{},true,".leading"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[[],"x","abc"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{},"x","ΣΊΣΥΦΟΣ"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{},{},"tab\tseparated"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":"b"},null,"ab  padded  "],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"storeReliabilityRecords","args":[{},{"a":"b"},"src/a/b.ts"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{},true,"straße"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{},{"a":"b"},"éHELLO"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{},{},"İstanbul{name} has {count} items"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[0,{"a":"b"},"key_name-1"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{},null,"﻿bom:"],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"storeReliabilityRecords","args":[["a",1],null,"a😀b😀ca"],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"storeReliabilityRecords","args":[["a",1],"x","helloünïcödé"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[["a",1],true,"line1\nline2ünïcödé"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":["x",{},"x"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":["x","x","ΣΊΣΥΦΟΣ"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},"x",":"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{},{"a":"b"},"ünïcödé{name} has {count} items"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[0,{},"hello world"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},[],"src/a/b.ts"],"error":"db.batch is not a function"}
+{"fn":"storeReliabilityRecords","args":[null,null,"a..bünïcödé"],"error":"Cannot read properties of null (reading 'batch')"}
+{"fn":"storeReliabilityRecords","args":[{"a":"b"},true,"ΣΊΣΥΦΟΣ"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":["x",0,"ns:key.path"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[[],{},"Hello World"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":["x",true,"key_name-1"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[0,null,"straße"],"error":"Cannot read properties of null (reading 'map')"}
+{"fn":"storeReliabilityRecords","args":[null,{"a":"b"},"tab\tseparated"],"error":"Cannot read properties of null (reading 'batch')"}
+{"fn":"storeReliabilityRecords","args":[[],{},"tab\tseparatedhello world"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":"b"},0,"src/a/b.ts"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},"héllo wörld"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},"👍🏽 thumbs"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},"日本語"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},""],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},"é"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},"İstanbul"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},"straße"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},"ılık ırmak"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},"👨‍👩‍👧 family"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},"a b"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},"ΣΊΣΥΦΟΣ"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},"a😀b"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},"﻿bom"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},"a²b x½ y①"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},"aⅠb Ⅻ"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},"a𐐀b 𝐀bc"],"error":"records.map is not a function"}
+{"fn":"storeReliabilityRecords","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},"कि ٣٤"],"error":"records.map is not a function"}
+{"fn":"readReliabilityTotals","args":[{"a":{"b":"c"}},[]],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[null,null],"error":"Cannot read properties of null (reading 'searchParams')"}
+{"fn":"readReliabilityTotals","args":[{"a":"b"},{"a":"b"}],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[0,[]],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":["x",{}],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[null,0],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[true,{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[{"a":{"b":"c"}},"x"],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[[],"x"],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[{"a":"b"},0],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[{"a":{"b":"c"}},["a",1]],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[{},{"a":"b"}],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[true,{"a":"b"}],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[null,["a",1]],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[{},["a",1]],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[null,"x"],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[{},true],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":["x",{"a":"b"}],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[null,{}],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[{"a":"b"},{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[["a",1],{"a":"b"}],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[0,{"a":"b"}],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[{},[]],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[true,"x"],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[["a",1],[]],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[[],["a",1]],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[{"a":"b"},null],"error":"Cannot read properties of null (reading 'searchParams')"}
+{"fn":"readReliabilityTotals","args":[[],null],"error":"Cannot read properties of null (reading 'searchParams')"}
+{"fn":"readReliabilityTotals","args":[{"a":{"b":"c"}},true],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[[],{"a":"b"}],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[{"a":{"b":"c"}},null],"error":"Cannot read properties of null (reading 'searchParams')"}
+{"fn":"readReliabilityTotals","args":[0,null],"error":"Cannot read properties of null (reading 'searchParams')"}
+{"fn":"readReliabilityTotals","args":[true,{}],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[[],0],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[["a",1],null],"error":"Cannot read properties of null (reading 'searchParams')"}
+{"fn":"readReliabilityTotals","args":[["a",1],0],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":["x",["a",1]],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[true,true],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[{},{}],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[{},null],"error":"Cannot read properties of null (reading 'searchParams')"}
+{"fn":"readReliabilityTotals","args":[["a",1],{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[{"a":"b"},"x"],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[{"a":"b"},true],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[true,[]],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[0,["a",1]],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[true,null],"error":"Cannot read properties of null (reading 'searchParams')"}
+{"fn":"readReliabilityTotals","args":[0,0],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":["x",{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[{"a":{"b":"c"}},0],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[null,true],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[{},{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[[],{}],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[true,0],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[["a",1],["a",1]],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[["a",1],true],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[["a",1],"x"],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[{"a":{"b":"c"}},{}],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[0,{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[0,"x"],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":["x","x"],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[null,[]],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[0,true],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[{"a":"b"},["a",1]],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[["a",1],{}],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":["x",[]],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[{},"x"],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[[],[]],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[{},0],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[{"a":{"b":"c"}},{"a":"b"}],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[null,{"a":"b"}],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[true,["a",1]],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":["x",true],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[0,{}],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[{"a":"b"},[]],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":["x",0],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[[],{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":["x",null],"error":"Cannot read properties of null (reading 'searchParams')"}
+{"fn":"readReliabilityTotals","args":[[],true],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[{"a":"b"},{}],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":[null,{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":["x","X"],"error":"Cannot read properties of undefined (reading 'get')"}
+{"fn":"readReliabilityTotals","args":["X","x"],"error":"Cannot read properties of undefined (reading 'get')"}

@@ -1,0 +1,66 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/analytics/reliability.ts",
+  "language": "ts",
+  "kind": "wasm",
+  "crate_name": "reliability-rs",
+  "exports": [
+    {
+      "name": "storeReliabilityRecords",
+      "file": "apps/analytics/reliability.ts",
+      "line": 15,
+      "params": [
+        {
+          "name": "db",
+          "ts_type": "D1Database",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "records",
+          "ts_type": "ReadonlyArray<typeof typeof typeof typeof ReliabilityRecord.Type.Type.Type.Type>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "receivedDay",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<string[]>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readReliabilityTotals",
+      "file": "apps/analytics/reliability.ts",
+      "line": 50,
+      "params": [
+        {
+          "name": "db",
+          "ts_type": "D1Database",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "url",
+          "ts_type": "URL",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<Response>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

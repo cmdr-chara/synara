@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/frameTransport.ts",
+  "files": 1,
+  "fingerprint": "80ddc812ac018cff",
+  "coverage": {
+    "lines": 458,
+    "reached": 202,
+    "files": [
+      {
+        "file": "packages/shared/src/frameTransport.ts",
+        "lines": 458,
+        "reached": 202,
+        "missed": "192-200, 203-216, 218-220, 222-224, 226-244, 246-252, 254-255, 257-259, 261-267, 269-270, 272-291, 293-301, 303-310, 313-325, 327-341, 343-354, 356-361, 363-383, 386-407, 410-420, 455-504"
+      }
+    ]
+  }
+}

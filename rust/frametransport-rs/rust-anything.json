@@ -1,0 +1,151 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/frameTransport.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "frametransport-rs",
+  "exports": [
+    {
+      "name": "encodeFrameEnvelope",
+      "file": "packages/shared/src/frameTransport.ts",
+      "line": 43,
+      "params": [
+        {
+          "name": "config",
+          "ts_type": "FrameCodecConfig",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "frame",
+          "ts_type": "FrameEnvelope",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Uint8Array",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "decodeFrameEnvelope",
+      "file": "packages/shared/src/frameTransport.ts",
+      "line": 79,
+      "params": [
+        {
+          "name": "config",
+          "ts_type": "FrameCodecConfig",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "bytes",
+          "ts_type": "Uint8Array",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| { readonly ok: true; readonly frame: FrameEnvelope }\n  | { readonly ok: false; readonly reason: (| \"too-short\"\n  | \"bad-magic\"\n  | \"unsupported-version\"\n  | \"truncated-stream-id\"\n  | \"invalid-stream-id\") })",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "peekFrameHeader",
+      "file": "packages/shared/src/frameTransport.ts",
+      "line": 124,
+      "params": [
+        {
+          "name": "config",
+          "ts_type": "FrameCodecConfig",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "bytes",
+          "ts_type": "Uint8Array",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "FrameHeader | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "classifyByFrameFlags",
+      "file": "packages/shared/src/frameTransport.ts",
+      "line": 153,
+      "params": [
+        {
+          "name": "frame",
+          "ts_type": "FrameClassification",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "FrameClassification",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "decodeFrameResyncRequest",
+      "file": "packages/shared/src/frameTransport.ts",
+      "line": 423,
+      "params": [
+        {
+          "name": "message",
+          "ts_type": "string | Uint8Array",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "resyncMessage",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "maxBytes",
+          "ts_type": "number",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "\"resync\" | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "FrameEncodeError",
+      "file": "packages/shared/src/frameTransport.ts",
+      "line": 38,
+      "reason": "class: extends another class"
+    },
+    {
+      "name": "FrameTransport",
+      "file": "packages/shared/src/frameTransport.ts",
+      "line": 190,
+      "reason": "class: accessor `subscriberCount`"
+    },
+    {
+      "name": "makeFrameSink",
+      "file": "packages/shared/src/frameTransport.ts",
+      "line": 454,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    }
+  ]
+}

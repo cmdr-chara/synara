@@ -1,0 +1,36 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/truncateTitle.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "truncatetitle-rs",
+  "exports": [
+    {
+      "name": "truncateTitle",
+      "file": "apps/web/src/truncateTitle.ts",
+      "line": 1,
+      "params": [
+        {
+          "name": "text",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "maxLength",
+          "ts_type": "number",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,17 @@
+{
+  "unit": "apps/web/src/threadDerivation.ts",
+  "files": 1,
+  "fingerprint": "d8e2c54869b3d7b4",
+  "coverage": {
+    "lines": 165,
+    "reached": 110,
+    "files": [
+      {
+        "file": "apps/web/src/threadDerivation.ts",
+        "lines": 165,
+        "reached": 110,
+        "missed": "55, 58-59, 61-65, 69-71, 74-80, 90-96, 98-107, 123-129, 136-141, 143-144, 146-148, 152, 173"
+      }
+    ]
+  }
+}

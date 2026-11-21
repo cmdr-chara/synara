@@ -1,0 +1,85 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/threadDerivation.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "threadderivation-rs",
+  "exports": [
+    {
+      "name": "selectThreadActivities",
+      "file": "apps/web/src/threadDerivation.ts",
+      "line": 82,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "AppState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Thread[\"activities\"]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "getThreadFromState",
+      "file": "apps/web/src/threadDerivation.ts",
+      "line": 109,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "AppState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Thread | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "getThreadsFromState",
+      "file": "apps/web/src/threadDerivation.ts",
+      "line": 176,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "AppState",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Thread[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "collectByIds",
+      "file": "apps/web/src/threadDerivation.ts",
+      "line": 46,
+      "reason": "generic over `TValue`: values of any shape, functions included"
+    }
+  ]
+}

@@ -1,0 +1,360 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/providerInstances.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "providerinstances-rs",
+  "exports": [
+    {
+      "name": "unresolvedAutomationInstanceId",
+      "file": "packages/shared/src/providerInstances.ts",
+      "line": 59,
+      "params": [
+        {
+          "name": "provider",
+          "ts_type": "typeof typeof typeof typeof ProviderDriverKind.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ProviderInstanceId.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isUnresolvedAutomationInstanceId",
+      "file": "packages/shared/src/providerInstances.ts",
+      "line": 63,
+      "params": [
+        {
+          "name": "instanceId",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isProviderKind",
+      "file": "packages/shared/src/providerInstances.ts",
+      "line": 131,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "value is typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "defaultInstanceIdForProvider",
+      "file": "packages/shared/src/providerInstances.ts",
+      "line": 135,
+      "params": [
+        {
+          "name": "provider",
+          "ts_type": "typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ProviderInstanceId.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "providerProfileDirectoryEnvironment",
+      "file": "packages/shared/src/providerInstances.ts",
+      "line": 139,
+      "params": [
+        {
+          "name": "provider",
+          "ts_type": "typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "profileDir",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Readonly<Record<string, string>>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "providerImportedDirectoryConfig",
+      "file": "packages/shared/src/providerInstances.ts",
+      "line": 157,
+      "params": [
+        {
+          "name": "provider",
+          "ts_type": "typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "directory",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Readonly<Record<string, string>>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "inferLegacyProviderKindFromInstanceId",
+      "file": "packages/shared/src/providerInstances.ts",
+      "line": 167,
+      "params": [
+        {
+          "name": "instanceId",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "inferLegacyProviderKindFromModel",
+      "file": "packages/shared/src/providerInstances.ts",
+      "line": 196,
+      "params": [
+        {
+          "name": "model",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "inferLegacyProviderKindFromModelSelection",
+      "file": "packages/shared/src/providerInstances.ts",
+      "line": 220,
+      "params": [
+        {
+          "name": "selection",
+          "ts_type": "Pick<typeof typeof typeof typeof ModelSelection.Type.Type.Type.Type, \"instanceId\" | \"model\"> | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveModelSelectionInstanceId",
+      "file": "packages/shared/src/providerInstances.ts",
+      "line": 229,
+      "params": [
+        {
+          "name": "selection",
+          "ts_type": "Pick<typeof typeof typeof typeof ModelSelection.Type.Type.Type.Type, \"provider\" | \"instanceId\"> | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ProviderInstanceId.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveProviderStatusInstanceId",
+      "file": "packages/shared/src/providerInstances.ts",
+      "line": 235,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly provider: typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type;\n  readonly instanceId?: typeof typeof typeof typeof ProviderInstanceId.Type.Type.Type.Type | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ProviderInstanceId.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "codexAccountInstanceId",
+      "file": "packages/shared/src/providerInstances.ts",
+      "line": 260,
+      "params": [
+        {
+          "name": "accountId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ProviderInstanceId.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deriveProviderInstanceConfigMap",
+      "file": "packages/shared/src/providerInstances.ts",
+      "line": 375,
+      "params": [
+        {
+          "name": "settings",
+          "ts_type": "typeof typeof typeof typeof ServerSettings.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ProviderInstanceConfigMap.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deriveProviderInstances",
+      "file": "packages/shared/src/providerInstances.ts",
+      "line": 435,
+      "params": [
+        {
+          "name": "settings",
+          "ts_type": "typeof typeof typeof typeof ServerSettings.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<ResolvedProviderInstance>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deriveUnsupportedProviderInstances",
+      "file": "packages/shared/src/providerInstances.ts",
+      "line": 465,
+      "params": [
+        {
+          "name": "settings",
+          "ts_type": "typeof typeof typeof typeof ServerSettings.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<UnsupportedProviderInstance>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveProviderInstance",
+      "file": "packages/shared/src/providerInstances.ts",
+      "line": 494,
+      "params": [
+        {
+          "name": "settings",
+          "ts_type": "typeof typeof typeof typeof ServerSettings.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "input",
+          "ts_type": "{\n    readonly instanceId?: typeof typeof typeof typeof ProviderInstanceId.Type.Type.Type.Type | undefined;\n    readonly provider?: typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type | undefined;\n  }",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ResolvedProviderInstance | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "providerStartOptionsFromInstance",
+      "file": "packages/shared/src/providerInstances.ts",
+      "line": 525,
+      "params": [
+        {
+          "name": "instance",
+          "ts_type": "ResolvedProviderInstance",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ProviderStartOptions.Type.Type.Type.Type | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "mergeProviderStartOptions",
+      "file": "packages/shared/src/providerInstances.ts",
+      "line": 659,
+      "params": [
+        {
+          "name": "base",
+          "ts_type": "typeof typeof typeof typeof ProviderStartOptions.Type.Type.Type.Type | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "overlay",
+          "ts_type": "typeof typeof typeof typeof ProviderStartOptions.Type.Type.Type.Type | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ProviderStartOptions.Type.Type.Type.Type | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

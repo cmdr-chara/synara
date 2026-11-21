@@ -1,0 +1,7 @@
+[request]
+method = "POST"
+path = "/health"
+body = '{"n":9007199254740993,"f":1e21,"t":0.1,"neg":-7}'
+
+[response]
+status = 404

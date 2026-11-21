@@ -1,0 +1,9 @@
+[request]
+method = "GET"
+path = "/api/auth/%C4%B0stanbul"
+
+[response]
+status = 404
+
+[response.headers]
+content-type = "text/plain"

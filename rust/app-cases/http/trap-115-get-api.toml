@@ -1,0 +1,9 @@
+[request]
+method = "GET"
+path = "/api/project-favicon?cwd=e%CC%81"
+
+[response]
+status = 401
+
+[response.headers]
+content-type = "application/json"

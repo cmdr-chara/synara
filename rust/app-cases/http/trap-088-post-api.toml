@@ -1,0 +1,9 @@
+[request]
+method = "POST"
+path = "/api/%C4%B1l%C4%B1k%20%C4%B1rmak/logout"
+
+[request.headers]
+Authorization = "Bearer rectoken"
+
+[response]
+status = 404

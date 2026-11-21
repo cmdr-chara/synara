@@ -16,20 +16,20 @@ Full generated plan with every unit, wave, readiness score and risk: [rust/plan.
 
 ### Units by package (port order)
 
-| # | Package | Path | Units | Waves |
-|---|---|---|---:|---|
-| 1 | @synara/contracts | `packages/contracts` | 79 | 0–9 |
-| 2 | @synara/profile-ui | `packages/profile-ui` | 9 | 0–2 |
-| 3 | @synara/shared | `packages/shared` | 142 | 0–4 |
-| 4 | @synara/analytics | `apps/analytics` | 17 | 0–6 |
-| 5 | @synara/api | `apps/api` | 17 | 0–6 |
-| 6 | @synara/desktop | `apps/desktop` | 105 | 0–6 |
-| 7 | @synara/marketing | `apps/marketing` | 24 | 0–2 |
-| 8 | @synara/profiles | `apps/profiles` | 7 | 0–3 |
-| 9 | @synara/web | `apps/web` | 198 | 0–6 |
-| 10 | @synara/cli | `apps/server` | 240 | 0–9 |
-| 11 | @synara/scripts | `scripts` | 39 | 0–7 |
-| 12 | @synara/monorepo | `.` | 4 | 0–4 |
+| #   | Package            | Path                  | Units | Waves |
+| --- | ------------------ | --------------------- | ----: | ----- |
+| 1   | @synara/contracts  | `packages/contracts`  |    79 | 0–9   |
+| 2   | @synara/profile-ui | `packages/profile-ui` |     9 | 0–2   |
+| 3   | @synara/shared     | `packages/shared`     |   142 | 0–4   |
+| 4   | @synara/analytics  | `apps/analytics`      |    17 | 0–6   |
+| 5   | @synara/api        | `apps/api`            |    17 | 0–6   |
+| 6   | @synara/desktop    | `apps/desktop`        |   105 | 0–6   |
+| 7   | @synara/marketing  | `apps/marketing`      |    24 | 0–2   |
+| 8   | @synara/profiles   | `apps/profiles`       |     7 | 0–3   |
+| 9   | @synara/web        | `apps/web`            |   198 | 0–6   |
+| 10  | @synara/cli        | `apps/server`         |   240 | 0–9   |
+| 11  | @synara/scripts    | `scripts`             |    39 | 0–7   |
+| 12  | @synara/monorepo   | `.`                   |     4 | 0–4   |
 
 ### First 10 units (start_here)
 
@@ -67,11 +67,11 @@ Full generated plan with every unit, wave, readiness score and risk: [rust/plan.
 
 ## Status
 
-| Phase | State |
-|---|---|
-| 0 — Analysis | done — 881 units planned |
-| 1 — Decisions | next (effect/zustand/electron are the big ADRs) |
-| 2 — Record | pending |
-| 3 — Front door | pending |
-| 4 — Port (881 units) | pending — start: `toolOutputSummary.ts` |
-| 5 — Lift | pending |
+| Phase                | State                                           |
+| -------------------- | ----------------------------------------------- |
+| 0 — Analysis         | done — 881 units planned                        |
+| 1 — Decisions        | next (effect/zustand/electron are the big ADRs) |
+| 2 — Record           | pending                                         |
+| 3 — Front door       | pending                                         |
+| 4 — Port (881 units) | pending — start: `toolOutputSummary.ts`         |
+| 5 — Lift             | pending                                         |

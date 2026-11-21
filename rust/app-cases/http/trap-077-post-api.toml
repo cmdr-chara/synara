@@ -1,0 +1,12 @@
+[request]
+method = "POST"
+path = "/api/auth/stra%C3%9Fe"
+
+[request.headers]
+Authorization = "Bearer rectoken"
+
+[response]
+status = 404
+
+[response.headers]
+content-type = "text/plain"

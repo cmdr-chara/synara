@@ -1,0 +1,1 @@
+{"authenticated":false,"auth":{"policy":"loopback-browser","bootstrapMethods":["one-time-token"],"sessionMethods":["browser-session-cookie","bearer-session-token"],"sessionCookieName":"synara_session"}}

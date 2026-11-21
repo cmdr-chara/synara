@@ -1,0 +1,66 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/toolOutputSummary.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "tooloutputsummary-rs",
+  "exports": [
+    {
+      "name": "stripTrailingToolExitCode",
+      "file": "packages/shared/src/toolOutputSummary.ts",
+      "line": 18,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{\n  output: string | null;\n  exitCode?: number;\n}",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "countTextLines",
+      "file": "packages/shared/src/toolOutputSummary.ts",
+      "line": 38,
+      "params": [
+        {
+          "name": "content",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "summarizeToolRawOutput",
+      "file": "packages/shared/src/toolOutputSummary.ts",
+      "line": 49,
+      "params": [
+        {
+          "name": "rawOutput",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

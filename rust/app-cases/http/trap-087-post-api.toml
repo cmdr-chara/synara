@@ -1,0 +1,9 @@
+[request]
+method = "POST"
+path = "/api/stra%C3%9Fe/logout"
+
+[request.headers]
+Authorization = "Bearer rectoken"
+
+[response]
+status = 404

@@ -1,0 +1,12 @@
+[request]
+method = "GET"
+path = "/api/auth/session"
+
+[request.headers]
+Authorization = "Bearer rectoken"
+
+[response]
+status = 200
+
+[response.headers]
+content-type = "application/json"

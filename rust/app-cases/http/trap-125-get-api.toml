@@ -1,0 +1,12 @@
+[request]
+method = "GET"
+path = "/api/e%CC%81?cwd=/missing&fallback=none"
+
+[request.headers]
+Authorization = "Bearer rectoken"
+
+[response]
+status = 503
+
+[response.headers]
+content-type = "text/plain"

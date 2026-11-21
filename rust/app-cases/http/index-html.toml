@@ -1,0 +1,9 @@
+[request]
+method = "GET"
+path = "/index.html"
+
+[response]
+status = 503
+
+[response.headers]
+content-type = "text/plain"

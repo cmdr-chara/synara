@@ -1,0 +1,12 @@
+[request]
+method = "GET"
+path = "/api/%F0%9F%91%8D%F0%9F%8F%BD%20thumbs/session"
+
+[request.headers]
+Authorization = "Bearer rectoken"
+
+[response]
+status = 503
+
+[response.headers]
+content-type = "text/plain"

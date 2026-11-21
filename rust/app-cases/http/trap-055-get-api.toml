@@ -1,0 +1,12 @@
+[request]
+method = "GET"
+path = "/api/e%CC%81/pairing-links"
+
+[request.headers]
+Authorization = "Bearer rectoken"
+
+[response]
+status = 503
+
+[response.headers]
+content-type = "text/plain"

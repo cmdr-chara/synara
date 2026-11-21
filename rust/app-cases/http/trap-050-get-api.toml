@@ -1,0 +1,12 @@
+[request]
+method = "GET"
+path = "/api/a%C2%A0b/clients"
+
+[request.headers]
+Authorization = "Bearer rectoken"
+
+[response]
+status = 503
+
+[response.headers]
+content-type = "text/plain"

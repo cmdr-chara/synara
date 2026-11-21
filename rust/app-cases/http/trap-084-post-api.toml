@@ -1,0 +1,9 @@
+[request]
+method = "POST"
+path = "/api//logout"
+
+[request.headers]
+Authorization = "Bearer rectoken"
+
+[response]
+status = 404

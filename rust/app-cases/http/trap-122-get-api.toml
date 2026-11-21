@@ -1,0 +1,12 @@
+[request]
+method = "GET"
+path = "/api/%F0%9F%91%8D%F0%9F%8F%BD%20thumbs?cwd=/missing&fallback=none"
+
+[request.headers]
+Authorization = "Bearer rectoken"
+
+[response]
+status = 503
+
+[response.headers]
+content-type = "text/plain"

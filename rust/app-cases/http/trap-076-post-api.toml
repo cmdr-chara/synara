@@ -1,0 +1,12 @@
+[request]
+method = "POST"
+path = "/api/auth/%C4%B0stanbul"
+
+[request.headers]
+Authorization = "Bearer rectoken"
+
+[response]
+status = 404
+
+[response.headers]
+content-type = "text/plain"

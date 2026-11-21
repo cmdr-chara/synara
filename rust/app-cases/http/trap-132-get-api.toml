@@ -1,0 +1,12 @@
+[request]
+method = "GET"
+path = "/api/project-favicon?cwd=%F0%9F%91%8D%F0%9F%8F%BD%20thumbs&fallback=none"
+
+[request.headers]
+Authorization = "Bearer rectoken"
+
+[response]
+status = 401
+
+[response.headers]
+content-type = "application/json"

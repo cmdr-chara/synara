@@ -1,0 +1,9 @@
+[request]
+method = "POST"
+path = "/api/%E6%97%A5%E6%9C%AC%E8%AA%9E/ws-token"
+
+[request.headers]
+Authorization = "Bearer rectoken"
+
+[response]
+status = 404

@@ -1,0 +1,12 @@
+[request]
+method = "POST"
+path = "/api/auth/ws-token"
+
+[request.headers]
+Authorization = "Bearer rectoken"
+
+[response]
+status = 401
+
+[response.headers]
+content-type = "application/json"

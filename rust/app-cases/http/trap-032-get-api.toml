@@ -1,0 +1,12 @@
+[request]
+method = "GET"
+path = "/api/auth/%F0%9F%91%8D%F0%9F%8F%BD%20thumbs"
+
+[request.headers]
+Authorization = "Bearer rectoken"
+
+[response]
+status = 404
+
+[response.headers]
+content-type = "text/plain"

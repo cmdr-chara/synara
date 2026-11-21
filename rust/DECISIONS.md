@@ -3,6 +3,7 @@
 ADRs for the Rust port. Numbered in order, never renumbered.
 
 ## ADR-001: Clean-room reimplementation — no T3 Tools code in the Rust port
+
 Status: accepted (2026-11-20)
 Context: The entire Synara TypeScript codebase is MIT-licensed to T3 Tools Inc and Emanuele Di Pietro (`LICENSE`). A line-by-line port is a derivative work and carries that copyright over; the goal is a rewrite containing no T3-authored code.
 Decision: The Rust port is written **only from behavioral recordings (`cases.jsonl`), public interface signatures, and contract types** — never from the original source text. Specifically:

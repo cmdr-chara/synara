@@ -1,0 +1,12 @@
+[request]
+method = "GET"
+path = "/api/stra%C3%9Fe/clients"
+
+[request.headers]
+Authorization = "Bearer rectoken"
+
+[response]
+status = 503
+
+[response.headers]
+content-type = "text/plain"

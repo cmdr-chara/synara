@@ -1,0 +1,9 @@
+[request]
+method = "GET"
+path = "/api/a%C2%A0b?cwd=/missing"
+
+[response]
+status = 503
+
+[response.headers]
+content-type = "text/plain"

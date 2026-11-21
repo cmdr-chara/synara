@@ -1,0 +1,9 @@
+[request]
+method = "GET"
+path = "/rust-anything-missing"
+
+[response]
+status = 503
+
+[response.headers]
+content-type = "text/plain"

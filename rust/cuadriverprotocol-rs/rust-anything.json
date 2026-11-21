@@ -1,0 +1,103 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/cuaDriverProtocol.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "cuadriverprotocol-rs",
+  "exports": [
+    {
+      "name": "cuaComputerTaskKey",
+      "file": "packages/shared/src/cuaDriverProtocol.ts",
+      "line": 108,
+      "params": [
+        {
+          "name": "task",
+          "ts_type": "CuaComputerTask",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseCuaShieldArgs",
+      "file": "packages/shared/src/cuaDriverProtocol.ts",
+      "line": 154,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| {\n      readonly action: \"engage\";\n      readonly shieldId: string;\n      readonly frame: { x: number; y: number; width: number; height: number };\n      readonly windowId: number;\n      readonly pid: number;\n      readonly label?: string;\n    }\n  | { readonly action: \"release\"; readonly shieldId: string }\n  | { readonly action: \"release_all\" }) | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseCuaComputerTask",
+      "file": "packages/shared/src/cuaDriverProtocol.ts",
+      "line": 204,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "CuaComputerTask | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "cuaCleanupAcknowledged",
+      "file": "packages/shared/src/cuaDriverProtocol.ts",
+      "line": 361,
+      "params": [
+        {
+          "name": "result",
+          "ts_type": "CuaToolResult | Record<string, unknown> | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "expectedPid",
+          "ts_type": "number | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "CuaTransportError",
+      "file": "packages/shared/src/cuaDriverProtocol.ts",
+      "line": 234,
+      "reason": "class: extends another class, public parameter properties"
+    },
+    {
+      "name": "cuaRequest",
+      "file": "packages/shared/src/cuaDriverProtocol.ts",
+      "line": 245,
+      "reason": "generic over `T`: values of any shape, functions included"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "unit": "apps/web/src/terminalActivity.ts",
+  "files": 1,
+  "fingerprint": "e20711f0e4a6af00",
+  "coverage": {
+    "lines": 24,
+    "reached": 12,
+    "files": [
+      {
+        "file": "apps/web/src/terminalActivity.ts",
+        "lines": 24,
+        "reached": 12,
+        "missed": "11-22"
+      }
+    ]
+  }
+}

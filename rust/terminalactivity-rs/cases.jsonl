@@ -1,0 +1,9 @@
+{"fn":"terminalActivityFromEvent","args":[0],"ok":null}
+{"fn":"terminalActivityFromEvent","args":["x"],"ok":null}
+{"fn":"terminalActivityFromEvent","args":[[]],"ok":null}
+{"fn":"terminalActivityFromEvent","args":[{}],"ok":null}
+{"fn":"terminalActivityFromEvent","args":[null],"error":"Cannot read properties of null (reading 'type')"}
+{"fn":"terminalActivityFromEvent","args":[["a",1]],"ok":null}
+{"fn":"terminalActivityFromEvent","args":[{"a":{"b":"c"}}],"ok":null}
+{"fn":"terminalActivityFromEvent","args":[{"a":"b"}],"ok":null}
+{"fn":"terminalActivityFromEvent","args":[true],"ok":null}

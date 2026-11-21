@@ -1,0 +1,17 @@
+{
+  "unit": "apps/server/src/codexWorkingDirectory.ts",
+  "files": 1,
+  "fingerprint": "b2f30fae0daa0fab",
+  "coverage": {
+    "lines": 24,
+    "reached": 18,
+    "files": [
+      {
+        "file": "apps/server/src/codexWorkingDirectory.ts",
+        "lines": 24,
+        "reached": 18,
+        "missed": "16-19, 24-25"
+      }
+    ]
+  }
+}

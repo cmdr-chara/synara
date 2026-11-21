@@ -1,0 +1,422 @@
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["a😀b😀c"],"ok":"Project working directory no longer exists: a😀b😀c. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["{name} has {count} items"],"ok":"Project working directory no longer exists: {name} has {count} items. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["a..b"],"ok":"Project working directory no longer exists: a..b. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["emoji 👍🏽 mix"],"ok":"Project working directory no longer exists: emoji 👍🏽 mix. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["tab\tseparated"],"ok":"Project working directory no longer exists: tab\tseparated. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["line1\nline2"],"ok":"Project working directory no longer exists: line1\nline2. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["Hello WorldHELLO"],"ok":"Project working directory no longer exists: Hello WorldHELLO. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["a"],"ok":"Project working directory no longer exists: a. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["straße"],"ok":"Project working directory no longer exists: straße. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["trailing."],"ok":"Project working directory no longer exists: trailing.. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["a:b:c"],"ok":"Project working directory no longer exists: a:b:c. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["src/a/b.ts"],"ok":"Project working directory no longer exists: src/a/b.ts. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["é"],"ok":"Project working directory no longer exists: é. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["hello world"],"ok":"Project working directory no longer exists: hello world. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["a.b.c"],"ok":"Project working directory no longer exists: a.b.c. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["HELLO"],"ok":"Project working directory no longer exists: HELLO. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["{name} has {count} itemsa😀b😀c"],"ok":"Project working directory no longer exists: {name} has {count} itemsa😀b😀c. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["hello"],"ok":"Project working directory no longer exists: hello. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["😀"],"ok":"Project working directory no longer exists: 😀. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["Hello World"],"ok":"Project working directory no longer exists: Hello World. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["éab"],"ok":"Project working directory no longer exists: éab. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":[".leading"],"ok":"Project working directory no longer exists: .leading. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["ΣΊΣΥΦΟΣ"],"ok":"Project working directory no longer exists: ΣΊΣΥΦΟΣ. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["ab"],"ok":"Project working directory no longer exists: ab. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":[".leading﻿bom"],"ok":"Project working directory no longer exists: .leading﻿bom. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["a..b﻿bom"],"ok":"Project working directory no longer exists: a..b﻿bom. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["a..bΣΊΣΥΦΟΣ"],"ok":"Project working directory no longer exists: a..bΣΊΣΥΦΟΣ. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":[""],"ok":"Project working directory no longer exists: . Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":[":"],"ok":"Project working directory no longer exists: :. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["﻿bom"],"ok":"Project working directory no longer exists: ﻿bom. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":[".leadingns:key.path"],"ok":"Project working directory no longer exists: .leadingns:key.path. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["ünïcödé"],"ok":"Project working directory no longer exists: ünïcödé. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["./x/**/*.json"],"ok":"Project working directory no longer exists: ./x/**/*.json. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["ΣΊΣΥΦΟΣa.b.c"],"ok":"Project working directory no longer exists: ΣΊΣΥΦΟΣa.b.c. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["HELLOabc"],"ok":"Project working directory no longer exists: HELLOabc. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["  padded  "],"ok":"Project working directory no longer exists:   padded  . Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["HELLOns:key.path"],"ok":"Project working directory no longer exists: HELLOns:key.path. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["abc"],"ok":"Project working directory no longer exists: abc. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["key_name-1"],"ok":"Project working directory no longer exists: key_name-1. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["tab\tseparateda.b.c"],"ok":"Project working directory no longer exists: tab\tseparateda.b.c. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["İstanbul"],"ok":"Project working directory no longer exists: İstanbul. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["abHello World"],"ok":"Project working directory no longer exists: abHello World. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["straßeünïcödé"],"ok":"Project working directory no longer exists: straßeünïcödé. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["ΣΊΣΥΦΟΣtab\tseparated"],"ok":"Project working directory no longer exists: ΣΊΣΥΦΟΣtab\tseparated. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["😀日本語のテキスト"],"ok":"Project working directory no longer exists: 😀日本語のテキスト. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["Hello Worldhello"],"ok":"Project working directory no longer exists: Hello Worldhello. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["helloab"],"ok":"Project working directory no longer exists: helloab. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["a.b.c./x/**/*.json"],"ok":"Project working directory no longer exists: a.b.c./x/**/*.json. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":[".leadinghello"],"ok":"Project working directory no longer exists: .leadinghello. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["hello日本語のテキスト"],"ok":"Project working directory no longer exists: hello日本語のテキスト. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["line1\nline2abc"],"ok":"Project working directory no longer exists: line1\nline2abc. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["line1\nline2HELLO"],"ok":"Project working directory no longer exists: line1\nline2HELLO. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["日本語のテキスト"],"ok":"Project working directory no longer exists: 日本語のテキスト. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["key_name-1./x/**/*.json"],"ok":"Project working directory no longer exists: key_name-1./x/**/*.json. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["straßeHello World"],"ok":"Project working directory no longer exists: straßeHello World. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["ns:key.path"],"ok":"Project working directory no longer exists: ns:key.path. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["trailing.{name} has {count} items"],"ok":"Project working directory no longer exists: trailing.{name} has {count} items. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":[".leadingabc"],"ok":"Project working directory no longer exists: .leadingabc. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["HELLO.leading"],"ok":"Project working directory no longer exists: HELLO.leading. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["./x/**/*.jsonİstanbul"],"ok":"Project working directory no longer exists: ./x/**/*.jsonİstanbul. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["ΣΊΣΥΦΟΣa:b:c"],"ok":"Project working directory no longer exists: ΣΊΣΥΦΟΣa:b:c. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["﻿bomemoji 👍🏽 mix"],"ok":"Project working directory no longer exists: ﻿bomemoji 👍🏽 mix. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["ΣΊΣΥΦΟΣHELLO"],"ok":"Project working directory no longer exists: ΣΊΣΥΦΟΣHELLO. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["ns:key.pathHello World"],"ok":"Project working directory no longer exists: ns:key.pathHello World. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["éa"],"ok":"Project working directory no longer exists: éa. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["key_name-1key_name-1"],"ok":"Project working directory no longer exists: key_name-1key_name-1. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["line1\nline2./x/**/*.json"],"ok":"Project working directory no longer exists: line1\nline2./x/**/*.json. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["﻿bomns:key.path"],"ok":"Project working directory no longer exists: ﻿bomns:key.path. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["src/a/b.tsa"],"ok":"Project working directory no longer exists: src/a/b.tsa. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["a😀b😀cstraße"],"ok":"Project working directory no longer exists: a😀b😀cstraße. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["trailing..leading"],"ok":"Project working directory no longer exists: trailing..leading. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["src/a/b.tsHello World"],"ok":"Project working directory no longer exists: src/a/b.tsHello World. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["İstanbulİstanbul"],"ok":"Project working directory no longer exists: İstanbulİstanbul. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["abİstanbul"],"ok":"Project working directory no longer exists: abİstanbul. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["日本語のテキストé"],"ok":"Project working directory no longer exists: 日本語のテキストé. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["İstanbulabc"],"ok":"Project working directory no longer exists: İstanbulabc. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["a..ba:b:c"],"ok":"Project working directory no longer exists: a..ba:b:c. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["İstanbul.leading"],"ok":"Project working directory no longer exists: İstanbul.leading. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":[":a😀b😀c"],"ok":"Project working directory no longer exists: :a😀b😀c. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["ns:key.pathhello world"],"ok":"Project working directory no longer exists: ns:key.pathhello world. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["trailing.日本語のテキスト"],"ok":"Project working directory no longer exists: trailing.日本語のテキスト. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["﻿bom:"],"ok":"Project working directory no longer exists: ﻿bom:. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["./x/**/*.jsonΣΊΣΥΦΟΣ"],"ok":"Project working directory no longer exists: ./x/**/*.jsonΣΊΣΥΦΟΣ. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["key_name-1tab\tseparated"],"ok":"Project working directory no longer exists: key_name-1tab\tseparated. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["aab"],"ok":"Project working directory no longer exists: aab. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["abca.b.c"],"ok":"Project working directory no longer exists: abca.b.c. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["atab\tseparated"],"ok":"Project working directory no longer exists: atab\tseparated. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["hellotab\tseparated"],"ok":"Project working directory no longer exists: hellotab\tseparated. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["Hello World😀"],"ok":"Project working directory no longer exists: Hello World😀. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":[".leadinga😀b😀c"],"ok":"Project working directory no longer exists: .leadinga😀b😀c. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["aHELLO"],"ok":"Project working directory no longer exists: aHELLO. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["{name} has {count} itemsHello World"],"ok":"Project working directory no longer exists: {name} has {count} itemsHello World. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["abchello"],"ok":"Project working directory no longer exists: abchello. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["é  padded  "],"ok":"Project working directory no longer exists: é  padded  . Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["./x/**/*.jsonemoji 👍🏽 mix"],"ok":"Project working directory no longer exists: ./x/**/*.jsonemoji 👍🏽 mix. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["key_name-1line1\nline2"],"ok":"Project working directory no longer exists: key_name-1line1\nline2. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":[".leading.leading"],"ok":"Project working directory no longer exists: .leading.leading. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["tab\tseparatedΣΊΣΥΦΟΣ"],"ok":"Project working directory no longer exists: tab\tseparatedΣΊΣΥΦΟΣ. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["HELLOa"],"ok":"Project working directory no longer exists: HELLOa. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["./x/**/*.jsonabc"],"ok":"Project working directory no longer exists: ./x/**/*.jsonabc. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["key_name-1Hello World"],"ok":"Project working directory no longer exists: key_name-1Hello World. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["  padded    padded  "],"ok":"Project working directory no longer exists:   padded    padded  . Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["a:b:ca😀b😀c"],"ok":"Project working directory no longer exists: a:b:ca😀b😀c. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["hello worldemoji 👍🏽 mix"],"ok":"Project working directory no longer exists: hello worldemoji 👍🏽 mix. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["﻿bom日本語のテキスト"],"ok":"Project working directory no longer exists: ﻿bom日本語のテキスト. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["hello world./x/**/*.json"],"ok":"Project working directory no longer exists: hello world./x/**/*.json. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["ΣΊΣΥΦΟΣ日本語のテキスト"],"ok":"Project working directory no longer exists: ΣΊΣΥΦΟΣ日本語のテキスト. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["./x/**/*.json{name} has {count} items"],"ok":"Project working directory no longer exists: ./x/**/*.json{name} has {count} items. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["abcHELLO"],"ok":"Project working directory no longer exists: abcHELLO. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["./x/**/*.jsonhello world"],"ok":"Project working directory no longer exists: ./x/**/*.jsonhello world. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["ns:key.path{name} has {count} items"],"ok":"Project working directory no longer exists: ns:key.path{name} has {count} items. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["hello worldabc"],"ok":"Project working directory no longer exists: hello worldabc. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["tab\tseparatedtab\tseparated"],"ok":"Project working directory no longer exists: tab\tseparatedtab\tseparated. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["Hello Worldns:key.path"],"ok":"Project working directory no longer exists: Hello Worldns:key.path. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["é﻿bom"],"ok":"Project working directory no longer exists: é﻿bom. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["key_name-1a😀b😀c"],"ok":"Project working directory no longer exists: key_name-1a😀b😀c. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["trailing.ns:key.path"],"ok":"Project working directory no longer exists: trailing.ns:key.path. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":[".leadingkey_name-1"],"ok":"Project working directory no longer exists: .leadingkey_name-1. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["a:b:ctab\tseparated"],"ok":"Project working directory no longer exists: a:b:ctab\tseparated. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["src/a/b.tsabc"],"ok":"Project working directory no longer exists: src/a/b.tsabc. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["key_name-1HELLO"],"ok":"Project working directory no longer exists: key_name-1HELLO. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["helloemoji 👍🏽 mix"],"ok":"Project working directory no longer exists: helloemoji 👍🏽 mix. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["./x/**/*.jsonab"],"ok":"Project working directory no longer exists: ./x/**/*.jsonab. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["a./x/**/*.json"],"ok":"Project working directory no longer exists: a./x/**/*.json. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["ünïcödéhello"],"ok":"Project working directory no longer exists: ünïcödéhello. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["line1\nline2tab\tseparated"],"ok":"Project working directory no longer exists: line1\nline2tab\tseparated. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":[":a.b.c"],"ok":"Project working directory no longer exists: :a.b.c. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["a.b.cemoji 👍🏽 mix"],"ok":"Project working directory no longer exists: a.b.cemoji 👍🏽 mix. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["abcemoji 👍🏽 mix"],"ok":"Project working directory no longer exists: abcemoji 👍🏽 mix. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["Hello World日本語のテキスト"],"ok":"Project working directory no longer exists: Hello World日本語のテキスト. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["{name} has {count} itemstrailing."],"ok":"Project working directory no longer exists: {name} has {count} itemstrailing.. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["ΣΊΣΥΦΟΣünïcödé"],"ok":"Project working directory no longer exists: ΣΊΣΥΦΟΣünïcödé. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["日本語のテキストa:b:c"],"ok":"Project working directory no longer exists: 日本語のテキストa:b:c. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["étrailing."],"ok":"Project working directory no longer exists: étrailing.. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["😀.leading"],"ok":"Project working directory no longer exists: 😀.leading. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":[":hello world"],"ok":"Project working directory no longer exists: :hello world. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["ünïcödé.leading"],"ok":"Project working directory no longer exists: ünïcödé.leading. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["emoji 👍🏽 mixhello"],"ok":"Project working directory no longer exists: emoji 👍🏽 mixhello. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["abcab"],"ok":"Project working directory no longer exists: abcab. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["emoji 👍🏽 mixa😀b😀c"],"ok":"Project working directory no longer exists: emoji 👍🏽 mixa😀b😀c. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["emoji 👍🏽 mix  padded  "],"ok":"Project working directory no longer exists: emoji 👍🏽 mix  padded  . Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["key_name-1{name} has {count} items"],"ok":"Project working directory no longer exists: key_name-1{name} has {count} items. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["a:b:csrc/a/b.ts"],"ok":"Project working directory no longer exists: a:b:csrc/a/b.ts. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["aé"],"ok":"Project working directory no longer exists: aé. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["a.b.ca"],"ok":"Project working directory no longer exists: a.b.ca. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["日本語のテキストsrc/a/b.ts"],"ok":"Project working directory no longer exists: 日本語のテキストsrc/a/b.ts. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["{name} has {count} itemsa.b.c"],"ok":"Project working directory no longer exists: {name} has {count} itemsa.b.c. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["ns:key.patha😀b😀c"],"ok":"Project working directory no longer exists: ns:key.patha😀b😀c. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["ns:key.patha.b.c"],"ok":"Project working directory no longer exists: ns:key.patha.b.c. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["a.b.cline1\nline2"],"ok":"Project working directory no longer exists: a.b.cline1\nline2. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["İstanbul﻿bom"],"ok":"Project working directory no longer exists: İstanbul﻿bom. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["{name} has {count} itemsünïcödé"],"ok":"Project working directory no longer exists: {name} has {count} itemsünïcödé. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["hello worldkey_name-1"],"ok":"Project working directory no longer exists: hello worldkey_name-1. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["line1\nline2{name} has {count} items"],"ok":"Project working directory no longer exists: line1\nline2{name} has {count} items. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["a..bns:key.path"],"ok":"Project working directory no longer exists: a..bns:key.path. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["é./x/**/*.json"],"ok":"Project working directory no longer exists: é./x/**/*.json. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["ns:key.path😀"],"ok":"Project working directory no longer exists: ns:key.path😀. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["a😀b😀ctrailing."],"ok":"Project working directory no longer exists: a😀b😀ctrailing.. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["ΣΊΣΥΦΟΣ.leading"],"ok":"Project working directory no longer exists: ΣΊΣΥΦΟΣ.leading. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["ünïcödé:"],"ok":"Project working directory no longer exists: ünïcödé:. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["straßeemoji 👍🏽 mix"],"ok":"Project working directory no longer exists: straßeemoji 👍🏽 mix. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["HELLOemoji 👍🏽 mix"],"ok":"Project working directory no longer exists: HELLOemoji 👍🏽 mix. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["  padded  ﻿bom"],"ok":"Project working directory no longer exists:   padded  ﻿bom. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["straßekey_name-1"],"ok":"Project working directory no longer exists: straßekey_name-1. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["ab./x/**/*.json"],"ok":"Project working directory no longer exists: ab./x/**/*.json. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["HELLO  padded  "],"ok":"Project working directory no longer exists: HELLO  padded  . Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["﻿bomab"],"ok":"Project working directory no longer exists: ﻿bomab. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["a:b:cemoji 👍🏽 mix"],"ok":"Project working directory no longer exists: a:b:cemoji 👍🏽 mix. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["﻿boma.b.c"],"ok":"Project working directory no longer exists: ﻿boma.b.c. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["{name} has {count} items😀"],"ok":"Project working directory no longer exists: {name} has {count} items😀. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["Hello Worldemoji 👍🏽 mix"],"ok":"Project working directory no longer exists: Hello Worldemoji 👍🏽 mix. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["ababc"],"ok":"Project working directory no longer exists: ababc. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["hello  padded  "],"ok":"Project working directory no longer exists: hello  padded  . Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["HELLO{name} has {count} items"],"ok":"Project working directory no longer exists: HELLO{name} has {count} items. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["trailing.a..b"],"ok":"Project working directory no longer exists: trailing.a..b. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["﻿bomΣΊΣΥΦΟΣ"],"ok":"Project working directory no longer exists: ﻿bomΣΊΣΥΦΟΣ. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["hello﻿bom"],"ok":"Project working directory no longer exists: hello﻿bom. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["key_name-1ünïcödé"],"ok":"Project working directory no longer exists: key_name-1ünïcödé. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["./x/**/*.jsonHELLO"],"ok":"Project working directory no longer exists: ./x/**/*.jsonHELLO. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["{name} has {count} itemshello"],"ok":"Project working directory no longer exists: {name} has {count} itemshello. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["helloa"],"ok":"Project working directory no longer exists: helloa. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["abcΣΊΣΥΦΟΣ"],"ok":"Project working directory no longer exists: abcΣΊΣΥΦΟΣ. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["hello worldsrc/a/b.ts"],"ok":"Project working directory no longer exists: hello worldsrc/a/b.ts. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["😀Hello World"],"ok":"Project working directory no longer exists: 😀Hello World. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["ns:key.pathtrailing."],"ok":"Project working directory no longer exists: ns:key.pathtrailing.. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["tab\tseparatedemoji 👍🏽 mix"],"ok":"Project working directory no longer exists: tab\tseparatedemoji 👍🏽 mix. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["a:b:c.leading"],"ok":"Project working directory no longer exists: a:b:c.leading. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["tab\tseparatedé"],"ok":"Project working directory no longer exists: tab\tseparatedé. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["ünïcödé﻿bom"],"ok":"Project working directory no longer exists: ünïcödé﻿bom. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["./x/**/*.jsonstraße"],"ok":"Project working directory no longer exists: ./x/**/*.jsonstraße. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["straße😀"],"ok":"Project working directory no longer exists: straße😀. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["trailing.straße"],"ok":"Project working directory no longer exists: trailing.straße. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["a😀b😀ckey_name-1"],"ok":"Project working directory no longer exists: a😀b😀ckey_name-1. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["ns:key.pathsrc/a/b.ts"],"ok":"Project working directory no longer exists: ns:key.pathsrc/a/b.ts. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["{name} has {count} itemsa"],"ok":"Project working directory no longer exists: {name} has {count} itemsa. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["emoji 👍🏽 mixa"],"ok":"Project working directory no longer exists: emoji 👍🏽 mixa. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["😀é"],"ok":"Project working directory no longer exists: 😀é. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["ns:key.pathabc"],"ok":"Project working directory no longer exists: ns:key.pathabc. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["İstanbula:b:c"],"ok":"Project working directory no longer exists: İstanbula:b:c. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":[":emoji 👍🏽 mix"],"ok":"Project working directory no longer exists: :emoji 👍🏽 mix. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["héllo wörld"],"ok":"Project working directory no longer exists: héllo wörld. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["👍🏽 thumbs"],"ok":"Project working directory no longer exists: 👍🏽 thumbs. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["日本語"],"ok":"Project working directory no longer exists: 日本語. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["ılık ırmak"],"ok":"Project working directory no longer exists: ılık ırmak. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["👨‍👩‍👧 family"],"ok":"Project working directory no longer exists: 👨‍👩‍👧 family. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["a b"],"ok":"Project working directory no longer exists: a b. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["a😀b"],"ok":"Project working directory no longer exists: a😀b. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["a²b x½ y①"],"ok":"Project working directory no longer exists: a²b x½ y①. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["aⅠb Ⅻ"],"ok":"Project working directory no longer exists: aⅠb Ⅻ. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["a𐐀b 𝐀bc"],"ok":"Project working directory no longer exists: a𐐀b 𝐀bc. Relocate or reconnect the project in Synara."}
+{"fn":"formatMissingCodexWorkingDirectoryError","args":["कि ٣٤"],"ok":"Project working directory no longer exists: कि ٣٤. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["a😀b😀c"],"error":"Project working directory no longer exists: a😀b😀c. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["line1\nline2"],"error":"Project working directory no longer exists: line1\nline2. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":[":"],"error":"Project working directory no longer exists: :. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["ab"],"error":"Project working directory no longer exists: ab. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["ΣΊΣΥΦΟΣ"],"error":"Project working directory no longer exists: ΣΊΣΥΦΟΣ. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["﻿bom"],"error":"Project working directory no longer exists: ﻿bom. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["key_name-1hello world"],"error":"Project working directory no longer exists: key_name-1hello world. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["src/a/b.tsemoji 👍🏽 mix"],"error":"Project working directory no longer exists: src/a/b.tsemoji 👍🏽 mix. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["./x/**/*.jsonünïcödé"],"error":"Project working directory no longer exists: ./x/**/*.jsonünïcödé. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["trailing."],"error":"Project working directory no longer exists: trailing.. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["hello world"],"error":"Project working directory no longer exists: hello world. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["a.b.c"],"error":"Project working directory no longer exists: a.b.c. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["straße"],"error":"Project working directory no longer exists: straße. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["ns:key.pathabc"],"error":"Project working directory no longer exists: ns:key.pathabc. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["key_name-1{name} has {count} items"],"error":"Project working directory no longer exists: key_name-1{name} has {count} items. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["src/a/b.ts"],"error":"Project working directory no longer exists: src/a/b.ts. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["emoji 👍🏽 mix"],"error":"Project working directory no longer exists: emoji 👍🏽 mix. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["./x/**/*.json"],"error":"Project working directory no longer exists: ./x/**/*.json. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["abc"],"error":"Project working directory no longer exists: abc. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["straßehello"],"error":"Project working directory no longer exists: straßehello. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":[""],"error":"Project working directory no longer exists: . Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["tab\tseparated"],"error":"Project working directory no longer exists: tab\tseparated. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["hello worldé"],"error":"Project working directory no longer exists: hello worldé. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["aba:b:c"],"error":"Project working directory no longer exists: aba:b:c. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["HELLO"],"error":"Project working directory no longer exists: HELLO. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["é"],"error":"Project working directory no longer exists: é. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["  padded  "],"error":"Project working directory no longer exists:   padded  . Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["ns:key.path"],"error":"Project working directory no longer exists: ns:key.path. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["HELLOünïcödé"],"error":"Project working directory no longer exists: HELLOünïcödé. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["{name} has {count} items"],"error":"Project working directory no longer exists: {name} has {count} items. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["key_name-1a"],"error":"Project working directory no longer exists: key_name-1a. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["a:b:ca..b"],"error":"Project working directory no longer exists: a:b:ca..b. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["ünïcödé"],"error":"Project working directory no longer exists: ünïcödé. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["emoji 👍🏽 mixa:b:c"],"error":"Project working directory no longer exists: emoji 👍🏽 mixa:b:c. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["a:b:c"],"error":"Project working directory no longer exists: a:b:c. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["astraße"],"error":"Project working directory no longer exists: astraße. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["line1\nline2  padded  "],"error":"Project working directory no longer exists: line1\nline2  padded  . Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["a..b"],"error":"Project working directory no longer exists: a..b. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["😀"],"error":"Project working directory no longer exists: 😀. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["日本語のテキストab"],"error":"Project working directory no longer exists: 日本語のテキストab. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["a😀b😀c日本語のテキスト"],"error":"Project working directory no longer exists: a😀b😀c日本語のテキスト. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["İstanbul"],"error":"Project working directory no longer exists: İstanbul. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["a..b{name} has {count} items"],"error":"Project working directory no longer exists: a..b{name} has {count} items. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["Hello World"],"error":"Project working directory no longer exists: Hello World. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["hello"],"error":"Project working directory no longer exists: hello. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["hello world{name} has {count} items"],"error":"Project working directory no longer exists: hello world{name} has {count} items. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["  padded  trailing."],"error":"Project working directory no longer exists:   padded  trailing.. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["﻿bomabc"],"error":"Project working directory no longer exists: ﻿bomabc. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["a"],"error":"Project working directory no longer exists: a. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["src/a/b.tsünïcödé"],"error":"Project working directory no longer exists: src/a/b.tsünïcödé. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["﻿bomhello world"],"error":"Project working directory no longer exists: ﻿bomhello world. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["abkey_name-1"],"error":"Project working directory no longer exists: abkey_name-1. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":[".leading"],"error":"Project working directory no longer exists: .leading. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["ékey_name-1"],"error":"Project working directory no longer exists: ékey_name-1. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["src/a/b.ts./x/**/*.json"],"error":"Project working directory no longer exists: src/a/b.ts./x/**/*.json. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["abcabc"],"error":"Project working directory no longer exists: abcabc. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["日本語のテキスト"],"error":"Project working directory no longer exists: 日本語のテキスト. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":[".leading.leading"],"error":"Project working directory no longer exists: .leading.leading. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["trailing.a😀b😀c"],"error":"Project working directory no longer exists: trailing.a😀b😀c. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["😀ns:key.path"],"error":"Project working directory no longer exists: 😀ns:key.path. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["straßea:b:c"],"error":"Project working directory no longer exists: straßea:b:c. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["Hello Worlda..b"],"error":"Project working directory no longer exists: Hello Worlda..b. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["key_name-1"],"error":"Project working directory no longer exists: key_name-1. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["ünïcödéab"],"error":"Project working directory no longer exists: ünïcödéab. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["./x/**/*.jsontrailing."],"error":"Project working directory no longer exists: ./x/**/*.jsontrailing.. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["ünïcödé.leading"],"error":"Project working directory no longer exists: ünïcödé.leading. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["ns:key.patha.b.c"],"error":"Project working directory no longer exists: ns:key.patha.b.c. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["ΣΊΣΥΦΟΣtrailing."],"error":"Project working directory no longer exists: ΣΊΣΥΦΟΣtrailing.. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["a..ba..b"],"error":"Project working directory no longer exists: a..ba..b. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["Hello Worldns:key.path"],"error":"Project working directory no longer exists: Hello Worldns:key.path. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["ahello"],"error":"Project working directory no longer exists: ahello. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["abab"],"error":"Project working directory no longer exists: abab. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["  padded  ﻿bom"],"error":"Project working directory no longer exists:   padded  ﻿bom. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["ΣΊΣΥΦΟΣHELLO"],"error":"Project working directory no longer exists: ΣΊΣΥΦΟΣHELLO. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["ns:key.pathline1\nline2"],"error":"Project working directory no longer exists: ns:key.pathline1\nline2. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["emoji 👍🏽 mixhello"],"error":"Project working directory no longer exists: emoji 👍🏽 mixhello. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["a.b.ckey_name-1"],"error":"Project working directory no longer exists: a.b.ckey_name-1. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["aline1\nline2"],"error":"Project working directory no longer exists: aline1\nline2. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["éline1\nline2"],"error":"Project working directory no longer exists: éline1\nline2. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["a😀b😀cstraße"],"error":"Project working directory no longer exists: a😀b😀cstraße. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["hello worldstraße"],"error":"Project working directory no longer exists: hello worldstraße. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":[":line1\nline2"],"error":"Project working directory no longer exists: :line1\nline2. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["emoji 👍🏽 mixkey_name-1"],"error":"Project working directory no longer exists: emoji 👍🏽 mixkey_name-1. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["a..btab\tseparated"],"error":"Project working directory no longer exists: a..btab\tseparated. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["aabc"],"error":"Project working directory no longer exists: aabc. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["straßeline1\nline2"],"error":"Project working directory no longer exists: straßeline1\nline2. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["ΣΊΣΥΦΟΣhello world"],"error":"Project working directory no longer exists: ΣΊΣΥΦΟΣhello world. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["a:b:ctrailing."],"error":"Project working directory no longer exists: a:b:ctrailing.. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["a:b:c日本語のテキスト"],"error":"Project working directory no longer exists: a:b:c日本語のテキスト. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["😀:"],"error":"Project working directory no longer exists: 😀:. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["a./x/**/*.json"],"error":"Project working directory no longer exists: a./x/**/*.json. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["😀é"],"error":"Project working directory no longer exists: 😀é. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["src/a/b.tsé"],"error":"Project working directory no longer exists: src/a/b.tsé. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["a😀b😀cHello World"],"error":"Project working directory no longer exists: a😀b😀cHello World. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["😀  padded  "],"error":"Project working directory no longer exists: 😀  padded  . Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["abca..b"],"error":"Project working directory no longer exists: abca..b. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["a..b日本語のテキスト"],"error":"Project working directory no longer exists: a..b日本語のテキスト. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["hello worldab"],"error":"Project working directory no longer exists: hello worldab. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["ns:key.pathhello world"],"error":"Project working directory no longer exists: ns:key.pathhello world. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["a{name} has {count} items"],"error":"Project working directory no longer exists: a{name} has {count} items. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":[".leadinga:b:c"],"error":"Project working directory no longer exists: .leadinga:b:c. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["tab\tseparatedemoji 👍🏽 mix"],"error":"Project working directory no longer exists: tab\tseparatedemoji 👍🏽 mix. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["HELLOabc"],"error":"Project working directory no longer exists: HELLOabc. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["日本語のテキストHello World"],"error":"Project working directory no longer exists: 日本語のテキストHello World. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["emoji 👍🏽 mix{name} has {count} items"],"error":"Project working directory no longer exists: emoji 👍🏽 mix{name} has {count} items. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["tab\tseparatedhello world"],"error":"Project working directory no longer exists: tab\tseparatedhello world. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["😀trailing."],"error":"Project working directory no longer exists: 😀trailing.. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["日本語のテキスト﻿bom"],"error":"Project working directory no longer exists: 日本語のテキスト﻿bom. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["ab./x/**/*.json"],"error":"Project working directory no longer exists: ab./x/**/*.json. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["a😀b😀cab"],"error":"Project working directory no longer exists: a😀b😀cab. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["İstanbulünïcödé"],"error":"Project working directory no longer exists: İstanbulünïcödé. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["Hello World  padded  "],"error":"Project working directory no longer exists: Hello World  padded  . Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["﻿boma..b"],"error":"Project working directory no longer exists: ﻿boma..b. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["abhello"],"error":"Project working directory no longer exists: abhello. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":[".leadinga.b.c"],"error":"Project working directory no longer exists: .leadinga.b.c. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["abemoji 👍🏽 mix"],"error":"Project working directory no longer exists: abemoji 👍🏽 mix. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["a.b.c  padded  "],"error":"Project working directory no longer exists: a.b.c  padded  . Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["{name} has {count} itemsHello World"],"error":"Project working directory no longer exists: {name} has {count} itemsHello World. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["  padded  a"],"error":"Project working directory no longer exists:   padded  a. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["  padded  line1\nline2"],"error":"Project working directory no longer exists:   padded  line1\nline2. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["trailing.ab"],"error":"Project working directory no longer exists: trailing.ab. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["./x/**/*.jsonemoji 👍🏽 mix"],"error":"Project working directory no longer exists: ./x/**/*.jsonemoji 👍🏽 mix. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":[":😀"],"error":"Project working directory no longer exists: :😀. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["abcé"],"error":"Project working directory no longer exists: abcé. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["a:b:c.leading"],"error":"Project working directory no longer exists: a:b:c.leading. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["a😀b😀ctrailing."],"error":"Project working directory no longer exists: a😀b😀ctrailing.. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["İstanbulns:key.path"],"error":"Project working directory no longer exists: İstanbulns:key.path. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["Hello World./x/**/*.json"],"error":"Project working directory no longer exists: Hello World./x/**/*.json. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["line1\nline2a"],"error":"Project working directory no longer exists: line1\nline2a. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["ΣΊΣΥΦΟΣa:b:c"],"error":"Project working directory no longer exists: ΣΊΣΥΦΟΣa:b:c. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["éünïcödé"],"error":"Project working directory no longer exists: éünïcödé. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["ΣΊΣΥΦΟΣ  padded  "],"error":"Project working directory no longer exists: ΣΊΣΥΦΟΣ  padded  . Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":[":tab\tseparated"],"error":"Project working directory no longer exists: :tab\tseparated. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":[":日本語のテキスト"],"error":"Project working directory no longer exists: :日本語のテキスト. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["HELLOa.b.c"],"error":"Project working directory no longer exists: HELLOa.b.c. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["straße﻿bom"],"error":"Project working directory no longer exists: straße﻿bom. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":[".leadingtab\tseparated"],"error":"Project working directory no longer exists: .leadingtab\tseparated. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["./x/**/*.jsonHELLO"],"error":"Project working directory no longer exists: ./x/**/*.jsonHELLO. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["key_name-1  padded  "],"error":"Project working directory no longer exists: key_name-1  padded  . Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["helloünïcödé"],"error":"Project working directory no longer exists: helloünïcödé. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["ünïcödéa..b"],"error":"Project working directory no longer exists: ünïcödéa..b. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["hello.leading"],"error":"Project working directory no longer exists: hello.leading. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":[":src/a/b.ts"],"error":"Project working directory no longer exists: :src/a/b.ts. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["hello{name} has {count} items"],"error":"Project working directory no longer exists: hello{name} has {count} items. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["a😀b😀csrc/a/b.ts"],"error":"Project working directory no longer exists: a😀b😀csrc/a/b.ts. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["abΣΊΣΥΦΟΣ"],"error":"Project working directory no longer exists: abΣΊΣΥΦΟΣ. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["abca.b.c"],"error":"Project working directory no longer exists: abca.b.c. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["ns:key.pathtab\tseparated"],"error":"Project working directory no longer exists: ns:key.pathtab\tseparated. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["HELLOa..b"],"error":"Project working directory no longer exists: HELLOa..b. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["abcline1\nline2"],"error":"Project working directory no longer exists: abcline1\nline2. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["  padded  ns:key.path"],"error":"Project working directory no longer exists:   padded  ns:key.path. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["key_name-1src/a/b.ts"],"error":"Project working directory no longer exists: key_name-1src/a/b.ts. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":[":abc"],"error":"Project working directory no longer exists: :abc. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["abc.leading"],"error":"Project working directory no longer exists: abc.leading. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["﻿bomHello World"],"error":"Project working directory no longer exists: ﻿bomHello World. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["éé"],"error":"Project working directory no longer exists: éé. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["ünïcödéİstanbul"],"error":"Project working directory no longer exists: ünïcödéİstanbul. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["./x/**/*.jsonline1\nline2"],"error":"Project working directory no longer exists: ./x/**/*.jsonline1\nline2. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["tab\tseparatedİstanbul"],"error":"Project working directory no longer exists: tab\tseparatedİstanbul. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["src/a/b.ts.leading"],"error":"Project working directory no longer exists: src/a/b.ts.leading. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["İstanbula😀b😀c"],"error":"Project working directory no longer exists: İstanbula😀b😀c. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["ünïcödéé"],"error":"Project working directory no longer exists: ünïcödéé. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["line1\nline2ab"],"error":"Project working directory no longer exists: line1\nline2ab. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["hellohello world"],"error":"Project working directory no longer exists: hellohello world. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["abns:key.path"],"error":"Project working directory no longer exists: abns:key.path. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["ns:key.path{name} has {count} items"],"error":"Project working directory no longer exists: ns:key.path{name} has {count} items. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["a😀b😀cé"],"error":"Project working directory no longer exists: a😀b😀cé. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["a.b.cabc"],"error":"Project working directory no longer exists: a.b.cabc. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["./x/**/*.jsonab"],"error":"Project working directory no longer exists: ./x/**/*.jsonab. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["  padded  😀"],"error":"Project working directory no longer exists:   padded  😀. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["a:b:c﻿bom"],"error":"Project working directory no longer exists: a:b:c﻿bom. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["a.b.ctab\tseparated"],"error":"Project working directory no longer exists: a.b.ctab\tseparated. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["tab\tseparatedkey_name-1"],"error":"Project working directory no longer exists: tab\tseparatedkey_name-1. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["ünïcödé{name} has {count} items"],"error":"Project working directory no longer exists: ünïcödé{name} has {count} items. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["trailing.trailing."],"error":"Project working directory no longer exists: trailing.trailing.. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["﻿bomkey_name-1"],"error":"Project working directory no longer exists: ﻿bomkey_name-1. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["İstanbulhello"],"error":"Project working directory no longer exists: İstanbulhello. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["ab.leading"],"error":"Project working directory no longer exists: ab.leading. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["﻿bomsrc/a/b.ts"],"error":"Project working directory no longer exists: ﻿bomsrc/a/b.ts. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["key_name-1key_name-1"],"error":"Project working directory no longer exists: key_name-1key_name-1. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["ΣΊΣΥΦΟΣ./x/**/*.json"],"error":"Project working directory no longer exists: ΣΊΣΥΦΟΣ./x/**/*.json. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["日本語のテキストkey_name-1"],"error":"Project working directory no longer exists: 日本語のテキストkey_name-1. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["trailing.{name} has {count} items"],"error":"Project working directory no longer exists: trailing.{name} has {count} items. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["  padded  key_name-1"],"error":"Project working directory no longer exists:   padded  key_name-1. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["line1\nline2straße"],"error":"Project working directory no longer exists: line1\nline2straße. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["./x/**/*.json﻿bom"],"error":"Project working directory no longer exists: ./x/**/*.json﻿bom. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["src/a/b.tsa😀b😀c"],"error":"Project working directory no longer exists: src/a/b.tsa😀b😀c. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["😀straße"],"error":"Project working directory no longer exists: 😀straße. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["tab\tseparatedsrc/a/b.ts"],"error":"Project working directory no longer exists: tab\tseparatedsrc/a/b.ts. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["line1\nline2:"],"error":"Project working directory no longer exists: line1\nline2:. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["hello world﻿bom"],"error":"Project working directory no longer exists: hello world﻿bom. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["straßeemoji 👍🏽 mix"],"error":"Project working directory no longer exists: straßeemoji 👍🏽 mix. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["emoji 👍🏽 mix:"],"error":"Project working directory no longer exists: emoji 👍🏽 mix:. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["ns:key.pathkey_name-1"],"error":"Project working directory no longer exists: ns:key.pathkey_name-1. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["src/a/b.ts  padded  "],"error":"Project working directory no longer exists: src/a/b.ts  padded  . Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["a:b:cΣΊΣΥΦΟΣ"],"error":"Project working directory no longer exists: a:b:cΣΊΣΥΦΟΣ. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["trailing.﻿bom"],"error":"Project working directory no longer exists: trailing.﻿bom. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["﻿bomİstanbul"],"error":"Project working directory no longer exists: ﻿bomİstanbul. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["😀ΣΊΣΥΦΟΣ"],"error":"Project working directory no longer exists: 😀ΣΊΣΥΦΟΣ. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["straßea.b.c"],"error":"Project working directory no longer exists: straßea.b.c. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["héllo wörld"],"error":"Project working directory no longer exists: héllo wörld. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["👍🏽 thumbs"],"error":"Project working directory no longer exists: 👍🏽 thumbs. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["日本語"],"error":"Project working directory no longer exists: 日本語. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["ılık ırmak"],"error":"Project working directory no longer exists: ılık ırmak. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["👨‍👩‍👧 family"],"error":"Project working directory no longer exists: 👨‍👩‍👧 family. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["a b"],"error":"Project working directory no longer exists: a b. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["a😀b"],"error":"Project working directory no longer exists: a😀b. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["a²b x½ y①"],"error":"Project working directory no longer exists: a²b x½ y①. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["aⅠb Ⅻ"],"error":"Project working directory no longer exists: aⅠb Ⅻ. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["a𐐀b 𝐀bc"],"error":"Project working directory no longer exists: a𐐀b 𝐀bc. Relocate or reconnect the project in Synara."}
+{"fn":"assertCodexWorkingDirectoryExists","args":["कि ٣٤"],"error":"Project working directory no longer exists: कि ٣٤. Relocate or reconnect the project in Synara."}

@@ -1,0 +1,97 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/updatePendingCache.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "updatependingcache-rs",
+  "exports": [
+    {
+      "name": "resolveElectronUpdaterCacheDirName",
+      "file": "apps/desktop/src/updatePendingCache.ts",
+      "line": 8,
+      "params": [
+        {
+          "name": "rawConfig",
+          "ts_type": "Record<string, string> | null",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "appName",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveElectronUpdaterPendingCacheDir",
+      "file": "apps/desktop/src/updatePendingCache.ts",
+      "line": 15,
+      "params": [
+        {
+          "name": "args",
+          "ts_type": "{\n  readonly cacheDirName: string | null;\n  readonly platform: NodeJS.Platform;\n  readonly homeDir: string;\n  readonly localAppData?: string | null;\n  readonly xdgCacheHome?: string | null;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveElectronUpdaterCacheDir",
+      "file": "apps/desktop/src/updatePendingCache.ts",
+      "line": 31,
+      "params": [
+        {
+          "name": "args",
+          "ts_type": "{\n  readonly cacheDirName: string | null;\n  readonly platform: NodeJS.Platform;\n  readonly homeDir: string;\n  readonly localAppData?: string | null;\n  readonly xdgCacheHome?: string | null;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveElectronUpdaterLegacyZipPath",
+      "file": "apps/desktop/src/updatePendingCache.ts",
+      "line": 53,
+      "params": [
+        {
+          "name": "args",
+          "ts_type": "{\n  readonly cacheDirName: string | null;\n  readonly platform: NodeJS.Platform;\n  readonly homeDir: string;\n  readonly localAppData?: string | null;\n  readonly xdgCacheHome?: string | null;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "PendingUpdateCacheClearQueue",
+      "file": "apps/desktop/src/updatePendingCache.ts",
+      "line": 68,
+      "reason": "class: `request`: takes or returns a function"
+    }
+  ]
+}

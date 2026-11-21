@@ -1,0 +1,17 @@
+{
+  "unit": "apps/desktop/src/updatePendingCache.ts",
+  "files": 1,
+  "fingerprint": "278bf790c26b46e3",
+  "coverage": {
+    "lines": 74,
+    "reached": 60,
+    "files": [
+      {
+        "file": "apps/desktop/src/updatePendingCache.ts",
+        "lines": 74,
+        "reached": 60,
+        "missed": "46, 48, 71-77, 79-83"
+      }
+    ]
+  }
+}

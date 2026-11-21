@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/profiles/src/middleware.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "middleware-rs",
+  "exports": [
+    {
+      "name": "middleware",
+      "file": "apps/profiles/src/middleware.ts",
+      "line": 14,
+      "params": [
+        {
+          "name": "request",
+          "ts_type": "NextRequest",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

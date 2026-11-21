@@ -1,0 +1,9 @@
+{"fn":"middleware","args":[[]],"ok":{}}
+{"fn":"middleware","args":[0],"ok":{}}
+{"fn":"middleware","args":["x"],"ok":{}}
+{"fn":"middleware","args":[null],"ok":{}}
+{"fn":"middleware","args":[{}],"ok":{}}
+{"fn":"middleware","args":[true],"ok":{}}
+{"fn":"middleware","args":[{"a":{"b":"c"}}],"ok":{}}
+{"fn":"middleware","args":[["a",1]],"ok":{}}
+{"fn":"middleware","args":[{"a":"b"}],"ok":{}}

@@ -1,0 +1,17 @@
+{
+  "unit": "apps/web/src/computerStateStore.ts",
+  "files": 1,
+  "fingerprint": "deb96f3620fe7fd1",
+  "coverage": {
+    "lines": 136,
+    "reached": 58,
+    "files": [
+      {
+        "file": "apps/web/src/computerStateStore.ts",
+        "lines": 136,
+        "reached": 58,
+        "missed": "36-47, 50-60, 63-73, 76-90, 93-107, 110-115, 120-123, 126-129"
+      }
+    ]
+  }
+}

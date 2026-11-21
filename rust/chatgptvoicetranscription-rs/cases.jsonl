@@ -1,0 +1,196 @@
+{"fn":"requestChatGptVoiceTranscription","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'byteLength')"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":null,"mimeType":"日本語のテキスト","token":"a:b:c","transcriptionUrl":"﻿bom"}],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":true,"mimeType":"a.b.c﻿bom","token":".leading","transcriptionUrl":"﻿bom","signal":["a",1]}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":{"b":"c"}},"mimeType":"ns:key.path","token":"hello","transcriptionUrl":"😀","signal":true}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":true,"mimeType":"{name} has {count} items","token":"","transcriptionUrl":"﻿bomİstanbul","signal":null}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[true],"error":"Cannot read properties of undefined (reading 'byteLength')"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":[],"mimeType":"😀","token":"ahello","signal":["a",1]}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{}],"error":"Cannot read properties of undefined (reading 'byteLength')"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":true,"mimeType":"key_name-1","token":"😀","transcriptionUrl":"hello","signal":{"a":{"b":"c"}}}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{},"mimeType":"a","token":":","transcriptionUrl":"./x/**/*.jsona😀b😀c","signal":{"a":{"b":"c"}}}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":null,"mimeType":"﻿bom","token":"a..b","transcriptionUrl":"a😀b😀c","signal":0}],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":null,"mimeType":"./x/**/*.json","token":"./x/**/*.json","transcriptionUrl":"Hello World","signal":null}],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"requestChatGptVoiceTranscription","args":[null],"error":"Cannot read properties of null (reading 'mimeType')"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":[],"mimeType":"hello","token":"a..b","transcriptionUrl":"日本語のテキスト","signal":0}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":true,"mimeType":"hello world","token":":","transcriptionUrl":"Hello World","signal":{"a":"b"}}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":"x","mimeType":"./x/**/*.jsonhello","token":"hello","signal":{}}],"error":"input.signal?.addEventListener is not a function"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":[],"mimeType":"abc","token":"日本語のテキスト.leading","transcriptionUrl":"hello","signal":true}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":true,"mimeType":"ns:key.path","token":"ab","transcriptionUrl":"line1\nline2","signal":{"a":"b"}}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":true,"mimeType":"ΣΊΣΥΦΟΣ","token":"src/a/b.ts","transcriptionUrl":"ünïcödé","signal":["a",1]}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":[],"mimeType":"a..b","token":"hello.leading"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":"b"},"mimeType":"{name} has {count} items","token":"a..ba","transcriptionUrl":".leading","signal":"x"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":"x","mimeType":"hello world","token":"İstanbulhello world","transcriptionUrl":"trailing."}],"error":"Outbound destination is not a valid URL."}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":{"b":"c"}},"mimeType":"emoji 👍🏽 mix","token":"a","transcriptionUrl":"日本語のテキスト","signal":[]}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":null,"mimeType":"﻿bom","token":"abc"}],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":"b"},"mimeType":"ns:key.path","token":"./x/**/*.json日本語のテキスト","transcriptionUrl":"abc"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":{"b":"c"}},"mimeType":"日本語のテキストstraße","token":"tab\tseparateda..b","transcriptionUrl":"hello world","signal":0}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":["a",1],"mimeType":"trailing.","token":"ab","transcriptionUrl":"a.b.c","signal":{"a":"b"}}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":["a",1],"mimeType":"ΣΊΣΥΦΟΣ","token":"a😀b😀cİstanbul","transcriptionUrl":"trailing.a..b","signal":{}}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":{"b":"c"}},"mimeType":"trailing.{name} has {count} items","token":"trailing.","transcriptionUrl":"a:b:cHELLO"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":null,"mimeType":"emoji 👍🏽 mix","token":"tab\tseparated","transcriptionUrl":"hello world","signal":{"a":{"b":"c"}}}],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":true,"mimeType":"ünïcödé","token":"emoji 👍🏽 mix","transcriptionUrl":"helloa..b","signal":0}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{},"mimeType":"trailing.","token":"hello world","transcriptionUrl":"src/a/b.ts","signal":{"a":{"b":"c"}}}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{},"mimeType":"a..b","token":"  padded  "}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":true,"mimeType":"trailing.","token":"日本語のテキストHello World"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":{"b":"c"}},"mimeType":"trailing.","token":"a.b.c","transcriptionUrl":"a.b.c","signal":"x"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":0,"mimeType":".leading","token":"😀","transcriptionUrl":"a..b","signal":["a",1]}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":["a",1],"mimeType":"trailing.","token":"﻿bom","transcriptionUrl":"日本語のテキスト","signal":"x"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":["a",1],"mimeType":"😀","token":"","transcriptionUrl":"src/a/b.ts","signal":true}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":"b"},"mimeType":"tab\tseparated","token":":","transcriptionUrl":":hello world","signal":["a",1]}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":[],"mimeType":"src/a/b.ts","token":"﻿bom","transcriptionUrl":":"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":"b"},"mimeType":"hello","token":"ab","signal":0}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":{"b":"c"}},"mimeType":"emoji 👍🏽 mix","token":"ns:key.pathİstanbul","transcriptionUrl":"a:b:c","signal":0}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":0,"mimeType":"hello","token":"hello world","transcriptionUrl":"{name} has {count} itemsns:key.path","signal":[]}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":{"b":"c"}},"mimeType":"ünïcödé","token":"İstanbul","transcriptionUrl":"ab"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":"x","mimeType":"😀","token":"a.b.c","transcriptionUrl":"straße"}],"error":"Outbound destination is not a valid URL."}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":{"b":"c"}},"mimeType":"straße","token":"ns:key.path﻿bom","signal":true}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":["a",1],"mimeType":"😀a","token":"a:b:c","signal":true}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":0,"mimeType":"src/a/b.ts","token":"trailing.","signal":true}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":true,"mimeType":"straße","token":"😀","transcriptionUrl":"a","signal":true}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":0,"mimeType":"ΣΊΣΥΦΟΣ","token":"abc","transcriptionUrl":"ns:key.path","signal":"x"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":"x","mimeType":"İstanbul","token":"日本語のテキスト","transcriptionUrl":"a.b.c","signal":null}],"error":"Outbound destination is not a valid URL."}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":null,"mimeType":"﻿bom﻿bom","token":"a😀b😀c.leading","signal":{"a":"b"}}],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":["a",1],"mimeType":"abc","token":"a.b.c","transcriptionUrl":"a.b.c","signal":{"a":"b"}}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":"b"},"mimeType":"tab\tseparated","token":"ab","signal":"x"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":"x","mimeType":"İstanbulab","token":"😀","signal":[]}],"error":"Cannot convert argument to a ByteString because the character at index 7 has a value of 55357 which is greater than 255."}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":[],"mimeType":"  padded  ","token":"é","transcriptionUrl":"./x/**/*.jsonİstanbul"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":0,"mimeType":"HELLO","token":"ΣΊΣΥΦΟΣ","signal":{"a":"b"}}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":["x"],"error":"Cannot read properties of undefined (reading 'byteLength')"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":[],"mimeType":"abé","token":"a..b","signal":null}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{},"mimeType":"abc","token":"hello world","transcriptionUrl":":","signal":true}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":true,"mimeType":":","token":"İstanbul","transcriptionUrl":"","signal":0}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[0],"error":"Cannot read properties of undefined (reading 'byteLength')"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":0,"mimeType":"tab\tseparated","token":"a.b.c","transcriptionUrl":"ns:key.path"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":["a",1],"mimeType":"abc","token":"ünïcödé.leading","transcriptionUrl":"ünïcödé"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":"x","mimeType":":","token":"hello world","transcriptionUrl":"Hello World","signal":["a",1]}],"error":"Outbound destination is not a valid URL."}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":{"b":"c"}},"mimeType":"HELLOhello","token":"a:b:c","transcriptionUrl":"emoji 👍🏽 mix","signal":0}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":0,"mimeType":"./x/**/*.json","token":"./x/**/*.json"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":"b"},"mimeType":"İstanbul","token":"İstanbul"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{},"mimeType":"ab","token":"trailing.","transcriptionUrl":"é","signal":true}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":["a",1],"mimeType":"é","token":"é","transcriptionUrl":"日本語のテキスト","signal":["a",1]}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":[],"mimeType":"./x/**/*.json","token":"hello","transcriptionUrl":"","signal":0}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{},"mimeType":"😀","token":"key_name-1a..b","transcriptionUrl":"tab\tseparated:","signal":{"a":{"b":"c"}}}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":true,"mimeType":"hello world.leading","token":".leading","transcriptionUrl":"﻿bom","signal":true}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":0,"mimeType":"ΣΊΣΥΦΟΣ","token":"ünïcödé","transcriptionUrl":"straße","signal":null}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":"b"},"mimeType":"line1\nline2","token":"./x/**/*.json","transcriptionUrl":"./x/**/*.json"}],"error":"Multipart content type is invalid."}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":[],"mimeType":"é","token":"a.b.c","transcriptionUrl":"trailing."}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":[],"mimeType":"abc","token":"emoji 👍🏽 mixline1\nline2","signal":null}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":[],"mimeType":"ns:key.path","token":"{name} has {count} items"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":{"b":"c"}},"mimeType":":emoji 👍🏽 mix","token":"emoji 👍🏽 mix","transcriptionUrl":"ahello world","signal":{}}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":true,"mimeType":"İstanbul","token":"ΣΊΣΥΦΟΣ","signal":["a",1]}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":"b"},"mimeType":"日本語のテキスト","token":"trailing.hello","transcriptionUrl":"","signal":[]}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":0,"mimeType":"{name} has {count} items","token":"İstanbulé","transcriptionUrl":"HELLO"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{},"mimeType":"ns:key.path","token":".leading","transcriptionUrl":"./x/**/*.jsona.b.c"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":0,"mimeType":"éa:b:c","token":"😀a😀b😀c","transcriptionUrl":"İstanbul","signal":{}}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":["a",1],"mimeType":"  padded  hello world","token":"Hello World","signal":"x"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":[],"mimeType":"😀","token":"ab","signal":[]}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":"b"},"mimeType":"a..b","token":"tab\tseparated"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'byteLength')"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":[],"mimeType":"ΣΊΣΥΦΟΣ","token":"trailing.HELLO","transcriptionUrl":"abc","signal":{"a":"b"}}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":"x","mimeType":"İstanbul","token":"İstanbul","transcriptionUrl":".leading","signal":{"a":{"b":"c"}}}],"error":"Outbound destination is not a valid URL."}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":["a",1],"mimeType":"a😀b😀c","token":"hello worldHello World"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":[],"mimeType":".leading","token":"ababc"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":{"b":"c"}},"mimeType":"emoji 👍🏽 mixa.b.c","token":"abc","transcriptionUrl":"Hello World"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":0,"mimeType":".leadinga:b:c","token":"a.b.c","transcriptionUrl":"ünïcödéİstanbul","signal":[]}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":true,"mimeType":":","token":"{name} has {count} items","transcriptionUrl":"line1\nline2","signal":{"a":{"b":"c"}}}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":0,"mimeType":".leading","token":"İstanbul","transcriptionUrl":"HELLOİstanbul","signal":{}}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{},"mimeType":"ab","token":"a:b:c","transcriptionUrl":":","signal":{"a":"b"}}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":"b"},"mimeType":"{name} has {count} items","token":"é","transcriptionUrl":"ünïcödé"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":[],"mimeType":"line1\nline2","token":"ns:key.path","transcriptionUrl":"İstanbul","signal":null}],"error":"Multipart content type is invalid."}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{},"mimeType":"key_name-1","token":"日本語のテキスト","transcriptionUrl":"a:b:c"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[[]],"error":"Cannot read properties of undefined (reading 'byteLength')"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":"b"},"mimeType":"helloa.b.c","token":":","transcriptionUrl":"a.b.c"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":[],"mimeType":"  padded  trailing.","token":"abc","transcriptionUrl":"hello","signal":["a",1]}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":true,"mimeType":"日本語のテキスト","token":"ΣΊΣΥΦΟΣ","transcriptionUrl":"emoji 👍🏽 mixstraße","signal":["a",1]}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":true,"mimeType":"straße","token":"abc","transcriptionUrl":"key_name-1:","signal":null}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":["a",1],"mimeType":"ns:key.path","token":"a.b.c","transcriptionUrl":"  padded  ","signal":true}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":"x","mimeType":"日本語のテキスト","token":"./x/**/*.json","transcriptionUrl":"ns:key.path","signal":{"a":{"b":"c"}}}],"error":"Outbound destinations must use HTTPS without URL credentials unless loopback HTTP is explicitly allowed."}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":["a",1],"mimeType":"abc","token":"a","transcriptionUrl":"ünïcödé"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":[],"mimeType":":","token":"key_name-1","signal":null}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":"b"},"mimeType":"HELLO","token":"line1\nline2","transcriptionUrl":"日本語のテキスト"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{},"mimeType":"a..bhello","token":"a..b","signal":true}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":0,"mimeType":"tab\tseparated","token":"abc","transcriptionUrl":"ns:key.path","signal":null}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{},"mimeType":"{name} has {count} items","token":"日本語のテキスト","transcriptionUrl":"src/a/b.ts","signal":true}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":"x","mimeType":"hello","token":":","transcriptionUrl":"hello"}],"error":"Outbound destination is not a valid URL."}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":null,"mimeType":"abc","token":":","transcriptionUrl":".leading","signal":{}}],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":["a",1],"mimeType":":","token":"﻿bom","transcriptionUrl":"emoji 👍🏽 mix","signal":["a",1]}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":"x","mimeType":"hello worldhello world","token":"abc","transcriptionUrl":"a  padded  "}],"error":"Outbound destination is not a valid URL."}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":"x","mimeType":"ΣΊΣΥΦΟΣ","token":"İstanbul","transcriptionUrl":"ns:key.path","signal":"x"}],"error":"Outbound destinations must use HTTPS without URL credentials unless loopback HTTP is explicitly allowed."}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":{"b":"c"}},"mimeType":"a","token":"a😀b😀c","transcriptionUrl":"tab\tseparated","signal":[]}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":[],"mimeType":"hello world","token":"日本語のテキスト:","transcriptionUrl":"a😀b😀c"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":[],"mimeType":"","token":"İstanbul","signal":"x"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":0,"mimeType":"hello worldhello world","token":"İstanbul","signal":["a",1]}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":{"b":"c"}},"mimeType":".leading","token":"tab\tseparatedİstanbul","signal":{"a":{"b":"c"}}}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":true,"mimeType":"  padded  ","token":"é","transcriptionUrl":"hellokey_name-1","signal":null}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":"b"},"mimeType":"﻿bom","token":"😀","transcriptionUrl":"HELLO","signal":[]}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":{"b":"c"}},"mimeType":".leading","token":"日本語のテキストünïcödé","signal":0}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{},"mimeType":"ünïcödéabc","token":"ab","transcriptionUrl":"./x/**/*.json","signal":{}}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":0,"mimeType":"a..b","token":"é","transcriptionUrl":"ΣΊΣΥΦΟΣ","signal":0}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":true,"mimeType":"hello","token":"İstanbulabc","transcriptionUrl":"a.b.c","signal":"x"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":"x","mimeType":"","token":"😀","transcriptionUrl":"emoji 👍🏽 mix"}],"error":"Outbound destination is not a valid URL."}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":"x","mimeType":"hello","token":"a","transcriptionUrl":"ns:key.path"}],"error":"Outbound destinations must use HTTPS without URL credentials unless loopback HTTP is explicitly allowed."}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":null,"mimeType":"İstanbul","token":"","transcriptionUrl":"abΣΊΣΥΦΟΣ","signal":[]}],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":["a",1],"mimeType":"﻿bom","token":"hello"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":true,"mimeType":"src/a/b.ts","token":"tab\tseparated","signal":"x"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":true,"mimeType":"ünïcödé","token":"helloa😀b😀c","transcriptionUrl":"ΣΊΣΥΦΟΣ","signal":["a",1]}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":null,"mimeType":"src/a/b.ts","token":"ns:key.path","signal":"x"}],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{},"mimeType":"ns:key.path","token":"Hello World"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":["a",1],"mimeType":"emoji 👍🏽 mix","token":"a:b:c","signal":["a",1]}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":0,"mimeType":"😀","token":"key_name-1","transcriptionUrl":"﻿bom"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":"x","mimeType":"straße","token":"line1\nline2","transcriptionUrl":"./x/**/*.json{name} has {count} items"}],"error":"Outbound destination is not a valid URL."}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":"x","mimeType":"{name} has {count} items","token":"hello world","transcriptionUrl":"hello world","signal":{}}],"error":"Outbound destination is not a valid URL."}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":{"b":"c"}},"mimeType":"straße","token":"aabc","transcriptionUrl":"ünïcödé","signal":[]}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":true,"mimeType":"key_name-1tab\tseparated","token":"😀"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":"x","mimeType":"ns:key.path","token":"😀","transcriptionUrl":"abc","signal":{"a":{"b":"c"}}}],"error":"Outbound destination is not a valid URL."}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":"b"},"mimeType":"key_name-1","token":":","transcriptionUrl":"HELLO","signal":["a",1]}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":null,"mimeType":"😀","token":"straße","transcriptionUrl":"日本語のテキスト","signal":true}],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":["a",1],"mimeType":"  padded  ","token":"abab","signal":[]}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":[],"mimeType":"abca:b:c","token":"  padded  "}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":"x","mimeType":"line1\nline2","token":"./x/**/*.json","transcriptionUrl":"straße","signal":["a",1]}],"error":"Multipart content type is invalid."}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":null,"mimeType":"./x/**/*.json","token":"a.b.c","transcriptionUrl":"line1\nline2","signal":null}],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":[],"mimeType":"key_name-1","token":"ΣΊΣΥΦΟΣ","transcriptionUrl":"./x/**/*.jsonabc","signal":["a",1]}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":"x","mimeType":"  padded  ","token":"hello  padded  ","transcriptionUrl":"src/a/b.ts"}],"error":"Outbound destination is not a valid URL."}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":"b"},"mimeType":"😀","token":"./x/**/*.jsona.b.c","transcriptionUrl":"😀","signal":null}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":"x","mimeType":"a","token":"src/a/b.ts.leading","transcriptionUrl":"ΣΊΣΥΦΟΣ","signal":[]}],"error":"Outbound destination is not a valid URL."}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":[],"mimeType":"é","token":"hello world"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{},"mimeType":"src/a/b.ts","token":"abc","signal":{"a":"b"}}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":{"b":"c"}},"mimeType":"key_name-1","token":"a:b:c","transcriptionUrl":"😀"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":"b"},"mimeType":"a..b","token":"line1\nline2","transcriptionUrl":"{name} has {count} items"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":true,"mimeType":"ΣΊΣΥΦΟΣ","token":"{name} has {count} items","transcriptionUrl":"a:b:c","signal":[]}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":["a",1],"mimeType":"hello","token":"tab\tseparated","transcriptionUrl":"a😀b😀cline1\nline2","signal":["a",1]}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":0,"mimeType":"","token":"a😀b😀c","transcriptionUrl":"abc﻿bom"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":null,"mimeType":"aHELLO","token":"hello world","signal":["a",1]}],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":"x","mimeType":"ΣΊΣΥΦΟΣ","token":"abc","transcriptionUrl":"src/a/b.ts","signal":null}],"error":"Outbound destination is not a valid URL."}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":{"b":"c"}},"mimeType":"key_name-1","token":"key_name-1"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":{"b":"c"}},"mimeType":"straße","token":"{name} has {count} items","transcriptionUrl":"a","signal":[]}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":"x","mimeType":"  padded  ünïcödé","token":":","transcriptionUrl":"é","signal":{"a":{"b":"c"}}}],"error":"Outbound destination is not a valid URL."}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{},"mimeType":"ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ","token":"ΣΊΣΥΦΟΣstraße","signal":0}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":true,"mimeType":"{name} has {count} items","token":"hello world"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":[],"mimeType":"a.b.c","token":".leading","transcriptionUrl":"a..bhello world","signal":{"a":{"b":"c"}}}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":null,"mimeType":"  padded  ","token":"  padded  ","transcriptionUrl":"src/a/b.ts","signal":"x"}],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{},"mimeType":"tab\tseparated","token":"src/a/b.tssrc/a/b.ts","transcriptionUrl":"HELLO"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{},"mimeType":"日本語のテキストline1\nline2","token":"ünïcödéHELLO","transcriptionUrl":"{name} has {count} items﻿bom","signal":"x"}],"error":"Multipart content type is invalid."}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":{"b":"c"}},"mimeType":"a.b.c","token":"a:b:c","transcriptionUrl":"é","signal":null}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":true,"mimeType":"a😀b😀c","token":":ns:key.path","transcriptionUrl":"a./x/**/*.json","signal":null}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":null,"mimeType":"Hello World","token":""}],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":["a",1],"mimeType":"src/a/b.ts","token":"ab","transcriptionUrl":"ΣΊΣΥΦΟΣ","signal":true}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":{"b":"c"}},"mimeType":"a.b.c","token":"日本語のテキストtab\tseparated","transcriptionUrl":"HELLO","signal":"x"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":[],"mimeType":"a:b:c","token":"trailing.","transcriptionUrl":"abc","signal":{"a":{"b":"c"}}}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":{"b":"c"}},"mimeType":"tab\tseparated","token":"ΣΊΣΥΦΟΣ","transcriptionUrl":"ab","signal":"x"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":null,"mimeType":"line1\nline2","token":"ünïcödé","signal":null}],"error":"Multipart content type is invalid."}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":0,"mimeType":"a:b:c","token":"a..b","transcriptionUrl":"key_name-1","signal":["a",1]}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":null,"mimeType":"ünïcödé","token":"ns:key.path","transcriptionUrl":"a:b:c","signal":true}],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":"x","mimeType":"key_name-1{name} has {count} items","token":"tab\tseparated","transcriptionUrl":"key_name-1","signal":"x"}],"error":"Outbound destination is not a valid URL."}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":null,"mimeType":"ns:key.path","token":"ab","transcriptionUrl":"😀","signal":[]}],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":"b"},"mimeType":"é","token":".leading","transcriptionUrl":"﻿bom"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{},"mimeType":"straße","token":"  padded  ","transcriptionUrl":"{name} has {count} itemsa"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":true,"mimeType":"{name} has {count} itemsns:key.path","token":":","transcriptionUrl":"ab","signal":["a",1]}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":0,"mimeType":"ΣΊΣΥΦΟΣ","token":"line1\nline2a.b.c","transcriptionUrl":"é","signal":null}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":0,"mimeType":"{name} has {count} items","token":"ab","transcriptionUrl":"  padded  a..b"}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":null,"mimeType":"{name} has {count} items","token":"é","transcriptionUrl":"src/a/b.ts"}],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":0,"mimeType":"line1\nline2trailing.","token":"a.leading","signal":{"a":{"b":"c"}}}],"error":"Multipart content type is invalid."}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":null,"mimeType":"ünïcödé","token":"a.b.c😀","signal":{}}],"error":"Cannot read properties of null (reading 'byteLength')"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":[],"mimeType":"line1\nline2","token":"emoji 👍🏽 mixabc","transcriptionUrl":"  padded  ","signal":true}],"error":"Multipart content type is invalid."}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":{"a":{"b":"c"}},"mimeType":"ΣΊΣΥΦΟΣ","token":".leading","transcriptionUrl":"hello","signal":null}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":[],"mimeType":"","token":"é","transcriptionUrl":"straße","signal":{"a":{"b":"c"}}}],"error":"offset is out of bounds"}
+{"fn":"requestChatGptVoiceTranscription","args":[{"audio":null,"mimeType":"日本語のテキスト","token":"hellohello","transcriptionUrl":"😀hello"}],"error":"Cannot read properties of null (reading 'byteLength')"}

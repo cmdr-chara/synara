@@ -1,0 +1,41 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/chatGptVoiceTranscription.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "chatgptvoicetranscription-rs",
+  "exports": [
+    {
+      "name": "prewarmChatGptVoiceTranscriptionConnection",
+      "file": "packages/shared/src/chatGptVoiceTranscription.ts",
+      "line": 23,
+      "params": [],
+      "returns": "Promise<void>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "requestChatGptVoiceTranscription",
+      "file": "packages/shared/src/chatGptVoiceTranscription.ts",
+      "line": 42,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly audio: Uint8Array;\n  readonly mimeType: string;\n  readonly token: string;\n  readonly transcriptionUrl?: string;\n  readonly signal?: AbortSignal;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<OutboundHttpResponse>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,359 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/rightDockStore.logic.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "rightdockstore-rs",
+  "exports": [
+    {
+      "name": "isSingletonPaneKind",
+      "file": "apps/web/src/rightDockStore.logic.ts",
+      "line": 72,
+      "params": [
+        {
+          "name": "kind",
+          "ts_type": "(typeof RIGHT_DOCK_PANE_KINDS)[number]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "createDefaultRightDockState",
+      "file": "apps/web/src/rightDockStore.logic.ts",
+      "line": 76,
+      "params": [],
+      "returns": "RightDockThreadState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isRightDockPaneKind",
+      "file": "apps/web/src/rightDockStore.logic.ts",
+      "line": 84,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "value is (typeof RIGHT_DOCK_PANE_KINDS)[number]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "sanitizeRightDockThreadState",
+      "file": "apps/web/src/rightDockStore.logic.ts",
+      "line": 128,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "RightDockThreadState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "sanitizeRightDockStateByThreadId",
+      "file": "apps/web/src/rightDockStore.logic.ts",
+      "line": 164,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Record<string, RightDockThreadState>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "openPaneInState",
+      "file": "apps/web/src/rightDockStore.logic.ts",
+      "line": 253,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "RightDockThreadState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "input",
+          "ts_type": "OpenPaneInput",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "RightDockThreadState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "closePaneInState",
+      "file": "apps/web/src/rightDockStore.logic.ts",
+      "line": 293,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "RightDockThreadState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "paneId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "RightDockThreadState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "movePaneInState",
+      "file": "apps/web/src/rightDockStore.logic.ts",
+      "line": 318,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "RightDockThreadState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "paneId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "overPaneId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "RightDockThreadState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "setActivePaneInState",
+      "file": "apps/web/src/rightDockStore.logic.ts",
+      "line": 330,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "RightDockThreadState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "paneId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "RightDockThreadState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "setDockOpenInState",
+      "file": "apps/web/src/rightDockStore.logic.ts",
+      "line": 340,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "RightDockThreadState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "open",
+          "ts_type": "boolean",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "RightDockThreadState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "updatePaneInState",
+      "file": "apps/web/src/rightDockStore.logic.ts",
+      "line": 350,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "RightDockThreadState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "paneId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "patch",
+          "ts_type": "Partial<\n    Pick<\n      RightDockPane,\n      | \"diffTurnId\"\n      | \"diffFilePath\"\n      | \"filePath\"\n      | \"threadId\"\n      | \"pullRequestProjectId\"\n      | \"pullRequestRepository\"\n      | \"pullRequestNumber\"\n      | \"pullRequestInitialTab\"\n    >\n  >",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "RightDockThreadState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "setSidechatPaneThreadInState",
+      "file": "apps/web/src/rightDockStore.logic.ts",
+      "line": 394,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "RightDockThreadState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "input",
+          "ts_type": "{ paneId: string; threadId: typeof typeof typeof typeof ThreadId.Type.Type.Type.Type | null }",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "RightDockThreadState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "toggleSingletonPaneInState",
+      "file": "apps/web/src/rightDockStore.logic.ts",
+      "line": 412,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "RightDockThreadState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "input",
+          "ts_type": "OpenPaneInput",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "RightDockThreadState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveActivePane",
+      "file": "apps/web/src/rightDockStore.logic.ts",
+      "line": 423,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "RightDockThreadState",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "RightDockPane | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "findMissingSidechatPaneIds",
+      "file": "apps/web/src/rightDockStore.logic.ts",
+      "line": 430,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "RightDockThreadState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "existingThreadIds",
+          "ts_type": "ReadonlySet<typeof typeof typeof typeof ThreadId.Type.Type.Type.Type>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "readonly string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveVisibleDockSidechatThreadIds",
+      "file": "apps/web/src/rightDockStore.logic.ts",
+      "line": 444,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  dockRendered: boolean;\n  dockStateByThreadId: Record<string, RightDockThreadState | undefined>;\n  hostThreadIds: readonly (typeof typeof typeof ThreadId.Type.Type.Type | typeof GITHUB_INBOX_DOCK_HOST_ID)[];\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

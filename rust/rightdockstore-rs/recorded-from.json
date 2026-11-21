@@ -1,0 +1,29 @@
+{
+  "unit": "apps/web/src/rightDockStore.logic.ts",
+  "files": 1,
+  "fingerprint": "5a391e50ed9beb01",
+  "coverage": {
+    "lines": 500,
+    "reached": 372,
+    "files": [
+      {
+        "file": "apps/web/src/lib/tabStrip.ts",
+        "lines": 29,
+        "reached": 17,
+        "missed": "14-15, 22-31"
+      },
+      {
+        "file": "apps/web/src/persistedRecord.ts",
+        "lines": 34,
+        "reached": 32,
+        "missed": "30-31"
+      },
+      {
+        "file": "apps/web/src/rightDockStore.logic.ts",
+        "lines": 437,
+        "reached": 323,
+        "missed": "92-126, 134-136, 142-148, 150, 155, 203-228, 237-239, 258-265, 269-270, 383-385, 400-401, 403-404, 418-419, 436, 453-470"
+      }
+    ]
+  }
+}

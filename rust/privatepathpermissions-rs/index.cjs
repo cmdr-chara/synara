@@ -47,11 +47,11 @@ const fromUnits = (units) => {
 
 module.exports = { ...native }
 const specs = {
-  ensurePrivateDirectorySync: [[0, 1], 'raw', false],
-  repairPrivateFileSync: [[0, 1], 'raw', false],
-  ensurePrivateFileSync: [[0, 1], 'raw', false],
-  repairPrivateFile: [[0, 1], 'raw', true],
-  repairPrivateTreeSync: [[0, 1], 'raw', false],
+  ensurePrivateDirectorySync: [[0, 1], 'json', false],
+  repairPrivateFileSync: [[0, 1], 'json', false],
+  ensurePrivateFileSync: [[0, 1], 'json', false],
+  repairPrivateFile: [[0, 1], 'json', true],
+  repairPrivateTreeSync: [[0, 1], 'json', false],
 }
 const classes = {
 
@@ -190,6 +190,7 @@ return true
 }
 const decode = () => {
 let t
+t = rDyn()
 return t
 }
 module.exports.ensurePrivateDirectorySync = function ensurePrivateDirectorySync (a0, a1) {
@@ -216,6 +217,7 @@ return true
 }
 const decode = () => {
 let t
+t = rDyn()
 return t
 }
 module.exports.repairPrivateFileSync = function repairPrivateFileSync (a0, a1) {
@@ -242,6 +244,7 @@ return true
 }
 const decode = () => {
 let t
+t = rDyn()
 return t
 }
 module.exports.ensurePrivateFileSync = function ensurePrivateFileSync (a0, a1) {
@@ -268,6 +271,7 @@ return true
 }
 const decode = () => {
 let t
+t = rDyn()
 return t
 }
 module.exports.repairPrivateTreeSync = function repairPrivateTreeSync (a0, a1) {

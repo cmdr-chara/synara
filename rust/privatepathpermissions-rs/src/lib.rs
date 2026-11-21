@@ -43,52 +43,55 @@ async fn run_async<T>(f: impl std::future::Future<Output = Result<T, String>>) -
 
 /// `ensurePrivateDirectorySync`.
 #[napi(js_name = "ensurePrivateDirectorySync")]
-pub fn ensure_private_directory_sync(directory_path: String, platform: String) -> napi::Result<()> {
+pub fn ensure_private_directory_sync(
+    directory_path: String,
+    platform: String,
+) -> napi::Result<String> {
     run(move || {
         let platform = crate::js::from_json(&platform)?;
-        port::ensure_private_directory_sync(directory_path, platform)?;
-        Ok(())
+        let out = port::ensure_private_directory_sync(directory_path, platform)?;
+        crate::js::to_json(&out)
     })
 }
 
 /// `repairPrivateFileSync`.
 #[napi(js_name = "repairPrivateFileSync")]
-pub fn repair_private_file_sync(file_path: String, options: String) -> napi::Result<()> {
+pub fn repair_private_file_sync(file_path: String, options: String) -> napi::Result<String> {
     run(move || {
         let options = crate::js::from_json(&options)?;
-        port::repair_private_file_sync(file_path, options)?;
-        Ok(())
+        let out = port::repair_private_file_sync(file_path, options)?;
+        crate::js::to_json(&out)
     })
 }
 
 /// `ensurePrivateFileSync`.
 #[napi(js_name = "ensurePrivateFileSync")]
-pub fn ensure_private_file_sync(file_path: String, options: String) -> napi::Result<()> {
+pub fn ensure_private_file_sync(file_path: String, options: String) -> napi::Result<String> {
     run(move || {
         let options = crate::js::from_json(&options)?;
-        port::ensure_private_file_sync(file_path, options)?;
-        Ok(())
+        let out = port::ensure_private_file_sync(file_path, options)?;
+        crate::js::to_json(&out)
     })
 }
 
 /// `repairPrivateFile`.
 #[napi(js_name = "repairPrivateFile")]
-pub async fn repair_private_file(file_path: String, options: String) -> napi::Result<()> {
+pub async fn repair_private_file(file_path: String, options: String) -> napi::Result<String> {
     run_async(async move {
         let options = crate::js::from_json(&options)?;
-        port::repair_private_file(file_path, options).await?;
-        Ok(())
+        let out = port::repair_private_file(file_path, options).await?;
+        crate::js::to_json(&out)
     })
     .await
 }
 
 /// `repairPrivateTreeSync`.
 #[napi(js_name = "repairPrivateTreeSync")]
-pub fn repair_private_tree_sync(root_path: String, platform: String) -> napi::Result<()> {
+pub fn repair_private_tree_sync(root_path: String, platform: String) -> napi::Result<String> {
     run(move || {
         let platform = crate::js::from_json(&platform)?;
-        port::repair_private_tree_sync(root_path, platform)?;
-        Ok(())
+        let out = port::repair_private_tree_sync(root_path, platform)?;
+        crate::js::to_json(&out)
     })
 }
 
@@ -183,18 +186,22 @@ fn wire_io(
     })
 }
 
+static S_ENSURE_PRIVATE_DIRECTORY_SYNC_OUT: wire::Schema = wire::Schema::Dyn;
+
 /// `ensurePrivateDirectorySync` over the binary wire.
 #[napi(js_name = "ensurePrivateDirectorySyncWire")]
 pub fn ensure_private_directory_sync_wire() -> napi::Result<f64> {
     wire_io(|r, w| {
         let directory_path: String = r.string16()?;
         let platform: Option<serde_json::Value> = wire::read_dyn_opt(r)?;
-        let () = port::ensure_private_directory_sync(directory_path, platform)?;
+        let out = &port::ensure_private_directory_sync(directory_path, platform)?;
+        wire::write_value(w, out, &S_ENSURE_PRIVATE_DIRECTORY_SYNC_OUT)?;
         Ok(())
     })
 }
 
 static S_REPAIR_PRIVATE_FILE_SYNC_1: wire::Schema = wire::Schema::Dyn;
+static S_REPAIR_PRIVATE_FILE_SYNC_OUT: wire::Schema = wire::Schema::Dyn;
 
 /// `repairPrivateFileSync` over the binary wire.
 #[napi(js_name = "repairPrivateFileSyncWire")]
@@ -202,12 +209,14 @@ pub fn repair_private_file_sync_wire() -> napi::Result<f64> {
     wire_io(|r, w| {
         let file_path: String = r.string16()?;
         let options: serde_json::Value = wire::read_value(r, &S_REPAIR_PRIVATE_FILE_SYNC_1)?;
-        let () = port::repair_private_file_sync(file_path, options)?;
+        let out = &port::repair_private_file_sync(file_path, options)?;
+        wire::write_value(w, out, &S_REPAIR_PRIVATE_FILE_SYNC_OUT)?;
         Ok(())
     })
 }
 
 static S_ENSURE_PRIVATE_FILE_SYNC_1: wire::Schema = wire::Schema::Dyn;
+static S_ENSURE_PRIVATE_FILE_SYNC_OUT: wire::Schema = wire::Schema::Dyn;
 
 /// `ensurePrivateFileSync` over the binary wire.
 #[napi(js_name = "ensurePrivateFileSyncWire")]
@@ -215,10 +224,13 @@ pub fn ensure_private_file_sync_wire() -> napi::Result<f64> {
     wire_io(|r, w| {
         let file_path: String = r.string16()?;
         let options: serde_json::Value = wire::read_value(r, &S_ENSURE_PRIVATE_FILE_SYNC_1)?;
-        let () = port::ensure_private_file_sync(file_path, options)?;
+        let out = &port::ensure_private_file_sync(file_path, options)?;
+        wire::write_value(w, out, &S_ENSURE_PRIVATE_FILE_SYNC_OUT)?;
         Ok(())
     })
 }
+
+static S_REPAIR_PRIVATE_TREE_SYNC_OUT: wire::Schema = wire::Schema::Dyn;
 
 /// `repairPrivateTreeSync` over the binary wire.
 #[napi(js_name = "repairPrivateTreeSyncWire")]
@@ -226,7 +238,8 @@ pub fn repair_private_tree_sync_wire() -> napi::Result<f64> {
     wire_io(|r, w| {
         let root_path: String = r.string16()?;
         let platform: Option<serde_json::Value> = wire::read_dyn_opt(r)?;
-        let () = port::repair_private_tree_sync(root_path, platform)?;
+        let out = &port::repair_private_tree_sync(root_path, platform)?;
+        wire::write_value(w, out, &S_REPAIR_PRIVATE_TREE_SYNC_OUT)?;
         Ok(())
     })
 }

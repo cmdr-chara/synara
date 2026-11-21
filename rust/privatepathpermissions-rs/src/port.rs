@@ -96,10 +96,10 @@ fn path_join(a: &str, b: &str) -> String {
 pub fn ensure_private_directory_sync(
     directory_path: String,
     platform: Option<serde_json::Value>,
-) -> Result<(), String> {
+) -> Result<serde_json::Value, String> {
     std::fs::create_dir_all(&directory_path).map_err(|_| err("create", &directory_path))?;
     if !supports_posix(platform.as_ref()) {
-        return Ok(());
+        return Ok(crate::js::undefined());
     }
     let dir = std::fs::File::open(&directory_path)
         .map_err(|_| err("open without following symlinks", &directory_path))?;
@@ -110,27 +110,29 @@ pub fn ensure_private_directory_sync(
     {
         return Err(err("set mode on", &directory_path));
     }
-    set_mode(&dir, PRIVATE_DIRECTORY_MODE).map_err(|_| err("set mode on", &directory_path))
+    set_mode(&dir, PRIVATE_DIRECTORY_MODE).map_err(|_| err("set mode on", &directory_path))?;
+    Ok(crate::js::undefined())
 }
 
 /// Port of `repairPrivateFileSync` (`apps/server/src/privatePathPermissions.ts:64`).
 pub fn repair_private_file_sync(
     file_path: String,
     options: serde_json::Value,
-) -> Result<(), String> {
+) -> Result<serde_json::Value, String> {
     let platform = options_platform(&options)?;
     repair_private_file_inner(
         &file_path,
         options_executable(&options),
         supports_posix(platform.as_ref()),
-    )
+    )?;
+    Ok(crate::js::undefined())
 }
 
 /// Port of `ensurePrivateFileSync` (`apps/server/src/privatePathPermissions.ts:88`).
 pub fn ensure_private_file_sync(
     file_path: String,
     options: serde_json::Value,
-) -> Result<(), String> {
+) -> Result<serde_json::Value, String> {
     let platform = options_platform(&options)?;
     let mode = if options_executable(&options) {
         PRIVATE_EXECUTABLE_FILE_MODE
@@ -145,7 +147,7 @@ pub fn ensure_private_file_sync(
             .create(true)
             .open(&file_path)
             .map_err(|_| err("create", &file_path))?;
-        return Ok(());
+        return Ok(crate::js::undefined());
     }
     let file = std::fs::OpenOptions::new()
         .create(true)
@@ -159,29 +161,31 @@ pub fn ensure_private_file_sync(
     {
         return Err(err("set mode on", &file_path));
     }
-    set_mode(&file, mode).map_err(|_| err("set mode on", &file_path))
+    set_mode(&file, mode).map_err(|_| err("set mode on", &file_path))?;
+    Ok(crate::js::undefined())
 }
 
 /// Port of `repairPrivateFile` (`apps/server/src/privatePathPermissions.ts:121`).
 pub async fn repair_private_file(
     file_path: String,
     options: serde_json::Value,
-) -> Result<(), String> {
+) -> Result<serde_json::Value, String> {
     let platform = options_platform(&options)?;
     repair_private_file_inner(
         &file_path,
         options_executable(&options),
         supports_posix(platform.as_ref()),
-    )
+    )?;
+    Ok(crate::js::undefined())
 }
 
 /// Port of `repairPrivateTreeSync` (`apps/server/src/privatePathPermissions.ts:154`).
 pub fn repair_private_tree_sync(
     root_path: String,
     platform: Option<serde_json::Value>,
-) -> Result<(), String> {
+) -> Result<serde_json::Value, String> {
     if !supports_posix(platform.as_ref()) {
-        return Ok(());
+        return Ok(crate::js::undefined());
     }
     fn visit(entry_path: &str, is_root: bool) -> Result<(), String> {
         let stat = std::fs::symlink_metadata(entry_path).map_err(|_| err("inspect", entry_path))?;
@@ -215,5 +219,6 @@ pub fn repair_private_tree_sync(
         }
         Ok(())
     }
-    visit(&root_path, true)
+    visit(&root_path, true)?;
+    Ok(crate::js::undefined())
 }

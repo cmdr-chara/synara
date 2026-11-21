@@ -41,11 +41,11 @@ pub fn is_broken_pipe_error(error: String) -> napi::Result<bool> {
 
 /// `handleDesktopStdioError`.
 #[napi(js_name = "handleDesktopStdioError")]
-pub fn handle_desktop_stdio_error(error: String) -> napi::Result<()> {
+pub fn handle_desktop_stdio_error(error: String) -> napi::Result<String> {
     run(move || {
         let error = crate::js::from_json(&error)?;
-        port::handle_desktop_stdio_error(error)?;
-        Ok(())
+        let out = port::handle_desktop_stdio_error(error)?;
+        crate::js::to_json(&out)
     })
 }
 
@@ -154,13 +154,15 @@ pub fn is_broken_pipe_error_wire() -> napi::Result<f64> {
 }
 
 static S_HANDLE_DESKTOP_STDIO_ERROR_0: wire::Schema = wire::Schema::Dyn;
+static S_HANDLE_DESKTOP_STDIO_ERROR_OUT: wire::Schema = wire::Schema::Dyn;
 
 /// `handleDesktopStdioError` over the binary wire.
 #[napi(js_name = "handleDesktopStdioErrorWire")]
 pub fn handle_desktop_stdio_error_wire() -> napi::Result<f64> {
     wire_io(|r, w| {
         let error: serde_json::Value = wire::read_value(r, &S_HANDLE_DESKTOP_STDIO_ERROR_0)?;
-        let () = port::handle_desktop_stdio_error(error)?;
+        let out = &port::handle_desktop_stdio_error(error)?;
+        wire::write_value(w, out, &S_HANDLE_DESKTOP_STDIO_ERROR_OUT)?;
         Ok(())
     })
 }

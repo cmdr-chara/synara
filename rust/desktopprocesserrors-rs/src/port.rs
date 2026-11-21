@@ -13,9 +13,9 @@ pub fn is_broken_pipe_error(error: serde_json::Value) -> Result<bool, String> {
 }
 
 /// Port of `handleDesktopStdioError` (`apps/desktop/src/desktopProcessErrors.ts:13`).
-pub fn handle_desktop_stdio_error(error: serde_json::Value) -> Result<(), String> {
+pub fn handle_desktop_stdio_error(error: serde_json::Value) -> Result<serde_json::Value, String> {
     if !is_broken_pipe_error(error.clone())? {
         return Err("error".to_string());
     }
-    Ok(())
+    Ok(crate::js::undefined())
 }

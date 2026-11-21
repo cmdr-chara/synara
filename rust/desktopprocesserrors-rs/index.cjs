@@ -48,7 +48,7 @@ const fromUnits = (units) => {
 module.exports = { ...native }
 const specs = {
   isBrokenPipeError: [[1], 'raw', false],
-  handleDesktopStdioError: [[1], 'raw', false],
+  handleDesktopStdioError: [[1], 'json', false],
 }
 const classes = {
 
@@ -209,6 +209,7 @@ return true
 }
 const decode = () => {
 let t
+t = rDyn()
 return t
 }
 module.exports.handleDesktopStdioError = function handleDesktopStdioError (a0) {

@@ -132,15 +132,17 @@ fn wire_io(
 }
 
 static S_DERIVE_TURN_STOP_ACTIVITY_0: wire::Schema = wire::Schema::Dyn;
+static S_DERIVE_TURN_STOP_ACTIVITY_1: wire::Schema = wire::Schema::Dyn;
+static S_DERIVE_TURN_STOP_ACTIVITY_OUT: wire::Schema = wire::Schema::Dyn;
 
 /// `deriveTurnStopActivity` over the binary wire.
 #[napi(js_name = "deriveTurnStopActivityWire")]
 pub fn derive_turn_stop_activity_wire() -> napi::Result<f64> {
     wire_io(|r, w| {
-        let event: serde_json::Value = wire::read_value(r, &S_DERIVE_TURN_STOP_ACTIVITY_0)?;
-        let active_turn_id: Option<serde_json::Value> = wire::read_dyn_opt(r)?;
+        let event: Value = wire::read_value(r, &S_DERIVE_TURN_STOP_ACTIVITY_0)?;
+        let active_turn_id: Value = wire::read_value(r, &S_DERIVE_TURN_STOP_ACTIVITY_1)?;
         let out = &port::derive_turn_stop_activity(event, active_turn_id)?;
-        wire::write_dyn(w, &serde_json::to_value(out).map_err(|e| e.to_string())?);
+        wire::write_value(w, out, &S_DERIVE_TURN_STOP_ACTIVITY_OUT)?;
         Ok(())
     })
 }

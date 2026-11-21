@@ -4,13 +4,13 @@
   "fingerprint": "730ae374a4bb6fac",
   "coverage": {
     "lines": 22,
-    "reached": 11,
+    "reached": 22,
     "files": [
       {
         "file": "packages/shared/src/turnStopActivity.ts",
         "lines": 22,
-        "reached": 11,
-        "missed": "12-22"
+        "reached": 22,
+        "missed": ""
       }
     ]
   }

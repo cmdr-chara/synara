@@ -1,0 +1,48 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/attachmentPaths.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "attachmentpaths-rs",
+  "exports": [
+    {
+      "name": "normalizeAttachmentRelativePath",
+      "file": "apps/server/src/attachmentPaths.ts",
+      "line": 5,
+      "params": [
+        {
+          "name": "rawRelativePath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveAttachmentRelativePath",
+      "file": "apps/server/src/attachmentPaths.ts",
+      "line": 21,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly attachmentsDir: string;\n  readonly relativePath: string;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

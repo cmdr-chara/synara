@@ -1,0 +1,17 @@
+{
+  "unit": "apps/server/src/attachmentPaths.ts",
+  "files": 1,
+  "fingerprint": "afe7e62420664704",
+  "coverage": {
+    "lines": 32,
+    "reached": 28,
+    "files": [
+      {
+        "file": "apps/server/src/attachmentPaths.ts",
+        "lines": 32,
+        "reached": 28,
+        "missed": "16-17, 27-28"
+      }
+    ]
+  }
+}

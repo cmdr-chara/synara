@@ -1,0 +1,423 @@
+{"fn": "normalizeAttachmentRelativePath", "args": ["hello worldemoji 👍🏽 mix"], "ok": "hello worldemoji 👍🏽 mix"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["abcemoji 👍🏽 mix"], "ok": "abcemoji 👍🏽 mix"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["emoji 👍🏽 mix"], "ok": "emoji 👍🏽 mix"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["hello"], "ok": "hello"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["line1\nline2"], "ok": "line1\nline2"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["abemoji 👍🏽 mix"], "ok": "abemoji 👍🏽 mix"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["./x/**/*.json"], "ok": "x/**/*.json"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["HELLOemoji 👍🏽 mix"], "ok": "HELLOemoji 👍🏽 mix"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["HELLO﻿bom"], "ok": "HELLO﻿bom"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["a😀b😀c"], "ok": "a😀b😀c"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["Hello World"], "ok": "Hello World"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["key_name-1"], "ok": "key_name-1"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["ΣΊΣΥΦΟΣ{name} has {count} items"], "ok": "ΣΊΣΥΦΟΣ{name} has {count} items"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["é"], "ok": "é"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["abc"], "ok": "abc"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["trailing."], "ok": "trailing."}
+{"fn": "normalizeAttachmentRelativePath", "args": ["tab\tseparated"], "ok": "tab\tseparated"}
+{"fn": "normalizeAttachmentRelativePath", "args": [":﻿bom"], "ok": ":﻿bom"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["İstanbul"], "ok": "İstanbul"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["tab\tseparated:"], "ok": "tab\tseparated:"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["ünïcödé"], "ok": "ünïcödé"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["straße"], "ok": "straße"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["ns:key.path"], "ok": "ns:key.path"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["ΣΊΣΥΦΟΣab"], "ok": "ΣΊΣΥΦΟΣab"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["src/a/b.tsΣΊΣΥΦΟΣ"], "ok": "src/a/b.tsΣΊΣΥΦΟΣ"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["  padded  "], "ok": "  padded  "}
+{"fn": "normalizeAttachmentRelativePath", "args": ["﻿bom"], "ok": "﻿bom"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["{name} has {count} items"], "ok": "{name} has {count} items"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["ünïcödéline1\nline2"], "ok": "ünïcödéline1\nline2"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["line1\nline2Hello World"], "ok": "line1\nline2Hello World"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["tab\tseparateda😀b😀c"], "ok": "tab\tseparateda😀b😀c"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["ünïcödékey_name-1"], "ok": "ünïcödékey_name-1"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["a:b:c"], "ok": "a:b:c"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["a..b"], "ok": "a..b"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["ΣΊΣΥΦΟΣ"], "ok": "ΣΊΣΥΦΟΣ"}
+{"fn": "normalizeAttachmentRelativePath", "args": [":"], "ok": ":"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["ns:key.pathé"], "ok": "ns:key.pathé"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["😀"], "ok": "😀"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["src/a/b.tsstraße"], "ok": "src/a/b.tsstraße"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["hello world"], "ok": "hello world"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["hello worldünïcödé"], "ok": "hello worldünïcödé"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["日本語のテキスト"], "ok": "日本語のテキスト"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["😀src/a/b.ts"], "ok": "😀src/a/b.ts"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["hellotab\tseparated"], "ok": "hellotab\tseparated"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["ΣΊΣΥΦΟΣstraße"], "ok": "ΣΊΣΥΦΟΣstraße"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["a.b.c"], "ok": "a.b.c"}
+{"fn": "normalizeAttachmentRelativePath", "args": [".leading"], "ok": ".leading"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["  padded  a..b"], "ok": "  padded  a..b"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["a:b:cab"], "ok": "a:b:cab"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["src/a/b.ts"], "ok": "src/a/b.ts"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["tab\tseparatedtab\tseparated"], "ok": "tab\tseparatedtab\tseparated"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["trailing.key_name-1"], "ok": "trailing.key_name-1"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["./x/**/*.jsonünïcödé"], "ok": "x/**/*.jsonünïcödé"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["ünïcödé:"], "ok": "ünïcödé:"}
+{"fn": "normalizeAttachmentRelativePath", "args": [":İstanbul"], "ok": ":İstanbul"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["trailing.a.b.c"], "ok": "trailing.a.b.c"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["ab"], "ok": "ab"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["İstanbultab\tseparated"], "ok": "İstanbultab\tseparated"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["aabc"], "ok": "aabc"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["HELLO"], "ok": "HELLO"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["straßeemoji 👍🏽 mix"], "ok": "straßeemoji 👍🏽 mix"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["./x/**/*.json😀"], "ok": "x/**/*.json😀"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["a😀b😀c./x/**/*.json"], "ok": "a😀b😀c./x/**/*.json"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["a"], "ok": "a"}
+{"fn": "normalizeAttachmentRelativePath", "args": [""], "ok": "."}
+{"fn": "normalizeAttachmentRelativePath", "args": ["./x/**/*.jsona😀b😀c"], "ok": "x/**/*.jsona😀b😀c"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["emoji 👍🏽 mixİstanbul"], "ok": "emoji 👍🏽 mixİstanbul"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["hellons:key.path"], "ok": "hellons:key.path"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["a.b.cünïcödé"], "ok": "a.b.cünïcödé"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["./x/**/*.jsonline1\nline2"], "ok": "x/**/*.jsonline1\nline2"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["a.b.c./x/**/*.json"], "ok": "a.b.c./x/**/*.json"}
+{"fn": "normalizeAttachmentRelativePath", "args": [".leading﻿bom"], "ok": ".leading﻿bom"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["﻿bom😀"], "ok": "﻿bom😀"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["a.b.c:"], "ok": "a.b.c:"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["line1\nline2tab\tseparated"], "ok": "line1\nline2tab\tseparated"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["straßea:b:c"], "ok": "straßea:b:c"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["a😀b😀cab"], "ok": "a😀b😀cab"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["abca:b:c"], "ok": "abca:b:c"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["a.leading"], "ok": "a.leading"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["é😀"], "ok": "é😀"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["aΣΊΣΥΦΟΣ"], "ok": "aΣΊΣΥΦΟΣ"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["Hello Worldstraße"], "ok": "Hello Worldstraße"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["a😀b😀ca..b"], "ok": "a😀b😀ca..b"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["﻿bomtab\tseparated"], "ok": "﻿bomtab\tseparated"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["HELLOtrailing."], "ok": "HELLOtrailing."}
+{"fn": "normalizeAttachmentRelativePath", "args": ["tab\tseparateda.b.c"], "ok": "tab\tseparateda.b.c"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["hello worldé"], "ok": "hello worldé"}
+{"fn": "normalizeAttachmentRelativePath", "args": [".leading  padded  "], "ok": ".leading  padded  "}
+{"fn": "normalizeAttachmentRelativePath", "args": ["  padded  日本語のテキスト"], "ok": "  padded  日本語のテキスト"}
+{"fn": "normalizeAttachmentRelativePath", "args": [".leading{name} has {count} items"], "ok": ".leading{name} has {count} items"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["ΣΊΣΥΦΟΣsrc/a/b.ts"], "ok": "ΣΊΣΥΦΟΣsrc/a/b.ts"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["﻿bom./x/**/*.json"], "ok": "﻿bom./x/**/*.json"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["key_name-1﻿bom"], "ok": "key_name-1﻿bom"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["tab\tseparated  padded  "], "ok": "tab\tseparated  padded  "}
+{"fn": "normalizeAttachmentRelativePath", "args": ["HELLOab"], "ok": "HELLOab"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["HELLO日本語のテキスト"], "ok": "HELLO日本語のテキスト"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["é﻿bom"], "ok": "é﻿bom"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["src/a/b.tstrailing."], "ok": "src/a/b.tstrailing."}
+{"fn": "normalizeAttachmentRelativePath", "args": ["hello  padded  "], "ok": "hello  padded  "}
+{"fn": "normalizeAttachmentRelativePath", "args": ["a..ba..b"], "ok": "a..ba..b"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["a.b.cabc"], "ok": "a.b.cabc"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["a:b:cΣΊΣΥΦΟΣ"], "ok": "a:b:cΣΊΣΥΦΟΣ"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["😀é"], "ok": "😀é"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["src/a/b.ts{name} has {count} items"], "ok": "src/a/b.ts{name} has {count} items"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["abcé"], "ok": "abcé"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["a..b{name} has {count} items"], "ok": "a..b{name} has {count} items"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["a..bé"], "ok": "a..bé"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["src/a/b.tshello"], "ok": "src/a/b.tshello"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["﻿bom{name} has {count} items"], "ok": "﻿bom{name} has {count} items"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["{name} has {count} itemshello world"], "ok": "{name} has {count} itemshello world"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["straßeİstanbul"], "ok": "straßeİstanbul"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["ΣΊΣΥΦΟΣkey_name-1"], "ok": "ΣΊΣΥΦΟΣkey_name-1"}
+{"fn": "normalizeAttachmentRelativePath", "args": [":a..b"], "ok": ":a..b"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["ns:key.pathhello world"], "ok": "ns:key.pathhello world"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["./x/**/*.jsona:b:c"], "ok": "x/**/*.jsona:b:c"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["ns:key.patha.b.c"], "ok": "ns:key.patha.b.c"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["ΣΊΣΥΦΟΣtab\tseparated"], "ok": "ΣΊΣΥΦΟΣtab\tseparated"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["key_name-1ünïcödé"], "ok": "key_name-1ünïcödé"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["line1\nline2ünïcödé"], "ok": "line1\nline2ünïcödé"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["emoji 👍🏽 mixa:b:c"], "ok": "emoji 👍🏽 mixa:b:c"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["hello worldline1\nline2"], "ok": "hello worldline1\nline2"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["src/a/b.ts:"], "ok": "src/a/b.ts:"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["./x/**/*.jsonΣΊΣΥΦΟΣ"], "ok": "x/**/*.jsonΣΊΣΥΦΟΣ"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["﻿bom  padded  "], "ok": "﻿bom  padded  "}
+{"fn": "normalizeAttachmentRelativePath", "args": ["abHello World"], "ok": "abHello World"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["line1\nline2:"], "ok": "line1\nline2:"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["tab\tseparated﻿bom"], "ok": "tab\tseparated﻿bom"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["line1\nline2😀"], "ok": "line1\nline2😀"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["ünïcödéstraße"], "ok": "ünïcödéstraße"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["helloHello World"], "ok": "helloHello World"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["İstanbulİstanbul"], "ok": "İstanbulİstanbul"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["line1\nline2emoji 👍🏽 mix"], "ok": "line1\nline2emoji 👍🏽 mix"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["😀hello"], "ok": "😀hello"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["{name} has {count} itemsstraße"], "ok": "{name} has {count} itemsstraße"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["日本語のテキストİstanbul"], "ok": "日本語のテキストİstanbul"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["hello world.leading"], "ok": "hello world.leading"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["aHello World"], "ok": "aHello World"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["key_name-1emoji 👍🏽 mix"], "ok": "key_name-1emoji 👍🏽 mix"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["日本語のテキストsrc/a/b.ts"], "ok": "日本語のテキストsrc/a/b.ts"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["日本語のテキストabc"], "ok": "日本語のテキストabc"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["hello world日本語のテキスト"], "ok": "hello world日本語のテキスト"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["a..ba:b:c"], "ok": "a..ba:b:c"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["éline1\nline2"], "ok": "éline1\nline2"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["İstanbula😀b😀c"], "ok": "İstanbula😀b😀c"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["abünïcödé"], "ok": "abünïcödé"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["😀😀"], "ok": "😀😀"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["line1\nline2日本語のテキスト"], "ok": "line1\nline2日本語のテキスト"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["İstanbula"], "ok": "İstanbula"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["ns:key.path日本語のテキスト"], "ok": "ns:key.path日本語のテキスト"}
+{"fn": "normalizeAttachmentRelativePath", "args": [":a:b:c"], "ok": ":a:b:c"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["hello{name} has {count} items"], "ok": "hello{name} has {count} items"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["src/a/b.tsab"], "ok": "src/a/b.tsab"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["line1\nline2a:b:c"], "ok": "line1\nline2a:b:c"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["😀trailing."], "ok": "😀trailing."}
+{"fn": "normalizeAttachmentRelativePath", "args": ["aab"], "ok": "aab"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["line1\nline2line1\nline2"], "ok": "line1\nline2line1\nline2"}
+{"fn": "normalizeAttachmentRelativePath", "args": [":ΣΊΣΥΦΟΣ"], "ok": ":ΣΊΣΥΦΟΣ"}
+{"fn": "normalizeAttachmentRelativePath", "args": [":Hello World"], "ok": ":Hello World"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["absrc/a/b.ts"], "ok": "absrc/a/b.ts"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["a.b.cns:key.path"], "ok": "a.b.cns:key.path"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["{name} has {count} itemsİstanbul"], "ok": "{name} has {count} itemsİstanbul"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["./x/**/*.json日本語のテキスト"], "ok": "x/**/*.json日本語のテキスト"}
+{"fn": "normalizeAttachmentRelativePath", "args": [":trailing."], "ok": ":trailing."}
+{"fn": "normalizeAttachmentRelativePath", "args": ["a..babc"], "ok": "a..babc"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["ns:key.pathİstanbul"], "ok": "ns:key.pathİstanbul"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["abc./x/**/*.json"], "ok": "abc./x/**/*.json"}
+{"fn": "normalizeAttachmentRelativePath", "args": [".leadingemoji 👍🏽 mix"], "ok": ".leadingemoji 👍🏽 mix"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["line1\nline2ns:key.path"], "ok": "line1\nline2ns:key.path"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["a😀b😀csrc/a/b.ts"], "ok": "a😀b😀csrc/a/b.ts"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["line1\nline2trailing."], "ok": "line1\nline2trailing."}
+{"fn": "normalizeAttachmentRelativePath", "args": ["line1\nline2é"], "ok": "line1\nline2é"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["tab\tseparatedtrailing."], "ok": "tab\tseparatedtrailing."}
+{"fn": "normalizeAttachmentRelativePath", "args": ["emoji 👍🏽 mixa"], "ok": "emoji 👍🏽 mixa"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["a😀b😀cΣΊΣΥΦΟΣ"], "ok": "a😀b😀cΣΊΣΥΦΟΣ"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["  padded  ünïcödé"], "ok": "  padded  ünïcödé"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["😀﻿bom"], "ok": "😀﻿bom"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["./x/**/*.jsonhello"], "ok": "x/**/*.jsonhello"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["abtab\tseparated"], "ok": "abtab\tseparated"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["./x/**/*.jsonİstanbul"], "ok": "x/**/*.jsonİstanbul"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["emoji 👍🏽 mixHello World"], "ok": "emoji 👍🏽 mixHello World"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["日本語のテキストstraße"], "ok": "日本語のテキストstraße"}
+{"fn": "normalizeAttachmentRelativePath", "args": [".leading:"], "ok": ".leading:"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["﻿boma.b.c"], "ok": "﻿boma.b.c"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["a.b.ctrailing."], "ok": "a.b.ctrailing."}
+{"fn": "normalizeAttachmentRelativePath", "args": ["tab\tseparatedİstanbul"], "ok": "tab\tseparatedİstanbul"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["ns:key.path.leading"], "ok": "ns:key.path.leading"}
+{"fn": "normalizeAttachmentRelativePath", "args": [".leadingé"], "ok": ".leadingé"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["a..ba"], "ok": "a..ba"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["ünïcödé😀"], "ok": "ünïcödé😀"}
+{"fn": "normalizeAttachmentRelativePath", "args": [".leadingab"], "ok": ".leadingab"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["trailing.a😀b😀c"], "ok": "trailing.a😀b😀c"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["ΣΊΣΥΦΟΣhello world"], "ok": "ΣΊΣΥΦΟΣhello world"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["abcab"], "ok": "abcab"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["a:b:ca"], "ok": "a:b:ca"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["a:b:cemoji 👍🏽 mix"], "ok": "a:b:cemoji 👍🏽 mix"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["a😀b😀cHELLO"], "ok": "a😀b😀cHELLO"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["a..bhello world"], "ok": "a..bhello world"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["straßea"], "ok": "straßea"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["./x/**/*.jsonstraße"], "ok": "x/**/*.jsonstraße"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["abcstraße"], "ok": "abcstraße"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["héllo wörld"], "ok": "héllo wörld"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["👍🏽 thumbs"], "ok": "👍🏽 thumbs"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["日本語"], "ok": "日本語"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["ılık ırmak"], "ok": "ılık ırmak"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["👨‍👩‍👧 family"], "ok": "👨‍👩‍👧 family"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["a b"], "ok": "a b"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["a😀b"], "ok": "a😀b"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["a²b x½ y①"], "ok": "a²b x½ y①"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["aⅠb Ⅻ"], "ok": "aⅠb Ⅻ"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["a𐐀b 𝐀bc"], "ok": "a𐐀b 𝐀bc"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["कि ٣٤"], "ok": "कि ٣٤"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["Iı İi"], "ok": "Iı İi"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["K K k"], "ok": "K K k"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["ſ s S"], "ok": "ſ s S"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["x‍y 👨‍👩‍👧"], "ok": "x‍y 👨‍👩‍👧"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["a b c　d"], "ok": "a b c　d"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["١٢٣ ٤٥"], "ok": "١٢٣ ٤٥"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["𝟘𝟙 ²³"], "ok": "𝟘𝟙 ²³"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["snake_case foo-bar o'neil"], "ok": "snake_case foo-bar o'neil"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["ǅungla Ǆ"], "ok": "ǅungla Ǆ"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["one\r\ntwo threefour"], "ok": "one\r\ntwo threefour"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["café café"], "ok": "café café"}
+{"fn": "normalizeAttachmentRelativePath", "args": ["ΣΑΣ σας ς"], "ok": "ΣΑΣ σας ς"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/straße", "relativePath": "ünïcödé"}], "ok": "/attroot/straße/ünïcödé"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/  padded  ", "relativePath": "😀"}], "ok": "/attroot/  padded  /😀"}
+{"fn": "resolveAttachmentRelativePath", "args": ["x"], "error": "The \"path\" argument must be of type string. Received undefined"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/ΣΊΣΥΦΟΣ", "relativePath": "a:b:c"}], "ok": "/attroot/ΣΊΣΥΦΟΣ/a:b:c"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/a", "relativePath": "src/a/b.ts日本語のテキスト"}], "ok": "/attroot/a/src/a/b.ts日本語のテキスト"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/line1\nline2", "relativePath": "ab"}], "ok": "/attroot/line1\nline2/ab"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/ns:key.path", "relativePath": "😀"}], "ok": "/attroot/ns:key.path/😀"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/Hello World", "relativePath": "trailing.Hello World"}], "ok": "/attroot/Hello World/trailing.Hello World"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/  padded  ", "relativePath": "{name} has {count} items"}], "ok": "/attroot/  padded  /{name} has {count} items"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/ünïcödé", "relativePath": "日本語のテキスト"}], "ok": "/attroot/ünïcödé/日本語のテキスト"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/emoji 👍🏽 mix", "relativePath": "Hello World"}], "ok": "/attroot/emoji 👍🏽 mix/Hello World"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "tab\tseparated", "relativePath": ""}], "ok": null}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/tab\tseparatedkey_name-1", "relativePath": "a:b:c"}], "ok": "/attroot/tab\tseparatedkey_name-1/a:b:c"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/😀", "relativePath": "a:b:c"}], "ok": "/attroot/😀/a:b:c"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/é", "relativePath": "emoji 👍🏽 mix"}], "ok": "/attroot/é/emoji 👍🏽 mix"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/", "relativePath": "  padded  é"}], "ok": "/attroot/  padded  é"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/a.b.cünïcödé", "relativePath": "  padded  "}], "ok": "/attroot/a.b.cünïcödé/  padded  "}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/😀", "relativePath": "日本語のテキスト﻿bom"}], "ok": "/attroot/😀/日本語のテキスト﻿bom"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/abc", "relativePath": "abc"}], "ok": "/attroot/abc/abc"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/tab\tseparated", "relativePath": "trailing."}], "ok": "/attroot/tab\tseparated/trailing."}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/aa:b:c", "relativePath": "ΣΊΣΥΦΟΣ"}], "ok": "/attroot/aa:b:c/ΣΊΣΥΦΟΣ"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/  padded  ", "relativePath": ".leading"}], "ok": "/attroot/  padded  /.leading"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/abc", "relativePath": "emoji 👍🏽 mix"}], "ok": "/attroot/abc/emoji 👍🏽 mix"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/", "relativePath": "emoji 👍🏽 mix"}], "ok": "/attroot/emoji 👍🏽 mix"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/abc", "relativePath": "line1\nline2"}], "ok": "/attroot/abc/line1\nline2"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/trailing.", "relativePath": "{name} has {count} items"}], "ok": "/attroot/trailing./{name} has {count} items"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/😀", "relativePath": "key_name-1"}], "ok": "/attroot/😀/key_name-1"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/ünïcödé", "relativePath": "  padded  "}], "ok": "/attroot/ünïcödé/  padded  "}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/İstanbulns:key.path", "relativePath": "a.b.cstraße"}], "ok": "/attroot/İstanbulns:key.path/a.b.cstraße"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/é", "relativePath": "abc"}], "ok": "/attroot/é/abc"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/trailing.", "relativePath": "ns:key.pathHello World"}], "ok": "/attroot/trailing./ns:key.pathHello World"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/ns:key.path", "relativePath": "hello world"}], "ok": "/attroot/ns:key.path/hello world"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/hello", "relativePath": "tab\tseparatedsrc/a/b.ts"}], "ok": "/attroot/hello/tab\tseparatedsrc/a/b.ts"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/hello world", "relativePath": "a.b.c"}], "ok": "/attroot/hello world/a.b.c"}
+{"fn": "resolveAttachmentRelativePath", "args": [null], "error": "Cannot read properties of null (reading 'relativePath')"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/straße", "relativePath": "abc"}], "ok": "/attroot/straße/abc"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/a", "relativePath": "HELLO"}], "ok": "/attroot/a/HELLO"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/😀", "relativePath": "abc😀"}], "ok": "/attroot/😀/abc😀"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/emoji 👍🏽 mix", "relativePath": "aba..b"}], "ok": "/attroot/emoji 👍🏽 mix/aba..b"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/a:b:c", "relativePath": "a..bline1\nline2"}], "ok": "/attroot/a:b:c/a..bline1\nline2"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/a", "relativePath": "ns:key.path"}], "ok": "/attroot/a/ns:key.path"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/ab", "relativePath": "日本語のテキストa😀b😀c"}], "ok": "/attroot/ab/日本語のテキストa😀b😀c"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/a😀b😀cabc", "relativePath": "a﻿bom"}], "ok": "/attroot/a😀b😀cabc/a﻿bom"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "abcabc", "relativePath": ""}], "ok": null}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/a..b", "relativePath": "helloé"}], "ok": "/attroot/a..b/helloé"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/Hello World", "relativePath": "ab"}], "ok": "/attroot/Hello World/ab"}
+{"fn": "resolveAttachmentRelativePath", "args": [0], "error": "The \"path\" argument must be of type string. Received undefined"}
+{"fn": "resolveAttachmentRelativePath", "args": [{}], "error": "The \"path\" argument must be of type string. Received undefined"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/é", "relativePath": "hello world"}], "ok": "/attroot/é/hello world"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/ünïcödé", "relativePath": "Hello World  padded  "}], "ok": "/attroot/ünïcödé/Hello World  padded  "}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/{name} has {count} items", "relativePath": "a.b.c"}], "ok": "/attroot/{name} has {count} items/a.b.c"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/emoji 👍🏽 mix", "relativePath": "😀"}], "ok": "/attroot/emoji 👍🏽 mix/😀"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/ünïcödé", "relativePath": "straßens:key.path"}], "ok": "/attroot/ünïcödé/straßens:key.path"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/.leading", "relativePath": "ΣΊΣΥΦΟΣ"}], "ok": "/attroot/.leading/ΣΊΣΥΦΟΣ"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"a": {"b": "c"}}], "error": "The \"path\" argument must be of type string. Received undefined"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/a😀b😀c", "relativePath": "src/a/b.ts"}], "ok": "/attroot/a😀b😀c/src/a/b.ts"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/hello world", "relativePath": "trailing.é"}], "ok": "/attroot/hello world/trailing.é"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/.leading", "relativePath": "﻿bom"}], "ok": "/attroot/.leading/﻿bom"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/straße", "relativePath": "src/a/b.ts"}], "ok": "/attroot/straße/src/a/b.ts"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/日本語のテキスト", "relativePath": "HELLO"}], "ok": "/attroot/日本語のテキスト/HELLO"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/.leading", "relativePath": "line1\nline2"}], "ok": "/attroot/.leading/line1\nline2"}
+{"fn": "resolveAttachmentRelativePath", "args": [true], "error": "The \"path\" argument must be of type string. Received undefined"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/a😀b😀c", "relativePath": "a"}], "ok": "/attroot/a😀b😀c/a"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "ns:key.path﻿bom", "relativePath": ""}], "ok": null}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/İstanbul", "relativePath": "a..b"}], "ok": "/attroot/İstanbul/a..b"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/{name} has {count} items", "relativePath": "trailing."}], "ok": "/attroot/{name} has {count} items/trailing."}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/  padded  ", "relativePath": "straße"}], "ok": "/attroot/  padded  /straße"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/key_name-1", "relativePath": "a.b.ca😀b😀c"}], "ok": "/attroot/key_name-1/a.b.ca😀b😀c"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/ns:key.patha", "relativePath": "ünïcödé"}], "ok": "/attroot/ns:key.patha/ünïcödé"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/a", "relativePath": "emoji 👍🏽 mix"}], "ok": "/attroot/a/emoji 👍🏽 mix"}
+{"fn": "resolveAttachmentRelativePath", "args": [["a", 1]], "error": "The \"path\" argument must be of type string. Received undefined"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/  padded  ", "relativePath": "日本語のテキスト"}], "ok": "/attroot/  padded  /日本語のテキスト"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/{name} has {count} itemskey_name-1", "relativePath": "hello world{name} has {count} items"}], "ok": "/attroot/{name} has {count} itemskey_name-1/hello world{name} has {count} items"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/İstanbul", "relativePath": "ns:key.path"}], "ok": "/attroot/İstanbul/ns:key.path"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/trailing.", "relativePath": "abemoji 👍🏽 mix"}], "ok": "/attroot/trailing./abemoji 👍🏽 mix"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/ab", "relativePath": "abc"}], "ok": "/attroot/ab/abc"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/", "relativePath": "{name} has {count} items"}], "ok": "/attroot/{name} has {count} items"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/a.b.c", "relativePath": "line1\nline2日本語のテキスト"}], "ok": "/attroot/a.b.c/line1\nline2日本語のテキスト"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/.leadingkey_name-1", "relativePath": "emoji 👍🏽 mix"}], "ok": "/attroot/.leadingkey_name-1/emoji 👍🏽 mix"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/a.b.c", "relativePath": "{name} has {count} items"}], "ok": "/attroot/a.b.c/{name} has {count} items"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/hello", "relativePath": "İstanbul"}], "ok": "/attroot/hello/İstanbul"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/:", "relativePath": "trailing.Hello World"}], "ok": "/attroot/:/trailing.Hello World"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/Hello World", "relativePath": "trailing."}], "ok": "/attroot/Hello World/trailing."}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/ab", "relativePath": "日本語のテキスト"}], "ok": "/attroot/ab/日本語のテキスト"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/ΣΊΣΥΦΟΣ", "relativePath": "trailing."}], "ok": "/attroot/ΣΊΣΥΦΟΣ/trailing."}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/a", "relativePath": "tab\tseparated"}], "ok": "/attroot/a/tab\tseparated"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/  padded  日本語のテキスト", "relativePath": "İstanbul"}], "ok": "/attroot/  padded  日本語のテキスト/İstanbul"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/Hello World", "relativePath": "straße"}], "ok": "/attroot/Hello World/straße"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/a.b.c", "relativePath": "a.b.c"}], "ok": "/attroot/a.b.c/a.b.c"}
+{"fn": "resolveAttachmentRelativePath", "args": [[]], "error": "The \"path\" argument must be of type string. Received undefined"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/éa..b", "relativePath": "emoji 👍🏽 mix"}], "ok": "/attroot/éa..b/emoji 👍🏽 mix"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/😀", "relativePath": "  padded  "}], "ok": "/attroot/😀/  padded  "}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/./x/**/*.json", "relativePath": "😀straße"}], "ok": "/attroot/x/**/*.json/😀straße"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/  padded  ", "relativePath": ".leading{name} has {count} items"}], "ok": "/attroot/  padded  /.leading{name} has {count} items"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/ünïcödé", "relativePath": "a"}], "ok": "/attroot/ünïcödé/a"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"a": "b"}], "error": "The \"path\" argument must be of type string. Received undefined"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/abc", "relativePath": "HELLO"}], "ok": "/attroot/abc/HELLO"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/:ns:key.path", "relativePath": "a..b"}], "ok": "/attroot/:ns:key.path/a..b"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/ns:key.path", "relativePath": "a"}], "ok": "/attroot/ns:key.path/a"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/日本語のテキスト", "relativePath": "key_name-1straße"}], "ok": "/attroot/日本語のテキスト/key_name-1straße"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/a.b.c", "relativePath": "HELLO"}], "ok": "/attroot/a.b.c/HELLO"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/emoji 👍🏽 mix", "relativePath": "{name} has {count} items"}], "ok": "/attroot/emoji 👍🏽 mix/{name} has {count} items"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/😀", "relativePath": "Hello World"}], "ok": "/attroot/😀/Hello World"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/:", "relativePath": "line1\nline2"}], "ok": "/attroot/:/line1\nline2"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/ns:key.path./x/**/*.json", "relativePath": "ΣΊΣΥΦΟΣHello World"}], "ok": "/attroot/ns:key.path./x/**/*.json/ΣΊΣΥΦΟΣHello World"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/  padded  ", "relativePath": "ns:key.pathtrailing."}], "ok": "/attroot/  padded  /ns:key.pathtrailing."}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/.leading", "relativePath": "src/a/b.ts"}], "ok": "/attroot/.leading/src/a/b.ts"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/src/a/b.tshello", "relativePath": "src/a/b.ts./x/**/*.json"}], "ok": "/attroot/src/a/b.tshello/src/a/b.ts./x/**/*.json"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/ünïcödé", "relativePath": "a.b.c"}], "ok": "/attroot/ünïcödé/a.b.c"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/a..b", "relativePath": "﻿bom"}], "ok": "/attroot/a..b/﻿bom"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/ΣΊΣΥΦΟΣ", "relativePath": "日本語のテキスト"}], "ok": "/attroot/ΣΊΣΥΦΟΣ/日本語のテキスト"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/ns:key.path", "relativePath": "ΣΊΣΥΦΟΣ日本語のテキスト"}], "ok": "/attroot/ns:key.path/ΣΊΣΥΦΟΣ日本語のテキスト"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/ns:key.path", "relativePath": "hello"}], "ok": "/attroot/ns:key.path/hello"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/HELLOHELLO", "relativePath": "😀"}], "ok": "/attroot/HELLOHELLO/😀"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/hello", "relativePath": "line1\nline2hello world"}], "ok": "/attroot/hello/line1\nline2hello world"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/😀", "relativePath": "日本語のテキスト"}], "ok": "/attroot/😀/日本語のテキスト"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/", "relativePath": "Hello World"}], "ok": "/attroot/Hello World"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/tab\tseparated", "relativePath": "a.b.c"}], "ok": "/attroot/tab\tseparated/a.b.c"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/src/a/b.ts", "relativePath": "a..ba"}], "ok": "/attroot/src/a/b.ts/a..ba"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/:a.b.c", "relativePath": "src/a/b.tsline1\nline2"}], "ok": "/attroot/:a.b.c/src/a/b.tsline1\nline2"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/a..b", "relativePath": "Hello World"}], "ok": "/attroot/a..b/Hello World"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/  padded  ", "relativePath": "./x/**/*.jsonstraße"}], "ok": "/attroot/  padded  /x/**/*.jsonstraße"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/", "relativePath": ".leading"}], "ok": "/attroot/.leading"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/key_name-1", "relativePath": "emoji 👍🏽 mix"}], "ok": "/attroot/key_name-1/emoji 👍🏽 mix"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/abc", "relativePath": "./x/**/*.json"}], "ok": "/attroot/abc/x/**/*.json"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/a:b:c", "relativePath": "src/a/b.ts"}], "ok": "/attroot/a:b:c/src/a/b.ts"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/HELLO", "relativePath": "😀"}], "ok": "/attroot/HELLO/😀"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/hello world", "relativePath": "a:b:c"}], "ok": "/attroot/hello world/a:b:c"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/a..b", "relativePath": "a..b"}], "ok": "/attroot/a..b/a..b"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/a:b:c", "relativePath": "étrailing."}], "ok": "/attroot/a:b:c/étrailing."}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "éünïcödé", "relativePath": ""}], "ok": null}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/a", "relativePath": "straßeé"}], "ok": "/attroot/a/straßeé"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/ünïcödé", "relativePath": "ünïcödéHello World"}], "ok": "/attroot/ünïcödé/ünïcödéHello World"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/tab\tseparated", "relativePath": "ab"}], "ok": "/attroot/tab\tseparated/ab"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/ns:key.path", "relativePath": ":"}], "ok": "/attroot/ns:key.path/:"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/﻿bom", "relativePath": "hello world"}], "ok": "/attroot/﻿bom/hello world"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/a:b:c", "relativePath": "a"}], "ok": "/attroot/a:b:c/a"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/key_name-1", "relativePath": "./x/**/*.jsonhello"}], "ok": "/attroot/key_name-1/x/**/*.jsonhello"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/﻿bom", "relativePath": "emoji 👍🏽 mix"}], "ok": "/attroot/﻿bom/emoji 👍🏽 mix"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/a..ba😀b😀c", "relativePath": "HELLO{name} has {count} items"}], "ok": "/attroot/a..ba😀b😀c/HELLO{name} has {count} items"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/日本語のテキスト", "relativePath": "a"}], "ok": "/attroot/日本語のテキスト/a"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/日本語のテキスト", "relativePath": "ns:key.path"}], "ok": "/attroot/日本語のテキスト/ns:key.path"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/emoji 👍🏽 mix", "relativePath": "a"}], "ok": "/attroot/emoji 👍🏽 mix/a"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/:", "relativePath": "a.b.c"}], "ok": "/attroot/:/a.b.c"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/src/a/b.tshello world", "relativePath": "  padded  "}], "ok": "/attroot/src/a/b.tshello world/  padded  "}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/ns:key.path", "relativePath": "abc"}], "ok": "/attroot/ns:key.path/abc"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/", "relativePath": "ΣΊΣΥΦΟΣ"}], "ok": "/attroot/ΣΊΣΥΦΟΣ"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/  padded  ", "relativePath": "a..b"}], "ok": "/attroot/  padded  /a..b"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/a.b.c", "relativePath": "a😀b😀c"}], "ok": "/attroot/a.b.c/a😀b😀c"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/key_name-1", "relativePath": "日本語のテキスト"}], "ok": "/attroot/key_name-1/日本語のテキスト"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/trailing.", "relativePath": "src/a/b.ts"}], "ok": "/attroot/trailing./src/a/b.ts"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/😀", "relativePath": "trailing."}], "ok": "/attroot/😀/trailing."}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/tab\tseparatedtrailing.", "relativePath": "😀"}], "ok": "/attroot/tab\tseparatedtrailing./😀"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/ünïcödé", "relativePath": "Hello World"}], "ok": "/attroot/ünïcödé/Hello World"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/ns:key.path", "relativePath": ".leading"}], "ok": "/attroot/ns:key.path/.leading"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/abca😀b😀c", "relativePath": "a.b.c"}], "ok": "/attroot/abca😀b😀c/a.b.c"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/ünïcödé", "relativePath": "İstanbul"}], "ok": "/attroot/ünïcödé/İstanbul"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/src/a/b.ts", "relativePath": "ab"}], "ok": "/attroot/src/a/b.ts/ab"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/tab\tseparated", "relativePath": "a..b"}], "ok": "/attroot/tab\tseparated/a..b"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/ΣΊΣΥΦΟΣ", "relativePath": "a"}], "ok": "/attroot/ΣΊΣΥΦΟΣ/a"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/:", "relativePath": "straße﻿bom"}], "ok": "/attroot/:/straße﻿bom"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/:", "relativePath": "key_name-1"}], "ok": "/attroot/:/key_name-1"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/ns:key.patha..b", "relativePath": "aé"}], "ok": "/attroot/ns:key.patha..b/aé"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/  padded  ", "relativePath": ":İstanbul"}], "ok": "/attroot/  padded  /:İstanbul"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/.leading", "relativePath": ".leading"}], "ok": "/attroot/.leading/.leading"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/emoji 👍🏽 mixns:key.path", "relativePath": "😀"}], "ok": "/attroot/emoji 👍🏽 mixns:key.path/😀"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/é", "relativePath": ":"}], "ok": "/attroot/é/:"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/😀", "relativePath": "﻿bom"}], "ok": "/attroot/😀/﻿bom"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/key_name-1", "relativePath": ":"}], "ok": "/attroot/key_name-1/:"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/hello", "relativePath": "key_name-1"}], "ok": "/attroot/hello/key_name-1"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/Hello World", "relativePath": "a.b.ca.b.c"}], "ok": "/attroot/Hello World/a.b.ca.b.c"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/ab", "relativePath": "Hello World.leading"}], "ok": "/attroot/ab/Hello World.leading"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/ΣΊΣΥΦΟΣ", "relativePath": "a.b.c"}], "ok": "/attroot/ΣΊΣΥΦΟΣ/a.b.c"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/./x/**/*.json", "relativePath": "hello"}], "ok": "/attroot/x/**/*.json/hello"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/hello world", "relativePath": "hello world"}], "ok": "/attroot/hello world/hello world"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/tab\tseparated", "relativePath": "straßea:b:c"}], "ok": "/attroot/tab\tseparated/straßea:b:c"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/tab\tseparated", "relativePath": "ΣΊΣΥΦΟΣ"}], "ok": "/attroot/tab\tseparated/ΣΊΣΥΦΟΣ"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/trailing.", "relativePath": "HELLO"}], "ok": "/attroot/trailing./HELLO"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/a..b", "relativePath": "a.b.c"}], "ok": "/attroot/a..b/a.b.c"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/Hello World", "relativePath": "  padded  "}], "ok": "/attroot/Hello World/  padded  "}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/ΣΊΣΥΦΟΣ", "relativePath": "HELLO"}], "ok": "/attroot/ΣΊΣΥΦΟΣ/HELLO"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/ΣΊΣΥΦΟΣ", "relativePath": "{name} has {count} items"}], "ok": "/attroot/ΣΊΣΥΦΟΣ/{name} has {count} items"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/trailing.", "relativePath": "a😀b😀c"}], "ok": "/attroot/trailing./a😀b😀c"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/é", "relativePath": "trailing."}], "ok": "/attroot/é/trailing."}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/tab\tseparated", "relativePath": "{name} has {count} items"}], "ok": "/attroot/tab\tseparated/{name} has {count} items"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/a:b:ctrailing.", "relativePath": "./x/**/*.jsonab"}], "ok": "/attroot/a:b:ctrailing./x/**/*.jsonab"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/", "relativePath": "Hello WorldΣΊΣΥΦΟΣ"}], "ok": "/attroot/Hello WorldΣΊΣΥΦΟΣ"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/", "relativePath": "İstanbul"}], "ok": "/attroot/İstanbul"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/hello world", "relativePath": ".leading"}], "ok": "/attroot/hello world/.leading"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/hello", "relativePath": "abc"}], "ok": "/attroot/hello/abc"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/a.b.c", "relativePath": "{name} has {count} itemshello"}], "ok": "/attroot/a.b.c/{name} has {count} itemshello"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/hello", "relativePath": "hello"}], "ok": "/attroot/hello/hello"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/a😀b😀c", "relativePath": ":"}], "ok": "/attroot/a😀b😀c/:"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/tab\tseparated", "relativePath": "a"}], "ok": "/attroot/tab\tseparated/a"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/aé", "relativePath": "ΣΊΣΥΦΟΣhello"}], "ok": "/attroot/aé/ΣΊΣΥΦΟΣhello"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/日本語のテキストab", "relativePath": "  padded  "}], "ok": "/attroot/日本語のテキストab/  padded  "}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/ns:key.path", "relativePath": "{name} has {count} items"}], "ok": "/attroot/ns:key.path/{name} has {count} items"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/😀abc", "relativePath": "trailing."}], "ok": "/attroot/😀abc/trailing."}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/straßehello", "relativePath": "a..b"}], "ok": "/attroot/straßehello/a..b"}
+{"fn": "resolveAttachmentRelativePath", "args": [{"attachmentsDir": "/attroot/İstanbul", "relativePath": "hello world"}], "ok": "/attroot/İstanbul/hello world"}

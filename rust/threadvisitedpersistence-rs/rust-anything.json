@@ -1,0 +1,60 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/threadVisitedPersistence.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "threadvisitedpersistence-rs",
+  "exports": [
+    {
+      "name": "resolveInitialLastVisitedAt",
+      "file": "apps/web/src/threadVisitedPersistence.ts",
+      "line": 62,
+      "params": [
+        {
+          "name": "thread",
+          "ts_type": "ThreadServerTimes & { readonly id: string }",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "{ readonly restoringSession?: boolean }",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "persistThreadVisitedState",
+      "file": "apps/web/src/threadVisitedPersistence.ts",
+      "line": 113,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "AppState",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "{ readonly force?: boolean }",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

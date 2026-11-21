@@ -1,0 +1,200 @@
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{"a":{"b":"c"}}}],"ok":"/Users/devin/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[],"ok":"/Users/devin/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":true,"homeDirectory":"trailing."}],"ok":"trailing./.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"$undefined":true}],"ok":"/Users/devin/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[null],"error":"Cannot read properties of null (reading 'homeDirectory')"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":["a",1],"homeDirectory":"a"}],"ok":"a/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":null,"homeDirectory":"a:b:c"}],"ok":"a:b:c/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":true,"homeDirectory":"日本語のテキストHello World"}],"ok":"日本語のテキストHello World/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":null,"homeDirectory":"ΣΊΣΥΦΟΣ"}],"ok":"ΣΊΣΥΦΟΣ/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[true],"ok":"/Users/devin/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{}],"ok":"/Users/devin/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{"a":"b"},"homeDirectory":"abé"}],"ok":"abé/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":["a",1]}],"ok":"/Users/devin/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":["a",1],"homeDirectory":"İstanbul"}],"ok":"İstanbul/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[0],"ok":"/Users/devin/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{"a":"b"},"homeDirectory":"a"}],"ok":"a/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":null,"homeDirectory":"trailing."}],"ok":"trailing./.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":"x","homeDirectory":"./x/**/*.json"}],"ok":"x/**/*.json/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":["a",1],"homeDirectory":"a.b.c"}],"ok":"a.b.c/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{"a":"b"},"homeDirectory":"  padded  "}],"ok":"  padded  /.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":true,"homeDirectory":"é"}],"ok":"é/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"homeDirectory":"a.b.c"}],"ok":"a.b.c/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":true,"homeDirectory":"ünïcödé﻿bom"}],"ok":"ünïcödé﻿bom/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"a":"b"}],"ok":"/Users/devin/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":0,"homeDirectory":"ns:key.path"}],"ok":"ns:key.path/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":0}],"ok":"/Users/devin/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{}}],"ok":"/Users/devin/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{},"homeDirectory":"a.b.c"}],"ok":"a.b.c/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"homeDirectory":"abc"}],"ok":"abc/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":["a",1],"homeDirectory":"abab"}],"ok":"abab/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":0,"homeDirectory":"﻿bom"}],"ok":"﻿bom/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":["a",1],"homeDirectory":":abc"}],"ok":":abc/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":"x","homeDirectory":"İstanbul"}],"ok":"İstanbul/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":[],"homeDirectory":""}],"ok":".synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[["a",1]],"ok":"/Users/devin/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":null,"homeDirectory":"abHello World"}],"ok":"abHello World/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{"a":{"b":"c"}},"homeDirectory":"tab\tseparated"}],"ok":"tab\tseparated/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":"x","homeDirectory":"hello world"}],"ok":"hello world/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{"a":{"b":"c"}},"homeDirectory":"line1\nline2src/a/b.ts"}],"ok":"line1\nline2src/a/b.ts/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":["a",1],"homeDirectory":"ΣΊΣΥΦΟΣ"}],"ok":"ΣΊΣΥΦΟΣ/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":[],"homeDirectory":"Hello World"}],"ok":"Hello World/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":[],"homeDirectory":"Hello Worldhello"}],"ok":"Hello Worldhello/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":["a",1],"homeDirectory":"ab"}],"ok":"ab/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"homeDirectory":"😀"}],"ok":"😀/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":0,"homeDirectory":".leadingemoji 👍🏽 mix"}],"ok":".leadingemoji 👍🏽 mix/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"homeDirectory":"a..b"}],"ok":"a..b/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{"a":{"b":"c"}},"homeDirectory":"a..b"}],"ok":"a..b/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":null}],"ok":"/Users/devin/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":["a",1],"homeDirectory":"a..b"}],"ok":"a..b/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{"a":"b"},"homeDirectory":"HELLO﻿bom"}],"ok":"HELLO﻿bom/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":["x"],"ok":"/Users/devin/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"homeDirectory":"﻿bom"}],"ok":"﻿bom/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":["a",1],"homeDirectory":"key_name-1"}],"ok":"key_name-1/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{"a":{"b":"c"}},"homeDirectory":"aa:b:c"}],"ok":"aa:b:c/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"homeDirectory":"emoji 👍🏽 mix"}],"ok":"emoji 👍🏽 mix/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":true,"homeDirectory":"emoji 👍🏽 mix"}],"ok":"emoji 👍🏽 mix/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":["a",1],"homeDirectory":"😀straße"}],"ok":"😀straße/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":true,"homeDirectory":"ns:key.path"}],"ok":"ns:key.path/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":null,"homeDirectory":"{name} has {count} items"}],"ok":"{name} has {count} items/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":[],"homeDirectory":"ΣΊΣΥΦΟΣtrailing."}],"ok":"ΣΊΣΥΦΟΣtrailing./.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{"a":"b"},"homeDirectory":":"}],"ok":":/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{},"homeDirectory":"ns:key.path"}],"ok":"ns:key.path/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"homeDirectory":"tab\tseparated"}],"ok":"tab\tseparated/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":"x","homeDirectory":"a"}],"ok":"a/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":0,"homeDirectory":"  padded  "}],"ok":"  padded  /.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":0,"homeDirectory":"straßehello"}],"ok":"straßehello/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"homeDirectory":"ns:key.path"}],"ok":"ns:key.path/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":"x"}],"ok":"/Users/devin/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":null,"homeDirectory":"tab\tseparated日本語のテキスト"}],"ok":"tab\tseparated日本語のテキスト/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{"a":"b"}}],"ok":"/Users/devin/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[[]],"ok":"/Users/devin/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"homeDirectory":":"}],"ok":":/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":null,"homeDirectory":"hello world"}],"ok":"hello world/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":["a",1],"homeDirectory":"a😀b😀c"}],"ok":"a😀b😀c/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{"a":"b"},"homeDirectory":"straße"}],"ok":"straße/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{},"homeDirectory":"straße"}],"ok":"straße/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{"a":{"b":"c"}},"homeDirectory":"﻿bom"}],"ok":"﻿bom/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":null,"homeDirectory":"ab"}],"ok":"ab/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":null,"homeDirectory":"a.b.c./x/**/*.json"}],"ok":"a.b.c./x/**/*.json/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"a":{"b":"c"}}],"ok":"/Users/devin/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"homeDirectory":"İstanbulkey_name-1"}],"ok":"İstanbulkey_name-1/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":true,"homeDirectory":"hello world"}],"ok":"hello world/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":[],"homeDirectory":"./x/**/*.json"}],"ok":"x/**/*.json/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"homeDirectory":".leading"}],"ok":".leading/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"homeDirectory":"trailing."}],"ok":"trailing./.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{"a":{"b":"c"}},"homeDirectory":"{name} has {count} items"}],"ok":"{name} has {count} items/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":null,"homeDirectory":"a"}],"ok":"a/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"homeDirectory":"é"}],"ok":"é/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":null,"homeDirectory":"a.b.c"}],"ok":"a.b.c/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":true,"homeDirectory":"日本語のテキスト"}],"ok":"日本語のテキスト/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"homeDirectory":"a..b😀"}],"ok":"a..b😀/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":"x","homeDirectory":"a😀b😀c"}],"ok":"a😀b😀c/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"homeDirectory":"hello"}],"ok":"hello/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"homeDirectory":".leadinga.b.c"}],"ok":".leadinga.b.c/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":"x","homeDirectory":"a..b"}],"ok":"a..b/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":"x","homeDirectory":".leading"}],"ok":".leading/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{"a":"b"},"homeDirectory":"a..b"}],"ok":"a..b/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":null,"homeDirectory":"ns:key.path"}],"ok":"ns:key.path/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":null,"homeDirectory":"abc日本語のテキスト"}],"ok":"abc日本語のテキスト/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":[],"homeDirectory":"a..b"}],"ok":"a..b/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":[],"homeDirectory":"日本語のテキストabc"}],"ok":"日本語のテキストabc/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{"a":"b"},"homeDirectory":""}],"ok":".synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{"a":{"b":"c"}},"homeDirectory":"ΣΊΣΥΦΟΣ"}],"ok":"ΣΊΣΥΦΟΣ/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":"x","homeDirectory":"é😀"}],"ok":"é😀/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"homeDirectory":"ünïcödé"}],"ok":"ünïcödé/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":"x","homeDirectory":""}],"ok":".synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{"a":"b"},"homeDirectory":"key_name-1"}],"ok":"key_name-1/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"homeDirectory":"  padded  "}],"ok":"  padded  /.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":null,"homeDirectory":"Hello World"}],"ok":"Hello World/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"homeDirectory":"line1\nline2"}],"ok":"line1\nline2/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":"x","homeDirectory":"emoji 👍🏽 mix"}],"ok":"emoji 👍🏽 mix/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":[],"homeDirectory":"a"}],"ok":"a/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":true,"homeDirectory":".leading"}],"ok":".leading/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":[]}],"ok":"/Users/devin/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":null,"homeDirectory":":a..b"}],"ok":":a..b/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{"a":{"b":"c"}},"homeDirectory":"straße"}],"ok":"straße/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{},"homeDirectory":"hello world"}],"ok":"hello world/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"homeDirectory":"a😀b😀c"}],"ok":"a😀b😀c/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{"a":{"b":"c"}},"homeDirectory":"hello"}],"ok":"hello/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":[],"homeDirectory":"é"}],"ok":"é/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"homeDirectory":":a.b.c"}],"ok":":a.b.c/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"homeDirectory":"./x/**/*.json:"}],"ok":"x/**/*.json:/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":null,"homeDirectory":".leading"}],"ok":".leading/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{"a":{"b":"c"}},"homeDirectory":"emoji 👍🏽 mixns:key.path"}],"ok":"emoji 👍🏽 mixns:key.path/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":[],"homeDirectory":"key_name-1"}],"ok":"key_name-1/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":null,"homeDirectory":"key_name-1"}],"ok":"key_name-1/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{},"homeDirectory":"ünïcödé"}],"ok":"ünïcödé/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":"x","homeDirectory":"key_name-1"}],"ok":"key_name-1/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":null,"homeDirectory":"😀"}],"ok":"😀/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"homeDirectory":"a:b:c"}],"ok":"a:b:c/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"homeDirectory":"﻿bom:"}],"ok":"﻿bom:/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":[],"homeDirectory":"﻿bom"}],"ok":"﻿bom/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"homeDirectory":"İstanbul"}],"ok":"İstanbul/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":"x","homeDirectory":":Hello World"}],"ok":":Hello World/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"homeDirectory":"ab"}],"ok":"ab/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"homeDirectory":"key_name-1  padded  "}],"ok":"key_name-1  padded  /.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":["a",1],"homeDirectory":"﻿bom"}],"ok":"﻿bom/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":null,"homeDirectory":"İstanbul"}],"ok":"İstanbul/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":null,"homeDirectory":"trailing.ab"}],"ok":"trailing.ab/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"homeDirectory":"emoji 👍🏽 mixline1\nline2"}],"ok":"emoji 👍🏽 mixline1\nline2/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"homeDirectory":"a"}],"ok":"a/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":0,"homeDirectory":"  padded  key_name-1"}],"ok":"  padded  key_name-1/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":null,"homeDirectory":"line1\nline2:"}],"ok":"line1\nline2:/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{},"homeDirectory":"a日本語のテキスト"}],"ok":"a日本語のテキスト/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":null,"homeDirectory":"src/a/b.ts"}],"ok":"src/a/b.ts/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{"a":"b"},"homeDirectory":"﻿bom  padded  "}],"ok":"﻿bom  padded  /.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":true,"homeDirectory":"😀{name} has {count} items"}],"ok":"😀{name} has {count} items/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{"a":{"b":"c"}},"homeDirectory":"hello world"}],"ok":"hello world/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"homeDirectory":".leading😀"}],"ok":".leading😀/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":true,"homeDirectory":"tab\tseparated:"}],"ok":"tab\tseparated:/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{"a":{"b":"c"}},"homeDirectory":"{name} has {count} itemsline1\nline2"}],"ok":"{name} has {count} itemsline1\nline2/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":"x","homeDirectory":"Hello World"}],"ok":"Hello World/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"homeDirectory":"{name} has {count} items"}],"ok":"{name} has {count} items/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":"x","homeDirectory":"line1\nline2"}],"ok":"line1\nline2/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{},"homeDirectory":"😀line1\nline2"}],"ok":"😀line1\nline2/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{},"homeDirectory":"  padded  "}],"ok":"  padded  /.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":"x","homeDirectory":"日本語のテキスト😀"}],"ok":"日本語のテキスト😀/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":0,"homeDirectory":"ab"}],"ok":"ab/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":"x","homeDirectory":"日本語のテキスト"}],"ok":"日本語のテキスト/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":"x","homeDirectory":"straße"}],"ok":"straße/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{"a":{"b":"c"}},"homeDirectory":"Hello World"}],"ok":"Hello World/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":null,"homeDirectory":"éns:key.path"}],"ok":"éns:key.path/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{},"homeDirectory":"a:b:c"}],"ok":"a:b:c/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":true,"homeDirectory":"İstanbul"}],"ok":"İstanbul/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":"x","homeDirectory":"tab\tseparated"}],"ok":"tab\tseparated/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":["a",1],"homeDirectory":"tab\tseparated"}],"ok":"tab\tseparated/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":[],"homeDirectory":"hello"}],"ok":"hello/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":true,"homeDirectory":"😀"}],"ok":"😀/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"homeDirectory":"key_name-1"}],"ok":"key_name-1/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":true,"homeDirectory":"ünïcödékey_name-1"}],"ok":"ünïcödékey_name-1/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{},"homeDirectory":"Hello World"}],"ok":"Hello World/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"homeDirectory":"ünïcödé  padded  "}],"ok":"ünïcödé  padded  /.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{"a":{"b":"c"}},"homeDirectory":"ünïcödé"}],"ok":"ünïcödé/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{"a":"b"},"homeDirectory":"hello world"}],"ok":"hello world/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":[],"homeDirectory":"trailing."}],"ok":"trailing./.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":true,"homeDirectory":"a..b"}],"ok":"a..b/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":0,"homeDirectory":"tab\tseparated"}],"ok":"tab\tseparated/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"homeDirectory":"./x/**/*.json"}],"ok":"x/**/*.json/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{},"homeDirectory":"ΣΊΣΥΦΟΣ"}],"ok":"ΣΊΣΥΦΟΣ/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":[],"homeDirectory":"日本語のテキスト"}],"ok":"日本語のテキスト/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{},"homeDirectory":"abtrailing."}],"ok":"abtrailing./.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":["a",1],"homeDirectory":"./x/**/*.json"}],"ok":"x/**/*.json/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":true,"homeDirectory":"a..bİstanbul"}],"ok":"a..bİstanbul/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":"x","homeDirectory":"ns:key.path"}],"ok":"ns:key.path/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"homeDirectory":"ΣΊΣΥΦΟΣ"}],"ok":"ΣΊΣΥΦΟΣ/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":null,"homeDirectory":"emoji 👍🏽 mix"}],"ok":"emoji 👍🏽 mix/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":null,"homeDirectory":"abtrailing."}],"ok":"abtrailing./.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":true,"homeDirectory":":"}],"ok":":/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":"x","homeDirectory":"src/a/b.ts"}],"ok":"src/a/b.ts/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":[],"homeDirectory":"abc"}],"ok":"abc/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":null,"homeDirectory":"a😀b😀c"}],"ok":"a😀b😀c/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":[],"homeDirectory":"a😀b😀c"}],"ok":"a😀b😀c/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{},"homeDirectory":"😀abc"}],"ok":"😀abc/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{"a":{"b":"c"}},"homeDirectory":"İstanbul"}],"ok":"İstanbul/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":[],"homeDirectory":"a.b.c"}],"ok":"a.b.c/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{"a":{"b":"c"}},"homeDirectory":"日本語のテキストns:key.path"}],"ok":"日本語のテキストns:key.path/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":"x","homeDirectory":"hellons:key.path"}],"ok":"hellons:key.path/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{},"homeDirectory":"İstanbul"}],"ok":"İstanbul/.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{"a":{"b":"c"}},"homeDirectory":"  padded  "}],"ok":"  padded  /.synara/cache/login-shell-environment.json"}
+{"fn":"loginShellEnvironmentCachePath","args":[{"env":{},"homeDirectory":"a..b"}],"ok":"a..b/.synara/cache/login-shell-environment.json"}

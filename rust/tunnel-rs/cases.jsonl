@@ -1,0 +1,400 @@
+{"fn":"connectRemoteTls","args":[[],{"environmentId":"﻿bom","rootCertificate":"./x/**/*.json","rootFingerprint":"{name} has {count} itemsa:b:c"},"x",{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[null,{"environmentId":"ns:key.path","rootCertificate":":line1\nline2","rootFingerprint":"hello world"},{"a":{"b":"c"}},["a",1]],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteTls","args":[true,{"environmentId":"Hello Worldünïcödé","rootCertificate":"","rootFingerprint":".leading"},null,["a",1]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[[],{},{"$undefined":true},null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[0,{"environmentId":"tab\tseparated","rootCertificate":"straße","rootFingerprint":"line1\nline2"},{"a":{"b":"c"}},true],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[["a",1],{"environmentId":".leading","rootCertificate":"","rootFingerprint":"ns:key.path"},{"$undefined":true},{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[true,{"environmentId":"a:b:c","rootCertificate":"","rootFingerprint":"ab"},0,"x"],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":"b"},{"environmentId":"line1\nline2日本語のテキスト","rootCertificate":"tab\tseparated","rootFingerprint":"ΣΊΣΥΦΟΣ"},0],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[["a",1],{"environmentId":"a..b","rootCertificate":"{name} has {count} items","rootFingerprint":"  padded  "},true,{"$undefined":true}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[[],null,{},{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":["x",{"environmentId":"{name} has {count} items","rootCertificate":"abcé","rootFingerprint":"Hello World"},null,[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[null,{"environmentId":"src/a/b.ts","rootCertificate":"ünïcödé","rootFingerprint":"./x/**/*.json"},{"$undefined":true}],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteTls","args":[0,{"environmentId":"abc","rootCertificate":"a😀b😀c","rootFingerprint":"ns:key.path"},{"a":{"b":"c"}}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":{"b":"c"}},{"environmentId":"HELLO","rootCertificate":"a.b.c","rootFingerprint":"a..b"},{},[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":{"b":"c"}},{"environmentId":"日本語のテキスト","rootCertificate":"hello","rootFingerprint":"key_name-1"},true,{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{},{"environmentId":":","rootCertificate":"HELLO","rootFingerprint":"﻿bom"},{"a":{"b":"c"}},{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[null,{"environmentId":"a.b.c","rootCertificate":"Hello World","rootFingerprint":"straße﻿bom"},{"a":"b"},null],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteTls","args":[[],{"environmentId":"src/a/b.ts","rootCertificate":"","rootFingerprint":".leading"},{"$undefined":true},{"a":{"b":"c"}}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[null,{"environmentId":"  padded  ","rootCertificate":"key_name-1","rootFingerprint":"a..b"},{},["a",1]],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteTls","args":["x",{"environmentId":"a..b:","rootCertificate":"a:b:c","rootFingerprint":"a.b.c"},0,true],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":"b"},{"environmentId":"line1\nline2","rootCertificate":"a😀b😀c","rootFingerprint":"hello world"},null,[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[true,{"environmentId":"ΣΊΣΥΦΟΣ","rootCertificate":"日本語のテキストline1\nline2","rootFingerprint":"﻿bom"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[true,{"environmentId":":","rootCertificate":"a.b.c","rootFingerprint":"a"},["a",1],{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[[],{"a":"b"},{"a":{"b":"c"}},{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":"b"},{"environmentId":"./x/**/*.json","rootCertificate":"straße","rootFingerprint":"a😀b😀cemoji 👍🏽 mix"},true,{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":["x",0,{},{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{},{"environmentId":"{name} has {count} items","rootCertificate":"abc","rootFingerprint":"src/a/b.ts"},{"a":"b"},true],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[0,{"environmentId":"line1\nline2","rootCertificate":"abc","rootFingerprint":"ns:key.path"},true,null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":{"b":"c"}},null,["a",1],{"$undefined":true}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{},{"a":"b"},["a",1],"x"],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":"b"},{"environmentId":"éabc","rootCertificate":"a.b.c","rootFingerprint":"ns:key.path"},null,{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[["a",1],{"environmentId":"HELLO","rootCertificate":"src/a/b.tshello","rootFingerprint":"ünïcödé"},{"$undefined":true},{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":["x",{"environmentId":"tab\tseparated","rootCertificate":"hello","rootFingerprint":"hello"},{"$undefined":true},{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":"b"},{"environmentId":"İstanbul","rootCertificate":"trailing.","rootFingerprint":"key_name-1"},{},{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[true,{"environmentId":"a😀b😀c","rootCertificate":"{name} has {count} itemsa:b:c","rootFingerprint":"trailing."},{},0],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":"b"},{"environmentId":"Hello World","rootCertificate":"hello world","rootFingerprint":"a"},[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":"b"},true,{"a":{"b":"c"}},["a",1]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{},{"environmentId":"ab","rootCertificate":"key_name-1","rootFingerprint":"trailing."},{"$undefined":true},{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":{"b":"c"}},{"environmentId":"trailing.","rootCertificate":"./x/**/*.json","rootFingerprint":"tab\tseparated"},{},{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":{"b":"c"}},null,{"a":{"b":"c"}},[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[[],{},"x",{"$undefined":true}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{},{"environmentId":"﻿bomtab\tseparated","rootCertificate":"./x/**/*.json:","rootFingerprint":"ns:key.pathkey_name-1"},"x",true],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[0,{"environmentId":"./x/**/*.json","rootCertificate":"./x/**/*.json","rootFingerprint":".leading"},{},{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":{"b":"c"}},{"environmentId":"a.b.ctab\tseparated","rootCertificate":"trailing.","rootFingerprint":"HELLO"},{"a":{"b":"c"}},["a",1]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[null,{"environmentId":"a","rootCertificate":"line1\nline2  padded  ","rootFingerprint":"a.b.c"},{"$undefined":true},null],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteTls","args":[true,{"environmentId":"a😀b😀ckey_name-1","rootCertificate":"","rootFingerprint":"a..b"},true,{"a":{"b":"c"}}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[["a",1],{"environmentId":"ΣΊΣΥΦΟΣ","rootCertificate":"a.b.c","rootFingerprint":"straße"},{"$undefined":true},0],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[null,{"environmentId":"emoji 👍🏽 mix","rootCertificate":"line1\nline2","rootFingerprint":"hello"},["a",1]],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteTls","args":[[],{"environmentId":"hello world","rootCertificate":"src/a/b.ts","rootFingerprint":"ΣΊΣΥΦΟΣ"},{"$undefined":true},["a",1]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[[],{"environmentId":"src/a/b.ts","rootCertificate":"trailing.","rootFingerprint":"emoji 👍🏽 mix:"},true,{"a":{"b":"c"}}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[0,"x",{"$undefined":true},null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[null,{"environmentId":"étrailing.","rootCertificate":"a","rootFingerprint":"key_name-1"},{"a":"b"},true],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteTls","args":[0,{"environmentId":"straße","rootCertificate":"Hello World","rootFingerprint":"emoji 👍🏽 mixabc"},{},{"$undefined":true}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[true,{"environmentId":"﻿bomΣΊΣΥΦΟΣ","rootCertificate":"a:b:c","rootFingerprint":"key_name-1"},true,"x"],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[0,{"environmentId":"src/a/b.ts","rootCertificate":"a  padded  ","rootFingerprint":"ab"},{"a":{"b":"c"}},0],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[null,{"environmentId":"é","rootCertificate":"😀","rootFingerprint":"ΣΊΣΥΦΟΣ"},{"$undefined":true},"x"],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteTls","args":[true,{"environmentId":"emoji 👍🏽 mix","rootCertificate":"tab\tseparated","rootFingerprint":"ns:key.path"},{"$undefined":true},{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":"b"},{"environmentId":"a..b","rootCertificate":".leading","rootFingerprint":"﻿bom"},"x",{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":{"b":"c"}},{"environmentId":"trailing.","rootCertificate":"a:b:c","rootFingerprint":".leadingns:key.path"},{"$undefined":true},null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[null,["a",1],{"$undefined":true},null],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteTls","args":[true,{"environmentId":"line1\nline2","rootCertificate":"﻿bomİstanbul","rootFingerprint":".leadingHELLO"},["a",1],true],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":{"b":"c"}},{"environmentId":"a.b.c","rootCertificate":"src/a/b.ts","rootFingerprint":"ΣΊΣΥΦΟΣ"},{},{"$undefined":true}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":{"b":"c"}},{"environmentId":"a","rootCertificate":"ab.leading","rootFingerprint":"ünïcödé"},[],"x"],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{},null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{},{"environmentId":"ab","rootCertificate":"😀","rootFingerprint":"absrc/a/b.ts"},null,{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":{"b":"c"}},{"environmentId":"ab","rootCertificate":"key_name-1a😀b😀c","rootFingerprint":"emoji 👍🏽 mixhello"},"x",null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":["x",{"environmentId":"a:b:c","rootCertificate":".leading","rootFingerprint":""},null,[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[0,{"environmentId":"a:b:c","rootCertificate":"ünïcödé","rootFingerprint":"emoji 👍🏽 mix"},"x",{"$undefined":true}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{},{"environmentId":"ΣΊΣΥΦΟΣ","rootCertificate":":","rootFingerprint":"😀"},[],{"$undefined":true}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[0,{"environmentId":"  padded  ","rootCertificate":"{name} has {count} items./x/**/*.json","rootFingerprint":"abc"},[],"x"],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[true,{"environmentId":"ab","rootCertificate":"src/a/b.ts","rootFingerprint":"key_name-1"},"x","x"],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[[],{"environmentId":".leading","rootCertificate":"a:b:cünïcödé","rootFingerprint":"src/a/b.ts"},{"a":"b"},[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":["x",{"environmentId":"line1\nline2","rootCertificate":"a😀b😀c","rootFingerprint":".leading"},["a",1],{"a":{"b":"c"}}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{},{"environmentId":"a:b:c","rootCertificate":"ünïcödé","rootFingerprint":":"},"x",{"a":{"b":"c"}}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":"b"},{"environmentId":"a","rootCertificate":"a..b","rootFingerprint":"a:b:c"},true,{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":["x",{"environmentId":"ab","rootCertificate":"日本語のテキストa..b","rootFingerprint":"ab"},true,"x"],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[null,{"environmentId":"hello","rootCertificate":"a..b","rootFingerprint":"line1\nline2"},true,"x"],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteTls","args":[{},{"environmentId":"hello world","rootCertificate":"abc","rootFingerprint":"a.b.c"},0,{"$undefined":true}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[["a",1],{"environmentId":"﻿bomab","rootCertificate":"","rootFingerprint":"  padded  "},0,true],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[null,{"a":{"b":"c"}},null,null],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteTls","args":["x",true,0,["a",1]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[0,{"environmentId":"ünïcödé","rootCertificate":"tab\tseparated","rootFingerprint":"日本語のテキスト"},["a",1],{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[null,{"environmentId":"😀hello","rootCertificate":"tab\tseparated","rootFingerprint":"﻿bom{name} has {count} items"},0,0],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteTls","args":[null,["a",1],"x",["a",1]],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteTls","args":[{},{"environmentId":"a:b:c","rootCertificate":"","rootFingerprint":"trailing."},[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[0,{"environmentId":"hello world","rootCertificate":"","rootFingerprint":"tab\tseparatedHELLO"},{"a":"b"},true],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[0,{},[],"x"],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[[],{"environmentId":"./x/**/*.json","rootCertificate":"éhello world","rootFingerprint":"trailing."},["a",1],{"a":{"b":"c"}}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[[],{"environmentId":"straße","rootCertificate":"﻿bom","rootFingerprint":"Hello World"},"x",[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":{"b":"c"}},{},{},{"a":{"b":"c"}}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[true,"x",{},[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[null,{"environmentId":"{name} has {count} items","rootCertificate":"a😀b😀c","rootFingerprint":"tab\tseparated"},null],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteTls","args":[["a",1],{"environmentId":"ünïcödé","rootCertificate":"line1\nline2","rootFingerprint":"ab"},{},[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[[],{"environmentId":"hello","rootCertificate":"","rootFingerprint":"a😀b😀c"},["a",1]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},[],null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[["a",1],{"environmentId":"abc","rootCertificate":"Hello World","rootFingerprint":"İstanbul"},{"a":"b"},true],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[0,{"environmentId":"key_name-1","rootCertificate":"😀","rootFingerprint":"abc"},[],["a",1]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[["a",1],{"environmentId":"trailing.","rootCertificate":"straße","rootFingerprint":"a..b{name} has {count} items"},["a",1],null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[[],{"environmentId":"./x/**/*.json","rootCertificate":"﻿bom","rootFingerprint":"hello﻿bom"},0,null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":["x",{"environmentId":"hello world","rootCertificate":"﻿bom😀","rootFingerprint":"{name} has {count} items"},null,[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[true,{"environmentId":"日本語のテキスト","rootCertificate":"line1\nline2","rootFingerprint":"a..b"},{"$undefined":true},[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[true,{"environmentId":"./x/**/*.json","rootCertificate":"İstanbul","rootFingerprint":"a.b.c"},{"$undefined":true},{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":{"b":"c"}},{"environmentId":"{name} has {count} items:","rootCertificate":"trailing.","rootFingerprint":"ünïcödé"},{"a":{"b":"c"}},{"$undefined":true}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{},{"environmentId":".leading","rootCertificate":"HELLO","rootFingerprint":"straße"},{"a":"b"},[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[null,{"environmentId":"é","rootCertificate":"é","rootFingerprint":"helloemoji 👍🏽 mix"},"x",{"a":{"b":"c"}}],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteTls","args":[{"a":"b"},{"environmentId":"a:b:cHello World","rootCertificate":"straße","rootFingerprint":"a.b.c"},{"a":{"b":"c"}},[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[["a",1],{"environmentId":".leading","rootCertificate":"日本語のテキスト.leading","rootFingerprint":"src/a/b.ts"},0,["a",1]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[null,{"environmentId":"Hello World日本語のテキスト","rootCertificate":"HELLO","rootFingerprint":"abc"},{"$undefined":true},true],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteTls","args":[true,{"environmentId":"trailing.","rootCertificate":"éhello","rootFingerprint":"  padded  "},{},{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{},{"environmentId":"éhello","rootCertificate":"a:b:c","rootFingerprint":"a"},{"$undefined":true}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[true,{"environmentId":"tab\tseparated","rootCertificate":"ΣΊΣΥΦΟΣ","rootFingerprint":"line1\nline2"},{},0],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[0,{"environmentId":"İstanbul","rootCertificate":"line1\nline2","rootFingerprint":"emoji 👍🏽 mix.leading"},{"a":{"b":"c"}},"x"],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[["a",1],{"environmentId":"😀","rootCertificate":"ab","rootFingerprint":"trailing.İstanbul"},{},["a",1]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":["x",{"environmentId":"é","rootCertificate":"ab","rootFingerprint":"ünïcödé"},["a",1],{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[0,{"environmentId":"é","rootCertificate":"ab  padded  ","rootFingerprint":"line1\nline2hello"},null,null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[null,{"environmentId":"😀","rootCertificate":"{name} has {count} itemsa..b","rootFingerprint":"a"},{},["a",1]],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteTls","args":[[],{"environmentId":"﻿bom","rootCertificate":"ns:key.path","rootFingerprint":"hello"},{},{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{},"x",{"$undefined":true},null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{},{"environmentId":":","rootCertificate":"﻿bom","rootFingerprint":"  padded  "},{},true],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[0,{"a":{"b":"c"}},[],{"a":{"b":"c"}}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[0,{"environmentId":"Hello World","rootCertificate":"trailing.","rootFingerprint":"a"},"x",{"a":{"b":"c"}}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":["x",{"environmentId":"﻿bom","rootCertificate":"HELLO","rootFingerprint":"ünïcödé"},null,true],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{},{"a":{"b":"c"}},{"a":{"b":"c"}},{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[["a",1],{"environmentId":"tab\tseparated","rootCertificate":"line1\nline2","rootFingerprint":"Hello World"},{"a":{"b":"c"}},[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[["a",1],{"environmentId":"emoji 👍🏽 mix","rootCertificate":"a..b","rootFingerprint":"a..b"},{"$undefined":true},0],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":["x",{"environmentId":"İstanbul","rootCertificate":":","rootFingerprint":"./x/**/*.jsonemoji 👍🏽 mix"},{"a":"b"},{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[null,{"environmentId":"./x/**/*.json","rootCertificate":"ns:key.path","rootFingerprint":"ns:key.path"},"x","x"],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteTls","args":[true,true,{"$undefined":true},{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":["x",{"environmentId":"line1\nline2","rootCertificate":"straße:","rootFingerprint":"ünïcödé./x/**/*.json"},0,null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[["a",1],{"environmentId":"key_name-1","rootCertificate":"tab\tseparated","rootFingerprint":"./x/**/*.json"},{"a":"b"},{"a":{"b":"c"}}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[["a",1],{"environmentId":"abc","rootCertificate":"line1\nline2ΣΊΣΥΦΟΣ","rootFingerprint":"tab\tseparated"},"x","x"],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[["a",1],[],{"$undefined":true},0],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{},{"environmentId":"line1\nline2","rootCertificate":"trailing.","rootFingerprint":"a😀b😀c"},[],{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[true,{"environmentId":"key_name-1","rootCertificate":"trailing.ab","rootFingerprint":"{name} has {count} itemsa..b"},{"a":"b"},0],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":"b"},{"environmentId":"key_name-1","rootCertificate":"","rootFingerprint":"a..b"},"x"],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[["a",1],{"environmentId":"line1\nline2HELLO","rootCertificate":"abc","rootFingerprint":"ns:key.path"},[],[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{},{"environmentId":"./x/**/*.jsoné","rootCertificate":"line1\nline2trailing.","rootFingerprint":"HELLO"},"x",{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":"b"},{"environmentId":"{name} has {count} items","rootCertificate":"{name} has {count} itemsemoji 👍🏽 mix","rootFingerprint":"😀"},{"$undefined":true},null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":"b"},{"environmentId":"﻿bom","rootCertificate":"line1\nline2","rootFingerprint":"a😀b😀c"},["a",1],null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":"b"},0,null,"x"],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":"b"},{"environmentId":"./x/**/*.json","rootCertificate":"a..b","rootFingerprint":"key_name-1"},{"a":"b"},{"a":{"b":"c"}}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[0,{"environmentId":"ns:key.path","rootCertificate":"éhello world","rootFingerprint":"./x/**/*.json"},0,{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[true,{"environmentId":"a😀b😀c","rootCertificate":"./x/**/*.json","rootFingerprint":"emoji 👍🏽 mixa"},{"$undefined":true},["a",1]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":{"b":"c"}},["a",1],true,{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":"b"},{"environmentId":"﻿bomHELLO","rootCertificate":"日本語のテキスト","rootFingerprint":"{name} has {count} items"},null,true],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[null,{"environmentId":"é","rootCertificate":"line1\nline2","rootFingerprint":"é"},["a",1],0],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteTls","args":["x",{"environmentId":"ünïcödé","rootCertificate":"日本語のテキスト","rootFingerprint":"hello"},[],"x"],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":"b"},{"environmentId":"hello world","rootCertificate":"a","rootFingerprint":"a..b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{},{"environmentId":"﻿bom","rootCertificate":"tab\tseparated","rootFingerprint":"hello world"},{"$undefined":true},[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[true,{"environmentId":"trailing.","rootCertificate":"tab\tseparatedabc","rootFingerprint":":"},{"a":{"b":"c"}},[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":{"b":"c"}},{"environmentId":":","rootCertificate":"ab","rootFingerprint":""},{},{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[["a",1],{"environmentId":"a.b.c","rootCertificate":":﻿bom","rootFingerprint":"ns:key.path"},{"$undefined":true},true],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[true,{"environmentId":"tab\tseparated","rootCertificate":"trailing.","rootFingerprint":"a..b"},{"a":{"b":"c"}}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":"b"},{"environmentId":":.leading","rootCertificate":"straße","rootFingerprint":"😀a.b.c"},0],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{},{"environmentId":"line1\nline2","rootCertificate":"İstanbula😀b😀c","rootFingerprint":":"},"x","x"],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[0,{"a":"b"},{"$undefined":true},["a",1]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[null,{"environmentId":"a","rootCertificate":"a😀b😀ca..b","rootFingerprint":"trailing.日本語のテキスト"},{"$undefined":true},{"$undefined":true}],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteTls","args":[0,{"environmentId":"emoji 👍🏽 mix","rootCertificate":"helloline1\nline2","rootFingerprint":"a:b:c"},{"a":{"b":"c"}}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[["a",1],{"environmentId":"line1\nline2","rootCertificate":"hello","rootFingerprint":"./x/**/*.json"},"x",{"a":{"b":"c"}}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{},{"environmentId":"line1\nline2","rootCertificate":"😀","rootFingerprint":"src/a/b.ts"},{"a":"b"},{"$undefined":true}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[true,{"environmentId":"日本語のテキスト","rootCertificate":":","rootFingerprint":"a..b"},0,{"a":{"b":"c"}}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":{"b":"c"}},{"environmentId":"é.leading","rootCertificate":"  padded  ","rootFingerprint":"{name} has {count} items"},{"$undefined":true},{"a":{"b":"c"}}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[0,["a",1],{"a":{"b":"c"}},[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{},{"environmentId":"ΣΊΣΥΦΟΣ","rootCertificate":"😀","rootFingerprint":"日本語のテキスト"},{"a":{"b":"c"}},["a",1]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{},{"environmentId":"İstanbul","rootCertificate":"a.b.c","rootFingerprint":"ab"},[],"x"],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{},{"environmentId":":","rootCertificate":"line1\nline2","rootFingerprint":"😀é"},{"$undefined":true},null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{},{"environmentId":"a","rootCertificate":"😀","rootFingerprint":"hello"},0,{"$undefined":true}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[[],{"environmentId":"line1\nline2","rootCertificate":"hello","rootFingerprint":"Hello World"},{"$undefined":true},[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[[],{"environmentId":"trailing.","rootCertificate":"tab\tseparated","rootFingerprint":"hello"},[],{"$undefined":true}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":{"b":"c"}},{"environmentId":"Hello World","rootCertificate":"hello","rootFingerprint":""},{},{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[[],{"environmentId":"ab","rootCertificate":"日本語のテキスト","rootFingerprint":"ab"},0,0],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[[],{"environmentId":"ab","rootCertificate":"﻿bom","rootFingerprint":"./x/**/*.jsonhello world"},{},{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[["a",1],{"environmentId":".leadinghello world","rootCertificate":"  padded  ","rootFingerprint":"a"},{"a":{"b":"c"}},["a",1]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[0,{"environmentId":":","rootCertificate":"a:b:cab","rootFingerprint":"İstanbul"},{"$undefined":true},"x"],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[["a",1],0,{"$undefined":true},true],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":"b"},{"environmentId":"ünïcödé","rootCertificate":"hello","rootFingerprint":"ns:key.path"},{},true],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[0,{"environmentId":"ünïcödé:","rootCertificate":"ns:key.path","rootFingerprint":"a..b"},"x",null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[["a",1],0,["a",1],{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[true,{"environmentId":"a..b","rootCertificate":"é","rootFingerprint":"a😀b😀c"},[],{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[[],{"environmentId":"tab\tseparated","rootCertificate":"a:b:c","rootFingerprint":"a😀b😀c"},true],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[[],{"environmentId":"İstanbul","rootCertificate":"İstanbul","rootFingerprint":"emoji 👍🏽 mix"},{"$undefined":true}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":["x",{"environmentId":".leadingİstanbul","rootCertificate":"a","rootFingerprint":""},{"$undefined":true},{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[["a",1],"x",null,{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[null,{"environmentId":"{name} has {count} items","rootCertificate":".leading","rootFingerprint":"straße"},{"$undefined":true},{"$undefined":true}],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteTls","args":[null,{"a":"b"},[],{"a":{"b":"c"}}],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteTls","args":[{"a":{"b":"c"}},{"environmentId":"emoji 👍🏽 mix","rootCertificate":"atab\tseparated","rootFingerprint":"{name} has {count} items"},{"a":{"b":"c"}},0],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[[],{"environmentId":"Hello World","rootCertificate":"straße","rootFingerprint":":"},{"a":{"b":"c"}},[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":"b"},{"environmentId":"a","rootCertificate":"a😀b😀c","rootFingerprint":"src/a/b.ts  padded  "},[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[0,{"environmentId":"日本語のテキスト","rootCertificate":"abc","rootFingerprint":"a..b"},null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[["a",1],{"environmentId":"a:b:c","rootCertificate":"straße","rootFingerprint":"a.b.cİstanbul"},[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[null,{"environmentId":":hello","rootCertificate":"😀","rootFingerprint":".leading"},{"a":{"b":"c"}},null],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteTls","args":[[],{"a":"b"},"x","x"],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[true,{"environmentId":"key_name-1","rootCertificate":"tab\tseparatedkey_name-1","rootFingerprint":"a😀b😀c"},"x",["a",1]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{},{"environmentId":"ΣΊΣΥΦΟΣ","rootCertificate":"trailing.","rootFingerprint":".leading"},["a",1],{"a":{"b":"c"}}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{},{"environmentId":"a..b","rootCertificate":"./x/**/*.json","rootFingerprint":":"},0],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{},{"environmentId":"é","rootCertificate":"tab\tseparated","rootFingerprint":"abc"},"x",{"$undefined":true}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{},{"environmentId":"ab","rootCertificate":":a😀b😀c","rootFingerprint":"{name} has {count} items"},{"a":{"b":"c"}},{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[{"a":{"b":"c"}},{"environmentId":"İstanbul","rootCertificate":"  padded  ","rootFingerprint":"HELLO"},[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteTls","args":[null,{},{"$undefined":true},[]],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteTls","args":[0,[],{},{"a":{"b":"c"}}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[true,{"environmentId":"HELLO","rootCertificate":"HELLOabc","rootFingerprint":"a:b:c"},null,["a",1]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[null,{"environmentId":"ΣΊΣΥΦΟΣ","rootCertificate":"straße","rootFingerprint":"ab"},{"a":"b"},0],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteWebSocket","args":[{"a":"b"},{"environmentId":".leading","rootCertificate":"abc","rootFingerprint":"a..b"},{"$undefined":true},[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[["a",1],{"environmentId":"ns:key.path","rootCertificate":"İstanbul","rootFingerprint":"{name} has {count} items"},null,"x"],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[null,{"environmentId":"日本語のテキストline1\nline2","rootCertificate":":","rootFingerprint":"line1\nline2"},["a",1]],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteWebSocket","args":[{},{"environmentId":"a.b.c","rootCertificate":"日本語のテキスト","rootFingerprint":"{name} has {count} items"},"x",{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[["a",1],{"environmentId":"ünïcödé","rootCertificate":"a.b.c","rootFingerprint":"emoji 👍🏽 mix"},"x",true],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[true,{"environmentId":"İstanbul","rootCertificate":"  padded  ","rootFingerprint":"😀"},[],{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":{"b":"c"}},{"environmentId":"a.b.c:","rootCertificate":"ünïcödé","rootFingerprint":"tab\tseparated"},"x",[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":"b"},["a",1],0,null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{},{"environmentId":"{name} has {count} items","rootCertificate":"line1\nline2","rootFingerprint":"😀hello"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[[],{"environmentId":"abc","rootCertificate":"é","rootFingerprint":"a.b.cline1\nline2"},{},{"a":{"b":"c"}}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{},{"environmentId":"﻿bom","rootCertificate":"a.b.c","rootFingerprint":"İstanbul"},[],{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[["a",1],{"environmentId":"﻿bom","rootCertificate":"HELLO","rootFingerprint":""}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":"b"},{"environmentId":"tab\tseparated","rootCertificate":"é","rootFingerprint":"key_name-1"},["a",1],[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[true,{"environmentId":":","rootCertificate":"helloHello World","rootFingerprint":"a"},{"a":{"b":"c"}},true],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":["x",[],[],[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[0,0,{"a":{"b":"c"}},null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[null,{"environmentId":":","rootCertificate":"key_name-1","rootFingerprint":"trailing."},{"a":"b"},{}],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteWebSocket","args":[{"a":{"b":"c"}},true,"x"],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[["a",1],{"environmentId":"﻿bom","rootCertificate":"straßens:key.path","rootFingerprint":"key_name-1"},0,{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[0,{"environmentId":"a.b.c","rootCertificate":"hello world","rootFingerprint":"straße"},{},null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[[],{"environmentId":"é","rootCertificate":"ünïcödéHello World","rootFingerprint":"trailing."},{"a":{"b":"c"}},[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[["a",1],{"environmentId":"Hello Worldtab\tseparated","rootCertificate":"ab","rootFingerprint":"tab\tseparated"},{"a":{"b":"c"}},{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[[],{"environmentId":"  padded  ","rootCertificate":"Hello World  padded  ","rootFingerprint":"Hello World"},{},{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":["x",{"environmentId":"  padded  tab\tseparated","rootCertificate":"straße","rootFingerprint":"Hello World"},{"$undefined":true},["a",1]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[[],{"environmentId":"ünïcödé","rootCertificate":"a.b.c","rootFingerprint":"tab\tseparatedline1\nline2"},[],{"$undefined":true}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":["x",{"environmentId":"Hello World","rootCertificate":"İstanbul","rootFingerprint":"hello worldabc"},null,{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":"b"},{"environmentId":"","rootCertificate":"key_name-1","rootFingerprint":":"},{"a":{"b":"c"}},true],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{},{"environmentId":"hello world","rootCertificate":"hello worldabc","rootFingerprint":"﻿bom{name} has {count} items"},{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{},{"environmentId":"﻿bom","rootCertificate":"ünïcödé","rootFingerprint":""},true],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":["x",0,"x","x"],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":"b"},{"environmentId":"key_name-1","rootCertificate":"日本語のテキストé","rootFingerprint":"  padded  "},"x",["a",1]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":"b"},{"environmentId":"HELLO","rootCertificate":"é","rootFingerprint":"./x/**/*.json😀"},0,0],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[true,{"environmentId":"a","rootCertificate":"src/a/b.ts","rootFingerprint":"ΣΊΣΥΦΟΣline1\nline2"},{"$undefined":true},{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[null,{"environmentId":"hello world","rootCertificate":"{name} has {count} items","rootFingerprint":"Hello World"},["a",1],0],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteWebSocket","args":[{"a":"b"},{"environmentId":"line1\nline2ünïcödé","rootCertificate":"a","rootFingerprint":"a:b:c"},true],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":{"b":"c"}},{"environmentId":"﻿bom","rootCertificate":"line1\nline2","rootFingerprint":"straßea.b.c"},["a",1],true],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[["a",1],{"environmentId":"ünïcödé","rootCertificate":"ΣΊΣΥΦΟΣsrc/a/b.ts","rootFingerprint":"HELLO"},true,{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[null,{"environmentId":"hello world","rootCertificate":"{name} has {count} items","rootFingerprint":"a😀b😀ctab\tseparated"},{"a":{"b":"c"}},{}],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteWebSocket","args":[[],{"environmentId":"日本語のテキスト","rootCertificate":"src/a/b.ts","rootFingerprint":"a.b.c﻿bom"},[],{"a":{"b":"c"}}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[[],{"environmentId":"ΣΊΣΥΦΟΣ","rootCertificate":"a..b","rootFingerprint":""},"x"],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[true,{"environmentId":"straße","rootCertificate":"ns:key.path","rootFingerprint":"日本語のテキストhello world"},{"$undefined":true},0],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[[],{"a":"b"},[],null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[["a",1],{"environmentId":"a..b","rootCertificate":"日本語のテキスト","rootFingerprint":"Hello World"},{"$undefined":true},null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":"b"},[],{"$undefined":true},[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[[],{"environmentId":"tab\tseparated","rootCertificate":"abca","rootFingerprint":"{name} has {count} itemsa"},{"$undefined":true},0],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[true,{"environmentId":"é","rootCertificate":"key_name-1","rootFingerprint":""},{},["a",1]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[null,{"environmentId":"src/a/b.ts","rootCertificate":"a..b","rootFingerprint":"Hello World"},{"$undefined":true}],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteWebSocket","args":[["a",1],{"environmentId":"hello world","rootCertificate":"","rootFingerprint":"key_name-1"},"x",null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[0,{"environmentId":"a.b.cns:key.path","rootCertificate":"a","rootFingerprint":"日本語のテキスト"},{"$undefined":true},{"$undefined":true}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":["x",{"environmentId":"İstanbul","rootCertificate":".leading","rootFingerprint":"é"},["a",1],true],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":"b"},{"environmentId":"İstanbul.leading","rootCertificate":"Hello World","rootFingerprint":"a:b:c"},{},[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[["a",1],{"a":"b"},{"a":{"b":"c"}},null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[["a",1],{"environmentId":"Hello Worldline1\nline2","rootCertificate":"ns:key.path","rootFingerprint":"emoji 👍🏽 mix"},[],{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[0,{"environmentId":"key_name-1","rootCertificate":"a:b:c","rootFingerprint":"﻿bom"},[],0],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":{"b":"c"}},{"environmentId":"./x/**/*.json","rootCertificate":"ns:key.pathtrailing.","rootFingerprint":"ΣΊΣΥΦΟΣ"},{"$undefined":true},{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[null,{"environmentId":"abc","rootCertificate":"ns:key.path","rootFingerprint":":日本語のテキスト"},{"a":{"b":"c"}},0],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteWebSocket","args":[true,{"environmentId":"src/a/b.ts","rootCertificate":"HELLO","rootFingerprint":"a😀b😀c"},null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[true,{"environmentId":"tab\tseparated","rootCertificate":"  padded  ","rootFingerprint":"ns:key.path"},true,[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":{"b":"c"}},{"environmentId":"hello world","rootCertificate":"  padded  ","rootFingerprint":"src/a/b.ts"},{"a":{"b":"c"}}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[0,{"environmentId":"key_name-1ΣΊΣΥΦΟΣ","rootCertificate":"é","rootFingerprint":":src/a/b.ts"},"x",null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":["x",null,{"$undefined":true},0],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":"b"},{"environmentId":"a..b","rootCertificate":"{name} has {count} items","rootFingerprint":"İstanbul"},["a",1],["a",1]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":{"b":"c"}},{"environmentId":"emoji 👍🏽 mix","rootCertificate":"line1\nline2","rootFingerprint":"😀"},["a",1],"x"],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":"b"},{"environmentId":"abcé","rootCertificate":"a.b.c","rootFingerprint":"{name} has {count} items"},true,["a",1]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[[],{"environmentId":"ab","rootCertificate":"tab\tseparated","rootFingerprint":"hello"},[],{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{},{"environmentId":"trailing.","rootCertificate":"İstanbul","rootFingerprint":"abc"},0,null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[0,{"environmentId":"a..bé","rootCertificate":"{name} has {count} items","rootFingerprint":"é"},{"$undefined":true},"x"],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[["a",1],{"environmentId":"hello world","rootCertificate":"hello","rootFingerprint":"key_name-1"},["a",1],{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[[],null,{"$undefined":true}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":["x",true,[],null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":{"b":"c"}},{"environmentId":"abc","rootCertificate":"ékey_name-1","rootFingerprint":"emoji 👍🏽 mix"},true,[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[["a",1],{"environmentId":"a😀b😀c","rootCertificate":"ünïcödéns:key.path","rootFingerprint":"HELLO"},"x",{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[0,{"environmentId":"line1\nline2ΣΊΣΥΦΟΣ","rootCertificate":"key_name-1","rootFingerprint":"trailing."},{"$undefined":true},{"$undefined":true}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":"b"},{"environmentId":"İstanbul","rootCertificate":"😀","rootFingerprint":"hello"},"x",["a",1]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":["x",{"environmentId":"é","rootCertificate":"key_name-1src/a/b.ts","rootFingerprint":"a.b.c"},["a",1],{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{},{"environmentId":"./x/**/*.json","rootCertificate":"a","rootFingerprint":"ab"},{"$undefined":true},{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[0,{"environmentId":"abc","rootCertificate":":","rootFingerprint":"ns:key.path"},["a",1],"x"],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[[],{"environmentId":"﻿bom","rootCertificate":"{name} has {count} itemsa","rootFingerprint":".leadingsrc/a/b.ts"},["a",1],0],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":["x",[],null,[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":{"b":"c"}},{"environmentId":"line1\nline2","rootCertificate":"a.b.cünïcödé","rootFingerprint":""},{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{},{"environmentId":"İstanbul","rootCertificate":":","rootFingerprint":"{name} has {count} items"},["a",1],true],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[true,{"environmentId":"é","rootCertificate":"a.b.c{name} has {count} items","rootFingerprint":"key_name-1"},{},{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":{"b":"c"}},{"environmentId":"a:b:c","rootCertificate":"é","rootFingerprint":"İstanbul"},true,{"$undefined":true}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[["a",1],{"environmentId":"abc","rootCertificate":"  padded  ","rootFingerprint":"{name} has {count} items"},"x",["a",1]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[null,{"environmentId":"İstanbul","rootCertificate":"a:b:c","rootFingerprint":"HELLOtrailing."},["a",1]],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteWebSocket","args":[true,{"environmentId":"line1\nline2HELLO","rootCertificate":"{name} has {count} items","rootFingerprint":"trailing."},null,{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[[],{},{"a":"b"},true],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":"b"},"x",0],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":["x",{"environmentId":".leadingkey_name-1","rootCertificate":"key_name-1","rootFingerprint":"src/a/b.ts"},{"$undefined":true},["a",1]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[["a",1],{"environmentId":"a","rootCertificate":"a😀b😀c","rootFingerprint":"HELLOünïcödé"},true,["a",1]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":{"b":"c"}},{"environmentId":"a.b.c","rootCertificate":"","rootFingerprint":"ab"},"x",{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":["x",{"environmentId":".leadingline1\nline2","rootCertificate":"trailing.","rootFingerprint":"emoji 👍🏽 mix"},{"a":{"b":"c"}},true],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":["x",{"environmentId":"line1\nline2","rootCertificate":"Hello World","rootFingerprint":"ab"},{"a":"b"},null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[true,{"environmentId":"trailing.","rootCertificate":"é","rootFingerprint":"  padded  "},"x",{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":"b"},{"environmentId":"a..b","rootCertificate":"HELLO","rootFingerprint":"emoji 👍🏽 mix"},"x",0],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":{"b":"c"}},{"environmentId":"ünïcödé","rootCertificate":"src/a/b.ts","rootFingerprint":"ünïcödéHELLO"},"x",["a",1]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":"b"},{"environmentId":"  padded  ","rootCertificate":"key_name-1","rootFingerprint":"line1\nline2"},0,true],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[["a",1],{"environmentId":"İstanbul","rootCertificate":"abchello","rootFingerprint":"é"},{"a":"b"},["a",1]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[true,{"a":"b"},true,null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[0,{"environmentId":".leading","rootCertificate":"Hello World日本語のテキスト","rootFingerprint":"ab"},{"$undefined":true},["a",1]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[true,"x",{"a":{"b":"c"}},0],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[[],{"a":"b"},{"a":{"b":"c"}},{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[true,{"environmentId":"key_name-1key_name-1","rootCertificate":"a","rootFingerprint":"HELLO"},{"a":{"b":"c"}},{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[0,{"environmentId":"key_name-1","rootCertificate":"key_name-1","rootFingerprint":"a.b.c"},["a",1],true],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[0,{"environmentId":":","rootCertificate":"a😀b😀c","rootFingerprint":".leadingtrailing."},{"$undefined":true},{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[null,{"environmentId":"😀","rootCertificate":"a","rootFingerprint":"hello日本語のテキスト"},["a",1],{"a":{"b":"c"}}],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteWebSocket","args":["x",{"environmentId":"tab\tseparated","rootCertificate":"İstanbul","rootFingerprint":"HELLO"},{"$undefined":true},{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{},{"environmentId":"a😀b😀c","rootCertificate":"😀  padded  ","rootFingerprint":"a:b:c"},{"a":{"b":"c"}},null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":"b"},{"environmentId":"日本語のテキストns:key.path","rootCertificate":"emoji 👍🏽 mix","rootFingerprint":"key_name-1"},{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":{"b":"c"}},{"environmentId":"é","rootCertificate":"key_name-1","rootFingerprint":"a😀b😀c"},[],0],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[[],true,0,0],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":{"b":"c"}},{"environmentId":"😀","rootCertificate":"a😀b😀c😀","rootFingerprint":"hello world"},["a",1],true],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":{"b":"c"}},{"environmentId":"aHello World","rootCertificate":"a:b:c","rootFingerprint":"tab\tseparatedΣΊΣΥΦΟΣ"},{"a":"b"},{"a":{"b":"c"}}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{},{"environmentId":"hello","rootCertificate":"ΣΊΣΥΦΟΣ","rootFingerprint":"😀"},{"$undefined":true},["a",1]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{},{"environmentId":"tab\tseparated","rootCertificate":"emoji 👍🏽 mix","rootFingerprint":"Hello World"},0,"x"],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[0,{"environmentId":"line1\nline2","rootCertificate":"a.b.c","rootFingerprint":"src/a/b.ts"},["a",1],["a",1]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[true,{"environmentId":"straße","rootCertificate":"aa..b","rootFingerprint":"a😀b😀c"},{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":{"b":"c"}},{"environmentId":"","rootCertificate":"a.b.c","rootFingerprint":"ab"},{"$undefined":true}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[true,{"environmentId":"a","rootCertificate":"ΣΊΣΥΦΟΣ","rootFingerprint":"HELLO"},"x",0],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":["X",{"environmentId":"日本語のテキストünïcödé","rootCertificate":"abcsrc/a/b.ts","rootFingerprint":"ns:key.pathhello world"},"x",{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{},{"environmentId":"tab\tseparatedkey_name-1","rootCertificate":"key_name-1","rootFingerprint":"src/a/b.tstrailing."},{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[0,"x",0,{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{},{"environmentId":"ΣΊΣΥΦΟΣ","rootCertificate":"ΣΊΣΥΦΟΣ","rootFingerprint":"  padded  a"},{"$undefined":true},{"a":{"b":"c"}}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":["x",{"environmentId":"ab","rootCertificate":"Hello World","rootFingerprint":"Hello World"},{"a":"b"},{"$undefined":true}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{},{"environmentId":"é","rootCertificate":"ünïcödé","rootFingerprint":"line1\nline2key_name-1"},0,"x"],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[null,{"a":{"b":"c"}},["a",1],[]],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteWebSocket","args":[[],{"environmentId":"ünïcödé","rootCertificate":"İstanbul","rootFingerprint":"ab"},[],null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":"b"},{"environmentId":"./x/**/*.json","rootCertificate":"{name} has {count} items","rootFingerprint":"é"},{"$undefined":true},{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":{"b":"c"}},{"environmentId":"key_name-1","rootCertificate":"straße","rootFingerprint":"日本語のテキスト"},"x",{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":{"b":"c"}},{"environmentId":"./x/**/*.jsonab","rootCertificate":"a","rootFingerprint":"ab"},"x",{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[["a",1],["a",1],{"a":{"b":"c"}},{"$undefined":true}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{},{"a":{"b":"c"}},"x",[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[null,{"a":{"b":"c"}},["a",1],{"a":{"b":"c"}}],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteWebSocket","args":[[],{"environmentId":"line1\nline2","rootCertificate":"ab","rootFingerprint":"😀"},{"$undefined":true},"x"],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{},{"environmentId":"  padded  ","rootCertificate":"./x/**/*.json","rootFingerprint":"line1\nline2"},[],{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[[],{"environmentId":"HELLO","rootCertificate":"  padded  ","rootFingerprint":"Hello World"},{"$undefined":true},["a",1]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":["x",{"environmentId":"a..b","rootCertificate":"ΣΊΣΥΦΟΣ﻿bom","rootFingerprint":"hello"},true,0],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[true,{"environmentId":".leading","rootCertificate":"İstanbulünïcödé","rootFingerprint":"ns:key.path"},{"a":"b"},0],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[["a",1],{"environmentId":"ΣΊΣΥΦΟΣ","rootCertificate":":ünïcödé","rootFingerprint":"straße"},{"$undefined":true},["a",1]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":"b"},{"environmentId":"a..b","rootCertificate":"  padded  ","rootFingerprint":"HELLO"},true,"x"],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[null,{"environmentId":"Hello World","rootCertificate":"HELLO","rootFingerprint":"a..b.leading"},0,["a",1]],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteWebSocket","args":[true,{"environmentId":"Hello Worldhello world","rootCertificate":"a:b:chello","rootFingerprint":"line1\nline2"},0,["a",1]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":"b"},{"environmentId":"{name} has {count} items","rootCertificate":"line1\nline2","rootFingerprint":"a.b.c"},{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{},{"environmentId":"hello worldline1\nline2","rootCertificate":"{name} has {count} items","rootFingerprint":"tab\tseparatedabc"},0,{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[null,{"environmentId":"HELLO","rootCertificate":":","rootFingerprint":"abcHELLO"},{"a":"b"},["a",1]],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteWebSocket","args":[true,{"environmentId":"ünïcödé","rootCertificate":"a:b:c","rootFingerprint":""},true,{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":"b"},{"environmentId":"tab\tseparated","rootCertificate":":","rootFingerprint":"ΣΊΣΥΦΟΣa..b"},null,0],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[[],{"environmentId":"HELLO","rootCertificate":"Hello World","rootFingerprint":"a😀b😀c"},{"a":{"b":"c"}},{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[["a",1],{"a":"b"},{},{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[0,{"environmentId":"./x/**/*.json","rootCertificate":"ns:key.path","rootFingerprint":"a:b:c"},{"a":{"b":"c"}},[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[null,{"environmentId":"HELLOΣΊΣΥΦΟΣ","rootCertificate":".leading","rootFingerprint":"a..b"},{"$undefined":true},null],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteWebSocket","args":[0,{"environmentId":"hello world","rootCertificate":"","rootFingerprint":"ünïcödé"},"x"],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":"b"},{"environmentId":".leading","rootCertificate":"trailing.emoji 👍🏽 mix","rootFingerprint":"hello world😀"},["a",1],{"a":{"b":"c"}}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{},true,{"a":{"b":"c"}},"x"],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{},{"environmentId":"ab","rootCertificate":"日本語のテキスト","rootFingerprint":"日本語のテキスト./x/**/*.json"},[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[0,"x",{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[0,{"a":"b"},{"$undefined":true},0],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[[],{"environmentId":"a.b.c","rootCertificate":"a😀b😀c","rootFingerprint":"straßeé"},{},{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[true,["a",1],"x",{"$undefined":true}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[0,{"environmentId":"","rootCertificate":"﻿bom","rootFingerprint":"hello"},{"a":{"b":"c"}}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":"b"},{"environmentId":"a﻿bom","rootCertificate":"﻿bom","rootFingerprint":"a😀b😀c"},{"$undefined":true},null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[0,{"environmentId":"a.b.c","rootCertificate":"line1\nline2","rootFingerprint":"a"},["a",1],{"a":{"b":"c"}}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":["x",{"environmentId":"","rootCertificate":"  padded  ","rootFingerprint":"a😀b😀c"},{"$undefined":true},{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{},{},true,null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[true,"x",{"$undefined":true},{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[0,{"environmentId":"line1\nline2","rootCertificate":"😀src/a/b.ts","rootFingerprint":""},{"a":"b"},{"$undefined":true}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[0,{"environmentId":"straße","rootCertificate":"ab","rootFingerprint":"abc"},null,"x"],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{},true,["a",1],null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[["a",1],{"environmentId":".leading","rootCertificate":"hello","rootFingerprint":"a:b:c"},{"$undefined":true},"x"],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{},{"environmentId":"emoji 👍🏽 mixa😀b😀c","rootCertificate":"HELLO﻿bom","rootFingerprint":"😀line1\nline2"},0,[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[true,{"environmentId":"trailing.","rootCertificate":"aba.b.c","rootFingerprint":".leading"},0,true],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[0,{"environmentId":"a:b:c","rootCertificate":"a:b:c","rootFingerprint":"a"},true,{"$undefined":true}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":["x",{"environmentId":".leading日本語のテキスト","rootCertificate":".leading","rootFingerprint":"tab\tseparated"},true,0],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[true,{"environmentId":"a:b:cHello World","rootCertificate":"key_name-1ΣΊΣΥΦΟΣ","rootFingerprint":"a.b.c"},0,null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":{"b":"c"}},{"a":{"b":"c"}},["a",1]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[[],{"environmentId":"","rootCertificate":"ΣΊΣΥΦΟΣ","rootFingerprint":":"},true,0],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":{"b":"c"}},{"environmentId":"./x/**/*.json","rootCertificate":"  padded  ","rootFingerprint":"a:b:c"},{"$undefined":true},null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{},null,{},{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":{"b":"c"}},[],0],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[true,{"environmentId":"ns:key.path","rootCertificate":"{name} has {count} itemshello","rootFingerprint":":"},["a",1],{"$undefined":true}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[["a",1],{"environmentId":"straße","rootCertificate":"aΣΊΣΥΦΟΣ","rootFingerprint":"Hello World"},{},"x"],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[["a",1],{"environmentId":"emoji 👍🏽 mix","rootCertificate":"😀","rootFingerprint":"straßea"},{},true],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[0,{"environmentId":"😀","rootCertificate":".leading","rootFingerprint":"hello"},0,"x"],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{},true,{},true],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":{"b":"c"}},{"environmentId":"ns:key.path","rootCertificate":"key_name-1","rootFingerprint":"trailing."},0,{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[null,{"environmentId":".leading","rootCertificate":":","rootFingerprint":"日本語のテキスト日本語のテキスト"},true,{}],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteWebSocket","args":[0,{"environmentId":"  padded  emoji 👍🏽 mix","rootCertificate":"./x/**/*.json","rootFingerprint":"{name} has {count} items"},{"$undefined":true},{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":"b"},{"a":"b"},["a",1],[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[true,{"environmentId":"日本語のテキスト","rootCertificate":"src/a/b.tsstraße","rootFingerprint":"a.b.c😀"},null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":"b"},"x",{"$undefined":true},[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":["x",{"environmentId":"","rootCertificate":"日本語のテキスト","rootFingerprint":"é"},"x",null],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":"b"},{"environmentId":"İstanbul","rootCertificate":".leading","rootFingerprint":"tab\tseparated"},"x",{"$undefined":true}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[{"a":"b"},{"environmentId":"hello world","rootCertificate":"key_name-1","rootFingerprint":"日本語のテキスト"},null,0],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[0,{"a":{"b":"c"}},["a",1],[]],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[[],{"environmentId":"a:b:c","rootCertificate":"emoji 👍🏽 mix  padded  ","rootFingerprint":"ΣΊΣΥΦΟΣ"},{"$undefined":true},{"a":"b"}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[null,{"environmentId":"key_name-1","rootCertificate":"trailing.","rootFingerprint":"HELLO"},"x",["a",1]],"error":"Cannot read properties of null (reading 'terminate')"}
+{"fn":"connectRemoteWebSocket","args":[0,{"environmentId":"line1\nline2","rootCertificate":"abc","rootFingerprint":"a😀b😀c"},{"$undefined":true},{}],"error":"outer.terminate is not a function"}
+{"fn":"connectRemoteWebSocket","args":[null,{"environmentId":"straße","rootCertificate":"a😀b😀c","rootFingerprint":""},{},{}],"error":"Cannot read properties of null (reading 'terminate')"}

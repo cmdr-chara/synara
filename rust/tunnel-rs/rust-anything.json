@@ -1,0 +1,91 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/remoteTransport/tunnel.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "tunnel-rs",
+  "exports": [
+    {
+      "name": "connectRemoteTls",
+      "file": "apps/server/src/remoteTransport/tunnel.ts",
+      "line": 227,
+      "params": [
+        {
+          "name": "outer",
+          "ts_type": "WebSocket",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "anchor",
+          "ts_type": "RemoteTlsAnchor",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "signal",
+          "ts_type": "AbortSignal",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "timeoutMs",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<tls.TLSSocket>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "connectRemoteWebSocket",
+      "file": "apps/server/src/remoteTransport/tunnel.ts",
+      "line": 281,
+      "params": [
+        {
+          "name": "outer",
+          "ts_type": "WebSocket",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "anchor",
+          "ts_type": "RemoteTlsAnchor",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "path",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "signal",
+          "ts_type": "AbortSignal",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<WebSocket>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "RemoteTlsServer",
+      "file": "apps/server/src/remoteTransport/tunnel.ts",
+      "line": 91,
+      "reason": "class: accessor `connectionCount`"
+    }
+  ]
+}

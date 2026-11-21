@@ -1,0 +1,17 @@
+{
+  "unit": "apps/desktop/src/showInFileManager.ts",
+  "files": 1,
+  "fingerprint": "d5249330b7901671",
+  "coverage": {
+    "lines": 26,
+    "reached": 21,
+    "files": [
+      {
+        "file": "apps/desktop/src/showInFileManager.ts",
+        "lines": 26,
+        "reached": 21,
+        "missed": "22-26"
+      }
+    ]
+  }
+}

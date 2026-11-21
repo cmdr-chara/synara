@@ -1,0 +1,217 @@
+{"fn":"showInFileManager","args":["a..b",false,{"a":"b"},{"a":{"b":"c"}}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["﻿bom",true,0,{}],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["日本語のテキスト",true,{"a":"b"},{"a":"b"}],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["hello world",true,["a",1],["a",1]],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["Hello World",false,{"a":{"b":"c"}},["a",1]],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["{name} has {count} items",true,{},"EM"],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["日本語のテキスト",true,true,{}],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["HELLO",false,[],0],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["key_name-1",false,null,true],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["x",false,[],"x"],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["a",true,true,["a",1]],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["﻿bom",false,{"a":{"b":"c"}},{"a":"b"}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["😀",true,[],0],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["日本語のテキスト",true,{"a":{"b":"c"}},{}],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["a..ba:b:c",false,null,true],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["﻿bom",true,null,0],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["tab\tseparated",true,["a",1],["a",1]],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["İstanbul",false,null,null],"error":"Cannot read properties of null (reading 'showItemInFolder')"}
+{"fn":"showInFileManager","args":["Hello Worldtab\tseparated",true,null,{"a":{"b":"c"}}],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["trailing.  padded  ",false,[],0],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["trailing.",true,[],{"a":{"b":"c"}}],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["./x/**/*.json",true,{"a":"b"},[]],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["a",true,["a",1],[]],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["helloİstanbul",true,0,"x"],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["key_name-1",false,"x",["a",1]],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["{name} has {count} items",true,true,"x"],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["a",true,{},{"a":{"b":"c"}}],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["hello world:",true,["a",1],null],"error":"Cannot read properties of null (reading 'openPath')"}
+{"fn":"showInFileManager","args":["a😀b😀c",true,{},["a",1]],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["akey_name-1",true,"x",{"a":"b"}],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["日本語のテキスト",true,null,{"a":"b"}],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["ΣΊΣΥΦΟΣ",false,[],null],"error":"Cannot read properties of null (reading 'showItemInFolder')"}
+{"fn":"showInFileManager","args":["ΣΊΣΥΦΟΣ",false,{"a":{"b":"c"}},{}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["emoji 👍🏽 mix",true,["a",1],true],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":[":😀",true,["a",1],{"a":"b"}],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["emoji 👍🏽 mix",false,{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["日本語のテキスト",true,"x",[]],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":[":",true,[],{"a":"b"}],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["x",false,"x",true],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["src/a/b.ts",true,{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["",false,{},true],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":[".leading",true,[],["a",1]],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":[".leading.leading",true,"x",null],"error":"Cannot read properties of null (reading 'openPath')"}
+{"fn":"showInFileManager","args":["a.b.c",false,[],true],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["x",false,["a",1],"x"],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["hello world",false,{"a":"b"},null],"error":"Cannot read properties of null (reading 'showItemInFolder')"}
+{"fn":"showInFileManager","args":["straße",false,["a",1],0],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["",false,"x",{"a":{"b":"c"}}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["HELLO",true,{"a":"b"},["a",1]],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["  padded  ",false,{"a":"b"},0],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["tab\tseparated",true,null,"x"],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["line1\nline2",false,[],null],"error":"Cannot read properties of null (reading 'showItemInFolder')"}
+{"fn":"showInFileManager","args":["a..b",true,{},0],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["./x/**/*.jsona..b",false,{"a":{"b":"c"}},["a",1]],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["emoji 👍🏽 mix",false,{"a":"b"},[]],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["a",false,"x",["a",1]],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["emoji 👍🏽 mix",true,{},0],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["./x/**/*.jsonünïcödé",true,{},["a",1]],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["hello",true,{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["X",false,"x",{"a":"b"}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["a..b",false,{},true],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["X",false,"x",["a",1]],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["./x/**/*.json",true,{},{}],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":[".leading",false,0,["a",1]],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["X",true,["a",1],"x"],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["a",true,{},{"a":"b"}],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["a",false,0,{"a":{"b":"c"}}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["😀é",true,{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["é",false,[],{}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["ünïcödéΣΊΣΥΦΟΣ",false,["a",1],{"a":"b"}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["a😀b😀c{name} has {count} items",false,"x",0],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["x",false,"x",{}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":[":a:b:c",true,true,true],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["a:b:c",false,"x",[]],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["line1\nline2",true,null,{}],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["ns:key.path",true,null,["a",1]],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":[":",false,{"a":"b"},["a",1]],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["a",false,["a",1],{"a":{"b":"c"}}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["😀",false,"x",{"a":{"b":"c"}}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["HELLO",false,"x",[]],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["ΣΊΣΥΦΟΣ",false,{"a":"b"},null],"error":"Cannot read properties of null (reading 'showItemInFolder')"}
+{"fn":"showInFileManager","args":["HELLO",false,{"a":{"b":"c"}},{}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["a..b",true,["a",1],0],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["a😀b😀c{name} has {count} items",true,{"a":"b"},null],"error":"Cannot read properties of null (reading 'openPath')"}
+{"fn":"showInFileManager","args":["ns:key.path",false,true,"x"],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["a.b.c😀",false,null,{"a":"b"}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["tab\tseparated./x/**/*.json",true,"x",true],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["hello",false,{"a":{"b":"c"}},null],"error":"Cannot read properties of null (reading 'showItemInFolder')"}
+{"fn":"showInFileManager","args":["ünïcödé",true,null,0],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["abc",false,["a",1],["a",1]],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["日本語のテキスト",false,true,[]],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["aünïcödé",true,["a",1],["a",1]],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["{name} has {count} items",false,0,true],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["hello",true,{"a":{"b":"c"}},["a",1]],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["straße",false,{"a":"b"},null],"error":"Cannot read properties of null (reading 'showItemInFolder')"}
+{"fn":"showInFileManager","args":["hello",false,true,null],"error":"Cannot read properties of null (reading 'showItemInFolder')"}
+{"fn":"showInFileManager","args":["  padded  ",true,{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["é",false,0,{"a":{"b":"c"}}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["key_name-1",true,true,[]],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["trailing.ns:key.path",false,null,"x"],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":[":a😀b😀c",false,null,{"a":"b"}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["  padded  ",true,0,{"a":{"b":"c"}}],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["emoji 👍🏽 mix",true,"x",["a",1]],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["emoji 👍🏽 mix",false,{},[]],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["akey_name-1",true,{"a":"b"},{"a":"b"}],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["hello",false,null,{}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["a.b.c  padded  ",false,["a",1],0],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["hello worldé",false,null,{}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["./x/**/*.json",false,["a",1],{"a":"b"}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["a",false,{},[]],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["key_name-1İstanbul",true,[],null],"error":"Cannot read properties of null (reading 'openPath')"}
+{"fn":"showInFileManager","args":["a..b",true,{"a":{"b":"c"}},null],"error":"Cannot read properties of null (reading 'openPath')"}
+{"fn":"showInFileManager","args":["abc",false,{},{}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["a..bline1\nline2",false,true,{"a":"b"}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["hello",true,0,"l"],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["日本語のテキスト",true,["a",1],null],"error":"Cannot read properties of null (reading 'openPath')"}
+{"fn":"showInFileManager","args":["a😀b😀c",true,{"a":"b"},"x"],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["X",true,"x",{"a":"b"}],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["src/a/b.ts",true,{"a":{"b":"c"}},true],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":[":",false,{},["a",1]],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["emoji 👍🏽 mix",false,null,["a",1]],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["  padded  ",false,{"a":{"b":"c"}},["a",1]],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["﻿bom",true,{"a":"b"},{"a":{"b":"c"}}],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["tab\tseparated",false,null,"x"],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["ab",true,["a",1],"x"],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["a:b:c",true,{"a":"b"},null],"error":"Cannot read properties of null (reading 'openPath')"}
+{"fn":"showInFileManager","args":["ΣΊΣΥΦΟΣ",true,{},{"a":{"b":"c"}}],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["a😀b😀c",true,0,{"a":"b"}],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["straße",true,["a",1],{}],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["ünïcödé",true,null,"x"],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["straße",false,[],["a",1]],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["﻿bom",true,{"a":"b"},null],"error":"Cannot read properties of null (reading 'openPath')"}
+{"fn":"showInFileManager","args":["ΣΊΣΥΦΟΣ",true,"x",0],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":[":",true,{"a":"b"},{}],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":[":",false,{"a":{"b":"c"}},[]],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["./x/**/*.jsonHello World",false,null,0],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["HELLO",true,true,true],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["{name} has {count} items",true,true,{"a":"b"}],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["é",false,true,{}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["hello",true,{"a":"b"},null],"error":"Cannot read properties of null (reading 'openPath')"}
+{"fn":"showInFileManager","args":["ns:key.path",true,{"a":{"b":"c"}},null],"error":"Cannot read properties of null (reading 'openPath')"}
+{"fn":"showInFileManager","args":["ab",true,"x",["a",1]],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["ns:key.path",true,true,{}],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":[".leading",false,true,"x"],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["straßens:key.path",false,0,0],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["line1\nline2ΣΊΣΥΦΟΣ",false,true,[]],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["é",false,["a",1],[]],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["x",true,null,"x"],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["  padded  hello",false,0,null],"error":"Cannot read properties of null (reading 'showItemInFolder')"}
+{"fn":"showInFileManager","args":["ns:key.path",true,{},{"a":{"b":"c"}}],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["x",true,"x",{"a":{"b":"c"}}],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["hello world﻿bom",false,["a",1],{"a":"b"}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["a..b",false,{},"x"],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["line1\nline2",true,["a",1],0],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["src/a/b.ts",false,{},true],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["aa",true,{"a":{"b":"c"}},[]],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["a:b:c",true,["a",1],null],"error":"Cannot read properties of null (reading 'openPath')"}
+{"fn":"showInFileManager","args":["hello",false,{},true],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["日本語のテキスト",false,null,"x"],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["﻿bom",false,{"a":"b"},[]],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["tab\tseparated",false,[],{"a":"b"}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["a.b.c",true,{},"x"],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["日本語のテキスト",false,{},[]],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["ünïcödé",true,true,true],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["Hello World",false,null,0],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["a😀b😀c",false,[],[]],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["abc",true,{"a":"b"},{"a":"b"}],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["hello",false,{},["a",1]],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["a",true,true,"x"],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["abc",false,true,[]],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["./x/**/*.json",false,true,{"a":"b"}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["a.b.ca😀b😀c",false,{},["a",1]],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["a:b:c",false,true,{"a":{"b":"c"}}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":[".leading",false,"x",0],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["ünïcödé",false,null,[]],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["hellosrc/a/b.ts",true,[],[]],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["x",false,"x",["a",1]],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["a",true,{},"x"],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["tab\tseparated",true,{"a":"b"},null],"error":"Cannot read properties of null (reading 'openPath')"}
+{"fn":"showInFileManager","args":["line1\nline2a😀b😀c",false,"x",true],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["ΣΊΣΥΦΟΣ",true,{},"x"],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["straßea",true,true,{"a":"b"}],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["helloİstanbul",true,[],true],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["src/a/b.tstrailing.",true,true,true],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":[":",true,0,["a",1]],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["😀",false,0,true],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["emoji 👍🏽 mixtrailing.",false,{"a":{"b":"c"}},["a",1]],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["hello world.leading",false,null,0],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["trailing.",true,true,0],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["emoji 👍🏽 mixline1\nline2",false,["a",1],"NE1\nLINE"],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["a",true,["a",1],0],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["日本語のテキスト",false,"x","x"],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["a..b",true,0,"x"],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["😀",false,true,"x"],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["HELLO",true,{},0],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["a..bHELLO",false,["a",1],{}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["x",true,"x",null],"error":"Cannot read properties of null (reading 'openPath')"}
+{"fn":"showInFileManager","args":["{name} has {count} items{name} has {count} items",false,["a",1],0],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["{name} has {count} itemshello",true,{"a":"b"},[]],"error":"shell.openPath is not a function"}
+{"fn":"showInFileManager","args":["a",true,"x",null],"error":"Cannot read properties of null (reading 'openPath')"}
+{"fn":"showInFileManager","args":["héllo wörld",false,{"a":"b"},{"a":{"b":"c"}}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["👍🏽 thumbs",false,{"a":"b"},{"a":{"b":"c"}}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["日本語",false,{"a":"b"},{"a":{"b":"c"}}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["",false,{"a":"b"},{"a":{"b":"c"}}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["é",false,{"a":"b"},{"a":{"b":"c"}}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["İstanbul",false,{"a":"b"},{"a":{"b":"c"}}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["straße",false,{"a":"b"},{"a":{"b":"c"}}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["ılık ırmak",false,{"a":"b"},{"a":{"b":"c"}}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["👨‍👩‍👧 family",false,{"a":"b"},{"a":{"b":"c"}}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["a b",false,{"a":"b"},{"a":{"b":"c"}}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["ΣΊΣΥΦΟΣ",false,{"a":"b"},{"a":{"b":"c"}}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["a😀b",false,{"a":"b"},{"a":{"b":"c"}}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["﻿bom",false,{"a":"b"},{"a":{"b":"c"}}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["a²b x½ y①",false,{"a":"b"},{"a":{"b":"c"}}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["aⅠb Ⅻ",false,{"a":"b"},{"a":{"b":"c"}}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["a𐐀b 𝐀bc",false,{"a":"b"},{"a":{"b":"c"}}],"error":"shell.showItemInFolder is not a function"}
+{"fn":"showInFileManager","args":["कि ٣٤",false,{"a":"b"},{"a":{"b":"c"}}],"error":"shell.showItemInFolder is not a function"}

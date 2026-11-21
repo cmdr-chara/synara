@@ -1,0 +1,48 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/showInFileManager.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "showinfilemanager-rs",
+  "exports": [
+    {
+      "name": "showInFileManager",
+      "file": "apps/desktop/src/showInFileManager.ts",
+      "line": 14,
+      "params": [
+        {
+          "name": "resolvedPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "isDirectory",
+          "ts_type": "boolean",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "platform",
+          "ts_type": "NodeJS.Platform",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "shell",
+          "ts_type": "Pick<Shell, \"openPath\" | \"showItemInFolder\">",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<void>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

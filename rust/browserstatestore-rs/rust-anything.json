@@ -1,0 +1,49 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/browserStateStore.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "browserstatestore-rs",
+  "exports": [
+    {
+      "name": "sanitizeRecentHistoryByThreadId",
+      "file": "apps/web/src/browserStateStore.ts",
+      "line": 99,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Record<string, BrowserHistoryEntry[]>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "createDedupedBrowserStateStorage",
+      "file": "apps/web/src/browserStateStore.ts",
+      "line": 116,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "selectThreadBrowserState",
+      "file": "apps/web/src/browserStateStore.ts",
+      "line": 221,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "selectThreadBrowserHistory",
+      "file": "apps/web/src/browserStateStore.ts",
+      "line": 227,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

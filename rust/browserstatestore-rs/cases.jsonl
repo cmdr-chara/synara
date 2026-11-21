@@ -1,0 +1,12 @@
+{"fn":"sanitizeRecentHistoryByThreadId","args":[null],"ok":{}}
+{"fn":"sanitizeRecentHistoryByThreadId","args":[{}],"ok":{}}
+{"fn":"sanitizeRecentHistoryByThreadId","args":[{"a":{"b":"c"}}],"ok":{}}
+{"fn":"sanitizeRecentHistoryByThreadId","args":[0],"ok":{}}
+{"fn":"sanitizeRecentHistoryByThreadId","args":["x"],"ok":{}}
+{"fn":"sanitizeRecentHistoryByThreadId","args":[[]],"ok":{}}
+{"fn":"sanitizeRecentHistoryByThreadId","args":[["a",1]],"ok":{}}
+{"fn":"sanitizeRecentHistoryByThreadId","args":[{"a":"b"}],"ok":{}}
+{"fn":"sanitizeRecentHistoryByThreadId","args":[true],"ok":{}}
+{"fn":"sanitizeRecentHistoryByThreadId","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":{}}
+{"fn":"sanitizeRecentHistoryByThreadId","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":{}}
+{"fn":"sanitizeRecentHistoryByThreadId","args":[[3,1,2]],"ok":{}}

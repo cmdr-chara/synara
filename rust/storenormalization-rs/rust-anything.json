@@ -1,0 +1,697 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/storeNormalization.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "storenormalization-rs",
+  "exports": [
+    {
+      "name": "threadSessionsEqual",
+      "file": "apps/web/src/storeNormalization.ts",
+      "line": 116,
+      "params": [
+        {
+          "name": "left",
+          "ts_type": "ThreadSession | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "right",
+          "ts_type": "ThreadSession | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveCreateBranchFlowCompletedMerge",
+      "file": "apps/web/src/storeNormalization.ts",
+      "line": 134,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  currentBranch: string | null;\n  nextBranch: string | null;\n  currentWorktreePath: string | null;\n  nextWorktreePath: string | null;\n  currentAssociatedWorktreePath: string | null | undefined;\n  nextAssociatedWorktreePath: string | null | undefined;\n  currentAssociatedWorktreeBranch: string | null | undefined;\n  nextAssociatedWorktreeBranch: string | null | undefined;\n  currentAssociatedWorktreeRef: string | null | undefined;\n  nextAssociatedWorktreeRef: string | null | undefined;\n  currentCreateBranchFlowCompleted: boolean | undefined;\n  nextCreateBranchFlowCompleted: boolean | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "threadShellsEqual",
+      "file": "apps/web/src/storeNormalization.ts",
+      "line": 171,
+      "params": [
+        {
+          "name": "left",
+          "ts_type": "ThreadShell | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "right",
+          "ts_type": "ThreadShell",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "threadTurnStatesEqual",
+      "file": "apps/web/src/storeNormalization.ts",
+      "line": 236,
+      "params": [
+        {
+          "name": "left",
+          "ts_type": "ThreadTurnState | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "right",
+          "ts_type": "ThreadTurnState",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "textSegmentArraysEqual",
+      "file": "apps/web/src/storeNormalization.ts",
+      "line": 268,
+      "params": [
+        {
+          "name": "left",
+          "ts_type": "| ReadonlyArray<{\n        readonly sequence: number;\n        readonly startedAt: string;\n        readonly endedAt: string;\n        readonly text: string;\n      }>\n    | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "right",
+          "ts_type": "| ReadonlyArray<{\n        readonly sequence: number;\n        readonly startedAt: string;\n        readonly endedAt: string;\n        readonly text: string;\n      }>\n    | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "providerReferenceArraysEqual",
+      "file": "apps/web/src/storeNormalization.ts",
+      "line": 307,
+      "params": [
+        {
+          "name": "left",
+          "ts_type": "| ReadonlyArray<Pick<NonNullable<ChatMessage[\"mentions\"]>[number], \"name\" | \"path\">>\n    | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "right",
+          "ts_type": "| ReadonlyArray<Pick<NonNullable<ChatMessage[\"mentions\"]>[number], \"name\" | \"path\">>\n    | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deepEqualJson",
+      "file": "apps/web/src/storeNormalization.ts",
+      "line": 348,
+      "params": [
+        {
+          "name": "left",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "right",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeModelSelection",
+      "file": "apps/web/src/storeNormalization.ts",
+      "line": 385,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "({ provider: typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type; model: string })",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "previous",
+          "ts_type": "({ provider: typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type; model: string }) | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "({ provider: typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type; model: string })",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeProject",
+      "file": "apps/web/src/storeNormalization.ts",
+      "line": 405,
+      "params": [
+        {
+          "name": "incoming",
+          "ts_type": "(Pick<\n  typeof typeof OrchestrationReadModel.Type.Type[\"projects\"][number],\n  | \"id\"\n  | \"kind\"\n  | \"title\"\n  | \"workspaceRoot\"\n  | \"defaultModelSelection\"\n  | \"scripts\"\n  | \"isPinned\"\n  | \"spaceId\"\n  | \"createdAt\"\n  | \"updatedAt\"\n> & { readonly additionalFolders?: ReadonlyArray<string> | undefined })",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "previous",
+          "ts_type": "Project | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Project",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeSpace",
+      "file": "apps/web/src/storeNormalization.ts",
+      "line": 492,
+      "params": [
+        {
+          "name": "incoming",
+          "ts_type": "typeof typeof typeof OrchestrationReadModel.Type.Type.Type[\"spaces\"][number] | typeof typeof typeof typeof OrchestrationSpaceShell.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "previous",
+          "ts_type": "Space | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Space",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "mapSpaces",
+      "file": "apps/web/src/storeNormalization.ts",
+      "line": 517,
+      "params": [
+        {
+          "name": "incoming",
+          "ts_type": "ReadonlyArray<typeof typeof typeof OrchestrationReadModel.Type.Type.Type[\"spaces\"][number] | typeof typeof typeof typeof OrchestrationSpaceShell.Type.Type.Type.Type>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "previous",
+          "ts_type": "Space[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Space[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeChatMessage",
+      "file": "apps/web/src/storeNormalization.ts",
+      "line": 591,
+      "params": [
+        {
+          "name": "incoming",
+          "ts_type": "typeof typeof OrchestrationReadModel.Type.Type[\"threads\"][number][\"messages\"][number]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "previous",
+          "ts_type": "ChatMessage | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ChatMessage",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "mergeReadModelThreadDetailWithLiveHotPath",
+      "file": "apps/web/src/storeNormalization.ts",
+      "line": 1118,
+      "params": [
+        {
+          "name": "incoming",
+          "ts_type": "typeof typeof typeof OrchestrationReadModel.Type.Type.Type[\"threads\"][number]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "previousThread",
+          "ts_type": "Thread | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "snapshotSequence",
+          "ts_type": "number",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof OrchestrationReadModel.Type.Type.Type[\"threads\"][number]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeProposedPlans",
+      "file": "apps/web/src/storeNormalization.ts",
+      "line": 1203,
+      "params": [
+        {
+          "name": "incoming",
+          "ts_type": "typeof typeof typeof OrchestrationReadModel.Type.Type.Type[\"threads\"][number][\"proposedPlans\"]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "previous",
+          "ts_type": "Thread[\"proposedPlans\"] | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Thread[\"proposedPlans\"]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeTurnDiffFiles",
+      "file": "apps/web/src/storeNormalization.ts",
+      "line": 1234,
+      "params": [
+        {
+          "name": "incoming",
+          "ts_type": "ReadonlyArray<Thread[\"turnDiffSummaries\"][number][\"files\"][number]>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "previous",
+          "ts_type": "Thread[\"turnDiffSummaries\"][number][\"files\"] | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Thread[\"turnDiffSummaries\"][number][\"files\"]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeActivities",
+      "file": "apps/web/src/storeNormalization.ts",
+      "line": 1310,
+      "params": [
+        {
+          "name": "incoming",
+          "ts_type": "typeof typeof typeof OrchestrationReadModel.Type.Type.Type[\"threads\"][number][\"activities\"]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "previous",
+          "ts_type": "Thread[\"activities\"] | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Thread[\"activities\"]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "withOrchestrationEventSequence",
+      "file": "apps/web/src/storeNormalization.ts",
+      "line": 1426,
+      "params": [
+        {
+          "name": "activity",
+          "ts_type": "typeof typeof typeof typeof OrchestrationThreadActivity.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "sequence",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof OrchestrationThreadActivity.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "capThreadActivities",
+      "file": "apps/web/src/storeNormalization.ts",
+      "line": 1504,
+      "params": [
+        {
+          "name": "activities",
+          "ts_type": "readonly (Thread[\"activities\"][number])[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(Thread[\"activities\"][number])[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "dedupeActivitiesByIdAfterAppend",
+      "file": "apps/web/src/storeNormalization.ts",
+      "line": 1643,
+      "params": [
+        {
+          "name": "activities",
+          "ts_type": "ReadonlyArray<(Thread[\"activities\"][number])>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "previousActivities",
+          "ts_type": "ReadonlyArray<(Thread[\"activities\"][number])> | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "previousActivityById",
+          "ts_type": "Record<string, Thread[\"activities\"][number]> | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(Thread[\"activities\"][number])[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "dedupeActivitiesById",
+      "file": "apps/web/src/storeNormalization.ts",
+      "line": 1672,
+      "params": [
+        {
+          "name": "activities",
+          "ts_type": "ReadonlyArray<(Thread[\"activities\"][number])>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(Thread[\"activities\"][number])[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "asActivityRecord",
+      "file": "apps/web/src/storeNormalization.ts",
+      "line": 1733,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Record<string, unknown> | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeThreadErrorMessage",
+      "file": "apps/web/src/storeNormalization.ts",
+      "line": 1759,
+      "params": [
+        {
+          "name": "message",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeThreadSession",
+      "file": "apps/web/src/storeNormalization.ts",
+      "line": 1763,
+      "params": [
+        {
+          "name": "incoming",
+          "ts_type": "typeof typeof typeof OrchestrationReadModel.Type.Type.Type[\"threads\"][number][\"session\"]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "previous",
+          "ts_type": "Thread[\"session\"] | undefined | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Thread[\"session\"]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeThreadFromReadModel",
+      "file": "apps/web/src/storeNormalization.ts",
+      "line": 1843,
+      "params": [
+        {
+          "name": "incoming",
+          "ts_type": "typeof typeof typeof OrchestrationReadModel.Type.Type.Type[\"threads\"][number]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "previous",
+          "ts_type": "Thread | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "snapshotSequence",
+          "ts_type": "number",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "{ readonly restoringSession?: boolean }",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Thread",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeThreadShellSnapshot",
+      "file": "apps/web/src/storeNormalization.ts",
+      "line": 2128,
+      "params": [
+        {
+          "name": "incoming",
+          "ts_type": "typeof typeof typeof OrchestrationShellSnapshot.Type.Type.Type[\"threads\"][number]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "previous",
+          "ts_type": "Thread | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "snapshotSequence",
+          "ts_type": "number",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "{ readonly restoringSession?: boolean }",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "{\n  shell: ThreadShell;\n  session: ThreadSession | null;\n  turnState: ThreadTurnState;\n}",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "mapProjects",
+      "file": "apps/web/src/storeNormalization.ts",
+      "line": 2314,
+      "params": [
+        {
+          "name": "incoming",
+          "ts_type": "ReadonlyArray<(Pick<\n  typeof typeof OrchestrationReadModel.Type.Type[\"projects\"][number],\n  | \"id\"\n  | \"kind\"\n  | \"title\"\n  | \"workspaceRoot\"\n  | \"defaultModelSelection\"\n  | \"scripts\"\n  | \"isPinned\"\n  | \"spaceId\"\n  | \"createdAt\"\n  | \"updatedAt\"\n> & { readonly additionalFolders?: ReadonlyArray<string> | undefined })>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "previous",
+          "ts_type": "Project[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Project[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "toLegacyProvider",
+      "file": "apps/web/src/storeNormalization.ts",
+      "line": 2377,
+      "params": [
+        {
+          "name": "providerName",
+          "ts_type": "string | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveThreadSidebarMetadata",
+      "file": "apps/web/src/storeNormalization.ts",
+      "line": 2402,
+      "params": [
+        {
+          "name": "thread",
+          "ts_type": "Thread",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Pick<\n  SidebarThreadSummary,\n  | \"latestUserMessageAt\"\n  | \"latestHumanMessageAt\"\n  | \"hasPendingApprovals\"\n  | \"hasPendingUserInput\"\n  | \"hasActionableProposedPlan\"\n  | \"hasLiveTailWork\"\n  | \"pendingBackgroundWorkCount\"\n>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "arraysShallowEqual",
+      "file": "apps/web/src/storeNormalization.ts",
+      "line": 248,
+      "reason": "generic over `T`: values of any shape, functions included"
+    },
+    {
+      "name": "recordsShallowEqual",
+      "file": "apps/web/src/storeNormalization.ts",
+      "line": 334,
+      "reason": "generic over `T`: values of any shape, functions included"
+    },
+    {
+      "name": "createThreadActivityAccumulator",
+      "file": "apps/web/src/storeNormalization.ts",
+      "line": 1357,
+      "reason": "uses `ThreadActivityAccumulator`, which has function members"
+    }
+  ]
+}

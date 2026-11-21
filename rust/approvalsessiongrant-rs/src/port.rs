@@ -10,11 +10,14 @@ use serde_json::Value;
 
 /// Port of `approvalSessionGrantWidensSessionPolicy` (`packages/shared/src/approvalSessionGrant.ts:15`).
 pub fn approval_session_grant_widens_session_policy(
-    request_kind: Option<Value>,
+    request_kind: serde_json::Value,
 ) -> Result<Option<bool>, String> {
     Ok(match &request_kind {
-        Some(Value::String(s)) if s == "command" => Some(true),
-        Some(Value::String(s)) if s == "permissions" || s == "tool" => Some(false),
+        // `kind === undefined` widens: an unrestricted session grant covers everything.
+        // A literal `null` does not.
+        Value::Object(map) if map.get("$undefined") == Some(&Value::Bool(true)) => Some(true),
+        Value::String(s) if s == "command" || s == "file-read" || s == "file-change" => Some(true),
+        Value::String(s) if s == "permissions" || s == "tool" => Some(false),
         _ => None,
     })
 }

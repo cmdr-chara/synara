@@ -4,13 +4,13 @@
   "fingerprint": "b54fac2e010c0d99",
   "coverage": {
     "lines": 30,
-    "reached": 28,
+    "reached": 30,
     "files": [
       {
         "file": "packages/shared/src/approvalSessionGrant.ts",
         "lines": 30,
-        "reached": 28,
-        "missed": "28-29"
+        "reached": 30,
+        "missed": ""
       }
     ]
   }

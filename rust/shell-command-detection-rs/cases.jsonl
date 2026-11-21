@@ -1,0 +1,216 @@
+{"fn":"isWindowsShellCommandMissingResult","args":[["a",1]],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":0.5,"stderr":"﻿bom"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"Infinity"},"stderr":"line1\nline2"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"-0"},"stderr":"a","platform":null}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":0.5,"stderr":"HELLO"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"a":{"b":"c"}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[true],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"NaN"},"stderr":"","platform":{}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":100,"stderr":"","platform":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":-1,"stderr":":hello","platform":[]}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"NaN"},"stderr":"key_name-1Hello World","platform":{}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"-0"},"stderr":"HELLOİstanbul","platform":[]}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"Infinity"},"stderr":"a..btrailing."}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"Infinity"},"stderr":"  padded  "}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":9007199254740992,"stderr":"a.b.c","platform":"x"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":1000,"stderr":"key_name-1","platform":{}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":10,"stderr":"ΣΊΣΥΦΟΣ","platform":[]}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":1000000,"stderr":"﻿bom","platform":{}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":3,"stderr":"  padded  ","platform":true}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":1000000,"stderr":"HELLOa😀b😀c","platform":true}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":1000000,"stderr":"a..b","platform":true}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":1000,"stderr":"hellokey_name-1","platform":{"a":"b"}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":1000000,"stderr":"a.b.c","platform":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":100,"stderr":"key_name-1","platform":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":2,"stderr":":","platform":"x"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":2,"stderr":"日本語のテキスト","platform":[]}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":2,"stderr":".leading","platform":{}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":0,"stderr":"hello"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":0.5,"stderr":"日本語のテキストa","platform":true}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":100,"stderr":"straßens:key.path","platform":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":9007199254740992,"stderr":"src/a/b.ts","platform":[]}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":2147483648,"stderr":"{name} has {count} items","platform":"x"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"Infinity"},"stderr":"","platform":"x"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":-2.5,"stderr":"","platform":0}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":2147483648,"stderr":"İstanbultrailing.","platform":null}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"-Infinity"},"stderr":"Hello World"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"-0"},"stderr":"ΣΊΣΥΦΟΣ"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":42,"stderr":"key_name-1","platform":{}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":9007199254740992,"stderr":"src/a/b.ts"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"-0"},"stderr":"a..b","platform":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":10,"stderr":"line1\nline2a..b"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":10,"stderr":"ΣΊΣΥΦΟΣ"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":1000,"stderr":"ünïcödé"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":2147483648,"stderr":"./x/**/*.json","platform":[]}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":["x"],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":10,"stderr":"ns:key.pathabc","platform":"x"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"NaN"},"stderr":"hello","platform":{"a":"b"}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"-Infinity"},"stderr":"a:b:c"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":9007199254740992,"stderr":"a:b:c","platform":{}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":42,"stderr":"abc"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":0.5,"stderr":"Hello World"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":0,"stderr":".leadinga:b:c","platform":"x"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":0,"stderr":"line1\nline2","platform":true}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":42,"stderr":"a😀b😀c","platform":{}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"NaN"},"stderr":"trailing.","platform":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":1,"stderr":"日本語のテキスト","platform":["a",1]}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"NaN"},"stderr":"./x/**/*.json","platform":[]}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"-Infinity"},"stderr":"tab\tseparateda..b","platform":null}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":10,"stderr":"a:b:c"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":2,"stderr":""}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":-1,"stderr":"  padded  "}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"-Infinity"},"stderr":"aba.b.c","platform":["a",1]}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":100,"stderr":"src/a/b.ts","platform":["a",1]}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":9007199254740992,"stderr":"{name} has {count} items"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":1000000,"stderr":"a:b:c","platform":["a",1]}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":-1,"stderr":"ünïcödé","platform":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":-2.5,"stderr":"ns:key.path","platform":["a",1]}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":-1,"stderr":"ünïcödé","platform":0}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"-0"},"stderr":"ΣΊΣΥΦΟΣ","platform":{"a":"b"}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":-1,"stderr":"aa:b:c"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":42,"stderr":"a..b"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":1000000,"stderr":"atrailing.","platform":0}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"Infinity"},"stderr":"tab\tseparatedHELLO"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":42,"stderr":"  padded  ","platform":[]}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"-Infinity"},"stderr":".leading","platform":["a",1]}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":1000,"stderr":"key_name-1line1\nline2","platform":"x"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":9007199254740992,"stderr":"a..b","platform":[]}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"a":"b"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":0,"stderr":"  padded  "}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":9007199254740992,"stderr":"a😀b😀csrc/a/b.ts","platform":["a",1]}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":3,"stderr":"line1\nline2","platform":0}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":10,"stderr":"ünïcödé","platform":true}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":2,"stderr":"line1\nline2"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":0.5,"stderr":"日本語のテキスト","platform":"x"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"-0"},"stderr":"emoji 👍🏽 mix","platform":0}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"-0"},"stderr":"key_name-1{name} has {count} items"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"Infinity"},"stderr":"a😀b😀c:","platform":0}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":100,"stderr":"tab\tseparated","platform":true}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":10,"stderr":"a.b.c","platform":0}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"-Infinity"},"stderr":"ns:key.path","platform":"x"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":2147483648,"stderr":"trailing.","platform":null}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"NaN"},"stderr":"﻿bom"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":10,"stderr":"a:b:c","platform":0}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":1000000,"stderr":"hello world","platform":{"a":"b"}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":1,"stderr":"Hello Worldkey_name-1","platform":"x"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":1000000,"stderr":"😀","platform":[]}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":10,"stderr":"a..b"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":0.5,"stderr":"tab\tseparated","platform":null}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":2,"stderr":"ΣΊΣΥΦΟΣ"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":0,"stderr":"abc","platform":"x"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":3,"stderr":"a😀b😀c"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":9007199254740992,"stderr":".leading","platform":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":2147483648,"stderr":"HELLO","platform":"x"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":-1,"stderr":"a.b.cHello World","platform":0}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"NaN"},"stderr":"straße日本語のテキスト","platform":{}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":0,"stderr":".leadingkey_name-1","platform":"x"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"NaN"},"stderr":"é"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":2,"stderr":"日本語のテキスト","platform":"x"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"-0"},"stderr":"hello","platform":null}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":3,"stderr":"😀a:b:c","platform":"x"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":1000,"stderr":"  padded  "}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":0,"stderr":"a😀b😀c","platform":true}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":9007199254740992,"stderr":"a😀b😀chello","platform":{}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"NaN"},"stderr":".leading"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":10,"stderr":"a😀b😀c","platform":true}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":2,"stderr":"trailing.","platform":"x"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":100,"stderr":"ünïcödé"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":3,"stderr":"a😀b😀c","platform":0}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"-0"},"stderr":"Hello WorldΣΊΣΥΦΟΣ","platform":{"a":"b"}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":9007199254740992,"stderr":"日本語のテキスト","platform":"x"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":1000000,"stderr":"ΣΊΣΥΦΟΣ","platform":null}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":3,"stderr":"tab\tseparated"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":0.5,"stderr":"ünïcödé"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":42,"stderr":"emoji 👍🏽 mix","platform":{"a":"b"}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":0.5,"stderr":"hello worlda.b.c"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":0.5,"stderr":"a.b.c","platform":0}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":-1,"stderr":"emoji 👍🏽 mix","platform":0}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":42,"stderr":"ns:key.path","platform":{}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":2147483648,"stderr":"line1\nline2","platform":{"a":"b"}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":-1,"stderr":"a:b:c  padded  "}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":3,"stderr":"straße","platform":0}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"NaN"},"stderr":"日本語のテキストemoji 👍🏽 mix","platform":"x"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"NaN"},"stderr":"a.b.c","platform":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":1000,"stderr":"a","platform":{}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":-2.5,"stderr":"ünïcödé","platform":["a",1]}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":9007199254740992,"stderr":"日本語のテキスト","platform":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"NaN"},"stderr":"line1\nline2","platform":{}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":-1,"stderr":"src/a/b.ts","platform":{"a":"b"}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":3,"stderr":":","platform":["a",1]}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":1000000,"stderr":"a.b.c","platform":true}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"-Infinity"},"stderr":"ΣΊΣΥΦΟΣ","platform":"x"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":-1,"stderr":"a","platform":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":0.5,"stderr":"trailing.","platform":null}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":42,"stderr":"ünïcödé","platform":{"a":"b"}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":3,"stderr":"a","platform":0}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":1000000,"stderr":"ab"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":42,"stderr":"日本語のテキストhello","platform":{}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":2,"stderr":"src/a/b.tskey_name-1","platform":true}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"-Infinity"},"stderr":"emoji 👍🏽 mix"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":42,"stderr":"a:b:c","platform":true}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":0,"stderr":"HELLO","platform":["a",1]}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":3,"stderr":"ünïcödé","platform":"x"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":-1,"stderr":"line1\nline2"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":42,"stderr":"😀","platform":0}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[[]],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":0.5,"stderr":"ΣΊΣΥΦΟΣ","platform":{}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":2,"stderr":"hello"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"-Infinity"},"stderr":".leading","platform":true}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":2,"stderr":"Hello World","platform":0}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":42,"stderr":"line1\nline2trailing."}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":42,"stderr":":","platform":0}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"-0"},"stderr":"日本語のテキスト"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"-0"},"stderr":"HELLO"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":9007199254740992,"stderr":":","platform":{"a":"b"}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":10,"stderr":"straße","platform":true}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":3,"stderr":"ΣΊΣΥΦΟΣé","platform":null}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"NaN"},"stderr":":a","platform":[]}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":2147483648,"stderr":"emoji 👍🏽 mix","platform":[]}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":10,"stderr":"HELLO","platform":["a",1]}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":2147483648,"stderr":"ab","platform":"x"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":42,"stderr":"ΣΊΣΥΦΟΣ","platform":{"a":"b"}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":1000,"stderr":"  padded  ","platform":{}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":2,"stderr":"a"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":0.5,"stderr":"src/a/b.ts","platform":"x"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":3,"stderr":"abc","platform":"x"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":1000,"stderr":"ns:key.path","platform":["a",1]}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":2,"stderr":"ab","platform":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":3,"stderr":"日本語のテキスト","platform":null}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":2147483648,"stderr":".leadinga😀b😀c"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":100,"stderr":"a","platform":{}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":1000,"stderr":"trailing.","platform":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"Infinity"},"stderr":"straße"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":100,"stderr":"hello","platform":{}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":3,"stderr":"ΣΊΣΥΦΟΣ"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"-Infinity"},"stderr":"src/a/b.ts","platform":[]}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":1000,"stderr":"a😀b😀c","platform":0}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":42,"stderr":"","platform":{"a":{"b":"c"}}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":100,"stderr":"trailing.","platform":true}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[0],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":9007199254740992,"stderr":"a:b:c","platform":["a",1]}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"NaN"},"stderr":"abcline1\nline2","platform":["a",1]}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":42,"stderr":"ns:key.path","platform":["a",1]}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":3,"stderr":"a😀b😀c","platform":true}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"Infinity"},"stderr":"﻿bom","platform":0}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"-0"},"stderr":"😀","platform":null}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":{"$num":"-Infinity"},"stderr":"key_name-1ns:key.path"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":-1,"stderr":"emoji 👍🏽 mix","platform":{}}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":9007199254740992,"stderr":"a..b","platform":"x"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":9009,"stderr":"","platform":"win32"}],"ok":true}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":0,"stderr":"'foo' is not recognized as an internal or external command","platform":"win32"}],"ok":true}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":1,"stderr":"'ls' IS NOT RECOGNIZED AS AN INTERNAL OR EXTERNAL COMMAND,\noperable program or batch file.","platform":"win32"}],"ok":true}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":2,"stderr":"Access denied","platform":"win32"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":9009,"stderr":"other","platform":"linux"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":9009,"stderr":"is not recognized as an internal or external command","platform":"Win32"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":"9009","stderr":"x is not recognized as an internal or external command","platform":"win32"}],"ok":true}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":1,"platform":"win32"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":1,"stderr":123,"platform":"win32"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":1,"stderr":"x is not recognized as an internal or external command","platform":null}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":1,"stderr":"x is not recognized as an internal or external command"}],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":1,"stderr":"is not recognized as an internal or external command","platform":"win32"}],"ok":true}
+{"fn":"isWindowsShellCommandMissingResult","args":[null],"error":"Cannot read properties of null (reading 'platform')"}
+{"fn":"isWindowsShellCommandMissingResult","args":[5],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":["win32"],"ok":false}
+{"fn":"isWindowsShellCommandMissingResult","args":[{"code":1,"stderr":"is not recognized as an internal or external command","platform":"win64"}],"ok":false}

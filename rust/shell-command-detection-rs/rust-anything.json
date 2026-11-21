@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/shell-command-detection.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "shell-command-detection-rs",
+  "exports": [
+    {
+      "name": "isWindowsShellCommandMissingResult",
+      "file": "apps/server/src/shell-command-detection.ts",
+      "line": 1,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly code: number;\n  readonly stderr: string;\n  readonly platform?: NodeJS.Platform;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

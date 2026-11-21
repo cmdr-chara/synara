@@ -1,0 +1,17 @@
+{
+  "unit": "apps/server/src/shell-command-detection.ts",
+  "files": 1,
+  "fingerprint": "15dcc1216005b176",
+  "coverage": {
+    "lines": 14,
+    "reached": 14,
+    "files": [
+      {
+        "file": "apps/server/src/shell-command-detection.ts",
+        "lines": 14,
+        "reached": 14,
+        "missed": ""
+      }
+    ]
+  }
+}

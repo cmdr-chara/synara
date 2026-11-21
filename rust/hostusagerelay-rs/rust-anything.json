@@ -1,0 +1,92 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/hostUsageRelay.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "hostusagerelay-rs",
+  "exports": [],
+  "classes": [
+    {
+      "name": "HostUsageRelay",
+      "file": "apps/desktop/src/hostUsageRelay.ts",
+      "line": 24,
+      "constructor": [
+        {
+          "name": "homeDir",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "channel",
+          "ts_type": "\"stable\" | \"beta\" | \"remote\"",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "methods": [
+        {
+          "name": "enable",
+          "file": "apps/desktop/src/hostUsageRelay.ts",
+          "line": 35,
+          "params": [],
+          "returns": "void",
+          "is_async": false,
+          "is_generator": false,
+          "type_params": [],
+          "uses_instanceof": false
+        },
+        {
+          "name": "clear",
+          "file": "apps/desktop/src/hostUsageRelay.ts",
+          "line": 50,
+          "params": [],
+          "returns": "void",
+          "is_async": false,
+          "is_generator": false,
+          "type_params": [],
+          "uses_instanceof": false
+        },
+        {
+          "name": "peek",
+          "file": "apps/desktop/src/hostUsageRelay.ts",
+          "line": 57,
+          "params": [
+            {
+              "name": "installId",
+              "ts_type": "string",
+              "optional": false,
+              "rest": false
+            }
+          ],
+          "returns": "typeof typeof typeof typeof HostUsageWindow.Type.Type.Type.Type | null",
+          "is_async": false,
+          "is_generator": false,
+          "type_params": [],
+          "uses_instanceof": false
+        },
+        {
+          "name": "acknowledge",
+          "file": "apps/desktop/src/hostUsageRelay.ts",
+          "line": 96,
+          "params": [
+            {
+              "name": "window",
+              "ts_type": "typeof typeof typeof typeof HostUsageWindow.Type.Type.Type.Type",
+              "optional": false,
+              "rest": false
+            }
+          ],
+          "returns": "void",
+          "is_async": false,
+          "is_generator": false,
+          "type_params": [],
+          "uses_instanceof": false
+        }
+      ],
+      "blocker": null
+    }
+  ],
+  "js_only": []
+}

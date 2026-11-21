@@ -156,7 +156,7 @@ fn days_from_civil(y: i64, m: i64, d: i64) -> i64 {
 }
 
 /// Strict ISO `YYYY-MM-DDTHH:mm:ss.sssZ`: no day overflow (round-trip rejects it).
-fn parse_iso_ms(s: &str) -> Option<f64> {
+pub fn parse_iso_ms(s: &str) -> Option<f64> {
     if s.len() != 24 {
         return None;
     }
@@ -197,7 +197,7 @@ fn civil_from_days(z: i64) -> (i64, i64, i64) {
     (if m <= 2 { y + 1 } else { y }, m, d)
 }
 
-fn ms_to_iso(ms: f64) -> Option<String> {
+pub fn ms_to_iso(ms: f64) -> Option<String> {
     if !ms.is_finite() || ms.abs() > 8.64e15 {
         return None;
     }

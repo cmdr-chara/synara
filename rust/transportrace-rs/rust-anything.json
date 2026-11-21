@@ -1,0 +1,55 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/transportRace.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "transportrace-rs",
+  "exports": [
+    {
+      "name": "transportPreferenceRank",
+      "file": "packages/shared/src/transportRace.ts",
+      "line": 49,
+      "params": [
+        {
+          "name": "kind",
+          "ts_type": "(\"loopback\" | \"lan\" | \"tailscale\" | \"ssh\" | \"cloudflare\" | \"relay\")",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "sortByTransportPreference",
+      "file": "packages/shared/src/transportRace.ts",
+      "line": 58,
+      "params": [
+        {
+          "name": "candidates",
+          "ts_type": "readonly TransportCandidate[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "readonly TransportCandidate[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "raceTransports",
+      "file": "packages/shared/src/transportRace.ts",
+      "line": 143,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    }
+  ]
+}

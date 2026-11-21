@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/formatBytes.ts",
+  "files": 1,
+  "fingerprint": "89dd68b9ecaa9f8f",
+  "coverage": {
+    "lines": 23,
+    "reached": 23,
+    "files": [
+      {
+        "file": "packages/shared/src/formatBytes.ts",
+        "lines": 23,
+        "reached": 23,
+        "missed": ""
+      }
+    ]
+  }
+}

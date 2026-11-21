@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/formatBytes.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "formatbytes-rs",
+  "exports": [
+    {
+      "name": "formatBytes",
+      "file": "packages/shared/src/formatBytes.ts",
+      "line": 11,
+      "params": [
+        {
+          "name": "bytes",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

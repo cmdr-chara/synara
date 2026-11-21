@@ -1,0 +1,151 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/gitHandoffOperations.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "githandoffoperations-rs",
+  "exports": [
+    {
+      "name": "canTransitionGitHandoff",
+      "file": "apps/server/src/gitHandoffOperations.ts",
+      "line": 29,
+      "params": [
+        {
+          "name": "from",
+          "ts_type": "keyof typeof GIT_HANDOFF_PHASE_TRANSITIONS",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "to",
+          "ts_type": "keyof typeof GIT_HANDOFF_PHASE_TRANSITIONS",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "beginGitHandoff",
+      "file": "apps/server/src/gitHandoffOperations.ts",
+      "line": 90,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "typeof typeof typeof typeof GitHandoffThreadInput.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "recordGitHandoffResult",
+      "file": "apps/server/src/gitHandoffOperations.ts",
+      "line": 115,
+      "params": [
+        {
+          "name": "commandId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "result",
+          "ts_type": "typeof typeof typeof typeof GitHandoffThreadResult.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "completeGitHandoff",
+      "file": "apps/server/src/gitHandoffOperations.ts",
+      "line": 127,
+      "params": [
+        {
+          "name": "commandId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "discardPendingGitHandoff",
+      "file": "apps/server/src/gitHandoffOperations.ts",
+      "line": 137,
+      "params": [
+        {
+          "name": "commandId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "gitHandoffMetadataCommand",
+      "file": "apps/server/src/gitHandoffOperations.ts",
+      "line": 146,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "Pick<typeof typeof typeof typeof GitHandoffThreadInput.Type.Type.Type.Type, \"commandId\" | \"threadId\">",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "result",
+          "ts_type": "typeof typeof typeof typeof GitHandoffThreadResult.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof OrchestrationCommand.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "GitHandoffOperationError",
+      "file": "apps/server/src/gitHandoffOperations.ts",
+      "line": 53,
+      "reason": "class: extends another class"
+    },
+    {
+      "name": "recoverGitHandoffOperations",
+      "file": "apps/server/src/gitHandoffOperations.ts",
+      "line": 156,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

@@ -1,0 +1,811 @@
+{"fn":"canTransitionGitHandoff","args":["x",["a",1]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[{"a":{"b":"c"}},0],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[[],null],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[{},{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[0,[]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[["a",1],{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[["a",1],0],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[null,{"a":"b"}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[{},true],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[{},0],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[["a",1],"x"],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[[],{}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[true,"x"],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[{"a":"b"},null],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[{},{"a":"b"}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[null,0],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[["a",1],null],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[0,0],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[true,["a",1]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[{"a":"b"},"x"],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":["x",null],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[{"a":{"b":"c"}},[]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":["X","x"],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":["x",{"a":"b"}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[[],{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[{"a":"b"},true],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[[],0],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[{"a":"b"},["a",1]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[null,true],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[{},[]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[null,{}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[0,{"a":"b"}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[{"a":"b"},[]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[{"a":{"b":"c"}},{"a":"b"}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[true,true],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[null,[]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[true,{"a":"b"}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":["x",[]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[{"a":"b"},{}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[{},["a",1]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[["a",1],["a",1]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[{"a":"b"},0],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[null,null],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[true,{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[["a",1],{}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[{"a":{"b":"c"}},["a",1]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[null,{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[{},null],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[{"a":{"b":"c"}},{}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[0,null],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[[],"x"],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[true,{}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":["x",{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[0,"x"],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":["x",true],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[{"a":{"b":"c"}},"x"],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[0,{}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[[],true],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[[],{"a":"b"}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[["a",1],{"a":"b"}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":["x",0],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[["a",1],[]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[true,null],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[true,0],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[{"a":"b"},{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[[],["a",1]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[true,[]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[null,"x"],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":["x",{}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[0,true],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[{"a":{"b":"c"}},null],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[0,["a",1]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[{},"x"],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":["x","x"],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[{"a":{"b":"c"}},true],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[{},{}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[["a",1],true],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[null,["a",1]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[[],[]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[0,{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":[{"a":"b"},{"a":"b"}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionGitHandoff","args":["x","X"],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"beginGitHandoff","args":[null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"beginGitHandoff","args":[{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"beginGitHandoff","args":[{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"beginGitHandoff","args":[true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"beginGitHandoff","args":[["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"beginGitHandoff","args":[0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"beginGitHandoff","args":[[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"beginGitHandoff","args":[{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"beginGitHandoff","args":["x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["{name} has {count} items",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["ΣΊΣΥΦΟΣ",["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["emoji 👍🏽 mix",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["ns:key.pathhello world","thhello wor"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["ünïcödé",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["a:b:ca.b.c",[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["src/a/b.ts",["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["ns:key.path",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["ab",["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["  padded  ",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["İstanbul","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["src/a/b.ts",[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["a",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["x","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["",{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["./x/**/*.jsonstraße",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["a😀b😀chello",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":[":",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["ΣΊΣΥΦΟΣHELLO",[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["a..b",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["abcünïcödé","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["{name} has {count} items",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["ünïcödé","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["src/a/b.ts",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["a😀b😀c",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["ünïcödé",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["hello world","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["😀",{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["ünïcödé",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["﻿bom","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["😀",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["straße",{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["a..b",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["hello",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["a..ba.b.c",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["abc",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["ns:key.path","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["a😀b😀c",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["key_name-1",["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["日本語のテキスト",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["hello",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["a😀b😀c",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["ns:key.path",["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":[":",{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["a.b.c",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["ünïcödé",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["ab",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["helloHELLO",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["é",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":[".leading",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["ünïcödékey_name-1",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["src/a/b.ts",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["a:b:cns:key.path",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["key_name-1",[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["İstanbul",{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["a.b.c:","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["tab\tseparated",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["hello world",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":[":",[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["hello world",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["line1\nline2hello",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":[":",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["{name} has {count} items",["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["straße{name} has {count} items",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["line1\nline2",[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["😀{name} has {count} items",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["a:b:c",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["ΣΊΣΥΦΟΣab",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":[".leading",["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["key_name-1",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["hello","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["  padded  emoji 👍🏽 mix","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["hello world",{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["tab\tseparated",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["ΣΊΣΥΦΟΣ",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["İstanbul",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["a😀b😀c",["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["ünïcödé",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["😀",[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["ns:key.path",{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["line1\nline2",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["  padded  ",["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["﻿bom",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["tab\tseparated",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["aabc",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":[".leading",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["key_name-1",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["key_name-1","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["ΣΊΣΥΦΟΣa..b",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["ΣΊΣΥΦΟΣ",[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["é",["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["a.b.c.leading",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["abc",["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["line1\nline2",["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["日本語のテキスト",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["a..b﻿bom",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["a..b",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["abc",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["Hello Worldstraße",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["emoji 👍🏽 mix",[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["X","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["hello",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["a:b:c",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":[":",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["﻿bom",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["ns:key.path",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["straßea",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["hello",{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["Hello World",{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["straßestraße",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["{name} has {count} items",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["a..bé",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["ΣΊΣΥΦΟΣ",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":[".leading",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["  padded  HELLO",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["hello world",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["key_name-1.leading",{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["﻿boma😀b😀c",[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["İstanbul",["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["ab",{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["😀",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["a",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":[".leading",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["emoji 👍🏽 mix",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["Hello World",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["﻿bom",{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["{name} has {count} itemsΣΊΣΥΦΟΣ",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["abc日本語のテキスト",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["abc","B"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["ΣΊΣΥΦΟΣa:b:c",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["line1\nline2",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["a😀b😀c",[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["Hello World","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["a:b:c😀",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["trailing.",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["😀",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["hello日本語のテキスト","ello"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["abc",[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["emoji 👍🏽 mix","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["{name} has {count} items",{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":[":",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["./x/**/*.json",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["  padded  ",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["a😀b😀c",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["ns:key.path",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["😀hello world",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["﻿bom﻿bom",[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["😀","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["İstanbul",[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["straße日本語のテキスト",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["tab\tseparated{name} has {count} items","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["straße",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["hello",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["line1\nline2","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["{name} has {count} items",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["İstanbul{name} has {count} items",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["😀",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["hello worldtrailing.",[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["./x/**/*.json.leading",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["a.b.c",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["ΣΊΣΥΦΟΣ",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["😀abc",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["line1\nline2",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["src/a/b.ts",{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["a:b:c",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["  padded  ",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["日本語のテキスト",{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":[":ünïcödé","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["tab\tseparated:",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["./x/**/*.json","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["Hello Worlda..b",{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["éé",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["trailing.",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["hello",["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["İstanbul",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["éhello world",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["Hello Worldabc",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["a:b:c",{"a":"b"}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["",["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["key_name-1a",["a",1]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["emoji 👍🏽 mix",{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["tab\tseparated:",{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":[".leading","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["./x/**/*.jsonHello World",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["tab\tseparated",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["trailing.",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["HELLO",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["﻿bom",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["Hello World",null],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["Hello World",[]],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["a.b.c",0],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["a😀b😀c","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["é",{}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["a.b.c","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["a:b:c","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["abc","x"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["a.b.c",{"a":{"b":"c"}}],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["héllo wörld",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["👍🏽 thumbs",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["日本語",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["é",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["straße",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["ılık ırmak",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["👨‍👩‍👧 family",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["a b",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["ΣΊΣΥΦΟΣ",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["a😀b",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["﻿bom",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["a²b x½ y①",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["aⅠb Ⅻ",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["a𐐀b 𝐀bc",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"recordGitHandoffResult","args":["कि ٣٤",true],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":[":"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["tab\tseparated"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["  padded  HELLO"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":[""],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["a😀b😀cünïcödé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["hello"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["hello world"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["a"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["trailing."],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["é"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["a.b.c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["src/a/b.ts"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["./x/**/*.jsona.b.c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["emoji 👍🏽 mix"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["日本語のテキスト"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["straße"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["ns:key.path"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["﻿bomsrc/a/b.ts"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["ab"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["İstanbulé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["😀"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["a:b:c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["key_name-1"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["日本語のテキストHELLO"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["ΣΊΣΥΦΟΣ"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["  padded  "],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["İstanbul"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["﻿bom"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":[".leading"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["abc"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["a😀b😀c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["Hello World"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["{name} has {count} items"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["  padded  ﻿bom"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["line1\nline2"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["a..babc"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["ünïcödé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["HELLO"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["日本語のテキストé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["Hello Worldkey_name-1"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["HELLOünïcödé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["./x/**/*.json"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["trailing.line1\nline2"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["trailing.trailing."],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["a..btrailing."],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["ns:key.pathtab\tseparated"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["{name} has {count} itemsΣΊΣΥΦΟΣ"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["a😀b😀chello world"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["src/a/b.tsstraße"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["Hello World.leading"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":[":emoji 👍🏽 mix"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":[":line1\nline2"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":[".leading﻿bom"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["a..b"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["é😀"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["./x/**/*.jsonsrc/a/b.ts"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":[":日本語のテキスト"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["  padded  a😀b😀c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["é:"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["ab.leading"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["line1\nline2emoji 👍🏽 mix"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["src/a/b.ts😀"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["emoji 👍🏽 mixsrc/a/b.ts"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["éemoji 👍🏽 mix"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["abstraße"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["😀ünïcödé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["a..bİstanbul"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["line1\nline2é"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["a:b:c.leading"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["İstanbultab\tseparated"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["hello worldΣΊΣΥΦΟΣ"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["key_name-1a"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["ΣΊΣΥΦΟΣhello"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["ünïcödéé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["ns:key.pathstraße"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["trailing.ünïcödé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["hello worldstraße"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":[".leadingline1\nline2"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":[":a"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["line1\nline2Hello World"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["trailing.ns:key.path"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["éünïcödé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["abca"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["Hello World😀"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["日本語のテキスト😀"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":[".leadingemoji 👍🏽 mix"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["﻿bomΣΊΣΥΦΟΣ"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["aİstanbul"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["éhello world"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["a日本語のテキスト"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["src/a/b.tsa"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["a:b:cünïcödé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["a😀b😀cΣΊΣΥΦΟΣ"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["日本語のテキスト:"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["line1\nline2hello world"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["a..b./x/**/*.json"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["日本語のテキストİstanbul"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["line1\nline2./x/**/*.json"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["a.b.cİstanbul"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["é.leading"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["日本語のテキスト./x/**/*.json"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["hello world./x/**/*.json"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["hello worlda😀b😀c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["﻿boma😀b😀c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["src/a/b.ts.leading"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["Hello Worldstraße"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["﻿boma.b.c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["./x/**/*.jsonünïcödé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["key_name-1a😀b😀c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["key_name-1hello"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["straße﻿bom"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":[".leadingabc"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["./x/**/*.json日本語のテキスト"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":[".leading😀"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["a.b.csrc/a/b.ts"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["a:b:chello world"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["a.leading"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["aHello World"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["ünïcödéa😀b😀c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["src/a/b.tsé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["tab\tseparated./x/**/*.json"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["key_name-1src/a/b.ts"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["src/a/b.tstrailing."],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["src/a/b.tsns:key.path"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["emoji 👍🏽 mixa"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["İstanbulstraße"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["ΣΊΣΥΦΟΣline1\nline2"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["src/a/b.tsa:b:c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["HELLO.leading"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["aa"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["  padded  {name} has {count} items"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["line1\nline2abc"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["😀hello"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["straßekey_name-1"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["line1\nline2a.b.c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["ΣΊΣΥΦΟΣsrc/a/b.ts"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["{name} has {count} itemsünïcödé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["ns:key.path:"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":[".leading{name} has {count} items"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["abcé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["a.b.chello world"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["﻿bom😀"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["trailing.a.b.c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["line1\nline2a:b:c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["日本語のテキストa..b"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["a.b.c  padded  "],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":[".leadinga😀b😀c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["abca..b"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["abcHello World"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["tab\tseparatedİstanbul"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["ΣΊΣΥΦΟΣ日本語のテキスト"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["éabc"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["{name} has {count} items{name} has {count} items"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["😀Hello World"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":[":a.b.c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["a.b.cΣΊΣΥΦΟΣ"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["a.b.c😀"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["line1\nline2ns:key.path"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["./x/**/*.jsonHello World"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["a😀b😀cline1\nline2"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["key_name-1ünïcödé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["trailing.é"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["a😀b😀ca.b.c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["Hello Worldhello world"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["tab\tseparateda"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["ab:"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["hello world😀"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":[":😀"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["HELLOstraße"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["./x/**/*.jsonİstanbul"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["ΣΊΣΥΦΟΣ{name} has {count} items"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["hello world日本語のテキスト"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["key_name-1tab\tseparated"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["ns:key.pathHELLO"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":[".leadinghello"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["éline1\nline2"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["éa😀b😀c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["key_name-1  padded  "],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["日本語のテキスト﻿bom"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["  padded  src/a/b.ts"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["asrc/a/b.ts"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["😀key_name-1"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["ns:key.patha.b.c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["{name} has {count} itemsa:b:c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["src/a/b.ts./x/**/*.json"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["ünïcödé:"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":[":straße"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":[".leadingHELLO"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["src/a/b.tsabc"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["tab\tseparatedabc"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["a./x/**/*.json"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["hello world{name} has {count} items"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":[".leadingab"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["hello worldhello world"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["﻿bom﻿bom"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["abemoji 👍🏽 mix"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["ΣΊΣΥΦΟΣa😀b😀c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["key_name-1:"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["😀HELLO"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["{name} has {count} itemsé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["héllo wörld"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["👍🏽 thumbs"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["日本語"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["ılık ırmak"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["👨‍👩‍👧 family"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["a b"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["a😀b"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["a²b x½ y①"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["aⅠb Ⅻ"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["a𐐀b 𝐀bc"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"completeGitHandoff","args":["कि ٣٤"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["emoji 👍🏽 mix"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["😀"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["hello world"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":[":"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["a.b.c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["key_name-1"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["😀a..b"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["é"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["hello world./x/**/*.json"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":[":ns:key.path"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["  padded  "],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["abc"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["HELLOé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["straße"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["a:b:c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["﻿bomtrailing."],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["ΣΊΣΥΦΟΣ"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["a..b"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["src/a/b.tsa"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["straßesrc/a/b.ts"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["HELLO"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["İstanbul"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["hello"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["trailing."],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["key_name-1src/a/b.ts"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["a😀b😀c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["./x/**/*.json"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["line1\nline2"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["{name} has {count} items"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["﻿bom"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":[""],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["😀a"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["Hello World"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["ns:key.path"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["a"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["key_name-1:"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["trailing.src/a/b.ts"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["ünïcödé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["a.b.cünïcödé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["é﻿bom"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["src/a/b.ts"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["日本語のテキスト"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["emoji 👍🏽 mix./x/**/*.json"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["Hello Worlda:b:c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["  padded  src/a/b.ts"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["ab"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["a:b:ca..b"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["straßeHELLO"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["emoji 👍🏽 mixtrailing."],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["trailing.emoji 👍🏽 mix"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":[".leading﻿bom"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":[".leading.leading"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["HELLO:"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["  padded  İstanbul"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["a:b:cline1\nline2"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["abcHELLO"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["hello worlda.b.c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["{name} has {count} itemsa"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":[".leading"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["﻿bomtab\tseparated"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["hellosrc/a/b.ts"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["ünïcödéa😀b😀c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["src/a/b.tsa:b:c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["İstanbulns:key.path"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["line1\nline2HELLO"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["helloHello World"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["😀é"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["{name} has {count} itemsHello World"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["İstanbulİstanbul"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["src/a/b.tsHELLO"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["tab\tseparated"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["emoji 👍🏽 mix.leading"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["😀./x/**/*.json"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["{name} has {count} itemsline1\nline2"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["ünïcödéHELLO"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["helloa.b.c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["trailing.line1\nline2"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["Hello Worldtrailing."],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["ns:key.pathhello"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["日本語のテキストab"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["ünïcödéa"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["﻿bom﻿bom"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["./x/**/*.jsona"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["./x/**/*.json﻿bom"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["straße:"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["line1\nline2src/a/b.ts"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["a😀b😀c日本語のテキスト"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["  padded  tab\tseparated"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["日本語のテキスト{name} has {count} items"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["straßeünïcödé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["tab\tseparatedé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["./x/**/*.jsona.b.c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["  padded  Hello World"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":[".leadingab"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["line1\nline2hello"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["ns:key.patha"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["abchello"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["ns:key.path😀"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["aa"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["line1\nline2  padded  "],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["hello worldhello"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["a😀b😀c﻿bom"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["abcünïcödé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["hello world.leading"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["{name} has {count} itemsİstanbul"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["line1\nline2日本語のテキスト"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["Hello Worldhello world"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["éa:b:c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["astraße"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["a😀b😀ctab\tseparated"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["src/a/b.tsHello World"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["straßeİstanbul"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["a..bé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["line1\nline2key_name-1"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["a.b.cns:key.path"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["hellohello"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["helloemoji 👍🏽 mix"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["akey_name-1"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["hello worldé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["﻿bomabc"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["a😀b😀cabc"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["helloa😀b😀c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["ΣΊΣΥΦΟΣemoji 👍🏽 mix"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["a..bİstanbul"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":[":ΣΊΣΥΦΟΣ"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["﻿bomline1\nline2"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["key_name-1ns:key.path"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["src/a/b.tssrc/a/b.ts"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["line1\nline2straße"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["src/a/b.ts{name} has {count} items"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["HELLOünïcödé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["😀key_name-1"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["abHELLO"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["ΣΊΣΥΦΟΣ﻿bom"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":[".leadingemoji 👍🏽 mix"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["absrc/a/b.ts"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["abhello"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":[":emoji 👍🏽 mix"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["ns:key.pathtab\tseparated"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["ΣΊΣΥΦΟΣstraße"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["﻿bomİstanbul"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["ünïcödéünïcödé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":[":key_name-1"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["  padded  ΣΊΣΥΦΟΣ"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["a:b:c日本語のテキスト"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["﻿bom日本語のテキスト"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["abc日本語のテキスト"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["ΣΊΣΥΦΟΣİstanbul"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["  padded  HELLO"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["tab\tseparatedhello world"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["😀日本語のテキスト"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["ünïcödéa:b:c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["a.b.chello world"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["./x/**/*.jsontab\tseparated"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":[".leadingtab\tseparated"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["a:b:c😀"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["straßeline1\nline2"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["tab\tseparatedİstanbul"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["a..b😀"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["key_name-1a"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["line1\nline2a😀b😀c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["éemoji 👍🏽 mix"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["abns:key.path"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["straßea:b:c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["emoji 👍🏽 mixa..b"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["日本語のテキストé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["{name} has {count} itemskey_name-1"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["éa.b.c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["﻿bomemoji 👍🏽 mix"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["line1\nline2İstanbul"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["{name} has {count} itemsHELLO"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["ΣΊΣΥΦΟΣHello World"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["aa.b.c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["a:b:chello world"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["Hello Worldünïcödé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["tab\tseparated./x/**/*.json"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":[":ünïcödé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["HELLOhello world"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["key_name-1😀"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["straßeé"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["emoji 👍🏽 mixΣΊΣΥΦΟΣ"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["hello worlda"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["😀hello world"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["İstanbul😀"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["abcemoji 👍🏽 mix"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["日本語のテキストtrailing."],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["éHELLO"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["日本語のテキストhello world"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["abline1\nline2"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["hello worldHELLO"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["😀HELLO"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["abhello world"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["ΣΊΣΥΦΟΣhello"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["ab日本語のテキスト"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["trailing.  padded  "],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["ab﻿bom"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["a.b.cİstanbul"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["﻿boma😀b😀c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["aba:b:c"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["./x/**/*.jsoné"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["héllo wörld"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["👍🏽 thumbs"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["日本語"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["ılık ırmak"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["👨‍👩‍👧 family"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["a b"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["a😀b"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["a²b x½ y①"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["aⅠb Ⅻ"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["a𐐀b 𝐀bc"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"discardPendingGitHandoff","args":["कि ٣٤"],"ok":{"~effect/Effect/args":{"$function":""}}}
+{"fn":"gitHandoffMetadataCommand","args":[0,"x"],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[{"a":{"b":"c"}},0],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[["a",1],null],"error":"Cannot read properties of null (reading 'targetMode')"}
+{"fn":"gitHandoffMetadataCommand","args":["x",{"a":{"b":"c"}}],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[{},{"a":"b"}],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[true,0],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[{},0],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[true,[]],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[true,true],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[true,{"a":"b"}],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":["x",["a",1]],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[{"a":{"b":"c"}},{"a":{"b":"c"}}],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[0,true],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[null,"x"],"error":"Cannot read properties of null (reading 'commandId')"}
+{"fn":"gitHandoffMetadataCommand","args":[{"a":{"b":"c"}},{}],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[{},{}],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[{},[]],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[{"a":"b"},"x"],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[null,[]],"error":"Cannot read properties of null (reading 'commandId')"}
+{"fn":"gitHandoffMetadataCommand","args":[[],{}],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[["a",1],true],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[[],{"a":{"b":"c"}}],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[[],0],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[0,[]],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[[],{"a":"b"}],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[["a",1],[]],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[["a",1],{"a":"b"}],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":["x",true],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[null,{}],"error":"Cannot read properties of null (reading 'commandId')"}
+{"fn":"gitHandoffMetadataCommand","args":[0,0],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":["X","x"],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[{},"x"],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[null,true],"error":"Cannot read properties of null (reading 'commandId')"}
+{"fn":"gitHandoffMetadataCommand","args":["x",{"a":"b"}],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[{},null],"error":"Cannot read properties of null (reading 'targetMode')"}
+{"fn":"gitHandoffMetadataCommand","args":[{},["a",1]],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[{"a":"b"},0],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[0,null],"error":"Cannot read properties of null (reading 'targetMode')"}
+{"fn":"gitHandoffMetadataCommand","args":[{"a":"b"},{"a":"b"}],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[null,["a",1]],"error":"Cannot read properties of null (reading 'commandId')"}
+{"fn":"gitHandoffMetadataCommand","args":[[],["a",1]],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[["a",1],"x"],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[{},{"a":{"b":"c"}}],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[{"a":{"b":"c"}},null],"error":"Cannot read properties of null (reading 'targetMode')"}
+{"fn":"gitHandoffMetadataCommand","args":[{"a":"b"},{"a":{"b":"c"}}],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[{"a":{"b":"c"}},true],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[0,["a",1]],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[null,{"a":{"b":"c"}}],"error":"Cannot read properties of null (reading 'commandId')"}
+{"fn":"gitHandoffMetadataCommand","args":[true,"x"],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[[],true],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[null,{"a":"b"}],"error":"Cannot read properties of null (reading 'commandId')"}
+{"fn":"gitHandoffMetadataCommand","args":[true,["a",1]],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[true,{}],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":["x",{}],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[{"a":"b"},true],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":["x",null],"error":"Cannot read properties of null (reading 'targetMode')"}
+{"fn":"gitHandoffMetadataCommand","args":["x","x"],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[{"a":"b"},{}],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[true,null],"error":"Cannot read properties of null (reading 'targetMode')"}
+{"fn":"gitHandoffMetadataCommand","args":[null,0],"error":"Cannot read properties of null (reading 'commandId')"}
+{"fn":"gitHandoffMetadataCommand","args":[["a",1],{}],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[["a",1],{"a":{"b":"c"}}],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[{"a":"b"},null],"error":"Cannot read properties of null (reading 'targetMode')"}
+{"fn":"gitHandoffMetadataCommand","args":[true,{"a":{"b":"c"}}],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[0,{}],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":["x",0],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[[],[]],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[{"a":{"b":"c"}},["a",1]],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[0,{"a":"b"}],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[null,null],"error":"Cannot read properties of null (reading 'commandId')"}
+{"fn":"gitHandoffMetadataCommand","args":[{"a":"b"},[]],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[{"a":"b"},["a",1]],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[{"a":{"b":"c"}},[]],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[[],null],"error":"Cannot read properties of null (reading 'targetMode')"}
+{"fn":"gitHandoffMetadataCommand","args":[{"a":{"b":"c"}},"x"],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[{},true],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[{"a":{"b":"c"}},{"a":"b"}],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[["a",1],["a",1]],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[["a",1],0],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[0,{"a":{"b":"c"}}],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":[[],"x"],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}
+{"fn":"gitHandoffMetadataCommand","args":["x",[]],"ok":{"type":"thread.meta.update","commandId":{"$undefined":true},"threadId":{"$undefined":true},"envMode":{"$undefined":true},"branch":{"$undefined":true},"worktreePath":{"$undefined":true},"associatedWorktreePath":{"$undefined":true},"associatedWorktreeBranch":{"$undefined":true},"associatedWorktreeRef":{"$undefined":true}}}

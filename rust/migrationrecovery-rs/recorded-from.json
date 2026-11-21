@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/migrationRecovery.ts",
+  "files": 1,
+  "fingerprint": "7f2e2ab72ff82232",
+  "coverage": {
+    "lines": 271,
+    "reached": 266,
+    "files": [
+      {
+        "file": "packages/shared/src/migrationRecovery.ts",
+        "lines": 271,
+        "reached": 266,
+        "missed": "216-218, 265-266"
+      }
+    ]
+  }
+}

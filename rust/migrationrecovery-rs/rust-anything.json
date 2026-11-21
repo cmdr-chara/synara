@@ -1,0 +1,210 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/migrationRecovery.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "migrationrecovery-rs",
+  "exports": [
+    {
+      "name": "migrationRecoveryMarkerPath",
+      "file": "packages/shared/src/migrationRecovery.ts",
+      "line": 4,
+      "params": [
+        {
+          "name": "dbPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "migrationBackupDirectory",
+      "file": "packages/shared/src/migrationRecovery.ts",
+      "line": 8,
+      "params": [
+        {
+          "name": "dbPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "migrationBackupProvenancePath",
+      "file": "packages/shared/src/migrationRecovery.ts",
+      "line": 12,
+      "params": [
+        {
+          "name": "dbPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseMigrationRecoveryResumeState",
+      "file": "packages/shared/src/migrationRecovery.ts",
+      "line": 47,
+      "params": [
+        {
+          "name": "markerText",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "MigrationRecoveryResumeState | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "createMigrationDivergenceConsentToken",
+      "file": "packages/shared/src/migrationRecovery.ts",
+      "line": 93,
+      "params": [
+        {
+          "name": "challenge",
+          "ts_type": "(Omit<\n  MigrationDivergenceConsentChallenge,\n  \"backupDirectory\" | \"consentToken\"\n>)",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "migrationRuntimeSourceDigest",
+      "file": "packages/shared/src/migrationRecovery.ts",
+      "line": 140,
+      "params": [
+        {
+          "name": "source",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "findMigrationRuntimeIdentityMismatch",
+      "file": "packages/shared/src/migrationRecovery.ts",
+      "line": 144,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly embeddedDigest: string;\n  readonly launcherDigest?: string | undefined;\n  readonly sourceText?: string | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "MigrationRuntimeIdentityMismatch | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "serializeMigrationDivergenceConsentChallenge",
+      "file": "packages/shared/src/migrationRecovery.ts",
+      "line": 169,
+      "params": [
+        {
+          "name": "challenge",
+          "ts_type": "MigrationDivergenceConsentChallenge",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseMigrationDivergenceConsentChallenge",
+      "file": "packages/shared/src/migrationRecovery.ts",
+      "line": 175,
+      "params": [
+        {
+          "name": "output",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "MigrationDivergenceConsentChallenge | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "serializeMigrationSchemaTooNewStartupBlock",
+      "file": "packages/shared/src/migrationRecovery.ts",
+      "line": 187,
+      "params": [
+        {
+          "name": "block",
+          "ts_type": "MigrationSchemaTooNewStartupBlock",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseMigrationSchemaTooNewStartupBlock",
+      "file": "packages/shared/src/migrationRecovery.ts",
+      "line": 193,
+      "params": [
+        {
+          "name": "output",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "MigrationSchemaTooNewStartupBlock | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

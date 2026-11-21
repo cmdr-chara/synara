@@ -1,0 +1,17 @@
+{
+  "unit": "apps/web/src/proposedPlan.ts",
+  "files": 1,
+  "fingerprint": "186fcab66ca5343e",
+  "coverage": {
+    "lines": 100,
+    "reached": 94,
+    "files": [
+      {
+        "file": "apps/web/src/proposedPlan.ts",
+        "lines": 100,
+        "reached": 94,
+        "missed": "14-18, 100"
+      }
+    ]
+  }
+}

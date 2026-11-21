@@ -1,0 +1,180 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/proposedPlan.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "proposedplan-rs",
+  "exports": [
+    {
+      "name": "proposedPlanTitle",
+      "file": "apps/web/src/proposedPlan.ts",
+      "line": 1,
+      "params": [
+        {
+          "name": "planMarkdown",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "stripDisplayedPlanMarkdown",
+      "file": "apps/web/src/proposedPlan.ts",
+      "line": 6,
+      "params": [
+        {
+          "name": "planMarkdown",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildCollapsedProposedPlanPreviewMarkdown",
+      "file": "apps/web/src/proposedPlan.ts",
+      "line": 22,
+      "params": [
+        {
+          "name": "planMarkdown",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "{\n    maxLines?: number;\n  }",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildPlanImplementationPrompt",
+      "file": "apps/web/src/proposedPlan.ts",
+      "line": 73,
+      "params": [
+        {
+          "name": "planMarkdown",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolvePlanFollowUpSubmission",
+      "file": "apps/web/src/proposedPlan.ts",
+      "line": 77,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{ draftText: string; planMarkdown: string }",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{\n  text: string;\n  interactionMode: \"default\" | \"plan\";\n}",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildPlanImplementationThreadTitle",
+      "file": "apps/web/src/proposedPlan.ts",
+      "line": 95,
+      "params": [
+        {
+          "name": "planMarkdown",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildProposedPlanMarkdownFilename",
+      "file": "apps/web/src/proposedPlan.ts",
+      "line": 103,
+      "params": [
+        {
+          "name": "planMarkdown",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizePlanMarkdownForExport",
+      "file": "apps/web/src/proposedPlan.ts",
+      "line": 108,
+      "params": [
+        {
+          "name": "planMarkdown",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "stripProposedPlanBlocksFromText",
+      "file": "apps/web/src/proposedPlan.ts",
+      "line": 114,
+      "params": [
+        {
+          "name": "text",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,15 @@
+{"fn":"buildCollapsedProposedPlanPreviewMarkdown","args":["# Integrate RPC\n\n## Summary\n\n- step 1\n- step 2",{"maxLines":4}]}
+{"fn":"stripDisplayedPlanMarkdown","args":["# Integrate RPC\n\n## Summary\n\n- step 1\n- step 2"]}
+{"fn":"buildCollapsedProposedPlanPreviewMarkdown","args":["# Integrate RPC\n\n- step 1\n- step 2\n- step 3",{"maxLines":2}]}
+{"fn":"stripDisplayedPlanMarkdown","args":["# Integrate RPC\n\n- step 1\n- step 2\n- step 3"]}
+{"fn":"stripDisplayedPlanMarkdown","args":["# Integrate RPC\n\n## Scope\n\n- step 1\n"]}
+{"fn":"buildPlanImplementationThreadTitle","args":["# Integrate RPC\n\nBody"]}
+{"fn":"proposedPlanTitle","args":["# Integrate RPC\n\nBody"]}
+{"fn":"buildPlanImplementationThreadTitle","args":["- step 1"]}
+{"fn":"proposedPlanTitle","args":["- step 1"]}
+{"fn":"resolvePlanFollowUpSubmission","args":[{"draftText":"   ","planMarkdown":"## Ship it\n\n- step 1\n"}]}
+{"fn":"buildPlanImplementationPrompt","args":["## Ship it\n\n- step 1\n"]}
+{"fn":"resolvePlanFollowUpSubmission","args":[{"draftText":"Refine step 2 first","planMarkdown":"## Ship it\n\n- step 1\n"}]}
+{"fn":"buildProposedPlanMarkdownFilename","args":["# Integrate Effect RPC Into Server App"]}
+{"fn":"proposedPlanTitle","args":["# Integrate Effect RPC Into Server App"]}
+{"fn":"buildProposedPlanMarkdownFilename","args":["- step 1"]}

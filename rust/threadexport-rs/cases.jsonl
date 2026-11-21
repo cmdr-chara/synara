@@ -1,0 +1,215 @@
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":null,"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":null,"messages":[{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[null],"error":"Cannot read properties of null (reading 'latestTurn')"}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":null,"messages":[{"streaming":false},{"streaming":true},{"streaming":false}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":null,"messages":[{"streaming":true},{"streaming":true},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":["x"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"ΣΊΣΥΦΟΣ"},"messages":[{"streaming":false},{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":null,"messages":[{"streaming":true},{"streaming":true},{"streaming":false}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"a:b:c"},"messages":[{"streaming":true},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[[]],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":null,"messages":[{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"straße"},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{}],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":null,"messages":[{"streaming":true},{"streaming":false}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"emoji 👍🏽 mix"},"messages":[{"streaming":false},{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"./x/**/*.json"},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"ünïcödé"},"messages":[{"streaming":true},{"streaming":true},{"streaming":false}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"ahello"},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":null,"messages":[{"streaming":true},{"streaming":false},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"HELLO"},"messages":[{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"emoji 👍🏽 mix"},"messages":[{"streaming":true},{"streaming":false},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"ΣΊΣΥΦΟΣ"},"messages":[{"streaming":false},{"streaming":false},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"{name} has {count} items"},"messages":[{"streaming":false},{"streaming":false},{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"a:b:cline1\nline2"},"messages":[{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"İstanbul"},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"tab\tseparated"},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":null,"messages":[{"streaming":false},{"streaming":false},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"tab\tseparated"},"messages":[{"streaming":true},{"streaming":false},{"streaming":false}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"é"},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"trailing."},"messages":[{"streaming":false},{"streaming":true},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"threadExportBlockedReason","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"hello"},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"key_name-1"},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":null,"messages":[{"streaming":false},{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"abünïcödé"},"messages":[{"streaming":false},{"streaming":false},{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":null,"messages":[{"streaming":false},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"line1\nline2"},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"emoji 👍🏽 mix"},"messages":[{"streaming":true},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":null,"messages":[{"streaming":false},{"streaming":false},{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[0],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":":"},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"a😀b😀c"},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"src/a/b.ts"},"messages":[{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"ahello"},"messages":[{"streaming":false},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"trailing."},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":null,"messages":[{"streaming":false},{"streaming":true},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"ΣΊΣΥΦΟΣstraße"},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"src/a/b.tsns:key.path"},"messages":[{"streaming":false},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"line1\nline2"},"messages":[{"streaming":true},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"hello world"},"messages":[{"streaming":false},{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":null,"messages":[{"streaming":true},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":null,"messages":[{"streaming":true},{"streaming":false},{"streaming":false}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"é"},"messages":[{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":""},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"é"},"messages":[{"streaming":false},{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"./x/**/*.json"},"messages":[{"streaming":true},{"streaming":true},{"streaming":false}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"ns:key.pathHello World"},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"a..b"},"messages":[{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"hello worldhello world"},"messages":[{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"key_name-1"},"messages":[{"streaming":false},{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":""},"messages":[{"streaming":true},{"streaming":true},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":":"},"messages":[{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"trailing.İstanbul"},"messages":[{"streaming":false},{"streaming":false},{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"abc"},"messages":[{"streaming":true},{"streaming":true},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"a😀b😀c.leading"},"messages":[{"streaming":false},{"streaming":true},{"streaming":false}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"a.b.c"},"messages":[{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"  padded  "},"messages":[{"streaming":true},{"streaming":true},{"streaming":false}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"trailing."},"messages":[{"streaming":true},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"a:b:c"},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"  padded  "},"messages":[{"streaming":true},{"streaming":false}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"a"},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"emoji 👍🏽 mix"},"messages":[{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"abc"},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"trailing."},"messages":[{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"ab"},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"日本語のテキスト"},"messages":[{"streaming":false},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"hello worldabc"},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"HELLO"},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"a😀b😀c"},"messages":[{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":""},"messages":[{"streaming":false},{"streaming":false},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"İstanbul"},"messages":[{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":":"},"messages":[{"streaming":false},{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"tab\tseparated"},"messages":[{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"abchello"},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[true],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":".leading日本語のテキスト"},"messages":[{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"{name} has {count} items"},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"Hello World"},"messages":[{"streaming":false},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"﻿bom"},"messages":[{"streaming":true},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"  padded  "},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"a:b:c"},"messages":[{"streaming":false},{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"src/a/b.ts"},"messages":[{"streaming":false},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"a.b.cHELLO"},"messages":[{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":""},"messages":[{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"ΣΊΣΥΦΟΣ"},"messages":[{"streaming":false},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"ΣΊΣΥΦΟΣ"},"messages":[{"streaming":false},{"streaming":true},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"İstanbul"},"messages":[{"streaming":true},{"streaming":false}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":""},"messages":[{"streaming":false},{"streaming":true},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"é"},"messages":[{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"key_name-1"},"messages":[{"streaming":true},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"ab😀"},"messages":[{"streaming":true},{"streaming":false}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"Hello World:"},"messages":[{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"tab\tseparated"},"messages":[{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"{name} has {count} items"},"messages":[{"streaming":true},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"a.b.c"},"messages":[{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"Hello World"},"messages":[{"streaming":true},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ"},"messages":[{"streaming":false},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"straße"},"messages":[{"streaming":false},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"İstanbul日本語のテキスト"},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"ns:key.path"},"messages":[{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":".leading"},"messages":[{"streaming":false},{"streaming":false},{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"{name} has {count} items"},"messages":[{"streaming":true},{"streaming":true},{"streaming":false}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"ns:key.pathünïcödé"},"messages":[{"streaming":true},{"streaming":true},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"{name} has {count} items"},"messages":[{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":""},"messages":[{"streaming":false},{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"line1\nline2"},"messages":[{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"a:b:c"},"messages":[{"streaming":false},{"streaming":false},{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"Hello World"},"messages":[{"streaming":false},{"streaming":false},{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"﻿bom"},"messages":[{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"😀emoji 👍🏽 mix"},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"hello world😀"},"messages":[{"streaming":true},{"streaming":false},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"emoji 👍🏽 mix"},"messages":[{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"./x/**/*.json"},"messages":[{"streaming":false},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"src/a/b.ts"},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":".leading"},"messages":[{"streaming":true},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"a..b"},"messages":[{"streaming":true},{"streaming":true},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"😀"},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":".leading"},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"tab\tseparated"},"messages":[{"streaming":false},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"key_name-1"},"messages":[{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"abc"},"messages":[{"streaming":false},{"streaming":false},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":":"},"messages":[{"streaming":false},{"streaming":true},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"a"},"messages":[{"streaming":true},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"{name} has {count} items:"},"messages":[{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"ns:key.path"},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"src/a/b.ts"},"messages":[{"streaming":true},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"line1\nline2é"},"messages":[{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"hello"},"messages":[{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"日本語のテキストünïcödé"},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"{name} has {count} items"},"messages":[{"streaming":false},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"a😀b😀c"},"messages":[{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"  padded  ΣΊΣΥΦΟΣ"},"messages":[{"streaming":false},{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"line1\nline2"},"messages":[{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"src/a/b.ts"},"messages":[{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"İstanbul"},"messages":[{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"hello world"},"messages":[{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"trailing."},"messages":[{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"abc"},"messages":[{"streaming":true},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":""},"messages":[{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"Hello World"},"messages":[{"streaming":false},{"streaming":false},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"ab﻿bom"},"messages":[{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"HELLOsrc/a/b.ts"},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"line1\nline2"},"messages":[{"streaming":true},{"streaming":false}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"  padded  "},"messages":[{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"😀"},"messages":[{"streaming":true},{"streaming":false},{"streaming":false}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"{name} has {count} items"},"messages":[{"streaming":true},{"streaming":false},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"abc"},"messages":[{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":".leadingtab\tseparated"},"messages":[{"streaming":true},{"streaming":false},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"日本語のテキスト"},"messages":[{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"ünïcödé"},"messages":[{"streaming":true},{"streaming":false},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"ΣΊΣΥΦΟΣ"},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"emoji 👍🏽 mix"},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"HELLOhello world"},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"hello world"},"messages":[{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"ünïcödé"},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":":"},"messages":[{"streaming":true},{"streaming":true},{"streaming":false}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"日本語のテキスト"},"messages":[{"streaming":true},{"streaming":false}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"Hello World"},"messages":[{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"a..bkey_name-1"},"messages":[{"streaming":false},{"streaming":true},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"emoji 👍🏽 mix"},"messages":[{"streaming":false},{"streaming":true},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"hello"},"messages":[{"streaming":false},{"streaming":true},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":".leading"},"messages":[{"streaming":false},{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"./x/**/*.jsona..b"},"messages":[{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"é"},"messages":[{"streaming":true},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"line1\nline2"},"messages":[{"streaming":true},{"streaming":false},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"emoji 👍🏽 mixemoji 👍🏽 mix"},"messages":[{"streaming":true},{"streaming":true},{"streaming":false}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"straße:"},"messages":[{"streaming":true},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"Hello World"},"messages":[{"streaming":true},{"streaming":true},{"streaming":false}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"HELLO"},"messages":[{"streaming":false},{"streaming":true},{"streaming":false}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"hello world"},"messages":[{"streaming":false},{"streaming":false},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"Hello World"},"messages":[{"streaming":false},{"streaming":true},{"streaming":false}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":".leading😀"},"messages":[{"streaming":true},{"streaming":false},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"éa.b.c"},"messages":[{"streaming":true},{"streaming":true},{"streaming":false}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"a"},"messages":[{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"line1\nline2"},"messages":[{"streaming":true},{"streaming":false},{"streaming":false}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"trailing."},"messages":[{"streaming":false},{"streaming":false},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"😀"},"messages":[{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"日本語のテキスト"},"messages":[{"streaming":true},{"streaming":true},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"é"},"messages":[{"streaming":true},{"streaming":true},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"ab"},"messages":[{"streaming":true},{"streaming":true},{"streaming":false}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"src/a/b.ts"},"messages":[{"streaming":false},{"streaming":false}]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"日本語のテキスト😀"},"messages":[{"streaming":false},{"streaming":false},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":":"},"messages":[{"streaming":true},{"streaming":false}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"a.b.c"},"messages":[{"streaming":true},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":".leading"},"messages":[{"streaming":true},{"streaming":false}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":""},"messages":[{"streaming":true},{"streaming":false},{"streaming":false}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"hello"},"messages":[{"streaming":true},{"streaming":false}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"a😀b😀c"},"messages":[{"streaming":false},{"streaming":false},{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"running"},"messages":[{"streaming":true}]}],"ok":"Thread is still running. Wait for the current turn to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"queued"},"messages":[{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":null,"messages":"x"}],"error":"thread.messages.some is not a function"}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":null,"messages":null}],"error":"Cannot read properties of null (reading 'some')"}
+{"fn":"threadExportBlockedReason","args":[null],"error":"Cannot read properties of null (reading 'latestTurn')"}
+{"fn":"threadExportBlockedReason","args":[{}],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"running"}}],"ok":"Thread is still running. Wait for the current turn to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"messages":[{"streaming":true}]}],"ok":"Thread has a streaming message. Wait for the current response to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":0},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":null},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"Running"},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":" running "},"messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"running"}}],"ok":"Thread is still running. Wait for the current turn to finish before exporting."}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":"running","messages":[]}],"ok":null}
+{"fn":"threadExportBlockedReason","args":[{"latestTurn":{"state":"running","extra":1},"messages":[]}],"ok":"Thread is still running. Wait for the current turn to finish before exporting."}

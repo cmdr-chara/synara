@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/threadExport.ts",
+  "files": 1,
+  "fingerprint": "5c4314111fc2127c",
+  "coverage": {
+    "lines": 20,
+    "reached": 20,
+    "files": [
+      {
+        "file": "packages/shared/src/threadExport.ts",
+        "lines": 20,
+        "reached": 20,
+        "missed": ""
+      }
+    ]
+  }
+}

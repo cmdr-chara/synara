@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/threadExport.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "threadexport-rs",
+  "exports": [
+    {
+      "name": "threadExportBlockedReason",
+      "file": "packages/shared/src/threadExport.ts",
+      "line": 14,
+      "params": [
+        {
+          "name": "thread",
+          "ts_type": "ThreadExportSnapshot",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

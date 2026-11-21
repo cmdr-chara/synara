@@ -1,0 +1,77 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/wsRpc.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "wsrpc-rs",
+  "exports": [
+    {
+      "name": "canManageExternalMcp",
+      "file": "apps/server/src/wsRpc.ts",
+      "line": 320,
+      "params": [
+        {
+          "name": "role",
+          "ts_type": "\"owner\" | \"client\"",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeWsRpcLayer",
+      "file": "apps/server/src/wsRpc.ts",
+      "line": 3674,
+      "params": [],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeWebsocketNegotiationRouteLayer",
+      "file": "apps/server/src/wsRpc.ts",
+      "line": 3996,
+      "params": [],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "toWsRpcError",
+      "file": "apps/server/src/wsRpc.ts",
+      "line": 420,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "authenticateRpcWebSocketUpgrade",
+      "file": "apps/server/src/wsRpc.ts",
+      "line": 3736,
+      "reason": "uses `ServerAuthShape`, which has function members"
+    },
+    {
+      "name": "authorizeDeviceFrameWebSocketUpgrade",
+      "file": "apps/server/src/wsRpc.ts",
+      "line": 3781,
+      "reason": "uses `ServerAuthShape`, which has function members"
+    },
+    {
+      "name": "makeWebsocketRpcRouteLayer",
+      "file": "apps/server/src/wsRpc.ts",
+      "line": 3797,
+      "reason": "generic over `R`: values of any shape, functions included"
+    }
+  ]
+}

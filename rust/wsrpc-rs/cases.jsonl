@@ -1,0 +1,225 @@
+{"fn":"canManageExternalMcp","args":["a..babc"],"ok":false}
+{"fn":"canManageExternalMcp","args":["a"],"ok":false}
+{"fn":"canManageExternalMcp","args":["😀"],"ok":false}
+{"fn":"canManageExternalMcp","args":["ünïcödé"],"ok":false}
+{"fn":"canManageExternalMcp","args":["straße"],"ok":false}
+{"fn":"canManageExternalMcp","args":["key_name-1"],"ok":false}
+{"fn":"canManageExternalMcp","args":["  padded  "],"ok":false}
+{"fn":"canManageExternalMcp","args":["{name} has {count} items"],"ok":false}
+{"fn":"canManageExternalMcp","args":["hello"],"ok":false}
+{"fn":"canManageExternalMcp","args":[""],"ok":false}
+{"fn":"canManageExternalMcp","args":["trailing.﻿bom"],"ok":false}
+{"fn":"canManageExternalMcp","args":["a:b:c"],"ok":false}
+{"fn":"canManageExternalMcp","args":["trailing.trailing."],"ok":false}
+{"fn":"canManageExternalMcp","args":["ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"canManageExternalMcp","args":["line1\nline2"],"ok":false}
+{"fn":"canManageExternalMcp","args":["ab"],"ok":false}
+{"fn":"canManageExternalMcp","args":["trailing."],"ok":false}
+{"fn":"canManageExternalMcp","args":["Hello WorldΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"canManageExternalMcp","args":[".leading"],"ok":false}
+{"fn":"canManageExternalMcp","args":["./x/**/*.json"],"ok":false}
+{"fn":"canManageExternalMcp","args":["emoji 👍🏽 mix"],"ok":false}
+{"fn":"canManageExternalMcp","args":["hello worlda😀b😀c"],"ok":false}
+{"fn":"canManageExternalMcp","args":["a..b"],"ok":false}
+{"fn":"canManageExternalMcp","args":[":"],"ok":false}
+{"fn":"canManageExternalMcp","args":["日本語のテキスト日本語のテキスト"],"ok":false}
+{"fn":"canManageExternalMcp","args":["HELLO./x/**/*.json"],"ok":false}
+{"fn":"canManageExternalMcp","args":["a.b.c"],"ok":false}
+{"fn":"canManageExternalMcp","args":["hello world"],"ok":false}
+{"fn":"canManageExternalMcp","args":["helloHello World"],"ok":false}
+{"fn":"canManageExternalMcp","args":["日本語のテキスト"],"ok":false}
+{"fn":"canManageExternalMcp","args":["İstanbul"],"ok":false}
+{"fn":"canManageExternalMcp","args":["ΣΊΣΥΦΟΣtrailing."],"ok":false}
+{"fn":"canManageExternalMcp","args":["hello  padded  "],"ok":false}
+{"fn":"canManageExternalMcp","args":["src/a/b.ts"],"ok":false}
+{"fn":"canManageExternalMcp","args":["ns:key.path"],"ok":false}
+{"fn":"canManageExternalMcp","args":["Hello World"],"ok":false}
+{"fn":"canManageExternalMcp","args":["  padded  {name} has {count} items"],"ok":false}
+{"fn":"canManageExternalMcp","args":["aba.b.c"],"ok":false}
+{"fn":"canManageExternalMcp","args":["a😀b😀c"],"ok":false}
+{"fn":"canManageExternalMcp","args":["src/a/b.tsünïcödé"],"ok":false}
+{"fn":"canManageExternalMcp","args":["é"],"ok":false}
+{"fn":"canManageExternalMcp","args":["tab\tseparated"],"ok":false}
+{"fn":"canManageExternalMcp","args":["HELLO:"],"ok":false}
+{"fn":"canManageExternalMcp","args":["a.leading"],"ok":false}
+{"fn":"canManageExternalMcp","args":["ns:key.pathsrc/a/b.ts"],"ok":false}
+{"fn":"canManageExternalMcp","args":["HELLO"],"ok":false}
+{"fn":"canManageExternalMcp","args":["ékey_name-1"],"ok":false}
+{"fn":"canManageExternalMcp","args":["helloHELLO"],"ok":false}
+{"fn":"canManageExternalMcp","args":["﻿bomİstanbul"],"ok":false}
+{"fn":"canManageExternalMcp","args":["abtrailing."],"ok":false}
+{"fn":"canManageExternalMcp","args":["﻿bom"],"ok":false}
+{"fn":"canManageExternalMcp","args":["{name} has {count} items  padded  "],"ok":false}
+{"fn":"canManageExternalMcp","args":["a日本語のテキスト"],"ok":false}
+{"fn":"canManageExternalMcp","args":[":ab"],"ok":false}
+{"fn":"canManageExternalMcp","args":["a..bHello World"],"ok":false}
+{"fn":"canManageExternalMcp","args":["abc"],"ok":false}
+{"fn":"canManageExternalMcp","args":["key_name-1Hello World"],"ok":false}
+{"fn":"canManageExternalMcp","args":["src/a/b.tsa"],"ok":false}
+{"fn":"canManageExternalMcp","args":["abc😀"],"ok":false}
+{"fn":"canManageExternalMcp","args":["hello worldabc"],"ok":false}
+{"fn":"canManageExternalMcp","args":["İstanbulabc"],"ok":false}
+{"fn":"canManageExternalMcp","args":["{name} has {count} itemsab"],"ok":false}
+{"fn":"canManageExternalMcp","args":["./x/**/*.jsoné"],"ok":false}
+{"fn":"canManageExternalMcp","args":["trailing.ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"canManageExternalMcp","args":["emoji 👍🏽 mix  padded  "],"ok":false}
+{"fn":"canManageExternalMcp","args":["key_name-1HELLO"],"ok":false}
+{"fn":"canManageExternalMcp","args":[".leadingé"],"ok":false}
+{"fn":"canManageExternalMcp","args":["hellohello"],"ok":false}
+{"fn":"canManageExternalMcp","args":["trailing.tab\tseparated"],"ok":false}
+{"fn":"canManageExternalMcp","args":["{name} has {count} itemsé"],"ok":false}
+{"fn":"canManageExternalMcp","args":[":Hello World"],"ok":false}
+{"fn":"canManageExternalMcp","args":["aab"],"ok":false}
+{"fn":"canManageExternalMcp","args":["é./x/**/*.json"],"ok":false}
+{"fn":"canManageExternalMcp","args":["﻿bomhello world"],"ok":false}
+{"fn":"canManageExternalMcp","args":["  padded  日本語のテキスト"],"ok":false}
+{"fn":"canManageExternalMcp","args":["tab\tseparatedtab\tseparated"],"ok":false}
+{"fn":"canManageExternalMcp","args":["ΣΊΣΥΦΟΣhello world"],"ok":false}
+{"fn":"canManageExternalMcp","args":["abcline1\nline2"],"ok":false}
+{"fn":"canManageExternalMcp","args":["tab\tseparated😀"],"ok":false}
+{"fn":"canManageExternalMcp","args":["hello world{name} has {count} items"],"ok":false}
+{"fn":"canManageExternalMcp","args":["a:b:ca"],"ok":false}
+{"fn":"canManageExternalMcp","args":["abca..b"],"ok":false}
+{"fn":"canManageExternalMcp","args":[":a..b"],"ok":false}
+{"fn":"canManageExternalMcp","args":["ünïcödéİstanbul"],"ok":false}
+{"fn":"canManageExternalMcp","args":["abline1\nline2"],"ok":false}
+{"fn":"canManageExternalMcp","args":["ünïcödé:"],"ok":false}
+{"fn":"canManageExternalMcp","args":["hello world.leading"],"ok":false}
+{"fn":"canManageExternalMcp","args":["key_name-1:"],"ok":false}
+{"fn":"canManageExternalMcp","args":["key_name-1ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"canManageExternalMcp","args":["a.b.cHELLO"],"ok":false}
+{"fn":"canManageExternalMcp","args":["Hello World{name} has {count} items"],"ok":false}
+{"fn":"canManageExternalMcp","args":["abİstanbul"],"ok":false}
+{"fn":"canManageExternalMcp","args":["aa.b.c"],"ok":false}
+{"fn":"canManageExternalMcp","args":["trailing.hello"],"ok":false}
+{"fn":"canManageExternalMcp","args":["HELLOHELLO"],"ok":false}
+{"fn":"canManageExternalMcp","args":["a.b.cab"],"ok":false}
+{"fn":"canManageExternalMcp","args":["a:b:c😀"],"ok":false}
+{"fn":"canManageExternalMcp","args":["é{name} has {count} items"],"ok":false}
+{"fn":"canManageExternalMcp","args":["﻿boma..b"],"ok":false}
+{"fn":"canManageExternalMcp","args":["straßehello"],"ok":false}
+{"fn":"canManageExternalMcp","args":["abc./x/**/*.json"],"ok":false}
+{"fn":"canManageExternalMcp","args":["src/a/b.tskey_name-1"],"ok":false}
+{"fn":"canManageExternalMcp","args":["日本語のテキスト:"],"ok":false}
+{"fn":"canManageExternalMcp","args":["tab\tseparatedΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"canManageExternalMcp","args":["  padded  é"],"ok":false}
+{"fn":"canManageExternalMcp","args":["a:b:cab"],"ok":false}
+{"fn":"canManageExternalMcp","args":["a😀b😀cline1\nline2"],"ok":false}
+{"fn":"canManageExternalMcp","args":["a:b:ca.b.c"],"ok":false}
+{"fn":"canManageExternalMcp","args":["hello worldtab\tseparated"],"ok":false}
+{"fn":"canManageExternalMcp","args":["abc.leading"],"ok":false}
+{"fn":"canManageExternalMcp","args":["trailing.a.b.c"],"ok":false}
+{"fn":"canManageExternalMcp","args":["hello world./x/**/*.json"],"ok":false}
+{"fn":"canManageExternalMcp","args":[":key_name-1"],"ok":false}
+{"fn":"canManageExternalMcp","args":["ΣΊΣΥΦΟΣline1\nline2"],"ok":false}
+{"fn":"canManageExternalMcp","args":["key_name-1😀"],"ok":false}
+{"fn":"canManageExternalMcp","args":["ΣΊΣΥΦΟΣHello World"],"ok":false}
+{"fn":"canManageExternalMcp","args":["﻿bom  padded  "],"ok":false}
+{"fn":"canManageExternalMcp","args":["ΣΊΣΥΦΟΣa.b.c"],"ok":false}
+{"fn":"canManageExternalMcp","args":["straßeé"],"ok":false}
+{"fn":"canManageExternalMcp","args":["line1\nline2Hello World"],"ok":false}
+{"fn":"canManageExternalMcp","args":["  padded  İstanbul"],"ok":false}
+{"fn":"canManageExternalMcp","args":["hello worlda..b"],"ok":false}
+{"fn":"canManageExternalMcp","args":["helloemoji 👍🏽 mix"],"ok":false}
+{"fn":"canManageExternalMcp","args":["line1\nline2{name} has {count} items"],"ok":false}
+{"fn":"canManageExternalMcp","args":["trailing.😀"],"ok":false}
+{"fn":"canManageExternalMcp","args":["hello./x/**/*.json"],"ok":false}
+{"fn":"canManageExternalMcp","args":["﻿bom:"],"ok":false}
+{"fn":"canManageExternalMcp","args":["﻿bomstraße"],"ok":false}
+{"fn":"canManageExternalMcp","args":["hello worlda:b:c"],"ok":false}
+{"fn":"canManageExternalMcp","args":["helloa..b"],"ok":false}
+{"fn":"canManageExternalMcp","args":["HELLOabc"],"ok":false}
+{"fn":"canManageExternalMcp","args":["helloab"],"ok":false}
+{"fn":"canManageExternalMcp","args":[":a😀b😀c"],"ok":false}
+{"fn":"canManageExternalMcp","args":["ΣΊΣΥΦΟΣhello"],"ok":false}
+{"fn":"canManageExternalMcp","args":["😀a:b:c"],"ok":false}
+{"fn":"canManageExternalMcp","args":["hello worldemoji 👍🏽 mix"],"ok":false}
+{"fn":"canManageExternalMcp","args":["  padded  a..b"],"ok":false}
+{"fn":"canManageExternalMcp","args":["  padded  ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"canManageExternalMcp","args":["a:b:c日本語のテキスト"],"ok":false}
+{"fn":"canManageExternalMcp","args":["a.b.cΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"canManageExternalMcp","args":["aline1\nline2"],"ok":false}
+{"fn":"canManageExternalMcp","args":["hello{name} has {count} items"],"ok":false}
+{"fn":"canManageExternalMcp","args":["日本語のテキストΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"canManageExternalMcp","args":[":src/a/b.ts"],"ok":false}
+{"fn":"canManageExternalMcp","args":["İstanbulé"],"ok":false}
+{"fn":"canManageExternalMcp","args":["ΣΊΣΥΦΟΣstraße"],"ok":false}
+{"fn":"canManageExternalMcp","args":["emoji 👍🏽 mix:"],"ok":false}
+{"fn":"canManageExternalMcp","args":["abctrailing."],"ok":false}
+{"fn":"canManageExternalMcp","args":["😀.leading"],"ok":false}
+{"fn":"canManageExternalMcp","args":[":trailing."],"ok":false}
+{"fn":"canManageExternalMcp","args":["trailing.a"],"ok":false}
+{"fn":"canManageExternalMcp","args":["abca.b.c"],"ok":false}
+{"fn":"canManageExternalMcp","args":[".leadinga😀b😀c"],"ok":false}
+{"fn":"canManageExternalMcp","args":["Hello Worldtab\tseparated"],"ok":false}
+{"fn":"canManageExternalMcp","args":["é  padded  "],"ok":false}
+{"fn":"canManageExternalMcp","args":["src/a/b.tsa..b"],"ok":false}
+{"fn":"canManageExternalMcp","args":["./x/**/*.jsonab"],"ok":false}
+{"fn":"canManageExternalMcp","args":["  padded  abc"],"ok":false}
+{"fn":"canManageExternalMcp","args":["a..b{name} has {count} items"],"ok":false}
+{"fn":"canManageExternalMcp","args":["日本語のテキスト😀"],"ok":false}
+{"fn":"canManageExternalMcp","args":["emoji 👍🏽 mixhello"],"ok":false}
+{"fn":"canManageExternalMcp","args":["line1\nline2line1\nline2"],"ok":false}
+{"fn":"canManageExternalMcp","args":["ns:key.path﻿bom"],"ok":false}
+{"fn":"canManageExternalMcp","args":["emoji 👍🏽 mixtab\tseparated"],"ok":false}
+{"fn":"canManageExternalMcp","args":["tab\tseparatedHello World"],"ok":false}
+{"fn":"canManageExternalMcp","args":["a😀b😀ca..b"],"ok":false}
+{"fn":"canManageExternalMcp","args":["a﻿bom"],"ok":false}
+{"fn":"canManageExternalMcp","args":["İstanbul.leading"],"ok":false}
+{"fn":"canManageExternalMcp","args":["trailing.emoji 👍🏽 mix"],"ok":false}
+{"fn":"canManageExternalMcp","args":["hello worldé"],"ok":false}
+{"fn":"canManageExternalMcp","args":[".leading{name} has {count} items"],"ok":false}
+{"fn":"canManageExternalMcp","args":["src/a/b.ts./x/**/*.json"],"ok":false}
+{"fn":"canManageExternalMcp","args":["éİstanbul"],"ok":false}
+{"fn":"canManageExternalMcp","args":["abé"],"ok":false}
+{"fn":"canManageExternalMcp","args":["trailing.  padded  "],"ok":false}
+{"fn":"canManageExternalMcp","args":["tab\tseparatedİstanbul"],"ok":false}
+{"fn":"canManageExternalMcp","args":["日本語のテキストa😀b😀c"],"ok":false}
+{"fn":"canManageExternalMcp","args":["./x/**/*.jsontrailing."],"ok":false}
+{"fn":"canManageExternalMcp","args":["emoji 👍🏽 mix😀"],"ok":false}
+{"fn":"canManageExternalMcp","args":["abünïcödé"],"ok":false}
+{"fn":"canManageExternalMcp","args":["a:b:cHello World"],"ok":false}
+{"fn":"canManageExternalMcp","args":["日本語のテキストstraße"],"ok":false}
+{"fn":"canManageExternalMcp","args":["emoji 👍🏽 mixünïcödé"],"ok":false}
+{"fn":"canManageExternalMcp","args":["aba😀b😀c"],"ok":false}
+{"fn":"canManageExternalMcp","args":["abca😀b😀c"],"ok":false}
+{"fn":"canManageExternalMcp","args":["line1\nline2src/a/b.ts"],"ok":false}
+{"fn":"canManageExternalMcp","args":["éline1\nline2"],"ok":false}
+{"fn":"canManageExternalMcp","args":["éhello"],"ok":false}
+{"fn":"canManageExternalMcp","args":[":﻿bom"],"ok":false}
+{"fn":"canManageExternalMcp","args":["{name} has {count} itemsHello World"],"ok":false}
+{"fn":"canManageExternalMcp","args":["ΣΊΣΥΦΟΣ﻿bom"],"ok":false}
+{"fn":"canManageExternalMcp","args":["trailing.hello world"],"ok":false}
+{"fn":"canManageExternalMcp","args":["İstanbul日本語のテキスト"],"ok":false}
+{"fn":"canManageExternalMcp","args":["trailing.a:b:c"],"ok":false}
+{"fn":"canManageExternalMcp","args":["emoji 👍🏽 mixsrc/a/b.ts"],"ok":false}
+{"fn":"canManageExternalMcp","args":["😀a"],"ok":false}
+{"fn":"canManageExternalMcp","args":["Hello Worldns:key.path"],"ok":false}
+{"fn":"canManageExternalMcp","args":["src/a/b.ts😀"],"ok":false}
+{"fn":"canManageExternalMcp","args":["a😀b😀csrc/a/b.ts"],"ok":false}
+{"fn":"canManageExternalMcp","args":["﻿bomHELLO"],"ok":false}
+{"fn":"canManageExternalMcp","args":["héllo wörld"],"ok":false}
+{"fn":"canManageExternalMcp","args":["👍🏽 thumbs"],"ok":false}
+{"fn":"canManageExternalMcp","args":["日本語"],"ok":false}
+{"fn":"canManageExternalMcp","args":["ılık ırmak"],"ok":false}
+{"fn":"canManageExternalMcp","args":["👨‍👩‍👧 family"],"ok":false}
+{"fn":"canManageExternalMcp","args":["a b"],"ok":false}
+{"fn":"canManageExternalMcp","args":["a😀b"],"ok":false}
+{"fn":"canManageExternalMcp","args":["a²b x½ y①"],"ok":false}
+{"fn":"canManageExternalMcp","args":["aⅠb Ⅻ"],"ok":false}
+{"fn":"canManageExternalMcp","args":["a𐐀b 𝐀bc"],"ok":false}
+{"fn":"canManageExternalMcp","args":["कि ٣٤"],"ok":false}
+{"fn":"canManageExternalMcp","args":["Iı İi"],"ok":false}
+{"fn":"canManageExternalMcp","args":["K K k"],"ok":false}
+{"fn":"canManageExternalMcp","args":["ſ s S"],"ok":false}
+{"fn":"canManageExternalMcp","args":["x‍y 👨‍👩‍👧"],"ok":false}
+{"fn":"canManageExternalMcp","args":["a b c　d"],"ok":false}
+{"fn":"canManageExternalMcp","args":["١٢٣ ٤٥"],"ok":false}
+{"fn":"canManageExternalMcp","args":["𝟘𝟙 ²³"],"ok":false}
+{"fn":"canManageExternalMcp","args":["snake_case foo-bar o'neil"],"ok":false}
+{"fn":"canManageExternalMcp","args":["ǅungla Ǆ"],"ok":false}
+{"fn":"canManageExternalMcp","args":["one\r\ntwo threefour"],"ok":false}
+{"fn":"canManageExternalMcp","args":["café café"],"ok":false}
+{"fn":"canManageExternalMcp","args":["ΣΑΣ σας ς"],"ok":false}
+{"fn":"makeWsRpcLayer","args":[],"ok":{"build":{"$function":""}}}
+{"fn":"makeWebsocketNegotiationRouteLayer","args":[],"ok":{"build":{"$function":""}}}

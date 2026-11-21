@@ -1,0 +1,9 @@
+{"fn":"reportBetaOperationalIssue","args":["x"],"ok":{"$undefined":true}}
+{"fn":"reportBetaOperationalIssue","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"reportBetaOperationalIssue","args":[{}],"ok":{"$undefined":true}}
+{"fn":"reportBetaOperationalIssue","args":[null],"ok":{"$undefined":true}}
+{"fn":"reportBetaOperationalIssue","args":[0],"ok":{"$undefined":true}}
+{"fn":"reportBetaOperationalIssue","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"reportBetaOperationalIssue","args":[[]],"ok":{"$undefined":true}}
+{"fn":"reportBetaOperationalIssue","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"reportBetaOperationalIssue","args":[true],"ok":{"$undefined":true}}

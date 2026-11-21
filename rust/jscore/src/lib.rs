@@ -5,6 +5,35 @@
 
 use serde_json::Value;
 
+/// The JS `\s` whitespace set (Rust regex `\s` differs on `` and `﻿`).
+pub fn is_space(c: char) -> bool {
+    matches!(c, '\t' | '\n' | '\u{b}' | '\u{c}' | '\r' | ' ' | '\u{a0}' | '\u{1680}'
+        | '\u{2000}'..='\u{200a}' | '\u{2028}' | '\u{2029}' | '\u{202f}' | '\u{205f}'
+        | '\u{3000}' | '\u{feff}')
+}
+
+/// `SERVER_DESKTOP_FLAVOR`: the hosting desktop's flavor from the
+/// `SYNARA_DESKTOP_BUNDLE_ID` env var, resolved once like the module-level const.
+pub fn synara_desktop_flavor() -> &'static str {
+    use std::sync::OnceLock;
+    static FLAVOR: OnceLock<&'static str> = OnceLock::new();
+    FLAVOR.get_or_init(|| {
+        match std::env::var("SYNARA_DESKTOP_BUNDLE_ID")
+            .ok()
+            .map(|v| v.trim_matches(is_space).to_string())
+            .as_deref()
+        {
+            Some("com.emanueledipietro.synara") => "production",
+            Some("com.emanueledipietro.synara.dev") => "development",
+            Some("com.emanueledipietro.synara.canary") => "canary",
+            Some("com.emanueledipietro.synara.cua") => "cua",
+            Some("com.emanueledipietro.synara.remote") => "remote",
+            Some("com.emanueledipietro.synara.beta") => "beta",
+            _ => "unknown",
+        }
+    })
+}
+
 /// `Number::toString` (ECMA-262): `NaN`/`Infinity` keep their JS spellings,
 /// `-0` is `"0"`, integral values print without a fraction, and the fixed/
 /// exponential cutovers are at `1e21` and `1e-6`.

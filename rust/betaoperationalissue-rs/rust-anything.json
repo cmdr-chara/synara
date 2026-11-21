@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/betaOperationalIssue.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "betaoperationalissue-rs",
+  "exports": [
+    {
+      "name": "reportBetaOperationalIssue",
+      "file": "apps/server/src/betaOperationalIssue.ts",
+      "line": 6,
+      "params": [
+        {
+          "name": "issue",
+          "ts_type": "typeof typeof typeof typeof DesktopDiagnosticIssue.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

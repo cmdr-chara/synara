@@ -1,0 +1,17 @@
+{
+  "unit": "apps/desktop/src/mediaPermissions.ts",
+  "files": 1,
+  "fingerprint": "e1b8bbe1f64cc264",
+  "coverage": {
+    "lines": 67,
+    "reached": 23,
+    "files": [
+      {
+        "file": "apps/desktop/src/mediaPermissions.ts",
+        "lines": 67,
+        "reached": 23,
+        "missed": "22-23, 25-26, 30-37, 39-48, 50-58, 61-73"
+      }
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+{"fn":"shouldAllowMediaPermissionRequest","args":["x"],"ok":true}
+{"fn":"shouldAllowMediaPermissionRequest","args":[true],"ok":true}
+{"fn":"shouldAllowMediaPermissionRequest","args":[{"a":"b"}],"ok":true}
+{"fn":"shouldAllowMediaPermissionRequest","args":[{"a":{"b":"c"}}],"ok":true}
+{"fn":"shouldAllowMediaPermissionRequest","args":[0],"ok":true}
+{"fn":"shouldAllowMediaPermissionRequest","args":[[]],"ok":true}
+{"fn":"shouldAllowMediaPermissionRequest","args":[{}],"ok":true}
+{"fn":"shouldAllowMediaPermissionRequest","args":[["a",1]],"ok":true}
+{"fn":"shouldAllowMediaPermissionRequest","args":[null],"ok":true}
+{"fn":"shouldAllowMediaPermissionRequest","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":true}
+{"fn":"shouldAllowMediaPermissionRequest","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":true}
+{"fn":"shouldAllowMediaPermissionRequest","args":[[3,1,2]],"ok":true}

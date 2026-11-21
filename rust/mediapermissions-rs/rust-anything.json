@@ -1,0 +1,37 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/mediaPermissions.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "mediapermissions-rs",
+  "exports": [
+    {
+      "name": "shouldAllowMediaPermissionRequest",
+      "file": "apps/desktop/src/mediaPermissions.ts",
+      "line": 16,
+      "params": [
+        {
+          "name": "details",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "isTrustedMediaPermissionRequest",
+      "file": "apps/desktop/src/mediaPermissions.ts",
+      "line": 60,
+      "reason": "uses `MediaPermissionRequester`, which has function members"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{"fn":"settingsSectionLabel","args":[[]],"ok":[]}
+{"fn":"settingsSectionLabel","args":[["a",1]],"ok":["a",1]}
+{"fn":"settingsSectionLabel","args":[{"a":{"b":"c"}}],"ok":{"a":{"b":"c"}}}
+{"fn":"settingsSectionLabel","args":["x"],"ok":"x"}
+{"fn":"settingsSectionLabel","args":[true],"ok":true}
+{"fn":"settingsSectionLabel","args":[{"a":"b"}],"ok":{"a":"b"}}
+{"fn":"settingsSectionLabel","args":[null],"ok":null}
+{"fn":"settingsSectionLabel","args":[0],"ok":0}
+{"fn":"settingsSectionLabel","args":[{}],"ok":{}}

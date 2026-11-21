@@ -1,0 +1,55 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/settingsSearchIndex.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "settingssearchindex-rs",
+  "exports": [
+    {
+      "name": "settingsSectionLabel",
+      "file": "apps/web/src/settingsSearchIndex.ts",
+      "line": 401,
+      "params": [
+        {
+          "name": "section",
+          "ts_type": "(typeof SETTINGS_SECTION_IDS)[number]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "settingsSearchEntryTarget",
+      "file": "apps/web/src/settingsSearchIndex.ts",
+      "line": 72,
+      "reason": "uses `SettingsSearchEntry`, which has function members"
+    },
+    {
+      "name": "settingsSearchEntryDescription",
+      "file": "apps/web/src/settingsSearchIndex.ts",
+      "line": 83,
+      "reason": "uses `SettingsSearchEntry`, which has function members"
+    },
+    {
+      "name": "settingsSearchEntryTitle",
+      "file": "apps/web/src/settingsSearchIndex.ts",
+      "line": 89,
+      "reason": "uses `SettingsSearchEntry`, which has function members"
+    },
+    {
+      "name": "rankSettingsSearchEntries",
+      "file": "apps/web/src/settingsSearchIndex.ts",
+      "line": 407,
+      "reason": "uses `SettingsSearchEntry`, which has function members"
+    }
+  ]
+}

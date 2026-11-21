@@ -1,0 +1,17 @@
+{
+  "unit": "apps/server/src/codexErrorClassification.ts",
+  "files": 1,
+  "fingerprint": "35a7057ae3c66e0e",
+  "coverage": {
+    "lines": 14,
+    "reached": 14,
+    "files": [
+      {
+        "file": "apps/server/src/codexErrorClassification.ts",
+        "lines": 14,
+        "reached": 14,
+        "missed": ""
+      }
+    ]
+  }
+}

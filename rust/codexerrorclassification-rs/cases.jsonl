@@ -1,0 +1,223 @@
+{"fn":"isNonFatalCodexErrorMessage","args":["src/a/b.ts"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["İstanbul"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["a..ba😀b😀c"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["😀"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["hello world"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["  padded  "],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["a.b.cemoji 👍🏽 mix"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["ab"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["{name} has {count} items"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["tab\tseparated"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["a😀b😀c"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["line1\nline2"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["HELLO"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["a"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":[":a..b"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["a.b.c"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":[":trailing."],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["﻿bom"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["Hello Worldtab\tseparated"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["straße"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["ünïcödé"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":[".leading"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["emoji 👍🏽 mix"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["a..b"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["日本語のテキスト"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["./x/**/*.json"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["a:b:c"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["ns:key.path"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["trailing.ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":[":"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["İstanbulline1\nline2"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["trailing."],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["a.b.c日本語のテキスト"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":[".leading{name} has {count} items"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["hello"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["src/a/b.tsns:key.path"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["src/a/b.tstrailing."],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["key_name-1.leading"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["😀trailing."],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["hello worldHello World"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":[""],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["trailing.line1\nline2"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["ΣΊΣΥΦΟΣHELLO"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["Hello World"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["abc"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["a.b.cHello World"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["a:b:chello world"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["key_name-1"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["src/a/b.ts./x/**/*.json"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["tab\tseparatedİstanbul"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["ünïcödéHELLO"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["HELLOab"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["ΣΊΣΥΦΟΣsrc/a/b.ts"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["Hello World😀"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["é"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["{name} has {count} items./x/**/*.json"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["ΣΊΣΥΦΟΣa😀b😀c"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["helloé"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["aa..b"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["straßeHello World"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["  padded  ab"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["Hello World  padded  "],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["./x/**/*.jsonHello World"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["line1\nline2ns:key.path"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["key_name-1abc"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["ünïcödéab"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["a..bhello world"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["a😀b😀cΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["abchello world"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["a😀b😀cİstanbul"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["😀{name} has {count} items"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["tab\tseparated﻿bom"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["a😀b😀c﻿bom"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["İstanbulé"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["straßehello"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":[":tab\tseparated"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["😀ab"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["HELLOtrailing."],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["İstanbulstraße"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["İstanbul  padded  "],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["ékey_name-1"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["éa😀b😀c"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["日本語のテキスト﻿bom"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["a:b:cé"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["trailing.straße"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["line1\nline2hello world"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["{name} has {count} items﻿bom"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["tab\tseparatedline1\nline2"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["emoji 👍🏽 mixΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["src/a/b.ts{name} has {count} items"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["HELLOabc"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":[".leadinghello world"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["aa"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["ab.leading"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["İstanbulHello World"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["éhello"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["trailing.hello"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["Hello WorldHello World"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["  padded    padded  "],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["ns:key.path{name} has {count} items"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["hello worldhello world"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["key_name-1ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["trailing.a"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["tab\tseparated.leading"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":[".leading😀"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":[".leadingns:key.path"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":[".leadingΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["emoji 👍🏽 mixns:key.path"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["  padded  Hello World"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":[".leadingab"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["éstraße"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["a😀b😀c日本語のテキスト"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["line1\nline2src/a/b.ts"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["tab\tseparated:"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["aba😀b😀c"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["😀ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["﻿bomstraße"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["hello worlda.b.c"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["abemoji 👍🏽 mix"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["{name} has {count} itemstrailing."],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["hello worldhello"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["ünïcödéa.b.c"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["trailing.😀"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["a:b:cstraße"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["a😀b😀csrc/a/b.ts"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["a:b:ca😀b😀c"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["{name} has {count} itemsünïcödé"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["İstanbulhello"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["  padded  a..b"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["./x/**/*.jsona:b:c"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["hello  padded  "],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["src/a/b.tsabc"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":[":hello"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["tab\tseparatedkey_name-1"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["日本語のテキスト日本語のテキスト"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["😀a..b"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["İstanbulΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["tab\tseparated  padded  "],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["{name} has {count} itemsab"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["ünïcödéünïcödé"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["  padded  hello world"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":[".leadinga..b"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["abkey_name-1"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["étab\tseparated"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["abtrailing."],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["./x/**/*.jsonkey_name-1"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["hello worldΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["aba"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["éΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["emoji 👍🏽 mix./x/**/*.json"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["tab\tseparatedsrc/a/b.ts"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["éns:key.path"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["HELLOa.b.c"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["ünïcödé.leading"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["straßekey_name-1"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["src/a/b.ts日本語のテキスト"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["é./x/**/*.json"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["key_name-1trailing."],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["a:b:c😀"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["abcline1\nline2"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["a.b.ca..b"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["ΣΊΣΥΦΟΣünïcödé"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["ésrc/a/b.ts"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":[":./x/**/*.json"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["a..btab\tseparated"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["a./x/**/*.json"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["hello world😀"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["a😀b😀chello world"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["abc  padded  "],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["a😀b😀cstraße"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["./x/**/*.jsontrailing."],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["İstanbulemoji 👍🏽 mix"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["./x/**/*.jsonΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["a.b.chello world"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["src/a/b.ts.leading"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["ΣΊΣΥΦΟΣline1\nline2"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["a:"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["{name} has {count} itemshello world"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["HELLOhello"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["é😀"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["😀emoji 👍🏽 mix"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["a😀b😀cé"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["aΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["helloΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["İstanbultrailing."],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["abc:"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["a..bns:key.path"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["a:b:cİstanbul"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["src/a/b.tssrc/a/b.ts"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":[":a"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["abhello world"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["abctrailing."],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["straßetrailing."],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["./x/**/*.jsonline1\nline2"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["ns:key.pathhello world"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["﻿bomHello World"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["ahello world"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["étrailing."],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["héllo wörld"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["👍🏽 thumbs"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["日本語"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["ılık ırmak"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["👨‍👩‍👧 family"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["a b"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["a😀b"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["a²b x½ y①"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["aⅠb Ⅻ"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["a𐐀b 𝐀bc"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["कि ٣٤"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["write_stdin failed: stdin is closed for this session"],"ok":true}
+{"fn":"isNonFatalCodexErrorMessage","args":["  WRITE_STDIN FAILED: STDIN IS CLOSED FOR THIS SESSION  "],"ok":true}
+{"fn":"isNonFatalCodexErrorMessage","args":["turn ended: write_stdin failed: stdin is closed for this session (code 3)"],"ok":true}
+{"fn":"isNonFatalCodexErrorMessage","args":["write_stdin failed: stdin is closed for this sessions"],"ok":true}
+{"fn":"isNonFatalCodexErrorMessage","args":["write_stdin failed: stdin is closed for this"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["write_stdin failed:stdin is closed for this session"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["stdin is closed for this session"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["write_stdin failed"],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["Write_Stdin Failed: Stdin Is Closed For This Session"],"ok":true}
+{"fn":"isNonFatalCodexErrorMessage","args":["\twrite_stdin failed: stdin is closed for this session\n"],"ok":true}
+{"fn":"isNonFatalCodexErrorMessage","args":[""],"ok":false}
+{"fn":"isNonFatalCodexErrorMessage","args":["EPIPE write_stdin failed: stdin is closed for this session EPIPE"],"ok":true}

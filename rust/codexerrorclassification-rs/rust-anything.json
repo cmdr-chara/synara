@@ -1,0 +1,37 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/codexErrorClassification.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "codexerrorclassification-rs",
+  "exports": [
+    {
+      "name": "isNonFatalCodexErrorMessage",
+      "file": "apps/server/src/codexErrorClassification.ts",
+      "line": 14,
+      "params": [
+        {
+          "name": "message",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "CodexSessionStartError",
+      "file": "apps/server/src/codexErrorClassification.ts",
+      "line": 6,
+      "reason": "class: extends another class, public field `name`"
+    }
+  ]
+}

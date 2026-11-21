@@ -1,0 +1,349 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/projectAgent.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "projectagent-rs",
+  "exports": [
+    {
+      "name": "normalizeProjectDocumentPath",
+      "file": "packages/shared/src/projectAgent.ts",
+      "line": 22,
+      "params": [
+        {
+          "name": "rawPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isInboxDocumentPath",
+      "file": "packages/shared/src/projectAgent.ts",
+      "line": 42,
+      "params": [
+        {
+          "name": "logicalPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isUserOwnedDocumentPath",
+      "file": "packages/shared/src/projectAgent.ts",
+      "line": 46,
+      "params": [
+        {
+          "name": "logicalPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isCoordinatorCuratedDocumentPath",
+      "file": "packages/shared/src/projectAgent.ts",
+      "line": 50,
+      "params": [
+        {
+          "name": "logicalPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isGeneratedDocumentPath",
+      "file": "packages/shared/src/projectAgent.ts",
+      "line": 54,
+      "params": [
+        {
+          "name": "logicalPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isMemoryDocumentPath",
+      "file": "packages/shared/src/projectAgent.ts",
+      "line": 63,
+      "params": [
+        {
+          "name": "logicalPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "memoryThreadDocumentPath",
+      "file": "packages/shared/src/projectAgent.ts",
+      "line": 67,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isMemoryThreadDocumentPath",
+      "file": "packages/shared/src/projectAgent.ts",
+      "line": 71,
+      "params": [
+        {
+          "name": "logicalPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "memoryThreadIdFromDocumentPath",
+      "file": "packages/shared/src/projectAgent.ts",
+      "line": 79,
+      "params": [
+        {
+          "name": "logicalPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isMemoryNoteDocumentPath",
+      "file": "packages/shared/src/projectAgent.ts",
+      "line": 85,
+      "params": [
+        {
+          "name": "logicalPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "canWriteMemoryDocument",
+      "file": "packages/shared/src/projectAgent.ts",
+      "line": 93,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly logicalPath: string;\n  readonly principalKind: string;\n  readonly principalThreadId?: string | null;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isProjectContextPreviewPath",
+      "file": "packages/shared/src/projectAgent.ts",
+      "line": 123,
+      "params": [
+        {
+          "name": "logicalPath",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "sanitizeProjectDigestSummary",
+      "file": "packages/shared/src/projectAgent.ts",
+      "line": 136,
+      "params": [
+        {
+          "name": "summary",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "sanitizeProjectDigestFocusTitle",
+      "file": "packages/shared/src/projectAgent.ts",
+      "line": 153,
+      "params": [
+        {
+          "name": "title",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "detectProjectTaskDependencyCycle",
+      "file": "packages/shared/src/projectAgent.ts",
+      "line": 157,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly taskId: typeof typeof typeof typeof ProjectTaskId.Type.Type.Type.Type;\n  readonly dependsOnTaskIds: ReadonlyArray<typeof typeof typeof typeof ProjectTaskId.Type.Type.Type.Type>;\n  readonly edges: ReadonlyMap<typeof typeof typeof typeof ProjectTaskId.Type.Type.Type.Type, ReadonlyArray<typeof typeof typeof typeof ProjectTaskId.Type.Type.Type.Type>>;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "truncateToContextBudget",
+      "file": "packages/shared/src/projectAgent.ts",
+      "line": 180,
+      "params": [
+        {
+          "name": "sections",
+          "ts_type": "ReadonlyArray<{ readonly label: string; readonly text: string }>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "budget",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "{\n  readonly packet: string;\n  readonly characterCount: number;\n  readonly truncated: boolean;\n}",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "encodeProjectAgentListCursor",
+      "file": "packages/shared/src/projectAgent.ts",
+      "line": 202,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly createdAt: string;\n  readonly id: string;\n  readonly sequence?: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "decodeProjectAgentListCursor",
+      "file": "packages/shared/src/projectAgent.ts",
+      "line": 211,
+      "params": [
+        {
+          "name": "cursor",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{\n  readonly createdAt: string;\n  readonly id: string;\n  readonly sequence?: number;\n} | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "ProjectAgentPathError",
+      "file": "packages/shared/src/projectAgent.ts",
+      "line": 13,
+      "reason": "class: extends another class, public field `code`"
+    }
+  ]
+}

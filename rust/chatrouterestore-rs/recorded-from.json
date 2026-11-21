@@ -1,0 +1,17 @@
+{
+  "unit": "apps/web/src/chatRouteRestore.ts",
+  "files": 1,
+  "fingerprint": "ef1a52a1bf3339a5",
+  "coverage": {
+    "lines": 64,
+    "reached": 55,
+    "files": [
+      {
+        "file": "apps/web/src/chatRouteRestore.ts",
+        "lines": 64,
+        "reached": 55,
+        "missed": "26-27, 29-32, 34-35, 37"
+      }
+    ]
+  }
+}

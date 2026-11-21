@@ -1,0 +1,102 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/chatRouteRestore.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "chatrouterestore-rs",
+  "exports": [
+    {
+      "name": "resolveRestorableThreadRoute",
+      "file": "apps/web/src/chatRouteRestore.ts",
+      "line": 15,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  lastThreadRoute: ({\n  threadId: string;\n  splitViewId?: string | undefined;\n}) | null;\n  availableThreadIds: ReadonlySet<string>;\n  availableSplitViewIds?: ReadonlySet<string>;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "({\n  threadId: string;\n  splitViewId?: string | undefined;\n}) | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "shouldStartRememberedRouteRecovery",
+      "file": "apps/web/src/chatRouteRestore.ts",
+      "line": 41,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  lastThreadRoute: ({\n  threadId: string;\n  splitViewId?: string | undefined;\n}) | null;\n  availableThreadCount: number;\n  recoveryState: (\"idle\" | \"pending\" | \"done\");\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "shouldHoldRememberedRouteFallback",
+      "file": "apps/web/src/chatRouteRestore.ts",
+      "line": 51,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  lastThreadRoute: ({\n  threadId: string;\n  splitViewId?: string | undefined;\n}) | null;\n  availableThreadCount: number;\n  recoveryState: (\"idle\" | \"pending\" | \"done\");\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "shouldStartMissingThreadRouteRecovery",
+      "file": "apps/web/src/chatRouteRestore.ts",
+      "line": 61,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  hasKnownServerThreads: boolean;\n  recoveryState: (\"idle\" | \"pending\" | \"done\");\n  routeThreadExists: boolean;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "shouldHoldMissingThreadRouteFallback",
+      "file": "apps/web/src/chatRouteRestore.ts",
+      "line": 69,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  hasKnownServerThreads: boolean;\n  recoveryState: (\"idle\" | \"pending\" | \"done\");\n  routeThreadExists: boolean;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

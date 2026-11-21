@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/automationRunLifecycle.ts",
+  "files": 1,
+  "fingerprint": "8abfea0d2750149e",
+  "coverage": {
+    "lines": 97,
+    "reached": 97,
+    "files": [
+      {
+        "file": "packages/shared/src/automationRunLifecycle.ts",
+        "lines": 97,
+        "reached": 97,
+        "missed": ""
+      }
+    ]
+  }
+}

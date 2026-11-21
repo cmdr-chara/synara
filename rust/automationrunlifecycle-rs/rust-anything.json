@@ -1,0 +1,90 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/automationRunLifecycle.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "automationrunlifecycle-rs",
+  "exports": [
+    {
+      "name": "isActiveAutomationRunStatus",
+      "file": "packages/shared/src/automationRunLifecycle.ts",
+      "line": 81,
+      "params": [
+        {
+          "name": "status",
+          "ts_type": "typeof typeof typeof typeof AutomationRunStatus.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "status is (typeof ACTIVE_AUTOMATION_RUN_STATUSES)[number]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isTerminalAutomationRunStatus",
+      "file": "packages/shared/src/automationRunLifecycle.ts",
+      "line": 88,
+      "params": [
+        {
+          "name": "status",
+          "ts_type": "typeof typeof typeof typeof AutomationRunStatus.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "status is (typeof TERMINAL_AUTOMATION_RUN_STATUSES)[number]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "canTransitionAutomationRun",
+      "file": "packages/shared/src/automationRunLifecycle.ts",
+      "line": 94,
+      "params": [
+        {
+          "name": "from",
+          "ts_type": "typeof typeof typeof typeof AutomationRunStatus.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "to",
+          "ts_type": "typeof typeof typeof typeof AutomationRunStatus.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "automationRunStatusesLeadingTo",
+      "file": "packages/shared/src/automationRunLifecycle.ts",
+      "line": 102,
+      "params": [
+        {
+          "name": "to",
+          "ts_type": "typeof typeof typeof typeof AutomationRunStatus.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<typeof typeof typeof typeof AutomationRunStatus.Type.Type.Type.Type>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

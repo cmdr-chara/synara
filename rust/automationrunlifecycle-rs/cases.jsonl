@@ -1,0 +1,218 @@
+{"fn":"isActiveAutomationRunStatus","args":[null],"ok":false}
+{"fn":"isActiveAutomationRunStatus","args":[["a",1]],"ok":false}
+{"fn":"isActiveAutomationRunStatus","args":[{}],"ok":false}
+{"fn":"isActiveAutomationRunStatus","args":["x"],"ok":false}
+{"fn":"isActiveAutomationRunStatus","args":[true],"ok":false}
+{"fn":"isActiveAutomationRunStatus","args":[[]],"ok":false}
+{"fn":"isActiveAutomationRunStatus","args":[0],"ok":false}
+{"fn":"isActiveAutomationRunStatus","args":[{"a":{"b":"c"}}],"ok":false}
+{"fn":"isActiveAutomationRunStatus","args":[{"a":"b"}],"ok":false}
+{"fn":"isTerminalAutomationRunStatus","args":[true],"ok":true}
+{"fn":"isTerminalAutomationRunStatus","args":[{"a":{"b":"c"}}],"ok":true}
+{"fn":"isTerminalAutomationRunStatus","args":[[]],"ok":true}
+{"fn":"isTerminalAutomationRunStatus","args":[null],"ok":true}
+{"fn":"isTerminalAutomationRunStatus","args":[{"a":"b"}],"ok":true}
+{"fn":"isTerminalAutomationRunStatus","args":[["a",1]],"ok":true}
+{"fn":"isTerminalAutomationRunStatus","args":[0],"ok":true}
+{"fn":"isTerminalAutomationRunStatus","args":["x"],"ok":true}
+{"fn":"isTerminalAutomationRunStatus","args":[{}],"ok":true}
+{"fn":"canTransitionAutomationRun","args":[{"a":"b"},["a",1]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[null,[]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[0,{"a":"b"}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[[],{}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[[],{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[{"a":"b"},{}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[null,true],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[{"a":{"b":"c"}},{"a":"b"}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[{"a":"b"},{"a":"b"}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[0,"x"],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[true,0],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[0,{}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[["a",1],{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[{"a":"b"},0],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[{},[]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[{"a":"b"},{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[[],[]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[[],"x"],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[{"a":{"b":"c"}},true],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[{"a":{"b":"c"}},["a",1]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[[],true],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[true,["a",1]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[["a",1],[]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[{"a":"b"},"x"],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":["x",null],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":["x",{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[true,[]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[null,0],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[["a",1],null],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":["x",0],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":["x",true],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":["x",{}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[[],0],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[{},null],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[["a",1],{"a":"b"}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[{},true],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[0,[]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":["x",["a",1]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[[],{"a":"b"}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[0,null],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[["a",1],{}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[{},"x"],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[["a",1],["a",1]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[null,{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":["x","x"],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[true,"x"],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[0,{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[{},{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[true,{"a":"b"}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[{},{"a":"b"}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[null,{}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[["a",1],0],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[0,["a",1]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[{"a":{"b":"c"}},0],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[[],["a",1]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":["x",[]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[{"a":"b"},true],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[null,{"a":"b"}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[{},{}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[{"a":{"b":"c"}},[]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[true,true],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[[],null],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[{},["a",1]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[{"a":"b"},null],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[{"a":{"b":"c"}},{}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[["a",1],"x"],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":["x",{"a":"b"}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[["a",1],true],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[true,null],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[null,"x"],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[{},0],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[true,{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[{"a":"b"},[]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[null,null],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[true,{}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[{"a":{"b":"c"}},"x"],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[{"a":{"b":"c"}},null],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[0,true],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[null,["a",1]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":[0,0],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":["X","x"],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"canTransitionAutomationRun","args":["x","X"],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"automationRunStatusesLeadingTo","args":[{"a":"b"}],"ok":[]}
+{"fn":"automationRunStatusesLeadingTo","args":["x"],"ok":[]}
+{"fn":"automationRunStatusesLeadingTo","args":[["a",1]],"ok":[]}
+{"fn":"automationRunStatusesLeadingTo","args":[true],"ok":[]}
+{"fn":"automationRunStatusesLeadingTo","args":[{"a":{"b":"c"}}],"ok":[]}
+{"fn":"automationRunStatusesLeadingTo","args":[{}],"ok":[]}
+{"fn":"automationRunStatusesLeadingTo","args":[[]],"ok":[]}
+{"fn":"automationRunStatusesLeadingTo","args":[0],"ok":[]}
+{"fn":"automationRunStatusesLeadingTo","args":[null],"ok":[]}
+{"fn":"isActiveAutomationRunStatus","args":["pending"],"ok":true}
+{"fn":"isTerminalAutomationRunStatus","args":["pending"],"ok":false}
+{"fn":"automationRunStatusesLeadingTo","args":["pending"],"ok":[]}
+{"fn":"isActiveAutomationRunStatus","args":["claimed"],"ok":true}
+{"fn":"isTerminalAutomationRunStatus","args":["claimed"],"ok":false}
+{"fn":"automationRunStatusesLeadingTo","args":["claimed"],"ok":[]}
+{"fn":"isActiveAutomationRunStatus","args":["running"],"ok":true}
+{"fn":"isTerminalAutomationRunStatus","args":["running"],"ok":false}
+{"fn":"automationRunStatusesLeadingTo","args":["running"],"ok":["pending","claimed","waiting-for-approval"]}
+{"fn":"isActiveAutomationRunStatus","args":["waiting-for-approval"],"ok":true}
+{"fn":"isTerminalAutomationRunStatus","args":["waiting-for-approval"],"ok":false}
+{"fn":"automationRunStatusesLeadingTo","args":["waiting-for-approval"],"ok":["pending","claimed","running"]}
+{"fn":"isActiveAutomationRunStatus","args":["succeeded"],"ok":false}
+{"fn":"isTerminalAutomationRunStatus","args":["succeeded"],"ok":true}
+{"fn":"automationRunStatusesLeadingTo","args":["succeeded"],"ok":["pending","claimed","running","waiting-for-approval"]}
+{"fn":"isActiveAutomationRunStatus","args":["failed"],"ok":false}
+{"fn":"isTerminalAutomationRunStatus","args":["failed"],"ok":true}
+{"fn":"automationRunStatusesLeadingTo","args":["failed"],"ok":["pending","claimed","running","waiting-for-approval"]}
+{"fn":"isActiveAutomationRunStatus","args":["cancelled"],"ok":false}
+{"fn":"isTerminalAutomationRunStatus","args":["cancelled"],"ok":true}
+{"fn":"automationRunStatusesLeadingTo","args":["cancelled"],"ok":["pending","claimed","running","waiting-for-approval"]}
+{"fn":"isActiveAutomationRunStatus","args":["interrupted"],"ok":false}
+{"fn":"isTerminalAutomationRunStatus","args":["interrupted"],"ok":true}
+{"fn":"automationRunStatusesLeadingTo","args":["interrupted"],"ok":["pending","claimed","running","waiting-for-approval"]}
+{"fn":"isActiveAutomationRunStatus","args":["skipped"],"ok":false}
+{"fn":"isTerminalAutomationRunStatus","args":["skipped"],"ok":true}
+{"fn":"automationRunStatusesLeadingTo","args":["skipped"],"ok":["pending","claimed"]}
+{"fn":"canTransitionAutomationRun","args":["pending","pending"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["pending","claimed"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["pending","running"],"ok":true}
+{"fn":"canTransitionAutomationRun","args":["pending","waiting-for-approval"],"ok":true}
+{"fn":"canTransitionAutomationRun","args":["pending","succeeded"],"ok":true}
+{"fn":"canTransitionAutomationRun","args":["pending","failed"],"ok":true}
+{"fn":"canTransitionAutomationRun","args":["pending","cancelled"],"ok":true}
+{"fn":"canTransitionAutomationRun","args":["pending","interrupted"],"ok":true}
+{"fn":"canTransitionAutomationRun","args":["pending","skipped"],"ok":true}
+{"fn":"canTransitionAutomationRun","args":["claimed","pending"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["claimed","claimed"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["claimed","running"],"ok":true}
+{"fn":"canTransitionAutomationRun","args":["claimed","waiting-for-approval"],"ok":true}
+{"fn":"canTransitionAutomationRun","args":["claimed","succeeded"],"ok":true}
+{"fn":"canTransitionAutomationRun","args":["claimed","failed"],"ok":true}
+{"fn":"canTransitionAutomationRun","args":["claimed","cancelled"],"ok":true}
+{"fn":"canTransitionAutomationRun","args":["claimed","interrupted"],"ok":true}
+{"fn":"canTransitionAutomationRun","args":["claimed","skipped"],"ok":true}
+{"fn":"canTransitionAutomationRun","args":["running","pending"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["running","claimed"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["running","running"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["running","waiting-for-approval"],"ok":true}
+{"fn":"canTransitionAutomationRun","args":["running","succeeded"],"ok":true}
+{"fn":"canTransitionAutomationRun","args":["running","failed"],"ok":true}
+{"fn":"canTransitionAutomationRun","args":["running","cancelled"],"ok":true}
+{"fn":"canTransitionAutomationRun","args":["running","interrupted"],"ok":true}
+{"fn":"canTransitionAutomationRun","args":["running","skipped"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["waiting-for-approval","pending"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["waiting-for-approval","claimed"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["waiting-for-approval","running"],"ok":true}
+{"fn":"canTransitionAutomationRun","args":["waiting-for-approval","waiting-for-approval"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["waiting-for-approval","succeeded"],"ok":true}
+{"fn":"canTransitionAutomationRun","args":["waiting-for-approval","failed"],"ok":true}
+{"fn":"canTransitionAutomationRun","args":["waiting-for-approval","cancelled"],"ok":true}
+{"fn":"canTransitionAutomationRun","args":["waiting-for-approval","interrupted"],"ok":true}
+{"fn":"canTransitionAutomationRun","args":["waiting-for-approval","skipped"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["succeeded","pending"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["succeeded","claimed"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["succeeded","running"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["succeeded","waiting-for-approval"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["succeeded","succeeded"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["succeeded","failed"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["succeeded","cancelled"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["succeeded","interrupted"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["succeeded","skipped"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["failed","pending"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["failed","claimed"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["failed","running"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["failed","waiting-for-approval"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["failed","succeeded"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["failed","failed"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["failed","cancelled"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["failed","interrupted"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["failed","skipped"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["cancelled","pending"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["cancelled","claimed"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["cancelled","running"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["cancelled","waiting-for-approval"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["cancelled","succeeded"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["cancelled","failed"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["cancelled","cancelled"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["cancelled","interrupted"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["cancelled","skipped"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["interrupted","pending"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["interrupted","claimed"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["interrupted","running"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["interrupted","waiting-for-approval"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["interrupted","succeeded"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["interrupted","failed"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["interrupted","cancelled"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["interrupted","interrupted"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["interrupted","skipped"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["skipped","pending"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["skipped","claimed"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["skipped","running"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["skipped","waiting-for-approval"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["skipped","succeeded"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["skipped","failed"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["skipped","cancelled"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["skipped","interrupted"],"ok":false}
+{"fn":"canTransitionAutomationRun","args":["skipped","skipped"],"ok":false}

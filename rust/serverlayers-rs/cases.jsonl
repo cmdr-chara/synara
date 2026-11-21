@@ -1,0 +1,21 @@
+{"fn":"makeServerRuntimeServicesLayer","args":[{"agentGatewayCredentialsLayer":["a",1]}],"ok":{"build":{"$function":""}}}
+{"fn":"makeServerRuntimeServicesLayer","args":[],"ok":{"build":{"$function":""}}}
+{"fn":"makeServerRuntimeServicesLayer","args":[{"agentGatewayCredentialsLayer":{"a":"b"}}],"ok":{"build":{"$function":""}}}
+{"fn":"makeServerRuntimeServicesLayer","args":[{"a":{"b":"c"}}],"ok":{"build":{"$function":""}}}
+{"fn":"makeServerRuntimeServicesLayer","args":[{"agentGatewayCredentialsLayer":{}}],"ok":{"build":{"$function":""}}}
+{"fn":"makeServerRuntimeServicesLayer","args":[{}],"ok":{"build":{"$function":""}}}
+{"fn":"makeServerRuntimeServicesLayer","args":[{"agentGatewayCredentialsLayer":null}],"ok":{"build":{"$function":""}}}
+{"fn":"makeServerRuntimeServicesLayer","args":[{"agentGatewayCredentialsLayer":{"a":{"b":"c"}}}],"ok":{"build":{"$function":""}}}
+{"fn":"makeServerRuntimeServicesLayer","args":[["a",1]],"ok":{"build":{"$function":""}}}
+{"fn":"makeServerRuntimeServicesLayer","args":[{"agentGatewayCredentialsLayer":true}],"ok":{"build":{"$function":""}}}
+{"fn":"makeServerRuntimeServicesLayer","args":[{"$undefined":true}],"ok":{"build":{"$function":""}}}
+{"fn":"makeServerRuntimeServicesLayer","args":[{"agentGatewayCredentialsLayer":"x"}],"ok":{"build":{"$function":""}}}
+{"fn":"makeServerRuntimeServicesLayer","args":[{"agentGatewayCredentialsLayer":[]}],"ok":{"build":{"$function":""}}}
+{"fn":"makeServerRuntimeServicesLayer","args":[true],"ok":{"build":{"$function":""}}}
+{"fn":"makeServerRuntimeServicesLayer","args":[{"a":"b"}],"ok":{"build":{"$function":""}}}
+{"fn":"makeServerRuntimeServicesLayer","args":["x"],"ok":{"build":{"$function":""}}}
+{"fn":"makeServerRuntimeServicesLayer","args":[{"agentGatewayCredentialsLayer":0}],"ok":{"build":{"$function":""}}}
+{"fn":"makeServerRuntimeServicesLayer","args":[0],"ok":{"build":{"$function":""}}}
+{"fn":"makeServerRuntimeServicesLayer","args":[[]],"ok":{"build":{"$function":""}}}
+{"fn":"makeServerRuntimeServicesLayer","args":[null],"error":"null is not an object (evaluating 'options.agentGatewayCredentialsLayer')"}
+{"fn":"makeServerApplicationLayers","args":[],"ok":{"runtimeServicesLayer":{"build":{"$function":""}},"providerLayer":{"build":{"$function":""}}}}

@@ -1,0 +1,48 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/serverLayers.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "serverlayers-rs",
+  "exports": [
+    {
+      "name": "makeServerRuntimeServicesLayer",
+      "file": "apps/server/src/serverLayers.ts",
+      "line": 102,
+      "params": [
+        {
+          "name": "options",
+          "ts_type": "{\n    readonly agentGatewayCredentialsLayer?: typeof AgentGatewayCredentialsWithSecretsLive;\n  }",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeServerApplicationLayers",
+      "file": "apps/server/src/serverLayers.ts",
+      "line": 390,
+      "params": [],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "provideThreadDeletionReactorDeviceService",
+      "file": "apps/server/src/serverLayers.ts",
+      "line": 89,
+      "reason": "generic over `ReactorServices`: values of any shape, functions included"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/computerKeyNames.ts",
+  "files": 1,
+  "fingerprint": "123e74cb541a5f27",
+  "coverage": {
+    "lines": 102,
+    "reached": 102,
+    "files": [
+      {
+        "file": "packages/shared/src/computerKeyNames.ts",
+        "lines": 102,
+        "reached": 102,
+        "missed": ""
+      }
+    ]
+  }
+}

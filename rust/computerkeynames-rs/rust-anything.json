@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/computerKeyNames.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "computerkeynames-rs",
+  "exports": [
+    {
+      "name": "isComputerNamedKey",
+      "file": "packages/shared/src/computerKeyNames.ts",
+      "line": 65,
+      "params": [
+        {
+          "name": "name",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "name is (typeof COMPUTER_NAMED_KEYS)[number]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

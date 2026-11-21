@@ -1,0 +1,18 @@
+{"fn":"usePreferredEditor","args":[{"a":{"b":"c"}}],"error":"null is not an object (evaluating 'resolveDispatcher().useState')"}
+{"fn":"usePreferredEditor","args":[null],"error":"null is not an object (evaluating 'resolveDispatcher().useState')"}
+{"fn":"usePreferredEditor","args":["x"],"error":"null is not an object (evaluating 'resolveDispatcher().useState')"}
+{"fn":"usePreferredEditor","args":[{}],"error":"null is not an object (evaluating 'resolveDispatcher().useState')"}
+{"fn":"usePreferredEditor","args":[[]],"error":"null is not an object (evaluating 'resolveDispatcher().useState')"}
+{"fn":"usePreferredEditor","args":[0],"error":"null is not an object (evaluating 'resolveDispatcher().useState')"}
+{"fn":"usePreferredEditor","args":[true],"error":"null is not an object (evaluating 'resolveDispatcher().useState')"}
+{"fn":"usePreferredEditor","args":[{"a":"b"}],"error":"null is not an object (evaluating 'resolveDispatcher().useState')"}
+{"fn":"usePreferredEditor","args":[["a",1]],"error":"null is not an object (evaluating 'resolveDispatcher().useState')"}
+{"fn":"resolveAndPersistPreferredEditor","args":[["a",1]],"ok":null}
+{"fn":"resolveAndPersistPreferredEditor","args":[{"a":"b"}],"error":"Type error"}
+{"fn":"resolveAndPersistPreferredEditor","args":[[]],"ok":null}
+{"fn":"resolveAndPersistPreferredEditor","args":[0],"error":"Type error"}
+{"fn":"resolveAndPersistPreferredEditor","args":[null],"ok":null}
+{"fn":"resolveAndPersistPreferredEditor","args":[{"a":{"b":"c"}}],"error":"Type error"}
+{"fn":"resolveAndPersistPreferredEditor","args":["x"],"ok":null}
+{"fn":"resolveAndPersistPreferredEditor","args":[{}],"error":"Type error"}
+{"fn":"resolveAndPersistPreferredEditor","args":[true],"error":"Type error"}

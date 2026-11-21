@@ -1,0 +1,55 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/editorPreferences.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "editorpreferences-rs",
+  "exports": [
+    {
+      "name": "usePreferredEditor",
+      "file": "apps/web/src/editorPreferences.ts",
+      "line": 6,
+      "params": [
+        {
+          "name": "availableEditors",
+          "ts_type": "ReadonlyArray<typeof typeof typeof typeof EditorId.Type.Type.Type.Type>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveAndPersistPreferredEditor",
+      "file": "apps/web/src/editorPreferences.ts",
+      "line": 19,
+      "params": [
+        {
+          "name": "availableEditors",
+          "ts_type": "readonly typeof typeof typeof typeof EditorId.Type.Type.Type.Type[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof EditorId.Type.Type.Type.Type | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "openInPreferredEditor",
+      "file": "apps/web/src/editorPreferences.ts",
+      "line": 30,
+      "reason": "uses `NativeApi`, which has function members"
+    }
+  ]
+}

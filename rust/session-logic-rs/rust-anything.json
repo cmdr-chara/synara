@@ -1,0 +1,570 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/session-logic.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "session-logic-rs",
+  "exports": [
+    {
+      "name": "formatClockDuration",
+      "file": "apps/web/src/session-logic.ts",
+      "line": 105,
+      "params": [
+        {
+          "name": "durationMs",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "formatClockElapsed",
+      "file": "apps/web/src/session-logic.ts",
+      "line": 119,
+      "params": [
+        {
+          "name": "startIso",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "endIso",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "formatElapsed",
+      "file": "apps/web/src/session-logic.ts",
+      "line": 129,
+      "params": [
+        {
+          "name": "startIso",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "endIso",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isSessionOrLatestTurnRunning",
+      "file": "apps/web/src/session-logic.ts",
+      "line": 153,
+      "params": [
+        {
+          "name": "orchestrationStatus",
+          "ts_type": "typeof typeof typeof typeof OrchestrationSessionStatus.Type.Type.Type.Type | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "latestTurnState",
+          "ts_type": "(typeof typeof typeof OrchestrationLatestTurn.Type.Type.Type[\"state\"] | null | undefined)",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isSessionOrLatestTurnStartingOrRunning",
+      "file": "apps/web/src/session-logic.ts",
+      "line": 161,
+      "params": [
+        {
+          "name": "orchestrationStatus",
+          "ts_type": "typeof typeof typeof typeof OrchestrationSessionStatus.Type.Type.Type.Type | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "latestTurnState",
+          "ts_type": "(typeof typeof typeof OrchestrationLatestTurn.Type.Type.Type[\"state\"] | null | undefined)",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isSessionOpenOrLatestTurnRunning",
+      "file": "apps/web/src/session-logic.ts",
+      "line": 175,
+      "params": [
+        {
+          "name": "orchestrationStatus",
+          "ts_type": "typeof typeof typeof typeof OrchestrationSessionStatus.Type.Type.Type.Type | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "latestTurnState",
+          "ts_type": "(typeof typeof typeof OrchestrationLatestTurn.Type.Type.Type[\"state\"] | null | undefined)",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "runningSessionActiveTurnId",
+      "file": "apps/web/src/session-logic.ts",
+      "line": 188,
+      "params": [
+        {
+          "name": "session",
+          "ts_type": "(Pick<ThreadSession, \"orchestrationStatus\" | \"activeTurnId\">) | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof TurnId.Type.Type.Type.Type | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isLatestTurnSettled",
+      "file": "apps/web/src/session-logic.ts",
+      "line": 194,
+      "params": [
+        {
+          "name": "latestTurn",
+          "ts_type": "(Pick<\n  typeof typeof typeof OrchestrationLatestTurn.Type.Type.Type,\n  \"turnId\" | \"state\" | \"startedAt\" | \"completedAt\"\n>) | null",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "session",
+          "ts_type": "(Pick<ThreadSession, \"orchestrationStatus\" | \"activeTurnId\">) | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "hasLiveLatestTurn",
+      "file": "apps/web/src/session-logic.ts",
+      "line": 208,
+      "params": [
+        {
+          "name": "latestTurn",
+          "ts_type": "(Pick<\n  typeof typeof typeof OrchestrationLatestTurn.Type.Type.Type,\n  \"turnId\" | \"state\" | \"startedAt\" | \"completedAt\"\n>) | null",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "session",
+          "ts_type": "(Pick<ThreadSession, \"orchestrationStatus\" | \"activeTurnId\">) | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "canSessionAnswerPendingRequests",
+      "file": "apps/web/src/session-logic.ts",
+      "line": 226,
+      "params": [
+        {
+          "name": "session",
+          "ts_type": "Pick<ThreadSession, \"status\"> | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isSessionRuntimeRetired",
+      "file": "apps/web/src/session-logic.ts",
+      "line": 240,
+      "params": [
+        {
+          "name": "status",
+          "ts_type": "typeof typeof typeof typeof OrchestrationSessionStatus.Type.Type.Type.Type | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isSessionAliveForSubagents",
+      "file": "apps/web/src/session-logic.ts",
+      "line": 247,
+      "params": [
+        {
+          "name": "status",
+          "ts_type": "typeof typeof typeof typeof OrchestrationSessionStatus.Type.Type.Type.Type | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isSessionRunningTurn",
+      "file": "apps/web/src/session-logic.ts",
+      "line": 272,
+      "params": [
+        {
+          "name": "session",
+          "ts_type": "(({\n  status: string;\n  activeTurnId?: typeof typeof typeof TurnId.Type.Type.Type | null | undefined;\n})) | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "session is (({\n  status: string;\n  activeTurnId?: typeof typeof typeof TurnId.Type.Type.Type | null | undefined;\n})) & { activeTurnId: typeof typeof typeof typeof TurnId.Type.Type.Type.Type }",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deriveActiveWorkStartedAt",
+      "file": "apps/web/src/session-logic.ts",
+      "line": 278,
+      "params": [
+        {
+          "name": "latestTurn",
+          "ts_type": "(Pick<\n  typeof typeof typeof OrchestrationLatestTurn.Type.Type.Type,\n  \"turnId\" | \"state\" | \"startedAt\" | \"completedAt\"\n>) | null",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "session",
+          "ts_type": "(Pick<ThreadSession, \"orchestrationStatus\" | \"activeTurnId\">) | null",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "sendStartedAt",
+          "ts_type": "string | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deriveActiveTaskListState",
+      "file": "apps/web/src/session-logic.ts",
+      "line": 315,
+      "params": [
+        {
+          "name": "activities",
+          "ts_type": "ReadonlyArray<typeof typeof typeof typeof OrchestrationThreadActivity.Type.Type.Type.Type>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "latestTurnId",
+          "ts_type": "typeof typeof typeof typeof TurnId.Type.Type.Type.Type | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ActiveTaskListState | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deriveActiveBackgroundTasksState",
+      "file": "apps/web/src/session-logic.ts",
+      "line": 462,
+      "params": [
+        {
+          "name": "activities",
+          "ts_type": "ReadonlyArray<typeof typeof typeof typeof OrchestrationThreadActivity.Type.Type.Type.Type>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "latestTurnId",
+          "ts_type": "typeof typeof typeof typeof TurnId.Type.Type.Type.Type | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ActiveBackgroundTasksState | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "derivePendingBackgroundWork",
+      "file": "apps/web/src/session-logic.ts",
+      "line": 481,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  activities: ReadonlyArray<typeof typeof typeof typeof OrchestrationThreadActivity.Type.Type.Type.Type>;\n  latestTurn: Pick<typeof typeof typeof typeof OrchestrationLatestTurn.Type.Type.Type.Type, \"turnId\"> | null | undefined;\n  session: Pick<ThreadSession, \"orchestrationStatus\"> | null | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{ count: number; taskIds: string[] } | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deriveOutstandingBackgroundTaskIds",
+      "file": "apps/web/src/session-logic.ts",
+      "line": 511,
+      "params": [
+        {
+          "name": "activities",
+          "ts_type": "ReadonlyArray<typeof typeof typeof typeof OrchestrationThreadActivity.Type.Type.Type.Type>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "countOutstandingBackgroundWork",
+      "file": "apps/web/src/session-logic.ts",
+      "line": 519,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  activities: ReadonlyArray<typeof typeof typeof typeof OrchestrationThreadActivity.Type.Type.Type.Type>;\n  session: Pick<ThreadSession, \"orchestrationStatus\"> | null | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deriveRunningSubagentTasks",
+      "file": "apps/web/src/session-logic.ts",
+      "line": 570,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  activities: ReadonlyArray<typeof typeof typeof typeof OrchestrationThreadActivity.Type.Type.Type.Type>;\n  liveTurnId: typeof typeof typeof typeof TurnId.Type.Type.Type.Type | null;\n  sessionStatus: typeof typeof typeof typeof OrchestrationSessionStatus.Type.Type.Type.Type | null | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "RunningSubagentTasks",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "hasLiveTurnTailWork",
+      "file": "apps/web/src/session-logic.ts",
+      "line": 639,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  latestTurn: Pick<typeof typeof typeof typeof OrchestrationLatestTurn.Type.Type.Type.Type, \"turnId\" | \"completedAt\"> | null;\n  messages: ReadonlyArray<Pick<ChatMessage, \"role\" | \"streaming\" | \"turnId\">>;\n  activities: ReadonlyArray<typeof typeof typeof typeof OrchestrationThreadActivity.Type.Type.Type.Type>;\n  session?: Pick<ThreadSession, \"orchestrationStatus\"> | null;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "findLatestProposedPlan",
+      "file": "apps/web/src/session-logic.ts",
+      "line": 674,
+      "params": [
+        {
+          "name": "proposedPlans",
+          "ts_type": "ReadonlyArray<ProposedPlan>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "latestTurnId",
+          "ts_type": "typeof typeof typeof typeof TurnId.Type.Type.Type.Type | string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "LatestProposedPlanState | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "findSidebarProposedPlan",
+      "file": "apps/web/src/session-logic.ts",
+      "line": 704,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  threads: ReadonlyArray<Pick<Thread, \"id\" | \"proposedPlans\">>;\n  latestTurn: Pick<typeof typeof typeof typeof OrchestrationLatestTurn.Type.Type.Type.Type, \"turnId\" | \"sourceProposedPlan\"> | null;\n  latestTurnSettled: boolean;\n  threadId: typeof typeof typeof typeof ThreadId.Type.Type.Type.Type | string | null | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "LatestProposedPlanState | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "hasActionableProposedPlan",
+      "file": "apps/web/src/session-logic.ts",
+      "line": 731,
+      "params": [
+        {
+          "name": "proposedPlan",
+          "ts_type": "LatestProposedPlanState | Pick<ProposedPlan, \"implementedAt\"> | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildSourceProposedPlanReference",
+      "file": "apps/web/src/session-logic.ts",
+      "line": 737,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  threadId: typeof typeof typeof typeof ThreadId.Type.Type.Type.Type;\n  proposedPlan: Pick<ProposedPlan, \"id\"> | null | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof OrchestrationLatestTurn.Type.Type.Type.Type[\"sourceProposedPlan\"] | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "inferCheckpointTurnCountByTurnId",
+      "file": "apps/web/src/session-logic.ts",
+      "line": 762,
+      "params": [
+        {
+          "name": "summaries",
+          "ts_type": "TurnDiffSummary[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Record<typeof typeof typeof typeof TurnId.Type.Type.Type.Type, number>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "derivePhase",
+      "file": "apps/web/src/session-logic.ts",
+      "line": 775,
+      "params": [
+        {
+          "name": "session",
+          "ts_type": "ThreadSession | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(\"disconnected\" | \"connecting\" | \"ready\" | \"running\")",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,35 @@
+{
+  "unit": "apps/web/src/storePersistence.ts",
+  "files": 1,
+  "fingerprint": "6c4d527ccd499f07",
+  "coverage": {
+    "lines": 788,
+    "reached": 540,
+    "files": [
+      {
+        "file": "apps/web/src/lib/hosts/executionContext.ts",
+        "lines": 34,
+        "reached": 12,
+        "missed": "11-13, 15-16, 18-31, 33-35"
+      },
+      {
+        "file": "apps/web/src/lib/hosts/executionStorage.ts",
+        "lines": 91,
+        "reached": 25,
+        "missed": "5-10, 14-52, 56-57, 66-67, 75-89, 93-94"
+      },
+      {
+        "file": "apps/web/src/lib/projectAppearance.ts",
+        "lines": 446,
+        "reached": 406,
+        "missed": "40-41, 410-414, 421-430, 433-437, 441-445, 449-461"
+      },
+      {
+        "file": "apps/web/src/storePersistence.ts",
+        "lines": 217,
+        "reached": 97,
+        "missed": "30-31, 33-34, 37-38, 50-51, 67-69, 80-81, 84-89, 94-98, 107-114, 117-125, 128-129, 142-157, 160-163, 165-174, 177-186, 189-197, 202-229"
+      }
+    ]
+  }
+}

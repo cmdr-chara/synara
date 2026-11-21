@@ -1,0 +1,127 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/storePersistence.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "storepersistence-rs",
+  "exports": [
+    {
+      "name": "projectCwdKey",
+      "file": "apps/web/src/storePersistence.ts",
+      "line": 45,
+      "params": [
+        {
+          "name": "cwd",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resetStaleRememberedProjectState",
+      "file": "apps/web/src/storePersistence.ts",
+      "line": 65,
+      "params": [
+        {
+          "name": "incomingCwdKeys",
+          "ts_type": "ReadonlySet<string>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "rememberProjectState",
+      "file": "apps/web/src/storePersistence.ts",
+      "line": 101,
+      "params": [
+        {
+          "name": "projects",
+          "ts_type": "ReadonlyArray<Pick<Project, \"cwd\" | \"expanded\" | \"localName\" | \"appearance\">>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "forgetProjectState",
+      "file": "apps/web/src/storePersistence.ts",
+      "line": 132,
+      "params": [
+        {
+          "name": "cwd",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readPersistedState",
+      "file": "apps/web/src/storePersistence.ts",
+      "line": 140,
+      "params": [
+        {
+          "name": "initialState",
+          "ts_type": "AppState",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "AppState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "persistState",
+      "file": "apps/web/src/storePersistence.ts",
+      "line": 200,
+      "params": [
+        {
+          "name": "state",
+          "ts_type": "AppState",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "getRememberedProjectUiState",
+      "file": "apps/web/src/storePersistence.ts",
+      "line": 49,
+      "reason": "uses `RememberedProjectUiState`, which has function members"
+    }
+  ]
+}

@@ -1,0 +1,391 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/composerDraftModels.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "composerdraftmodels-rs",
+  "exports": [
+    {
+      "name": "normalizeProviderKind",
+      "file": "apps/web/src/composerDraftModels.ts",
+      "line": 154,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeProviderInstanceId",
+      "file": "apps/web/src/composerDraftModels.ts",
+      "line": 172,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ProviderInstanceId.Type.Type.Type.Type | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "providerInstanceModelSelectionKey",
+      "file": "apps/web/src/composerDraftModels.ts",
+      "line": 177,
+      "params": [
+        {
+          "name": "provider",
+          "ts_type": "typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "instanceId",
+          "ts_type": "typeof typeof typeof typeof ProviderInstanceId.Type.Type.Type.Type | null | undefined",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ProviderInstanceId.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "modelSelectionStorageKey",
+      "file": "apps/web/src/composerDraftModels.ts",
+      "line": 184,
+      "params": [
+        {
+          "name": "selection",
+          "ts_type": "typeof typeof typeof typeof ModelSelection.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ProviderInstanceId.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readModelSelectionForProviderInstance",
+      "file": "apps/web/src/composerDraftModels.ts",
+      "line": 188,
+      "params": [
+        {
+          "name": "selections",
+          "ts_type": "Partial<Record<typeof typeof typeof ProviderInstanceId.Type.Type.Type, typeof typeof typeof ModelSelection.Type.Type.Type>> | null | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "provider",
+          "ts_type": "typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "instanceId",
+          "ts_type": "typeof typeof typeof typeof ProviderInstanceId.Type.Type.Type.Type | null | undefined",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ModelSelection.Type.Type.Type.Type | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeModelSelectionMapByInstance",
+      "file": "apps/web/src/composerDraftModels.ts",
+      "line": 196,
+      "params": [
+        {
+          "name": "selections",
+          "ts_type": "Partial<Record<typeof typeof typeof ProviderInstanceId.Type.Type.Type, typeof typeof typeof ModelSelection.Type.Type.Type>>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Partial<Record<typeof typeof typeof ProviderInstanceId.Type.Type.Type, typeof typeof typeof ModelSelection.Type.Type.Type>>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "makeModelSelection",
+      "file": "apps/web/src/composerDraftModels.ts",
+      "line": 216,
+      "params": [
+        {
+          "name": "provider",
+          "ts_type": "typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "model",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "typeof typeof typeof typeof ProviderModelOptions.Type.Type.Type.Type[typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type]",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "supportsAutoMode",
+          "ts_type": "boolean",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "instanceId",
+          "ts_type": "typeof typeof typeof typeof ProviderInstanceId.Type.Type.Type.Type | null | undefined",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ModelSelection.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeProviderModelOptions",
+      "file": "apps/web/src/composerDraftModels.ts",
+      "line": 323,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "provider",
+          "ts_type": "typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type | null",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "legacy",
+          "ts_type": "typeof typeof typeof typeof LegacyCodexFields.Type.Type.Type.Type",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ProviderModelOptions.Type.Type.Type.Type | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeModelSelection",
+      "file": "apps/web/src/composerDraftModels.ts",
+      "line": 529,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "legacy",
+          "ts_type": "{\n    provider?: unknown;\n    model?: unknown;\n    modelOptions?: unknown;\n    legacyCodex?: typeof typeof typeof typeof LegacyCodexFields.Type.Type.Type.Type;\n  }",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ModelSelection.Type.Type.Type.Type | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "reconcileProviderScopedModelSelection",
+      "file": "apps/web/src/composerDraftModels.ts",
+      "line": 612,
+      "params": [
+        {
+          "name": "requested",
+          "ts_type": "typeof typeof typeof typeof ModelSelection.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "current",
+          "ts_type": "typeof typeof typeof typeof ModelSelection.Type.Type.Type.Type | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ModelSelection.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "stripNonStickyModelOptions",
+      "file": "apps/web/src/composerDraftModels.ts",
+      "line": 674,
+      "params": [
+        {
+          "name": "selection",
+          "ts_type": "typeof typeof typeof typeof ModelSelection.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ModelSelection.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "sanitizeStickyModelSelectionMap",
+      "file": "apps/web/src/composerDraftModels.ts",
+      "line": 695,
+      "params": [
+        {
+          "name": "map",
+          "ts_type": "Partial<Record<typeof typeof typeof ProviderInstanceId.Type.Type.Type, typeof typeof typeof ModelSelection.Type.Type.Type>>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Partial<Record<typeof typeof typeof ProviderInstanceId.Type.Type.Type, typeof typeof typeof ModelSelection.Type.Type.Type>>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "legacySyncModelSelectionOptions",
+      "file": "apps/web/src/composerDraftModels.ts",
+      "line": 711,
+      "params": [
+        {
+          "name": "modelSelection",
+          "ts_type": "typeof typeof typeof typeof ModelSelection.Type.Type.Type.Type | null",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "modelOptions",
+          "ts_type": "typeof typeof typeof typeof ProviderModelOptions.Type.Type.Type.Type | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ModelSelection.Type.Type.Type.Type | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "legacyMergeModelSelectionIntoProviderModelOptions",
+      "file": "apps/web/src/composerDraftModels.ts",
+      "line": 731,
+      "params": [
+        {
+          "name": "modelSelection",
+          "ts_type": "typeof typeof typeof typeof ModelSelection.Type.Type.Type.Type | null",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "currentModelOptions",
+          "ts_type": "typeof typeof typeof typeof ProviderModelOptions.Type.Type.Type.Type | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ProviderModelOptions.Type.Type.Type.Type | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "legacyToModelSelectionByProvider",
+      "file": "apps/web/src/composerDraftModels.ts",
+      "line": 763,
+      "params": [
+        {
+          "name": "modelSelection",
+          "ts_type": "typeof typeof typeof typeof ModelSelection.Type.Type.Type.Type | null",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "modelOptions",
+          "ts_type": "typeof typeof typeof typeof ProviderModelOptions.Type.Type.Type.Type | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Partial<Record<typeof typeof typeof ProviderInstanceId.Type.Type.Type, typeof typeof typeof ModelSelection.Type.Type.Type>>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deriveEffectiveComposerModelState",
+      "file": "apps/web/src/composerDraftModels.ts",
+      "line": 792,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  draft:\n    | Pick<ComposerThreadDraftState, \"modelSelectionByProvider\" | \"activeProvider\">\n    | null\n    | undefined;\n  selectedProvider: typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type;\n  selectedProviderInstanceId?: typeof typeof typeof typeof ProviderInstanceId.Type.Type.Type.Type | null | undefined;\n  threadModelSelection: typeof typeof typeof typeof ModelSelection.Type.Type.Type.Type | null | undefined;\n  projectModelSelection: typeof typeof typeof typeof ModelSelection.Type.Type.Type.Type | null | undefined;\n  customModelsByProvider: Record<typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type, readonly string[]>;\n  availableModelOptionsByProvider?: Partial<\n    Record<typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type, ReadonlyArray<{ slug: string; name: string }>>\n  >;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "EffectiveComposerModelState",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "resolvePreferredComposerModelSelection",
+      "file": "apps/web/src/composerDraftModels.ts",
+      "line": 904,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

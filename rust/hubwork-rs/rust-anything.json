@@ -1,0 +1,66 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/contracts/src/hubWork.ts",
+  "language": "ts",
+  "kind": "wasm",
+  "crate_name": "hubwork-rs",
+  "exports": [
+    {
+      "name": "hubWorkItem",
+      "file": "packages/contracts/src/hubWork.ts",
+      "line": 117,
+      "params": [
+        {
+          "name": "record",
+          "ts_type": "typeof typeof typeof typeof HubWorkRecord.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof HubWorkItem.Type.Type.Type.Type",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "hubWorkLogicalTaskKey",
+      "file": "packages/contracts/src/hubWork.ts",
+      "line": 137,
+      "params": [
+        {
+          "name": "record",
+          "ts_type": "{\n  readonly taskKey?: string | undefined;\n  readonly taskIndex: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "hubWorkPositionalTaskKey",
+      "file": "packages/contracts/src/hubWork.ts",
+      "line": 145,
+      "params": [
+        {
+          "name": "position",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,131 @@
+{
+  "unit": "packages/contracts/src/hubWork.ts",
+  "files": 1,
+  "fingerprint": "dcdf66e82fd7ffdd",
+  "coverage": {
+    "lines": 8325,
+    "reached": 8161,
+    "files": [
+      {
+        "file": "packages/contracts/src/agentGateway.ts",
+        "lines": 228,
+        "reached": 228,
+        "missed": ""
+      },
+      {
+        "file": "packages/contracts/src/agentMentions.ts",
+        "lines": 289,
+        "reached": 245,
+        "missed": "245-249, 256-258, 260-263, 269-273, 275-277, 283-289, 291-298, 301-302, 305-307, 309-312"
+      },
+      {
+        "file": "packages/contracts/src/asyncUserInput.ts",
+        "lines": 24,
+        "reached": 24,
+        "missed": ""
+      },
+      {
+        "file": "packages/contracts/src/automation.ts",
+        "lines": 490,
+        "reached": 490,
+        "missed": ""
+      },
+      {
+        "file": "packages/contracts/src/baseSchemas.ts",
+        "lines": 84,
+        "reached": 84,
+        "missed": ""
+      },
+      {
+        "file": "packages/contracts/src/claudeCache.ts",
+        "lines": 30,
+        "reached": 30,
+        "missed": ""
+      },
+      {
+        "file": "packages/contracts/src/editor.ts",
+        "lines": 252,
+        "reached": 252,
+        "missed": ""
+      },
+      {
+        "file": "packages/contracts/src/environment.ts",
+        "lines": 42,
+        "reached": 42,
+        "missed": ""
+      },
+      {
+        "file": "packages/contracts/src/hubWork.ts",
+        "lines": 135,
+        "reached": 135,
+        "missed": ""
+      },
+      {
+        "file": "packages/contracts/src/inlineVisual.ts",
+        "lines": 53,
+        "reached": 53,
+        "missed": ""
+      },
+      {
+        "file": "packages/contracts/src/keybindings.ts",
+        "lines": 214,
+        "reached": 214,
+        "missed": ""
+      },
+      {
+        "file": "packages/contracts/src/model.ts",
+        "lines": 1336,
+        "reached": 1336,
+        "missed": ""
+      },
+      {
+        "file": "packages/contracts/src/orchestration.ts",
+        "lines": 3284,
+        "reached": 3179,
+        "missed": "146-149, 151-186, 188-220, 230-241, 245-250, 378, 386-387, 389-390, 655-659, 3155-3158"
+      },
+      {
+        "file": "packages/contracts/src/project.ts",
+        "lines": 311,
+        "reached": 311,
+        "missed": ""
+      },
+      {
+        "file": "packages/contracts/src/projectImport.ts",
+        "lines": 87,
+        "reached": 87,
+        "missed": ""
+      },
+      {
+        "file": "packages/contracts/src/providerDiscovery.ts",
+        "lines": 347,
+        "reached": 347,
+        "missed": ""
+      },
+      {
+        "file": "packages/contracts/src/providerInstance.ts",
+        "lines": 69,
+        "reached": 67,
+        "missed": "81-82"
+      },
+      {
+        "file": "packages/contracts/src/server.ts",
+        "lines": 706,
+        "reached": 695,
+        "missed": "209-216, 733-735"
+      },
+      {
+        "file": "packages/contracts/src/settings.ts",
+        "lines": 303,
+        "reached": 301,
+        "missed": "329-330"
+      },
+      {
+        "file": "packages/contracts/src/usageLimit.ts",
+        "lines": 41,
+        "reached": 41,
+        "missed": ""
+      }
+    ]
+  }
+}

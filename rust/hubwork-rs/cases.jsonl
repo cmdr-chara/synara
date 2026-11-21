@@ -1,0 +1,244 @@
+{"fn":"hubWorkItem","args":[{}],"ok":{"id":{"$undefined":true},"sourceThreadId":{"$undefined":true},"sourceMessageId":{"$undefined":true},"title":{"$undefined":true},"workerThreadId":{"$undefined":true},"state":{"$undefined":true},"queueReason":{"$undefined":true},"resultSummary":{"$undefined":true},"progress":{"$undefined":true},"revision":{"$undefined":true},"createdAt":{"$undefined":true},"updatedAt":{"$undefined":true}}}
+{"fn":"hubWorkItem","args":[true],"ok":{"id":{"$undefined":true},"sourceThreadId":{"$undefined":true},"sourceMessageId":{"$undefined":true},"title":{"$undefined":true},"workerThreadId":{"$undefined":true},"state":{"$undefined":true},"queueReason":{"$undefined":true},"resultSummary":{"$undefined":true},"progress":{"$undefined":true},"revision":{"$undefined":true},"createdAt":{"$undefined":true},"updatedAt":{"$undefined":true}}}
+{"fn":"hubWorkItem","args":[{"a":"b"}],"ok":{"id":{"$undefined":true},"sourceThreadId":{"$undefined":true},"sourceMessageId":{"$undefined":true},"title":{"$undefined":true},"workerThreadId":{"$undefined":true},"state":{"$undefined":true},"queueReason":{"$undefined":true},"resultSummary":{"$undefined":true},"progress":{"$undefined":true},"revision":{"$undefined":true},"createdAt":{"$undefined":true},"updatedAt":{"$undefined":true}}}
+{"fn":"hubWorkItem","args":[[]],"ok":{"id":{"$undefined":true},"sourceThreadId":{"$undefined":true},"sourceMessageId":{"$undefined":true},"title":{"$undefined":true},"workerThreadId":{"$undefined":true},"state":{"$undefined":true},"queueReason":{"$undefined":true},"resultSummary":{"$undefined":true},"progress":{"$undefined":true},"revision":{"$undefined":true},"createdAt":{"$undefined":true},"updatedAt":{"$undefined":true}}}
+{"fn":"hubWorkItem","args":[["a",1]],"ok":{"id":{"$undefined":true},"sourceThreadId":{"$undefined":true},"sourceMessageId":{"$undefined":true},"title":{"$undefined":true},"workerThreadId":{"$undefined":true},"state":{"$undefined":true},"queueReason":{"$undefined":true},"resultSummary":{"$undefined":true},"progress":{"$undefined":true},"revision":{"$undefined":true},"createdAt":{"$undefined":true},"updatedAt":{"$undefined":true}}}
+{"fn":"hubWorkItem","args":[null],"error":"Cannot read properties of null (reading 'id')"}
+{"fn":"hubWorkItem","args":["x"],"ok":{"id":{"$undefined":true},"sourceThreadId":{"$undefined":true},"sourceMessageId":{"$undefined":true},"title":{"$undefined":true},"workerThreadId":{"$undefined":true},"state":{"$undefined":true},"queueReason":{"$undefined":true},"resultSummary":{"$undefined":true},"progress":{"$undefined":true},"revision":{"$undefined":true},"createdAt":{"$undefined":true},"updatedAt":{"$undefined":true}}}
+{"fn":"hubWorkItem","args":[0],"ok":{"id":{"$undefined":true},"sourceThreadId":{"$undefined":true},"sourceMessageId":{"$undefined":true},"title":{"$undefined":true},"workerThreadId":{"$undefined":true},"state":{"$undefined":true},"queueReason":{"$undefined":true},"resultSummary":{"$undefined":true},"progress":{"$undefined":true},"revision":{"$undefined":true},"createdAt":{"$undefined":true},"updatedAt":{"$undefined":true}}}
+{"fn":"hubWorkItem","args":[{"a":{"b":"c"}}],"ok":{"id":{"$undefined":true},"sourceThreadId":{"$undefined":true},"sourceMessageId":{"$undefined":true},"title":{"$undefined":true},"workerThreadId":{"$undefined":true},"state":{"$undefined":true},"queueReason":{"$undefined":true},"resultSummary":{"$undefined":true},"progress":{"$undefined":true},"revision":{"$undefined":true},"createdAt":{"$undefined":true},"updatedAt":{"$undefined":true}}}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"hellohello","taskIndex":0.5}],"ok":"hellohello"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"abc","taskIndex":1000}],"ok":"abc"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"src/a/b.ts","taskIndex":1}],"ok":"src/a/b.ts"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":{"$undefined":true},"taskIndex":{"$num":"-Infinity"}}],"ok":"task:-Infinity"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"emoji 👍🏽 mix","taskIndex":9007199254740992}],"ok":"emoji 👍🏽 mix"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":{"$undefined":true},"taskIndex":2}],"ok":"task:2"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":{"$undefined":true},"taskIndex":10}],"ok":"task:10"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskIndex":{"$num":"-0"}}],"ok":"task:0"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskIndex":9007199254740992}],"ok":"task:9007199254740992"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskIndex":2}],"ok":"task:2"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"./x/**/*.jsonkey_name-1","taskIndex":2147483648}],"ok":"./x/**/*.jsonkey_name-1"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"a":"b"}],"ok":"task:undefined"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskIndex":100}],"ok":"task:100"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"😀","taskIndex":0.5}],"ok":"😀"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"a","taskIndex":1}],"ok":"a"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"./x/**/*.json","taskIndex":1}],"ok":"./x/**/*.json"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskIndex":{"$num":"-Infinity"}}],"ok":"task:-Infinity"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":{"$undefined":true},"taskIndex":42}],"ok":"task:42"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"  padded  ","taskIndex":0}],"ok":"  padded  "}
+{"fn":"hubWorkLogicalTaskKey","args":[{}],"ok":"task:undefined"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"a","taskIndex":100}],"ok":"a"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"","taskIndex":1000}],"ok":""}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"emoji 👍🏽 mix","taskIndex":-1}],"ok":"emoji 👍🏽 mix"}
+{"fn":"hubWorkLogicalTaskKey","args":[["a",1]],"ok":"task:undefined"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":":😀","taskIndex":1000000}],"ok":":😀"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"HELLO","taskIndex":10}],"ok":"HELLO"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskIndex":1000000}],"ok":"task:1000000"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskIndex":1}],"ok":"task:1"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"日本語のテキスト","taskIndex":{"$num":"-Infinity"}}],"ok":"日本語のテキスト"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":{"$undefined":true},"taskIndex":2147483648}],"ok":"task:2147483648"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"a","taskIndex":{"$num":"-Infinity"}}],"ok":"a"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskIndex":1000}],"ok":"task:1000"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"a":{"b":"c"}}],"ok":"task:undefined"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"trailing.","taskIndex":1000}],"ok":"trailing."}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"trailing.:","taskIndex":{"$num":"NaN"}}],"ok":"trailing.:"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"  padded  ","taskIndex":1}],"ok":"  padded  "}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"","taskIndex":2147483648}],"ok":""}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":{"$undefined":true},"taskIndex":{"$num":"-0"}}],"ok":"task:0"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":":","taskIndex":2}],"ok":":"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":{"$undefined":true},"taskIndex":0.5}],"ok":"task:0.5"}
+{"fn":"hubWorkLogicalTaskKey","args":["x"],"ok":"task:undefined"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":{"$undefined":true},"taskIndex":1}],"ok":"task:1"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":{"$undefined":true},"taskIndex":9007199254740992}],"ok":"task:9007199254740992"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":{"$undefined":true},"taskIndex":1000000}],"ok":"task:1000000"}
+{"fn":"hubWorkLogicalTaskKey","args":[0],"ok":"task:undefined"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"HELLO","taskIndex":0.5}],"ok":"HELLO"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"src/a/b.ts","taskIndex":-1}],"ok":"src/a/b.ts"}
+{"fn":"hubWorkLogicalTaskKey","args":[true],"ok":"task:undefined"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"😀key_name-1","taskIndex":{"$num":"NaN"}}],"ok":"😀key_name-1"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":{"$undefined":true},"taskIndex":{"$num":"Infinity"}}],"ok":"task:Infinity"}
+{"fn":"hubWorkLogicalTaskKey","args":[[]],"ok":"task:undefined"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":{"$undefined":true},"taskIndex":100}],"ok":"task:100"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskIndex":{"$num":"Infinity"}}],"ok":"task:Infinity"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"ünïcödé","taskIndex":3}],"ok":"ünïcödé"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"日本語のテキスト","taskIndex":0.5}],"ok":"日本語のテキスト"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"{name} has {count} items{name} has {count} items","taskIndex":9007199254740992}],"ok":"{name} has {count} items{name} has {count} items"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskIndex":3}],"ok":"task:3"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"a.b.c","taskIndex":1000000}],"ok":"a.b.c"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskIndex":-2.5}],"ok":"task:-2.5"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"{name} has {count} itemskey_name-1","taskIndex":0}],"ok":"{name} has {count} itemskey_name-1"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"straße","taskIndex":1}],"ok":"straße"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":{"$undefined":true},"taskIndex":1000}],"ok":"task:1000"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"hello","taskIndex":2}],"ok":"hello"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":":","taskIndex":-2.5}],"ok":":"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"ab","taskIndex":{"$num":"-0"}}],"ok":"ab"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"a😀b😀c","taskIndex":9007199254740992}],"ok":"a😀b😀c"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskIndex":2147483648}],"ok":"task:2147483648"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"Hello Worldline1\nline2","taskIndex":1000000}],"ok":"Hello Worldline1\nline2"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"Hello World","taskIndex":2}],"ok":"Hello World"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"src/a/b.ts","taskIndex":{"$num":"-Infinity"}}],"ok":"src/a/b.ts"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"😀","taskIndex":{"$num":"-Infinity"}}],"ok":"😀"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskIndex":10}],"ok":"task:10"}
+{"fn":"hubWorkLogicalTaskKey","args":[null],"error":"Cannot read properties of null (reading 'taskKey')"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"{name} has {count} items","taskIndex":0.5}],"ok":"{name} has {count} items"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskIndex":0}],"ok":"task:0"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"ΣΊΣΥΦΟΣ","taskIndex":2147483648}],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"HELLO","taskIndex":2}],"ok":"HELLO"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"tab\tseparated","taskIndex":{"$num":"NaN"}}],"ok":"tab\tseparated"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":{"$undefined":true},"taskIndex":-1}],"ok":"task:-1"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"ünïcödé","taskIndex":0.5}],"ok":"ünïcödé"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"﻿bom","taskIndex":1}],"ok":"﻿bom"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"key_name-1","taskIndex":-1}],"ok":"key_name-1"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"{name} has {count} itemsHello World","taskIndex":42}],"ok":"{name} has {count} itemsHello World"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":":","taskIndex":0}],"ok":":"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"line1\nline2","taskIndex":9007199254740992}],"ok":"line1\nline2"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskIndex":42}],"ok":"task:42"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":{"$undefined":true},"taskIndex":0}],"ok":"task:0"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"tab\tseparated","taskIndex":0}],"ok":"tab\tseparated"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":{"$undefined":true},"taskIndex":{"$num":"NaN"}}],"ok":"task:NaN"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskIndex":{"$num":"NaN"}}],"ok":"task:NaN"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":{"$undefined":true},"taskIndex":-2.5}],"ok":"task:-2.5"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"ünïcödé","taskIndex":-1}],"ok":"ünïcödé"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"hello","taskIndex":2147483648}],"ok":"hello"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":":","taskIndex":1000000}],"ok":":"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"Hello World","taskIndex":1000000}],"ok":"Hello World"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"İstanbulHello World","taskIndex":10}],"ok":"İstanbulHello World"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskIndex":-1}],"ok":"task:-1"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"ünïcödéstraße","taskIndex":{"$num":"Infinity"}}],"ok":"ünïcödéstraße"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"ab","taskIndex":1000000}],"ok":"ab"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":{"$undefined":true},"taskIndex":3}],"ok":"task:3"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"日本語のテキスト","taskIndex":10}],"ok":"日本語のテキスト"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"line1\nline2HELLO","taskIndex":0.5}],"ok":"line1\nline2HELLO"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"trailing.","taskIndex":10}],"ok":"trailing."}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"😀","taskIndex":3}],"ok":"😀"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"  padded  ","taskIndex":0.5}],"ok":"  padded  "}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"a:b:c","taskIndex":1000}],"ok":"a:b:c"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":":","taskIndex":{"$num":"NaN"}}],"ok":":"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"Hello World😀","taskIndex":-1}],"ok":"Hello World😀"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"ab","taskIndex":0.5}],"ok":"ab"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskIndex":0.5}],"ok":"task:0.5"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"emoji 👍🏽 mix","taskIndex":1000000}],"ok":"emoji 👍🏽 mix"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":":","taskIndex":0.5}],"ok":":"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"﻿bomline1\nline2","taskIndex":10}],"ok":"﻿bomline1\nline2"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"key_name-1","taskIndex":1000000}],"ok":"key_name-1"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"ab","taskIndex":{"$num":"Infinity"}}],"ok":"ab"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"😀ΣΊΣΥΦΟΣ","taskIndex":1000000}],"ok":"😀ΣΊΣΥΦΟΣ"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"a","taskIndex":{"$num":"NaN"}}],"ok":"a"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"line1\nline2","taskIndex":2147483648}],"ok":"line1\nline2"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"ΣΊΣΥΦΟΣ","taskIndex":{"$num":"NaN"}}],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"abc{name} has {count} items","taskIndex":10}],"ok":"abc{name} has {count} items"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"./x/**/*.jsona..b","taskIndex":{"$num":"-Infinity"}}],"ok":"./x/**/*.jsona..b"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"tab\tseparated","taskIndex":{"$num":"-Infinity"}}],"ok":"tab\tseparated"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"Hello World","taskIndex":-1}],"ok":"Hello World"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":".leadingemoji 👍🏽 mix","taskIndex":1}],"ok":".leadingemoji 👍🏽 mix"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"ünïcödésrc/a/b.ts","taskIndex":100}],"ok":"ünïcödésrc/a/b.ts"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"a","taskIndex":2147483648}],"ok":"a"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"ab","taskIndex":3}],"ok":"ab"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"a.b.c","taskIndex":9007199254740992}],"ok":"a.b.c"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"日本語のテキスト","taskIndex":{"$num":"NaN"}}],"ok":"日本語のテキスト"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"ΣΊΣΥΦΟΣ","taskIndex":-1}],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":".leading","taskIndex":-1}],"ok":".leading"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"ünïcödé","taskIndex":-2.5}],"ok":"ünïcödé"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"HELLO日本語のテキスト","taskIndex":1000}],"ok":"HELLO日本語のテキスト"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"HELLO","taskIndex":100}],"ok":"HELLO"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":":a","taskIndex":9007199254740992}],"ok":":a"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"ns:key.path","taskIndex":{"$num":"-Infinity"}}],"ok":"ns:key.path"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"日本語のテキスト","taskIndex":{"$num":"-0"}}],"ok":"日本語のテキスト"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"日本語のテキスト","taskIndex":1000}],"ok":"日本語のテキスト"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"key_name-1","taskIndex":{"$num":"Infinity"}}],"ok":"key_name-1"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"a..babc","taskIndex":2}],"ok":"a..babc"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"line1\nline2","taskIndex":3}],"ok":"line1\nline2"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"ünïcödé","taskIndex":{"$num":"NaN"}}],"ok":"ünïcödé"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"./x/**/*.jsonhello","taskIndex":{"$num":"-Infinity"}}],"ok":"./x/**/*.jsonhello"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"a😀b😀ca😀b😀c","taskIndex":{"$num":"-0"}}],"ok":"a😀b😀ca😀b😀c"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"{name} has {count} itemshello","taskIndex":10}],"ok":"{name} has {count} itemshello"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"ns:key.path:","taskIndex":9007199254740992}],"ok":"ns:key.path:"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"  padded  ","taskIndex":2}],"ok":"  padded  "}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"./x/**/*.json","taskIndex":-1}],"ok":"./x/**/*.json"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"﻿bom","taskIndex":1000}],"ok":"﻿bom"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"straße","taskIndex":42}],"ok":"straße"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"a😀b😀c","taskIndex":1000}],"ok":"a😀b😀c"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"ab","taskIndex":2147483648}],"ok":"ab"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"HELLO","taskIndex":42}],"ok":"HELLO"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"Hello World.leading","taskIndex":{"$num":"-0"}}],"ok":"Hello World.leading"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"key_name-1","taskIndex":9007199254740992}],"ok":"key_name-1"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"ΣΊΣΥΦΟΣé","taskIndex":42}],"ok":"ΣΊΣΥΦΟΣé"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"a..b","taskIndex":42}],"ok":"a..b"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"﻿bom","taskIndex":{"$num":"NaN"}}],"ok":"﻿bom"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"tab\tseparated","taskIndex":9007199254740992}],"ok":"tab\tseparated"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"ΣΊΣΥΦΟΣ","taskIndex":0}],"ok":"ΣΊΣΥΦΟΣ"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"é","taskIndex":2}],"ok":"é"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"./x/**/*.json","taskIndex":0.5}],"ok":"./x/**/*.json"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":".leading","taskIndex":2147483648}],"ok":".leading"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"ns:key.pathab","taskIndex":1000}],"ok":"ns:key.pathab"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"  padded  ","taskIndex":10}],"ok":"  padded  "}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"a😀b😀c😀","taskIndex":-2.5}],"ok":"a😀b😀c😀"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"tab\tseparated","taskIndex":1000}],"ok":"tab\tseparated"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"  padded  ","taskIndex":9007199254740992}],"ok":"  padded  "}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"Hello World","taskIndex":42}],"ok":"Hello World"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"hello","taskIndex":{"$num":"-0"}}],"ok":"hello"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"abc","taskIndex":1000000}],"ok":"abc"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"tab\tseparated","taskIndex":100}],"ok":"tab\tseparated"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"abc","taskIndex":{"$num":"NaN"}}],"ok":"abc"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"a😀b😀c","taskIndex":3}],"ok":"a😀b😀c"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"key_name-1:","taskIndex":2}],"ok":"key_name-1:"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"emoji 👍🏽 mix","taskIndex":1000}],"ok":"emoji 👍🏽 mix"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"hello","taskIndex":-2.5}],"ok":"hello"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"HELLO﻿bom","taskIndex":42}],"ok":"HELLO﻿bom"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"HELLO","taskIndex":1}],"ok":"HELLO"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"emoji 👍🏽 mix","taskIndex":42}],"ok":"emoji 👍🏽 mix"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"{name} has {count} items","taskIndex":{"$num":"NaN"}}],"ok":"{name} has {count} items"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":":","taskIndex":9007199254740992}],"ok":":"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"a.b.c","taskIndex":3}],"ok":"a.b.c"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"key_name-1emoji 👍🏽 mix","taskIndex":3}],"ok":"key_name-1emoji 👍🏽 mix"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"İstanbul","taskIndex":1000000}],"ok":"İstanbul"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"src/a/b.tsab","taskIndex":-2.5}],"ok":"src/a/b.tsab"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"{name} has {count} items","taskIndex":3}],"ok":"{name} has {count} items"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"a:b:c","taskIndex":3}],"ok":"a:b:c"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"tab\tseparatedé","taskIndex":100}],"ok":"tab\tseparatedé"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"a😀b😀chello world","taskIndex":0}],"ok":"a😀b😀chello world"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"./x/**/*.json","taskIndex":42}],"ok":"./x/**/*.json"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":":","taskIndex":100}],"ok":":"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":".leading","taskIndex":42}],"ok":".leading"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"﻿bom","taskIndex":0}],"ok":"﻿bom"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"HELLO:","taskIndex":9007199254740992}],"ok":"HELLO:"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"abc","taskIndex":-1}],"ok":"abc"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"Hello World","taskIndex":-2.5}],"ok":"Hello World"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"﻿bom","taskIndex":{"$num":"-Infinity"}}],"ok":"﻿bom"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"hello world","taskIndex":0}],"ok":"hello world"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskKey":"﻿bom","taskIndex":42}],"ok":"﻿bom"}
+{"fn":"hubWorkPositionalTaskKey","args":[1000000],"ok":"task:1000000"}
+{"fn":"hubWorkPositionalTaskKey","args":[{"$num":"Infinity"}],"ok":"task:Infinity"}
+{"fn":"hubWorkPositionalTaskKey","args":[{"$num":"-0"}],"ok":"task:0"}
+{"fn":"hubWorkPositionalTaskKey","args":[100],"ok":"task:100"}
+{"fn":"hubWorkPositionalTaskKey","args":[-2.5],"ok":"task:-2.5"}
+{"fn":"hubWorkPositionalTaskKey","args":[0],"ok":"task:0"}
+{"fn":"hubWorkPositionalTaskKey","args":[42],"ok":"task:42"}
+{"fn":"hubWorkPositionalTaskKey","args":[9007199254740992],"ok":"task:9007199254740992"}
+{"fn":"hubWorkPositionalTaskKey","args":[-1],"ok":"task:-1"}
+{"fn":"hubWorkPositionalTaskKey","args":[10],"ok":"task:10"}
+{"fn":"hubWorkPositionalTaskKey","args":[3],"ok":"task:3"}
+{"fn":"hubWorkPositionalTaskKey","args":[2],"ok":"task:2"}
+{"fn":"hubWorkPositionalTaskKey","args":[0.5],"ok":"task:0.5"}
+{"fn":"hubWorkPositionalTaskKey","args":[{"$num":"-Infinity"}],"ok":"task:-Infinity"}
+{"fn":"hubWorkPositionalTaskKey","args":[{"$num":"NaN"}],"ok":"task:NaN"}
+{"fn":"hubWorkPositionalTaskKey","args":[1000],"ok":"task:1000"}
+{"fn":"hubWorkPositionalTaskKey","args":[1],"ok":"task:1"}
+{"fn":"hubWorkPositionalTaskKey","args":[2147483648],"ok":"task:2147483648"}
+{"fn":"hubWorkPositionalTaskKey","args":[-7.5],"ok":"task:-7.5"}
+{"fn":"hubWorkPositionalTaskKey","args":[0.1],"ok":"task:0.1"}
+{"fn":"hubWorkPositionalTaskKey","args":[0.30000000000000004],"ok":"task:0.30000000000000004"}
+{"fn":"hubWorkPositionalTaskKey","args":[1e+21],"ok":"task:1e+21"}
+{"fn":"hubWorkPositionalTaskKey","args":[1e-7],"ok":"task:1e-7"}
+{"fn":"hubWorkPositionalTaskKey","args":[5e-324],"ok":"task:5e-324"}
+{"fn":"hubWorkPositionalTaskKey","args":[1.7976931348623157e+308],"ok":"task:1.7976931348623157e+308"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskIndex":{"$date":0}}],"ok":"task:Wed Dec 31 1969 16:00:00 GMT-0800 (Pacific Standard Time)"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskIndex":{"$bytes":[1,2,3]}}],"ok":"task:1,2,3"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskIndex":{"$buffer":[4,5]}}],"ok":"task:\u0004\u0005"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskIndex":{"$bigint":"42"}}],"ok":"task:42"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskIndex":{"$map":[["a",1]]}}],"ok":"task:[object Map]"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskIndex":{"$set":[9]}}],"ok":"task:[object Set]"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskIndex":{"$regexp":{"source":"x","flags":"gi"}}}],"ok":"task:[object Object]"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskIndex":{"$function":{"source":"x"}}}],"ok":"task:[object Object]"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskIndex":[1,null,{"$undefined":true},"a"]}],"ok":"task:1,,,a"}
+{"fn":"hubWorkLogicalTaskKey","args":[{"taskIndex":{"$utf16":[55296,97]}}],"ok":{"$utf16":[116,97,115,107,58,55296,97]}}

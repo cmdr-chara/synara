@@ -1,0 +1,1161 @@
+{"fn":"sqliteModifierFromUtcOffsetMinutes","args":[3],"ok":"+00:03"}
+{"fn":"sqliteModifierFromUtcOffsetMinutes","args":[100],"ok":"+01:40"}
+{"fn":"sqliteModifierFromUtcOffsetMinutes","args":[10],"ok":"+00:10"}
+{"fn":"sqliteModifierFromUtcOffsetMinutes","args":[1000],"ok":"+16:40"}
+{"fn":"sqliteModifierFromUtcOffsetMinutes","args":[{"$num":"Infinity"}],"ok":"+00:00"}
+{"fn":"sqliteModifierFromUtcOffsetMinutes","args":[1000000],"ok":"+16666:40"}
+{"fn":"sqliteModifierFromUtcOffsetMinutes","args":[-2.5],"ok":"-00:02"}
+{"fn":"sqliteModifierFromUtcOffsetMinutes","args":[2147483648],"ok":"+35791394:08"}
+{"fn":"sqliteModifierFromUtcOffsetMinutes","args":[{"$num":"NaN"}],"ok":"+00:00"}
+{"fn":"sqliteModifierFromUtcOffsetMinutes","args":[9007199254740992],"ok":"+150119987579016:32"}
+{"fn":"sqliteModifierFromUtcOffsetMinutes","args":[{"$num":"-Infinity"}],"ok":"+00:00"}
+{"fn":"sqliteModifierFromUtcOffsetMinutes","args":[1],"ok":"+00:01"}
+{"fn":"sqliteModifierFromUtcOffsetMinutes","args":[0.5],"ok":"+00:00"}
+{"fn":"sqliteModifierFromUtcOffsetMinutes","args":[42],"ok":"+00:42"}
+{"fn":"sqliteModifierFromUtcOffsetMinutes","args":[-1],"ok":"-00:01"}
+{"fn":"sqliteModifierFromUtcOffsetMinutes","args":[0],"ok":"+00:00"}
+{"fn":"sqliteModifierFromUtcOffsetMinutes","args":[2],"ok":"+00:02"}
+{"fn":"sqliteModifierFromUtcOffsetMinutes","args":[{"$num":"-0"}],"ok":"+00:00"}
+{"fn":"sqliteModifierFromUtcOffsetMinutes","args":[-7.5],"ok":"-00:07"}
+{"fn":"sqliteModifierFromUtcOffsetMinutes","args":[0.1],"ok":"+00:00"}
+{"fn":"sqliteModifierFromUtcOffsetMinutes","args":[0.30000000000000004],"ok":"+00:00"}
+{"fn":"sqliteModifierFromUtcOffsetMinutes","args":[1e+21],"ok":"+16666666666666666000:40"}
+{"fn":"sqliteModifierFromUtcOffsetMinutes","args":[1e-7],"ok":"+00:00"}
+{"fn":"sqliteModifierFromUtcOffsetMinutes","args":[5e-324],"ok":"+00:00"}
+{"fn":"sqliteModifierFromUtcOffsetMinutes","args":[1.7976931348623157e+308],"ok":"+2.9961552247705265e+306:08"}
+{"fn":"num","args":[0],"ok":0}
+{"fn":"num","args":[{"a":"b"}],"ok":0}
+{"fn":"num","args":[{}],"ok":0}
+{"fn":"num","args":[null],"ok":0}
+{"fn":"num","args":["x"],"ok":0}
+{"fn":"num","args":[["a",1]],"ok":0}
+{"fn":"num","args":[[]],"ok":0}
+{"fn":"num","args":[true],"ok":1}
+{"fn":"num","args":[{"a":{"b":"c"}}],"ok":0}
+{"fn":"num","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":0}
+{"fn":"num","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":0}
+{"fn":"num","args":[[3,1,2]],"ok":0}
+{"fn":"nonEmptyString","args":[0],"ok":null}
+{"fn":"nonEmptyString","args":[null],"ok":null}
+{"fn":"nonEmptyString","args":["x"],"ok":"x"}
+{"fn":"nonEmptyString","args":[true],"ok":null}
+{"fn":"nonEmptyString","args":[[]],"ok":null}
+{"fn":"nonEmptyString","args":[{"a":{"b":"c"}}],"ok":null}
+{"fn":"nonEmptyString","args":[["a",1]],"ok":null}
+{"fn":"nonEmptyString","args":[{"a":"b"}],"ok":null}
+{"fn":"nonEmptyString","args":[{}],"ok":null}
+{"fn":"nonEmptyString","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":null}
+{"fn":"nonEmptyString","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":null}
+{"fn":"nonEmptyString","args":[[3,1,2]],"ok":null}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"emoji 👍🏽 mix","text":"  padded  ","skillsJson":null,"mentionsJson":"abc"}],[]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"abc","text":"İstanbul","skillsJson":null,"mentionsJson":"{name} has {count} items"},{"messageId":null,"text":null,"skillsJson":"trailing.","mentionsJson":"hello world"}],[]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[["a",1],{"$undefined":true}],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":"ünïcödé","skillsJson":null,"mentionsJson":null},{"messageId":null,"text":":","skillsJson":null,"mentionsJson":null}],"x"],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":"a.b.c","skillsJson":null,"mentionsJson":null}],[{"name":"key_name-1","kind":null,"runCount":2}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"日本語のテキスト","text":null,"skillsJson":null,"mentionsJson":null},{"messageId":"HELLO","text":null,"skillsJson":null,"mentionsJson":null}],[{"name":"😀hello","kind":null,"runCount":1000000}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[["a",1],[{"name":null,"kind":null,"runCount":1},{"name":null,"kind":null,"runCount":3},{"name":"a..b","kind":"İstanbul","runCount":1}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[null,[]],"error":"rows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[{"a":{"b":"c"}},[{"name":"😀HELLO","kind":null,"runCount":{"$num":"-Infinity"}},{"name":"  padded  src/a/b.ts","kind":"abc","runCount":{"$num":"Infinity"}},{"name":"hello world./x/**/*.json","kind":"ab","runCount":{"$num":"NaN"}}]],"error":"rows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"hello world","text":"ab","skillsJson":"./x/**/*.jsonİstanbul","mentionsJson":null},{"messageId":"{name} has {count} items","text":":","skillsJson":null,"mentionsJson":"ünïcödé"},{"messageId":"emoji 👍🏽 mix","text":null,"skillsJson":"日本語のテキスト","mentionsJson":"a..b"}],[{"name":null,"kind":null,"runCount":0.5}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":"日本語のテキスト","skillsJson":null,"mentionsJson":null},{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":"hello world"},{"messageId":"{name} has {count} items","text":"key_name-1","skillsJson":null,"mentionsJson":"﻿bom"}],[]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[],[]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":"{name} has {count} items","skillsJson":"hello","mentionsJson":"./x/**/*.json"}],[{"name":"tab\tseparated","kind":null,"runCount":2147483648},{"name":"日本語のテキスト","kind":"ab","runCount":9007199254740992},{"name":null,"kind":null,"runCount":2}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"  padded  İstanbul","text":"ns:key.pathİstanbul","skillsJson":null,"mentionsJson":null},{"messageId":null,"text":null,"skillsJson":"","mentionsJson":"﻿bom"}],[{"name":null,"kind":null,"runCount":1},{"name":null,"kind":"abc","runCount":2147483648}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":":","text":null,"skillsJson":"Hello World","mentionsJson":"日本語のテキスト"},{"messageId":"src/a/b.ts","text":"ab","skillsJson":null,"mentionsJson":null},{"messageId":"tab\tseparated","text":null,"skillsJson":"abline1\nline2","mentionsJson":"straße"}],{"$undefined":true}],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"aHello World","text":null,"skillsJson":"ab","mentionsJson":"a.b.c"},{"messageId":"a","text":null,"skillsJson":"straße","mentionsJson":"{name} has {count} items"}],[{"name":null,"kind":null,"runCount":{"$num":"-0"}},{"name":"hello","kind":null,"runCount":3}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":null,"skillsJson":"a.b.c","mentionsJson":"tab\tseparated"},{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":".leading"}],{"$undefined":true}],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"./x/**/*.json","text":"line1\nline2","skillsJson":"./x/**/*.json","mentionsJson":null},{"messageId":null,"text":"a..b","skillsJson":null,"mentionsJson":null}],[]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[],[{"name":null,"kind":":ΣΊΣΥΦΟΣ","runCount":0},{"name":"src/a/b.ts","kind":null,"runCount":100}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":"İstanbul","skillsJson":"{name} has {count} items","mentionsJson":null},{"messageId":"trailing.","text":"hello world","skillsJson":"😀日本語のテキスト","mentionsJson":"ΣΊΣΥΦΟΣ"},{"messageId":null,"text":"","skillsJson":"emoji 👍🏽 mix","mentionsJson":null}],[]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[],[{"name":"straße./x/**/*.json","kind":"trailing.","runCount":42},{"name":"abc","kind":"{name} has {count} items","runCount":{"$num":"-0"}}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":"日本語のテキスト","skillsJson":"a:b:c","mentionsJson":null}],[{"name":null,"kind":"abc","runCount":9007199254740992},{"name":"key_name-1","kind":"line1\nline2","runCount":{"$num":"Infinity"}},{"name":"日本語のテキスト","kind":"abc","runCount":9007199254740992}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":["x",[{"name":null,"kind":null,"runCount":{"$num":"Infinity"}}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"ΣΊΣΥΦΟΣ  padded  ","text":null,"skillsJson":null,"mentionsJson":"﻿bom"}],[{"name":null,"kind":"a..b","runCount":42},{"name":null,"kind":null,"runCount":3},{"name":"ΣΊΣΥΦΟΣ","kind":"tab\tseparated","runCount":-1}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[{"a":{"b":"c"}},[]],"error":"rows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"  padded  ","text":"hello","skillsJson":null,"mentionsJson":"hello world"}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[true,[]],"error":"rows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":null,"skillsJson":"  padded  ","mentionsJson":"ünïcödé"},{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":"İstanbul"},{"messageId":"key_name-1","text":"日本語のテキスト","skillsJson":"é","mentionsJson":"﻿bomab"}],[{"name":null,"kind":"a.b.c","runCount":{"$num":"-0"}}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[{"a":"b"},[]],"error":"rows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[[],[{"name":null,"kind":"{name} has {count} items","runCount":42},{"name":null,"kind":"é","runCount":0.5}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":null}],{"$undefined":true}],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[],true],"error":"archivedRows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[{"a":"b"},[{"name":null,"kind":null,"runCount":100},{"name":null,"kind":null,"runCount":{"$num":"NaN"}}]],"error":"rows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"日本語のテキスト","text":null,"skillsJson":null,"mentionsJson":"line1\nline2emoji 👍🏽 mix"}],[{"name":"./x/**/*.json","kind":"😀","runCount":{"$num":"-Infinity"}}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[],[{"name":"aé","kind":"😀","runCount":0.5},{"name":"{name} has {count} items日本語のテキスト","kind":null,"runCount":{"$num":"NaN"}},{"name":".leading","kind":null,"runCount":-2.5}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"tab\tseparated","text":null,"skillsJson":"ns:key.patha.b.c","mentionsJson":null}],null],"error":"archivedRows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[[],[{"name":null,"kind":null,"runCount":0},{"name":".leading","kind":null,"runCount":-2.5},{"name":"﻿bom","kind":null,"runCount":1000}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"key_name-1","text":"ünïcödé","skillsJson":null,"mentionsJson":"emoji 👍🏽 mix"},{"messageId":"{name} has {count} items","text":null,"skillsJson":"a.b.ctab\tseparated","mentionsJson":"ΣΊΣΥΦΟΣ"},{"messageId":null,"text":"ünïcödésrc/a/b.ts","skillsJson":null,"mentionsJson":null}],true],"error":"archivedRows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"﻿boma","text":null,"skillsJson":null,"mentionsJson":null},{"messageId":"﻿bom","text":null,"skillsJson":null,"mentionsJson":"atab\tseparated"}],[{"name":"a..b","kind":null,"runCount":1},{"name":"key_name-1","kind":"","runCount":2},{"name":".leading","kind":null,"runCount":42}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"Hello World","text":null,"skillsJson":null,"mentionsJson":null},{"messageId":null,"text":"key_name-1","skillsJson":null,"mentionsJson":null},{"messageId":"ns:key.path","text":null,"skillsJson":null,"mentionsJson":null}],[{"name":"./x/**/*.json","kind":null,"runCount":2},{"name":"abc","kind":null,"runCount":10}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":"éΣΊΣΥΦΟΣ","skillsJson":"hello world","mentionsJson":"a.b.c"},{"messageId":":","text":null,"skillsJson":null,"mentionsJson":"﻿bom"},{"messageId":null,"text":null,"skillsJson":"abc","mentionsJson":"straße"}],[{"name":"ünïcödé","kind":null,"runCount":-2.5},{"name":null,"kind":":","runCount":0.5}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[{"a":{"b":"c"}},[{"name":null,"kind":null,"runCount":3}]],"error":"rows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"hello world","text":"trailing.","skillsJson":"  padded  ","mentionsJson":"ns:key.path"}],[]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[true,[{"name":"é.leading","kind":null,"runCount":-1},{"name":null,"kind":"emoji 👍🏽 mix","runCount":1}]],"error":"rows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[[],[{"name":null,"kind":null,"runCount":2},{"name":null,"kind":"trailing.","runCount":9007199254740992},{"name":"hello","kind":null,"runCount":{"$num":"Infinity"}}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[],[{"name":null,"kind":null,"runCount":10},{"name":"a.b.c","kind":null,"runCount":0}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":null,"skillsJson":"a😀b😀c","mentionsJson":"abc"},{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":null}],[]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[null,{"$undefined":true}],"error":"rows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"ns:key.path","text":null,"skillsJson":"{name} has {count} itemsemoji 👍🏽 mix","mentionsJson":null},{"messageId":null,"text":null,"skillsJson":"emoji 👍🏽 mix","mentionsJson":"a:b:c"},{"messageId":null,"text":"hello","skillsJson":"a.b.ca","mentionsJson":"a..babc"}],[{"name":"HELLO","kind":"ΣΊΣΥΦΟΣ","runCount":10},{"name":"hello worldtrailing.","kind":null,"runCount":1000000}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[true,{"a":{"b":"c"}}],"error":"rows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"İstanbul","text":null,"skillsJson":null,"mentionsJson":null},{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":"é"},{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":null}],[{"name":"","kind":"﻿bom","runCount":{"$num":"Infinity"}},{"name":null,"kind":"  padded  ","runCount":1000000},{"name":null,"kind":".leading","runCount":{"$num":"NaN"}}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"line1\nline2","text":null,"skillsJson":"line1\nline2","mentionsJson":null},{"messageId":"ns:key.path","text":"src/a/b.tsa:b:c","skillsJson":"tab\tseparated","mentionsJson":null},{"messageId":"straße","text":null,"skillsJson":"tab\tseparatedtab\tseparated","mentionsJson":"😀"}],[{"name":null,"kind":"abctrailing.","runCount":{"$num":"NaN"}}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"a..b","text":"a","skillsJson":null,"mentionsJson":"ΣΊΣΥΦΟΣé"}],[{"name":null,"kind":"tab\tseparated","runCount":100}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[],[{"name":null,"kind":null,"runCount":42},{"name":null,"kind":null,"runCount":0.5},{"name":null,"kind":"a:b:ca😀b😀c","runCount":{"$num":"Infinity"}}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"😀","text":"trailing.","skillsJson":null,"mentionsJson":null},{"messageId":null,"text":null,"skillsJson":"abtrailing.","mentionsJson":null}],["a",1]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"a..b","text":null,"skillsJson":null,"mentionsJson":null},{"messageId":null,"text":null,"skillsJson":"hello world","mentionsJson":"ab"},{"messageId":null,"text":"straßeünïcödé","skillsJson":"ΣΊΣΥΦΟΣ","mentionsJson":null}],[{"name":".leading","kind":null,"runCount":9007199254740992},{"name":null,"kind":null,"runCount":{"$num":"-Infinity"}}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"é","text":null,"skillsJson":"a.b.c","mentionsJson":null},{"messageId":null,"text":"İstanbul","skillsJson":"tab\tseparated","mentionsJson":null},{"messageId":"{name} has {count} items","text":null,"skillsJson":null,"mentionsJson":"aa:b:c"}],[{"name":null,"kind":null,"runCount":1000000},{"name":null,"kind":null,"runCount":{"$num":"Infinity"}}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":"日本語のテキスト","skillsJson":null,"mentionsJson":"ΣΊΣΥΦΟΣ"}],[]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"a😀b😀ctrailing.","text":"trailing.","skillsJson":"日本語のテキスト","mentionsJson":"straße"},{"messageId":"éİstanbul","text":null,"skillsJson":":","mentionsJson":"hello"},{"messageId":null,"text":"Hello World","skillsJson":"é","mentionsJson":"﻿bom"}],{}],"error":"archivedRows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":null,"skillsJson":"tab\tseparated","mentionsJson":"hello worldstraße"}],{"$undefined":true}],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[],[{"name":null,"kind":"::","runCount":1000}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[],{"$undefined":true}],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":"tab\tseparated","skillsJson":null,"mentionsJson":".leading"},{"messageId":null,"text":null,"skillsJson":"é","mentionsJson":null},{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":null}],[]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"﻿bom","text":"tab\tseparated","skillsJson":null,"mentionsJson":"line1\nline2emoji 👍🏽 mix"}],{"a":"b"}],"error":"archivedRows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":"a.b.c","skillsJson":null,"mentionsJson":"src/a/b.ts"},{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":"ns:key.pathline1\nline2"},{"messageId":null,"text":"İstanbul","skillsJson":null,"mentionsJson":null}],[{"name":null,"kind":"tab\tseparateda","runCount":{"$num":"-0"}},{"name":"line1\nline2","kind":"ns:key.patha","runCount":0.5}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"ns:key.path","text":"ünïcödé","skillsJson":null,"mentionsJson":null}],[{"name":null,"kind":"日本語のテキスト","runCount":2},{"name":"a😀b😀c","kind":null,"runCount":1000000},{"name":"  padded  ","kind":"","runCount":{"$num":"Infinity"}}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"tab\tseparated","text":null,"skillsJson":null,"mentionsJson":null},{"messageId":"日本語のテキスト","text":"ab","skillsJson":"src/a/b.ts","mentionsJson":"ünïcödékey_name-1"},{"messageId":null,"text":"trailing.","skillsJson":null,"mentionsJson":null}],[]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"ΣΊΣΥΦΟΣ","text":"a","skillsJson":null,"mentionsJson":null},{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":"hello"},{"messageId":"trailing.","text":null,"skillsJson":null,"mentionsJson":"hello worldhello world"}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"tab\tseparated","text":"abc","skillsJson":"HELLO","mentionsJson":"a.b.c﻿bom"},{"messageId":"a:b:c","text":null,"skillsJson":"./x/**/*.json","mentionsJson":null},{"messageId":null,"text":".leading","skillsJson":"a..bkey_name-1","mentionsJson":null}],[]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"Hello World","text":"tab\tseparated","skillsJson":null,"mentionsJson":null}],[{"name":"./x/**/*.json","kind":"straßeHello World","runCount":2},{"name":null,"kind":null,"runCount":0.5}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[],null],"error":"archivedRows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":"abc"},{"messageId":"﻿bom","text":"./x/**/*.json","skillsJson":"a","mentionsJson":null},{"messageId":"hello world","text":"HELLO","skillsJson":"İstanbul","mentionsJson":"key_name-1"}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"hello./x/**/*.json","text":"ns:key.path","skillsJson":null,"mentionsJson":"Hello World"},{"messageId":null,"text":null,"skillsJson":"","mentionsJson":"😀"},{"messageId":null,"text":"./x/**/*.json","skillsJson":"emoji 👍🏽 mix","mentionsJson":null}],[{"name":"İstanbul","kind":"hello","runCount":3},{"name":":{name} has {count} items","kind":"HELLO./x/**/*.json","runCount":1},{"name":null,"kind":"","runCount":2147483648}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[["a",1]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[{}],"error":"rows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[[],0],"error":"archivedRows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":null}],[]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[],{}],"error":"archivedRows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":":","text":null,"skillsJson":"İstanbul","mentionsJson":"abc"},{"messageId":null,"text":"","skillsJson":"trailing.","mentionsJson":":"},{"messageId":null,"text":null,"skillsJson":"İstanbul","mentionsJson":null}],[{"name":null,"kind":".leadingkey_name-1","runCount":2}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"straße","text":null,"skillsJson":"a😀b😀c","mentionsJson":null},{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":"abc"},{"messageId":null,"text":"abc","skillsJson":null,"mentionsJson":"src/a/b.tsHello World"}],[]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":null}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":null,"skillsJson":"Hello World","mentionsJson":".leading"}],["a",1]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"trailing.","text":null,"skillsJson":null,"mentionsJson":null},{"messageId":"ab  padded  ","text":null,"skillsJson":"﻿bom","mentionsJson":null},{"messageId":"hello world","text":"ab","skillsJson":null,"mentionsJson":"a😀b😀c"}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":"tab\tseparated"},{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":null},{"messageId":null,"text":"HELLO","skillsJson":"emoji 👍🏽 mix","mentionsJson":null}],[{"name":"Hello World","kind":null,"runCount":{"$num":"Infinity"}},{"name":null,"kind":"a.b.c","runCount":10},{"name":null,"kind":"HELLO","runCount":{"$num":"-Infinity"}}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"./x/**/*.jsonİstanbul","text":"é","skillsJson":null,"mentionsJson":null},{"messageId":"a","text":null,"skillsJson":null,"mentionsJson":null},{"messageId":"line1\nline2","text":":","skillsJson":"abc","mentionsJson":null}],[{"name":null,"kind":"  padded  é","runCount":-2.5},{"name":null,"kind":"ab","runCount":100},{"name":"{name} has {count} items","kind":null,"runCount":1}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"a..b","text":null,"skillsJson":null,"mentionsJson":null},{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":null}],[{"name":"ab","kind":null,"runCount":2147483648}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":null},{"messageId":"a","text":null,"skillsJson":"a.b.c","mentionsJson":null}],{"a":{"b":"c"}}],"error":"archivedRows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[0,{"$undefined":true}],"error":"rows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"﻿bom","text":null,"skillsJson":"","mentionsJson":null},{"messageId":null,"text":"😀","skillsJson":null,"mentionsJson":"src/a/b.ts"}],[{"name":"tab\tseparated","kind":null,"runCount":{"$num":"-0"}},{"name":"ab","kind":"{name} has {count} items","runCount":3},{"name":null,"kind":"key_name-1","runCount":-1}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":"HELLO","skillsJson":"{name} has {count} items","mentionsJson":"emoji 👍🏽 mix"},{"messageId":null,"text":null,"skillsJson":"İstanbul","mentionsJson":null}],[{"name":"a","kind":null,"runCount":{"$num":"-Infinity"}},{"name":"HELLO","kind":null,"runCount":{"$num":"NaN"}}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[],[{"name":null,"kind":".leadingstraße","runCount":10},{"name":"abtrailing.","kind":null,"runCount":10},{"name":null,"kind":"日本語のテキスト","runCount":{"$num":"NaN"}}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"ΣΊΣΥΦΟΣ","text":null,"skillsJson":"emoji 👍🏽 mix","mentionsJson":"a.b.ctab\tseparated"}],[{"name":null,"kind":"日本語のテキストabc","runCount":{"$num":"NaN"}},{"name":null,"kind":null,"runCount":1000}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":null,"skillsJson":"İstanbul","mentionsJson":"a"},{"messageId":"trailing.","text":"a","skillsJson":null,"mentionsJson":null}],[]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"abc","text":"ab","skillsJson":null,"mentionsJson":null},{"messageId":null,"text":"a:b:c","skillsJson":"hello world","mentionsJson":null},{"messageId":null,"text":"{name} has {count} itemsHello World","skillsJson":null,"mentionsJson":null}],[]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":null,"skillsJson":"emoji 👍🏽 mix","mentionsJson":"{name} has {count} items"},{"messageId":null,"text":"a.b.c","skillsJson":"a..b","mentionsJson":"a.b.c"},{"messageId":"😀","text":null,"skillsJson":"hello world","mentionsJson":""}],[{"name":".leading","kind":null,"runCount":-2.5},{"name":"straße","kind":":ΣΊΣΥΦΟΣ","runCount":10},{"name":null,"kind":"  padded  emoji 👍🏽 mix","runCount":2}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"straße","text":"  padded  ","skillsJson":null,"mentionsJson":"İstanbul"},{"messageId":null,"text":"ns:key.path","skillsJson":"abc","mentionsJson":"İstanbul"},{"messageId":"emoji 👍🏽 mixa.b.c","text":null,"skillsJson":"a.b.cΣΊΣΥΦΟΣ","mentionsJson":"HELLOtab\tseparated"}],[{"name":null,"kind":"trailing.","runCount":2}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"Hello World","text":null,"skillsJson":"abc","mentionsJson":null}],[{"name":"emoji 👍🏽 mix","kind":null,"runCount":{"$num":"NaN"}}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":"trailing.","skillsJson":"emoji 👍🏽 mix","mentionsJson":null},{"messageId":null,"text":"﻿boma..b","skillsJson":null,"mentionsJson":"tab\tseparated"},{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":"😀"}],[{"name":null,"kind":null,"runCount":2},{"name":"{name} has {count} items","kind":".leading","runCount":9007199254740992},{"name":"  padded  ","kind":"key_name-1","runCount":1000}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[{"a":{"b":"c"}},[{"name":"emoji 👍🏽 mix","kind":null,"runCount":100},{"name":null,"kind":"a😀b😀c","runCount":2},{"name":"line1\nline2","kind":"hellohello world","runCount":0.5}]],"error":"rows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":"straße","skillsJson":"😀","mentionsJson":null},{"messageId":"﻿bom","text":null,"skillsJson":null,"mentionsJson":"straßetrailing."},{"messageId":null,"text":"hello world","skillsJson":".leadingtrailing.","mentionsJson":"a:b:c"}],[{"name":null,"kind":"ünïcödéHELLO","runCount":2},{"name":"é.leading","kind":null,"runCount":{"$num":"-0"}}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":null,"skillsJson":"line1\nline2src/a/b.ts","mentionsJson":"😀"}],[{"name":"abΣΊΣΥΦΟΣ","kind":null,"runCount":9007199254740992}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[["a",1],[{"name":":a.b.c","kind":"é","runCount":9007199254740992}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":"a😀b😀c"},{"messageId":null,"text":"ΣΊΣΥΦΟΣa😀b😀c","skillsJson":null,"mentionsJson":null}],[{"name":null,"kind":null,"runCount":{"$num":"Infinity"}},{"name":null,"kind":"HELLO","runCount":1000},{"name":null,"kind":"ab","runCount":1000000}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[true,[{"name":null,"kind":null,"runCount":-2.5},{"name":"ns:key.path","kind":null,"runCount":0.5},{"name":"hello","kind":"./x/**/*.json","runCount":1}]],"error":"rows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"abc","text":null,"skillsJson":"日本語のテキスト","mentionsJson":"key_name-1"}],{"$undefined":true}],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[{},[{"name":null,"kind":null,"runCount":{"$num":"-0"}}]],"error":"rows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":"ünïcödé","skillsJson":null,"mentionsJson":"a😀b😀c"}],[{"name":"hello","kind":"é","runCount":100},{"name":null,"kind":"line1\nline2","runCount":0.5}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":"ab","skillsJson":"ΣΊΣΥΦΟΣ:","mentionsJson":"line1\nline2"}],[{"name":null,"kind":"ab","runCount":{"$num":"NaN"}}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":null,"skillsJson":"ab","mentionsJson":null},{"messageId":null,"text":"HELLOa","skillsJson":":日本語のテキスト","mentionsJson":""},{"messageId":"./x/**/*.json:","text":"é","skillsJson":"a.b.c","mentionsJson":"key_name-1"}],[]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":"key_name-1","skillsJson":"ΣΊΣΥΦΟΣ","mentionsJson":null},{"messageId":"ab","text":null,"skillsJson":null,"mentionsJson":"a😀b😀c"}],[{"name":null,"kind":null,"runCount":0.5}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"HELLO","text":"hello world","skillsJson":null,"mentionsJson":null},{"messageId":"ns:key.path","text":"tab\tseparated","skillsJson":"ünïcödé","mentionsJson":"Hello World"},{"messageId":"hello world","text":null,"skillsJson":"trailing.","mentionsJson":null}],[{"name":"ns:key.path","kind":":","runCount":{"$num":"-Infinity"}},{"name":null,"kind":null,"runCount":42},{"name":null,"kind":"line1\nline2","runCount":{"$num":"-0"}}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"trailing.","text":"trailing.","skillsJson":null,"mentionsJson":null},{"messageId":null,"text":"ab","skillsJson":".leading  padded  ","mentionsJson":null},{"messageId":"a","text":"a.b.c﻿bom","skillsJson":"a.b.cline1\nline2","mentionsJson":"é"}],[]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[["a",1],[]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"Hello World","text":":","skillsJson":"ns:key.path","mentionsJson":"HELLO"},{"messageId":"Hello World","text":null,"skillsJson":null,"mentionsJson":null},{"messageId":"{name} has {count} itemsa.b.c","text":null,"skillsJson":"é","mentionsJson":null}],[{"name":null,"kind":null,"runCount":9007199254740992},{"name":"  padded  ","kind":"key_name-1","runCount":1}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"atab\tseparated","text":"a","skillsJson":null,"mentionsJson":null}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[],[{"name":"trailing.","kind":null,"runCount":{"$num":"Infinity"}},{"name":null,"kind":"﻿bom","runCount":-2.5},{"name":null,"kind":null,"runCount":-2.5}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[["a",1],[{"name":null,"kind":"","runCount":{"$num":"-Infinity"}}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[["a",1],[{"name":"line1\nline2","kind":null,"runCount":1000}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[],[{"name":"hello world","kind":"  padded  ","runCount":9007199254740992}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[["a",1],[{"name":"","kind":null,"runCount":10},{"name":null,"kind":"ab","runCount":2},{"name":null,"kind":null,"runCount":1000}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"a.b.ca","text":"straße","skillsJson":null,"mentionsJson":null},{"messageId":"emoji 👍🏽 mix","text":"a..b日本語のテキスト","skillsJson":null,"mentionsJson":null},{"messageId":"src/a/b.ts","text":null,"skillsJson":"abc","mentionsJson":null}],[{"name":null,"kind":null,"runCount":1000000},{"name":"./x/**/*.json","kind":null,"runCount":42},{"name":"İstanbul","kind":null,"runCount":{"$num":"-0"}}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"emoji 👍🏽 mix","text":"ab","skillsJson":"src/a/b.ts","mentionsJson":".leading"}],[{"name":"abca..b","kind":null,"runCount":{"$num":"NaN"}},{"name":"a:b:chello","kind":null,"runCount":{"$num":"-0"}}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"ns:key.pathtrailing.","text":"a:b:cline1\nline2","skillsJson":"hello","mentionsJson":null},{"messageId":null,"text":"key_name-1","skillsJson":"日本語のテキスト","mentionsJson":null}],[{"name":null,"kind":"Hello World","runCount":{"$num":"-0"}},{"name":null,"kind":"./x/**/*.json:","runCount":-2.5},{"name":"straße","kind":null,"runCount":{"$num":"NaN"}}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[{"a":{"b":"c"}},[{"name":"src/a/b.ts","kind":".leading","runCount":0},{"name":"a😀b😀c","kind":"ΣΊΣΥΦΟΣ","runCount":-2.5}]],"error":"rows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":"hello world"}],{"$undefined":true}],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":".leading"},{"messageId":"straße","text":"","skillsJson":"hello","mentionsJson":null}],{"$undefined":true}],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":null,"skillsJson":"hello world","mentionsJson":null},{"messageId":null,"text":":","skillsJson":null,"mentionsJson":"./x/**/*.json"},{"messageId":"ab","text":null,"skillsJson":null,"mentionsJson":"key_name-1"}],[{"name":"hello","kind":null,"runCount":{"$num":"-Infinity"}},{"name":null,"kind":null,"runCount":10}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":"straße"}],"x"],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":"hello worldhello","skillsJson":null,"mentionsJson":null},{"messageId":"a..b","text":"hello world","skillsJson":"line1\nline2","mentionsJson":"./x/**/*.json"}],[{"name":"line1\nline2a..b","kind":null,"runCount":{"$num":"NaN"}},{"name":"tab\tseparatedΣΊΣΥΦΟΣ","kind":"  padded  ","runCount":42}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"ünïcödé","text":"a😀b😀chello world","skillsJson":"a..b","mentionsJson":"abc"},{"messageId":"  padded  😀","text":null,"skillsJson":"a:b:c日本語のテキスト","mentionsJson":"İstanbul"},{"messageId":null,"text":null,"skillsJson":"日本語のテキスト","mentionsJson":".leading"}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[],[{"name":null,"kind":null,"runCount":{"$num":"-Infinity"}},{"name":null,"kind":null,"runCount":{"$num":"Infinity"}},{"name":null,"kind":null,"runCount":-2.5}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"ΣΊΣΥΦΟΣtrailing.","text":null,"skillsJson":null,"mentionsJson":"tab\tseparated"}],[{"name":"a","kind":null,"runCount":0.5},{"name":null,"kind":null,"runCount":2147483648}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":["x",[{"name":null,"kind":"a😀b😀ca:b:c","runCount":10}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":null},{"messageId":"hello{name} has {count} items","text":null,"skillsJson":null,"mentionsJson":null},{"messageId":null,"text":"hello world","skillsJson":"straße","mentionsJson":"é"}],[{"name":null,"kind":null,"runCount":42},{"name":"İstanbulsrc/a/b.ts","kind":"  padded  日本語のテキスト","runCount":-1}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[{"a":{"b":"c"}},[{"name":"日本語のテキスト","kind":"İstanbul","runCount":0}]],"error":"rows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[{},[{"name":"ünïcödéabc","kind":"ünïcödé","runCount":1000},{"name":null,"kind":"key_name-1","runCount":{"$num":"Infinity"}},{"name":"src/a/b.ts","kind":null,"runCount":0.5}]],"error":"rows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":"ΣΊΣΥΦΟΣ","skillsJson":"ünïcödé","mentionsJson":":"},{"messageId":null,"text":"a..b","skillsJson":"hellokey_name-1","mentionsJson":null},{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":null}],[{"name":null,"kind":null,"runCount":1000}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"a.b.c","text":"hello world","skillsJson":null,"mentionsJson":null}],[]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":".leading","skillsJson":null,"mentionsJson":"./x/**/*.json"}],[{"name":"","kind":"İstanbul","runCount":10}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":null},{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":"  padded  .leading"},{"messageId":"日本語のテキスト","text":null,"skillsJson":null,"mentionsJson":null}],[{"name":"ékey_name-1","kind":null,"runCount":2147483648},{"name":"hello world{name} has {count} items","kind":"éline1\nline2","runCount":{"$num":"-0"}},{"name":null,"kind":".leading","runCount":1000}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":"a..b"},{"messageId":null,"text":null,"skillsJson":"  padded  ΣΊΣΥΦΟΣ","mentionsJson":null},{"messageId":"ünïcödé","text":null,"skillsJson":".leading","mentionsJson":null}],[{"name":":","kind":"﻿bom./x/**/*.json","runCount":{"$num":"-Infinity"}}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":"helloa😀b😀c","skillsJson":null,"mentionsJson":null},{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":"line1\nline2"},{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":null}],[{"name":null,"kind":"İstanbul","runCount":1},{"name":"  padded  ","kind":"hello world😀","runCount":-1}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":"﻿bom","skillsJson":null,"mentionsJson":null}],[{"name":"./x/**/*.json","kind":"hello world","runCount":9007199254740992}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[],[{"name":null,"kind":null,"runCount":-2.5}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[null,{"a":"b"}],"error":"rows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":"line1\nline2"},{"messageId":null,"text":null,"skillsJson":"é","mentionsJson":"ünïcödé"}],[]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":null,"skillsJson":"line1\nline2","mentionsJson":"Hello World"},{"messageId":"src/a/b.ts","text":null,"skillsJson":null,"mentionsJson":null}],{"a":"b"}],"error":"archivedRows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[0,[{"name":null,"kind":null,"runCount":{"$num":"-0"}},{"name":"key_name-1","kind":"","runCount":100},{"name":null,"kind":null,"runCount":1000000}]],"error":"rows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":"key_name-1","skillsJson":null,"mentionsJson":"key_name-1"},{"messageId":"a😀b😀c","text":null,"skillsJson":null,"mentionsJson":null},{"messageId":null,"text":"emoji 👍🏽 mix😀","skillsJson":null,"mentionsJson":null}],{"$undefined":true}],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"a.b.c","text":null,"skillsJson":null,"mentionsJson":null},{"messageId":null,"text":"line1\nline2","skillsJson":"a..b","mentionsJson":null}],[{"name":"key_name-1","kind":"tab\tseparated","runCount":{"$num":"NaN"}}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":".leading","text":null,"skillsJson":null,"mentionsJson":"a.b.c"},{"messageId":"é","text":null,"skillsJson":"  padded  ","mentionsJson":"key_name-1"}],[{"name":"a..b","kind":null,"runCount":1},{"name":"a😀b😀c","kind":"  padded  ","runCount":-1},{"name":null,"kind":null,"runCount":2147483648}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":"a😀b😀c"},{"messageId":"a😀b😀c","text":"abc","skillsJson":null,"mentionsJson":null}],[{"name":null,"kind":"./x/**/*.json","runCount":2},{"name":"HELLO","kind":null,"runCount":2147483648}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":null,"skillsJson":"a:b:c","mentionsJson":"hello worldtab\tseparated"}],null],"error":"archivedRows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"hello world","text":null,"skillsJson":"hello world","mentionsJson":"abcstraße"},{"messageId":"{name} has {count} items","text":"tab\tseparated","skillsJson":"{name} has {count} items","mentionsJson":null}],[{"name":null,"kind":"abc","runCount":100},{"name":null,"kind":"a","runCount":42}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"İstanbul","text":"a😀b😀c","skillsJson":"tab\tseparated","mentionsJson":":"}],{"$undefined":true}],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"{name} has {count} items","text":"a","skillsJson":null,"mentionsJson":"tab\tseparateda😀b😀c"},{"messageId":null,"text":"a.b.c","skillsJson":null,"mentionsJson":"a..b"}],[{"name":"src/a/b.tshello","kind":null,"runCount":-2.5},{"name":"éa😀b😀c","kind":"Hello World","runCount":2147483648}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[],[{"name":null,"kind":null,"runCount":0.5},{"name":"hello world","kind":null,"runCount":9007199254740992}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"😀","text":"{name} has {count} items","skillsJson":"hello","mentionsJson":null},{"messageId":null,"text":null,"skillsJson":"./x/**/*.json","mentionsJson":""}],[{"name":"a:b:c","kind":"a😀b😀c","runCount":2},{"name":null,"kind":null,"runCount":1}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[],[{"name":null,"kind":"😀","runCount":-1}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"ns:key.path","text":null,"skillsJson":"é","mentionsJson":null},{"messageId":"日本語のテキスト./x/**/*.json","text":null,"skillsJson":"﻿bom","mentionsJson":null}],[{"name":"İstanbul","kind":null,"runCount":{"$num":"-0"}},{"name":null,"kind":"HELLO{name} has {count} items","runCount":1000000}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"Hello Worldhello","text":null,"skillsJson":null,"mentionsJson":"😀"}],{"$undefined":true}],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"a:b:c","text":"ünïcödé日本語のテキスト","skillsJson":"HELLO","mentionsJson":"a:b:c{name} has {count} items"},{"messageId":null,"text":"ésrc/a/b.ts","skillsJson":"{name} has {count} items./x/**/*.json","mentionsJson":"a:b:c"},{"messageId":null,"text":"emoji 👍🏽 mix","skillsJson":null,"mentionsJson":"Hello World"}],{"$undefined":true}],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":null,"skillsJson":"HELLO","mentionsJson":null},{"messageId":null,"text":"a:b:c","skillsJson":null,"mentionsJson":null},{"messageId":"emoji 👍🏽 mix","text":null,"skillsJson":null,"mentionsJson":null}],{"a":"b"}],"error":"archivedRows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"tab\tseparated","text":"a..b","skillsJson":"ΣΊΣΥΦΟΣ","mentionsJson":"Hello World"},{"messageId":"abc﻿bom","text":"Hello World","skillsJson":"line1\nline2","mentionsJson":"hello world{name} has {count} items"},{"messageId":"aa😀b😀c","text":"trailing.","skillsJson":"trailing.","mentionsJson":"  padded  "}],[{"name":"straße","kind":null,"runCount":0.5}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"trailing.","text":".leading","skillsJson":"{name} has {count} items","mentionsJson":"src/a/b.tsHello World"},{"messageId":"ünïcödé","text":null,"skillsJson":null,"mentionsJson":"{name} has {count} items"}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"HELLO","text":"a.b.cΣΊΣΥΦΟΣ","skillsJson":"İstanbul","mentionsJson":"key_name-1"},{"messageId":"emoji 👍🏽 mix","text":"hello","skillsJson":"HELLO","mentionsJson":"src/a/b.ts"}],[{"name":"a..b","kind":"key_name-1a😀b😀c","runCount":0.5}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"hello world","text":null,"skillsJson":":","mentionsJson":"emoji 👍🏽 mix"},{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":"日本語のテキスト"},{"messageId":null,"text":null,"skillsJson":"ünïcödé","mentionsJson":null}],[{"name":null,"kind":null,"runCount":100},{"name":null,"kind":null,"runCount":-1},{"name":null,"kind":null,"runCount":0.5}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"HELLO","text":"ünïcödéa😀b😀c","skillsJson":"  padded  ","mentionsJson":null},{"messageId":"hello","text":"{name} has {count} items","skillsJson":"key_name-1","mentionsJson":null},{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":"abc"}],[]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[],[{"name":null,"kind":null,"runCount":2147483648},{"name":"İstanbul😀","kind":"straße:","runCount":1}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[],[{"name":"a😀b😀cemoji 👍🏽 mix","kind":null,"runCount":{"$num":"-0"}}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[{"a":{"b":"c"}}],"error":"rows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"src/a/b.ts","text":"é","skillsJson":null,"mentionsJson":"hello"},{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":""},{"messageId":"ünïcödé","text":null,"skillsJson":null,"mentionsJson":"a😀b😀c"}],[]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":"line1\nline2ΣΊΣΥΦΟΣ","skillsJson":null,"mentionsJson":"ab"}],[{"name":"trailing.","kind":"ab","runCount":3},{"name":null,"kind":"src/a/b.ts","runCount":100}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"line1\nline2é","text":null,"skillsJson":"  padded  ","mentionsJson":"a.b.c"},{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":"é"}],{"$undefined":true}],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"a..bünïcödé","text":"İstanbul","skillsJson":"a..b","mentionsJson":"line1\nline2a😀b😀c"},{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":null},{"messageId":"ab","text":null,"skillsJson":"straße","mentionsJson":"hello"}],[]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":":","text":null,"skillsJson":null,"mentionsJson":".leading"},{"messageId":":","text":null,"skillsJson":null,"mentionsJson":null},{"messageId":"ünïcödé","text":null,"skillsJson":null,"mentionsJson":"ΣΊΣΥΦΟΣ"}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":"HELLOtab\tseparated","skillsJson":"﻿bom","mentionsJson":null},{"messageId":null,"text":null,"skillsJson":"a","mentionsJson":null}],0],"error":"archivedRows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[true,"x"],"error":"rows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[null,[{"name":null,"kind":"﻿bom","runCount":2147483648}]],"error":"rows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":"İstanbul","skillsJson":"HELLO日本語のテキスト","mentionsJson":null}],[{"name":null,"kind":"abab","runCount":42}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":"key_name-1","skillsJson":"a..ba:b:c","mentionsJson":"key_name-1İstanbul"},{"messageId":"a.b.c","text":null,"skillsJson":"hello","mentionsJson":"abc"},{"messageId":null,"text":"./x/**/*.jsonns:key.path","skillsJson":null,"mentionsJson":null}],[{"name":null,"kind":null,"runCount":1000}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"a😀b😀c./x/**/*.json","text":"./x/**/*.json","skillsJson":null,"mentionsJson":null},{"messageId":null,"text":"a.b.c","skillsJson":"﻿bom","mentionsJson":"straße"}],[{"name":"","kind":null,"runCount":{"$num":"-0"}}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[],[{"name":"a","kind":null,"runCount":2147483648}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"ab","text":null,"skillsJson":"Hello World","mentionsJson":"key_name-1"}],[{"name":"a:b:c","kind":null,"runCount":42},{"name":null,"kind":"a:b:c","runCount":9007199254740992}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":"İstanbultrailing.","skillsJson":"straße","mentionsJson":null},{"messageId":"trailing.ΣΊΣΥΦΟΣ","text":"ab","skillsJson":"line1\nline2","mentionsJson":null}],[{"name":null,"kind":null,"runCount":1000000},{"name":null,"kind":null,"runCount":-2.5}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":null,"skillsJson":"İstanbul","mentionsJson":"src/a/b.ts"}],{"$undefined":true}],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"emoji 👍🏽 mixstraße","text":null,"skillsJson":null,"mentionsJson":"a😀b😀c"},{"messageId":"ns:key.path","text":"İstanbul","skillsJson":null,"mentionsJson":".leading"}],[{"name":"tab\tseparated﻿bom","kind":null,"runCount":{"$num":"-0"}},{"name":"tab\tseparated","kind":null,"runCount":9007199254740992},{"name":"aa.b.c","kind":null,"runCount":2147483648}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[{"a":"b"},[{"name":null,"kind":null,"runCount":{"$num":"Infinity"}},{"name":null,"kind":"a😀b😀c","runCount":{"$num":"-Infinity"}}]],"error":"rows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":null,"skillsJson":"HELLO😀","mentionsJson":null}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"a😀b😀c","text":"İstanbul","skillsJson":"hello world","mentionsJson":".leading  padded  "},{"messageId":"tab\tseparated","text":"","skillsJson":null,"mentionsJson":null}],{"a":"b"}],"error":"archivedRows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":null,"skillsJson":"hello","mentionsJson":"ΣΊΣΥΦΟΣ"}],{"a":"b"}],"error":"archivedRows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"tab\tseparated","text":"src/a/b.ts","skillsJson":null,"mentionsJson":"  padded  İstanbul"},{"messageId":null,"text":"a:b:c","skillsJson":null,"mentionsJson":"ns:key.path"},{"messageId":"ab","text":null,"skillsJson":null,"mentionsJson":"emoji 👍🏽 mix"}],[{"name":"a.b.c","kind":null,"runCount":100}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":null,"text":"hello world","skillsJson":"﻿bom","mentionsJson":null},{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":null}],[{"name":"a😀","kind":"😀a:b:c","runCount":100}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"😀","text":"src/a/b.ts","skillsJson":"a.b.c","mentionsJson":".leading"}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"İstanbultrailing.","text":"abc","skillsJson":null,"mentionsJson":null},{"messageId":"hello world","text":"a..babc","skillsJson":"a:b:chello","mentionsJson":null}],{"$undefined":true}],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[{"messageId":"a😀b😀c","text":null,"skillsJson":null,"mentionsJson":null},{"messageId":null,"text":null,"skillsJson":null,"mentionsJson":"line1\nline2"}],[{"name":null,"kind":null,"runCount":42},{"name":null,"kind":null,"runCount":0.5},{"name":null,"kind":"ns:key.pathline1\nline2","runCount":2147483648}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[[],[{"name":"  padded  ab","kind":null,"runCount":2147483648}]],"ok":[]}
+{"fn":"aggregateProfileSkillUsageRows","args":[{},[{"name":null,"kind":null,"runCount":0},{"name":"a.b.c","kind":"emoji 👍🏽 mix","runCount":42},{"name":null,"kind":null,"runCount":{"$num":"-Infinity"}}]],"error":"rows is not iterable"}
+{"fn":"aggregateProfileSkillUsageRows","args":[0,[{"name":"absrc/a/b.ts","kind":null,"runCount":0.5}]],"error":"rows is not iterable"}
+{"fn":"heatmapIntensity","args":[2147483648,[0]],"ok":4}
+{"fn":"heatmapIntensity","args":[0,[]],"ok":0}
+{"fn":"heatmapIntensity","args":[{"$num":"-0"},[2147483648,{"$num":"-0"}]],"ok":0}
+{"fn":"heatmapIntensity","args":[{"$num":"Infinity"},[1,1000000]],"ok":4}
+{"fn":"heatmapIntensity","args":[-2.5,[]],"ok":0}
+{"fn":"heatmapIntensity","args":[9007199254740992,[0,2147483648]],"ok":4}
+{"fn":"heatmapIntensity","args":[{"$num":"-0"},[]],"ok":0}
+{"fn":"heatmapIntensity","args":[{"$num":"Infinity"},[{"$num":"-Infinity"}]],"ok":4}
+{"fn":"heatmapIntensity","args":[10,[1000000,0.5]],"ok":4}
+{"fn":"heatmapIntensity","args":[2147483648,[]],"ok":0}
+{"fn":"heatmapIntensity","args":[{"$num":"NaN"},[9007199254740992]],"ok":1}
+{"fn":"heatmapIntensity","args":[{"$num":"Infinity"},[{"$num":"Infinity"}]],"ok":4}
+{"fn":"heatmapIntensity","args":[9007199254740992,[]],"ok":0}
+{"fn":"heatmapIntensity","args":[2147483648,[0.5,1000000]],"ok":4}
+{"fn":"heatmapIntensity","args":[3,[]],"ok":0}
+{"fn":"heatmapIntensity","args":[42,[42,0,{"$num":"-Infinity"}]],"ok":4}
+{"fn":"heatmapIntensity","args":[0,[2147483648,{"$num":"NaN"}]],"ok":0}
+{"fn":"heatmapIntensity","args":[42,[0,{"$num":"-0"},10]],"ok":4}
+{"fn":"heatmapIntensity","args":[3,[3,-1]],"ok":4}
+{"fn":"heatmapIntensity","args":[0.5,[0.5,1000000,42]],"ok":2}
+{"fn":"heatmapIntensity","args":[{"$num":"NaN"},[]],"ok":0}
+{"fn":"heatmapIntensity","args":[1,[9007199254740992,100,1000]],"ok":1}
+{"fn":"heatmapIntensity","args":[2147483648,[1000]],"ok":4}
+{"fn":"heatmapIntensity","args":[100,[]],"ok":0}
+{"fn":"heatmapIntensity","args":[{"$num":"NaN"},[2,-2.5]],"ok":1}
+{"fn":"heatmapIntensity","args":[{"$num":"-0"},[42]],"ok":0}
+{"fn":"heatmapIntensity","args":[0.5,[0,2]],"ok":2}
+{"fn":"heatmapIntensity","args":[{"$num":"-Infinity"},[10,1000,{"$num":"-Infinity"}]],"ok":0}
+{"fn":"heatmapIntensity","args":[100,[2147483648,3]],"ok":4}
+{"fn":"heatmapIntensity","args":[100,[2,1,0.5]],"ok":4}
+{"fn":"heatmapIntensity","args":[1,[0,2,1000000]],"ok":2}
+{"fn":"heatmapIntensity","args":[-2.5,[2147483648,1000,{"$num":"-Infinity"}]],"ok":0}
+{"fn":"heatmapIntensity","args":[2,[]],"ok":0}
+{"fn":"heatmapIntensity","args":[1000,[]],"ok":0}
+{"fn":"heatmapIntensity","args":[1,[{"$num":"Infinity"},1000000]],"ok":1}
+{"fn":"heatmapIntensity","args":[1000000,[1,100,42]],"ok":4}
+{"fn":"heatmapIntensity","args":[2,[-1]],"ok":4}
+{"fn":"heatmapIntensity","args":[0,[{"$num":"-Infinity"},2147483648,0]],"ok":0}
+{"fn":"heatmapIntensity","args":[{"$num":"NaN"},[1000,3,1000000]],"ok":1}
+{"fn":"heatmapIntensity","args":[42,[]],"ok":0}
+{"fn":"heatmapIntensity","args":[-2.5,[{"$num":"Infinity"},9007199254740992,1000000]],"ok":0}
+{"fn":"heatmapIntensity","args":[{"$num":"-0"},[0.5,{"$num":"-Infinity"}]],"ok":0}
+{"fn":"heatmapIntensity","args":[1,[0.5,-1]],"ok":4}
+{"fn":"heatmapIntensity","args":[1000,[{"$num":"-0"}]],"ok":4}
+{"fn":"heatmapIntensity","args":[{"$num":"NaN"},[-2.5,{"$num":"Infinity"}]],"ok":1}
+{"fn":"heatmapIntensity","args":[0.5,[]],"ok":0}
+{"fn":"heatmapIntensity","args":[-2.5,[-1,{"$num":"NaN"}]],"ok":0}
+{"fn":"heatmapIntensity","args":[2,[1,9007199254740992]],"ok":2}
+{"fn":"heatmapIntensity","args":[42,[3,{"$num":"NaN"},1000]],"ok":2}
+{"fn":"heatmapIntensity","args":[{"$num":"Infinity"},[1000,0,{"$num":"NaN"}]],"ok":3}
+{"fn":"heatmapIntensity","args":[3,[1,1]],"ok":4}
+{"fn":"heatmapIntensity","args":[{"$num":"NaN"},[{"$num":"Infinity"},1000000,{"$num":"-0"}]],"ok":1}
+{"fn":"heatmapIntensity","args":[3,[0.5,1,10]],"ok":3}
+{"fn":"heatmapIntensity","args":[2147483648,[{"$num":"NaN"},{"$num":"NaN"}]],"ok":1}
+{"fn":"heatmapIntensity","args":[1,[3,2147483648,1000]],"ok":1}
+{"fn":"heatmapIntensity","args":[0,[1,{"$num":"NaN"},{"$num":"Infinity"}]],"ok":0}
+{"fn":"heatmapIntensity","args":[-2.5,[0.5,{"$num":"Infinity"}]],"ok":0}
+{"fn":"heatmapIntensity","args":[-2.5,[1000]],"ok":0}
+{"fn":"heatmapIntensity","args":[2,[2147483648,{"$num":"-0"}]],"ok":4}
+{"fn":"heatmapIntensity","args":[9007199254740992,[{"$num":"Infinity"},1000000,1]],"ok":4}
+{"fn":"heatmapIntensity","args":[1000,[0,{"$num":"NaN"},42]],"ok":2}
+{"fn":"heatmapIntensity","args":[9007199254740992,[1,0]],"ok":4}
+{"fn":"heatmapIntensity","args":[{"$num":"-Infinity"},[]],"ok":0}
+{"fn":"heatmapIntensity","args":[{"$num":"NaN"},[1000,3,{"$num":"Infinity"}]],"ok":1}
+{"fn":"heatmapIntensity","args":[42,[3,1000]],"ok":2}
+{"fn":"heatmapIntensity","args":[0,[-2.5,{"$num":"Infinity"}]],"ok":0}
+{"fn":"heatmapIntensity","args":[{"$num":"-0"},[{"$num":"-Infinity"}]],"ok":0}
+{"fn":"heatmapIntensity","args":[1000000,[100,1,42]],"ok":4}
+{"fn":"heatmapIntensity","args":[42,[1,-1,1]],"ok":4}
+{"fn":"heatmapIntensity","args":[0.5,[1,100]],"ok":1}
+{"fn":"heatmapIntensity","args":[{"$num":"-0"},[1]],"ok":0}
+{"fn":"heatmapIntensity","args":[1000000,[0.5]],"ok":4}
+{"fn":"heatmapIntensity","args":[1,[2]],"ok":1}
+{"fn":"heatmapIntensity","args":[100,[-1,-2.5,-2.5]],"ok":4}
+{"fn":"heatmapIntensity","args":[9007199254740992,[1000000,42,-2.5]],"ok":4}
+{"fn":"heatmapIntensity","args":[{"$num":"Infinity"},[-1]],"ok":4}
+{"fn":"heatmapIntensity","args":[9007199254740992,[0.5]],"ok":4}
+{"fn":"heatmapIntensity","args":[{"$num":"Infinity"},[2]],"ok":4}
+{"fn":"heatmapIntensity","args":[{"$num":"NaN"},[1000000,{"$num":"Infinity"},42]],"ok":1}
+{"fn":"heatmapIntensity","args":[2147483648,[{"$num":"-Infinity"}]],"ok":4}
+{"fn":"heatmapIntensity","args":[2,[9007199254740992,10,{"$num":"NaN"}]],"ok":1}
+{"fn":"heatmapIntensity","args":[10,[{"$num":"Infinity"},{"$num":"Infinity"}]],"ok":1}
+{"fn":"heatmapIntensity","args":[{"$num":"-0"},[1000000]],"ok":0}
+{"fn":"heatmapIntensity","args":[{"$num":"NaN"},[{"$num":"Infinity"},9007199254740992]],"ok":1}
+{"fn":"heatmapIntensity","args":[3,[-1,3]],"ok":4}
+{"fn":"heatmapIntensity","args":[10,[-1,9007199254740992,100]],"ok":2}
+{"fn":"heatmapIntensity","args":[-1,[0,-1]],"ok":0}
+{"fn":"heatmapIntensity","args":[{"$num":"-0"},[9007199254740992,{"$num":"Infinity"},42]],"ok":0}
+{"fn":"heatmapIntensity","args":[3,[3]],"ok":4}
+{"fn":"heatmapIntensity","args":[{"$num":"Infinity"},[]],"ok":0}
+{"fn":"heatmapIntensity","args":[{"$num":"-0"},[{"$num":"NaN"}]],"ok":0}
+{"fn":"heatmapIntensity","args":[0,[{"$num":"-Infinity"},3,{"$num":"NaN"}]],"ok":0}
+{"fn":"heatmapIntensity","args":[{"$num":"Infinity"},[{"$num":"-0"},-2.5,100]],"ok":4}
+{"fn":"heatmapIntensity","args":[0.5,[1]],"ok":1}
+{"fn":"heatmapIntensity","args":[0,[{"$num":"Infinity"},3,1000]],"ok":0}
+{"fn":"heatmapIntensity","args":[10,[1000,1000]],"ok":1}
+{"fn":"heatmapIntensity","args":[{"$num":"-0"},[1,2,2]],"ok":0}
+{"fn":"heatmapIntensity","args":[1000,[0,0.5,0.5]],"ok":4}
+{"fn":"heatmapIntensity","args":[{"$num":"Infinity"},[0.5,{"$num":"NaN"},{"$num":"-0"}]],"ok":2}
+{"fn":"heatmapIntensity","args":[9007199254740992,[3]],"ok":4}
+{"fn":"heatmapIntensity","args":[-1,[10,10]],"ok":0}
+{"fn":"heatmapIntensity","args":[-2.5,[10,2]],"ok":0}
+{"fn":"heatmapIntensity","args":[{"$num":"NaN"},[2147483648,{"$num":"Infinity"}]],"ok":1}
+{"fn":"heatmapIntensity","args":[{"$num":"-Infinity"},[0.5,-1,3]],"ok":0}
+{"fn":"heatmapIntensity","args":[0.5,[{"$num":"NaN"},10]],"ok":1}
+{"fn":"heatmapIntensity","args":[{"$num":"-0"},[0]],"ok":0}
+{"fn":"heatmapIntensity","args":[10,[1,{"$num":"-Infinity"},-1]],"ok":4}
+{"fn":"heatmapIntensity","args":[10,[{"$num":"-Infinity"},3,9007199254740992]],"ok":3}
+{"fn":"heatmapIntensity","args":[42,[{"$num":"Infinity"},-2.5,-2.5]],"ok":4}
+{"fn":"heatmapIntensity","args":[-1,[]],"ok":0}
+{"fn":"heatmapIntensity","args":[2,[10,3]],"ok":1}
+{"fn":"heatmapIntensity","args":[1000000,[100]],"ok":4}
+{"fn":"heatmapIntensity","args":[2147483648,[-2.5,0.5,{"$num":"-Infinity"}]],"ok":4}
+{"fn":"heatmapIntensity","args":[2147483648,[{"$num":"Infinity"},0,3]],"ok":4}
+{"fn":"heatmapIntensity","args":[{"$num":"-0"},[{"$num":"NaN"},{"$num":"NaN"},3]],"ok":0}
+{"fn":"heatmapIntensity","args":[1,[42]],"ok":1}
+{"fn":"heatmapIntensity","args":[1000000,[2,2,{"$num":"-Infinity"}]],"ok":4}
+{"fn":"heatmapIntensity","args":[-2.5,[1000000]],"ok":0}
+{"fn":"heatmapIntensity","args":[3,[{"$num":"-Infinity"}]],"ok":4}
+{"fn":"heatmapIntensity","args":[1000000,[]],"ok":0}
+{"fn":"heatmapIntensity","args":[3,[10,2147483648,1000]],"ok":1}
+{"fn":"heatmapIntensity","args":[0.5,[-2.5,9007199254740992,1000]],"ok":2}
+{"fn":"heatmapIntensity","args":[9007199254740992,[{"$num":"-0"}]],"ok":4}
+{"fn":"heatmapIntensity","args":[3,[0.5,1000000]],"ok":2}
+{"fn":"heatmapIntensity","args":[1000,[{"$num":"NaN"},2]],"ok":4}
+{"fn":"heatmapIntensity","args":[9007199254740992,[42,-1,-2.5]],"ok":4}
+{"fn":"heatmapIntensity","args":[-2.5,[0.5]],"ok":0}
+{"fn":"heatmapIntensity","args":[1,[{"$num":"-Infinity"}]],"ok":4}
+{"fn":"heatmapIntensity","args":[0.5,[{"$num":"NaN"},{"$num":"-Infinity"},{"$num":"Infinity"}]],"ok":3}
+{"fn":"heatmapIntensity","args":[10,[3]],"ok":4}
+{"fn":"heatmapIntensity","args":[1000000,[-1,1]],"ok":4}
+{"fn":"heatmapIntensity","args":[0.5,[0.5]],"ok":4}
+{"fn":"heatmapIntensity","args":[2,[-2.5,2147483648]],"ok":2}
+{"fn":"heatmapIntensity","args":[{"$num":"Infinity"},[{"$num":"Infinity"},-1,{"$num":"-Infinity"}]],"ok":4}
+{"fn":"heatmapIntensity","args":[2,[0,-1,2]],"ok":4}
+{"fn":"heatmapIntensity","args":[2,[-2.5,0]],"ok":4}
+{"fn":"heatmapIntensity","args":[-1,[9007199254740992,100,1000000]],"ok":0}
+{"fn":"heatmapIntensity","args":[{"$num":"NaN"},[42,-1,{"$num":"-0"}]],"ok":1}
+{"fn":"heatmapIntensity","args":[{"$num":"-Infinity"},[{"$num":"-Infinity"},3]],"ok":0}
+{"fn":"heatmapIntensity","args":[1000,[3,{"$num":"NaN"},2]],"ok":2}
+{"fn":"heatmapIntensity","args":[0.5,[10]],"ok":1}
+{"fn":"heatmapIntensity","args":[9007199254740992,[0,0.5,3]],"ok":4}
+{"fn":"heatmapIntensity","args":[2,[0.5,100]],"ok":2}
+{"fn":"heatmapIntensity","args":[0.5,[0,0]],"ok":4}
+{"fn":"heatmapIntensity","args":[10,[]],"ok":0}
+{"fn":"heatmapIntensity","args":[{"$num":"-0"},[0.5,-1,{"$num":"-0"}]],"ok":0}
+{"fn":"heatmapIntensity","args":[{"$num":"Infinity"},[{"$num":"-0"},{"$num":"-Infinity"},0]],"ok":4}
+{"fn":"heatmapIntensity","args":[1000,[{"$num":"-Infinity"}]],"ok":4}
+{"fn":"heatmapIntensity","args":[-2.5,[0,1000000]],"ok":0}
+{"fn":"heatmapIntensity","args":[{"$num":"-0"},[-1]],"ok":0}
+{"fn":"heatmapIntensity","args":[{"$num":"-0"},[1,9007199254740992]],"ok":0}
+{"fn":"heatmapIntensity","args":[-1,[{"$num":"NaN"}]],"ok":0}
+{"fn":"heatmapIntensity","args":[2,[2147483648]],"ok":1}
+{"fn":"heatmapIntensity","args":[-2.5,[10]],"ok":0}
+{"fn":"heatmapIntensity","args":[1,[-2.5,2,9007199254740992]],"ok":2}
+{"fn":"heatmapIntensity","args":[1,[]],"ok":0}
+{"fn":"heatmapIntensity","args":[100,[-1,0,0.5]],"ok":4}
+{"fn":"heatmapIntensity","args":[2147483648,[-1,{"$num":"NaN"},10]],"ok":2}
+{"fn":"heatmapIntensity","args":[9007199254740992,[0,{"$num":"Infinity"}]],"ok":2}
+{"fn":"heatmapIntensity","args":[0.5,[-1]],"ok":4}
+{"fn":"heatmapIntensity","args":[42,[2147483648]],"ok":1}
+{"fn":"heatmapIntensity","args":[{"$num":"-0"},[2147483648,1000]],"ok":0}
+{"fn":"heatmapIntensity","args":[10,[-1,{"$num":"Infinity"},{"$num":"-0"}]],"ok":2}
+{"fn":"heatmapIntensity","args":[0.5,[42]],"ok":1}
+{"fn":"heatmapIntensity","args":[{"$num":"-0"},[42,2147483648]],"ok":0}
+{"fn":"heatmapIntensity","args":[2147483648,[1000,1000000,{"$num":"-Infinity"}]],"ok":4}
+{"fn":"heatmapIntensity","args":[1000000,[0,-2.5,10]],"ok":4}
+{"fn":"heatmapIntensity","args":[-1,[2,1,10]],"ok":0}
+{"fn":"heatmapIntensity","args":[{"$num":"-0"},[100,-1]],"ok":0}
+{"fn":"heatmapIntensity","args":[0.5,[3,10]],"ok":1}
+{"fn":"heatmapIntensity","args":[{"$num":"NaN"},[1000,-1,{"$num":"-Infinity"}]],"ok":1}
+{"fn":"heatmapIntensity","args":[2147483648,[{"$num":"NaN"},0.5]],"ok":4}
+{"fn":"heatmapIntensity","args":[{"$num":"Infinity"},[3,1000000,10]],"ok":4}
+{"fn":"heatmapIntensity","args":[9007199254740992,[2147483648,9007199254740992]],"ok":4}
+{"fn":"heatmapIntensity","args":[-2.5,[{"$num":"NaN"}]],"ok":0}
+{"fn":"heatmapIntensity","args":[-2.5,[42,{"$num":"NaN"},{"$num":"-0"}]],"ok":0}
+{"fn":"heatmapIntensity","args":[2,[-2.5,{"$num":"-0"}]],"ok":4}
+{"fn":"heatmapIntensity","args":[{"$num":"-0"},[-2.5]],"ok":0}
+{"fn":"heatmapIntensity","args":[2,[0.5]],"ok":4}
+{"fn":"heatmapIntensity","args":[1000,[0.5]],"ok":4}
+{"fn":"heatmapIntensity","args":[-2.5,[100]],"ok":0}
+{"fn":"heatmapIntensity","args":[{"$num":"Infinity"},[42,0.5,{"$num":"NaN"}]],"ok":3}
+{"fn":"heatmapIntensity","args":[1000000,[1]],"ok":4}
+{"fn":"heatmapIntensity","args":[1,[2147483648,3,-2.5]],"ok":1}
+{"fn":"heatmapIntensity","args":[1000,[42]],"ok":4}
+{"fn":"heatmapIntensity","args":[-1,[3,9007199254740992,0]],"ok":0}
+{"fn":"heatmapIntensity","args":[1000000,[10,{"$num":"NaN"}]],"ok":2}
+{"fn":"heatmapIntensity","args":[1000,[1000000,2,{"$num":"-0"}]],"ok":4}
+{"fn":"heatmapIntensity","args":[{"$num":"Infinity"},[{"$num":"NaN"}]],"ok":1}
+{"fn":"heatmapIntensity","args":[1,[-1,-2.5,0.5]],"ok":4}
+{"fn":"heatmapIntensity","args":[{"$num":"-Infinity"},[1000,2147483648]],"ok":0}
+{"fn":"heatmapIntensity","args":[1,[-1,3,1000]],"ok":2}
+{"fn":"heatmapIntensity","args":[0.5,[42,10]],"ok":1}
+{"fn":"heatmapIntensity","args":[42,[10]],"ok":4}
+{"fn":"heatmapIntensity","args":[-1,[3]],"ok":0}
+{"fn":"heatmapIntensity","args":[3,[1000000,{"$num":"NaN"},-2.5]],"ok":1}
+{"fn":"heatmapIntensity","args":[{"$num":"-0"},[1000]],"ok":0}
+{"fn":"heatmapIntensity","args":[10,[{"$num":"-0"}]],"ok":4}
+{"fn":"heatmapIntensity","args":[1,[-2.5,{"$num":"-Infinity"},10]],"ok":3}
+{"fn":"heatmapIntensity","args":[1000,[{"$num":"Infinity"},2]],"ok":4}
+{"fn":"heatmapIntensity","args":[-7.5,[0]],"ok":0}
+{"fn":"heatmapIntensity","args":[0.1,[0]],"ok":4}
+{"fn":"heatmapIntensity","args":[0.30000000000000004,[0]],"ok":4}
+{"fn":"heatmapIntensity","args":[1e+21,[0]],"ok":4}
+{"fn":"heatmapIntensity","args":[1e-7,[0]],"ok":4}
+{"fn":"heatmapIntensity","args":[5e-324,[0]],"ok":4}
+{"fn":"heatmapIntensity","args":[1.7976931348623157e+308,[0]],"ok":4}
+{"fn":"heatmapIntensity","args":[9007199254740992,[0]],"ok":4}
+{"fn":"heatmapIntensity","args":[2147483648,[0.1,0.2,-0.5,1e+21]],"ok":3}
+{"fn":"normalizeProviderKind","args":[{"a":{"b":"c"}},null],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[["a",1],"x"],"ok":"codex"}
+{"fn":"normalizeProviderKind","args":[0,"x"],"ok":"codex"}
+{"fn":"normalizeProviderKind","args":[true,0],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[["a",1],null],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":["x",{"a":{"b":"c"}}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[{},["a",1]],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":["x"],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[true,{"a":"b"}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[0,{}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[0,true],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[null,{"$undefined":true}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[true,{"a":{"b":"c"}}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[{"a":"b"},[]],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[[],null],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[null],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[["a",1],{"$undefined":true}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[[],{"$undefined":true}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[0,{"a":{"b":"c"}}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[true,[]],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[["a",1],["a",1]],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[{"a":{"b":"c"}},"x"],"ok":"codex"}
+{"fn":"normalizeProviderKind","args":[null,"x"],"ok":"codex"}
+{"fn":"normalizeProviderKind","args":["x",[]],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[null,0],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[true,{}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[0,{"a":"b"}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[{"a":"b"},"x"],"ok":"codex"}
+{"fn":"normalizeProviderKind","args":[{"a":{"b":"c"}},{"a":{"b":"c"}}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":["x",0],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[{"a":"b"}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[true],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[["a",1]],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[{},{"a":{"b":"c"}}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":["x",{"$undefined":true}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[["a",1],true],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[[],0],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":["x",{"a":"b"}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[true,["a",1]],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":["x",null],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[null,true],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[null,null],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[null,[]],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[{},null],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[{"a":"b"},0],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[{},true],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[[],{"a":"b"}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[[],true],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[true,true],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[{"a":"b"},["a",1]],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[[],{"a":{"b":"c"}}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[null,{}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[["a",1],{"a":{"b":"c"}}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[{"a":{"b":"c"}},0],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[{"a":{"b":"c"}},[]],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[[],"x"],"ok":"codex"}
+{"fn":"normalizeProviderKind","args":[{"a":"b"},true],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[{},{"a":"b"}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[{"a":{"b":"c"}},{}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":["x","x"],"ok":"codex"}
+{"fn":"normalizeProviderKind","args":["x",["a",1]],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[["a",1],{}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[{"a":{"b":"c"}},true],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[{},{"$undefined":true}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[["a",1],[]],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[["a",1],0],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[{"a":{"b":"c"}}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[true,"x"],"ok":"codex"}
+{"fn":"normalizeProviderKind","args":[[]],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[{"a":"b"},{"$undefined":true}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[{"a":"b"},null],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[null,{"a":{"b":"c"}}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[0],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[0,null],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[true,{"$undefined":true}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[[],[]],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[true,null],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[null,{"a":"b"}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[{}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":["x",true],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":["x",{}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[0,0],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[null,["a",1]],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[{},[]],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[{},0],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[[],{}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[{},"x"],"ok":"codex"}
+{"fn":"normalizeProviderKind","args":[{"a":"b"},{"a":"b"}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[{"a":"b"},{}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[["a",1],{"a":"b"}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[0,["a",1]],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[0,{"$undefined":true}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[{"a":{"b":"c"}},{"a":"b"}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[{"a":{"b":"c"}},["a",1]],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[{},{}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[{"a":{"b":"c"}},{"$undefined":true}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[{"a":"b"},{"a":{"b":"c"}}],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[[],["a",1]],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[0,[]],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":["X","x"],"ok":"codex"}
+{"fn":"normalizeProviderKind","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6},null],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7},null],"ok":"unknown"}
+{"fn":"normalizeProviderKind","args":[[3,1,2],null],"ok":"unknown"}
+{"fn":"turnModelSelectionCte","args":[true,{"threadIdsQuery":[]}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[{},{"threadIdsQuery":true}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":{"b":"c"}}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":"b"},{"threadId":"İstanbul"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":{"b":"c"}},{"threadId":"tab\tseparated"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[null],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"turnModelSelectionCte","args":[{"a":{"b":"c"}},{"threadId":"😀"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[null,{"$undefined":true}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"turnModelSelectionCte","args":[0,{"threadIdsQuery":0}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[true,{"threadIdsQuery":{}}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[true,{"threadId":"日本語のテキスト"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":{"b":"c"}},{"threadId":"HELLO"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":["x",{"threadId":"emoji 👍🏽 mix"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[0,{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":"b"},[]],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[{},{"threadIdsQuery":"x"}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[{},{"threadId":"line1\nline2"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":["x",{"threadId":"a.b.c"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[[]],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[{},{"threadIdsQuery":0}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":["x",{"threadId":"ünïcödé"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[{},{"threadIdsQuery":{"a":"b"}}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[[],{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[["a",1]],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":["x",[]],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":["x",{"a":{"b":"c"}}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[0,{"threadId":"abc日本語のテキスト"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[null,"x"],"error":"Cannot use 'in' operator to search for 'threadId' in x"}
+{"fn":"turnModelSelectionCte","args":[["a",1],{"threadIdsQuery":true}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[{},{"threadId":"hello"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[["a",1],{"threadId":"a:b:c"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":{"b":"c"}},{"threadIdsQuery":"x"}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[0,"x"],"error":"Cannot use 'in' operator to search for 'threadId' in x"}
+{"fn":"turnModelSelectionCte","args":[null,{"threadId":"src/a/b.ts"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[0,{"threadId":"hello world"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[[],{"threadId":"ünïcödé"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":"b"},{"threadIdsQuery":[]}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[0,{"threadIdsQuery":true}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[null,{"threadIdsQuery":{"a":{"b":"c"}}}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"turnModelSelectionCte","args":[true,{"a":"b"}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[true,{"threadId":"./x/**/*.json"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":"b"},{"a":{"b":"c"}}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":"b"},{"threadId":"abc"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":{"b":"c"}},{"threadIdsQuery":true}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":"b"},{"threadIdsQuery":null}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[true,[]],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[[],{"threadId":""}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":{"b":"c"}},{"threadId":".leading"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":"b"},{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[[],{"threadIdsQuery":["a",1]}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[null,{"threadIdsQuery":[]}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"turnModelSelectionCte","args":[true,"x"],"error":"Cannot use 'in' operator to search for 'threadId' in x"}
+{"fn":"turnModelSelectionCte","args":[{},{"threadId":"key_name-1"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":{"b":"c"}},{"threadIdsQuery":{}}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[[],{"threadId":"a"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[true,{"threadId":"HELLO"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":{"b":"c"}},{"threadId":"a😀b😀c"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[null,{"threadIdsQuery":{}}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"turnModelSelectionCte","args":[["a",1],{"threadId":"İstanbul"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[[],{"threadId":"line1\nline2"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[{}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[{},{}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[0],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[true,{"threadIdsQuery":true}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":{"b":"c"}},{"threadId":"﻿bom"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[{},{"threadIdsQuery":[]}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":["x",true],"error":"Cannot use 'in' operator to search for 'threadId' in true"}
+{"fn":"turnModelSelectionCte","args":[true,{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[["a",1],{"threadId":"ab"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[null,{"threadIdsQuery":null}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"turnModelSelectionCte","args":[["a",1],{"threadId":"  padded  "}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[["a",1],{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":"b"},{"threadId":"Hello World"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[0,{"threadIdsQuery":"x"}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":{"b":"c"}},{"threadIdsQuery":null}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":["x",{"threadIdsQuery":"x"}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":"b"}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[0,{"threadIdsQuery":{"a":{"b":"c"}}}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":["x",{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[0,[]],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[[],{"threadId":"trailing."}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":["x",{"threadIdsQuery":{"a":{"b":"c"}}}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[["a",1],[]],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[["a",1],{"threadIdsQuery":{}}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[null,["a",1]],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"turnModelSelectionCte","args":[null,{"threadId":":"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":["x",{"threadId":"a..b"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":{"b":"c"}},{"threadIdsQuery":{"a":{"b":"c"}}}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":{"b":"c"}},{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[null,{"threadId":"﻿bomtab\tseparated"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[0,{}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":["x"],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[{},{"threadId":"é"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":{"b":"c"}},"x"],"error":"Cannot use 'in' operator to search for 'threadId' in x"}
+{"fn":"turnModelSelectionCte","args":[true],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[0,{"threadId":"é日本語のテキスト"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[{},{"threadIdsQuery":["a",1]}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[true,{"threadId":"a..b"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[["a",1],{"threadIdsQuery":"x"}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[true,{"threadId":"a:b:c"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":"b"},{"threadId":"ünïcödé"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[true,{"threadId":"emoji 👍🏽 mix"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[["a",1],{"threadIdsQuery":0}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":"b"},{"threadIdsQuery":{"a":"b"}}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":{"b":"c"}},{"threadId":"日本語のテキスト"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[[],{"a":{"b":"c"}}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[null,{"threadId":"{name} has {count} itemshello"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[true,{"threadIdsQuery":"x"}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":{"b":"c"}},true],"error":"Cannot use 'in' operator to search for 'threadId' in true"}
+{"fn":"turnModelSelectionCte","args":[0,{"threadId":"line1\nline2"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[null,{"threadId":"emoji 👍🏽 mix"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[{},{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":["x",{"threadIdsQuery":{}}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":["x",{"threadId":"straßeabc"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[0,{"threadIdsQuery":[]}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[[],{"threadId":"helloé"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[true,{"threadIdsQuery":{"a":{"b":"c"}}}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":["x",{"threadId":"./x/**/*.json"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[true,{"threadIdsQuery":null}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":["x",{"threadIdsQuery":{"a":"b"}}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":["x",{"threadId":""}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":"b"},{"threadIdsQuery":["a",1]}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":["x",{"threadId":":a😀b😀c"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[null,{"threadIdsQuery":"x"}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"turnModelSelectionCte","args":[[],{"threadIdsQuery":[]}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":{"b":"c"}},{"threadIdsQuery":{"a":"b"}}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":["x",{"threadIdsQuery":0}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[["a",1],{"threadId":"﻿bom"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[0,{"threadId":"﻿bom"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[["a",1],{"threadIdsQuery":null}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[null,{"threadId":"src/a/b.ts  padded  "}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[["a",1],{"threadId":"ns:key.path"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":{"b":"c"}},0],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[["a",1],{"threadIdsQuery":{"a":"b"}}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[[],{"threadId":"hello worldΣΊΣΥΦΟΣ"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[["a",1],{"a":{"b":"c"}}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":{"b":"c"}},{"threadId":"  padded  "}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":"b"},{"threadId":"﻿bomabc"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[true,{"threadIdsQuery":0}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":"b"},{"threadId":"ΣΊΣΥΦΟΣ"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[true,{"threadId":"{name} has {count} items"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[0,{"threadId":"İstanbul"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[null,{"threadId":"﻿bom"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":["x",{"threadId":"straße"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[{},{"threadIdsQuery":{}}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[{},{"threadId":"{name} has {count} items"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[[],{"threadId":"aba"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[{},{"threadId":"line1\nline2a😀b😀c"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[[],{"threadIdsQuery":{"a":{"b":"c"}}}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":["x",{"threadId":"é"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[true,{"threadId":"ns:key.path"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[[],{"threadId":"ns:key.path"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":["x",{"threadIdsQuery":true}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[0,{"threadId":"😀"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[null,{"threadIdsQuery":{"a":"b"}}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"turnModelSelectionCte","args":["x","x"],"error":"Cannot use 'in' operator to search for 'threadId' in x"}
+{"fn":"turnModelSelectionCte","args":["x",["a",1]],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":["x",{"threadIdsQuery":["a",1]}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[true,{"threadId":"trailing."}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[{},{"threadId":"trailing."}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":{"b":"c"}},{"threadId":"src/a/b.ts"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[0,0],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[[],{"threadIdsQuery":"x"}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[["a",1],{"threadId":"trailing."}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":"b"},true],"error":"Cannot use 'in' operator to search for 'threadId' in true"}
+{"fn":"turnModelSelectionCte","args":[true,{"threadId":"a😀b😀c"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":"b"},{"threadId":""}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[[],{"threadId":"😀"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":["x",{"threadId":"  padded  "}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[0,{"threadIdsQuery":["a",1]}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[[],{"threadId":"a😀b😀c😀"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":["x",0],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[[],{"threadId":"straße"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":"b"},{"threadId":"tab\tseparated"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":{"b":"c"}},{"threadId":"a😀b😀cé"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[[],{"threadId":"日本語のテキスト"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[["a",1],{"threadId":"key_name-1"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":["x",{"a":"b"}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[true,{"threadId":"hello world"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[{},{"threadId":"helloemoji 👍🏽 mix"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":"b"},{"threadId":":"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[0,{"threadIdsQuery":{"a":"b"}}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[{},{"threadId":"﻿bomstraße"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":["x",{"threadId":"trailing."}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[true,{"threadIdsQuery":{"a":"b"}}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[{},{"threadId":"hello world"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":["x",{"threadId":":"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[0,{"threadIdsQuery":null}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[0,{"threadId":"tab\tseparated"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[0,{"threadId":"  padded  "}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[[],{"threadIdsQuery":{"a":"b"}}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[[],{}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[null,{"threadId":"a..b"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":{"b":"c"}},{"threadId":"trailing."}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":["x",{"threadId":"a:b:c"}],"error":"sql is not a function"}
+{"fn":"turnModelSelectionCte","args":[["a",1],{"threadIdsQuery":[]}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":{"b":"c"}},{"threadIdsQuery":[]}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[[],{"threadIdsQuery":0}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[true,{"a":{"b":"c"}}],"error":"sql.literal is not a function"}
+{"fn":"turnModelSelectionCte","args":[{"a":"b"},"x"],"error":"Cannot use 'in' operator to search for 'threadId' in x"}
+{"fn":"userPromptEventsQuery","args":[["a",1],{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"userPromptEventsQuery","args":[0,{"from":"emoji 👍🏽 mix","to":"trailing."}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[["a",1],{"from":"hello world","to":"﻿bomünïcödé"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[[],{"from":"İstanbul","to":"  padded  "}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":"b"},{"from":"ab","to":"a.b.c"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[[],{"from":"Hello World","to":"Hello World"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[["a",1],{"a":{"b":"c"}}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{},{"from":"Hello World","to":"{name} has {count} itemsa..b"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":{"b":"c"}},{"from":"ab","to":"key_name-1"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":"b"},{"from":"  padded  ","to":"tab\tseparatedkey_name-1"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[[],{"from":"trailing.日本語のテキスト","to":"日本語のテキスト"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[true,{"from":"İstanbul","to":"./x/**/*.json"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[null,["a",1]],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[null,{"from":"😀a","to":"tab\tseparated"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":{"b":"c"}},{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"userPromptEventsQuery","args":[0,{"from":"ΣΊΣΥΦΟΣ","to":"é"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[true],"error":"sql.literal is not a function"}
+{"fn":"userPromptEventsQuery","args":["x",{"from":"HELLO","to":"emoji 👍🏽 mixhello"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[[],{"from":"a..b","to":"HELLO"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":{"b":"c"}},{"from":"straßeünïcödé","to":"﻿bom"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":["x",{"from":"hello worlda.b.c","to":"é"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[0,{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"userPromptEventsQuery","args":[true,{"from":"emoji 👍🏽 mixhello","to":"line1\nline2"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{},{"from":"a","to":"﻿bom"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[null,{"from":":ab","to":"a.b.c"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[["a",1],{"from":"hello","to":"line1\nline2"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[null,{"from":"😀","to":"{name} has {count} items"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[null],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"userPromptEventsQuery","args":[{},{"from":"a..b","to":"日本語のテキスト"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":"b"},{"from":"tab\tseparated","to":"key_name-1a:b:c"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[true,{"from":"trailing.","to":"ΣΊΣΥΦΟΣ"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[0],"error":"sql.literal is not a function"}
+{"fn":"userPromptEventsQuery","args":["x",{"from":"straße","to":"  padded  "}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[null,{"from":"Hello World","to":"hello worldHELLO"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":"b"},{"from":"ünïcödé","to":"tab\tseparated"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[0,{"from":"a..b","to":"./x/**/*.json"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":"b"},null],"error":"sql.literal is not a function"}
+{"fn":"userPromptEventsQuery","args":[{},{"from":"./x/**/*.json","to":"tab\tseparated"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":"b"},{"from":"{name} has {count} items","to":"abc"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":"b"},{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"userPromptEventsQuery","args":["x",{"from":"trailing.tab\tseparated","to":"tab\tseparatedemoji 👍🏽 mix"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{},{"from":"﻿bom","to":"é"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":"b"},{"from":"src/a/b.ts","to":"Hello World日本語のテキスト"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":"b"},{"from":"straße","to":"  padded  "}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[["a",1],{"from":"hello world","to":"src/a/b.ts"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[[],{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"userPromptEventsQuery","args":[true,{"from":"key_name-1","to":"key_name-1"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":{"b":"c"}},{"from":"hello world","to":"tab\tseparatedİstanbul"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":["x",{"from":"Hello World","to":"﻿bom"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":{"b":"c"}},{"from":"HELLO","to":"trailing."}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[[],{"from":"{name} has {count} items","to":"{name} has {count} items"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[[],{"from":"a","to":":"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[true,{"from":"line1\nline2","to":"ünïcödé./x/**/*.json"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[true,"x"],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":{"b":"c"}},{"from":"  padded  ","to":"a.b.c"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[[],{"from":"a😀b😀c","to":"a.b.c"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":{"b":"c"}}],"error":"sql.literal is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":{"b":"c"}},{"from":"abc","to":"key_name-1"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[["a",1],{"from":"Hello World","to":"emoji 👍🏽 mix"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":"b"},true],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[true,{"from":"a😀b😀c","to":"ab"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[null,{"from":"tab\tseparated","to":"{name} has {count} items"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[[]],"error":"sql.literal is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":"b"},{"from":"ns:key.pathabc","to":"line1\nline2"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":{"b":"c"}},{"from":"hello","to":"ünïcödé"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[null,{"from":"Hello World","to":"a😀b😀chello world"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[["a",1],{"from":"line1\nline2﻿bom","to":"a"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{},{"from":"İstanbul","to":"a"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":{"b":"c"}},{"from":"ns:key.path","to":"Hello World"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":["x"],"error":"sql.literal is not a function"}
+{"fn":"userPromptEventsQuery","args":[[],{"from":"ns:key.path","to":"./x/**/*.json"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[null,{"from":"ns:key.path","to":"﻿bom"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":{"b":"c"}},{"from":"  padded  日本語のテキスト","to":"HELLO"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":["x",{"from":"😀","to":"Hello World﻿bom"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[[],{"a":"b"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[["a",1],{"from":"a","to":"a..b"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[[],{"from":"trailing.line1\nline2","to":"éstraße"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":"b"},{"from":"ΣΊΣΥΦΟΣsrc/a/b.ts","to":""}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[null,{"from":"tab\tseparated","to":"ns:key.path"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":{"b":"c"}},{}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":{"b":"c"}},{"from":"ns:key.path","to":"a:b:c"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":"b"},{"from":":hello world","to":"ab"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[["a",1],{"from":"é","to":"hello"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[["a",1],{"from":"src/a/b.ts","to":"ΣΊΣΥΦΟΣ:"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[null,{"from":"","to":"straße"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":["x",{"from":"hello","to":"key_name-1é"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[null,{"from":"a","to":"ns:key.path:"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[0,{"from":"straße","to":"😀"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":{"b":"c"}},{"from":"","to":"ns:key.path:"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{},{"from":"ünïcödéİstanbul","to":"Hello World"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":["x",{"from":"emoji 👍🏽 mix","to":"﻿bom"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[true,{"from":"emoji 👍🏽 mix","to":"ΣΊΣΥΦΟΣ"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[[],{"from":"src/a/b.ts","to":"a.b.c"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{}],"error":"sql.literal is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":{"b":"c"}},{"from":"HELLO","to":"HELLO"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":{"b":"c"}},{"from":"straße","to":"ünïcödé"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[0,true],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[["a",1],{"from":"é./x/**/*.json","to":"key_name-1  padded  "}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":["x",{"from":"  padded  ","to":"😀"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":["x",{"from":"é","to":"İstanbul"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[null,{"from":"ΣΊΣΥΦΟΣ","to":"hello"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{},{"a":"b"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":["x",{"from":"HELLO","to":"trailing."}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":"b"},{"from":"tab\tseparated","to":"tab\tseparatedhello"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[null,{"from":"ΣΊΣΥΦΟΣ","to":"straße"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[true,{"from":"{name} has {count} items","to":"abc"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":["x",{"from":"ünïcödé","to":"line1\nline2"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{},[]],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[["a",1],{"from":"a😀b😀c","to":"key_name-1"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[true,{"from":"a😀b😀c","to":"ns:key.path"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[null,{"$undefined":true}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"userPromptEventsQuery","args":[null,{"from":"key_name-1Hello World","to":""}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[true,{"from":"abcline1\nline2","to":"tab\tseparated"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[["a",1],"x"],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":"b"},{"from":"key_name-1trailing.","to":"a﻿bom"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":{"b":"c"}},{"from":"abc","to":"tab\tseparatedab"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[true,{"from":"a:b:c","to":"日本語のテキスト"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[null,{"from":"a..b","to":"hello"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":"b"},{"from":"a😀b😀cİstanbul","to":"ab"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":{"b":"c"}},{"from":"abc","to":"a😀b😀c"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[0,{"from":"a.b.c","to":"abc"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":["x",{"from":"ab","to":"ΣΊΣΥΦΟΣ"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[null,{"from":"😀","to":"./x/**/*.json"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":["x",{"from":"tab\tseparated","to":"Hello Worldhello"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":{"b":"c"}},{"from":"hello world","to":"a"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":["x",{"from":"😀","to":"tab\tseparated"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":["x",{"from":"ünïcödé","to":"hello"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[null,null],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"userPromptEventsQuery","args":[[],{"from":".leading","to":"Hello World"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":"b"},{"from":"ΣΊΣΥΦΟΣ","to":"日本語のテキスト"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[true,{"from":"straße","to":"src/a/b.ts😀"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":{"b":"c"}},{"from":"İstanbul","to":"ΣΊΣΥΦΟΣ"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{},{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"userPromptEventsQuery","args":[["a",1],{"from":"trailing.line1\nline2","to":"ns:key.pathab"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[["a",1],{"from":"","to":"tab\tseparated"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":"b"}],"error":"sql.literal is not a function"}
+{"fn":"userPromptEventsQuery","args":[{},{"from":"hello world","to":"Hello World"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[null,{"from":"abc","to":"./x/**/*.json"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":{"b":"c"}},{"from":"ünïcödé","to":"trailing.{name} has {count} items"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[0,{"from":"İstanbul","to":"trailing."}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[[],{"a":{"b":"c"}}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{},{"from":"a.b.c","to":"line1\nline2"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":["x",{"a":"b"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[null,"x"],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":["x",{"from":"trailing.","to":""}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[[],{"from":"a😀b😀c","to":""}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[["a",1]],"error":"sql.literal is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":"b"},{"from":"trailing.","to":"ab"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[true,{"from":"trailing.","to":"{name} has {count} items"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":"b"},{"from":"a","to":"日本語のテキストsrc/a/b.ts"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":{"b":"c"}},{"from":"ab","to":"./x/**/*.json"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":["x",{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"userPromptEventsQuery","args":[0,{"from":":","to":"key_name-1"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{},null],"error":"sql.literal is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":"b"},{"from":"İstanbula😀b😀c","to":"a:b:c"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{},{"from":"Hello World","to":"  padded  a😀b😀c"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[["a",1],{"from":"  padded  ","to":"a:b:c"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[["a",1],{"from":"😀","to":"  padded  ab"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[["a",1],{"from":"{name} has {count} items","to":":"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":["x",{"from":"a..ba","to":"a😀b😀c"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":"b"},{"from":"a😀b😀c","to":"a.b.c"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[["a",1],{"from":"tab\tseparated﻿bom","to":"a..b"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[[],{"from":"a.b.c","to":"line1\nline2"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[["a",1],{"from":"😀","to":"src/a/b.ts日本語のテキスト"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[0,{"from":"hello","to":"é"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[[],{"from":".leading","to":"a😀b😀c"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[true,{"from":"a","to":"ünïcödé"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[0,{"from":"trailing.","to":"ΣΊΣΥΦΟΣ"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[[],{"from":"a😀b😀chello","to":"ünïcödé"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[null,{"from":":","to":"Hello World"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[0,{"from":"﻿bom","to":"ΣΊΣΥΦΟΣHello World"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":"b"},{"from":"key_name-1ns:key.path","to":"a"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[0,{"from":"src/a/b.ts","to":"ünïcödé"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[true,{"from":"a..b","to":"😀"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{},{"from":"{name} has {count} items","to":"hello world"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":"b"},{"from":"ns:key.path","to":"{name} has {count} items"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":"b"},{"from":"ünïcödé","to":"key_name-1"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":["x",{"from":"﻿bom","to":"a:b:c"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[["a",1],{"from":"İstanbul","to":"İstanbulΣΊΣΥΦΟΣ"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[[],{"from":"﻿bom","to":"ünïcödéHello World"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{},{"from":"src/a/b.ts","to":"İstanbul"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":"b"},["a",1]],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[0,{"from":"a😀b😀chello","to":"😀"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[0,{"from":"./x/**/*.json","to":""}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[null,{"from":"Hello World","to":"emoji 👍🏽 mix"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":["x",{"from":"{name} has {count} items","to":"ünïcödé"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[0,{"from":"ab","to":"ns:key.pathkey_name-1"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{},{"from":"İstanbul","to":"abc"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[0,{"from":".leading","to":"ab"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{},{"from":"a:b:c","to":".leading"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[0,0],"error":"sql.literal is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":{"b":"c"}},{"from":"İstanbul:","to":"emoji 👍🏽 mix"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":"b"},{"from":"Hello Worlda..b","to":""}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":{"b":"c"}},{"from":"abc","to":"emoji 👍🏽 mix"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[true,{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"userPromptEventsQuery","args":["x",{"from":"HELLO","to":"😀"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":{"b":"c"}},{"from":"./x/**/*.json","to":"hello world"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[null,{"from":"İstanbul","to":"ab:"}],"error":"sql is not a function"}
+{"fn":"userPromptEventsQuery","args":[{"a":"b"},{"from":"a.b.cstraße","to":"Hello World"}],"error":"sql is not a function"}
+{"fn":"tokenDeltaCtes","args":[{},{"threadIdsQuery":[]}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[null,"x"],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"tokenDeltaCtes","args":[{"a":{"b":"c"}},{"threadId":":ünïcödé"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[[],{"threadId":"line1\nline2"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[true,{"threadId":":"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[null,{"$undefined":true}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"tokenDeltaCtes","args":[null,{"threadId":"😀"}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"tokenDeltaCtes","args":[{"a":{"b":"c"}},{"threadIdsQuery":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":{"b":"c"}},{"threadId":"ns:key.path"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[true,{"threadIdsQuery":{}}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":{"b":"c"}},{"a":"b"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":{"b":"c"}},{"threadIdsQuery":{"a":"b"}}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":{"b":"c"}},{"threadIdsQuery":0}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[null,null],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"tokenDeltaCtes","args":[true,{"threadId":"日本語のテキスト"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[true,{"threadIdsQuery":["a",1]}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[true,{"a":"b"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[null,{"threadId":".leading"}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"tokenDeltaCtes","args":[{},{"threadId":"./x/**/*.json"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[true,true],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[0,0],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[true,{"threadId":"trailing."}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":"b"},{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[[],{"threadId":"hello world"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[true,{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[["a",1],{"threadIdsQuery":"x"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[["a",1],{"threadId":"./x/**/*.json"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":{"b":"c"}},{"threadId":"😀"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":["x"],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[[],{"threadIdsQuery":[]}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[true,{"threadId":"./x/**/*.json"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[true,{"threadIdsQuery":{"a":{"b":"c"}}}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[[],true],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[["a",1]],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{},{"threadId":"hello world"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[true,{"threadId":"a😀b😀ckey_name-1"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[["a",1],{"threadId":"tab\tseparated"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[null,{"threadIdsQuery":true}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"tokenDeltaCtes","args":[true,{"threadId":"src/a/b.ts"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":{"b":"c"}}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[null,{"threadIdsQuery":{}}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"tokenDeltaCtes","args":["x",{"threadIdsQuery":[]}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":["x",{"threadId":"hello world"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[0,{"threadId":"hello world"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":"b"},{"threadIdsQuery":[]}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{},{"a":"b"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{},{"threadId":"HELLOline1\nline2"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":["x",{"threadIdsQuery":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[0,{"threadId":"a😀b😀c"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[["a",1],{"threadIdsQuery":[]}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[null,{"threadIdsQuery":{"a":{"b":"c"}}}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"tokenDeltaCtes","args":[{"a":"b"},{"threadId":"ab"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":["x",{"threadIdsQuery":{"a":"b"}}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":{"b":"c"}},{"threadId":"src/a/b.ts"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[["a",1],{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[[],{"threadIdsQuery":{}}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[true,{"threadId":"line1\nline2HELLO"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":["x",{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":"b"},{"threadId":":"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[[],{"threadId":"a:b:c"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[[],{"threadId":"./x/**/*.json:"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":"b"},{"threadIdsQuery":"x"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[0,{"threadId":"日本語のテキスト"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[null,{"threadId":"straßeünïcödé"}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"tokenDeltaCtes","args":[{},["a",1]],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[null,{"threadId":":"}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"tokenDeltaCtes","args":[{},{"threadId":"ΣΊΣΥΦΟΣ"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[null,{"threadIdsQuery":0}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"tokenDeltaCtes","args":[{"a":{"b":"c"}},["a",1]],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{},null],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{},{"threadId":"Hello World"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[[],{"threadId":"hello"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[0,{"threadIdsQuery":{}}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":["x",{"threadIdsQuery":null}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[null,{"threadId":"hello"}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"tokenDeltaCtes","args":[["a",1],{"threadId":":"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":"b"},{"threadId":"line1\nline2"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":["x",{"threadId":"😀hello"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":{"b":"c"}},{"threadId":"İstanbul"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[true,{"threadId":"key_name-1"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[true,{"threadIdsQuery":{"a":"b"}}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[null,{"threadIdsQuery":{"a":"b"}}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"tokenDeltaCtes","args":[{"a":{"b":"c"}},{"threadIdsQuery":["a",1]}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":"b"},{"threadId":"é  padded  "}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":{"b":"c"}},{"threadId":"a..b./x/**/*.json"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":{"b":"c"}},{"threadIdsQuery":{}}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":"b"},{"threadIdsQuery":["a",1]}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[0,{"threadId":"straße"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[[],{"threadIdsQuery":{"a":"b"}}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[["a",1],{"threadId":""}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[0,{"threadIdsQuery":"x"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":"b"},{"threadId":"tab\tseparatedhello world"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[0,{"threadId":"a..b"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[null,{"threadId":"Hello World"}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"tokenDeltaCtes","args":[{},{"threadId":".leading"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[[],{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[["a",1],{"threadId":"ünïcödé"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[[],["a",1]],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[true,{"threadId":"😀﻿bom"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[[],{"threadId":"straßetab\tseparated"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{},{"threadId":"日本語のテキストkey_name-1"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[[],{"threadId":"﻿bom"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":"b"},true],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[["a",1],[]],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":["x",{"threadId":".leadingtab\tseparated"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":{"b":"c"}},{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[true,{"threadId":"😀"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[true,{"threadIdsQuery":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[["a",1],{"threadId":"src/a/b.ts"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":{"b":"c"}},true],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":"b"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":{"b":"c"}},{"threadId":"trailing."}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":{"b":"c"}},{"threadIdsQuery":null}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[null,{"threadIdsQuery":[]}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"tokenDeltaCtes","args":[true,{"threadId":"Hello World"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{},[]],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[null,{"threadId":"hello world"}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"tokenDeltaCtes","args":["x",{"threadIdsQuery":["a",1]}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":"b"},{"a":{"b":"c"}}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[0,{"threadId":"line1\nline2"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[null,{"threadId":"./x/**/*.json😀"}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"tokenDeltaCtes","args":[{"a":{"b":"c"}},0],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":["x",{"threadIdsQuery":0}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{},{"threadId":"  padded  "}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":"b"},{"threadIdsQuery":null}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":"b"},0],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[["a",1],{"threadIdsQuery":{"a":{"b":"c"}}}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{},{"threadIdsQuery":null}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[["a",1],{"threadId":"hello world"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[null],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"tokenDeltaCtes","args":["x",{"threadId":"  padded  "}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[null,{"threadId":"a😀b😀c"}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"tokenDeltaCtes","args":[{},{"threadId":"İstanbula😀b😀c"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":["x",null],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[["a",1],{"threadId":"straße"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[null,{"threadId":"abc"}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"tokenDeltaCtes","args":[[],{"threadId":"tab\tseparated"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":["x",{"threadId":"Hello World"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[true,{"threadId":"src/a/b.tstab\tseparated"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[[],{"threadId":"tab\tseparatedkey_name-1"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[null,0],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"tokenDeltaCtes","args":[true,{"threadId":"abc{name} has {count} items"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":{"b":"c"}},{"threadId":"éa:b:c"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[["a",1],{"a":"b"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[0,{"threadIdsQuery":[]}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[[],0],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":"b"},{"threadId":"a.b.cΣΊΣΥΦΟΣ"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[[],{"threadId":"ab"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{},{"threadIdsQuery":["a",1]}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[[],{"threadId":"ünïcödé"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[null,{"threadIdsQuery":["a",1]}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"tokenDeltaCtes","args":[0,{"threadIdsQuery":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{},{"a":{"b":"c"}}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[0,{"threadId":"key_name-1"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":["x",{"threadIdsQuery":{"a":{"b":"c"}}}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{},{}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[null,{}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"tokenDeltaCtes","args":[["a",1],{"threadIdsQuery":0}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{},{"threadId":"😀"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[0,{"$undefined":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{},{"threadId":"a..b"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[[],{}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[0,null],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[0,{"threadIdsQuery":0}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[true],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":"b"},{"threadId":"﻿bom"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[["a",1],{"threadId":"ab"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[[],{"threadIdsQuery":null}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[[],{"threadIdsQuery":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[[],{"threadId":"abc"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[["a",1],{"threadIdsQuery":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[[],{"threadIdsQuery":{"a":{"b":"c"}}}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[["a",1],{"threadId":".leading"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":{"b":"c"}},{"threadId":"abca.b.c"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[0],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[0,{"threadId":"./x/**/*.json"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":"b"},{"threadId":":日本語のテキスト"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":"b"},{"threadId":"HELLO"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[null,{"threadIdsQuery":null}],"error":"Cannot read properties of null (reading 'literal')"}
+{"fn":"tokenDeltaCtes","args":[["a",1],{"threadId":"ΣΊΣΥΦΟΣ"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":["x",{"threadId":"HELLO"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":{"b":"c"}},{"threadIdsQuery":"x"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[["a",1],{"threadIdsQuery":{}}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[["a",1],{"threadIdsQuery":{"a":"b"}}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{},{"threadIdsQuery":"x"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[true,{"threadId":"hello world"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{},{"threadId":"tab\tseparated"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{},{"threadId":"straße"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[0,{"threadId":"tab\tseparated"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":"b"},{"threadIdsQuery":true}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[true,{"threadId":"HELLO"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[0,{"threadIdsQuery":null}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[0,{"threadIdsQuery":{"a":"b"}}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{},{"threadId":"trailing."}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[[]],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[["a",1],{"threadId":"tab\tseparatedhello"}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[{"a":{"b":"c"}},{}],"error":"sql.literal is not a function"}
+{"fn":"tokenDeltaCtes","args":[true,[]],"error":"sql.literal is not a function"}

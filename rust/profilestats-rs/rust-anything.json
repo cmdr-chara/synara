@@ -1,0 +1,217 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/profileStats.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "profilestats-rs",
+  "exports": [
+    {
+      "name": "sqliteModifierFromUtcOffsetMinutes",
+      "file": "apps/server/src/profileStats.ts",
+      "line": 116,
+      "params": [
+        {
+          "name": "offsetMinutes",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "num",
+      "file": "apps/server/src/profileStats.ts",
+      "line": 129,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "nonEmptyString",
+      "file": "apps/server/src/profileStats.ts",
+      "line": 140,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "aggregateProfileSkillUsageRows",
+      "file": "apps/server/src/profileStats.ts",
+      "line": 263,
+      "params": [
+        {
+          "name": "rows",
+          "ts_type": "ReadonlyArray<SkillUsageMessageRow>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "archivedRows",
+          "ts_type": "ReadonlyArray<ArchivedSkillUsageRow>",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof ProfileStats.Type.Type.Type[\"skills\"][number][]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "heatmapIntensity",
+      "file": "apps/server/src/profileStats.ts",
+      "line": 391,
+      "params": [
+        {
+          "name": "count",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "sortedActiveCounts",
+          "ts_type": "readonly number[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeProviderKind",
+      "file": "apps/server/src/profileStats.ts",
+      "line": 451,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "model",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ProviderKind.Type.Type.Type.Type | \"unknown\"",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "turnModelSelectionCte",
+      "file": "apps/server/src/profileStats.ts",
+      "line": 620,
+      "params": [
+        {
+          "name": "sql",
+          "ts_type": "SqlClient.SqlClient",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "scope",
+          "ts_type": "(| { readonly threadId: string }\n  | { readonly threadIdsQuery: Statement.Fragment })",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "userPromptEventsQuery",
+      "file": "apps/server/src/profileStats.ts",
+      "line": 666,
+      "params": [
+        {
+          "name": "sql",
+          "ts_type": "SqlClient.SqlClient",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "range",
+          "ts_type": "{ readonly from: string; readonly to: string }",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Statement.Fragment",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "tokenDeltaCtes",
+      "file": "apps/server/src/profileStats.ts",
+      "line": 722,
+      "params": [
+        {
+          "name": "sql",
+          "ts_type": "SqlClient.SqlClient",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "scope",
+          "ts_type": "(| { readonly threadId: string }\n  | { readonly threadIdsQuery: Statement.Fragment })",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "ProfileStatsQuery",
+      "file": "apps/server/src/profileStats.ts",
+      "line": 1121,
+      "reason": "class: extends another class"
+    }
+  ]
+}

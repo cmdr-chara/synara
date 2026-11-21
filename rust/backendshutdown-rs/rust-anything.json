@@ -1,0 +1,109 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/backendShutdown.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "backendshutdown-rs",
+  "exports": [
+    {
+      "name": "requireWindowsBackendExit",
+      "file": "apps/desktop/src/backendShutdown.ts",
+      "line": 51,
+      "params": [
+        {
+          "name": "result",
+          "ts_type": "(| { readonly type: \"already-exited\"; readonly forced: false }\n  | { readonly type: \"exited\"; readonly forced: boolean }\n  | { readonly type: \"timed-out\"; readonly forced: boolean })",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "shouldDeferDesktopWindowClose",
+      "file": "apps/desktop/src/backendShutdown.ts",
+      "line": 79,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly platform: NodeJS.Platform;\n  readonly shutdownComplete: boolean;\n  readonly updaterHandoffActive: boolean;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "retainLiveBackendAfterShutdownFailure",
+      "file": "apps/desktop/src/backendShutdown.ts",
+      "line": 180,
+      "params": [
+        {
+          "name": "current",
+          "ts_type": "((Pick<\n  ChildProcess,\n  \"exitCode\" | \"signalCode\" | \"once\" | \"off\" | \"kill\"\n>)) | null",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "attempted",
+          "ts_type": "((Pick<\n  ChildProcess,\n  \"exitCode\" | \"signalCode\" | \"once\" | \"off\" | \"kill\"\n>))",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "((Pick<\n  ChildProcess,\n  \"exitCode\" | \"signalCode\" | \"once\" | \"off\" | \"kill\"\n>)) | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "PosixBackendShutdownTimeoutError",
+      "file": "apps/desktop/src/backendShutdown.ts",
+      "line": 31,
+      "reason": "class: extends another class, public field `forced`"
+    },
+    {
+      "name": "WindowsBackendShutdownTimeoutError",
+      "file": "apps/desktop/src/backendShutdown.ts",
+      "line": 41,
+      "reason": "class: extends another class, public field `forced`"
+    },
+    {
+      "name": "runAfterDesktopShutdown",
+      "file": "apps/desktop/src/backendShutdown.ts",
+      "line": 57,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "startDesktopBackendShutdownRequest",
+      "file": "apps/desktop/src/backendShutdown.ts",
+      "line": 116,
+      "reason": "uses `PendingDesktopBackendShutdownRequest`, which has function members"
+    },
+    {
+      "name": "stopPosixBackendAndWait",
+      "file": "apps/desktop/src/backendShutdown.ts",
+      "line": 336,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "stopWindowsBackendAndWait",
+      "file": "apps/desktop/src/backendShutdown.ts",
+      "line": 489,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

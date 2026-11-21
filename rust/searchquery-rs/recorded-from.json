@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/searchQuery.ts",
+  "files": 1,
+  "fingerprint": "bfb13a6370ec3766",
+  "coverage": {
+    "lines": 22,
+    "reached": 22,
+    "files": [
+      {
+        "file": "packages/shared/src/searchQuery.ts",
+        "lines": 22,
+        "reached": 22,
+        "missed": ""
+      }
+    ]
+  }
+}

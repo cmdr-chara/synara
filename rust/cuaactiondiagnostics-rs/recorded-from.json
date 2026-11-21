@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/cuaActionDiagnostics.ts",
+  "files": 1,
+  "fingerprint": "b9c3d20961ea983c",
+  "coverage": {
+    "lines": 83,
+    "reached": 83,
+    "files": [
+      {
+        "file": "packages/shared/src/cuaActionDiagnostics.ts",
+        "lines": 83,
+        "reached": 83,
+        "missed": ""
+      }
+    ]
+  }
+}

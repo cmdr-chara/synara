@@ -1,0 +1,10 @@
+{"fn":"parseCuaActionDiagnostics","args":[{"diagnostics":{"scroll_delta_y":-120.5,"observation":"fresh-frame","message":"private"}}]}
+{"fn":"parseCuaActionDiagnostics","args":[{"diagnostics":{"scroll_delta_y":{"$num":"Infinity"},"observation":"private window title"}}]}
+{"fn":"parseCuaActionDiagnostics","args":[{"message":"secret selected text","diagnostics":{"delivery_path":"ax","actuator":"ax_press","focus_mutation":"none","restore_status":"not-needed","error_code":"ax_dispatch_failed","ax_error":-25204,"prior_pid":123,"prior_window_id":456,"message":"secret selected text","title":"Private window","value":"password"}}]}
+{"fn":"cuaActionDiagnosticMessage","args":[{"delivery_path":"ax","actuator":"ax_press","focus_mutation":"none","restore_status":"not-needed","error_code":"ax_dispatch_failed","ax_error":-25204,"prior_pid":123,"prior_window_id":456}]}
+{"fn":"parseCuaActionDiagnostics","args":[null]}
+{"fn":"parseCuaActionDiagnostics","args":[[]]}
+{"fn":"parseCuaActionDiagnostics","args":[{}]}
+{"fn":"parseCuaActionDiagnostics","args":[{"diagnostics":[]}]}
+{"fn":"parseCuaActionDiagnostics","args":[{"diagnostics":{"actuator":"private field","error_code":"secret_token","delivery_path":"arbitrary","restore_status":"secret","focus_mutation":"password","ax_error":{"$num":"NaN"},"prior_pid":-1,"prior_window_id":1099511627776}}]}
+{"fn":"parseCuaActionDiagnostics","args":[{"diagnostics":{"restore_status":"failed","prior_pid":1.5,"prior_window_id":"12","ax_error":{"$num":"Infinity"}}}]}

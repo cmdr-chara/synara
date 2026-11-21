@@ -1,0 +1,48 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/cuaActionDiagnostics.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "cuaactiondiagnostics-rs",
+  "exports": [
+    {
+      "name": "parseCuaActionDiagnostics",
+      "file": "packages/shared/src/cuaActionDiagnostics.ts",
+      "line": 59,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "CuaActionDiagnostics | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "cuaActionDiagnosticMessage",
+      "file": "packages/shared/src/cuaActionDiagnostics.ts",
+      "line": 87,
+      "params": [
+        {
+          "name": "diagnostics",
+          "ts_type": "CuaActionDiagnostics",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

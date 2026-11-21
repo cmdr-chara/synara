@@ -1,0 +1,48 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "scripts/pre-push-check.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "pre-push-check-rs",
+  "exports": [
+    {
+      "name": "parsePushedRefs",
+      "file": "scripts/pre-push-check.ts",
+      "line": 23,
+      "params": [
+        {
+          "name": "stdin",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{ readonly localOid: string; readonly remoteOid: string }[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "affectedProjects",
+      "file": "scripts/pre-push-check.ts",
+      "line": 74,
+      "params": [
+        {
+          "name": "files",
+          "ts_type": "readonly string[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,23 @@
+{
+  "unit": "scripts/pre-push-check.ts",
+  "files": 1,
+  "fingerprint": "a6f7718e855ca684",
+  "coverage": {
+    "lines": 290,
+    "reached": 89,
+    "files": [
+      {
+        "file": "scripts/pre-push-check.ts",
+        "lines": 185,
+        "reached": 60,
+        "missed": "31-38, 41-54, 76, 91-103, 110-138, 140-160, 162-195, 198-202"
+      },
+      {
+        "file": "scripts/typecheck.ts",
+        "lines": 105,
+        "reached": 29,
+        "missed": "31-34, 38-50, 53-65, 68-96, 98-114"
+      }
+    ]
+  }
+}

@@ -1,0 +1,21 @@
+{"fn":"normalizeDesktopWsUrl","args":["x"],"ok":"x"}
+{"fn":"normalizeDesktopWsUrl","args":[{"a":"b"}],"ok":null}
+{"fn":"normalizeDesktopWsUrl","args":[null],"ok":null}
+{"fn":"normalizeDesktopWsUrl","args":[{"a":{"b":"c"}}],"ok":null}
+{"fn":"normalizeDesktopWsUrl","args":[["a",1]],"ok":null}
+{"fn":"normalizeDesktopWsUrl","args":[true],"ok":null}
+{"fn":"normalizeDesktopWsUrl","args":[[]],"ok":null}
+{"fn":"normalizeDesktopWsUrl","args":[{}],"ok":null}
+{"fn":"normalizeDesktopWsUrl","args":[0],"ok":null}
+{"fn":"normalizeDesktopWsUrl","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":null}
+{"fn":"normalizeDesktopWsUrl","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":null}
+{"fn":"normalizeDesktopWsUrl","args":[[3,1,2]],"ok":null}
+{"fn":"resolveDesktopWsUrlFromEnv","args":[{"a":"b"}],"ok":null}
+{"fn":"resolveDesktopWsUrlFromEnv","args":["x"],"ok":null}
+{"fn":"resolveDesktopWsUrlFromEnv","args":[{"a":{"b":"c"}}],"ok":null}
+{"fn":"resolveDesktopWsUrlFromEnv","args":[["a",1]],"ok":null}
+{"fn":"resolveDesktopWsUrlFromEnv","args":[{}],"ok":null}
+{"fn":"resolveDesktopWsUrlFromEnv","args":[[]],"ok":null}
+{"fn":"resolveDesktopWsUrlFromEnv","args":[null],"error":"Cannot read properties of null (reading 'SYNARA_DESKTOP_WS_URL')"}
+{"fn":"resolveDesktopWsUrlFromEnv","args":[true],"ok":null}
+{"fn":"resolveDesktopWsUrlFromEnv","args":[0],"ok":null}

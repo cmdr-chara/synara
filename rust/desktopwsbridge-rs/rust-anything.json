@@ -1,0 +1,48 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/desktopWsBridge.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "desktopwsbridge-rs",
+  "exports": [
+    {
+      "name": "normalizeDesktopWsUrl",
+      "file": "apps/desktop/src/desktopWsBridge.ts",
+      "line": 7,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveDesktopWsUrlFromEnv",
+      "file": "apps/desktop/src/desktopWsBridge.ts",
+      "line": 16,
+      "params": [
+        {
+          "name": "env",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

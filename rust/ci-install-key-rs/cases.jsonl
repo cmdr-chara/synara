@@ -1,0 +1,11 @@
+{"fn":"workspaceInstallFingerprint","args":[true],"error":"The \"path\" argument must be of type string. Received type boolean (true)"}
+{"fn":"workspaceInstallFingerprint","args":[0],"error":"The \"path\" argument must be of type string. Received type number (0)"}
+{"fn":"workspaceInstallFingerprint","args":[[]],"error":"The \"path\" argument must be of type string. Received an instance of Array"}
+{"fn":"workspaceInstallFingerprint","args":[null],"error":"The \"path\" argument must be of type string. Received null"}
+{"fn":"workspaceInstallFingerprint","args":[{"a":"b"}],"error":"The \"path\" argument must be of type string. Received an instance of Object"}
+{"fn":"workspaceInstallFingerprint","args":[],"ok":"a2701cfc390711fcf2feb931239367f8677e75260039083c2b3808fff933bf9f"}
+{"fn":"workspaceInstallFingerprint","args":[{}],"error":"The \"path\" argument must be of type string. Received an instance of Object"}
+{"fn":"workspaceInstallFingerprint","args":[{"$undefined":true}],"ok":"a2701cfc390711fcf2feb931239367f8677e75260039083c2b3808fff933bf9f"}
+{"fn":"workspaceInstallFingerprint","args":[["a",1]],"error":"The \"path\" argument must be of type string. Received an instance of Array"}
+{"fn":"workspaceInstallFingerprint","args":["x"],"error":"ENOENT: no such file or directory, open 'x/package.json'"}
+{"fn":"workspaceInstallFingerprint","args":[{"a":{"b":"c"}}],"error":"The \"path\" argument must be of type string. Received an instance of Object"}

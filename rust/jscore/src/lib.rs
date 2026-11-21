@@ -7,9 +7,17 @@ use serde_json::Value;
 
 /// The JS `\s` whitespace set (Rust regex `\s` differs on `` and `﻿`).
 pub fn is_space(c: char) -> bool {
-    matches!(c, '\t' | '\n' | '\u{b}' | '\u{c}' | '\r' | ' ' | '\u{a0}' | '\u{1680}'
-        | '\u{2000}'..='\u{200a}' | '\u{2028}' | '\u{2029}' | '\u{202f}' | '\u{205f}'
-        | '\u{3000}' | '\u{feff}')
+    matches!(
+        c,
+        '\t' | '\n' | '\u{b}' | '\u{c}' | '\r' | ' ' | '\u{a0}' | '\u{1680}' | '\u{2000}'
+            ..='\u{200a}'
+                | '\u{2028}'
+                | '\u{2029}'
+                | '\u{202f}'
+                | '\u{205f}'
+                | '\u{3000}'
+                | '\u{feff}'
+    )
 }
 
 /// `SERVER_DESKTOP_FLAVOR`: the hosting desktop's flavor from the
@@ -108,12 +116,17 @@ pub fn js_to_string(v: &Value) -> String {
                     "Infinity" => "Infinity".to_string(),
                     "-Infinity" => "-Infinity".to_string(),
                     "-0" => "0".to_string(),
-                    _ => n.parse().map(|x: f64| number_to_string(x)).unwrap_or_default(),
+                    _ => n
+                        .parse()
+                        .map(|x: f64| number_to_string(x))
+                        .unwrap_or_default(),
                 };
             }
             if let Some(units) = m.get("$utf16").and_then(Value::as_array) {
-                let units: Vec<u16> =
-                    units.iter().filter_map(|u| u.as_u64().map(|u| u as u16)).collect();
+                let units: Vec<u16> = units
+                    .iter()
+                    .filter_map(|u| u.as_u64().map(|u| u as u16))
+                    .collect();
                 return String::from_utf16_lossy(&units);
             }
             "[object Object]".to_string()
@@ -222,4 +235,255 @@ fn write_json(v: &Value, out: &mut String) {
             out.push('}');
         }
     }
+}
+
+// JS `\s` for the comma lookahead (the Unicode space set JS regexes use).
+const JS_SPACE: &str = "\t\n\u{b}\u{c}\r \u{a0}\u{1680}\u{2000}\u{2001}\u{2002}\u{2003}\u{2004}\u{2005}\u{2006}\u{2007}\u{2008}\u{2009}\u{200a}\u{2028}\u{2029}\u{202f}\u{205f}\u{3000}\u{feff}";
+
+// `contents.replace(/"(?:[^"\\]|\\.)*"|,(?=\s*[}\]])/g, t => t === "," ? "" : t)`
+fn strip_trailing_commas(input: &str) -> String {
+    let b: Vec<char> = input.chars().collect();
+    let mut out = String::with_capacity(input.len());
+    let mut i = 0;
+    while i < b.len() {
+        if b[i] == '"' {
+            let mut j = i + 1;
+            while j < b.len() && b[j] != '"' {
+                if b[j] == '\\' {
+                    match b.get(j + 1) {
+                        Some(&c) if !matches!(c, '\n' | '\r' | '\u{2028}' | '\u{2029}') => j += 2,
+                        _ => break,
+                    }
+                } else {
+                    j += 1;
+                }
+            }
+            if j < b.len() {
+                out.extend(&b[i..=j]);
+                i = j + 1;
+                continue;
+            }
+        }
+        if b[i] == ',' {
+            let mut j = i + 1;
+            while j < b.len() && JS_SPACE.contains(b[j]) {
+                j += 1;
+            }
+            if j < b.len() && matches!(b[j], '}' | ']') {
+                i += 1;
+                continue;
+            }
+        }
+        out.push(b[i]);
+        i += 1;
+    }
+    out
+}
+
+// `normalizeBunLockfile` from `scripts/bun-lockfile.ts`, shared by the ports
+// that hash workspace state.
+pub fn normalize_bun_lockfile(contents: &str) -> String {
+    let Ok(mut lockfile) = serde_json::from_str::<Value>(&strip_trailing_commas(contents)) else {
+        return contents.to_string();
+    };
+    let is_v3 = matches!(lockfile.get("lockfileVersion"), Some(v) if v.as_f64() == Some(3.0));
+    let falsy_ws = match lockfile.get("workspaces") {
+        None | Some(Value::Null) | Some(Value::Bool(false)) => true,
+        Some(Value::Number(n)) => n.as_f64() == Some(0.0),
+        Some(Value::String(s)) => s.is_empty(),
+        _ => false,
+    };
+    if !is_v3 || falsy_ws {
+        return contents.to_string();
+    }
+    let members: Vec<&mut Value> = match lockfile.get_mut("workspaces") {
+        Some(Value::Object(m)) => m.values_mut().collect(),
+        Some(Value::Array(a)) => a.iter_mut().collect(),
+        _ => Vec::new(),
+    };
+    for member in members {
+        if member.is_null() {
+            return contents.to_string();
+        }
+        if let Value::Object(m) = member {
+            if m.get("version").is_some_and(Value::is_string) {
+                m.shift_remove("version");
+            }
+        }
+    }
+    json_stringify(&lockfile)
+}
+
+// Expand `{a,b}` alternates in a glob pattern (Node fs.globSync/minimatch).
+pub fn glob_brace_expand(pattern: &str) -> Vec<String> {
+    let Some(open) = pattern.find('{') else {
+        return vec![pattern.to_string()];
+    };
+    let mut depth = 0;
+    let mut close = None;
+    for (i, c) in pattern.char_indices().skip(open) {
+        match c {
+            '{' => depth += 1,
+            '}' => {
+                depth -= 1;
+                if depth == 0 {
+                    close = Some(i);
+                    break;
+                }
+            }
+            _ => {}
+        }
+    }
+    let Some(close) = close else {
+        return vec![pattern.to_string()];
+    };
+    let inner = &pattern[open + 1..close];
+    let mut alts = Vec::new();
+    let mut cur = String::new();
+    let mut d = 0;
+    for c in inner.chars() {
+        if c == ',' && d == 0 {
+            alts.push(std::mem::take(&mut cur));
+        } else {
+            if c == '{' {
+                d += 1;
+            }
+            if c == '}' {
+                d -= 1;
+            }
+            cur.push(c);
+        }
+    }
+    alts.push(cur);
+    let mut out = Vec::new();
+    for alt in alts {
+        out.extend(glob_brace_expand(&format!(
+            "{}{}{}",
+            &pattern[..open],
+            alt,
+            &pattern[close + 1..]
+        )));
+    }
+    out
+}
+
+// One path segment against a pattern segment: `*`, `?`, `[a-z]`, `[!a-z]`.
+fn segment_match(pat: &[char], seg: &[char]) -> bool {
+    if pat.is_empty() {
+        return seg.is_empty();
+    }
+    match pat[0] {
+        '*' => (0..=seg.len()).any(|skip| segment_match(&pat[1..], &seg[skip..])),
+        '?' => !seg.is_empty() && segment_match(&pat[1..], &seg[1..]),
+        '[' => {
+            let neg = pat.get(1) == Some(&'!') || pat.get(1) == Some(&'^');
+            let mut i = if neg { 2 } else { 1 };
+            if seg.is_empty() {
+                return false;
+            }
+            let c = seg[0];
+            let mut matched = false;
+            while i < pat.len() && pat[i] != ']' {
+                if i + 2 < pat.len() && pat[i + 1] == '-' && pat[i + 2] != ']' {
+                    if pat[i] <= c && c <= pat[i + 2] {
+                        matched = true;
+                    }
+                    i += 3;
+                } else {
+                    if pat[i] == c {
+                        matched = true;
+                    }
+                    i += 1;
+                }
+            }
+            i < pat.len() && (matched != neg) && segment_match(&pat[i + 1..], &seg[1..])
+        }
+        c => !seg.is_empty() && seg[0] == c && segment_match(&pat[1..], &seg[1..]),
+    }
+}
+
+fn glob_walk(dir: &std::path::Path, segments: &[String], out: &mut Vec<String>, rel: &str) {
+    if segments.is_empty() {
+        return;
+    }
+    let (head, rest) = (&segments[0], &segments[1..]);
+    if head == "**" {
+        glob_walk(dir, rest, out, rel);
+        if let Ok(entries) = std::fs::read_dir(dir) {
+            for entry in entries.flatten() {
+                let name = entry.file_name().to_string_lossy().into_owned();
+                if name == "node_modules" || name == ".git" {
+                    continue;
+                }
+                if entry.file_type().map(|t| t.is_dir()).unwrap_or(false) {
+                    let child = if rel.is_empty() {
+                        name
+                    } else {
+                        format!("{rel}/{name}")
+                    };
+                    if rest.is_empty() {
+                        collect_all_files(&entry.path(), out, &child);
+                    } else {
+                        glob_walk(&entry.path(), segments, out, &child);
+                    }
+                }
+            }
+        }
+        return;
+    }
+    let Ok(entries) = std::fs::read_dir(dir) else {
+        return;
+    };
+    let pat_chars: Vec<char> = head.chars().collect();
+    for entry in entries.flatten() {
+        let name = entry.file_name().to_string_lossy().into_owned();
+        let seg_chars: Vec<char> = name.chars().collect();
+        if !segment_match(&pat_chars, &seg_chars) {
+            continue;
+        }
+        let child = if rel.is_empty() {
+            name
+        } else {
+            format!("{rel}/{name}")
+        };
+        if rest.is_empty() {
+            out.push(child);
+        } else if entry.file_type().map(|t| t.is_dir()).unwrap_or(false) {
+            glob_walk(&entry.path(), rest, out, &child);
+        }
+    }
+}
+
+fn collect_all_files(dir: &std::path::Path, out: &mut Vec<String>, rel: &str) {
+    if let Ok(entries) = std::fs::read_dir(dir) {
+        for entry in entries.flatten() {
+            let name = entry.file_name().to_string_lossy().into_owned();
+            if name == "node_modules" || name == ".git" {
+                continue;
+            }
+            let child = if rel.is_empty() {
+                name
+            } else {
+                format!("{rel}/{name}")
+            };
+            if entry.file_type().map(|t| t.is_dir()).unwrap_or(false) {
+                collect_all_files(&entry.path(), out, &child);
+            } else {
+                out.push(child);
+            }
+        }
+    }
+}
+
+// `globSync(patterns, {cwd})` — matches relative to `cwd`, returns
+// '/'-separated relative paths.
+pub fn glob_sync(patterns: &[String], cwd: &std::path::Path) -> Vec<String> {
+    let mut out = Vec::new();
+    for pattern in patterns {
+        for expanded in glob_brace_expand(pattern) {
+            let segments: Vec<String> = expanded.split('/').map(String::from).collect();
+            glob_walk(cwd, &segments, &mut out, "");
+        }
+    }
+    out
 }

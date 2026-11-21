@@ -1,0 +1,379 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/accountAuth.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "accountauth-rs",
+  "exports": [
+    {
+      "name": "accountApiIssuer",
+      "file": "apps/server/src/accountAuth.ts",
+      "line": 60,
+      "params": [
+        {
+          "name": "accountUrl",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "accountStateDirectory",
+      "file": "apps/server/src/accountAuth.ts",
+      "line": 141,
+      "params": [
+        {
+          "name": "baseDir",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "devUrl",
+          "ts_type": "URL",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "accountCredentialsPath",
+      "file": "apps/server/src/accountAuth.ts",
+      "line": 145,
+      "params": [
+        {
+          "name": "baseDir",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readAccountFile",
+      "file": "apps/server/src/accountAuth.ts",
+      "line": 158,
+      "params": [
+        {
+          "name": "baseDir",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<StoredAccountFile | undefined>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "readAccountCredentials",
+      "file": "apps/server/src/accountAuth.ts",
+      "line": 257,
+      "params": [
+        {
+          "name": "baseDir",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<AccountCredentials | undefined>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "writeAccountCredentials",
+      "file": "apps/server/src/accountAuth.ts",
+      "line": 270,
+      "params": [
+        {
+          "name": "baseDir",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "credentials",
+          "ts_type": "StoredAccountFile",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<void>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deleteAccountCredentials",
+      "file": "apps/server/src/accountAuth.ts",
+      "line": 283,
+      "params": [
+        {
+          "name": "baseDir",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<void>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveAccountUrl",
+      "file": "apps/server/src/accountAuth.ts",
+      "line": 362,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly flag?: string | undefined;\n  readonly env?: NodeJS.ProcessEnv;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "toAccountHostPlatform",
+      "file": "apps/server/src/accountAuth.ts",
+      "line": 417,
+      "params": [
+        {
+          "name": "platform",
+          "ts_type": "NodeJS.Platform | string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof AccountHostPlatform.Type.Type.Type.Type | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveLanEndpoints",
+      "file": "apps/server/src/accountAuth.ts",
+      "line": 429,
+      "params": [
+        {
+          "name": "baseDir",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "devUrl",
+          "ts_type": "URL | undefined",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<typeof typeof typeof typeof AccountHostEndpoint.Type.Type.Type.Type[]>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "logAccountSession",
+      "file": "apps/server/src/accountAuth.ts",
+      "line": 550,
+      "params": [
+        {
+          "name": "baseDir",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "reason",
+          "ts_type": "(| \"refresh_rejected\"\n  /** The account answered `organization_required`; the session was cleared. */\n  | \"workspace_refused\"\n  /** An account, workspace or user fence refused the stored session. */\n  | \"identity_fence\"\n  /** `/me` still answered 401 after renewal; status reports signed out. */\n  | \"status_unauthorized\"\n  /** A renewal series ended without a new pair; the session is kept. */\n  | \"refresh_failed\"\n  /** One sign-in's per-step durations (step names and milliseconds only). */\n  | \"sign_in_timing\")",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "detail",
+          "ts_type": "(Readonly<Record<string, string | number | boolean>>)",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "recordRemoteBillingPolicy",
+      "file": "apps/server/src/accountAuth.ts",
+      "line": 624,
+      "params": [
+        {
+          "name": "baseDir",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "expected",
+          "ts_type": "{ readonly accountUrl: string; readonly hostId: string; readonly ownerUserId: string }",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "enforced",
+          "ts_type": "boolean",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<boolean>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "selectOrganization",
+      "file": "apps/server/src/accountAuth.ts",
+      "line": 1070,
+      "params": [
+        {
+          "name": "organizations",
+          "ts_type": "readonly typeof typeof typeof typeof OrganizationSummary.Type.Type.Type.Type[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<typeof typeof typeof typeof OrganizationSummary.Type.Type.Type.Type>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveAuthLoginAccountUrl",
+      "file": "apps/server/src/accountAuth.ts",
+      "line": 1308,
+      "params": [
+        {
+          "name": "options",
+          "ts_type": "{\n  readonly baseDir: string;\n  readonly explicitUrl: string | undefined;\n  readonly devUrl?: URL;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<string | undefined>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "SessionExpiredError",
+      "file": "apps/server/src/accountAuth.ts",
+      "line": 479,
+      "reason": "class: extends another class"
+    },
+    {
+      "name": "WorkspaceAccessChangedError",
+      "file": "apps/server/src/accountAuth.ts",
+      "line": 493,
+      "reason": "class: extends another class"
+    },
+    {
+      "name": "unlinkLocalAccountHost",
+      "file": "apps/server/src/accountAuth.ts",
+      "line": 298,
+      "reason": "uses `UnlinkLocalAccountHostOptions`, which has function members"
+    },
+    {
+      "name": "withLockedAccountFile",
+      "file": "apps/server/src/accountAuth.ts",
+      "line": 619,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "withFreshAccessToken",
+      "file": "apps/server/src/accountAuth.ts",
+      "line": 968,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "ensureLocalAccountHostLinked",
+      "file": "apps/server/src/accountAuth.ts",
+      "line": 1270,
+      "reason": "uses `AccountFlowOptions`, which has function members"
+    },
+    {
+      "name": "runAuthLogin",
+      "file": "apps/server/src/accountAuth.ts",
+      "line": 1331,
+      "reason": "uses `AccountFlowOptions`, which has function members"
+    },
+    {
+      "name": "runDeviceCodeHostLink",
+      "file": "apps/server/src/accountAuth.ts",
+      "line": 1365,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "scopeTokenToWorkspace",
+      "file": "apps/server/src/accountAuth.ts",
+      "line": 1472,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "refreshHostRegistration",
+      "file": "apps/server/src/accountAuth.ts",
+      "line": 1529,
+      "reason": "uses `RefreshHostRegistrationOptions`, which has function members"
+    },
+    {
+      "name": "runAuthLogout",
+      "file": "apps/server/src/accountAuth.ts",
+      "line": 1565,
+      "reason": "uses `LogoutOptions`, which has function members"
+    },
+    {
+      "name": "runStatus",
+      "file": "apps/server/src/accountAuth.ts",
+      "line": 1678,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    }
+  ]
+}

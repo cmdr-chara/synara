@@ -1,0 +1,43 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/betaImport.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "betaimport-rs",
+  "exports": [
+    {
+      "name": "allowedImportSourceHomes",
+      "file": "apps/server/src/betaImport.ts",
+      "line": 343,
+      "params": [
+        {
+          "name": "env",
+          "ts_type": "NodeJS.ProcessEnv",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "copyLiveDatabase",
+      "file": "apps/server/src/betaImport.ts",
+      "line": 214,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "runBetaImportIfRequested",
+      "file": "apps/server/src/betaImport.ts",
+      "line": 348,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    }
+  ]
+}

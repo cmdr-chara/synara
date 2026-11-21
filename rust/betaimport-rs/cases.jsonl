@@ -1,0 +1,11 @@
+{"fn":"allowedImportSourceHomes","args":[[]],"ok":["/Users/devin/.synara"]}
+{"fn":"allowedImportSourceHomes","args":[{"a":{"b":"c"}}],"ok":["/Users/devin/.synara"]}
+{"fn":"allowedImportSourceHomes","args":[["a",1]],"ok":["/Users/devin/.synara"]}
+{"fn":"allowedImportSourceHomes","args":[{"$undefined":true}],"ok":["/Users/devin/.synara"]}
+{"fn":"allowedImportSourceHomes","args":["x"],"ok":["/Users/devin/.synara"]}
+{"fn":"allowedImportSourceHomes","args":[],"ok":["/Users/devin/.synara"]}
+{"fn":"allowedImportSourceHomes","args":[0],"ok":["/Users/devin/.synara"]}
+{"fn":"allowedImportSourceHomes","args":[{"a":"b"}],"ok":["/Users/devin/.synara"]}
+{"fn":"allowedImportSourceHomes","args":[true],"ok":["/Users/devin/.synara"]}
+{"fn":"allowedImportSourceHomes","args":[{}],"ok":["/Users/devin/.synara"]}
+{"fn":"allowedImportSourceHomes","args":[null],"error":"Cannot read properties of null (reading 'SYNARA_STABLE_HOME')"}

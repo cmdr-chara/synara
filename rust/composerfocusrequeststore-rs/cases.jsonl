@@ -1,0 +1,9 @@
+{"fn":"requestComposerFocus","args":[{"a":"b"}],"ok":{"$undefined":true}}
+{"fn":"requestComposerFocus","args":[["a",1]],"ok":{"$undefined":true}}
+{"fn":"requestComposerFocus","args":["x"],"ok":{"$undefined":true}}
+{"fn":"requestComposerFocus","args":[true],"ok":{"$undefined":true}}
+{"fn":"requestComposerFocus","args":[[]],"ok":{"$undefined":true}}
+{"fn":"requestComposerFocus","args":[{"a":{"b":"c"}}],"ok":{"$undefined":true}}
+{"fn":"requestComposerFocus","args":[null],"ok":{"$undefined":true}}
+{"fn":"requestComposerFocus","args":[{}],"ok":{"$undefined":true}}
+{"fn":"requestComposerFocus","args":[0],"ok":{"$undefined":true}}

@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/composerFocusRequestStore.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "composerfocusrequeststore-rs",
+  "exports": [
+    {
+      "name": "requestComposerFocus",
+      "file": "apps/web/src/composerFocusRequestStore.ts",
+      "line": 27,
+      "params": [
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

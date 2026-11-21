@@ -1,0 +1,73 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/desktopUpdateRpc.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "desktopupdaterpc-rs",
+  "exports": [
+    {
+      "name": "hasDesktopUpdateThreadWork",
+      "file": "apps/server/src/desktopUpdateRpc.ts",
+      "line": 38,
+      "params": [
+        {
+          "name": "thread",
+          "ts_type": "(Pick<\n  typeof typeof typeof OrchestrationThread.Type.Type.Type,\n  \"deletedAt\" | \"hasPendingApprovals\" | \"hasPendingUserInput\"\n> & {\n  readonly session: Pick<typeof typeof typeof OrchestrationSession.Type.Type.Type, \"status\" | \"activeTurnId\"> | null;\n  readonly latestTurn: Pick<typeof typeof typeof OrchestrationLatestTurn.Type.Type.Type, \"state\"> | null;\n  readonly pendingInteractions?:\n    | readonly Pick<typeof typeof typeof OrchestrationPendingInteraction.Type.Type.Type, \"status\">[]\n    | undefined;\n  readonly claudeCacheReview?: Pick<typeof typeof typeof PendingClaudeCacheReview.Type.Type.Type, \"status\"> | null | undefined;\n})",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "desktopUpdateAuthorityForSession",
+      "file": "apps/server/src/desktopUpdateRpc.ts",
+      "line": 100,
+      "params": [
+        {
+          "name": "sessionId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "role",
+          "ts_type": "\"owner\" | \"client\"",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "hasDesktopUpdateProviderWork",
+      "file": "apps/server/src/desktopUpdateRpc.ts",
+      "line": 52,
+      "reason": "uses `ProviderServiceShape`, which has function members"
+    },
+    {
+      "name": "authorizeRemoteDesktopUpdateSession",
+      "file": "apps/server/src/desktopUpdateRpc.ts",
+      "line": 91,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "makeDesktopUpdateRpcHandlers",
+      "file": "apps/server/src/desktopUpdateRpc.ts",
+      "line": 108,
+      "reason": "generic over `E`: values of any shape, functions included"
+    }
+  ]
+}

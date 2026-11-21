@@ -1,0 +1,48 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/desktopProcessErrors.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "desktopprocesserrors-rs",
+  "exports": [
+    {
+      "name": "isBrokenPipeError",
+      "file": "apps/desktop/src/desktopProcessErrors.ts",
+      "line": 5,
+      "params": [
+        {
+          "name": "error",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "handleDesktopStdioError",
+      "file": "apps/desktop/src/desktopProcessErrors.ts",
+      "line": 14,
+      "params": [
+        {
+          "name": "error",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

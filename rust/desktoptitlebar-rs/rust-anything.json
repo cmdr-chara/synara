@@ -1,0 +1,66 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/desktopTitleBar.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "desktoptitlebar-rs",
+  "exports": [
+    {
+      "name": "supportsCustomTitleBar",
+      "file": "packages/shared/src/desktopTitleBar.ts",
+      "line": 10,
+      "params": [
+        {
+          "name": "platform",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "defaultCustomTitleBarPreference",
+      "file": "packages/shared/src/desktopTitleBar.ts",
+      "line": 19,
+      "params": [
+        {
+          "name": "platform",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveCustomTitleBarActive",
+      "file": "packages/shared/src/desktopTitleBar.ts",
+      "line": 27,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly platform: string;\n  readonly preference: boolean | null;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

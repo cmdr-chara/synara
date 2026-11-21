@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/desktopTitleBar.ts",
+  "files": 1,
+  "fingerprint": "973c8348db27537c",
+  "coverage": {
+    "lines": 35,
+    "reached": 35,
+    "files": [
+      {
+        "file": "packages/shared/src/desktopTitleBar.ts",
+        "lines": 35,
+        "reached": 35,
+        "missed": ""
+      }
+    ]
+  }
+}

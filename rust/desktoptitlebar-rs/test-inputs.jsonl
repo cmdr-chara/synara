@@ -1,0 +1,12 @@
+{"fn":"resolveCustomTitleBarActive","args":[{"platform":"darwin","preference":true}]}
+{"fn":"supportsCustomTitleBar","args":["darwin"]}
+{"fn":"resolveCustomTitleBarActive","args":[{"platform":"darwin","preference":null}]}
+{"fn":"resolveCustomTitleBarActive","args":[{"platform":"win32","preference":null}]}
+{"fn":"supportsCustomTitleBar","args":["win32"]}
+{"fn":"defaultCustomTitleBarPreference","args":["win32"]}
+{"fn":"resolveCustomTitleBarActive","args":[{"platform":"linux","preference":null}]}
+{"fn":"supportsCustomTitleBar","args":["linux"]}
+{"fn":"defaultCustomTitleBarPreference","args":["linux"]}
+{"fn":"resolveCustomTitleBarActive","args":[{"platform":"linux","preference":false}]}
+{"fn":"resolveCustomTitleBarActive","args":[{"platform":"win32","preference":false}]}
+{"fn":"resolveCustomTitleBarActive","args":[{"platform":"linux","preference":true}]}

@@ -1,0 +1,70 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/tasksSurface.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "taskssurface-rs",
+  "exports": [
+    {
+      "name": "isTasksRefusal",
+      "file": "apps/web/src/tasksSurface.ts",
+      "line": 18,
+      "params": [
+        {
+          "name": "error",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "noteTasksRefusal",
+      "file": "apps/web/src/tasksSurface.ts",
+      "line": 28,
+      "params": [
+        {
+          "name": "error",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isTasksSurfaceEnabled",
+      "file": "apps/web/src/tasksSurface.ts",
+      "line": 35,
+      "params": [],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "useTasksSurfaceEnabled",
+      "file": "apps/web/src/tasksSurface.ts",
+      "line": 39,
+      "params": [],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

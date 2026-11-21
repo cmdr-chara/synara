@@ -1,0 +1,26 @@
+{"fn":"isTasksRefusal","args":[["a",1]],"ok":false}
+{"fn":"isTasksRefusal","args":[{"a":"b"}],"ok":false}
+{"fn":"isTasksRefusal","args":[true],"ok":false}
+{"fn":"isTasksRefusal","args":[[]],"ok":false}
+{"fn":"isTasksRefusal","args":[{}],"ok":false}
+{"fn":"isTasksRefusal","args":[{"a":{"b":"c"}}],"ok":false}
+{"fn":"isTasksRefusal","args":[null],"ok":false}
+{"fn":"isTasksRefusal","args":["x"],"ok":false}
+{"fn":"isTasksRefusal","args":[0],"ok":false}
+{"fn":"isTasksRefusal","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":false}
+{"fn":"isTasksRefusal","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":false}
+{"fn":"isTasksRefusal","args":[[3,1,2]],"ok":false}
+{"fn":"noteTasksRefusal","args":[0],"ok":false}
+{"fn":"noteTasksRefusal","args":[true],"ok":false}
+{"fn":"noteTasksRefusal","args":[null],"ok":false}
+{"fn":"noteTasksRefusal","args":[{}],"ok":false}
+{"fn":"noteTasksRefusal","args":[{"a":{"b":"c"}}],"ok":false}
+{"fn":"noteTasksRefusal","args":["x"],"ok":false}
+{"fn":"noteTasksRefusal","args":[["a",1]],"ok":false}
+{"fn":"noteTasksRefusal","args":[{"a":"b"}],"ok":false}
+{"fn":"noteTasksRefusal","args":[[]],"ok":false}
+{"fn":"noteTasksRefusal","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":false}
+{"fn":"noteTasksRefusal","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":false}
+{"fn":"noteTasksRefusal","args":[[3,1,2]],"ok":false}
+{"fn":"isTasksSurfaceEnabled","args":[],"ok":true}
+{"fn":"useTasksSurfaceEnabled","args":[],"error":"null is not an object (evaluating 'resolveDispatcher().useCallback')"}

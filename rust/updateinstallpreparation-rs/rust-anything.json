@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/updateInstallPreparation.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "updateinstallpreparation-rs",
+  "exports": [
+    {
+      "name": "makeUpdateInstallPreparationCoordinator",
+      "file": "apps/desktop/src/updateInstallPreparation.ts",
+      "line": 44,
+      "params": [],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "UpdateInstallPreparationCancelledError",
+      "file": "apps/desktop/src/updateInstallPreparation.ts",
+      "line": 3,
+      "reason": "class: extends another class"
+    }
+  ]
+}

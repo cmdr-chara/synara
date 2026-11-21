@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/turnResume.ts",
+  "files": 1,
+  "fingerprint": "ee07f0d1626400f7",
+  "coverage": {
+    "lines": 55,
+    "reached": 55,
+    "files": [
+      {
+        "file": "packages/shared/src/turnResume.ts",
+        "lines": 55,
+        "reached": 55,
+        "missed": ""
+      }
+    ]
+  }
+}

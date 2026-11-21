@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/turnResume.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "turnresume-rs",
+  "exports": [
+    {
+      "name": "resolveTurnResumeTarget",
+      "file": "packages/shared/src/turnResume.ts",
+      "line": 35,
+      "params": [
+        {
+          "name": "thread",
+          "ts_type": "{\n  readonly messages: ReadonlyArray<TurnResumeMessage>;\n  readonly latestTurn: Pick<typeof typeof typeof typeof OrchestrationLatestTurn.Type.Type.Type.Type, \"turnId\" | \"state\"> | null;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(| { readonly kind: \"resend\"; readonly messageId: typeof typeof typeof MessageId.Type.Type.Type }\n  | {\n      readonly kind: \"continue\";\n      readonly turnId: typeof typeof typeof TurnId.Type.Type.Type;\n      readonly state: Extract<typeof typeof typeof OrchestrationLatestTurn.Type.Type.Type[\"state\"], \"interrupted\" | \"error\">;\n    }) | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

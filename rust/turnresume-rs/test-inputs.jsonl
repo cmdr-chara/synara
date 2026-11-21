@@ -1,0 +1,9 @@
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"first","role":"user","turnId":"turn-latest"},{"id":"reply","role":"assistant","turnId":"turn-latest"},{"id":"unsent","role":"user","turnId":null}],"latestTurn":{"turnId":"turn-latest","state":"completed"}}]}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"request","role":"user","turnId":"turn-latest"}],"latestTurn":{"turnId":"turn-latest","state":"interrupted"}}]}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"request","role":"user","turnId":"turn-latest"}],"latestTurn":{"turnId":"turn-latest","state":"error"}}]}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"legacy","role":"user","turnId":null},{"id":"reply","role":"assistant","turnId":"turn-latest"}],"latestTurn":{"turnId":"turn-latest","state":"interrupted"}}]}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"request","role":"user","turnId":"turn-latest"},{"id":"steer","role":"user","turnId":null,"startsNewTurn":false}],"latestTurn":{"turnId":"turn-latest","state":"interrupted"}}]}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"request","role":"user","turnId":"turn-latest"}],"latestTurn":{"turnId":"turn-latest","state":"completed"}}]}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"request","role":"user","turnId":"turn-latest"}],"latestTurn":{"turnId":"turn-latest","state":"running"}}]}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"request","role":"user","turnId":"turn-latest"}],"latestTurn":null}]}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"queued","role":"user","turnId":null}],"latestTurn":{"turnId":"turn-latest","state":"running"}}]}

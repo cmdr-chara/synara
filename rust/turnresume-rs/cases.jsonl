@@ -1,0 +1,88 @@
+{"fn":"resolveTurnResumeTarget","args":[true],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveTurnResumeTarget","args":[{}],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveTurnResumeTarget","args":[0],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveTurnResumeTarget","args":["x"],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveTurnResumeTarget","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveTurnResumeTarget","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveTurnResumeTarget","args":[[]],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveTurnResumeTarget","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveTurnResumeTarget","args":[null],"error":"Cannot read properties of null (reading 'latestTurn')"}
+{"fn":"resolveTurnResumeTarget","args":[{"latestTurn":null}],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveTurnResumeTarget","args":[{"latestTurn":[]}],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveTurnResumeTarget","args":[{"latestTurn":{"messages":[]}}],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[],"latestTurn":{"turnId":"t","state":"interrupted"}}],"ok":{"kind":"continue","turnId":"t","state":"interrupted"}}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[],"latestTurn":null}],"ok":null}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":null}],"latestTurn":{"turnId":"t1","state":"completed"}}],"ok":{"kind":"resend","messageId":"u1"}}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"},{"id":"u2","role":"user","turnId":null}],"latestTurn":{"turnId":"t1","state":"running"}}],"ok":null}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"},{"id":"u2","role":"user","turnId":null}],"latestTurn":{"turnId":"t1","state":"interrupted"}}],"ok":{"kind":"resend","messageId":"u2"}}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"},{"id":"u2","role":"user","turnId":null,"startsNewTurn":true}],"latestTurn":{"turnId":"t1","state":"completed"}}],"ok":{"kind":"resend","messageId":"u2"}}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"},{"id":"a1","role":"assistant","turnId":null}],"latestTurn":{"turnId":"t1","state":"completed"}}],"ok":null}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":null},{"id":"u2","role":"user","turnId":null}],"latestTurn":{"turnId":"t1","state":"completed"}}],"ok":{"kind":"resend","messageId":"u2"}}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"},{"id":"u2","role":"user","turnId":null},{"id":"u3","role":"user","turnId":null}],"latestTurn":{"turnId":"t1","state":"completed"}}],"ok":{"kind":"resend","messageId":"u3"}}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"}],"latestTurn":{"turnId":"t1","state":"failed"}}],"ok":null}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"}],"latestTurn":{"turnId":"t1","state":"queued"}}],"ok":null}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"}],"latestTurn":{"turnId":"t1","state":null}}],"ok":null}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"}],"latestTurn":{"state":"interrupted"}}],"ok":{"kind":"continue","turnId":{"$undefined":true},"state":"interrupted"}}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"other"}],"latestTurn":{"turnId":"t1","state":"interrupted"}}],"ok":{"kind":"continue","turnId":"t1","state":"interrupted"}}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":"str","latestTurn":{"turnId":"t1","state":"completed"}}],"ok":null}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":{},"latestTurn":{"turnId":"t1","state":"completed"}}],"ok":null}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":null,"latestTurn":{"turnId":"t1","state":"completed"}}],"error":"Cannot read properties of null (reading 'length')"}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"},{"id":"u2","role":"user","turnId":null,"startsNewTurn":false}],"latestTurn":{"turnId":"t1","state":"completed"}}],"ok":null}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":null},{"id":"a1","role":"assistant","turnId":"t1"},{"id":"u2","role":"user","turnId":null}],"latestTurn":{"turnId":"t1","state":"interrupted"}}],"ok":{"kind":"resend","messageId":"u2"}}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"},{"id":"u2","role":"user","turnId":null},{"id":"a3","role":"assistant","turnId":"t1"}],"latestTurn":{"turnId":"t1","state":"completed"}}],"ok":null}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"},{"id":"u2","role":"user"}],"latestTurn":{"turnId":"t1","state":"completed"}}],"ok":{"kind":"resend","messageId":"u2"}}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"},null],"latestTurn":{"turnId":"t1","state":"completed"}}],"ok":null}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"},"str"],"latestTurn":{"turnId":"t1","state":"completed"}}],"ok":null}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"},{"id":"u2","role":"user","turnId":0}],"latestTurn":{"turnId":"t1","state":"completed"}}],"ok":null}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"},{"id":"u2","role":"user","turnId":null}],"latestTurn":{"turnId":"t1"}}],"ok":{"kind":"resend","messageId":"u2"}}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"},{"turnId":null}],"latestTurn":{"turnId":"t1","state":"completed"}}],"ok":null}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"},{"id":"u2","role":"User","turnId":null}],"latestTurn":{"turnId":"t1","state":"completed"}}],"ok":null}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"},{"id":"u2","role":"user","turnId":null,"startsNewTurn":1}],"latestTurn":{"turnId":"t1","state":"completed"}}],"ok":{"kind":"resend","messageId":"u2"}}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"},{"id":"u2","role":"user","turnId":null}],"latestTurn":{"turnId":"t1","state":"running"}}],"ok":null}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"}],"latestTurn":{"turnId":"t1","state":"cancelled"}}],"ok":null}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"}],"latestTurn":{"turnId":"t1","state":"canceled"}}],"ok":null}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"}],"latestTurn":{"turnId":"t1","state":"pending"}}],"ok":null}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"}],"latestTurn":{"turnId":"t1","state":"paused"}}],"ok":null}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"}],"latestTurn":{"turnId":"t1","state":"waiting"}}],"ok":null}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"}],"latestTurn":{"turnId":"t1","state":"done"}}],"ok":null}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"}],"latestTurn":{"turnId":"t1","state":"started"}}],"ok":null}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"}],"latestTurn":{"turnId":"t1","state":"blocked"}}],"ok":null}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"},{"id":"u2","role":"user","turnId":null}],"latestTurn":{"turnId":"t1","state":"error"}}],"ok":{"kind":"resend","messageId":"u2"}}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"},{"id":"u2","role":"user","turnId":null}],"latestTurn":{"turnId":"t1","state":"queued"}}],"ok":{"kind":"resend","messageId":"u2"}}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"},{"id":"u2","role":"user","turnId":null,"startsNewTurn":0}],"latestTurn":{"turnId":"t1","state":"completed"}}],"ok":{"kind":"resend","messageId":"u2"}}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"},{"id":"u2","role":"user","turnId":null,"startsNewTurn":null}],"latestTurn":{"turnId":"t1","state":"completed"}}],"ok":{"kind":"resend","messageId":"u2"}}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"},{"id":"u2","role":"user","turnId":null}],"latestTurn":"x"}],"ok":{"kind":"resend","messageId":"u2"}}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"},{"id":"u2","role":"user","turnId":null}],"latestTurn":5}],"ok":{"kind":"resend","messageId":"u2"}}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"},{"id":"u2","role":"user","turnId":null}],"latestTurn":true}],"ok":{"kind":"resend","messageId":"u2"}}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"},{"id":"u2","role":"user","turnId":null}],"latestTurn":[]}],"ok":{"kind":"resend","messageId":"u2"}}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"},{"id":"u2","role":"user","turnId":null,"startsNewTurn":false}],"latestTurn":{"turnId":"t1","state":"error"}}],"ok":{"kind":"continue","turnId":"t1","state":"error"}}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[null],"latestTurn":{"turnId":"t1","state":"interrupted"}}],"ok":{"kind":"continue","turnId":"t1","state":"interrupted"}}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"},{"id":"u2","role":"user","turnId":false}],"latestTurn":{"turnId":"t1","state":"completed"}}],"ok":null}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"},{"id":"u2","role":"user","turnId":""}],"latestTurn":{"turnId":"t1","state":"completed"}}],"ok":null}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u2","role":"user","turnId":null}],"latestTurn":null}],"ok":{"kind":"resend","messageId":"u2"}}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u2","role":"user","turnId":null}]}],"ok":{"kind":"resend","messageId":"u2"}}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u2","role":"user","turnId":null}],"latestTurn":false}],"ok":{"kind":"resend","messageId":"u2"}}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u2","role":"user","turnId":null}],"latestTurn":0}],"ok":{"kind":"resend","messageId":"u2"}}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u2","role":"user","turnId":null}],"latestTurn":""}],"ok":{"kind":"resend","messageId":"u2"}}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"},{"id":"u2","turnId":null}],"latestTurn":{"turnId":"t1","state":"completed"}}],"ok":null}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"},{"role":"user","turnId":null}],"latestTurn":{"turnId":"t1","state":"completed"}}],"ok":{"kind":"resend","messageId":{"$undefined":true}}}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"},{"id":"u2","role":"user","turnId":null}],"latestTurn":{"turnId":"t1","state":5}}],"ok":{"kind":"resend","messageId":"u2"}}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"u1","role":"user","turnId":"t1"},{"id":"u2","role":"user","turnId":null}],"latestTurn":{"turnId":"t1","state":"Running"}}],"ok":{"kind":"resend","messageId":"u2"}}
+{"fn":"resolveTurnResumeTarget","args":[true],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveTurnResumeTarget","args":[{}],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveTurnResumeTarget","args":[0],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveTurnResumeTarget","args":["x"],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveTurnResumeTarget","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveTurnResumeTarget","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveTurnResumeTarget","args":[[]],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveTurnResumeTarget","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'length')"}
+{"fn":"resolveTurnResumeTarget","args":[null],"error":"Cannot read properties of null (reading 'latestTurn')"}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"first","role":"user","turnId":"turn-latest"},{"id":"reply","role":"assistant","turnId":"turn-latest"},{"id":"unsent","role":"user","turnId":null}],"latestTurn":{"turnId":"turn-latest","state":"completed"}}],"ok":{"kind":"resend","messageId":"unsent"}}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"request","role":"user","turnId":"turn-latest"}],"latestTurn":{"turnId":"turn-latest","state":"interrupted"}}],"ok":{"kind":"continue","turnId":"turn-latest","state":"interrupted"}}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"request","role":"user","turnId":"turn-latest"}],"latestTurn":{"turnId":"turn-latest","state":"error"}}],"ok":{"kind":"continue","turnId":"turn-latest","state":"error"}}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"legacy","role":"user","turnId":null},{"id":"reply","role":"assistant","turnId":"turn-latest"}],"latestTurn":{"turnId":"turn-latest","state":"interrupted"}}],"ok":{"kind":"continue","turnId":"turn-latest","state":"interrupted"}}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"request","role":"user","turnId":"turn-latest"},{"id":"steer","role":"user","turnId":null,"startsNewTurn":false}],"latestTurn":{"turnId":"turn-latest","state":"interrupted"}}],"ok":{"kind":"continue","turnId":"turn-latest","state":"interrupted"}}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"request","role":"user","turnId":"turn-latest"}],"latestTurn":{"turnId":"turn-latest","state":"completed"}}],"ok":null}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"request","role":"user","turnId":"turn-latest"}],"latestTurn":{"turnId":"turn-latest","state":"running"}}],"ok":null}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"request","role":"user","turnId":"turn-latest"}],"latestTurn":null}],"ok":null}
+{"fn":"resolveTurnResumeTarget","args":[{"messages":[{"id":"queued","role":"user","turnId":null}],"latestTurn":{"turnId":"turn-latest","state":"running"}}],"ok":null}

@@ -1,0 +1,17 @@
+{
+  "unit": "packages/contracts/src/baseSchemas.ts",
+  "files": 1,
+  "fingerprint": "11ad5ae4a2fc9405",
+  "coverage": {
+    "lines": 84,
+    "reached": 84,
+    "files": [
+      {
+        "file": "packages/contracts/src/baseSchemas.ts",
+        "lines": 84,
+        "reached": 84,
+        "missed": ""
+      }
+    ]
+  }
+}

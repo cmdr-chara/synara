@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/contracts/src/baseSchemas.ts",
+  "language": "ts",
+  "kind": "wasm",
+  "crate_name": "baseschemas-rs",
+  "exports": [
+    {
+      "name": "boundedTrimmedNonEmptyString",
+      "file": "packages/contracts/src/baseSchemas.ts",
+      "line": 13,
+      "params": [
+        {
+          "name": "maxLength",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "unknown",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,49 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/nativeApi.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "nativeapi-rs",
+  "exports": [
+    {
+      "name": "readNativeApiServerCapability",
+      "file": "apps/web/src/nativeApi.ts",
+      "line": 35,
+      "params": [
+        {
+          "name": "capability",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "readNativeApi",
+      "file": "apps/web/src/nativeApi.ts",
+      "line": 15,
+      "reason": "uses `NativeApi`, which has function members"
+    },
+    {
+      "name": "ensureNativeApi",
+      "file": "apps/web/src/nativeApi.ts",
+      "line": 27,
+      "reason": "uses `NativeApi`, which has function members"
+    },
+    {
+      "name": "onNativeApiServerCapabilitiesChange",
+      "file": "apps/web/src/nativeApi.ts",
+      "line": 49,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

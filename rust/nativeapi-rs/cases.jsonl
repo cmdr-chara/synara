@@ -1,0 +1,211 @@
+{"fn":"readNativeApiServerCapability","args":["abc"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["﻿bom"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["  padded  "],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["İstanbulns:key.path"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["hello world"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["HELLOa😀b😀c"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["src/a/b.ts"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["ΣΊΣΥΦΟΣa"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["ns:key.path"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["emoji 👍🏽 mix"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["straße"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["日本語のテキスト"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["trailing."],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["ünïcödé"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["  padded  ﻿bom"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["key_name-1"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":[""],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["HELLOtab\tseparated"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["a..bİstanbul"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["hello"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["{name} has {count} items"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["HELLO"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["ünïcödé日本語のテキスト"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":[".leadingkey_name-1"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["a:b:c  padded  "],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["./x/**/*.json"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["tab\tseparatedab"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":[":😀"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["é"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["Hello World"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["İstanbul"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["a😀b😀cemoji 👍🏽 mix"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":[":"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["😀"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["akey_name-1"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["a:b:c"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["﻿bomsrc/a/b.ts"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["a..b"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["ab"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["ünïcödétrailing."],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["a😀b😀c.leading"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["ns:key.path.leading"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["{name} has {count} items日本語のテキスト"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["a.b.c"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["line1\nline2"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["İstanbulHello World"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["./x/**/*.jsona"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["a"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["ns:key.patha..b"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["日本語のテキストΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":[".leading"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["a😀b😀c日本語のテキスト"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["abchello"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["İstanbultab\tseparated"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["src/a/b.ts.leading"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["İstanbulline1\nline2"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["Hello Worlda"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["abİstanbul"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["😀hello"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["hello worldhello world"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["İstanbula.b.c"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["a:b:cé"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["  padded  emoji 👍🏽 mix"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["key_name-1é"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":[":a😀b😀c"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["straße:"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["key_name-1日本語のテキスト"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":[":hello"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["a😀b😀ca"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["Hello WorldHELLO"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["  padded  日本語のテキスト"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":[".leadingΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["tab\tseparated"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["  padded  Hello World"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["İstanbul日本語のテキスト"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["straßestraße"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["ünïcödéa..b"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["a😀b😀c"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["Hello WorldHello World"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["  padded  a😀b😀c"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["trailing.a:b:c"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["abc./x/**/*.json"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":[".leading﻿bom"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["Hello Worldemoji 👍🏽 mix"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["hellons:key.path"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["ab.leading"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["key_name-1a"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["  padded  a..b"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["éstraße"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["trailing.{name} has {count} items"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["key_name-1:"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["İstanbula"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":[".leadingab"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["{name} has {count} itemsΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["trailing.HELLO"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["éabc"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["{name} has {count} itemssrc/a/b.ts"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["a😀b😀ca..b"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["a..b.leading"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["HELLOa..b"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["hello{name} has {count} items"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["aline1\nline2"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["😀﻿bom"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["helloİstanbul"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["emoji 👍🏽 mixΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["hello worldhello"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["{name} has {count} itemsa.b.c"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["ns:key.path日本語のテキスト"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["line1\nline2HELLO"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["Hello World{name} has {count} items"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["éa..b"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":[".leadinga.b.c"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["a:b:cab"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["{name} has {count} itemsab"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["﻿bomline1\nline2"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["  padded  hello world"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["HELLOünïcödé"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["straßehello"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["a日本語のテキスト"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["😀./x/**/*.json"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["helloHello World"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["{name} has {count} items﻿bom"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["ahello world"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["./x/**/*.jsonhello"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["😀hello world"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["a..bHELLO"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["﻿bomhello"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["a..b:"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["é{name} has {count} items"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["emoji 👍🏽 mix﻿bom"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["日本語のテキストline1\nline2"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["a.b.c日本語のテキスト"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["  padded  é"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["emoji 👍🏽 mixa😀b😀c"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["./x/**/*.jsonline1\nline2"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["é😀"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":[".leadinga:b:c"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["éemoji 👍🏽 mix"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["a:b:c日本語のテキスト"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["abstraße"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["straßeHELLO"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["tab\tseparatedhello"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["Hello Worldünïcödé"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["key_name-1ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["a😀b😀cstraße"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["./x/**/*.jsonhello world"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["a:b:c{name} has {count} items"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["İstanbulé"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["😀ns:key.path"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["straßeemoji 👍🏽 mix"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["a:b:ca😀b😀c"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["Hello World./x/**/*.json"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["İstanbul.leading"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["line1\nline2a"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["ns:key.pathİstanbul"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["﻿bomns:key.path"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["﻿bomstraße"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["helloa..b"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["straße  padded  "],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["key_name-1ab"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["a.b.cHello World"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["src/a/b.tsHELLO"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["abé"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["İstanbulΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["aa.b.c"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["./x/**/*.jsontab\tseparated"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["ΣΊΣΥΦΟΣab"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":[".leadingHello World"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["abHELLO"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["  padded  {name} has {count} items"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["straßesrc/a/b.ts"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["😀a:b:c"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["日本語のテキストa:b:c"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["{name} has {count} itemsé"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["﻿bomtrailing."],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["ΣΊΣΥΦΟΣa.b.c"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["HELLOkey_name-1"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":[":./x/**/*.json"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":[".leadingline1\nline2"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["straßeΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["😀{name} has {count} items"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["日本語のテキスト{name} has {count} items"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["./x/**/*.json日本語のテキスト"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":[".leadinga..b"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["HELLO😀"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["日本語のテキストünïcödé"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":[".leadinga😀b😀c"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["HELLOé"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["HELLO日本語のテキスト"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["trailing.emoji 👍🏽 mix"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["src/a/b.tsa"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["straße﻿bom"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["src/a/b.ts{name} has {count} items"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["key_name-1Hello World"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["src/a/b.tshello"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["😀emoji 👍🏽 mix"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["abc  padded  "],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["﻿bomé"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["abc.leading"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["héllo wörld"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["👍🏽 thumbs"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["日本語"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["ılık ırmak"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["👨‍👩‍👧 family"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["a b"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["a😀b"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["a²b x½ y①"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["aⅠb Ⅻ"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["a𐐀b 𝐀bc"],"ok":false}
+{"fn":"readNativeApiServerCapability","args":["कि ٣٤"],"ok":false}

@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/sidechatExpiry.ts",
+  "files": 1,
+  "fingerprint": "8ef23a40445c402d",
+  "coverage": {
+    "lines": 175,
+    "reached": 50,
+    "files": [
+      {
+        "file": "packages/shared/src/sidechatExpiry.ts",
+        "lines": 175,
+        "reached": 50,
+        "missed": "60-63, 65-69, 71-74, 76-88, 90-98, 100-189"
+      }
+    ]
+  }
+}

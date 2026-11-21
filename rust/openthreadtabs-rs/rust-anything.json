@@ -1,0 +1,229 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/openThreadTabs.logic.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "openthreadtabs-rs",
+  "exports": [
+    {
+      "name": "addOpenThreadTab",
+      "file": "apps/web/src/openThreadTabs.logic.ts",
+      "line": 43,
+      "params": [
+        {
+          "name": "threadIds",
+          "ts_type": "readonly typeof typeof typeof typeof ThreadId.Type.Type.Type.Type[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "readonly typeof typeof typeof typeof ThreadId.Type.Type.Type.Type[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "removeOpenThreadTab",
+      "file": "apps/web/src/openThreadTabs.logic.ts",
+      "line": 50,
+      "params": [
+        {
+          "name": "threadIds",
+          "ts_type": "readonly typeof typeof typeof typeof ThreadId.Type.Type.Type.Type[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "readonly typeof typeof typeof typeof ThreadId.Type.Type.Type.Type[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "moveOpenThreadTab",
+      "file": "apps/web/src/openThreadTabs.logic.ts",
+      "line": 63,
+      "params": [
+        {
+          "name": "threadIds",
+          "ts_type": "readonly typeof typeof typeof typeof ThreadId.Type.Type.Type.Type[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "threadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "overThreadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "readonly typeof typeof typeof typeof ThreadId.Type.Type.Type.Type[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeOpenThreadTabIds",
+      "file": "apps/web/src/openThreadTabs.logic.ts",
+      "line": 83,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "canKeepOpenThreadTab",
+      "file": "apps/web/src/openThreadTabs.logic.ts",
+      "line": 103,
+      "params": [
+        {
+          "name": "summary",
+          "ts_type": "SidebarThreadSummary | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "hasDraft",
+          "ts_type": "boolean",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildOpenThreadTabs",
+      "file": "apps/web/src/openThreadTabs.logic.ts",
+      "line": 146,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  sources: readonly OpenThreadTabSource[];\n  activeThreadId: typeof typeof typeof typeof ThreadId.Type.Type.Type.Type | null;\n  projectId?: typeof typeof typeof typeof ProjectId.Type.Type.Type.Type | null | undefined;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "OpenThreadTab[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveOpenThreadTabCloseTarget",
+      "file": "apps/web/src/openThreadTabs.logic.ts",
+      "line": 168,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  tabs: readonly Pick<OpenThreadTab, \"threadId\">[];\n  closedThreadId: typeof typeof typeof typeof ThreadId.Type.Type.Type.Type;\n  activeThreadId: typeof typeof typeof typeof ThreadId.Type.Type.Type.Type | null;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "{ threadId: typeof typeof typeof typeof ThreadId.Type.Type.Type.Type | null } | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveOpenThreadTabsInCloseScope",
+      "file": "apps/web/src/openThreadTabs.logic.ts",
+      "line": 261,
+      "params": [
+        {
+          "name": "tabs",
+          "ts_type": "readonly Pick<OpenThreadTab, \"threadId\">[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "anchorThreadId",
+          "ts_type": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "scope",
+          "ts_type": "(\"left\" | \"right\" | \"others\")",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ThreadId.Type.Type.Type.Type[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "pruneOpenThreadTabs",
+      "file": "apps/web/src/openThreadTabs.logic.ts",
+      "line": 75,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "replaceLastTabWithFreshChat",
+      "file": "apps/web/src/openThreadTabs.logic.ts",
+      "line": 199,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    },
+    {
+      "name": "closeOpenThreadTab",
+      "file": "apps/web/src/openThreadTabs.logic.ts",
+      "line": 224,
+      "reason": "uses `CloseOpenThreadTabInput`, which has function members"
+    },
+    {
+      "name": "closeOpenThreadTabs",
+      "file": "apps/web/src/openThreadTabs.logic.ts",
+      "line": 286,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "createOpenThreadTabCloseQueue",
+      "file": "apps/web/src/openThreadTabs.logic.ts",
+      "line": 310,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

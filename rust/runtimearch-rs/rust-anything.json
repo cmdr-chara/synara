@@ -1,0 +1,48 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/runtimeArch.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "runtimearch-rs",
+  "exports": [
+    {
+      "name": "resolveDesktopRuntimeInfo",
+      "file": "apps/desktop/src/runtimeArch.ts",
+      "line": 15,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "ResolveDesktopRuntimeInfoInput",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "DesktopRuntimeInfo",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isArm64HostRunningIntelBuild",
+      "file": "apps/desktop/src/runtimeArch.ts",
+      "line": 37,
+      "params": [
+        {
+          "name": "runtimeInfo",
+          "ts_type": "DesktopRuntimeInfo",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

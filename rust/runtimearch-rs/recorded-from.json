@@ -1,0 +1,17 @@
+{
+  "unit": "apps/desktop/src/runtimeArch.ts",
+  "files": 1,
+  "fingerprint": "ff10a9d850242a64",
+  "coverage": {
+    "lines": 32,
+    "reached": 32,
+    "files": [
+      {
+        "file": "apps/desktop/src/runtimeArch.ts",
+        "lines": 32,
+        "reached": 32,
+        "missed": ""
+      }
+    ]
+  }
+}

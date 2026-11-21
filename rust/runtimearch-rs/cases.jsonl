@@ -1,0 +1,227 @@
+{"fn":"resolveDesktopRuntimeInfo","args":[{"a":"b"}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":["a",1],"processArch":"ünïcödé","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":null,"processArch":"ab","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":[],"processArch":"emoji 👍🏽 mix","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":null,"processArch":"straße","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":"x","processArch":"😀","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":0,"processArch":"straße","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":null,"processArch":"hello","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":"b"},"processArch":"{name} has {count} items","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":{"b":"c"}},"processArch":"src/a/b.ts","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":null,"processArch":"a:b:c","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":{"b":"c"}},"processArch":"a😀b😀c","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":0,"processArch":"ns:key.path","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":"b"},"processArch":"abc","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":["a",1],"processArch":"İstanbul","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":["a",1],"processArch":"ns:key.path","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{},"processArch":"HELLO","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":0,"processArch":"{name} has {count} items","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{},"processArch":"a","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[[]],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":0,"processArch":"İstanbulhello world","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{},"processArch":".leading","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":"b"},"processArch":"é","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":"x","processArch":"İstanbul","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":["a",1],"processArch":"ünïcödé","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":"x","processArch":"","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":0,"processArch":"","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":"b"},"processArch":"a:b:cstraße","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":0,"processArch":".leading","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":0,"processArch":"ns:key.path","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":true,"processArch":"{name} has {count} items","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":0,"processArch":"a","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":{"b":"c"}},"processArch":"﻿bom","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":"x","processArch":"ab","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":null,"processArch":"","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"a":{"b":"c"}}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":["a",1],"processArch":"日本語のテキスト","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":null,"processArch":"straße","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{},"processArch":"日本語のテキスト","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[0],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":{"b":"c"}},"processArch":"a","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":["a",1],"processArch":"abc","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":["a",1],"processArch":"tab\tseparated","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{},"processArch":"日本語のテキストns:key.path","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":{"b":"c"}},"processArch":"emoji 👍🏽 mix😀","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{},"processArch":":","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":["a",1],"processArch":"abHello World","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{},"processArch":".leadingΣΊΣΥΦΟΣ","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":{"b":"c"}},"processArch":":","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{},"processArch":"HELLO","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{},"processArch":"Hello World","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":{"b":"c"}},"processArch":"a:b:c","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":{"b":"c"}},"processArch":"ΣΊΣΥΦΟΣ","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":{"b":"c"}},"processArch":"﻿bomİstanbul","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":[],"processArch":"  padded  ","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":null,"processArch":"İstanbul","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":0,"processArch":"tab\tseparated","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":true,"processArch":"a..bline1\nline2","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":null,"processArch":"./x/**/*.jsona😀b😀c","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":"b"},"processArch":"trailing.","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":null,"processArch":"trailing.","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":0,"processArch":"HELLO😀","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":true,"processArch":"a.b.c","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":"b"},"processArch":"日本語のテキスト","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":"b"},"processArch":"İstanbul  padded  ","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":["a",1],"processArch":"a:b:c","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":["a",1],"processArch":"ab.leading","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":null,"processArch":"helloHELLO","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[["a",1]],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{},"processArch":"straße","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":0,"processArch":"./x/**/*.json","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":true,"processArch":"😀a","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":{"b":"c"}},"processArch":"😀","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[true],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":{"b":"c"}},"processArch":"abİstanbul","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":["a",1],"processArch":"😀","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":"x","processArch":"a.b.c","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":"x","processArch":"é","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":true,"processArch":"hello","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":"x","processArch":"abc","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":true,"processArch":"trailing.","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":null,"processArch":"./x/**/*.json","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":"x","processArch":"HELLO","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":[],"processArch":"éHello World","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":"x","processArch":"hello worldsrc/a/b.ts","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":true,"processArch":"ns:key.path","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":0,"processArch":":","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":true,"processArch":"src/a/b.ts","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":[],"processArch":".leading","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":[],"processArch":"a..b","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":"b"},"processArch":"hello world","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{},"processArch":"emoji 👍🏽 mix","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":{"b":"c"}},"processArch":"😀","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":[],"processArch":"ΣΊΣΥΦΟΣ","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":[],"processArch":"src/a/b.tsa😀b😀c","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":{"b":"c"}},"processArch":":hello","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":0,"processArch":"absrc/a/b.ts","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":"b"},"processArch":"a:b:ca.b.c","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":"x","processArch":"a😀b😀cünïcödé","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":"x","processArch":"","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":"b"},"processArch":"a","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":"b"},"processArch":"﻿bom","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":0,"processArch":"ab","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{},"processArch":"emoji 👍🏽 mix{name} has {count} items","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":[],"processArch":"﻿bom","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{},"processArch":"ΣΊΣΥΦΟΣ","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":null,"processArch":"ab","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":"x","processArch":"a..b","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{},"processArch":"ünïcödé","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":"x","processArch":"hello","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":[],"processArch":"ünïcödé","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":"b"},"processArch":"{name} has {count} items﻿bom","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":["a",1],"processArch":"  padded  ","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":"b"},"processArch":"abc","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":["a",1],"processArch":"{name} has {count} itemsstraße","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":0,"processArch":"日本語のテキスト","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":[],"processArch":"ab","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":null,"processArch":"trailing.","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":"x","processArch":"日本語のテキスト","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":"b"},"processArch":"ünïcödé","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":["a",1],"processArch":"{name} has {count} items","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":"x","processArch":"line1\nline2","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":{"b":"c"}},"processArch":"trailing.","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":0,"processArch":"é","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":["a",1],"processArch":"😀","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":0,"processArch":"😀","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":["a",1],"processArch":"a:b:c","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":"x","processArch":"  padded  ","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{},"processArch":"ab","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":[],"processArch":"İstanbul","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[null],"error":"Cannot read properties of null (reading 'processArch')"}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":null,"processArch":"a.b.c","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":{"b":"c"}},"processArch":"hello","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":true,"processArch":"😀","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":null,"processArch":"a😀b😀c","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":[],"processArch":"key_name-1","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":"b"},"processArch":"a","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":[],"processArch":"a:b:c","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":"b"},"processArch":"İstanbul","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":[],"processArch":"hello world﻿bom","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":"x","processArch":"﻿bom.leading","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":["a",1],"processArch":"ΣΊΣΥΦΟΣ","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":[],"processArch":"é","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":["a",1],"processArch":"straße","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":"x","processArch":"aa.b.c","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":[],"processArch":".leading","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":"x","processArch":"line1\nline2key_name-1","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":null,"processArch":"Hello World","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":"b"},"processArch":"trailing.","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":[],"processArch":"helloünïcödé","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":0,"processArch":".leading","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":["a",1],"processArch":"日本語のテキストns:key.path","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":{"b":"c"}},"processArch":"line1\nline2","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":["a",1],"processArch":"{name} has {count} items","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":"b"},"processArch":"a..b","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{},"processArch":"hello world","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":["a",1],"processArch":"ans:key.path","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":true,"processArch":"﻿bom","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":0,"processArch":"a","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":true,"processArch":"trailing.","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":[],"processArch":"tab\tseparated","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":"b"},"processArch":"src/a/b.ts","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":{"b":"c"}},"processArch":"abc","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":0,"processArch":"  padded  ","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":"b"},"processArch":"ns:key.path","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{},"processArch":"hello world","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":null,"processArch":"İstanbul","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":true,"processArch":"key_name-1","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":null,"processArch":"﻿bomtab\tseparated","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":true,"processArch":"aİstanbul","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":true,"processArch":"éİstanbul","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":"x","processArch":"key_name-1","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":[],"processArch":"hello world","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":true,"processArch":"abcabc","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":[],"processArch":"HELLO","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":"x","processArch":"a:b:cünïcödé","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":null,"processArch":"﻿boma","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":0,"processArch":"a😀b😀c","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":true,"processArch":"日本語のテキスト","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":null,"processArch":"key_name-1","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":["a",1],"processArch":"straßeünïcödé","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":[],"processArch":"trailing.","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{},"processArch":"src/a/b.ts","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{},"processArch":"Hello World","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":[],"processArch":"straße","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":"x","processArch":"key_name-1","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":["x"],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":{"b":"c"}},"processArch":"hello","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":"b"},"processArch":"ΣΊΣΥΦΟΣ","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":["a",1],"processArch":"src/a/b.ts","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":{"b":"c"}},"processArch":"ns:key.path","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":0,"processArch":"Hello World","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":"x","processArch":"ΣΊΣΥΦΟΣ","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":[],"processArch":"Hello World","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":0,"processArch":"a..b","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":["a",1],"processArch":"ns:key.pathhello world","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{},"processArch":"{name} has {count} items","runningUnderArm64Translation":true}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":{"a":"b"},"processArch":"a..b","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"resolveDesktopRuntimeInfo","args":[{"platform":true,"processArch":"😀a","runningUnderArm64Translation":false}],"ok":{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}}
+{"fn":"isArm64HostRunningIntelBuild","args":[[]],"ok":false}
+{"fn":"isArm64HostRunningIntelBuild","args":[{"hostArch":"x64","appArch":"x64","runningUnderArm64Translation":true}],"ok":false}
+{"fn":"isArm64HostRunningIntelBuild","args":[{"hostArch":"other","appArch":"other","runningUnderArm64Translation":false}],"ok":false}
+{"fn":"isArm64HostRunningIntelBuild","args":[{"hostArch":"x64","appArch":"x64","runningUnderArm64Translation":false}],"ok":false}
+{"fn":"isArm64HostRunningIntelBuild","args":[{"hostArch":"arm64","appArch":"x64","runningUnderArm64Translation":true}],"ok":true}
+{"fn":"isArm64HostRunningIntelBuild","args":[{"hostArch":"other","appArch":"other","runningUnderArm64Translation":true}],"ok":false}
+{"fn":"isArm64HostRunningIntelBuild","args":[{"hostArch":"x64","appArch":"other","runningUnderArm64Translation":false}],"ok":false}
+{"fn":"isArm64HostRunningIntelBuild","args":[{"hostArch":"x64","appArch":"arm64","runningUnderArm64Translation":true}],"ok":false}
+{"fn":"isArm64HostRunningIntelBuild","args":[{"hostArch":"arm64","appArch":"x64","runningUnderArm64Translation":false}],"ok":true}
+{"fn":"isArm64HostRunningIntelBuild","args":[{"hostArch":"x64","appArch":"other","runningUnderArm64Translation":true}],"ok":false}
+{"fn":"isArm64HostRunningIntelBuild","args":[{"hostArch":"arm64","appArch":"arm64","runningUnderArm64Translation":true}],"ok":false}
+{"fn":"isArm64HostRunningIntelBuild","args":[{"hostArch":"other","appArch":"x64","runningUnderArm64Translation":false}],"ok":false}
+{"fn":"isArm64HostRunningIntelBuild","args":[{"hostArch":"arm64","appArch":"other","runningUnderArm64Translation":false}],"ok":false}
+{"fn":"isArm64HostRunningIntelBuild","args":[{"hostArch":"other","appArch":"x64","runningUnderArm64Translation":true}],"ok":false}
+{"fn":"isArm64HostRunningIntelBuild","args":[{"hostArch":"arm64","appArch":"other","runningUnderArm64Translation":true}],"ok":false}
+{"fn":"isArm64HostRunningIntelBuild","args":[{"hostArch":"other","appArch":"arm64","runningUnderArm64Translation":true}],"ok":false}
+{"fn":"isArm64HostRunningIntelBuild","args":[["a",1]],"ok":false}
+{"fn":"isArm64HostRunningIntelBuild","args":[null],"error":"Cannot read properties of null (reading 'hostArch')"}
+{"fn":"isArm64HostRunningIntelBuild","args":[{"hostArch":"x64","appArch":"arm64","runningUnderArm64Translation":false}],"ok":false}
+{"fn":"isArm64HostRunningIntelBuild","args":[{"hostArch":"arm64","appArch":"arm64","runningUnderArm64Translation":false}],"ok":false}
+{"fn":"isArm64HostRunningIntelBuild","args":[{}],"ok":false}
+{"fn":"isArm64HostRunningIntelBuild","args":[{"hostArch":"other","appArch":"arm64","runningUnderArm64Translation":false}],"ok":false}
+{"fn":"isArm64HostRunningIntelBuild","args":[true],"ok":false}
+{"fn":"isArm64HostRunningIntelBuild","args":[0],"ok":false}
+{"fn":"isArm64HostRunningIntelBuild","args":["x"],"ok":false}
+{"fn":"isArm64HostRunningIntelBuild","args":[{"a":"b"}],"ok":false}
+{"fn":"isArm64HostRunningIntelBuild","args":[{"a":{"b":"c"}}],"ok":false}

@@ -1,0 +1,17 @@
+{
+  "unit": "apps/server/src/imageMime.ts",
+  "files": 1,
+  "fingerprint": "d118abdd9af7f1cf",
+  "coverage": {
+    "lines": 63,
+    "reached": 54,
+    "files": [
+      {
+        "file": "apps/server/src/imageMime.ts",
+        "lines": 63,
+        "reached": 54,
+        "missed": "35, 38-39, 43-44, 50-51, 68-69"
+      }
+    ]
+  }
+}

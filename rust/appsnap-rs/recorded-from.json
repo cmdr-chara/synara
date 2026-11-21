@@ -1,0 +1,23 @@
+{
+  "unit": "apps/web/src/appSnap.logic.ts",
+  "files": 1,
+  "fingerprint": "492abb8860337c91",
+  "coverage": {
+    "lines": 278,
+    "reached": 149,
+    "files": [
+      {
+        "file": "apps/web/src/appSnap.logic.ts",
+        "lines": 203,
+        "reached": 127,
+        "missed": "31-39, 89-90, 96-98, 100-101, 106-108, 126-128, 130-131, 148-149, 168-173, 177-180, 183-188, 190-201, 203-212, 214-223, 225-226"
+      },
+      {
+        "file": "apps/web/src/lib/composerImageSource.ts",
+        "lines": 75,
+        "reached": 22,
+        "missed": "20-26, 28-31, 34-54, 60-66, 68-74, 78-84"
+      }
+    ]
+  }
+}

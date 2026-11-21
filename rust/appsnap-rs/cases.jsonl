@@ -1,0 +1,845 @@
+{"fn":"didAppSnapHydrationInputsChange","args":["x",{}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"10":{"$undefined":true},"nav":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}},{"2":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"nav":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}},{"ünï":{"images":null,"persistedAttachments":null},"nav":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"2":{"images":null,"persistedAttachments":null},"home":{"$undefined":true},"a":{"$undefined":true}},{"a.b":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null},"b":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}},"ünï":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"😀":{"$undefined":true},"home":{"$undefined":true},"title":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}},{"b":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"10":{"images":null,"persistedAttachments":null}},{"title":{"$undefined":true},"nav":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"b":{"$undefined":true}},{"10":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}},"😀":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}},"nav":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{}],"ok":false}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"2":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null},"title":{"$undefined":true}},{"10":{"images":null,"persistedAttachments":null},"home":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"10":{"images":null,"persistedAttachments":null}},"x"],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"a.b":{"images":null,"persistedAttachments":null},"nav":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"2":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"2":{"images":null,"persistedAttachments":null},"nav":{"$undefined":true},"ünï":{"images":null,"persistedAttachments":null}},{"nav":{"images":null,"persistedAttachments":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"2":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null},"title":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}},{"a":"b"}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"home":{"$undefined":true},"a":{"images":null,"persistedAttachments":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"title":{"$undefined":true},"b":{"images":null,"persistedAttachments":null}},"x"],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"10":{"$undefined":true},"a":{"$undefined":true}},{"10":{"$undefined":true},"😀":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"2":{"$undefined":true},"a":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"a":{"$undefined":true},"title":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}},"😀":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"nav":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}},{}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"10":{"$undefined":true},"home":{"$undefined":true},"ünï":{"$undefined":true}},{}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"a.b":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}},"😀":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}},{"ünï":{"$undefined":true},"home":{"images":null,"persistedAttachments":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"a.b":{"$undefined":true},"😀":{"$undefined":true},"home":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":["x",{"title":{"$undefined":true},"a.b":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[[],{}],"ok":false}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"home":{"$undefined":true},"a":{"$undefined":true},"😀":{"$undefined":true}},{"2":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"title":{"$undefined":true},"home":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}}},{}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"home":{"images":null,"persistedAttachments":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"2":{"images":null,"persistedAttachments":null},"b":{"images":null,"persistedAttachments":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"ünï":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}},{"a":"b"}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"b":{"$undefined":true}},["a",1]],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"a":{"images":null,"persistedAttachments":null},"ünï":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}},"a.b":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[null,{}],"error":"Cannot convert undefined or null to object"}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"a":{"b":"c"}},{}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"home":{"$undefined":true}},{}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"😀":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"home":{"$undefined":true}},{"2":{"$undefined":true},"a.b":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null},"nav":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"10":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}},"b":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},true],"ok":false}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"title":{"$undefined":true},"😀":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"😀":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}},"ünï":{"$undefined":true},"a":{"$undefined":true}},{"nav":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"2":{"$undefined":true},"home":{"$undefined":true},"a.b":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"a":{"$undefined":true},"😀":{"$undefined":true},"ünï":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}},[]],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"a":{"$undefined":true},"😀":{"$undefined":true}},{"title":{"$undefined":true},"a":{"$undefined":true},"😀":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"ünï":{"$undefined":true}},{"2":{"$undefined":true},"10":{"images":null,"persistedAttachments":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"title":{"$undefined":true},"ünï":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}},"😀":{"$undefined":true}},{"ünï":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"nav":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}},"b":{"$undefined":true},"a":{"images":null,"persistedAttachments":null}},{"title":{"images":null,"persistedAttachments":null},"😀":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"b":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}}},{"nav":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"10":{"$undefined":true},"nav":{"$undefined":true}},{}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[0,{}],"ok":false}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"10":{"images":null,"persistedAttachments":null}},{}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"ünï":{"$undefined":true},"a.b":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}},{}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"10":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}},"home":{"$undefined":true}},{"nav":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"a.b":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"a":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"2":{"$undefined":true},"nav":{"$undefined":true},"b":{"$undefined":true}},{}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"b":{"images":null,"persistedAttachments":null},"home":{"$undefined":true}},{"a":"b"}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[true,{}],"ok":false}
+{"fn":"didAppSnapHydrationInputsChange","args":[["a",1],{}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"10":{"$undefined":true}},{}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"a":"b"},{"b":{"images":null,"persistedAttachments":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"😀":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[["a",1],{"home":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}},"a":{"images":null,"persistedAttachments":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"2":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}},"home":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null},"a":{"$undefined":true}},{"2":{"$undefined":true},"title":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"2":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}}},{"nav":{"$undefined":true},"ünï":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null},"a":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"a":{"b":"c"}},{"2":{"$undefined":true},"a":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"2":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null},"home":{"$undefined":true}},{"2":{"$undefined":true},"a.b":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"2":{"$undefined":true},"ünï":{"$undefined":true},"a":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}},true],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},["a",1]],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"title":{"$undefined":true}},{}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"2":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}},{}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"10":{"$undefined":true},"ünï":{"$undefined":true},"home":{"images":null,"persistedAttachments":null}},{}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"10":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null},"😀":{"$undefined":true},"home":{"$undefined":true}},{}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"10":{"$undefined":true},"home":{"$undefined":true}},{"nav":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"10":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null},"a.b":{"$undefined":true},"home":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}},{"b":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null},"a":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"b":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"home":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}}},{}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"b":{"$undefined":true},"😀":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}}},{"home":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"2":{"$undefined":true}},{}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"a.b":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}},{"2":{"$undefined":true},"home":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"a.b":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}},{}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"a.b":{"$undefined":true}},{}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":["x",{"b":{"$undefined":true},"title":{"images":null,"persistedAttachments":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"2":{"images":null,"persistedAttachments":null},"😀":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}},"x"],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"10":{"$undefined":true},"b":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"10":{"$undefined":true},"title":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}}},{"10":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"2":{"$undefined":true},"a":{"$undefined":true},"😀":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}}},["a",1]],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"nav":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null},"home":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}},{}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"a":{"$undefined":true},"home":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"2":{"images":null,"persistedAttachments":null},"ünï":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"😀":{"images":null,"persistedAttachments":null},"ünï":{"$undefined":true},"nav":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}},{"nav":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"title":{"$undefined":true}},{"nav":{"images":null,"persistedAttachments":null},"home":{"$undefined":true},"a.b":{"images":null,"persistedAttachments":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[true,{"2":{"$undefined":true},"title":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"2":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null},"home":{"images":null,"persistedAttachments":null},"title":{"$undefined":true}},["a",1]],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"nav":{"images":null,"persistedAttachments":null}},"x"],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"home":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null},"a.b":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"nav":{"$undefined":true},"a.b":{"$undefined":true}},{"a":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}},"😀":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"title":{"$undefined":true}},{"a":{"$undefined":true},"a.b":{"$undefined":true},"title":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"2":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"a.b":{"$undefined":true},"home":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"ünï":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"2":{"images":null,"persistedAttachments":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"10":{"$undefined":true},"title":{"$undefined":true}},{"ünï":{"$undefined":true},"b":{"images":null,"persistedAttachments":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},null],"error":"Cannot convert undefined or null to object"}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"2":{"$undefined":true}},{"10":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"ünï":{"images":null,"persistedAttachments":null},"title":{"images":null,"persistedAttachments":null}},{}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"ünï":{"$undefined":true}},{"nav":{"images":null,"persistedAttachments":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"10":{"images":null,"persistedAttachments":null},"title":{"$undefined":true}},{"2":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"😀":{"$undefined":true}},{}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"nav":{"$undefined":true},"home":{"$undefined":true},"a":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"2":{"$undefined":true},"title":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"home":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}},"a":{"$undefined":true}},true],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"10":{"$undefined":true},"😀":{"$undefined":true},"ünï":{"images":null,"persistedAttachments":null}},{"home":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}},"😀":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"title":{"$undefined":true},"nav":{"$undefined":true}},{"10":{"$undefined":true},"😀":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"10":{"$undefined":true},"title":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}},"a":{"$undefined":true}},{"2":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"a":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}},{}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"10":{"$undefined":true},"title":{"$undefined":true},"nav":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}}},{"10":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"title":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}}},{"nav":{"$undefined":true},"title":{"$undefined":true},"😀":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"a":"b"}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"b":{"$undefined":true}},{"10":{"images":null,"persistedAttachments":null},"a":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[["a",1],{"10":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}},"nav":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":["x",{"ünï":{"images":null,"persistedAttachments":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[null,{"10":{"$undefined":true},"a":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}}],"error":"Cannot convert undefined or null to object"}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"2":{"$undefined":true},"title":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}},null],"error":"Cannot convert undefined or null to object"}
+{"fn":"didAppSnapHydrationInputsChange","args":[["a",1],{"ünï":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"home":{"$undefined":true},"😀":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}}},{"2":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}},"home":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"home":{"$undefined":true},"a.b":{"$undefined":true},"title":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}},{"a.b":{"$undefined":true},"ünï":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"a":{"b":"c"}},{"a.b":{"$undefined":true},"home":{"images":null,"persistedAttachments":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"nav":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}},{"title":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"title":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"10":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}},"home":{"images":null,"persistedAttachments":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[true,{"a.b":{"images":null,"persistedAttachments":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"10":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}},"title":{"$undefined":true}},true],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"10":{"images":null,"persistedAttachments":null},"😀":{"$undefined":true}},{"nav":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[true,{"10":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"😀":{"images":null,"persistedAttachments":null},"home":{"$undefined":true},"a":{"images":null,"persistedAttachments":null}},{"2":{"images":null,"persistedAttachments":null},"😀":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"home":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"home":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}},"title":{"images":null,"persistedAttachments":null}},{"a":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"home":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null},"a.b":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"😀":{"$undefined":true},"a":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"nav":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null},"a.b":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}},{"10":{"$undefined":true},"b":{"$undefined":true},"ünï":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"😀":{"$undefined":true},"a.b":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null},"nav":{"$undefined":true}},{"a.b":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}},"😀":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"a.b":{"$undefined":true},"ünï":{"$undefined":true}},{"2":{"$undefined":true},"a":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}},"ünï":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"b":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null},"home":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}},"ünï":{"$undefined":true}},{"10":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[true,{"home":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"a.b":{"$undefined":true},"ünï":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}},"b":{"$undefined":true}},{}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"nav":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"b":{"images":null,"persistedAttachments":null},"😀":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"2":{"$undefined":true},"10":{"images":null,"persistedAttachments":null},"title":{"$undefined":true}},["a",1]],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"2":{"$undefined":true},"a":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}},{"a":{"$undefined":true},"😀":{"$undefined":true},"nav":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"2":{"$undefined":true},"b":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}}},{"2":{"$undefined":true},"a.b":{"$undefined":true},"b":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"ünï":{"$undefined":true},"😀":{"images":null,"persistedAttachments":null}},{"home":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"home":{"$undefined":true}},{"nav":{"$undefined":true},"b":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"a.b":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null},"b":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}}},{"ünï":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"10":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}},"😀":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}},{"title":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"nav":{"$undefined":true}},{"b":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"home":{"$undefined":true}},{"home":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}},"title":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"b":{"images":null,"persistedAttachments":null},"😀":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"nav":{"$undefined":true},"😀":{"$undefined":true}},{"2":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null},"ünï":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"10":{"$undefined":true},"a":{"$undefined":true},"home":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}},{"😀":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"b":{"$undefined":true},"a":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}},"title":{"$undefined":true}},{"10":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":["x",{"2":{"$undefined":true},"10":{"$undefined":true},"😀":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"b":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}},"nav":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"a":{"$undefined":true}},{}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"2":{"$undefined":true},"a.b":{"$undefined":true},"title":{"images":null,"persistedAttachments":null}},{}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"home":{"$undefined":true}},null],"error":"Cannot convert undefined or null to object"}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"10":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}},{"10":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null},"a":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}},"ünï":{"images":null,"persistedAttachments":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"2":{"$undefined":true},"10":{"$undefined":true},"home":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}},{"10":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"😀":{"$undefined":true},"a.b":{"$undefined":true}},{"2":{"images":null,"persistedAttachments":null},"ünï":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"home":{"$undefined":true},"b":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}}},true],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"home":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}},"title":{"$undefined":true},"😀":{"$undefined":true}},{"2":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"a.b":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}},"a":{"$undefined":true},"home":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}},{}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"b":{"images":null,"persistedAttachments":null}},{"a":{"$undefined":true},"a.b":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[null,{"nav":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}},"a":{"$undefined":true}}],"error":"Cannot convert undefined or null to object"}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"a":{"$undefined":true},"nav":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"nav":{"$undefined":true},"title":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"home":{"$undefined":true},"😀":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null},"ünï":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}},0],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"2":{"$undefined":true},"title":{"$undefined":true},"ünï":{"$undefined":true}},{"2":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null},"nav":{"$undefined":true},"ünï":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"a":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}},{"2":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}},"a.b":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"10":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}},"a":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"2":{"$undefined":true}},{"😀":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null},"a":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}},"a.b":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[0,{"nav":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}},"😀":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"😀":{"$undefined":true},"home":{"$undefined":true}},{"😀":{"$undefined":true},"a.b":{"images":null,"persistedAttachments":null},"b":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"2":{"images":null,"persistedAttachments":null},"ünï":{"$undefined":true}},{"a.b":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"2":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null},"title":{"$undefined":true},"ünï":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"a.b":{"$undefined":true}},{"2":{"images":null,"persistedAttachments":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"ünï":{"$undefined":true},"a.b":{"$undefined":true}},{}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"2":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}},{"b":{"images":null,"persistedAttachments":null},"home":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"a.b":{"$undefined":true},"nav":{"$undefined":true}},{"nav":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"ünï":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}},"home":{"images":null,"persistedAttachments":null}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{},{"a.b":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null},"b":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"home":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}},{"nav":{"$undefined":true},"a.b":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[true,{"😀":{"$undefined":true}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"home":{"$undefined":true},"😀":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}},0],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"nav":{"$undefined":true}},{"a.b":{"$undefined":true},"😀":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"2":{"$undefined":true},"nav":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}},"home":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}},{"a":{"images":null,"persistedAttachments":null},"😀":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"nav":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}},"a":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}},"ünï":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}},{}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"10":{"images":null,"persistedAttachments":null},"nav":{"$undefined":true},"title":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":null}},{}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"a.b":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}},"a":{"$undefined":true}},{"title":{"$undefined":true},"a":{"$undefined":true},"ünï":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}}],"ok":true}
+{"fn":"didAppSnapHydrationInputsChange","args":[{"😀":{"images":null,"persistedAttachments":null},"b":{"images":null,"persistedAttachments":null},"ünï":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"$undefined":true}}},{"10":{"$undefined":true},"ünï":{"images":null,"persistedAttachments":null},"a.b":{"images":null,"persistedAttachments":null,"promptHistorySavedDraft":{"images":null,"persistedAttachments":null}}}],"ok":true}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"key_name-1"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":["x","ΣΊΣΥΦΟΣ"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":"b"},"straße"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{},"ΣΊΣΥΦΟΣé"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[0,":"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{},"ns:key.path"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"abc"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"trailing.İstanbul"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{},"{name} has {count} items"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[true,"日本語のテキスト"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[["a",1],""],"ok":false}
+{"fn":"hasPersistedAppSnapCapture","args":[{},"src/a/b.ts"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[["a",1],"src/a/b.ts"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":[true,"  padded  "],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[true,"﻿bom"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[null,"日本語のテキスト"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"日本語のテキスト"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"a"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{},"Hello World"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":"b"},"{name} has {count} items"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[[],"hellotrailing."],"ok":false}
+{"fn":"hasPersistedAppSnapCapture","args":[0,"﻿boma..b"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{},"HELLO"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[0,"a😀b😀c"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":"b"},":"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[true,"{name} has {count} items"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[[],"straße{name} has {count} items"],"ok":false}
+{"fn":"hasPersistedAppSnapCapture","args":[null,":"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":"b"},":a"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[[],""],"ok":false}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":"b"},"a..bkey_name-1"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{},"İstanbul"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[["a",1],"abctab\tseparated"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":"b"},"emoji 👍🏽 mix"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":"b"},"a:b:c"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[null,"a.b.c./x/**/*.json"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[["a",1],"tab\tseparateda:b:c"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":["x","Hello Worldabc"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":"b"},"é"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":["x","é"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":"b"},"日本語のテキスト"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"a..b:"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[0,"ns:key.pathab"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[null,"./x/**/*.json"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"a😀b😀c"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[["a",1],"a..b"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":[null,"HELLO"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[true,""],"ok":false}
+{"fn":"hasPersistedAppSnapCapture","args":[["a",1],"ΣΊΣΥΦΟΣ"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":[[],"hello"],"ok":false}
+{"fn":"hasPersistedAppSnapCapture","args":[true,"a:b:c"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[null,"ΣΊΣΥΦΟΣ"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[["a",1],"line1\nline2"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":"b"},"key_name-1é"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":["x","a"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":[true,".leading"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[["a",1],"éns:key.path"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":"b"},""],"ok":false}
+{"fn":"hasPersistedAppSnapCapture","args":[null,"Hello World"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[["a",1],"a:b:c"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":[null,".leading"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":"b"},"./x/**/*.jsontrailing."],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[null,"ns:key.path"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"hello world"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"./x/**/*.json"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"line1\nline2"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":"b"},"{name} has {count} items:"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"straße日本語のテキスト"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[null,"hello"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":"b"},"src/a/b.ts"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{},"absrc/a/b.ts"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[[],"﻿bomns:key.path"],"ok":false}
+{"fn":"hasPersistedAppSnapCapture","args":["x","HELLO"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":[["a",1],"a😀b😀c"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":[0,"ab"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":["x","src/a/b.ts"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":[["a",1],"é:"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":[0,"İstanbul"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":["x",".leading"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":["x","Hello World"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":[["a",1],"line1\nline2Hello World"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":[[],"tab\tseparated"],"ok":false}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"trailing."],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"  padded  "],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":"b"},"tab\tseparated"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[null,"😀"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[0,"﻿boma:b:c"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{},""],"ok":false}
+{"fn":"hasPersistedAppSnapCapture","args":[null,"ab"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[[],"日本語のテキスト"],"ok":false}
+{"fn":"hasPersistedAppSnapCapture","args":[[],"Hello Worldsrc/a/b.ts"],"ok":false}
+{"fn":"hasPersistedAppSnapCapture","args":[{},"a..b"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[null,"Hello World日本語のテキスト"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[[],"Hello World"],"ok":false}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":"b"},"key_name-1"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[true,"HELLO{name} has {count} items"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{},"﻿bom"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":"b"},"İstanbul"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[true,"İstanbul"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[null,"trailing."],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[true,"hello world"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[[],"src/a/b.ts"],"ok":false}
+{"fn":"hasPersistedAppSnapCapture","args":[[],"hello world"],"ok":false}
+{"fn":"hasPersistedAppSnapCapture","args":[["a",1],"./x/**/*.json"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":[true,"ΣΊΣΥΦΟΣé"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":"b"},"ünïcödé"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[[],"a"],"ok":false}
+{"fn":"hasPersistedAppSnapCapture","args":["x","a😀b😀c"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":[{},"line1\nline2"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"aa.b.c"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{},"ns:key.path.leading"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":"b"},"ns:key.path"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{},"abc"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[true,"ns:key.path"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},".leading"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"  padded  é"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[null,"﻿bom"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[true,"hello world./x/**/*.json"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[true,"line1\nline2abc"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[[],"﻿bom"],"ok":false}
+{"fn":"hasPersistedAppSnapCapture","args":[[],"é"],"ok":false}
+{"fn":"hasPersistedAppSnapCapture","args":[[],"{name} has {count} items"],"ok":false}
+{"fn":"hasPersistedAppSnapCapture","args":[null,"key_name-1"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[null,"ns:key.path😀"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"HELLO"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{},"a..bemoji 👍🏽 mix"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":["x",""],"ok":false}
+{"fn":"hasPersistedAppSnapCapture","args":[[],"key_name-1"],"ok":false}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"﻿bom"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"./x/**/*.jsonline1\nline2"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[0,"tab\tseparated"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[true,"line1\nline2"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[0,"HELLOé"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[[],"İstanbul"],"ok":false}
+{"fn":"hasPersistedAppSnapCapture","args":[{},"trailing."],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[0,".leadinga.b.c"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[["a",1],"é"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":[0,"abünïcödé"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[["a",1],"﻿bom"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":[true,"HELLOemoji 👍🏽 mix"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[0,"a😀b😀cab"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"ab"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[0,"{name} has {count} items"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":["x","a..b"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":[0,"ΣΊΣΥΦΟΣ"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[[],"ab"],"ok":false}
+{"fn":"hasPersistedAppSnapCapture","args":[0,"a.b.cabc"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{},"abca.b.c"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[null,"abc"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{},".leading"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[null,"ünïcödé:"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[null,"😀ns:key.path"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[null,"ünïcödé"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[null,"a"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":["x","  padded  "],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":[0,"hello worldemoji 👍🏽 mix"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":"b"},"a..b"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":["x",".leadingemoji 👍🏽 mix"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"emoji 👍🏽 mix"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"emoji 👍🏽 mixa"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[["a",1],"a"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":[null,"aé"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[null,"a😀b😀c"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[["a",1],"😀"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":[0,"Hello World"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[[],":"],"ok":false}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":"b"},"😀"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[0,"./x/**/*.json"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[[],"ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"hasPersistedAppSnapCapture","args":[{},"é"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":"b"},"a..b./x/**/*.json"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":"b"},".leading  padded  "],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{},"straße"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{},"  padded  "],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":["x","hello worldtab\tseparated"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":[[],"a..b"],"ok":false}
+{"fn":"hasPersistedAppSnapCapture","args":[{},"😀"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":["x","ns:key.pathHELLO"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":"b"},"a.b.cİstanbul"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[0,"key_name-1"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":["x","hello world"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":[0,"a.b.c"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[["a",1],"./x/**/*.jsona..b"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":["x",":"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"a.b.c"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":["x","x"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"İstanbul"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":["x","emoji 👍🏽 mix"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":[null,"a﻿bom"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[null,"emoji 👍🏽 mixhello world"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{},"trailing..leading"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":["x","./x/**/*.json"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":[[],"a😀b😀cns:key.path"],"ok":false}
+{"fn":"hasPersistedAppSnapCapture","args":[null,"a.b.csrc/a/b.ts"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":["x","ns:key.path"],"error":"Cannot read properties of undefined (reading 'some')"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"é"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{},"a:b:cline1\nline2"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[0,"tab\tseparateda.b.c"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":"b"},"hello world"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[null,"{name} has {count} items"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"héllo wörld"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"👍🏽 thumbs"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"日本語"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},""],"ok":false}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"straße"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"ılık ırmak"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"👨‍👩‍👧 family"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"a b"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"ΣΊΣΥΦΟΣ"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"a😀b"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"a²b x½ y①"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"aⅠb Ⅻ"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"a𐐀b 𝐀bc"],"error":"drafts is not iterable"}
+{"fn":"hasPersistedAppSnapCapture","args":[{"a":{"b":"c"}},"कि ٣٤"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[true,"Hello World"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[{},"  padded  "],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[0,"trailing."],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":["x","  padded  "],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":["x","trailing."],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":["x","tab\tseparated"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":"b"},"HELLO"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[["a",1],"ns:key.path"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[[],"Hello World"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":{"b":"c"}},"a.b.c"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[null,"a:b:c"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[["a",1],"straße"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[true,"😀"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":["x","a..b"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[["a",1],""],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[["a",1],"tab\tseparated"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[["a",1],"HELLOab"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[[],"key_name-1"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[{},"Hello World"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[true,"İstanbul"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":"b"},"abc"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":{"b":"c"}},"aé"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[[],"tab\tseparatedhello world"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[["a",1],"hello world"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":{"b":"c"}},""],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":"b"},"ünïcödé"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[[],"emoji 👍🏽 mixab"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[{},".leading"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[{},"日本語のテキストa:b:c"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[null,"hello world"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[["a",1],".leading"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[true,"trailing.  padded  "],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[null,"日本語のテキスト./x/**/*.json"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":["x","a😀b😀c./x/**/*.json"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[null,"hello"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[0,"a:b:c"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":"b"},"İstanbul"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[null,"﻿bom"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":"b"},"a"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[[],"hello world"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[{},"emoji 👍🏽 mix"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":"b"},"emoji 👍🏽 mix"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[[],"ΣΊΣΥΦΟΣ  padded  "],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[[],"a:b:c"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[{},"a:b:c"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":["x","X"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[[],"a.b.c"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[0,"İstanbul"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":["x","emoji 👍🏽 mix"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[null,"a"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[{},"abc"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[[],"src/a/b.ts"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[{},"日本語のテキスト"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[0,"emoji 👍🏽 mix"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[0,"src/a/b.ts"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":["x",".leadingİstanbul"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[{},"İstanbulabc"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[["a",1],"  padded  "],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[null,"﻿boma"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":"b"},"a:b:c"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[true,".leadingsrc/a/b.ts"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":"b"},"ΣΊΣΥΦΟΣ"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":["x","Hello World"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":"b"},"line1\nline2"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":"b"},"trailing."],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[[],"tab\tseparated"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[{},"line1\nline2"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[true,"abcİstanbul"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[0,"﻿bom{name} has {count} items"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[["a",1],"./x/**/*.json"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":["x","hello"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[0,"İstanbula😀b😀c"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[null,"İstanbul"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[[],"hello"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":["x","ab"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[[],"Hello World:"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[{},"﻿bom"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[true,"a:b:c"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[[],"tab\tseparatedHELLO"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[null,".leading"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[["a",1],"emoji 👍🏽 mix{name} has {count} items"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":"b"},""],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[true,"日本語のテキスト"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":{"b":"c"}},"hello"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[[],""],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[{},"key_name-1hello"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[0,"日本語のテキスト"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":["x","x"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":{"b":"c"}},"a.leading"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":{"b":"c"}},"a😀b😀c"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":"b"},":"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[0,"ab"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":["x","abc"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[true,"emoji 👍🏽 mix"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[{},"a😀b😀c"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[{},"ünïcödé"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[{},"{name} has {count} items"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[null,""],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":["x","a:b:c"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[["a",1],"ΣΊΣΥΦΟΣ"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[[],".leading"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[["a",1],"a"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[0,"HELLO"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[true,"straße"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":["x","İstanbul"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":"b"},"日本語のテキスト"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":"b"},"  padded  "],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[null,"line1\nline2"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[true,"tab\tseparated"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[{},"a"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":{"b":"c"}},"é"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[[],"İstanbul.leading"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":["x","ns:key.path"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[0,"helloline1\nline2"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[0,"é"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":["x","日本語のテキスト"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[["a",1],"{name} has {count} items"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[["a",1],"HELLO"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[0,"key_name-1"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[[],"😀a"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[[],"﻿bom"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[null,"src/a/b.ts"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[null,"straße"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":"b"},"ab"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[0,""],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":["́","é"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[0,"./x/**/*.jsonsrc/a/b.ts"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[null,"  padded  .leading"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":{"b":"c"}},"straßeHELLO"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[0,":"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[0,"tab\tseparated"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[true,"trailing."],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":"b"},"straße"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[null,"abc"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[[],"ab"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":{"b":"c"}},"a..b"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[null,"a.b.c"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[["a",1],"﻿bom"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[0,"hello world"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":["x","a"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":{"b":"c"}},"key_name-1"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":["ix","emoji 👍🏽 mix"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[[],"😀"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[true,"Hello Worldtab\tseparated"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[[],"{name} has {count} itemsabc"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[null,"ünïcödé"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[null,"tab\tseparated"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[{},"./x/**/*.json"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":{"b":"c"}},"  padded  "],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":["x","src/a/b.ts"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":["x",""],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[null,"trailing."],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[true,"éhello world"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[["a",1],"hello"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[0,".leading"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[null,"key_name-1"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":"b"},"a😀b😀c"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[{},"é"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[{},"ΣΊΣΥΦΟΣ"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[[],"HELLO"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[["a",1],"a..b"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[0,"ns:key.path"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[0,"ünïcödé"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":{"b":"c"}},"﻿bom"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":{"b":"c"}},"a:b:c"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[0,"./x/**/*.jsonHello World"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[["a",1],"a😀b😀c"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":"b"},"é"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[0,"﻿bom"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[true,"  padded  hello"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[null,"Hello World"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[true,"日本語のテキスト:"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":{"b":"c"}},"key_name-1HELLO"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":"b"},"a.leading"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[0,"ΣΊΣΥΦΟΣa:b:c"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[true,"HELLO"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[null,"İstanbulline1\nline2"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":{"b":"c"}},"tab\tseparated"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[null,"😀"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[[],"a.b.ckey_name-1"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[0,"emoji 👍🏽 mixhello"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[0,".leading日本語のテキスト"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[["a",1],"😀"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":{"b":"c"}},"hello world"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[{},"a.b.c"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[["a",1],"ΣΊΣΥΦΟΣtab\tseparated"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[null,"ab"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[[],"日本語のテキスト"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":{"b":"c"}},"😀"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[[],"Hello World😀"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[null,"😀日本語のテキスト"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[[],"a"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[null,"日本語のテキストns:key.path"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[[],"İstanbulHello World"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[["a",1],"emoji 👍🏽 mixemoji 👍🏽 mix"],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[{"a":{"b":"c"}},"straße"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[{},"éa..b"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[true,"{name} has {count} items"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[null,"é"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[null,"İstanbulstraße"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[true,"héllo wörld"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[true,"👍🏽 thumbs"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[true,"日本語"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[true,""],"ok":false}
+{"fn":"hasHydratedAppSnapCapture","args":[true,"é"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[true,"ılık ırmak"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[true,"👨‍👩‍👧 family"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[true,"a b"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[true,"ΣΊΣΥΦΟΣ"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[true,"a😀b"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[true,"﻿bom"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[true,"a²b x½ y①"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[true,"aⅠb Ⅻ"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[true,"a𐐀b 𝐀bc"],"error":"drafts is not iterable"}
+{"fn":"hasHydratedAppSnapCapture","args":[true,"कि ٣٤"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],"hello"],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[null,"HELLO"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[0,"a😀b😀c"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[null,"HELLO{name} has {count} items"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],"src/a/b.ts"],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":{"b":"c"}},"a.b.c"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":["x","abc"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":["x","ns:key.path"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[0,"abc"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":["x","straße"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":["x",":"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{},"abc"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[null,"tab\tseparatedns:key.path"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],"İstanbul"],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{},"ns:key.path"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[["a",1],":"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[true,"line1\nline2İstanbul"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":{"b":"c"}},"a😀b😀c"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[0,""],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":"b"},"﻿bomhello"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],"a.b.c"],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":{"b":"c"}},"tab\tseparated"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":{"b":"c"}},".leading"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[0,"İstanbul"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{},"ab"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":["..b","a..b"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[null,"hello world"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":{"b":"c"}},"  padded  "],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":"b"},"😀"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[["a",1],""],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[null,"日本語のテキストa..b"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":{"b":"c"}},"{name} has {count} items"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":["😀","😀"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":{"b":"c"}},"./x/**/*.json"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],":trailing."],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[0,"straßestraße"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[0,"emoji 👍🏽 mixΣΊΣΥΦΟΣ"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[["a",1],"ab"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":{"b":"c"}},"src/a/b.ts"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":"b"},"ΣΊΣΥΦΟΣ"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[["a",1],"  padded  "],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[0,"src/a/b.ts"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":{"b":"c"}},"Hello Worldsrc/a/b.ts"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[0,"hello"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[true,""],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{},"a😀b😀c"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{},"a..b"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[null,"./x/**/*.jsona..b"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[["a",1],"HELLOtrailing."],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":["A","a"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],"ab"],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":["x","ünïcödé"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[null,":"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{},"key_name-1"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[true,"Hello Worldabc"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[null,"ns:key.pathsrc/a/b.ts"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[true,"HELLO"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[["a",1],"😀"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[0,"﻿bom"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":"b"},"a.b.c"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[["a",1],"日本語のテキスト"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":"b"},"line1\nline2"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":"b"},"日本語のテキスト"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[0,"ünïcödé{name} has {count} items"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":{"b":"c"}},"Hello World"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[["a",1],"a😀b😀c"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[null,"ΣΊΣΥΦΟΣa:b:c"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],"trailing."],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{},"straße"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[0,"HELLO"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[null,"./x/**/*.jsonns:key.path"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[true,"😀key_name-1"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],"./x/**/*.json"],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[["a",1],"ns:key.path"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[true,"a.b.c"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[true,"trailing.trailing."],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":"b"},"trailing.a..b"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":"b"},"a:b:c"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":["x","key_name-1"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[true,"{name} has {count} items"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":["x","./x/**/*.json"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[null,"./x/**/*.json"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[true,"﻿boma..b"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":"b"},"ns:key.path"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":["x","a.b.c"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{},"﻿bom"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":"b"},"é"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[null,"tab\tseparated日本語のテキスト"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],"HELLOhello world"],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[0,"ünïcödéhello"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[0,"./x/**/*.json"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[null,"trailing.a"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[0,"line1\nline2"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":["x","a"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":["x","  padded  "],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":"b"},"trailing."],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[null,"a:b:c"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],"hello worldHELLO"],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":["x","trailing."],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":{"b":"c"}},"﻿bom"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{},"ns:key.pathkey_name-1"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{},"a"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{},"  padded  a"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[0,"ünïcödé"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":"b"},"a"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":{"b":"c"}},":"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[0,"a.b.c"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],"tab\tseparatedline1\nline2"],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":{"b":"c"}},"😀"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":["x","ab﻿bom"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{},"Hello Worldé"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":"b"},"tab\tseparated"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":{"b":"c"}},"line1\nline2line1\nline2"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{},"a:b:c"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[["a",1],"trailing."],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":{"b":"c"}},"ns:key.pathstraße"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":["ΣΥΦΟΣ","ΣΊΣΥΦΟΣ日本語のテキスト"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[true,"ünïcödé"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[0,"straße"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":["x","é"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[0,"key_name-1"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[null,"a"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":{"b":"c"}},"./x/**/*.jsona..b"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[0,".leading"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[null,""],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[0,"key_name-1emoji 👍🏽 mix"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[["a",1],"İstanbul"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":{"b":"c"}},"emoji 👍🏽 mix"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":{"b":"c"}},"a:b:c"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[0,"😀"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[["a",1],"a.b.c"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{},"日本語のテキスト"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":"b"},"﻿bom"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[0,"a:b:c"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[["a",1],"straße"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":["x","X"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[0,"ΣΊΣΥΦΟΣemoji 👍🏽 mix"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":["x","HELLO"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{},"İstanbul"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":["x","trailing.abc"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{},"src/a/b.ts﻿bom"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":"b"},"straße"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[true,"hello"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":"b"},"key_name-1"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[["a",1],"hello world"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],"日本語のテキスト  padded  "],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],"aline1\nline2"],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":"b"},"./x/**/*.json"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],"a..bHello World"],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[null,"ΣΊΣΥΦΟΣ"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[0,"hello world"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[true,"trailing."],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":"b"},"{name} has {count} items"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[true,"straße"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[null,"İstanbul"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[null,"ns:key.path"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{},"src/a/b.ts"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":["x","hello world"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],"{name} has {count} items"],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":{"b":"c"}},"ns:key.path"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":["x",".leading"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":"b"},"hello"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[0,"tab\tseparated"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],"  padded  "],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[["a",1],"tab\tseparated"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],"tab\tseparateda😀b😀c"],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[["a",1],"ΣΊΣΥΦΟΣ"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],"  padded  src/a/b.ts"],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":["x","x"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":{"b":"c"}},"straße"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],"./x/**/*.jsonabc"],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[null,"日本語のテキストHello World"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],"a.b.c﻿bom"],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":"b"},"Hello World"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],"tab\tseparated"],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[true,"a"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[["a",1],"ünïcödé"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[true,"emoji 👍🏽 mixa.b.c"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{},"Hello World"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{},"ΣΊΣΥΦΟΣ"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],":"],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":{"b":"c"}},"HELLO"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[0,"ns:key.pathemoji 👍🏽 mix"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[0,"emoji 👍🏽 mix"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[null,"  padded  line1\nline2"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[0,"abc😀"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":"b"},"trailing../x/**/*.json"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[["a",1],"ns:key.pathİstanbul"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[true,"a😀b😀c"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[["a",1],"straße.leading"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{},"HELLO"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[0,"  padded  "],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":{"b":"c"}},"İstanbulünïcödé"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":{"b":"c"}},"tab\tseparatedHELLO"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[["a",1],"emoji 👍🏽 mix"],"error":"draft.persistedAttachments is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[0,":"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{},".leading"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{"a":"b"},"a😀b😀c"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[0,"日本語のテキスト"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[{},"a.b.cabc"],"error":"drafts is not iterable"}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],"héllo wörld"],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],"👍🏽 thumbs"],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],"日本語"],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],""],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],"é"],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],"straße"],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],"ılık ırmak"],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],"👨‍👩‍👧 family"],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],"a b"],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],"ΣΊΣΥΦΟΣ"],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],"a😀b"],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],"﻿bom"],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],"a²b x½ y①"],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],"aⅠb Ⅻ"],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],"a𐐀b 𝐀bc"],"ok":[]}
+{"fn":"persistedAppSnapCaptureBlobKeys","args":[[],"कि ٣٤"],"ok":[]}

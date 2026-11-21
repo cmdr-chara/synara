@@ -1,0 +1,121 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/appSnap.logic.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "appsnap-rs",
+  "exports": [
+    {
+      "name": "didAppSnapHydrationInputsChange",
+      "file": "apps/web/src/appSnap.logic.ts",
+      "line": 76,
+      "params": [
+        {
+          "name": "current",
+          "ts_type": "Readonly<Record<string, AppSnapHydrationDraft | undefined>>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "previous",
+          "ts_type": "Readonly<Record<string, AppSnapHydrationDraft | undefined>>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "hasPersistedAppSnapCapture",
+      "file": "apps/web/src/appSnap.logic.ts",
+      "line": 117,
+      "params": [
+        {
+          "name": "drafts",
+          "ts_type": "Iterable<AppSnapCaptureDraft | undefined>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "captureId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "hasHydratedAppSnapCapture",
+      "file": "apps/web/src/appSnap.logic.ts",
+      "line": 137,
+      "params": [
+        {
+          "name": "drafts",
+          "ts_type": "Iterable<AppSnapCaptureDraft | undefined>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "captureId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "persistedAppSnapCaptureBlobKeys",
+      "file": "apps/web/src/appSnap.logic.ts",
+      "line": 155,
+      "params": [
+        {
+          "name": "drafts",
+          "ts_type": "Iterable<AppSnapCaptureDraft | undefined>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "captureId",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "createLatestAppSnapRequestGuard",
+      "file": "apps/web/src/appSnap.logic.ts",
+      "line": 30,
+      "reason": "uses `LatestAppSnapRequestGuard`, which has function members"
+    },
+    {
+      "name": "resolveAppSnapTarget",
+      "file": "apps/web/src/appSnap.logic.ts",
+      "line": 182,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

@@ -34,6 +34,50 @@ pub fn synara_desktop_flavor() -> &'static str {
     })
 }
 
+/// `application/x-www-form-urlencoded` encoding (WHATWG `URLSearchParams`):
+/// ASCII alphanumerics and `*-._` pass through, space becomes `+`,
+/// everything else becomes `%XX` on UTF-8 bytes.
+pub fn form_url_encode(s: &str) -> String {
+    let mut out = String::with_capacity(s.len());
+    for b in s.as_bytes() {
+        match b {
+            b'A'..=b'Z' | b'a'..=b'z' | b'0'..=b'9' | b'*' | b'-' | b'.' | b'_' => {
+                out.push(*b as char)
+            }
+            b' ' => out.push('+'),
+            _ => out.push_str(&format!("%{b:02X}")),
+        }
+    }
+    out
+}
+
+/// JS truthiness on a wire `Value` (marker objects are unwrapped first):
+/// undefined/null/false/0/NaN/"" are falsy, everything else truthy.
+pub fn js_truthy(v: &Value) -> bool {
+    match v {
+        Value::Null => false,
+        Value::Bool(b) => *b,
+        Value::Number(n) => n.as_f64().is_some_and(|x| x != 0.0),
+        Value::String(s) => !s.is_empty(),
+        Value::Object(m) => {
+            if m.get("$undefined").is_some() {
+                return false;
+            }
+            if let Some(n) = m.get("$num").and_then(Value::as_str) {
+                return match n {
+                    "NaN" | "-0" => false,
+                    _ => n.parse::<f64>().map(|x| x != 0.0).unwrap_or(true),
+                };
+            }
+            if let Some(units) = m.get("$utf16").and_then(Value::as_array) {
+                return !units.is_empty();
+            }
+            true
+        }
+        Value::Array(_) => true,
+    }
+}
+
 /// JS `String(v)` / template-literal interpolation of a JSON value:
 /// `undefined`→`"undefined"`, `null`→`"null"`, arrays join by `,`,
 /// plain objects become `"[object Object]"`, numbers use `number_to_string`.
@@ -67,8 +111,10 @@ pub fn js_to_string(v: &Value) -> String {
                     _ => n.parse().map(|x: f64| number_to_string(x)).unwrap_or_default(),
                 };
             }
-            if m.get("$utf16").is_some() {
-                return String::new();
+            if let Some(units) = m.get("$utf16").and_then(Value::as_array) {
+                let units: Vec<u16> =
+                    units.iter().filter_map(|u| u.as_u64().map(|u| u as u16)).collect();
+                return String::from_utf16_lossy(&units);
             }
             "[object Object]".to_string()
         }

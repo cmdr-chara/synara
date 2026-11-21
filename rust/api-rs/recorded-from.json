@@ -1,0 +1,17 @@
+{
+  "unit": "apps/analytics/src/api.ts",
+  "files": 1,
+  "fingerprint": "c9601da3d10d44de",
+  "coverage": {
+    "lines": 329,
+    "reached": 307,
+    "files": [
+      {
+        "file": "apps/analytics/src/api.ts",
+        "lines": 329,
+        "reached": 307,
+        "missed": "50-55, 57-67, 328-332"
+      }
+    ]
+  }
+}

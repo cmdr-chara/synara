@@ -1,0 +1,97 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/analytics/src/api.ts",
+  "language": "ts",
+  "kind": "wasm",
+  "crate_name": "api-rs",
+  "exports": [
+    {
+      "name": "pickFilters",
+      "file": "apps/analytics/src/api.ts",
+      "line": 25,
+      "params": [
+        {
+          "name": "f",
+          "ts_type": "Filters",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "fields",
+          "ts_type": "readonly (keyof Filters)[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Filters",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "filtersQuery",
+      "file": "apps/analytics/src/api.ts",
+      "line": 33,
+      "params": [
+        {
+          "name": "f",
+          "ts_type": "Filters",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "loginErrorMessage",
+      "file": "apps/analytics/src/api.ts",
+      "line": 44,
+      "params": [
+        {
+          "name": "res",
+          "ts_type": "Response | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "productFiltersQuery",
+      "file": "apps/analytics/src/api.ts",
+      "line": 318,
+      "params": [
+        {
+          "name": "f",
+          "ts_type": "ProductFilters",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "AuthError",
+      "file": "apps/analytics/src/api.ts",
+      "line": 69,
+      "reason": "class: extends another class"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{"fn":"normalizeVoidSpace","args":[null],"ok":{"name":"Void","icon":"black-hole"}}
+{"fn":"normalizeVoidSpace","args":[{}],"ok":{"name":"Void","icon":"black-hole"}}
+{"fn":"normalizeVoidSpace","args":[[]],"ok":{"name":"Void","icon":"black-hole"}}
+{"fn":"normalizeVoidSpace","args":[{"a":"b"}],"ok":{"name":"Void","icon":"black-hole"}}
+{"fn":"normalizeVoidSpace","args":[true],"ok":{"name":"Void","icon":"black-hole"}}
+{"fn":"normalizeVoidSpace","args":[["a",1]],"ok":{"name":"Void","icon":"black-hole"}}
+{"fn":"normalizeVoidSpace","args":[{"a":{"b":"c"}}],"ok":{"name":"Void","icon":"black-hole"}}
+{"fn":"normalizeVoidSpace","args":[0],"ok":{"name":"Void","icon":"black-hole"}}
+{"fn":"normalizeVoidSpace","args":["x"],"ok":{"name":"Void","icon":"black-hole"}}
+{"fn":"normalizeVoidSpace","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":{"name":"Void","icon":"black-hole"}}
+{"fn":"normalizeVoidSpace","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":{"name":"Void","icon":"black-hole"}}
+{"fn":"normalizeVoidSpace","args":[[3,1,2]],"ok":{"name":"Void","icon":"black-hole"}}
+{"fn":"useVoidSpace","args":[],"error":"null is not an object (evaluating 'resolveDispatcher().useCallback')"}

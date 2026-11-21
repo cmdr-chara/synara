@@ -1,0 +1,247 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/analytics/worker.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "worker-rs",
+  "exports": [
+    {
+      "name": "normalizeProductEvent",
+      "file": "apps/analytics/worker.ts",
+      "line": 283,
+      "params": [
+        {
+          "name": "raw",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "now",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "NormalizedProductEvent | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "normalizeEvent",
+      "file": "apps/analytics/worker.ts",
+      "line": 550,
+      "params": [
+        {
+          "name": "raw",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "now",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "NormalizedEvent | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "signSession",
+      "file": "apps/analytics/worker.ts",
+      "line": 798,
+      "params": [
+        {
+          "name": "secret",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "expiresAtSeconds",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<string>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "verifySessionCookie",
+      "file": "apps/analytics/worker.ts",
+      "line": 818,
+      "params": [
+        {
+          "name": "cookieHeader",
+          "ts_type": "string | null",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "secret",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "nowSeconds",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<boolean>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseApiFilters",
+      "file": "apps/analytics/worker.ts",
+      "line": 1013,
+      "params": [
+        {
+          "name": "url",
+          "ts_type": "URL",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "now",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "ApiFilters",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "compareVersionsDesc",
+      "file": "apps/analytics/worker.ts",
+      "line": 1100,
+      "params": [
+        {
+          "name": "a",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "b",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "number",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "releaseHealth",
+      "file": "apps/analytics/worker.ts",
+      "line": 1197,
+      "params": [
+        {
+          "name": "crashFreePct",
+          "ts_type": "number | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "\"healthy\" | \"watch\" | \"unhealthy\" | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "rangeDays",
+      "file": "apps/analytics/worker.ts",
+      "line": 1271,
+      "params": [
+        {
+          "name": "since",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "now",
+          "ts_type": "number",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "purgeLegacyDiagnosticContent",
+      "file": "apps/analytics/worker.ts",
+      "line": 2444,
+      "params": [
+        {
+          "name": "env",
+          "ts_type": "Env",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<{ eventsScrubbed: number; statusRowsDeleted: number; complete: boolean }>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "purgeLegacyDiagnosticDumps",
+      "file": "apps/analytics/worker.ts",
+      "line": 2508,
+      "params": [
+        {
+          "name": "env",
+          "ts_type": "Env",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<{ objectsDeleted: number; rowsDeleted: number }>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "verifyAccessJwt",
+      "file": "apps/analytics/worker.ts",
+      "line": 904,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

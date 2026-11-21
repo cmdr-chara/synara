@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/subagents.ts",
+  "files": 1,
+  "fingerprint": "85c6bbe5d54376d8",
+  "coverage": {
+    "lines": 607,
+    "reached": 595,
+    "files": [
+      {
+        "file": "packages/shared/src/subagents.ts",
+        "lines": 607,
+        "reached": 595,
+        "missed": "197-198, 212-213, 375-376, 549, 551-555"
+      }
+    ]
+  }
+}

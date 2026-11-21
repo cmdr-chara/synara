@@ -1,0 +1,168 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/subagents.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "subagents-rs",
+  "exports": [
+    {
+      "name": "isWorkerTierSubagentRole",
+      "file": "packages/shared/src/subagents.ts",
+      "line": 51,
+      "params": [
+        {
+          "name": "role",
+          "ts_type": "string | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "decodeSubagentReceiverThreadIds",
+      "file": "packages/shared/src/subagents.ts",
+      "line": 147,
+      "params": [
+        {
+          "name": "item",
+          "ts_type": "Record<string, unknown> | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<string>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "decodeSubagentReceiverAgents",
+      "file": "packages/shared/src/subagents.ts",
+      "line": 178,
+      "params": [
+        {
+          "name": "item",
+          "ts_type": "Record<string, unknown>",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "fallbackThreadIds",
+          "ts_type": "ReadonlyArray<string>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<ParsedSubagentReceiverAgent>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "decodeSubagentAgentStates",
+      "file": "packages/shared/src/subagents.ts",
+      "line": 359,
+      "params": [
+        {
+          "name": "item",
+          "ts_type": "Record<string, unknown> | null | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Record<string, ParsedSubagentAgentState>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "collectSubagentProviderThreadIds",
+      "file": "packages/shared/src/subagents.ts",
+      "line": 400,
+      "params": [
+        {
+          "name": "item",
+          "ts_type": "Record<string, unknown>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<string>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "extractSubagentIdentityHints",
+      "file": "packages/shared/src/subagents.ts",
+      "line": 433,
+      "params": [
+        {
+          "name": "item",
+          "ts_type": "Record<string, unknown>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ReadonlyArray<ParsedSubagentIdentityHint>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildSubagentIdentityDirectory",
+      "file": "packages/shared/src/subagents.ts",
+      "line": 582,
+      "params": [
+        {
+          "name": "hints",
+          "ts_type": "ReadonlyArray<ParsedSubagentIdentityHint>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ParsedSubagentIdentityDirectory",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveSubagentIdentityFromDirectory",
+      "file": "packages/shared/src/subagents.ts",
+      "line": 636,
+      "params": [
+        {
+          "name": "directory",
+          "ts_type": "ParsedSubagentIdentityDirectory",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "input",
+          "ts_type": "{\n    providerThreadId?: string | null | undefined;\n    agentId?: string | null | undefined;\n  }",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ParsedSubagentIdentityHint | undefined",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

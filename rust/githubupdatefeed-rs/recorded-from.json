@@ -1,0 +1,17 @@
+{
+  "unit": "apps/desktop/src/githubUpdateFeed.ts",
+  "files": 1,
+  "fingerprint": "da3096c95393f4a8",
+  "coverage": {
+    "lines": 39,
+    "reached": 31,
+    "files": [
+      {
+        "file": "apps/desktop/src/githubUpdateFeed.ts",
+        "lines": 39,
+        "reached": 31,
+        "missed": "13-15, 27-28, 30-32"
+      }
+    ]
+  }
+}

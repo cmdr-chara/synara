@@ -1,0 +1,54 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/desktop/src/githubUpdateFeed.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "githubupdatefeed-rs",
+  "exports": [
+    {
+      "name": "resolveGitHubUpdateSource",
+      "file": "apps/desktop/src/githubUpdateFeed.ts",
+      "line": 17,
+      "params": [
+        {
+          "name": "rawConfig",
+          "ts_type": "Record<string, string> | null",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "({\n  readonly owner: string;\n  readonly repo: string;\n  readonly host: string;\n  readonly protocol: \"http\" | \"https\";\n}) | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildGitHubReleasesPageUrl",
+      "file": "apps/desktop/src/githubUpdateFeed.ts",
+      "line": 39,
+      "params": [
+        {
+          "name": "source",
+          "ts_type": "({\n  readonly owner: string;\n  readonly repo: string;\n  readonly host: string;\n  readonly protocol: \"http\" | \"https\";\n})",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "tag",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

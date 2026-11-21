@@ -1,0 +1,41 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/editorAppIcons.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "editorappicons-rs",
+  "exports": [
+    {
+      "name": "resolveCachedEditorIcon",
+      "file": "apps/server/src/editorAppIcons.ts",
+      "line": 726,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly editorId: string;\n  readonly cacheDir: string;\n  readonly platform?: NodeJS.Platform;\n  readonly env?: NodeJS.ProcessEnv;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<CachedEditorIcon | null>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "clearEditorIconInFlightCache",
+      "file": "apps/server/src/editorAppIcons.ts",
+      "line": 759,
+      "params": [],
+      "returns": "void",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,30 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "scripts/bun-lockfile.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "bun-lockfile-rs",
+  "exports": [
+    {
+      "name": "normalizeBunLockfile",
+      "file": "scripts/bun-lockfile.ts",
+      "line": 3,
+      "params": [
+        {
+          "name": "contents",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

@@ -1,0 +1,17 @@
+{
+  "unit": "scripts/bun-lockfile.ts",
+  "files": 1,
+  "fingerprint": "cbfff90f10ef25d0",
+  "coverage": {
+    "lines": 17,
+    "reached": 17,
+    "files": [
+      {
+        "file": "scripts/bun-lockfile.ts",
+        "lines": 17,
+        "reached": 17,
+        "missed": ""
+      }
+    ]
+  }
+}

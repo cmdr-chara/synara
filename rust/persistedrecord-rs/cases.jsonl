@@ -1,0 +1,12 @@
+{"fn":"isPlainObject","args":[0],"ok":false}
+{"fn":"isPlainObject","args":[{"a":{"b":"c"}}],"ok":true}
+{"fn":"isPlainObject","args":[true],"ok":false}
+{"fn":"isPlainObject","args":[{"a":"b"}],"ok":true}
+{"fn":"isPlainObject","args":[[]],"ok":false}
+{"fn":"isPlainObject","args":[{}],"ok":true}
+{"fn":"isPlainObject","args":[["a",1]],"ok":false}
+{"fn":"isPlainObject","args":["x"],"ok":false}
+{"fn":"isPlainObject","args":[null],"ok":false}
+{"fn":"isPlainObject","args":[{"2":4,"10":3,"zebra":1,"apple":2,"é":5,"Apple":6}],"ok":true}
+{"fn":"isPlainObject","args":[{"n":9007199254740992,"f":1e+21,"t":0.1,"neg":-7}],"ok":true}
+{"fn":"isPlainObject","args":[[3,1,2]],"ok":false}

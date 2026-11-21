@@ -1,0 +1,17 @@
+{
+  "unit": "apps/web/src/persistedRecord.ts",
+  "files": 1,
+  "fingerprint": "ec41c5bf38fca9ec",
+  "coverage": {
+    "lines": 34,
+    "reached": 16,
+    "files": [
+      {
+        "file": "apps/web/src/persistedRecord.ts",
+        "lines": 34,
+        "reached": 16,
+        "missed": "20-25, 27-38"
+      }
+    ]
+  }
+}

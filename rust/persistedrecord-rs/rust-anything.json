@@ -1,0 +1,37 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/persistedRecord.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "persistedrecord-rs",
+  "exports": [
+    {
+      "name": "isPlainObject",
+      "file": "apps/web/src/persistedRecord.ts",
+      "line": 6,
+      "params": [
+        {
+          "name": "value",
+          "ts_type": "unknown",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "value is Record<string, unknown>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "sanitizeStringKeyedRecord",
+      "file": "apps/web/src/persistedRecord.ts",
+      "line": 19,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

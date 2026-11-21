@@ -1,0 +1,200 @@
+{"fn":"installCloudflared","args":["a😀b😀c",["a",1],["a",1]],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["hello world",true,[],true],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["key_name-1",true,{"$undefined":true},{}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["a..b",{"a":"b"},".",[]],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["abckey_name-1",["a",1],{},[]],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["a..b",{},true,null],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["ns:key.path",{"$undefined":true},"x",[]],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["ab",{"a":{"b":"c"}},{"$undefined":true},{"a":{"b":"c"}}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["İstanbul","x",{"$undefined":true},{"a":{"b":"c"}}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["﻿bom",{},0,{"a":"b"}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["a.b.c",{"$undefined":true},0,[]],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["é",["a",1],[],true],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["hello world","x",{"a":{"b":"c"}},[]],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["trailing.",true,{"a":{"b":"c"}},"x"],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["😀Hello World",{"$undefined":true},{"$undefined":true},[]],"error":"signals[0] is not of type AbortSignal."}
+{"fn":"installCloudflared","args":["tab\tseparated",null,[],{"a":"b"}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["tab\tseparated",{"$undefined":true},{"a":"b"}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["emoji 👍🏽 mix","x","x",{"$undefined":true}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":[":",["a",1],{"a":"b"},{"a":{"b":"c"}}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["ab",{"a":"b"},null,0],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["﻿bom",null,0,"M"],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["  padded  İstanbul",{"$undefined":true},[],{"a":{"b":"c"}}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["tab\tseparated",{"$undefined":true},"x",{"a":{"b":"c"}}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["line1\nline2",null,[],{}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["ababc",0,{"$undefined":true},{"$undefined":true}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["a:b:c",true,{"$undefined":true},{"$undefined":true}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["{name} has {count} items",{},null,{"a":{"b":"c"}}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["😀",{"$undefined":true},{},{"a":"b"}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["é",{"a":{"b":"c"}},{"a":"b"},true],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["hello",[],null,{"a":"b"}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["tab\tseparated",0,[],"x"],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["abc",{"a":{"b":"c"}},{"a":"b"},0],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["ns:key.path",{"a":{"b":"c"}},true,true],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["x",{"a":{"b":"c"}},"x",true],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["key_name-1",{"$undefined":true},true,{"$undefined":true}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["ünïcödé","x",0,null],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["a😀b😀c",{"$undefined":true},{"$undefined":true},0],"error":"signal?.throwIfAborted is not a function"}
+{"fn":"installCloudflared","args":["abc",{"a":{"b":"c"}},null,{"$undefined":true}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["line1\nline2é",0,{"a":{"b":"c"}},null],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["éHello World",{},["a",1],{"a":{"b":"c"}}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["Hello World",true,{"$undefined":true},{}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["  padded  ",[],true,0],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["./x/**/*.json",{"a":{"b":"c"}},["a",1],true],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":[".leading",0,true,{}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["trailing.hello",true,{"$undefined":true},["a",1]],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":[":",{"$undefined":true},true],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["  padded  ",[],"x","x"],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["a😀b😀cHello World",null,{"$undefined":true},{"$undefined":true}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["  padded  ",0,["a",1],null],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["Hello World","x",{"$undefined":true},null],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["a😀b😀c",[],0,[]],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["./x/**/*.json",null,["a",1],0],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["😀",{"a":"b"},null,{"a":"b"}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["line1\nline2",[],[],{"$undefined":true}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["abc",null],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":[".leadingab",{"$undefined":true},"x",{"a":"b"}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["HELLOemoji 👍🏽 mix","x","x",{}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["emoji 👍🏽 mix",["a",1],["a",1]],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["./x/**/*.json",{"a":{"b":"c"}},0,true],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["./x/**/*.json",0,null,{"$undefined":true}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["abc","x","x",{"$undefined":true}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["trailing.",null,{"$undefined":true},"x"],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["hello world",{},{"$undefined":true},{"$undefined":true}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["﻿bom",{"$undefined":true},{"$undefined":true},0],"error":"signal?.throwIfAborted is not a function"}
+{"fn":"installCloudflared","args":["",{"$undefined":true},"x",{"a":"b"}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["line1\nline2",null,{"$undefined":true},{}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["a:b:c",null],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["x",{"a":"b"},"x",["a",1]],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["{name} has {count} items",{"a":"b"},true,true],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["ab",["a",1],true,0],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["😀",{"$undefined":true},"x",["a",1]],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["src/a/b.ts",0,[],{"a":"b"}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["x",["a",1],"x",null],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["  padded  ",{},[],"x"],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":[".leading",{},0,{"$undefined":true}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["line1\nline2tab\tseparated","x",{"a":"b"},{"$undefined":true}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["İstanbul",{"$undefined":true},{},"x"],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["{name} has {count} items",{"$undefined":true},{"a":"b"},[]],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["hello",true,true,{"a":{"b":"c"}}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["ünïcödéHello World",{},{"$undefined":true},{}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["X",{"$undefined":true},"x",{"a":{"b":"c"}}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["./x/**/*.json",true,{"a":"b"},{}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["src/a/b.ts",{"a":"b"},{"$undefined":true},true],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["😀",{"a":"b"},"x",0],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["",true,{},0],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["line1\nline2",null,"x",{"$undefined":true}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["",{"$undefined":true},{"$undefined":true},null],"error":"ENOENT: no such file or directory, mkdir ''"}
+{"fn":"installCloudflared","args":["emoji 👍🏽 mix:",null,{"a":{"b":"c"}},true],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["  padded  {name} has {count} items",[],0,["a",1]],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["😀",0,{"$undefined":true},{}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["key_name-1  padded  ",{},{"$undefined":true},{"$undefined":true}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["a:b:ctrailing.",{},[],"x"],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":[":",{"a":{"b":"c"}},{"a":"b"},{"a":"b"}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["Hello World",true,["a",1],{"$undefined":true}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["😀",{"$undefined":true},["a",1],true],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["İstanbul",{"$undefined":true},{"a":{"b":"c"}},null],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["Hello World",0],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["a:b:c",[],null],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["trailing.",[],{"$undefined":true},"x"],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["emoji 👍🏽 mix",["a",1],true,{"a":"b"}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["hello worldΣΊΣΥΦΟΣ",{"$undefined":true},["a",1],true],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["x",{"a":"b"},null,"x"],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["ünïcödé",true,[],{}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["ab",[],{},{"$undefined":true}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["a..b",{"$undefined":true},true,null],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["line1\nline2",{"a":{"b":"c"}},[],["a",1]],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["Hello Worldünïcödé",[],"x",[]],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["İstanbul",{"a":{"b":"c"}},0,{"a":{"b":"c"}}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":[".leading",["a",1],0],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["abc",["a",1],["a",1]],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["trailing.",[],0,[]],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["日本語のテキスト",{"a":"b"},{"a":{"b":"c"}},0],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["straßea..b",{"a":"b"},{},{}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["İstanbul",{"$undefined":true},{"$undefined":true},{"$undefined":true}],"ok":"İstanbul/cloudflared"}
+{"fn":"installCloudflared","args":["﻿bom",[],null,{"$undefined":true}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["helloline1\nline2",null,{"a":{"b":"c"}},null],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["  padded  ",true,{"a":"b"},0],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["src/a/b.ts",null,null,{"a":"b"}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["trailing.",{"a":{"b":"c"}},{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["{name} has {count} items",{"$undefined":true},"x",0],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["İstanbula.b.c",{"$undefined":true},{"$undefined":true},{}],"error":"signals[0] is not of type AbortSignal."}
+{"fn":"installCloudflared","args":["日本語のテキスト",{},[],{"$undefined":true}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["helloline1\nline2",{},{"a":{"b":"c"}},["a",1]],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["abc",0,{},["a",1]],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["日本語のテキスト",{"$undefined":true},[],true],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["",{"a":"b"},["a",1],["a",1]],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":[".leading",["a",1],{"a":"b"},0],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["Hello World",[],null,"x"],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["日本語のテキスト",{"a":{"b":"c"}},[],{"a":"b"}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["abc",{"$undefined":true},true,[]],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["emoji 👍🏽 mix",{"$undefined":true},null,{"$undefined":true}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["日本語のテキスト",{"$undefined":true},{"a":"b"},[]],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":[".leading",{"$undefined":true},{"$undefined":true},["a",1]],"error":"signals[0] is not of type AbortSignal."}
+{"fn":"installCloudflared","args":[".leading",{"$undefined":true},{},0],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["a..b",null,0,"."],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["a:b:cns:key.path","x","x",null],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["x",{"$undefined":true},["a",1],"x"],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["  padded  ",0,{"a":"b"},{"a":"b"}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["日本語のテキストa.b.c",{"$undefined":true},true,{"$undefined":true}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["straße",{"$undefined":true},true,null],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["😀",{"$undefined":true},{},{"a":{"b":"c"}}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["src/a/b.ts",{"a":{"b":"c"}},["a",1],["a",1]],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["﻿bomabc",true,{},{"a":"b"}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["a:b:c",0,{"$undefined":true},0],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["é",{"a":{"b":"c"}},[],{"a":"b"}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["straße",{"$undefined":true},[],0],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["日本語のテキスト",{"$undefined":true},{"a":"b"},null],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["İstanbul",{"a":{"b":"c"}},0,{"$undefined":true}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["a:b:c",0,{"a":"b"},{"a":{"b":"c"}}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["line1\nline2a:b:c",{"$undefined":true}],"ok":"line1\nline2a:b:c/cloudflared"}
+{"fn":"installCloudflared","args":["src/a/b.ts",{"a":"b"},{"a":"b"},{"a":"b"}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["trailing.",true,["a",1],["a",1]],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["src/a/b.ts",{"a":"b"},["a",1],null],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["straße",["a",1],{},["a",1]],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["line1\nline2",{"$undefined":true},["a",1],{}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["x",null,"x",true],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["abc","x",true,{}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["ab",{"$undefined":true},["a",1],[]],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["line1\nline2",null,0,{"a":"b"}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["ab",{"$undefined":true},{},{"$undefined":true}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["HELLO",{"$undefined":true},"x",["a",1]],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["key_name-1İstanbul","x",{"a":{"b":"c"}},{"$undefined":true}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["a..bline1\nline2","x",0,["a",1]],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["{name} has {count} items😀",["a",1],true,0],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["ΣΊΣΥΦΟΣ",{"$undefined":true},true,0],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["a:b:c",{"$undefined":true},["a",1],[]],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["src/a/b.tssrc/a/b.ts",0,0,{"a":{"b":"c"}}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["x","x",null],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["./x/**/*.jsona.b.c",[],{},true],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["./x/**/*.json","x",null,true],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["a",true,{"a":{"b":"c"}},null],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["hello",true,{"$undefined":true},{"$undefined":true}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["a😀b😀cHello World","x",[],true],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["İstanbul",["a",1],null,true],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["ünïcödé",true,[],"x"],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["abc",{"a":"b"},{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["line1\nline2",{"a":{"b":"c"}},{"$undefined":true},{"a":"b"}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["key_name-1","x",["a",1],"x"],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":[".leading",{},[],null],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":[".leading",true,true,true],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["  padded  ",["a",1],{"a":{"b":"c"}},true],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["src/a/b.ts",{"$undefined":true},"x",{"$undefined":true}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["é",true,null,["a",1]],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["  padded  ab",true,["a",1],["a",1]],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["a:b:c",{"$undefined":true},{"$undefined":true},"x"],"error":"signals[0] is not of type AbortSignal."}
+{"fn":"installCloudflared","args":["hello worldé",{"$undefined":true},{},[]],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["İstanbul",{},{"$undefined":true},"x"],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["日本語のテキスト","x",[],"語のテキ"],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["﻿bomtrailing.",[],{"$undefined":true},null],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["abcHELLO",true,0,["a",1]],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["a.b.c😀",{"$undefined":true},{"$undefined":true},{}],"error":"signals[0] is not of type AbortSignal."}
+{"fn":"installCloudflared","args":["{name} has {count} items",{"$undefined":true},"x",[]],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["😀abc",{"a":{"b":"c"}},["a",1],null],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["Hello World./x/**/*.json",null,{"$undefined":true},{"a":{"b":"c"}}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["😀",["a",1],0,{"a":"b"}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["a..b",0,0,{}],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["abc",null,{"a":{"b":"c"}},["a",1]],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["😀:","x",{"a":"b"},["a",1]],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":["a",{"$undefined":true},{"a":{"b":"c"}},true],"error":"Cloudflare remote is unsupported on this platform"}
+{"fn":"installCloudflared","args":[".leading",{"a":"b"},{},0],"error":"Cloudflare remote is unsupported on this platform"}

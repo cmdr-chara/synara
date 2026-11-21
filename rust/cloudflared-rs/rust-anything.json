@@ -1,0 +1,48 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/cloudflared.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "cloudflared-rs",
+  "exports": [
+    {
+      "name": "installCloudflared",
+      "file": "packages/shared/src/cloudflared.ts",
+      "line": 32,
+      "params": [
+        {
+          "name": "directory",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "platform",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "arch",
+          "ts_type": "unknown",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "signal",
+          "ts_type": "AbortSignal",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "Promise<string>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

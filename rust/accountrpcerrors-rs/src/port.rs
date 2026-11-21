@@ -9,5 +9,12 @@
 
 /// Port of `unwrapTryPromiseError` (`apps/server/src/accountRpcErrors.ts:16`).
 pub fn unwrap_try_promise_error(cause: serde_json::Value) -> Result<serde_json::Value, String> {
+    if let serde_json::Value::Object(o) = &cause
+        && o.get("_tag").and_then(|t| t.as_str()) == Some("UnknownError")
+        && let Some(inner) = o.get("cause")
+        && !crate::js::is_undefined(inner)
+    {
+        return Ok(inner.clone());
+    }
     Ok(cause)
 }

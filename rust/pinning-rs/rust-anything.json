@@ -1,0 +1,193 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/pinning.logic.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "pinning-rs",
+  "exports": [
+    {
+      "name": "normalizePinnedIds",
+      "file": "apps/web/src/pinning.logic.ts",
+      "line": 12,
+      "params": [
+        {
+          "name": "ids",
+          "ts_type": "readonly (string)[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "{ maxCount?: number }",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "(string)[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "pinId",
+      "file": "apps/web/src/pinning.logic.ts",
+      "line": 34,
+      "params": [
+        {
+          "name": "ids",
+          "ts_type": "readonly (string)[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "id",
+          "ts_type": "(string)",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "options",
+          "ts_type": "{ maxCount?: number }",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "PinLimitResult<(string)>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "unpinId",
+      "file": "apps/web/src/pinning.logic.ts",
+      "line": 52,
+      "params": [
+        {
+          "name": "ids",
+          "ts_type": "readonly (string)[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "id",
+          "ts_type": "(string)",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "PinLimitResult<(string)>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "prunePinnedIds",
+      "file": "apps/web/src/pinning.logic.ts",
+      "line": 62,
+      "params": [
+        {
+          "name": "ids",
+          "ts_type": "readonly (string)[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "allowedIds",
+          "ts_type": "readonly (string)[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(string)[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "derivePinnedIds",
+      "file": "apps/web/src/pinning.logic.ts",
+      "line": 71,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "{\n  readonly items: readonly ({ id: TId; isPinned?: boolean | undefined })[];\n  readonly persistedPinnedIds: readonly (string)[];\n  readonly optimisticPinnedStateById: ReadonlyMap<(string), boolean>;\n  readonly maxCount?: number;\n}",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "(string)[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "getPinnedItems",
+      "file": "apps/web/src/pinning.logic.ts",
+      "line": 109,
+      "params": [
+        {
+          "name": "items",
+          "ts_type": "readonly ({ id: TId })[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "pinnedIds",
+          "ts_type": "readonly (string)[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "({ id: TId })[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "orderPinnedItemsFirst",
+      "file": "apps/web/src/pinning.logic.ts",
+      "line": 129,
+      "params": [
+        {
+          "name": "items",
+          "ts_type": "readonly ({ id: TId })[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "pinnedIds",
+          "ts_type": "readonly (string)[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "({ id: TId })[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "isLatestPinMutation",
+      "file": "apps/web/src/pinning.logic.ts",
+      "line": 143,
+      "reason": "generic over `TId`: values of any shape, functions included"
+    },
+    {
+      "name": "reconcileOptimisticPinState",
+      "file": "apps/web/src/pinning.logic.ts",
+      "line": 153,
+      "reason": "generic over `TId`: values of any shape, functions included"
+    }
+  ]
+}

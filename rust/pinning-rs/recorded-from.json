@@ -1,0 +1,17 @@
+{
+  "unit": "apps/web/src/pinning.logic.ts",
+  "files": 1,
+  "fingerprint": "8d26ef1ddd2663de",
+  "coverage": {
+    "lines": 158,
+    "reached": 116,
+    "files": [
+      {
+        "file": "apps/web/src/pinning.logic.ts",
+        "lines": 158,
+        "reached": 116,
+        "missed": "83-88, 93-96, 102-103, 122-123, 144-149, 154-175"
+      }
+    ]
+  }
+}

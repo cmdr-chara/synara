@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/deviceHelperCache.ts",
+  "files": 1,
+  "fingerprint": "d70fb9e639b5b6b6",
+  "coverage": {
+    "lines": 110,
+    "reached": 90,
+    "files": [
+      {
+        "file": "packages/shared/src/deviceHelperCache.ts",
+        "lines": 110,
+        "reached": 90,
+        "missed": "99-108, 110-119"
+      }
+    ]
+  }
+}

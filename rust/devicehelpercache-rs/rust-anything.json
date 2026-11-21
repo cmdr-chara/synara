@@ -1,0 +1,61 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "packages/shared/src/deviceHelperCache.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "devicehelpercache-rs",
+  "exports": [
+    {
+      "name": "deviceHelperCacheKey",
+      "file": "packages/shared/src/deviceHelperCache.ts",
+      "line": 44,
+      "params": [
+        {
+          "name": "xcodebuildVersionOutput",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "sourceRevision",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "deviceHelperSourceRevision",
+      "file": "packages/shared/src/deviceHelperCache.ts",
+      "line": 69,
+      "params": [
+        {
+          "name": "files",
+          "ts_type": "readonly DeviceHelperSourceFile[]",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "readDeviceHelperSourceRevision",
+      "file": "packages/shared/src/deviceHelperCache.ts",
+      "line": 98,
+      "reason": "takes or returns a function"
+    }
+  ]
+}

@@ -1,0 +1,144 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/web/src/markdown-links.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "markdown-links-rs",
+  "exports": [
+    {
+      "name": "markdownFilePathHref",
+      "file": "apps/web/src/markdown-links.ts",
+      "line": 74,
+      "params": [
+        {
+          "name": "path",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "rewriteMarkdownFileUriHref",
+      "file": "apps/web/src/markdown-links.ts",
+      "line": 87,
+      "params": [
+        {
+          "name": "href",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "extractAbsoluteFilesystemPaths",
+      "file": "apps/web/src/markdown-links.ts",
+      "line": 188,
+      "params": [
+        {
+          "name": "text",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveUniqueAbsoluteSuffixTarget",
+      "file": "apps/web/src/markdown-links.ts",
+      "line": 226,
+      "params": [
+        {
+          "name": "reference",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "knownAbsolutePaths",
+          "ts_type": "ReadonlyArray<string>",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveChatFileChipTarget",
+      "file": "apps/web/src/markdown-links.ts",
+      "line": 257,
+      "params": [
+        {
+          "name": "reference",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "cwd",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "knownAbsolutePaths",
+          "ts_type": "ReadonlyArray<string>",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "resolveMarkdownFileLinkTarget",
+      "file": "apps/web/src/markdown-links.ts",
+      "line": 270,
+      "params": [
+        {
+          "name": "href",
+          "ts_type": "string | undefined",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "cwd",
+          "ts_type": "string",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": []
+}

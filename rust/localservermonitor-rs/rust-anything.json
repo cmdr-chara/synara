@@ -1,0 +1,174 @@
+{
+  "schema": "rust-anything/bridge@1",
+  "root": "/Users/devin/repos/synara",
+  "unit": "apps/server/src/localServerMonitor.ts",
+  "language": "ts",
+  "kind": "napi",
+  "crate_name": "localservermonitor-rs",
+  "exports": [
+    {
+      "name": "parseLsofTcpListenOutput",
+      "file": "apps/server/src/localServerMonitor.ts",
+      "line": 180,
+      "params": [
+        {
+          "name": "output",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "ParsedLsofListener[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseLsofCwdOutput",
+      "file": "apps/server/src/localServerMonitor.ts",
+      "line": 230,
+      "params": [
+        {
+          "name": "output",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Map<number, string>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "parseProcessInfo",
+      "file": "apps/server/src/localServerMonitor.ts",
+      "line": 256,
+      "params": [
+        {
+          "name": "output",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "Map<number, LocalServerProcessInfo>",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "isIgnoredLocalServerProcess",
+      "file": "apps/server/src/localServerMonitor.ts",
+      "line": 354,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "DevServerCandidateInput",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "boolean",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "detectDevServerKindFromText",
+      "file": "apps/server/src/localServerMonitor.ts",
+      "line": 384,
+      "params": [
+        {
+          "name": "input",
+          "ts_type": "DevServerCandidateInput",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "extractLocalServerPageTitle",
+      "file": "apps/server/src/localServerMonitor.ts",
+      "line": 493,
+      "params": [
+        {
+          "name": "html",
+          "ts_type": "string",
+          "optional": false,
+          "rest": false
+        }
+      ],
+      "returns": "string | null",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "buildLocalServerProcesses",
+      "file": "apps/server/src/localServerMonitor.ts",
+      "line": 946,
+      "params": [
+        {
+          "name": "listeners",
+          "ts_type": "readonly ParsedLsofListener[]",
+          "optional": false,
+          "rest": false
+        },
+        {
+          "name": "processInfoByPid",
+          "ts_type": "ReadonlyMap<number, LocalServerProcessInfo>",
+          "optional": true,
+          "rest": false
+        },
+        {
+          "name": "cwdByPid",
+          "ts_type": "ReadonlyMap<number, string>",
+          "optional": true,
+          "rest": false
+        }
+      ],
+      "returns": "typeof typeof typeof typeof ServerLocalServerProcess.Type.Type.Type.Type[]",
+      "is_async": false,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    },
+    {
+      "name": "listLocalServers",
+      "file": "apps/server/src/localServerMonitor.ts",
+      "line": 964,
+      "params": [],
+      "returns": "Promise<typeof typeof typeof typeof ServerListLocalServersResult.Type.Type.Type.Type>",
+      "is_async": true,
+      "is_generator": false,
+      "type_params": [],
+      "uses_instanceof": false
+    }
+  ],
+  "classes": [],
+  "js_only": [
+    {
+      "name": "enrichLocalServerProcessesWithPageTitles",
+      "file": "apps/server/src/localServerMonitor.ts",
+      "line": 745,
+      "reason": "takes or returns a function"
+    },
+    {
+      "name": "stopLocalServer",
+      "file": "apps/server/src/localServerMonitor.ts",
+      "line": 992,
+      "reason": "checks `instanceof`: class identity does not survive the bridge"
+    }
+  ]
+}

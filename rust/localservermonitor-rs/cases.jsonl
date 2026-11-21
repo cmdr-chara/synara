@@ -1,0 +1,1493 @@
+{"fn":"parseLsofTcpListenOutput","args":["ünïcödé"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["é"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":[":"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["trailing."],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["emoji 👍🏽 mix"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["tab\tseparated"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["a:b:c"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["src/a/b.ts"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":[""],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["a"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["ab"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["{name} has {count} items"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["key_name-1"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["hello  padded  "],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["straße"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["İstanbul"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["a.b.c"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["日本語のテキスト"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["Hello World"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["a..b"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["./x/**/*.json"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["HELLO"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["hello world{name} has {count} items"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["helloab"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["hello world"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["line1\nline2"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["a😀b😀c"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["abca"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["﻿bomabc"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["😀ab"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["İstanbultab\tseparated"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["abc"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["./x/**/*.jsontrailing."],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":[".leading"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["  padded  "],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["hello"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["ΣΊΣΥΦΟΣ"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["😀"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["a..b😀"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["emoji 👍🏽 mixtrailing."],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["a:b:cHELLO"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["straßeabc"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["key_name-1straße"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["a😀b😀c./x/**/*.json"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["﻿bom"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["ünïcödékey_name-1"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["İstanbula"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["HELLOa:b:c"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["日本語のテキスト  padded  "],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["tab\tseparatedHello World"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["ns:key.path😀"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["ünïcödé./x/**/*.json"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["src/a/b.tsHello World"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["😀key_name-1"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["😀HELLO"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["HELLOa"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["a:b:cline1\nline2"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["hellohello world"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["key_name-1日本語のテキスト"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["Hello Worldns:key.path"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["ΣΊΣΥΦΟΣstraße"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["İstanbul./x/**/*.json"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["hellohello"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["key_name-1ab"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["HELLOHello World"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":[":tab\tseparated"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["日本語のテキスト.leading"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["ΣΊΣΥΦΟΣhello world"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["ns:key.path"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["hello worldİstanbul"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["éHELLO"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":[".leading.leading"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["😀tab\tseparated"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["src/a/b.tsa:b:c"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["a😀b😀c.leading"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":[":﻿bom"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["line1\nline2a..b"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["ΣΊΣΥΦΟΣ.leading"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["straßeİstanbul"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["ünïcödéΣΊΣΥΦΟΣ"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["emoji 👍🏽 mixemoji 👍🏽 mix"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["ΣΊΣΥΦΟΣ  padded  "],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["trailing.HELLO"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["ns:key.path.leading"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["İstanbulhello"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["ΣΊΣΥΦΟΣ./x/**/*.json"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["日本語のテキストa:b:c"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["hello world日本語のテキスト"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["ns:key.patha:b:c"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["éa..b"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["abcİstanbul"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":[".leading  padded  "],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["abckey_name-1"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["ünïcödé.leading"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["a😀b😀csrc/a/b.ts"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":[":İstanbul"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["HELLOemoji 👍🏽 mix"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["éa😀b😀c"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["İstanbulkey_name-1"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["straßestraße"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["HELLOkey_name-1"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["abc😀"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["trailing.a..b"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["Hello World😀"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["  padded  :"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["a..bΣΊΣΥΦΟΣ"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["ns:key.path:"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["aİstanbul"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["ns:key.pathabc"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["line1\nline2hello"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["tab\tseparatedé"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["Hello World  padded  "],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["Hello Worlda..b"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["ns:key.pathhello"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["./x/**/*.json.leading"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["straße.leading"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["ünïcödéemoji 👍🏽 mix"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["a.b.cemoji 👍🏽 mix"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["line1\nline2emoji 👍🏽 mix"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["  padded  a😀b😀c"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["a..ba..b"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["emoji 👍🏽 mixabc"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["tab\tseparated﻿bom"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["src/a/b.tsemoji 👍🏽 mix"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["tab\tseparated  padded  "],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["a:"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["{name} has {count} itemsstraße"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["é😀"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["./x/**/*.json日本語のテキスト"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["ünïcödétab\tseparated"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":[":  padded  "],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["src/a/b.tsé"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["HELLO日本語のテキスト"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["ünïcödéns:key.path"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["tab\tseparatedhello"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":[".leading日本語のテキスト"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":[".leadinghello"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["straßeé"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["ünïcödéa😀b😀c"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["abcab"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["a.b.c﻿bom"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["a..bé"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["tab\tseparated日本語のテキスト"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["hellotab\tseparated"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["abchello"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["😀ΣΊΣΥΦΟΣ"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["﻿bomline1\nline2"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["abc.leading"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["ünïcödéabc"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["a:b:cstraße"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["hello worlda:b:c"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["hello worldΣΊΣΥΦΟΣ"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["HELLOİstanbul"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["helloünïcödé"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["emoji 👍🏽 mixa..b"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":[":ünïcödé"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["日本語のテキストHello World"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":[".leadingab"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["abcstraße"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["😀😀"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["ΣΊΣΥΦΟΣünïcödé"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["ΣΊΣΥΦΟΣé"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["trailing.ünïcödé"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["a..ba:b:c"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["src/a/b.ts﻿bom"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["ns:key.pathline1\nline2"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["trailing.abc"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["é:"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["ns:key.patha"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["a.b.chello"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["  padded  ab"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["  padded  trailing."],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["ünïcödé{name} has {count} items"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["trailing.{name} has {count} items"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["helloa"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["./x/**/*.jsontab\tseparated"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["a..btrailing."],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["a😀b😀cünïcödé"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["hello worldhello"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["hello world  padded  "],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["a😀b😀c{name} has {count} items"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["key_name-1😀"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["a..b{name} has {count} items"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["a:b:ckey_name-1"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["key_name-1ns:key.path"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["./x/**/*.jsonabc"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["日本語のテキストİstanbul"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["hellotrailing."],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["a😀b😀ctab\tseparated"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["a:b:ca:b:c"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["./x/**/*.jsonkey_name-1"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["helloa..b"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["é.leading"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["{name} has {count} items😀"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":[".leading😀"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["a.b.ca"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["﻿bomtab\tseparated"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":[":ΣΊΣΥΦΟΣ"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["straßeHello World"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["src/a/b.ts./x/**/*.json"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["héllo wörld"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["👍🏽 thumbs"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["日本語"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["ılık ırmak"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["👨‍👩‍👧 family"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["a b"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["a😀b"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["a²b x½ y①"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["aⅠb Ⅻ"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["a𐐀b 𝐀bc"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["कि ٣٤"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["Iı İi"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["K K k"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["ſ s S"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["x‍y 👨‍👩‍👧"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["a b c　d"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["١٢٣ ٤٥"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["𝟘𝟙 ²³"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["snake_case foo-bar o'neil"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["ǅungla Ǆ"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["one\r\ntwo threefour"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["café café"],"ok":[]}
+{"fn":"parseLsofTcpListenOutput","args":["ΣΑΣ σας ς"],"ok":[]}
+{"fn":"parseLsofCwdOutput","args":["trailing."],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["é:"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["😀"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["a😀b😀c"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":[":"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["emoji 👍🏽 mix"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["line1\nline2"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["line1\nline2a"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["a:b:c"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["日本語のテキスト"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["hello"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["emoji 👍🏽 mix.leading"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["tab\tseparated"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["a"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["straße"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["key_name-1日本語のテキスト"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["ΣΊΣΥΦΟΣ"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["key_name-1"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["straßetrailing."],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["hello worldns:key.path"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":[""],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["﻿bomns:key.path"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["HELLO"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["ab"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["{name} has {count} items"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["a..b"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["tab\tseparatedHELLO"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["./x/**/*.json﻿bom"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["hello world"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["﻿bomhello"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["trailing.﻿bom"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["trailing.tab\tseparated"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["Hello World"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["hello worldhello world"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["ns:key.path"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["a.b.cstraße"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["İstanbul"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["é"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["./x/**/*.json"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["abctab\tseparated"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["😀abc"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["abc"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["{name} has {count} itemsns:key.path"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["a..b😀"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["  padded  :"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["ns:key.pathHello World"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["﻿bomemoji 👍🏽 mix"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":[".leading"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["﻿bom"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["abcstraße"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["src/a/b.ts"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["./x/**/*.jsona😀b😀c"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["straße:"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["HELLOİstanbul"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["a.b.c"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["helloa😀b😀c"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["a.b.ca..b"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["İstanbul./x/**/*.json"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["./x/**/*.json.leading"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["日本語のテキストemoji 👍🏽 mix"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["a😀b😀ca..b"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["hello worldhello"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["a:b:chello"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["  padded  "],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["ünïcödéstraße"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["ünïcödé"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["İstanbula..b"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["日本語のテキストé"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["hello world日本語のテキスト"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["😀:"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["HELLOhello world"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["hello worlda..b"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["key_name-1ab"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["a..bab"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["src/a/b.tstrailing."],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["emoji 👍🏽 mix﻿bom"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["aHello World"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["😀./x/**/*.json"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["ns:key.path😀"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["straßens:key.path"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["😀emoji 👍🏽 mix"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["absrc/a/b.ts"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["tab\tseparated日本語のテキスト"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["abc  padded  "],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["{name} has {count} itemshello"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["ΣΊΣΥΦΟΣemoji 👍🏽 mix"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["Hello Worldé"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["./x/**/*.json{name} has {count} items"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["straßeé"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["ünïcödétab\tseparated"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["{name} has {count} items日本語のテキスト"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["ünïcödésrc/a/b.ts"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["emoji 👍🏽 mix./x/**/*.json"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["﻿bom  padded  "],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["a😀b😀cHello World"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["line1\nline2./x/**/*.json"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["helloemoji 👍🏽 mix"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":[".leadinga:b:c"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["line1\nline2hello"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["ns:key.pathkey_name-1"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["ΣΊΣΥΦΟΣ:"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["src/a/b.ts./x/**/*.json"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["hello worlda:b:c"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["src/a/b.ts{name} has {count} items"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["  padded  Hello World"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["abcemoji 👍🏽 mix"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["{name} has {count} itemsabc"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["日本語のテキストns:key.path"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["ns:key.patha:b:c"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["abkey_name-1"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["straßea"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["emoji 👍🏽 mixİstanbul"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["abcé"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["abca:b:c"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["straßekey_name-1"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["straßeİstanbul"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["hello worldHELLO"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["straßeab"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["a😀b😀ca😀b😀c"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["./x/**/*.json😀"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["ékey_name-1"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["abünïcödé"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["ΣΊΣΥΦΟΣünïcödé"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["Hello Worldhello"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["a..bhello world"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["ünïcödé:"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["line1\nline2ab"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["a..b./x/**/*.json"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["İstanbulΣΊΣΥΦΟΣ"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["./x/**/*.jsonünïcödé"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["a..bİstanbul"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["ünïcödéé"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["emoji 👍🏽 mixa.b.c"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["hello world.leading"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["helloé"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["{name} has {count} itemsΣΊΣΥΦΟΣ"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["./x/**/*.jsonHello World"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["  padded  ab"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["./x/**/*.jsonkey_name-1"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["İstanbul日本語のテキスト"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["İstanbulemoji 👍🏽 mix"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":[".leading{name} has {count} items"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["abhello world"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["hello worldΣΊΣΥΦΟΣ"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["😀a"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":[".leadingünïcödé"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["HELLOhello"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["a:b:ca:b:c"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["trailing.  padded  "],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["src/a/b.tshello"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["straße﻿bom"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["﻿bomünïcödé"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["aa😀b😀c"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["İstanbultab\tseparated"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["emoji 👍🏽 mixHELLO"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["tab\tseparatedkey_name-1"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["a😀b😀chello world"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["src/a/b.tsstraße"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["./x/**/*.json  padded  "],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["atab\tseparated"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["﻿bomhello world"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["a:b:ctab\tseparated"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["key_name-1a"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["Hello World./x/**/*.json"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":[":a"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["ünïcödéünïcödé"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["line1\nline2ns:key.path"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["İstanbulstraße"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["é{name} has {count} items"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["ünïcödéa.b.c"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["src/a/b.tskey_name-1"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["😀straße"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["a.b.chello"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["a..babc"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["日本語のテキストtrailing."],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["é﻿bom"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["tab\tseparatedsrc/a/b.ts"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["éé"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["abc{name} has {count} items"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["a.b.csrc/a/b.ts"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["﻿bom./x/**/*.json"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["HELLO😀"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["  padded  trailing."],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["tab\tseparated:"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["line1\nline2tab\tseparated"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["hello world﻿bom"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["ΣΊΣΥΦΟΣline1\nline2"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["﻿bomHello World"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["key_name-1ünïcödé"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":[":a😀b😀c"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["é😀"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["a..b:"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["src/a/b.tshello world"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["😀Hello World"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["Hello Worldtrailing."],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["a.b.cemoji 👍🏽 mix"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["./x/**/*.jsonΣΊΣΥΦΟΣ"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["  padded  é"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["a  padded  "],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["src/a/b.tsHELLO"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["héllo wörld"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["👍🏽 thumbs"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["日本語"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["ılık ırmak"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["👨‍👩‍👧 family"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["a b"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["a😀b"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["a²b x½ y①"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["aⅠb Ⅻ"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["a𐐀b 𝐀bc"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["कि ٣٤"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["Iı İi"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["K K k"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["ſ s S"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["x‍y 👨‍👩‍👧"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["a b c　d"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["١٢٣ ٤٥"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["𝟘𝟙 ²³"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["snake_case foo-bar o'neil"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["ǅungla Ǆ"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["one\r\ntwo threefour"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["café café"],"ok":{"$map":[]}}
+{"fn":"parseLsofCwdOutput","args":["ΣΑΣ σας ς"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["./x/**/*.json"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a.b.c"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a:b:chello"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["😀a:b:c"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["tab\tseparated"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["line1\nline2"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["ns:key.patha..b"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["hello world"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["  padded  hello world"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a😀b😀c"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["src/a/b.tstab\tseparated"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":[".leading"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["src/a/b.ts"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["trailing.ab"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a..b"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["İstanbul"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["﻿bom"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["ns:key.path"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["İstanbulline1\nline2"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["é"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["ünïcödé日本語のテキスト"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":[":a😀b😀c"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["İstanbultab\tseparated"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["hello"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["{name} has {count} itemsé"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["key_name-1"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["ΣΊΣΥΦΟΣ"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["ab"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["😀"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":[":"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["Hello Worlda..b"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["Hello World"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["日本語のテキスト"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a:b:c"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["  padded  "],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["HELLO"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["./x/**/*.json{name} has {count} items"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["HELLO﻿bom"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["src/a/b.tstrailing."],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a.b.cé"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["ünïcödé"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a😀b😀cé"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["{name} has {count} items"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["abc"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":[".leadinga:b:c"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["﻿boma.b.c"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["trailing.key_name-1"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":[""],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["emoji 👍🏽 mix"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["abchello"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["HELLOhello"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["straße"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["日本語のテキストns:key.path"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["straße  padded  "],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["日本語のテキストa..b"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["key_name-1a:b:c"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a:b:csrc/a/b.ts"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["src/a/b.ts😀"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["aünïcödé"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a./x/**/*.json"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["ΣΊΣΥΦΟΣ﻿bom"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a.b.cünïcödé"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["./x/**/*.jsonns:key.path"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["./x/**/*.json.leading"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["İstanbul./x/**/*.json"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["straße﻿bom"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a..b😀"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["  padded  .leading"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["aba😀b😀c"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["straßea.b.c"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":[":日本語のテキスト"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["ΣΊΣΥΦΟΣ  padded  "],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["line1\nline2straße"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["trailing."],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a:b:ca:b:c"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["İstanbul  padded  "],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["😀trailing."],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["ünïcödéHello World"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["helloa"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["HELLOΣΊΣΥΦΟΣ"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["ünïcödéns:key.path"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["akey_name-1"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a.b.c😀"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a.b.ca😀b😀c"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["﻿bomkey_name-1"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["src/a/b.ts﻿bom"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a😀b😀cline1\nline2"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["aHello World"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["key_name-1a..b"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["İstanbulHELLO"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["abctab\tseparated"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["abHELLO"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["ékey_name-1"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["hello worldtrailing."],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["aba"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["trailing.tab\tseparated"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["emoji 👍🏽 mixhello"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["abtab\tseparated"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["{name} has {count} itemsns:key.path"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["Hello World😀"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["hello worldline1\nline2"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["ns:key.pathemoji 👍🏽 mix"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["helloabc"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["日本語のテキストline1\nline2"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a..bline1\nline2"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["İstanbulHello World"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a:b:c日本語のテキスト"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":[":line1\nline2"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["key_name-1ns:key.path"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["  padded  hello"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["İstanbulemoji 👍🏽 mix"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["absrc/a/b.ts"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["  padded  a😀b😀c"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["  padded  straße"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["straßekey_name-1"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["İstanbula"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a😀b😀c./x/**/*.json"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":[".leading./x/**/*.json"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":[".leadinghello"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":[".leadingİstanbul"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["ΣΊΣΥΦΟΣns:key.path"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["key_name-1a😀b😀c"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["HELLOHello World"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["hello worldns:key.path"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["Hello Worldtrailing."],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a日本語のテキスト"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["﻿bomhello"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["ns:key.pathé"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a:b:ctrailing."],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["trailing.é"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["hello world﻿bom"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":[".leadingns:key.path"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["trailing.src/a/b.ts"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["ünïcödéhello"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["hello world日本語のテキスト"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["Hello World﻿bom"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["éabc"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["ünïcödé.leading"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["HELLO日本語のテキスト"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["日本語のテキストünïcödé"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["ünïcödé  padded  "],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["  padded  :"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["trailing.a.b.c"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["line1\nline2abc"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a:b:ckey_name-1"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["﻿bomsrc/a/b.ts"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["src/a/b.tsΣΊΣΥΦΟΣ"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["line1\nline2😀"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["hello worldsrc/a/b.ts"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["abns:key.path"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["./x/**/*.jsonΣΊΣΥΦΟΣ"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["Hello Worlda:b:c"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["😀:"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a😀b😀ca:b:c"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["abhello world"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["éΣΊΣΥΦΟΣ"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["trailing.a😀b😀c"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["key_name-1emoji 👍🏽 mix"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["{name} has {count} items{name} has {count} items"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["😀tab\tseparated"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["Hello World日本語のテキスト"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["tab\tseparatedhello"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["日本語のテキストa😀b😀c"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["{name} has {count} items﻿bom"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["abhello"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["é{name} has {count} items"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a..bé"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["  padded  tab\tseparated"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["hello worldHello World"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a😀b😀cİstanbul"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["﻿bomabc"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["ab{name} has {count} items"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["hello world😀"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["key_name-1é"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["line1\nline2tab\tseparated"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["src/a/b.tsHello World"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["straßeabc"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a😀b😀chello"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a:b:c:"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["tab\tseparatedé"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":[".leadingline1\nline2"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a.b.c./x/**/*.json"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a😀b😀chello world"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["hello worlda"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["emoji 👍🏽 mixa"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a😀b😀c.leading"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["./x/**/*.jsonhello"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["aé"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["İstanbul日本語のテキスト"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["  padded  a..b"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a..bhello"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["abstraße"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["Hello World{name} has {count} items"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["日本語のテキストa"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a﻿bom"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["😀line1\nline2"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a..ba:b:c"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["hello./x/**/*.json"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["é日本語のテキスト"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["héllo wörld"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["👍🏽 thumbs"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["日本語"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["ılık ırmak"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["👨‍👩‍👧 family"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a b"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a😀b"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a²b x½ y①"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["aⅠb Ⅻ"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a𐐀b 𝐀bc"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["कि ٣٤"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["Iı İi"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["K K k"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["ſ s S"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["x‍y 👨‍👩‍👧"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["a b c　d"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["١٢٣ ٤٥"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["𝟘𝟙 ²³"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["snake_case foo-bar o'neil"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["ǅungla Ǆ"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["one\r\ntwo threefour"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["café café"],"ok":{"$map":[]}}
+{"fn":"parseProcessInfo","args":["ΣΑΣ σας ς"],"ok":{"$map":[]}}
+{"fn":"isIgnoredLocalServerProcess","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'matchAll')"}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"ΣΊΣΥΦΟΣ","args":"HELLO","ports":[2147483648]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"tab\tseparated","args":"a:b:cab","ports":[1]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"straße","args":"😀","ports":[-2.5]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'matchAll')"}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"abc","args":"﻿bom","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"{name} has {count} items","args":"日本語のテキストstraße","ports":[{"$num":"-Infinity"},1000000]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"straße","args":"ab","ports":[2147483648]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"HELLO","args":"é","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"line1\nline2","args":"😀","ports":[2147483648]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[null],"error":"Cannot read properties of null (reading 'command')"}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"é","args":"","ports":[{"$num":"Infinity"}]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"日本語のテキスト","args":"hello world","ports":[-2.5,{"$num":"Infinity"},100]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"ab","args":"trailing.","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"a😀b😀c","args":"src/a/b.ts","ports":[1000]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{}],"error":"Cannot read properties of undefined (reading 'matchAll')"}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"tab\tseparated","args":"abc","ports":[0,{"$num":"Infinity"},1]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[[]],"error":"Cannot read properties of undefined (reading 'matchAll')"}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"é","args":"é","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"","args":"ΣΊΣΥΦΟΣ","ports":[42]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"a😀b😀c","args":"./x/**/*.json","ports":[{"$num":"-0"},10]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":["x"],"error":"Cannot read properties of undefined (reading 'matchAll')"}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"line1\nline2","args":"ns:key.pathemoji 👍🏽 mix","ports":[0.5,10,1000]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"ünïcödéns:key.path","args":"Hello World","ports":[3]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'matchAll')"}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"ΣΊΣΥΦΟΣ","args":"src/a/b.ts﻿bom","ports":[0,100,3]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"﻿bomHELLO","args":"a.b.c","ports":[100,3]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":".leading","args":"日本語のテキスト","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"line1\nline2","args":"é","ports":[10]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"a.b.chello","args":"ΣΊΣΥΦΟΣ","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"日本語のテキスト","args":":","ports":[1000,3]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"a😀b😀c","args":"Hello World","ports":[{"$num":"Infinity"},100,9007199254740992]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"a:b:c","args":"HELLO","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"./x/**/*.jsonline1\nline2","args":":","ports":[1000000,1000000]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"  padded  ","args":"a😀b😀cé","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"日本語のテキスト","args":"src/a/b.ts","ports":[{"$num":"Infinity"},2147483648,0.5]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"a.b.c","args":"./x/**/*.json","ports":[1000000,1]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"😀","args":"Hello World:","ports":[3]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"  padded  ","args":"ab","ports":[42,3,-2.5]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"a:b:c","args":"trailing.","ports":[10,1000000,0]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"日本語のテキストabc","args":"a.b.ca:b:c","ports":[2,1000,{"$num":"NaN"}]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"hello world","args":"ab","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"key_name-1","args":"a😀b😀c","ports":[{"$num":"-Infinity"}]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"trailing.","args":"Hello World","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"src/a/b.ts","args":"src/a/b.ts","ports":[42,1000]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"a..b","args":"ab","ports":[9007199254740992]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"﻿bom","args":"ns:key.path","ports":[1000000,2147483648,2]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"ns:key.path","args":"tab\tseparated","ports":[0,{"$num":"-Infinity"},2147483648]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"line1\nline2","args":"é","ports":[1000,3,100]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"a..b","args":"😀","ports":[1000000]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"HELLOabc","args":"./x/**/*.json","ports":[1]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"aé","args":"line1\nline2","ports":[{"$num":"-Infinity"},2147483648,0]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"emoji 👍🏽 mixhello","args":"emoji 👍🏽 mix","ports":[9007199254740992]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"é","args":"./x/**/*.json","ports":[{"$num":"Infinity"},{"$num":"-0"}]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"Hello Worldé","args":"src/a/b.ts","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"日本語のテキスト","args":"a","ports":[42]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"İstanbulns:key.path","args":"İstanbul","ports":[42,{"$num":"-0"},2]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"key_name-1","args":"HELLO  padded  ","ports":[{"$num":"Infinity"},10]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"./x/**/*.json","args":"Hello World","ports":[9007199254740992,10]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"ünïcödé{name} has {count} items","args":"tab\tseparated","ports":[2147483648]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"  padded  ","args":"trailing.","ports":[0,1,2]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"Hello Worldhello","args":"./x/**/*.json","ports":[{"$num":"-Infinity"},2]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"😀","args":"line1\nline2","ports":[2,2147483648,2147483648]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"Hello World.leading","args":".leading😀","ports":[-1,-1]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"HELLO","args":"Hello World","ports":[{"$num":"NaN"}]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"a..b","args":".leading","ports":[0,1000000]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"tab\tseparated:","args":"a","ports":[3,{"$num":"Infinity"}]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"hello world","args":"line1\nline2","ports":[10]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"{name} has {count} items","args":"key_name-1","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"abc","args":":","ports":[-2.5,3]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"ünïcödé","args":"ab","ports":[1000,{"$num":"-0"}]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"HELLO","args":"😀","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"a.b.c","args":"{name} has {count} items","ports":[1]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"ns:key.path","args":"emoji 👍🏽 mix","ports":[-1,2147483648,{"$num":"Infinity"}]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"ΣΊΣΥΦΟΣ","args":"a:b:cab","ports":[1000,10]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":".leading","args":"ΣΊΣΥΦΟΣ","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"trailing.","args":"ünïcödé","ports":[{"$num":"-0"}]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"ab日本語のテキスト","args":"trailing../x/**/*.json","ports":[2147483648,2,0]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"日本語のテキスト","args":"a:b:cstraße","ports":[9007199254740992,-2.5]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"trailing.","args":"a:b:c","ports":[1000000]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[0],"error":"Cannot read properties of undefined (reading 'matchAll')"}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"a😀b😀c","args":"日本語のテキスト","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"a😀b😀c","args":"{name} has {count} items","ports":[{"$num":"NaN"},-2.5,{"$num":"NaN"}]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"日本語のテキスト","args":".leading","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"emoji 👍🏽 mix","args":"a","ports":[1000]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"trailing.","args":"trailing.straße","ports":[42,10,-2.5]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"a:b:c","args":"key_name-1","ports":[1,3,-2.5]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"é","args":"ns:key.path","ports":[9007199254740992,{"$num":"-Infinity"},0]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"a😀b😀c","args":"ab","ports":[-1]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"line1\nline2ΣΊΣΥΦΟΣ","args":"﻿bom","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"key_name-1a:b:c","args":"😀","ports":[{"$num":"-Infinity"},1000]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"","args":"hello","ports":[0,-2.5]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"a:b:c","args":"line1\nline2","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"  padded  ","args":"key_name-1","ports":[2147483648]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":":","args":"a..b","ports":[1000]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[true],"error":"Cannot read properties of undefined (reading 'matchAll')"}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"straße","args":"ünïcödé","ports":[42,1000000,{"$num":"Infinity"}]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"HELLO","args":"hello","ports":[{"$num":"-Infinity"},42]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"a..b","args":"trailing.","ports":[1000000,1000000]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"HELLO","args":"a.b.c","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"Hello World","args":"  padded  ","ports":[2147483648,1]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"straße","args":"İstanbul","ports":[-1]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"İstanbul","args":"src/a/b.ts","ports":[-1,{"$num":"-0"},100]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":":","args":"hello","ports":[3,10]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"abc","args":"tab\tseparated","ports":[1000]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"a😀b😀c","args":"ab","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"straße","args":"trailing.","ports":[0.5,9007199254740992]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"","args":"{name} has {count} items","ports":[9007199254740992,0.5,0.5]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"a","args":"  padded  ","ports":[{"$num":"Infinity"}]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"key_name-1","args":"a..b","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"tab\tseparated","args":"﻿bomab","ports":[100,{"$num":"-Infinity"}]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"ünïcödé","args":"emoji 👍🏽 mix","ports":[100,2147483648]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"trailing.é","args":"hello world","ports":[1000000,2147483648]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"😀","args":"﻿boma:b:c","ports":[0,2147483648]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"abctrailing.","args":"a","ports":[-2.5,1000000]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"Hello World","args":"abc","ports":[3,1000,-1]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"ΣΊΣΥΦΟΣ","args":"","ports":[2]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"a.b.c","args":"a..b","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"a.b.chello world","args":"İstanbul","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"ΣΊΣΥΦΟΣ","args":"emoji 👍🏽 mixemoji 👍🏽 mix","ports":[{"$num":"-0"},-1,-1]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"line1\nline2","args":"hello world","ports":[2]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"","args":"trailing.a..b","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":".leading","args":"emoji 👍🏽 mix","ports":[3,{"$num":"-0"}]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"straße","args":"Hello World","ports":[2,1,-1]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"😀","args":"./x/**/*.json","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"a😀b😀c","args":"ns:key.path","ports":[100,3,{"$num":"-Infinity"}]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"key_name-1","args":"éns:key.path","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"::","args":"src/a/b.ts","ports":[1000,0]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"ΣΊΣΥΦΟΣ","args":"tab\tseparated","ports":[-2.5]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"straße","args":"./x/**/*.jsonΣΊΣΥΦΟΣ","ports":[-1,{"$num":"-Infinity"}]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"日本語のテキスト","args":":","ports":[100,0]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"hello world","args":"a..b./x/**/*.json","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"a😀b😀c","args":"İstanbul","ports":[0.5,{"$num":"NaN"}]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"straße","args":"abc{name} has {count} items","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"😀","args":"Hello World日本語のテキスト","ports":[9007199254740992]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"src/a/b.ts","args":"日本語のテキスト","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"a:b:c","args":"a:b:c","ports":[100]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"a.b.c","args":"key_name-1hello","ports":[{"$num":"-Infinity"},0,{"$num":"Infinity"}]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"a..b","args":"abc","ports":[2,9007199254740992,2]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"﻿bom","args":"a:b:c","ports":[2147483648]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"src/a/b.ts","args":"ünïcödé","ports":[42]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"emoji 👍🏽 mix","args":"tab\tseparated","ports":[{"$num":"Infinity"},-1,-1]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"abc","args":"","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"abc","args":"Hello World","ports":[3,1000,1]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"ab","args":"İstanbul./x/**/*.json","ports":[2]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"İstanbul","args":"a:b:c","ports":[{"$num":"NaN"},{"$num":"Infinity"},10]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"hello world","args":"﻿bom","ports":[{"$num":"-0"},2147483648]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"a:b:c","args":"straße","ports":[1000000,1000]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"hello","args":"  padded  a..b","ports":[2]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"éΣΊΣΥΦΟΣ","args":"日本語のテキスト","ports":[42]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"emoji 👍🏽 mix","args":"hello worlda.b.c","ports":[{"$num":"-Infinity"},1000]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"hello","args":"Hello World","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"key_name-1","args":"a","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"line1\nline2","args":"tab\tseparatedstraße","ports":[42]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"line1\nline2","args":"a😀b😀c","ports":[{"$num":"Infinity"},3,2]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"key_name-1","args":"a:b:c","ports":[0,{"$num":"-Infinity"},2]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"İstanbul","args":".leading","ports":[100,100]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"./x/**/*.json","args":":","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"hello world","args":"a.b.cstraße","ports":[0.5,0,{"$num":"NaN"}]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"a.b.c","args":"é:","ports":[{"$num":"Infinity"},10,9007199254740992]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"abc","args":"a😀b😀c","ports":[1000000]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"hello","args":"HELLO","ports":[{"$num":"-Infinity"},100]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"ΣΊΣΥΦΟΣ","args":"emoji 👍🏽 mix","ports":[10]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"ns:key.path","args":"a.b.c","ports":[3]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"ünïcödé","args":"日本語のテキストtab\tseparated","ports":[100,1000,1]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"ΣΊΣΥΦΟΣ","args":"Hello World","ports":[10,2147483648,9007199254740992]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"src/a/b.ts","args":"key_name-1","ports":[{"$num":"-0"},3,1]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"hello world","args":":","ports":[42,{"$num":"Infinity"}]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"étrailing.","args":"line1\nline2.leading","ports":[1000000,2]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"a.b.cİstanbul","args":"a","ports":[2,2147483648,2147483648]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"İstanbul","args":"ΣΊΣΥΦΟΣ","ports":[{"$num":"Infinity"},42]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"a:b:c","args":"a.b.cünïcödé","ports":[100]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"aHELLO","args":"é","ports":[-2.5]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"日本語のテキスト:","args":"a.b.c","ports":[2]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"ns:key.pathhello world","args":"ΣΊΣΥΦΟΣ","ports":[{"$num":"-0"}]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"Hello World","args":"ΣΊΣΥΦΟΣstraße","ports":[42,1000,42]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"tab\tseparated./x/**/*.json","args":"hello","ports":[{"$num":"Infinity"}]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"","args":"tab\tseparated","ports":[{"$num":"-Infinity"},100,42]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"a.b.c","args":"İstanbul","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"ns:key.path","args":"emoji 👍🏽 mixemoji 👍🏽 mix","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"tab\tseparated","args":"tab\tseparated","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"line1\nline2","args":"hello","ports":[1000000,3]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"trailing.","args":"ΣΊΣΥΦΟΣa","ports":[0.5,100]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"﻿bom","args":"😀","ports":[2147483648,42]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":":","args":"ab","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"😀","args":"trailing.hello world","ports":[1000,{"$num":"-Infinity"},1]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"key_name-1line1\nline2","args":"{name} has {count} items","ports":[-1,{"$num":"Infinity"}]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"hello","args":"😀key_name-1","ports":[0.5]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"trailing.","args":"tab\tseparatedabc","ports":[1000,-2.5,{"$num":"-0"}]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"a:b:c","args":"line1\nline2Hello World","ports":[42,3,{"$num":"NaN"}]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"ab","args":"a","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"hello world","args":"ünïcödé","ports":[{"$num":"NaN"},1,{"$num":"NaN"}]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":":","args":"a..b","ports":[2,{"$num":"NaN"}]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"./x/**/*.json","args":"a","ports":[-1,{"$num":"Infinity"},1]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"./x/**/*.json","args":"a:b:c","ports":[1,1000000]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"😀line1\nline2","args":"  padded  ","ports":[1000000,1000000,2147483648]}],"ok":false}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"ΣΊΣΥΦΟΣ","args":"ΣΊΣΥΦΟΣ","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"","args":"é日本語のテキスト","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"﻿bom","args":"./x/**/*.json","ports":[]}],"ok":true}
+{"fn":"isIgnoredLocalServerProcess","args":[{"command":"a😀b😀c","args":"a😀b😀cemoji 👍🏽 mix","ports":[100,0.5,-1]}],"ok":true}
+{"fn":"detectDevServerKindFromText","args":[{"command":"ΣΊΣΥΦΟΣ","args":"a..b","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'matchAll')"}
+{"fn":"detectDevServerKindFromText","args":[{"command":"﻿bom","args":"  padded  ","ports":[1]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"a:b:c","args":"a:b:c","ports":[{"$num":"Infinity"}]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"{name} has {count} items","args":".leading","ports":[-2.5,10,1]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"ns:key.path","args":"trailing.tab\tseparated","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"a😀b😀c","args":"HELLO","ports":[-1]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"  padded  ","args":"key_name-1","ports":[{"$num":"Infinity"},42]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"hello world","args":"hello worldline1\nline2","ports":[0]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"İstanbul","args":"ns:key.path","ports":[1,1000000,42]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"é","args":"emoji 👍🏽 mix:","ports":[-1]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"ababc","args":"abc","ports":[1,0.5]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"a:b:cstraße","args":"abc","ports":[1000,{"$num":"-Infinity"},42]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"hello world","args":"  padded  ","ports":[3,42]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"trailing.","args":"a:b:c{name} has {count} items","ports":[{"$num":"NaN"}]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"./x/**/*.json","args":"ΣΊΣΥΦΟΣ","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"emoji 👍🏽 mix","args":"a","ports":[2147483648,1]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"😀","args":"日本語のテキストemoji 👍🏽 mix","ports":[-1,1000,42]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":["x"],"error":"Cannot read properties of undefined (reading 'matchAll')"}
+{"fn":"detectDevServerKindFromText","args":[{"command":".leading","args":"{name} has {count} itemstab\tseparated","ports":[2147483648,3]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"a..b","args":".leadinghello","ports":[{"$num":"-0"},1000000]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"😀","args":"line1\nline2","ports":[{"$num":"NaN"},2]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":".leading","args":"./x/**/*.json","ports":[100,42]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"😀","args":"key_name-1","ports":[-2.5,-2.5]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"./x/**/*.json","args":"HELLO","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"ünïcödé","args":"日本語のテキスト﻿bom","ports":[0.5,9007199254740992]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"hello world","args":"  padded  ","ports":[-2.5,42]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"日本語のテキスト","args":"a..b","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"abchello","args":"straße","ports":[{"$num":"Infinity"}]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"HELLO","args":"HELLO","ports":[{"$num":"-0"},{"$num":"NaN"},-1]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"{name} has {count} items","args":"a.b.c","ports":[0.5,{"$num":"Infinity"}]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":":","args":"a..ba..b","ports":[{"$num":"-0"},-2.5,10]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"ΣΊΣΥΦΟΣ","args":"日本語のテキスト","ports":[1,-1]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"ab  padded  ","args":"日本語のテキストHello World","ports":[1000000]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"straße","args":"  padded  ","ports":[{"$num":"-Infinity"},3,1000000]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"straße","args":":","ports":[1,1000,10]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"straße","args":"😀","ports":[1,{"$num":"-0"},10]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"Hello World","args":"﻿bom","ports":[{"$num":"-Infinity"},42]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"","args":"a.b.c","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"./x/**/*.json","args":":","ports":[{"$num":"-Infinity"},9007199254740992]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"src/a/b.ts","args":"","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"src/a/b.tsé","args":"😀","ports":[2,0.5,{"$num":"NaN"}]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"line1\nline2","args":"HELLO","ports":[1000000]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"a","args":"abc","ports":[2147483648,2147483648,1000]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"a","args":"  padded  ","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"key_name-1line1\nline2","args":"ünïcödé","ports":[10,1000,0.5]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"tab\tseparated","args":"a:b:c","ports":[1,-1,9007199254740992]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"😀","args":"emoji 👍🏽 mix","ports":[{"$num":"-Infinity"}]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"ΣΊΣΥΦΟΣ","args":"  padded  ab","ports":[100,1000000]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"é","args":"","ports":[1000]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"HELLO﻿bom","args":"line1\nline2","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[0],"error":"Cannot read properties of undefined (reading 'matchAll')"}
+{"fn":"detectDevServerKindFromText","args":[{"command":"ékey_name-1","args":"ünïcödé","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"  padded  ","args":"Hello World","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":".leading","args":"a..b","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"a":"b"}],"error":"Cannot read properties of undefined (reading 'matchAll')"}
+{"fn":"detectDevServerKindFromText","args":[null],"error":"Cannot read properties of null (reading 'command')"}
+{"fn":"detectDevServerKindFromText","args":[{"command":"a.b.c","args":"  padded  ","ports":[2,-2.5,{"$num":"NaN"}]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"a..b","args":"  padded  ","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"abc","args":"İstanbul","ports":[100,9007199254740992,0]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"İstanbul","args":"a.b.ctab\tseparated","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"src/a/b.ts","args":"trailing.emoji 👍🏽 mix","ports":[100,{"$num":"NaN"},{"$num":"-0"}]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"ünïcödé","args":"Hello World","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"😀","args":"ns:key.path","ports":[0.5]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"é","args":"hello","ports":[9007199254740992]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"abc","args":"./x/**/*.json","ports":[42]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"key_name-1ns:key.path","args":"  padded  ","ports":[100,2147483648,9007199254740992]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"abc","args":"line1\nline2","ports":[2]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"ns:key.path","args":"trailing.","ports":[0.5,0.5,1000000]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"ΣΊΣΥΦΟΣ","args":"tab\tseparated","ports":[0]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":".leading","args":"","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"  padded  ","args":"😀./x/**/*.json","ports":[1,42,{"$num":"-Infinity"}]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"emoji 👍🏽 mixünïcödé","args":"src/a/b.ts日本語のテキスト","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"abc","args":"日本語のテキスト","ports":[-1,{"$num":"Infinity"},100]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"a😀b😀ctrailing.","args":"src/a/b.ts","ports":[0.5,2147483648]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":":","args":":","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"a..b","args":"﻿bom","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"trailing.","args":"Hello World","ports":[1000000,9007199254740992]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[true],"error":"Cannot read properties of undefined (reading 'matchAll')"}
+{"fn":"detectDevServerKindFromText","args":[{"command":"😀","args":"trailing..leading","ports":[2]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"abc","args":"src/a/b.ts","ports":[{"$num":"Infinity"},1,9007199254740992]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"ünïcödéa..b","args":"a..b","ports":[{"$num":"NaN"},1000000]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[["a",1]],"error":"Cannot read properties of undefined (reading 'matchAll')"}
+{"fn":"detectDevServerKindFromText","args":[{"command":"{name} has {count} itemsa:b:c","args":"a..b","ports":[-2.5,3]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"é","args":"日本語のテキスト","ports":[1000,1]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"hello world","args":"  padded  ","ports":[0.5,10]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"a..b","args":"straße","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"","args":":İstanbul","ports":[42,1000]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"  padded  line1\nline2","args":"a","ports":[{"$num":"NaN"},2]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"straße","args":"日本語のテキストhello","ports":[1]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"{name} has {count} items","args":"ns:key.path","ports":[{"$num":"-0"}]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"a..b","args":".leading","ports":[2]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"é","args":"abc","ports":[{"$num":"-0"}]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"key_name-1","args":"{name} has {count} itemskey_name-1","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"{name} has {count} items","args":"a😀b😀c","ports":[10,0.5,1000]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"line1\nline2line1\nline2","args":"a..b","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"a:b:c","args":"trailing.hello","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"./x/**/*.jsonHello World","args":"trailing.","ports":[0,1000]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"Hello World","args":"line1\nline2","ports":[1000]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"ab","args":"ünïcödé","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"日本語のテキストabc","args":"a:b:c","ports":[{"$num":"Infinity"}]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"  padded  ","args":"a..b","ports":[3,9007199254740992]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"emoji 👍🏽 mix","args":"{name} has {count} items","ports":[{"$num":"Infinity"},1000000]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"﻿bom:","args":":","ports":[0]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"emoji 👍🏽 mix","args":"é","ports":[100,100,0]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"a..b","args":"line1\nline2a😀b😀c","ports":[-1]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"a:b:c","args":"日本語のテキスト","ports":[0,1000000]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"straße","args":"hello","ports":[1,10]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"src/a/b.tsHELLO","args":"abc","ports":[0]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"trailing.","args":"﻿bom","ports":[2]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"a.b.c","args":"./x/**/*.json","ports":[9007199254740992,9007199254740992,1000000]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"emoji 👍🏽 mixabc","args":"ΣΊΣΥΦΟΣ","ports":[0.5]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"src/a/b.tsünïcödé","args":".leading","ports":[{"$num":"NaN"}]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"./x/**/*.json","args":"emoji 👍🏽 mix","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"﻿bom","args":"src/a/b.ts","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"hello","args":"  padded  src/a/b.ts","ports":[-2.5]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"a.b.c","args":"line1\nline2","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"İstanbul","args":"ΣΊΣΥΦΟΣ","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"abc","args":"Hello World","ports":[3,2]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"HELLOHello World","args":":","ports":[{"$num":"-0"},-1]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"straße","args":"ünïcödéΣΊΣΥΦΟΣ","ports":[-1]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"İstanbul","args":"😀","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"a..b","args":"a😀b😀c","ports":[-2.5]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"a..b","args":"ab","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"hello world","args":"a","ports":[3]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"😀","args":"src/a/b.ts","ports":[{"$num":"NaN"},2]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"emoji 👍🏽 mix","args":"tab\tseparatedline1\nline2","ports":[10,2147483648,1]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"hello world","args":"é","ports":[1,10]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"key_name-1","args":"ünïcödé","ports":[1000]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":":","args":"straße","ports":[2147483648,-1,{"$num":"Infinity"}]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"ab","args":"﻿bom","ports":[1000,3]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"hello","args":"a.b.c","ports":[0.5,1]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"hello world","args":"emoji 👍🏽 mix","ports":[1,3]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"key_name-1","args":"a.b.c","ports":[1,{"$num":"Infinity"}]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[[]],"error":"Cannot read properties of undefined (reading 'matchAll')"}
+{"fn":"detectDevServerKindFromText","args":[{"command":"a:b:c","args":"é","ports":[0]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"é","args":":","ports":[9007199254740992,{"$num":"-0"},10]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"é","args":"😀","ports":[0.5]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"😀","args":"﻿bom{name} has {count} items","ports":[{"$num":"Infinity"}]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":".leading","args":"aba:b:c","ports":[{"$num":"Infinity"},2147483648,0.5]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"a:b:c","args":"HELLO","ports":[3,10,0.5]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"日本語のテキスト","args":"ab","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"  padded  tab\tseparated","args":"trailing.","ports":[42]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"a","args":"./x/**/*.json","ports":[{"$num":"-0"},100,1000000]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"hello","args":"key_name-1","ports":[1]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"hello","args":"a😀b😀c","ports":[{"$num":"NaN"}]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"key_name-1","args":"ΣΊΣΥΦΟΣ","ports":[10]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"hello world","args":"abc﻿bom","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"a:b:c","args":"straße","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"hello","args":"日本語のテキストabc","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":":","args":"src/a/b.ts","ports":[1000000]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"a:b:c","args":"ünïcödé","ports":[2]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"﻿bom","args":"a.b.c","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{}],"error":"Cannot read properties of undefined (reading 'matchAll')"}
+{"fn":"detectDevServerKindFromText","args":[{"command":"a..b","args":"line1\nline2","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"a..b","args":"hello world","ports":[0.5,-1]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"helloé","args":"a..bé","ports":[0,2,1000000]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"é","args":"abc","ports":[0.5,1,0]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"./x/**/*.json","args":"trailing.","ports":[{"$num":"Infinity"},42,{"$num":"-0"}]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"a.b.c","args":"a:b:c","ports":[{"$num":"-Infinity"},-2.5,{"$num":"-0"}]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"trailing.straße","args":"😀a😀b😀c","ports":[{"$num":"Infinity"}]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"a","args":"ünïcödé","ports":[42,{"$num":"NaN"}]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":":ΣΊΣΥΦΟΣ","args":"tab\tseparateda..b","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"ünïcödé","args":"日本語のテキストİstanbul","ports":[{"$num":"-0"},2147483648,1000]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"  padded  ","args":"﻿bom","ports":[2147483648,0.5,1000000]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"a:b:c日本語のテキスト","args":"trailing.a.b.c","ports":[{"$num":"Infinity"}]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"a😀b😀c","args":"{name} has {count} items","ports":[1]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"trailing.","args":"./x/**/*.jsonstraße","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"a..b","args":"a","ports":[{"$num":"-Infinity"},0]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"ΣΊΣΥΦΟΣ","args":"HELLO","ports":[10]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"a.b.c","args":"a:b:c","ports":[3,{"$num":"NaN"}]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"a:b:cünïcödé","args":"tab\tseparated","ports":[1000000,-2.5,{"$num":"NaN"}]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"line1\nline2","args":"a..b","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"İstanbul","args":"{name} has {count} items","ports":[0.5,-1]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":":line1\nline2","args":"src/a/b.ts","ports":[{"$num":"-Infinity"},9007199254740992,1000]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"{name} has {count} items","args":"emoji 👍🏽 mix","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"ΣΊΣΥΦΟΣ","args":"ΣΊΣΥΦΟΣ","ports":[9007199254740992,1000,0]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"line1\nline2src/a/b.ts","args":"a","ports":[42,{"$num":"Infinity"}]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"a.b.c","args":"tab\tseparated","ports":[{"$num":"-Infinity"},0,2]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"key_name-1","args":"./x/**/*.json","ports":[1]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"hello world","args":"{name} has {count} items","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"ns:key.path","args":"a😀b😀c","ports":[1000000]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"﻿bom","args":"key_name-1","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"ΣΊΣΥΦΟΣ","args":"abc","ports":[{"$num":"NaN"}]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"ΣΊΣΥΦΟΣa..b","args":"😀","ports":[{"$num":"Infinity"},{"$num":"NaN"},{"$num":"Infinity"}]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"emoji 👍🏽 mix","args":"a..bé","ports":[42,9007199254740992,1]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"abca😀b😀c","args":"😀","ports":[2,{"$num":"-0"},10]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"straße.leading","args":":ünïcödé","ports":[3]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"ns:key.path","args":"a","ports":[42,0.5,{"$num":"-Infinity"}]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"﻿bom","args":"emoji 👍🏽 mix","ports":[1,{"$num":"Infinity"},0]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"Hello World","args":"İstanbul","ports":[0]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"ΣΊΣΥΦΟΣ","args":"src/a/b.ts","ports":[100,3,42]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"﻿bom","args":"﻿bom","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"key_name-1","args":"Hello World","ports":[{"$num":"-0"}]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"😀","args":"﻿bom","ports":[100,{"$num":"-0"}]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"a.b.c","args":"hello","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"日本語のテキスト:","args":"﻿bom","ports":[2147483648]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"a.b.c","args":"","ports":[42,2,3]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"src/a/b.ts","args":"a😀b😀c","ports":[]}],"ok":null}
+{"fn":"detectDevServerKindFromText","args":[{"command":"::","args":"日本語のテキスト","ports":[]}],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["emoji 👍🏽 mix:"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["trailing."],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["{name} has {count} items"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["line1\nline2"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["  padded  a😀b😀c"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ababc"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["HELLOemoji 👍🏽 mix"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["tab\tseparated"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":[""],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["😀"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["日本語のテキスト"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["straße:"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":[".leading"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["étrailing."],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["emoji 👍🏽 mix"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["  padded  "],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ünïcödé"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["﻿bom"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["line1\nline2日本語のテキスト"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["abline1\nline2"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["abc"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["hello"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["a😀b😀c"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ns:key.path"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["./x/**/*.jsona.b.c"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["a"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["emoji 👍🏽 mixstraße"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["﻿boma..b"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["日本語のテキストstraße"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["İstanbul"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":[":"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["é"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["Hello World"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ab"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["HELLO"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["a:b:c"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["a..b"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["abcabc"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["  padded  é"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["  padded  a..b"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["straße"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["./x/**/*.json"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["straßea😀b😀c"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["HELLOİstanbul"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ΣΊΣΥΦΟΣΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["a..btrailing."],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["a.b.c"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["src/a/b.ts"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":[".leadinghello"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ΣΊΣΥΦΟΣabc"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["key_name-1"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["﻿bomhello"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ΣΊΣΥΦΟΣhello world"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["Hello Worldtab\tseparated"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["abé"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["tab\tseparateda"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ünïcödé日本語のテキスト"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["  padded  a"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["hello world"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["helloa.b.c"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["éstraße"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":[".leading😀"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["{name} has {count} items  padded  "],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["日本語のテキストline1\nline2"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ΣΊΣΥΦΟΣsrc/a/b.ts"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["é{name} has {count} items"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["İstanbul./x/**/*.json"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["Hello World./x/**/*.json"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["key_name-1emoji 👍🏽 mix"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ünïcödéline1\nline2"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["😀  padded  "],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ΣΊΣΥΦΟΣns:key.path"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ünïcödéΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["aba😀b😀c"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ns:key.path﻿bom"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["straßetrailing."],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ns:key.pathhello world"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["aünïcödé"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["日本語のテキストemoji 👍🏽 mix"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["日本語のテキストabc"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["a.b.cabc"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["a.b.cemoji 👍🏽 mix"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["hellosrc/a/b.ts"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["a😀b😀c{name} has {count} items"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["src/a/b.tsünïcödé"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["{name} has {count} itemsa..b"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":[".leadingİstanbul"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["abc:"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":[".leadingabc"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ΣΊΣΥΦΟΣtrailing."],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["HELLOns:key.path"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["./x/**/*.jsonΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ünïcödéHello World"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["abΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["😀hello"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["a:b:cünïcödé"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["a..bHELLO"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["key_name-1ns:key.path"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["a..bns:key.path"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["helloΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["a..b./x/**/*.json"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["trailing.tab\tseparated"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["é./x/**/*.json"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["a..ba.b.c"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["line1\nline2a.b.c"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["a:b:ckey_name-1"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["abünïcödé"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["日本語のテキスト{name} has {count} items"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["abhello world"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["﻿bom﻿bom"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["日本語のテキストa😀b😀c"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["tab\tseparateda:b:c"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ünïcödéHELLO"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["aba:b:c"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["line1\nline2hello world"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["a.b.c./x/**/*.json"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["straße﻿bom"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":[".leadingünïcödé"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["a:b:cline1\nline2"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["{name} has {count} items:"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ΣΊΣΥΦΟΣkey_name-1"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ΣΊΣΥΦΟΣemoji 👍🏽 mix"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ns:key.pathHello World"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["trailing.  padded  "],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ünïcödétrailing."],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["abchello"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["Hello Worldkey_name-1"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["{name} has {count} items﻿bom"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ns:key.patha😀b😀c"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["trailing.HELLO"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["src/a/b.tsHELLO"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["İstanbultab\tseparated"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["HELLO./x/**/*.json"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ΣΊΣΥΦΟΣline1\nline2"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["a.b.cΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["éa..b"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["trailing.Hello World"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["emoji 👍🏽 mix﻿bom"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["trailing.trailing."],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["İstanbulline1\nline2"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["key_name-1src/a/b.ts"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["éa:b:c"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["abns:key.path"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["a😀b😀ctab\tseparated"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["emoji 👍🏽 mixΣΊΣΥΦΟΣ"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["./x/**/*.jsonabc"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":[":line1\nline2"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["./x/**/*.jsonline1\nline2"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["src/a/b.tsabc"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["Hello Worlda.b.c"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ünïcödé  padded  "],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["a😀b😀cHELLO"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["./x/**/*.jsonünïcödé"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["﻿bom日本語のテキスト"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ns:key.pathline1\nline2"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["straßetab\tseparated"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["aba"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["HELLO😀"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["helloé"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["Hello World😀"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["éhello"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["a😀b😀c😀"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["  padded  :"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["straßesrc/a/b.ts"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":[":trailing."],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ΣΊΣΥΦΟΣa.b.c"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ns:key.pathHELLO"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ΣΊΣΥΦΟΣ./x/**/*.json"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["helloab"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["Hello Worldé"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ünïcödéabc"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ékey_name-1"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["straße.leading"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["a.b.cHello World"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["./x/**/*.jsonsrc/a/b.ts"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["  padded  abc"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["hello worlda😀b😀c"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["Hello World  padded  "],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":[".leading  padded  "],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["a  padded  "],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["a..ba..b"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["{name} has {count} itemsstraße"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["éİstanbul"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["./x/**/*.jsontab\tseparated"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":[":  padded  "],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["  padded  Hello World"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["{name} has {count} itemsa:b:c"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":[":{name} has {count} items"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["  padded  ns:key.path"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["Hello Worldtrailing."],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["abtrailing."],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["a😀b😀ca.b.c"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ΣΊΣΥΦΟΣ.leading"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["key_name-1key_name-1"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["éab"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["emoji 👍🏽 mix  padded  "],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["HELLO日本語のテキスト"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ΣΊΣΥΦΟΣa"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["😀.leading"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["héllo wörld"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["👍🏽 thumbs"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["日本語"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ılık ırmak"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["👨‍👩‍👧 family"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["a b"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["a😀b"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["a²b x½ y①"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["aⅠb Ⅻ"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["a𐐀b 𝐀bc"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["कि ٣٤"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["Iı İi"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["K K k"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ſ s S"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["x‍y 👨‍👩‍👧"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["a b c　d"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["١٢٣ ٤٥"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["𝟘𝟙 ²³"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["snake_case foo-bar o'neil"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ǅungla Ǆ"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["one\r\ntwo threefour"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["café café"],"ok":null}
+{"fn":"extractLocalServerPageTitle","args":["ΣΑΣ σας ς"],"ok":null}
+{"fn":"buildLocalServerProcesses","args":[["a",1],null,{"$undefined":true}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"Infinity"},"command":"abcHELLO","protocol":"tcp","host":"é","port":0,"family":[]},{"pid":0,"command":"src/a/b.ts","protocol":"tcp","host":"hello worldns:key.path","port":100,"family":"x"},{"pid":1000000,"command":"src/a/b.ts","protocol":"tcp","host":".leading","port":{"$num":"NaN"},"family":[]}],null,{"$undefined":true}],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"buildLocalServerProcesses","args":[[],{"a":{"b":"c"}},{"a":"b"}],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":["x","x",{"a":{"b":"c"}}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"buildLocalServerProcesses","args":["x","x",null],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"buildLocalServerProcesses","args":[[],{"$undefined":true},{"$undefined":true}],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":100,"command":"ΣΊΣΥΦΟΣ","protocol":"tcp","host":"a.b.cabc","port":2147483648,"family":"x"}],{"$undefined":true},0],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[],{"a":"b"},{"$undefined":true}],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[],{"$undefined":true},{"a":{"b":"c"}}],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":2147483648,"command":"İstanbulé","protocol":"tcp","host":"hello","port":100,"family":["a",1]},{"pid":100,"command":"straße","protocol":"tcp","host":"ns:key.path","port":{"$num":"NaN"},"family":{"a":"b"}}],{"$undefined":true},{"a":"b"}],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":1000,"command":"key_name-1","protocol":"tcp","host":"hello world","port":1,"family":"x"}],{"a":{"b":"c"}},{}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"NaN"},"command":"Hello Worldtrailing.","protocol":"tcp","host":"ünïcödé","port":{"$num":"Infinity"},"family":[]}],null,true],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":1000,"command":"﻿boma😀b😀c","protocol":"tcp","host":"Hello World","port":-2.5,"family":["a",1]},{"pid":3,"command":"  padded  ","protocol":"tcp","host":"akey_name-1","port":100,"family":["a",1]}],{"$undefined":true},true],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":2147483648,"command":"a..b","protocol":"tcp","host":":","port":2,"family":"x"},{"pid":0.5,"command":"a..b  padded  ","protocol":"tcp","host":"a","port":1000000,"family":{"a":{"b":"c"}}}],{"a":{"b":"c"}},["a",1]],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[],{"a":"b"},["a",1]],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":2,"command":"İstanbul","protocol":"tcp","host":"emoji 👍🏽 mix{name} has {count} items","port":{"$num":"Infinity"},"family":[]}],{"a":"b"},null],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"Infinity"},"command":"ab  padded  ","protocol":"tcp","host":":","port":0,"family":[]},{"pid":1000000,"command":"tab\tseparated","protocol":"tcp","host":"a😀b😀c./x/**/*.json","port":-2.5,"family":null},{"pid":-1,"command":"éHello World","protocol":"tcp","host":"key_name-1  padded  ","port":{"$num":"Infinity"},"family":{"a":"b"}}]],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[],{"a":"b"},[]],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[],0,"x"],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":-2.5,"command":"abc  padded  ","protocol":"tcp","host":"line1\nline2key_name-1","port":42,"family":{}},{"pid":0.5,"command":"{name} has {count} items","protocol":"tcp","host":"ünïcödé","port":2,"family":{}}],{},0],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[0,0,{"a":"b"}],"error":"listeners is not iterable"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":-2.5,"command":"İstanbul","protocol":"tcp","host":"ab","port":42,"family":["a",1]},{"pid":10,"command":"key_name-1","protocol":"tcp","host":"a.b.c","port":{"$num":"-0"},"family":"x"}],"x",{"a":{"b":"c"}}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":-1,"command":"HELLO","protocol":"tcp","host":"a.b.c","port":0.5,"family":{"a":{"b":"c"}}},{"pid":2147483648,"command":"  padded  ","protocol":"tcp","host":"trailing.","port":1000,"family":{}},{"pid":{"$num":"-0"},"command":":","protocol":"tcp","host":".leading","port":-2.5,"family":0}],["a",1],true],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":10,"command":"src/a/b.ts","protocol":"tcp","host":"😀","port":10,"family":["a",1]},{"pid":{"$num":"-Infinity"},"command":"src/a/b.ts","protocol":"tcp","host":":","port":3,"family":{"a":"b"}},{"pid":1,"command":"{name} has {count} items","protocol":"tcp","host":"HELLO","port":1000,"family":{"a":"b"}}],{"$undefined":true},{}],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[],"x",true],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":-2.5,"command":"ünïcödé","protocol":"tcp","host":"İstanbulstraße","port":0,"family":0}]],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":42,"command":"abc","protocol":"tcp","host":"straße","port":0.5,"family":{"a":{"b":"c"}}}],[],0],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":1000000,"command":"a..bsrc/a/b.ts","protocol":"tcp","host":"a..bemoji 👍🏽 mix","port":1000000,"family":["a",1]}],true,true],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[{},["a",1],{}],"error":"listeners is not iterable"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":0.5,"command":"a😀b😀c","protocol":"tcp","host":"","port":9007199254740992,"family":[]},{"pid":3,"command":"ünïcödé","protocol":"tcp","host":"{name} has {count} itemsemoji 👍🏽 mix","port":1000,"family":{}},{"pid":{"$num":"NaN"},"command":"abé","protocol":"tcp","host":".leadinga:b:c","port":{"$num":"NaN"},"family":0}],"x",["a",1]],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":9007199254740992,"command":"HELLO","protocol":"tcp","host":".leading","port":0.5,"family":{"a":"b"}},{"pid":1000000,"command":"a:b:c","protocol":"tcp","host":".leading","port":1000,"family":true}],{"a":{"b":"c"}},true],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[],null,{}],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"-Infinity"},"command":"😀","protocol":"tcp","host":"straße","port":100,"family":{}}],0,{"$undefined":true}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":-2.5,"command":"İstanbul","protocol":"tcp","host":"ab","port":2147483648,"family":[]}],{"$undefined":true},{"$undefined":true}],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"-0"},"command":"hello","protocol":"tcp","host":"ab","port":{"$num":"-0"},"family":null},{"pid":{"$num":"-0"},"command":"line1\nline2","protocol":"tcp","host":"./x/**/*.json","port":{"$num":"Infinity"},"family":{"a":{"b":"c"}}},{"pid":-2.5,"command":"ünïcödé","protocol":"tcp","host":"a","port":{"$num":"-Infinity"},"family":{"a":"b"}}],{"a":"b"},[]],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"Infinity"},"command":"src/a/b.ts","protocol":"tcp","host":"tab\tseparated","port":{"$num":"-0"},"family":{"a":{"b":"c"}}},{"pid":1,"command":"a..b","protocol":"tcp","host":"ns:key.path","port":{"$num":"NaN"},"family":["a",1]},{"pid":2147483648,"command":"abc","protocol":"tcp","host":"emoji 👍🏽 mix","port":1000,"family":{"a":{"b":"c"}}}],{"$undefined":true},{"a":{"b":"c"}}],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":["x","x",{}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":3,"command":"İstanbula😀b😀c","protocol":"tcp","host":"日本語のテキスト","port":10,"family":true},{"pid":10,"command":"HELLO","protocol":"tcp","host":"trailing.","port":-2.5,"family":[]}],true],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":10,"command":"tab\tseparated","protocol":"tcp","host":"  padded  ","port":{"$num":"Infinity"},"family":null},{"pid":-2.5,"command":"trailing.","protocol":"tcp","host":"﻿bom","port":10,"family":null},{"pid":3,"command":"a..b","protocol":"tcp","host":"key_name-1","port":{"$num":"-0"},"family":true}],{}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"NaN"},"command":"emoji 👍🏽 mix","protocol":"tcp","host":"ab","port":2,"family":{"a":{"b":"c"}}}],{"a":{"b":"c"}},["a",1]],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[["a",1],null,"x"],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"buildLocalServerProcesses","args":[["a",1],{},null],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":1,"command":"straße","protocol":"tcp","host":"straßeΣΊΣΥΦΟΣ","port":3,"family":null}],[],["a",1]],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[{},"x",{}],"error":"listeners is not iterable"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"-0"},"command":"straße","protocol":"tcp","host":"Hello World:","port":3,"family":true},{"pid":1000000,"command":"ab","protocol":"tcp","host":"line1\nline2","port":9007199254740992,"family":{"a":"b"}}],{"$undefined":true},0],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[],0,{"$undefined":true}],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[["a",1],true,{"$undefined":true}],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"NaN"},"command":"tab\tseparatedhello","protocol":"tcp","host":"src/a/b.tskey_name-1","port":9007199254740992,"family":{}},{"pid":{"$num":"Infinity"},"command":"src/a/b.ts","protocol":"tcp","host":"hello","port":42,"family":true}],{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[],["a",1],{"$undefined":true}],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"NaN"},"command":"./x/**/*.json","protocol":"tcp","host":"😀","port":0,"family":"x"}],null,{"a":{"b":"c"}}],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"Infinity"},"command":"ns:key.path","protocol":"tcp","host":"日本語のテキスト","port":0.5,"family":{"a":"b"}},{"pid":{"$num":"-Infinity"},"command":"İstanbul","protocol":"tcp","host":"ns:key.path","port":2,"family":{"a":"b"}},{"pid":1000,"command":"emoji 👍🏽 mix","protocol":"tcp","host":"İstanbula:b:c","port":-2.5,"family":null}],{},{"$undefined":true}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"-Infinity"},"command":"é","protocol":"tcp","host":"emoji 👍🏽 mix","port":2147483648,"family":[]},{"pid":10,"command":"emoji 👍🏽 mix  padded  ","protocol":"tcp","host":"ab","port":{"$num":"Infinity"},"family":[]}],"x",{}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[],true,["a",1]],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":2,"command":"é","protocol":"tcp","host":"./x/**/*.json","port":{"$num":"NaN"},"family":["a",1]},{"pid":42,"command":"日本語のテキスト","protocol":"tcp","host":"Hello World","port":10,"family":{}},{"pid":-2.5,"command":"./x/**/*.json","protocol":"tcp","host":"key_name-1tab\tseparated","port":100,"family":["a",1]}],null,0],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"-Infinity"},"command":"hello world","protocol":"tcp","host":"tab\tseparateda.b.c","port":-2.5,"family":["a",1]}],{"a":{"b":"c"}},[]],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":9007199254740992,"command":"straße./x/**/*.json","protocol":"tcp","host":"{name} has {count} items","port":1000,"family":0}],"x"],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":3,"command":"a","protocol":"tcp","host":"a:b:c","port":1,"family":0}],{},{}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":100,"command":"a..b","protocol":"tcp","host":"HELLO","port":-1,"family":{}}],[],true],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":9007199254740992,"command":"  padded  ","protocol":"tcp","host":"src/a/b.ts","port":{"$num":"-Infinity"},"family":{"a":"b"}}],[],null],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"Infinity"},"command":"hello world","protocol":"tcp","host":"ab","port":100,"family":true},{"pid":-2.5,"command":"a:b:c","protocol":"tcp","host":".leading","port":1000,"family":"x"}],{"$undefined":true},{"a":{"b":"c"}}],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":42,"command":"line1\nline2:","protocol":"tcp","host":"  padded  a😀b😀c","port":1000,"family":{"a":"b"}},{"pid":2147483648,"command":"  padded  ","protocol":"tcp","host":"a.b.c","port":-1,"family":{"a":{"b":"c"}}}],{"$undefined":true},0],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[true,null,null],"error":"listeners is not iterable"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":2147483648,"command":"Hello World","protocol":"tcp","host":"abc","port":-2.5,"family":{"a":"b"}}],true,{}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":100,"command":".leading","protocol":"tcp","host":"HELLO","port":3,"family":{"a":"b"}}],{"a":"b"},0],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":2147483648,"command":"﻿bom","protocol":"tcp","host":"hello","port":10,"family":"x"},{"pid":3,"command":"ns:key.path","protocol":"tcp","host":"HELLO","port":3,"family":{}},{"pid":0.5,"command":"ΣΊΣΥΦΟΣ","protocol":"tcp","host":"a:b:ca😀b😀c","port":1000000,"family":[]}],{"a":"b"},0],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":1000,"command":"ab","protocol":"tcp","host":"a","port":{"$num":"-0"},"family":["a",1]},{"pid":{"$num":"Infinity"},"command":"a..b","protocol":"tcp","host":"ns:key.path","port":100,"family":true},{"pid":{"$num":"NaN"},"command":"a..b","protocol":"tcp","host":"straße","port":{"$num":"NaN"},"family":{"a":{"b":"c"}}}],{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"NaN"},"command":"{name} has {count} items","protocol":"tcp","host":"key_name-1","port":0.5,"family":{"a":"b"}},{"pid":42,"command":"{name} has {count} items","protocol":"tcp","host":"a","port":{"$num":"-Infinity"},"family":{}}],{"$undefined":true},{}],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":42,"command":"İstanbul:","protocol":"tcp","host":"{name} has {count} items","port":9007199254740992,"family":[]},{"pid":{"$num":"NaN"},"command":"é","protocol":"tcp","host":"ünïcödéHello World","port":2147483648,"family":{"a":"b"}}],{"$undefined":true},0],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":0,"command":"日本語のテキスト","protocol":"tcp","host":"trailing.","port":1000000,"family":0},{"pid":{"$num":"Infinity"},"command":"é","protocol":"tcp","host":":ns:key.path","port":1,"family":{"a":"b"}},{"pid":{"$num":"Infinity"},"command":"","protocol":"tcp","host":"a:b:c","port":10,"family":{"a":{"b":"c"}}}],true,[]],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[],{"$undefined":true},[]],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":0.5,"command":":","protocol":"tcp","host":"ünïcödé","port":0,"family":null}],"x",[]],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[],"x",0],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":1000,"command":"hello","protocol":"tcp","host":"Hello Worldline1\nline2","port":0.5,"family":{"a":"b"}},{"pid":{"$num":"-0"},"command":"日本語のテキスト","protocol":"tcp","host":"./x/**/*.json","port":1000000,"family":{"a":"b"}}],{"$undefined":true},null],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[{"a":"b"},{"$undefined":true},["a",1]],"error":"listeners is not iterable"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":10,"command":"key_name-1","protocol":"tcp","host":"straße","port":0.5,"family":[]}],{},{"$undefined":true}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":1000,"command":"ünïcödé","protocol":"tcp","host":"éhello world","port":1000000,"family":true}],null,"x"],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":0,"command":"a..b","protocol":"tcp","host":"İstanbul","port":1,"family":{"a":"b"}}],{"$undefined":true},"x"],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":100,"command":"helloab","protocol":"tcp","host":"emoji 👍🏽 mixΣΊΣΥΦΟΣ","port":1000000,"family":{}}],{},{}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":1000000,"command":"{name} has {count} items","protocol":"tcp","host":"ünïcödé","port":3,"family":["a",1]},{"pid":10,"command":"日本語のテキスト","protocol":"tcp","host":"HELLO","port":1000000,"family":[]},{"pid":100,"command":"İstanbul","protocol":"tcp","host":"hello world","port":0,"family":[]}],{"$undefined":true},{}],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"NaN"},"command":"hello","protocol":"tcp","host":"é","port":10,"family":null},{"pid":42,"command":"﻿bom","protocol":"tcp","host":":","port":-2.5,"family":null},{"pid":{"$num":"-0"},"command":"src/a/b.ts","protocol":"tcp","host":"ns:key.path","port":{"$num":"-Infinity"},"family":{}}],{"a":"b"},0],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"-Infinity"},"command":"😀","protocol":"tcp","host":"ünïcödésrc/a/b.ts","port":-1,"family":{"a":{"b":"c"}}},{"pid":42,"command":"a:b:c","protocol":"tcp","host":"hello worlda","port":3,"family":["a",1]},{"pid":-2.5,"command":"ünïcödé","protocol":"tcp","host":"Hello World","port":9007199254740992,"family":{}}],0,{"a":{"b":"c"}}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":10,"command":"HELLO","protocol":"tcp","host":"a:b:c","port":0,"family":"x"},{"pid":0,"command":"﻿bom﻿bom","protocol":"tcp","host":".leading","port":-2.5,"family":"x"}],[],null],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":100,"command":"a..b","protocol":"tcp","host":"hello","port":{"$num":"-Infinity"},"family":{"a":{"b":"c"}}},{"pid":2,"command":"é","protocol":"tcp","host":"tab\tseparated","port":{"$num":"-0"},"family":{"a":"b"}},{"pid":2147483648,"command":"😀","protocol":"tcp","host":".leading","port":2147483648,"family":true}],{"$undefined":true},{"a":{"b":"c"}}],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[{"a":{"b":"c"}},null,null],"error":"listeners is not iterable"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":2147483648,"command":"helloHELLO","protocol":"tcp","host":"a:b:c日本語のテキスト","port":0.5,"family":{"a":"b"}}],["a",1]],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":-2.5,"command":"{name} has {count} items","protocol":"tcp","host":"abc","port":1000000,"family":0}],{"$undefined":true},[]],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":1000000,"command":"abc","protocol":"tcp","host":"a","port":1000000,"family":{"a":{"b":"c"}}},{"pid":1,"command":"straße日本語のテキスト","protocol":"tcp","host":"ünïcödé","port":0,"family":[]},{"pid":9007199254740992,"command":"tab\tseparated","protocol":"tcp","host":"a..b","port":0.5,"family":{"a":{"b":"c"}}}],null,"x"],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":1000000,"command":"a..b","protocol":"tcp","host":"é","port":0,"family":{"a":"b"}},{"pid":42,"command":"  padded  ","protocol":"tcp","host":"a","port":-2.5,"family":{"a":"b"}}],{"$undefined":true}],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[["a",1],[],0],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"Infinity"},"command":"  padded  ","protocol":"tcp","host":"a:b:c","port":3,"family":0},{"pid":{"$num":"NaN"},"command":".leading","protocol":"tcp","host":"日本語のテキスト","port":2147483648,"family":null}],{},null],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":2147483648,"command":"hello world","protocol":"tcp","host":":","port":3,"family":null},{"pid":2147483648,"command":"tab\tseparated","protocol":"tcp","host":"İstanbul","port":{"$num":"-Infinity"},"family":null},{"pid":{"$num":"-Infinity"},"command":"Hello World","protocol":"tcp","host":"😀","port":42,"family":[]}],true,["a",1]],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"Infinity"},"command":"line1\nline2","protocol":"tcp","host":"😀","port":0,"family":["a",1]},{"pid":1000000,"command":"src/a/b.ts😀","protocol":"tcp","host":"ΣΊΣΥΦΟΣ","port":0,"family":"x"}],{"a":{"b":"c"}},true],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":1000,"command":"Hello World","protocol":"tcp","host":"abcİstanbul","port":3,"family":{"a":"b"}},{"pid":9007199254740992,"command":"trailing.a😀b😀c","protocol":"tcp","host":"hello worlda..b","port":{"$num":"NaN"},"family":[]},{"pid":1000000,"command":".leading","protocol":"tcp","host":"a","port":-2.5,"family":[]}],["a",1],{"$undefined":true}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"-0"},"command":"a","protocol":"tcp","host":"😀","port":1000000,"family":["a",1]}],{"a":"b"},{"$undefined":true}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":9007199254740992,"command":"key_name-1","protocol":"tcp","host":"tab\tseparated","port":100,"family":null},{"pid":10,"command":"😀","protocol":"tcp","host":"tab\tseparateda:b:c","port":42,"family":{"a":"b"}},{"pid":{"$num":"Infinity"},"command":"a..b","protocol":"tcp","host":"ab","port":1000000,"family":{"a":"b"}}],{"$undefined":true}],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":1000,"command":"tab\tseparated","protocol":"tcp","host":"a","port":{"$num":"-0"},"family":true},{"pid":2,"command":"hello","protocol":"tcp","host":"a:b:c","port":42,"family":{"a":"b"}},{"pid":0,"command":"abc","protocol":"tcp","host":"Hello World","port":-1,"family":{"a":{"b":"c"}}}],{},{"a":{"b":"c"}}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"Infinity"},"command":"a","protocol":"tcp","host":"hello","port":2,"family":null}],{}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":1000,"command":"a:b:c","protocol":"tcp","host":"straße","port":{"$num":"-Infinity"},"family":{"a":{"b":"c"}}}]],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"-0"},"command":"ab","protocol":"tcp","host":"😀","port":100,"family":{"a":"b"}}],{"a":"b"},{"$undefined":true}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":1000,"command":"a","protocol":"tcp","host":"straße","port":-2.5,"family":true},{"pid":1,"command":"ünïcödé","protocol":"tcp","host":"abc","port":0,"family":[]}],{"$undefined":true},["a",1]],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":3,"command":"ünïcödé","protocol":"tcp","host":"😀","port":42,"family":[]}],0,["a",1]],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":-2.5,"command":"a:b:c","protocol":"tcp","host":"😀","port":-2.5,"family":"x"},{"pid":9007199254740992,"command":"emoji 👍🏽 mix","protocol":"tcp","host":"Hello World","port":{"$num":"-Infinity"},"family":null},{"pid":100,"command":"  padded  ","protocol":"tcp","host":"a","port":0,"family":true}],{},{"a":{"b":"c"}}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":1000000,"command":"a","protocol":"tcp","host":"日本語のテキスト","port":2,"family":["a",1]}],["a",1],{}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"NaN"},"command":"a:b:c","protocol":"tcp","host":"straße","port":{"$num":"-Infinity"},"family":{"a":"b"}},{"pid":2147483648,"command":"straße","protocol":"tcp","host":"﻿bom","port":2147483648,"family":"x"}],{"a":"b"},{"$undefined":true}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":100,"command":"Hello World:","protocol":"tcp","host":"straße","port":{"$num":"-Infinity"},"family":{}}],"x",{"a":{"b":"c"}}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":9007199254740992,"command":"line1\nline2","protocol":"tcp","host":"hello world","port":1,"family":0},{"pid":{"$num":"Infinity"},"command":"trailing.","protocol":"tcp","host":".leading","port":0,"family":{"a":{"b":"c"}}},{"pid":1000000,"command":"ünïcödé","protocol":"tcp","host":"ab","port":100,"family":{"a":{"b":"c"}}}],{}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[0,{"a":{"b":"c"}},{"a":"b"}],"error":"listeners is not iterable"}
+{"fn":"buildLocalServerProcesses","args":[[],["a",1],0],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"NaN"},"command":"","protocol":"tcp","host":"日本語のテキスト","port":{"$num":"Infinity"},"family":{}},{"pid":42,"command":"hello world","protocol":"tcp","host":"tab\tseparated","port":42,"family":{}},{"pid":-2.5,"command":"﻿bomHello World","protocol":"tcp","host":"İstanbulemoji 👍🏽 mix","port":-2.5,"family":{"a":"b"}}],{"$undefined":true},{"a":"b"}],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"-0"},"command":"Hello World","protocol":"tcp","host":"ab","port":9007199254740992,"family":"x"},{"pid":0,"command":"é","protocol":"tcp","host":"src/a/b.ts","port":100,"family":{"a":"b"}},{"pid":1000000,"command":"{name} has {count} items","protocol":"tcp","host":":","port":1,"family":{"a":"b"}}],true,{"$undefined":true}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"NaN"},"command":":","protocol":"tcp","host":"ab","port":1,"family":null},{"pid":{"$num":"-Infinity"},"command":"日本語のテキスト","protocol":"tcp","host":"key_name-1straße","port":-1,"family":null},{"pid":2,"command":"","protocol":"tcp","host":"line1\nline2","port":2147483648,"family":["a",1]}],{"$undefined":true},[]],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[],null,{"$undefined":true}],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"NaN"},"command":"HELLO","protocol":"tcp","host":"  padded  ","port":2147483648,"family":true},{"pid":0,"command":"Hello World","protocol":"tcp","host":"abc","port":{"$num":"NaN"},"family":{"a":{"b":"c"}}},{"pid":1000,"command":"{name} has {count} items","protocol":"tcp","host":"hello","port":1000,"family":null}],[],null],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[{"a":"b"},true,["a",1]],"error":"listeners is not iterable"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":2147483648,"command":"{name} has {count} items","protocol":"tcp","host":"ns:key.path./x/**/*.json","port":9007199254740992,"family":{"a":"b"}}],true,{"$undefined":true}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"NaN"},"command":"tab\tseparated","protocol":"tcp","host":"  padded  a:b:c","port":10,"family":"x"},{"pid":1000000,"command":"😀","protocol":"tcp","host":"é","port":10,"family":null},{"pid":0.5,"command":"hellohello","protocol":"tcp","host":"emoji 👍🏽 mix","port":0.5,"family":"x"}],{},0],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[],{"a":"b"},{"a":"b"}],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":2147483648,"command":"src/a/b.ts","protocol":"tcp","host":"a","port":{"$num":"-0"},"family":0},{"pid":-1,"command":"./x/**/*.json","protocol":"tcp","host":"ab","port":1000000,"family":["a",1]}],{"$undefined":true},"x"],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"-0"},"command":"éns:key.path","protocol":"tcp","host":"ΣΊΣΥΦΟΣ","port":{"$num":"Infinity"},"family":0},{"pid":0,"command":"ns:key.path","protocol":"tcp","host":"hello world","port":2147483648,"family":"x"}],"x",{"a":{"b":"c"}}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"NaN"},"command":"hello world","protocol":"tcp","host":"😀","port":100,"family":{"a":"b"}}],[],"x"],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"NaN"},"command":"﻿bom","protocol":"tcp","host":"ünïcödé","port":10,"family":["a",1]}],["a",1],[]],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[],["a",1],null],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[],{"a":"b"},null],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[{"a":{"b":"c"}},["a",1],[]],"error":"listeners is not iterable"}
+{"fn":"buildLocalServerProcesses","args":[[],{"$undefined":true},"x"],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[true,{"a":"b"},{"a":{"b":"c"}}],"error":"listeners is not iterable"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":100,"command":"😀","protocol":"tcp","host":"key_name-1","port":3,"family":"x"}],{"$undefined":true},{}],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":10,"command":"emoji 👍🏽 mix","protocol":"tcp","host":".leadingünïcödé","port":{"$num":"Infinity"},"family":{"a":{"b":"c"}}}],"x",{"a":"b"}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":3,"command":"{name} has {count} items","protocol":"tcp","host":"a.b.c﻿bom","port":100,"family":"x"},{"pid":0,"command":"straße","protocol":"tcp","host":"abc","port":1000000,"family":0},{"pid":1000000,"command":"HELLOsrc/a/b.ts","protocol":"tcp","host":"a😀b😀c","port":3,"family":0}],"x",0],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":9007199254740992,"command":"abc","protocol":"tcp","host":"ünïcödé","port":42,"family":null}],"x"],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":-2.5,"command":"line1\nline2","protocol":"tcp","host":"a..b","port":0,"family":null}],true,["a",1]],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":-1,"command":"a.b.c","protocol":"tcp","host":"İstanbul","port":0.5,"family":{}}],0,{}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":0.5,"command":"src/a/b.ts","protocol":"tcp","host":"a.b.c","port":42,"family":0},{"pid":2147483648,"command":"é","protocol":"tcp","host":"Hello World","port":0.5,"family":null},{"pid":-1,"command":"atab\tseparated","protocol":"tcp","host":"﻿bom","port":-1,"family":"x"}],{"$undefined":true},{"$undefined":true}],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"-0"},"command":"{name} has {count} items","protocol":"tcp","host":"ΣΊΣΥΦΟΣ","port":3,"family":{}},{"pid":0.5,"command":":{name} has {count} items","protocol":"tcp","host":"hello","port":{"$num":"-Infinity"},"family":{"a":{"b":"c"}}}],null,{"a":"b"}],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"buildLocalServerProcesses","args":[[],"x","x"],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":1000,"command":"a:b:c","protocol":"tcp","host":"tab\tseparated","port":0.5,"family":0},{"pid":1,"command":"key_name-1","protocol":"tcp","host":"  padded  ","port":{"$num":"-Infinity"},"family":{"a":"b"}}],["a",1]],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":0,"command":"  padded  ","protocol":"tcp","host":"a.b.c","port":1000000,"family":{}},{"pid":2147483648,"command":".leading","protocol":"tcp","host":"hello","port":{"$num":"NaN"},"family":{"a":{"b":"c"}}},{"pid":1,"command":"abc","protocol":"tcp","host":"tab\tseparated","port":100,"family":{"a":{"b":"c"}}}],{"$undefined":true},[]],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[],{}],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"NaN"},"command":"ünïcödé","protocol":"tcp","host":"tab\tseparated","port":2147483648,"family":"x"},{"pid":3,"command":".leading","protocol":"tcp","host":"a.b.cline1\nline2","port":3,"family":0}],{"a":"b"}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[0],"error":"listeners is not iterable"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":3,"command":"ünïcödé","protocol":"tcp","host":"a:b:c","port":0,"family":{"a":"b"}},{"pid":9007199254740992,"command":"😀","protocol":"tcp","host":":hello world","port":2147483648,"family":{"a":{"b":"c"}}}],"x",["a",1]],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":["x","x",["a",1]],"error":"Cannot read properties of undefined (reading 'includes')"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":1000,"command":"hello","protocol":"tcp","host":"a..b","port":1,"family":["a",1]}],0,{"$undefined":true}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":-1,"command":"trailing.","protocol":"tcp","host":"emoji 👍🏽 mix","port":-1,"family":"x"},{"pid":100,"command":"HELLO","protocol":"tcp","host":".leading","port":2,"family":{}},{"pid":42,"command":"Hello World","protocol":"tcp","host":"hello","port":{"$num":"-0"},"family":[]}],0,{}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":3,"command":"ünïcödé","protocol":"tcp","host":"a","port":1000000,"family":0}],{"a":"b"},{"a":{"b":"c"}}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"Infinity"},"command":"abc","protocol":"tcp","host":"é","port":42,"family":{"a":{"b":"c"}}},{"pid":1000000,"command":"emoji 👍🏽 mix","protocol":"tcp","host":"hello world","port":1000000,"family":0}],0],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":3,"command":"ünïcödé","protocol":"tcp","host":"日本語のテキスト","port":1000,"family":{"a":"b"}},{"pid":2,"command":"a.b.c","protocol":"tcp","host":"a:b:c","port":1000000,"family":{}}],["a",1],true],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":0.5,"command":"a😀b😀c","protocol":"tcp","host":"  padded  ","port":{"$num":"-0"},"family":{"a":{"b":"c"}}},{"pid":42,"command":"aİstanbul","protocol":"tcp","host":"./x/**/*.json:","port":3,"family":{}}],[],0],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":1000,"command":"hello worldline1\nline2","protocol":"tcp","host":"ünïcödé","port":42,"family":{"a":{"b":"c"}}},{"pid":1000,"command":"HELLO","protocol":"tcp","host":"a","port":{"$num":"-Infinity"},"family":[]}],"x",["a",1]],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":1000,"command":"./x/**/*.json","protocol":"tcp","host":"Hello World","port":10,"family":{"a":{"b":"c"}}}],0,"x"],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"NaN"},"command":"a","protocol":"tcp","host":"hello world","port":3,"family":[]}],0,null],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":1000000,"command":"trailing.","protocol":"tcp","host":"日本語のテキスト","port":2,"family":{}},{"pid":3,"command":"hello world","protocol":"tcp","host":"a.b.c","port":{"$num":"-0"},"family":{"a":"b"}}],true,{"a":{"b":"c"}}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":0.5,"command":"日本語のテキスト","protocol":"tcp","host":"a.b.c","port":2147483648,"family":{"a":"b"}},{"pid":{"$num":"NaN"},"command":"a","protocol":"tcp","host":"ab","port":-2.5,"family":[]},{"pid":3,"command":"ünïcödé","protocol":"tcp","host":"straße","port":1000000,"family":true}],{},true],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[],[],{"a":{"b":"c"}}],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":100,"command":"src/a/b.ts","protocol":"tcp","host":"./x/**/*.json","port":0.5,"family":"x"},{"pid":1000000,"command":"ΣΊΣΥΦΟΣ","protocol":"tcp","host":"ΣΊΣΥΦΟΣa:b:c","port":-1,"family":{"a":"b"}},{"pid":3,"command":"aba.b.c","protocol":"tcp","host":"abünïcödé","port":{"$num":"-Infinity"},"family":"x"}],{"a":"b"}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[],0,{"a":{"b":"c"}}],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"NaN"},"command":"a:b:c{name} has {count} items","protocol":"tcp","host":"ns:key.path","port":1,"family":null},{"pid":100,"command":"a:b:c","protocol":"tcp","host":"key_name-1","port":-1,"family":true}],{"a":"b"},{}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[true,null,{"a":"b"}],"error":"listeners is not iterable"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":10,"command":".leading","protocol":"tcp","host":"﻿bom","port":-1,"family":{"a":"b"}},{"pid":2147483648,"command":"HELLO","protocol":"tcp","host":"é","port":-1,"family":null},{"pid":3,"command":"emoji 👍🏽 mix","protocol":"tcp","host":"hello","port":-2.5,"family":0}],true,{}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":2147483648,"command":"a..b{name} has {count} items","protocol":"tcp","host":"straßeé","port":9007199254740992,"family":true},{"pid":0.5,"command":"a.b.c","protocol":"tcp","host":"","port":{"$num":"NaN"},"family":{}}],{"$undefined":true},null],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[],{"$undefined":true},0],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":2,"command":"日本語のテキスト","protocol":"tcp","host":".leading","port":100,"family":null},{"pid":2,"command":".leading","protocol":"tcp","host":"İstanbul","port":1000,"family":{"a":"b"}},{"pid":1000,"command":"a😀b😀c","protocol":"tcp","host":"HELLO","port":2,"family":[]}],{},"x"],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":9007199254740992,"command":"a:b:c","protocol":"tcp","host":"line1\nline2","port":-1,"family":0}],{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"-Infinity"},"command":"a.b.c","protocol":"tcp","host":"hello","port":{"$num":"-Infinity"},"family":{"a":"b"}},{"pid":1000,"command":":","protocol":"tcp","host":"ns:key.path","port":1,"family":0},{"pid":3,"command":"a😀b😀c","protocol":"tcp","host":"ab","port":1000,"family":"x"}],[],"x"],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[true,{"a":"b"}],"error":"listeners is not iterable"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"Infinity"},"command":"é","protocol":"tcp","host":"İstanbul","port":10,"family":"x"}],{"$undefined":true},{"a":"b"}],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"Infinity"},"command":"日本語のテキスト","protocol":"tcp","host":"hello","port":9007199254740992,"family":"x"},{"pid":42,"command":"a","protocol":"tcp","host":"é","port":0.5,"family":0},{"pid":0,"command":"","protocol":"tcp","host":"ΣΊΣΥΦΟΣ","port":-1,"family":true}],"x"],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[{"a":{"b":"c"}},true,["a",1]],"error":"listeners is not iterable"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":0.5,"command":"hello","protocol":"tcp","host":"ΣΊΣΥΦΟΣ","port":2147483648,"family":true},{"pid":1000,"command":"é","protocol":"tcp","host":"  padded  ","port":3,"family":{"a":"b"}},{"pid":-1,"command":"emoji 👍🏽 mix","protocol":"tcp","host":"line1\nline2","port":0,"family":0}],{},{"$undefined":true}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":-1,"command":"tab\tseparated","protocol":"tcp","host":"","port":1000000,"family":{"a":{"b":"c"}}}],[],null],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":3,"command":"line1\nline2","protocol":"tcp","host":"a:b:ctrailing.","port":{"$num":"NaN"},"family":{"a":"b"}}],{"a":{"b":"c"}},["a",1]],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":0,"command":"a:b:cemoji 👍🏽 mix","protocol":"tcp","host":"HELLO","port":-2.5,"family":true},{"pid":0.5,"command":"./x/**/*.json","protocol":"tcp","host":"é","port":0.5,"family":null},{"pid":9007199254740992,"command":"straße./x/**/*.json","protocol":"tcp","host":"  padded  ","port":1000000,"family":{"a":"b"}}],{},[]],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":0,"command":"straße","protocol":"tcp","host":"﻿bom","port":-1,"family":0}],{"a":{"b":"c"}},"x"],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":100,"command":"😀","protocol":"tcp","host":"İstanbul","port":1000000,"family":"x"},{"pid":42,"command":"./x/**/*.json","protocol":"tcp","host":"  padded  abc","port":1000000,"family":{"a":"b"}},{"pid":{"$num":"-Infinity"},"command":"straße","protocol":"tcp","host":"key_name-1","port":{"$num":"-0"},"family":["a",1]}],["a",1],"x"],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"-Infinity"},"command":"tab\tseparated","protocol":"tcp","host":"hello world","port":0.5,"family":["a",1]},{"pid":9007199254740992,"command":"hello world","protocol":"tcp","host":"😀","port":42,"family":{"a":"b"}}],{"$undefined":true},[]],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":42,"command":"HELLO","protocol":"tcp","host":"日本語のテキスト","port":1000,"family":0},{"pid":{"$num":"-Infinity"},"command":"日本語のテキスト","protocol":"tcp","host":"a😀b😀c","port":{"$num":"Infinity"},"family":{"a":{"b":"c"}}}],{"$undefined":true},true],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[0,null,null],"error":"listeners is not iterable"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":3,"command":"ünïcödé./x/**/*.json","protocol":"tcp","host":".leading","port":{"$num":"Infinity"},"family":["a",1]},{"pid":{"$num":"NaN"},"command":"abc","protocol":"tcp","host":"hello","port":0,"family":"x"}],0,{}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"-0"},"command":"line1\nline2ΣΊΣΥΦΟΣ","protocol":"tcp","host":"İstanbul","port":{"$num":"-Infinity"},"family":{"a":"b"}},{"pid":2147483648,"command":"hello","protocol":"tcp","host":"a:b:c","port":1000000,"family":{}}],0,{}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[],null,true],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[],{"a":{"b":"c"}}],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"Infinity"},"command":"./x/**/*.jsonkey_name-1","protocol":"tcp","host":"a😀b😀c","port":9007199254740992,"family":[]},{"pid":{"$num":"NaN"},"command":"Hello Worldsrc/a/b.ts","protocol":"tcp","host":"line1\nline2","port":-1,"family":[]}],{},{"$undefined":true}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":10,"command":"é","protocol":"tcp","host":"line1\nline2a😀b😀c","port":0.5,"family":{"a":{"b":"c"}}}],null,0],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"buildLocalServerProcesses","args":[{"a":{"b":"c"}},"x",{"a":"b"}],"error":"listeners is not iterable"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":9007199254740992,"command":"a..bemoji 👍🏽 mix","protocol":"tcp","host":"a:b:c😀","port":1000000,"family":0},{"pid":{"$num":"Infinity"},"command":"emoji 👍🏽 mix","protocol":"tcp","host":"  padded  line1\nline2","port":1000,"family":null}],["a",1],{"a":"b"}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"-Infinity"},"command":"Hello World","protocol":"tcp","host":"src/a/b.ts","port":0.5,"family":0},{"pid":9007199254740992,"command":"trailing.","protocol":"tcp","host":"key_name-1","port":{"$num":"NaN"},"family":["a",1]}],{"a":"b"},{"a":"b"}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"NaN"},"command":"trailing.","protocol":"tcp","host":"a..b","port":1,"family":true},{"pid":2,"command":"a😀b😀c","protocol":"tcp","host":"ab","port":10,"family":{"a":{"b":"c"}}}],{"a":"b"},{"a":"b"}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[],{"$undefined":true},["a",1]],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":1000,"command":"hello","protocol":"tcp","host":"😀key_name-1","port":-1,"family":["a",1]},{"pid":-1,"command":"HELLO","protocol":"tcp","host":"abΣΊΣΥΦΟΣ","port":{"$num":"NaN"},"family":true}],true,"x"],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":42,"command":"日本語のテキスト","protocol":"tcp","host":"a:b:c","port":{"$num":"NaN"},"family":{}}],true,"x"],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":9007199254740992,"command":"","protocol":"tcp","host":"abc","port":{"$num":"Infinity"},"family":0}],{},0],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":0.5,"command":"😀","protocol":"tcp","host":"aline1\nline2","port":-2.5,"family":0}],"x",{"a":{"b":"c"}}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[],null,[]],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":2147483648,"command":"src/a/b.ts","protocol":"tcp","host":"ünïcödé.leading","port":1000,"family":0},{"pid":10,"command":"straßeab","protocol":"tcp","host":"  padded  ./x/**/*.json","port":{"$num":"NaN"},"family":0}],null,{"$undefined":true}],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"buildLocalServerProcesses","args":[{"a":"b"},"x",[]],"error":"listeners is not iterable"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":3,"command":"a.b.c","protocol":"tcp","host":"a:b:c","port":10,"family":{"a":{"b":"c"}}}],["a",1],[]],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":2147483648,"command":"{name} has {count} items","protocol":"tcp","host":"ΣΊΣΥΦΟΣ","port":42,"family":true}],{"$undefined":true},{"$undefined":true}],"ok":[]}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"NaN"},"command":"line1\nline2a.b.c","protocol":"tcp","host":"a..babc","port":2147483648,"family":["a",1]},{"pid":{"$num":"-Infinity"},"command":"İstanbul","protocol":"tcp","host":"straße","port":{"$num":"Infinity"},"family":{"a":{"b":"c"}}},{"pid":100,"command":".leading","protocol":"tcp","host":"","port":0,"family":{"a":"b"}}],{"a":{"b":"c"}},{"a":{"b":"c"}}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":2,"command":"","protocol":"tcp","host":"ns:key.path","port":-1,"family":{}},{"pid":2147483648,"command":"  padded  {name} has {count} items","protocol":"tcp","host":"ab","port":0,"family":"x"}],{},{"$undefined":true}],"error":"processInfoByPid.get is not a function"}
+{"fn":"buildLocalServerProcesses","args":[[{"pid":{"$num":"-0"},"command":"ns:key.path","protocol":"tcp","host":".leading","port":1000000,"family":0}],null,{"a":{"b":"c"}}],"error":"Cannot read properties of null (reading 'get')"}
+{"fn":"listLocalServers","args":[],"ok":{"generatedAt":"2026-11-21T16:44:54.386Z","servers":[]}}

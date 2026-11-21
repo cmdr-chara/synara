@@ -1,0 +1,17 @@
+{
+  "unit": "packages/shared/src/threadDetailEvents.ts",
+  "files": 1,
+  "fingerprint": "472a235edcd13c4d",
+  "coverage": {
+    "lines": 37,
+    "reached": 37,
+    "files": [
+      {
+        "file": "packages/shared/src/threadDetailEvents.ts",
+        "lines": 37,
+        "reached": 37,
+        "missed": ""
+      }
+    ]
+  }
+}
